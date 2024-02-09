@@ -12,7 +12,7 @@ Rules that help you discover design issues.
     <rule name="AbstractClassWithoutAnyMethod"
           language="java"
           since="4.2"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           message="No abstract method which means that the keyword is most likely used to prevent instantiation. Use a private or protected constructor instead."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#abstractclasswithoutanymethod">
         <description>
@@ -51,7 +51,7 @@ public abstract class Example {
           since="4.2.6"
           language="java"
           message="Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoidcatchinggenericexception">
         <description>
 Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block.
@@ -122,7 +122,7 @@ public class Foo {
           language="java"
           since="3.8"
           message="A catch statement that catches an exception only to rethrow it should be avoided."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoidrethrowingexception">
         <description>
 Catch blocks that merely rethrow a caught exception only add to code size and runtime complexity.
@@ -156,7 +156,7 @@ public void bar() {
           since="4.2.5"
           language="java"
           message="A catch statement that catches an exception only to wrap it in a new instance of the same type of exception and throw it should be avoided"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoidthrowingnewinstanceofsameexception">
         <description>
 Catch blocks that merely rethrow a caught exception wrapped inside a new instance of the same type only add to
@@ -243,7 +243,7 @@ public class Foo {
           language="java"
           since="1.8"
           message="Avoid throwing raw exception types."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoidthrowingrawexceptiontypes">
         <description>
 Avoid throwing certain exception types. Rather than throw a raw RuntimeException, Throwable,
@@ -283,7 +283,7 @@ public class Foo {
           since="6.13.0"
           language="java"
           message="A method or constructor should not explicitly declare unchecked exceptions in its ''throws'' clause"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoiduncheckedexceptionsinsignatures">
         <description>
 Reports unchecked exceptions in the `throws` clause of a method or constructor.
@@ -334,7 +334,7 @@ public class Foo {  //Should be final
           language="java"
           since="3.1"
           message="This if statement could be combined with its parent"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#collapsibleifstatements">
         <description><![CDATA[
 Reports nested 'if' statements that can be merged together by joining their
@@ -579,7 +579,7 @@ public class DataClass {
           language="java"
           since="4.0"
           message="Exceptions should not extend java.lang.Error"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#donotextendjavalangerror">
         <description>
 Errors are system exceptions. Do not extend them.
@@ -796,7 +796,7 @@ public class Foo {
           language="java"
           since="1.1"
           message="This final field could be made static"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#finalfieldcouldbestatic">
         <description>
 If a final field is assigned to a compile-time constant, it could be made static, thus saving overhead
@@ -1013,7 +1013,7 @@ public class Foo {
     <rule name="LogicInversion"
           language="java"
           since="5.0"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           message="Use opposite operator instead of the logic complement operator."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#logicinversion">
         <description>
@@ -1197,7 +1197,7 @@ public void foo() throws Exception {
           language="java"
           since="5.4.0"
           message="This conditional expression can be simplified with || or &amp;&amp;"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifiedternary">
         <description>
 <![CDATA[
@@ -1253,7 +1253,7 @@ public class Foo {
           language="java"
           since="1.05"
           message="Avoid unnecessary comparisons in boolean expressions"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifybooleanexpressions">
         <description>
 Avoid unnecessary comparisons in boolean expressions, they serve no purpose and impacts readability.
@@ -1401,7 +1401,7 @@ public class Foo {
           language="java"
           since="3.0"
           message="Too many fields"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#toomanyfields">
         <description>
 Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,
@@ -1444,7 +1444,7 @@ public class Person {   // this is more manageable
     <rule name="TooManyMethods"
           language="java"
           since="4.2"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           message="This class has too many methods, consider refactoring it."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#toomanymethods">
         <description>
@@ -1505,7 +1505,7 @@ public Long getId() {
           language="java"
           since="4.2.6"
           message="Rather than using a lot of String arguments, consider using a container object for those values."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#useobjectforclearerapi">
         <description>
 When you write a public method, you should be thinking in terms of an API. If your method is public, it means other class
@@ -1573,7 +1573,7 @@ public class MaybeAUtility {
           language="java"
           since="6.35.0"
           message="Do not use non-final non-private static fields"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#mutablestaticstate">
         <description>
 Non-private static fields should be made constants (or immutable references) by
@@ -1590,7 +1590,6 @@ rule {% rule java/errorprone/AssignmentToNonFinalStatic %}.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
                     <![CDATA[

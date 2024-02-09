@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.vm;
 
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
-import net.sourceforge.pmd.lang.vm.cpd.VmTokenizer;
+import net.sourceforge.pmd.lang.vm.cpd.VmCpdLexer;
 
 /**
  * Created by christoferdutz on 20.09.14.
@@ -32,7 +32,7 @@ public class VmLanguageModule extends SimpleLanguageModuleBase {
     }
 
     @Override
-    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-        return new VmTokenizer();
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new VmCpdLexer();
     }
 }

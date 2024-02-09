@@ -18,43 +18,11 @@ import net.sourceforge.pmd.lang.modelica.ModelicaParsingHelper;
 import net.sourceforge.pmd.lang.modelica.ast.ASTExtendsClause;
 import net.sourceforge.pmd.lang.modelica.ast.ASTStoredDefinition;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaClassSpecifierNode;
-import net.sourceforge.pmd.lang.modelica.ast.ModelicaNode;
-import net.sourceforge.pmd.lang.modelica.ast.ModelicaVisitorBase;
 import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionState;
 
 class ModelicaResolverTest {
 
     private final ModelicaParsingHelper modelica = ModelicaParsingHelper.DEFAULT;
-
-    private static class NodeFinder extends ModelicaVisitorBase<Object, Object> {
-        private ModelicaNode result;
-        private Class<?> nodeClass;
-        private String nodeName;
-
-        NodeFinder(Class<?> nodeClass, String nodeName) {
-            this.nodeClass = nodeClass;
-            this.nodeName = nodeName;
-        }
-
-        @Override
-        public Object visitModelicaNode(ModelicaNode node, Object data) {
-            if (nodeClass.isInstance(node) && node.getImage().equals(nodeName)) {
-                assertNull(result);
-                result = node;
-            }
-            return super.visitModelicaNode(node, data);
-        }
-
-        ModelicaNode getResult() {
-            return result;
-        }
-    }
-
-    private ModelicaNode findNodeByClassAndImage(ASTStoredDefinition ast, Class<?> clazz, String image) {
-        NodeFinder vis = new NodeFinder(clazz, image);
-        ast.acceptVisitor(vis, null);
-        return vis.getResult();
-    }
 
     private void ensureCounts(ResolutionResult result, int best, int hidden) {
         assertFalse(result.wasTimedOut());
@@ -128,7 +96,8 @@ class ModelicaResolverTest {
 
         assertEquals(1, sourceFileScope.getContainedDeclarations().size());
 
-        ModelicaNode testSubmodel = findNodeByClassAndImage(ast, ModelicaClassSpecifierNode.class, "TestSubmodel");
+        ModelicaClassSpecifierNode testSubmodel = ast.descendants(ModelicaClassSpecifierNode.class)
+                .first(n -> "TestSubmodel".equals(n.getSimpleClassName()));
         assertNotNull(testSubmodel);
         assertEquals(
                 "#ROOT#FILE#Class:TestPackage#Class:TestModel#Class:TestSubmodel",

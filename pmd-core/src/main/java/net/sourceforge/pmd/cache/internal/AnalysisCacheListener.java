@@ -7,8 +7,8 @@ package net.sourceforge.pmd.cache.internal;
 import java.io.IOException;
 import java.util.Collection;
 
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 

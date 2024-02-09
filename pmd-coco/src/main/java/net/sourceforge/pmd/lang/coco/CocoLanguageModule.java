@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.coco;
 
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.coco.cpd.CocoTokenizer;
+import net.sourceforge.pmd.lang.coco.cpd.CocoCpdLexer;
 import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
 
 /**
@@ -25,7 +25,7 @@ public class CocoLanguageModule extends CpdOnlyLanguageModuleBase {
     }
 
     @Override
-    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-        return new CocoTokenizer();
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new CocoCpdLexer();
     }
 }

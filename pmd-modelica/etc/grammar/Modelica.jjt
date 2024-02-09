@@ -49,9 +49,6 @@ options {
 PARSER_BEGIN(ModelicaParserImpl)
 package net.sourceforge.pmd.lang.modelica.ast;
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
-
 class ModelicaParserImpl {
 
 }
@@ -335,7 +332,7 @@ void LanguageSpecification():
 }
 {
     t = <STRING>
-    { jjtThis.setImage(t.getImage()); }
+    { jjtThis.setExternalLanguage(t.getImage()); }
 }
 
 void ExternalFunctionCall(): {}
@@ -763,12 +760,12 @@ void Relation() #Relation(>1): {}
 
 void RelOp(): {}
 {
-    <LT> { jjtThis.setImage("<"); }
-  | <LE> { jjtThis.setImage("<="); }
-  | <GT> { jjtThis.setImage(">"); }
-  | <GE> { jjtThis.setImage(">="); }
-  | <EQ> { jjtThis.setImage("=="); }
-  | <NEQ> { jjtThis.setImage("<>"); }
+    <LT> { jjtThis.setOperator("<"); }
+  | <LE> { jjtThis.setOperator("<="); }
+  | <GT> { jjtThis.setOperator(">"); }
+  | <GE> { jjtThis.setOperator(">="); }
+  | <EQ> { jjtThis.setOperator("=="); }
+  | <NEQ> { jjtThis.setOperator("<>"); }
 }
 
 void ArithmeticExpression() #ArithmeticExpression(>1): {}
@@ -783,10 +780,10 @@ void ArithmeticExpression() #ArithmeticExpression(>1): {}
 
 void AddOp(): {}
 {
-      <PLUS> { jjtThis.setImage("+"); }
-    | <MINUS> { jjtThis.setImage("-"); }
-    | <DOT_PLUS> { jjtThis.setImage(".+"); }
-    | <DOT_MINUS>{ jjtThis.setImage(".-"); }
+      <PLUS> { jjtThis.setOperator("+"); }
+    | <MINUS> { jjtThis.setOperator("-"); }
+    | <DOT_PLUS> { jjtThis.setOperator(".+"); }
+    | <DOT_MINUS>{ jjtThis.setOperator(".-"); }
 }
 
 void Term() #Term(>1): {}
@@ -800,10 +797,10 @@ void Term() #Term(>1): {}
 
 void MulOp(): {}
 {
-      <ASTERISK>     { jjtThis.setImage("*"); }
-    | <SLASH>        { jjtThis.setImage("/"); }
-    | <DOT_ASTERISK> { jjtThis.setImage(".*"); }
-    | <DOT_SLASH>    { jjtThis.setImage("./"); }
+      <ASTERISK>     { jjtThis.setOperator("*"); }
+    | <SLASH>        { jjtThis.setOperator("/"); }
+    | <DOT_ASTERISK> { jjtThis.setOperator(".*"); }
+    | <DOT_SLASH>    { jjtThis.setOperator("./"); }
 }
 
 void Factor() #Factor(>1): {}
@@ -811,8 +808,8 @@ void Factor() #Factor(>1): {}
     Primary()
     (
         (
-              <HAT>     { jjtThis.setImage("^"); }
-            | <DOT_HAT> { jjtThis.setImage(".^"); }
+              <HAT>     { jjtThis.setOperator("^"); }
+            | <DOT_HAT> { jjtThis.setOperator(".^"); }
         )
         Primary()
     )?
@@ -838,7 +835,7 @@ void NumberLiteral():
 }
 {
     t = <UNSIGNED_NUMBER>
-    { jjtThis.setImage(t.getImage()); }
+    { jjtThis.setValue(t.getImage()); }
 }
 
 void StringLiteral():
@@ -847,7 +844,7 @@ void StringLiteral():
 }
 {
     t = <STRING>
-    { jjtThis.setImage(t.getImage()); }
+    { jjtThis.setValue(t.getImage()); }
 }
 
 void Name(): {}
@@ -866,7 +863,7 @@ void SimpleName():
 }
 {
     t = <IDENT>
-    { jjtThis.setImage(t.getImage()); }
+    { jjtThis.setName(t.getImage()); }
 }
 
 void SubscriptedName(): {}
@@ -980,7 +977,7 @@ void StringComment() #StringComment(!skip):
         { sb.append(t); }
         (<PLUS> t = <STRING> { sb.append(t); } )*
     ) { skip = false; }) ?
-    { jjtThis.setImage(sb.toString()); }
+    { jjtThis.setComment(sb.toString()); }
 }
 
 void Annotation(): {}

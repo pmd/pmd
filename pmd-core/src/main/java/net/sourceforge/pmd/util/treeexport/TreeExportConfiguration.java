@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.util.treeexport;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.List;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -18,9 +18,7 @@ import net.sourceforge.pmd.util.log.PmdReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 public class TreeExportConfiguration extends AbstractConfiguration {
-
     private static final Logger LOG = LoggerFactory.getLogger(TreeExportConfiguration.class);
-    protected Path reportFile;
 
     private String format = "xml";
     private Language language = LanguageRegistry.PMD.getLanguageById("java");
@@ -94,43 +92,18 @@ public class TreeExportConfiguration extends AbstractConfiguration {
         this.messageReporter = messageReporter;
     }
 
-    /**
-     * Get the file to which the report should render.
-     *
-     * @return The file to which to render.
-     * @deprecated Use {@link #getReportFilePath()}
-     */
-    @Deprecated
-    public String getReportFile() {
-        return reportFile == null ? null : reportFile.toString();
+    @Override
+    public List<Path> getRelativizeRoots() {
+        throw new UnsupportedOperationException();
     }
 
-    /**
-     * Get the file to which the report should render.
-     *
-     * @return The file to which to render.
-     */
-    public Path getReportFilePath() {
-        return reportFile;
+    @Override
+    public void addRelativizeRoot(Path path) {
+        throw new UnsupportedOperationException();
     }
 
-    /**
-     * Set the file to which the report should render.
-     *
-     * @param reportFile the file to set
-     * @deprecated Use {@link #setReportFile(Path)}
-     */
-    @Deprecated
-    public void setReportFile(String reportFile) {
-        this.reportFile = reportFile == null ? null : Paths.get(reportFile);
-    }
-
-    /**
-     * Set the file to which the report should render.
-     *
-     * @param reportFile the file to set
-     */
-    public void setReportFile(Path reportFile) {
-        this.reportFile = reportFile;
+    @Override
+    public void addRelativizeRoots(List<Path> paths) {
+        throw new UnsupportedOperationException();
     }
 }

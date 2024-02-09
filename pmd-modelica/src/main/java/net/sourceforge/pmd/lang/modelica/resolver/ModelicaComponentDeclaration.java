@@ -86,7 +86,7 @@ public class ModelicaComponentDeclaration extends AbstractModelicaDeclaration im
     private final ASTConditionAttribute condition;
 
     public ModelicaComponentDeclaration(ASTComponentDeclaration node) {
-        declarationName = node.firstChild(ASTDeclaration.class).firstChild(ASTSimpleName.class).getImage();
+        declarationName = node.firstChild(ASTDeclaration.class).firstChild(ASTSimpleName.class).getName();
         condition = node.firstChild(ASTConditionAttribute.class);
         ASTComponentClause declarationRoot = node.ancestors(ASTComponentClause.class).first();
         ASTTypePrefix prefixes = declarationRoot.firstChild(ASTTypePrefix.class);

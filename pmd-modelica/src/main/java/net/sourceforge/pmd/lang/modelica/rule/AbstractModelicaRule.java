@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.modelica.rule;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Base class for rules for Modelica language.

@@ -36,7 +36,7 @@ public final class ASTMultipleDefinitionImportClause extends AbstractModelicaImp
         ASTImportList importList = firstChild(ASTImportList.class);
         for (int i = 0; i < importList.getNumChildren(); ++i) {
             ASTSimpleName namePart = (ASTSimpleName) importList.getChild(i);
-            importedNames.add(namePart.getImage());
+            importedNames.add(namePart.getName());
         }
     }
 

@@ -17,7 +17,7 @@ import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 /**
  * @apiNote  Internal API
@@ -53,9 +53,9 @@ public class ResourceLoader {
     }
 
     /**
-     * Attempts to load the resource from file, a URL or the claspath
-     * <p>
-     * Caller is responsible for closing the {@link InputStream}.
+     * Attempts to load the resource from file, a URL or the classpath.
+     *
+     * <p>Caller is responsible for closing the {@link InputStream}.
      *
      * @param name The resource to attempt and load
      *
@@ -74,7 +74,7 @@ public class ResourceLoader {
             }
         }
 
-        // Maybe it's a url?
+        // Maybe it's a URL?
         try {
             final HttpURLConnection connection = (HttpURLConnection) new URL(name).openConnection();
             connection.setConnectTimeout(TIMEOUT);

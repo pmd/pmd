@@ -16,7 +16,7 @@ Here might be &lt;script&gt;alert('XSS');&lt;/script&gt; as well. And "quotes".
           language="java"
           since="0.1"
           message="Tests that &lt;script&gt;alert('XSS');&lt;/script&gt; is properly escaped"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_sample.html#xssindocumentation">
        <description>
             &lt;script&gt;alert('XSS at the beginning');&lt;/script&gt; HTML tags might appear at various places.
@@ -57,7 +57,6 @@ Here might be &lt;script&gt;alert('XSS');&lt;/script&gt; as well. And "quotes".
        </description>
        <priority>3</priority>
        <properties>
-           <property name="version" value="2.0"/>
            <property name="xpath">
                <value>
 <![CDATA[
@@ -140,14 +139,13 @@ public class Foo {
           language="java"
           since="1.0"
           message="Avoid modifying an outer loop incrementer in an inner loop for update expression"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_sample.html#jumbledincrementer">
      <description>
 Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
      </description>
      <priority>3</priority>
      <properties>
-         <property name="version" value="2.0"/>
          <property name="xpath">
              <value>
  <![CDATA[
@@ -190,7 +188,7 @@ public class JumbledIncrementerRule1 {
       language="java"
       since="1.0"
       message="Sample rule, which is deprecated"
-      class="net.sourceforge.pmd.lang.rule.XPathRule"
+      class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
       externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_sample.html#deprecatedsample"
       deprecated="true">
  <description>
@@ -206,7 +204,6 @@ RuleTag with full category and without quotes: Use {% rule java/sample/RenamedRu
  </description>
  <priority>3</priority>
  <properties>
-     <property name="version" value="2.0"/>
      <property name="xpath">
          <value>
 <![CDATA[

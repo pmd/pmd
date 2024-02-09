@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.html.rule;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.html.ast.HtmlVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public abstract class AbstractHtmlRule extends AbstractRule implements HtmlVisitor {
 

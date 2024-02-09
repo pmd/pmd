@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.scala;
 
-import net.sourceforge.pmd.cpd.ScalaTokenizer;
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLexer;
+import net.sourceforge.pmd.cpd.ScalaCpdLexer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
@@ -34,7 +34,7 @@ public class ScalaLanguageModule extends SimpleLanguageModuleBase {
     }
 
     @Override
-    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-        return new ScalaTokenizer(bundle);
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new ScalaCpdLexer(bundle);
     }
 }

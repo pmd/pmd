@@ -38,7 +38,6 @@ public final class ASTAnnotationParameter extends AbstractApexNode<AnnotationPar
     }
 
     @Override
-    @Deprecated
     public String getImage() {
         return getValue();
     }

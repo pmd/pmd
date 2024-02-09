@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.dart;
 
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.dart.cpd.DartTokenizer;
+import net.sourceforge.pmd.lang.dart.cpd.DartCpdLexer;
 import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
 
 /**
@@ -26,7 +26,7 @@ public class DartLanguageModule extends CpdOnlyLanguageModuleBase {
     }
 
     @Override
-    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-        return new DartTokenizer();
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new DartCpdLexer();
     }
 }

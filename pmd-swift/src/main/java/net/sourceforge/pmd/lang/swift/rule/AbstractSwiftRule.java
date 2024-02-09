@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.swift.rule;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.rule.AbstractVisitorRule;
 import net.sourceforge.pmd.lang.swift.ast.SwiftVisitor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public abstract class AbstractSwiftRule extends AbstractVisitorRule {
 

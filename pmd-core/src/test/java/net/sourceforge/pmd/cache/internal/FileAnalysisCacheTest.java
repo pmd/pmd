@@ -36,8 +36,6 @@ import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mockito;
 
 import net.sourceforge.pmd.PmdCoreTestUtils;
-import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.FileId;
@@ -46,8 +44,11 @@ import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.document.TextFileContent;
 import net.sourceforge.pmd.lang.document.TextRange2d;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.lang.rule.Rule;
+import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.ParametricRuleViolation;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 class FileAnalysisCacheTest {
 
@@ -123,7 +124,7 @@ class FileAnalysisCacheTest {
         final RuleViolation rv = mock(RuleViolation.class);
         final TextRange2d textLocation = TextRange2d.range2d(1, 2, 3, 4);
         when(rv.getLocation()).thenReturn(FileLocation.range(sourceFile.getFileId(), textLocation));
-        final net.sourceforge.pmd.Rule rule = mock(net.sourceforge.pmd.Rule.class, Mockito.RETURNS_SMART_NULLS);
+        final Rule rule = mock(Rule.class, Mockito.RETURNS_SMART_NULLS);
         when(rule.getLanguage()).thenReturn(mock(Language.class));
         when(rv.getRule()).thenReturn(rule);
 
@@ -153,7 +154,7 @@ class FileAnalysisCacheTest {
         // id is saved into the cache file, and the cache implementation updates the
         // display name of the violations to match their current display name.
 
-        final net.sourceforge.pmd.Rule rule = mock(net.sourceforge.pmd.Rule.class, Mockito.RETURNS_SMART_NULLS);
+        final Rule rule = mock(Rule.class, Mockito.RETURNS_SMART_NULLS);
         when(rule.getLanguage()).thenReturn(mock(Language.class));
 
         final TextRange2d textLocation = TextRange2d.range2d(1, 2, 3, 4);
@@ -281,7 +282,7 @@ class FileAnalysisCacheTest {
         // Make sure the auxclasspath file is not empty
         Files.write(classpathFile.toPath(), "some text".getBytes());
 
-        final net.sourceforge.pmd.Rule r = mock(net.sourceforge.pmd.Rule.class);
+        final Rule r = mock(Rule.class);
         when(r.getLanguage()).thenReturn(mock(Language.class));
         when(rs.getAllRules()).thenReturn(Collections.singleton(r));
         reloadedCache.checkValidity(rs, cl, Collections.emptySet());
@@ -297,7 +298,7 @@ class FileAnalysisCacheTest {
         final File classpathFile = Files.createTempFile(tempFolder, null, "foo.class").toFile();
         when(cl.getURLs()).thenReturn(new URL[] { classpathFile.toURI().toURL(), });
 
-        final net.sourceforge.pmd.Rule r = mock(net.sourceforge.pmd.Rule.class);
+        final Rule r = mock(Rule.class);
         when(r.getLanguage()).thenReturn(mock(Language.class));
         when(rs.getAllRules()).thenReturn(Collections.singleton(r));
 

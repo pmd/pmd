@@ -8,8 +8,8 @@ import io.kotest.assertions.withClue
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.equalityMatcher
 import io.kotest.matchers.should
-import net.sourceforge.pmd.Report
-import net.sourceforge.pmd.RuleViolation
+import net.sourceforge.pmd.reporting.Report
+import net.sourceforge.pmd.reporting.RuleViolation
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.document.Chars
 import kotlin.reflect.KCallable

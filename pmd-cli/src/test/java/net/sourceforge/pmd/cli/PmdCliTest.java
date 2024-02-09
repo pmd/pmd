@@ -40,11 +40,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.MockRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
@@ -207,12 +207,6 @@ class PmdCliTest extends BaseCliTest {
         CliExecutionResult result = runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", RULESET_NO_VIOLATIONS);
         result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd.cli - Log level is at INFO"));
         result.checkStdErr(not(containsPattern("Adding file .*"))); // not in debug mode
-    }
-
-    @Test
-    void testDeprecatedRulesetSyntaxOnCommandLine() throws Exception {
-        CliExecutionResult result = runCli(VIOLATIONS_FOUND, "--dir", srcDir.toString(), "--rulesets", "dummy-basic");
-        result.checkStdErr(containsString("Ruleset reference 'dummy-basic' uses a deprecated form, use 'rulesets/dummy/basic.xml' instead"));
     }
 
     @Test

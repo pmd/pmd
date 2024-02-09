@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.wsdl;
 
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 import net.sourceforge.pmd.lang.xml.XmlHandler;
-import net.sourceforge.pmd.lang.xml.cpd.XmlTokenizer;
+import net.sourceforge.pmd.lang.xml.cpd.XmlCpdLexer;
 
 /**
  * Created by bernardo-macedo on 24.06.15.
@@ -30,7 +30,7 @@ public class WsdlLanguageModule extends SimpleLanguageModuleBase {
     }
 
     @Override
-    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-        return new XmlTokenizer();
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new XmlCpdLexer();
     }
 }

@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.util;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class FooRuleWithLanguageSetInJava extends AbstractRule {
 

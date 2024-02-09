@@ -11,18 +11,17 @@ import org.mozilla.javascript.ast.InfixExpression;
 abstract class AbstractInfixEcmascriptNode<T extends InfixExpression> extends AbstractEcmascriptNode<T> {
 
     AbstractInfixEcmascriptNode(T infixExpression) {
-        this(infixExpression, true);
+        super(infixExpression);
     }
 
-    AbstractInfixEcmascriptNode(T infixExpression, boolean setImage) {
-        super(infixExpression);
-        if (setImage) {
-            if (infixExpression.getOperator() == Token.ASSIGN_BITXOR) {
-                super.setImage("^=");
-            } else if (infixExpression.getOperator() != Token.METHOD) {
-                super.setImage(AstRoot.operatorToString(infixExpression.getOperator()));
-            }
+    public String getOperator() {
+        int operator = node.getOperator();
+        if (operator == Token.ASSIGN_BITXOR) {
+            return "^=";
+        } else if (operator != Token.METHOD) {
+            return AstRoot.operatorToString(operator);
         }
+        return "";
     }
 
     public EcmascriptNode<?> getLeft() {

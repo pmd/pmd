@@ -9,8 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.LanguageProcessor;
+import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException.Phase;
 

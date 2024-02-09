@@ -5,12 +5,12 @@
 package net.sourceforge.pmd.lang.apex;
 
 import net.sourceforge.pmd.cpd.CpdCapableLanguage;
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.LanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.PmdCapableLanguage;
-import net.sourceforge.pmd.lang.apex.cpd.ApexTokenizer;
+import net.sourceforge.pmd.lang.apex.cpd.ApexCpdLexer;
 
 public class ApexLanguageModule extends LanguageModuleBase implements PmdCapableLanguage, CpdCapableLanguage {
     private static final String ID = "apex";
@@ -47,7 +47,7 @@ public class ApexLanguageModule extends LanguageModuleBase implements PmdCapable
     }
 
     @Override
-    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-        return new ApexTokenizer();
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new ApexCpdLexer();
     }
 }

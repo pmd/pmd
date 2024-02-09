@@ -5,8 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-
-import net.sf.saxon.trans.XPathException;
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
 
 public final class NodeIsFunction extends BaseRewrittenFunction<Class<?>, JavaNode> {
 
@@ -17,16 +16,16 @@ public final class NodeIsFunction extends BaseRewrittenFunction<Class<?>, JavaNo
     }
 
     @Override
-    protected Class<?> parseArgument(String arg) throws XPathException {
+    protected Class<?> parseArgument(String arg) throws XPathFunctionException {
         try {
             return Class.forName("net.sourceforge.pmd.lang.java.ast.AST" + arg);
         } catch (ClassNotFoundException e) {
-            throw new XPathException("No class named AST" + arg);
+            throw new XPathFunctionException("No class named AST" + arg, e);
         }
     }
 
     @Override
-    protected boolean matches(JavaNode contextNode, String arg, Class<?> parsedArg, boolean isConstant) throws XPathException {
+    protected boolean matches(JavaNode contextNode, String arg, Class<?> parsedArg, boolean isConstant) {
         return parsedArg.isInstance(contextNode);
     }
 

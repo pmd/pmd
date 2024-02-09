@@ -13,7 +13,7 @@ import java.util.Map.Entry;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
@@ -91,7 +91,7 @@ public class Tokens {
 
     /**
      * Creates a token factory to process the given file with
-     * {@link Tokenizer#tokenize(TextDocument, TokenFactory)}.
+     * {@link CpdLexer#tokenize(TextDocument, TokenFactory)}.
      * Tokens are accumulated in the {@link Tokens} parameter.
      *
      * @param file   Document for the file to process
@@ -115,8 +115,8 @@ public class Tokens {
             }
 
             @Override
-            public TokenMgrError makeLexException(int line, int column, String message, @Nullable Throwable cause) {
-                return new TokenMgrError(line, column, fileId, message, cause);
+            public LexException makeLexException(int line, int column, String message, @Nullable Throwable cause) {
+                return new LexException(line, column, fileId, message, cause);
             }
 
             @Override

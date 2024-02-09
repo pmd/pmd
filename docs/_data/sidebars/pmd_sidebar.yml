@@ -106,6 +106,9 @@ entries:
         - title: Testing your rules
           url: /pmd_userdocs_extending_testing.html
           output: web, pdf
+        - title: Creating (XML) dump of the AST
+          url: /pmd_userdocs_extending_ast_dump.html
+          output: web, pdf
     - title: null
       output: web, pdf
       subfolders:
@@ -552,9 +555,6 @@ entries:
       - title: Experimental features
         output: web, pdf
         subfolderitems:
-        - title: Creating (XML) dump of the AST
-          url: /pmd_devdocs_experimental_ast_dump.html
-          output: web, pdf
         - title: List of experimental Features
           url: /tag_experimental.html
           output: web, pdf

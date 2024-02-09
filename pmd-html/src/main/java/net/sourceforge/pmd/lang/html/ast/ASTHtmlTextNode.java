@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.html.ast;
 
 import org.jsoup.nodes.TextNode;
 
-public class ASTHtmlTextNode extends AbstractHtmlNode<TextNode> {
+public class ASTHtmlTextNode extends AbstractHtmlNode<TextNode> implements net.sourceforge.pmd.lang.rule.xpath.TextNode {
 
     ASTHtmlTextNode(TextNode node) {
         super(node);
@@ -18,16 +18,17 @@ public class ASTHtmlTextNode extends AbstractHtmlNode<TextNode> {
         return visitor.visit(this, data);
     }
 
-    public String getNormalizedText() {
-        return node.text();
-    }
-
-    public String getText() {
+    public String getWholeText() {
         return node.getWholeText();
     }
 
     @Override
-    public String getImage() {
-        return getNormalizedText();
+    public String getText() {
+        return node.text();
+    }
+
+    @Override
+    public String getXPathNodeName() {
+        return net.sourceforge.pmd.lang.rule.xpath.TextNode.super.getXPathNodeName();
     }
 }

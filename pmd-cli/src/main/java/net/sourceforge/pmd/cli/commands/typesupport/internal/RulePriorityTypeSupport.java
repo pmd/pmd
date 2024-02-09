@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.lang.rule.RulePriority;
 
 import picocli.CommandLine.ITypeConverter;
 import picocli.CommandLine.TypeConversionException;

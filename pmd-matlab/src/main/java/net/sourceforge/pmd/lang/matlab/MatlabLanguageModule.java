@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.matlab;
 
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
-import net.sourceforge.pmd.lang.matlab.cpd.MatlabTokenizer;
+import net.sourceforge.pmd.lang.matlab.cpd.MatlabCpdLexer;
 
 /**
  * Defines the Language module for Matlab
@@ -29,7 +29,7 @@ public class MatlabLanguageModule extends CpdOnlyLanguageModuleBase {
     }
 
     @Override
-    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-        return new MatlabTokenizer();
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new MatlabCpdLexer();
     }
 }

@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.modelica;
 
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
-import net.sourceforge.pmd.lang.modelica.cpd.ModelicaTokenizer;
+import net.sourceforge.pmd.lang.modelica.cpd.ModelicaCpdLexer;
 
 public class ModelicaLanguageModule extends SimpleLanguageModuleBase {
     private static final String ID = "modelica";
@@ -26,7 +26,7 @@ public class ModelicaLanguageModule extends SimpleLanguageModuleBase {
     }
 
     @Override
-    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-        return new ModelicaTokenizer();
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new ModelicaCpdLexer();
     }
 }

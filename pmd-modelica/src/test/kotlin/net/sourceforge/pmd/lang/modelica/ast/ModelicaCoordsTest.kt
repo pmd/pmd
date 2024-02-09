@@ -130,7 +130,7 @@ end TestPackage"""
                                                 }
                                                 child<ASTSimpleName> {
                                                     it shouldHaveText "EmptyPackage"
-                                                    it::getImage shouldBe "EmptyPackage"
+                                                    it.name shouldBe "EmptyPackage"
                                                     it.assertPosition(3, 7, 3, 19)
                                                 }
                                             }

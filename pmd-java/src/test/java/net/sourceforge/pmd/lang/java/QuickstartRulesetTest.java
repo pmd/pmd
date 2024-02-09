@@ -9,9 +9,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.AbstractRuleSetFactoryTest;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetLoader;
+import net.sourceforge.pmd.lang.rule.AbstractRuleSetFactoryTest;
+import net.sourceforge.pmd.lang.rule.RuleSet;
+import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
@@ -20,7 +20,7 @@ class QuickstartRulesetTest {
 
     @Test
     void noDeprecations() throws Exception {
-        RuleSetLoader ruleSetLoader = new RuleSetLoader().enableCompatibility(false);
+        RuleSetLoader ruleSetLoader = new RuleSetLoader();
         String errorOutput = SystemLambda.tapSystemErr(() -> {
             RuleSet quickstart = ruleSetLoader.loadFromResource(QUICKSTART_RULESET);
             assertFalse(quickstart.getRules().isEmpty());

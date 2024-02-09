@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang;
 
 import java.util.Objects;
 
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.cpd.CpdCapableLanguage;
 import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.lang.ast.DummyNode;
@@ -18,6 +17,7 @@ import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
+import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
 
 /**
@@ -98,7 +98,14 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase implements Cpd
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             if (c == '(') {
-                DummyNode node = new DummyNode();
+                DummyNode node;
+                if (text.startsWith("#text", i + 1)) {
+                    node = new DummyNode.DummyTextNode();
+                } else if (text.startsWith("#comment", i + 1)) {
+                    node = new DummyNode.DummyCommentNode();
+                } else {
+                    node = new DummyNode();
+                }
                 node.setParent(top);
                 top.addChild(node, top.getNumChildren());
                 // setup coordinates, temporary (will be completed when node closes)

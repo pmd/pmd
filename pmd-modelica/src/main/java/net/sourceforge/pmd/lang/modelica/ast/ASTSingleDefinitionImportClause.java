@@ -28,7 +28,7 @@ public class ASTSingleDefinitionImportClause extends AbstractModelicaImportClaus
         super.jjtClose();
 
         importWhat = firstChild(ASTName.class);
-        importedName = importWhat.getChild(importWhat.getNumChildren() - 1).getImage();
+        importedName = ((ASTSimpleName) importWhat.getChild(importWhat.getNumChildren() - 1)).getName();
     }
 
     @Override

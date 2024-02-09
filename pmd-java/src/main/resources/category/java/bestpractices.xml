@@ -133,7 +133,7 @@ public class Foo {
           language="java"
           since="6.18.0"
           message="You shouldn't declare field of MessageDigest type, because unsynchronized access could cause problems"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#avoidmessagedigestfield">
         <description>
             Declaring a MessageDigest instance as a field make this instance directly available to multiple threads.
@@ -183,7 +183,7 @@ public class AvoidMessageDigestFieldExample {
           language="java"
           since="3.2"
           message="Avoid printStackTrace(); use a logger call instead."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#avoidprintstacktrace">
         <description>
 Avoid printStackTrace(); use a logger call instead.
@@ -336,7 +336,7 @@ public class Hello {
           language="java"
           since="4.2"
           message="StringBuffers can grow quite a lot, and so may become a source of memory leak (if the owning class has a long life time)."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#avoidstringbufferfield">
         <description>
 StringBuffers/StringBuilders can grow considerably, and so may become a source of memory leaks
@@ -414,7 +414,7 @@ if (rst.next()) {    // result is properly examined and used
           language="java"
           since="5.5"
           message="Using constants in interfaces is a bad practice."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#constantsininterface">
         <description>
 Using constants in interfaces is a bad practice. Interfaces define types, constants are implementation details better placed in classes or enums. If the constants are best viewed as members of an enumerated type, you should export them with an enum type.
@@ -461,7 +461,7 @@ public interface YetAnotherConstantInterface {
           language="java"
           since="1.5"
           message="The default label should be the last label in a switch statement"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#defaultlabelnotlastinswitchstmt">
         <description>
 By convention, the default label should be the last label in a switch statement.
@@ -498,7 +498,7 @@ public class Foo {
           language="java"
           since="6.16.0"
           message="Double-brace initialization should be avoided"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#doublebraceinitialization">
         <description>
             Double brace initialisation is a pattern to initialise eg collections concisely. But it implicitly
@@ -572,7 +572,7 @@ public class MyClass {
           language="java"
           since="6.11.0"
           message="Too many control variables in the 'for' statement"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#forloopvariablecount">
         <description>
 Having a lot of control variables in a 'for' loop makes it harder to see what range of values
@@ -632,7 +632,7 @@ log.debug("log something expensive: {}", () -> calculateExpensiveLoggingText());
           language="java"
           since="4.0"
           message="JUnit 4 indicates test suites via annotations, not the suite method."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4suitesshouldusesuiteannotation">
         <description>
 In JUnit 3, test suites are indicated by the suite() method. In JUnit 4, suites are indicated
@@ -670,7 +670,7 @@ public class GoodTest {
           language="java"
           since="4.0"
           message="JUnit 4 tests that clean up tests should use the @After annotation, JUnit5 tests should use @AfterEach or @AfterAll"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4testshoulduseafterannotation">
         <description>
 In JUnit 3, the tearDown method was used to clean up all data entities required in running tests.
@@ -714,7 +714,7 @@ public class MyTest2 {
           language="java"
           since="4.0"
           message="JUnit 4 tests that set up tests should use the @Before annotation, JUnit5 tests should use @BeforeEach or @BeforeAll"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4testshouldusebeforeannotation">
         <description>
 In JUnit 3, the setUp method was used to set up all data entities required in running tests.
@@ -759,7 +759,7 @@ public class MyTest2 {
           language="java"
           since="4.0"
           message="Unit tests that execute tests should use the @Test annotation. In case of JUnit 5, test methods might use @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest annotations instead."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4testshouldusetestannotation">
         <description>
 In JUnit 3, the framework executed all methods which started with the word test as a unit test.
@@ -813,7 +813,7 @@ public class MyTest {
           language="java"
           since="6.35.0"
           message="JUnit 5 tests should be package-private."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit5testshouldbepackageprivate">
         <description><![CDATA[
 Reports JUnit 5 test classes and methods that are not package-private.
@@ -826,7 +826,6 @@ Test methods are identified as those which use `@Test`, `@RepeatedTest`,
             ]]></description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1117,7 +1116,7 @@ public class SecureSystem {
     <rule name="OneDeclarationPerLine"
           language="java"
           since="5.0"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           message="Use one line for each declaration, it enhances code readability."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#onedeclarationperline">
         <description>
@@ -1242,7 +1241,7 @@ public class Foo {
           language="java"
           since="3.4"
           message="Consider replacing this Enumeration with the newer java.util.Iterator"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#replaceenumerationwithiterator">
         <description>
 Consider replacing Enumeration usages with the newer java.util.Iterator
@@ -1276,7 +1275,7 @@ public class Foo implements Enumeration {
           language="java"
           since="3.4"
           message="Consider replacing this Hashtable with the newer java.util.Map"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#replacehashtablewithmap">
         <description>
 Consider replacing Hashtable usage with the newer java.util.Map if thread safety is not required.
@@ -1304,7 +1303,7 @@ public class Foo {
           language="java"
           since="3.4"
           message="Consider replacing this Vector with the newer java.util.List"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#replacevectorwithlist">
         <description>
 Consider replacing Vector usages with the newer java.util.ArrayList if expensive thread-safe operations are not required.
@@ -1370,7 +1369,7 @@ class SomeTestClass {
           language="java"
           since="1.0"
           message="Switch statements should be exhaustive, add a default case (or missing enum branches)"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#switchstmtsshouldhavedefault">
         <description>
             Switch statements should be exhaustive, to make their control flow
@@ -1404,7 +1403,7 @@ class Foo {{
           language="java"
           since="2.1"
           message="Usage of System.out/err"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#systemprintln">
         <description>
 References to System.(out|err).print are usually intended for debugging purposes and can remain in
@@ -1697,7 +1696,7 @@ public class Foo {
           since="6.34.0"
           minimumLanguageVersion="1.7"
           message="Please use StandardCharsets constants"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#usestandardcharsets">
         <description>
 Starting with Java 7, StandardCharsets provides constants for common Charset objects, such as UTF-8.
@@ -1786,7 +1785,7 @@ public class TryWithResources {
           minimumLanguageVersion="1.5"
           since="5.0"
           message="Consider using varargs for methods or constructors which take an array the last parameter."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#usevarargs">
         <description>
 Java 5 introduced the varargs parameter declaration for methods and constructors. This syntactic
@@ -1825,7 +1824,7 @@ public class Foo {
     </rule>
 
     <rule name="WhileLoopWithLiteralBoolean"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           language="java"
           since="6.13.0"
           message="The loop can be simplified."
@@ -1880,7 +1879,6 @@ a block `{}` is sufficient.
     ]]
                 ]]></value>
             </property>
-            <property name="version" value="2.0" />
         </properties>
         <example>
 <![CDATA[

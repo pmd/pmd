@@ -15,8 +15,8 @@ import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
 
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.ant.internal.PMDTaskImpl;
+import net.sourceforge.pmd.lang.rule.RulePriority;
 
 /**
  * PMD Ant task. Setters of this class are interpreted by Ant as properties
@@ -58,7 +58,6 @@ public class PMDTask extends Task {
     private final List<Path> relativizePathsWith = new ArrayList<>();
     private String suppressMarker;
     private String rulesetFiles;
-    private boolean noRuleSetCompatibility;
     private String encoding;
     private int threads = 1; // same default as in PMDParameters (CLI)
     private int minimumPriority = RulePriority.LOW.getPriority(); // inclusive
@@ -262,14 +261,6 @@ public class PMDTask extends Task {
 
     public Collection<RuleSetWrapper> getNestedRules() {
         return nestedRules;
-    }
-
-    public boolean isNoRuleSetCompatibility() {
-        return noRuleSetCompatibility;
-    }
-
-    public void setNoRuleSetCompatibility(boolean noRuleSetCompatibility) {
-        this.noRuleSetCompatibility = noRuleSetCompatibility;
     }
 
     public String getCacheLocation() {
