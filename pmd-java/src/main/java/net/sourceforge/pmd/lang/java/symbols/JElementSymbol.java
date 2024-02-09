@@ -8,7 +8,6 @@ package net.sourceforge.pmd.lang.java.symbols;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -26,7 +25,6 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
  *
  * @since 7.0.0
  */
-@Experimental
 @InternalApi
 public interface JElementSymbol {
 

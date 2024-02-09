@@ -53,7 +53,7 @@ public final class ASTTypePattern extends AbstractJavaNode implements ASTPattern
     }
 
     @Override
-    @Experimental
+    @Experimental("Parenthesized patterns is a Java 20 Preview feature")
     public int getParenthesisDepth() {
         return parenDepth;
     }

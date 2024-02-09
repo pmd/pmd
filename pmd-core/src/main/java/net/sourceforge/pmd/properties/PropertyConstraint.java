@@ -11,8 +11,6 @@ import java.util.function.Predicate;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.annotation.Experimental;
-
 
 /**
  * Validates the value of a property.
@@ -60,7 +58,6 @@ public interface PropertyConstraint<T> {
      * @see net.sourceforge.pmd.util.internal.xml.SchemaConstants#PROPERTY_MIN
      * @see net.sourceforge.pmd.util.internal.xml.SchemaConstants#PROPERTY_MAX
      */
-    @Experimental
     default Map<String, String> getXmlConstraint() {
         return Collections.emptyMap();
     }
@@ -70,7 +67,6 @@ public interface PropertyConstraint<T> {
      * by checking that the value conforms to this constraint if
      * it is non-empty.
      */
-    @Experimental
     default PropertyConstraint<Optional<? extends T>> toOptionalConstraint() {
         return new PropertyConstraint<Optional<? extends T>>() {
             @Override
@@ -122,7 +118,6 @@ public interface PropertyConstraint<T> {
      *
      * @return A new validator
      */
-    @Experimental
     static <U> PropertyConstraint<U> fromPredicate(final Predicate<? super U> pred, final String constraintDescription) {
         return fromPredicate(pred, constraintDescription, Collections.emptyMap());
     }
@@ -133,7 +128,6 @@ public interface PropertyConstraint<T> {
      *
      * @see #fromPredicate(Predicate, String)
      */
-    @Experimental
     static <U> PropertyConstraint<U> fromPredicate(final Predicate<? super U> pred, final String constraintDescription,
                                                    final Map<String, String> xmlConstraint) {
         return new PropertyConstraint<U>() {

@@ -3,15 +3,14 @@
  */
 
 /**
- * Prototype of a new symbol resolution framework
+ * The new symbol resolution framework
  * that inter-operates cleanly with type resolution.
  *
  * @see net.sourceforge.pmd.lang.java.symbols.JElementSymbol
  * @see net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
  * @see net.sourceforge.pmd.lang.java.symbols.SymbolResolver
+ *
+ * @since 7.0.0
  */
 
-@Experimental
 package net.sourceforge.pmd.lang.java.symbols;
-
-import net.sourceforge.pmd.annotation.Experimental;

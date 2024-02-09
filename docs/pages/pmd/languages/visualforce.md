@@ -1,8 +1,8 @@
 ---
 title: Visualforce Support
 permalink: pmd_languages_visualforce.html
-last_updated: September 2023
-tags: [languages, PmdCapableLanguage, CpdCapableLanguage, experimental]
+last_updated: February 2024 (7.0.0)
+tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 author: Andreas Dangel
 summary: "Visualforce-specific features and guidance"
 ---
@@ -39,9 +39,6 @@ These env vars have changed from PMD 6 to PMD 7:
 * `PMD_VF_APEXDIRECTORIES` ➡️ `PMD_VF_APEX_DIRECTORIES`
 * `PMD_VF_OBJECTSDIRECTORIES` ➡️ `PMD_VF_OBJECTS_DIRECTORIES`
 "%}
-
-This feature is experimental, in particular, expect changes to the way the configuration is specified.
-We'll probably extend the CLI instead of relying on environment variables in a future version.
 
 ### Sample usage
 

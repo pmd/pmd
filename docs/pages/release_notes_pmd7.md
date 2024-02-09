@@ -176,14 +176,10 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 [Matías Fraga](https://github.com/matifraga) (@matifraga),
 [Tomás De Lucca](https://github.com/tomidelucca) (@tomidelucca)
 
-### New: Kotlin support (experimental)
+### New: Kotlin support
 
 PMD now supports Kotlin as an additional language for analyzing source code. It is based on
 the official kotlin Antlr grammar. Java-based rules and XPath-based rules are supported.
-
-Kotlin support has **experimental** stability level, meaning no compatibility should
-be expected between even incremental releases. Any functionality can be added, removed or changed without
-warning.
 
 We are shipping the following rules:
 
@@ -246,6 +242,11 @@ Note: Support for Java 19 preview language features have been removed. The versi
 PMD supports Apache Velocity for a very long time, but the CPD integration never got finished.
 This is now done and CPD supports Apache Velocity Template language for detecting copy and paste.
 It is shipped in the module `pmd-vm`.
+
+### Changed: HTML support
+
+Support for HTML was introduced in PMD 6.55.0 as an experimental feature. With PMD 7.0.0 this
+is now considered stable.
 
 ### Changed: JavaScript support
 

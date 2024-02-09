@@ -89,6 +89,15 @@ This PMD release ships a new version of the pmd-designer.
 For the changes, see
 * [PMD Designer Changelog (7.0.0)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0).
 
+##### Changed: HTML support
+
+Support for HTML was introduced in PMD 6.55.0 as an experimental feature. With PMD 7.0.0 this
+is now considered stable.
+
+##### Changed: Kotlin support
+
+Experimental Kotlin support has been promoted as stable API now.
+
 #### Rule Changes
 
 **New Rules**
@@ -393,10 +402,10 @@ in the migration guide for details.
     * `isNullLiteral()` - use `node instanceof ASTNullLiteral` instead.
     * `isBooleanLiteral()` - use `node instanceof ASTBooleanLiteral` instead.
     * `isNumericLiteral()` - use `node instanceof ASTNumericLiteral` instead.
-    * `isIntLiteral()` - use {%jdoc lang.java.ast.ASTNumericLiteral#isIntLiteral() %} instead.
-    * `isLongLiteral()` - use {%jdoc lang.java.ast.ASTNumericLiteral#isLongLiteral() %} instead.
-    * `isFloatLiteral()` - use {%jdoc lang.java.ast.ASTNumericLiteral#isFloatLiteral() %} instead.
-    * `isDoubleLiteral()` - use {%jdoc lang.java.ast.ASTNumericLiteral#isDoubleLiteral() %} instead.
+    * `isIntLiteral()` - use {%jdoc java::lang.java.ast.ASTNumericLiteral#isIntLiteral() %} instead.
+    * `isLongLiteral()` - use {%jdoc java::lang.java.ast.ASTNumericLiteral#isLongLiteral() %} instead.
+    * `isFloatLiteral()` - use {%jdoc java::lang.java.ast.ASTNumericLiteral#isFloatLiteral() %} instead.
+    * `isDoubleLiteral()` - use {%jdoc java::lang.java.ast.ASTNumericLiteral#isDoubleLiteral() %} instead.
   * {%jdoc !!java::lang.java.ast.ASTMethodDeclaration %} - methods `getImage()` and `getMethodName()` have been removed.
     Use {%jdoc java::lang.java.ast.ASTMethodDeclaration#getName() %} instead.
   * {%jdoc !!java::lang.java.ast.ASTMethodReference %} - method `getImage()` has been removed.
@@ -497,6 +506,9 @@ in the migration guide for details.
 
 **Removed classes, interfaces and methods (not previously deprecated)**
 
+* pmd-core
+  * `net.sourceforge.pmd.util.Predicate` has been removed. It was marked as Experimental before. Use
+    `java.util.function.Predicate` instead.
 * pmd-java
   * The interface `FinalizableNode` (introduced in 7.0.0-rc1) has been removed.
     Its method `isFinal()` has been moved down to the
@@ -540,6 +552,57 @@ in the migration guide for details.
     all the implementations have been renamed as well (`Tokenizer` -> `CpdLexer`), e.g. "CppCpdLexer", "JavaCpdLexer".
     This affects all language modules.
   * {%jdoc_old core::cpd.AnyTokenizer %} has been renamed to {% jdoc core::cpd.AnyCpdLexer %}.
+
+**Classes and methods, that are not experimental anymore**
+
+These were annotated with `@Experimental`, but can now be considered stable.
+
+* pmd-apex
+  * {%jdoc !!apex::lang.apex.ast.ASTCommentContainer %}
+  * {%jdoc !!apex::lang.apex.multifile.ApexMultifileAnalysis %}
+* pmd-core
+  * {%jdoc !!core::cpd.CPDReport#filterMatches(java.util.function.Predicate) %}
+  * {%jdoc !!core::lang.ast.impl.antlr4.AntlrToken.getKind() %}
+  * {%jdoc !!core::lang.ast.impl.javacc.AbstractJjtreeNode %}
+  * {%jdoc !!core::lang.ast.impl.TokenDocument %}
+  * {%jdoc !!core::lang.ast.AstInfo.getSuppressionComments() %}
+  * {%jdoc !!core::lang.ast.AstInfo.withSuppressMap(java.util.Map) %}
+  * {%jdoc !!core::lang.ast.GenericToken.getKind() %}
+  * {%jdoc !!core::lang.document.FileCollector.addZipFileWithContent(java.nio.file.Path) %}
+  * {%jdoc_package core::lang.document %}
+  * {%jdoc !!core::lang.LanguageVersionHandler.getLanguageMetricsProvider() %}
+  * {%jdoc !!core::lang.LanguageVersionHandler.getDesignerBindings() %}
+  * {%jdoc !!core::lang.PlainTextLanguage %}
+  * {%jdoc !!core::properties.PropertyConstraint.getXmlConstraint() %}
+  * {%jdoc !!core::properties.PropertyConstraint.toOptionalConstraint() %}
+  * {%jdoc !!core::properties.PropertyConstraint.fromPredicate(java.util.function.Predicate,java.lang.String) %}
+  * {%jdoc !!core::properties.PropertyConstraint.fromPredicate(java.util.function.Predicate,java.lang.String,java.util.Map) %}
+  * {%jdoc !!core::renderers.AbstractRenderer.setReportFile(java.lang.String) %}
+  * {%jdoc !!core::renderers.Renderer.setReportFile(java.lang.String) %}
+  * {%jdoc !!core::util.designerbindings.DesignerBindings %}
+  * {%jdoc !!core::util.designerbindings.DesignerBindings.TreeIconId %}
+  * {%jdoc !!core::util.designerbindings.RelatedNodesSelector %}
+  * {%jdoc !!core::Report.filterViolations(java.util.function.Predicate) %}
+  * {%jdoc !!core::Report.union(core::Report) %}
+* pmd-groovy
+  * {%jdoc !!groovy::lang.groovy.ast.impl.antlr4.GroovyToken.getKind() %}
+* pmd-html
+  * {%jdoc_package html::lang.html %}
+* pmd-java
+  * {%jdoc !!java::lang.java.ast.ASTExpression#getConversionContext() %}
+  * {%jdoc !!java::lang.java.rule.AbstractJavaRulechainRule#AbstractJavaRulechainRule(java.lang.Class,java.lang.Class...) %}
+  * {%jdoc !!java::lang.java.symbols.table.JSymbolTable %}
+  * {%jdoc !!java::lang.java.symbols.JElementSymbol %}
+  * {%jdoc_package java::lang.java.symbols %}
+  * {%jdoc !!java::lang.java.types.ast.ExprContext %}
+  * {%jdoc !!java::lang.java.types.JIntersectionType#getInducedClassType() %}
+  * {%jdoc !!java::lang.java.types.JTypeMirror#streamMethods(java.util.function.Predicate) %}
+  * {%jdoc !!java::lang.java.types.JTypeMirror#streamDeclaredMethods(java.util.function.Predicate) %}
+  * {%jdoc !!java::lang.java.types.JTypeMirror#getConstructors() %}
+* pmd-kotlin
+  * {%jdoc !!kotlin::lang.kotlin.KotlinLanguageModule %}
+* pmd-test-schema
+  * {%jdoc !!test-schema::test.schema.TestSchemaParser %}
 
 **Removed functionality**
 
@@ -645,7 +708,7 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 [Matías Fraga](https://github.com/matifraga) (@matifraga),
 [Tomás De Lucca](https://github.com/tomidelucca) (@tomidelucca)
 
-#### New: Kotlin support (experimental)
+#### New: Kotlin support
 
 * use PMD to analyze Kotlin code with PMD rules
 * Support for Kotlin 1.8 grammar
@@ -695,6 +758,11 @@ version `21-preview`:
     pmd check --use-version java-21-preview ...
 
 Note: Support for Java 19 preview language features have been removed. The version "19-preview" is no longer available.
+
+#### Changed: HTML support
+
+Support for HTML was introduced in PMD 6.55.0 as an experimental feature. With PMD 7.0.0 this
+is now considered stable.
 
 #### Changed: JavaScript support
 

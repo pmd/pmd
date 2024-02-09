@@ -8,7 +8,6 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.reporting.Reportable;
@@ -145,12 +144,9 @@ public interface GenericToken<T extends GenericToken<T>> extends Comparable<T>, 
      * Gets a unique integer representing the kind of token this is.
      * The semantics of this kind depend on the language.
      *
-     * <p><strong>Note:</strong> This is an experimental API.
-     *
      * <p>The returned constants can be looked up in the language's "*ParserConstants",
      * e.g. CppParserConstants or JavaParserConstants. These constants are considered
      * internal API and may change at any time when the language's grammar is changed.
      */
-    @Experimental
     int getKind();
 }

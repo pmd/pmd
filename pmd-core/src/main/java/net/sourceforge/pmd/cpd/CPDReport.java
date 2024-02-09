@@ -64,7 +64,6 @@ public class CPDReport {
      *
      * @return copy of this report
      */
-    @Experimental
     public CPDReport filterMatches(Predicate<Match> filter) {
         List<Match> filtered = this.matches.stream().filter(filter).collect(Collectors.toList());
 

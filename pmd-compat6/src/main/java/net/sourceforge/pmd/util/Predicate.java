@@ -2,17 +2,16 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util;
+// This class has been taken from 7.0.0-SNAPSHOT
 
-import net.sourceforge.pmd.annotation.Experimental;
+package net.sourceforge.pmd.util;
 
 /**
  * Simple predicate of one argument.
  *
  * @param <T> the type of the input to the predicate
  */
-// TODO java8 - replace with java.util.function.Predicate
-@Experimental
+//@Experimental
 public interface Predicate<T> {
 
     boolean test(T t);

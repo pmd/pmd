@@ -325,7 +325,6 @@ public final class FileCollector implements AutoCloseable {
      *
      * @return True if the zip file including its content has been added without errors
      */
-    @Experimental
     public boolean addZipFileWithContent(Path zipFile) throws IOException {
         if (!Files.isRegularFile(zipFile)) {
             throw new IllegalArgumentException("Not a regular file: " + zipFile);
@@ -365,7 +364,6 @@ public final class FileCollector implements AutoCloseable {
 
 
     /** A collector that prefixes the display name of the files it will contain with the path of the zip. */
-    @Experimental
     private FileCollector newZipCollector(Path zipFilePath) {
         return new FileCollector(discoverer, reporter, FileId.fromPath(zipFilePath));
     }

@@ -17,7 +17,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * @see <a href="https://openjdk.org/jeps/430">JEP 430: String Templates (Preview)</a>
  */
-@Experimental
+@Experimental("String templates is a Java 21 Preview feature")
 public final class ASTTemplate extends AbstractJavaNode {
     ASTTemplate(int i) {
         super(i);

@@ -138,7 +138,7 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements JavaNo
         return lazyTypeResolver;
     }
 
-    @Experimental
+    @Experimental("Unnamed classes is a Java 21 Preview feature")
     @NoAttribute
     public boolean isUnnamedClass() {
         return children(ASTMethodDeclaration.class).nonEmpty();

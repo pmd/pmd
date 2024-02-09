@@ -16,7 +16,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
@@ -347,7 +346,6 @@ public final class Report {
      * @param filter when true, the violation will be kept.
      * @return copy of this report
      */
-    @Experimental
     public Report filterViolations(Predicate<RuleViolation> filter) {
         Report copy = new Report();
 
@@ -370,7 +368,6 @@ public final class Report {
      * @param other the other report to combine
      * @return a new report which is the combination of this and the other report.
      */
-    @Experimental
     public Report union(Report other) {
         Report copy = new Report();
 

@@ -18,7 +18,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * @see <a href="https://openjdk.org/jeps/443">JEP 443: Unnamed patterns and variables (Preview)</a> (Java 21)
 */
-@Experimental
+@Experimental("Unnamed patterns is a Java 21 Preview feature")
 public final class ASTUnnamedPattern extends AbstractJavaNode implements ASTPattern {
 
     ASTUnnamedPattern(int id) {
