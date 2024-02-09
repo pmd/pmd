@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.reporting;
 
 import java.util.List;
 import java.util.Map;
@@ -12,13 +12,14 @@ import java.util.regex.Pattern;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.Report.SuppressedViolation;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
+import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
 
 /**
  * An object that suppresses rule violations. Suppressors are used by
@@ -27,8 +28,6 @@ import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
  * no knowledge of language-specific suppressors.
  */
 public interface ViolationSuppressor {
-    // todo move to package reporting
-
     /**
      * Suppressor for the violationSuppressRegex property.
      */

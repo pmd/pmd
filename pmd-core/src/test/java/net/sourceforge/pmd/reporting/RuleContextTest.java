@@ -2,13 +2,14 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.reporting;
 
-import static net.sourceforge.pmd.ReportTestUtil.getReport;
+import static net.sourceforge.pmd.reporting.ReportTestUtil.getReport;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil;
 

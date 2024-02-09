@@ -2,6 +2,9 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+// This class has been taken from 7.0.0-SNAPSHOT
+// Changes: renderFileReport
+
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
@@ -274,5 +277,12 @@ public interface Renderer extends PropertySource {
                 }
             }
         };
+    }
+
+    // --- compat
+    default void renderFileReport(net.sourceforge.pmd.Report report) throws IOException {
+        Report newReport = new Report();
+        newReport.merge(report);
+        renderFileReport(newReport);
     }
 }

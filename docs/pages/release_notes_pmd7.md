@@ -1201,7 +1201,7 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
   should be used.
 - Several members of {% jdoc test::cli.BaseCPDCLITest %} have been deprecated with replacements.
 - The methods {% jdoc !!core::ant.Formatter#start(java.lang.String) %},
-  {% jdoc !!core::ant.Formatter#end(net.sourceforge.pmd.Report) %}, {% jdoc !!core::ant.Formatter#getRenderer() %},
+  {% jdoc !!core::ant.Formatter#end(net.sourceforge.pmd.reporting.Report) %}, {% jdoc !!core::ant.Formatter#getRenderer() %},
   and {% jdoc !!core::ant.Formatter#isNoOutputSupplied() %} have been internalized.
 
 #### 6.45.0
@@ -1211,7 +1211,7 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 * Report has two new methods which allow limited mutations of a given report:
   * {% jdoc !!core::Report#filterViolations(net.sourceforge.pmd.util.Predicate) %} creates a new report with
     some violations removed with a given predicate based filter.
-  * {% jdoc !!core::Report#union(net.sourceforge.pmd.Report) %} can combine two reports into a single new Report.
+  * {% jdoc !!core::Report#union(net.sourceforge.pmd.reporting.Report) %} can combine two reports into a single new Report.
 * {% jdoc !!core::util.Predicate %} will be replaced in PMD7 with the standard Predicate interface from java8.
 * The module `pmd-html` is entirely experimental right now. Anything in the package
   `net.sourceforge.pmd.lang.html` should be used cautiously.

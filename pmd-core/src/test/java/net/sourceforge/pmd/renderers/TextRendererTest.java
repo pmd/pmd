@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.renderers;
 
-import net.sourceforge.pmd.Report.ConfigurationError;
-import net.sourceforge.pmd.Report.ProcessingError;
+import net.sourceforge.pmd.reporting.Report.ConfigurationError;
+import net.sourceforge.pmd.reporting.Report.ProcessingError;
 
 class TextRendererTest extends AbstractRendererTest {
 

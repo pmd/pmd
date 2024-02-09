@@ -2,6 +2,9 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+// This class has been taken from 7.0.0-SNAPSHOT
+// Changes: performAnalysisAndCollectReport, changes due to Report moved package
+
 package net.sourceforge.pmd;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
@@ -41,17 +44,12 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.lang.document.TextFile;
-import net.sourceforge.pmd.lang.rule.Rule;
-import net.sourceforge.pmd.lang.rule.RuleSet;
-import net.sourceforge.pmd.lang.rule.RuleSetLoader;
-import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.ConfigurableFileNameRenderer;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.ListenerInitializer;
 import net.sourceforge.pmd.reporting.Report;
-import net.sourceforge.pmd.reporting.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.reporting.ReportStatsListener;
 import net.sourceforge.pmd.util.AssertionUtil;
@@ -157,8 +155,8 @@ public final class PmdAnalysis implements AutoCloseable {
         this.configuration = config;
         this.reporter = config.getReporter();
         this.collector = FileCollector.newCollector(
-            config.getLanguageVersionDiscoverer(),
-            reporter
+                config.getLanguageVersionDiscoverer(),
+                reporter
         );
 
     }
@@ -363,34 +361,34 @@ public final class PmdAnalysis implements AutoCloseable {
      * accumulated into a {@link MessageReporter}.
      */
     public Report performAnalysisAndCollectReport() {
-        try (GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener()) {
+        try (Report.GlobalReportBuilderListener reportBuilder = new Report.GlobalReportBuilderListener()) {
             performAnalysisImpl(listOf(reportBuilder)); // closes the report builder
             return reportBuilder.getResultImpl();
         }
     }
 
-    void performAnalysisImpl(List<? extends GlobalReportBuilderListener> extraListeners) {
+    void performAnalysisImpl(List<? extends Report.GlobalReportBuilderListener> extraListeners) {
         try (FileCollector files = collector) {
             files.filterLanguages(getApplicableLanguages(false));
             performAnalysisImpl(extraListeners, files.getCollectedFiles());
         }
     }
 
-    void performAnalysisImpl(List<? extends GlobalReportBuilderListener> extraListeners, List<TextFile> textFiles) {
+    void performAnalysisImpl(List<? extends Report.GlobalReportBuilderListener> extraListeners, List<TextFile> textFiles) {
         RuleSets rulesets = new RuleSets(this.ruleSets);
 
         GlobalAnalysisListener listener;
         try {
             @SuppressWarnings("PMD.CloseResource")
             AnalysisCacheListener cacheListener = new AnalysisCacheListener(configuration.getAnalysisCache(),
-                                                                            rulesets,
-                                                                            configuration.getClassLoader(),
-                                                                            textFiles);
+                    rulesets,
+                    configuration.getClassLoader(),
+                    textFiles);
             listener = GlobalAnalysisListener.tee(listOf(createComposedRendererListener(renderers),
-                                                         GlobalAnalysisListener.tee(listeners),
-                                                         GlobalAnalysisListener.tee(extraListeners),
-                                                         cacheListener));
-            
+                    GlobalAnalysisListener.tee(listeners),
+                    GlobalAnalysisListener.tee(extraListeners),
+                    cacheListener));
+
             // Initialize listeners
             try (ListenerInitializer initializer = listener.initializer()) {
                 initializer.setNumberOfFilesToAnalyze(textFiles.size());
@@ -413,22 +411,22 @@ public final class PmdAnalysis implements AutoCloseable {
             encourageToUseIncrementalAnalysis(configuration);
 
             try (LanguageProcessorRegistry lpRegistry = LanguageProcessorRegistry.create(
-                // only start the applicable languages (and dependencies)
-                new LanguageRegistry(getApplicableLanguages(true)),
-                langProperties,
-                reporter
+                    // only start the applicable languages (and dependencies)
+                    new LanguageRegistry(getApplicableLanguages(true)),
+                    langProperties,
+                    reporter
             )) {
                 // Note the analysis task is shared: all processors see
                 // the same file list, which may contain files for other
                 // languages.
                 AnalysisTask analysisTask = new AnalysisTask(
-                    rulesets,
-                    textFiles,
-                    listener,
-                    configuration.getThreads(),
-                    configuration.getAnalysisCache(),
-                    reporter,
-                    lpRegistry
+                        rulesets,
+                        textFiles,
+                        listener,
+                        configuration.getThreads(),
+                        configuration.getAnalysisCache(),
+                        reporter,
+                        lpRegistry
                 );
 
                 List<AutoCloseable> analyses = new ArrayList<>();
@@ -468,7 +466,7 @@ public final class PmdAnalysis implements AutoCloseable {
             try {
                 @SuppressWarnings("PMD.CloseResource")
                 GlobalAnalysisListener listener =
-                    Objects.requireNonNull(renderer.newListener(), "Renderer should provide non-null listener");
+                        Objects.requireNonNull(renderer.newListener(), "Renderer should provide non-null listener");
                 rendererListeners.add(listener);
             } catch (Exception ioe) {
                 // close listeners so far, throw their close exception or the ioe
@@ -511,8 +509,8 @@ public final class PmdAnalysis implements AutoCloseable {
                     if (depLang == null) {
                         // todo maybe report all then throw
                         throw new IllegalStateException(
-                            "Language " + lang.getId() + " has unsatisfied dependencies: "
-                                + depId + " is not found in " + reg
+                                "Language " + lang.getId() + " has unsatisfied dependencies: "
+                                        + depId + " is not found in " + reg
                         );
                     }
                     changed |= languages.add(depLang);
@@ -532,7 +530,7 @@ public final class PmdAnalysis implements AutoCloseable {
 
         for (final Rule rule : brokenRules) {
             reporter.warn("Removed misconfigured rule: {0} cause: {1}",
-                          rule.getName(), rule.dysfunctionReason());
+                    rule.getName(), rule.dysfunctionReason());
         }
 
         return brokenRules;
@@ -606,13 +604,19 @@ public final class PmdAnalysis implements AutoCloseable {
         final MessageReporter reporter = configuration.getReporter();
 
         if (!configuration.isIgnoreIncrementalAnalysis()
-            && configuration.getAnalysisCache() instanceof NoopAnalysisCache
-            && reporter.isLoggable(Level.WARN)) {
+                && configuration.getAnalysisCache() instanceof NoopAnalysisCache
+                && reporter.isLoggable(Level.WARN)) {
             final String version =
-                PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-doc-" + PMDVersion.VERSION;
+                    PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-doc-" + PMDVersion.VERSION;
             reporter.warn("This analysis could be faster, please consider using Incremental Analysis: "
-                            + "https://docs.pmd-code.org/{0}/pmd_userdocs_incremental_analysis.html", version);
+                    + "https://docs.pmd-code.org/{0}/pmd_userdocs_incremental_analysis.html", version);
         }
     }
 
+    // ---- compatibility
+
+    // new method to be compatible with PMD 6 - Report has changed package
+    public net.sourceforge.pmd.Report performAnalysisAndCollectReport$$bridge() { // SUPPRESS CHECKSTYLE ignore
+        return performAnalysisAndCollectReport();
+    }
 }

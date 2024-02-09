@@ -6,9 +6,8 @@ package net.sourceforge.pmd.reporting;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.util.BaseResultProducingCloseable;
 
 /**

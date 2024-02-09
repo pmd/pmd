@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * This is the basic Rule interface for PMD rules.

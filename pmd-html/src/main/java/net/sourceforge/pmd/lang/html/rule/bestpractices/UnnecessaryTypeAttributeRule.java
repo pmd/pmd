@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.html.rule.bestpractices;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.html.ast.ASTHtmlElement;
 import net.sourceforge.pmd.lang.html.rule.AbstractHtmlRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class UnnecessaryTypeAttributeRule extends AbstractHtmlRule {
 

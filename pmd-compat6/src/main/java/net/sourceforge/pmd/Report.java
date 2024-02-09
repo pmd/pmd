@@ -26,10 +26,11 @@ import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.reporting.ViolationSuppressor;
 import net.sourceforge.pmd.util.BaseResultProducingCloseable;
 
 /**
- * A {@link Report} collects all informations during a PMD execution. This
+ * A {@link Report} collects all information during a PMD execution. This
  * includes violations, suppressed violations, metrics, error during processing
  * and configuration errors.
  *
@@ -46,7 +47,7 @@ import net.sourceforge.pmd.util.BaseResultProducingCloseable;
  * These methods create a new {@link Report} rather than modifying their receiver.
  * </p>
  */
-public final class Report {
+public class Report {
     // todo move to package reporting
 
     private final List<RuleViolation> violations = synchronizedList(new ArrayList<>());
@@ -312,7 +313,7 @@ public final class Report {
      * A {@link FileAnalysisListener} that accumulates events into a
      * {@link Report}.
      */
-    public static final class ReportBuilderListener extends BaseResultProducingCloseable<Report> implements FileAnalysisListener {
+    public static /*final*/ class ReportBuilderListener extends BaseResultProducingCloseable<Report> implements FileAnalysisListener {
 
         private final Report report;
 
@@ -330,17 +331,17 @@ public final class Report {
         }
 
         @Override
-        public void onRuleViolation(RuleViolation violation) {
+        public void onRuleViolation(net.sourceforge.pmd.reporting.RuleViolation violation) {
             report.addRuleViolation(violation);
         }
 
         @Override
-        public void onSuppressedRuleViolation(SuppressedViolation violation) {
+        public void onSuppressedRuleViolation(net.sourceforge.pmd.reporting.Report.SuppressedViolation violation) {
             report.addSuppressedViolation(violation);
         }
 
         @Override
-        public void onError(ProcessingError error) {
+        public void onError(net.sourceforge.pmd.reporting.Report.ProcessingError error) {
             report.addError(error);
         }
 
@@ -354,9 +355,9 @@ public final class Report {
      * A {@link GlobalAnalysisListener} that accumulates the events of
      * all files into a {@link Report}.
      */
-    public static final class GlobalReportBuilderListener extends BaseResultProducingCloseable<Report> implements GlobalAnalysisListener {
+    public static /*final*/ class GlobalReportBuilderListener extends BaseResultProducingCloseable<net.sourceforge.pmd.reporting.Report> implements GlobalAnalysisListener {
 
-        private final Report report = new Report();
+        private final net.sourceforge.pmd.reporting.Report report = new net.sourceforge.pmd.reporting.Report();
 
         @Override
         public FileAnalysisListener startFileAnalysis(TextFile file) {
@@ -365,12 +366,12 @@ public final class Report {
         }
 
         @Override
-        public void onConfigError(ConfigurationError error) {
+        public void onConfigError(net.sourceforge.pmd.reporting.Report.ConfigurationError error) {
             report.addConfigError(error);
         }
 
         @Override
-        protected Report getResultImpl() {
+        protected net.sourceforge.pmd.reporting.Report getResultImpl() {
             return report;
         }
     }
