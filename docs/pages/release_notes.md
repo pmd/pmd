@@ -313,6 +313,8 @@ These were marked as `@InternalApi` previously.
 
 **Removed classes and members (previously deprecated)**
 
+The annotation `@DeprecatedUntil700` has been removed.
+
 * pmd-core
   * {%jdoc !!core::cpd.CpdLanguageProperties %}. The field `DEFAULT_SKIP_BLOCKS_PATTERN` has been removed.
   * {%jdoc !!core::lang.ast.impl.antlr4.BaseAntlrNode %} - method `joinTokenText()` has been removed.

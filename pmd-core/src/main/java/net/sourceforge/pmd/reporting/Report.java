@@ -16,7 +16,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import net.sourceforge.pmd.PmdAnalysis;
-import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
@@ -47,7 +46,6 @@ public final class Report {
     private final List<ProcessingError> errors = synchronizedList(new ArrayList<>());
     private final List<ConfigurationError> configErrors = synchronizedList(new ArrayList<>());
 
-    @DeprecatedUntil700
     @InternalApi
     public Report() { // NOPMD - UnnecessaryConstructor
         // TODO: should be package-private, you have to use a listener to build a report.
@@ -180,7 +178,6 @@ public final class Report {
      *
      * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
      */
-    @DeprecatedUntil700
     @Deprecated
     @InternalApi
     public void addRuleViolation(RuleViolation violation) {
@@ -206,7 +203,6 @@ public final class Report {
      *
      * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
      */
-    @DeprecatedUntil700
     @Deprecated
     @InternalApi
     public void addConfigError(ConfigurationError error) {
@@ -220,7 +216,6 @@ public final class Report {
      *            the error to add
      * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
      */
-    @DeprecatedUntil700
     @Deprecated
     @InternalApi
     public void addError(ProcessingError error) {

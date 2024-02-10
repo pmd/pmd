@@ -57,6 +57,25 @@ There are a couple of deprecated things in PMD 6, you might encounter:
   and the old rulesets like `basic.xml` have been deprecated and have been removed with PMD 7.
   It is about time to create a [custom ruleset](pmd_userdocs_making_rulesets.html).
 
+## Approaching 7.0.0
+
+After that, migrate to the release candidates, and fix any problems you encounter. Start with 7.0.0-rc1 via
+7.0.0-rc2, 7.0.0-rc3 and 7.0.0-rc4 until you finally use 7.0.0.
+
+You might encounter additionally the following types of problems:
+
+* If you use any programmatic API of PMD, first avoid any usage of deprecated or internal classes/methods. These
+  are marked with one of these annotations: `@Deprecated`, `@DeprecatedUtil700`, `@InternalApi`.
+  * Some of these classes are available until 7.0.0-rc4 but are finally removed with 7.0.0.
+  * See [API changes](pmd_release_notes_pmd7.html#api-changes) for details.
+* Some rules have been removed, because they have been deprecated. See [Removed Rules](pmd_release_notes_pmd7.html#removed-rules).
+* Some rule properties have been removed or changed. See [Changed Rules](pmd_release_notes_pmd7.html#changed-rules).
+* The filenames of the assets of a release (the "binary distribution zip file") have changed,
+  see [Release downloads](#release-downloads).
+* Some CLI options have been removed, because they have been deprecated. See [CLI Changes](#cli-changes) for details.
+* If you call CPD programmatically, the API has changed, see [New Programmatic API for CPD](pmd_release_notes_pmd7.html#new-programmatic-api-for-cpd).
+
+The following topics describe well known migration challenges in more detail.
 
 ## Use cases
 
@@ -205,7 +224,8 @@ Most notable changes:
     an error message such as `[main] ERROR net.sourceforge.pmd.cli.commands.internal.PmdCommand - No such file false`.
   * PMD tries to display a progress bar. If you don't want this (e.g. on a CI build server), you can disable this
     with `--no-progress`.
-  * `--no-ruleset-compatibility` has been removed
+  * `--no-ruleset-compatibility` has been removed without replacement.
+  * `--stress` (or `-stress`) has been removed without replacement.
 
 ### Custom distribution packages
 
