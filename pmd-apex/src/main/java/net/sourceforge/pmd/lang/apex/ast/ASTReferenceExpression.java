@@ -26,15 +26,7 @@ public final class ASTReferenceExpression extends AbstractApexNode.Many<Identifi
         return visitor.visit(this, data);
     }
 
-    /*
-    public IdentifierContext getContext() {
-        return node.getContext();
-    }
-     */
-    // TODO(b/243906211)
-
-    /* TODO(b/239648780) this is not yet set to a meaningful value
-    public */ ReferenceType getReferenceType() {
+    public ReferenceType getReferenceType() {
         return referenceType;
     }
 

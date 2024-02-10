@@ -256,6 +256,8 @@ The following previously deprecated classes have been removed:
   * The constant `STATIC_INITIALIZER_METHOD_NAME` in {%jdoc apex::lang.apex.rule.codestyle.FieldDeclarationsShouldBeAtStartRule %}
     has been removed. It was used to filter out synthetic methods, but these are not generated anymore with the
     new parser.
+  * The method `getContext()` in {%jdoc apex::lang.apex.ast.ASTReferenceExpression %} has been removed.
+    It was not used and always returned `null`.
 * pmd-java
   * The interface `FinalizableNode` (introduced in 7.0.0-rc1) has been removed.
     Its method `isFinal()` has been moved down to the

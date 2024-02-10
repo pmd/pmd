@@ -395,7 +395,7 @@ class ApexTreeBuilder(val task: ParserTask, val proc: ApexLanguageProcessor) {
             else -> {
                 val (receiver, components, isSafe) = flattenExpression(node.receiver)
                 ASTMethodCallExpression(node, components).apply {
-                    buildReferenceExpression(components, receiver, ReferenceType.METHOD, isSafe).also {
+                    buildReferenceExpression(components, receiver, ReferenceType.METHOD, isSafe || node.isSafe).also {
                         it.setParent(this)
                     }
                     buildChildren(node, parent = this, exclude = { it == node.receiver })
