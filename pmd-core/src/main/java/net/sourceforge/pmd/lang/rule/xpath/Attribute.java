@@ -15,7 +15,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -102,8 +101,7 @@ public final class Attribute {
      *
      * @apiNote Internal API
      */
-    @InternalApi
-    public String replacementIfDeprecated() {
+    String replacementIfDeprecated() {
         if (method == null) {
             return null;
         } else {

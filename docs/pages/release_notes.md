@@ -323,6 +323,8 @@ package or made (package) private and are _not accessible_ anymore.
     * Method `newCollector(LanguageVersionDiscoverer, PmdReporter)` is now package private.
     * Method `newCollector(PmdReporter)` is now package private.
     * In order to create a FileCollector, use {%jdoc core::PmdAnalysis#files() %} instead.
+  * {%jdoc !!core::lang.rule.xpath.Attribute %}
+    * Method `replacementIfDeprecated()` is now package private.
 * pmd-ant
   * {%jdoc !!ant::ant.Formatter %}
     * Method `getRenderer()` has been removed.
