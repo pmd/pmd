@@ -314,6 +314,8 @@ package or made (package) private and are _not accessible_ anymore.
     * Method `loadRuleSetsWithoutException(java.util.List)` is now package private.
   * {%jdoc !!core::lang.rule.RuleSetLoadException %}
     * All constructors are package private now.
+  * {%jdoc !!core::lang.ast.LexException %} - the constructor `LexException(boolean, String, int, int, String, char)` is now package private.
+    It is only used by JavaCC-generated token managers.
 * pmd-ant
   * {%jdoc !!ant::ant.Formatter %}
     * Method `getRenderer()` has been removed.
