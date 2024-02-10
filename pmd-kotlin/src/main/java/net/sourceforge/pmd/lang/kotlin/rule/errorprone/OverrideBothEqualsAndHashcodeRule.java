@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.kotlin.AbstractKotlinRule;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassMemberDeclaration;
@@ -20,6 +19,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinTerminalNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinVisitor;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinVisitorBase;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class OverrideBothEqualsAndHashcodeRule extends AbstractKotlinRule {
 

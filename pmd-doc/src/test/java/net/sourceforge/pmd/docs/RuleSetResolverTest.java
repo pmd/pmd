@@ -16,8 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 class RuleSetResolverTest {

@@ -11,8 +11,8 @@ import java.nio.file.Paths;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 /**
  * An identifier for a {@link TextFile}. This is not a path, but provides

@@ -4,19 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
+import java.util.Optional;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
-import net.sourceforge.pmd.lang.rule.xpath.internal.AstElementNode;
-
-import net.sf.saxon.expr.XPathContext;
-import net.sf.saxon.lib.ExtensionFunctionCall;
-import net.sf.saxon.om.Sequence;
-import net.sf.saxon.trans.XPathException;
-import net.sf.saxon.value.BigDecimalValue;
-import net.sf.saxon.value.EmptySequence;
-import net.sf.saxon.value.SequenceType;
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
 
 
 /**
@@ -38,37 +32,28 @@ public final class MetricFunction extends BaseJavaXPathFunction {
     }
 
     @Override
-    public SequenceType[] getArgumentTypes() {
-        return new SequenceType[] {SequenceType.SINGLE_STRING};
+    public Type[] getArgumentTypes() {
+        return new Type[] {Type.SINGLE_STRING};
     }
 
 
     @Override
-    public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
-        return SequenceType.OPTIONAL_DECIMAL;
+    public Type getResultType() {
+        return Type.OPTIONAL_DECIMAL;
     }
 
 
     @Override
-    public boolean dependsOnFocus() {
+    public boolean dependsOnContext() {
         return true;
     }
 
 
     @Override
-    public ExtensionFunctionCall makeCallExpression() {
-        return new ExtensionFunctionCall() {
-
-            @Override
-            public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
-                Node contextNode = ((AstElementNode) context.getContextItem()).getUnderlyingNode();
-                String metricKey = arguments[0].head().getStringValue();
-
-                double metric = getMetric(contextNode, metricKey);
-                return Double.isFinite(metric)
-                       ? new BigDecimalValue(metric)
-                       : EmptySequence.getInstance();
-            }
+    public FunctionCall makeCallExpression() {
+        return (contextNode, arguments) -> {
+            String metricKey = arguments[0].toString();
+            return getMetric(contextNode, metricKey);
         };
     }
 
@@ -78,16 +63,16 @@ public final class MetricFunction extends BaseJavaXPathFunction {
     }
 
 
-    private static double getMetric(Node n, String metricKeyName) throws XPathException {
+    private static Optional<Double> getMetric(Node n, String metricKeyName) throws XPathFunctionException {
         LanguageMetricsProvider provider =
             n.getAstInfo().getLanguageProcessor().services().getLanguageMetricsProvider();
         Metric<?, ?> metric = provider.getMetricWithName(metricKeyName);
         if (metric == null) {
-            throw new XPathException(badMetricKeyMessage(metricKeyName));
+            throw new XPathFunctionException(badMetricKeyMessage(metricKeyName));
         }
 
         Number computed = Metric.compute(metric, n, MetricOptions.emptyOptions());
-        return computed == null ? Double.NaN : computed.doubleValue();
+        return computed == null ? Optional.empty() : Optional.of(computed.doubleValue());
     }
 
 }

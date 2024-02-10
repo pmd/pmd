@@ -7,17 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 import static net.sourceforge.pmd.lang.java.rule.xpath.internal.BaseContextNodeTestFun.SINGLE_STRING_SEQ;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.xpath.internal.AstElementNode;
-
-import net.sf.saxon.expr.Expression;
-import net.sf.saxon.expr.StaticContext;
-import net.sf.saxon.expr.StringLiteral;
-import net.sf.saxon.expr.XPathContext;
-import net.sf.saxon.lib.ExtensionFunctionCall;
-import net.sf.saxon.om.Sequence;
-import net.sf.saxon.trans.XPathException;
-import net.sf.saxon.value.BooleanValue;
-import net.sf.saxon.value.SequenceType;
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
 
 
 /**
@@ -39,17 +29,17 @@ abstract class BaseRewrittenFunction<S, N extends Node> extends BaseJavaXPathFun
     }
 
     @Override
-    public SequenceType[] getArgumentTypes() {
+    public Type[] getArgumentTypes() {
         return SINGLE_STRING_SEQ;
     }
 
     @Override
-    public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
-        return SequenceType.SINGLE_BOOLEAN;
+    public Type getResultType() {
+        return Type.SINGLE_BOOLEAN;
     }
 
     @Override
-    public boolean dependsOnFocus() {
+    public boolean dependsOnContext() {
         return true;
     }
 
@@ -59,7 +49,7 @@ abstract class BaseRewrittenFunction<S, N extends Node> extends BaseJavaXPathFun
      * if the arg is constant, otherwise it's anyway called before {@link #matches(Node, String, Object, boolean)}
      * is called.
      */
-    protected abstract S parseArgument(String arg) throws XPathException;
+    protected abstract S parseArgument(String arg) throws XPathFunctionException;
 
     /**
      * Compute the result of the function.
@@ -71,48 +61,40 @@ abstract class BaseRewrittenFunction<S, N extends Node> extends BaseJavaXPathFun
      *
      * @return Whether the function matches
      */
-    protected abstract boolean matches(N contextNode, String arg, S parsedArg, boolean isConstant) throws XPathException;
+    protected abstract boolean matches(N contextNode, String arg, S parsedArg, boolean isConstant) throws XPathFunctionException;
 
 
     @Override
-    public ExtensionFunctionCall makeCallExpression() {
-        return new ExtensionFunctionCall() {
+    public FunctionCall makeCallExpression() {
+        return new FunctionCall() {
 
             private S constantState;
             private boolean isConstant;
 
             @Override
-            public Expression rewrite(StaticContext context, Expression[] arguments) throws XPathException {
-                // If the argument is a string literal then we can preload
-                // the class, and check that it's valid at expression build time
+            public void staticInit(Object[] arguments) throws XPathFunctionException {
+                if (arguments[0] instanceof String) {
+                    // If the argument was a string literal then we can preload
+                    // the class, and check that it's valid at expression build time
 
-                Expression firstArg = arguments[0]; // this expression has been type checked so there is an argument
-                if (firstArg instanceof StringLiteral) {
-                    String name = ((StringLiteral) firstArg).getStringValue();
-                    try {
-                        constantState = parseArgument(name);
-                    } catch (XPathException e) {
-                        e.setIsStaticError(true);
-                        throw e;
-                    }
+                    String name = (String) arguments[0]; // this expression has been type checked so there is an argument
+                    constantState = parseArgument(name);
                     isConstant = true;
                 }
-                return null;
             }
 
             @Override
-            public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
-                Node node = ((AstElementNode) context.getContextItem()).getUnderlyingNode();
+            public Boolean call(Node node, Object[] arguments) throws XPathFunctionException {
                 if (!contextNodeType.isInstance(node)) {
                     // we could report that as an error
-                    return BooleanValue.FALSE;
+                    return false;
                 }
 
-                String arg = arguments[0].head().getStringValue();
+                String arg = arguments[0].toString();
                 S parsedArg = isConstant ? constantState
                                          : parseArgument(arg);
 
-                return BooleanValue.get(matches((N) node, arg, parsedArg, isConstant));
+                return matches((N) node, arg, parsedArg, isConstant);
             }
         };
     }

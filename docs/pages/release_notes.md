@@ -203,7 +203,11 @@ The rules have been moved into categories with PMD 6.
   * [#4723](https://github.com/pmd/pmd/issues/4723): \[cli] Launch fails for "bash pmd"
 * core
   * [#1027](https://github.com/pmd/pmd/issues/1027): \[core] Apply the new PropertyDescriptor&lt;Pattern&gt; type where applicable
+  * [#3903](https://github.com/pmd/pmd/issues/3903): \[core] Consolidate `n.s.pmd.reporting` package
+  * [#3905](https://github.com/pmd/pmd/issues/3905): \[core] Stabilize tree export API
+  * [#3917](https://github.com/pmd/pmd/issues/3917): \[core] Consolidate `n.s.pmd.lang.rule` package
   * [#4065](https://github.com/pmd/pmd/issues/4065): \[core] Rename TokenMgrError to LexException, Tokenizer to CpdLexer
+  * [#4309](https://github.com/pmd/pmd/issues/4309): \[core] Cleanups in XPath area
   * [#4312](https://github.com/pmd/pmd/issues/4312): \[core] Remove unnecessary property `color` and system property `pmd.color` in `TextColorRenderer`
   * [#4313](https://github.com/pmd/pmd/issues/4313): \[core] Remove support for &lt;lang&gt;-&lt;ruleset&gt; hyphen notation for ruleset references
   * [#4314](https://github.com/pmd/pmd/issues/4314): \[core] Remove ruleset compatibility filter (RuleSetFactoryCompatibility) and CLI option `--no-ruleset-compatibility`
@@ -260,10 +264,52 @@ The rules have been moved into categories with PMD 6.
 
 #### API Changes
 
+**New API**
+
+The API around {%jdoc core::util.treeexport.TreeRenderer %} has been declared as stable. It was previously
+experimental. It can be used via the CLI subcommand `ast-dump` or programmatically, as described
+on [Creating XML dump of the AST]({{ baseurl }}pmd_userdocs_extending_ast_dump.html).
+
 **General AST Changes to avoid `@Image`**
 
 See [General AST Changes to avoid @Image]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html#general-ast-changes-to-avoid-image)
 in the migration guide for details.
+
+**XPath Rules**
+* The property `version` was already deprecated and has finally been removed. Please don't define the version
+  property anymore in your custom XPath rules. By default, the latest XPath version will be used, which
+  is XPath 3.1.
+
+**Moved classes/consolidated packages**
+
+* pmd-core
+  * Many types have been moved from the base package `net.sourceforge.pmd` into subpackage {% jdoc_package core::lang.rule %}
+    * {%jdoc core::lang.rule.Rule %}
+    * {%jdoc core::lang.rule.RulePriority %}
+    * {%jdoc core::lang.rule.RuleSet %}
+    * {%jdoc core::lang.rule.RuleSetFactory %}
+    * {%jdoc core::lang.rule.RuleSetLoader %}
+    * {%jdoc core::lang.rule.RuleSetLoadException %}
+    * {%jdoc core::lang.rule.RuleSetWriter %}
+  * Many types have been moved from the base package `net.sourceforge.pmd` into subpackage {% jdoc_package core::reporting %}
+    * {%jdoc core::reporting.Report %}
+    * {%jdoc core::reporting.RuleContext %}
+    * {%jdoc core::reporting.RuleViolation %}
+    * {%jdoc core::reporting.ViolationSuppressor %}
+    * {%jdoc core::reporting.ParametricRuleViolation %} (moved from `net.sourcceforge.pmd.lang.rule`)
+  * {%jdoc core::lang.rule.xpath.XPathRule %} has been moved into subpackage {% jdoc_package core::lang.rule.xpath %}.
+
+**Internalized classes**
+
+These were marked as `@InternalApi` previously.
+
+* pmd-core
+  * `RuleFactory`: moved from `net.sourceforge.pmd.rules` into subpackage `lang.rule`.
+    It has now been hidden completely from public API.
+  * Many types have been moved from the base package `net.sourceforge.pmd` into subpackage `lang.rule.internal`.
+      * `RuleSetReference`
+      * `RuleSetReferenceId`
+      * `RuleSets`
 
 **Removed classes and members (previously deprecated)**
 
@@ -1025,6 +1071,9 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#3815](https://github.com/pmd/pmd/issues/3815): \[core] Update Saxon HE to 10.7
     * [#3893](https://github.com/pmd/pmd/pull/3893):   \[core] Text documents
     * [#3902](https://github.com/pmd/pmd/issues/3902): \[core] Violation decorators
+    * [#3903](https://github.com/pmd/pmd/issues/3903): \[core] Consolidate `n.s.pmd.reporting` package
+    * [#3905](https://github.com/pmd/pmd/issues/3905): \[core] Stabilize tree export API
+    * [#3917](https://github.com/pmd/pmd/issues/3917): \[core] Consolidate `n.s.pmd.lang.rule` package
     * [#3918](https://github.com/pmd/pmd/issues/3918): \[core] Make LanguageRegistry non static
     * [#3919](https://github.com/pmd/pmd/issues/3919): \[core] Merge CPD and PMD language
     * [#3922](https://github.com/pmd/pmd/pull/3922):   \[core] Better error reporting for the ruleset parser
@@ -1034,6 +1083,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4204](https://github.com/pmd/pmd/issues/4204): \[core] Provide a CpdAnalysis class as a programmatic entry point into CPD
     * [#4301](https://github.com/pmd/pmd/issues/4301): \[core] Remove deprecated property concrete classes
     * [#4302](https://github.com/pmd/pmd/issues/4302): \[core] Migrate Property Framework API to Java 8
+    * [#4309](https://github.com/pmd/pmd/issues/4309): \[core] Cleanups in XPath area
     * [#4312](https://github.com/pmd/pmd/issues/4312): \[core] Remove unnecessary property `color` and system property `pmd.color` in `TextColorRenderer`
     * [#4313](https://github.com/pmd/pmd/issues/4313): \[core] Remove support for &lt;lang&gt;-&lt;ruleset&gt; hyphen notation for ruleset references
     * [#4314](https://github.com/pmd/pmd/issues/4314): \[core] Remove ruleset compatibility filter (RuleSetFactoryCompatibility) and CLI option `--no-ruleset-compatibility`

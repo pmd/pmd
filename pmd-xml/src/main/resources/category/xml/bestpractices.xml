@@ -13,7 +13,7 @@ Rules which enforce generally accepted best practices.
           language="xml"
           since="7.0.0"
           message="Set an explicit XML encoding in the XML declaration to ensure proper parsing"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_xml_bestpractices.html#missingencoding">
        <description>
 When the character encoding is missing from the XML declaration,

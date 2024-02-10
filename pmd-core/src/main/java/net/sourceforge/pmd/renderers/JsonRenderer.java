@@ -15,9 +15,9 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMDVersion;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.ViolationSuppressor;
+import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.RuleViolation;
+import net.sourceforge.pmd.reporting.ViolationSuppressor;
 
 import com.google.gson.stream.JsonWriter;
 

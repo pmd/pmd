@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -23,14 +22,13 @@ import net.sourceforge.pmd.util.treeexport.XmlTreeRenderer.XmlRenderingConfig;
 
 /**
  * Entry point to fetch and register tree renderers. This API is meant
- * to be be integrated in tools that operate on tree descriptors generically.
+ * to be integrated in tools that operate on tree descriptors generically.
  * For that reason the standard descriptors provided by PMD and their
  * properties are not public.
  *
  * @see #findById(String)
  * @see #register(TreeRendererDescriptor)
  */
-@Experimental
 public final class TreeRenderers {
 
     // descriptors are test only

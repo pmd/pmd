@@ -27,7 +27,7 @@ There are a couple of deprecated things in PMD 6, you might encounter:
   See also [Defining rule properties](pmd_userdocs_extending_defining_properties.html)
 
 * When reporting a violation, you might see a deprecation of the `addViolation` methods. These methods have been moved
-  to {% jdoc core::RuleContext %}. E.g. instead of `addViolation(data, node, ...)` use `asCtx(data).addViolation(node, ...)`.
+  to {% jdoc core::reporting.RuleContext %}. E.g. instead of `addViolation(data, node, ...)` use `asCtx(data).addViolation(node, ...)`.
 
 * When you are calling PMD from CLI, you need to stop using deprecated CLI params, e.g.
   * `-no-cache` ➡️ `--no-cache`
@@ -109,9 +109,11 @@ XPath 2.0 is available in PMD 6 already and can be used right away. PMD 7 will u
 won't support XPath 1.0 anymore. The difference between XPath 2.0 and XPath 3.1 is not big, so your XPath 2.0
 can be expected to work in PMD 7 without any further changes. So the migration path is to simply migrate to XPath 2.0.
 
-After you have migrated your XPath rules to XPath 2.0, remove the "version" property, since that will be removed
-with PMD 7. PMD 7 by default uses XPath 3.1.
-See below [XPath](#xpath-migrating-from-10-to-20) for details.
+After you have migrated your XPath rules to XPath 2.0, remove the "version" property, since that has been removed
+with PMD 7. PMD 7 by default uses XPath 3.1. See below [XPath](#xpath-migrating-from-10-to-20) for details.
+
+Then change the `class` attribute of your rule to `net.sourceforge.pmd.lang.rule.xpath.XPathRule` - because the
+class {%jdoc core::lang.rule.xpath.XPathRule %} has been moved into subpackage {% jdoc_package core::lang.rule.xpath %}.
 
 There are some general changes for AST nodes regarding the `@Image` attribute.
 See below [General AST Changes to avoid @Image](#general-ast-changes-to-avoid-image).
@@ -161,7 +163,7 @@ Most notable changes are:
 * A rule violation factory is not needed anymore. For language specific information on rule violations, there is
   now a {% jdoc core::reporting.ViolationDecorator %} that a language can implement. These ViolationDecorators
   are called when a violation is reported and they can provide the additional information. This information can be
-  used by renderers via {% jdoc !!core::RuleViolation#getAdditionalInfo() %}.
+  used by renderers via {% jdoc !!core::reporting.RuleViolation#getAdditionalInfo() %}.
 * A parser visitor adapter is not needed anymore. The visitor interface now provides a default implementation.
   Instead, a base visitor for the language should be created, which extends {% jdoc core::lang.ast.AstVisitorBase %}.
 * A rule chain visitor is not needed anymore. PMD provides a common implementation that fits all languages.

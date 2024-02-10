@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.impl;
 
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.lang.LanguageProcessor.AnalysisTask;
 import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;

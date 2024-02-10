@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.apex.rule;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.apex.ast.ApexVisitor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public abstract class AbstractApexRule extends AbstractRule implements ApexVisitor<Object, Object> {
 

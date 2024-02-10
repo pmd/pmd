@@ -6,14 +6,14 @@ package net.sourceforge.pmd.lang.xml.rule;
 
 import java.util.Objects;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * XPath rule that executes an expression on the DOM directly, and not
@@ -128,8 +128,6 @@ public class DomXPathRule extends AbstractRule {
     public DomXPathRule() {
         definePropertyDescriptor(XPATH_EXPR);
         definePropertyDescriptor(DEFAULT_NS_URI);
-        // for compatibility, but is ignored.
-        definePropertyDescriptor(XPathRule.VERSION_DESCRIPTOR);
     }
 
 

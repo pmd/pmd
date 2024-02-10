@@ -32,7 +32,7 @@ import picocli.CommandLine.Mixin;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParameterException;
 
-@Command(name = "ast-dump", description = "Experimental: dumps the AST of parsing source code")
+@Command(name = "ast-dump", description = "Dumps the AST of parsing source code")
 public class TreeExportCommand extends AbstractPmdSubcommand {
 
     static {

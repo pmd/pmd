@@ -32,15 +32,15 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetLoadException;
-import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.RuleSet;
+import net.sourceforge.pmd.lang.rule.RuleSetLoadException;
+import net.sourceforge.pmd.lang.rule.RuleSetLoader;
+import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class RuleDocGenerator {
@@ -437,7 +437,6 @@ public class RuleDocGenerator {
                     properties.remove(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR);
                     properties.remove(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR);
                     properties.removeIf(p -> "xpath".equals(p.name())); // this is XPathRule.XPATH_DESCRIPTOR
-                    properties.remove(XPathRule.VERSION_DESCRIPTOR);
 
                     if (!properties.isEmpty()) {
                         lines.add("**This rule has the following properties:**");

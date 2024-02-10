@@ -37,7 +37,7 @@ public class Foo {
           language="java"
           since="1.5"
           message="Avoid using dollar signs in variable/method/class/interface names"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#avoiddollarsigns">
         <description>
 Avoid using dollar signs in variable/method/class/interface names.
@@ -70,7 +70,7 @@ public class Fo$o {  // not a recommended name
           language="java"
           since="2.1"
           message="Avoid protected fields in a final class.  Change to private or package access."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#avoidprotectedfieldinfinalclass">
         <description>
 Do not use protected fields in final classes since they cannot be subclassed.
@@ -103,7 +103,7 @@ public final class Bar {
           language="java"
           since="5.1"
           message="Avoid protected methods in a final class that doesn't extend anything other than Object.  Change to private or package access."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#avoidprotectedmethodinfinalclassnotextending">
         <description>
 Do not use protected methods in most final classes since they cannot be subclassed. This should
@@ -136,7 +136,7 @@ public final class Foo {
           language="java"
           since="4.1"
           message="The use of native code is not recommended."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#avoidusingnativecode">
         <description>
 Unnecessary reliance on Java Native Interface (JNI) calls directly reduces application portability
@@ -173,7 +173,7 @@ public class SomeJNIClass {
           language="java"
           since="4.0"
           message="A 'getX()' method which returns a boolean should be named 'isX()'"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#booleangetmethodname">
         <description>
 Methods that return boolean results should be named as predicate statements to denote this.
@@ -207,7 +207,7 @@ public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
           language="java"
           since="3.0"
           message="It is a good practice to call super() in a constructor"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#callsuperinconstructor">
         <description>
 It is a good practice to call super() in a constructor. If super() is not called but
@@ -357,7 +357,7 @@ boolean bar(int x, int y) {
           language="java"
           since="6.2.0"
           message="This statement should have braces"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#controlstatementbraces">
         <description>
             Enforce a policy for braces on control statements. It is recommended to use braces on 'if ... else'
@@ -419,7 +419,7 @@ while (true) {  // preferred approach
     <rule name="EmptyMethodInAbstractClassShouldBeAbstract"
           language="java"
           since="4.1"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           message="An empty method in an abstract class should be abstract instead"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#emptymethodinabstractclassshouldbeabstract">
         <description>
@@ -509,7 +509,7 @@ class Foo {
           language="java"
           since="5.0"
           message="No need to explicitly extend Object."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#extendsobject">
         <description>No need to explicitly extend Object.</description>
         <priority>4</priority>
@@ -600,7 +600,7 @@ public class HelloWorldBean {
           language="java"
           since="6.42.0"
           message="Final parameter in abstract method"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#finalparameterinabstractmethod">
         <description>
@@ -631,7 +631,7 @@ public interface MyInterface {
           language="java"
           since="1.02"
           message="This for loop could be simplified to a while loop"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#forloopshouldbewhileloop">
         <description>
 Some for loops can be simplified to while loops, this makes them more concise.
@@ -701,7 +701,7 @@ public class Foo {
           language="java"
           since="4.2.6"
           message="Generics names should be a one letter long and upper case."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#genericsnaming">
         <description>
 Names for references to generic values should be limited to a single uppercase letter.
@@ -840,7 +840,7 @@ public class LinguisticNaming {
     <rule name="LocalHomeNamingConvention"
           language="java"
           since="4.0"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           message="The Local Home interface of a Session EJB should be suffixed by 'LocalHome'"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#localhomenamingconvention">
         <description>
@@ -872,7 +872,7 @@ public interface MissingProperSuffix extends javax.ejb.EJBLocalHome {}  // non-s
     <rule name="LocalInterfaceSessionNamingConvention"
           language="java"
           since="4.0"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           message="The Local Interface of a Session EJB should be suffixed by 'Local'"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#localinterfacesessionnamingconvention">
         <description>
@@ -963,7 +963,7 @@ public class Bar {
           language="java"
           since="0.3"
           message="Avoid excessively long variable names like {0}"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#longvariable">
         <description>
 Fields, formal arguments, or local variable names that are too long can make the code difficult to follow.
@@ -997,7 +997,7 @@ public class Something {
     <rule name="MDBAndSessionBeanNamingConvention"
           language="java"
           since="4.0"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           message="SessionBean or MessageBean should be suffixed by Bean"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#mdbandsessionbeannamingconvention">
         <description>
@@ -1079,7 +1079,7 @@ public class Foo {
           language="java"
           since="3.3"
           message="All classes, interfaces, enums and annotations must belong to a named package"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#nopackage">
         <description>
 Detects when a class, interface, enum or annotation does not have a package definition.
@@ -1104,7 +1104,7 @@ public class ClassInDefaultPackage {
           since="6.10.0"
           minimumLanguageVersion="1.7"
           message="Number {0} should separate every third digit with an underscore"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#useunderscoresinnumericliterals">
         <description>
             Since Java 1.7, numeric literals can use underscores to separate digits. This rule enforces that
@@ -1179,7 +1179,7 @@ public class OneReturnOnly1 {
           language="java"
           since="3.3"
           message="Package name contains upper case characters"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#packagecase">
         <description>
 Detects when a package definition contains uppercase characters.
@@ -1260,7 +1260,7 @@ public int getLength(String[] strings) {
     <rule name="RemoteInterfaceNamingConvention"
           language="java"
           since="4.0"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           message="Remote Interface of a Session EJB should NOT be suffixed"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#remoteinterfacenamingconvention">
         <description>
@@ -1297,7 +1297,7 @@ public interface BadSuffixBean extends javax.ejb.EJBObject {}
     <rule name="RemoteSessionInterfaceNamingConvention"
           language="java"
           since="4.0"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           message="Remote Home interface of a Session EJB should be suffixed by 'Home'"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#remotesessioninterfacenamingconvention">
         <description>
@@ -1330,7 +1330,7 @@ public interface MissingProperSuffix extends javax.ejb.EJBHome {}   // non-stand
           language="java"
           since="5.0"
           message="Avoid short class names like {0}"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#shortclassname">
         <description>
 Short Classnames with fewer than e.g. five characters are not recommended.
@@ -1358,7 +1358,7 @@ public class Foo {
           language="java"
           since="0.3"
           message="Avoid using short method names"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#shortmethodname">
         <description>
 Method names that are very short are not helpful to the reader.
@@ -1388,7 +1388,7 @@ public class ShortMethod {
           language="java"
           since="0.3"
           message="Avoid variables with short names like {0}"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#shortvariable">
         <description>
 Fields, local variables, enum constant names or parameter names that are very short are not helpful to the reader.
@@ -1433,7 +1433,7 @@ public class Something {
     <rule name="TooManyStaticImports"
           language="java"
           since="4.1"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           message="Too many static imports may lead to messy code"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#toomanystaticimports">
         <description>
@@ -1470,7 +1470,7 @@ import static Yoko; // Too much !
           language="java"
           since="6.2.0"
           message="Avoid the use of value in annotations when it's the only element"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessaryannotationvalueelement">
         <description>
             Avoid the use of value in annotations when it's the only element.
@@ -1797,7 +1797,7 @@ public class Foo {
           language="java"
           since="6.46.0"
           message="Unnecessary semicolon"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessarysemicolon">
         <description>
             Reports unnecessary semicolons (so called "empty statements" and "empty declarations").
@@ -1880,7 +1880,7 @@ was made possible for anonymous class constructors.
           minimumLanguageVersion="10"
           since="7.0.0"
           message="Use Explicit Types"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#useexplicittypes">
         <description>
 Java 10 introduced the `var` keyword. This reduces the amount of code written because java can infer the type
@@ -1965,7 +1965,7 @@ public class Foo {
           language="java"
           since="5.4.0"
           message="Useless qualified this usage in the same class."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#uselessqualifiedthis">
         <description>
             Reports qualified this usages in the same class.
@@ -2015,7 +2015,7 @@ public class Foo {
         language="java"
         since="6.15.0"
         message="Array initialization can be written shorter"
-        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#useshortarrayinitializer">
         <description>
 <![CDATA[

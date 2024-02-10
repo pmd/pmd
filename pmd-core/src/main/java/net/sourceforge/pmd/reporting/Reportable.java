@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.reporting;
 
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.FileLocation;

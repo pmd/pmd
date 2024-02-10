@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang;
 import java.util.List;
 import java.util.Objects;
 
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 /**
  * Represents a version of a {@link Language}. Language instances provide

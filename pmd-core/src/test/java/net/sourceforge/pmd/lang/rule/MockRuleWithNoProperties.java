@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.rule;
 
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 /**

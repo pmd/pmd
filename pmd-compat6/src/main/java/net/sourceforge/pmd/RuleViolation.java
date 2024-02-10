@@ -3,7 +3,9 @@
  */
 
 // This class has been taken from 7.0.0-SNAPSHOT
-// Changes: getFilename
+// Changes:
+// - getFilename
+// - getRule returns n.s.pmd.rule.Rule or the old n.s.pmd.Rule
 
 package net.sourceforge.pmd;
 
@@ -68,7 +70,7 @@ public interface RuleViolation {
      *
      * @return The identifying Rule.
      */
-    Rule getRule();
+    net.sourceforge.pmd.lang.rule.Rule getRule();
 
     /**
      * Get the description of this violation.
@@ -192,5 +194,10 @@ public interface RuleViolation {
     @Deprecated
     default String getFilename() {
         return getLocation().getFileId().getFileName();
+    }
+
+    // returns the PMD 6 compatible Rule
+    default net.sourceforge.pmd.Rule getRule$$bridge() { // SUPPRESS CHECKSTYLE ignore
+        return getRule();
     }
 }

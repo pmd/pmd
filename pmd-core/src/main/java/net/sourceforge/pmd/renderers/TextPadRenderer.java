@@ -7,7 +7,7 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 import java.util.Iterator;
 
-import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 /**
  * <p>

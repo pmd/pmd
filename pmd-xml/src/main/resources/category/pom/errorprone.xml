@@ -13,7 +13,7 @@ Rules to detect constructs that are either broken, extremely confusing or prone 
           language="pom"
           since="5.4"
           message="By default, Maven only recognizes the following types: pom, jar, maven-plugin, ejb, war, ear, rar, par."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_pom_errorprone.html#invaliddependencytypes">
         <description>
 If you use an invalid dependency type in the dependency management section, Maven doesn't fail. Instead,
@@ -59,7 +59,7 @@ The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear,
           language="pom"
           since="5.4"
           message="Do not use project.version to express a dependency version."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_pom_errorprone.html#projectversionasdependencyversion">
         <description>
 Using that expression in dependency declarations seems like a shortcut, but it can go wrong.
