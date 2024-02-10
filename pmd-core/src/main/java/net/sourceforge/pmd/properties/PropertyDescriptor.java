@@ -8,8 +8,9 @@ import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.rule.RuleSetWriter;
+import net.sourceforge.pmd.properties.internal.PropertyParsingUtil;
+import net.sourceforge.pmd.properties.internal.PropertyTypeId;
 
 
 /**
@@ -107,8 +108,7 @@ public final class PropertyDescriptor<T> {
      *
      * @apiNote Internal API
      */
-    @InternalApi
-    public @Nullable PropertyTypeId getTypeId() {
+    @Nullable PropertyTypeId getTypeId() {
         return typeId;
     }
 

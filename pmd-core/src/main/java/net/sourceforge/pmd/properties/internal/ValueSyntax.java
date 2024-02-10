@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.properties;
+package net.sourceforge.pmd.properties.internal;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
@@ -14,6 +14,8 @@ import java.util.function.Function;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.internal.util.PredicateUtil;
+import net.sourceforge.pmd.properties.InternalApiBridge;
+import net.sourceforge.pmd.properties.PropertyConstraint;
 
 /**
  * Serialize to and from a simple string. Examples:
@@ -27,7 +29,7 @@ import net.sourceforge.pmd.internal.util.PredicateUtil;
  * <pre>This class is special because it enables compatibility with the
  * pre 7.0.0 XML syntax.
  */
-class ValueSyntax<T> extends PropertySerializer<T> {
+class ValueSyntax<T> extends InternalApiBridge.InternalPropertySerializer<T> {
 
     private final Function<? super T, @NonNull String> toString;
     private final Function<@NonNull String, ? extends T> fromString;

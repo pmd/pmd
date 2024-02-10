@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.properties;
+package net.sourceforge.pmd.properties.internal;
 
 
 import java.util.ArrayList;
@@ -15,13 +15,17 @@ import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import net.sourceforge.pmd.properties.ConstraintViolatedException;
+import net.sourceforge.pmd.properties.PropertyConstraint;
+import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.properties.PropertySerializer;
 import net.sourceforge.pmd.util.IteratorUtil;
 import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 
 /**
  * This is internal API and shouldn't be used directly by clients.
  */
-final class PropertyParsingUtil {
+public final class PropertyParsingUtil {
 
     public static final ValueSyntax<String> STRING = ValueSyntax.withDefaultToString(String::trim);
     public static final ValueSyntax<Character> CHARACTER =

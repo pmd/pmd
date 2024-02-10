@@ -325,6 +325,8 @@ package or made (package) private and are _not accessible_ anymore.
     * In order to create a FileCollector, use {%jdoc core::PmdAnalysis#files() %} instead.
   * {%jdoc !!core::lang.rule.xpath.Attribute %}
     * Method `replacementIfDeprecated()` is now package private.
+  * `net.sourceforge.pmd.properties.PropertyTypeId` - moved in subpackage `internal`.
+  * {%jdoc !!core::properties.PropertyDescriptor %} - method `getTypeId()` is now package private.
 * pmd-ant
   * {%jdoc !!ant::ant.Formatter %}
     * Method `getRenderer()` has been removed.

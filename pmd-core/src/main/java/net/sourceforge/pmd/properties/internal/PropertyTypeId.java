@@ -2,14 +2,17 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.properties;
+package net.sourceforge.pmd.properties.internal;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.properties.InternalApiBridge;
+import net.sourceforge.pmd.properties.PropertyBuilder;
+import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.properties.PropertySerializer;
 
 
 /**
@@ -27,7 +30,6 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @since 6.0.0
  * @apiNote Internal API
  */
-@InternalApi
 public enum PropertyTypeId {
     // These are exclusively used for XPath rules. It would make more sense to model the supported
     // property types around XML Schema Datatypes (XSD) 1.0 or 1.1 instead of Java datatypes (save for
@@ -100,7 +102,9 @@ public enum PropertyTypeId {
 
             @Override
             public PropertyBuilder<?, ?> newBuilder(String name) {
-                return factory.apply(name).typeId(PropertyTypeId.this).availableInXPath(true);
+                PropertyBuilder<?, ?> builder = factory.apply(name);
+                builder = InternalApiBridge.withTypeId(builder, PropertyTypeId.this);
+                return builder.availableInXPath(true);
             }
         };
     }
