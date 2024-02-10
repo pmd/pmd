@@ -336,6 +336,7 @@ package or made (package) private and are _not accessible_ anymore.
     * Method `newListener(Project)` is now package private.
   * {%jdoc !!ant::ant.PMDTask %}
     * Method `getRelativizeRoots()` has been removed.
+  * `net.sourceforge.pmd.ant.ReportException` is now package private. Note: It was not marked with @<!-- -->InternalApi before.
 * pmd-apex
   * {%jdoc !!apex::ast.ApexNode %}
     * Method `getNode()` has been removed. It was only deprecated before and not marked with @<!-- -->InternalApi.

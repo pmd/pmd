@@ -35,6 +35,21 @@ import net.sourceforge.pmd.reporting.FileNameRenderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.ListenerInitializer;
 
+/**
+ * Part of PMD Ant task configuration. Setters of this class are interpreted by Ant as properties
+ * settable in the XML. This is therefore published API.
+ *
+ * <p>This class is used to configure a specific {@link Renderer} for outputting the violations. This is called
+ * a formatter in PMD Ant task configuration and might look like this:
+ *
+ * <pre>{@code
+ * <pmd>
+ *   <formatter type="html" toFile="${build}/pmd_report.html"/>
+ * </pmd>
+ * }</pre>
+ *
+ * @see PMDTask#addFormatter(Formatter)
+ */
 public class Formatter {
 
     private File toFile;
