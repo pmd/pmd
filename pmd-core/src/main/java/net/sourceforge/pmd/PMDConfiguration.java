@@ -21,13 +21,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cache.internal.AnalysisCache;
 import net.sourceforge.pmd.cache.internal.FileAnalysisCache;
 import net.sourceforge.pmd.cache.internal.NoopAnalysisCache;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.RulePriority;
 import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -455,8 +455,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @apiNote This is internal API.
      */
-    @InternalApi
-    public AnalysisCache getAnalysisCache() {
+    AnalysisCache getAnalysisCache() {
         // Make sure we are not null
         if (analysisCache == null || isIgnoreIncrementalAnalysis() && !(analysisCache instanceof NoopAnalysisCache)) {
             // sets a noop cache
@@ -476,8 +475,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @apiNote This is internal API. Use {@link #setAnalysisCacheLocation(String)} to configure a cache.
      */
-    @InternalApi
-    public void setAnalysisCache(final AnalysisCache cache) {
+    void setAnalysisCache(final AnalysisCache cache) {
         // the doc says it's a noop if incremental analysis was disabled,
         // but it's actually the getter that enforces that
         this.analysisCache = cache == null ? new NoopAnalysisCache() : cache;

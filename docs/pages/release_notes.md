@@ -316,6 +316,9 @@ package or made (package) private and are _not accessible_ anymore.
     * All constructors are package private now.
   * {%jdoc !!core::lang.ast.LexException %} - the constructor `LexException(boolean, String, int, int, String, char)` is now package private.
     It is only used by JavaCC-generated token managers.
+  * {%jdoc !!core::PMDConfiguration %}
+    * Method `setAnalysisCache(AnalysisCache)` is now package private. Use {%jdoc core::PMDConfiguration#setAnalysisCacheLocation(java.lang.String) %} instead.
+    * Method `getAnalysisCache()` is now package private.
 * pmd-ant
   * {%jdoc !!ant::ant.Formatter %}
     * Method `getRenderer()` has been removed.
