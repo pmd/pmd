@@ -22,6 +22,7 @@ import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.rule.InternalApiBridge;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.lang.rule.internal.RuleApplicator;
@@ -126,7 +127,7 @@ public class RuleSets {
      */
     public boolean applies(TextFile file) {
         for (RuleSet ruleSet : ruleSets) {
-            if (ruleSet.applies(file)) {
+            if (InternalApiBridge.ruleSetApplies(ruleSet, file.getFileId())) {
                 return true;
             }
         }
@@ -155,7 +156,7 @@ public class RuleSets {
         }
 
         for (RuleSet ruleSet : ruleSets) {
-            if (ruleSet.applies(root.getTextDocument().getFileId())) {
+            if (InternalApiBridge.ruleSetApplies(ruleSet, root.getTextDocument().getFileId())) {
                 ruleApplicator.apply(ruleSet.getRules(), listener);
             }
         }

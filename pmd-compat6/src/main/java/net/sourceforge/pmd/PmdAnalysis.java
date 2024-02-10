@@ -193,7 +193,7 @@ public final class PmdAnalysis implements AutoCloseable {
 
         if (!config.getRuleSetPaths().isEmpty()) {
             final net.sourceforge.pmd.lang.rule.RuleSetLoader ruleSetLoader = pmd.newRuleSetLoader();
-            final List<RuleSet> ruleSets = ruleSetLoader.loadRuleSetsWithoutException(config.getRuleSetPaths());
+            final List<RuleSet> ruleSets = net.sourceforge.pmd.lang.rule.InternalApiBridge.loadRuleSetsWithoutException(ruleSetLoader, config.getRuleSetPaths());
             pmd.addRuleSets(ruleSets);
         }
 
@@ -490,7 +490,7 @@ public final class PmdAnalysis implements AutoCloseable {
                 Objects.requireNonNull(ruleLanguage, "Rule has no language " + rule);
                 if (!languages.contains(ruleLanguage)) {
                     LanguageVersion version = discoverer.getDefaultLanguageVersion(ruleLanguage);
-                    if (RuleSet.applies((net.sourceforge.pmd.lang.rule.Rule) rule, version)) {
+                    if (net.sourceforge.pmd.lang.rule.InternalApiBridge.ruleSetApplies((net.sourceforge.pmd.lang.rule.Rule) rule, version)) {
                         configuration.checkLanguageIsRegistered(ruleLanguage);
                         languages.add(ruleLanguage);
                         if (!quiet) {

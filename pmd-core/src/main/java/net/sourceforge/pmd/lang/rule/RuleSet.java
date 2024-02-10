@@ -20,12 +20,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cache.internal.ChecksumAware;
 import net.sourceforge.pmd.internal.util.PredicateUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.FileId;
-import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.internal.RuleSetReference;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 
@@ -607,28 +605,11 @@ public class RuleSet implements ChecksumAware {
      *
      * @return <code>true</code> if the file should be checked,
      *     <code>false</code> otherwise
+     *
+     * @apiNote Internal API.
      */
-    // TODO get rid of this overload
-    @InternalApi
-    public boolean applies(FileId qualFileName) {
+    boolean applies(FileId qualFileName) {
         return filter.test(qualFileName.getAbsolutePath());
-    }
-
-    /**
-     * Check if a given source file should be checked by rules in this RuleSet.
-     * A file should not be checked if there is an <code>exclude</code> pattern
-     * which matches the file, unless there is an <code>include</code> pattern
-     * which also matches the file. In other words, <code>include</code>
-     * patterns override <code>exclude</code> patterns.
-     *
-     * @param file a text file
-     *
-     * @return <code>true</code> if the file should be checked,
-     *     <code>false</code> otherwise
-     */
-    @InternalApi
-    public boolean applies(TextFile file) {
-        return applies(file.getFileId());
     }
 
     /**
@@ -644,12 +625,9 @@ public class RuleSet implements ChecksumAware {
      * @return <code>true</code> if the given rule matches the given language,
      *         which means, that the rule would be executed.
      *
-     * @deprecated This is internal API, removed in PMD 7. You should
-     * not use a ruleset directly.
+     * @apiNote This is internal API.
      */
-    @Deprecated
-    @InternalApi
-    public static boolean applies(Rule rule, LanguageVersion languageVersion) {
+    static boolean applies(Rule rule, LanguageVersion languageVersion) {
         final LanguageVersion min = rule.getMinimumLanguageVersion();
         final LanguageVersion max = rule.getMaximumLanguageVersion();
         assert rule.getLanguage() != null : "Rule has no language " + rule;
@@ -715,17 +693,13 @@ public class RuleSet implements ChecksumAware {
 
     /**
      * Remove and collect any misconfigured rules.
-     * TODO remove this method. This mutates rulesets for nothing. Whether
-     *  a rule is dysfunctional or not should be checked when it is initialized.
      *
      * @param collector
      *            the removed rules will be added to this collection
-     *
-     * @deprecated This is internal API, removed in PMD 7. You should
-     * not use a ruleset directly.
      */
-    @Deprecated
-    @InternalApi
+    // TODO remove this method. This mutates rulesets for nothing. Whether a rule
+    //  is dysfunctional or not should be checked when it is initialized.
+    //  See also https://github.com/pmd/pmd/issues/3868 and https://github.com/pmd/pmd/issues/3901
     public void removeDysfunctionalRules(Collection<Rule> collector) {
         Iterator<Rule> iter = rules.iterator();
 

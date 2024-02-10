@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.ant.internal;
 
+import static net.sourceforge.pmd.lang.rule.InternalApiBridge.loadRuleSetsWithoutException;
+
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -125,7 +127,7 @@ public class PMDTaskImpl {
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
             RuleSetLoader rulesetLoader =
                 pmd.newRuleSetLoader().loadResourcesWith(setupResourceLoader());
-            pmd.addRuleSets(rulesetLoader.loadRuleSetsWithoutException(ruleSetPaths));
+            pmd.addRuleSets(loadRuleSetsWithoutException(rulesetLoader, ruleSetPaths));
 
             for (FileSet fileset : filesets) {
                 DirectoryScanner ds = fileset.getDirectoryScanner(project);

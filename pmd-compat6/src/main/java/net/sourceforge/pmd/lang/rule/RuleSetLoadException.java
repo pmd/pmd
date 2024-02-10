@@ -2,6 +2,9 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+// Copied from 7.0.0-SNAPSHOT
+// Changes: constructors are public again
+
 package net.sourceforge.pmd.lang.rule;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -19,14 +22,14 @@ public class RuleSetLoadException extends RuntimeException {
     /**
      * @apiNote Internal API.
      */
-    RuleSetLoadException(RuleSetReferenceId rsetId, @NonNull Throwable cause) {
+    public RuleSetLoadException(RuleSetReferenceId rsetId, @NonNull Throwable cause) {
         super("Cannot load ruleset " + rsetId + ": " + cause.getMessage(), cause);
     }
 
     /**
      * @apiNote Internal API.
      */
-    RuleSetLoadException(RuleSetReferenceId rsetId, String message) {
+    public RuleSetLoadException(RuleSetReferenceId rsetId, String message) {
         super("Cannot load ruleset " + rsetId + ": " + message);
     }
 

@@ -306,6 +306,14 @@ package or made (package) private and are _not accessible_ anymore.
     * `net.sourceforge.pmd.RuleSets`
   * `net.sourceforge.pmd.lang.rule.ParametricRuleViolation` is now package private and moved to `net.sourceforge.pmd.reporting.ParametricRuleViolation`.
     The only public API is {%jdoc core::reporting.RuleViolation %}.
+  * {%jdoc !!core::lang.rule.RuleSet %}
+    * Method `applies(Rule,LanguageVersion)` is now package private.
+    * Method `applies(TextFile)` has been removed.
+    * Method `applies(FileId)` is now package private.
+  * {%jdoc !!core::lang.rule.RuleSetLoader %}
+    * Method `loadRuleSetsWithoutException(java.util.List)` is now package private.
+  * {%jdoc !!core::lang.rule.RuleSetLoadException %}
+    * All constructors are package private now.
 * pmd-ant
   * {%jdoc !!ant::ant.Formatter %}
     * Method `getRenderer()` has been removed.
