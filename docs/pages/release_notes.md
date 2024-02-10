@@ -291,11 +291,11 @@ package or made (package) private and are _not accessible_ anymore.
   * {%jdoc !!core::lang.rule.RuleTargetSelector %}
     * Method `isRuleChain()` has been removed.
   * {%jdoc !!core::renderers.AbstractAccumulatingRenderer %}
-    * {%jdoc core::renderers.AbstractAccumulatingRenderer#renderFileReport(core::Report) %} - this method is now final
+    * {%jdoc core::renderers.AbstractAccumulatingRenderer#renderFileReport(core::reporting.Report) %} - this method is now final
       and can't be overridden anymore.
-  * {%jdoc !!core::Report %}
+  * {%jdoc !!core::reporting.Report %}
     * Constructor as well as the methods `addRuleViolation`, `addConfigError`, `addError` are now private.
-  * {%jdoc !!core::RuleContext %}
+  * {%jdoc !!core::reporting.RuleContext %}
     * Method `getRule()` is now package private.
     * Method `create(FileAnalysisListener listener, Rule rule)` has been removed.
   * `net.sourceforge.pmd.rules.RuleFactory`: moved into subpackage `lang.rule` and made package private.
