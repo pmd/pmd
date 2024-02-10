@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.document.InternalApiBridge;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -78,7 +79,7 @@ public final class CpdAnalysis implements AutoCloseable {
     private CpdAnalysis(CPDConfiguration config) {
         this.configuration = config;
         this.reporter = config.getReporter();
-        this.files = FileCollector.newCollector(
+        this.files = InternalApiBridge.newCollector(
             config.getLanguageVersionDiscoverer(),
             reporter
         );

@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.document.InternalApiBridge;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
@@ -58,7 +59,7 @@ public final class FileCollectionUtil {
             LOG.debug("Now collecting files to exclude.");
             // errors like "excluded file does not exist" are reported as warnings.
             PmdReporter mutedLog = new ErrorsAsWarningsReporter(collector.getReporter());
-            try (FileCollector excludeCollector = collector.newCollector(mutedLog)) {
+            try (FileCollector excludeCollector = InternalApiBridge.newCollector(collector, mutedLog)) {
 
                 if (configuration.getIgnoreFile() != null) {
                     // todo better reporting of *where* exactly the path is

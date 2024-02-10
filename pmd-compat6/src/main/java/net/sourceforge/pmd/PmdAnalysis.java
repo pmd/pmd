@@ -157,7 +157,7 @@ public final class PmdAnalysis implements AutoCloseable {
     private PmdAnalysis(PMDConfiguration config) {
         this.configuration = config;
         this.reporter = config.getReporter();
-        this.collector = FileCollector.newCollector(
+        this.collector = net.sourceforge.pmd.lang.document.InternalApiBridge.newCollector(
                 config.getLanguageVersionDiscoverer(),
                 reporter
         );

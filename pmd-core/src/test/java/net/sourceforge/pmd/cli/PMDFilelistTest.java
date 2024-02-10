@@ -24,6 +24,7 @@ import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.document.FileCollector;
+import net.sourceforge.pmd.lang.document.InternalApiBridge;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.util.log.PmdReporter;
 
@@ -32,7 +33,7 @@ class PMDFilelistTest {
     private static final Path RESOURCES = Paths.get("src/test/resources/net/sourceforge/pmd/cli/");
 
     private @NonNull FileCollector newCollector() {
-        return FileCollector.newCollector(new LanguageVersionDiscoverer(LanguageRegistry.PMD), PmdReporter.quiet());
+        return InternalApiBridge.newCollector(new LanguageVersionDiscoverer(LanguageRegistry.PMD), PmdReporter.quiet());
     }
 
     @Test

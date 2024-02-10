@@ -319,6 +319,10 @@ package or made (package) private and are _not accessible_ anymore.
   * {%jdoc !!core::PMDConfiguration %}
     * Method `setAnalysisCache(AnalysisCache)` is now package private. Use {%jdoc core::PMDConfiguration#setAnalysisCacheLocation(java.lang.String) %} instead.
     * Method `getAnalysisCache()` is now package private.
+  * {%jdoc !!core::lang.document.FileCollector %}
+    * Method `newCollector(LanguageVersionDiscoverer, PmdReporter)` is now package private.
+    * Method `newCollector(PmdReporter)` is now package private.
+    * In order to create a FileCollector, use {%jdoc core::PmdAnalysis#files() %} instead.
 * pmd-ant
   * {%jdoc !!ant::ant.Formatter %}
     * Method `getRenderer()` has been removed.

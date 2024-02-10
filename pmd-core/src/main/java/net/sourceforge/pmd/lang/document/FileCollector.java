@@ -36,7 +36,6 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -77,8 +76,7 @@ public final class FileCollector implements AutoCloseable {
      * @apiNote Internal API - please use {@link PmdAnalysis#files()} instead of
      * creating a collector yourself.
      */
-    @InternalApi
-    public static FileCollector newCollector(LanguageVersionDiscoverer discoverer, PmdReporter reporter) {
+    static FileCollector newCollector(LanguageVersionDiscoverer discoverer, PmdReporter reporter) {
         return new FileCollector(discoverer, reporter, null);
     }
 
@@ -88,8 +86,7 @@ public final class FileCollector implements AutoCloseable {
      * @apiNote Internal API - please use {@link PmdAnalysis#files()} instead of
      * creating a collector yourself.
      */
-    @InternalApi
-    public FileCollector newCollector(PmdReporter logger) {
+    FileCollector newCollector(PmdReporter logger) {
         FileCollector fileCollector = new FileCollector(discoverer, logger, null);
         fileCollector.charset = this.charset;
         return fileCollector;
