@@ -20,13 +20,14 @@ import com.google.summit.translation.Translate;
 @SuppressWarnings("PMD.DoNotUseJavaUtilLogging")
 public final class ApexParser implements Parser {
 
+    // This is static - it keeps the Logger from being garbage collected
+    // we want to configure the log level for this once.
+    private static final Logger TRANSLATE_LOGGER = Logger.getLogger(Translate.class.getName());
+
     static {
         AntlrVersionCheckSuppression.initApexLexer();
-    }
-
-    public ApexParser() {
         // Suppress INFO-level output
-        Logger.getLogger(Translate.class.getName()).setLevel(Level.WARNING);
+        TRANSLATE_LOGGER.setLevel(Level.WARNING);
     }
 
     @Override
