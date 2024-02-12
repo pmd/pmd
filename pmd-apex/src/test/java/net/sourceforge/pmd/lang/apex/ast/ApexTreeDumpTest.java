@@ -31,4 +31,9 @@ class ApexTreeDumpTest extends BaseTreeDumpTest {
     void userEnumType() {
         doTest("UserEnumType");
     }
+
+    @Test
+    void innerClassLocations() {
+        doTest("InnerClassLocations");
+    }
 }
