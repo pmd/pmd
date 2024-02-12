@@ -69,22 +69,38 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
 
         @Override
         protected void calculateTextRegion(TextDocument sourceCode) {
-            // TODO: compute union of ranges?
+            // from all nodes, use the earliest location and the latest location.
+            // this assumes, that these nodes form a contiguous code snippet.
+
+            SourceLocation union = SourceLocation.Companion.getUNKNOWN();
             for (Node node : nodes) {
                 SourceLocation loc = node.getSourceLocation();
                 if (!loc.isUnknown()) {
-                    // Column+1 because Summit columns are 0-based and PMD are 1-based
-                    setRegion(TextRegion.fromBothOffsets(
-                        sourceCode.offsetAtLineColumn(TextPos2d.pos2d(loc.getStartLine(), loc.getStartColumn() + 1)),
-                        sourceCode.offsetAtLineColumn(TextPos2d.pos2d(loc.getEndLine(), loc.getEndColumn() + 1))
-                    ));
+                    if (union.getStartLine() == null
+                            || loc.getStartLine() < union.getStartLine()
+                            || loc.getStartLine().equals(union.getStartLine()) && loc.getStartColumn() < union.getStartColumn()) {
+                        union = new SourceLocation(loc.getStartLine(), loc.getStartColumn(), union.getEndLine(), union.getEndColumn());
+                    }
+                    if (union.getEndLine() == null
+                            || loc.getEndLine() > union.getEndLine()
+                            || loc.getEndLine().equals(union.getEndLine()) && loc.getEndColumn() > union.getEndColumn()) {
+                        union = new SourceLocation(union.getStartLine(), union.getStartColumn(), loc.getEndLine(), loc.getEndColumn());
+                    }
                 }
+            }
+
+            if (!union.isUnknown()) {
+                // Column+1 because Summit columns are 0-based and PMD are 1-based
+                setRegion(TextRegion.fromBothOffsets(
+                    sourceCode.offsetAtLineColumn(TextPos2d.pos2d(union.getStartLine(), union.getStartColumn() + 1)),
+                    sourceCode.offsetAtLineColumn(TextPos2d.pos2d(union.getEndLine(), union.getEndColumn() + 1))
+                ));
             }
         }
 
         @Override
         public boolean hasRealLoc() {
-            return nodes.stream().noneMatch(n -> n.getSourceLocation().isUnknown());
+            return !nodes.isEmpty() && nodes.stream().noneMatch(n -> n.getSourceLocation().isUnknown());
         }
     }
 
