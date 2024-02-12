@@ -30,7 +30,7 @@ public final class ASTField extends AbstractApexNode.Many<Node> {
     }
 
     ASTField(EnumDeclaration enumType, Identifier name) {
-        super(Arrays.asList(name));
+        super(Arrays.asList(enumType, name));
         this.name = name;
         this.value = Optional.empty();
         this.typeName = enumType.getId().asCodeString();
@@ -73,5 +73,22 @@ public final class ASTField extends AbstractApexNode.Many<Node> {
             }
         }
         return null;
+    }
+
+    @Override
+    public boolean hasRealLoc() {
+        if (!(nodes.get(0) instanceof TypeRef)) {
+            return super.hasRealLoc();
+        }
+
+        // only special case if the first child is a TypeRef - then we need to look deeper
+        // TypeRef itself doesn't have a source location
+        TypeRef typeRef = (TypeRef) nodes.get(0);
+        boolean allHaveRealLoc = typeRef.getComponents().stream().noneMatch(c -> c.getId().getSourceLocation().isUnknown());
+        // check the remaining nodes (name and optional value)
+        for (int i = 1; i < nodes.size(); i++) {
+            allHaveRealLoc &= !nodes.get(i).getSourceLocation().isUnknown();
+        }
+        return allHaveRealLoc;
     }
 }

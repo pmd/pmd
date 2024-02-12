@@ -84,7 +84,7 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
 
         @Override
         public boolean hasRealLoc() {
-            return false;
+            return nodes.stream().noneMatch(n -> n.getSourceLocation().isUnknown());
         }
     }
 
