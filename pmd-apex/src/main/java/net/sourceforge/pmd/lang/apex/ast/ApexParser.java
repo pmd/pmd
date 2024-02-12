@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ApexLanguageProcessor;
+import net.sourceforge.pmd.lang.apex.internal.AntlrVersionCheckSuppression;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser;
 

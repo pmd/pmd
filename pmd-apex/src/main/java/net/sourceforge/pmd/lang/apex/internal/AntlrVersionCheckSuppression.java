@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.apex.ast;
+package net.sourceforge.pmd.lang.apex.internal;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -14,13 +14,13 @@ import com.nawforce.apexparser.ApexParser;
  * Suppresses the warnings about mismatched ANTLR runtime/compilation version.
  * <p>ApexParser is using ANTLR 4.8, but PMD is using ANTLR 4.9.</p>
  */
-final class AntlrVersionCheckSuppression {
+public final class AntlrVersionCheckSuppression {
     private AntlrVersionCheckSuppression() {
         // utility
     }
 
-    // warning: this must not be called in multiple threads!
-    static void initApexLexer() {
+    // warning: this is synchronized as System.err is changed. It must not be called in multiple threads!
+    public static synchronized void initApexLexer() {
         @SuppressWarnings("PMD.CloseResource") // ok not to close; is save/restore pattern
         PrintStream err = System.err;
         try {

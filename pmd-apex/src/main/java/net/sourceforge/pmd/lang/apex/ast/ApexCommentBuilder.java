@@ -19,6 +19,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.Token;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.apex.internal.AntlrVersionCheckSuppression;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 
