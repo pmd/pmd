@@ -36,9 +36,6 @@ public interface ApexNode<T> extends GenericNode<ApexNode<?>> {
     String getDefiningType();
 
 
-    String getNamespace();
-
-
     @Override
     @NonNull ASTApexFile getRoot();
 }

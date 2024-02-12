@@ -258,6 +258,9 @@ The following previously deprecated classes have been removed:
     new parser.
   * The method `getContext()` in {%jdoc apex::lang.apex.ast.ASTReferenceExpression %} has been removed.
     It was not used and always returned `null`.
+  * The method `getNamespace()` in all AST nodes (defined in {%jdoc apex::lang.apex.ast.ApexNode %}) has
+    been removed, as it was never fully implemented. It always returned an empty string.
+  * The method `getNameSpace()` in {%jdoc apex::lang.apex.ast.ApexQualifiedName %} has been removed.
 * pmd-java
   * The interface `FinalizableNode` (introduced in 7.0.0-rc1) has been removed.
     Its method `isFinal()` has been moved down to the

@@ -191,16 +191,6 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
         return null;
     }
 
-    @Override
-    public String getNamespace() {
-        // TypeInfo definingType = getDefiningTypeOrNull();
-        // if (definingType != null) {
-        //     return definingType.getNamespace().toString();
-        // }
-        // TODO(b/243905954)
-        return null;
-    }
-
     /** Returns the string value of the {@link LiteralExpression}. */
     static String literalToString(LiteralExpression expr) {
         if (expr instanceof LiteralExpression.StringVal) {
