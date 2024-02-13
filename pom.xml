@@ -1197,7 +1197,6 @@
     </profiles>
 
     <modules>
-        <module>pmd-apex-jorje</module>
         <module>pmd-apex</module>
         <module>pmd-coco</module>
         <module>pmd-core</module>
