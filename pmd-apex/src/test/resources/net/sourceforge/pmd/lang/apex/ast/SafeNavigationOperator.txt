@@ -85,7 +85,7 @@
             +- ReturnStatement[@DefiningType = "Foo", @RealLoc = true]
                +- VariableExpression[@DefiningType = "Foo", @Image = "Name", @RealLoc = true]
                   +- ReferenceExpression[@DefiningType = "Foo", @Image = "", @RealLoc = false, @ReferenceType = ReferenceType.LOAD, @SObjectType = false, @SafeNav = true]
-                     +- SoqlExpression[@CanonicalQuery = "SELECT Name FROM Account WHERE Id = :accId", @DefiningType = "Foo", @Query = "SELECT Name FROM Account WHERE Id = :accId", @RealLoc = true]
+                     +- SoqlExpression[@CanonicalQuery = "SELECT Name FROM Account WHERE Id = :tmpVar1", @DefiningType = "Foo", @Query = "SELECT Name FROM Account WHERE Id = :accId", @RealLoc = true]
                         +- BindExpressions[@DefiningType = "Foo", @RealLoc = true]
                            +- VariableExpression[@DefiningType = "Foo", @Image = "accId", @RealLoc = true]
                               +- EmptyReferenceExpression[@DefiningType = null, @RealLoc = false]

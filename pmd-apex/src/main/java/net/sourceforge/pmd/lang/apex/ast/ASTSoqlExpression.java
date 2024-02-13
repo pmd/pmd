@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.google.summit.ast.expression.SoqlExpression;
 
 public final class ASTSoqlExpression extends AbstractApexNode.Single<SoqlExpression> {
@@ -35,7 +38,7 @@ public final class ASTSoqlExpression extends AbstractApexNode.Single<SoqlExpress
     }
 
     private static String convertToCanonicalQuery(String rawQuery) {
-        // node: this is a very crude way. At some point, the parsed query should be
+        // note: this is a very crude way. At some point, the parsed query should be
         // provided by Summit AST. The Apex Parser already parses the SOQL/SOSL queries.
         String query = rawQuery;
         query = query.replaceAll("(?i)\\bselect\\b", "SELECT");
@@ -43,6 +46,9 @@ public final class ASTSoqlExpression extends AbstractApexNode.Single<SoqlExpress
         query = query.replaceAll("(?i)\\bupdate\\b", "UPDATE");
         query = query.replaceAll("(?i)\\bwhere\\b", "WHERE");
         query = query.replaceAll("(?i)\\bgroup\\b+by\\b", "GROUP BY");
+        query = query.replaceAll("(?i)\\band\\b", "AND");
+        query = query.replaceAll("(?i)\\bor\\b", "OR");
+        query = query.replaceAll("(?i)\\bnot\\b", "NOT");
 
         // soql functions
         query = query.replaceAll("(?i)\\bavg\\(", "AVG(");
@@ -71,6 +77,18 @@ public final class ASTSoqlExpression extends AbstractApexNode.Single<SoqlExpress
         query = query.replaceAll("(?i)\\bFIELDS\\(standard\\)", "FIELDS(STANDARD)");
         query = query.replaceAll("(?i)\\bDISTANCE\\(", "DISTANCE(");
         query = query.replaceAll("(?i)\\bconverttimezone\\(", "CONVERTTIMEZONE(");
-        return query;
+
+        // replace all binding variables with :tmpVar1 :tmpVar2...
+        Pattern bindingVarPattern = Pattern.compile(":[^ :]+\\b");
+        int tmpVarCounter = 1;
+        StringBuffer normalizedVars = new StringBuffer();
+        Matcher matcher = bindingVarPattern.matcher(query);
+        while (matcher.find()) {
+            matcher.appendReplacement(normalizedVars, ":tmpVar" + tmpVarCounter);
+            tmpVarCounter++;
+        }
+        matcher.appendTail(normalizedVars);
+
+        return normalizedVars.toString();
     }
 }
