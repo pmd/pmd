@@ -78,6 +78,8 @@
     <dependency>
         <groupId>org.antlr</groupId>
         <artifactId>antlr-runtime</artifactId>
+        <!-- old antlr version used by apex-jorje -->
+        <version>3.5.2</version>
     </dependency>
     <dependency>
         <groupId>org.antlr</groupId>
