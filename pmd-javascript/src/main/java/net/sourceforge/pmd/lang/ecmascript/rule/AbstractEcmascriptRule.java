@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.ecmascript.rule;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 public abstract class AbstractEcmascriptRule extends AbstractRule

@@ -11,9 +11,9 @@ import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.Report;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 import com.google.gson.Gson;

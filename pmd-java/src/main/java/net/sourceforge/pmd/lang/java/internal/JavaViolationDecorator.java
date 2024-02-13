@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
@@ -25,6 +24,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
+import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
 import net.sourceforge.pmd.util.IteratorUtil;
 

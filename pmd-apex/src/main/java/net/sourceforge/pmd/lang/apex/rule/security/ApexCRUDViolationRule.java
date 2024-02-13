@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.apex.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
@@ -57,6 +56,7 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.HashMultimap;

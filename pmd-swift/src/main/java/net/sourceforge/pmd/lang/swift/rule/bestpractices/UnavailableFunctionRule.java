@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwAttribute;
@@ -22,6 +21,7 @@ import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwStatement;
 import net.sourceforge.pmd.lang.swift.ast.SwiftVisitor;
 import net.sourceforge.pmd.lang.swift.ast.SwiftVisitorBase;
 import net.sourceforge.pmd.lang.swift.rule.AbstractSwiftRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class UnavailableFunctionRule extends AbstractSwiftRule {
 

@@ -16,9 +16,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.mozilla.javascript.ast.AstRoot;
 
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
+import net.sourceforge.pmd.reporting.Report;
 
 class EcmascriptParserTest extends EcmascriptParserTestBase {
 

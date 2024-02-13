@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.reporting;
 
-import net.sourceforge.pmd.RuleViolation;
-
 final class NoopFileListener implements FileAnalysisListener {
 
     static final NoopFileListener INSTANCE = new NoopFileListener();

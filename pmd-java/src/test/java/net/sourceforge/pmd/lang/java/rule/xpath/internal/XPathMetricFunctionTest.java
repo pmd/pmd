@@ -9,7 +9,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 /**
  * @author Clément Fournier

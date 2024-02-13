@@ -3,8 +3,8 @@
  */
 package net.sourceforge.pmd.lang.ast.test
 
-import net.sourceforge.pmd.*
-import net.sourceforge.pmd.lang.PmdCapableLanguage
+import net.sourceforge.pmd.PMDConfiguration
+import net.sourceforge.pmd.PmdAnalysis
 import net.sourceforge.pmd.internal.util.IOUtil
 import net.sourceforge.pmd.lang.*
 import net.sourceforge.pmd.lang.ast.Node
@@ -13,9 +13,12 @@ import net.sourceforge.pmd.lang.ast.RootNode
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter
 import net.sourceforge.pmd.lang.document.FileId
 import net.sourceforge.pmd.lang.document.TextDocument
-import net.sourceforge.pmd.lang.rule.XPathRule
+import net.sourceforge.pmd.lang.rule.Rule
+import net.sourceforge.pmd.lang.rule.RuleSet
+import net.sourceforge.pmd.lang.rule.xpath.XPathRule
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener
+import net.sourceforge.pmd.reporting.Report
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files

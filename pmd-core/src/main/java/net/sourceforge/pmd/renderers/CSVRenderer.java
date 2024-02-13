@@ -14,11 +14,11 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.renderers.ColumnDescriptor.Accessor;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 
 /**

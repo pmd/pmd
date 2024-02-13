@@ -19,6 +19,8 @@ import net.sourceforge.pmd.ant.SourceLanguage;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.rule.RuleSet;
+import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 
 /**
  * Base test class for {@link LanguageVersion} implementations. <br>

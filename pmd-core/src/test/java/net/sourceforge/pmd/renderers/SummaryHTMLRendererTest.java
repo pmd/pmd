@@ -13,11 +13,11 @@ import java.util.function.Consumer;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.FooRule;
-import net.sourceforge.pmd.Report.ConfigurationError;
-import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.Report.ConfigurationError;
+import net.sourceforge.pmd.reporting.Report.ProcessingError;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 class SummaryHTMLRendererTest extends AbstractRendererTest {
 

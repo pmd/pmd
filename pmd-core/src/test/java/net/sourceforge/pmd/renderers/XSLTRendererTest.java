@@ -9,12 +9,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.FooRule;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRange2d;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.reporting.ParametricRuleViolation;
+import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 class XSLTRendererTest extends AbstractRendererTest {
 

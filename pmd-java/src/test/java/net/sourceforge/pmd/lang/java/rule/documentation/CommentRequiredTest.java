@@ -12,7 +12,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 

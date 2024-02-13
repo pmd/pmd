@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
-import net.sourceforge.pmd.RuleSetTest.MockRule;
 import net.sourceforge.pmd.lang.Dummy2LanguageModule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
@@ -31,8 +30,12 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.SimpleTestTextFile;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.lang.rule.MockRule;
+import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.ReportStats;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**

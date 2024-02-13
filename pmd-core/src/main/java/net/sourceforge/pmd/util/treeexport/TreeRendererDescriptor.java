@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.util.treeexport;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.properties.PropertySource;
 
 /**
@@ -12,7 +11,6 @@ import net.sourceforge.pmd.properties.PropertySource;
  *
  * @see TreeRenderers
  */
-@Experimental
 public interface TreeRendererDescriptor {
 
     /**

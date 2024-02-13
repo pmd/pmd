@@ -73,7 +73,7 @@ example, all Java AST nodes extend {% jdoc java::lang.java.ast.JavaNode %}.
 
 The structure of the AST can be discovered through
  * the [Rule Designer](pmd_userdocs_extending_designer_reference.html#ast-inspection)
- * the [AST dump feature](pmd_devdocs_experimental_ast_dump.html)
+ * the [AST dump feature](pmd_userdocs_extending_ast_dump.html)
 
 
 
@@ -104,7 +104,7 @@ instead of mentioning the `ref` attribute, it mentions the `class` attribute,
 with the implementation class of your rule.
 
 * **For Java rules:** this is the concrete class extending AbstractRule (transitively)
-* **For XPath rules:** this is `net.sourceforge.pmd.lang.rule.XPathRule`.
+* **For XPath rules:** this is `net.sourceforge.pmd.lang.rule.xpath.XPathRule`.
 * **For XPath rules analyzing XML-based languages:** this is `net.sourceforge.pmd.lang.xml.rule.DomXPathRule`.
   See [XPath rules in XML](pmd_languages_xml.html#xpath-rules-in-xml) for more info.
 
@@ -128,7 +128,7 @@ Example for XPath rule:
 <rule name="MyXPathRule"
       language="java"
       message="Violation!"
-      class="net.sourceforge.pmd.lang.rule.XPathRule">
+      class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
     <description>
         Description
     </description>

@@ -11,8 +11,8 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 /**
  * Renderer to a summarized HTML format.

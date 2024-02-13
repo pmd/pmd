@@ -27,7 +27,8 @@ with opt-in support for XPath 2.0.
 See [the Saxonica documentation](https://www.saxonica.com/html/documentation/expressions/xpath31new.html)
 for an introduction to new features in XPath 3.1.
 
-The property `version` of {% jdoc core::lang.rule.XPathRule %} is deprecated and will be removed.
+The property `version` of {% jdoc core::lang.rule.XPathRule %} is deprecated and
+has been removed with PMD 7.
 
 
 ## DOM representation of ASTs

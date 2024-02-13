@@ -11,8 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import net.sourceforge.pmd.PMDVersion;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.ArtifactLocation;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.AssociatedRule;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Component;
@@ -30,6 +28,8 @@ import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Run;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Tool;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.ToolConfigurationNotification;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.ToolExecutionNotification;
+import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 public class SarifLogBuilder {
     private final List<ReportingDescriptor> rules = new ArrayList<>();

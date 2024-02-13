@@ -165,7 +165,6 @@ with a backslash when needed.
 ```xml
 <rule name="MyXpathRule" ...>
   <properties>
-    <property name="version" value="2.0" />
     <property name="intProp" type="List[Integer]" value="1,2,5" description="An IntegerMultiProperty." />
     <property name="reportedIdentifiers" type="List[String]" value="foo,bar"
               description="A StringMultiProperty." />
