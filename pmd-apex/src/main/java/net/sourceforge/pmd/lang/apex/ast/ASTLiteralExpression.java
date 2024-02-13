@@ -40,6 +40,7 @@ public final class ASTLiteralExpression extends AbstractApexNode.Single<LiteralE
         } else if (node instanceof LiteralExpression.IntegerVal) {
             return LiteralType.INTEGER;
         } else if (node instanceof LiteralExpression.DoubleVal) {
+            // TODO Replace this workaround with LiteralExpression.DecimalVal, see below and https://github.com/google/summit-ast/pull/47
             Chars source = getTextDocument().getText().slice(getTextRegion());
             if (source.indexOf('d') > -1 || source.indexOf('D') > -1) {
                 return LiteralType.DOUBLE;
