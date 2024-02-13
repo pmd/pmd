@@ -3283,9 +3283,16 @@ which is based on an open source grammar for Apex: [apex-parser](https://github.
 
 The produced AST is mostly compatible, there are some unavoidable changes however:
 
-* Method
+* Node `Method` ({%jdoc apex::lang.apex.ast.ASTMethod %})
   * No attribute `@Synthetic` anymore. Unlike Jorje, Summit AST doesn't generate synthetic methods anymore, so
     this attribute would have been always false and is of no use. Therefore it has been removed completely.
+  * There will be no methods anymore with the name `<clinit>`, `<init>`.
+* There is no node `BridgeMethodCreator` anymore. This was an artificially generated node by Jorje. Since the
+  new parser doesn't generate synthetic methods anymore, this node is not needed anymore.
+* There is in general no attribute `@Namespace` anymore. The attribute has been removed, as it was never fully
+  implemented. It always returned an empty string.
+* Node `ReferenceExpression` ({%jdoc apex::lang.apex.ast.ASTReferenceExpression %})
+  * No attribute `@Context` anymore. It was not used and always returned `null`.
 
 ### Language versions
 
