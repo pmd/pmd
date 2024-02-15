@@ -66,38 +66,43 @@ class Java22PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
-    void unnamedClasses1() {
-        doTest("Jep445_UnnamedClasses1");
-        ASTCompilationUnit compilationUnit = java22p.parseResource("Jep445_UnnamedClasses1.java");
+    void jep463UnnamedClasses1() {
+        doTest("Jep463_UnnamedClasses1");
+        ASTCompilationUnit compilationUnit = java22p.parseResource("Jep463_UnnamedClasses1.java");
         assertTrue(compilationUnit.isUnnamedClass());
         ASTMethodCall methodCall = compilationUnit.descendants(ASTMethodCall.class).first();
         assertNotNull(methodCall.getTypeMirror());
     }
 
     @Test
-    void unnamedClasses2() {
-        doTest("Jep445_UnnamedClasses2");
+    void jep463UnnamedClasses2() {
+        doTest("Jep463_UnnamedClasses2");
     }
 
     @Test
-    void unnamedClasses3() {
-        doTest("Jep445_UnnamedClasses3");
+    void jep463UnnamedClasses3() {
+        doTest("Jep463_UnnamedClasses3");
     }
 
     @Test
-    void unnamedClassesBeforeJava22Preview() {
-        ParseException thrown = assertThrows(ParseException.class, () -> java22.parseResource("Jep445_UnnamedClasses1.java"));
+    void jep463UnnamedClasses4WithImports() {
+        doTest("Jep463_UnnamedClasses4WithImports");
+    }
+
+    @Test
+    void jep463UnnamedClassesBeforeJava22Preview() {
+        ParseException thrown = assertThrows(ParseException.class, () -> java22.parseResource("Jep463_UnnamedClasses1.java"));
         assertThat(thrown.getMessage(), containsString("Unnamed classes is a preview feature of JDK 22, you should select your language version accordingly"));
     }
 
     @Test
-    void testOrdinaryCompilationUnit() {
+    void jep463TestOrdinaryCompilationUnit() {
         ASTCompilationUnit compilationUnit = java22.parse("public class Foo { public static void main(String[] args) {}}");
         assertFalse(compilationUnit.isUnnamedClass());
     }
 
     @Test
-    void testModularCompilationUnit() {
+    void jep463TestModularCompilationUnit() {
         ASTCompilationUnit compilationUnit = java22.parse("module foo {}");
         assertFalse(compilationUnit.isUnnamedClass());
     }

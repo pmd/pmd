@@ -138,6 +138,7 @@ public class LanguageLevelChecker<T> {
         /**
          * Unnamed Classes and Instance Main Methods
          * @see <a href="https://openjdk.org/jeps/445">JEP 445: Unnamed Classes and Instance Main Methods (Preview)</a> (Java 21)
+         * @see <a href="https://openjdk.org/jeps/463">JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)</a> (Java 22)
          */
         UNNAMED_CLASSES(21, 22, false),
 
