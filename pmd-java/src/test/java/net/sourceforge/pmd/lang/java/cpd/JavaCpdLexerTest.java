@@ -8,7 +8,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.CpdLanguageProperties;
@@ -21,7 +20,6 @@ import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 
-// TODO - enable tests
 class JavaCpdLexerTest extends CpdTextComparisonTest {
 
     JavaCpdLexerTest() {
@@ -57,73 +55,61 @@ class JavaCpdLexerTest extends CpdTextComparisonTest {
         doTest("StringTemplateReduction2");
     }
 
-    @Disabled("Needs to be enabled after java-grammar changes are finalized")
     @Test
     void testCommentsIgnored() {
         doTest("simpleClassWithComments");
     }
 
-    @Disabled("Needs to be enabled after java-grammar changes are finalized")
     @Test
     void testDiscardedElements() {
         doTest("discardedElements", "_ignore_annots", ignoreAnnotations());
     }
 
-    @Disabled("Needs to be enabled after java-grammar changes are finalized")
     @Test
     void testDiscardedElementsExceptAnnots() {
         doTest("discardedElements", "_no_ignore_annots");
     }
 
-    @Disabled("Needs to be enabled after java-grammar changes are finalized")
     @Test
     void testIgnoreBetweenSpecialComments() {
         doTest("specialComments");
     }
 
-    @Disabled("Needs to be enabled after java-grammar changes are finalized")
     @Test
     void testIgnoreBetweenSpecialAnnotation() {
         doTest("ignoreSpecialAnnotations");
     }
 
-    @Disabled("Needs to be enabled after java-grammar changes are finalized")
     @Test
     void testIgnoreBetweenSpecialAnnotationAndIgnoreAnnotations() {
         doTest("ignoreSpecialAnnotations", "_ignore_annots", ignoreAnnotations());
     }
 
-    @Disabled("Needs to be enabled after java-grammar changes are finalized")
     @Test
     void testIgnoreIdentifiersDontAffectConstructors() {
         doTest("ignoreIdentsPreservesCtor", "", ignoreIdents());
     }
 
-    @Disabled("Needs to be enabled after java-grammar changes are finalized")
     @Test
     void testIgnoreIdentifiersHandlesEnums() {
         doTest("ignoreIdentsPreservesEnum", "", ignoreIdents());
     }
 
-    @Disabled("Needs to be enabled after java-grammar changes are finalized")
     @Test
     void testIgnoreIdentifiersWithClassKeyword() {
         doTest("ignoreIdentsPreservesClassLiteral", "", ignoreIdents());
     }
 
-    @Disabled("Needs to be enabled after java-grammar changes are finalized")
     @Test
     void testIgnoreLiterals() {
         doTest("ignoreLiterals", "", ignoreLiterals());
     }
 
-    @Disabled("Needs to be enabled after java-grammar changes are finalized")
     @Test
     void testNoIgnoreLiterals() {
         doTest("ignoreLiterals", "_noignore");
     }
 
-    @Disabled("Needs to be enabled after java-grammar changes are finalized")
     @Test
     void testTabWidth() {
         doTest("tabWidth");
