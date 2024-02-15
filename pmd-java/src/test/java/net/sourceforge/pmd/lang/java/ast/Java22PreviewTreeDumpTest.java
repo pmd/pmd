@@ -52,20 +52,6 @@ class Java22PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
-    void unnamedPatternsAndVariables() {
-        doTest("Jep443_UnnamedPatternsAndVariables");
-    }
-
-    @Test
-    void unnamedPatternsAndVariablesBeforeJava22Preview() {
-        ParseException thrown = assertThrows(ParseException.class, () -> java22.parseResource("Jep443_UnnamedPatternsAndVariables.java"));
-        assertThat(thrown.getMessage(), containsString("Since Java 9, '_' is reserved and cannot be used as an identifier"));
-
-        thrown = assertThrows(ParseException.class, () -> java22.parseResource("Jep443_UnnamedPatternsAndVariables2.java"));
-        assertThat(thrown.getMessage(), containsString("Unnamed patterns and variables is a preview feature of JDK 22, you should select your language version accordingly"));
-    }
-
-    @Test
     void jep463UnnamedClasses1() {
         doTest("Jep463_UnnamedClasses1");
         ASTCompilationUnit compilationUnit = java22p.parseResource("Jep463_UnnamedClasses1.java");

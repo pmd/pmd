@@ -240,6 +240,8 @@ The rules have been moved into categories with PMD 6.
    - method `getParenthesisDepth()` has been removed.
 * {%jdoc java::lang.java.ast.ASTTemplateFragment %}: To get the content of the template, use now
   {%jdoc java::lang.java.ast.ASTTemplateFragment#getContent() %} or `@Content` instead of `getImage()`/`@Image`.
+* {%jdoc java::lang.java.ast.ASTUnnamedPattern %} is not experimental anymore. The language feature
+  has been standardized with Java 22.
 
 **New API**
 

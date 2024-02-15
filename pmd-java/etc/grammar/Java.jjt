@@ -1,4 +1,6 @@
 /**
+ * Support "JEP 456: Unnamed Variables & Patterns" (Java 22)
+ *     This is now a regular language feature. Otherwise no changes.
  * Support "JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)" (Java 22)
  *     No changes.
  * Support "JEP 459: String Templates (Second Preview)" (Java 22)

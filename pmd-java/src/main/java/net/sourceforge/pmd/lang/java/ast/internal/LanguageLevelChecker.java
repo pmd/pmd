@@ -130,10 +130,11 @@ public class LanguageLevelChecker<T> {
         STRING_TEMPLATES(21, 22, false),
 
         /**
-         * Unnamed patterns and variables.
+         * Unnamed variables and patterns.
          * @see <a href="https://openjdk.org/jeps/443">JEP 443: Unnamed patterns and variables (Preview)</a> (Java 21)
+         * @see <a href="https://openjdk.org/jeps/456">JEP 456: Unnamed Variables & Patterns</a> (Java 22)
          */
-        UNNAMED_PATTERNS_AND_VARIABLES(21, 22, false),
+        UNNAMED_VARIABLES_AND_PATTERNS(21, 21, true),
 
         /**
          * Unnamed Classes and Instance Main Methods
@@ -167,10 +168,10 @@ public class LanguageLevelChecker<T> {
             }
 
             String message = StringUtils.capitalize(displayNameLower(name()));
-            if (canBePreview) {
+            if (wasStandardized) {
+                message += " was only standardized in Java " + (maxPreviewVersion + 1);
+            } else if (canBePreview) {
                 message += " is a preview feature of JDK " + jdk;
-            } else if (wasStandardized) {
-                message = message + " was only standardized in Java " + (maxPreviewVersion + 1);
             } else if (minPreviewVersion == maxPreviewVersion) {
                 message += " is a preview feature of JDK " + minPreviewVersion;
             } else {
@@ -655,7 +656,7 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTUnnamedPattern node, T data) {
-            check(node, PreviewFeature.UNNAMED_PATTERNS_AND_VARIABLES, data);
+            check(node, PreviewFeature.UNNAMED_VARIABLES_AND_PATTERNS, data);
             return null;
         }
 
@@ -688,8 +689,8 @@ public class LanguageLevelChecker<T> {
             } else if ("assert".equals(simpleName)) {
                 check(node, Keywords.ASSERT_AS_AN_IDENTIFIER, acc);
             } else if ("_".equals(simpleName)) {
-                if (LanguageLevelChecker.this.preview) {
-                    check(node, PreviewFeature.UNNAMED_PATTERNS_AND_VARIABLES, acc);
+                if (LanguageLevelChecker.this.jdkVersion >= 21) {
+                    check(node, PreviewFeature.UNNAMED_VARIABLES_AND_PATTERNS, acc);
                 } else {
                     check(node, Keywords.UNDERSCORE_AS_AN_IDENTIFIER, acc);
                 }
