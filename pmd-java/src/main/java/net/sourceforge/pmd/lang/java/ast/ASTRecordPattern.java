@@ -5,8 +5,6 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
-import net.sourceforge.pmd.annotation.Experimental;
-
 /**
  * A record pattern, a Java 21 language feature.
  *
@@ -17,13 +15,9 @@ import net.sourceforge.pmd.annotation.Experimental;
  * </pre>
  *
  * @see ASTRecordDeclaration
- * @see <a href="https://openjdk.org/jeps/405">JEP 405: Record Patterns (Preview)</a> (Java 19)
- * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a> (Java 20)
  * @see <a href="https://openjdk.org/jeps/440">JEP 440: Record Patterns</a> (Java 21)
 */
 public final class ASTRecordPattern extends AbstractJavaNode implements ASTPattern {
-
-    private int parenDepth;
 
     ASTRecordPattern(int id) {
         super(id);
@@ -44,15 +38,5 @@ public final class ASTRecordPattern extends AbstractJavaNode implements ASTPatte
     /** Returns the declared variable. */
     public ASTVariableId getVarId() {
         return firstChild(ASTVariableId.class);
-    }
-
-    void bumpParenDepth() {
-        parenDepth++;
-    }
-
-    @Override
-    @Experimental
-    public int getParenthesisDepth() {
-        return parenDepth;
     }
 }

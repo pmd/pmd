@@ -235,6 +235,9 @@ The rules have been moved into categories with PMD 6.
 **pmd-java**
 
 * Support for Java 20 preview language features have been removed. The version "20-preview" is no longer available.
+* {%jdoc java::lang.java.ast.ASTPattern %}, {%jdoc java::lang.java.ast.ASTRecordPattern %},
+  {%jdoc java::lang.java.ast.ASTTypePattern %}, {%jdoc java::lang.java.ast.ASTUnnamedPattern %}
+   - method `getParenthesisDepth()` has been removed.
 
 **New API**
 

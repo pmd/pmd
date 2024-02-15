@@ -29,9 +29,4 @@ public final class ASTUnnamedPattern extends AbstractJavaNode implements ASTPatt
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
-
-    @Override
-    public int getParenthesisDepth() {
-        return 0;
-    }
 }

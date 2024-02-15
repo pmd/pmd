@@ -1,4 +1,8 @@
 /**
+ * Remove support for Record pattern in enhanced for statements. This was only a Java 20 Preview feature.
+ * Remove support for ParenthesizedPatterns. This was only a Java 20 Preview feature.
+ * Andreas Dangel 02/2024
+ *====================================================================
  * Renamed various nodes:
  * ClassOrInterfaceType -> ClassType
  * ClassOrInterfaceDeclaration -> ClassDeclaration
@@ -1895,16 +1899,7 @@ void Pattern() #void:
 {}
 {
     LOOKAHEAD((Annotation())* ReferenceType() "(") RecordPattern()
-    | LOOKAHEAD("(") ParenthesizedPattern()
     | TypePattern()
-}
-
-// ParenthesizedPatterns are removed with Java 21 (JEP 441), but needed for now to support Java 20 Preview
-// TODO: Remove ParenthesizedPattern once java 20-preview is removed
-void ParenthesizedPattern() #void:
-{}
-{
-    "(" Pattern() ")" { AstImplUtil.bumpParenDepth((ASTPattern) jjtree.peekNode()); }
 }
 
 void TypePattern():
@@ -2771,9 +2766,7 @@ void ForStatement() #void:
 void EnhancedForDeclaration() #void:
 {}
 {
-      LOOKAHEAD(LocalVariableDeclaration()) LocalVariableDeclaration()
-    // TODO: a recored pattern here is only valid with Java 20 Preview and not anymore with Java 21 (see JEP 440)
-    | RecordPattern()
+      LocalVariableDeclaration()
 }
 
 void ForInit() :
