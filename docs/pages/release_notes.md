@@ -232,6 +232,10 @@ The rules have been moved into categories with PMD 6.
 
 #### API Changes
 
+**pmd-java**
+
+* Support for Java 20 preview language features have been removed. The version "20-preview" is no longer available.
+
 **New API**
 
 The API around {%jdoc core::util.treeexport.TreeRenderer %} has been declared as stable. It was previously

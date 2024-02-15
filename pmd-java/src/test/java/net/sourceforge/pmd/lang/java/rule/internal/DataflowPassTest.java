@@ -23,12 +23,12 @@ class DataflowPassTest extends BaseParserTest {
     void testSimple() {
 
         ASTCompilationUnit ast = java.parseResource(
-            "/net/sourceforge/pmd/lang/java/ast/jdkversiontests/java20p/RecordPatternsInEnhancedFor.java",
-            "20-preview"
+            "/net/sourceforge/pmd/lang/java/ast/jdkversiontests/java21/RecordPatterns.java",
+            "21"
         );
 
         DataflowResult dataflow = DataflowPass.getDataflowResult(ast);
-        assertThat(dataflow.getUnusedAssignments(), Matchers.hasSize(2));
+        assertThat(dataflow.getUnusedAssignments(), Matchers.hasSize(0));
 
     }
 

@@ -37,7 +37,6 @@ class LanguageVersionTest extends AbstractLanguageVersionTest {
                 new TestDescriptor(java, "18"),
                 new TestDescriptor(java, "19"),
                 new TestDescriptor(java, "20"),
-                new TestDescriptor(java, "20-preview"),
                 new TestDescriptor(java, "21"),
                 new TestDescriptor(java, "21-preview"),
                 new TestDescriptor(java, "22"),
@@ -48,7 +47,7 @@ class LanguageVersionTest extends AbstractLanguageVersionTest {
                 // this one won't be found: case-sensitive!
                 versionDoesNotExist("JAVA", "JAVA", "1.7"),
                 // not supported anymore
-                versionDoesNotExist(java, "19-preview")
+                versionDoesNotExist(java, "20-preview")
         );
     }
 }
