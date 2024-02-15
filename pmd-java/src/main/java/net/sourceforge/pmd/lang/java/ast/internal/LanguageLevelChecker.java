@@ -123,52 +123,6 @@ public class LanguageLevelChecker<T> {
      */
     private enum PreviewFeature implements LanguageFeature {
         /**
-         * Pattern matching for switch
-         * @see <a href="https://openjdk.org/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> (Java 17)
-         * @see <a href="https://openjdk.org/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
-         * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
-         * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
-         * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a> (Java 21)
-         */
-        PATTERNS_IN_SWITCH_STATEMENTS(17, 20, true),
-
-        /**
-         * Part of pattern matching for switch
-         * @see #PATTERNS_IN_SWITCH_STATEMENTS
-         * @see <a href="https://openjdk.org/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> (Java 17)
-         * @see <a href="https://openjdk.org/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
-         * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
-         * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
-         * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a> (Java 21)
-         */
-        NULL_IN_SWITCH_CASES(17, 20, true),
-
-        /**
-         * Part of pattern matching for switch: Case refinement using "when"
-         * @see #PATTERNS_IN_SWITCH_STATEMENTS
-         * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
-         * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
-         * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a> (Java 21)
-         */
-        CASE_REFINEMENT(19, 20, true),
-
-        /**
-         * Record patterns
-         * @see <a href="https://openjdk.org/jeps/405">JEP 405: Record Patterns (Preview)</a> (Java 19)
-         * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a> (Java 20)
-         * @see <a href="https://openjdk.org/jeps/440">JEP 440: Record Patterns</a> (Java 21)
-         */
-        RECORD_PATTERNS(19, 20, true),
-
-        /**
-         * Record deconstruction patterns in for-each loops.
-         * Note: support for this has been removed with Java 21 (JEP 440).
-         * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a> (Java 20)
-         * @see <a href="https://openjdk.org/jeps/440">JEP 440: Record Patterns</a> (Java 21)
-         */
-        DECONSTRUCTION_PATTERNS_IN_ENHANCED_FOR_STATEMENT(20, 20, false),
-
-        /**
          * String Templates.
          * @see <a href="https://openjdk.org/jeps/430">JEP 430: String Templates (Preview)</a> (Java 21)
          */
@@ -378,6 +332,44 @@ public class LanguageLevelChecker<T> {
          */
         SEALED_CLASSES(17),
 
+        /**
+         * Pattern matching for switch
+         * @see <a href="https://openjdk.org/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> (Java 17)
+         * @see <a href="https://openjdk.org/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
+         * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
+         * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
+         * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a> (Java 21)
+         */
+        PATTERNS_IN_SWITCH_STATEMENTS(21),
+
+        /**
+         * Part of pattern matching for switch
+         * @see #PATTERNS_IN_SWITCH_STATEMENTS
+         * @see <a href="https://openjdk.org/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> (Java 17)
+         * @see <a href="https://openjdk.org/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
+         * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
+         * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
+         * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a> (Java 21)
+         */
+        NULL_IN_SWITCH_CASES(21),
+
+        /**
+         * Part of pattern matching for switch: Case refinement using "when"
+         * @see #PATTERNS_IN_SWITCH_STATEMENTS
+         * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
+         * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
+         * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a> (Java 21)
+         */
+        CASE_REFINEMENT(21),
+
+        /**
+         * Record patterns
+         * @see <a href="https://openjdk.org/jeps/405">JEP 405: Record Patterns (Preview)</a> (Java 19)
+         * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a> (Java 20)
+         * @see <a href="https://openjdk.org/jeps/440">JEP 440: Record Patterns</a> (Java 21)
+         */
+        RECORD_PATTERNS(21),
+
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
         private final int minJdkLevel;
@@ -512,9 +504,6 @@ public class LanguageLevelChecker<T> {
         @Override
         public Void visit(ASTForeachStatement node, T data) {
             check(node, RegularLanguageFeature.FOREACH_LOOPS, data);
-            if (node.getFirstChild() instanceof ASTRecordPattern) {
-                check(node, PreviewFeature.DECONSTRUCTION_PATTERNS_IN_ENHANCED_FOR_STATEMENT, data);
-            }
             return null;
         }
 
@@ -578,13 +567,13 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTRecordPattern node, T data) {
-            check(node, PreviewFeature.RECORD_PATTERNS, data);
+            check(node, RegularLanguageFeature.RECORD_PATTERNS, data);
             return null;
         }
 
         @Override
         public Void visit(ASTGuard node, T data) {
-            check(node, PreviewFeature.CASE_REFINEMENT, data);
+            check(node, RegularLanguageFeature.CASE_REFINEMENT, data);
             return null;
         }
 
@@ -627,13 +616,13 @@ public class LanguageLevelChecker<T> {
                 check(node, RegularLanguageFeature.COMPOSITE_CASE_LABEL, data);
             }
             if (node.isDefault() && JavaTokenKinds.CASE == node.getFirstToken().getKind()) {
-                check(node, PreviewFeature.PATTERNS_IN_SWITCH_STATEMENTS, data);
+                check(node, RegularLanguageFeature.PATTERNS_IN_SWITCH_STATEMENTS, data);
             }
             if (node.getFirstChild() instanceof ASTNullLiteral) {
-                check(node, PreviewFeature.NULL_IN_SWITCH_CASES, data);
+                check(node, RegularLanguageFeature.NULL_IN_SWITCH_CASES, data);
             }
             if (node.getFirstChild() instanceof ASTPattern) {
-                check(node, PreviewFeature.PATTERNS_IN_SWITCH_STATEMENTS, data);
+                check(node, RegularLanguageFeature.PATTERNS_IN_SWITCH_STATEMENTS, data);
             }
             return null;
         }
