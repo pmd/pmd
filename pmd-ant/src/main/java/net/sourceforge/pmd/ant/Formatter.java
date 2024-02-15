@@ -222,7 +222,7 @@ public class Formatter {
                     // stop here, we don't have an interactive console.
                     return null;
                 }
-            } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+            } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException ignored) {
                 // fall-through - we use a Java Runtime < 22.
             }
 
