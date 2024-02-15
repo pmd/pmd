@@ -17,6 +17,30 @@ if [ ! -f pom.xml ] || [ ! -d ../pmd.github.io ]; then
     exit 1
 fi
 
+#
+# Make sure, we have ruby and bundler available
+#
+set +e # don't stop for error "command not found" - it is handled
+ruby_version_full=$(ruby --version 2>&1)
+ruby_version=$(echo "${ruby_version_full}" | grep "ruby 3" | head -1 2>&1)
+if [ $? -eq 0 ] && [ -n "${ruby_version}" ]; then
+  echo "Using ${ruby_version_full}"
+else
+  echo "Wrong ruby version! Expected ruby 3"
+  echo "${ruby_version_full}"
+  exit 1
+fi
+bundler_version=$(bundler --version 2>&1)
+if [ $? -eq 0 ]; then
+  echo "Using ${bundler_version}"
+else
+  echo "Missing bundler!"
+  echo "${bundler_version}"
+  exit 1
+fi
+# abort the script on the first failing sub command
+set -e
+
 CURRENT_BRANCH=
 
 echo "-------------------------------------------"
