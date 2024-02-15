@@ -218,6 +218,28 @@ module `pmd-coco`.
 
 Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
 
+### Java 22 Support
+
+This release of PMD brings support for Java 22. There are the following new standard language features,
+that are supported now:
+
+* [JEP 456: Unnamed Variables & Patterns](https://openjdk.org/jeps/456)
+
+PMD also supports the following preview language features:
+
+* [JEP 447: Statements before super(...) (Preview)](https://openjdk.org/jeps/447)
+* [JEP 459: String Templates (Second Preview)](https://openjdk.org/jeps/459)
+* [JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)](https://openjdk.org/jeps/463)
+
+In order to analyze a project with PMD that uses these language features,
+you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
+version `22-preview`:
+
+    export PMD_JAVA_OPTS=--enable-preview
+    pmd check --use-version java-22-preview ...
+
+Note: Support for Java 20 preview language features have been removed. The version "20-preview" is no longer available.
+
 ### New: Java 21 Support
 
 This release of PMD brings support for Java 21. There are the following new standard language features,
