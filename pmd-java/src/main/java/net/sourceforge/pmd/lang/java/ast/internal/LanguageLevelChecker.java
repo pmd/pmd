@@ -18,7 +18,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTGuard;
@@ -142,6 +144,12 @@ public class LanguageLevelChecker<T> {
          * @see <a href="https://openjdk.org/jeps/463">JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)</a> (Java 22)
          */
         UNNAMED_CLASSES(21, 22, false),
+
+        /**
+         * Statements before super
+         * @see <a href="https://openjdk.org/jeps/447">JEP 447: Statements before super(...) (Preview)</a> (Java 22)
+         */
+        STATEMENTS_BEFORE_SUPER(22, 22, false),
 
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
@@ -680,6 +688,17 @@ public class LanguageLevelChecker<T> {
                 check(node, Keywords.PERMITS_AS_A_TYPE_NAME, data);
             }
             checkIdent(node, simpleName, data);
+            return null;
+        }
+
+        @Override
+        public Void visit(ASTConstructorDeclaration node, T data) {
+            super.visit(node, data);
+            if (node.getBody().descendants(ASTExplicitConstructorInvocation.class).nonEmpty()) {
+                if (!(node.getBody().getFirstChild() instanceof ASTExplicitConstructorInvocation)) {
+                    check(node, PreviewFeature.STATEMENTS_BEFORE_SUPER, data);
+                }
+            }
             return null;
         }
 
