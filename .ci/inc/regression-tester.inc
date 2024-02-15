@@ -19,8 +19,9 @@ function regression_tester_setup_ci() {
     source .ci/files/public-env >/dev/null 2>&1
     rm .ci/files/public-env
 
-    if hash "bundler" 2>/dev/null; then
+    if hash "bundle" 2>/dev/null; then
         pmd_ci_log_debug "Bundler is already installed"
+        bundle --version
     else
         pmd_ci_log_info "Installing bundler..."
         gem install bundler

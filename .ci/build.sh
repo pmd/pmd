@@ -167,11 +167,12 @@ function build() {
 
 
 #
-# Installs bundler, which is needed for doc generation and regression tester
+# Bundler should be already installed - it should be included in the ruby distribution.
+# Bundler is needed for doc generation and regression tester
 #
 function pmd_ci_build_setup_bundler() {
-    pmd_ci_log_info "Installing bundler..."
-    gem install bundler -v 2.4.22
+    pmd_ci_log_info "Checking bundler version..."
+    bundle --version
 }
 
 #
