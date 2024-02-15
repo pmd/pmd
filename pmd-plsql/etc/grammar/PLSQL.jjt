@@ -1279,6 +1279,7 @@ void AbstractSelectStatement(AbstractSelectStatement node) #void :
 ASTSelectIntoStatement SelectIntoStatement() :
 {}
 {
+    [ WithClause() ]  // Although undocumented, WITH works with SELECT INTO !
     AbstractSelectStatement(jjtThis)
     SelectList()
     ( IntoClause() | BulkCollectIntoClause() )
@@ -2330,11 +2331,11 @@ ASTUnlabelledStatement UnlabelledStatement()  :
 {}
 {
        (
-       // small optimization: SelectIntoStatement and SelectStatement both begin with SELECT
+       // small optimization: SelectIntoStatement and SelectStatement both begin with WITH or SELECT
        // but to distinguish the two, a complete lookahead of SelectIntoStatement needs to be parsed.
        // Using a lookahead of a single token first avoids this the syntatic lookahead for all other choices
        // not related to SELECT statements.
-       LOOKAHEAD(<SELECT>) (
+       LOOKAHEAD(<WITH>|<SELECT>) (
             LOOKAHEAD(SelectIntoStatement()) SelectIntoStatement() ";" |
             SelectStatement() ";"
        ) |
