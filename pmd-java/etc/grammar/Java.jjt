@@ -1524,8 +1524,12 @@ private void ConstructorBlock() #Block:
 {}
 {
     "{" { tokenContexts.push(TokenContext.BLOCK); }
-        ( LOOKAHEAD(2) BlockStatement() )*
-        [ LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation() ]
+        (
+            LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation()
+               |
+            ( LOOKAHEAD(2) BlockStatement() )*
+            [ LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation() ]
+        )
         ( BlockStatement() )*
     "}" { tokenContexts.pop(); }
 }

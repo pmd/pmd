@@ -17,7 +17,8 @@ import org.junit.platform.suite.api.Suite;
     Java17TreeDumpTest.class,
     Java21TreeDumpTest.class,
     Java21PreviewTreeDumpTest.class,
-    Java22TreeDumpTest.class
+    Java22TreeDumpTest.class,
+    Java22PreviewTreeDumpTest.class
 })
 class AllJavaAstTreeDumpTest {
 
