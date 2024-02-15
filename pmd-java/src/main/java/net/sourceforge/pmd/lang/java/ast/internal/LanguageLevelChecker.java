@@ -125,20 +125,21 @@ public class LanguageLevelChecker<T> {
         /**
          * String Templates.
          * @see <a href="https://openjdk.org/jeps/430">JEP 430: String Templates (Preview)</a> (Java 21)
+         * @see <a href="https://openjdk.org/jeps/459">JEP 459: String Templates (Second Preview)</a> (Java 22)
          */
-        STRING_TEMPLATES(21, 21, false),
+        STRING_TEMPLATES(21, 22, false),
 
         /**
          * Unnamed patterns and variables.
          * @see <a href="https://openjdk.org/jeps/443">JEP 443: Unnamed patterns and variables (Preview)</a> (Java 21)
          */
-        UNNAMED_PATTERNS_AND_VARIABLES(21, 21, false),
+        UNNAMED_PATTERNS_AND_VARIABLES(21, 22, false),
 
         /**
          * Unnamed Classes and Instance Main Methods
          * @see <a href="https://openjdk.org/jeps/445">JEP 445: Unnamed Classes and Instance Main Methods (Preview)</a> (Java 21)
          */
-        UNNAMED_CLASSES(21, 21, false),
+        UNNAMED_CLASSES(21, 22, false),
 
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 

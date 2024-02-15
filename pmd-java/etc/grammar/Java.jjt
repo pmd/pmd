@@ -1,4 +1,6 @@
 /**
+ * Support "JEP 459: String Templates (Second Preview)" (Java 22)
+ *     Use ASTTemplate.setContent instead of setImage.
  * Remove support for Record pattern in enhanced for statements. This was only a Java 20 Preview feature.
  * Remove support for ParenthesizedPatterns. This was only a Java 20 Preview feature.
  * Andreas Dangel 02/2024
@@ -1053,7 +1055,7 @@ TOKEN :
 // In order to produce the correct token sequence, the ambiguity needs to be resolved using the context.
 // That means, that STRING_TEMPLATE_MID/END and TEXT_BLOCK_TEMPLATE_MID/END could actually be a closing bracket ("}").
 // Additionally, a STRING_TEMPLATE_MID could be a TEXT_BLOCK_TEMPLATE_MID and the other way round.
-// See JLS 3.13 Fragments (Java 21 Preview)
+// See JLS 3.13 Fragments (Java 21 Preview and Java 22 Preview)
 
 TOKEN :
 {
@@ -2336,10 +2338,10 @@ void StringTemplate() #void :
 {
   { tokenContexts.push(TokenContext.STRING_TEMPLATE); }
 
-        <STRING_TEMPLATE_BEGIN> { setLastTokenImage(jjtThis); } #TemplateFragment
+        <STRING_TEMPLATE_BEGIN> { jjtThis.setContent(getToken(0).getImage()); } #TemplateFragment
         EmbeddedExpression()
-        ( <STRING_TEMPLATE_MID> { setLastTokenImage(jjtThis); } #TemplateFragment EmbeddedExpression() )*
-        <STRING_TEMPLATE_END> { setLastTokenImage(jjtThis); } #TemplateFragment
+        ( <STRING_TEMPLATE_MID> { jjtThis.setContent(getToken(0).getImage()); } #TemplateFragment EmbeddedExpression() )*
+        <STRING_TEMPLATE_END> { jjtThis.setContent(getToken(0).getImage()); } #TemplateFragment
 
   { tokenContexts.pop(); }
 }
@@ -2349,10 +2351,10 @@ void TextBlockTemplate() #void :
 {
   { tokenContexts.push(TokenContext.TEXT_BLOCK_TEMPLATE); }
 
-        <TEXT_BLOCK_TEMPLATE_BEGIN> { setLastTokenImage(jjtThis); } #TemplateFragment
+        <TEXT_BLOCK_TEMPLATE_BEGIN> { jjtThis.setContent(getToken(0).getImage()); } #TemplateFragment
         EmbeddedExpression()
-        ( <TEXT_BLOCK_TEMPLATE_MID> { setLastTokenImage(jjtThis); } #TemplateFragment EmbeddedExpression() )*
-        <TEXT_BLOCK_TEMPLATE_END> { setLastTokenImage(jjtThis); } #TemplateFragment
+        ( <TEXT_BLOCK_TEMPLATE_MID> { jjtThis.setContent(getToken(0).getImage()); } #TemplateFragment EmbeddedExpression() )*
+        <TEXT_BLOCK_TEMPLATE_END> { jjtThis.setContent(getToken(0).getImage()); } #TemplateFragment
 
   { tokenContexts.pop(); }
 }
