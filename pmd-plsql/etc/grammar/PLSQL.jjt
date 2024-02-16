@@ -1273,8 +1273,12 @@ void AbstractSelectStatement(AbstractSelectStatement node) #void :
 }
 
 /**
+ * Note: The SELECT INTO statement can be preceded by a WithClause, even though this is not in the
+ * official reference documentation.
+ *
  * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/SELECT-INTO-statement.html
- * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/img_text/select_into_statement.html
+ * @see https://docs.oracle.com/en/database/oracle/oracle-database/23/lnpls/SELECT-INTO-statement.html
+ * @see https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/SELECT.html
  */
 ASTSelectIntoStatement SelectIntoStatement() :
 {}
