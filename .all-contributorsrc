@@ -7242,8 +7242,8 @@
       "contributions": [
         "bug"
       ]
-     },
-     {
+    },
+    {
       "login": "eant60",
       "name": "eant60",
       "avatar_url": "https://avatars.githubusercontent.com/u/41472980?v=4",
@@ -7349,6 +7349,16 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/3007876?v=4",
       "profile": "https://github.com/marcindabrowski",
       "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "lbovet",
+      "name": "Laurent Bovet",
+      "avatar_url": "https://avatars.githubusercontent.com/u/692124?v=4",
+      "profile": "https://github.com/lbovet",
+      "contributions": [
+        "bug",
         "code"
       ]
     }
