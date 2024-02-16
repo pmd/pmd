@@ -202,6 +202,7 @@ The rules have been moved into categories with PMD 6.
   * [#4736](https://github.com/pmd/pmd/issues/4736): \[ci] Improve build procedure
   * [#4741](https://github.com/pmd/pmd/pull/4741):   Add pmd-compat6 module for maven-pmd-plugin
   * [#4749](https://github.com/pmd/pmd/pull/4749):   Fixes NoSuchMethodError on processing errors in pmd-compat6
+  * [#4776](https://github.com/pmd/pmd/issues/4776): \[ci] Upgrade to ruby 3
   * [#4796](https://github.com/pmd/pmd/pull/4796):   Remove deprecated and release rulesets
 * apex-performance
   * [#4675](https://github.com/pmd/pmd/issues/4675): \[apex] New Rule: OperationWithHighCostInLoop
@@ -720,6 +721,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4736](https://github.com/pmd/pmd/issues/4736): \[ci] Improve build procedure
     * [#4741](https://github.com/pmd/pmd/pull/4741):   Add pmd-compat6 module for maven-pmd-plugin
     * [#4749](https://github.com/pmd/pmd/pull/4749):   Fixes NoSuchMethodError on processing errors in pmd-compat6
+    * [#4776](https://github.com/pmd/pmd/issues/4776): \[ci] Upgrade to ruby 3
     * [#4796](https://github.com/pmd/pmd/pull/4796):   Remove deprecated and release rulesets
 * ant
     * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule
