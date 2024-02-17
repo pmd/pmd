@@ -35,6 +35,7 @@
                     <rulesets>
                         <ruleset>/rulesets/java/maven-pmd-plugin-default.xml</ruleset>
                         <ruleset>${project.basedir}/exception_ruleset.xml</ruleset>
+                        <ruleset>${project.basedir}/config_error_ruleset.xml</ruleset>
                     </rulesets>
                 </configuration>
                 <dependencies>
