@@ -225,10 +225,12 @@ be misleading.  Considering removing this unnecessary Block.
                 <value>
 <![CDATA[
 //Block[not(parent::FunctionNode or parent::IfStatement or parent::ForLoop or parent::ForInLoop
-    or parent::WhileLoop or parent::DoLoop or parent::TryStatement or parent::CatchClause)]
+    or parent::WhileLoop or parent::DoLoop or parent::TryStatement or parent::CatchClause)
+    and not(ancestor::VariableDeclarator) and not(ancestor::ImportDeclaration)]
 |
 //Scope[not(parent::FunctionNode or parent::IfStatement or parent::ForLoop or parent::ForInLoop
-    or parent::WhileLoop or parent::DoLoop or parent::TryStatement or parent::CatchClause)]
+    or parent::WhileLoop or parent::DoLoop or parent::TryStatement or parent::CatchClause)
+    and not(ancestor::VariableDeclarator) and not(ancestor::ImportDeclaration)]
 ]]>
                 </value>
             </property>
