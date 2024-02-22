@@ -327,7 +327,7 @@ Was expecting one of:
     ... 10 more
 ]]>
 </error>
-<suppressedviolation filename="/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/PMD.java" suppressiontype="annotation" msg="Ensure that resources like this OutputStreamWriter object are closed after use" usermsg=""/>
+<suppressedviolation filename="/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/PMD.java" suppressiontype="@suppresswarnings" msg="Ensure that resources like this OutputStreamWriter object are closed after use" usermsg=""/>
 <configerror rule="LoosePackageCoupling" msg="No packages or classes specified"/>
 </pmd>
 ```

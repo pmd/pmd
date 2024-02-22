@@ -3359,3 +3359,13 @@ See the use case [I'm using custom rules](#im-using-custom-rules).
   ```
 * Gradle 8.3 most likely will support PMD 7 out of the box.
 * See [Support for PMD 7.0](https://github.com/gradle/gradle/issues/24502)
+
+### XML Report Format
+
+The [XML Report format](pmd_userdocs_report_formats.html#xml) supports rendering [suppressed violations](pmd_userdocs_suppressing_warnings.html).
+
+The content of the attribute `suppressiontype` is changed in PMD 7.0.0:
+* `nopmd` ➡️ `//nopmd`
+* `annotation` ➡️ `@suppresswarnings`
+* `xpath` - new value. Suppressed via property "violationSuppressXPath".
+* `regex` - new value. Suppressed via property "violationSuppressRegex".
