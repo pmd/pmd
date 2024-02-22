@@ -1931,6 +1931,31 @@ It is about time to create a <a href="pmd_userdocs_making_rulesets.html">custom 
   </li>
 </ul>
 
+<h2 id="approaching-700">Approaching 7.0.0</h2>
+
+<p>After that, migrate to the release candidates, and fix any problems you encounter. Start with 7.0.0-rc1 via
+7.0.0-rc2, 7.0.0-rc3 and 7.0.0-rc4 until you finally use 7.0.0.</p>
+
+<p>You might encounter additionally the following types of problems:</p>
+
+<ul>
+  <li>If you use any programmatic API of PMD, first avoid any usage of deprecated or internal classes/methods. These
+are marked with one of these annotations: <code class="language-plaintext highlighter-rouge">@Deprecated</code>, <code class="language-plaintext highlighter-rouge">@DeprecatedUtil700</code>, <code class="language-plaintext highlighter-rouge">@InternalApi</code>.
+    <ul>
+      <li>Some of these classes are available until 7.0.0-rc4 but are finally removed with 7.0.0.</li>
+      <li>See <a href="pmd_release_notes_pmd7.html#api-changes">API changes</a> for details.</li>
+    </ul>
+  </li>
+  <li>Some rules have been removed, because they have been deprecated. See <a href="pmd_release_notes_pmd7.html#removed-rules">Removed Rules</a>.</li>
+  <li>Some rule properties have been removed or changed. See <a href="pmd_release_notes_pmd7.html#changed-rules">Changed Rules</a>.</li>
+  <li>The filenames of the assets of a release (the “binary distribution zip file”) have changed,
+see <a href="#release-downloads">Release downloads</a>.</li>
+  <li>Some CLI options have been removed, because they have been deprecated. See <a href="#cli-changes">CLI Changes</a> for details.</li>
+  <li>If you call CPD programmatically, the API has changed, see <a href="pmd_release_notes_pmd7.html#new-programmatic-api-for-cpd">New Programmatic API for CPD</a>.</li>
+</ul>
+
+<p>The following topics describe well known migration challenges in more detail.</p>
+
 <h2 id="use-cases">Use cases</h2>
 
 <h3 id="im-using-only-built-in-rules">I’m using only built-in rules</h3>
@@ -2092,7 +2117,8 @@ an error message such as <code class="language-plaintext highlighter-rouge">[mai
       </li>
       <li>PMD tries to display a progress bar. If you don’t want this (e.g. on a CI build server), you can disable this
 with <code class="language-plaintext highlighter-rouge">--no-progress</code>.</li>
-      <li><code class="language-plaintext highlighter-rouge">--no-ruleset-compatibility</code> has been removed</li>
+      <li><code class="language-plaintext highlighter-rouge">--no-ruleset-compatibility</code> has been removed without replacement.</li>
+      <li><code class="language-plaintext highlighter-rouge">--stress</code> (or <code class="language-plaintext highlighter-rouge">-stress</code>) has been removed without replacement.</li>
     </ul>
   </li>
 </ul>
@@ -2357,14 +2383,15 @@ by deprecating the attribute and providing alternatives.</p>
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnnotationTypeDeclaration.html#"><code>ASTAnnotationTypeDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleName</code></li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnonymousClassDeclaration.html#"><code>ASTAnonymousClassDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleName</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#"><code>ASTClassOrInterfaceDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleName</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassDeclaration.html#"><code>ASTClassDeclaration</code></a> (previously “ASTClassOrInterfaceDeclaration”): <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleName</code></li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTEnumDeclaration.html#"><code>ASTEnumDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleName</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#"><code>ASTFieldDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@VariableName</code> ➡️ <code class="language-plaintext highlighter-rouge">VariableDeclaratorId/@Name</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#"><code>ASTFieldDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@VariableName</code> ➡️ <code class="language-plaintext highlighter-rouge">VariableId/@Name</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#"><code>ASTMethodDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#"><code>ASTMethodDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@MethodName</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTRecordDeclaration.html#"><code>ASTRecordDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleName</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#"><code>ASTVariableDeclaratorId</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#"><code>ASTVariableDeclaratorId</code></a>: <code class="language-plaintext highlighter-rouge">@VariableName</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#"><code>ASTVariableDeclaratorId</code></a>: <code class="language-plaintext highlighter-rouge">@Array</code> ➡️ <code class="language-plaintext highlighter-rouge">@ArrayType</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a> (previously “ASTVariableDeclaratorId”): <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a> (previously “ASTVariableDeclaratorId”): <code class="language-plaintext highlighter-rouge">@VariableName</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a> (previously “ASTVariableDeclaratorId”): <code class="language-plaintext highlighter-rouge">@Array</code> ➡️ <code class="language-plaintext highlighter-rouge">@ArrayType</code></li>
 </ul>
 
 <h4 id="javascript">JavaScript</h4>

@@ -2795,28 +2795,10 @@
 ,
 
 {
-"title": "ExcessiveClassLength (Java, Design)",
-"tags": "",
-"keywords": "ExcessiveClassLength",
-"url": "pmd_rules_java_design.html#excessiveclasslength",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
 "title": "ExcessiveImports (Java, Design)",
 "tags": "",
 "keywords": "ExcessiveImports",
 "url": "pmd_rules_java_design.html#excessiveimports",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "ExcessiveMethodLength (Java, Design)",
-"tags": "",
-"keywords": "ExcessiveMethodLength",
-"url": "pmd_rules_java_design.html#excessivemethodlength",
 "summary": "Rules that help you discover design issues."
 }
 ,
@@ -3727,15 +3709,6 @@
 ,
 
 {
-"title": "BeanMembersShouldSerialize (Java, Error Prone)",
-"tags": "",
-"keywords": "BeanMembersShouldSerialize",
-"url": "pmd_rules_java_errorprone.html#beanmembersshouldserialize",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
 "title": "BrokenNullCheck (Java, Error Prone)",
 "tags": "",
 "keywords": "BrokenNullCheck",
@@ -3929,87 +3902,6 @@
 "tags": "",
 "keywords": "EmptyFinalizer",
 "url": "pmd_rules_java_errorprone.html#emptyfinalizer",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "EmptyFinallyBlock (Java, Error Prone)",
-"tags": "",
-"keywords": "EmptyFinallyBlock",
-"url": "pmd_rules_java_errorprone.html#emptyfinallyblock",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "EmptyIfStmt (Java, Error Prone)",
-"tags": "",
-"keywords": "EmptyIfStmt",
-"url": "pmd_rules_java_errorprone.html#emptyifstmt",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "EmptyInitializer (Java, Error Prone)",
-"tags": "",
-"keywords": "EmptyInitializer",
-"url": "pmd_rules_java_errorprone.html#emptyinitializer",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "EmptyStatementBlock (Java, Error Prone)",
-"tags": "",
-"keywords": "EmptyStatementBlock",
-"url": "pmd_rules_java_errorprone.html#emptystatementblock",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "EmptyStatementNotInLoop (Java, Error Prone)",
-"tags": "",
-"keywords": "EmptyStatementNotInLoop",
-"url": "pmd_rules_java_errorprone.html#emptystatementnotinloop",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "EmptySwitchStatements (Java, Error Prone)",
-"tags": "",
-"keywords": "EmptySwitchStatements",
-"url": "pmd_rules_java_errorprone.html#emptyswitchstatements",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "EmptySynchronizedBlock (Java, Error Prone)",
-"tags": "",
-"keywords": "EmptySynchronizedBlock",
-"url": "pmd_rules_java_errorprone.html#emptysynchronizedblock",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "EmptyTryBlock (Java, Error Prone)",
-"tags": "",
-"keywords": "EmptyTryBlock",
-"url": "pmd_rules_java_errorprone.html#emptytryblock",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "EmptyWhileStmt (Java, Error Prone)",
-"tags": "",
-"keywords": "EmptyWhileStmt",
-"url": "pmd_rules_java_errorprone.html#emptywhilestmt",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
@@ -4643,7 +4535,7 @@
 
 {
 "title": "HTML support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguageexperimental",
+"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
 "keywords": "",
 "url": "pmd_languages_html.html",
 "summary": "HTML-specific features and guidance"
@@ -4867,7 +4759,7 @@
 
 {
 "title": "Kotlin Support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguageexperimental",
+"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
 "keywords": "",
 "url": "pmd_languages_kotlin.html",
 "summary": "Kotlin-specific features and guidance"
@@ -5324,33 +5216,6 @@
 "tags": "",
 "keywords": "AvoidDebugStatements",
 "url": "pmd_rules_apex_performance.html#avoiddebugstatements",
-"summary": "Rules that flag suboptimal code."
-}
-,
-
-{
-"title": "AvoidDmlStatementsInLoops (Apex, Performance)",
-"tags": "",
-"keywords": "AvoidDmlStatementsInLoops",
-"url": "pmd_rules_apex_performance.html#avoiddmlstatementsinloops",
-"summary": "Rules that flag suboptimal code."
-}
-,
-
-{
-"title": "AvoidSoqlInLoops (Apex, Performance)",
-"tags": "",
-"keywords": "AvoidSoqlInLoops",
-"url": "pmd_rules_apex_performance.html#avoidsoqlinloops",
-"summary": "Rules that flag suboptimal code."
-}
-,
-
-{
-"title": "AvoidSoslInLoops (Apex, Performance)",
-"tags": "",
-"keywords": "AvoidSoslInLoops",
-"url": "pmd_rules_apex_performance.html#avoidsoslinloops",
 "summary": "Rules that flag suboptimal code."
 }
 ,
@@ -6340,7 +6205,7 @@
 
 {
 "title": "Visualforce Support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguageexperimental",
+"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
 "keywords": "",
 "url": "pmd_languages_visualforce.html",
 "summary": "Visualforce-specific features and guidance"
