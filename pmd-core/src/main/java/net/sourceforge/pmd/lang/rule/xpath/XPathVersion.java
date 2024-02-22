@@ -11,29 +11,6 @@ import java.util.Map;
  * Constants for XPath language version used in XPath queries.
  */
 public enum XPathVersion {
-    /**
-     * XPath 1.0.
-     *
-     * @deprecated not supported anymore
-     */
-    @Deprecated
-    XPATH_1_0("1.0"),
-    /**
-     * XPath 1.0 compatibility mode.
-     *
-     * @deprecated Not supported any more.
-     */
-    @Deprecated
-    XPATH_1_0_COMPATIBILITY("1.0 compatibility"),
-
-    /**
-     * XPath 2.0.
-     *
-     * @deprecated Technically still supported, use 3.1 instead. There
-     *     are no known incompatibilities.
-     */
-    @Deprecated
-    XPATH_2_0("2.0"),
     /** XPath 3.1. */
     XPATH_3_1("3.1");
 

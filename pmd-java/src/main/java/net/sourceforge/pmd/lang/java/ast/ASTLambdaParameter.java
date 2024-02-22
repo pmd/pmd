@@ -62,7 +62,6 @@ public final class ASTLambdaParameter extends AbstractJavaTypeNode
         return firstChild(ASTType.class);
     }
 
-    @Override
     public boolean isFinal() {
         return hasModifiers(JModifier.FINAL);
     }

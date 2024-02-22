@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.cpd.AnyCpdLexer;
 import net.sourceforge.pmd.cpd.CpdCapableLanguage;
 import net.sourceforge.pmd.cpd.CpdLexer;
@@ -26,7 +25,6 @@ import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
  * @author Clément Fournier
  * @since 6.48.0
  */
-@Experimental
 public final class PlainTextLanguage extends SimpleLanguageModuleBase implements CpdCapableLanguage {
     private static final String ID = "text";
 

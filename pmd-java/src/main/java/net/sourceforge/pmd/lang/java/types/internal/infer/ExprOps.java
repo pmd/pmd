@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
 import static net.sourceforge.pmd.lang.java.types.TypeConversion.capture;
+import static net.sourceforge.pmd.lang.java.types.internal.InternalMethodTypeItf.cast;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.lang.reflect.Modifier;
@@ -246,7 +247,7 @@ final class ExprOps {
                 // of the original owner, ie the erased method is the
                 // same as the generic method.
                 JClassType lhsClass = (JClassType) candidate.getDeclaringType();
-                JMethodSig unerased = candidate.internalApi().withOwner(lhsClass.getGenericTypeDeclaration()).internalApi().originalMethod();
+                JMethodSig unerased = cast(cast(candidate).withOwner(lhsClass.getGenericTypeDeclaration())).originalMethod();
                 if (TypeOps.mentionsAny(unerased, lhsClass.getFormalTypeParams())) {
                     return null;
                 }
@@ -536,7 +537,7 @@ final class ExprOps {
     static JMethodSig adaptGetClass(JMethodSig sig, Supplier<JTypeMirror> replacementReturnType) {
         TypeSystem ts = sig.getTypeSystem();
         if ("getClass".equals(sig.getName()) && sig.getDeclaringType().equals(ts.OBJECT)) {
-            return sig.internalApi().withReturnType(getClassReturn(replacementReturnType.get(), ts)).internalApi().markAsAdapted();
+            return cast(cast(sig).withReturnType(getClassReturn(replacementReturnType.get(), ts))).markAsAdapted();
         }
         return sig;
     }
@@ -546,7 +547,7 @@ final class ExprOps {
     }
 
     static boolean isContextDependent(JMethodSig m) {
-        m = m.internalApi().adaptedMethod();
+        m = cast(m).adaptedMethod();
         return m.isGeneric() && TypeOps.mentionsAny(m.getReturnType(), m.getTypeParameters());
     }
 }

@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.lang.document.InternalApiBridge.newCollector;
+import static net.sourceforge.pmd.lang.rule.InternalApiBridge.loadRuleSetsWithoutException;
+import static net.sourceforge.pmd.lang.rule.InternalApiBridge.ruleSetApplies;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.nio.file.Path;
@@ -24,12 +27,13 @@ import org.slf4j.event.Level;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
-import net.sourceforge.pmd.cache.AnalysisCacheListener;
-import net.sourceforge.pmd.cache.NoopAnalysisCache;
+import net.sourceforge.pmd.cache.internal.AnalysisCacheListener;
+import net.sourceforge.pmd.cache.internal.NoopAnalysisCache;
 import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.lang.InternalApiBridge;
 import net.sourceforge.pmd.lang.JvmLanguagePropertyBundle;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageProcessor.AnalysisTask;
@@ -56,7 +60,7 @@ import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.reporting.ReportStatsListener;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.StringUtil;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
  * Main programmatic API of PMD. This is not a CLI entry point, see module
@@ -127,8 +131,8 @@ import net.sourceforge.pmd.util.log.MessageReporter;
  * <h3>Customizing message output</h3>
  *
  * <p>The analysis reports messages like meta warnings and errors through a
- * {@link MessageReporter} instance. To override how those messages are output,
- * you can set it in {@link PMDConfiguration#setReporter(MessageReporter)}.
+ * {@link PmdReporter} instance. To override how those messages are output,
+ * you can set it in {@link PMDConfiguration#setReporter(PmdReporter)}.
  * By default, it forwards messages to SLF4J.
  *
  */
@@ -141,7 +145,7 @@ public final class PmdAnalysis implements AutoCloseable {
     private final List<GlobalAnalysisListener> listeners = new ArrayList<>();
     private final List<RuleSet> ruleSets = new ArrayList<>();
     private final PMDConfiguration configuration;
-    private final MessageReporter reporter;
+    private final PmdReporter reporter;
 
     private final Map<Language, LanguagePropertyBundle> langProperties = new HashMap<>();
     private boolean closed;
@@ -156,7 +160,7 @@ public final class PmdAnalysis implements AutoCloseable {
     private PmdAnalysis(PMDConfiguration config) {
         this.configuration = config;
         this.reporter = config.getReporter();
-        this.collector = FileCollector.newCollector(
+        this.collector = newCollector(
             config.getLanguageVersionDiscoverer(),
             reporter
         );
@@ -171,7 +175,7 @@ public final class PmdAnalysis implements AutoCloseable {
      * exclude list, etc) are explored and the files to analyse are
      * collected into the file collector ({@link #files()}).
      * More can be added programmatically using the file collector.
-     * <li>The rulesets given in the configuration are loaded ({@link PMDConfiguration#getRuleSets()})
+     * <li>The rulesets given in the configuration are loaded ({@link PMDConfiguration#getRuleSetPaths()})
      * <li>A renderer corresponding to the parameters of the configuration
      * is created and added (but not started).
      * </ul>
@@ -192,7 +196,7 @@ public final class PmdAnalysis implements AutoCloseable {
 
         if (!config.getRuleSetPaths().isEmpty()) {
             final RuleSetLoader ruleSetLoader = pmd.newRuleSetLoader();
-            final List<RuleSet> ruleSets = ruleSetLoader.loadRuleSetsWithoutException(config.getRuleSetPaths());
+            final List<RuleSet> ruleSets = loadRuleSetsWithoutException(ruleSetLoader, config.getRuleSetPaths());
             pmd.addRuleSets(ruleSets);
         }
 
@@ -349,7 +353,7 @@ public final class PmdAnalysis implements AutoCloseable {
      * processed. This does not return a report, as the analysis results
      * are consumed by {@link GlobalAnalysisListener} instances (of which
      * Renderers are a special case). Note that this does
-     * not throw, errors are instead accumulated into a {@link MessageReporter}.
+     * not throw, errors are instead accumulated into a {@link PmdReporter}.
      */
     public void performAnalysis() {
         performAnalysisImpl(Collections.emptyList());
@@ -360,7 +364,7 @@ public final class PmdAnalysis implements AutoCloseable {
      * and finish the registered renderers. All files collected in the
      * {@linkplain #files() file collector} are processed. Returns the
      * output report. Note that this does not throw, errors are instead
-     * accumulated into a {@link MessageReporter}.
+     * accumulated into a {@link PmdReporter}.
      */
     public Report performAnalysisAndCollectReport() {
         try (GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener()) {
@@ -421,7 +425,7 @@ public final class PmdAnalysis implements AutoCloseable {
                 // Note the analysis task is shared: all processors see
                 // the same file list, which may contain files for other
                 // languages.
-                AnalysisTask analysisTask = new AnalysisTask(
+                AnalysisTask analysisTask = InternalApiBridge.createAnalysisTask(
                     rulesets,
                     textFiles,
                     listener,
@@ -489,7 +493,7 @@ public final class PmdAnalysis implements AutoCloseable {
                 Objects.requireNonNull(ruleLanguage, "Rule has no language " + rule);
                 if (!languages.contains(ruleLanguage)) {
                     LanguageVersion version = discoverer.getDefaultLanguageVersion(ruleLanguage);
-                    if (RuleSet.applies(rule, version)) {
+                    if (ruleSetApplies(rule, version)) {
                         configuration.checkLanguageIsRegistered(ruleLanguage);
                         languages.add(ruleLanguage);
                         if (!quiet) {
@@ -539,7 +543,7 @@ public final class PmdAnalysis implements AutoCloseable {
     }
 
 
-    public MessageReporter getReporter() {
+    public PmdReporter getReporter() {
         return reporter;
     }
 
@@ -591,7 +595,7 @@ public final class PmdAnalysis implements AutoCloseable {
         return stats;
     }
 
-    static void printErrorDetected(MessageReporter reporter, int errors) {
+    static void printErrorDetected(PmdReporter reporter, int errors) {
         String msg = LogMessages.errorDetectedMessage(errors, "PMD");
         // note: using error level here increments the error count of the reporter,
         // which we don't want.
@@ -603,7 +607,7 @@ public final class PmdAnalysis implements AutoCloseable {
     }
 
     private static void encourageToUseIncrementalAnalysis(final PMDConfiguration configuration) {
-        final MessageReporter reporter = configuration.getReporter();
+        final PmdReporter reporter = configuration.getReporter();
 
         if (!configuration.isIgnoreIncrementalAnalysis()
             && configuration.getAnalysisCache() instanceof NoopAnalysisCache

@@ -12,7 +12,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
-import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 
 /**
@@ -63,19 +62,7 @@ public interface ASTTypeDeclaration
      * empty string if this is an anonymous class declaration.
      */
     @NonNull
-    default String getSimpleName() {
-        return getImage();
-    }
-
-
-    /**
-     * @deprecated Use {@link #getSimpleName()}
-     */
-    @Deprecated // note: already deprecated in 6.55.0
-    @DeprecatedAttribute(replaceWith = "@SimpleName")
-    @Override
-    String getImage();
-
+    String getSimpleName();
 
     /**
      * Returns the name of the package in which this class is declared.
@@ -132,7 +119,6 @@ public interface ASTTypeDeclaration
      * Returns true if this is an abstract type. Interfaces and annotations
      * types are implicitly abstract.
      */
-    @Override
     default boolean isAbstract() {
         return hasModifiers(ABSTRACT);
     }
@@ -140,12 +126,10 @@ public interface ASTTypeDeclaration
     /**
      * Returns true if this type is static. Only inner types can be static.
      */
-    @Override
     default boolean isStatic() {
         return hasModifiers(JModifier.STATIC);
     }
 
-    @Override
     default boolean isFinal() {
         return hasModifiers(JModifier.FINAL);
     }

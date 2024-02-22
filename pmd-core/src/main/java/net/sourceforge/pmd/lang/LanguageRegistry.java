@@ -4,12 +4,10 @@
 
 package net.sourceforge.pmd.lang;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
@@ -24,7 +22,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.cpd.CpdCapableLanguage;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -159,22 +156,6 @@ public final class LanguageRegistry implements Iterable<Language> {
     }
 
     /**
-     * Returns a language from its {@linkplain Language#getName() full name}
-     * (eg {@code "Java"}). This is case sensitive.
-     *
-     * @param languageName Language name
-     *
-     * @return A language, or null if the name is unknown
-     *
-     * @deprecated Use {@link #getLanguageByFullName(String) LanguageRegistry.PMD.getLanguageByFullName}
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    public static Language getLanguage(String languageName) {
-        return PMD.getLanguageByFullName(languageName);
-    }
-
-    /**
      * Returns a language from its {@linkplain Language#getId() ID}
      * (eg {@code "java"}). This is case-sensitive.
      *
@@ -214,41 +195,6 @@ public final class LanguageRegistry implements Iterable<Language> {
      */
     public @Nullable Language getLanguageByFullName(String languageName) {
         return languagesByFullName.get(languageName);
-    }
-
-    /**
-     * Returns a language from its {@linkplain Language#getTerseName() terse name}
-     * (eg {@code "java"}). This is case sensitive.
-     *
-     * @param terseName Language terse name
-     *
-     * @return A language, or null if the name is unknown
-     *
-     * @deprecated Use {@link #getLanguageById(String) LanguageRegistry.PMD.getLanguageById}.
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    public static @Nullable Language findLanguageByTerseName(@Nullable String terseName) {
-        return PMD.getLanguageById(terseName);
-    }
-
-    /**
-     * Returns all languages that support the given extension.
-     *
-     * @param extensionWithoutDot A file extension (without '.' prefix)
-     *
-     * @deprecated Not replaced, extension will be extended to match full name in PMD 7.
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    public static List<Language> findByExtension(String extensionWithoutDot) {
-        List<Language> languages = new ArrayList<>();
-        for (Language language : PMD.getLanguages()) {
-            if (language.hasExtension(extensionWithoutDot)) {
-                languages.add(language);
-            }
-        }
-        return languages;
     }
 
     /**

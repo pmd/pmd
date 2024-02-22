@@ -203,11 +203,11 @@
             <fileset dir="${target-package-dir}" />
         </replaceregexp>
 
-        <replace token=".beginLine" value=".getBeginLine()">
+        <replace token=".beginLine" value=".getReportLocation().getStartLine()">
             <fileset dir="${target-package-dir}" />
         </replace>
 
-        <replace token=".beginColumn" value=".getBeginColumn()">
+        <replace token=".beginColumn" value=".getReportLocation().getStartColumn()">
             <fileset dir="${target-package-dir}" />
         </replace>
 
@@ -283,7 +283,7 @@
         <!-- Use own LexException instead of JavaCC's TokenMgrError -->
         <replaceregexp>
             <regexp pattern='throw new TokenMgrError\(EOFSeen' />
-            <substitution expression='throw new net.sourceforge.pmd.lang.ast.LexException(EOFSeen' />
+            <substitution expression='throw net.sourceforge.pmd.lang.ast.InternalApiBridge.newLexException(EOFSeen' />
             <file name="${tokenmgr-file}" />
         </replaceregexp>
 

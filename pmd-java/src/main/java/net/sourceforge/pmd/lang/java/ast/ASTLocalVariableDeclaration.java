@@ -76,7 +76,6 @@ public final class ASTLocalVariableDeclaration extends AbstractJavaNode
         return firstChild(ASTType.class);
     }
 
-    @Override
     public boolean isFinal() {
         return hasModifiers(JModifier.FINAL);
     }

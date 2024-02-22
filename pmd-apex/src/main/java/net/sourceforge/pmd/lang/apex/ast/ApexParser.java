@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ApexLanguageProcessor;
 import net.sourceforge.pmd.lang.apex.internal.AntlrVersionCheckSuppression;
 import net.sourceforge.pmd.lang.ast.ParseException;
@@ -17,7 +16,6 @@ import com.google.summit.SummitAST;
 import com.google.summit.ast.CompilationUnit;
 import com.google.summit.translation.Translate;
 
-@InternalApi
 @SuppressWarnings("PMD.DoNotUseJavaUtilLogging")
 public final class ApexParser implements Parser {
 

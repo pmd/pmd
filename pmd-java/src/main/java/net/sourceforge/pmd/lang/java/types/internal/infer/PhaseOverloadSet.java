@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
 import static net.sourceforge.pmd.lang.java.types.TypeOps.areOverrideEquivalent;
+import static net.sourceforge.pmd.lang.java.types.internal.InternalMethodTypeItf.cast;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.TypeSpecies.getSpecies;
 import static net.sourceforge.pmd.util.OptionalBool.NO;
 import static net.sourceforge.pmd.util.OptionalBool.UNKNOWN;
@@ -15,6 +16,7 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.lang.java.types.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
@@ -90,8 +92,8 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
 
     @Override
     protected OptionalBool shouldTakePrecedence(MethodCtDecl m1, MethodCtDecl m2) {
-        return isMoreSpecific(m1.getMethodType().internalApi().adaptedMethod(),
-                              m2.getMethodType().internalApi().adaptedMethod());
+        return isMoreSpecific(cast(m1.getMethodType()).adaptedMethod(),
+                              cast(m2.getMethodType()).adaptedMethod());
     }
 
 
@@ -252,7 +254,7 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
             if (TypeOps.mentionsAny(x, sfun.getTypeParameters()) && !ctx.isGround(y)) {
                 return false;
             } else {
-                TypeOps.isSameTypeInInference(x, y.subst(tToS)); // adds an equality constraint
+                InternalApiBridge.isSameTypeInInference(x, y.subst(tToS)); // adds an equality constraint
             }
         }
 

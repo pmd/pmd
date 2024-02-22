@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
-import net.sourceforge.pmd.cache.AnalysisCache;
+import net.sourceforge.pmd.cache.internal.AnalysisCache;
 import net.sourceforge.pmd.internal.SystemProps;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageProcessor.AnalysisTask;

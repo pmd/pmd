@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.modelica.resolver;
 
 import java.util.List;
 
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionState;
+
 /**
  * A <b>lexical</b> scope of Modelica code.
  * That is, a component declaration does not have one, it is its type that does (but these may be resolved to multiple

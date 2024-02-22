@@ -45,6 +45,7 @@ import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.RuleSet.RuleSetBuilder;
 import net.sourceforge.pmd.lang.rule.internal.RuleSets;
@@ -389,27 +390,28 @@ class RuleSetTest {
 
     @Test
     void testIncludeExcludeApplies() {
-        TextFile file = TextFile.forPath(Paths.get("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java"), Charset.defaultCharset(), dummyVersion());
+        FileId fileId = TextFile.forPath(Paths.get("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java"), Charset.defaultCharset(), dummyVersion())
+                .getFileId();
 
         RuleSet ruleSet = createRuleSetBuilder("ruleset").build();
-        assertTrue(ruleSet.applies(file), "No patterns");
+        assertTrue(ruleSet.applies(fileId), "No patterns");
 
         ruleSet = createRuleSetBuilder("ruleset")
                 .withFileExclusions(Pattern.compile("nomatch"))
                 .build();
-        assertTrue(ruleSet.applies(file), "Non-matching exclude");
+        assertTrue(ruleSet.applies(fileId), "Non-matching exclude");
 
         ruleSet = createRuleSetBuilder("ruleset")
                 .withFileExclusions(Pattern.compile("nomatch"), Pattern.compile(".*/package/.*"))
                 .build();
-        assertFalse(ruleSet.applies(file), "Matching exclude");
+        assertFalse(ruleSet.applies(fileId), "Matching exclude");
 
         ruleSet = createRuleSetBuilder("ruleset")
                 .withFileExclusions(Pattern.compile("nomatch"))
                 .withFileExclusions(Pattern.compile(".*/package/.*"))
                 .withFileInclusions(Pattern.compile(".*/randomX/.*"))
                 .build();
-        assertFalse(ruleSet.applies(file), "Non-matching include");
+        assertFalse(ruleSet.applies(fileId), "Non-matching include");
 
         ruleSet = createRuleSetBuilder("ruleset")
                 .withFileExclusions(Pattern.compile("nomatch"))
@@ -417,7 +419,7 @@ class RuleSetTest {
                 .withFileInclusions(Pattern.compile(".*/randomX/.*"))
                 .withFileInclusions(Pattern.compile(".*/random/.*"))
                 .build();
-        assertTrue(ruleSet.applies(file), "Matching include");
+        assertTrue(ruleSet.applies(fileId), "Matching include");
     }
 
     @Test
@@ -521,7 +523,7 @@ class RuleSetTest {
         }).addRule(new MockRule() {
             @Override
             public void apply(Node target, RuleContext ctx) {
-                addViolationWithMessage(ctx, target, "Test violation of the second rule in the ruleset");
+                ctx.addViolationWithMessage(target, "Test violation of the second rule in the ruleset");
             }
         }).build();
 
@@ -560,7 +562,7 @@ class RuleSetTest {
 
             @Override
             public void apply(Node target, RuleContext ctx) {
-                addViolationWithMessage(ctx, target, "Test violation of the second rule in the ruleset");
+                ctx.addViolationWithMessage(target, "Test violation of the second rule in the ruleset");
             }
         }).build();
 

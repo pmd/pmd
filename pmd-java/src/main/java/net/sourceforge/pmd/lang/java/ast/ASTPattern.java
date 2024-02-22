@@ -32,7 +32,7 @@ public interface ASTPattern extends JavaNode {
      * If this method returns 0, then no parentheses are present.
      * @deprecated Parenthesized patterns are only possible with Java 20 Preview and are removed with Java 21.
      */
-    @Experimental
+    @Experimental("Parenthesized patterns is a Java 20 Preview feature")
     @Deprecated
     int getParenthesisDepth();
 }

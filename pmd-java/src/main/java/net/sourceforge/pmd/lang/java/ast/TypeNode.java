@@ -5,9 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypingContext;
@@ -43,23 +41,4 @@ public interface TypeNode extends JavaNode {
     }
 
     JTypeMirror getTypeMirror(TypingContext typing);
-
-
-    /**
-     * Get the Java Class associated with this node.
-     *
-     * @return The Java Class, may return <code>null</code>.
-     *
-     * @deprecated This doesn't work. PMD doesn't load classes, it just
-     *         reads the bytecode. Compare the symbol of the {@link #getTypeMirror() type mirror}
-     *         instead.
-     */
-    @Nullable
-    @Deprecated
-    @DeprecatedUntil700
-    default Class<?> getType() {
-        return null;
-    }
-
-
 }

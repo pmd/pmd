@@ -32,12 +32,12 @@ import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstant;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 public class RulesetFactoryTestBase {
 
-    protected MessageReporter mockReporter;
+    protected PmdReporter mockReporter;
 
     @BeforeEach
     void setup() {

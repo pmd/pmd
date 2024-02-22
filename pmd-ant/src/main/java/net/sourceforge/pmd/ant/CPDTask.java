@@ -28,7 +28,6 @@ import net.sourceforge.pmd.cpd.CPDReport;
 import net.sourceforge.pmd.cpd.CPDReportRenderer;
 import net.sourceforge.pmd.cpd.CSVRenderer;
 import net.sourceforge.pmd.cpd.CpdAnalysis;
-import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.SimpleRenderer;
 import net.sourceforge.pmd.cpd.XMLRenderer;
 import net.sourceforge.pmd.lang.Language;
@@ -79,7 +78,7 @@ public class CPDTask extends Task {
     private boolean skipLexicalErrors;
     private boolean skipDuplicateFiles;
     private boolean skipBlocks = true;
-    private String skipBlocksPattern = CpdLanguageProperties.DEFAULT_SKIP_BLOCKS_PATTERN;
+    private String skipBlocksPattern;
     private File outputFile;
     private String encoding = System.getProperty("file.encoding");
     private List<FileSet> filesets = new ArrayList<>();

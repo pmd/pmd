@@ -5,11 +5,11 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
 import static net.sourceforge.pmd.lang.java.types.TypeOps.isConvertible;
-import static net.sourceforge.pmd.lang.java.types.TypeOps.isSameTypeInInference;
 
 import java.util.ArrayList;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.java.types.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
@@ -99,7 +99,7 @@ abstract class IncorporationAction {
          */
         boolean checkBound(boolean eq, JTypeMirror t, JTypeMirror s, InferenceContext ctx) {
             // eq bounds are so rare we shouldn't care if they're cached
-            return eq ? isSameTypeInInference(t, s)
+            return eq ? InternalApiBridge.isSameTypeInInference(t, s)
                       : checkSubtype(t, s, ctx);
         }
 

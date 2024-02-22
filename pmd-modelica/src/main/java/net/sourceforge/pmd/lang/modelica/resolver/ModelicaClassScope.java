@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.modelica.resolver;
 
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionContext;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.Watchdog;
+
 /**
  * A lexical scope corresponding to a Modelica class.
  */
@@ -21,7 +24,7 @@ public final class ModelicaClassScope extends AbstractModelicaScope {
 
     @Override
     public void resolveLexically(ResolutionContext result, CompositeName name) throws Watchdog.CountdownException {
-        InternalModelicaResolverApi.resolveFurtherNameComponents(classDeclaration, result, name);
+        InternalApiBridge.resolveFurtherNameComponents(classDeclaration, result, name);
         if (classDeclaration.isEncapsulated()) {
             getRoot().resolveBuiltin(result, name);
         } else {

@@ -19,7 +19,7 @@
                |        |  +- PrimitiveType[@Kind = PrimitiveTypeKind.INT]
                |        |  +- VariableDeclarator[@Initializer = false, @Name = "staticField"]
                |        |     +- VariableId[@ArrayType = false, @EffectiveVisibility = Visibility.V_LOCAL, @EnumConstant = false, @ExceptionBlockParameter = false, @Field = true, @Final = false, @ForLoopVariable = false, @ForeachVariable = false, @FormalParameter = false, @LambdaParameter = false, @LocalVariable = false, @Name = "staticField", @PatternBinding = false, @RecordComponent = false, @ResourceDeclaration = false, @TypeInferred = false, @Visibility = Visibility.V_PACKAGE]
-               |        +- MethodDeclaration[@Abstract = false, @Arity = 0, @EffectiveVisibility = Visibility.V_LOCAL, @Final = false, @Image = "staticMethod", @Name = "staticMethod", @Overridden = false, @Static = true, @Varargs = false, @Visibility = Visibility.V_PACKAGE, @Void = true]
+               |        +- MethodDeclaration[@Abstract = false, @Arity = 0, @EffectiveVisibility = Visibility.V_LOCAL, @Final = false, @Name = "staticMethod", @Overridden = false, @Static = true, @Varargs = false, @Visibility = Visibility.V_PACKAGE, @Void = true]
                |           +- ModifierList[@EffectiveModifiers = "{static}", @ExplicitModifiers = "{static}"]
                |           +- VoidType[]
                |           +- FormalParameters[@Empty = true, @Size = 0]

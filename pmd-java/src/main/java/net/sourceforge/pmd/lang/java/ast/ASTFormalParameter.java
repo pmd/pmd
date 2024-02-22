@@ -91,7 +91,6 @@ public final class ASTFormalParameter extends AbstractJavaNode
         return getVarId().getTypeMirror(ctx);
     }
 
-    @Override
     public boolean isFinal() {
         return hasModifiers(JModifier.FINAL);
     }

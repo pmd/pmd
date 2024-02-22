@@ -20,7 +20,7 @@ public final class ReportTestUtil {
     }
 
     public static Report getReport(Rule rule, BiConsumer<Rule, RuleContext> sideEffects) {
-        return Report.buildReport(listener -> sideEffects.accept(rule, RuleContext.create(listener, rule)));
+        return Report.buildReport(listener -> sideEffects.accept(rule, InternalApiBridge.createRuleContext(listener, rule)));
     }
 
     public static Report getReportForRuleApply(Rule rule, Node node) {

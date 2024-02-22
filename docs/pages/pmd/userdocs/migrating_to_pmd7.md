@@ -57,6 +57,25 @@ There are a couple of deprecated things in PMD 6, you might encounter:
   and the old rulesets like `basic.xml` have been deprecated and have been removed with PMD 7.
   It is about time to create a [custom ruleset](pmd_userdocs_making_rulesets.html).
 
+## Approaching 7.0.0
+
+After that, migrate to the release candidates, and fix any problems you encounter. Start with 7.0.0-rc1 via
+7.0.0-rc2, 7.0.0-rc3 and 7.0.0-rc4 until you finally use 7.0.0.
+
+You might encounter additionally the following types of problems:
+
+* If you use any programmatic API of PMD, first avoid any usage of deprecated or internal classes/methods. These
+  are marked with one of these annotations: `@Deprecated`, `@DeprecatedUtil700`, `@InternalApi`.
+  * Some of these classes are available until 7.0.0-rc4 but are finally removed with 7.0.0.
+  * See [API changes](pmd_release_notes_pmd7.html#api-changes) for details.
+* Some rules have been removed, because they have been deprecated. See [Removed Rules](pmd_release_notes_pmd7.html#removed-rules).
+* Some rule properties have been removed or changed. See [Changed Rules](pmd_release_notes_pmd7.html#changed-rules).
+* The filenames of the assets of a release (the "binary distribution zip file") have changed,
+  see [Release downloads](#release-downloads).
+* Some CLI options have been removed, because they have been deprecated. See [CLI Changes](#cli-changes) for details.
+* If you call CPD programmatically, the API has changed, see [New Programmatic API for CPD](pmd_release_notes_pmd7.html#new-programmatic-api-for-cpd).
+
+The following topics describe well known migration challenges in more detail.
 
 ## Use cases
 
@@ -205,7 +224,8 @@ Most notable changes:
     an error message such as `[main] ERROR net.sourceforge.pmd.cli.commands.internal.PmdCommand - No such file false`.
   * PMD tries to display a progress bar. If you don't want this (e.g. on a CI build server), you can disable this
     with `--no-progress`.
-  * `--no-ruleset-compatibility` has been removed
+  * `--no-ruleset-compatibility` has been removed without replacement.
+  * `--stress` (or `-stress`) has been removed without replacement.
 
 ### Custom distribution packages
 
@@ -443,14 +463,15 @@ Some nodes have already the image attribute (and others) deprecated. These depre
 
 * {% jdoc java::lang.java.ast.ASTAnnotationTypeDeclaration %}: `@Image` ➡️ `@SimpleName`
 * {% jdoc java::lang.java.ast.ASTAnonymousClassDeclaration %}: `@Image` ➡️ `@SimpleName`
-* {% jdoc java::lang.java.ast.ASTClassOrInterfaceDeclaration %}: `@Image` ➡️ `@SimpleName`
+* {% jdoc java::lang.java.ast.ASTClassDeclaration %} (previously "ASTClassOrInterfaceDeclaration"): `@Image` ➡️ `@SimpleName`
 * {% jdoc java::lang.java.ast.ASTEnumDeclaration %}: `@Image` ➡️ `@SimpleName`
-* {% jdoc java::lang.java.ast.ASTFieldDeclaration %}: `@VariableName` ➡️ `VariableDeclaratorId/@Name`
+* {% jdoc java::lang.java.ast.ASTFieldDeclaration %}: `@VariableName` ➡️ `VariableId/@Name`
+* {% jdoc java::lang.java.ast.ASTMethodDeclaration %}: `@Image` ➡️ `@Name`
 * {% jdoc java::lang.java.ast.ASTMethodDeclaration %}: `@MethodName` ➡️ `@Name`
 * {% jdoc java::lang.java.ast.ASTRecordDeclaration %}: `@Image` ➡️ `@SimpleName`
-* {% jdoc java::lang.java.ast.ASTVariableDeclaratorId %}: `@Image` ➡️ `@Name`
-* {% jdoc java::lang.java.ast.ASTVariableDeclaratorId %}: `@VariableName` ➡️ `@Name`
-* {% jdoc java::lang.java.ast.ASTVariableDeclaratorId %}: `@Array` ➡️ `@ArrayType`
+* {% jdoc java::lang.java.ast.ASTVariableId %} (previously "ASTVariableDeclaratorId"): `@Image` ➡️ `@Name`
+* {% jdoc java::lang.java.ast.ASTVariableId %} (previously "ASTVariableDeclaratorId"): `@VariableName` ➡️ `@Name`
+* {% jdoc java::lang.java.ast.ASTVariableId %} (previously "ASTVariableDeclaratorId"): `@Array` ➡️ `@ArrayType`
 
 #### JavaScript
 
@@ -3340,31 +3361,7 @@ See the use case [I'm using only built-in rules](#im-using-only-built-in-rules) 
 #### Maven
 
 * Due to some changes in PMD's API, you can't simply pull in the new PMD 7 dependency.
-* However, there is now a compatibility module, that makes it possible to use PMD 7 with Maven. In addition to the PMD 7
-  dependencies documented in [Upgrading PMD at Runtime](https://maven.apache.org/plugins/maven-pmd-plugin/examples/upgrading-PMD-at-runtime.html)
-  you need to add additionally the following dependency (first available version is 7.0.0-rc4):
-
-```xml
-<dependency>
-  <groupId>net.sourceforge.pmd</groupId>
-  <artifactId>pmd-compat6</artifactId>
-  <version>${pmdVersion}</version>
-</dependency>
-```
-
-It is important to add this dependency as the **first** in the list, so that maven-pmd-plugin sees the (old)
-compatible versions of some classes.
-
-This module is available beginning with version 7.0.0-rc4 and will be there at least for the first
-final version PMD 7 (7.0.0). It's not decided yet, whether we will keep updating it, after PMD 7 is finally
-released.
-
-Note: This compatibility module only works for the built-in rules, that are still available in PMD 7. E.g. you need
-to review your rulesets and look out for deprecated rules and such. See the use case
-[I'm using only built-in rules](#im-using-only-built-in-rules)
-
-As PMD 7 revamped the Java module, if you have custom rules, you need to migrate these rules.
-See the use case [I'm using custom rules](#im-using-custom-rules).
+* See [Using PMD 7 with maven-pmd-plugin](pmd_userdocs_tools_maven.html#using-pmd-7-with-maven-pmd-plugin).
 
 #### Gradle
 
@@ -3377,3 +3374,13 @@ See the use case [I'm using custom rules](#im-using-custom-rules).
   ```
 * Gradle 8.3 most likely will support PMD 7 out of the box.
 * See [Support for PMD 7.0](https://github.com/gradle/gradle/issues/24502)
+
+### XML Report Format
+
+The [XML Report format](pmd_userdocs_report_formats.html#xml) supports rendering [suppressed violations](pmd_userdocs_suppressing_warnings.html).
+
+The content of the attribute `suppressiontype` is changed in PMD 7.0.0:
+* `nopmd` ➡️ `//nopmd`
+* `annotation` ➡️ `@suppresswarnings`
+* `xpath` - new value. Suppressed via property "violationSuppressXPath".
+* `regex` - new value. Suppressed via property "violationSuppressRegex".

@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -22,16 +21,14 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
-import java.util.List;
 import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import net.sourceforge.pmd.cache.FileAnalysisCache;
-import net.sourceforge.pmd.cache.NoopAnalysisCache;
+import net.sourceforge.pmd.cache.internal.FileAnalysisCache;
+import net.sourceforge.pmd.cache.internal.NoopAnalysisCache;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.lang.rule.RulePriority;
 import net.sourceforge.pmd.renderers.CSVRenderer;
@@ -117,16 +114,6 @@ class PmdConfigurationTest {
     }
 
     @Test
-    void testRuleSetsLegacy() {
-        PMDConfiguration configuration = new PMDConfiguration();
-        assertNull(configuration.getRuleSets(), "Default RuleSets");
-        configuration.setRuleSets("/rulesets/basic.xml");
-        assertEquals("/rulesets/basic.xml", configuration.getRuleSets(), "Changed RuleSets");
-        configuration.setRuleSets((String) null);
-        assertNull(configuration.getRuleSets());
-    }
-
-    @Test
     void testRuleSets() {
         PMDConfiguration configuration = new PMDConfiguration();
         assertThat(configuration.getRuleSetPaths(), empty());
@@ -158,17 +145,6 @@ class PmdConfigurationTest {
     }
 
     @Test
-    void testInputPaths() {
-        PMDConfiguration configuration = new PMDConfiguration();
-        assertThat(configuration.getInputPathList(), empty());
-        configuration.setInputPaths("a,b,c");
-        List<Path> expected = listOf(
-            Paths.get("a"), Paths.get("b"), Paths.get("c")
-        );
-        assertEquals(expected, configuration.getInputPathList(), "Changed input paths");
-    }
-
-    @Test
     void testReportFormat() {
         PMDConfiguration configuration = new PMDConfiguration();
         assertEquals(null, configuration.getReportFormat(), "Default report format");
@@ -188,14 +164,6 @@ class PmdConfigurationTest {
         renderer = configuration.createRenderer();
         assertEquals(CSVRenderer.class, renderer.getClass(), "Renderer class");
         assertEquals(true, renderer.isShowSuppressedViolations(), "Changed renderer show suppressed violations");
-    }
-
-    @Test
-    void testReportFile() {
-        PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals(null, configuration.getReportFile(), "Default report file");
-        configuration.setReportFile("somefile");
-        assertEquals("somefile", configuration.getReportFile(), "Changed report file");
     }
 
     @Test
