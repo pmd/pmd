@@ -21,13 +21,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.internal.RuleSetReferenceId;
 import net.sourceforge.pmd.util.CollectionUtil;
-import net.sourceforge.pmd.util.ResourceLoader;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.internal.ResourceLoader;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
  * Configurable object to load rulesets from XML resources.
@@ -43,7 +42,7 @@ public final class RuleSetLoader {
     private RulePriority minimumPriority = RulePriority.LOW;
     private boolean warnDeprecated = true;
     private boolean includeDeprecatedRuleReferences = false;
-    private @NonNull MessageReporter reporter = MessageReporter.quiet();
+    private @NonNull PmdReporter reporter = PmdReporter.quiet();
 
     /**
      * Create a new RuleSetLoader with a default configuration.
@@ -53,7 +52,7 @@ public final class RuleSetLoader {
         // default
     }
 
-    RuleSetLoader withReporter(@NonNull MessageReporter reporter) {
+    RuleSetLoader withReporter(@NonNull PmdReporter reporter) {
         this.reporter = Objects.requireNonNull(reporter);
         return this;
     }
@@ -195,11 +194,10 @@ public final class RuleSetLoader {
      * Loads a list of rulesets, if any has an error, report it on the contextual
      * error reporter instead of aborting, and continue loading the rest.
      *
-     * <p>Internal API: might be published later, or maybe in PMD 7 this
+     * @apiNote Internal API: might be published later, or maybe this
      * will be the default behaviour of every method of this class.
      */
-    @InternalApi
-    public List<RuleSet> loadRuleSetsWithoutException(List<String> rulesetPaths) {
+    List<RuleSet> loadRuleSetsWithoutException(List<String> rulesetPaths) {
         List<RuleSet> ruleSets = new ArrayList<>(rulesetPaths.size());
         boolean anyRules = false;
         boolean error = false;

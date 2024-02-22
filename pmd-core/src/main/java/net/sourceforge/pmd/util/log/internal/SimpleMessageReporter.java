@@ -7,16 +7,14 @@ package net.sourceforge.pmd.util.log.internal;
 import org.slf4j.Logger;
 import org.slf4j.event.Level;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
  * A {@link Logger} (java.util) based logger impl.
  *
  * @author Clément Fournier
  */
-@InternalApi
-public class SimpleMessageReporter extends MessageReporterBase implements MessageReporter {
+public class SimpleMessageReporter extends MessageReporterBase implements PmdReporter {
 
     private final Logger backend;
 

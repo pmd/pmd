@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
@@ -89,10 +88,7 @@ abstract class AbstractApexNode<T extends AstNode> extends AbstractNode<Abstract
         this.region = region;
     }
 
-    @Deprecated
-    @InternalApi
-    @Override
-    public T getNode() {
+    T getNode() {
         return node;
     }
 

@@ -9,7 +9,6 @@ import java.util.List;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTRunAsBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
-import net.sourceforge.pmd.lang.apex.rule.AbstractApexUnitTestRule;
 
 /**
  * Apex unit tests should have System.runAs methods in them

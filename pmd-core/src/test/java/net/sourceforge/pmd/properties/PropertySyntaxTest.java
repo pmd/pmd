@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.RulesetFactoryTestBase;
+import net.sourceforge.pmd.properties.internal.PropertyParsingUtil;
 import net.sourceforge.pmd.util.internal.xml.XmlErrorMessages;
 
 /**

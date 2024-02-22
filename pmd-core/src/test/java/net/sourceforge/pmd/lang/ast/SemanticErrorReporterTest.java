@@ -22,7 +22,7 @@ import org.slf4j.event.Level;
 import org.slf4j.helpers.NOPLogger;
 
 import net.sourceforge.pmd.DummyParsingHelper;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
  * Reports errors that occur after parsing. This may be used to implement
@@ -30,7 +30,7 @@ import net.sourceforge.pmd.util.log.MessageReporter;
  */
 class SemanticErrorReporterTest {
 
-    MessageReporter mockReporter;
+    PmdReporter mockReporter;
     Logger mockLogger;
 
     @RegisterExtension
@@ -38,7 +38,7 @@ class SemanticErrorReporterTest {
 
     @BeforeEach
     void setup() {
-        mockReporter = mock(MessageReporter.class);
+        mockReporter = mock(PmdReporter.class);
         when(mockReporter.isLoggable(Level.ERROR)).thenReturn(true);
         mockLogger = spy(NOPLogger.class);
     }

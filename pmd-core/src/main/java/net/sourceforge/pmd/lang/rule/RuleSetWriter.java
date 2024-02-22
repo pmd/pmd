@@ -35,11 +35,12 @@ import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.internal.RuleSetReference;
+import net.sourceforge.pmd.properties.InternalApiBridge;
 import net.sourceforge.pmd.properties.PropertyConstraint;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySerializer;
 import net.sourceforge.pmd.properties.PropertySource;
-import net.sourceforge.pmd.properties.PropertyTypeId;
+import net.sourceforge.pmd.properties.internal.PropertyTypeId;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
 
 /**
@@ -269,7 +270,7 @@ public class RuleSetWriter {
         for (PropertyDescriptor<?> descriptor : defined) {
             // For each provided PropertyDescriptor
 
-            PropertyTypeId typeId = descriptor.getTypeId();
+            PropertyTypeId typeId = InternalApiBridge.getTypeId(descriptor);
 
             if (typeId == null // not defined externally
                 && !overridden.contains(descriptor)) {

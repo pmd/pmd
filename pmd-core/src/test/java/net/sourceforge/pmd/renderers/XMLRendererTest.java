@@ -29,7 +29,6 @@ import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRange2d;
-import net.sourceforge.pmd.reporting.ParametricRuleViolation;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.Report.ConfigurationError;
 import net.sourceforge.pmd.reporting.Report.ProcessingError;
@@ -94,7 +93,7 @@ class XMLRendererTest extends AbstractRendererTest {
     private RuleViolation createRuleViolation(String description) {
         FileLocation loc = FileLocation.range(FileId.fromPathLikeString(getSourceCodeFilename()),
                                               TextRange2d.range2d(1, 1, 1, 1));
-        return new ParametricRuleViolation(new FooRule(), loc, description);
+        return newRuleViolation(new FooRule(), loc, description);
     }
 
     private void verifyXmlEscaping(Renderer renderer, String shouldContain, Charset charset) throws Exception {

@@ -180,6 +180,7 @@ The rules have been moved into categories with PMD 6.
   * [#4312](https://github.com/pmd/pmd/issues/4312): \[core] Remove unnecessary property `color` and system property `pmd.color` in `TextColorRenderer`
   * [#4313](https://github.com/pmd/pmd/issues/4313): \[core] Remove support for &lt;lang&gt;-&lt;ruleset&gt; hyphen notation for ruleset references
   * [#4314](https://github.com/pmd/pmd/issues/4314): \[core] Remove ruleset compatibility filter (RuleSetFactoryCompatibility) and CLI option `--no-ruleset-compatibility`
+  * [#4348](https://github.com/pmd/pmd/issues/4348): \[core] Consolidate @<!-- -->InternalApi classes
   * [#4378](https://github.com/pmd/pmd/issues/4378): \[core] Ruleset loading processes commented rules
   * [#4674](https://github.com/pmd/pmd/issues/4674): \[core] WARNING: Illegal reflective access by org.codehaus.groovy.reflection.CachedClass
   * [#4694](https://github.com/pmd/pmd/pull/4694):   \[core] Fix line/col numbers in TokenMgrError
@@ -267,20 +268,110 @@ in the migration guide for details.
     * {%jdoc core::reporting.RuleContext %}
     * {%jdoc core::reporting.RuleViolation %}
     * {%jdoc core::reporting.ViolationSuppressor %}
-    * {%jdoc core::reporting.ParametricRuleViolation %} (moved from `net.sourcceforge.pmd.lang.rule`)
   * {%jdoc core::lang.rule.xpath.XPathRule %} has been moved into subpackage {% jdoc_package core::lang.rule.xpath %}.
 
-**Internalized classes**
+**Internalized classes and interfaces and methods**
 
-These were marked as `@InternalApi` previously.
+The following classes/methods have been marked as @<!-- -->InternalApi before and are now moved into a `internal`
+package or made (package) private and are _not accessible_ anymore.
 
 * pmd-core
-  * `RuleFactory`: moved from `net.sourceforge.pmd.rules` into subpackage `lang.rule`.
+  * `net.sourceforge.pmd.cache.AbstractAnalysisCache` (moved to internal, now package private)
+  * `net.sourceforge.pmd.cache.AnalysisCache` (moved to internal)
+  * `net.sourceforge.pmd.cache.AnalysisCacheListener` (moved to internal)
+  * `net.sourceforge.pmd.cache.AnalysisResult` (moved to internal)
+  * `net.sourceforge.pmd.cache.CachedRuleMapper` (moved to internal, now package private)
+  * `net.sourceforge.pmd.cache.CachedRuleViolation` (moved to internal, now package private)
+  * `net.sourceforge.pmd.cache.ChecksumAware` (moved to internal)
+  * `net.sourceforge.pmd.cache.FileAnalysisCache` (moved to internal)
+  * `net.sourceforge.pmd.cache.NoopAnalysisCache` (moved to internal)
+  * `net.sourceforge.pmd.util.ResourceLoader` (moved to internal)
+  * {%jdoc !!core::cpd.Tokens %}
+    * Constructor is now package private.
+  * {%jdoc !!core::lang.LanguageProcessor.AnalysisTask %}
+    * Constructor is now package private.
+    * Method `withFiles(java.util.List)` is now package private. Note: it was not previously marked with @<!-- -->InternalApi.
+  * {%jdoc !!core::lang.rule.RuleTargetSelector %}
+    * Method `isRuleChain()` has been removed.
+  * {%jdoc !!core::renderers.AbstractAccumulatingRenderer %}
+    * {%jdoc core::renderers.AbstractAccumulatingRenderer#renderFileReport(core::reporting.Report) %} - this method is now final
+      and can't be overridden anymore.
+  * {%jdoc !!core::reporting.Report %}
+    * Constructor as well as the methods `addRuleViolation`, `addConfigError`, `addError` are now private.
+  * {%jdoc !!core::reporting.RuleContext %}
+    * Method `getRule()` is now package private.
+    * Method `create(FileAnalysisListener listener, Rule rule)` has been removed.
+  * `net.sourceforge.pmd.rules.RuleFactory`: moved into subpackage `lang.rule` and made package private.
     It has now been hidden completely from public API.
-  * Many types have been moved from the base package `net.sourceforge.pmd` into subpackage `lang.rule.internal`.
-      * `RuleSetReference`
-      * `RuleSetReferenceId`
-      * `RuleSets`
+  * Many types have been moved from into subpackage `lang.rule.internal`.
+    * `net.sourceforge.pmd.RuleSetReference`
+    * `net.sourceforge.pmd.RuleSetReferenceId`
+    * `net.sourceforge.pmd.RuleSets`
+  * `net.sourceforge.pmd.lang.rule.ParametricRuleViolation` is now package private and moved to `net.sourceforge.pmd.reporting.ParametricRuleViolation`.
+    The only public API is {%jdoc core::reporting.RuleViolation %}.
+  * {%jdoc !!core::lang.rule.RuleSet %}
+    * Method `applies(Rule,LanguageVersion)` is now package private.
+    * Method `applies(TextFile)` has been removed.
+    * Method `applies(FileId)` is now package private.
+  * {%jdoc !!core::lang.rule.RuleSetLoader %}
+    * Method `loadRuleSetsWithoutException(java.util.List)` is now package private.
+  * {%jdoc !!core::lang.rule.RuleSetLoadException %}
+    * All constructors are package private now.
+  * {%jdoc !!core::lang.ast.LexException %} - the constructor `LexException(boolean, String, int, int, String, char)` is now package private.
+    It is only used by JavaCC-generated token managers.
+  * {%jdoc !!core::PMDConfiguration %}
+    * Method `setAnalysisCache(AnalysisCache)` is now package private. Use {%jdoc core::PMDConfiguration#setAnalysisCacheLocation(java.lang.String) %} instead.
+    * Method `getAnalysisCache()` is now package private.
+  * {%jdoc !!core::lang.document.FileCollector %}
+    * Method `newCollector(LanguageVersionDiscoverer, PmdReporter)` is now package private.
+    * Method `newCollector(PmdReporter)` is now package private.
+    * In order to create a FileCollector, use {%jdoc core::PmdAnalysis#files() %} instead.
+  * {%jdoc !!core::lang.rule.xpath.Attribute %}
+    * Method `replacementIfDeprecated()` is now package private.
+  * `net.sourceforge.pmd.properties.PropertyTypeId` - moved in subpackage `internal`.
+  * {%jdoc !!core::properties.PropertyDescriptor %} - method `getTypeId()` is now package private.
+* pmd-ant
+  * {%jdoc !!ant::ant.Formatter %}
+    * Method `getRenderer()` has been removed.
+    * Method `start(String)` is private now.
+    * Method `end(Report)` has been removed.
+    * Method `isNoOutputSupplied()` is now package private.
+    * Method `newListener(Project)` is now package private.
+  * {%jdoc !!ant::ant.PMDTask %}
+    * Method `getRelativizeRoots()` has been removed.
+  * `net.sourceforge.pmd.ant.ReportException` is now package private. Note: It was not marked with @<!-- -->InternalApi before.
+* pmd-apex
+  * {%jdoc !!apex::ast.ApexNode %}
+    * Method `getNode()` has been removed. It was only deprecated before and not marked with @<!-- -->InternalApi.
+      However, it gave access to the wrapped Jorje node and was thus internal API.
+  * {%jdoc !!apex::ast.AbstractApexNode %}
+    * Method `getNode()` is now package private.
+  * {%jdoc !!apex::multifile.ApexMultifileAnalysis %}
+    * Constructor is now package private.
+  * `net.sourceforge.pmd.lang.apex.rule.design.AbstractNcssCountRule` (now package private)
+  * `net.sourceforge.pmd.lang.apex.rule.AbstractApexUnitTestRule` (moved to package `net.sourceforge.pmd.apex.rule.bestpractices`, now package private)
+* pmd-java
+  * `net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule` (moved to internal)
+  * `net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver` (moved to internal)
+  * {%jdoc !!java::types.JMethodSig %}
+    * Method `internalApi()` has been removed.
+  * {%jdoc !!java::types.TypeOps %}
+    * Method `isSameTypeInInference(JTypeMirror,JTypeMirror)` is now package private.
+* pmd-jsp
+  * {%jdoc !!jsp::ast.JspParser %}
+    * Method `getTokenBehavior()` has been removed.
+* pmd-modelica
+  * {%jdoc !!modelica::ast.InternalApiBridge %} renamed from `InternalModelicaNodeApi`.
+  * {%jdoc !!modelica::resolver.InternalApiBridge %} renamed from `InternalModelicaResolverApi`.
+  * `net.sourceforge.pmd.lang.modelica.resolver.ModelicaSymbolFacade` has been removed.
+  * `net.sourceforge.pmd.lang.modelica.resolver.ResolutionContext` (moved to internal)
+  * `net.sourceforge.pmd.lang.modelica.resolver.ResolutionState` (moved to internal). Note: it was not previously marked with @<!-- -->InternalApi.
+  * `net.sourceforge.pmd.lang.modelica.resolver.Watchdog` (moved to internal). Note: it was not previously marked with @<!-- -->InternalApi.
+* pmd-plsql
+  * `net.sourceforge.pmd.lang.plsql.rule.design.AbstractNcssCountRule` is now package private.
+* pmd-scala
+  * {%jdoc !!scala::ScalaLanguageModule %}
+    * Method `dialectOf(LanguageVersion)` has been removed.
 
 **Removed classes and methods (previously deprecated)**
 
@@ -308,6 +399,9 @@ The following previously deprecated classes have been removed:
     which can correctly differentiate between local and package private classes.
 
 **Renamed classes, interfaces**
+
+* pmd-core
+  * {%jdoc core::util.log.PmdReporter %} - has been renamed from `net.sourceforge.pmd.util.log.MessageReporter`
 
 * pmd-java
   * The interface `AccessNode` has been renamed to {% jdoc java::lang.ast.ModifierOwner %}. This is only relevant
@@ -771,6 +865,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4313](https://github.com/pmd/pmd/issues/4313): \[core] Remove support for &lt;lang&gt;-&lt;ruleset&gt; hyphen notation for ruleset references
     * [#4314](https://github.com/pmd/pmd/issues/4314): \[core] Remove ruleset compatibility filter (RuleSetFactoryCompatibility) and CLI option `--no-ruleset-compatibility`
     * [#4323](https://github.com/pmd/pmd/issues/4323): \[core] Refactor CPD integration
+    * [#4348](https://github.com/pmd/pmd/issues/4348): \[core] Consolidate @<!-- -->InternalApi classes
     * [#4353](https://github.com/pmd/pmd/pull/4353):   \[core] Micro optimizations for Node API
     * [#4365](https://github.com/pmd/pmd/pull/4365):   \[core] Improve benchmarking
     * [#4397](https://github.com/pmd/pmd/pull/4397):   \[core] Refactor CPD

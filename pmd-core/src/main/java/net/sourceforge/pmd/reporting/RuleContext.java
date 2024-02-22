@@ -15,7 +15,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.FileLocation;
@@ -47,7 +46,10 @@ public final class RuleContext {
     private final FileAnalysisListener listener;
     private final Rule rule;
 
-    private RuleContext(FileAnalysisListener listener, Rule rule) {
+    /**
+     * @apiNote Internal API
+     */
+    RuleContext(FileAnalysisListener listener, Rule rule) {
         Objects.requireNonNull(listener, "Listener was null");
         Objects.requireNonNull(rule, "Rule was null");
         this.listener = listener;
@@ -55,11 +57,10 @@ public final class RuleContext {
     }
 
     /**
-     * @deprecated Used in {@link AbstractRule#asCtx(Object)}, when that is gone, will be removed.
+     * @apiNote Internal API. Used in {@link AbstractRule} in {@code asCtx(Object)},
+     * through {@link InternalApiBridge}.
      */
-    @Deprecated
-    @InternalApi
-    public Rule getRule() {
+    Rule getRule() {
         return rule;
     }
 
@@ -161,17 +162,6 @@ public final class RuleContext {
         return suppressed;
     }
 
-    /**
-     * Force the recording of a violation, ignoring the violation
-     * suppression mechanism ({@link ViolationSuppressor}).
-     *
-     * @param rv A violation
-     */
-    @InternalApi
-    public void addViolationNoSuppress(RuleViolation rv) {
-        listener.onRuleViolation(rv);
-    }
-
     private String makeMessage(@NonNull String message, Object[] args, Map<String, String> extraVars) {
         // Escape PMD specific variable message format, specifically the {
         // in the ${, so MessageFormat doesn't bitch.
@@ -210,16 +200,4 @@ public final class RuleContext {
         final PropertyDescriptor<?> propertyDescriptor = rule.getPropertyDescriptor(name);
         return propertyDescriptor == null ? null : String.valueOf(rule.getProperty(propertyDescriptor));
     }
-
-
-    /**
-     * Create a new RuleContext.
-     *
-     * The listener must be closed by its creator.
-     */
-    @InternalApi
-    public static RuleContext create(FileAnalysisListener listener, Rule rule) {
-        return new RuleContext(listener, rule);
-    }
-
 }

@@ -27,6 +27,8 @@ import org.hamcrest.Matchers;
 import org.hamcrest.core.SubstringMatcher;
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.properties.internal.PropertyParsingUtil;
+
 
 /**
  * @author Clément Fournier

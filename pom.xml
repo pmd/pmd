@@ -341,7 +341,8 @@
                     <configuration>
                         <quiet>true</quiet>
                         <doclint>none</doclint>
-                        <excludePackageNames>*.internal</excludePackageNames>
+                        <!-- exclude any internal package and up to two sub-packages inside -->
+                        <excludePackageNames>*.internal,*.internal.*,*.internal.*.*</excludePackageNames>
                         <detectOfflineLinks>false</detectOfflineLinks>
                         <offlineLinks>
                             <offlineLink>

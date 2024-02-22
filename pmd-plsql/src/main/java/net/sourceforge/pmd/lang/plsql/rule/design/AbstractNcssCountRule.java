@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.plsql.rule.design;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCaseStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCaseWhenClause;
@@ -31,11 +30,9 @@ import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
  * Abstract superclass for NCSS counting methods. Analogous to and cribbed from
  * the Java version of the rule.
  *
- * @deprecated Internal API
+ * @apiNote Internal API
  */
-@Deprecated
-@InternalApi
-public abstract class AbstractNcssCountRule<T extends PLSQLNode> extends AbstractCounterCheckRule<T> {
+abstract class AbstractNcssCountRule<T extends PLSQLNode> extends AbstractCounterCheckRule<T> {
 
 
     /**

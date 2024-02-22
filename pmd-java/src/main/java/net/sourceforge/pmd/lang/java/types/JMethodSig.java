@@ -10,11 +10,9 @@ import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
-import net.sourceforge.pmd.lang.java.types.internal.InternalMethodTypeItf;
 
 /**
  * Represents the signature of methods and constructors. An instance of
@@ -172,13 +170,4 @@ public interface JMethodSig extends JTypeVisitable {
     default <T, P> T acceptVisitor(JTypeVisitor<T, P> visitor, P p) {
         return visitor.visitMethodType(this, p);
     }
-
-
-    /**
-     * Internal API, should not be used outside of the type inference
-     * implementation.
-     */
-    @InternalApi
-    InternalMethodTypeItf internalApi();
-
 }

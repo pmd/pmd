@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.InternalApiBridge;
 import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
@@ -291,7 +292,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
      */
     protected final RuleContext asCtx(Object ctx) {
         if (ctx instanceof RuleContext) {
-            assert isThisRule(((RuleContext) ctx).getRule())
+            assert isThisRule(InternalApiBridge.getRule((RuleContext) ctx))
                 : "not an appropriate rule context!";
             return (RuleContext) ctx;
         } else {

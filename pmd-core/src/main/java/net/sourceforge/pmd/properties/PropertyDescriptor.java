@@ -8,8 +8,9 @@ import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.rule.RuleSetWriter;
+import net.sourceforge.pmd.properties.internal.PropertyParsingUtil;
+import net.sourceforge.pmd.properties.internal.PropertyTypeId;
 
 
 /**
@@ -104,9 +105,10 @@ public final class PropertyDescriptor<T> {
      * Returns the type ID which was used to define this property. Returns
      * null if this property was defined in Java code and not in XML. This
      * is used to write the property back to XML, when using a {@link RuleSetWriter}.
+     *
+     * @apiNote Internal API
      */
-    @InternalApi
-    public @Nullable PropertyTypeId getTypeId() {
+    @Nullable PropertyTypeId getTypeId() {
         return typeId;
     }
 

@@ -5,12 +5,15 @@
 package net.sourceforge.pmd.cpd.test
 
 import io.kotest.assertions.throwables.shouldThrow
-import net.sourceforge.pmd.cpd.*
+import net.sourceforge.pmd.cpd.CpdCapableLanguage
+import net.sourceforge.pmd.cpd.CpdLexer
+import net.sourceforge.pmd.cpd.TokenEntry
+import net.sourceforge.pmd.cpd.Tokens
 import net.sourceforge.pmd.lang.LanguagePropertyBundle
 import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.ast.LexException
-import net.sourceforge.pmd.lang.document.TextDocument
 import net.sourceforge.pmd.lang.document.FileId
+import net.sourceforge.pmd.lang.document.TextDocument
 import net.sourceforge.pmd.test.BaseTextComparisonTest
 import org.apache.commons.lang3.StringUtils
 
@@ -170,10 +173,7 @@ abstract class CpdTextComparisonTest(
         FileData(fileName = fileName, fileText = text)
 
     fun tokenize(cpdLexer: CpdLexer, fileData: FileData): Tokens =
-        Tokens().also { tokens ->
-            val source = sourceCodeOf(fileData)
-            CpdLexer.tokenize(cpdLexer, source, tokens)
-        }
+        CpdLexer.tokenize(cpdLexer, sourceCodeOf(fileData))
 
     private companion object {
         const val Indent = "    "

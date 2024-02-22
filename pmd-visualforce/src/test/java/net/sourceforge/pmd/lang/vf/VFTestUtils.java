@@ -13,7 +13,7 @@ import java.util.Collections;
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 public final class VFTestUtils {
     private VFTestUtils() {
@@ -52,7 +52,7 @@ public final class VFTestUtils {
 
     public static LanguageProcessorRegistry fakeLpRegistry() {
         LanguageRegistry registry = new LanguageRegistry(setOf(ApexLanguageModule.getInstance(), VfLanguageModule.getInstance()));
-        return LanguageProcessorRegistry.create(registry, Collections.emptyMap(), MessageReporter.quiet());
+        return LanguageProcessorRegistry.create(registry, Collections.emptyMap(), PmdReporter.quiet());
     }
 
     /**

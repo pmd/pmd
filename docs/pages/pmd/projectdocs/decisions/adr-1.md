@@ -63,7 +63,7 @@ However, this also adds additional tasks, and it takes time to write down and do
 
 ## Change History
 
-2022-09-30: Status changed to "Accepted".
+2022-09-30: Status changed to "Accepted". ([#4072](https://github.com/pmd/pmd/pull/4072))
 
 2022-09-06: Added section "Change History" to the template. Added "Last updated" to "Status" section.
 

@@ -16,7 +16,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.rule.RuleSetLoader;
-import net.sourceforge.pmd.util.ResourceLoader;
+import net.sourceforge.pmd.util.internal.ResourceLoader;
 
 /**
  * This class is used to reference either a complete ruleset with all rules or to reference a single rule

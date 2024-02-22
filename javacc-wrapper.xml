@@ -283,7 +283,7 @@
         <!-- Use own LexException instead of JavaCC's TokenMgrError -->
         <replaceregexp>
             <regexp pattern='throw new TokenMgrError\(EOFSeen' />
-            <substitution expression='throw new net.sourceforge.pmd.lang.ast.LexException(EOFSeen' />
+            <substitution expression='throw net.sourceforge.pmd.lang.ast.InternalApiBridge.newLexException(EOFSeen' />
             <file name="${tokenmgr-file}" />
         </replaceregexp>
 

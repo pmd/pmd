@@ -19,10 +19,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import net.sourceforge.pmd.FooRule;
+import net.sourceforge.pmd.InternalApiBridgeForTestsOnly;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
-import net.sourceforge.pmd.cache.AnalysisCache;
-import net.sourceforge.pmd.cache.NoopAnalysisCache;
+import net.sourceforge.pmd.cache.internal.AnalysisCache;
+import net.sourceforge.pmd.cache.internal.NoopAnalysisCache;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.FileId;
@@ -71,7 +72,7 @@ class GlobalAnalysisListenerTest {
 
         PMDConfiguration config = newConfig();
         AnalysisCache mockCache = spy(NoopAnalysisCache.class);
-        config.setAnalysisCache(mockCache);
+        InternalApiBridgeForTestsOnly.setAnalysisCache(config, mockCache);
 
         MyFooRule rule = new MyFooRule();
         runPmd(config, GlobalAnalysisListener.noop(), rule);
@@ -86,7 +87,7 @@ class GlobalAnalysisListenerTest {
 
         PMDConfiguration config = newConfig();
         AnalysisCache mockCache = spy(NoopAnalysisCache.class);
-        config.setAnalysisCache(mockCache);
+        InternalApiBridgeForTestsOnly.setAnalysisCache(config, mockCache);
 
         BrokenRule rule = new BrokenRule();  // the broken rule throws
         runPmd(config, GlobalAnalysisListener.noop(), rule);
@@ -102,7 +103,7 @@ class GlobalAnalysisListenerTest {
 
         PMDConfiguration config = newConfig();
         AnalysisCache mockCache = spy(NoopAnalysisCache.class);
-        config.setAnalysisCache(mockCache);
+        InternalApiBridgeForTestsOnly.setAnalysisCache(config, mockCache);
 
         BrokenRule rule = new BrokenRule();  // the broken rule throws
         // now the exception should be propagated
@@ -122,7 +123,7 @@ class GlobalAnalysisListenerTest {
     @NonNull
     private PMDConfiguration newConfig() {
         PMDConfiguration config = new PMDConfiguration();
-        config.setAnalysisCache(new NoopAnalysisCache());
+        config.setAnalysisCacheLocation(null);
         config.setIgnoreIncrementalAnalysis(true);
         config.setThreads(0); // no multithreading for this test
         return config;

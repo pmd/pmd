@@ -16,9 +16,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import net.sourceforge.pmd.PmdAnalysis;
-import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.Rule;
@@ -49,10 +47,8 @@ public final class Report {
     private final List<ProcessingError> errors = synchronizedList(new ArrayList<>());
     private final List<ConfigurationError> configErrors = synchronizedList(new ArrayList<>());
 
-    @DeprecatedUntil700
-    @InternalApi
-    public Report() { // NOPMD - UnnecessaryConstructor
-        // TODO: should be package-private, you have to use a listener to build a report.
+    private Report() {
+        // constructor is private
     }
 
     /**
@@ -179,13 +175,8 @@ public final class Report {
      * Adds a new rule violation to the report and notify the listeners.
      *
      * @param violation the violation to add
-     *
-     * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
      */
-    @DeprecatedUntil700
-    @Deprecated
-    @InternalApi
-    public void addRuleViolation(RuleViolation violation) {
+    private void addRuleViolation(RuleViolation violation) {
         synchronized (violations) {
             // note that this binary search is inefficient as we usually
             // report violations file by file.
@@ -205,27 +196,17 @@ public final class Report {
      * Adds a new configuration error to the report.
      *
      * @param error the error to add
-     *
-     * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
      */
-    @DeprecatedUntil700
-    @Deprecated
-    @InternalApi
-    public void addConfigError(ConfigurationError error) {
+    private void addConfigError(ConfigurationError error) {
         configErrors.add(error);
     }
 
     /**
      * Adds a new processing error to the report.
      *
-     * @param error
-     *            the error to add
-     * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
+     * @param error the error to add
      */
-    @DeprecatedUntil700
-    @Deprecated
-    @InternalApi
-    public void addError(ProcessingError error) {
+    private void addError(ProcessingError error) {
         errors.add(error);
     }
 
