@@ -2443,7 +2443,7 @@ The full detailed documentation of the changes are available in the
   <li>CLI changed: Custom scripts need to be updated (<code class="language-plaintext highlighter-rouge">run.sh pmd ...</code> ➡️ <code class="language-plaintext highlighter-rouge">pmd check ...</code>, <code class="language-plaintext highlighter-rouge">run.sh cpd ...</code>, <code class="language-plaintext highlighter-rouge">pmd cpd ...</code>).</li>
   <li>Java module revamped: Custom rules need to be updated.</li>
   <li>Removed rules: Custom rulesets need to be reviewed. See below for a list of new and removed rules.</li>
-  <li>XPath 1.0 support is removed, <code class="language-plaintext highlighter-rouge">violationSuppressXPath</code> now requires XPath 2.0 or 3.1: Custom rulesets need
+  <li>XPath 1.0 and 2.0 support is removed, <code class="language-plaintext highlighter-rouge">violationSuppressXPath</code> now requires XPath 3.1: Custom rulesets need
 to be reviewed.</li>
   <li>Custom rules using rulechains: Need to override <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/AbstractRule.html#buildTargetSelector()"><code>buildTargetSelector</code></a>
 using <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/RuleTargetSelector.html#forTypes(java.lang.Class,java.lang.Class...)"><code>forTypes</code></a>.</li>
@@ -2455,6 +2455,7 @@ Keep that in mind, if you have an automated download script.</p>
     <p>The structure inside the ZIP files stay the same, e.g. we still provide inside the binary distribution
 ZIP file the base directory <code class="language-plaintext highlighter-rouge">pmd-bin-&lt;version&gt;</code>.</p>
   </li>
+  <li>For maven-pmd-plugin usage, see <a href="pmd_userdocs_tools_maven.html#using-pmd-7-with-maven-pmd-plugin">Using PMD 7 with maven-pmd-plugin</a>.</li>
 </ul>
 
 <h3 id="for-integrators">For integrators</h3>
@@ -4913,7 +4914,7 @@ Please use <code class="language-plaintext highlighter-rouge">net.sourceforge.pm
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Feb 16, 2024 <br />
+             Site last generated: Feb 22, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

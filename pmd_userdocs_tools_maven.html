@@ -1880,7 +1880,7 @@
 <p>When adding the maven-pmd-plugin to your pom.xml, you need to select a version. To figure out the
 latest available version, have a look at the official <a href="https://maven.apache.org/plugins/maven-pmd-plugin/">maven-pmd-plugin documentation</a>.</p>
 
-<p>As of March 2020, the current plugin version is <strong>3.13.0</strong>.</p>
+<p>As of February 2024, the current plugin version is <strong>3.21.2</strong>.</p>
 
 <p>The version of the plugin should be specified in <code class="language-plaintext highlighter-rouge">&lt;build&gt;&lt;pluginManagement/&gt;&lt;/build&gt;</code> and if using the project
 report additionally in <code class="language-plaintext highlighter-rouge">&lt;reporting&gt;&lt;plugins/&gt;&lt;/reporting&gt;</code> elements. Here’s an example for the pluginManagement
@@ -1892,7 +1892,7 @@ section:</p>
             <span class="nt">&lt;plugin&gt;</span>
                 <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
                 <span class="nt">&lt;artifactId&gt;</span>maven-pmd-plugin<span class="nt">&lt;/artifactId&gt;</span>
-                <span class="nt">&lt;version&gt;</span>3.13.0<span class="nt">&lt;/version&gt;</span>
+                <span class="nt">&lt;version&gt;</span>3.21.2<span class="nt">&lt;/version&gt;</span>
             <span class="nt">&lt;/plugin&gt;</span>
         <span class="nt">&lt;/plugins&gt;</span>
     <span class="nt">&lt;/pluginManagement&gt;</span>
@@ -1916,7 +1916,7 @@ the reports element in your pom.xml:</p>
             <span class="nt">&lt;plugin&gt;</span>
                 <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
                 <span class="nt">&lt;artifactId&gt;</span>maven-pmd-plugin<span class="nt">&lt;/artifactId&gt;</span>
-                <span class="nt">&lt;version&gt;</span>3.13.0<span class="nt">&lt;/version&gt;</span>
+                <span class="nt">&lt;version&gt;</span>3.21.2<span class="nt">&lt;/version&gt;</span>
             <span class="nt">&lt;/plugin&gt;</span>
         <span class="nt">&lt;/plugins&gt;</span>
     <span class="nt">&lt;/reporting&gt;</span>
@@ -1947,7 +1947,7 @@ PMD finds some violations. Therefore the <code class="language-plaintext highlig
       <span class="nt">&lt;plugin&gt;</span>
         <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
         <span class="nt">&lt;artifactId&gt;</span>maven-pmd-plugin<span class="nt">&lt;/artifactId&gt;</span>
-        <span class="nt">&lt;version&gt;</span>3.13.0<span class="nt">&lt;/version&gt;</span> <span class="c">&lt;!-- or use version from pluginManagement --&gt;</span>
+        <span class="nt">&lt;version&gt;</span>3.21.2<span class="nt">&lt;/version&gt;</span> <span class="c">&lt;!-- or use version from pluginManagement --&gt;</span>
         <span class="nt">&lt;configuration&gt;</span>
             <span class="c">&lt;!-- failOnViolation is actually true by default, but can be disabled --&gt;</span>
             <span class="nt">&lt;failOnViolation&gt;</span>true<span class="nt">&lt;/failOnViolation&gt;</span>
@@ -1982,7 +1982,7 @@ you add <code class="language-plaintext highlighter-rouge">cpd-check</code> as a
         <span class="nt">&lt;plugin&gt;</span>
             <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
             <span class="nt">&lt;artifactId&gt;</span>maven-pmd-plugin<span class="nt">&lt;/artifactId&gt;</span>
-            <span class="nt">&lt;version&gt;</span>3.13.0<span class="nt">&lt;/version&gt;</span>
+            <span class="nt">&lt;version&gt;</span>3.21.2<span class="nt">&lt;/version&gt;</span>
             <span class="nt">&lt;configuration&gt;</span>
                 <span class="nt">&lt;rulesets&gt;</span>
                     <span class="nt">&lt;ruleset&gt;</span>/rulesets/java/quickstart.xml<span class="nt">&lt;/ruleset&gt;</span>
@@ -2012,7 +2012,7 @@ speed up PMD’s execution while retaining the quality of the analysis. You can 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;plugin&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
     <span class="nt">&lt;artifactId&gt;</span>maven-pmd-plugin<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>3.13.0<span class="nt">&lt;/version&gt;</span> <span class="c">&lt;!-- or use version from pluginManagement --&gt;</span>
+    <span class="nt">&lt;version&gt;</span>3.21.2<span class="nt">&lt;/version&gt;</span> <span class="c">&lt;!-- or use version from pluginManagement --&gt;</span>
     <span class="nt">&lt;configuration&gt;</span>
         <span class="c">&lt;!-- enable incremental analysis --&gt;</span>
         <span class="nt">&lt;analysisCache&gt;</span>true<span class="nt">&lt;/analysisCache&gt;</span>
@@ -2030,7 +2030,7 @@ the report to html source files, and the file encoding:</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;plugin&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
     <span class="nt">&lt;artifactId&gt;</span>maven-pmd-plugin<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>3.13.0<span class="nt">&lt;/version&gt;</span> <span class="c">&lt;!-- or use version from pluginManagement --&gt;</span>
+    <span class="nt">&lt;version&gt;</span>3.21.2<span class="nt">&lt;/version&gt;</span> <span class="c">&lt;!-- or use version from pluginManagement --&gt;</span>
     <span class="nt">&lt;configuration&gt;</span>
         <span class="nt">&lt;linkXRef&gt;</span>true<span class="nt">&lt;/linkXRef&gt;</span>
         <span class="nt">&lt;sourceEncoding&gt;</span>ISO-8859-1<span class="nt">&lt;/sourceEncoding&gt;</span>
@@ -2059,7 +2059,7 @@ Maven plugin will use and benefit from the latest bugfixes and enhancements:</p>
                 <span class="nt">&lt;plugin&gt;</span>
                     <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
                     <span class="nt">&lt;artifactId&gt;</span>maven-pmd-plugin<span class="nt">&lt;/artifactId&gt;</span>
-                    <span class="nt">&lt;version&gt;</span>3.13.0<span class="nt">&lt;/version&gt;</span>
+                    <span class="nt">&lt;version&gt;</span>3.21.2<span class="nt">&lt;/version&gt;</span>
                     <span class="nt">&lt;dependencies&gt;</span>
                         <span class="nt">&lt;dependency&gt;</span>
                             <span class="nt">&lt;groupId&gt;</span>net.sourceforge.pmd<span class="nt">&lt;/groupId&gt;</span>
@@ -2090,61 +2090,52 @@ Maven plugin will use and benefit from the latest bugfixes and enhancements:</p>
 <span class="nt">&lt;/project&gt;</span>
 </code></pre></div></div>
 
+<h4 id="using-pmd-7-with-maven-pmd-plugin">Using PMD 7 with maven-pmd-plugin</h4>
+
+<p>The Maven PMD plugin comes with a specific PMD version, which is documented on the
+<a href="https://maven.apache.org/plugins/maven-pmd-plugin/index.html">plugin project page</a>.
+This might not support PMD 7 out of the box.</p>
+
+<p>Since PMD 7 is a major release which breaks compatibility in various ways, the solution described
+above in <a href="#upgrading-the-pmd-version-at-runtime">Upgrading the PMD version at runtime</a> doesn’t work
+directly.</p>
+
+<p>In order to use PMD 7 with <a href="https://maven.apache.org/plugins/maven-pmd-plugin/">maven-pmd-plugin</a> a new
+compatibility module has been created. This allows to use PMD 7 by simply adding one additional dependency:</p>
+
+<ol>
+  <li>Follow the guide <a href="https://maven.apache.org/plugins/maven-pmd-plugin/examples/upgrading-PMD-at-runtime.html">Upgrading PMD at Runtime</a></li>
+  <li>Add additionally the following dependency:</li>
+</ol>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>net.sourceforge.pmd<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>pmd-compat6<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>${pmdVersion}<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div></div>
+
+<p>It is important to add this dependency as the <strong>first</strong> in the list, so that maven-pmd-plugin sees the (old)
+compatible versions of some classes.</p>
+
+<p>This module is available beginning with version 7.0.0-rc4 and will be there at least for the first
+final version PMD 7 (7.0.0). It’s not decided yet, whether we will keep updating it, after PMD 7 is finally
+released.</p>
+
+<p>Note: This compatibility module only works for the built-in rules, that are still available in PMD 7. E.g. you need
+to review your rulesets and look out for deprecated rules and such. See the use case
+<a href="pmd_userdocs_migrating_to_pmd7.html#im-using-only-built-in-rules">I’m using only built-in rules</a>
+in the <a href="pmd_userdocs_migrating_to_pmd7.html">Migration Guide for PMD 7</a>.</p>
+
+<p>As PMD 7 revamped the Java module, if you have custom rules, you need to migrate these rules.
+See the use case <a href="pmd_userdocs_migrating_to_pmd7.html#im-using-custom-rules">I’m using custom rules</a>
+in the Migration Guide.</p>
+
 <h3 id="reference">Reference</h3>
 
 <p>For more information, please see the well documented PMD plugin project page here:
 <a href="http://maven.apache.org/plugins/maven-pmd-plugin/index.html">http://maven.apache.org/plugins/maven-pmd-plugin/index.html</a>.
-Also, the bug tracker for this plugin is <a href="https://issues.apache.org/jira/browse/MPMD">here</a>.</p>
-
-<h2 id="maven-1">Maven 1</h2>
-
-<div class="alert alert-danger" role="alert"><i class="fas fa-exclamation-circle"></i> <b>Warning:</b> Apache Maven 1.x has reached its end of life, and is no longer supported. For more information, see the <a href="http://maven.apache.org/maven-1.x-eol.html">announcement</a>. Users are encouraged to migrate to the current version of Apache Maven.</div>
-
-<p>This section is about the maven 1 PMD plugin.</p>
-
-<h3 id="running-the-pmd-plugin-1">Running the pmd plugin</h3>
-
-<h4 id="generating-a-project-report-1">Generating a project report</h4>
-
-<p>To include the PMD report in the project reports section add the following line under
-the reports element in your project.xml:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;report&gt;maven-pmd-plugin&lt;/report&gt;
-</code></pre></div></div>
-
-<p>This will add an entry to the ‘project reports’ section with the PMD report.</p>
-
-<h4 id="executing-pmd-manually-1">Executing PMD manually</h4>
-
-<p>To run PMD on a Maven project without adding it as a report, simply run</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>maven pmd xdoc
-</code></pre></div></div>
-
-<p>The PMD plugin writes the report in XML which will then be formatted into more readable HTML.</p>
-
-<h3 id="customization-1">Customization</h3>
-
-<h4 id="changing-rulesets-1">Changing rulesets</h4>
-
-<p>To specify a set of official, built-in rulesets to be used set them in the property
-<em>maven.pmd.rulesets</em>.  You can include this setting in your project.properties file.</p>
-
-<p>A clean strategy for customizing which rules to use for a project is to write a ruleset file.
-In this file you can define which rules to use, add custom rules, and
-customizing which rules to include/exclude from official rulesets. More information on
-writing a ruleset can be found <a href="pmd_userdocs_making_rulesets.html">here</a>.</p>
-
-<p>Add to the root of your Maven project a pmd.xml file which contains the ruleset mentioned in
-the previous paragraph. Add the following property to your project now:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>maven.pmd.rulesetfiles = ${basedir}/pmd.xml
-</code></pre></div></div>
-
-<h3 id="reference-1">Reference</h3>
-
-<p>See the PMD plugin project page here:
-<a href="http://maven.apache.org/maven-1.x/plugins/pmd/">http://maven.apache.org/maven-1.x/plugins/pmd/</a></p>
+Also, the bug tracker for this plugin is <a href="https://issues.apache.org/jira/browse/MPMD">MPMD</a>.</p>
 
 
     <div class="tags">
@@ -2187,7 +2178,7 @@ the previous paragraph. Add the following property to your project now:</p>
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            March 2020<br /> Site last generated: Feb 16, 2024 <br />
+            February 2024<br /> Site last generated: Feb 22, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
