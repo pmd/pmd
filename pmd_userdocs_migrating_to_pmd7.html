@@ -5328,6 +5328,32 @@ parenthesis, which makes it harder to fool rules that look at the structure of t
 
 </details>
 
+<h3 id="apex-ast">Apex AST</h3>
+
+<p>PMD 7.0.0 switched the underlying parser for Apex code from Jorje to <a href="https://github.com/google/summit-ast">Summit AST</a>,
+which is based on an open source grammar for Apex: <a href="https://github.com/nawforce/apex-parser">apex-parser</a>.</p>
+
+<p>The produced AST is mostly compatible, there are some unavoidable changes however:</p>
+
+<ul>
+  <li>Node <code class="language-plaintext highlighter-rouge">Method</code> (<a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTMethod.html#"><code>ASTMethod</code></a>)
+    <ul>
+      <li>No attribute <code class="language-plaintext highlighter-rouge">@Synthetic</code> anymore. Unlike Jorje, Summit AST doesn’t generate synthetic methods anymore, so
+this attribute would have been always false and is of no use. Therefore it has been removed completely.</li>
+      <li>There will be no methods anymore with the name <code class="language-plaintext highlighter-rouge">&lt;clinit&gt;</code>, <code class="language-plaintext highlighter-rouge">&lt;init&gt;</code>.</li>
+    </ul>
+  </li>
+  <li>There is no node <code class="language-plaintext highlighter-rouge">BridgeMethodCreator</code> anymore. This was an artificially generated node by Jorje. Since the
+new parser doesn’t generate synthetic methods anymore, this node is not needed anymore.</li>
+  <li>There is in general no attribute <code class="language-plaintext highlighter-rouge">@Namespace</code> anymore. The attribute has been removed, as it was never fully
+implemented. It always returned an empty string.</li>
+  <li>Node <code class="language-plaintext highlighter-rouge">ReferenceExpression</code> (<a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTReferenceExpression.html#"><code>ASTReferenceExpression</code></a>)
+    <ul>
+      <li>No attribute <code class="language-plaintext highlighter-rouge">@Context</code> anymore. It was not used and always returned <code class="language-plaintext highlighter-rouge">null</code>.</li>
+    </ul>
+  </li>
+</ul>
+
 <h3 id="language-versions">Language versions</h3>
 
 <ul>
