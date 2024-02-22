@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.PrefixExpression;
+import com.google.summit.ast.expression.UnaryExpression;
 
-public final class ASTPrefixExpression extends AbstractApexNode<PrefixExpression> {
+public final class ASTPrefixExpression extends AbstractApexNode.Single<UnaryExpression> {
 
-    ASTPrefixExpression(PrefixExpression prefixExpression) {
-        super(prefixExpression);
+    ASTPrefixExpression(UnaryExpression unaryExpression) {
+        super(unaryExpression);
     }
 
     @Override

@@ -20,4 +20,11 @@ class ASTMethodTest extends ApexParserTestBase {
         assertEquals("<init>", methods.get(0).getCanonicalName());
         assertEquals("bar", methods.get(1).getImage()); // normal method
     }
+
+    @Test
+    void qualifiedNameWithGenerics() {
+        ASTUserClass node = (ASTUserClass) parse("public class Foo { public void bar(List<SObject> mylist, Map<Id, SObject> oldMap) {}}");
+        ApexQualifiedName qualifiedName = node.getMethods().first().getQualifiedName();
+        assertEquals("bar(List<SObject>, Map<Id, SObject>)", qualifiedName.getOperation());
+    }
 }

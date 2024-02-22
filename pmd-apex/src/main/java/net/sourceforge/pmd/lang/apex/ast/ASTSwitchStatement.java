@@ -4,15 +4,13 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.statement.SwitchStatement;
+import com.google.summit.ast.statement.SwitchStatement;
 
-public final class ASTSwitchStatement extends AbstractApexNode<SwitchStatement> {
+public final class ASTSwitchStatement extends AbstractApexNode.Single<SwitchStatement> {
 
-
-    ASTSwitchStatement(SwitchStatement node) {
-        super(node);
+    ASTSwitchStatement(SwitchStatement switchStatement) {
+        super(switchStatement);
     }
-
 
 
     @Override

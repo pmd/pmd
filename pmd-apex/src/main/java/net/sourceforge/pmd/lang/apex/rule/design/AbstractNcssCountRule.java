@@ -150,7 +150,7 @@ abstract class AbstractNcssCountRule<T extends ApexNode<?>> extends AbstractCoun
 
         @Override
         public Integer visit(ASTMethod node, Void data) {
-            return node.isSynthetic() ? 0 : countNodeChildren(node, data);
+            return countNodeChildren(node, data);
         }
 
         @Override

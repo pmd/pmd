@@ -657,12 +657,6 @@
                 <version>${antlr.version}</version>
             </dependency>
             <dependency>
-                <!-- old antlr version used by apex-jorje -->
-                <groupId>org.antlr</groupId>
-                <artifactId>antlr-runtime</artifactId>
-                <version>3.5.2</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.ant</groupId>
                 <artifactId>ant</artifactId>
                 <version>${ant.version}</version>
@@ -760,7 +754,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>32.0.1-jre</version>
+                <version>33.0.0-jre</version>
             </dependency>
 
             <!-- needed by pmd-apex via apex-link -->
@@ -882,13 +876,13 @@
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-stdlib</artifactId>
                 <version>${kotlin.version}</version>
-                <scope>test</scope>
+                <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-stdlib-jdk8</artifactId>
                 <version>${kotlin.version}</version>
-                <scope>test</scope>
+                <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
@@ -1204,7 +1198,6 @@
     </profiles>
 
     <modules>
-        <module>pmd-apex-jorje</module>
         <module>pmd-apex</module>
         <module>pmd-coco</module>
         <module>pmd-core</module>

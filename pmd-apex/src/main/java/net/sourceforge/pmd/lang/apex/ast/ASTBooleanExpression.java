@@ -4,13 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.BooleanExpression;
+import com.google.summit.ast.expression.BinaryExpression;
 
+public final class ASTBooleanExpression extends AbstractApexNode.Single<BinaryExpression> {
 
-public final class ASTBooleanExpression extends AbstractApexNode<BooleanExpression> {
-
-    ASTBooleanExpression(BooleanExpression booleanExpression) {
-        super(booleanExpression);
+    ASTBooleanExpression(BinaryExpression binaryExpression) {
+        super(binaryExpression);
     }
 
     @Override

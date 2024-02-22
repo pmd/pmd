@@ -8,6 +8,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A place in a text document, represented as line/column information.
+ * <p>Line and column are 1-based.</p>
  */
 public final class TextPos2d implements Comparable<TextPos2d> {
 

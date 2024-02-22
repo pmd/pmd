@@ -35,7 +35,7 @@ public enum DataType {
     IndirectLookup(false),
     Location(false),
     LongTextArea(true),
-    Lookup(false, "ID"),
+    Lookup(false, "Id"),
     MasterDetail(false),
     MetadataRelationship(false),
     MultiselectPicklist(true),

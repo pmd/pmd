@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.compilation.Compilation;
+import com.google.summit.ast.declaration.TypeDeclaration;
 
-abstract class BaseApexClass<T extends Compilation> extends AbstractApexNode<T> implements ASTUserClassOrInterface<T> {
+abstract class BaseApexClass<T extends TypeDeclaration> extends AbstractApexNode.Single<T> implements ASTUserClassOrInterface<T> {
 
     private ApexQualifiedName qname;
 
@@ -26,8 +26,7 @@ abstract class BaseApexClass<T extends Compilation> extends AbstractApexNode<T> 
 
     @Override
     public String getSimpleName() {
-        String apexName = getDefiningType();
-        return apexName.substring(apexName.lastIndexOf('.') + 1);
+        return node.getId().getString();
     }
 
     @Override

@@ -56,7 +56,7 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionsRule {
             return data;
         }
 
-        if ("<clinit>".equals(node.getImage()) || "clone".equals(node.getImage())) {
+        if (node.isStaticInitializer()) {
             return data;
         }
 

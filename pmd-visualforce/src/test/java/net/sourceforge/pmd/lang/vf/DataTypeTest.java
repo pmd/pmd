@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 class DataTypeTest {
+
     @Test
     void testFromString() {
         assertEquals(DataType.AutoNumber, DataType.fromString("AutoNumber"));

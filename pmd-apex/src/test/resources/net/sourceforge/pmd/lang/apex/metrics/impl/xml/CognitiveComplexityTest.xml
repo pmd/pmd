@@ -7,7 +7,7 @@
         <description>If statements have complexity 1</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'c__Foo#foo(Integer)' has value 1.</message>
+            <message>'Foo#foo(Integer)' has value 1.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -28,7 +28,7 @@
         <description>Nested if statements bump complexity level</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'c__Foo#foo(Integer)' has value 3.</message>
+            <message>'Foo#foo(Integer)' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -53,7 +53,7 @@
         <description>Non nested if statements don't incur a penalty</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'c__Foo#foo(Integer)' has value 3.</message>
+            <message>'Foo#foo(Integer)' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -80,7 +80,7 @@
         <description>Else-if blocks count as non-nested</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'c__Foo#foo(Integer)' has value 3.</message>
+            <message>'Foo#foo(Integer)' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -103,7 +103,7 @@
         <description>For loops increment nesting</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'c__Foo#foo()' has value 3.</message>
+            <message>'Foo#foo()' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -126,7 +126,7 @@
         <description>Foreach loops increment nesting</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'c__Foo#foo()' has value 3.</message>
+            <message>'Foo#foo()' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -150,7 +150,7 @@
         <description>Continue statements don't increase complexity</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'c__Foo#foo()' has value 3.</message>
+            <message>'Foo#foo()' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -174,7 +174,7 @@
         <description>Break statements don't increase complexity</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'c__Foo#foo()' has value 3.</message>
+            <message>'Foo#foo()' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -198,7 +198,7 @@
         <description>While statements increase nesting</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'c__Foo#foo()' has value 3.</message>
+            <message>'Foo#foo()' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -224,7 +224,7 @@
         <description>Only the catch statement increases nesting</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'c__Foo#foo()' has value 4.</message>
+            <message>'Foo#foo()' has value 4.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -251,7 +251,7 @@
         <description>Do-while loops cause nesting</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'c__Foo#foo()' has value 4.</message>
+            <message>'Foo#foo()' has value 4.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -276,7 +276,7 @@
         <description>Ternary operators cause nesting</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'c__Foo#foo(Integer)' has value 3.</message>
+            <message>'Foo#foo(Integer)' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -295,12 +295,12 @@
         <description>Boolean operators</description>
         <expected-problems>6</expected-problems>
         <expected-messages>
-            <message>'c__Foo#a(Integer)' has value 1.</message>
-            <message>'c__Foo#b(Integer)' has value 1.</message>
-            <message>'c__Foo#c(Integer)' has value 1.</message>
-            <message>'c__Foo#d(Boolean, Boolean, Boolean, Boolean, Boolean, Boolean)' has value 3.</message>
-            <message>'c__Foo#e(Boolean, Boolean, Boolean)' has value 2.</message>
-            <message>'c__Foo#f()' has value 2.</message>
+            <message>'Foo#a(Integer)' has value 1.</message>
+            <message>'Foo#b(Integer)' has value 1.</message>
+            <message>'Foo#c(Integer)' has value 1.</message>
+            <message>'Foo#d(Boolean, Boolean, Boolean, Boolean, Boolean, Boolean)' has value 3.</message>
+            <message>'Foo#e(Boolean, Boolean, Boolean)' has value 2.</message>
+            <message>'Foo#f()' has value 2.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -343,7 +343,7 @@
         <description>Recursion bumps complexity value</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'c__Foo#foo(Integer)' has value 3.</message>
+            <message>'Foo#foo(Integer)' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -364,7 +364,7 @@
         <description>Switch statements only gain 1 complexity regardless of the number of cases</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'c__Foo#foo(Integer)' has value 3.</message>
+            <message>'Foo#foo(Integer)' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -395,7 +395,7 @@
         <description>Nested else-if statements don't receive nesting increment</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'c__Foo#foo(Integer)' has value 4.</message>
+            <message>'Foo#foo(Integer)' has value 4.</message>
         </expected-messages>
         <code>
             <![CDATA[

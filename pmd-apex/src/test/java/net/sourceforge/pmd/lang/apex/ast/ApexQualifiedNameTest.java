@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -24,9 +23,8 @@ class ApexQualifiedNameTest extends ApexParserTestBase {
         ASTUserClass root = (ASTUserClass) parse("public class Foo {}");
 
         ApexQualifiedName qname = root.getQualifiedName();
-        assertEquals("c__Foo", qname.toString());
+        assertEquals("Foo", qname.toString());
         assertEquals(1, qname.getClasses().length);
-        assertNotNull(qname.getNameSpace());
         assertNull(qname.getOperation());
     }
 
@@ -37,9 +35,8 @@ class ApexQualifiedNameTest extends ApexParserTestBase {
 
         ASTUserClass inner = root.descendants(ASTUserClass.class).firstOrThrow();
         ApexQualifiedName qname = inner.getQualifiedName();
-        assertEquals("c__Foo.Bar", qname.toString());
+        assertEquals("Foo.Bar", qname.toString());
         assertEquals(2, qname.getClasses().length);
-        assertNotNull(qname.getNameSpace());
         assertNull(qname.getOperation());
     }
 
@@ -48,9 +45,8 @@ class ApexQualifiedNameTest extends ApexParserTestBase {
     void testSimpleMethod() {
         ASTUserClass root = (ASTUserClass) parse("public class Foo { String foo() {}}");
         ApexQualifiedName qname = root.descendants(ASTMethod.class).firstOrThrow().getQualifiedName();
-        assertEquals("c__Foo#foo()", qname.toString());
+        assertEquals("Foo#foo()", qname.toString());
         assertEquals(1, qname.getClasses().length);
-        assertNotNull(qname.getNameSpace());
         assertEquals("foo()", qname.getOperation());
     }
 
@@ -59,9 +55,8 @@ class ApexQualifiedNameTest extends ApexParserTestBase {
     void testMethodWithArguments() {
         ASTUserClass root = (ASTUserClass) parse("public class Foo { String foo(String h, Foo g) {}}");
         ApexQualifiedName qname = root.descendants(ASTMethod.class).firstOrThrow().getQualifiedName();
-        assertEquals("c__Foo#foo(String, Foo)", qname.toString());
+        assertEquals("Foo#foo(String, Foo)", qname.toString());
         assertEquals(1, qname.getClasses().length);
-        assertNotNull(qname.getNameSpace());
         assertEquals("foo(String, Foo)", qname.getOperation());
     }
 
@@ -89,7 +84,7 @@ class ApexQualifiedNameTest extends ApexParserTestBase {
 
 
         ASTMethod m = root.descendants(ASTMethod.class).firstOrThrow();
-        assertEquals("c__trigger.Account#myAccountTrigger", m.getQualifiedName().toString());
+        assertEquals("trigger.Account#myAccountTrigger", m.getQualifiedName().toString());
     }
 
 
@@ -100,9 +95,9 @@ class ApexQualifiedNameTest extends ApexParserTestBase {
         ApexQualifiedName enumQName = root.getQualifiedName();
         List<ASTMethod> methods = root.descendants(ASTMethod.class).toList();
 
-        assertEquals("c__primaryColor", enumQName.toString());
+        assertEquals("primaryColor", enumQName.toString());
         for (ASTMethod m : methods) {
-            assertTrue(m.getQualifiedName().toString().startsWith("c__primaryColor#"));
+            assertTrue(m.getQualifiedName().toString().startsWith("primaryColor#"));
         }
     }
 
@@ -114,9 +109,9 @@ class ApexQualifiedNameTest extends ApexParserTestBase {
         ApexQualifiedName enumQName = enumNode.getQualifiedName();
         List<ASTMethod> methods = enumNode.descendants(ASTMethod.class).toList();
 
-        assertEquals("c__Outer.Inner", enumQName.toString());
+        assertEquals("Outer.Inner", enumQName.toString());
         for (ASTMethod m : methods) {
-            assertTrue(m.getQualifiedName().toString().startsWith("c__Outer.Inner#"));
+            assertTrue(m.getQualifiedName().toString().startsWith("Outer.Inner#"));
         }
     }
 }

@@ -10,7 +10,6 @@ import java.util.function.Predicate;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.internal.util.PredicateUtil;
-import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
@@ -114,7 +113,7 @@ public final class ApexMetrics {
 
 
     private static Function<Node, ApexNode<?>> isRegularApexNode() {
-        return filterMapNode(GENERIC_APEX_NODE_CLASS, n -> !(n instanceof ASTMethod && ((ASTMethod) n).isSynthetic()));
+        return filterMapNode(GENERIC_APEX_NODE_CLASS, PredicateUtil.always());
     }
 
 

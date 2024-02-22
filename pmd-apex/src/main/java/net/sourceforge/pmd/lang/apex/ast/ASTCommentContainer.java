@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.AstNode;
-
 /**
  * Interface for nodes that can contain comments. Because comments are for the most part lost, the tree builder only
  * captures whether the node did contain comments of any sort in the source code and not the actual contents of those
@@ -14,7 +12,7 @@ import apex.jorje.semantic.ast.AstNode;
  * <p>This information is used for the rule "EmptyCatchBlock", which can ignore empty catch blocks, if they
  * contain comments.
  */
-public interface ASTCommentContainer<T extends AstNode> extends ApexNode<T> {
+public interface ASTCommentContainer extends ApexNode<Void> {
 
     boolean getContainsComment();
 }

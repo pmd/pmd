@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.JavaVariableExpression;
+import com.google.summit.ast.Node;
 
-public final class ASTJavaVariableExpression extends AbstractApexNode<JavaVariableExpression> {
+public final class ASTJavaVariableExpression extends AbstractApexNode.Single<Node> {
 
-    ASTJavaVariableExpression(JavaVariableExpression javaVariableExpression) {
+    ASTJavaVariableExpression(Node javaVariableExpression) {
         super(javaVariableExpression);
     }
 

@@ -8,22 +8,18 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
-import apex.jorje.semantic.ast.AstNode;
-
 /**
  * Root interface implemented by all Apex nodes. Apex nodes wrap a tree
- * obtained from an external parser (Jorje).
+ * obtained from an external parser.
  *
- * @param <T> Type of the underlying Jorje node
+ * @param <T> Type of the underlying Summit AST node (or Void)
  */
-public interface ApexNode<T extends AstNode> extends GenericNode<ApexNode<?>> {
+public interface ApexNode<T> extends GenericNode<ApexNode<?>> {
+
     boolean hasRealLoc();
 
 
     String getDefiningType();
-
-
-    String getNamespace();
 
 
     @Override

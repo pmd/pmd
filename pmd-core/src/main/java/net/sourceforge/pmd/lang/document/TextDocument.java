@@ -188,12 +188,12 @@ public interface TextDocument extends Closeable {
 
     /**
      * Returns the line and column at the given offset (inclusive).
-     * Note that the line/column cannot be converted back. They are
-     * absolute in the coordinate system of the original document.
      *
      * @param offset A source offset (0-based), can range in {@code [0, length]}.
      *
      * @throws IndexOutOfBoundsException if the offset is out of bounds
+     * @see #lineColumnAtOffset(int, boolean)
+     * @see #offsetAtLineColumn(TextPos2d)
      */
     default TextPos2d lineColumnAtOffset(int offset) {
         return lineColumnAtOffset(offset, true);
@@ -213,9 +213,19 @@ public interface TextDocument extends Closeable {
      * @return A position, in the coordinate system of the root document
      *
      * @throws IndexOutOfBoundsException if the offset is out of bounds
+     * @see #offsetAtLineColumn(TextPos2d)
      */
     TextPos2d lineColumnAtOffset(int offset, boolean inclusive);
 
+    /**
+     * Calculates the offset from a given line/column.
+     *
+     * @param position the line/column
+     *
+     * @see #lineColumnAtOffset(int)
+     * @see #lineColumnAtOffset(int, boolean)
+     */
+    int offsetAtLineColumn(TextPos2d position);
 
     /**
      * Closing a document closes the underlying {@link TextFile}.

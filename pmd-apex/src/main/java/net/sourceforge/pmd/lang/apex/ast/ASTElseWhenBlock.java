@@ -4,15 +4,13 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.statement.ElseWhenBlock;
+import com.google.summit.ast.statement.SwitchStatement;
 
-public final class ASTElseWhenBlock extends AbstractApexNode<ElseWhenBlock> {
+public final class ASTElseWhenBlock extends AbstractApexNode.Single<SwitchStatement.WhenElse> {
 
-
-    ASTElseWhenBlock(ElseWhenBlock node) {
-        super(node);
+    ASTElseWhenBlock(SwitchStatement.WhenElse whenElse) {
+        super(whenElse);
     }
-
 
 
     @Override

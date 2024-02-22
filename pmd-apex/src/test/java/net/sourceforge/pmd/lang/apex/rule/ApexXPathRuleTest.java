@@ -38,6 +38,4 @@ class ApexXPathRuleTest extends ApexParserTestBase {
                                                    "BooleanExpressions.cls");
         assertSize(report, 1);
     }
-
-
 }

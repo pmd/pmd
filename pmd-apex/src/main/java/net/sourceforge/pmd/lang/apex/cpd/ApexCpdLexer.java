@@ -7,39 +7,32 @@ package net.sourceforge.pmd.lang.apex.cpd;
 import java.io.IOException;
 import java.util.Locale;
 
-import org.antlr.runtime.ANTLRReaderStream;
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.Lexer;
-import org.antlr.runtime.Token;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.Token;
 
 import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.cpd.TokenFactory;
-import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
+import net.sourceforge.pmd.lang.apex.internal.AntlrVersionCheckSuppression;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
-import apex.jorje.parser.impl.ApexLexer;
+import com.nawforce.apexparser.ApexLexer;
 
 public class ApexCpdLexer implements CpdLexer {
-
-    public ApexCpdLexer() {
-        ApexJorjeLogging.disableLogging();
+    static {
+        AntlrVersionCheckSuppression.initApexLexer();
     }
 
     @Override
     public void tokenize(TextDocument document, TokenFactory tokenEntries) throws IOException {
 
-        ANTLRStringStream ass = new ANTLRReaderStream(document.newReader());
-        ApexLexer lexer = new ApexLexer(ass) {
-            @Override
-            public void emitErrorMessage(String msg) {
-                throw tokenEntries.makeLexException(getLine(), getCharPositionInLine(), msg, null);
-            }
-        };
+        CharStream charStream = CharStreams.fromReader(document.newReader());
+        ApexLexer lexer = new ApexLexer(charStream);
 
         Token token = lexer.nextToken();
 
         while (token.getType() != Token.EOF) {
-            if (token.getChannel() != Lexer.HIDDEN) {
+            if (token.getChannel() == ApexLexer.DEFAULT_TOKEN_CHANNEL) { // exclude WHITESPACE_CHANNEL and COMMENT_CHANNEL
                 String tokenText = token.getText();
                 // be case-insensitive
                 tokenText = tokenText.toLowerCase(Locale.ROOT);

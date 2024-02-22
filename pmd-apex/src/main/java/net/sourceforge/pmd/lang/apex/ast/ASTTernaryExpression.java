@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.TernaryExpression;
+import com.google.summit.ast.expression.TernaryExpression;
 
-public final class ASTTernaryExpression extends AbstractApexNode<TernaryExpression> {
+public final class ASTTernaryExpression extends AbstractApexNode.Single<TernaryExpression> {
 
     ASTTernaryExpression(TernaryExpression ternaryExpression) {
         super(ternaryExpression);

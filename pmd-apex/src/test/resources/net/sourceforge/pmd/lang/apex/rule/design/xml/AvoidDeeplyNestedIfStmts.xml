@@ -71,4 +71,25 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>nested ifs with else if</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,7</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void bar(Integer x, Integer y, Integer z) {
+        if (x>y) {
+            if (y>z) {
+                if (z==x) { // violation 1
+                    // !! too deep
+                } else if (z == 42) { // violation 2
+                    // !! too deep
+                }
+            }
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
