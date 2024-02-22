@@ -184,7 +184,7 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
 
     @Override
     public String getDefiningType() {
-        BaseApexClass<?> baseNode = this instanceof BaseApexClass ? (BaseApexClass<?>) this : getFirstParentOfType(BaseApexClass.class);
+        BaseApexClass<?> baseNode = this instanceof BaseApexClass ? (BaseApexClass<?>) this : ancestors(BaseApexClass.class).first();
         if (baseNode != null) {
             return baseNode.getQualifiedName().toString();
         }

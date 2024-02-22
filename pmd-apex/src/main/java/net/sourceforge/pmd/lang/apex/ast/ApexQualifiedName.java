@@ -161,7 +161,7 @@ public final class ApexQualifiedName {
         StringBuilder sb = new StringBuilder();
         sb.append(node.getImage()).append('(');
 
-        List<String> paramTypes = node.findChildrenOfType(ASTParameter.class).stream()
+        List<String> paramTypes = node.children(ASTParameter.class).toStream()
             .map(ASTParameter::getType)
             .collect(Collectors.toList());
 

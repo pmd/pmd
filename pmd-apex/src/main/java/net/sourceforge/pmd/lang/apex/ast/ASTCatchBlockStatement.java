@@ -27,6 +27,6 @@ public final class ASTCatchBlockStatement extends AbstractApexCommentContainerNo
     }
 
     public ASTBlockStatement getBody() {
-        return getFirstChildOfType(ASTBlockStatement.class);
+        return firstChild(ASTBlockStatement.class);
     }
 }

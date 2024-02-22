@@ -769,7 +769,7 @@ class ApexTreeBuilder(val task: ParserTask, val proc: ApexLanguageProcessor) {
         root: AbstractApexNode,
         nodeType: KClass<T>
     ): List<T> =
-        root.findDescendantsOfType(nodeType.java, true) + (if (root is T) listOf(root) else emptyList())
+        root.descendants(nodeType.java).crossFindBoundaries().toList() + (if (root is T) listOf(root) else emptyList())
 
     /** Generates [ASTField] nodes for the [ASTFieldDeclarationStatements]. */
     private fun generateFields(node: ASTFieldDeclarationStatements) {
