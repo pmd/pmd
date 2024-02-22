@@ -29,7 +29,7 @@ abstract class AbstractApexUnitTestRule extends AbstractApexRule {
     }
 
     protected boolean isTestMethodOrClass(final ApexNode<?> node) {
-        final ASTModifierNode modifierNode = node.getFirstChildOfType(ASTModifierNode.class);
+        final ASTModifierNode modifierNode = node.firstChild(ASTModifierNode.class);
         return modifierNode != null && modifierNode.isTest();
     }
 }

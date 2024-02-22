@@ -8,7 +8,6 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -300,26 +299,6 @@ public abstract class AbstractConfiguration {
     }
 
     /**
-     * Set the comma separated list of input paths to process for source files.
-     *
-     * @param inputPaths The comma separated list.
-     *
-     * @throws NullPointerException If the parameter is null
-     * @deprecated Use {@link #setInputPathList(List)} or {@link #addInputPath(Path)}
-     */
-    @Deprecated
-    public void setInputPaths(String inputPaths) {
-        if (inputPaths.isEmpty()) {
-            return;
-        }
-        List<Path> paths = new ArrayList<>();
-        for (String s : inputPaths.split(",")) {
-            paths.add(Paths.get(s));
-        }
-        this.inputPaths = paths;
-    }
-
-    /**
      * Set the input paths to the given list of paths.
      *
      * @throws NullPointerException If the parameter is null or contains a null value
@@ -354,33 +333,9 @@ public abstract class AbstractConfiguration {
      * comma-separated list of source file names to process.
      *
      * @param inputFilePath path to the file
-     * @deprecated Use {@link #setInputFilePath(Path)}
-     */
-    @Deprecated
-    public void setInputFilePath(String inputFilePath) {
-        this.inputFilePath = inputFilePath == null ? null : Paths.get(inputFilePath);
-    }
-
-    /**
-     * The input file path points to a single file, which contains a
-     * comma-separated list of source file names to process.
-     *
-     * @param inputFilePath path to the file
      */
     public void setInputFilePath(Path inputFilePath) {
         this.inputFilePath = inputFilePath;
-    }
-
-    /**
-     * The input file path points to a single file, which contains a
-     * comma-separated list of source file names to ignore.
-     *
-     * @param ignoreFilePath path to the file
-     * @deprecated Use {@link #setIgnoreFilePath(Path)}
-     */
-    @Deprecated
-    public void setIgnoreFilePath(String ignoreFilePath) {
-        this.ignoreFilePath = ignoreFilePath == null ? null : Paths.get(ignoreFilePath);
     }
 
     /**
@@ -391,17 +346,6 @@ public abstract class AbstractConfiguration {
      */
     public void setIgnoreFilePath(Path ignoreFilePath) {
         this.ignoreFilePath = ignoreFilePath;
-    }
-
-    /**
-     * Set the input URI to process for source code objects.
-     *
-     * @param inputUri a single URI
-     * @deprecated Use {@link PMDConfiguration#setInputUri(URI)}
-     */
-    @Deprecated
-    public void setInputUri(String inputUri) {
-        this.inputUri = inputUri == null ? null : URI.create(inputUri);
     }
 
     public List<Path> getExcludes() {

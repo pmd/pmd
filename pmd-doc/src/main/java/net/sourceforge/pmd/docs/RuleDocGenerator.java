@@ -436,7 +436,7 @@ public class RuleDocGenerator {
                     // filter out standard properties
                     properties.remove(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR);
                     properties.remove(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR);
-                    properties.remove(XPathRule.XPATH_DESCRIPTOR);
+                    properties.removeIf(p -> "xpath".equals(p.name())); // this is XPathRule.XPATH_DESCRIPTOR
 
                     if (!properties.isEmpty()) {
                         lines.add("**This rule has the following properties:**");

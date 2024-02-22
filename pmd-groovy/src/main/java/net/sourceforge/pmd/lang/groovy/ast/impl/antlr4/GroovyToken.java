@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.groovy.ast.impl.antlr4;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
 import net.sourceforge.pmd.lang.document.FileLocation;
@@ -78,7 +77,6 @@ public class GroovyToken implements GenericToken<GroovyToken> {
     }
 
     @Override
-    @Experimental
     public int getKind() {
         return token.getType();
     }

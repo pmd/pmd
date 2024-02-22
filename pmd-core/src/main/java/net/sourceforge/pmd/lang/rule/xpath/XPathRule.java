@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule.xpath;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,6 +24,7 @@ import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
+import net.sourceforge.pmd.util.IteratorUtil;
 
 
 /**
@@ -32,11 +34,7 @@ public final class XPathRule extends AbstractRule {
 
     private static final Logger LOG = LoggerFactory.getLogger(XPathRule.class);
 
-    /**
-     * @deprecated Use {@link #XPathRule(XPathVersion, String)}
-     */
-    @Deprecated
-    public static final PropertyDescriptor<String> XPATH_DESCRIPTOR =
+    private static final PropertyDescriptor<String> XPATH_DESCRIPTOR =
         PropertyFactory.stringProperty("xpath")
                        .desc("XPath expression")
                        .defaultValue("")
@@ -107,8 +105,24 @@ public final class XPathRule extends AbstractRule {
         }
 
         for (Node nodeWithViolation : nodesWithViolation) {
-            addViolation(ctx, nodeWithViolation, nodeWithViolation.getImage());
+            // see Deprecate getImage/@Image #4787 https://github.com/pmd/pmd/issues/4787
+            String messageArg = nodeWithViolation.getImage();
+            // Nodes might already have been refactored to not use getImage anymore.
+            // Therefore, try several other common names
+            if (messageArg == null) {
+                messageArg = getFirstMessageArgFromNode(nodeWithViolation, "Name", "SimpleName", "MethodName");
+            }
+            ctx.addViolation(nodeWithViolation, messageArg);
         }
+    }
+
+    private String getFirstMessageArgFromNode(Node node, String... attributeNames) {
+        List<String> nameList = Arrays.asList(attributeNames);
+        return IteratorUtil.toStream(node.getXPathAttributesIterator())
+                .filter(a -> nameList.contains(a.getName()))
+                .findFirst()
+                .map(Attribute::getStringValue)
+                .orElse(null);
     }
 
     private ContextedRuntimeException addExceptionContext(PmdXPathException e) {

@@ -12,7 +12,6 @@ import static net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKin
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
@@ -26,7 +25,6 @@ import net.sourceforge.pmd.util.AssertionUtil;
  * determines what kinds of conversions apply to the value to make it
  * compatible with the context.
  */
-@Experimental("The API is minimal until more use cases show up, and this is better tested.")
 public abstract class ExprContext {
     // note: most members of this class are quite low-level and should
     // stay package-private for exclusive use by PolyResolution.

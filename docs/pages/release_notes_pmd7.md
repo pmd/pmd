@@ -176,14 +176,10 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 [Matías Fraga](https://github.com/matifraga) (@matifraga),
 [Tomás De Lucca](https://github.com/tomidelucca) (@tomidelucca)
 
-### New: Kotlin support (experimental)
+### New: Kotlin support
 
 PMD now supports Kotlin as an additional language for analyzing source code. It is based on
 the official kotlin Antlr grammar. Java-based rules and XPath-based rules are supported.
-
-Kotlin support has **experimental** stability level, meaning no compatibility should
-be expected between even incremental releases. Any functionality can be added, removed or changed without
-warning.
 
 We are shipping the following rules:
 
@@ -246,6 +242,11 @@ Note: Support for Java 19 preview language features have been removed. The versi
 PMD supports Apache Velocity for a very long time, but the CPD integration never got finished.
 This is now done and CPD supports Apache Velocity Template language for detecting copy and paste.
 It is shipped in the module `pmd-vm`.
+
+### Changed: HTML support
+
+Support for HTML was introduced in PMD 6.55.0 as an experimental feature. With PMD 7.0.0 this
+is now considered stable.
 
 ### Changed: JavaScript support
 
@@ -445,78 +446,72 @@ The following previously deprecated rules have been finally removed:
 **Java**
 
 * {% deleted_rule java/codestyle/AbstractNaming %} ➡️ use {% rule java/codestyle/ClassNamingConventions %}
-* AvoidFinalLocalVariable (java-codestyle) ➡️ not replaced
-* AvoidPrefixingMethodParameters (java-codestyle) ➡️ use {% rule "java/codestyle/FormalParameterNamingConventions" %}
-* AvoidUsingShortType (java-performance) ➡️ not replaced
-* BadComparison (java-errorprone) ➡️ use {% rule "java/errorprone/ComparisonWithNaN" %}
-* BeanMembersShouldSerialize (java-errorprone) ➡️ use {% rule java/errorprone/NonSerializableClass %}
-* BooleanInstantiation (java-performance) ➡️ use {% rule "java/codestyle/UnnecessaryBoxing" %}
+* {% deleted_rule java/codestyle/AvoidFinalLocalVariable %} ➡️ not replaced
+* {% deleted_rule java/codestyle/AvoidPrefixingMethodParameters %} ➡️ use {% rule "java/codestyle/FormalParameterNamingConventions" %}
+* {% deleted_rule java/performance/AvoidUsingShortType %} ➡️ not replaced
+* {% deleted_rule java/errorprone/BadComparison %} ➡️ use {% rule "java/errorprone/ComparisonWithNaN" %}
+* {% deleted_rule java/errorprone/BeanMembersShouldSerialize %} ➡️ use {% rule java/errorprone/NonSerializableClass %}
+* {% deleted_rule java/performance/BooleanInstantiation %} ➡️ use {% rule "java/codestyle/UnnecessaryBoxing" %}
   and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
-* ByteInstantiation (java-performance) ➡️ use {% rule "java/codestyle/UnnecessaryBoxing" %}
+* {% deleted_rule java/performance/ByteInstantiation %} ➡️ use {% rule "java/codestyle/UnnecessaryBoxing" %}
   and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
-* CloneThrowsCloneNotSupportedException (java-errorprone) ➡️ not replaced
-* DataflowAnomalyAnalysis (java-errorprone) ➡️ use {% rule java/bestpractices/UnusedAssignment %}
-* DefaultPackage (java-codestyle) ➡️ use {% rule "java/codestyle/CommentDefaultAccessModifier" %}
-* DoNotCallSystemExit (java-errorprone) ➡️ use {% rule "java/errorprone/DoNotTerminateVM" %}
-* DontImportJavaLang (java-codestyle) ➡️ use {% rule java/codestyle/UnnecessaryImport %}
-* DuplicateImports (java-codestyle) ➡️ use {% rule java/codestyle/UnnecessaryImport %}
-* EmptyFinallyBlock (java-errorprone) ➡️ use {% rule java/codestyle/EmptyControlStatement %}
-* EmptyIfStmt (java-errorprone) ➡️ use {% rule java/codestyle/EmptyControlStatement %}
-* EmptyInitializer (java-errorprone) ➡️ use {% rule java/codestyle/EmptyControlStatement %}
-* EmptyStatementBlock (java-errorprone) ➡️ use {% rule java/codestyle/EmptyControlStatement %}
-* EmptyStatementNotInLoop (java-errorprone) ➡️ use {% rule java/codestyle/UnnecessarySemicolon %}
-* EmptySwitchStatements (java-errorprone) ➡️ use {% rule java/codestyle/EmptyControlStatement %}
-* EmptySynchronizedBlock (java-errorprone) ➡️ use {% rule java/codestyle/EmptyControlStatement %}
-* EmptyTryBlock (java-errorprone) ➡️ use {% rule java/codestyle/EmptyControlStatement %}
-* EmptyWhileStmt (java-errorprone) ➡️ use {% rule java/codestyle/EmptyControlStatement %}
-* ExcessiveClassLength (java-design) ➡️ use {% rule java/design/NcssCount %}
-* ExcessiveMethodLength (java-design) ➡️ use {% rule java/design/NcssCount %}
-* ForLoopsMustUseBraces (java-codestyle) ➡️ use {% rule java/codestyle/ControlStatementBraces %}
-* IfElseStmtsMustUseBraces (java-codestyle) ➡️ use {% rule java/codestyle/ControlStatementBraces %}
-* IfStmtsMustUseBraces (java-codestyle) ➡️ use {% rule java/codestyle/ControlStatementBraces %}
-* ImportFromSamePackage (java-errorprone) ➡️ use {% rule java/codestyle/UnnecessaryImport %}
-* IntegerInstantiation (java-performance) ➡️ use {% rule java/codestyle/UnnecessaryBoxing %}
+* {% deleted_rule java/errorprone/CloneThrowsCloneNotSupportedException %} ➡️ not replaced
+* {% deleted_rule java/errorprone/DataflowAnomalyAnalysis %} ➡️ use {% rule java/bestpractices/UnusedAssignment %}
+* {% deleted_rule java/codestyle/DefaultPackage %} ➡️ use {% rule "java/codestyle/CommentDefaultAccessModifier" %}
+* {% deleted_rule java/errorprone/DoNotCallSystemExit %} ➡️ use {% rule "java/errorprone/DoNotTerminateVM" %}
+* {% deleted_rule java/codestyle/DontImportJavaLang %} ➡️ use {% rule java/codestyle/UnnecessaryImport %}
+* {% deleted_rule java/codestyle/DuplicateImports %} ➡️ use {% rule java/codestyle/UnnecessaryImport %}
+* {% deleted_rule java/errorprone/EmptyFinallyBlock %} ➡️ use {% rule java/codestyle/EmptyControlStatement %}
+* {% deleted_rule java/errorprone/EmptyIfStmt %} ➡️ use {% rule java/codestyle/EmptyControlStatement %}
+* {% deleted_rule java/errorprone/EmptyInitializer %} ➡️ use {% rule java/codestyle/EmptyControlStatement %}
+* {% deleted_rule java/errorprone/EmptyStatementBlock %} ➡️ use {% rule java/codestyle/EmptyControlStatement %}
+* {% deleted_rule java/errorprone/EmptyStatementNotInLoop %} ➡️ use {% rule java/codestyle/UnnecessarySemicolon %}
+* {% deleted_rule java/errorprone/EmptySwitchStatements %} ➡️ use {% rule java/codestyle/EmptyControlStatement %}
+* {% deleted_rule java/errorprone/EmptySynchronizedBlock %} ➡️ use {% rule java/codestyle/EmptyControlStatement %}
+* {% deleted_rule java/errorprone/EmptyTryBlock %} ➡️ use {% rule java/codestyle/EmptyControlStatement %}
+* {% deleted_rule java/errorprone/EmptyWhileStmt %} ➡️ use {% rule java/codestyle/EmptyControlStatement %}
+* {% deleted_rule java/design/ExcessiveClassLength %} ➡️ use {% rule java/design/NcssCount %}
+* {% deleted_rule java/design/ExcessiveMethodLength %} ➡️ use {% rule java/design/NcssCount %}
+* {% deleted_rule java/codestyle/ForLoopsMustUseBraces %} ➡️ use {% rule java/codestyle/ControlStatementBraces %}
+* {% deleted_rule java/codestyle/IfElseStmtsMustUseBraces %} ➡️ use {% rule java/codestyle/ControlStatementBraces %}
+* {% deleted_rule java/codestyle/IfStmtsMustUseBraces %} ➡️ use {% rule java/codestyle/ControlStatementBraces %}
+* {% deleted_rule java/errorprone/ImportFromSamePackage %} ➡️ use {% rule java/codestyle/UnnecessaryImport %}
+* {% deleted_rule java/performance/IntegerInstantiation %} ➡️ use {% rule java/codestyle/UnnecessaryBoxing %}
   and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
-* InvalidSlf4jMessageFormat (java-errorprone) ➡️  use {% rule "java/errorprone/InvalidLogMessageFormat" %}
-* LoggerIsNotStaticFinal (java-errorprone) ➡️ use {% rule java/errorprone/ProperLogger %}
-* LongInstantiation (java-performance) ➡️ use {% rule "java/codestyle/UnnecessaryBoxing" %}
+* {% deleted_rule java/errorprone/InvalidSlf4jMessageFormat %} ➡️  use {% rule "java/errorprone/InvalidLogMessageFormat" %}
+* {% deleted_rule java/errorprone/LoggerIsNotStaticFinal %} ➡️ use {% rule java/errorprone/ProperLogger %}
+* {% deleted_rule java/performance/LongInstantiation %} ➡️ use {% rule "java/codestyle/UnnecessaryBoxing" %}
   and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
-* MIsLeadingVariableName (java-codestyle) ➡️ use {% rule java/codestyle/FieldNamingConventions %},
+* {% deleted_rule java/codestyle/MIsLeadingVariableName %} ➡️ use {% rule java/codestyle/FieldNamingConventions %},
   {% rule java/codestyle/FormalParameterNamingConventions %},
   or {% rule java/codestyle/LocalVariableNamingConventions %}
-* MissingBreakInSwitch (java-errorprone) ➡️  use {% rule "java/errorprone/ImplicitSwitchFallThrough" %}
-* ModifiedCyclomaticComplexity (java-design) ➡️ use {% rule "java/design/CyclomaticComplexity" %}
-* NcssConstructorCount (java-design) ➡️ use {% rule java/design/NcssCount %}
-* NcssMethodCount (java-design) ➡️ use {% rule java/design/NcssCount %}
-* NcssTypeCount (java-design) ➡️ use {% rule java/design/NcssCount %}
-* PositionLiteralsFirstInCaseInsensitiveComparisons (java-bestpractices) ➡️
+* {% deleted_rule java/errorprone/MissingBreakInSwitch %} ➡️  use {% rule "java/errorprone/ImplicitSwitchFallThrough" %}
+* {% deleted_rule java/design/ModifiedCyclomaticComplexity %} ➡️ use {% rule "java/design/CyclomaticComplexity" %}
+* {% deleted_rule java/design/NcssConstructorCount %} ➡️ use {% rule java/design/NcssCount %}
+* {% deleted_rule java/design/NcssMethodCount %} ➡️ use {% rule java/design/NcssCount %}
+* {% deleted_rule java/design/NcssTypeCount %} ➡️ use {% rule java/design/NcssCount %}
+* {% deleted_rule java/bestpractices/PositionLiteralsFirstInCaseInsensitiveComparisons %} ➡️
   use {% rule "java/bestpractices/LiteralsFirstInComparisons" %}
-* PositionLiteralsFirstInComparisons (java-bestpractices) ➡️
+* {% deleted_rule java/bestpractices/PositionLiteralsFirstInComparisons %} ➡️
   use {% rule "java/bestpractices/LiteralsFirstInComparisons" %}
-* ReturnEmptyArrayRatherThanNull (java-errorprone) ➡️
+* {% deleted_rule java/errorprone/ReturnEmptyArrayRatherThanNull %} ➡️
   use {% rule "java/errorprone/ReturnEmptyCollectionRatherThanNull" %}
-* ShortInstantiation (java-performance) ➡️ use {% rule "java/codestyle/UnnecessaryBoxing" %}
+* {% deleted_rule java/performance/ShortInstantiation %} ➡️ use {% rule "java/codestyle/UnnecessaryBoxing" %}
   and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
-* SimplifyBooleanAssertion (java-design) ➡️ use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-* SimplifyStartsWith (java-performance) ➡️ not replaced
-* StdCyclomaticComplexity (java-design) ➡️ use {% rule "java/design/CyclomaticComplexity" %}
-* SuspiciousConstantFieldName (java-codestyle) ➡️ use {% rule java/codestyle/FieldNamingConventions %}
-* UnnecessaryWrapperObjectCreation (java-performance) ➡️ use the new rule {% rule "java/codestyle/UnnecessaryBoxing" %}
-* UnsynchronizedStaticDateFormatter (java-multithreading) ➡️
-  use {% rule java/multithreading/UnsynchronizedStaticFormatter %}
-* UnusedImports (java-bestpractices) ➡️ use {% rule java/codestyle/UnnecessaryImport %}
-* UseAssertEqualsInsteadOfAssertTrue (java-bestpractices) ➡️
-  use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-* UseAssertNullInsteadOfAssertEquals (java-bestpractices) ➡️
-  use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-* UseAssertSameInsteadOfAssertEquals (java-bestpractices) ➡️
-  use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-* UseAssertTrueInsteadOfAssertEquals (java-bestpractices) ➡️
-  use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-* VariableNamingConventions (java-codestyle) ➡️ use {% rule java/codestyle/FieldNamingConventions %},
-  {% rule java/codestyle/FormalParameterNamingConventions %},
-  or {% rule java/codestyle/LocalVariableNamingConventions %}
-* WhileLoopsMustUseBraces (java-codestyle) ➡️ use {% rule "java/codestyle/ControlStatementBraces" %}
+* {% deleted_rule java/design/SimplifyBooleanAssertion %} ➡️ use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
+* {% deleted_rule java/performance/SimplifyStartsWith %} ➡️ not replaced
+* {% deleted_rule java/design/StdCyclomaticComplexity %} ➡️ use {% rule "java/design/CyclomaticComplexity" %}
+* {% deleted_rule java/codestyle/SuspiciousConstantFieldName %} ➡️ use {% rule java/codestyle/FieldNamingConventions %}
+* {% deleted_rule java/performance/UnnecessaryWrapperObjectCreation %} ➡️ use the new rule {% rule "java/codestyle/UnnecessaryBoxing" %}
+* {% deleted_rule java/multithreading/UnsynchronizedStaticDateFormatter %} ➡️ use {% rule java/multithreading/UnsynchronizedStaticFormatter %}
+* {% deleted_rule java/bestpractices/UnusedImports %} ➡️ use {% rule java/codestyle/UnnecessaryImport %}
+* {% deleted_rule java/bestpractices/UseAssertEqualsInsteadOfAssertTrue %} ➡️ use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
+* {% deleted_rule java/bestpractices/UseAssertNullInsteadOfAssertEquals %} ➡️ use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
+* {% deleted_rule java/bestpractices/UseAssertSameInsteadOfAssertEquals %} ➡️ use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
+* {% deleted_rule java/bestpractices/UseAssertTrueInsteadOfAssertEquals %} ➡️ use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
+* {% deleted_rule java/codestyle/VariableNamingConventions %} ➡️ use {% rule java/codestyle/FieldNamingConventions %},
+  {% rule java/codestyle/FormalParameterNamingConventions %}, or {% rule java/codestyle/LocalVariableNamingConventions %}
+* {% deleted_rule java/codestyle/WhileLoopsMustUseBraces %} ➡️ use {% rule "java/codestyle/ControlStatementBraces" %}
 
 ## 💥 Compatibility and Migration Notes
 
@@ -606,7 +601,7 @@ See [ADR 3 - API evolution principles](pmd_projectdocs_decisions_adr_3.html) and
 
 ### XPath 3.1 support
 
-Support for XPath versions 1.0, 1.0-compatibility was removed, support for XPath 2.0 is deprecated. The default
+Support for XPath versions 1.0, 1.0-compatibility, 2.0 was removed. The default
 (and only) supported XPath version is now XPath 3.1. This version of the XPath language is mostly identical to
 XPath 2.0.
 

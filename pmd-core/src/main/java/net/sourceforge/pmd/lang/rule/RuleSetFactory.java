@@ -482,7 +482,7 @@ final class RuleSetFactory {
                 "Rule {0}/{1} does not mention attribute language='{2}',"
                     + " please mention it explicitly to be compatible with PMD 7",
                 ruleSetReferenceId.getRuleSetFileName(), rule.getName(),
-                rule.getLanguage().getTerseName());
+                rule.getLanguage().getId());
         }
 
         ruleSetBuilder.addRule(rule);

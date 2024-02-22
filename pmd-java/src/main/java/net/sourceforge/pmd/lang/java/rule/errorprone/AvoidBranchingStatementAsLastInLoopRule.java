@@ -79,7 +79,7 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
             if (parent instanceof ASTFinallyClause) {
                 // get the parent of the block, in which the try statement is: ForStatement/Block/TryStatement/Finally
                 // e.g. a ForStatement
-                parent = ((ASTFinallyClause) parent).getNthParent(3);
+                parent = ((ASTFinallyClause) parent).ancestors().get(2);
             }
         }
         if (parent instanceof ASTForStatement || parent instanceof ASTForeachStatement) {

@@ -10,7 +10,6 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
-import java.nio.file.FileSystemAlreadyExistsException;
 import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitOption;
@@ -35,7 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PmdAnalysis;
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -313,30 +311,6 @@ public final class FileCollector implements AutoCloseable {
     }
 
     /**
-     * Opens a zip file and returns a FileSystem for its contents, so
-     * it can be explored with the {@link Path} API. You can then call
-     * {@link #addFile(Path)} and such. The zip file is registered as
-     * a resource to close at the end of analysis.
-     *
-     * @deprecated Use {@link #addZipFileWithContent(Path)} instead.
-     */
-    @Deprecated
-    public FileSystem addZipFile(Path zipFile) {
-        if (!Files.isRegularFile(zipFile)) {
-            throw new IllegalArgumentException("Not a regular file: " + zipFile);
-        }
-        URI zipUri = URI.create("jar:" + zipFile.toUri());
-        try {
-            FileSystem fs = FileSystems.newFileSystem(zipUri, Collections.<String, Object>emptyMap());
-            resourcesToClose.add(fs);
-            return fs;
-        } catch (FileSystemAlreadyExistsException | ProviderNotFoundException | IOException e) {
-            reporter.errorEx("Cannot open zip file " + zipFile, e);
-            return null;
-        }
-    }
-
-    /**
      * Opens a zip file and adds all files of the zip file to the list
      * of files to be processed.
      *
@@ -344,7 +318,6 @@ public final class FileCollector implements AutoCloseable {
      *
      * @return True if the zip file including its content has been added without errors
      */
-    @Experimental
     public boolean addZipFileWithContent(Path zipFile) throws IOException {
         if (!Files.isRegularFile(zipFile)) {
             throw new IllegalArgumentException("Not a regular file: " + zipFile);
@@ -384,7 +357,6 @@ public final class FileCollector implements AutoCloseable {
 
 
     /** A collector that prefixes the display name of the files it will contain with the path of the zip. */
-    @Experimental
     private FileCollector newZipCollector(Path zipFilePath) {
         return new FileCollector(discoverer, reporter, FileId.fromPath(zipFilePath));
     }

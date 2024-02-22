@@ -138,7 +138,7 @@ public abstract class LanguageModuleBase implements Language {
     }
 
     @Override
-    public String getTerseName() {
+    public String getId() {
         return meta.id;
     }
 
@@ -149,7 +149,7 @@ public abstract class LanguageModuleBase implements Language {
 
     @Override
     public String toString() {
-        return getTerseName();
+        return getId();
     }
 
     @Override

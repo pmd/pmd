@@ -15,7 +15,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
-import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 // @formatter:off
 /**
@@ -46,6 +45,7 @@ import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 // @formatter:on
 public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariableSymbol> implements ModifierOwner, SymbolDeclaratorNode {
 
+    private String name;
     private List<ASTNamedReferenceExpr> usages = Collections.emptyList();
 
     ASTVariableId(int id) {
@@ -94,7 +94,6 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
         return getModifierOwnerParent().getModifiers();
     }
 
-    @Override
     public boolean isFinal() {
         return hasModifiers(JModifier.FINAL);
     }
@@ -114,19 +113,13 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
         return (ModifierOwner) parent;
     }
 
-    /**
-     * @deprecated Use {@link #getName()}
-     */
-    @Override
-    @DeprecatedAttribute(replaceWith = "@Name")
-    @Deprecated // note: already deprecated in 6.55.0
-    public String getImage() {
-        return getName();
-    }
-
     /** Returns the name of the variable. */
     public String getName() {
-        return super.getImage();
+        return name;
+    }
+
+    void setName(String name) {
+        this.name = name;
     }
 
     /**
@@ -169,7 +162,7 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
      * a regular {@link ASTLocalVariableDeclaration}.
      */
     public boolean isLocalVariable() {
-        return getNthParent(2) instanceof ASTLocalVariableDeclaration
+        return ancestors().get(1) instanceof ASTLocalVariableDeclaration
             && !isResourceDeclaration()
             && !isForeachVariable();
     }
@@ -180,7 +173,7 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
      */
     public boolean isForeachVariable() {
         // Foreach/LocalVarDecl/VarDeclarator/VarDeclId
-        return getNthParent(3) instanceof ASTForeachStatement;
+        return ancestors().get(2) instanceof ASTForeachStatement;
     }
 
     /**
@@ -189,7 +182,7 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
      */
     public boolean isForLoopVariable() {
         // For/ForInit/LocalVarDecl/VarDeclarator/VarDeclId
-        return getNthParent(3) instanceof ASTForInit;
+        return ancestors().get(2) instanceof ASTForInit;
     }
 
 
@@ -210,7 +203,7 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
      * if you want that).
      */
     public boolean isField() {
-        return getNthParent(2) instanceof ASTFieldDeclaration;
+        return ancestors().get(1) instanceof ASTFieldDeclaration;
     }
 
     /**
@@ -220,16 +213,6 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
         return getParent() instanceof ASTEnumConstant;
     }
 
-    /**
-     * Returns the name of the variable.
-     *
-     * @deprecated Use {@link #getName()}
-     */
-    @Deprecated
-    @DeprecatedAttribute(replaceWith = "@Name")
-    public String getVariableName() {
-        return getName();
-    }
 
     /**
      * Returns true if this declarator id declares a resource in a try-with-resources statement.

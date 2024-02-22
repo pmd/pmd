@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.ast.AstVisitor;
  * @param <D> The type of the data input to each visit method
  * @param <R> the type of the returned data from each visit method
  */
-public interface ScalaParserVisitor<D, R> extends AstVisitor<D, R> {
+public interface ScalaVisitor<D, R> extends AstVisitor<D, R> {
 
     /**
      * Visit an arbitrary Scala Node (any node in the tree).

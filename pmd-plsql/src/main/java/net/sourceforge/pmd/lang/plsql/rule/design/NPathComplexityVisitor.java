@@ -26,12 +26,12 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
 import net.sourceforge.pmd.lang.plsql.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ExecutableCode;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
-import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
+import net.sourceforge.pmd.lang.plsql.ast.PlsqlVisitorBase;
 
 /**
  * @author Clément Fournier
  */
-class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
+class NPathComplexityVisitor extends PlsqlVisitorBase<Object, Object> {
 
 
     public int compute(ExecutableCode root) {

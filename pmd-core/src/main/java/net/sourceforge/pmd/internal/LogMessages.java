@@ -22,9 +22,4 @@ public final class LogMessages {
             + "If you do so, please include a stack-trace, the code sample\n"
             + " causing the issue, and details about your run configuration.";
     }
-
-    @Deprecated
-    public static String runWithHelpFlagMessage() {
-        return "Run with --help for command line help.";
-    }
 }

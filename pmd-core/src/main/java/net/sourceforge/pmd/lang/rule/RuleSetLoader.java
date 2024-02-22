@@ -113,14 +113,10 @@ public final class RuleSetLoader {
     }
 
     /**
-     * Create a new rule set factory, if you have to (that class is deprecated).
+     * Create a new rule set factory, if you have to (that class is internal).
      * That factory will use the configuration that was set using the setters of this.
-     *
-     * @deprecated {@link RuleSetFactory} is deprecated, replace its usages
-     *     with usages of this class, or of static factory methods of {@link RuleSet}
      */
-    @Deprecated
-    public RuleSetFactory toFactory() {
+    RuleSetFactory toFactory() {
         return new RuleSetFactory(
             this.resourceLoader,
             this.languageRegistry,
@@ -286,7 +282,7 @@ public final class RuleSetLoader {
         List<String> ruleSetReferenceIds = new ArrayList<>();
         for (Language language : languageRegistry.getLanguages()) {
             Properties props = new Properties();
-            rulesetsProperties = "category/" + language.getTerseName() + "/categories.properties";
+            rulesetsProperties = "category/" + language.getId() + "/categories.properties";
             try (InputStream inputStream = resourceLoader.loadClassPathResourceAsStreamOrThrow(rulesetsProperties)) {
                 props.load(inputStream);
                 String rulesetFilenames = props.getProperty("rulesets.filenames");

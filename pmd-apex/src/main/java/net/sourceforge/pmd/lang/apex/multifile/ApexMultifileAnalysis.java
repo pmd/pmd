@@ -15,7 +15,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.apex.ApexLanguageProcessor;
 import net.sourceforge.pmd.lang.apex.ApexLanguageProperties;
 
@@ -31,9 +30,10 @@ import com.nawforce.pkgforce.diagnostics.LoggerOps;
  * issues after packages are loaded and throw away the 'Org'. That would be a better model if all you wanted was the
  * issues but more complex rules will need the ability to traverse the internal graph of the 'Org'.
  *
+ * <p>Note: This is used by {@link net.sourceforge.pmd.lang.apex.rule.design.UnusedMethodRule}.
+ *
  * @author Kevin Jones
  */
-@Experimental
 public final class ApexMultifileAnalysis {
 
     // test only

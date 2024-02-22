@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.data.ast.PostfixOp;
 import apex.jorje.semantic.ast.expression.PostfixExpression;
 
 
@@ -14,19 +13,9 @@ public final class ASTPostfixExpression extends AbstractApexNode<PostfixExpressi
         super(postfixExpression);
     }
 
-
-
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-    /**
-     * @deprecated Use {@link #getOp()} instead.
-     */
-    @Deprecated
-    public PostfixOp getOperator() {
-        return node.getOp();
     }
 
     public PostfixOperator getOp() {

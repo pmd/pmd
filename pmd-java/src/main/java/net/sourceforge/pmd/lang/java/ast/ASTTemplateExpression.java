@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr
  *
  * @see <a href="https://openjdk.org/jeps/430">JEP 430: String Templates (Preview)</a>
  */
-@Experimental
+@Experimental("String templates is a Java 21 Preview feature")
 public final class ASTTemplateExpression extends AbstractJavaExpr {
     ASTTemplateExpression(int i) {
         super(i);

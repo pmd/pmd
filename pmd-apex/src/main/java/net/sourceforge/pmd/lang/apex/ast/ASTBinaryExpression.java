@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.data.ast.BinaryOp;
 import apex.jorje.semantic.ast.expression.BinaryExpression;
 
 public final class ASTBinaryExpression extends AbstractApexNode<BinaryExpression> {
@@ -19,13 +18,6 @@ public final class ASTBinaryExpression extends AbstractApexNode<BinaryExpression
         return visitor.visit(this, data);
     }
 
-    /**
-     * @deprecated Use {@link #getOp()} instead.
-     */
-    @Deprecated
-    public BinaryOp getOperator() {
-        return node.getOp();
-    }
 
     public BinaryOperator getOp() {
         return BinaryOperator.valueOf(node.getOp());

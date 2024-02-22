@@ -211,7 +211,7 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
 
         } else if (isTypeInferred && node.isLambdaParameter()) {
             ASTLambdaParameter param = (ASTLambdaParameter) node.getParent();
-            ASTLambdaExpression lambda = (ASTLambdaExpression) node.getNthParent(3);
+            ASTLambdaExpression lambda = (ASTLambdaExpression) node.ancestors().get(2);
             JTypeMirror contextualResult = ctx.apply(node.getSymbol());
             if (contextualResult != null) {
                 return contextualResult;

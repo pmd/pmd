@@ -2,6 +2,8 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+// Moved from pmd-core 7.0.0-SNAPSHOT
+
 package net.sourceforge.pmd.annotation;
 
 /**

@@ -51,13 +51,6 @@ import net.sourceforge.pmd.util.AssertionUtil;
 public final class InternalApiBridge {
     private InternalApiBridge() {}
 
-    @Deprecated
-    public static ASTVariableId newVarId(String image) {
-        ASTVariableId varid = new ASTVariableId(JavaParserImplTreeConstants.JJTVARIABLEID);
-        varid.setImage(image);
-        return varid;
-    }
-
     public static void setSymbol(SymbolDeclaratorNode node, JElementSymbol symbol) {
         if (node instanceof ASTMethodDeclaration) {
             ((ASTMethodDeclaration) node).setSymbol((JMethodSymbol) symbol);

@@ -179,7 +179,7 @@ public class CodeFormatRule extends AbstractPLSQLRule {
 
     @Override
     public Object visit(ASTDeclarativeSection node, Object data) {
-        int variableIndentation = node.getNthParent(2).getBeginColumn() + 2 * indentation;
+        int variableIndentation = node.ancestors().get(1).getBeginColumn() + 2 * indentation;
         int line = node.getBeginLine();
 
         List<ASTVariableOrConstantDeclarator> variables = node
@@ -254,7 +254,7 @@ public class CodeFormatRule extends AbstractPLSQLRule {
             }
 
             // closing parenthesis should be on a new line
-            Node primaryExpression = node.getNthParent(3);
+            Node primaryExpression = node.ancestors().get(2);
             if (primaryExpression.getEndLine() != node.getEndLine() + 1) {
                 asCtx(data).addViolationWithMessage(primaryExpression, "Closing parenthesis should be on a new line.");
             }

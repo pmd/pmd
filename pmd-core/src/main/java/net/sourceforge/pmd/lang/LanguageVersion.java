@@ -76,13 +76,13 @@ public final class LanguageVersion implements Comparable<LanguageVersion> {
     }
 
     /**
-     * Get the terse name of this LanguageVersion. This is Language terse name
+     * Get the terse name of this LanguageVersion. This is Language id
      * appended with the LanguageVersion version if not an empty String.
      *
      * @return The terse name of this LanguageVersion.
      */
     public String getTerseName() {
-        return version.length() > 0 ? language.getTerseName() + ' ' + version : language.getTerseName();
+        return version.length() > 0 ? language.getId() + ' ' + version : language.getId();
     }
 
     /**

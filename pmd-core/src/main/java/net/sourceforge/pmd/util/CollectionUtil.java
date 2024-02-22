@@ -57,49 +57,6 @@ public final class CollectionUtil {
     }
 
     /**
-     * Creates and returns a map populated with the keyValuesSets where the
-     * value held by the tuples are they key and value in that order.
-     *
-     * @param keys
-     *            K[]
-     * @param values
-     *            V[]
-     * @return Map
-     *
-     * @deprecated Used by deprecated property types
-     */
-    @Deprecated
-    public static <K, V> Map<K, V> mapFrom(K[] keys, V[] values) {
-        if (keys.length != values.length) {
-            throw new RuntimeException("mapFrom keys and values arrays have different sizes");
-        }
-        Map<K, V> map = new HashMap<>(keys.length);
-        for (int i = 0; i < keys.length; i++) {
-            map.put(keys[i], values[i]);
-        }
-        return map;
-    }
-
-    /**
-     * Returns a map based on the source but with the key &amp; values swapped.
-     *
-     * @param source
-     *            Map
-     * @return Map
-     *
-     * @deprecated Used by deprecated property types
-     */
-    @Deprecated
-    public static <K, V> Map<V, K> invertedMapFrom(Map<K, V> source) {
-        Map<V, K> map = new HashMap<>(source.size());
-        for (Map.Entry<K, V> entry : source.entrySet()) {
-            map.put(entry.getValue(), entry.getKey());
-        }
-        return map;
-    }
-
-
-    /**
      * Returns a list view that pretends it is the concatenation of
      * both lists. The returned view is unmodifiable. The implementation
      * is pretty stupid and not optimized for repeated concatenation,

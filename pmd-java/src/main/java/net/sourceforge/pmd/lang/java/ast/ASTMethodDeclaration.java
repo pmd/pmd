@@ -13,7 +13,6 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
-import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 
 /**
@@ -43,6 +42,8 @@ import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
  * </pre>
  */
 public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JMethodSymbol> {
+
+    private String name;
 
     /**
      * Populated by {@link OverrideResolutionPass}.
@@ -89,24 +90,15 @@ public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JM
         return ident.getReportLocation();
     }
 
-    /**
-     * Returns the simple name of the method.
-     *
-     * @deprecated Use {@link #getName()}
-     */
-    @Deprecated
-    @DeprecatedAttribute(replaceWith = "@Name")
-    public String getMethodName() {
-        return getName();
-    }
-
-
     /** Returns the simple name of the method. */
     @Override
     public String getName() {
-        return getImage();
+        return name;
     }
 
+    void setName(String name) {
+        this.name = name;
+    }
 
     /**
      * If this method declaration is an explicit record component accessor,
@@ -133,12 +125,10 @@ public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JM
     }
 
     /** Returns true if this method is static. */
-    @Override
     public boolean isStatic() {
         return hasModifiers(JModifier.STATIC);
     }
 
-    @Override
     public boolean isFinal() {
         return hasModifiers(JModifier.FINAL);
     }
