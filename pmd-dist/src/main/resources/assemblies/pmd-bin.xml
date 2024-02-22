@@ -51,20 +51,16 @@
             <directoryMode>0755</directoryMode>
             <fileMode>0644</fileMode>
         </fileSet>
-    </fileSets>
 
-    <files>
-        <file>
-            <source>target/bom.xml</source>
+        <fileSet>
+            <includes>
+                <include>pmd-*-cyclonedx.xml</include>
+                <include>pmd-*-cyclonedx.json</include>
+            </includes>
+            <directory>target</directory>
             <outputDirectory>sbom</outputDirectory>
-            <destName>pmd-${project.version}-cyclonedx.xml</destName>
-        </file>
-        <file>
-            <source>target/bom.json</source>
-            <outputDirectory>sbom</outputDirectory>
-            <destName>pmd-${project.version}-cyclonedx.json</destName>
-        </file>
-    </files>
+        </fileSet>
+    </fileSets>
 
     <dependencySets>
         <!-- jar dependencies go to lib/ -->
