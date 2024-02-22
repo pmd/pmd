@@ -17,6 +17,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +30,6 @@ import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
-import com.google.common.collect.ImmutableMap;
 
 class CpdCliTest extends BaseCliTest {
 
@@ -36,12 +37,17 @@ class CpdCliTest extends BaseCliTest {
     private static final String SRC_DIR = BASE_RES_PATH + "files/";
     private static final Path SRC_PATH = Paths.get(SRC_DIR).toAbsolutePath();
 
-    private static final Map<String, Integer> NUMBER_OF_TOKENS = ImmutableMap.of(
-        SRC_PATH.resolve("dup1.java").toString(), 89,
-        SRC_PATH.resolve("dup2.java").toString(), 89,
-        SRC_PATH.resolve("fileWith_ISO8859_1_Encoding.java").toString(), 5,
-        SRC_PATH.resolve("fileWith_UTF_8_BOM_Encoding.java").toString(), 5
-    );
+    private static final Map<String, Integer> NUMBER_OF_TOKENS;
+
+    static {
+        Map<String, Integer> map = new LinkedHashMap<>();
+        map.put(SRC_PATH.resolve("dup1.java").toString(), 89);
+        map.put(SRC_PATH.resolve("dup2.java").toString(), 89);
+        map.put(SRC_PATH.resolve("fileWith_ISO8859_1_Encoding.java").toString(), 5);
+        map.put(SRC_PATH.resolve("fileWith_UTF_8_BOM_Encoding.java").toString(), 5);
+        NUMBER_OF_TOKENS = Collections.unmodifiableMap(map);
+    }
+
     @TempDir
     private Path tempDir;
 
