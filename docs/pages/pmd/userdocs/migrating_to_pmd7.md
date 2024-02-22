@@ -3322,31 +3322,7 @@ See the use case [I'm using only built-in rules](#im-using-only-built-in-rules) 
 #### Maven
 
 * Due to some changes in PMD's API, you can't simply pull in the new PMD 7 dependency.
-* However, there is now a compatibility module, that makes it possible to use PMD 7 with Maven. In addition to the PMD 7
-  dependencies documented in [Upgrading PMD at Runtime](https://maven.apache.org/plugins/maven-pmd-plugin/examples/upgrading-PMD-at-runtime.html)
-  you need to add additionally the following dependency (first available version is 7.0.0-rc4):
-
-```xml
-<dependency>
-  <groupId>net.sourceforge.pmd</groupId>
-  <artifactId>pmd-compat6</artifactId>
-  <version>${pmdVersion}</version>
-</dependency>
-```
-
-It is important to add this dependency as the **first** in the list, so that maven-pmd-plugin sees the (old)
-compatible versions of some classes.
-
-This module is available beginning with version 7.0.0-rc4 and will be there at least for the first
-final version PMD 7 (7.0.0). It's not decided yet, whether we will keep updating it, after PMD 7 is finally
-released.
-
-Note: This compatibility module only works for the built-in rules, that are still available in PMD 7. E.g. you need
-to review your rulesets and look out for deprecated rules and such. See the use case
-[I'm using only built-in rules](#im-using-only-built-in-rules)
-
-As PMD 7 revamped the Java module, if you have custom rules, you need to migrate these rules.
-See the use case [I'm using custom rules](#im-using-custom-rules).
+* See [Using PMD 7 with maven-pmd-plugin](pmd_userdocs_tools_maven.html#using-pmd-7-with-maven-pmd-plugin).
 
 #### Gradle
 

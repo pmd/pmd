@@ -531,7 +531,7 @@ The full detailed documentation of the changes are available in the
 * CLI changed: Custom scripts need to be updated (`run.sh pmd ...` ➡️ `pmd check ...`, `run.sh cpd ...`, `pmd cpd ...`).
 * Java module revamped: Custom rules need to be updated.
 * Removed rules: Custom rulesets need to be reviewed. See below for a list of new and removed rules.
-* XPath 1.0 support is removed, `violationSuppressXPath` now requires XPath 2.0 or 3.1: Custom rulesets need
+* XPath 1.0 and 2.0 support is removed, `violationSuppressXPath` now requires XPath 3.1: Custom rulesets need
   to be reviewed.
 * Custom rules using rulechains: Need to override {% jdoc core::lang.rule.AbstractRule#buildTargetSelector() %}
   using {% jdoc core::lang.rule.RuleTargetSelector#forTypes(java.lang.Class,java.lang.Class...) %}.
@@ -541,6 +541,7 @@ The full detailed documentation of the changes are available in the
 
   The structure inside the ZIP files stay the same, e.g. we still provide inside the binary distribution
   ZIP file the base directory `pmd-bin-<version>`.
+* For maven-pmd-plugin usage, see [Using PMD 7 with maven-pmd-plugin](pmd_userdocs_tools_maven.html#using-pmd-7-with-maven-pmd-plugin).
 
 ### For integrators
 
