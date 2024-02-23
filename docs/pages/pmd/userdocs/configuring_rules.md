@@ -4,7 +4,7 @@ short_title: Configuring rules
 keywords: [property, properties, message, priority]
 tags: [userdocs, getting_started]
 summary: "Learn how to configure your rules directly from the ruleset XML."
-last_updated: May 2023 (7.0.0)
+last_updated: February 2024 (7.0.0)
 permalink: pmd_userdocs_configuring_rules.html
 author: Hooper Bloob <hooperbloob@users.sourceforge.net>, Romain Pelisse <rpelisse@users.sourceforge.net>, Clément Fournier <clement.fournier76@gmail.com>
 ---
@@ -43,7 +43,10 @@ will cause the rule to be ignored.
 
 ## Rule properties
 
-Properties make it easy to customise the behaviour of a rule directly from the xml. They come in several types, which correspond to the type of their values. For example, NPathComplexity declares a property "reportLevel", with an integer value type, and which corresponds to the threshold above which a method will be reported. If you believe that its default value of 200 is too high, you could lower it to e.g. 150 in the following way:
+Properties make it easy to customise the behaviour of a rule directly from the xml. They come in several types,
+which correspond to the type of their values. For example, NPathComplexity declares a property "reportLevel",
+with an integer value type, and which corresponds to the threshold above which a method will be reported.
+If you believe that its default value of 200 is too high, you could lower it to e.g. 150 in the following way:
 
 ```xml
 <rule ref="category/java/design.xml/NPathComplexity">
@@ -55,7 +58,9 @@ Properties make it easy to customise the behaviour of a rule directly from the x
 </rule>
 ```
 
-Properties are assigned a value with a `property` element, which should mention the name of a property as an attribute. The value of the property can be specified either in the content of the element, like above, or in the `value` attribute, e.g.
+Properties are assigned a value with a `property` element, which should mention the name of a property as an
+attribute. The value of the property can be specified either in the content of the element, like above, or
+in the `value` attribute, e.g.
 
 ```xml
 <property name="reportLevel" value="150"/>
@@ -63,12 +68,17 @@ Properties are assigned a value with a `property` element, which should mention 
 
 All property assignments must be enclosed in a `properties` element, which is itself inside a `rule` element.
 
-{%include tip.html content="The properties of a rule are documented with the rule, e.g. [here](pmd_rules_java_design.html#npathcomplexity) for NPathComplexity. Note that **assigning a value to a property that does not exist throws an error!**" %}
+{% capture tip_content %}
+The properties of a rule are documented with the rule, e.g. [here](pmd_rules_java_design.html#npathcomplexity)
+for NPathComplexity. Note that **assigning a value to a property that does not exist throws an error!**
+{% endcapture %}
+{%include tip.html content=tip_content %}
 
-Some properties take multiple values (a list), in which case you can provide them all by delimiting them with a delimiter character. It is usually a pipe ('\|'), or a comma (',') for numeric properties, e.g.
+Some properties take multiple values (a list), in which case you can provide them all by delimiting them with
+a comma (','), e.g.
 ```xml
 <property name="legalCollectionTypes"
-          value="java.util.ArrayList|java.util.Vector|java.util.HashMap"/>
+          value="java.util.ArrayList,java.util.Vector,java.util.HashMap"/>
 ```
 
 These properties are referred to as **multivalued properties** in this documentation.
