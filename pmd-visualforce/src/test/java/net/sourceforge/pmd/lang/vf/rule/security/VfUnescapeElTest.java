@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.vf.VFTestUtils;
 import net.sourceforge.pmd.lang.vf.ast.VfParsingHelper;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleViolation;
-import net.sourceforge.pmd.testframework.PmdRuleTst;
+import net.sourceforge.pmd.test.PmdRuleTst;
 
 class VfUnescapeElTest extends PmdRuleTst {
     private static final String EXPECTED_RULE_MESSAGE = "Avoid unescaped user controlled content in EL";

@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.xml.pom.rule.errorprone;
 
-import net.sourceforge.pmd.testframework.PmdRuleTst;
+import net.sourceforge.pmd.test.PmdRuleTst;
 
 class ProjectVersionAsDependencyVersionTest extends PmdRuleTst {
     // no additional unit tests

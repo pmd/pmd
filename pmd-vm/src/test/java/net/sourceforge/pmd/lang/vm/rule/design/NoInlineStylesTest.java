@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.vm.rule.design;
 
-import net.sourceforge.pmd.testframework.PmdRuleTst;
+import net.sourceforge.pmd.test.PmdRuleTst;
 
 class NoInlineStylesTest extends PmdRuleTst {
     // no additional unit tests

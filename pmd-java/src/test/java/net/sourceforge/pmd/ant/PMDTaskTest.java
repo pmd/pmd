@@ -14,6 +14,7 @@ import java.util.Locale;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.test.AbstractAntTestHelper;
 
 class PMDTaskTest extends AbstractAntTestHelper {
 

@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.xml;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.ant.AbstractAntTestHelper;
+import net.sourceforge.pmd.test.AbstractAntTestHelper;
 
 class PMDTaskTest extends AbstractAntTestHelper {
 

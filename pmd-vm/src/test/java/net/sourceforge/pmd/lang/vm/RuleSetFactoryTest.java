@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.vm;
 
-import net.sourceforge.pmd.lang.rule.AbstractRuleSetFactoryTest;
+import net.sourceforge.pmd.test.lang.rule.AbstractRuleSetFactoryTest;
 
 /**
  * Test velocity's rulesets.

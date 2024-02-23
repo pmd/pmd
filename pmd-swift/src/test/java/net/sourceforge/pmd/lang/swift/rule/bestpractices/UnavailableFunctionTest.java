@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.swift.rule.bestpractices;
 
-import net.sourceforge.pmd.testframework.PmdRuleTst;
+import net.sourceforge.pmd.test.PmdRuleTst;
 
 class UnavailableFunctionTest extends PmdRuleTst {
     // no additional unit tests

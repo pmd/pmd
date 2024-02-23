@@ -115,8 +115,12 @@ Once you have reviewed your ruleset(s), you can switch to PMD 7.
 
 ### I'm using custom rules
 
+#### Testing
 Ideally, you have written good tests already for your custom rules - see [Testing your rules](pmd_userdocs_extending_testing.html).
 This helps to identify problems early on.
+
+The base test classes {%jdoc test::test.PmdRuleTst %} and {%jdoc test::test.SimpleAggregatorTst %} have been moved out
+of package `net.sourceforge.pmd.testframework`. You'll need to adjust your imports.
 
 #### Ruleset XML
 The `<rule>` tag, that defines your custom rule, is required to have a `language` attribute now. This was always the

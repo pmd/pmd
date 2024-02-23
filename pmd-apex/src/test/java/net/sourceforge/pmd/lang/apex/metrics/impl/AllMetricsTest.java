@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.metrics.impl;
 
 import net.sourceforge.pmd.lang.apex.ast.ApexQualifiableNode;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.test.SimpleAggregatorTst;
 
 /**
  * Executes the metrics testing rules.

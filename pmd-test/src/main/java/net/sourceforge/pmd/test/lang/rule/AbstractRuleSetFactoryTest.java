@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.rule;
+package net.sourceforge.pmd.test.lang.rule;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyString;
@@ -45,6 +45,12 @@ import org.xml.sax.helpers.DefaultHandler;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.rule.InternalApiBridge;
+import net.sourceforge.pmd.lang.rule.Rule;
+import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.lang.rule.RuleSet;
+import net.sourceforge.pmd.lang.rule.RuleSetLoader;
+import net.sourceforge.pmd.lang.rule.RuleSetWriter;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.log.internal.MessageReporterBase;
@@ -355,8 +361,7 @@ public abstract class AbstractRuleSetFactoryTest {
             }
         }
 
-        RuleSet ruleSet = new RuleSetLoader()
-                .withReporter(new Reporter())
+        RuleSet ruleSet = InternalApiBridge.withReporter(new RuleSetLoader(), new Reporter())
                 .loadFromResource(ruleSetFileName);
 
         assertThat("There should be no warnings while loading the ruleset",

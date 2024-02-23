@@ -341,6 +341,13 @@ in the migration guide for details.
 * pmd-scala
   * {%jdoc scala::lang.scala.cpd.ScalaCpdLexer %} (moved from `net.sourceforge.pmd.lang.scala.cpd.ScalaCpdLexer`)
   * {%jdoc scala::lang.scala.cpd.ScalaTokenAdapter %} (moved from `net.sourceforge.pmd.lang.scala.cpd.ScalaTokenAdapter`)
+* pmd-test
+  * {%jdoc test::test.lang.rule.AbstractRuleSetFactoryTest %} (moved from `net.sourceforge.pmd.lang.rule.AbstractRuleSetFactoryTest`)
+  * {%jdoc test::test.AbstractAntTestHelper %} (moved from `net.sourceforge.pmd.ant.AbstractAntTestHelper`)
+  * {%jdoc test::test.AbstractLanguageVersionTest %} (moved from `net.sourceforge.pmd.AbstractLanguageVersionTest`)
+  * {%jdoc test::test.PmdRuleTst %} (moved from `net.sourceforge.pmd.testframework.PmdRuleTst`)
+  * {%jdoc test::test.RuleTst %} (moved from `net.sourceforge.pmd.testframework.RuleTst`)
+  * {%jdoc test::test.SimpleAggregatorTst %} (moved from `net.sourceforge.pmd.testframework.SimpleAggregatorTst`)
 * pmd-xml
   * {%jdoc xml::lang.xml.pom.PomLanguageModule %} (moved from `net.sourceforge.pmd.lang.pom.PomLanguageModule`)
   * {%jdoc xml::lang.xml.wsdl.WsdlLanguageModule %} (moved from `net.sourceforge.pmd.lang.wsdl.WsdlLanguageModule`)

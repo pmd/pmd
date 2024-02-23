@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.vf.rule.security;
 
-import net.sourceforge.pmd.testframework.PmdRuleTst;
+import net.sourceforge.pmd.test.PmdRuleTst;
 
 class VfCsrfTest extends PmdRuleTst {
     // no additional unit tests

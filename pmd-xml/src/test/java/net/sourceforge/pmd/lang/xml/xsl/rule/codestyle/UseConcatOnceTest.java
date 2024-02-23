@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.xml.xsl.rule.codestyle;
 
-import net.sourceforge.pmd.testframework.PmdRuleTst;
+import net.sourceforge.pmd.test.PmdRuleTst;
 
 class UseConcatOnceTest extends PmdRuleTst {
     // no additional unit tests

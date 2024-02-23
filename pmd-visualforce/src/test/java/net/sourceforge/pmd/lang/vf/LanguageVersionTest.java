@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.vf;
 import java.util.Arrays;
 import java.util.Collection;
 
-import net.sourceforge.pmd.AbstractLanguageVersionTest;
+import net.sourceforge.pmd.test.AbstractLanguageVersionTest;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
 
 class LanguageVersionTest extends AbstractLanguageVersionTest {
