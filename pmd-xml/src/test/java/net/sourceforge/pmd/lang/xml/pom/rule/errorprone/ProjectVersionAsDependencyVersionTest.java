@@ -2,10 +2,10 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.xsl.rule.codestyle;
+package net.sourceforge.pmd.lang.xml.pom.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-class UseConcatOnceTest extends PmdRuleTst {
+class ProjectVersionAsDependencyVersionTest extends PmdRuleTst {
     // no additional unit tests
 }

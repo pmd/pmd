@@ -2,10 +2,10 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.pom.rule.errorprone;
+package net.sourceforge.pmd.lang.xml.xsl.rule.performance;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-class InvalidDependencyTypesTest extends PmdRuleTst {
+class AvoidAxisNavigationTest extends PmdRuleTst {
     // no additional unit tests
 }

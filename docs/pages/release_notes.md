@@ -341,6 +341,10 @@ in the migration guide for details.
 * pmd-scala
   * {%jdoc scala::lang.scala.cpd.ScalaCpdLexer %} (moved from `net.sourceforge.pmd.lang.scala.cpd.ScalaCpdLexer`)
   * {%jdoc scala::lang.scala.cpd.ScalaTokenAdapter %} (moved from `net.sourceforge.pmd.lang.scala.cpd.ScalaTokenAdapter`)
+* pmd-xml
+  * {%jdoc xml::lang.xml.pom.PomLanguageModule %} (moved from `net.sourceforge.pmd.lang.pom.PomLanguageModule`)
+  * {%jdoc xml::lang.xml.wsdl.WsdlLanguageModule %} (moved from `net.sourceforge.pmd.lang.wsdl.WsdlLanguageModule`)
+  * {%jdoc xml::lang.xml.xsl.XslLanguageModule %} (moved from `net.sourceforge.pmd.lang.xsl.XslLanguageModule`)
 
 **Internalized classes and interfaces and methods**
 
