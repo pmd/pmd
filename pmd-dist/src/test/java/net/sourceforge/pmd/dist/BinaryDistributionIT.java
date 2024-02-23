@@ -34,7 +34,7 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         "julia",
         "kotlin", "lua", "matlab", "modelica", "objectivec", "perl",
         "php", "plsql", "pom", "python", "ruby", "scala", "swift",
-        "tsql", "typescript", "visualforce", "vm", "wsdl", "xml", "xsl"
+        "tsql", "typescript", "velocity", "visualforce", "wsdl", "xml", "xsl"
     );
 
     private static final List<String> SUPPORTED_LANGUAGES_PMD = listOf(
@@ -61,11 +61,12 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         "swift-4.2", "swift-5.0", "swift-5.1", "swift-5.2",
         "swift-5.3", "swift-5.4", "swift-5.5", "swift-5.6",
         "swift-5.7", "swift-5.8", "swift-5.9",
+        "velocity-2.0", "velocity-2.1", "velocity-2.2", "velocity-2.3",
         "visualforce-52", "visualforce-53", "visualforce-54", "visualforce-55", "visualforce-56",
         "visualforce-57", "visualforce-58", "visualforce-59",
-        "vm-2.0", "vm-2.1", "vm-2.2", "vm-2.3", "wsdl-1.1",
-        "wsdl-2.0", "xml-1.0", "xml-1.1", "xsl-1.0", "xsl-2.0",
-        "xsl-3.0"
+        "wsdl-1.1", "wsdl-2.0",
+        "xml-1.0", "xml-1.1",
+        "xsl-1.0", "xsl-2.0", "xsl-3.0"
     );
 
     private final String srcDir = new File(".", "src/test/resources/sample-source/java/").getAbsolutePath();

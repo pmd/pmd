@@ -1282,8 +1282,8 @@
         <module>pmd-test</module>
         <module>pmd-test-schema</module>
         <module>pmd-tsql</module>
+        <module>pmd-velocity</module>
         <module>pmd-visualforce</module>
-        <module>pmd-vm</module>
         <module>pmd-xml</module>
         <module>pmd-ant</module>
         <module>pmd-languages-deps</module>

@@ -502,7 +502,7 @@ entries:
       url: /pmd_languages_visualforce.html
       output: web, pdf
     - title: Velocity Template Language (VTL)
-      url: /pmd_languages_vm.html
+      url: /pmd_languages_velocity.html
       output: web, pdf
     - title: XML and XML dialects
       url: /pmd_languages_xml.html

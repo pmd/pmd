@@ -136,6 +136,15 @@ is now considered stable.
 
 Experimental Kotlin support has been promoted as stable API now.
 
+##### Changed: Velocity Template Language (VTL)
+
+The module was named just "vm" which was not a good name. It module and language id and
+package names have been renamed to "velocity".
+
+If you import rules, you also need to ajdust the paths, e.g.
+
+* `category/vm/...` ➡️ `category/velocity/...`
+
 #### Rule Changes
 
 **New Rules**
@@ -153,6 +162,9 @@ Experimental Kotlin support has been promoted as stable API now.
 **Renamed Rulesets**
 
 * `category/vf/security.xml` ➡️ `category/visualforce/security.xml`
+* `category/vm/bestpractices.xml` ➡️ `category/velocity/bestpractices.xml`
+* `category/vm/design.xml` ➡️ `category/velocity/design.xml`
+* `category/vm/errorprone.xml` ➡️ `category/velocity/errorprone.xml`
 
 **Removed Rules**
 
@@ -371,6 +383,16 @@ in the migration guide for details.
   * The package `net.sourceforge.pmd.lang.vf` has been renamed to {%jdoc_package visualforce::lang.visualforce %}.
   * The language id of visualforce has been changed to `visualforce` (it was previously just "vf")
   * The ruleset changed: `category/vf/security.xml` ➡️ `category/visualforce/security.xml`
+* pmd-velocity (renamed from pmd-vm)
+  * The package `net.sourceforge.pmd.lang.vm` has been renamed to {%jdoc_package velocity::lang.velocity %}.
+  * The language id of the Velocity module has been changed to `velocity` (it was previously just "vm")
+  * The rulesets changed: `category/vm/...` ➡️ `category/velocity/...`
+  * Many classes used the prefix `Vm`, e.g. `VmLanguageModule`. This has been changed to be `Vtl`:
+    * {%jdoc velocity::lang.velocity.VtlLanguageModule %}
+    * {%jdoc velocity::lang.velocity.ast.VtlNode %}
+    * {%jdoc velocity::lang.velocity.ast.VtlParser %}
+    * {%jdoc velocity::lang.velocity.cpd.VtlCpdLexer %}
+    * {%jdoc velocity::lang.velocity.rule.AbstractVtlRule %}
 
 **Internalized classes and interfaces and methods**
 
@@ -716,10 +738,10 @@ The annotation `@DeprecatedUntil700` has been removed.
   * {%jdoc !!visualforce::lang.vf.DataType %} - method `fromBasicType(BasicType)` has been removed.
     Use {%jdoc visualforce::lang.vf.DataType#fromTypeName(java.lang.String) %} instead.
 * pmd-vm
-  * {%jdoc !!vm::lang.vm.ast.VmNode %} - method `jjtAccept()` has been removed.
+  * {%jdoc !!velocity::lang.vm.ast.VmNode %} - method `jjtAccept()` has been removed.
     Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
   * `net.sourceforge.pmd.lang.vm.ast.VmParserVisitor`
-    Use {%jdoc vm::lang.vm.ast.VmVisitor %} or {%jdoc vm::lang.vm.ast.VmVisitorBase %} instead.
+    Use {%jdoc velocity::lang.vm.ast.VmVisitor %} or {%jdoc velocity::lang.vm.ast.VmVisitorBase %} instead.
   * `net.sourceforge.pmd.lang.vm.ast.VmParserVisitorAdapter`
 
 **Removed classes, interfaces and methods (not previously deprecated)**
