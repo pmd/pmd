@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.coverage;
+package net.sourceforge.pmd.lang.java;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -25,7 +25,6 @@ import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 

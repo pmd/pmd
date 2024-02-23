@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.lang.java;
 
 import static net.sourceforge.pmd.lang.test.ast.TestUtilsKt.assertSize;
 import static net.sourceforge.pmd.lang.test.ast.TestUtilsKt.assertSuppressed;
@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.reporting.Report;
 

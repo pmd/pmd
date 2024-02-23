@@ -9,7 +9,6 @@ import static net.sourceforge.pmd.lang.test.ast.TestUtilsKt.assertSize;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;

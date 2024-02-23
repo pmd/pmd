@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.ant;
+package net.sourceforge.pmd.lang.java;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -19,6 +19,7 @@ import net.sourceforge.pmd.test.AbstractAntTestHelper;
 class PMDTaskTest extends AbstractAntTestHelper {
 
     PMDTaskTest() {
+        pathToTestScript = "target/test-classes/net/sourceforge/pmd/lang/java/ant/xml";
         antTestScriptFilename = "pmdtasktest.xml";
     }
 

@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.lang.java;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
