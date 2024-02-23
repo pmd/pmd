@@ -3,7 +3,7 @@
  */
 
 
-package net.sourceforge.pmd.docs;
+package net.sourceforge.pmd.doc.internal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

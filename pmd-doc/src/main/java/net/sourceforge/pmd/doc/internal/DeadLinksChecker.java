@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.docs;
+package net.sourceforge.pmd.doc.internal;
 
 import java.io.IOException;
 import java.io.InputStream;

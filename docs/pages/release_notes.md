@@ -393,6 +393,10 @@ package or made (package) private and are _not accessible_ anymore.
     * Method `replacementIfDeprecated()` is now package private.
   * `net.sourceforge.pmd.properties.PropertyTypeId` - moved in subpackage `internal`.
   * {%jdoc !!core::properties.PropertyDescriptor %} - method `getTypeId()` is now package private.
+* pmd-doc
+  * The whole maven module `pmd-doc` is now considered internal API even though it was not declared so before.
+    It's used to generate the rule documentation for the built-in rules.
+  * All the classes have been moved into package `net.sourceforge.pmd.doc.internal`.
 * pmd-ant
   * {%jdoc !!ant::ant.Formatter %}
     * Method `getRenderer()` has been removed.
