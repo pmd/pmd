@@ -330,6 +330,8 @@ in the migration guide for details.
     * {%jdoc core::reporting.RuleViolation %}
     * {%jdoc core::reporting.ViolationSuppressor %}
   * {%jdoc core::lang.rule.xpath.XPathRule %} has been moved into subpackage {% jdoc_package core::lang.rule.xpath %}.
+* pmd-html
+  * `net.sourceforge.pmd.lang.html.ast.HtmlCpdLexer` moved into package `cpd`: {%jdoc html::lang.html.cpd.HtmlCpdLexer %}.
 
 **Internalized classes and interfaces and methods**
 
