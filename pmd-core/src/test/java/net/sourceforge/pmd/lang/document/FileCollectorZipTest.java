@@ -2,9 +2,9 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cli;
+package net.sourceforge.pmd.lang.document;
 
-import static net.sourceforge.pmd.cli.PMDFilelistTest.assertHasName;
+import static net.sourceforge.pmd.lang.document.FileCollectorTest.assertHasName;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -21,11 +21,10 @@ import org.junit.jupiter.api.Test;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.internal.util.IOUtil;
-import net.sourceforge.pmd.lang.document.TextFile;
 
-class ZipFileTest {
+class FileCollectorZipTest {
 
-    private static final String ZIP_PATH = "src/test/resources/net/sourceforge/pmd/cli/zipWithSources.zip";
+    private static final String ZIP_PATH = "src/test/resources/net/sourceforge/pmd/lang/document/filecollectorziptest/zipWithSources.zip";
     private final Path zipPath = Paths.get(ZIP_PATH);
 
     @Test
@@ -66,7 +65,7 @@ class ZipFileTest {
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
-            String baseZipPath = IOUtil.normalizePath("net/sourceforge/pmd/cli/zipWithSources.zip");
+            String baseZipPath = IOUtil.normalizePath("net/sourceforge/pmd/lang/document/filecollectorziptest/zipWithSources.zip");
             assertHasName(files.get(0), baseZipPath + "!/otherSrc/somefile.dummy", pmd);
             assertHasName(files.get(1), baseZipPath + "!/src/somefile.dummy", pmd);
             assertHasName(files.get(2), baseZipPath + "!/src/somefile1.dummy", pmd);

@@ -5,10 +5,13 @@
 package net.sourceforge.pmd.cpd;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -70,10 +73,10 @@ class CpdAnalysisTest {
     void testFileSectionWithBrokenSymlinks() throws Exception {
         prepareSymLinks();
 
-        NoFileAssertListener listener = new NoFileAssertListener(0);
+        FileCountAssertListener listener = new FileCountAssertListener(0);
         try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
             cpd.setCpdListener(listener);
-            cpd.files().addFile(Paths.get(BASE_TEST_RESOURCE_PATH, "this-is-a-broken-sym-link-for-test"));
+            assertFalse(cpd.files().addFile(Paths.get(BASE_TEST_RESOURCE_PATH, "this-is-a-broken-sym-link-for-test")));
             cpd.performAnalysis();
         }
 
@@ -91,11 +94,28 @@ class CpdAnalysisTest {
     void testFileAddedAsSymlinkAndReal() throws Exception {
         prepareSymLinks();
 
-        NoFileAssertListener listener = new NoFileAssertListener(1);
+        FileCountAssertListener listener = new FileCountAssertListener(1);
         try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
             cpd.setCpdListener(listener);
-            cpd.files().addFile(Paths.get(BASE_TEST_RESOURCE_PATH, "real-file.txt"));
-            cpd.files().addFile(Paths.get(BASE_TEST_RESOURCE_PATH, "symlink-for-real-file.txt"));
+            assertTrue(cpd.files().addFile(Paths.get(BASE_TEST_RESOURCE_PATH, "real-file.txt")));
+            assertFalse(cpd.files().addFile(Paths.get(BASE_TEST_RESOURCE_PATH, "symlink-for-real-file.txt")));
+            cpd.performAnalysis();
+        }
+
+        listener.verify();
+    }
+
+    /**
+     * A file should be not be added via a sym link.
+     */
+    @Test
+    void testNoFileAddedAsSymlink() throws Exception {
+        prepareSymLinks();
+
+        FileCountAssertListener listener = new FileCountAssertListener(0);
+        try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
+            cpd.setCpdListener(listener);
+            assertFalse(cpd.files().addFile(Paths.get(BASE_TEST_RESOURCE_PATH, "symlink-for-real-file.txt")));
             cpd.performAnalysis();
         }
 
@@ -111,10 +131,10 @@ class CpdAnalysisTest {
      */
     @Test
     void testFileAddedWithRelativePath() throws Exception {
-        NoFileAssertListener listener = new NoFileAssertListener(1);
+        FileCountAssertListener listener = new FileCountAssertListener(1);
         try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
             cpd.setCpdListener(listener);
-            cpd.files().addFile(Paths.get("./" + BASE_TEST_RESOURCE_PATH, "real-file.txt"));
+            assertTrue(cpd.files().addFile(Paths.get("./" + BASE_TEST_RESOURCE_PATH, "real-file.txt")));
             cpd.performAnalysis();
         }
 
@@ -128,31 +148,46 @@ class CpdAnalysisTest {
      */
     @Test
     void testFileOrderRelevance() throws Exception {
+        Path dup1 = Paths.get("./" + BASE_TEST_RESOURCE_PATH, "dup1.txt");
+        Path dup2 = Paths.get("./" + BASE_TEST_RESOURCE_PATH, "dup2.txt");
+
         try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
-            cpd.files().addFile(Paths.get("./" + BASE_TEST_RESOURCE_PATH, "dup2.java"));
-            cpd.files().addFile(Paths.get("./" + BASE_TEST_RESOURCE_PATH, "dup1.java"));
+            assertTrue(cpd.files().addFile(dup2));
+            assertTrue(cpd.files().addFile(dup1));
             cpd.performAnalysis(report -> {
-
-
                 List<Match> matches = report.getMatches();
+                assertFalse(matches.isEmpty());
                 for (Match match : matches) {
-                    // the file added first was dup2.
-                    assertEquals("dup2.java", match.getFirstMark().getFileId().getFileName());
-                    assertEquals("dup1.java", match.getSecondMark().getFileId().getFileName());
+                    // the file added first was dup2, but we sort now the files alphabetically, so dup1 is the first.
+                    assertEquals("dup1.txt", match.getFirstMark().getFileId().getFileName());
+                    assertEquals("dup2.txt", match.getSecondMark().getFileId().getFileName());
                 }
             });
         }
-
+        // now the other way round
+        try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
+            assertTrue(cpd.files().addFile(dup1));
+            assertTrue(cpd.files().addFile(dup2));
+            cpd.performAnalysis(report -> {
+                List<Match> matches = report.getMatches();
+                assertFalse(matches.isEmpty());
+                for (Match match : matches) {
+                    // dup1.txt is still the first
+                    assertEquals("dup1.txt", match.getFirstMark().getFileId().getFileName());
+                    assertEquals("dup2.txt", match.getSecondMark().getFileId().getFileName());
+                }
+            });
+        }
     }
 
     /**
      * Simple listener that fails, if too many files were added and not skipped.
      */
-    private static class NoFileAssertListener implements CPDListener {
+    private static class FileCountAssertListener implements CPDListener {
         private int expectedFilesCount;
         private int files;
 
-        NoFileAssertListener(int expectedFilesCount) {
+        FileCountAssertListener(int expectedFilesCount) {
             this.expectedFilesCount = expectedFilesCount;
             this.files = 0;
         }
