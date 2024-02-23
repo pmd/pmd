@@ -136,13 +136,9 @@ function build() {
         pmd_ci_openjdk_setdefault 17
         # Note: Sonar also needs GITHUB_TOKEN (!)
         ./mvnw \
-            -Dmaven.javadoc.skip=true \
-            -Dmaven.source.skip \
-            -Dcheckstyle.skip \
-            -Dpmd.skip \
             --show-version --errors --batch-mode \
             clean package \
-            sonar:sonar -Dsonar.login="${SONAR_TOKEN}" -Psonar
+            sonar:sonar -Dsonar.login="${SONAR_TOKEN}" -Psonar,fastSkip
         pmd_ci_log_success "New sonar results: https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd"
     pmd_ci_log_group_end
 
@@ -151,15 +147,22 @@ function build() {
         export CI_NAME="github actions"
         export CI_BUILD_URL="${PMD_CI_JOB_URL}"
         export CI_BRANCH="${PMD_CI_BRANCH}"
+        # first create jacoco report
         ./mvnw \
-            -Dmaven.javadoc.skip=true \
-            -Dmaven.source.skip \
-            -Dcheckstyle.skip \
-            -Dpmd.skip \
-            -DrepoToken="${COVERALLS_REPO_TOKEN}" \
             --show-version --errors --batch-mode \
-            clean package jacoco:report \
-            coveralls:report -Pcoveralls
+            clean package \
+            jacoco:report -Pcoveralls,fastSkip
+
+        # workaround, maybe https://github.com/jacoco/jacoco/issues/654
+        sed -i 's$Comparisons.kt$ApexTreeBuilder.kt$g' pmd-apex/target/site/jacoco/jacoco.xml
+
+        # then create and send coveralls report
+        # note: generate-sources is needed, so that antlr4 generated directories are on the compileSourceRoots
+        ./mvnw \
+            --show-version --errors --batch-mode \
+            generate-sources \
+            coveralls:report -DrepoToken="${COVERALLS_REPO_TOKEN}" -Pcoveralls,fastSkip
+
         pmd_ci_log_success "New coveralls result: https://coveralls.io/github/pmd/pmd"
     pmd_ci_log_group_end
     fi
