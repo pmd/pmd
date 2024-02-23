@@ -74,6 +74,7 @@ You might encounter additionally the following types of problems:
   see [Release downloads](#release-downloads).
 * Some CLI options have been removed, because they have been deprecated. See [CLI Changes](#cli-changes) for details.
 * If you call CPD programmatically, the API has changed, see [New Programmatic API for CPD](pmd_release_notes_pmd7.html#new-programmatic-api-for-cpd).
+* If you use Visualforce, then you need to change "vf" to "visualforce", e.g. `category/vf/security.xml` ➡️ `category/visualforce/security.xml`
 
 The following topics describe well known migration challenges in more detail.
 

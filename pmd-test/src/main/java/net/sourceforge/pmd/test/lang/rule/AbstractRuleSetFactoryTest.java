@@ -338,7 +338,7 @@ public abstract class AbstractRuleSetFactoryTest {
         if (input == null) {
             // this might happen if a language is only support by CPD, but not
             // by PMD
-            System.err.println("No ruleset found for language " + language);
+            System.err.println("No rulesets found for language " + language + " at " + propertiesPath);
             return Collections.emptyList();
         }
         try (InputStream is = input) {

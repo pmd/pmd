@@ -34,7 +34,7 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         "julia",
         "kotlin", "lua", "matlab", "modelica", "objectivec", "perl",
         "php", "plsql", "pom", "python", "ruby", "scala", "swift",
-        "tsql", "typescript", "vf", "vm", "wsdl", "xml", "xsl"
+        "tsql", "typescript", "visualforce", "vm", "wsdl", "xml", "xsl"
     );
 
     private static final List<String> SUPPORTED_LANGUAGES_PMD = listOf(
@@ -60,8 +60,9 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         "scala-2.10", "scala-2.11", "scala-2.12", "scala-2.13",
         "swift-4.2", "swift-5.0", "swift-5.1", "swift-5.2",
         "swift-5.3", "swift-5.4", "swift-5.5", "swift-5.6",
-        "swift-5.7", "swift-5.8", "swift-5.9", "vf-52", "vf-53", "vf-54", "vf-55", "vf-56",
-        "vf-57", "vf-58", "vf-59",
+        "swift-5.7", "swift-5.8", "swift-5.9",
+        "visualforce-52", "visualforce-53", "visualforce-54", "visualforce-55", "visualforce-56",
+        "visualforce-57", "visualforce-58", "visualforce-59",
         "vm-2.0", "vm-2.1", "vm-2.2", "vm-2.3", "wsdl-1.1",
         "wsdl-2.0", "xml-1.0", "xml-1.1", "xsl-1.0", "xsl-2.0",
         "xsl-3.0"

@@ -49,7 +49,7 @@
                                 <ant antfile="${javacc.ant.wrapper}" target="alljavacc">
                                     <property name="javacc.jar" value="${javacc.jar}" />
                                     <property name="lang-name" value="Vf" />
-                                    <property name="lang-terse-name" value="vf" />
+                                    <property name="lang-terse-name" value="visualforce" />
                                 </ant>
                             </target>
                         </configuration>

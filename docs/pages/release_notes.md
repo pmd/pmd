@@ -116,6 +116,17 @@ See [#3766](https://github.com/pmd/pmd/issues/3766) for details.
 Contributors: [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-google),
   [Edward Klimoshenko](https://github.com/eklimo) (@eklimo)
 
+##### Changed: Visualforce
+
+There was an inconsistency between the naming of the maven module and the language id. The language id
+used the abbreviation "vf", while the maven module used the longer name "visualforce". This has been
+solved by renaming the language module to its full name "visualforce". The java packages have
+been renamed as well.
+
+If you import rules, you also need to adjust the paths, e.g.
+
+* `category/vf/security.xml` ➡️ `category/visualforce/security.xml`
+
 ##### Changed: HTML support
 
 Support for HTML was introduced in PMD 6.55.0 as an experimental feature. With PMD 7.0.0 this
@@ -138,6 +149,10 @@ Experimental Kotlin support has been promoted as stable API now.
 
 * {% rule java/codestyle/EmptyControlStatement %}: The rule has a new property to allow empty blocks when
   they contain a comment (`allowCommentedBlocks`).
+
+**Renamed Rulesets**
+
+* `category/vf/security.xml` ➡️ `category/visualforce/security.xml`
 
 **Removed Rules**
 
@@ -352,6 +367,10 @@ in the migration guide for details.
   * {%jdoc xml::lang.xml.pom.PomLanguageModule %} (moved from `net.sourceforge.pmd.lang.pom.PomLanguageModule`)
   * {%jdoc xml::lang.xml.wsdl.WsdlLanguageModule %} (moved from `net.sourceforge.pmd.lang.wsdl.WsdlLanguageModule`)
   * {%jdoc xml::lang.xml.xsl.XslLanguageModule %} (moved from `net.sourceforge.pmd.lang.xsl.XslLanguageModule`)
+* pmd-visualforce
+  * The package `net.sourceforge.pmd.lang.vf` has been renamed to {%jdoc_package visualforce::lang.visualforce %}.
+  * The language id of visualforce has been changed to `visualforce` (it was previously just "vf")
+  * The ruleset changed: `category/vf/security.xml` ➡️ `category/visualforce/security.xml`
 
 **Internalized classes and interfaces and methods**
 

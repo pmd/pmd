@@ -6,13 +6,13 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
     <description>Every Visualforce Rule in PMD</description>
 
-    <rule ref="category/vf/bestpractices.xml" />
-    <rule ref="category/vf/codestyle.xml" />
-    <rule ref="category/vf/design.xml" />
-    <rule ref="category/vf/documentation.xml" />
-    <rule ref="category/vf/errorprone.xml" />
-    <rule ref="category/vf/multithreading.xml" />
-    <rule ref="category/vf/performance.xml" />
-    <rule ref="category/vf/security.xml" />
+    <rule ref="category/visualforce/bestpractices.xml" />
+    <rule ref="category/visualforce/codestyle.xml" />
+    <rule ref="category/visualforce/design.xml" />
+    <rule ref="category/visualforce/documentation.xml" />
+    <rule ref="category/visualforce/errorprone.xml" />
+    <rule ref="category/visualforce/multithreading.xml" />
+    <rule ref="category/visualforce/performance.xml" />
+    <rule ref="category/visualforce/security.xml" />
 
 </ruleset>
