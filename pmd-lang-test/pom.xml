@@ -17,58 +17,15 @@
     </parent>
 
     <build>
-        <testResources>
-            <testResource>
-                <directory>${project.basedir}/src/test/resources</directory>
-            </testResource>
-            <!-- Adding kotlin files to test resources, so that checkstyle verifies the license header -->
-            <testResource>
-                <directory>${project.basedir}/src/main/kotlin</directory>
-            </testResource>
-        </testResources>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>add-kotlin-sources</id>
-                        <!-- This is needed because otherwise that directory is      -->
-                        <!-- added as a test resource by the <testResources> above   -->
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${project.basedir}/src/main/kotlin</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
-
-            <!-- The kotlin plugin has to run before the java plugin-->
             <plugin>
-                <artifactId>kotlin-maven-plugin</artifactId>
                 <groupId>org.jetbrains.kotlin</groupId>
-                <version>${kotlin.version}</version>
-                <executions>
-                    <execution>
-                        <id>kotlin-compile</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <phase>process-sources</phase>
-                        <configuration>
-                            <sourceDirs>
-                                <sourceDir>${project.basedir}/src/main/java</sourceDir>
-                                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
-                            </sourceDirs>
-                        </configuration>
-                    </execution>
-                </executions>
+                <artifactId>kotlin-maven-plugin</artifactId>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -88,15 +45,6 @@
             <plugin>
                 <groupId>org.jetbrains.dokka</groupId>
                 <artifactId>dokka-maven-plugin</artifactId>
-                <version>${dokka.version}</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>javadocJar</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
