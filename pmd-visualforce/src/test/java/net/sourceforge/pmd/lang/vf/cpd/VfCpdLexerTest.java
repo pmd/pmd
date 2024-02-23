@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.vf.cpd;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
+import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 
 class VfCpdLexerTest extends CpdTextComparisonTest {
 

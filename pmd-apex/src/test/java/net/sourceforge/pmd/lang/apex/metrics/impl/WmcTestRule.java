@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.metrics.impl;
 
 import net.sourceforge.pmd.lang.apex.metrics.ApexMetrics;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.test.AbstractMetricTestRule;
+import net.sourceforge.pmd.lang.test.AbstractMetricTestRule;
 
 /**
  * @author Clément Fournier

@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cpd.test
+package net.sourceforge.pmd.lang.test.cpd
 
 import io.kotest.assertions.throwables.shouldThrow
 import net.sourceforge.pmd.cpd.CpdCapableLanguage
@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.ast.LexException
 import net.sourceforge.pmd.lang.document.FileId
 import net.sourceforge.pmd.lang.document.TextDocument
-import net.sourceforge.pmd.test.BaseTextComparisonTest
+import net.sourceforge.pmd.lang.test.BaseTextComparisonTest
 import org.apache.commons.lang3.StringUtils
 
 /**

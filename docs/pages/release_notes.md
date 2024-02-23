@@ -332,6 +332,12 @@ in the migration guide for details.
   * {%jdoc core::lang.rule.xpath.XPathRule %} has been moved into subpackage {% jdoc_package core::lang.rule.xpath %}.
 * pmd-html
   * `net.sourceforge.pmd.lang.html.ast.HtmlCpdLexer` moved into package `cpd`: {%jdoc html::lang.html.cpd.HtmlCpdLexer %}.
+* pmd-lang-test: All types have been moved under the new base package {%jdoc_package lang-test::lang.test %}:
+  * {%jdoc lang-test::lang.test.AbstractMetricTestRule %} (moved from `net.sourceforge.pmd.test.AbstractMetricTestRule`)
+  * {%jdoc lang-test::lang.test.BaseTextComparisonTest %} (moved from `net.sourceforge.pmd.test.BaseTextComparisonTest`)
+  * {%jdoc lang-test::lang.test.cpd.CpdTextComparisonTest %} (moved from `net.sourceforge.pmd.cpd.test.CpdTextComparisonTest`)
+  * {%jdoc lang-test::lang.test.ast.BaseTreeDumpTest %} (moved from `net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest`)
+  * Any many other types have been moved from `net.sourceforge.pmd.lang.ast.test` to `net.sourceforge.pmd.lang.test`.
 
 **Internalized classes and interfaces and methods**
 

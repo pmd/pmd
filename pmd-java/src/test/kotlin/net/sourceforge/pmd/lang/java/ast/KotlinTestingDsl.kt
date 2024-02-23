@@ -13,7 +13,7 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.collections.shouldContainAll
 import net.sourceforge.pmd.lang.ast.*
-import net.sourceforge.pmd.lang.ast.test.*
+import net.sourceforge.pmd.lang.test.ast.*
 import net.sourceforge.pmd.lang.java.JavaLanguageModule
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import net.sourceforge.pmd.lang.java.JavaParsingHelper.*

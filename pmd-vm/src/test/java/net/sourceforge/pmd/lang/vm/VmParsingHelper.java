@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.vm;
 
-import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
+import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.lang.vm.ast.ASTTemplate;
 
 public final class VmParsingHelper extends BaseParsingHelper<VmParsingHelper, ASTTemplate> {

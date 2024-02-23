@@ -4,17 +4,17 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
-import io.kotest.matchers.should
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.collections.shouldBeEmpty
-import net.sourceforge.pmd.lang.ast.test.*
-import net.sourceforge.pmd.lang.ast.test.shouldBe
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol
 import net.sourceforge.pmd.lang.java.types.shouldHaveType
+import net.sourceforge.pmd.lang.test.ast.*
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 import java.lang.reflect.Modifier
 
 @Suppress("UNUSED_VARIABLE")

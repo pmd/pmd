@@ -4,16 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal
 
+import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
-import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.*
-import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.*
 import net.sourceforge.pmd.lang.java.types.Substitution
+import net.sourceforge.pmd.lang.test.ast.*
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 import java.lang.reflect.Modifier
 
 /**
