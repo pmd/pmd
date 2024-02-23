@@ -90,6 +90,7 @@ public class RuleDocGenerator {
     }
 
     public void generate(List<RuleSet> registeredRulesets, List<String> additionalRulesets) throws IOException {
+        removeExistingRuleDocs();
         Map<Language, List<RuleSet>> sortedRulesets;
         Map<Language, List<RuleSet>> sortedAdditionalRulesets;
         sortedRulesets = sortRulesets(registeredRulesets);
@@ -100,6 +101,38 @@ public class RuleDocGenerator {
 
         ensureAllLanguages(sortedRulesets);
         generateSidebar(sortedRulesets);
+    }
+
+    private void removeExistingRuleDocs() throws IOException {
+        Path directory = root.resolve("docs/pages/pmd/rules");
+        if (!Files.isDirectory(directory)) {
+            // no old files exist yet
+            return;
+        }
+
+        System.out.println("Deleting old rule docs in " + directory);
+        Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                if (file.toString().endsWith("scala.md")) {
+                    // don't delete scala.md, since we don't have any rules yet...
+                    return FileVisitResult.CONTINUE;
+                }
+                Files.delete(file);
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                if (dir.equals(directory)) {
+                    // don't delete the whole directory, keep it empty
+                    // or almost empty (scala.md is still present)
+                    return FileVisitResult.CONTINUE;
+                }
+                Files.delete(dir);
+                return FileVisitResult.CONTINUE;
+            }
+        });
     }
 
     private void ensureAllLanguages(Map<Language, List<RuleSet>> sortedRulesets) {

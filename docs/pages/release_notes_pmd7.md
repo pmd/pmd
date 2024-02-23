@@ -330,7 +330,7 @@ can be parsed now. PMD should now be able to parse Apex code up to version 59.0 
       {% rule plsql/design/ExcessiveParameterList %}, {% rule plsql/design/ExcessiveTypeLength %},
       {% rule plsql/design/NcssMethodCount %}, {% rule plsql/design/NcssObjectCount %},
       {% rule plsql/design/NPathComplexity %}
-    * VM: {% rule vm/design/ExcessiveTemplateLength %}
+    * Velocity: {% rule velocity/design/ExcessiveTemplateLength %}
 
 * The general property `violationSuppressXPath` which is available for all rules to
   [suppress warnings](pmd_userdocs_suppressing_warnings.html) now uses XPath version 3.1 by default.

@@ -28,7 +28,7 @@ Since PMD 6.30.0 support for type resolution has been added.
 
 The Visualforce AST now can resolve the data type of Visualforce expressions that reference
 Apex Controller properties and Custom Object fields. This feature improves the precision of existing rules,
-like {% rule vf/security/VfUnescapeEl %}.
+like {% rule visualforce/security/VfUnescapeEl %}.
 
 This can be configured using two language properties, which can be set as environment variables:
 
