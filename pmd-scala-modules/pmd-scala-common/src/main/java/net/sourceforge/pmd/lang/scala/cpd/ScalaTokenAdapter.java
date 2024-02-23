@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cpd;
+package net.sourceforge.pmd.lang.scala.cpd;
 
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.document.Chars;

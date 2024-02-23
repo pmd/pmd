@@ -2,10 +2,12 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cpd;
+package net.sourceforge.pmd.lang.scala.cpd;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.cpd.CpdLexer;
+import net.sourceforge.pmd.cpd.TokenFactory;
 import net.sourceforge.pmd.cpd.impl.BaseTokenFilter;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersion;

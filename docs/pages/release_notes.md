@@ -338,6 +338,9 @@ in the migration guide for details.
   * {%jdoc lang-test::lang.test.cpd.CpdTextComparisonTest %} (moved from `net.sourceforge.pmd.cpd.test.CpdTextComparisonTest`)
   * {%jdoc lang-test::lang.test.ast.BaseTreeDumpTest %} (moved from `net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest`)
   * Any many other types have been moved from `net.sourceforge.pmd.lang.ast.test` to `net.sourceforge.pmd.lang.test`.
+* pmd-scala
+  * {%jdoc scala::lang.scala.cpd.ScalaCpdLexer %} (moved from `net.sourceforge.pmd.lang.scala.cpd.ScalaCpdLexer`)
+  * {%jdoc scala::lang.scala.cpd.ScalaTokenAdapter %} (moved from `net.sourceforge.pmd.lang.scala.cpd.ScalaTokenAdapter`)
 
 **Internalized classes and interfaces and methods**
 
@@ -668,6 +671,7 @@ The annotation `@DeprecatedUntil700` has been removed.
   * {%jdoc !!plsql::lang.plsql.ast.PLSQLNode %} - method `jjtAccept()` has been removed.
     Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
 * pmd-scala
+  * The maven module `pmd-scala` has been removed. Use `pmd-scala_2.13` or `pmd-scala_2.12` instead.
   * {%jdoc !!scala::lang.scala.ast.ScalaNode %}
     * Method `accept()` has been removed. Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
     * Method `getNode()` has been removed. The underlying node is only available in AST nodes, but not in rule implementations.

@@ -2,25 +2,20 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cpd;
+package net.sourceforge.pmd.lang.scala.cpd;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.scala.ScalaLanguageModule;
+import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 
 class ScalaCpdLexerTest extends CpdTextComparisonTest {
 
     ScalaCpdLexerTest() {
         super(ScalaLanguageModule.getInstance(), ".scala");
-    }
-
-    @Override
-    protected String getResourcePrefix() {
-        return "../lang/scala/cpd/testdata";
     }
 
     @Test
