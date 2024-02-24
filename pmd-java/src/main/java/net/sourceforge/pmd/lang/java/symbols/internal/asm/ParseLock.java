@@ -32,14 +32,22 @@ abstract class ParseLock {
                     try {
                         boolean success = doParse();
                         status = success ? ParseStatus.FULL : ParseStatus.FAILED;
-                        this.status = status;
                         finishParse(!success);
                     } catch (Throwable t) {
                         status = ParseStatus.FAILED;
-                        this.status = status;
                         LOG.error(t.toString(), t);
                         finishParse(true);
                     }
+
+                    // the status must be updated as last statement, so that
+                    // other threads see the status FULL or FAILED only after finishParse()
+                    // returns. Otherwise, some fields might not have been initialized.
+                    //
+                    // Note: the current thread might reenter the parsing logic through
+                    // finishParse() -> ... -> ensureParsed(). In that case the status is still BEING_PARSED,
+                    // and we don't call finishParse() again. See below for canReenter()
+                    this.status = status;
+
                     assert status.isFinished : "Inconsistent status " + status;
                     assert postCondition() : "Post condition not satisfied after parsing sig " + this;
                 } else if (status == ParseStatus.BEING_PARSED && !canReenter()) {
