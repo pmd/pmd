@@ -35,7 +35,7 @@ abstract class ParseLock {
                         finishParse(!success);
                     } catch (Throwable t) {
                         status = ParseStatus.FAILED;
-                        LOG.error(t.toString(), t);
+                        LOG.error("Parsing failed in ParseLock#doParse()", t);
                         finishParse(true);
                     }
 
