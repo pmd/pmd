@@ -343,6 +343,12 @@ can be parsed now. PMD should now be able to parse Apex code up to version 59.0 
   from all rules. These properties have been deprecated since PMD 6.13.0.
   See [issue #1648](https://github.com/pmd/pmd/issues/1648) for more details.
 
+**Apex Codestyle**
+
+* {% rule apex/codestyle/MethodNamingConventions %}: The deprecated rule property `skipTestMethodUnderscores` has
+  been removed. It was actually deprecated since PMD 6.15.0, but was not mentioned in the release notes
+  back then. Use the property `testPattern` instead to configure valid names for test methods.
+
 **Java General changes**
 
 * Violations reported on methods or classes previously reported the line range of the entire method

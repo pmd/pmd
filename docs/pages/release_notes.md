@@ -138,6 +138,9 @@ Experimental Kotlin support has been promoted as stable API now.
 
 * {% rule java/codestyle/EmptyControlStatement %}: The rule has a new property to allow empty blocks when
   they contain a comment (`allowCommentedBlocks`).
+* {% rule apex/codestyle/MethodNamingConventions %}: The deprecated rule property `skipTestMethodUnderscores` has
+  been removed. It was actually deprecated since PMD 6.15.0, but was not mentioned in the release notes
+  back then. Use the property `testPattern` instead to configure valid names for test methods.
 
 **Removed Rules**
 
@@ -1082,6 +1085,12 @@ Contributors: [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-g
 * The properties `cc_categories`, `cc_remediation_points_multiplier`, `cc_block_highlighting` have been removed
   from all rules. These properties have been deprecated since PMD 6.13.0.
   See [issue #1648](https://github.com/pmd/pmd/issues/1648) for more details.
+
+**Apex Codestyle**
+
+* {% rule apex/codestyle/MethodNamingConventions %}: The deprecated rule property `skipTestMethodUnderscores` has
+  been removed. It was actually deprecated since PMD 6.15.0, but was not mentioned in the release notes
+  back then. Use the property `testPattern` instead to configure valid names for test methods.
 
 **Java General changes**
 
