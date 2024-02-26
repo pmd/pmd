@@ -514,17 +514,7 @@ public class CommentRequired {
     </test-code>
 
     <test-code>
-        <description>#1683 [java] CommentRequired property names are inconsistent - use deprecated property</description>
-        <rule-property name="headerCommentRequirement">Unwanted</rule-property>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-/** Unwanted class comment */
-public class CommentRequirement {}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>#1683 [java] CommentRequired property names are inconsistent - use new property</description>
+        <description>#1683 [java] CommentRequired property names are inconsistent</description>
         <rule-property name="classCommentRequirement">Unwanted</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[

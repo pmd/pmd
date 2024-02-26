@@ -141,6 +141,8 @@ Experimental Kotlin support has been promoted as stable API now.
 * {% rule apex/codestyle/MethodNamingConventions %}: The deprecated rule property `skipTestMethodUnderscores` has
   been removed. It was actually deprecated since PMD 6.15.0, but was not mentioned in the release notes
   back then. Use the property `testPattern` instead to configure valid names for test methods.
+* {% rule java/documentation/CommentRequired %}: The deprecated property `headerCommentRequirement` has been removed.
+  Use the property `classCommentRequirement` instead.
 
 **Removed Rules**
 
@@ -1162,6 +1164,8 @@ Contributors: [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-g
       See also [pull request #3757](https://github.com/pmd/pmd/pull/3757).
     * Elements in annotation types are now detected as well. This might lead to an increased number of violations
       for missing public method comments.
+    * The deprecated property `headerCommentRequirement` has been removed. Use the property `classCommentRequirement`
+      instead.
 * {% rule java/documentation/CommentSize %}: When determining the line-length of a comment, the leading comment
   prefix markers (e.g. `*` or `//`) are ignored and don't add up to the line-length.
   See also [pull request #4369](https://github.com/pmd/pmd/pull/4369).

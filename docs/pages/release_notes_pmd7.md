@@ -419,6 +419,8 @@ can be parsed now. PMD should now be able to parse Apex code up to version 59.0 
     See also [pull request #3757](https://github.com/pmd/pmd/pull/3757).
   * Elements in annotation types are now detected as well. This might lead to an increased number of violations
     for missing public method comments.
+  * The deprecated property `headerCommentRequirement` has been removed. Use the property `classCommentRequirement`
+    instead.
 * {% rule java/documentation/CommentSize %}: When determining the line-length of a comment, the leading comment
   prefix markers (e.g. `*` or `//`) are ignored and don't add up to the line-length.
   See also [pull request #4369](https://github.com/pmd/pmd/pull/4369).
