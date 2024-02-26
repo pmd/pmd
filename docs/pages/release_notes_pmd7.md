@@ -390,6 +390,8 @@ can be parsed now. PMD should now be able to parse Apex code up to version 59.0 
   not necessary are allowed, if they separate expressions of different precedence.
   The other property `ignoreBalancing` (default: true) is similar, in that it allows parentheses that help
   reading and understanding the expressions.
+* {% rule java/codestyle/EmptyControlStatement %}: The rule has a new property to allow empty blocks when
+  they contain a comment (`allowCommentedBlocks`).
 
 **Java Design**
 
