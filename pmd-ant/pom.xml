@@ -15,6 +15,24 @@
     <name>PMD Ant Integration</name>
     <description>Apache Ant integration for PMD.</description>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <!-- overrides the configuration from parent pom: we only have pmd-core yet -->
+                    <offlineLinks combine.self="override">
+                        <offlineLink>
+                            <location>${project.basedir}/../pmd-core/target/apidocs</location>
+                            <url>../../pmd-core/${project.version}</url>
+                        </offlineLink>
+                    </offlineLinks>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
