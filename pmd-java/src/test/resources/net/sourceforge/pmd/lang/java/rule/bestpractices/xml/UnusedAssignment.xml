@@ -3543,4 +3543,43 @@ public class UnusedAssignmentUnusedVariableFP {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UnusedAssignment false positive in record compact constructor #4603</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Main {
+    public static void main(String[] args) {
+        System.out.println(new TestRecord(2).foo());
+    }
+}
+
+record TestRecord(int foo) {
+    TestRecord {
+        // src/Main.java:10:        UnusedAssignment:       The value assigned to variable 'foo' is never used
+        foo = Math.min(foo, 1); // <!--- violation here
+        // implicit this.foo = foo;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Verify explicit canonical record constructor #4603</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Main {
+    public static void main(String[] args) {
+        System.out.println(new TestRecord(2).foo());
+    }
+}
+
+record TestRecord(int foo) {
+    TestRecord(int foo) {
+        foo = Math.min(foo, 1);
+        this.foo = foo; // explicit
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
