@@ -314,4 +314,29 @@ public class UnnecessaryLocal {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>[java] UnnecessaryLocalBeforeReturn - false positive with catch clause</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Example {
+    public Example() {
+        Exception result = attempt(() -> {});
+        if (result != null) {
+            throw new RuntimeException(result);
+        }
+    }
+
+    private Exception attempt(Runnable task) {
+        try {
+            task.run();
+            return null;
+        } catch (Exception e) {
+            // src/Example.java:15:    UnnecessaryLocalBeforeReturn:   Consider simply returning the value vs storing it in local variable 'e'
+            return e;
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
