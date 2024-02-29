@@ -171,13 +171,13 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
 
         result = PMDExecutor.runPMD(createTemporaryReportFile(), tempDir, "-d", srcDir, "-R", "src/test/resources/rulesets/sample-ruleset.xml");
         result.assertExitCode(4);
-        result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.cli - Log level is at INFO");
+        result.assertNoErrorInReport("[DEBUG] Log level is at TRACE");
 
 
         // now with debug
         result = PMDExecutor.runPMD(createTemporaryReportFile(), tempDir, "-d", srcDir, "-R", "src/test/resources/rulesets/sample-ruleset.xml", "--debug");
         result.assertExitCode(4);
-        result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.cli - Log level is at TRACE");
+        result.assertErrorOutputContains("[DEBUG] Log level is at TRACE");
     }
 
     @Test

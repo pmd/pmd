@@ -44,6 +44,10 @@ public final class PmdRootLogger {
                 // need to reload the logger with the new configuration
                 log = LoggerFactory.getLogger(PMD_CLI_LOGGER);
                 resetLogLevel = true;
+
+                // logging, mostly for testing purposes
+                Level defaultLogLevel = Slf4jSimpleConfiguration.getDefaultLogLevel();
+                log.debug("Log level is at {}", defaultLogLevel);
             }
 
             PmdReporter pmdReporter = setupMessageReporter();
@@ -68,9 +72,6 @@ public final class PmdRootLogger {
         PmdReporter pmdReporter = new SimpleMessageReporter(log);
         // always install java.util.logging to slf4j bridge
         Slf4jSimpleConfiguration.installJulBridge();
-        // logging, mostly for testing purposes
-        Level defaultLogLevel = Slf4jSimpleConfiguration.getDefaultLogLevel();
-        log.info("Log level is at {}", defaultLogLevel);
         return pmdReporter;
     }
 }

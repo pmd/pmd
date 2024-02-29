@@ -11,6 +11,7 @@ import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -90,7 +91,7 @@ class CpdCliTest extends BaseCliTest {
     @Test
     void debugLogging() throws Exception {
         CliExecutionResult result = runCliSuccessfully("--debug", "--minimum-tokens", "340", "--dir", SRC_DIR);
-        result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd.cli - Log level is at TRACE"));
+        result.checkStdErr(containsString("[DEBUG] Log level is at TRACE"));
     }
 
     @Test
@@ -102,7 +103,7 @@ class CpdCliTest extends BaseCliTest {
     @Test
     void defaultLogging() throws Exception {
         CliExecutionResult result = runCliSuccessfully("--minimum-tokens", "340", "--dir", SRC_DIR);
-        result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd.cli - Log level is at INFO"));
+        result.checkStdErr(not(containsString("[DEBUG] Log level is at TRACE")));
     }
 
     @Test
