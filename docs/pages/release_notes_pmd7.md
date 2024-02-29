@@ -343,6 +343,12 @@ can be parsed now. PMD should now be able to parse Apex code up to version 59.0 
   from all rules. These properties have been deprecated since PMD 6.13.0.
   See [issue #1648](https://github.com/pmd/pmd/issues/1648) for more details.
 
+**Apex Codestyle**
+
+* {% rule apex/codestyle/MethodNamingConventions %}: The deprecated rule property `skipTestMethodUnderscores` has
+  been removed. It was actually deprecated since PMD 6.15.0, but was not mentioned in the release notes
+  back then. Use the property `testPattern` instead to configure valid names for test methods.
+
 **Java General changes**
 
 * Violations reported on methods or classes previously reported the line range of the entire method
@@ -384,6 +390,8 @@ can be parsed now. PMD should now be able to parse Apex code up to version 59.0 
   not necessary are allowed, if they separate expressions of different precedence.
   The other property `ignoreBalancing` (default: true) is similar, in that it allows parentheses that help
   reading and understanding the expressions.
+* {% rule java/codestyle/EmptyControlStatement %}: The rule has a new property to allow empty blocks when
+  they contain a comment (`allowCommentedBlocks`).
 
 **Java Design**
 
@@ -411,6 +419,8 @@ can be parsed now. PMD should now be able to parse Apex code up to version 59.0 
     See also [pull request #3757](https://github.com/pmd/pmd/pull/3757).
   * Elements in annotation types are now detected as well. This might lead to an increased number of violations
     for missing public method comments.
+  * The deprecated property `headerCommentRequirement` has been removed. Use the property `classCommentRequirement`
+    instead.
 * {% rule java/documentation/CommentSize %}: When determining the line-length of a comment, the leading comment
   prefix markers (e.g. `*` or `//`) are ignored and don't add up to the line-length.
   See also [pull request #4369](https://github.com/pmd/pmd/pull/4369).
@@ -424,6 +434,8 @@ can be parsed now. PMD should now be able to parse Apex code up to version 59.0 
   special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
 * {% rule java/errorprone/ImplicitSwitchFallThrough %}: Violations are now reported on the case statements
   rather than on the switch statements. This is more accurate but might result in more violations now.
+* {% rule java/errorprone/NonSerializableClass %}: The deprecated property `prefix` has been removed
+  without replacement. In a serializable class all fields have to be serializable regardless of the name.
 
 ### Deprecated Rules
 
