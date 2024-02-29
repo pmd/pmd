@@ -2010,6 +2010,13 @@ potential performance issue.</li>
 <ul>
   <li><a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a>: The rule has a new property to allow empty blocks when
 they contain a comment (<code class="language-plaintext highlighter-rouge">allowCommentedBlocks</code>).</li>
+  <li><a href="pmd_rules_apex_codestyle.html#methodnamingconventions"><code class="language-plaintext highlighter-rouge">MethodNamingConventions</code></a>: The deprecated rule property <code class="language-plaintext highlighter-rouge">skipTestMethodUnderscores</code> has
+been removed. It was actually deprecated since PMD 6.15.0, but was not mentioned in the release notes
+back then. Use the property <code class="language-plaintext highlighter-rouge">testPattern</code> instead to configure valid names for test methods.</li>
+  <li><a href="pmd_rules_java_documentation.html#commentrequired"><code class="language-plaintext highlighter-rouge">CommentRequired</code></a>: The deprecated property <code class="language-plaintext highlighter-rouge">headerCommentRequirement</code> has been removed.
+Use the property <code class="language-plaintext highlighter-rouge">classCommentRequirement</code> instead.</li>
+  <li><a href="pmd_rules_java_errorprone.html#nonserializableclass"><code class="language-plaintext highlighter-rouge">NonSerializableClass</code></a>: The deprecated property <code class="language-plaintext highlighter-rouge">prefix</code> has been removed
+without replacement. In a serializable class all fields have to be serializable regardless of the name.</li>
 </ul>
 
 <p><strong>Removed Rules</strong></p>
@@ -3328,6 +3335,14 @@ from all rules. These properties have been deprecated since PMD 6.13.0.
 See <a href="https://github.com/pmd/pmd/issues/1648">issue #1648</a> for more details.</li>
 </ul>
 
+<p><strong>Apex Codestyle</strong></p>
+
+<ul>
+  <li><a href="pmd_rules_apex_codestyle.html#methodnamingconventions"><code class="language-plaintext highlighter-rouge">MethodNamingConventions</code></a>: The deprecated rule property <code class="language-plaintext highlighter-rouge">skipTestMethodUnderscores</code> has
+been removed. It was actually deprecated since PMD 6.15.0, but was not mentioned in the release notes
+back then. Use the property <code class="language-plaintext highlighter-rouge">testPattern</code> instead to configure valid names for test methods.</li>
+</ul>
+
 <p><strong>Java General changes</strong></p>
 
 <ul>
@@ -3410,6 +3425,8 @@ annotation. This is relevant for the property <code class="language-plaintext hi
 See also <a href="https://github.com/pmd/pmd/pull/3757">pull request #3757</a>.</li>
       <li>Elements in annotation types are now detected as well. This might lead to an increased number of violations
 for missing public method comments.</li>
+      <li>The deprecated property <code class="language-plaintext highlighter-rouge">headerCommentRequirement</code> has been removed. Use the property <code class="language-plaintext highlighter-rouge">classCommentRequirement</code>
+instead.</li>
     </ul>
   </li>
   <li><a href="pmd_rules_java_documentation.html#commentsize"><code class="language-plaintext highlighter-rouge">CommentSize</code></a>: When determining the line-length of a comment, the leading comment
@@ -3427,6 +3444,8 @@ deprecated since PMD 6.10.0. Use the property <code class="language-plaintext hi
 special-cased anymore. Rename the exception parameter to <code class="language-plaintext highlighter-rouge">ignored</code> to ignore them.</li>
   <li><a href="pmd_rules_java_errorprone.html#implicitswitchfallthrough"><code class="language-plaintext highlighter-rouge">ImplicitSwitchFallThrough</code></a>: Violations are now reported on the case statements
 rather than on the switch statements. This is more accurate but might result in more violations now.</li>
+  <li><a href="pmd_rules_java_errorprone.html#nonserializableclass"><code class="language-plaintext highlighter-rouge">NonSerializableClass</code></a>: The deprecated property <code class="language-plaintext highlighter-rouge">prefix</code> has been removed
+without replacement. In a serializable class all fields have to be serializable regardless of the name.</li>
 </ul>
 
 <h4 id="removed-rules">Removed Rules</h4>
