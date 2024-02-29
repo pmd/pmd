@@ -262,6 +262,7 @@ The rules have been moved into categories with PMD 6.
   * [#4659](https://github.com/pmd/pmd/pull/4659):   \[doc] Improve ant documentation
   * [#4669](https://github.com/pmd/pmd/pull/4669):   \[doc] Add bld PMD Extension to Tools / Integrations
   * [#4676](https://github.com/pmd/pmd/issues/4676): \[doc] Clarify how CPD `--ignore-literals` and `--ignore-identifiers` work
+  * [#4704](https://github.com/pmd/pmd/issues/4704): \[doc] Multivalued properties do not accept | as a separator
 * miscellaneous
   * [#4699](https://github.com/pmd/pmd/pull/4699):   Make PMD buildable with java 21
   * [#4586](https://github.com/pmd/pmd/pull/4586):   Use explicit encoding in ruleset xml files
@@ -1328,6 +1329,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4676](https://github.com/pmd/pmd/issues/4676): \[doc] Clarify how CPD `--ignore-literals` and `--ignore-identifiers` work
     * [#4659](https://github.com/pmd/pmd/pull/4659):   \[doc] Improve ant documentation
     * [#4669](https://github.com/pmd/pmd/pull/4669):   \[doc] Add bld PMD Extension to Tools / Integrations
+    * [#4704](https://github.com/pmd/pmd/issues/4704): \[doc] Multivalued properties do not accept | as a separator
 * testing
     * [#2435](https://github.com/pmd/pmd/issues/2435): \[test] Remove duplicated Dummy language module
     * [#4234](https://github.com/pmd/pmd/issues/4234): \[test] Tests that change the logging level do not work
