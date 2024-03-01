@@ -7379,6 +7379,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "vctqs1",
+      "name": "Thu Vo",
+      "avatar_url": "https://avatars.githubusercontent.com/u/30227910?v=4",
+      "profile": "https://www.linkedin.com/in/thu-vo-cat-79143b181/",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
