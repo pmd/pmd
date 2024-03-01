@@ -102,7 +102,8 @@ Also having access to the source code, enhancements and modifications are easier
 
 Under the hood, we use two open source libraries instead:
 
-* [apex-parser](https://github.com/nawforce/apex-parser) by [Kevin Jones](https://github.com/nawforce) (@nawforce)
+* [apex-parser](https://github.com/apex-dev-tools/apex-parser) originally by
+  [Kevin Jones](https://github.com/nawforce) (@nawforce).
   This project provides the grammar for a ANTLR based parser.
 * [Summit-AST](https://github.com/google/summit-ast) by [Google](https://github.com/google) (@google)
   This project translates the ANTLR parse tree into an AST, that is similar to the AST Jorje provided.
