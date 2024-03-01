@@ -10,7 +10,6 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.matchers.types.shouldBeSameInstanceAs
-import io.kotest.property.forAll
 import net.sourceforge.pmd.lang.java.symbols.internal.forAllEqual
 
 /**

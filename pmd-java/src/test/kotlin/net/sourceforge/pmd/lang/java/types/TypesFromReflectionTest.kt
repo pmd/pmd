@@ -90,6 +90,7 @@ class TypesFromReflectionTest : FunSpec({
         }
 
 
+        @Suppress("unused")
         private class GenericKlass<T>
 
         /**

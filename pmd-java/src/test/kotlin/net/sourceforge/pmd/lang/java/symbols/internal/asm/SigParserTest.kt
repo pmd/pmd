@@ -7,9 +7,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.Matcher
 import io.kotest.matchers.collections.shouldHaveSize
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import javasymbols.testdata.impls.SomeInnerClasses

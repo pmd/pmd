@@ -248,7 +248,7 @@ class Scratch<O> {
 }
         """.trimIndent())
 
-        val (t_I, t_C) = acu.declaredTypeSignatures()
+        val (_, t_C) = acu.declaredTypeSignatures()
         val tParam = acu.typeVariables().first { it.name == "T" }
 
         spy.shouldBeOk {
