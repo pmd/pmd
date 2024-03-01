@@ -14,7 +14,6 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.collections.shouldContainAll
 import net.sourceforge.pmd.lang.ast.*
 import net.sourceforge.pmd.lang.ast.test.*
-import net.sourceforge.pmd.lang.java.JavaLanguageModule
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import net.sourceforge.pmd.lang.java.JavaParsingHelper.*
 import java.beans.PropertyDescriptor
@@ -40,8 +39,6 @@ enum class JavaVersion : Comparable<JavaVersion> {
     /** Name suitable for use with e.g. [JavaParsingHelper.parse] */
     val pmdName: String = name.removePrefix("J").replaceFirst("__", "-").replace('_', '.').lowercase()
 
-    val pmdVersion get() = JavaLanguageModule.getInstance().getVersion(pmdName)
-
     val parser: JavaParsingHelper = DEFAULT.withDefaultVersion(pmdName)
 
     operator fun not(): List<JavaVersion> = values().toList() - this
@@ -64,9 +61,9 @@ enum class JavaVersion : Comparable<JavaVersion> {
         fun since(v: JavaVersion) = v.rangeTo(Latest)
 
         fun except(v1: JavaVersion, vararg versions: JavaVersion) =
-                values().toList() - v1 - versions
+                values().toList() - v1 - versions.toSet()
 
-        fun except(versions: List<JavaVersion>) = values().toList() - versions
+        fun except(versions: List<JavaVersion>) = values().toList() - versions.toSet()
     }
 }
 
@@ -151,8 +148,8 @@ inline fun <reified N : Node> JavaNode?.shouldMatchNode(ignoreChildren: Boolean 
  * Can be used inside of a [ParserTestSpec] with [ParserTestSpec.parserTest].
  *
  * Parsing contexts allow to parse a string containing only the node you're interested
- * in instead of writing up a full class that the parser can handle. See [parseExpression],
- * [parseStatement].
+ * in instead of writing up a full class that the parser can handle. See [ExpressionParsingCtx],
+ * [StatementParsingCtx].
  *
  * These are implicitly used by [matchExpr] and [matchStmt], which specify a matcher directly
  * on the strings, using their type parameter and the info in this test context to parse, find
@@ -169,7 +166,7 @@ inline fun <reified N : Node> JavaNode?.shouldMatchNode(ignoreChildren: Boolean 
  * Import statements in the parsing contexts can be configured by adding types to [importedTypes],
  * or strings to [otherImports].
  *
- * Technically the utilities provided by this class may be used outside of [io.kotest.specs.FunSpec]s,
+ * Technically the utilities provided by this class may be used outside of [io.kotest.core.spec.Spec]s,
  * e.g. in regular JUnit tests, but I think we should strive to uniformize our testing style,
  * especially since KotlinTest defines so many.
  *
@@ -224,7 +221,7 @@ open class ParserTestCtx(testScope: TestScope,
     /**
      * Places all node parsing contexts inside the declaration of the given class
      * of the given class.
-     * It's like you were writing eg expressions inside the class, with the method
+     * It's like you were writing e.g. expressions inside the class, with the method
      * declarations around it and all.
      *
      * LIMITATIONS:

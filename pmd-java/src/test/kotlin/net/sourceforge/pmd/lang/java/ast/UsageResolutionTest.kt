@@ -65,13 +65,13 @@ class UsageResolutionTest : ProcessorTestSpec({
         p::isRecordComponent shouldBe true
         p.localUsages.shouldHaveSize(2)
         p.localUsages[0].shouldBeA<ASTVariableAccess> {
-            it.referencedSym!!.shouldBeA<JFormalParamSymbol> {
-                it.tryGetNode() shouldBe p
+            it.referencedSym!!.shouldBeA<JFormalParamSymbol> { symbol ->
+                symbol.tryGetNode() shouldBe p
             }
         }
         p.localUsages[1].shouldBeA<ASTVariableAccess> {
-            it.referencedSym!!.shouldBeA<JFieldSymbol> {
-                it.tryGetNode() shouldBe p
+            it.referencedSym!!.shouldBeA<JFieldSymbol> { symbol ->
+                symbol.tryGetNode() shouldBe p
             }
         }
     }

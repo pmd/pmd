@@ -31,7 +31,7 @@ class ASTSuperExpressionTest : ParserTestSpec({
             // a method call, field access, or method reference
             "super" shouldNot parse()
 
-            // type arguments and annots are disallowed on the qualifier
+            // type arguments and annotations are disallowed on the qualifier
             "T.B<C>.super::foo" shouldNot parse()
             "T.B<C>.super.foo()" shouldNot parse()
             "T.@F B.super.foo()" shouldNot parse()

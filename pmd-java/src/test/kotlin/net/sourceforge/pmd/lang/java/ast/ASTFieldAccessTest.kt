@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 
 /**
@@ -12,7 +11,7 @@ import net.sourceforge.pmd.lang.ast.test.shouldBe
  */
 class ASTFieldAccessTest : ParserTestSpec({
 
-    parserTest("Field access exprs") {
+    parserTest("Field access expressions") {
 
         inContext(ExpressionParsingCtx) {
 
