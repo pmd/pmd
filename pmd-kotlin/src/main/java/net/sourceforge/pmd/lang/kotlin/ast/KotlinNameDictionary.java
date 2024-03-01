@@ -15,10 +15,4 @@ final class KotlinNameDictionary extends AntlrNameDictionary {
     KotlinNameDictionary(Vocabulary vocab, String[] ruleNames) {
         super(vocab, ruleNames);
     }
-
-    @Override
-    protected @Nullable String nonAlphaNumName(String name) {
-        // todo
-        return super.nonAlphaNumName(name);
-    }
 }

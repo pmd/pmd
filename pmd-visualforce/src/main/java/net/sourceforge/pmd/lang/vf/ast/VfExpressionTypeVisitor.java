@@ -42,7 +42,6 @@ class VfExpressionTypeVisitor extends VfVisitorBase<Void, Void> {
      * {@code controller} or {@code extensions} attribute.
      */
     private final List<String> apexClassNames;
-    // todo make those lists of Path
     private final List<String> apexDirectories;
     private final List<String> objectsDirectories;
 

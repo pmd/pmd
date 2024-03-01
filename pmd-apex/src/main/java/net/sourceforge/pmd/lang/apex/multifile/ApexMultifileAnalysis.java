@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
@@ -52,20 +53,20 @@ public final class ApexMultifileAnalysis {
 
 
     ApexMultifileAnalysis(ApexLanguageProperties properties) {
-        String rootDir = properties.getProperty(ApexLanguageProperties.MULTIFILE_DIRECTORY);
+        Optional<String> rootDir = properties.getProperty(ApexLanguageProperties.MULTIFILE_DIRECTORY);
         LOG.debug("MultiFile Analysis created for {}", rootDir);
 
         Org org = null;
         try {
             // Load the package into the org, this can take some time!
-            if (rootDir != null && !rootDir.isEmpty()) {
-                Path projectPath = Paths.get(rootDir);
+            if (rootDir.isPresent() && !rootDir.get().isEmpty()) {
+                Path projectPath = Paths.get(rootDir.get());
                 Path sfdxProjectJson = projectPath.resolve("sfdx-project.json");
 
                 // Limit analysis to SFDX Projects
                 // MDAPI analysis is currently supported but is expected to be deprecated soon
                 if (Files.isDirectory(projectPath) && Files.isRegularFile(sfdxProjectJson)) {
-                    org = Org.newOrg(rootDir);
+                    org = Org.newOrg(rootDir.get());
 
                     // FIXME: Syntax & Semantic errors found during Org loading are not currently being reported. These
                     // should be routed to the new SemanticErrorReporter but that is not available for use just yet.
