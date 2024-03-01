@@ -1928,7 +1928,10 @@ will cause the rule to be ignored.</p>
 
 <h2 id="rule-properties">Rule properties</h2>
 
-<p>Properties make it easy to customise the behaviour of a rule directly from the xml. They come in several types, which correspond to the type of their values. For example, NPathComplexity declares a property “reportLevel”, with an integer value type, and which corresponds to the threshold above which a method will be reported. If you believe that its default value of 200 is too high, you could lower it to e.g. 150 in the following way:</p>
+<p>Properties make it easy to customise the behaviour of a rule directly from the xml. They come in several types,
+which correspond to the type of their values. For example, NPathComplexity declares a property “reportLevel”,
+with an integer value type, and which corresponds to the threshold above which a method will be reported.
+If you believe that its default value of 200 is too high, you could lower it to e.g. 150 in the following way:</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/design.xml/NPathComplexity"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;properties&gt;</span>
@@ -1939,18 +1942,24 @@ will cause the rule to be ignored.</p>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
-<p>Properties are assigned a value with a <code class="language-plaintext highlighter-rouge">property</code> element, which should mention the name of a property as an attribute. The value of the property can be specified either in the content of the element, like above, or in the <code class="language-plaintext highlighter-rouge">value</code> attribute, e.g.</p>
+<p>Properties are assigned a value with a <code class="language-plaintext highlighter-rouge">property</code> element, which should mention the name of a property as an
+attribute. The value of the property can be specified either in the content of the element, like above, or
+in the <code class="language-plaintext highlighter-rouge">value</code> attribute, e.g.</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"reportLevel"</span> <span class="na">value=</span><span class="s">"150"</span><span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <p>All property assignments must be enclosed in a <code class="language-plaintext highlighter-rouge">properties</code> element, which is itself inside a <code class="language-plaintext highlighter-rouge">rule</code> element.</p>
 
-<div class="alert alert-success" role="alert"><i class="fas fa-check-square-o"></i> <b>Tip:</b> The properties of a rule are documented with the rule, e.g. <a href="pmd_rules_java_design.html#npathcomplexity">here</a> for NPathComplexity. Note that <strong>assigning a value to a property that does not exist throws an error!</strong></div>
+<div class="alert alert-success" role="alert"><i class="fas fa-check-square-o"></i> <b>Tip:</b> 
+The properties of a rule are documented with the rule, e.g. <a href="pmd_rules_java_design.html#npathcomplexity">here</a>
+for NPathComplexity. Note that <strong>assigning a value to a property that does not exist throws an error!</strong>
+</div>
 
-<p>Some properties take multiple values (a list), in which case you can provide them all by delimiting them with a delimiter character. It is usually a pipe (‘|’), or a comma (‘,’) for numeric properties, e.g.</p>
+<p>Some properties take multiple values (a list), in which case you can provide them all by delimiting them with
+a comma (‘,’), e.g.</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"legalCollectionTypes"</span>
-          <span class="na">value=</span><span class="s">"java.util.ArrayList|java.util.Vector|java.util.HashMap"</span><span class="nt">/&gt;</span>
+          <span class="na">value=</span><span class="s">"java.util.ArrayList,java.util.Vector,java.util.HashMap"</span><span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <p>These properties are referred to as <strong>multivalued properties</strong> in this documentation.</p>
@@ -1996,7 +2005,7 @@ will cause the rule to be ignored.</p>
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            May 2023 (7.0.0)<br /> Site last generated: Feb 29, 2024 <br />
+            February 2024 (7.0.0)<br /> Site last generated: Mar 1, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
