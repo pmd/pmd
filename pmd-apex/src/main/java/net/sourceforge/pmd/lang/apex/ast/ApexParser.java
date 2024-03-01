@@ -8,7 +8,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.apex.ApexLanguageProcessor;
-import net.sourceforge.pmd.lang.apex.internal.AntlrVersionCheckSuppression;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser;
 
@@ -24,7 +23,6 @@ public final class ApexParser implements Parser {
     private static final Logger TRANSLATE_LOGGER = Logger.getLogger(Translate.class.getName());
 
     static {
-        AntlrVersionCheckSuppression.initApexLexer();
         // Suppress INFO-level output
         TRANSLATE_LOGGER.setLevel(Level.WARNING);
     }

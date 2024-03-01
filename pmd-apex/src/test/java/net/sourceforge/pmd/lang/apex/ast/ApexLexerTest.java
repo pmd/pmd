@@ -14,8 +14,6 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.lang.apex.internal.AntlrVersionCheckSuppression;
-
 import com.nawforce.apexparser.ApexLexer;
 import com.nawforce.apexparser.ApexParser;
 
@@ -24,10 +22,6 @@ import com.nawforce.apexparser.ApexParser;
  * This is an exploration test for {@link ApexLexer}.
  */
 class ApexLexerTest {
-    static {
-        AntlrVersionCheckSuppression.initApexLexer();
-    }
-
     private static final String CODE = "public class Foo {\n"
             + "   public List<SObject> test1() {\n"
             + "       return Database.query('Select Id from Account LIMIT 100');\n"

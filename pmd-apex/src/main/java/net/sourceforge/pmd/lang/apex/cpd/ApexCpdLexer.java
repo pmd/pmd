@@ -13,16 +13,11 @@ import org.antlr.v4.runtime.Token;
 
 import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.cpd.TokenFactory;
-import net.sourceforge.pmd.lang.apex.internal.AntlrVersionCheckSuppression;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
 import com.nawforce.apexparser.ApexLexer;
 
 public class ApexCpdLexer implements CpdLexer {
-    static {
-        AntlrVersionCheckSuppression.initApexLexer();
-    }
-
     @Override
     public void tokenize(TextDocument document, TokenFactory tokenEntries) throws IOException {
 
