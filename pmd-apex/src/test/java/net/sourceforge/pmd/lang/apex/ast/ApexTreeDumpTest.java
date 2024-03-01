@@ -36,4 +36,9 @@ class ApexTreeDumpTest extends BaseTreeDumpTest {
     void innerClassLocations() {
         doTest("InnerClassLocations");
     }
+
+    @Test
+    void nullCoalescingOperator() {
+        doTest("NullCoalescingOperator");
+    }
 }

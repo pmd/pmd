@@ -19,7 +19,8 @@ public enum BinaryOperator {
     RIGHT_SHIFT_UNSIGNED(">>>"),
     BITWISE_AND("&"),
     BITWISE_OR("|"),
-    BITWISE_XOR("^");
+    BITWISE_XOR("^"),
+    NULL_COALESCING("??");
 
     private final String symbol;
 
@@ -58,6 +59,8 @@ public enum BinaryOperator {
             return BITWISE_OR;
         case BITWISE_XOR:
             return BITWISE_XOR;
+        case NULL_COALESCING:
+            return NULL_COALESCING;
         default:
             throw new IllegalArgumentException("Invalid binary operator " + op);
         }

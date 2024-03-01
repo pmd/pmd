@@ -116,6 +116,11 @@ See [#3766](https://github.com/pmd/pmd/issues/3766) for details.
 Contributors: [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-google),
   [Edward Klimoshenko](https://github.com/eklimo) (@eklimo)
 
+##### Updated Apex Support: Version 60 (Spring '24)
+
+* The Apex language has been updated to support version 60.0 (Spring '24).
+* This includes support for the new [Null Coalescing Operator `??`](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_NullCoalescingOperator.htm).
+
 ##### Changed: HTML support
 
 Support for HTML was introduced in PMD 6.55.0 as an experimental feature. With PMD 7.0.0 this
@@ -274,6 +279,7 @@ The rules have been moved into categories with PMD 6.
   * [#4796](https://github.com/pmd/pmd/pull/4796):   Remove deprecated and release rulesets
 * apex
   * [#3766](https://github.com/pmd/pmd/issues/3766): \[apex] Replace Jorje with fully open source front-end
+  * [#4828](https://github.com/pmd/pmd/issues/4828): \[apex] Support null coalescing operator ?? (apex 60)
 * apex-documentation
   * [#4774](https://github.com/pmd/pmd/issues/4774): \[apex] ApexDoc false-positive for the first method of an annotated Apex class
 * apex-performance
@@ -1347,6 +1353,7 @@ Language specific fixes:
     * [#3973](https://github.com/pmd/pmd/issues/3973): \[apex] Update parser to support new 'as user' keywords (User Mode for Database Operations)
     * [#4427](https://github.com/pmd/pmd/issues/4427): \[apex] ApexBadCrypto test failing to detect inline code
     * [#4453](https://github.com/pmd/pmd/issues/4453): \[apex] \[7.0-rc1] Exception while initializing Apexlink (Index 34812 out of bounds for length 34812)
+    * [#4828](https://github.com/pmd/pmd/issues/4828): \[apex] Support null coalescing operator ?? (apex 60)
 * apex-design
     * [#2667](https://github.com/pmd/pmd/issues/2667): \[apex] Integrate nawforce/ApexLink to build robust Unused rule
     * [#4509](https://github.com/pmd/pmd/issues/4509): \[apex] ExcessivePublicCount doesn't consider inner classes correctly
