@@ -273,6 +273,7 @@ The rules have been moved into categories with PMD 6.
   * [#4749](https://github.com/pmd/pmd/pull/4749):   Fixes NoSuchMethodError on processing errors in pmd-compat6
   * [#4776](https://github.com/pmd/pmd/issues/4776): \[ci] Upgrade to ruby 3
   * [#4796](https://github.com/pmd/pmd/pull/4796):   Remove deprecated and release rulesets
+  * [#4827](https://github.com/pmd/pmd/pull/4827):   \[compat6] Support config errors and cpd for csharp
 * apex
   * [#3766](https://github.com/pmd/pmd/issues/3766): \[apex] Replace Jorje with fully open source front-end
 * apex-documentation
@@ -1247,6 +1248,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4749](https://github.com/pmd/pmd/pull/4749):   Fixes NoSuchMethodError on processing errors in pmd-compat6
     * [#4776](https://github.com/pmd/pmd/issues/4776): \[ci] Upgrade to ruby 3
     * [#4796](https://github.com/pmd/pmd/pull/4796):   Remove deprecated and release rulesets
+    * [#4827](https://github.com/pmd/pmd/pull/4827):   \[compat6] Support config errors and cpd for csharp
 * ant
     * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule
 * core
