@@ -146,7 +146,7 @@
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-ui</artifactId>
+            <artifactId>pmd-designer</artifactId>
             <version>${pmd-designer.version}</version>
         </dependency>
         <dependency>
