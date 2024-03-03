@@ -13,6 +13,11 @@ public class Report extends net.sourceforge.pmd.Report {
         public ConfigurationError(Rule theRule, String theIssue) {
             super(theRule, theIssue);
         }
+
+        @Override
+        public net.sourceforge.pmd.lang.rule.Rule rule() {
+            return (net.sourceforge.pmd.lang.rule.Rule) super.rule();
+        }
     }
 
     public static class ProcessingError extends net.sourceforge.pmd.Report.ProcessingError {

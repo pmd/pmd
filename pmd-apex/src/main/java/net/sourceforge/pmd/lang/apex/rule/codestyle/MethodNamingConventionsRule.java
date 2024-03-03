@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule.codestyle;
 
-import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -30,14 +28,7 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionsRule {
     private static final PropertyDescriptor<Pattern> INSTANCE_REGEX = prop("instancePattern", "instance method",
             DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(CAMEL_CASE).build();
 
-    private static final PropertyDescriptor<Boolean> SKIP_TEST_METHOD_UNDERSCORES_DESCRIPTOR
-        = booleanProperty("skipTestMethodUnderscores")
-              .desc("deprecated! Skip underscores in test methods")
-              .defaultValue(false)
-              .build();
-
     public MethodNamingConventionsRule() {
-        definePropertyDescriptor(SKIP_TEST_METHOD_UNDERSCORES_DESCRIPTOR);
         definePropertyDescriptor(TEST_REGEX);
         definePropertyDescriptor(STATIC_REGEX);
         definePropertyDescriptor(INSTANCE_REGEX);
@@ -65,11 +56,7 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionsRule {
         }
 
         if (node.getModifiers().isTest()) {
-            if (getProperty(SKIP_TEST_METHOD_UNDERSCORES_DESCRIPTOR)) {
-                checkMatches(TEST_REGEX, CAMEL_CASE_WITH_UNDERSCORES, node, data);
-            } else {
-                checkMatches(TEST_REGEX, node, data);
-            }
+            checkMatches(TEST_REGEX, node, data);
         } else if (node.getModifiers().isStatic()) {
             checkMatches(STATIC_REGEX, node, data);
         } else {

@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
@@ -44,7 +45,7 @@ class SpecialMethodsTest : ProcessorTestSpec({
 
         val t_Scratch = acu.declaredTypeSignatures()[0]
         val kvar = acu.typeVar("K")
-        val (k, k2, raw, call) = acu.methodCalls().toList()
+        val (k, k2, _, call) = acu.methodCalls().toList()
 
         doTest("Test this::getClass") {
             spy.shouldBeOk {
@@ -137,7 +138,7 @@ class SpecialMethodsTest : ProcessorTestSpec({
 
         """.trimIndent())
 
-        val t_Scratch = acu.descendants(ASTTypeDeclaration::class.java).firstOrThrow().typeMirror
+        acu.descendants(ASTTypeDeclaration::class.java).firstOrThrow().typeMirror shouldNotBe null
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 

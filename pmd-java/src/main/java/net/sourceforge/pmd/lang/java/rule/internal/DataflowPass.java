@@ -54,6 +54,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
 import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
@@ -815,6 +816,23 @@ public final class DataflowPass {
             } else if (isAssignedImplicitly(node.getVarId())) {
                 data.declareBlank(node.getVarId());
             }
+            return data;
+        }
+
+        @Override
+        public SpanInfo visit(ASTCompactConstructorDeclaration node, SpanInfo data) {
+            super.visit(node, data);
+
+            // mark any write to a variable that is named like a record component as usage
+            // record compact constructors do an implicit assignment at the end.
+            for (ASTRecordComponent component : node.getEnclosingType().getRecordComponents()) {
+                node.descendants(ASTAssignmentExpression.class)
+                        .descendants(ASTVariableAccess.class)
+                        .filter(v -> v.getAccessType() == AccessType.WRITE)
+                        .filter(v -> v.getName().equals(component.getVarId().getName()))
+                        .forEach(varAccess -> data.use(varAccess.getReferencedSym(), null));
+            }
+
             return data;
         }
 

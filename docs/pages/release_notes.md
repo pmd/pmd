@@ -102,7 +102,8 @@ Also having access to the source code, enhancements and modifications are easier
 
 Under the hood, we use two open source libraries instead:
 
-* [apex-parser](https://github.com/nawforce/apex-parser) by [Kevin Jones](https://github.com/nawforce) (@nawforce)
+* [apex-parser](https://github.com/apex-dev-tools/apex-parser) originally by
+  [Kevin Jones](https://github.com/nawforce) (@nawforce).
   This project provides the grammar for a ANTLR based parser.
 * [Summit-AST](https://github.com/google/summit-ast) by [Google](https://github.com/google) (@google)
   This project translates the ANTLR parse tree into an AST, that is similar to the AST Jorje provided.
@@ -138,6 +139,13 @@ Experimental Kotlin support has been promoted as stable API now.
 
 * {% rule java/codestyle/EmptyControlStatement %}: The rule has a new property to allow empty blocks when
   they contain a comment (`allowCommentedBlocks`).
+* {% rule apex/codestyle/MethodNamingConventions %}: The deprecated rule property `skipTestMethodUnderscores` has
+  been removed. It was actually deprecated since PMD 6.15.0, but was not mentioned in the release notes
+  back then. Use the property `testPattern` instead to configure valid names for test methods.
+* {% rule java/documentation/CommentRequired %}: The deprecated property `headerCommentRequirement` has been removed.
+  Use the property `classCommentRequirement` instead.
+* {% rule java/errorprone/NonSerializableClass %}: The deprecated property `prefix` has been removed
+  without replacement. In a serializable class all fields have to be serializable regardless of the name.
 
 **Removed Rules**
 
@@ -255,6 +263,7 @@ The rules have been moved into categories with PMD 6.
   * [#4659](https://github.com/pmd/pmd/pull/4659):   \[doc] Improve ant documentation
   * [#4669](https://github.com/pmd/pmd/pull/4669):   \[doc] Add bld PMD Extension to Tools / Integrations
   * [#4676](https://github.com/pmd/pmd/issues/4676): \[doc] Clarify how CPD `--ignore-literals` and `--ignore-identifiers` work
+  * [#4704](https://github.com/pmd/pmd/issues/4704): \[doc] Multivalued properties do not accept | as a separator
 * miscellaneous
   * [#4699](https://github.com/pmd/pmd/pull/4699):   Make PMD buildable with java 21
   * [#4586](https://github.com/pmd/pmd/pull/4586):   Use explicit encoding in ruleset xml files
@@ -265,8 +274,11 @@ The rules have been moved into categories with PMD 6.
   * [#4776](https://github.com/pmd/pmd/issues/4776): \[ci] Upgrade to ruby 3
   * [#4796](https://github.com/pmd/pmd/pull/4796):   Remove deprecated and release rulesets
   * [#4823](https://github.com/pmd/pmd/pull/4823):   Update to use renamed pmd-designer
+  * [#4827](https://github.com/pmd/pmd/pull/4827):   \[compat6] Support config errors and cpd for csharp
 * apex
   * [#3766](https://github.com/pmd/pmd/issues/3766): \[apex] Replace Jorje with fully open source front-end
+* apex-documentation
+  * [#4774](https://github.com/pmd/pmd/issues/4774): \[apex] ApexDoc false-positive for the first method of an annotated Apex class
 * apex-performance
   * [#4675](https://github.com/pmd/pmd/issues/4675): \[apex] New Rule: OperationWithHighCostInLoop
 * groovy
@@ -276,15 +288,22 @@ The rules have been moved into categories with PMD 6.
   * [#3751](https://github.com/pmd/pmd/issues/3751): \[java] Rename some node types
   * [#4628](https://github.com/pmd/pmd/pull/4628):   \[java] Support loading classes from java runtime images
   * [#4753](https://github.com/pmd/pmd/issues/4753): \[java] PMD crashes while using generics and wildcards
+* java-bestpractices
+  * [#4603](https://github.com/pmd/pmd/issues/4603): \[java] UnusedAssignment false positive in record compact constructor
+  * [#4625](https://github.com/pmd/pmd/issues/4625): \[java] UnusedPrivateMethod false positive: Autoboxing into Number
 * java-codestyle
   * [#2847](https://github.com/pmd/pmd/issues/2847): \[java] New Rule: Use Explicit Types
+  * [#4239](https://github.com/pmd/pmd/issues/4239): \[java] UnnecessaryLocalBeforeReturn - false positive with catch clause
   * [#4578](https://github.com/pmd/pmd/issues/4578): \[java] CommentDefaultAccessModifier comment needs to be before annotation if present
+  * [#4631](https://github.com/pmd/pmd/issues/4631): \[java] UnnecessaryFullyQualifiedName fails to recognize illegal self reference in enums
   * [#4645](https://github.com/pmd/pmd/issues/4645): \[java] CommentDefaultAccessModifier - False Positive with JUnit5's ParameterizedTest
   * [#4754](https://github.com/pmd/pmd/pull/4754):   \[java] EmptyControlStatementRule: Add allowCommentedBlocks property
+  * [#4816](https://github.com/pmd/pmd/issues/4816): \[java] UnnecessaryImport false-positive on generic method call with on lambda
 * java-design
   * [#174](https://github.com/pmd/pmd/issues/174):   \[java] SingularField false positive with switch in method that both assigns and reads field
 * java-errorprone
   * [#718](https://github.com/pmd/pmd/issues/718):   \[java] BrokenNullCheck false positive with parameter/field confusion
+  * [#932](https://github.com/pmd/pmd/issues/932):   \[java] SingletonClassReturningNewInstance false positive with double assignment
   * [#1831](https://github.com/pmd/pmd/issues/1831): \[java] DetachedTestCase reports abstract methods
   * [#4719](https://github.com/pmd/pmd/pull/4719):   \[java] UnnecessaryCaseChange: example doc toUpperCase() should compare to a capitalized string
 * javascript
@@ -1084,6 +1103,12 @@ Contributors: [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-g
   from all rules. These properties have been deprecated since PMD 6.13.0.
   See [issue #1648](https://github.com/pmd/pmd/issues/1648) for more details.
 
+**Apex Codestyle**
+
+* {% rule apex/codestyle/MethodNamingConventions %}: The deprecated rule property `skipTestMethodUnderscores` has
+  been removed. It was actually deprecated since PMD 6.15.0, but was not mentioned in the release notes
+  back then. Use the property `testPattern` instead to configure valid names for test methods.
+
 **Java General changes**
 
 * Violations reported on methods or classes previously reported the line range of the entire method
@@ -1154,6 +1179,8 @@ Contributors: [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-g
       See also [pull request #3757](https://github.com/pmd/pmd/pull/3757).
     * Elements in annotation types are now detected as well. This might lead to an increased number of violations
       for missing public method comments.
+    * The deprecated property `headerCommentRequirement` has been removed. Use the property `classCommentRequirement`
+      instead.
 * {% rule java/documentation/CommentSize %}: When determining the line-length of a comment, the leading comment
   prefix markers (e.g. `*` or `//`) are ignored and don't add up to the line-length.
   See also [pull request #4369](https://github.com/pmd/pmd/pull/4369).
@@ -1167,6 +1194,8 @@ Contributors: [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-g
   special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
 * {% rule java/errorprone/ImplicitSwitchFallThrough %}: Violations are now reported on the case statements
   rather than on the switch statements. This is more accurate but might result in more violations now.
+* {% rule java/errorprone/NonSerializableClass %}: The deprecated property `prefix` has been removed
+  without replacement. In a serializable class all fields have to be serializable regardless of the name.
 
 #### Removed Rules
 
@@ -1222,6 +1251,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4776](https://github.com/pmd/pmd/issues/4776): \[ci] Upgrade to ruby 3
     * [#4796](https://github.com/pmd/pmd/pull/4796):   Remove deprecated and release rulesets
     * [#4823](https://github.com/pmd/pmd/pull/4823):   Update to use renamed pmd-designer
+    * [#4827](https://github.com/pmd/pmd/pull/4827):   \[compat6] Support config errors and cpd for csharp
 * ant
     * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule
 * core
@@ -1307,6 +1337,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4676](https://github.com/pmd/pmd/issues/4676): \[doc] Clarify how CPD `--ignore-literals` and `--ignore-identifiers` work
     * [#4659](https://github.com/pmd/pmd/pull/4659):   \[doc] Improve ant documentation
     * [#4669](https://github.com/pmd/pmd/pull/4669):   \[doc] Add bld PMD Extension to Tools / Integrations
+    * [#4704](https://github.com/pmd/pmd/issues/4704): \[doc] Multivalued properties do not accept | as a separator
 * testing
     * [#2435](https://github.com/pmd/pmd/issues/2435): \[test] Remove duplicated Dummy language module
     * [#4234](https://github.com/pmd/pmd/issues/4234): \[test] Tests that change the logging level do not work
@@ -1326,6 +1357,8 @@ Language specific fixes:
     * [#2667](https://github.com/pmd/pmd/issues/2667): \[apex] Integrate nawforce/ApexLink to build robust Unused rule
     * [#4509](https://github.com/pmd/pmd/issues/4509): \[apex] ExcessivePublicCount doesn't consider inner classes correctly
     * [#4596](https://github.com/pmd/pmd/issues/4596): \[apex] ExcessivePublicCount ignores properties
+* apex-documentation
+    * [#4774](https://github.com/pmd/pmd/issues/4774): \[apex] ApexDoc false-positive for the first method of an annotated Apex class
 * apex-performance
     * [#4675](https://github.com/pmd/pmd/issues/4675): \[apex] New Rule: OperationWithHighCostInLoop
 * apex-security
@@ -1404,6 +1437,8 @@ Language specific fixes:
     * [#4516](https://github.com/pmd/pmd/issues/4516): \[java] UnusedLocalVariable: false-negative with try-with-resources
     * [#4517](https://github.com/pmd/pmd/issues/4517): \[java] UnusedLocalVariable: false-negative with compound assignments
     * [#4518](https://github.com/pmd/pmd/issues/4518): \[java] UnusedLocalVariable: false-positive with multiple for-loop indices
+    * [#4603](https://github.com/pmd/pmd/issues/4603): \[java] UnusedAssignment false positive in record compact constructor
+    * [#4625](https://github.com/pmd/pmd/issues/4625): \[java] UnusedPrivateMethod false positive: Autoboxing into Number
     * [#4634](https://github.com/pmd/pmd/issues/4634): \[java] JUnit4TestShouldUseTestAnnotation false positive with TestNG
 * java-codestyle
     * [#1208](https://github.com/pmd/pmd/issues/1208): \[java] PrematureDeclaration rule false-positive on variable declared to measure time
@@ -1425,6 +1460,7 @@ Language specific fixes:
     * [#3221](https://github.com/pmd/pmd/issues/3221): \[java] PrematureDeclaration false positive for unused variables
     * [#3238](https://github.com/pmd/pmd/issues/3238): \[java] Improve ExprContext, fix FNs of UnnecessaryCast
     * [#3500](https://github.com/pmd/pmd/pull/3500):   \[java] UnnecessaryBoxing - check for Integer.valueOf(String) calls
+    * [#4239](https://github.com/pmd/pmd/issues/4239): \[java] UnnecessaryLocalBeforeReturn - false positive with catch clause
     * [#4268](https://github.com/pmd/pmd/issues/4268): \[java] CommentDefaultAccessModifier: false positive with TestNG annotations
     * [#4273](https://github.com/pmd/pmd/issues/4273): \[java] CommentDefaultAccessModifier ignoredAnnotations should include "org.junit.jupiter.api.extension.RegisterExtension" by default
     * [#4357](https://github.com/pmd/pmd/pull/4357):   \[java] Fix IllegalStateException in UseDiamondOperator rule
@@ -1435,8 +1471,10 @@ Language specific fixes:
     * [#4512](https://github.com/pmd/pmd/issues/4512): \[java] MethodArgumentCouldBeFinal shouldn't report unused parameters
     * [#4557](https://github.com/pmd/pmd/issues/4557): \[java] UnnecessaryImport FP with static imports of overloaded methods
     * [#4578](https://github.com/pmd/pmd/issues/4578): \[java] CommentDefaultAccessModifier comment needs to be before annotation if present
+    * [#4631](https://github.com/pmd/pmd/issues/4631): \[java] UnnecessaryFullyQualifiedName fails to recognize illegal self reference in enums
     * [#4645](https://github.com/pmd/pmd/issues/4645): \[java] CommentDefaultAccessModifier - False Positive with JUnit5's ParameterizedTest
     * [#4754](https://github.com/pmd/pmd/pull/4754):   \[java] EmptyControlStatementRule: Add allowCommentedBlocks property
+    * [#4816](https://github.com/pmd/pmd/issues/4816): \[java] UnnecessaryImport false-positive on generic method call with on lambda
 * java-design
     * [#174](https://github.com/pmd/pmd/issues/174):   \[java] SingularField false positive with switch in method that both assigns and reads field
     * [#1014](https://github.com/pmd/pmd/issues/1014): \[java] LawOfDemeter: False positive with lambda expression
@@ -1465,6 +1503,7 @@ Language specific fixes:
 * java-errorprone
     * [#659](https://github.com/pmd/pmd/issues/659):   \[java] MissingBreakInSwitch - last default case does not contain a break
     * [#718](https://github.com/pmd/pmd/issues/718):   \[java] BrokenNullCheck false positive with parameter/field confusion
+    * [#932](https://github.com/pmd/pmd/issues/932):   \[java] SingletonClassReturningNewInstance false positive with double assignment
     * [#1005](https://github.com/pmd/pmd/issues/1005): \[java] CloneMethodMustImplementCloneable triggers for interfaces
     * [#1669](https://github.com/pmd/pmd/issues/1669): \[java] NullAssignment - FP with ternay and null as constructor argument
     * [#1831](https://github.com/pmd/pmd/issues/1831): \[java] DetachedTestCase reports abstract methods

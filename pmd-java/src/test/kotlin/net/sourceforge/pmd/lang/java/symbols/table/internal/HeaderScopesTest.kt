@@ -7,8 +7,6 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
 import io.kotest.matchers.collections.*
-import io.kotest.matchers.maps.shouldBeEmpty
-import io.kotest.matchers.maps.shouldContain
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
@@ -252,8 +250,8 @@ class HeaderScopesTest : ProcessorTestSpec({
                 it.apply {
                     scopeTag shouldBe SINGLE_IMPORT
                     results should haveSize(2)
-                    results.forEach {
-                        it.symbol.enclosingClass.canonicalName shouldBe "javasymbols.testdata.StaticNameCollision"
+                    results.forEach { methodSig ->
+                        methodSig.symbol.enclosingClass.canonicalName shouldBe "javasymbols.testdata.StaticNameCollision"
                     }
                 }
 
@@ -261,8 +259,8 @@ class HeaderScopesTest : ProcessorTestSpec({
                 it.apply {
                     scopeTag shouldBe IMPORT_ON_DEMAND
                     results should haveSize(2)
-                    results.forEach {
-                        it.symbol.enclosingClass.canonicalName shouldBe "javasymbols.testdata.Statics"
+                    results.forEach { methodSig ->
+                        methodSig.symbol.enclosingClass.canonicalName shouldBe "javasymbols.testdata.Statics"
                     }
                 }
             }
@@ -276,8 +274,8 @@ class HeaderScopesTest : ProcessorTestSpec({
                 it.apply {
                     scopeTag shouldBe IMPORT_ON_DEMAND
                     results should haveSize(1)
-                    results.forEach {
-                        it.symbol.enclosingClass.canonicalName shouldBe "javasymbols.testdata.Statics"
+                    results.forEach { methodSig ->
+                        methodSig.symbol.enclosingClass.canonicalName shouldBe "javasymbols.testdata.Statics"
                     }
                 }
             }

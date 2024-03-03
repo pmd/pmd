@@ -112,7 +112,7 @@ class LocalTypeScopesTest : ParserTestSpec({
             }
         """)
 
-        val (foo, inner, other) =
+        val (foo, inner, _) =
                 acu.descendants(ASTClassDeclaration::class.java).toList()
 
         val (insideFoo, insideInner, insideOther) =

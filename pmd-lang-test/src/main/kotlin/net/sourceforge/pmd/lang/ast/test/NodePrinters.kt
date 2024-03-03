@@ -27,10 +27,10 @@ val SimpleNodePrinter = TextTreeRenderer(true, -1)
 
 open class RelevantAttributePrinter : BaseNodeAttributePrinter() {
 
-    private val Ignored = setOf("BeginLine", "EndLine", "BeginColumn", "EndColumn", "FindBoundary", "SingleLine")
+    private val defaultIgnoredAttributes = setOf("BeginLine", "EndLine", "BeginColumn", "EndColumn", "FindBoundary", "SingleLine")
 
     override fun ignoreAttribute(node: Node, attribute: Attribute): Boolean =
-            Ignored.contains(attribute.name) || attribute.name == "Image" && attribute.value == null
+            defaultIgnoredAttributes.contains(attribute.name) || attribute.name == "Image" && attribute.value == null
 
 }
 
@@ -102,7 +102,7 @@ open class BaseNodeAttributePrinter : TextTreeRenderer(true, -1) {
         get() = this.javaClass.let {
             when {
                 it.isEnum -> it
-                else -> it.enclosingClass.takeIf { it.isEnum }
+                else -> it.enclosingClass.takeIf { clazz -> clazz.isEnum }
                         ?: throw IllegalStateException()
             }
         }

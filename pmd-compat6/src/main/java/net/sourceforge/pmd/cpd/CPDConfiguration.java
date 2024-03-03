@@ -296,6 +296,9 @@ public class CPDConfiguration extends AbstractConfiguration {
         } else if (language instanceof JSPLanguage) {
             filenameFilter = language.getFileFilter();
             setForceLanguageVersion(JspLanguageModule.getInstance().getDefaultVersion());
+        } else if (language instanceof LanguageFactory.CpdLanguageAdapter) {
+            filenameFilter = language.getFileFilter();
+            setForceLanguageVersion(((LanguageFactory.CpdLanguageAdapter) language).getLanguage().getDefaultVersion());
         } else {
             throw new UnsupportedOperationException("Language " + language.getName() + " is not supported");
         }

@@ -73,7 +73,7 @@ class ParenthesesTest : ParserTestSpec({
                                 it::getParenthesisDepth shouldBe 2
                                 it::isParenthesized shouldBe true
 
-                                it.tokenList().map { it.image } shouldBe listOf("(", "(", "a", ")", ")")
+                                it.tokenList().map { token -> token.image } shouldBe listOf("(", "(", "a", ")", ")")
                             }
                         }
                     }
@@ -95,7 +95,7 @@ class ParenthesesTest : ParserTestSpec({
                                 it::getParenthesisDepth shouldBe 1
                                 it::isParenthesized shouldBe true
 
-                                it.tokenList().map { it.image } shouldBe listOf("(", "a", ")")
+                                it.tokenList().map { token -> token.image } shouldBe listOf("(", "a", ")")
                             }
                         }
                     }
