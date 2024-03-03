@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.statement.ThrowStatement;
+import com.google.summit.ast.statement.ThrowStatement;
 
-public final class ASTThrowStatement extends AbstractApexNode<ThrowStatement> {
+public class ASTThrowStatement extends AbstractApexNode.Single<ThrowStatement> {
 
     ASTThrowStatement(ThrowStatement throwStatement) {
         super(throwStatement);

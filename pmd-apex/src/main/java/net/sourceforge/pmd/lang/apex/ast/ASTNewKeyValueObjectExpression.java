@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.NewKeyValueObjectExpression;
+import com.google.summit.ast.initializer.ConstructorInitializer;
 
-public final class ASTNewKeyValueObjectExpression extends AbstractApexNode<NewKeyValueObjectExpression> {
+public final class ASTNewKeyValueObjectExpression extends AbstractApexNode.Single<ConstructorInitializer> {
 
-    ASTNewKeyValueObjectExpression(NewKeyValueObjectExpression node) {
-        super(node);
+    ASTNewKeyValueObjectExpression(ConstructorInitializer constructorInitializer) {
+        super(constructorInitializer);
     }
 
 
@@ -18,11 +18,17 @@ public final class ASTNewKeyValueObjectExpression extends AbstractApexNode<NewKe
         return visitor.visit(this, data);
     }
 
+    /**
+     * Returns the type name.
+     *
+     * This includes any type arguments.
+     * If the type is a primitive, its case will be normalized.
+     */
     public String getType() {
-        return node.getTypeRef().getNames().get(0).getValue();
+        return caseNormalizedTypeIfPrimitive(node.getType().asCodeString());
     }
 
     public int getParameterCount() {
-        return node.getParameters().size();
+        return node.getArgs().size();
     }
 }

@@ -65,7 +65,6 @@ public interface ASTExecutableDeclaration
      * standard reflection API.
      */
     // TODO is this relevant?
-    @Override
     default boolean isAbstract() {
         return hasModifiers(JModifier.ABSTRACT);
     }

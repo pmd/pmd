@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.SoslExpression;
+import com.google.summit.ast.expression.SoslExpression;
 
-public final class ASTSoslExpression extends AbstractApexNode<SoslExpression> {
+public final class ASTSoslExpression extends AbstractApexNode.Single<SoslExpression> {
 
     ASTSoslExpression(SoslExpression soslExpression) {
         super(soslExpression);

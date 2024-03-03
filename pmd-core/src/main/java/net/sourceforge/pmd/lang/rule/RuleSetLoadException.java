@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.rule;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.rule.internal.RuleSetReferenceId;
 
 /**
@@ -17,15 +16,17 @@ import net.sourceforge.pmd.lang.rule.internal.RuleSetReferenceId;
  */
 public class RuleSetLoadException extends RuntimeException {
 
-    /** Constructors are internal. */
-    @InternalApi
-    public RuleSetLoadException(RuleSetReferenceId rsetId, @NonNull Throwable cause) {
+    /**
+     * @apiNote Internal API.
+     */
+    RuleSetLoadException(RuleSetReferenceId rsetId, @NonNull Throwable cause) {
         super("Cannot load ruleset " + rsetId + ": " + cause.getMessage(), cause);
     }
 
-    /** Constructors are internal. */
-    @InternalApi
-    public RuleSetLoadException(RuleSetReferenceId rsetId, String message) {
+    /**
+     * @apiNote Internal API.
+     */
+    RuleSetLoadException(RuleSetReferenceId rsetId, String message) {
         super("Cannot load ruleset " + rsetId + ": " + message);
     }
 

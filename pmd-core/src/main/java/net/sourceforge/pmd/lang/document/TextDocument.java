@@ -10,19 +10,13 @@ import java.io.Reader;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * Represents a textual document, providing methods to edit it incrementally
  * and address regions of text. A text document delegates IO operations
  * to a {@link TextFile}. It reflects some in-memory snapshot of the file,
  * though the file may still be edited externally.
- *
- * <p>TextDocument is meant to replace CPD's SourceCode and PMD's
- * {@link DataSource}, though the abstraction level of {@link DataSource}
- * is the {@link TextFile}.
  *
  * <p>Note that the backing {@link TextFile} is purposefully not accessible
  * from a text document. Exposing it here could lead to files being written
@@ -194,12 +188,12 @@ public interface TextDocument extends Closeable {
 
     /**
      * Returns the line and column at the given offset (inclusive).
-     * Note that the line/column cannot be converted back. They are
-     * absolute in the coordinate system of the original document.
      *
      * @param offset A source offset (0-based), can range in {@code [0, length]}.
      *
      * @throws IndexOutOfBoundsException if the offset is out of bounds
+     * @see #lineColumnAtOffset(int, boolean)
+     * @see #offsetAtLineColumn(TextPos2d)
      */
     default TextPos2d lineColumnAtOffset(int offset) {
         return lineColumnAtOffset(offset, true);
@@ -219,9 +213,19 @@ public interface TextDocument extends Closeable {
      * @return A position, in the coordinate system of the root document
      *
      * @throws IndexOutOfBoundsException if the offset is out of bounds
+     * @see #offsetAtLineColumn(TextPos2d)
      */
     TextPos2d lineColumnAtOffset(int offset, boolean inclusive);
 
+    /**
+     * Calculates the offset from a given line/column.
+     *
+     * @param position the line/column
+     *
+     * @see #lineColumnAtOffset(int)
+     * @see #lineColumnAtOffset(int, boolean)
+     */
+    int offsetAtLineColumn(TextPos2d position);
 
     /**
      * Closing a document closes the underlying {@link TextFile}.
@@ -278,12 +282,5 @@ public interface TextDocument extends Closeable {
         } catch (IOException e) {
             throw new AssertionError("String text file should never throw IOException", e);
         }
-    }
-
-    @Deprecated
-    @DeprecatedUntil700
-    // note: this method is for backwards compatibility only - currently used by pmd-designer
-    static TextDocument readOnlyString(@NonNull CharSequence source, @NonNull String filename, @NonNull LanguageVersion lv) {
-        return readOnlyString(source, FileId.fromPathLikeString(filename), lv);
     }
 }

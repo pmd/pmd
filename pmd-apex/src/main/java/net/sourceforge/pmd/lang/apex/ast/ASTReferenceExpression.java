@@ -4,22 +4,21 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import apex.jorje.data.Identifier;
-import apex.jorje.semantic.ast.expression.IdentifierContext;
-import apex.jorje.semantic.ast.expression.ReferenceExpression;
-import apex.jorje.semantic.ast.expression.ReferenceType;
+import com.google.summit.ast.Identifier;
 
+public final class ASTReferenceExpression extends AbstractApexNode.Many<Identifier> {
 
-public final class ASTReferenceExpression extends AbstractApexNode<ReferenceExpression> {
+    private final ReferenceType referenceType;
+    private final boolean isSafe;
 
-    ASTReferenceExpression(ReferenceExpression referenceExpression) {
-        super(referenceExpression);
+    ASTReferenceExpression(List<Identifier> identifiers, ReferenceType referenceType, boolean isSafe) {
+        super(identifiers);
+        this.referenceType = referenceType;
+        this.isSafe = isSafe;
     }
-
 
 
     @Override
@@ -27,39 +26,32 @@ public final class ASTReferenceExpression extends AbstractApexNode<ReferenceExpr
         return visitor.visit(this, data);
     }
 
-
-    public IdentifierContext getContext() {
-        return node.getContext();
-    }
-
-
     public ReferenceType getReferenceType() {
-        return node.getReferenceType();
+        return referenceType;
     }
 
     @Override
     public String getImage() {
-        if (node.getNames() != null && !node.getNames().isEmpty()) {
-            return node.getNames().get(0).getValue();
+        if (!nodes.isEmpty()) {
+            return nodes.get(0).getString();
         }
-        return null;
+        return "";
     }
 
     public List<String> getNames() {
-        List<Identifier> identifiers = node.getNames();
-        if (identifiers != null) {
-            return identifiers.stream().map(id -> id.getValue()).collect(Collectors.toList());
-        }
-        return Collections.emptyList();
+        return nodes.stream().map(Identifier::getString).collect(Collectors.toList());
     }
 
     public boolean isSafeNav() {
-        return node.isSafeNav();
+        return this.isSafe;
     }
 
     public boolean isSObjectType() {
-        List<Identifier> identifiers = node.getNames();
-        return identifiers != null
-            && identifiers.stream().anyMatch(id -> "sobjecttype".equalsIgnoreCase(id.getValue()));
+        return nodes.stream().anyMatch(id -> "sobjecttype".equalsIgnoreCase(id.getString()));
+    }
+
+    @Override
+    public boolean hasRealLoc() {
+        return !nodes.isEmpty();
     }
 }

@@ -26,4 +26,14 @@ class ApexTreeDumpTest extends BaseTreeDumpTest {
     void safeNavigationOperator() {
         doTest("SafeNavigationOperator");
     }
+
+    @Test
+    void userEnumType() {
+        doTest("UserEnumType");
+    }
+
+    @Test
+    void innerClassLocations() {
+        doTest("InnerClassLocations");
+    }
 }

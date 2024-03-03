@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
-import net.sourceforge.pmd.lang.apex.rule.AbstractApexUnitTestRule;
 
 public class ApexAssertionsShouldIncludeMessageRule extends AbstractApexUnitTestRule {
 

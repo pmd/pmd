@@ -39,7 +39,7 @@ class StressTest : ProcessorTestSpec({
         fun TreeNodeWrapper<Node, out TypeNode>.typeIs(value: Boolean) {
             it.typeMirror.shouldBeA<JClassType> {
                 it.symbol.binaryName  shouldBe "net.sourceforge.pmd.lang.java.types.testdata.BoolLogic\$${value.toString()
-                    .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }}"
+                    .replaceFirstChar { char -> if (char.isLowerCase()) char.titlecase(Locale.getDefault()) else char.toString() }}"
             }
         }
 

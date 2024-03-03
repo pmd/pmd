@@ -51,15 +51,15 @@ import net.sourceforge.pmd.properties.PropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyConstraint;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySerializer;
-import net.sourceforge.pmd.properties.PropertyTypeId;
-import net.sourceforge.pmd.properties.PropertyTypeId.BuilderAndMapper;
-import net.sourceforge.pmd.util.ResourceLoader;
+import net.sourceforge.pmd.properties.internal.PropertyTypeId;
+import net.sourceforge.pmd.properties.internal.PropertyTypeId.BuilderAndMapper;
 import net.sourceforge.pmd.util.StringUtil;
+import net.sourceforge.pmd.util.internal.ResourceLoader;
 import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstant;
 import net.sourceforge.pmd.util.internal.xml.XmlErrorMessages;
 import net.sourceforge.pmd.util.internal.xml.XmlUtil;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 import com.github.oowekyala.ooxml.DomUtils;
 import com.github.oowekyala.ooxml.messages.XmlException;
@@ -254,7 +254,7 @@ class RuleFactory {
                          .error(
                              message,
                              attrValue,
-                             language.getTerseName(),
+                             language.getId(),
                              supportedVersions
                          );
             }
@@ -423,7 +423,7 @@ class RuleFactory {
     }
 
 
-    private static <T> @Nullable T tryParsePropertyValue(BuilderAndMapper<T> factory, String value, MessageReporter err) {
+    private static <T> @Nullable T tryParsePropertyValue(BuilderAndMapper<T> factory, String value, PmdReporter err) {
         try {
             return factory.getXmlMapper().fromString(value);
         } catch (IllegalArgumentException e) {
@@ -431,7 +431,7 @@ class RuleFactory {
         }
     }
 
-    private static <T> Comparable<T> asComparableOrThrow(T object, MessageReporter err) {
+    private static <T> Comparable<T> asComparableOrThrow(T object, PmdReporter err) {
         if (object instanceof Comparable) {
             return (Comparable) object;
         }

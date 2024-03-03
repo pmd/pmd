@@ -51,7 +51,7 @@ public final class ASTRecordPattern extends AbstractJavaNode implements ASTPatte
     }
 
     @Override
-    @Experimental
+    @Experimental("Parenthesized patterns is a Java 20 Preview feature")
     public int getParenthesisDepth() {
         return parenDepth;
     }

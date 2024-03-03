@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.ThisVariableExpression;
+import com.google.summit.ast.expression.ThisExpression;
 
-public final class ASTThisVariableExpression extends AbstractApexNode<ThisVariableExpression> {
+public final class ASTThisVariableExpression extends AbstractApexNode.Single<ThisExpression> {
 
-    ASTThisVariableExpression(ThisVariableExpression thisVariableExpression) {
-        super(thisVariableExpression);
+    ASTThisVariableExpression(ThisExpression thisExpression) {
+        super(thisExpression);
     }
 
 

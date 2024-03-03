@@ -29,7 +29,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTTypeSpecification;
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclaratorId;
 import net.sourceforge.pmd.lang.plsql.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
-import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
+import net.sourceforge.pmd.lang.plsql.ast.PlsqlVisitorBase;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 /**
@@ -42,7 +42,7 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  * each scope object is linked to its parent scope, which is the scope object of
  * the next embedding syntactic entity that has a scope.
  */
-public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
+public class ScopeAndDeclarationFinder extends PlsqlVisitorBase<Object, Object> {
     private static final Logger LOG = LoggerFactory.getLogger(ScopeAndDeclarationFinder.class);
 
     /**

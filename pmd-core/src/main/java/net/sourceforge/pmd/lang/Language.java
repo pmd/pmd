@@ -53,20 +53,6 @@ public interface Language extends Comparable<Language> {
     String getShortName();
 
     /**
-     * Returns the terse name of this language. This is a short, alphanumeric,
-     * lowercase name, eg {@code "java"}. It's used to identify the language
-     * in the ruleset XML, and is also in the package name of the language
-     * module.
-     *
-     * @return The terse name of this language.
-     *
-     * @deprecated Use {@link #getId()}
-     */
-    @Deprecated
-    String getTerseName();
-
-
-    /**
      * Returns the ID of this language. This is a short, alphanumeric,
      * lowercase name, eg {@code "java"}. It's used to identify the language
      * in the ruleset XML, and is also in the package name of the language
@@ -74,9 +60,7 @@ public interface Language extends Comparable<Language> {
      *
      * @return The ID of this language.
      */
-    default String getId() {
-        return getTerseName();
-    }
+    String getId();
 
     /**
      * Returns the list of file extensions associated with this language.

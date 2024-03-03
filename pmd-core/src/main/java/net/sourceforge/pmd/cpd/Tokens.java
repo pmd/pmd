@@ -13,7 +13,6 @@ import java.util.Map.Entry;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
@@ -22,7 +21,6 @@ import net.sourceforge.pmd.lang.document.TextDocument;
  * Global token collector for CPD. This is populated by lexing all files,
  * after which the match algorithm proceeds.
  */
-@InternalApi
 public class Tokens {
 
     // This stores all the token entries recorded during the run.
@@ -32,12 +30,12 @@ public class Tokens {
     private int curImageId = 1;
 
     /**
-     * Create a new instance, is internal.
+     * Create a new instance.
+     *
+     * @apiNote  Internal API
      */
-    @InternalApi
-    @Deprecated // just to get a warning
-    public Tokens() { // NOPMD: UnnecessaryConstructor - constructor is needed to place the annotations
-        // constructor is needed to place the annotations
+    Tokens() {
+        // constructor is package private
     }
 
     private void add(TokenEntry tokenEntry) {

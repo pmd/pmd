@@ -511,6 +511,10 @@ public final class IteratorUtil {
         return StreamSupport.stream(iter.spliterator(), false);
     }
 
+    /**
+     * Note, that this iterator doesn't support the {@code remove} operation.
+     * @param <T>
+     */
     public abstract static class AbstractIterator<T> implements Iterator<T> {
 
         private State state = State.NOT_READY;
@@ -564,10 +568,16 @@ public final class IteratorUtil {
             READY, NOT_READY, DONE
         }
 
-        @Deprecated
+        /**
+         * This implementation throws an instance of
+         * {@link UnsupportedOperationException} and performs no other action.
+         *
+         * @throws UnsupportedOperationException always, as the {@code remove}
+         *         operation is not supported by this iterator
+         */
         @Override
         public final void remove() {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("remove");
         }
 
     }

@@ -10,6 +10,7 @@ import static net.sourceforge.pmd.lang.java.types.TypeOps.asClassType;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.findFunctionalInterfaceMethod;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.mentionsAny;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.nonWildcardParameterization;
+import static net.sourceforge.pmd.lang.java.types.internal.InternalMethodTypeItf.cast;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.ExprOps.methodRefAsInvocation;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind.EQ;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind.LOWER;
@@ -434,7 +435,7 @@ final class ExprCheckHelper {
                 infCtx.freeVarsIn(groundTargetType),
                 solved -> {
                     mref.setInferredType(solved.ground(groundTargetType));
-                    mref.setFunctionalMethod(solved.ground(functionalMethod).internalApi().withOwner(solved.ground(functionalMethod.getDeclaringType())));
+                    mref.setFunctionalMethod(cast(solved.ground(functionalMethod)).withOwner(solved.ground(functionalMethod.getDeclaringType())));
                     mref.setCompileTimeDecl(solved.ground(ctDecl));
                 }
             );
@@ -483,7 +484,7 @@ final class ExprCheckHelper {
                     solved -> {
                         JClassType solvedGround = solved.ground(groundTargetType);
                         lambda.setInferredType(solvedGround);
-                        lambda.setFunctionalMethod(solved.ground(groundFun).internalApi().withOwner(solved.ground(groundFun.getDeclaringType())));
+                        lambda.setFunctionalMethod(cast(solved.ground(groundFun)).withOwner(solved.ground(groundFun.getDeclaringType())));
                     }
                 );
             }

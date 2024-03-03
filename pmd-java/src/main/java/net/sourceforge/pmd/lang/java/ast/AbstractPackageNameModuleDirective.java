@@ -6,21 +6,17 @@ package net.sourceforge.pmd.lang.java.ast;
 
 public abstract class AbstractPackageNameModuleDirective extends ASTModuleDirective {
 
+    private String packageName;
+
     AbstractPackageNameModuleDirective(int id) {
         super(id);
     }
 
     public final String getPackageName() {
-        return super.getImage();
-    }
-
-    @Override
-    @Deprecated
-    public final String getImage() {
-        return null;
+        return packageName;
     }
 
     final void setPackageName(String name) {
-        super.setImage(name);
+        packageName = name;
     }
 }

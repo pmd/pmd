@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.ast.impl;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.TextDocument;
@@ -12,7 +11,6 @@ import net.sourceforge.pmd.lang.document.TextDocument;
 /**
  * Token layer of a parsed file.
  */
-@Experimental
 public abstract class TokenDocument<T extends GenericToken> {
 
     private final TextDocument textDocument;

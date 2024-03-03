@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.modifier.Modifier;
+import com.google.summit.ast.Node;
 
-public final class ASTModifier extends AbstractApexNode<Modifier> {
+public final class ASTModifier extends AbstractApexNode.Single<Node> {
 
-    ASTModifier(Modifier node) {
+    ASTModifier(Node node) {
         super(node);
     }
 

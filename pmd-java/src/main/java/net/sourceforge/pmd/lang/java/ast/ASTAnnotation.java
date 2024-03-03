@@ -9,7 +9,6 @@ import java.util.Iterator;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 
@@ -39,18 +38,6 @@ public final class ASTAnnotation extends AbstractJavaTypeNode implements TypeNod
     @Override
     public @NonNull JClassType getTypeMirror() {
         return (JClassType) super.getTypeMirror();
-    }
-
-    /**
-     * Returns the name of the annotation as it is used,
-     * eg {@code java.lang.Override} or {@code Override}.
-     *
-     * @deprecated Use {@link #getTypeMirror()} instead
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    public String getAnnotationName() {
-        return getTypeNode().getText().toString();
     }
 
     /**

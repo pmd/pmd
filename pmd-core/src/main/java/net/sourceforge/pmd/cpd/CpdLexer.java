@@ -29,4 +29,10 @@ public interface CpdLexer {
             cpdLexer.tokenize(textDocument, tf);
         }
     }
+
+    static Tokens tokenize(CpdLexer cpdLexer, TextDocument textDocument) throws IOException {
+        Tokens tokens = new Tokens();
+        tokenize(cpdLexer, textDocument, tokens);
+        return tokens;
+    }
 }

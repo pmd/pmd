@@ -5,8 +5,8 @@ permalink: pmd_projectdocs_decisions_adr_3.html
 sidebaractiveurl: /pmd_projectdocs_decisions.html
 adr: true
 # Proposed / Accepted / Deprecated / Superseded
-adr_status: "Proposed"
-last_updated: December 2023
+adr_status: "Accepted"
+last_updated: February 2024
 ---
 
 <!-- https://github.com/joelparkerhenderson/architecture-decision-record/blob/main/templates/decision-record-template-by-michael-nygard/index.md -->
@@ -183,5 +183,7 @@ Non-concrete AST classes (like base classes or common interfaces) should follow 
 * Refactoring of the implementation is possible without affecting public API.
 
 ## Change History
+
+2024-02-01: Changed status to "Accepted". ([#4756](https://github.com/pmd/pmd/pull/4756))
 
 2023-12-01: Proposed initial version.

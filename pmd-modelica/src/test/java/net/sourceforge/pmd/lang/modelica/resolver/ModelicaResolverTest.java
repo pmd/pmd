@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.modelica.ModelicaParsingHelper;
 import net.sourceforge.pmd.lang.modelica.ast.ASTExtendsClause;
 import net.sourceforge.pmd.lang.modelica.ast.ASTStoredDefinition;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaClassSpecifierNode;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionState;
 
 class ModelicaResolverTest {
 

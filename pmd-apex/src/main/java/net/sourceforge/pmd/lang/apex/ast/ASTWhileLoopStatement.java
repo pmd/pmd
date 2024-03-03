@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.statement.WhileLoopStatement;
+import com.google.summit.ast.statement.WhileLoopStatement;
 
-public final class ASTWhileLoopStatement extends AbstractApexNode<WhileLoopStatement> {
+public final class ASTWhileLoopStatement extends AbstractApexNode.Single<WhileLoopStatement> {
 
     ASTWhileLoopStatement(WhileLoopStatement whileLoopStatement) {
         super(whileLoopStatement);

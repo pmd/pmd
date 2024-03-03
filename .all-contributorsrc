@@ -7361,6 +7361,24 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "enexusde",
+      "name": "Peter Rader",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6880636?v=4",
+      "profile": "http://www.e-nexus.de./",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "liqingjun123",
+      "name": "liqingjun123",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12873992?v=4",
+      "profile": "https://github.com/liqingjun123",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,

@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.statement.ForEachStatement;
+import com.google.summit.ast.statement.EnhancedForLoopStatement;
 
-public final class ASTForEachStatement extends AbstractApexNode<ForEachStatement> {
+public final class ASTForEachStatement extends AbstractApexNode.Single<EnhancedForLoopStatement> {
 
-    ASTForEachStatement(ForEachStatement forEachStatement) {
-        super(forEachStatement);
+    ASTForEachStatement(EnhancedForLoopStatement enhancedForLoopStatement) {
+        super(enhancedForLoopStatement);
     }
 
 

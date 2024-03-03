@@ -40,7 +40,7 @@ class ReflectedClassSymbolTests : IntelliMarker, WordSpec({
 
         "reflect its superinterfaces correctly" {
             TestClassesGen.forAllEqual {
-                classSym(it)!!.superInterfaces to it.interfaces.toList().map { classSym(it) }
+                classSym(it)!!.superInterfaces to it.interfaces.toList().map { clazz -> classSym(clazz) }
             }
         }
 

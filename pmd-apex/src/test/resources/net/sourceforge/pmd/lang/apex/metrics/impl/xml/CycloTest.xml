@@ -57,9 +57,9 @@
         <description>Complicated method - Standard</description>
         <expected-problems>3</expected-problems>
         <expected-messages>
-            <message>'c__Complicated' has value 21.</message>
-            <message>'c__Complicated#exception()' has value 4.</message>
-            <message>'c__Complicated#example()' has value 18.</message>
+            <message>'Complicated' has value 21.</message>
+            <message>'Complicated#exception()' has value 4.</message>
+            <message>'Complicated#example()' has value 18.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -69,8 +69,8 @@
         <description>Empty methods should count 1</description>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>'c__Foo' has value 1.</message>
-            <message>'c__Foo#foo()' has value 1.</message>
+            <message>'Foo' has value 1.</message>
+            <message>'Foo#foo()' has value 1.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -101,8 +101,8 @@
         <description>#984 Cyclomatic complexity should treat constructors like methods</description>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>'c__Test' has value 4.</message>
-            <message>'c__Test#Test()' has value 4.</message>
+            <message>'Test' has value 4.</message>
+            <message>'Test#Test()' has value 4.</message>
         </expected-messages>
         <code-ref id="constructor-violation"/>
     </test-code>
@@ -127,8 +127,8 @@
         <description>Standard Cyclo should count boolean paths</description>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>'c__Foo' has value 8.</message>
-            <message>'c__Foo#foo()' has value 8.</message>
+            <message>'Foo' has value 8.</message>
+            <message>'Foo#foo()' has value 8.</message>
         </expected-messages>
         <code-ref id="manyBooleanOps"/>
     </test-code>
@@ -137,8 +137,8 @@
         <description>Ternary expression counts 1 + boolean complexity</description>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>'c__Foo' has value 3.</message>
-            <message>'c__Foo#bar()' has value 3.</message>
+            <message>'Foo' has value 3.</message>
+            <message>'Foo#bar()' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[

@@ -6,13 +6,19 @@ package net.sourceforge.pmd.lang.vf.rule;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.lang.vf.ast.VfParserVisitor;
+import net.sourceforge.pmd.lang.vf.ast.VfVisitor;
 import net.sourceforge.pmd.reporting.RuleContext;
 
-public abstract class AbstractVfRule extends AbstractRule implements VfParserVisitor {
+public abstract class AbstractVfRule extends AbstractRule implements VfVisitor<Object, Object> {
 
     @Override
     public void apply(Node target, RuleContext ctx) {
         target.acceptVisitor(this, ctx);
+    }
+
+    @Override
+    public Object visitNode(Node node, Object param) {
+        node.children().forEach(n -> n.acceptVisitor(this, param));
+        return param;
     }
 }

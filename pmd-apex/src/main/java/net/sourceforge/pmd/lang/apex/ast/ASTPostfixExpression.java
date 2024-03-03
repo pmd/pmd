@@ -4,29 +4,18 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.data.ast.PostfixOp;
-import apex.jorje.semantic.ast.expression.PostfixExpression;
+import com.google.summit.ast.expression.UnaryExpression;
 
+public final class ASTPostfixExpression extends AbstractApexNode.Single<UnaryExpression> {
 
-public final class ASTPostfixExpression extends AbstractApexNode<PostfixExpression> {
-
-    ASTPostfixExpression(PostfixExpression postfixExpression) {
-        super(postfixExpression);
+    ASTPostfixExpression(UnaryExpression unaryExpression) {
+        super(unaryExpression);
     }
-
 
 
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-    /**
-     * @deprecated Use {@link #getOp()} instead.
-     */
-    @Deprecated
-    public PostfixOp getOperator() {
-        return node.getOp();
     }
 
     public PostfixOperator getOp() {

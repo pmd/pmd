@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.compilation.UserClassMethods;
+import com.google.summit.ast.Node;
 
-public final class ASTUserClassMethods extends AbstractApexNode<UserClassMethods> {
+public final class ASTUserClassMethods extends AbstractApexNode.Single<Node> {
 
-    ASTUserClassMethods(UserClassMethods userClassMethods) {
+    ASTUserClassMethods(Node userClassMethods) {
         super(userClassMethods);
     }
 

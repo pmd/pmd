@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.statement.CatchBlockStatement;
+import com.google.summit.ast.statement.TryStatement;
 
-public final class ASTCatchBlockStatement extends AbstractApexCommentContainerNode<CatchBlockStatement> {
+public final class ASTCatchBlockStatement extends AbstractApexCommentContainerNode<TryStatement.CatchBlock> {
 
-    ASTCatchBlockStatement(CatchBlockStatement catchBlockStatement) {
-        super(catchBlockStatement);
+    ASTCatchBlockStatement(TryStatement.CatchBlock catchBlock) {
+        super(catchBlock);
     }
 
 
@@ -19,17 +19,14 @@ public final class ASTCatchBlockStatement extends AbstractApexCommentContainerNo
     }
 
     public String getExceptionType() {
-        return String.valueOf(node.getTypeRef());
+        return node.getException().getType().asCodeString();
     }
 
     public String getVariableName() {
-        if (node.getVariable() != null) {
-            return node.getVariable().getName();
-        }
-        return null;
+        return node.getException().getDeclarations().get(0).getId().getString();
     }
 
     public ASTBlockStatement getBody() {
-        return (ASTBlockStatement) getChild(0);
+        return firstChild(ASTBlockStatement.class);
     }
 }

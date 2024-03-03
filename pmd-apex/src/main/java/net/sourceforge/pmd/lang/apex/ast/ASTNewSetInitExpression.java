@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.NewSetInitExpression;
+import com.google.summit.ast.initializer.ConstructorInitializer;
 
-public final class ASTNewSetInitExpression extends AbstractApexNode<NewSetInitExpression> {
+public final class ASTNewSetInitExpression extends AbstractApexNode.Single<ConstructorInitializer> {
 
-    ASTNewSetInitExpression(NewSetInitExpression newSetInitExpression) {
+    ASTNewSetInitExpression(ConstructorInitializer newSetInitExpression) {
         super(newSetInitExpression);
     }
 

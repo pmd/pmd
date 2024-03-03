@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 class LanguageProcessorRegistryTest {
     @Test
@@ -28,7 +28,7 @@ class LanguageProcessorRegistryTest {
         DummyLanguagePropertyBundle bundle = new DummyLanguagePropertyBundle(dummyLanguage);
         languageProperties.put(dummyLanguage, bundle);
 
-        try (LanguageProcessorRegistry ignored = LanguageProcessorRegistry.create(languageRegistry, languageProperties, MessageReporter.quiet(), env)) {
+        try (LanguageProcessorRegistry ignored = LanguageProcessorRegistry.create(languageRegistry, languageProperties, PmdReporter.quiet(), env)) {
             assertEquals("theValue", bundle.getRootDirectory());
         }
     }

@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.data.ast.PostfixOp;
+import com.google.summit.ast.expression.UnaryExpression;
 
 /**
  * Apex postfix operator
@@ -25,13 +25,14 @@ public enum PostfixOperator {
     }
 
     /**
-     * Returns a {@link PostfixOperator} corresponding to the given {@link PostfixOp}.
+     * Returns a {@link PostfixOperator} corresponding to the given {@link
+     * UnaryExpression.Operator}.
      */
-    public static PostfixOperator valueOf(PostfixOp op) {
+    public static PostfixOperator valueOf(UnaryExpression.Operator op) {
         switch (op) {
-        case INC:
+        case POST_INCREMENT:
             return INCREMENT;
-        case DEC:
+        case POST_DECREMENT:
             return DECREMENT;
         default:
             throw new IllegalArgumentException("Invalid postfix operator " + op);

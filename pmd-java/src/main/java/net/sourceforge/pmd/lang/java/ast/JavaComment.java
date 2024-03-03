@@ -37,14 +37,6 @@ public class JavaComment implements Reportable {
         return getToken().getReportLocation();
     }
 
-    /**
-     * @deprecated Use {@link #getText()}
-     */
-    @Deprecated
-    public String getImage() {
-        return getText().toString();
-    }
-
     /** The token underlying this comment. */
     public final JavaccToken getToken() {
         return token;

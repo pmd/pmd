@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -94,9 +93,10 @@ public final class TypeOps {
     /**
      * Return true if t and s are the same type. This may perform side effects
      * on inference variables. Annotations are ignored.
+     *
+     * @apiNote Internal API
      */
-    @InternalApi
-    public static boolean isSameTypeInInference(JTypeMirror t, JTypeMirror s) {
+    static boolean isSameTypeInInference(JTypeMirror t, JTypeMirror s) {
         return isSameType(t, s, true, false);
     }
 

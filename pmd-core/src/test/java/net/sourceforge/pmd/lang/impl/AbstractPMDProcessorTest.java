@@ -16,6 +16,7 @@ import org.mockito.Mockito;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.InternalApiBridge;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -28,12 +29,12 @@ import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.reporting.RuleViolation;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 abstract class AbstractPMDProcessorTest {
     protected SimpleReportListener reportListener;
 
-    protected MessageReporter reporter;
+    protected PmdReporter reporter;
 
     protected abstract int getThreads();
 
@@ -47,7 +48,7 @@ abstract class AbstractPMDProcessorTest {
     }
 
     private LanguageProcessor.AnalysisTask createTask(int threads) {
-        return new LanguageProcessor.AnalysisTask(null, null, null, threads, null, null, null);
+        return InternalApiBridge.createAnalysisTask(null, null, null, threads, null, null, null);
     }
 
     @Test

@@ -16,13 +16,9 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import net.sourceforge.pmd.PmdAnalysis;
-import net.sourceforge.pmd.annotation.DeprecatedUntil700;
-import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.Rule;
-import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
 import net.sourceforge.pmd.util.BaseResultProducingCloseable;
 
 /**
@@ -49,10 +45,8 @@ public final class Report {
     private final List<ProcessingError> errors = synchronizedList(new ArrayList<>());
     private final List<ConfigurationError> configErrors = synchronizedList(new ArrayList<>());
 
-    @DeprecatedUntil700
-    @InternalApi
-    public Report() { // NOPMD - UnnecessaryConstructor
-        // TODO: should be package-private, you have to use a listener to build a report.
+    private Report() {
+        // constructor is private
     }
 
     /**
@@ -179,13 +173,8 @@ public final class Report {
      * Adds a new rule violation to the report and notify the listeners.
      *
      * @param violation the violation to add
-     *
-     * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
      */
-    @DeprecatedUntil700
-    @Deprecated
-    @InternalApi
-    public void addRuleViolation(RuleViolation violation) {
+    private void addRuleViolation(RuleViolation violation) {
         synchronized (violations) {
             // note that this binary search is inefficient as we usually
             // report violations file by file.
@@ -205,55 +194,19 @@ public final class Report {
      * Adds a new configuration error to the report.
      *
      * @param error the error to add
-     *
-     * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
      */
-    @DeprecatedUntil700
-    @Deprecated
-    @InternalApi
-    public void addConfigError(ConfigurationError error) {
+    private void addConfigError(ConfigurationError error) {
         configErrors.add(error);
     }
 
     /**
      * Adds a new processing error to the report.
      *
-     * @param error
-     *            the error to add
-     * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
+     * @param error the error to add
      */
-    @DeprecatedUntil700
-    @Deprecated
-    @InternalApi
-    public void addError(ProcessingError error) {
+    private void addError(ProcessingError error) {
         errors.add(error);
     }
-
-    /**
-     * Merges the given report into this report. This might be necessary, if a
-     * summary over all violations is needed as PMD creates one report per file
-     * by default.
-     *
-     * <p>This is synchronized on an internal lock (note that other mutation
-     * operations are not synchronized, todo for pmd 7).
-     *
-     * @param r the report to be merged into this.
-     *
-     * @see AbstractAccumulatingRenderer
-     *
-     * @deprecated Convert Renderer to use the reports.
-     */
-    @Deprecated
-    public void merge(Report r) {
-        errors.addAll(r.errors);
-        configErrors.addAll(r.configErrors);
-        suppressedRuleViolations.addAll(r.suppressedRuleViolations);
-
-        for (RuleViolation violation : r.getViolations()) {
-            addRuleViolation(violation);
-        }
-    }
-
 
     /**
      * Returns an unmodifiable list of violations that were suppressed.
@@ -372,7 +325,6 @@ public final class Report {
      * @param filter when true, the violation will be kept.
      * @return copy of this report
      */
-    @Experimental
     public Report filterViolations(Predicate<RuleViolation> filter) {
         Report copy = new Report();
 
@@ -390,13 +342,11 @@ public final class Report {
 
     /**
      * Creates a new report by combining this report with another report.
-     * This is similar to {@link #merge(Report)}, but instead a new report
-     * is created. The lowest start time and greatest end time are kept in the copy.
+     * The lowest start time and greatest end time are kept in the copy.
      *
      * @param other the other report to combine
-     * @return
+     * @return a new report which is the combination of this and the other report.
      */
-    @Experimental
     public Report union(Report other) {
         Report copy = new Report();
 

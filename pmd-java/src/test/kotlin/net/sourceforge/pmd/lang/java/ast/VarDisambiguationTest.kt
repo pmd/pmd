@@ -11,7 +11,6 @@ import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol
-import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors.*
 
 class VarDisambiguationTest : ParserTestSpec({

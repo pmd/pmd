@@ -12,6 +12,7 @@ import net.sourceforge.pmd.reporting.Report
 import net.sourceforge.pmd.reporting.RuleViolation
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.document.Chars
+import java.util.*
 import kotlin.reflect.KCallable
 import kotlin.reflect.jvm.isAccessible
 import kotlin.test.assertEquals
@@ -29,9 +30,9 @@ infix fun <N, V : N> KCallable<N>.shouldEqual(expected: V?) =
             n.should(equalityMatcher(v) as Matcher<N>)
         }
 
-private fun <N, V> assertWrapper(callable: KCallable<N>, right: V, asserter: (N, V) -> Unit) {
+private fun <N, V> assertWrapper(callable: KCallable<N>, expected: V, asserter: (N, V) -> Unit) {
 
-    fun formatName() = "::" + callable.name.removePrefix("get").decapitalize()
+    fun formatName() = "::" + callable.name.removePrefix("get").replaceFirstChar { it.lowercase(Locale.getDefault()) }
 
     val value: N = try {
         callable.isAccessible = true
@@ -41,7 +42,7 @@ private fun <N, V> assertWrapper(callable: KCallable<N>, right: V, asserter: (N,
     }
 
     try {
-        asserter(value, right)
+        asserter(value, expected)
     } catch (e: AssertionError) {
 
         if (e.message?.contains("expected:") == true) {

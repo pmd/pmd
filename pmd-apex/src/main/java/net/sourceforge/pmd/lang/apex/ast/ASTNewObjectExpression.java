@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.NewObjectExpression;
+import com.google.summit.ast.initializer.ConstructorInitializer;
 
-public final class ASTNewObjectExpression extends AbstractApexNode<NewObjectExpression> {
+public final class ASTNewObjectExpression extends AbstractApexNode.Single<ConstructorInitializer> {
 
-    ASTNewObjectExpression(NewObjectExpression newObjectExpression) {
-        super(newObjectExpression);
+    ASTNewObjectExpression(ConstructorInitializer constructorInitializer) {
+        super(constructorInitializer);
     }
 
 
@@ -18,7 +18,13 @@ public final class ASTNewObjectExpression extends AbstractApexNode<NewObjectExpr
         return visitor.visit(this, data);
     }
 
+    /**
+     * Returns the type name.
+     *
+     * This includes any type arguments.
+     * If the type is a primitive, its case will be normalized.
+     */
     public String getType() {
-        return String.valueOf(node.getTypeRef());
+        return caseNormalizedTypeIfPrimitive(node.getType().asCodeString());
     }
 }

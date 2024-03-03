@@ -16,7 +16,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.rule.RuleSetLoader;
-import net.sourceforge.pmd.util.ResourceLoader;
+import net.sourceforge.pmd.util.internal.ResourceLoader;
 
 /**
  * This class is used to reference either a complete ruleset with all rules or to reference a single rule
@@ -312,7 +312,9 @@ public class RuleSetReferenceId {
     }
 
     /**
-     * Return the String form of this Rule reference.
+     * Return a string representation of this Rule reference.
+     *
+     * <p>Warning: Do not rely on the format of this method, as it might be changed without prior notice.
      *
      * @return Return the String form of this Rule reference, which is
      *         <i>ruleSetFileName</i> for all Rule absolute references,

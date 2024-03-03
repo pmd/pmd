@@ -16,7 +16,7 @@ public final class ASTTermMatch extends AbstractScalaNode<Term.Match> {
     }
 
     @Override
-    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
+    protected <P, R> R acceptVisitor(ScalaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

@@ -19,7 +19,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
@@ -111,12 +110,11 @@ public final class JIntersectionType implements JTypeMirror {
      * for the purpose of identifying its members. This may be a functional
      * interface. This returns null for the non-implemented cases.
      *
-     * @experimental this is only relevant to check for functional
-     *     interface parameterization, eg {@code Runnable & Serializable}. Do
-     *     not use this to find out the members of this type, rather, use {@link #streamMethods(Predicate)}
-     *     or so.
+     * <p>This is only relevant to check for functional
+     * interface parameterization, eg {@code Runnable & Serializable}. Do
+     * not use this to find out the members of this type, rather, use {@link #streamMethods(Predicate)}
+     * or so.
      */
-    @Experimental
     public @Nullable JClassType getInducedClassType() {
         JTypeMirror primary = getPrimaryBound();
         if (primary instanceof JTypeVar || primary instanceof JArrayType) {

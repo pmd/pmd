@@ -26,19 +26,10 @@ public abstract class AbstractPropertySource implements PropertySource {
     // This would avoid duplicating the implementation between Rule and RuleReference,
     // which should use exactly the same mechanism to override properties (XML).
 
-    // BUT to do that RuleReference should not extend AbstractDelegateRule
-    // Indeed, AbstractDelegateRule has no business having this overriding logic built-in,
-    // it would break its contract. For all deeds and purposes that class should be removed.
-
-    // TODO 7.0.0 these fields should be made private final
-
     /**
      * The list of known properties that can be configured.
-     *
-     * @deprecated Will be made private final
      */
-    @Deprecated
-    protected List<PropertyDescriptor<?>> propertyDescriptors = new ArrayList<>();
+    private final List<PropertyDescriptor<?>> propertyDescriptors = new ArrayList<>();
 
     /**
      * The values for each property that were overridden here.
@@ -46,36 +37,8 @@ public abstract class AbstractPropertySource implements PropertySource {
      * In other words, if this map doesn't contain a descriptor
      * which is in {@link #propertyDescriptors}, then it's assumed
      * to have a default value.
-     *
-     * @deprecated Will be made private final
      */
-    @Deprecated
-    protected Map<PropertyDescriptor<?>, Object> propertyValuesByDescriptor = new HashMap<>();
-
-
-    /**
-     * Creates a copied list of the property descriptors and returns it.
-     *
-     * @return a copy of the property descriptors.
-     * @deprecated Just use {@link #getPropertyDescriptors()}
-     */
-    @Deprecated
-    protected List<PropertyDescriptor<?>> copyPropertyDescriptors() {
-        return new ArrayList<>(propertyDescriptors);
-    }
-
-
-    /**
-     * Creates a copied map of the values of the properties and returns it.
-     *
-     * @return a copy of the values
-     *
-     * @deprecated Just use {@link #getPropertiesByPropertyDescriptor()} or {@link #getOverriddenPropertiesByPropertyDescriptor()}
-     */
-    @Deprecated
-    protected Map<PropertyDescriptor<?>, Object> copyPropertyValues() {
-        return new HashMap<>(propertyValuesByDescriptor);
-    }
+    private final Map<PropertyDescriptor<?>, Object> propertyValuesByDescriptor = new HashMap<>();
 
 
     @Override

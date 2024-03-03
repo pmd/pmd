@@ -6,20 +6,18 @@ package net.sourceforge.pmd.util.log.internal;
 
 import org.slf4j.event.Level;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
  * Turns errors into warnings reported on another logger.
  *
  * @author Clément Fournier
  */
-@InternalApi
 public final class ErrorsAsWarningsReporter extends MessageReporterBase {
 
-    private final MessageReporter backend;
+    private final PmdReporter backend;
 
-    public ErrorsAsWarningsReporter(MessageReporter backend) {
+    public ErrorsAsWarningsReporter(PmdReporter backend) {
         this.backend = backend;
     }
 

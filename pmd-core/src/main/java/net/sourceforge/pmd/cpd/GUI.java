@@ -70,6 +70,7 @@ import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.document.InternalApiBridge;
 import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -714,7 +715,7 @@ public class GUI implements CPDListener {
             // the created sourceManager will be closed when exiting or when a new analysis is started,
             // see #closeSourceManager().
             @SuppressWarnings("PMD.CloseResource")
-            FileCollector fileCollector = FileCollector.newCollector(config.getLanguageVersionDiscoverer(), config.getReporter());
+            FileCollector fileCollector = InternalApiBridge.newCollector(config.getLanguageVersionDiscoverer(), config.getReporter());
             fileCollector.addFileOrDirectory(dirPath, recurse);
             sourceManager = new SourceManager(fileCollector.getCollectedFiles());
         } catch (Exception e) {

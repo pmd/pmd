@@ -215,7 +215,7 @@ class CtorInferenceTest : ProcessorTestSpec({
 
             """)
 
-        val (t_Outer, t_Inner, t_Scratch) = acu.declaredTypeSignatures()
+        val (t_Outer, t_Inner, _) = acu.declaredTypeSignatures()
 
         val (innerCtor) = acu.ctorDeclarations().toList()
         val (ctor) = acu.descendants(ASTExplicitConstructorInvocation::class.java).toList()
@@ -260,7 +260,7 @@ class CtorInferenceTest : ProcessorTestSpec({
             """)
 
 
-        val (t_Outer, t_Inner, t_Scratch) = acu.declaredTypeSignatures()
+        val (t_Outer, t_Inner, _) = acu.declaredTypeSignatures()
 
         val (innerCtor) = acu.ctorDeclarations().toList()
         val (ctor) = acu.descendants(ASTExplicitConstructorInvocation::class.java).toList()
@@ -335,7 +335,7 @@ class CtorInferenceTest : ProcessorTestSpec({
 
     parserTest("Mapping of type params doesn't fail") {
 
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+        val (acu, _) = parser.parseWithTypeInferenceSpy(
             """
 
     class Gen<A,B> {

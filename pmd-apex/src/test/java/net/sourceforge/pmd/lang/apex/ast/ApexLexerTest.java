@@ -4,30 +4,39 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CharStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.Token;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.Token;
 import org.junit.jupiter.api.Test;
 
-import apex.jorje.data.ast.CompilationUnit;
-import apex.jorje.parser.impl.ApexLexer;
-import apex.jorje.parser.impl.ApexParser;
+import net.sourceforge.pmd.lang.apex.internal.AntlrVersionCheckSuppression;
 
+import com.nawforce.apexparser.ApexLexer;
+import com.nawforce.apexparser.ApexParser;
+
+
+/**
+ * This is an exploration test for {@link ApexLexer}.
+ */
 class ApexLexerTest {
+    static {
+        AntlrVersionCheckSuppression.initApexLexer();
+    }
 
     private static final String CODE = "public class Foo {\n"
             + "   public List<SObject> test1() {\n"
-            + "       return Database.query(\"Select Id from Account LIMIT 100\");\n"
+            + "       return Database.query('Select Id from Account LIMIT 100');\n"
             + "   }\n"
             + "}\n";
 
     @Test
-    void testLexer() throws Exception {
-        CharStream in = new ANTLRStringStream(CODE);
+    void testLexer() {
+        CharStream in = CharStreams.fromString(CODE);
         ApexLexer lexer = new ApexLexer(in);
 
         Token token = lexer.nextToken();
@@ -36,15 +45,15 @@ class ApexLexerTest {
             tokenCount++;
             token = lexer.nextToken();
         }
-        assertEquals(43, tokenCount);
+        assertEquals(35, tokenCount);
     }
 
     @Test
-    void testParser() throws Exception {
-        CharStream in = new ANTLRStringStream(CODE);
+    void testParser() {
+        CharStream in = CharStreams.fromString(CODE);
         ApexLexer lexer = new ApexLexer(in);
-        ApexParser parser = new ApexParser(new CommonTokenStream(lexer));
-        CompilationUnit compilationUnit = parser.compilationUnit();
+        ApexParser parser = new com.nawforce.apexparser.ApexParser(new CommonTokenStream(lexer));
+        ApexParser.CompilationUnitContext compilationUnit = parser.compilationUnit();
         assertNotNull(compilationUnit);
     }
 }

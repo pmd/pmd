@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.lang.java.types.TypeConversion.capture;
 import static net.sourceforge.pmd.lang.java.types.TypeConversion.isWilcardParameterized;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.asList;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.subst;
+import static net.sourceforge.pmd.lang.java.types.internal.InternalMethodTypeItf.cast;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.ExprOps.isPertinentToApplicability;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.MethodResolutionPhase.INVOC_LOOSE;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
@@ -196,7 +197,7 @@ public final class Infer {
         }
         // ok we failed, we can still use some info from the ctdecl
 
-        JMethodSig fallback = deleteTypeParams(ctdecl.getMethodType().internalApi().adaptedMethod());
+        JMethodSig fallback = deleteTypeParams(cast(ctdecl.getMethodType()).adaptedMethod());
         LOG.fallbackInvocation(fallback, site);
 
         return ctdecl.withMethod(fallback, true);
@@ -326,7 +327,7 @@ public final class Infer {
 
         return logInference(site,
                             ctdecl.getResolvePhase().asInvoc(),
-                            ctdecl.getMethodType().internalApi().adaptedMethod());
+                            cast(ctdecl.getMethodType()).adaptedMethod());
     }
 
     // this is skipped when running without assertions
@@ -420,9 +421,9 @@ public final class Infer {
             if (!rtype.isInterface()) {
                 // this is for anonymous class ctors
                 // an interface cannot declare a constructor
-                result = result.internalApi().withOwner(rtype);
+                result = cast(result).withOwner(rtype);
             }
-            return result.internalApi().withTypeParams(null);
+            return cast(result).withTypeParams(null);
 
         }
         return result;
@@ -459,7 +460,7 @@ public final class Infer {
         }
 
         // replace the return type so that anonymous class ctors return the supertype
-        JMethodSig adaptedSig = cons.internalApi().withReturnType(newType).internalApi().markAsAdapted();
+        JMethodSig adaptedSig = cast(cast(cons).withReturnType(newType)).markAsAdapted();
 
         List<JTypeVar> newTypeFormals = newType.getFormalTypeParams();
         if (newTypeFormals.isEmpty()) {
@@ -482,7 +483,7 @@ public final class Infer {
 
             // type parameters are not part of the adapted signature, so that when we reset
             // the signature for invocation inference, we don't duplicate new type parameters
-            return adaptedSig.internalApi().withTypeParams(tparams).internalApi().markAsAdapted();
+            return cast(cast(adaptedSig).withTypeParams(tparams)).markAsAdapted();
         }
     }
 
@@ -610,7 +611,7 @@ public final class Infer {
         LOG.startReturnChecks();
         JTypeMirror actualResType = addReturnConstraints(infCtx, m, site); // b3
         LOG.endReturnChecks();
-        m = m.internalApi().withReturnType(actualResType);
+        m = cast(m).withReturnType(actualResType);
         return m;
     }
 
