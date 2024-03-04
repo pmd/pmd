@@ -882,13 +882,13 @@
                         
                         
                         
-                        <li><a href="pmd_rules_vf.html">Index</a></li>
+                        <li><a href="pmd_rules_visualforce.html">Index</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vf_security.html">Security</a></li>
+                        <li><a href="pmd_rules_visualforce_security.html">Security</a></li>
                         
                         
                         
@@ -975,25 +975,25 @@
                         
                         
                         
-                        <li><a href="pmd_rules_vm.html">Index</a></li>
+                        <li><a href="pmd_rules_velocity.html">Index</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vm_bestpractices.html">Best Practices</a></li>
+                        <li><a href="pmd_rules_velocity_bestpractices.html">Best Practices</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vm_design.html">Design</a></li>
+                        <li><a href="pmd_rules_velocity_design.html">Design</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vm_errorprone.html">Error Prone</a></li>
+                        <li><a href="pmd_rules_velocity_errorprone.html">Error Prone</a></li>
                         
                         
                         
@@ -1471,7 +1471,7 @@
             
 
                 
-                <li><a href="pmd_languages_vm.html">Velocity Template Language (VTL)</a></li>
+                <li><a href="pmd_languages_velocity.html">Velocity Template Language (VTL)</a></li>
                 
 
             
@@ -1952,6 +1952,8 @@ are marked with one of these annotations: <code class="language-plaintext highli
 see <a href="#release-downloads">Release downloads</a>.</li>
   <li>Some CLI options have been removed, because they have been deprecated. See <a href="#cli-changes">CLI Changes</a> for details.</li>
   <li>If you call CPD programmatically, the API has changed, see <a href="pmd_release_notes_pmd7.html#new-programmatic-api-for-cpd">New Programmatic API for CPD</a>.</li>
+  <li>If you use Visualforce, then you need to change “vf” to “visualforce”, e.g. <code class="language-plaintext highlighter-rouge">category/vf/security.xml</code> ➡️ <code class="language-plaintext highlighter-rouge">category/visualforce/security.xml</code></li>
+  <li>If you use Velocity, then you need to change “vm” to “velocity”, e.g. <code class="language-plaintext highlighter-rouge">category/vm/...</code> ➡️ <code class="language-plaintext highlighter-rouge">category/velocity/...</code></li>
 </ul>
 
 <p>The following topics describe well known migration challenges in more detail.</p>
@@ -1994,8 +1996,12 @@ with a backslash. This affects the following rules:
 
 <h3 id="im-using-custom-rules">I’m using custom rules</h3>
 
+<h4 id="testing">Testing</h4>
 <p>Ideally, you have written good tests already for your custom rules - see <a href="pmd_userdocs_extending_testing.html">Testing your rules</a>.
 This helps to identify problems early on.</p>
+
+<p>The base test classes <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/test/PmdRuleTst.html#"><code>PmdRuleTst</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/test/SimpleAggregatorTst.html#"><code>SimpleAggregatorTst</code></a> have been moved out
+of package <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.testframework</code>. You’ll need to adjust your imports.</p>
 
 <h4 id="ruleset-xml">Ruleset XML</h4>
 <p>The <code class="language-plaintext highlighter-rouge">&lt;rule&gt;</code> tag, that defines your custom rule, is required to have a <code class="language-plaintext highlighter-rouge">language</code> attribute now. This was always the
@@ -5472,7 +5478,7 @@ the ant task is in an own dependency with PMD 7:
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Mar 3, 2024 <br />
+             Site last generated: Mar 4, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

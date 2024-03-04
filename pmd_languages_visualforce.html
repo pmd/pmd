@@ -882,13 +882,13 @@
                         
                         
                         
-                        <li><a href="pmd_rules_vf.html">Index</a></li>
+                        <li><a href="pmd_rules_visualforce.html">Index</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vf_security.html">Security</a></li>
+                        <li><a href="pmd_rules_visualforce_security.html">Security</a></li>
                         
                         
                         
@@ -975,25 +975,25 @@
                         
                         
                         
-                        <li><a href="pmd_rules_vm.html">Index</a></li>
+                        <li><a href="pmd_rules_velocity.html">Index</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vm_bestpractices.html">Best Practices</a></li>
+                        <li><a href="pmd_rules_velocity_bestpractices.html">Best Practices</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vm_design.html">Design</a></li>
+                        <li><a href="pmd_rules_velocity_design.html">Design</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vm_errorprone.html">Error Prone</a></li>
+                        <li><a href="pmd_rules_velocity_errorprone.html">Error Prone</a></li>
                         
                         
                         
@@ -1471,7 +1471,7 @@
             
 
                 
-                <li><a href="pmd_languages_vm.html">Velocity Template Language (VTL)</a></li>
+                <li><a href="pmd_languages_velocity.html">Velocity Template Language (VTL)</a></li>
                 
 
             
@@ -1883,13 +1883,18 @@ language that gives developers way to build applications and customize the Sales
     <div class="card">
         <ul class="list-group list-group-flush">
             <li class="list-group-item">Since PMD 5.6.0</li>
-            <li class="list-group-item">Implementation: <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vf/VfLanguageModule.html#"><code>VfLanguageModule</code></a></li>
-            <li class="list-group-item">Id: vf</li>
+            <li class="list-group-item">Implementation: <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/visualforce/VfLanguageModule.html#"><code>VfLanguageModule</code></a></li>
+            <li class="list-group-item">Id: visualforce</li>
             <li class="list-group-item">PMD: ✔️</li>
             <li class="list-group-item">CPD: ✔️</li>
         </ul>
     </div>
 </details>
+
+<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> 
+The language id of Visualforce was in PMD 6 just “vf”. In PMD 7, this has been changed to “visualforce”. Also the
+package name of the classes has been changed from vf to “visualforce”.
+</div>
 
 <h2 id="language-properties">Language Properties</h2>
 
@@ -1901,18 +1906,18 @@ language that gives developers way to build applications and customize the Sales
 
 <p>The Visualforce AST now can resolve the data type of Visualforce expressions that reference
 Apex Controller properties and Custom Object fields. This feature improves the precision of existing rules,
-like <a href="pmd_rules_vf_security.html#vfunescapeel"><code class="language-plaintext highlighter-rouge">VfUnescapeEl</code></a>.</p>
+like <a href="pmd_rules_visualforce_security.html#vfunescapeel"><code class="language-plaintext highlighter-rouge">VfUnescapeEl</code></a>.</p>
 
 <p>This can be configured using two language properties, which can be set as environment variables:</p>
 
 <ul>
   <li>
-    <p><code class="language-plaintext highlighter-rouge">PMD_VF_APEX_DIRECTORIES</code>: Comma separated list of directories for Apex classes. Absolute or relative
+    <p><code class="language-plaintext highlighter-rouge">PMD_VISUALFORCE_APEX_DIRECTORIES</code>: Comma separated list of directories for Apex classes. Absolute or relative
 to the Visualforce directory. Default is <code class="language-plaintext highlighter-rouge">../classes</code>. Specifying an empty string will disable data type
 resolution for Apex Controller properties.</p>
   </li>
   <li>
-    <p><code class="language-plaintext highlighter-rouge">PMD_VF_OBJECTS_DIRECTORIES</code>: Comma separated list of directories for Custom Objects. Absolute or relative
+    <p><code class="language-plaintext highlighter-rouge">PMD_VISUALFORCE_OBJECTS_DIRECTORIES</code>: Comma separated list of directories for Custom Objects. Absolute or relative
 to the Visualforce directory. Default is <code class="language-plaintext highlighter-rouge">../objects</code>. Specifying an empty string will disable data type
 resolution for Custom Object fields.</p>
   </li>
@@ -1920,21 +1925,21 @@ resolution for Custom Object fields.</p>
 
 <div class="alert alert-danger" role="alert"><i class="fas fa-exclamation-circle"></i> <b>Warning:</b> 
 These env vars have changed from PMD 6 to PMD 7:
-* <code class="language-plaintext highlighter-rouge">PMD_VF_APEXDIRECTORIES</code> ➡️ <code class="language-plaintext highlighter-rouge">PMD_VF_APEX_DIRECTORIES</code>
-* <code class="language-plaintext highlighter-rouge">PMD_VF_OBJECTSDIRECTORIES</code> ➡️ <code class="language-plaintext highlighter-rouge">PMD_VF_OBJECTS_DIRECTORIES</code>
+* <code class="language-plaintext highlighter-rouge">PMD_VF_APEXDIRECTORIES</code> ➡️ <code class="language-plaintext highlighter-rouge">PMD_VISUALFORCE_APEX_DIRECTORIES</code>
+* <code class="language-plaintext highlighter-rouge">PMD_VF_OBJECTSDIRECTORIES</code> ➡️ <code class="language-plaintext highlighter-rouge">PMD_VISUALFORCE_OBJECTS_DIRECTORIES</code>
 </div>
 
 <h3 id="sample-usage">Sample usage</h3>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PMD_VF_APEXDIRECTORIES=../classes \
-PMD_VF_OBJECTSDIRECTORIES=../objects \
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PMD_VISUALFORCE_APEXDIRECTORIES=../classes \
+PMD_VISUALFORCE_OBJECTSDIRECTORIES=../objects \
 pmd check -d $GITHUB_WORKSPACE/force-app/main/default/pages \
-    -R category/vf/security.xml/VfUnescapeEl -f text
+    -R category/visualforce/security.xml/VfUnescapeEl -f text
 </code></pre></div></div>
 
 <p>If you run with debug logging turned on, you might see log messages like this:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Okt. 14, 2021 11:30:44 AM net.sourceforge.pmd.lang.vf.VfExpressionTypeVisitor visit
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Okt. 14, 2021 11:30:44 AM net.sourceforge.pmd.lang.visualforce.VfExpressionTypeVisitor visit
 FINE: Unable to determine type for: Account.NotFoundField__c
 </code></pre></div></div>
 
@@ -1986,7 +1991,7 @@ the needed data.</p>
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            February 2024 (7.0.0)<br /> Site last generated: Mar 3, 2024 <br />
+            February 2024 (7.0.0)<br /> Site last generated: Mar 4, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

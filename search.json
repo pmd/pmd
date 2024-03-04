@@ -528,7 +528,7 @@
 "title": "Best Practices (Velocity Template Language (VTL), Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
-"url": "pmd_rules_vm_bestpractices.html#best practices",
+"url": "pmd_rules_velocity_bestpractices.html#best practices",
 "summary": "Rules which enforce generally accepted best practices."
 }
 ,
@@ -537,7 +537,7 @@
 "title": "AvoidReassigningParameters (Velocity Template Language (VTL), Best Practices)",
 "tags": "",
 "keywords": "AvoidReassigningParameters",
-"url": "pmd_rules_vm_bestpractices.html#avoidreassigningparameters",
+"url": "pmd_rules_velocity_bestpractices.html#avoidreassigningparameters",
 "summary": "Rules which enforce generally accepted best practices."
 }
 ,
@@ -546,7 +546,7 @@
 "title": "UnusedMacroParameter (Velocity Template Language (VTL), Best Practices)",
 "tags": "",
 "keywords": "UnusedMacroParameter",
-"url": "pmd_rules_vm_bestpractices.html#unusedmacroparameter",
+"url": "pmd_rules_velocity_bestpractices.html#unusedmacroparameter",
 "summary": "Rules which enforce generally accepted best practices."
 }
 
@@ -2524,7 +2524,7 @@
 "title": "Design (Velocity Template Language (VTL), Design)",
 "tags": "",
 "keywords": "Design",
-"url": "pmd_rules_vm_design.html#design",
+"url": "pmd_rules_velocity_design.html#design",
 "summary": "Rules that help you discover design issues."
 }
 ,
@@ -2533,7 +2533,7 @@
 "title": "AvoidDeeplyNestedIfStmts (Velocity Template Language (VTL), Design)",
 "tags": "",
 "keywords": "AvoidDeeplyNestedIfStmts",
-"url": "pmd_rules_vm_design.html#avoiddeeplynestedifstmts",
+"url": "pmd_rules_velocity_design.html#avoiddeeplynestedifstmts",
 "summary": "Rules that help you discover design issues."
 }
 ,
@@ -2542,7 +2542,7 @@
 "title": "CollapsibleIfStatements (Velocity Template Language (VTL), Design)",
 "tags": "",
 "keywords": "CollapsibleIfStatements",
-"url": "pmd_rules_vm_design.html#collapsibleifstatements",
+"url": "pmd_rules_velocity_design.html#collapsibleifstatements",
 "summary": "Rules that help you discover design issues."
 }
 ,
@@ -2551,7 +2551,7 @@
 "title": "ExcessiveTemplateLength (Velocity Template Language (VTL), Design)",
 "tags": "",
 "keywords": "ExcessiveTemplateLength",
-"url": "pmd_rules_vm_design.html#excessivetemplatelength",
+"url": "pmd_rules_velocity_design.html#excessivetemplatelength",
 "summary": "Rules that help you discover design issues."
 }
 ,
@@ -2560,7 +2560,7 @@
 "title": "NoInlineJavaScript (Velocity Template Language (VTL), Design)",
 "tags": "",
 "keywords": "NoInlineJavaScript",
-"url": "pmd_rules_vm_design.html#noinlinejavascript",
+"url": "pmd_rules_velocity_design.html#noinlinejavascript",
 "summary": "Rules that help you discover design issues."
 }
 ,
@@ -2569,7 +2569,7 @@
 "title": "NoInlineStyles (Velocity Template Language (VTL), Design)",
 "tags": "",
 "keywords": "NoInlineStyles",
-"url": "pmd_rules_vm_design.html#noinlinestyles",
+"url": "pmd_rules_velocity_design.html#noinlinestyles",
 "summary": "Rules that help you discover design issues."
 }
 
@@ -3474,7 +3474,7 @@
 "title": "Error Prone (Velocity Template Language (VTL), Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
-"url": "pmd_rules_vm_errorprone.html#error prone",
+"url": "pmd_rules_velocity_errorprone.html#error prone",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
@@ -3483,7 +3483,7 @@
 "title": "EmptyForeachStmt (Velocity Template Language (VTL), Error Prone)",
 "tags": "",
 "keywords": "EmptyForeachStmt",
-"url": "pmd_rules_vm_errorprone.html#emptyforeachstmt",
+"url": "pmd_rules_velocity_errorprone.html#emptyforeachstmt",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
@@ -3492,7 +3492,7 @@
 "title": "EmptyIfStmt (Velocity Template Language (VTL), Error Prone)",
 "tags": "",
 "keywords": "EmptyIfStmt",
-"url": "pmd_rules_vm_errorprone.html#emptyifstmt",
+"url": "pmd_rules_velocity_errorprone.html#emptyifstmt",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 
@@ -5820,7 +5820,7 @@
 "title": "Security (Salesforce Visualforce, Security)",
 "tags": "",
 "keywords": "Security",
-"url": "pmd_rules_vf_security.html#security",
+"url": "pmd_rules_visualforce_security.html#security",
 "summary": "Rules that flag potential security flaws."
 }
 ,
@@ -5829,7 +5829,7 @@
 "title": "VfCsrf (Salesforce Visualforce, Security)",
 "tags": "",
 "keywords": "VfCsrf",
-"url": "pmd_rules_vf_security.html#vfcsrf",
+"url": "pmd_rules_visualforce_security.html#vfcsrf",
 "summary": "Rules that flag potential security flaws."
 }
 ,
@@ -5838,7 +5838,7 @@
 "title": "VfHtmlStyleTagXss (Salesforce Visualforce, Security)",
 "tags": "",
 "keywords": "VfHtmlStyleTagXss",
-"url": "pmd_rules_vf_security.html#vfhtmlstyletagxss",
+"url": "pmd_rules_visualforce_security.html#vfhtmlstyletagxss",
 "summary": "Rules that flag potential security flaws."
 }
 ,
@@ -5847,7 +5847,7 @@
 "title": "VfUnescapeEl (Salesforce Visualforce, Security)",
 "tags": "",
 "keywords": "VfUnescapeEl",
-"url": "pmd_rules_vf_security.html#vfunescapeel",
+"url": "pmd_rules_visualforce_security.html#vfunescapeel",
 "summary": "Rules that flag potential security flaws."
 }
 
@@ -6188,10 +6188,42 @@
 
 
 {
-"title": "Salesforce Visualforce Rules",
-"tags": "rule_referencesvf",
+"title": "Velocity Template Language (VTL) Rules",
+"tags": "rule_referencesvelocity",
 "keywords": "",
-"url": "pmd_rules_vf.html",
+"url": "pmd_rules_velocity.html",
+"summary": "Index of all built-in rules available for Velocity Template Language (VTL)"
+}
+
+
+
+,
+
+
+
+
+
+{
+"title": "Velocity Template Language (VTL) support",
+"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"keywords": "",
+"url": "pmd_languages_velocity.html",
+"summary": "VTL-specific features and guidance"
+}
+
+
+
+,
+
+
+
+
+
+{
+"title": "Salesforce Visualforce Rules",
+"tags": "rule_referencesvisualforce",
+"keywords": "",
+"url": "pmd_rules_visualforce.html",
 "summary": "Index of all built-in rules available for Salesforce Visualforce"
 }
 
@@ -6209,38 +6241,6 @@
 "keywords": "",
 "url": "pmd_languages_visualforce.html",
 "summary": "Visualforce-specific features and guidance"
-}
-
-
-
-,
-
-
-
-
-
-{
-"title": "Velocity Template Language (VTL) Rules",
-"tags": "rule_referencesvm",
-"keywords": "",
-"url": "pmd_rules_vm.html",
-"summary": "Index of all built-in rules available for Velocity Template Language (VTL)"
-}
-
-
-
-,
-
-
-
-
-
-{
-"title": "Velocity Template Language (VTL) support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
-"keywords": "",
-"url": "pmd_languages_vm.html",
-"summary": "VTL-specific features and guidance"
 }
 
 

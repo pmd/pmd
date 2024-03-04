@@ -882,13 +882,13 @@
                         
                         
                         
-                        <li><a href="pmd_rules_vf.html">Index</a></li>
+                        <li><a href="pmd_rules_visualforce.html">Index</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vf_security.html">Security</a></li>
+                        <li><a href="pmd_rules_visualforce_security.html">Security</a></li>
                         
                         
                         
@@ -975,25 +975,25 @@
                         
                         
                         
-                        <li><a href="pmd_rules_vm.html">Index</a></li>
+                        <li><a href="pmd_rules_velocity.html">Index</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vm_bestpractices.html">Best Practices</a></li>
+                        <li><a href="pmd_rules_velocity_bestpractices.html">Best Practices</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vm_design.html">Design</a></li>
+                        <li><a href="pmd_rules_velocity_design.html">Design</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vm_errorprone.html">Error Prone</a></li>
+                        <li><a href="pmd_rules_velocity_errorprone.html">Error Prone</a></li>
                         
                         
                         
@@ -1471,7 +1471,7 @@
             
 
                 
-                <li><a href="pmd_languages_vm.html">Velocity Template Language (VTL)</a></li>
+                <li><a href="pmd_languages_velocity.html">Velocity Template Language (VTL)</a></li>
                 
 
             
@@ -2079,6 +2079,33 @@ module <code class="language-plaintext highlighter-rouge">pmd-coco</code>.</p>
 
 <p>Contributors: <a href="https://github.com/wener-tiobe">Wener</a> (@wener-tiobe)</p>
 
+<h3 id="java-22-support">Java 22 Support</h3>
+
+<p>This release of PMD brings support for Java 22. There are the following new standard language features,
+that are supported now:</p>
+
+<ul>
+  <li><a href="https://openjdk.org/jeps/456">JEP 456: Unnamed Variables &amp; Patterns</a></li>
+</ul>
+
+<p>PMD also supports the following preview language features:</p>
+
+<ul>
+  <li><a href="https://openjdk.org/jeps/447">JEP 447: Statements before super(…) (Preview)</a></li>
+  <li><a href="https://openjdk.org/jeps/459">JEP 459: String Templates (Second Preview)</a></li>
+  <li><a href="https://openjdk.org/jeps/463">JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)</a></li>
+</ul>
+
+<p>In order to analyze a project with PMD that uses these language features,
+you’ll need to enable it via the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language
+version <code class="language-plaintext highlighter-rouge">22-preview</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS=--enable-preview
+pmd check --use-version java-22-preview ...
+</code></pre></div></div>
+
+<p>Note: Support for Java 20 preview language features have been removed. The version “20-preview” is no longer available.</p>
+
 <h3 id="new-java-21-support">New: Java 21 Support</h3>
 
 <p>This release of PMD brings support for Java 21. There are the following new standard language features,
@@ -2216,7 +2243,7 @@ and Velocity Template Language (vm):
 <a href="pmd_rules_plsql_design.html#excessiveparameterlist"><code class="language-plaintext highlighter-rouge">ExcessiveParameterList</code></a>, <a href="pmd_rules_plsql_design.html#excessivetypelength"><code class="language-plaintext highlighter-rouge">ExcessiveTypeLength</code></a>,
 <a href="pmd_rules_plsql_design.html#ncssmethodcount"><code class="language-plaintext highlighter-rouge">NcssMethodCount</code></a>, <a href="pmd_rules_plsql_design.html#ncssobjectcount"><code class="language-plaintext highlighter-rouge">NcssObjectCount</code></a>,
 <a href="pmd_rules_plsql_design.html#npathcomplexity"><code class="language-plaintext highlighter-rouge">NPathComplexity</code></a></li>
-      <li>VM: <a href="pmd_rules_vm_design.html#excessivetemplatelength"><code class="language-plaintext highlighter-rouge">ExcessiveTemplateLength</code></a></li>
+      <li>Velocity: <a href="pmd_rules_velocity_design.html#excessivetemplatelength"><code class="language-plaintext highlighter-rouge">ExcessiveTemplateLength</code></a></li>
     </ul>
   </li>
   <li>The general property <code class="language-plaintext highlighter-rouge">violationSuppressXPath</code> which is available for all rules to
@@ -4028,7 +4055,7 @@ following languages:</p>
 <ul>
   <li>Java: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.java.ast</code></a></li>
   <li>Java Server Pages: <a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.jsp.ast</code></a></li>
-  <li>Velocity Template Language: <a href="https://docs.pmd-code.org/apidocs/pmd-vm/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.vm.ast</code></a></li>
+  <li>Velocity Template Language: <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.vm.ast</code></a></li>
 </ul>
 
 <p>Outside of these packages, these changes also concern the following TokenManager
@@ -4045,7 +4072,7 @@ implementations, and their corresponding Parser if it exists (in the same packag
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/PLSQLTokenManager.html#"><code>PLSQLTokenManager</code></a></li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-python/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/python/PythonTokenManager.html#"><code>PythonTokenManager</code></a></li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vf/VfTokenManager.html#"><code>VfTokenManager</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-vm/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/VmTokenManager.html#"><code>VmTokenManager</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/VmTokenManager.html#"><code>VmTokenManager</code></a></li>
 </ul>
 
 <p>In the <strong>Java AST</strong> the following attributes are deprecated and will issue a warning when used in XPath rules:</p>
@@ -4208,20 +4235,20 @@ which for rules, means that they never need to instantiate node themselves.
 Those constructors will be made package private with 7.0.0.</li>
   <li><strong>Subclassing of abstract node classes, or usage of their type</strong>. The base classes are internal API
 and will be hidden in version 7.0.0. You should not couple your code to them.</li>
-  <li>In the meantime you should use interfaces like <a href="https://docs.pmd-code.org/apidocs/pmd-vm/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/ast/VmNode.html#"><code>VmNode</code></a> or
+  <li>In the meantime you should use interfaces like <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/ast/VmNode.html#"><code>VmNode</code></a> or
 <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a>, or the other published interfaces in this package,
 to refer to nodes generically.</li>
   <li>Concrete node classes will <strong>be made final</strong> with 7.0.0.</li>
   <li>Setters found in any node class or interface. <strong>Rules should consider the AST immutable</strong>.
 We will make those setters package private with 7.0.0.</li>
-  <li>The package <a href="https://docs.pmd-code.org/apidocs/pmd-vm/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/directive/package-summary.html#"><code>net.sourceforge.pmd.lang.vm.directive</code></a> as well as the classes
-<a href="https://docs.pmd-code.org/apidocs/pmd-vm/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/util/DirectiveMapper.html#"><code>DirectiveMapper</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-vm/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/util/LogUtil.html#"><code>LogUtil</code></a> are deprecated
+  <li>The package <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/directive/package-summary.html#"><code>net.sourceforge.pmd.lang.vm.directive</code></a> as well as the classes
+<a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/util/DirectiveMapper.html#"><code>DirectiveMapper</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/util/LogUtil.html#"><code>LogUtil</code></a> are deprecated
 for removal. They were only used internally during parsing.</li>
-  <li>The class <a href="https://docs.pmd-code.org/apidocs/pmd-vm/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/VmParser.html#"><code>VmParser</code></a> is deprecated and should not be used directly.
+  <li>The class <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/VmParser.html#"><code>VmParser</code></a> is deprecated and should not be used directly.
 Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getParser(ParserOptions)"><code>LanguageVersionHandler#getParser</code></a> instead.</li>
 </ul>
 
-<p>Please look at <a href="https://docs.pmd-code.org/apidocs/pmd-vm/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.vm.ast</code></a> to find out the full list of deprecations.</p>
+<p>Please look at <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.vm.ast</code></a> to find out the full list of deprecations.</p>
 
 <p><strong>PLSQL AST</strong></p>
 
@@ -4487,7 +4514,7 @@ will be removed with PMD 7. The rule designer is a better way to inspect nodes.<
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.jsp.ast.DumpFacade</code></a></li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.plsql.ast.DumpFacade</code></a></li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vf/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.vf.ast.DumpFacade</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-vm/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/ast/AbstractVmNode.html#dump(String,boolean,Writer)"><code>net.sourceforge.pmd.lang.vm.ast.AbstractVmNode#dump</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/ast/AbstractVmNode.html#dump(String,boolean,Writer)"><code>net.sourceforge.pmd.lang.vm.ast.AbstractVmNode#dump</code></a></li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.xml.ast.DumpFacade</code></a></li>
   <li>The method <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getDumpFacade(Writer,String,boolean)"><code>LanguageVersionHandler#getDumpFacade</code></a> will be
 removed as well. It is deprecated, along with all its implementations in the subclasses of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/LanguageVersionHandler.html#"><code>LanguageVersionHandler</code></a>.</li>
@@ -4923,7 +4950,7 @@ Please use <code class="language-plaintext highlighter-rouge">net.sourceforge.pm
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Mar 3, 2024 <br />
+             Site last generated: Mar 4, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

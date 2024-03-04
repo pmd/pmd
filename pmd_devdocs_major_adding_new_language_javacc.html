@@ -882,13 +882,13 @@
                         
                         
                         
-                        <li><a href="pmd_rules_vf.html">Index</a></li>
+                        <li><a href="pmd_rules_visualforce.html">Index</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vf_security.html">Security</a></li>
+                        <li><a href="pmd_rules_visualforce_security.html">Security</a></li>
                         
                         
                         
@@ -975,25 +975,25 @@
                         
                         
                         
-                        <li><a href="pmd_rules_vm.html">Index</a></li>
+                        <li><a href="pmd_rules_velocity.html">Index</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vm_bestpractices.html">Best Practices</a></li>
+                        <li><a href="pmd_rules_velocity_bestpractices.html">Best Practices</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vm_design.html">Design</a></li>
+                        <li><a href="pmd_rules_velocity_design.html">Design</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vm_errorprone.html">Error Prone</a></li>
+                        <li><a href="pmd_rules_velocity_errorprone.html">Error Prone</a></li>
                         
                         
                         
@@ -1471,7 +1471,7 @@
             
 
                 
-                <li><a href="pmd_languages_vm.html">Velocity Template Language (VTL)</a></li>
+                <li><a href="pmd_languages_velocity.html">Velocity Template Language (VTL)</a></li>
                 
 
             
@@ -2009,7 +2009,7 @@ against a previously recorded version. If there are differences, the test fails.
 
 <ul>
   <li>Create a test class in the package <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.$lang.ast</code> with the name <code class="language-plaintext highlighter-rouge">$langTreeDumpTest</code>.</li>
-  <li>This test class must extend <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest</code>. Note: This class
+  <li>This test class must extend <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.test.ast.BaseTreeDumpTest</code>. Note: This class
 is written in kotlin and is available in the module “lang-test”.</li>
   <li>
     <p>Add a default constructor, that calls the super constructor like so:</p>
@@ -2022,7 +2022,7 @@ is written in kotlin and is available in the module “lang-test”.</li>
     <p>Replace “$lang” and “$extension” accordingly.</p>
   </li>
   <li>Implement the method <code class="language-plaintext highlighter-rouge">getParser()</code>. It must return a
-subclass of <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.ast.test.BaseParsingHelper</code>. See 
+subclass of <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.test.ast.BaseParsingHelper</code>. See 
 <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.ecmascript.ast.JsParsingHelper</code> for an example.
 With this parser helper you can also specify, where the test files are searched, by using
 the method <code class="language-plaintext highlighter-rouge">withResourceContext(Class&lt;?&gt;, String)</code>.</li>
@@ -2165,7 +2165,7 @@ This can be achieved with Rule Designer:</p>
       <li>Fork and clone the <a href="https://github.com/pmd/pmd-designer">pmd/pmd-designer</a> repository.</li>
       <li>Add a syntax highlighter implementation to <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting</code> (you could use Java as an example).</li>
       <li>Register it in the <code class="language-plaintext highlighter-rouge">AvailableSyntaxHighlighters</code> enumeration.</li>
-      <li>Now build your implementation and place the <code class="language-plaintext highlighter-rouge">target/pmd-ui-&lt;version&gt;-SNAPSHOT.jar</code> to the <code class="language-plaintext highlighter-rouge">lib</code> directory inside your <code class="language-plaintext highlighter-rouge">pmd-bin-...</code> distribution (you have to delete old <code class="language-plaintext highlighter-rouge">pmd-ui-*.jar</code> from there).</li>
+      <li>Now build your implementation and place the <code class="language-plaintext highlighter-rouge">target/pmd-designer-&lt;version&gt;-SNAPSHOT.jar</code> to the <code class="language-plaintext highlighter-rouge">lib</code> directory inside your <code class="language-plaintext highlighter-rouge">pmd-bin-...</code> distribution (you have to delete old <code class="language-plaintext highlighter-rouge">pmd-designer-*.jar</code> from there).</li>
     </ul>
   </li>
 </ul>
@@ -2273,7 +2273,7 @@ see <a href="pmd_languages_java.html">Java-specific features and guidance</a>.</
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            December 2023 (7.0.0)<br /> Site last generated: Mar 3, 2024 <br />
+            December 2023 (7.0.0)<br /> Site last generated: Mar 4, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

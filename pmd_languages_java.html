@@ -882,13 +882,13 @@
                         
                         
                         
-                        <li><a href="pmd_rules_vf.html">Index</a></li>
+                        <li><a href="pmd_rules_visualforce.html">Index</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vf_security.html">Security</a></li>
+                        <li><a href="pmd_rules_visualforce_security.html">Security</a></li>
                         
                         
                         
@@ -975,25 +975,25 @@
                         
                         
                         
-                        <li><a href="pmd_rules_vm.html">Index</a></li>
+                        <li><a href="pmd_rules_velocity.html">Index</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vm_bestpractices.html">Best Practices</a></li>
+                        <li><a href="pmd_rules_velocity_bestpractices.html">Best Practices</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vm_design.html">Design</a></li>
+                        <li><a href="pmd_rules_velocity_design.html">Design</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vm_errorprone.html">Error Prone</a></li>
+                        <li><a href="pmd_rules_velocity_errorprone.html">Error Prone</a></li>
                         
                         
                         
@@ -1471,7 +1471,7 @@
             
 
                 
-                <li><a href="pmd_languages_vm.html">Velocity Template Language (VTL)</a></li>
+                <li><a href="pmd_languages_velocity.html">Velocity Template Language (VTL)</a></li>
                 
 
             
@@ -1900,19 +1900,24 @@
   </thead>
   <tbody>
     <tr>
+      <td>22-preview</td>
+      <td> </td>
+      <td>7.0.0</td>
+    </tr>
+    <tr>
+      <td>22 (default)</td>
+      <td> </td>
+      <td>7.0.0</td>
+    </tr>
+    <tr>
       <td>21-preview</td>
       <td> </td>
       <td>7.0.0</td>
     </tr>
     <tr>
-      <td>21 (default)</td>
+      <td>21</td>
       <td> </td>
       <td>7.0.0</td>
-    </tr>
-    <tr>
-      <td>20-preview</td>
-      <td> </td>
-      <td>6.55.0</td>
     </tr>
     <tr>
       <td>20</td>
@@ -2010,10 +2015,10 @@
 <h2 id="using-java-preview-features">Using Java preview features</h2>
 
 <p>In order to analyze a project with PMD that uses preview language features, you’ll need to enable
-it via the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language version, e.g. <code class="language-plaintext highlighter-rouge">21-preview</code>:</p>
+it via the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language version, e.g. <code class="language-plaintext highlighter-rouge">22-preview</code>:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS=--enable-preview
-pmd check --use-version java-21-preview ...
+pmd check --use-version java-22-preview ...
 </code></pre></div></div>
 
 <p>Note: we only support preview language features for the latest two java versions.</p>
@@ -2195,7 +2200,7 @@ AST pass that adds dataflow information. The implementation can be found in
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            December 2023 (7.0.0)<br /> Site last generated: Mar 3, 2024 <br />
+            December 2023 (7.0.0)<br /> Site last generated: Mar 4, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

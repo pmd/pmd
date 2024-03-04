@@ -882,13 +882,13 @@
                         
                         
                         
-                        <li><a href="pmd_rules_vf.html">Index</a></li>
+                        <li><a href="pmd_rules_visualforce.html">Index</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vf_security.html">Security</a></li>
+                        <li><a href="pmd_rules_visualforce_security.html">Security</a></li>
                         
                         
                         
@@ -975,25 +975,25 @@
                         
                         
                         
-                        <li><a href="pmd_rules_vm.html">Index</a></li>
+                        <li><a href="pmd_rules_velocity.html">Index</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vm_bestpractices.html">Best Practices</a></li>
+                        <li><a href="pmd_rules_velocity_bestpractices.html">Best Practices</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vm_design.html">Design</a></li>
+                        <li><a href="pmd_rules_velocity_design.html">Design</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vm_errorprone.html">Error Prone</a></li>
+                        <li><a href="pmd_rules_velocity_errorprone.html">Error Prone</a></li>
                         
                         
                         
@@ -1471,7 +1471,7 @@
             
 
                 
-                <li><a href="pmd_languages_vm.html">Velocity Template Language (VTL)</a></li>
+                <li><a href="pmd_languages_velocity.html">Velocity Template Language (VTL)</a></li>
                 
 
             
@@ -1934,6 +1934,33 @@ in the <a href="pmd_userdocs_migrating_to_pmd7.html">Migration Guide for PMD 7</
 See the use case <a href="pmd_userdocs_migrating_to_pmd7.html#im-using-custom-rules">I’m using custom rules</a>
 in the Migration Guide.</p>
 
+<h5 id="java-22-support">Java 22 Support</h5>
+
+<p>This release of PMD brings support for Java 22. There are the following new standard language features,
+that are supported now:</p>
+
+<ul>
+  <li><a href="https://openjdk.org/jeps/456">JEP 456: Unnamed Variables &amp; Patterns</a></li>
+</ul>
+
+<p>PMD also supports the following preview language features:</p>
+
+<ul>
+  <li><a href="https://openjdk.org/jeps/447">JEP 447: Statements before super(…) (Preview)</a></li>
+  <li><a href="https://openjdk.org/jeps/459">JEP 459: String Templates (Second Preview)</a></li>
+  <li><a href="https://openjdk.org/jeps/463">JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)</a></li>
+</ul>
+
+<p>In order to analyze a project with PMD that uses these language features,
+you’ll need to enable it via the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language
+version <code class="language-plaintext highlighter-rouge">22-preview</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS=--enable-preview
+pmd check --use-version java-22-preview ...
+</code></pre></div></div>
+
+<p>Note: Support for Java 20 preview language features have been removed. The version “20-preview” is no longer available.</p>
+
 <h5 id="swift-support">Swift Support</h5>
 
 <ul>
@@ -1986,6 +2013,19 @@ These are documented in the <a href="pmd_userdocs_migrating_to_pmd7.html#apex-as
 <p>Contributors: <a href="https://github.com/aaronhurst-google">Aaron Hurst</a> (@aaronhurst-google),
   <a href="https://github.com/eklimo">Edward Klimoshenko</a> (@eklimo)</p>
 
+<h5 id="changed-visualforce">Changed: Visualforce</h5>
+
+<p>There was an inconsistency between the naming of the maven module and the language id. The language id
+used the abbreviation “vf”, while the maven module used the longer name “visualforce”. This has been
+solved by renaming the language module to its full name “visualforce”. The java packages have
+been renamed as well.</p>
+
+<p>If you import rules, you also need to adjust the paths, e.g.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">category/vf/security.xml</code> ➡️ <code class="language-plaintext highlighter-rouge">category/visualforce/security.xml</code></li>
+</ul>
+
 <h5 id="changed-html-support">Changed: HTML support</h5>
 
 <p>Support for HTML was introduced in PMD 6.55.0 as an experimental feature. With PMD 7.0.0 this
@@ -1994,6 +2034,17 @@ is now considered stable.</p>
 <h5 id="changed-kotlin-support">Changed: Kotlin support</h5>
 
 <p>Experimental Kotlin support has been promoted as stable API now.</p>
+
+<h5 id="changed-velocity-template-language-vtl">Changed: Velocity Template Language (VTL)</h5>
+
+<p>The module was named just “vm” which was not a good name. It module and language id and
+package names have been renamed to “velocity”.</p>
+
+<p>If you import rules, you also need to ajdust the paths, e.g.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">category/vm/...</code> ➡️ <code class="language-plaintext highlighter-rouge">category/velocity/...</code></li>
+</ul>
 
 <h4 id="rule-changes">Rule Changes</h4>
 
@@ -2018,6 +2069,15 @@ back then. Use the property <code class="language-plaintext highlighter-rouge">t
 Use the property <code class="language-plaintext highlighter-rouge">classCommentRequirement</code> instead.</li>
   <li><a href="pmd_rules_java_errorprone.html#nonserializableclass"><code class="language-plaintext highlighter-rouge">NonSerializableClass</code></a>: The deprecated property <code class="language-plaintext highlighter-rouge">prefix</code> has been removed
 without replacement. In a serializable class all fields have to be serializable regardless of the name.</li>
+</ul>
+
+<p><strong>Renamed Rulesets</strong></p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">category/vf/security.xml</code> ➡️ <code class="language-plaintext highlighter-rouge">category/visualforce/security.xml</code></li>
+  <li><code class="language-plaintext highlighter-rouge">category/vm/bestpractices.xml</code> ➡️ <code class="language-plaintext highlighter-rouge">category/velocity/bestpractices.xml</code></li>
+  <li><code class="language-plaintext highlighter-rouge">category/vm/design.xml</code> ➡️ <code class="language-plaintext highlighter-rouge">category/velocity/design.xml</code></li>
+  <li><code class="language-plaintext highlighter-rouge">category/vm/errorprone.xml</code> ➡️ <code class="language-plaintext highlighter-rouge">category/velocity/errorprone.xml</code></li>
 </ul>
 
 <p><strong>Removed Rules</strong></p>
@@ -2176,7 +2236,9 @@ The rules have been moved into categories with PMD 6.</p>
       <li><a href="https://github.com/pmd/pmd/pull/4749">#4749</a>:   Fixes NoSuchMethodError on processing errors in pmd-compat6</li>
       <li><a href="https://github.com/pmd/pmd/issues/4776">#4776</a>: [ci] Upgrade to ruby 3</li>
       <li><a href="https://github.com/pmd/pmd/pull/4796">#4796</a>:   Remove deprecated and release rulesets</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4823">#4823</a>:   Update to use renamed pmd-designer</li>
       <li><a href="https://github.com/pmd/pmd/pull/4827">#4827</a>:   [compat6] Support config errors and cpd for csharp</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4830">#4830</a>: Consolidate packages in each maven module</li>
     </ul>
   </li>
   <li>apex
@@ -2205,6 +2267,7 @@ The rules have been moved into categories with PMD 6.</p>
       <li><a href="https://github.com/pmd/pmd/issues/3751">#3751</a>: [java] Rename some node types</li>
       <li><a href="https://github.com/pmd/pmd/pull/4628">#4628</a>:   [java] Support loading classes from java runtime images</li>
       <li><a href="https://github.com/pmd/pmd/issues/4753">#4753</a>: [java] PMD crashes while using generics and wildcards</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4794">#4794</a>: [java] Support JDK 22</li>
     </ul>
   </li>
   <li>java-bestpractices
@@ -2261,6 +2324,22 @@ The rules have been moved into categories with PMD 6.</p>
 
 <h4 id="api-changes">API Changes</h4>
 
+<p><strong>pmd-java</strong></p>
+
+<ul>
+  <li>Support for Java 20 preview language features have been removed. The version “20-preview” is no longer available.</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPattern.html#"><code>ASTPattern</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTRecordPattern.html#"><code>ASTRecordPattern</code></a>,
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypePattern.html#"><code>ASTTypePattern</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTUnnamedPattern.html#"><code>ASTUnnamedPattern</code></a>
+    <ul>
+      <li>method <code class="language-plaintext highlighter-rouge">getParenthesisDepth()</code> has been removed.</li>
+    </ul>
+  </li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTemplateFragment.html#"><code>ASTTemplateFragment</code></a>: To get the content of the template, use now
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTemplateFragment.html#getContent()"><code>getContent</code></a> or <code class="language-plaintext highlighter-rouge">@Content</code> instead of <code class="language-plaintext highlighter-rouge">getImage()</code>/<code class="language-plaintext highlighter-rouge">@Image</code>.</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTUnnamedPattern.html#"><code>ASTUnnamedPattern</code></a> is not experimental anymore. The language feature
+has been standardized with Java 22.</li>
+</ul>
+
 <p><strong>New API</strong></p>
 
 <p>The API around <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/util/treeexport/TreeRenderer.html#"><code>TreeRenderer</code></a> has been declared as stable. It was previously
@@ -2304,6 +2383,66 @@ is XPath 3.1.</li>
         </ul>
       </li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/xpath/XPathRule.html#"><code>XPathRule</code></a> has been moved into subpackage <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/xpath/package-summary.html#"><code>net.sourceforge.pmd.lang.rule.xpath</code></a>.</li>
+    </ul>
+  </li>
+  <li>pmd-html
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.html.ast.HtmlCpdLexer</code> moved into package <code class="language-plaintext highlighter-rouge">cpd</code>: <a href="https://docs.pmd-code.org/apidocs/pmd-html/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/html/cpd/HtmlCpdLexer.html#"><code>HtmlCpdLexer</code></a>.</li>
+    </ul>
+  </li>
+  <li>pmd-lang-test: All types have been moved under the new base package <a href="https://docs.pmd-code.org/apidocs/pmd-lang-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/test/package-summary.html#"><code>net.sourceforge.pmd.lang.test</code></a>:
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-lang-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/test/AbstractMetricTestRule.html#"><code>AbstractMetricTestRule</code></a> (moved from <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.test.AbstractMetricTestRule</code>)</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-lang-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/test/BaseTextComparisonTest.html#"><code>BaseTextComparisonTest</code></a> (moved from <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.test.BaseTextComparisonTest</code>)</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-lang-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/test/cpd/CpdTextComparisonTest.html#"><code>CpdTextComparisonTest</code></a> (moved from <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.test.CpdTextComparisonTest</code>)</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-lang-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/test/ast/BaseTreeDumpTest.html#"><code>BaseTreeDumpTest</code></a> (moved from <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest</code>)</li>
+      <li>Any many other types have been moved from <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.ast.test</code> to <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.test</code>.</li>
+    </ul>
+  </li>
+  <li>pmd-scala
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/cpd/ScalaCpdLexer.html#"><code>ScalaCpdLexer</code></a> (moved from <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.scala.cpd.ScalaCpdLexer</code>)</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/cpd/ScalaTokenAdapter.html#"><code>ScalaTokenAdapter</code></a> (moved from <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.scala.cpd.ScalaTokenAdapter</code>)</li>
+    </ul>
+  </li>
+  <li>pmd-test
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/test/lang/rule/AbstractRuleSetFactoryTest.html#"><code>AbstractRuleSetFactoryTest</code></a> (moved from <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.rule.AbstractRuleSetFactoryTest</code>)</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/test/AbstractAntTestHelper.html#"><code>AbstractAntTestHelper</code></a> (moved from <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.ant.AbstractAntTestHelper</code>)</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/test/AbstractLanguageVersionTest.html#"><code>AbstractLanguageVersionTest</code></a> (moved from <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.AbstractLanguageVersionTest</code>)</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/test/PmdRuleTst.html#"><code>PmdRuleTst</code></a> (moved from <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.testframework.PmdRuleTst</code>)</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/test/RuleTst.html#"><code>RuleTst</code></a> (moved from <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.testframework.RuleTst</code>)</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/test/SimpleAggregatorTst.html#"><code>SimpleAggregatorTst</code></a> (moved from <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.testframework.SimpleAggregatorTst</code>)</li>
+    </ul>
+  </li>
+  <li>pmd-xml
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/pom/PomLanguageModule.html#"><code>PomLanguageModule</code></a> (moved from <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.pom.PomLanguageModule</code>)</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/wsdl/WsdlLanguageModule.html#"><code>WsdlLanguageModule</code></a> (moved from <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.wsdl.WsdlLanguageModule</code>)</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/xsl/XslLanguageModule.html#"><code>XslLanguageModule</code></a> (moved from <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.xsl.XslLanguageModule</code>)</li>
+    </ul>
+  </li>
+  <li>pmd-visualforce
+    <ul>
+      <li>The package <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.vf</code> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/visualforce/package-summary.html#"><code>net.sourceforge.pmd.lang.visualforce</code></a>.</li>
+      <li>The language id of visualforce has been changed to <code class="language-plaintext highlighter-rouge">visualforce</code> (it was previously just “vf”)</li>
+      <li>The ruleset changed: <code class="language-plaintext highlighter-rouge">category/vf/security.xml</code> ➡️ <code class="language-plaintext highlighter-rouge">category/visualforce/security.xml</code></li>
+    </ul>
+  </li>
+  <li>pmd-velocity (renamed from pmd-vm)
+    <ul>
+      <li>The package <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.vm</code> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/velocity/package-summary.html#"><code>net.sourceforge.pmd.lang.velocity</code></a>.</li>
+      <li>The language id of the Velocity module has been changed to <code class="language-plaintext highlighter-rouge">velocity</code> (it was previously just “vm”)</li>
+      <li>The rulesets changed: <code class="language-plaintext highlighter-rouge">category/vm/...</code> ➡️ <code class="language-plaintext highlighter-rouge">category/velocity/...</code></li>
+      <li>Many classes used the prefix <code class="language-plaintext highlighter-rouge">Vm</code>, e.g. <code class="language-plaintext highlighter-rouge">VmLanguageModule</code>. This has been changed to be <code class="language-plaintext highlighter-rouge">Vtl</code>:
+        <ul>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/velocity/VtlLanguageModule.html#"><code>VtlLanguageModule</code></a></li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/velocity/ast/VtlNode.html#"><code>VtlNode</code></a></li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/velocity/ast/VtlParser.html#"><code>VtlParser</code></a></li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/velocity/cpd/VtlCpdLexer.html#"><code>VtlCpdLexer</code></a></li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/velocity/rule/AbstractVtlRule.html#"><code>AbstractVtlRule</code></a></li>
+        </ul>
+      </li>
     </ul>
   </li>
 </ul>
@@ -2409,6 +2548,13 @@ It is only used by JavaCC-generated token managers.</li>
       </li>
       <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.PropertyTypeId</code> - moved in subpackage <code class="language-plaintext highlighter-rouge">internal</code>.</li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyDescriptor.html#"><code>net.sourceforge.pmd.properties.PropertyDescriptor</code></a> - method <code class="language-plaintext highlighter-rouge">getTypeId()</code> is now package private.</li>
+    </ul>
+  </li>
+  <li>pmd-doc
+    <ul>
+      <li>The whole maven module <code class="language-plaintext highlighter-rouge">pmd-doc</code> is now considered internal API even though it was not declared so before.
+It’s used to generate the rule documentation for the built-in rules.</li>
+      <li>All the classes have been moved into package <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.doc.internal</code>.</li>
     </ul>
   </li>
   <li>pmd-ant
@@ -2810,6 +2956,7 @@ Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourc
   </li>
   <li>pmd-scala
     <ul>
+      <li>The maven module <code class="language-plaintext highlighter-rouge">pmd-scala</code> has been removed. Use <code class="language-plaintext highlighter-rouge">pmd-scala_2.13</code> or <code class="language-plaintext highlighter-rouge">pmd-scala_2.12</code> instead.</li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ScalaNode.html#"><code>net.sourceforge.pmd.lang.scala.ast.ScalaNode</code></a>
         <ul>
           <li>Method <code class="language-plaintext highlighter-rouge">accept()</code> has been removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#acceptVisitor(net.sourceforge.pmd.lang.ast.AstVisitor,P)"><code>acceptVisitor</code></a> instead.</li>
@@ -2833,10 +2980,10 @@ Use <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0-SNAPSHOT/ne
   </li>
   <li>pmd-vm
     <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-vm/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/ast/VmNode.html#"><code>net.sourceforge.pmd.lang.vm.ast.VmNode</code></a> - method <code class="language-plaintext highlighter-rouge">jjtAccept()</code> has been removed.
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/ast/VmNode.html#"><code>net.sourceforge.pmd.lang.vm.ast.VmNode</code></a> - method <code class="language-plaintext highlighter-rouge">jjtAccept()</code> has been removed.
 Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#acceptVisitor(net.sourceforge.pmd.lang.ast.AstVisitor,P)"><code>acceptVisitor</code></a> instead.</li>
       <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.vm.ast.VmParserVisitor</code>
-Use <a href="https://docs.pmd-code.org/apidocs/pmd-vm/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/ast/VmVisitor.html#"><code>VmVisitor</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-vm/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/ast/VmVisitorBase.html#"><code>VmVisitorBase</code></a> instead.</li>
+Use <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/ast/VmVisitor.html#"><code>VmVisitor</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/ast/VmVisitorBase.html#"><code>VmVisitorBase</code></a> instead.</li>
       <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.vm.ast.VmParserVisitorAdapter</code></li>
     </ul>
   </li>
@@ -3336,7 +3483,7 @@ and Velocity Template Language (vm):
 <a href="pmd_rules_plsql_design.html#excessiveparameterlist"><code class="language-plaintext highlighter-rouge">ExcessiveParameterList</code></a>, <a href="pmd_rules_plsql_design.html#excessivetypelength"><code class="language-plaintext highlighter-rouge">ExcessiveTypeLength</code></a>,
 <a href="pmd_rules_plsql_design.html#ncssmethodcount"><code class="language-plaintext highlighter-rouge">NcssMethodCount</code></a>, <a href="pmd_rules_plsql_design.html#ncssobjectcount"><code class="language-plaintext highlighter-rouge">NcssObjectCount</code></a>,
 <a href="pmd_rules_plsql_design.html#npathcomplexity"><code class="language-plaintext highlighter-rouge">NPathComplexity</code></a></li>
-      <li>VM: <a href="pmd_rules_vm_design.html#excessivetemplatelength"><code class="language-plaintext highlighter-rouge">ExcessiveTemplateLength</code></a></li>
+      <li>Velocity: <a href="pmd_rules_velocity_design.html#excessivetemplatelength"><code class="language-plaintext highlighter-rouge">ExcessiveTemplateLength</code></a></li>
     </ul>
   </li>
   <li>The general property <code class="language-plaintext highlighter-rouge">violationSuppressXPath</code> which is available for all rules to
@@ -3523,7 +3670,9 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/pull/4749">#4749</a>:   Fixes NoSuchMethodError on processing errors in pmd-compat6</li>
       <li><a href="https://github.com/pmd/pmd/issues/4776">#4776</a>: [ci] Upgrade to ruby 3</li>
       <li><a href="https://github.com/pmd/pmd/pull/4796">#4796</a>:   Remove deprecated and release rulesets</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4823">#4823</a>:   Update to use renamed pmd-designer</li>
       <li><a href="https://github.com/pmd/pmd/pull/4827">#4827</a>:   [compat6] Support config errors and cpd for csharp</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4830">#4830</a>: Consolidate packages in each maven module</li>
     </ul>
   </li>
   <li>ant
@@ -3717,6 +3866,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/4583">#4583</a>: [java] Support JDK 21 (LTS)</li>
       <li><a href="https://github.com/pmd/pmd/pull/4628">#4628</a>:   [java] Support loading classes from java runtime images</li>
       <li><a href="https://github.com/pmd/pmd/issues/4753">#4753</a>: [java] PMD crashes while using generics and wildcards</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4794">#4794</a>: [java] Support JDK 22</li>
     </ul>
   </li>
   <li>java-bestpractices
@@ -4022,7 +4172,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Mar 3, 2024 <br />
+             Site last generated: Mar 4, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

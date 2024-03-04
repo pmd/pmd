@@ -882,13 +882,13 @@
                         
                         
                         
-                        <li><a href="pmd_rules_vf.html">Index</a></li>
+                        <li><a href="pmd_rules_visualforce.html">Index</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vf_security.html">Security</a></li>
+                        <li><a href="pmd_rules_visualforce_security.html">Security</a></li>
                         
                         
                         
@@ -975,25 +975,25 @@
                         
                         
                         
-                        <li><a href="pmd_rules_vm.html">Index</a></li>
+                        <li><a href="pmd_rules_velocity.html">Index</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vm_bestpractices.html">Best Practices</a></li>
+                        <li><a href="pmd_rules_velocity_bestpractices.html">Best Practices</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vm_design.html">Design</a></li>
+                        <li><a href="pmd_rules_velocity_design.html">Design</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_rules_vm_errorprone.html">Error Prone</a></li>
+                        <li><a href="pmd_rules_velocity_errorprone.html">Error Prone</a></li>
                         
                         
                         
@@ -1471,7 +1471,7 @@
             
 
                 
-                <li><a href="pmd_languages_vm.html">Velocity Template Language (VTL)</a></li>
+                <li><a href="pmd_languages_velocity.html">Velocity Template Language (VTL)</a></li>
                 
 
             
@@ -1891,7 +1891,7 @@ Each category-ruleset has a single abstract base test class, from which the indi
 We have one test class per rule, which executes all test cases for a single rule. The actual test cases are
 stored in separate XML files, for each rule a separate file is used.</p>
 
-<p>All the test classes inherit from <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/testframework/PmdRuleTst.html#"><code>PmdRuleTst</code></a>,
+<p>All the test classes inherit from <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/test/PmdRuleTst.html#"><code>PmdRuleTst</code></a>,
 which provides the seamless integration with JUnit5. This base class determines the language, the category name
 and the rule name from the concrete test class. It then searches the test code on its own.
 E.g. the individual rule test class
@@ -1907,7 +1907,7 @@ test case and just execute this one.</p>
 
 <h2 id="where-to-place-the-test-code">Where to place the test code</h2>
 
-<p>The <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/testframework/PmdRuleTst.html#"><code>PmdRuleTst</code></a> class searches the XML file, that describes the test cases
+<p>The <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/test/PmdRuleTst.html#"><code>PmdRuleTst</code></a> class searches the XML file, that describes the test cases
 for a certain rule using the following convention:</p>
 
 <p>The XML file is a test resource, so it is searched in the tree under <code class="language-plaintext highlighter-rouge">src/test/resources</code>.</p>
@@ -1945,12 +1945,12 @@ see <a href="#using-the-test-framework-externally">Using the test framework exte
 
 <h3 id="test-class-abstractclasswithoutabstractmethodtest">Test Class: AbstractClassWithoutAbstractMethodTest</h3>
 
-<p>This class inherits from <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/testframework/PmdRuleTst.html#"><code>PmdRuleTst</code></a> and is located in the package “bestpractices”,
+<p>This class inherits from <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/test/PmdRuleTst.html#"><code>PmdRuleTst</code></a> and is located in the package “bestpractices”,
 since the rule belongs to the category “Best Practices”:</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">net.sourceforge.pmd.lang.java.rule.bestpractices</span><span class="o">;</span>
 
-<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.testframework.PmdRuleTst</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.test.PmdRuleTst</span><span class="o">;</span>
 
 <span class="kd">class</span> <span class="nc">AbstractClassWithoutAbstractMethodTest</span> <span class="kd">extends</span> <span class="nc">PmdRuleTst</span> <span class="o">{</span>
     <span class="c1">// no additional unit tests</span>
@@ -2131,7 +2131,7 @@ the rule test manually, as SimpleAggregatorTst will fail to determine it correct
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.example.pmd.rules</span><span class="o">;</span>
 
-<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.testframework.SimpleAggregatorTst</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.test.SimpleAggregatorTst</span><span class="o">;</span>
 
 <span class="kd">class</span> <span class="nc">CustomRuleTest</span> <span class="kd">extends</span> <span class="nc">SimpleAggregatorTst</span> <span class="o">{</span>
     <span class="nd">@Override</span>
@@ -2154,14 +2154,14 @@ of JUnit5 under the hood, among a couple of utility classes:</p>
 
 <ul>
   <li>
-    <p><a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/testframework/PmdRuleTst.html#"><code>PmdRuleTst</code></a>: This is the base class for tests in PMD’s code base. It is a subclass of
-<a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/testframework/RuleTst.html#"><code>RuleTst</code></a> and just
+    <p><a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/test/PmdRuleTst.html#"><code>PmdRuleTst</code></a>: This is the base class for tests in PMD’s code base. It is a subclass of
+<a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/test/RuleTst.html#"><code>RuleTst</code></a> and just
 contains the logic to determine the test resources based on the test class name.</p>
   </li>
   <li>
-    <p><a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/testframework/SimpleAggregatorTst.html#"><code>SimpleAggregatorTst</code></a>: This is a more generic base class for the test classes.
+    <p><a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/test/SimpleAggregatorTst.html#"><code>SimpleAggregatorTst</code></a>: This is a more generic base class for the test classes.
 It doesn’t register any test cases on its own. You can register your own rule tests.
-It itself is a subclass of <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/testframework/RuleTst.html#"><code>RuleTst</code></a>.</p>
+It itself is a subclass of <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/test/RuleTst.html#"><code>RuleTst</code></a>.</p>
   </li>
   <li>
     <p>The maven module “pmd-test-schema” contains the logic to parse the XML files and provides a
@@ -2169,7 +2169,7 @@ It itself is a subclass of <a href="https://docs.pmd-code.org/apidocs/pmd-test/7
 <a href="https://docs.pmd-code.org/apidocs/pmd-test-schema/7.0.0-SNAPSHOT/net/sourceforge/pmd/test/schema/RuleTestDescriptor.html#"><code>RuleTestDescriptor</code></a>s. Each rule test descriptor describes a single test case.</p>
   </li>
   <li>
-    <p><a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/testframework/RuleTst.html#"><code>RuleTst</code></a>: uses the <a href="https://docs.pmd-code.org/apidocs/pmd-test-schema/7.0.0-SNAPSHOT/net/sourceforge/pmd/test/schema/TestSchemaParser.html#"><code>TestSchemaParser</code></a>
+    <p><a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/test/RuleTst.html#"><code>RuleTst</code></a>: uses the <a href="https://docs.pmd-code.org/apidocs/pmd-test-schema/7.0.0-SNAPSHOT/net/sourceforge/pmd/test/schema/TestSchemaParser.html#"><code>TestSchemaParser</code></a>
 from module “pmd-test-schema” to parse the test cases, executes each
 rule test descriptor and asserts the results. It defines a test method <code class="language-plaintext highlighter-rouge">ruleTests()</code> which is a test factory
 and returns one dynamic test per rule test.</p>
@@ -2222,7 +2222,7 @@ create custom PMD rules for different languages including tests.</p>
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            December 2023 (7.0.0)<br /> Site last generated: Mar 3, 2024 <br />
+            December 2023 (7.0.0)<br /> Site last generated: Mar 4, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
