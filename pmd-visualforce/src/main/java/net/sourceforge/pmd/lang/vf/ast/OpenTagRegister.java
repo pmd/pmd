@@ -9,8 +9,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * Utility class to keep track of unclosed tags. The mechanism is rather simple.
  * If a end tag (&lt;/x&gt;) is encountered, it will iterate through the open
@@ -21,7 +19,6 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @author Victor Bucutea
  *
  */
-@InternalApi
 class OpenTagRegister {
 
     private List<ASTElement> tagList = new ArrayList<>();

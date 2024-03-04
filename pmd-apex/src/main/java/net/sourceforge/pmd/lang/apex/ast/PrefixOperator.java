@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.data.ast.PrefixOp;
+import com.google.summit.ast.expression.UnaryExpression;
 
 /**
  * Apex prefix operator
@@ -29,21 +29,22 @@ public enum PrefixOperator {
     }
 
     /**
-     * Returns a {@link PrefixOperator} corresponding to the given {@link PrefixOp}.
+     * Returns a {@link PrefixOperator} corresponding to the given {@link
+     * UnaryExpression.Operator}.
      */
-    public static PrefixOperator valueOf(PrefixOp op) {
+    public static PrefixOperator valueOf(UnaryExpression.Operator op) {
         switch (op) {
-        case POSITIVE:
+        case PLUS:
             return POSITIVE;
-        case NEGATIVE:
+        case NEGATION:
             return NEGATIVE;
-        case NOT:
+        case LOGICAL_COMPLEMENT:
             return LOGICAL_NOT;
-        case BITWISE_COMPLEMENT:
+        case BITWISE_NOT:
             return BITWISE_NOT;
-        case INC:
+        case PRE_INCREMENT:
             return INCREMENT;
-        case DEC:
+        case PRE_DECREMENT:
             return DECREMENT;
         default:
             throw new IllegalArgumentException("Invalid prefix operator " + op);

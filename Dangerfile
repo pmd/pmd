@@ -6,7 +6,7 @@ require 'etc'
 
 @logger = Logger.new(STDOUT)
 
-def get_args(base_branch, autogen = TRUE, patch_config = './pmd/.ci/files/all-regression-rules.xml')
+def get_args(base_branch, autogen = true, patch_config = './pmd/.ci/files/all-regression-rules.xml')
   ['--local-git-repo', './pmd',
    '--list-of-project', './pmd/.ci/files/project-list.xml',
    '--base-branch', base_branch,

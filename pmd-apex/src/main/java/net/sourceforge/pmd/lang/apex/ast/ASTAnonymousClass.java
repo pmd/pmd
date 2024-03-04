@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.compilation.AnonymousClass;
+import com.google.summit.ast.declaration.TypeDeclaration;
 
-public final class ASTAnonymousClass extends AbstractApexNode<AnonymousClass> {
+public final class ASTAnonymousClass extends AbstractApexNode.Single<TypeDeclaration> {
 
-    ASTAnonymousClass(AnonymousClass anonymousClass) {
+    ASTAnonymousClass(TypeDeclaration anonymousClass) {
         super(anonymousClass);
     }
 

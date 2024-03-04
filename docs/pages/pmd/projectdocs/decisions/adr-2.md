@@ -66,6 +66,6 @@ Maintaining a polyglot code base with multiple languages is likely to be more ch
 
 ## Change History
 
-2022-09-30: Changed status to "Accepted".
+2022-09-30: Changed status to "Accepted". ([#4072](https://github.com/pmd/pmd/pull/4072))
 
 2022-07-28: Proposed initial version.

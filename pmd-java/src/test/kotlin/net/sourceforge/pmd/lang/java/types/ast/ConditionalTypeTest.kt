@@ -9,6 +9,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
 import net.sourceforge.pmd.lang.java.types.*
+import net.sourceforge.pmd.lang.java.types.ast.internal.PolyResolution
 
 /**
  * @author Clément Fournier

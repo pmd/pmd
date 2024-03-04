@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.VariableExpression;
+import com.google.summit.ast.Identifier;
 
-public final class ASTVariableExpression extends AbstractApexNode<VariableExpression> {
+public final class ASTVariableExpression extends AbstractApexNode.Single<Identifier> {
 
-    ASTVariableExpression(VariableExpression variableExpression) {
-        super(variableExpression);
+    ASTVariableExpression(Identifier identifier) {
+        super(identifier);
     }
 
 
@@ -20,9 +20,6 @@ public final class ASTVariableExpression extends AbstractApexNode<VariableExpres
 
     @Override
     public String getImage() {
-        if (node.getIdentifier() != null) {
-            return node.getIdentifier().getValue();
-        }
-        return null;
+        return node.getString();
     }
 }

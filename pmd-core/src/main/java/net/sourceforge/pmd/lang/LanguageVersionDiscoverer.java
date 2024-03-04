@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
@@ -120,21 +119,6 @@ public class LanguageVersionDiscoverer {
 
     public void setForcedVersion(LanguageVersion forceLanguageVersion) {
         this.forcedVersion = forceLanguageVersion;
-    }
-
-    /**
-     * Get the Languages of a given source file.
-     *
-     * @param sourceFile
-     *            The file.
-     * @return The Languages for the source file, may be empty.
-     *
-     * @deprecated PMD 7 avoids using {@link File}.
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    public List<Language> getLanguagesForFile(File sourceFile) {
-        return getLanguagesForFile(sourceFile.getName());
     }
 
     /**

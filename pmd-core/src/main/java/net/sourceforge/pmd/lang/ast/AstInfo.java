@@ -9,7 +9,6 @@ import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
@@ -69,19 +68,16 @@ public final class AstInfo<T extends RootNode> {
      * "suppressMarker", which by default is "PMD". The text after the
      * suppressMarker is used as a "review comment" and included in this map.
      *
-     * <p>
-     * This map is later used to determine, if a violation is being suppressed.
+     * <p>This map is later used to determine, if a violation is being suppressed.
      * It is suppressed, if the line of the violation is contained in this suppress map.
      *
      * @return map of the suppress lines with the corresponding review comments.
      */
-    @Experimental
     public Map<Integer, String> getSuppressionComments() {
         return suppressionComments;
     }
 
 
-    @Experimental
     public AstInfo<T> withSuppressMap(Map<Integer, String> map) {
         return new AstInfo<>(
             textDocument,

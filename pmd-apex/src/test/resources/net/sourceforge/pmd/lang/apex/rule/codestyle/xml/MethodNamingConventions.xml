@@ -65,41 +65,6 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>#1573 method names should not contain underscores, but skip test methods 1</description>
-        <rule-property name="skipTestMethodUnderscores">true</rule-property>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-    @isTest
-    void test_barFoo() {}
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>#1573 method names should not contain underscores, but skip test methods 2</description>
-        <rule-property name="skipTestMethodUnderscores">true</rule-property>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-    testmethod void test_barFoo() {}
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>#1573 method names should not contain underscores, but skip test methods 3</description>
-        <rule-property name="skipTestMethodUnderscores">false</rule-property>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
-    @isTest
-    void test_barFoo() {}
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
         <description>all is well</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -224,5 +189,17 @@ public class Foo {
     public void INSTANCE_METHOD() { }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>static initializer</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    static {
+        String s = 'a';
+    }
+}
+]]></code>
     </test-code>
 </test-data>

@@ -161,6 +161,23 @@ public interface Foo { }
     </test-code>
 
     <test-code>
+        <description>public method in interface should have comment</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Missing ApexDoc comment</message>
+        </expected-messages>
+        <code><![CDATA[
+/**
+ * @description My Interface
+ */
+public interface MyInterface {
+    void func();
+}
+]]></code>
+    </test-code>
+
+    <test-code>
         <description>public method should have comment</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -677,5 +694,57 @@ public class Foo {
     global Object Bar { get; set; }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No comment required for static initializer blocks</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description My Class
+ */
+public class MyClass {
+  static {
+    Test = 1;
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Misplaced formal comment for static initializer blocks</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description My Class
+ */
+public class MyClass {
+  /**
+   * Missing description... but that's no problem. Fields are not considered (yet) by ApexDoc.
+   **/
+  public static Integer Test;
+
+  static {
+    Test = 1;
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[apex] ApexDoc false-positive for the first method of an annotated Apex class #4774</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description       : rest service
+ **/
+@RestResource(urlMapping='/api/v1/get/*')
+global without sharing class TestService {
+    /**
+     * @description Bar
+     */
+    public void bar() { return; }
+}
+]]></code>
     </test-code>
 </test-data>

@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.statement.MethodBlockStatement;
+import com.google.summit.ast.Node;
 
-public final class ASTMethodBlockStatement extends AbstractApexNode<MethodBlockStatement> {
+public final class ASTMethodBlockStatement extends AbstractApexNode.Single<Node> {
 
-    ASTMethodBlockStatement(MethodBlockStatement node) {
+    ASTMethodBlockStatement(Node node) {
         super(node);
     }
 

@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
-import net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver;
+import net.sourceforge.pmd.lang.java.types.ast.internal.LazyTypeResolver;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 
@@ -138,7 +138,7 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements JavaNo
         return lazyTypeResolver;
     }
 
-    @Experimental
+    @Experimental("Unnamed classes is a Java 21 Preview feature")
     @NoAttribute
     public boolean isUnnamedClass() {
         return children(ASTMethodDeclaration.class).nonEmpty();

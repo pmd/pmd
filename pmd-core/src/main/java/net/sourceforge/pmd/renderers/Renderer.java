@@ -7,7 +7,6 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 import java.io.Writer;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -183,7 +182,6 @@ public interface Renderer extends PropertySource {
      *
      * @param reportFilename the filename (optional).
      */
-    @Experimental
     void setReportFile(String reportFilename);
 
 

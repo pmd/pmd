@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.NewListInitExpression;
+import com.google.summit.ast.initializer.Initializer;
 
-public final class ASTNewListInitExpression extends AbstractApexNode<NewListInitExpression> {
+public final class ASTNewListInitExpression extends AbstractApexNode.Single<Initializer> {
 
-    ASTNewListInitExpression(NewListInitExpression newListInitExpression) {
-        super(newListInitExpression);
+    ASTNewListInitExpression(Initializer initializer) {
+        super(initializer);
     }
 
 

@@ -6,11 +6,12 @@ package net.sourceforge.pmd.ant;
 
 /**
  * @author Philippe T'Seyen
+ * @apiNote Internal API
  */
-public class ReportException extends RuntimeException {
+class ReportException extends RuntimeException {
     private static final long serialVersionUID = 6043174086675858209L;
 
-    public ReportException(Throwable cause) {
+    ReportException(Throwable cause) {
         super(cause);
     }
 }

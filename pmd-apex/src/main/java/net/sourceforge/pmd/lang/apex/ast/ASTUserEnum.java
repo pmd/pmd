@@ -4,13 +4,13 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.compilation.UserEnum;
+import com.google.summit.ast.declaration.EnumDeclaration;
 
-public final class ASTUserEnum extends BaseApexClass<UserEnum> {
+public final class ASTUserEnum extends BaseApexClass<EnumDeclaration> {
     private ApexQualifiedName qname;
 
-    ASTUserEnum(UserEnum userEnum) {
-        super(userEnum);
+    ASTUserEnum(EnumDeclaration enumDeclaration) {
+        super(enumDeclaration);
     }
 
     @Override

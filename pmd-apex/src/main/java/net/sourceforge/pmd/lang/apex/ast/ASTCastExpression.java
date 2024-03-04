@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.CastExpression;
+import com.google.summit.ast.expression.CastExpression;
 
-public final class ASTCastExpression extends AbstractApexNode<CastExpression> {
+public final class ASTCastExpression extends AbstractApexNode.Single<CastExpression> {
 
-    ASTCastExpression(CastExpression node) {
-        super(node);
+    ASTCastExpression(CastExpression castExpression) {
+        super(castExpression);
     }
 
 

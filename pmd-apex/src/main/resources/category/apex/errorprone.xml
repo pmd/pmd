@@ -222,8 +222,17 @@ Empty block statements serve no purpose and should be removed.
             <property name="xpath">
                 <value>
 <![CDATA[
-//Method[$reportEmptyPrivateNoArgConstructor = true() or (@Constructor != true() or ./ModifierNode[@Private != true()] or ./Parameter[count(*) > 0])]/ModifierNode[@Abstract != true() and ($reportEmptyVirtualMethod = true() or @Virtual != true()) and ../BlockStatement[count(*) = 0]]
-| //Method/BlockStatement//BlockStatement[count(*) = 0 and @RealLoc = true()]
+//Method[$reportEmptyPrivateNoArgConstructor = true()
+    or (@Constructor != true()
+    or ./ModifierNode[@Private != true()]
+    or ./Parameter[count(*) > 0])]/ModifierNode[@Abstract != true()
+        and ($reportEmptyVirtualMethod = true() or @Virtual != true())
+        and ../BlockStatement[count(*) = 0]
+    ]
+| //Method/BlockStatement//BlockStatement
+    [not(parent::CatchBlockStatement)]
+    [count(*) = 0]
+    [@RealLoc = true()]
 ]]>
                 </value>
             </property>

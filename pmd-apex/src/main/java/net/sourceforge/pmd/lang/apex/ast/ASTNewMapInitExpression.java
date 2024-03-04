@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.NewMapInitExpression;
+import com.google.summit.ast.initializer.ConstructorInitializer;
 
-public final class ASTNewMapInitExpression extends AbstractApexNode<NewMapInitExpression> {
+public final class ASTNewMapInitExpression extends AbstractApexNode.Single<ConstructorInitializer> {
 
-    ASTNewMapInitExpression(NewMapInitExpression newMapInitExpression) {
-        super(newMapInitExpression);
+    ASTNewMapInitExpression(ConstructorInitializer constructorInitializer) {
+        super(constructorInitializer);
     }
 
 

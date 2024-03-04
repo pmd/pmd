@@ -4,15 +4,13 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.statement.ValueWhenBlock;
+import com.google.summit.ast.statement.SwitchStatement;
 
-public final class ASTValueWhenBlock extends AbstractApexNode<ValueWhenBlock> {
+public final class ASTValueWhenBlock extends AbstractApexNode.Single<SwitchStatement.WhenValue> {
 
-
-    ASTValueWhenBlock(ValueWhenBlock node) {
-        super(node);
+    ASTValueWhenBlock(SwitchStatement.WhenValue whenValue) {
+        super(whenValue);
     }
-
 
 
     @Override

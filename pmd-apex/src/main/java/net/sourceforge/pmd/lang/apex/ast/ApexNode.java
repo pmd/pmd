@@ -6,50 +6,20 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.annotation.DeprecatedUntil700;
-import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
-
-import apex.jorje.semantic.ast.AstNode;
 
 /**
  * Root interface implemented by all Apex nodes. Apex nodes wrap a tree
- * obtained from an external parser (Jorje). The underlying AST node is
- * available with {@link #getNode()}.
+ * obtained from an external parser.
  *
- * @param <T> Type of the underlying Jorje node
+ * @param <T> Type of the underlying Summit AST node (or Void)
  */
-public interface ApexNode<T extends AstNode> extends GenericNode<ApexNode<?>> {
-
-    /**
-     * Accept the visitor.
-     *
-     * @deprecated Use {@link #acceptVisitor(AstVisitor, Object)}
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default Object jjtAccept(ApexParserVisitor visitor, Object data) {
-        return acceptVisitor(visitor, data);
-    }
-
-
-    /**
-     * Get the underlying AST node.
-     * @deprecated the underlying AST node should not be available outside of the AST node.
-     *      If information is needed from the underlying node, then PMD's AST node need to expose
-     *      this information.
-     */
-    @Deprecated
-    T getNode();
-
+public interface ApexNode<T> extends GenericNode<ApexNode<?>> {
 
     boolean hasRealLoc();
 
 
     String getDefiningType();
-
-
-    String getNamespace();
 
 
     @Override

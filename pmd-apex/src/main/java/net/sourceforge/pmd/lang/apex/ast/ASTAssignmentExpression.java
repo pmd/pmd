@@ -4,12 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.data.ast.AssignmentOp;
-import apex.jorje.semantic.ast.expression.AssignmentExpression;
+import com.google.summit.ast.expression.AssignExpression;
 
-public final class ASTAssignmentExpression extends AbstractApexNode<AssignmentExpression> {
+public final class ASTAssignmentExpression extends AbstractApexNode.Single<AssignExpression> {
 
-    ASTAssignmentExpression(AssignmentExpression assignmentExpression) {
+    ASTAssignmentExpression(AssignExpression assignmentExpression) {
         super(assignmentExpression);
     }
 
@@ -19,15 +18,7 @@ public final class ASTAssignmentExpression extends AbstractApexNode<AssignmentEx
         return visitor.visit(this, data);
     }
 
-    /**
-     * @deprecated Use {@link #getOp()} instead.
-     */
-    @Deprecated
-    public AssignmentOp getOperator() {
-        return node.getOp();
-    }
-
     public AssignmentOperator getOp() {
-        return AssignmentOperator.valueOf(node.getOp());
+        return AssignmentOperator.valueOf(node.getPreOperation());
     }
 }

@@ -145,7 +145,7 @@ class VfExpressionTypeVisitor extends VfVisitorBase<Void, Void> {
             }
 
             if (type != null) {
-                VfAstInternals.setDataType(entry.getKey(), type);
+                InternalApiBridge.setDataType(entry.getKey(), type);
             } else {
                 LOG.debug("Unable to determine type for: {}", name);
             }

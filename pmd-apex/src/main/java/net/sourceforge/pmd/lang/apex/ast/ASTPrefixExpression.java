@@ -4,27 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.data.ast.PrefixOp;
-import apex.jorje.semantic.ast.expression.PrefixExpression;
+import com.google.summit.ast.expression.UnaryExpression;
 
-public final class ASTPrefixExpression extends AbstractApexNode<PrefixExpression> {
+public final class ASTPrefixExpression extends AbstractApexNode.Single<UnaryExpression> {
 
-    ASTPrefixExpression(PrefixExpression prefixExpression) {
-        super(prefixExpression);
+    ASTPrefixExpression(UnaryExpression unaryExpression) {
+        super(unaryExpression);
     }
-
 
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-    /**
-     * @deprecated Use {@link #getOp()} instead.
-     */
-    @Deprecated
-    public PrefixOp getOperator() {
-        return node.getOp();
     }
 
     public PrefixOperator getOp() {

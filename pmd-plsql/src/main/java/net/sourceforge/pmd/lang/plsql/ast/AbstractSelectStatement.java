@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-@InternalApi
 abstract class AbstractSelectStatement extends AbstractPLSQLNode {
 
     private boolean distinct;

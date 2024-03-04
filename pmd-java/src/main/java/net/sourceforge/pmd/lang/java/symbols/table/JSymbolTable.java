@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain;
@@ -21,7 +20,6 @@ import net.sourceforge.pmd.lang.java.types.JVariableSig;
  *
  * @since 7.0.0
  */
-@Experimental
 public interface JSymbolTable {
 
     /**

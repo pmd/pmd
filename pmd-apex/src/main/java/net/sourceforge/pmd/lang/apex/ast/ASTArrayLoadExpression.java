@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.ArrayLoadExpression;
+import com.google.summit.ast.expression.ArrayExpression;
 
-public final class ASTArrayLoadExpression extends AbstractApexNode<ArrayLoadExpression> {
+public final class ASTArrayLoadExpression extends AbstractApexNode.Single<ArrayExpression> {
 
-    ASTArrayLoadExpression(ArrayLoadExpression arrayLoadExpression) {
+    ASTArrayLoadExpression(ArrayExpression arrayLoadExpression) {
         super(arrayLoadExpression);
     }
 

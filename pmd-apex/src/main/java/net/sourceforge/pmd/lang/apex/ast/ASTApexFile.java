@@ -17,20 +17,19 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextRegion;
 
-import apex.jorje.semantic.ast.AstNode;
-import apex.jorje.semantic.ast.compilation.Compilation;
+import com.google.summit.ast.CompilationUnit;
 import com.nawforce.pkgforce.api.Issue;
 
-public final class ASTApexFile extends AbstractApexNode<AstNode> implements RootNode {
+public final class ASTApexFile extends AbstractApexNode.Single<CompilationUnit> implements RootNode {
 
     private final AstInfo<ASTApexFile> astInfo;
     private final @NonNull ApexMultifileAnalysis multifileAnalysis;
 
     ASTApexFile(ParserTask task,
-                Compilation jorjeNode,
+                CompilationUnit compilationUnit,
                 Map<Integer, String> suppressMap,
                 @NonNull ApexLanguageProcessor apexLang) {
-        super(jorjeNode);
+        super(compilationUnit);
         this.astInfo = new AstInfo<>(task, this).withSuppressMap(suppressMap);
         this.multifileAnalysis = apexLang.getMultiFileState();
         this.setRegion(TextRegion.fromOffsetLength(0, task.getTextDocument().getLength()));
@@ -59,5 +58,15 @@ public final class ASTApexFile extends AbstractApexNode<AstNode> implements Root
     public List<Issue> getGlobalIssues() {
         FileId fileId = getAstInfo().getTextDocument().getFileId();
         return multifileAnalysis.getFileIssues(fileId.getAbsolutePath());
+    }
+
+    @Override
+    public String getDefiningType() {
+        // an apex file can contain only one top level type
+        BaseApexClass baseApexClass = firstChild(BaseApexClass.class);
+        if (baseApexClass != null) {
+            return baseApexClass.getQualifiedName().toString();
+        }
+        return null;
     }
 }

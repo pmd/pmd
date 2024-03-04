@@ -235,7 +235,7 @@ class BaseTestParserImpl {
             version = null;
             terseName = terseNameAndVersion;
         }
-        Language language = LanguageRegistry.findLanguageByTerseName(terseName);
+        Language language = LanguageRegistry.PMD.getLanguageById(terseName);
         if (language != null) {
             if (version == null) {
                 return language.getDefaultVersion();

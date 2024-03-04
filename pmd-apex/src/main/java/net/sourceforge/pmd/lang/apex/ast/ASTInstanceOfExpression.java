@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.InstanceOfExpression;
+import com.google.summit.ast.expression.BinaryExpression;
 
-public final class ASTInstanceOfExpression extends AbstractApexNode<InstanceOfExpression> {
+public final class ASTInstanceOfExpression extends AbstractApexNode.Single<BinaryExpression> {
 
-    ASTInstanceOfExpression(InstanceOfExpression instanceOfExpression) {
-        super(instanceOfExpression);
+    ASTInstanceOfExpression(BinaryExpression binaryExpression) {
+        super(binaryExpression);
     }
 
 

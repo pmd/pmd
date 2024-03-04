@@ -1,0 +1,46 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+
+String readFile(File file) throws IOException {
+    StringBuilder content = new StringBuilder();
+    for (String line : Files.readAllLines(file.toPath(), StandardCharsets.UTF_8)) {
+        content.append(line).append(System.lineSeparator());
+    }
+    return content.toString();
+}
+
+File buildLogPath = new File(basedir, "build.log");
+String buildLog = readFile(buildLogPath);
+if (buildLog.contains("An API incompatibility was encountered while")) {
+    throw new RuntimeException("Executing failed due to API incompatibility");
+}
+
+if (!buildLog.contains("[INFO] CPD Failure: Found 12 lines of duplicated code at locations:")) {
+    throw new RuntimeException("No CPD failures detected, did CPD run?");
+}
+File classA = new File("cpd-for-csharp/src/main/cs/strings1.cs");
+if (!buildLog.contains(classA + " line 1")) {
+    throw new RuntimeException("No CPD failures detected, did CPD run?");
+}
+File classB = new File("cpd-for-csharp/src/main/cs/strings2.cs");
+if (!buildLog.contains(classA + " line 1")) {
+    throw new RuntimeException("No CPD failures detected, did CPD run?");
+}
+
+File cpdXmlReport = new File(basedir, "target/cpd.xml");
+if (!cpdXmlReport.exists()) {
+    throw new FileNotFoundException("Could not find cpd xml report: " + cpdXmlReport);
+}
+String cpdXml = readFile(cpdXmlReport);
+if (!cpdXml.contains("<duplication lines=\"12\" tokens=\"29\">")) {
+    throw new RuntimeException("Expected duplication has not been reported");
+}
+if (!cpdXml.contains(classA + "\"/>")) {
+    throw new RuntimeException("Expected duplication has not been reported");
+}
+if (!cpdXml.contains(classB + "\"/>")) {
+    throw new RuntimeException("Expected duplication has not been reported");
+}

@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ast.JModifier.STRICTFP;
-
 import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -116,111 +114,6 @@ public interface ModifierOwner extends Annotatable {
      */
     default boolean hasVisibility(Visibility visibility) {
         return getVisibility() == visibility;
-    }
-
-    // TODO remove all those, kept only for compatibility with rules
-
-    // these are about effective modifiers
-
-
-    @Deprecated
-    default boolean isFinal() {
-        return hasModifiers(JModifier.FINAL);
-    }
-
-
-    @Deprecated
-    default boolean isAbstract() {
-        return hasModifiers(JModifier.ABSTRACT);
-    }
-
-
-    @Deprecated
-    default boolean isStrictfp() {
-        return hasModifiers(STRICTFP);
-    }
-
-
-    @Deprecated
-    default boolean isSynchronized() {
-        return hasModifiers(JModifier.SYNCHRONIZED);
-    }
-
-
-    @Deprecated
-    default boolean isNative() {
-        return hasModifiers(JModifier.NATIVE);
-    }
-
-
-    @Deprecated
-    default boolean isStatic() {
-        return hasModifiers(JModifier.STATIC);
-    }
-
-
-    @Deprecated
-    default boolean isVolatile() {
-        return hasModifiers(JModifier.VOLATILE);
-    }
-
-
-    @Deprecated
-    default boolean isTransient() {
-        return hasModifiers(JModifier.TRANSIENT);
-    }
-
-
-    // these are about visibility
-
-
-    @Deprecated
-    default boolean isPrivate() {
-        return getVisibility() == Visibility.V_PRIVATE;
-    }
-
-
-    @Deprecated
-    default boolean isPublic() {
-        return getVisibility() == Visibility.V_PUBLIC;
-    }
-
-
-    @Deprecated
-    default boolean isProtected() {
-        return getVisibility() == Visibility.V_PROTECTED;
-    }
-
-
-    @Deprecated
-    default boolean isPackagePrivate() {
-        return getVisibility() == Visibility.V_PACKAGE;
-    }
-
-    // these are about explicit modifiers
-
-
-    @Deprecated
-    default boolean isSyntacticallyAbstract() {
-        return hasExplicitModifiers(JModifier.ABSTRACT);
-    }
-
-
-    @Deprecated
-    default boolean isSyntacticallyPublic() {
-        return hasExplicitModifiers(JModifier.PUBLIC);
-    }
-
-
-    @Deprecated
-    default boolean isSyntacticallyStatic() {
-        return hasExplicitModifiers(JModifier.STATIC);
-    }
-
-
-    @Deprecated
-    default boolean isSyntacticallyFinal() {
-        return hasExplicitModifiers(JModifier.FINAL);
     }
 
 

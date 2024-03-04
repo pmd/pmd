@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.BindExpressions;
+import com.google.summit.ast.expression.SoqlOrSoslBinding;
 
-public final class ASTBindExpressions extends AbstractApexNode<BindExpressions> {
+public final class ASTBindExpressions extends AbstractApexNode.Single<SoqlOrSoslBinding> {
 
-    ASTBindExpressions(BindExpressions bindExpressions) {
+    ASTBindExpressions(SoqlOrSoslBinding bindExpressions) {
         super(bindExpressions);
     }
 

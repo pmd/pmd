@@ -62,7 +62,7 @@ public abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends Ab
 
 
     @Override
-    public Object visit(ApexNode<?> node, Object data) {
+    public Object visitApexNode(ApexNode<?> node, Object data) {
         @SuppressWarnings("unchecked")
         T t = (T) node;
         // since we only visit this node, it's ok
