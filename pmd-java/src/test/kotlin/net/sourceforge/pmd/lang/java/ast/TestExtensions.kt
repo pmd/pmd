@@ -256,8 +256,8 @@ fun TreeNodeWrapper<Node, *>.returnStatement(contents: ValuedNodeSpec<ASTReturnS
 
 fun TreeNodeWrapper<Node, *>.forLoop(body: ValuedNodeSpec<ASTForStatement, ASTStatement?> = { null }) =
         child<ASTForStatement> {
-            val body = body()
-            if (body != null) it::getBody shouldBe body
+            val expectedBody = body()
+            if (expectedBody != null) it::getBody shouldBe expectedBody
             else unspecifiedChildren(it.numChildren)
         }
 
@@ -280,22 +280,22 @@ fun TreeNodeWrapper<Node, *>.statementExprList(body: NodeSpec<ASTStatementExpres
 
 fun TreeNodeWrapper<Node, *>.foreachLoop(body: ValuedNodeSpec<ASTForeachStatement, ASTStatement?> = { null }) =
         child<ASTForeachStatement> {
-            val body = body()
-            if (body != null) it::getBody shouldBe body
+            val expectedBody = body()
+            if (expectedBody != null) it::getBody shouldBe expectedBody
             else unspecifiedChildren(it.numChildren)
         }
 
 fun TreeNodeWrapper<Node, *>.doLoop(body: ValuedNodeSpec<ASTDoStatement, ASTStatement?> = { null }) =
         child<ASTDoStatement> {
-            val body = body()
-            if (body != null) it::getBody shouldBe body
+            val expectedBody = body()
+            if (expectedBody != null) it::getBody shouldBe expectedBody
             else unspecifiedChildren(it.numChildren)
         }
 
 fun TreeNodeWrapper<Node, *>.whileLoop(body: ValuedNodeSpec<ASTWhileStatement, ASTStatement?> = { null }) =
         child<ASTWhileStatement> {
-            val body = body()
-            if (body != null) it::getBody shouldBe body
+            val expectedBody = body()
+            if (expectedBody != null) it::getBody shouldBe expectedBody
             else unspecifiedChildren(it.numChildren)
         }
 
@@ -398,7 +398,7 @@ fun TreeNodeWrapper<Node, *>.unionType(contents: NodeSpec<ASTUnionType> = EmptyA
             contents()
         }
 
-fun TreeNodeWrapper<Node, *>.voidType() = child<ASTVoidType>() {}
+fun TreeNodeWrapper<Node, *>.voidType() = child<ASTVoidType> {}
 
 
 fun TreeNodeWrapper<Node, *>.typeExpr(contents: ValuedNodeSpec<ASTTypeExpression, ASTType>) =
@@ -425,7 +425,7 @@ fun TreeNodeWrapper<Node, *>.arrayType(contents: NodeSpec<ASTArrayType> = EmptyA
 fun TreeNodeWrapper<Node, *>.primitiveType(type: PrimitiveTypeKind, assertions: NodeSpec<ASTPrimitiveType> = EmptyAssertions) =
         child<ASTPrimitiveType> {
             it::getKind shouldBe type
-            PrettyPrintingUtil.prettyPrintType(it) shouldBe type.toString();
+            PrettyPrintingUtil.prettyPrintType(it) shouldBe type.toString()
             assertions()
         }
 
@@ -586,8 +586,8 @@ fun TreeNodeWrapper<Node, *>.switchStmt(assertions: NodeSpec<ASTSwitchStatement>
 
 fun TreeNodeWrapper<Node, *>.switchArrow(rhs: ValuedNodeSpec<ASTSwitchArrowBranch, ASTSwitchArrowRHS?> = { null }) =
         child<ASTSwitchArrowBranch> {
-            val rhs = rhs()
-            if (rhs != null) it::getRightHandSide shouldBe rhs
+            val expectedRhs = rhs()
+            if (expectedRhs != null) it::getRightHandSide shouldBe expectedRhs
             else unspecifiedChildren(2) // label + rhs
         }
 

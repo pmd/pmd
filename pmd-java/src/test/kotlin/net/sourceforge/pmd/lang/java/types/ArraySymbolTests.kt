@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.symbols.internal.getDeclaredMethods
  */
 class ArraySymbolTests : WordSpec({
 
-    val INT_SYM = testTypeSystem.getClassSymbol(java.lang.Integer.TYPE)
+    val INT_SYM = testTypeSystem.getClassSymbol(Integer.TYPE)
     val STRING_SYM = testTypeSystem.getClassSymbol(java.lang.String::class.java)
 
     fun makeArraySym(comp: JTypeDeclSymbol?) = ArraySymbolImpl(testTypeSystem, comp)

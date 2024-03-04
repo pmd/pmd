@@ -59,7 +59,7 @@ class BrokenClasspathTest : FunSpec({
         // since we're loading things lazily this type hasn't tried to populate its superinterfaces
         val superItfType = ts.declaration(unresolvedItfSym) as JClassType
         val subclassType = ts.declaration(subclassSym) as JClassType
-        val (tvarC, tvarD) = subclassType.formalTypeParams
+        val (_, tvarD) = subclassType.formalTypeParams
 
         // and now since the super interface *type* is parameterized, we'll try to create SuperItf<D,D>
         // Except SuperItf is unresolved.

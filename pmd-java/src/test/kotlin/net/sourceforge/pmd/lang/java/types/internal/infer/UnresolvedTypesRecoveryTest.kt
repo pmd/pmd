@@ -261,7 +261,7 @@ class C {
         val (fooM, idM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.symbol }
 
         val t_Foo = fooM.getReturnType(Substitution.EMPTY).shouldBeUnresolvedClass("ooo.Foo")
-        val t_Bound = idM.typeParameters[0].upperBound.shouldBeUnresolvedClass("ooo.Bound")
+        idM.typeParameters[0].upperBound.shouldBeUnresolvedClass("ooo.Bound")
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 

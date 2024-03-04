@@ -261,26 +261,26 @@ class MemberInheritanceTest : ParserTestSpec({
             }
         """)
 
-        val (t_Scratch, t_Inner) =
+        val (typeScratch, typeInner) =
                 acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
 
         val insideFoo =
                 acu.descendants(ASTClassBody::class.java)
                     .crossFindBoundaries().get(2)!!
 
-        val `t_Scratch{String}Inner` = with (acu.typeDsl) {
-            t_Scratch[gen.t_String].selectInner(t_Inner.symbol, emptyList())
+        val `typeScratch{String}Inner` = with (acu.typeDsl) {
+            typeScratch[gen.t_String].selectInner(typeInner.symbol, emptyList())
         }
 
         insideFoo.symbolTable.types().resolve("Inner").shouldBeSingleton {
-            it.shouldBe(`t_Scratch{String}Inner`)
+            it.shouldBe(`typeScratch{String}Inner`)
         }
 
         val typeNode = acu.descendants(ASTClassType::class.java).first { it.simpleName == "Inner" }!!
 
         typeNode.shouldMatchN {
             classType("Inner") {
-                it shouldHaveType `t_Scratch{String}Inner`
+                it shouldHaveType `typeScratch{String}Inner`
             }
         }
 

@@ -31,8 +31,8 @@ abstract class BaseTextComparisonTest {
     data class FileData(val fileName: FileId, val fileText:String)
 
     /**
-     * Executes the test. The test files are looked up using the [parser].
-     * The reference test file must be named [fileBaseName] + [ExpectedExt].
+     * Executes the test. The test files are looked up using the [resourceLoader].
+     * The reference test file must be named [fileBaseName] + [EXPECTED_EXTENSION].
      * The source file to parse must be named [fileBaseName] + [extensionIncludingDot].
      *
      * @param transformTextContent Function that maps the contents of the source file to the
@@ -41,7 +41,7 @@ abstract class BaseTextComparisonTest {
     internal fun doTest(fileBaseName: String,
                         expectedSuffix: String = "",
                         transformTextContent: (FileData) -> String) {
-        val expectedFile = findTestFile(resourceLoader, "${resourcePrefix}/$fileBaseName$expectedSuffix$ExpectedExt").toFile()
+        val expectedFile = findTestFile(resourceLoader, "${resourcePrefix}/$fileBaseName$expectedSuffix$EXPECTED_EXTENSION").toFile()
 
         val actual = transformTextContent(sourceText(fileBaseName))
 
@@ -97,7 +97,7 @@ abstract class BaseTextComparisonTest {
     }
 
     companion object {
-        const val ExpectedExt = ".txt"
+        const val EXPECTED_EXTENSION = ".txt"
 
     }
 

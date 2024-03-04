@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.test.ast.shouldBe
 class ASTMethodCallTest : ParserTestSpec({
 
 
-    parserTest("Method call exprs") {
+    parserTest("Method call expressions") {
 
         inContext(ExpressionParsingCtx) {
 

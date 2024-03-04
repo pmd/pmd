@@ -45,6 +45,19 @@
             <plugin>
                 <groupId>org.jetbrains.dokka</groupId>
                 <artifactId>dokka-maven-plugin</artifactId>
+                <configuration>
+                    <!-- overrides the configuration from parent pom: we have here only pmd-core and pmd-test available -->
+                    <externalDocumentationLinks combine.self="override">
+                        <link>
+                            <url>https://docs.pmd-code.org/apidocs/pmd-core/${project.version}/</url>
+                            <packageListUrl>file://${project.basedir}/../pmd-core/target/apidocs/element-list</packageListUrl>
+                        </link>
+                        <link>
+                            <url>https://docs.pmd-code.org/apidocs/pmd-test/${project.version}/</url>
+                            <packageListUrl>file://${project.basedir}/../pmd-test/target/apidocs/element-list</packageListUrl>
+                        </link>
+                    </externalDocumentationLinks>
+                </configuration>
             </plugin>
         </plugins>
     </build>

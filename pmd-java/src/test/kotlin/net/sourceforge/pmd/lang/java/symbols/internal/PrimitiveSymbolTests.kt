@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.types.testTypeSystem
  */
 class PrimitiveSymbolTests : WordSpec({
 
-    fun primitives(): List<JClassSymbol> = testTypeSystem.allPrimitives.map { it.symbol!! }
+    fun primitives(): List<JClassSymbol> = testTypeSystem.allPrimitives.map { it.symbol }
 
     "A primitive symbol" should {
 

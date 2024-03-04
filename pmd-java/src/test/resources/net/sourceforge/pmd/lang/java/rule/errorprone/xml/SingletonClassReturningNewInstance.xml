@@ -57,4 +57,48 @@ public class Singleton {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] SingletonClassReturningNewInstance false positive with double assignment #932 - variant 1</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Foo {
+    private static volatile Foo myFoo;
+    public static Foo getInstance() {
+        Foo instance = myFoo;
+        if (instance == null) {
+            synchronized (Foo.class) {
+                instance = myFoo;
+                if (instance == null) {
+                    myFoo = instance = new Foo(); // here: double assignment to instance and then field
+                }
+            }
+        }
+        return instance;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] SingletonClassReturningNewInstance false positive with double assignment #932 - variant 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Foo {
+    private static volatile Foo myFoo;
+    public static Foo getInstance() {
+        Foo instance = myFoo;
+        if (instance == null) {
+            synchronized (Foo.class) {
+                instance = myFoo;
+                if (instance == null) {
+                    instance = myFoo = new Foo(); // here: double assignment to field and then instance
+                }
+            }
+        }
+        return instance;
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

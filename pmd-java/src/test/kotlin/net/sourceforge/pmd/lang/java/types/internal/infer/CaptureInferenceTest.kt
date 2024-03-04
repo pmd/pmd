@@ -476,7 +476,6 @@ public class SubClass<T> {
                 """.trimIndent()
         )
 
-        val cvar = acu.typeVar("C")
         val tvar = acu.typeVar("T")
 
         spy.shouldBeOk {

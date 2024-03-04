@@ -252,7 +252,7 @@ This can be achieved with Rule Designer:
     *   Fork and clone the [pmd/pmd-designer](https://github.com/pmd/pmd-designer) repository.
     *   Add a syntax highlighter implementation to `net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting` (you could use Java as an example).
     *   Register it in the `AvailableSyntaxHighlighters` enumeration.
-    *   Now build your implementation and place the `target/pmd-ui-<version>-SNAPSHOT.jar` to the `lib` directory inside your `pmd-bin-...` distribution (you have to delete old `pmd-ui-*.jar` from there).
+    *   Now build your implementation and place the `target/pmd-designer-<version>-SNAPSHOT.jar` to the `lib` directory inside your `pmd-bin-...` distribution (you have to delete old `pmd-designer-*.jar` from there).
 
 ## Optional features
 

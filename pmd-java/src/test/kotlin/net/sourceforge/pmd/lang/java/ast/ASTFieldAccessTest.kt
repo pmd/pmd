@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.test.ast.shouldBe
  */
 class ASTFieldAccessTest : ParserTestSpec({
 
-    parserTest("Field access exprs") {
+    parserTest("Field access expressions") {
 
         inContext(ExpressionParsingCtx) {
 

@@ -49,7 +49,7 @@ class ConversionContextTests : ProcessorTestSpec({
             }
         """)
 
-        val (ternary, _, num1, shortCast, num5) = acu.descendants(ASTExpression::class.java).toList()
+        val (ternary, _, num1, shortCast, _) = acu.descendants(ASTExpression::class.java).toList()
 
         spy.shouldBeOk {
             // ternary is in double assignment context
@@ -80,7 +80,7 @@ class ConversionContextTests : ProcessorTestSpec({
             }
         """)
 
-        val (ternary, _, integerCast, nullLit, num4) = acu.descendants(ASTExpression::class.java).toList()
+        val (ternary, _, integerCast, _, num4) = acu.descendants(ASTExpression::class.java).toList()
 
         spy.shouldBeOk {
             // ternary is in double assignment context

@@ -193,7 +193,7 @@ class Java7InferenceTest : ProcessorTestSpec({
 
 })
 
-private fun TypeDslMixin.ctorInfersTo(
+private fun ctorInfersTo(
     call: ASTConstructorCall,
     inferredType: JClassType
 ) {
@@ -204,7 +204,7 @@ private fun TypeDslMixin.ctorInfersTo(
     )
 }
 
-private fun TypeDslMixin.methodInfersTo(call: ASTMethodCall, returnType: JClassType) {
+private fun methodInfersTo(call: ASTMethodCall, returnType: JClassType) {
     call.methodType.shouldMatchMethod(
         named = call.methodName,
         declaredIn = null, // not asserted

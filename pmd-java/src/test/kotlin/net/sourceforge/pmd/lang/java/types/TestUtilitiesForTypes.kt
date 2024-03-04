@@ -45,7 +45,7 @@ val TypeSystem.STRING get() = declaration(getClassSymbol(String::class.java)) as
 typealias TypePair = Pair<JTypeMirror, JTypeMirror>
 
 
-fun JTypeMirror.getMethodsByName(name: String) = streamMethods { it.simpleName == name }.collect(Collectors.toList())
+fun JTypeMirror.getMethodsByName(name: String): List<JMethodSig> = streamMethods { it.simpleName == name }.collect(Collectors.toList())
 
 fun JTypeMirror.shouldBeUnresolvedClass(canonicalName: String) =
     this.shouldBeA<JClassType> {
@@ -225,6 +225,7 @@ val JTypeMirror.isExlusiveIntersectionBound
 /**
  * Was added in java 12.
  */
+@Suppress("UNCHECKED_CAST")
 val <T> Class<T>.arrayType: Class<Array<T>>
     get() {
         val arr = java.lang.reflect.Array.newInstance(this, 0)

@@ -130,9 +130,9 @@ abstract class CpdTextComparisonTest(
 
     private fun StringBuilder.formatLine(escapedImage: String, bcol: Any, ecol: Any): StringBuilder {
         var colStart = length
-        colStart = append(Indent).append(escapedImage).padCol(colStart, Col0Width)
+        colStart = append(INDENT).append(escapedImage).padCol(colStart, COL_0_WIDTH)
         @Suppress("UNUSED_VALUE")
-        colStart = append(Indent).append(bcol).padCol(colStart, Col1Width)
+        colStart = append(INDENT).append(bcol).padCol(colStart, COL_1_WIDTH)
         return append(ecol)
     }
 
@@ -152,7 +152,7 @@ abstract class CpdTextComparisonTest(
                 .replace(Regex("\\u000D\\u000A|[\\u000A\\u000B\\u000C\\u000D\\u0085\\u2028\\u2029]"), "\\\\n")       // escape other newlines (normalizing), use \\R with java8+
                 .replace(Regex("[]\\[]"), "\\\\$0")   // escape []
 
-        var truncated = StringUtils.truncate(escaped, ImageSize)
+        var truncated = StringUtils.truncate(escaped, IMAGE_SIZE)
 
         if (truncated.endsWith('\\') && !truncated.endsWith("\\\\"))
             truncated = truncated.substring(0, truncated.length - 1) // cut inside an escape
@@ -176,10 +176,10 @@ abstract class CpdTextComparisonTest(
         CpdLexer.tokenize(cpdLexer, sourceCodeOf(fileData))
 
     private companion object {
-        const val Indent = "    "
-        const val Col0Width = 40
-        const val Col1Width = 10 + Indent.length
-        val ImageSize = Col0Width - Indent.length - 2 // -2 is for the "[]"
+        const val INDENT = "    "
+        const val COL_0_WIDTH = 40
+        const val COL_1_WIDTH = 10 + INDENT.length
+        const val IMAGE_SIZE = COL_0_WIDTH - INDENT.length - 2 // -2 is for the "[]"
     }
 }
 

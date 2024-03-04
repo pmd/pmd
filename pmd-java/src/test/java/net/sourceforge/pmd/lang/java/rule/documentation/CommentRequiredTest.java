@@ -23,9 +23,6 @@ class CommentRequiredTest extends PmdRuleTst {
         assertNull(rule.dysfunctionReason(), "By default, the rule should be functional");
 
         List<PropertyDescriptor<?>> propertyDescriptors = getProperties(rule);
-        // remove  deprecated properties
-        propertyDescriptors.removeIf(property -> property.description().startsWith("Deprecated!"));
-
         for (PropertyDescriptor<?> property : propertyDescriptors) {
             setPropertyValue(rule, property, "Ignored");
         }

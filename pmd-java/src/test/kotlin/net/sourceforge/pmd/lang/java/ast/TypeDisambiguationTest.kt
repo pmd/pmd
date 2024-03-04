@@ -246,18 +246,18 @@ class TypeDisambiguationTest : ParserTestSpec({
 
         val outerUnresolved = m0.qualifier!!
         val outerT = outerUnresolved.typeMirror.shouldBeA<JClassType> {
-            it.symbol.shouldBeA<JClassSymbol> {
-                it::isUnresolved shouldBe true
-                it::getSimpleName shouldBe "OuterUnresolved"
+            it.symbol.shouldBeA<JClassSymbol> { classSymbol ->
+                classSymbol::isUnresolved shouldBe true
+                classSymbol::getSimpleName shouldBe "OuterUnresolved"
             }
         }
 
         val innerT = m0.typeMirror.shouldBeA<JClassType> {
             it::getEnclosingType shouldBe outerT
-            it.symbol.shouldBeA<JClassSymbol> {
-                it::isUnresolved shouldBe true
-                it::getSimpleName shouldBe "InnerUnresolved"
-                it.enclosingClass.shouldBeSameInstanceAs(outerT.symbol)
+            it.symbol.shouldBeA<JClassSymbol> { classSymbol ->
+                classSymbol::isUnresolved shouldBe true
+                classSymbol::getSimpleName shouldBe "InnerUnresolved"
+                classSymbol.enclosingClass.shouldBeSameInstanceAs(outerT.symbol)
             }
         }
 
@@ -314,7 +314,7 @@ class TypeDisambiguationTest : ParserTestSpec({
         // before all classes of the CU have been visited
         enableProcessing()
 
-        val acu = parser.parse("""
+        @Suppress("UNUSED_VARIABLE") val acu = parser.parse("""
 package p;
 import static p.Assert2.*;
 

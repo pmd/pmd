@@ -138,7 +138,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
             }
         }
 
-        // default abstract is an invalid combination of modifiers so we won't encounter it in real analysis
+        // default abstract is an invalid combination of modifiers, so we won't encounter it in real analysis
     }
 
     parserTest("Throws list") {
