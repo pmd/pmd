@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
+import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.lang.scala.ScalaLanguageModule;
 
 public final class ScalaParsingHelper extends BaseParsingHelper<ScalaParsingHelper, ASTSource> {

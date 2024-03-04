@@ -11,7 +11,7 @@ options {
 }
 
 PARSER_BEGIN(VfParserImpl)
-package net.sourceforge.pmd.lang.vf.ast;
+package net.sourceforge.pmd.lang.visualforce.ast;
 
 public class VfParserImpl {
 

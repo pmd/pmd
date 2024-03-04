@@ -4,13 +4,13 @@
 
 package net.sourceforge.pmd.lang.java;
 
-import static net.sourceforge.pmd.AbstractLanguageVersionTest.TestDescriptor.defaultVersionIs;
-import static net.sourceforge.pmd.AbstractLanguageVersionTest.TestDescriptor.versionDoesNotExist;
+import static net.sourceforge.pmd.test.AbstractLanguageVersionTest.TestDescriptor.defaultVersionIs;
+import static net.sourceforge.pmd.test.AbstractLanguageVersionTest.TestDescriptor.versionDoesNotExist;
 
 import java.util.Arrays;
 import java.util.Collection;
 
-import net.sourceforge.pmd.AbstractLanguageVersionTest;
+import net.sourceforge.pmd.test.AbstractLanguageVersionTest;
 import net.sourceforge.pmd.lang.Language;
 
 class LanguageVersionTest extends AbstractLanguageVersionTest {

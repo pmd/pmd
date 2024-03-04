@@ -31,7 +31,7 @@
                             <target>
                                 <ant antfile="${antlr4.ant.wrapper}" target="cpd-language">
                                     <property name="lang-name" value="Golang" />
-                                    <property name="lang-terse-name" value="go" />
+                                    <property name="lang-id" value="go" />
                                 </ant>
                             </target>
                         </configuration>

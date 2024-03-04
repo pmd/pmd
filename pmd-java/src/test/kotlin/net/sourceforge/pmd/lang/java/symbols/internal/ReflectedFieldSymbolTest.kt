@@ -12,7 +12,7 @@ import io.kotest.matchers.shouldNotBe
 import io.kotest.property.arbitrary.filterNot
 import javasymbols.testdata.impls.IdenticalToSomeFields
 import javasymbols.testdata.impls.SomeFields
-import net.sourceforge.pmd.lang.ast.test.IntelliMarker
+import net.sourceforge.pmd.lang.test.ast.IntelliMarker
 
 /**
  * @author Clément Fournier

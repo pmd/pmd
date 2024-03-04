@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.testframework.PmdRuleTst;
+import net.sourceforge.pmd.test.PmdRuleTst;
 
 class CommentRequiredTest extends PmdRuleTst {
     @Test

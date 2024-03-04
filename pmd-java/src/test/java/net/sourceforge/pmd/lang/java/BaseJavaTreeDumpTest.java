@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java;
 
-import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
+import net.sourceforge.pmd.lang.test.ast.BaseTreeDumpTest;
 
 /**
  * Special tweak of BaseTreeDumpTest to remove deprecated attributes

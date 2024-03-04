@@ -71,7 +71,7 @@ class PmdConfigurationTest {
 
     @Test
     void auxClasspathWithRelativeFileEmpty() {
-        String relativeFilePath = "src/test/resources/net/sourceforge/pmd/cli/auxclasspath-empty.cp";
+        String relativeFilePath = "src/test/resources/net/sourceforge/pmd/auxclasspath-empty.cp";
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.prependAuxClasspath("file:" + relativeFilePath);
         URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
@@ -80,7 +80,7 @@ class PmdConfigurationTest {
 
     @Test
     void auxClasspathWithRelativeFileEmpty2() {
-        String relativeFilePath = "./src/test/resources/net/sourceforge/pmd/cli/auxclasspath-empty.cp";
+        String relativeFilePath = "./src/test/resources/net/sourceforge/pmd/auxclasspath-empty.cp";
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.prependAuxClasspath("file:" + relativeFilePath);
         URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
@@ -92,7 +92,7 @@ class PmdConfigurationTest {
         final String FILE_SCHEME = "file";
 
         String currentWorkingDirectory = new File("").getAbsoluteFile().toURI().getPath();
-        String relativeFilePath = "src/test/resources/net/sourceforge/pmd/cli/auxclasspath.cp";
+        String relativeFilePath = "src/test/resources/net/sourceforge/pmd/auxclasspath.cp";
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.prependAuxClasspath("file:" + relativeFilePath);
         URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();

@@ -17,7 +17,7 @@
                                 whose name is an acronym, eg PLSQL (in camelcase, "Plsql").
                                 Defaults to lang-name.
 
-         - lang-terse-name: Terse name, used in the conventional package names
+         - lang-id: The language id, used in the conventional package names
 
          It also uses the following maven properties:
 
@@ -34,12 +34,12 @@
         </not>
     </condition>
 
-    <property name="target-package-dir" value="${javacc.outputDirectory}/net/sourceforge/pmd/lang/${lang-terse-name}/ast" />
+    <property name="target-package-dir" value="${javacc.outputDirectory}/net/sourceforge/pmd/lang/${lang-id}/ast" />
     <property name="stamp-file" value="${project.build.directory}/last-generated-timestamp" />
 
     <property name="javacc-home.path" value="${project.build.directory}/lib/javacc" />
 
-    <property name="lang-ast-package" value="net.sourceforge.pmd.lang.${lang-terse-name}.ast" />
+    <property name="lang-ast-package" value="net.sourceforge.pmd.lang.${lang-id}.ast" />
     <property name="ast-api-package" value="net.sourceforge.pmd.lang.ast" />
     <property name="ast-impl-package" value="${ast-api-package}.impl.javacc" />
 

@@ -98,7 +98,7 @@ entries:
         subfolderitems:
         - title: Index
           output: web, pdf
-          url: /pmd_rules_vf.html
+          url: /pmd_rules_visualforce.html
     - title: null
       output: web, pdf
       subfolders:
@@ -125,7 +125,7 @@ entries:
         subfolderitems:
         - title: Index
           output: web, pdf
-          url: /pmd_rules_vm.html
+          url: /pmd_rules_velocity.html
     - title: null
       output: web, pdf
       subfolders:

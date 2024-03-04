@@ -263,8 +263,8 @@ Example:
 *   [pom](pmd_rules_pom.html) (Maven POM)
 *   [scala](pmd_rules_scala.html)
 *   [swift](pmd_rules_swift.html)
-*   [vf](pmd_rules_vf.html) (Salesforce VisualForce)
-*   [vm](pmd_rules_vm.html) (Apache Velocity)
+*   [velocity](pmd_rules_velocity.html) (Apache Velocity Template Language)
+*   [visualforce](pmd_rules_visualforce.html) (Salesforce VisualForce)
 *   [xml](pmd_rules_xml.html)
 *   [xsl](pmd_rules_xsl.html)
 

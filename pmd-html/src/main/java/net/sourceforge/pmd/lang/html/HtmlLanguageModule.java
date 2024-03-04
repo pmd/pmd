@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.html;
 import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.html.ast.HtmlCpdLexer;
+import net.sourceforge.pmd.lang.html.cpd.HtmlCpdLexer;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 
 public final class HtmlLanguageModule extends SimpleLanguageModuleBase {

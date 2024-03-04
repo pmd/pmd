@@ -31,7 +31,7 @@
                             <target>
                                 <ant antfile="${antlr4.ant.wrapper}" target="cpd-language">
                                     <property name="lang-name" value="Lua" />
-                                    <property name="lang-terse-name" value="lua" />
+                                    <property name="lang-id" value="lua" />
                                 </ant>
                             </target>
                         </configuration>

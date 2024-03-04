@@ -119,7 +119,7 @@ against a previously recorded version. If there are differences, the test fails.
 This helps to detect anything in the AST structure that changed, maybe unexpectedly.
 
 *   Create a test class in the package `net.sourceforge.pmd.lang.$lang.ast` with the name `$langTreeDumpTest`.
-*   This test class must extend `net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest`. Note: This class
+*   This test class must extend `net.sourceforge.pmd.lang.test.ast.BaseTreeDumpTest`. Note: This class
     is written in kotlin and is available in the module "lang-test".
 *   Add a default constructor, that calls the super constructor like so:
     
@@ -131,7 +131,7 @@ This helps to detect anything in the AST structure that changed, maybe unexpecte
     
     Replace "$lang" and "$extension" accordingly.
 *   Implement the method `getParser()`. It must return a
-    subclass of `net.sourceforge.pmd.lang.ast.test.BaseParsingHelper`. See 
+    subclass of `net.sourceforge.pmd.lang.test.ast.BaseParsingHelper`. See 
     `net.sourceforge.pmd.lang.ecmascript.ast.JsParsingHelper` for an example.
     With this parser helper you can also specify, where the test files are searched, by using
     the method `withResourceContext(Class<?>, String)`.

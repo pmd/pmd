@@ -7,9 +7,9 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
-import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
-import net.sourceforge.pmd.lang.ast.test.NodePrintersKt;
+import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
+import net.sourceforge.pmd.lang.test.ast.BaseTreeDumpTest;
+import net.sourceforge.pmd.lang.test.ast.NodePrintersKt;
 
 class JsTreeDumpTest extends BaseTreeDumpTest {
     JsTreeDumpTest() {

@@ -75,7 +75,7 @@ If your language only supports CPD, then you can subclass {% jdoc core::lang.imp
 
    At this point the new language module should be available in {% jdoc core::lang.LanguageRegistry#CPD %} and usable by CPD like any other language.
 
-4. Update the test that asserts the list of supported languages by updating the `SUPPORTED_LANGUAGES` constant in [BinaryDistributionIT](https://github.com/pmd/pmd/blob/master/pmd-dist/src/test/java/net/sourceforge/pmd/it/BinaryDistributionIT.java).
+4. Update the test that asserts the list of supported languages by updating the `SUPPORTED_LANGUAGES` constant in [BinaryDistributionIT](https://github.com/pmd/pmd/blob/master/pmd-dist/src/test/java/net/sourceforge/pmd/dist/BinaryDistributionIT.java).
 
 5. Add some tests for your CpdLexer by following the [section below](#testing-your-implementation).
 

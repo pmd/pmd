@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex;
 
-import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSize;
-import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSuppressed;
+import static net.sourceforge.pmd.lang.test.ast.TestUtilsKt.assertSize;
+import static net.sourceforge.pmd.lang.test.ast.TestUtilsKt.assertSuppressed;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;

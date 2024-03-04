@@ -154,7 +154,7 @@
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-vm</artifactId>
+            <artifactId>pmd-velocity</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

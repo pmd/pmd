@@ -10,12 +10,13 @@ package net.sourceforge.pmd.lang.java.types
 import io.kotest.assertions.*
 import io.kotest.assertions.print.print
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
-import net.sourceforge.pmd.lang.java.ast.*
+import net.sourceforge.pmd.lang.java.ast.InvocationNode
+import net.sourceforge.pmd.lang.java.ast.TypeNode
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.AsmSymbolResolver
 import net.sourceforge.pmd.lang.java.types.TypeOps.*
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import org.hamcrest.Description
 import java.util.stream.Collectors
 import kotlin.String

@@ -13,9 +13,9 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.collections.shouldContainAll
 import net.sourceforge.pmd.lang.ast.*
-import net.sourceforge.pmd.lang.ast.test.*
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import net.sourceforge.pmd.lang.java.JavaParsingHelper.*
+import net.sourceforge.pmd.lang.test.ast.*
 import java.beans.PropertyDescriptor
 import java.io.PrintStream
 import java.util.*

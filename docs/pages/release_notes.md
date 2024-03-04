@@ -139,6 +139,17 @@ See [#3766](https://github.com/pmd/pmd/issues/3766) for details.
 Contributors: [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-google),
   [Edward Klimoshenko](https://github.com/eklimo) (@eklimo)
 
+##### Changed: Visualforce
+
+There was an inconsistency between the naming of the maven module and the language id. The language id
+used the abbreviation "vf", while the maven module used the longer name "visualforce". This has been
+solved by renaming the language module to its full name "visualforce". The java packages have
+been renamed as well.
+
+If you import rules, you also need to adjust the paths, e.g.
+
+* `category/vf/security.xml` ➡️ `category/visualforce/security.xml`
+
 ##### Changed: HTML support
 
 Support for HTML was introduced in PMD 6.55.0 as an experimental feature. With PMD 7.0.0 this
@@ -147,6 +158,15 @@ is now considered stable.
 ##### Changed: Kotlin support
 
 Experimental Kotlin support has been promoted as stable API now.
+
+##### Changed: Velocity Template Language (VTL)
+
+The module was named just "vm" which was not a good name. It module and language id and
+package names have been renamed to "velocity".
+
+If you import rules, you also need to ajdust the paths, e.g.
+
+* `category/vm/...` ➡️ `category/velocity/...`
 
 #### Rule Changes
 
@@ -168,6 +188,13 @@ Experimental Kotlin support has been promoted as stable API now.
   Use the property `classCommentRequirement` instead.
 * {% rule java/errorprone/NonSerializableClass %}: The deprecated property `prefix` has been removed
   without replacement. In a serializable class all fields have to be serializable regardless of the name.
+
+**Renamed Rulesets**
+
+* `category/vf/security.xml` ➡️ `category/visualforce/security.xml`
+* `category/vm/bestpractices.xml` ➡️ `category/velocity/bestpractices.xml`
+* `category/vm/design.xml` ➡️ `category/velocity/design.xml`
+* `category/vm/errorprone.xml` ➡️ `category/velocity/errorprone.xml`
 
 **Removed Rules**
 
@@ -297,6 +324,7 @@ The rules have been moved into categories with PMD 6.
   * [#4796](https://github.com/pmd/pmd/pull/4796):   Remove deprecated and release rulesets
   * [#4823](https://github.com/pmd/pmd/pull/4823):   Update to use renamed pmd-designer
   * [#4827](https://github.com/pmd/pmd/pull/4827):   \[compat6] Support config errors and cpd for csharp
+  * [#4830](https://github.com/pmd/pmd/issues/4830): Consolidate packages in each maven module
 * apex
   * [#3766](https://github.com/pmd/pmd/issues/3766): \[apex] Replace Jorje with fully open source front-end
 * apex-documentation
@@ -384,6 +412,42 @@ in the migration guide for details.
     * {%jdoc core::reporting.RuleViolation %}
     * {%jdoc core::reporting.ViolationSuppressor %}
   * {%jdoc core::lang.rule.xpath.XPathRule %} has been moved into subpackage {% jdoc_package core::lang.rule.xpath %}.
+* pmd-html
+  * `net.sourceforge.pmd.lang.html.ast.HtmlCpdLexer` moved into package `cpd`: {%jdoc html::lang.html.cpd.HtmlCpdLexer %}.
+* pmd-lang-test: All types have been moved under the new base package {%jdoc_package lang-test::lang.test %}:
+  * {%jdoc lang-test::lang.test.AbstractMetricTestRule %} (moved from `net.sourceforge.pmd.test.AbstractMetricTestRule`)
+  * {%jdoc lang-test::lang.test.BaseTextComparisonTest %} (moved from `net.sourceforge.pmd.test.BaseTextComparisonTest`)
+  * {%jdoc lang-test::lang.test.cpd.CpdTextComparisonTest %} (moved from `net.sourceforge.pmd.cpd.test.CpdTextComparisonTest`)
+  * {%jdoc lang-test::lang.test.ast.BaseTreeDumpTest %} (moved from `net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest`)
+  * Any many other types have been moved from `net.sourceforge.pmd.lang.ast.test` to `net.sourceforge.pmd.lang.test`.
+* pmd-scala
+  * {%jdoc scala::lang.scala.cpd.ScalaCpdLexer %} (moved from `net.sourceforge.pmd.lang.scala.cpd.ScalaCpdLexer`)
+  * {%jdoc scala::lang.scala.cpd.ScalaTokenAdapter %} (moved from `net.sourceforge.pmd.lang.scala.cpd.ScalaTokenAdapter`)
+* pmd-test
+  * {%jdoc test::test.lang.rule.AbstractRuleSetFactoryTest %} (moved from `net.sourceforge.pmd.lang.rule.AbstractRuleSetFactoryTest`)
+  * {%jdoc test::test.AbstractAntTestHelper %} (moved from `net.sourceforge.pmd.ant.AbstractAntTestHelper`)
+  * {%jdoc test::test.AbstractLanguageVersionTest %} (moved from `net.sourceforge.pmd.AbstractLanguageVersionTest`)
+  * {%jdoc test::test.PmdRuleTst %} (moved from `net.sourceforge.pmd.testframework.PmdRuleTst`)
+  * {%jdoc test::test.RuleTst %} (moved from `net.sourceforge.pmd.testframework.RuleTst`)
+  * {%jdoc test::test.SimpleAggregatorTst %} (moved from `net.sourceforge.pmd.testframework.SimpleAggregatorTst`)
+* pmd-xml
+  * {%jdoc xml::lang.xml.pom.PomLanguageModule %} (moved from `net.sourceforge.pmd.lang.pom.PomLanguageModule`)
+  * {%jdoc xml::lang.xml.wsdl.WsdlLanguageModule %} (moved from `net.sourceforge.pmd.lang.wsdl.WsdlLanguageModule`)
+  * {%jdoc xml::lang.xml.xsl.XslLanguageModule %} (moved from `net.sourceforge.pmd.lang.xsl.XslLanguageModule`)
+* pmd-visualforce
+  * The package `net.sourceforge.pmd.lang.vf` has been renamed to {%jdoc_package visualforce::lang.visualforce %}.
+  * The language id of visualforce has been changed to `visualforce` (it was previously just "vf")
+  * The ruleset changed: `category/vf/security.xml` ➡️ `category/visualforce/security.xml`
+* pmd-velocity (renamed from pmd-vm)
+  * The package `net.sourceforge.pmd.lang.vm` has been renamed to {%jdoc_package velocity::lang.velocity %}.
+  * The language id of the Velocity module has been changed to `velocity` (it was previously just "vm")
+  * The rulesets changed: `category/vm/...` ➡️ `category/velocity/...`
+  * Many classes used the prefix `Vm`, e.g. `VmLanguageModule`. This has been changed to be `Vtl`:
+    * {%jdoc velocity::lang.velocity.VtlLanguageModule %}
+    * {%jdoc velocity::lang.velocity.ast.VtlNode %}
+    * {%jdoc velocity::lang.velocity.ast.VtlParser %}
+    * {%jdoc velocity::lang.velocity.cpd.VtlCpdLexer %}
+    * {%jdoc velocity::lang.velocity.rule.AbstractVtlRule %}
 
 **Internalized classes and interfaces and methods**
 
@@ -445,6 +509,10 @@ package or made (package) private and are _not accessible_ anymore.
     * Method `replacementIfDeprecated()` is now package private.
   * `net.sourceforge.pmd.properties.PropertyTypeId` - moved in subpackage `internal`.
   * {%jdoc !!core::properties.PropertyDescriptor %} - method `getTypeId()` is now package private.
+* pmd-doc
+  * The whole maven module `pmd-doc` is now considered internal API even though it was not declared so before.
+    It's used to generate the rule documentation for the built-in rules.
+  * All the classes have been moved into package `net.sourceforge.pmd.doc.internal`.
 * pmd-ant
   * {%jdoc !!ant::ant.Formatter %}
     * Method `getRenderer()` has been removed.
@@ -710,6 +778,7 @@ The annotation `@DeprecatedUntil700` has been removed.
   * {%jdoc !!plsql::lang.plsql.ast.PLSQLNode %} - method `jjtAccept()` has been removed.
     Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
 * pmd-scala
+  * The maven module `pmd-scala` has been removed. Use `pmd-scala_2.13` or `pmd-scala_2.12` instead.
   * {%jdoc !!scala::lang.scala.ast.ScalaNode %}
     * Method `accept()` has been removed. Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
     * Method `getNode()` has been removed. The underlying node is only available in AST nodes, but not in rule implementations.
@@ -724,10 +793,10 @@ The annotation `@DeprecatedUntil700` has been removed.
   * {%jdoc !!visualforce::lang.vf.DataType %} - method `fromBasicType(BasicType)` has been removed.
     Use {%jdoc visualforce::lang.vf.DataType#fromTypeName(java.lang.String) %} instead.
 * pmd-vm
-  * {%jdoc !!vm::lang.vm.ast.VmNode %} - method `jjtAccept()` has been removed.
+  * {%jdoc !!velocity::lang.vm.ast.VmNode %} - method `jjtAccept()` has been removed.
     Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
   * `net.sourceforge.pmd.lang.vm.ast.VmParserVisitor`
-    Use {%jdoc vm::lang.vm.ast.VmVisitor %} or {%jdoc vm::lang.vm.ast.VmVisitorBase %} instead.
+    Use {%jdoc velocity::lang.vm.ast.VmVisitor %} or {%jdoc velocity::lang.vm.ast.VmVisitorBase %} instead.
   * `net.sourceforge.pmd.lang.vm.ast.VmParserVisitorAdapter`
 
 **Removed classes, interfaces and methods (not previously deprecated)**
@@ -1124,7 +1193,7 @@ Contributors: [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-g
       {% rule plsql/design/ExcessiveParameterList %}, {% rule plsql/design/ExcessiveTypeLength %},
       {% rule plsql/design/NcssMethodCount %}, {% rule plsql/design/NcssObjectCount %},
       {% rule plsql/design/NPathComplexity %}
-    * VM: {% rule vm/design/ExcessiveTemplateLength %}
+    * Velocity: {% rule velocity/design/ExcessiveTemplateLength %}
 
 * The general property `violationSuppressXPath` which is available for all rules to
   [suppress warnings]({{ baseurl }}pmd_userdocs_suppressing_warnings.html) now uses XPath version 3.1 by default.
@@ -1286,6 +1355,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4796](https://github.com/pmd/pmd/pull/4796):   Remove deprecated and release rulesets
     * [#4823](https://github.com/pmd/pmd/pull/4823):   Update to use renamed pmd-designer
     * [#4827](https://github.com/pmd/pmd/pull/4827):   \[compat6] Support config errors and cpd for csharp
+    * [#4830](https://github.com/pmd/pmd/issues/4830): Consolidate packages in each maven module
 * ant
     * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule
 * core
