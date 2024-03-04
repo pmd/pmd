@@ -34,7 +34,7 @@ class Java21TreeDumpTest extends BaseJavaTreeDumpTest {
     @Test
     void patternMatchingForSwitchBeforeJava21() {
         ParseException thrown = assertThrows(ParseException.class, () -> java20.parseResource("Jep441_PatternMatchingForSwitch.java"));
-        assertThat(thrown.getMessage(), containsString("Patterns in switch statements is a preview feature of JDK 20, you should select your language version accordingly"));
+        assertThat(thrown.getMessage(), containsString("Patterns in switch statements are a feature of Java 21, you should select your language version accordingly"));
     }
 
     @Test
@@ -45,7 +45,7 @@ class Java21TreeDumpTest extends BaseJavaTreeDumpTest {
     @Test
     void dealingWithNullBeforeJava21() {
         ParseException thrown = assertThrows(ParseException.class, () -> java20.parseResource("DealingWithNull.java"));
-        assertThat(thrown.getMessage(), containsString("Null in switch cases is a preview feature of JDK 20, you should select your language version accordingly"));
+        assertThat(thrown.getMessage(), containsString("Null in switch cases are a feature of Java 21, you should select your language version accordingly"));
     }
 
 
@@ -67,7 +67,7 @@ class Java21TreeDumpTest extends BaseJavaTreeDumpTest {
     @Test
     void guardedPatternsBeforeJava21() {
         ParseException thrown = assertThrows(ParseException.class, () -> java20.parseResource("GuardedPatterns.java"));
-        assertThat(thrown.getMessage(), containsString("Patterns in switch statements is a preview feature of JDK 20, you should select your language version accordingly"));
+        assertThat(thrown.getMessage(), containsString("Patterns in switch statements are a feature of Java 21, you should select your language version accordingly"));
     }
 
     @Test
@@ -78,7 +78,7 @@ class Java21TreeDumpTest extends BaseJavaTreeDumpTest {
     @Test
     void patternsInSwitchLabelsBeforeJava21() {
         ParseException thrown = assertThrows(ParseException.class, () -> java20.parseResource("PatternsInSwitchLabels.java"));
-        assertThat(thrown.getMessage(), containsString("Patterns in switch statements is a preview feature of JDK 20, you should select your language version accordingly"));
+        assertThat(thrown.getMessage(), containsString("Patterns in switch statements are a feature of Java 21, you should select your language version accordingly"));
     }
 
     @Test
@@ -99,7 +99,7 @@ class Java21TreeDumpTest extends BaseJavaTreeDumpTest {
     @Test
     void recordPatternsJepBeforeJava21() {
         ParseException thrown = assertThrows(ParseException.class, () -> java20.parseResource("Jep440_RecordPatterns.java"));
-        assertThat(thrown.getMessage(), containsString("Record patterns is a preview feature of JDK 20, you should select your language version accordingly"));
+        assertThat(thrown.getMessage(), containsString("Record patterns are a feature of Java 21, you should select your language version accordingly"));
     }
 
     @Test
@@ -110,7 +110,7 @@ class Java21TreeDumpTest extends BaseJavaTreeDumpTest {
     @Test
     void recordPatternsBeforeJava21() {
         ParseException thrown = assertThrows(ParseException.class, () -> java20.parseResource("RecordPatterns.java"));
-        assertThat(thrown.getMessage(), containsString("Record patterns is a preview feature of JDK 20, you should select your language version accordingly"));
+        assertThat(thrown.getMessage(), containsString("Record patterns are a feature of Java 21, you should select your language version accordingly"));
     }
 
     @Test

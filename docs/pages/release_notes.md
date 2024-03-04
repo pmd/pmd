@@ -73,6 +73,28 @@ As PMD 7 revamped the Java module, if you have custom rules, you need to migrate
 See the use case [I'm using custom rules]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html#im-using-custom-rules)
 in the Migration Guide.
 
+##### Java 22 Support
+
+This release of PMD brings support for Java 22. There are the following new standard language features,
+that are supported now:
+
+* [JEP 456: Unnamed Variables & Patterns](https://openjdk.org/jeps/456)
+
+PMD also supports the following preview language features:
+
+* [JEP 447: Statements before super(...) (Preview)](https://openjdk.org/jeps/447)
+* [JEP 459: String Templates (Second Preview)](https://openjdk.org/jeps/459)
+* [JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)](https://openjdk.org/jeps/463)
+
+In order to analyze a project with PMD that uses these language features,
+you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
+version `22-preview`:
+
+    export PMD_JAVA_OPTS=--enable-preview
+    pmd check --use-version java-22-preview ...
+
+Note: Support for Java 20 preview language features have been removed. The version "20-preview" is no longer available.
+
 ##### Swift Support
 
 * limited support for Swift 5.9 (Macro Expansions)
@@ -288,6 +310,7 @@ The rules have been moved into categories with PMD 6.
   * [#3751](https://github.com/pmd/pmd/issues/3751): \[java] Rename some node types
   * [#4628](https://github.com/pmd/pmd/pull/4628):   \[java] Support loading classes from java runtime images
   * [#4753](https://github.com/pmd/pmd/issues/4753): \[java] PMD crashes while using generics and wildcards
+  * [#4794](https://github.com/pmd/pmd/issues/4794): \[java] Support JDK 22
 * java-bestpractices
   * [#4603](https://github.com/pmd/pmd/issues/4603): \[java] UnusedAssignment false positive in record compact constructor
   * [#4625](https://github.com/pmd/pmd/issues/4625): \[java] UnusedPrivateMethod false positive: Autoboxing into Number
@@ -316,6 +339,17 @@ The rules have been moved into categories with PMD 6.
   * [#4592](https://github.com/pmd/pmd/pull/4592):   \[xml] Add MissingEncoding rule
 
 #### API Changes
+
+**pmd-java**
+
+* Support for Java 20 preview language features have been removed. The version "20-preview" is no longer available.
+* {%jdoc java::lang.java.ast.ASTPattern %}, {%jdoc java::lang.java.ast.ASTRecordPattern %},
+  {%jdoc java::lang.java.ast.ASTTypePattern %}, {%jdoc java::lang.java.ast.ASTUnnamedPattern %}
+   - method `getParenthesisDepth()` has been removed.
+* {%jdoc java::lang.java.ast.ASTTemplateFragment %}: To get the content of the template, use now
+  {%jdoc java::lang.java.ast.ASTTemplateFragment#getContent() %} or `@Content` instead of `getImage()`/`@Image`.
+* {%jdoc java::lang.java.ast.ASTUnnamedPattern %} is not experimental anymore. The language feature
+  has been standardized with Java 22.
 
 **New API**
 
@@ -1398,6 +1432,7 @@ Language specific fixes:
     * [#4583](https://github.com/pmd/pmd/issues/4583): \[java] Support JDK 21 (LTS)
     * [#4628](https://github.com/pmd/pmd/pull/4628):   \[java] Support loading classes from java runtime images
     * [#4753](https://github.com/pmd/pmd/issues/4753): \[java] PMD crashes while using generics and wildcards
+    * [#4794](https://github.com/pmd/pmd/issues/4794): \[java] Support JDK 22
 * java-bestpractices
     * [#342](https://github.com/pmd/pmd/issues/342):   \[java] AccessorMethodGeneration: Name clash with another public field not properly handled
     * [#755](https://github.com/pmd/pmd/issues/755):   \[java] AccessorClassGeneration false positive for private constructors
