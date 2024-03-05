@@ -4,11 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 
 class Java11Test : ParserTestSpec({
 

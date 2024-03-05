@@ -10,7 +10,6 @@ import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.util.OptionalBool
-import org.intellij.lang.annotations.Language
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 

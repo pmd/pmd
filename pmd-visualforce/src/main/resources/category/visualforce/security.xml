@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ruleset name="Security"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+Rules that flag potential security flaws.
+    </description>
+
+    <rule name="VfCsrf"
+          language="visualforce"
+          since="5.6.0"
+          message="Avoid calling VF action upon page load"
+          class="net.sourceforge.pmd.lang.visualforce.rule.security.VfCsrfRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_visualforce_security.html#vfcsrf">
+        <description>
+Avoid calling VF action upon page load as the action becomes vulnerable to CSRF.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+<apex:page controller="AcRestActionsController" action="{!csrfInitMethod}" >
+]]>
+        </example>
+    </rule>
+
+    <rule name="VfHtmlStyleTagXss"
+          language="visualforce"
+          since="6.31.0"
+          message="Use correct encoding for expressions within Style tag"
+          class="net.sourceforge.pmd.lang.visualforce.rule.security.VfHtmlStyleTagXssRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_visualforce_security.html#vfhtmlstyletagxss">
+        <description>
+Checks for the correct encoding in `&lt;style/&gt;` tags in Visualforce pages.
+
+The rule is based on Salesforce Security's recommendation to prevent XSS in Visualforce as mentioned
+on [Secure Coding Cross Site Scripting](https://developer.salesforce.com/docs/atlas.en-us.secure_coding_guide.meta/secure_coding_guide/secure_coding_cross_site_scripting.htm).
+
+In order to avoid cross site scripting, the relevant encoding must be used in HTML tags. The rule expects
+`URLENCODING` or `JSINHTMLENCODING` for URL-based style values and any kind of encoding
+(e.g. `HTMLENCODING`) for non-url style values.
+
+See also {% rule "VfUnescapeEl" %} to check escaping in other places on Visualforce pages.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+<apex:page>
+    <style>
+        div {
+            background: url('{!XSSHere}'); // Potential XSS
+        }
+        div {
+            background: url('{!URLENCODE(XSSHere)}'); // correct encoding
+        }
+    </style>
+</apex:page>
+]]>
+        </example>
+    </rule>
+
+    <rule name="VfUnescapeEl"
+          language="visualforce"
+          since="5.6.0"
+          message="Avoid unescaped user controlled content in EL"
+          class="net.sourceforge.pmd.lang.visualforce.rule.security.VfUnescapeElRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_visualforce_security.html#vfunescapeel">
+        <description>
+Avoid unescaped user controlled content in EL as it results in XSS.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+<apex:outputText value="Potential XSS is {! here }" escape="false" />
+]]>
+        </example>
+    </rule>
+
+</ruleset>

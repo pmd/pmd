@@ -4,16 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal
 
+import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
-import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.*
-import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.*
 import net.sourceforge.pmd.lang.java.types.Substitution
+import net.sourceforge.pmd.lang.test.ast.*
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 import java.lang.reflect.Modifier
 
 /**
@@ -386,7 +386,7 @@ class AstSymbolTests : ParserTestSpec({
         val (canonCtor1, canonCtor2) = acu.descendants(ASTRecordComponentList::class.java).toList { it.symbol }
         val (auxCtor) = acu.descendants(ASTConstructorDeclaration::class.java).toList { it.symbol }
         val (xAccessor) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.symbol }
-        val (xComp, yComp, x2Comp, y2Comp, x2Formal) = acu.descendants(ASTVariableId::class.java).toList { it.symbol }
+        val (xComp, yComp, _, y2Comp, _) = acu.descendants(ASTVariableId::class.java).toList { it.symbol }
 
 
         doTest("should reflect their modifiers") {
@@ -550,7 +550,7 @@ class AstSymbolTests : ParserTestSpec({
             }
 
             // all others are Runnable
-            (allAnons - anonsWithSuperClass).forEach {
+            (allAnons - anonsWithSuperClass.toSet()).forEach {
                 it::getSuperclass shouldBe it.typeSystem.OBJECT.symbol
                 it::getSuperInterfaces shouldBe listOf(it.typeSystem.getClassSymbol(Runnable::class.java))
             }

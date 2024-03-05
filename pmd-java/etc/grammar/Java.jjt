@@ -1,4 +1,16 @@
 /**
+ * Support "JEP 447: Statements before super(...) (Preview)" (Java 22)
+ *     Changes in ConstructorBlock
+ * Support "JEP 456: Unnamed Variables & Patterns" (Java 22)
+ *     This is now a regular language feature. Otherwise no changes.
+ * Support "JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)" (Java 22)
+ *     No changes.
+ * Support "JEP 459: String Templates (Second Preview)" (Java 22)
+ *     Use ASTTemplate.setContent instead of setImage.
+ * Remove support for Record pattern in enhanced for statements. This was only a Java 20 Preview feature.
+ * Remove support for ParenthesizedPatterns. This was only a Java 20 Preview feature.
+ * Andreas Dangel 02/2024
+ *====================================================================
  * Renamed various nodes:
  * ClassOrInterfaceType -> ClassType
  * ClassOrInterfaceDeclaration -> ClassDeclaration
@@ -1049,7 +1061,7 @@ TOKEN :
 // In order to produce the correct token sequence, the ambiguity needs to be resolved using the context.
 // That means, that STRING_TEMPLATE_MID/END and TEXT_BLOCK_TEMPLATE_MID/END could actually be a closing bracket ("}").
 // Additionally, a STRING_TEMPLATE_MID could be a TEXT_BLOCK_TEMPLATE_MID and the other way round.
-// See JLS 3.13 Fragments (Java 21 Preview)
+// See JLS 3.13 Fragments (Java 21 Preview and Java 22 Preview)
 
 TOKEN :
 {
@@ -1147,7 +1159,7 @@ ASTCompilationUnit CompilationUnit() :
   // OrdinaryCompilationUnit: -> TopLevelClassOrInterfaceDeclaration
   ( TypeDeclaration() ( EmptyDeclaration() )* )*
 
-  // UnnamedClassCompilationUnit:
+  // SimpleCompilationUnit:
   [
       ( LOOKAHEAD(3) ClassMemberDeclarationNoMethod() )*
       ModifierList() MethodDeclaration()
@@ -1512,7 +1524,12 @@ private void ConstructorBlock() #Block:
 {}
 {
     "{" { tokenContexts.push(TokenContext.BLOCK); }
-        [ LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation() ]
+        (
+            LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation()
+               |
+            ( LOOKAHEAD(2) BlockStatement() )*
+            [ LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation() ]
+        )
         ( BlockStatement() )*
     "}" { tokenContexts.pop(); }
 }
@@ -1895,16 +1912,7 @@ void Pattern() #void:
 {}
 {
     LOOKAHEAD((Annotation())* ReferenceType() "(") RecordPattern()
-    | LOOKAHEAD("(") ParenthesizedPattern()
     | TypePattern()
-}
-
-// ParenthesizedPatterns are removed with Java 21 (JEP 441), but needed for now to support Java 20 Preview
-// TODO: Remove ParenthesizedPattern once java 20-preview is removed
-void ParenthesizedPattern() #void:
-{}
-{
-    "(" Pattern() ")" { AstImplUtil.bumpParenDepth((ASTPattern) jjtree.peekNode()); }
 }
 
 void TypePattern():
@@ -2341,10 +2349,10 @@ void StringTemplate() #void :
 {
   { tokenContexts.push(TokenContext.STRING_TEMPLATE); }
 
-        <STRING_TEMPLATE_BEGIN> { setLastTokenImage(jjtThis); } #TemplateFragment
+        <STRING_TEMPLATE_BEGIN> { jjtThis.setContent(getToken(0).getImage()); } #TemplateFragment
         EmbeddedExpression()
-        ( <STRING_TEMPLATE_MID> { setLastTokenImage(jjtThis); } #TemplateFragment EmbeddedExpression() )*
-        <STRING_TEMPLATE_END> { setLastTokenImage(jjtThis); } #TemplateFragment
+        ( <STRING_TEMPLATE_MID> { jjtThis.setContent(getToken(0).getImage()); } #TemplateFragment EmbeddedExpression() )*
+        <STRING_TEMPLATE_END> { jjtThis.setContent(getToken(0).getImage()); } #TemplateFragment
 
   { tokenContexts.pop(); }
 }
@@ -2354,10 +2362,10 @@ void TextBlockTemplate() #void :
 {
   { tokenContexts.push(TokenContext.TEXT_BLOCK_TEMPLATE); }
 
-        <TEXT_BLOCK_TEMPLATE_BEGIN> { setLastTokenImage(jjtThis); } #TemplateFragment
+        <TEXT_BLOCK_TEMPLATE_BEGIN> { jjtThis.setContent(getToken(0).getImage()); } #TemplateFragment
         EmbeddedExpression()
-        ( <TEXT_BLOCK_TEMPLATE_MID> { setLastTokenImage(jjtThis); } #TemplateFragment EmbeddedExpression() )*
-        <TEXT_BLOCK_TEMPLATE_END> { setLastTokenImage(jjtThis); } #TemplateFragment
+        ( <TEXT_BLOCK_TEMPLATE_MID> { jjtThis.setContent(getToken(0).getImage()); } #TemplateFragment EmbeddedExpression() )*
+        <TEXT_BLOCK_TEMPLATE_END> { jjtThis.setContent(getToken(0).getImage()); } #TemplateFragment
 
   { tokenContexts.pop(); }
 }
@@ -2771,9 +2779,7 @@ void ForStatement() #void:
 void EnhancedForDeclaration() #void:
 {}
 {
-      LOOKAHEAD(LocalVariableDeclaration()) LocalVariableDeclaration()
-    // TODO: a recored pattern here is only valid with Java 20 Preview and not anymore with Java 21 (see JEP 440)
-    | RecordPattern()
+      LocalVariableDeclaration()
 }
 
 void ForInit() :

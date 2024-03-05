@@ -7,8 +7,8 @@ package net.sourceforge.pmd.lang.java.types
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.IntelliMarker
-import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.test.ast.IntelliMarker
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.createUnresolvedAsmSymbol
 
 /**

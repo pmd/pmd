@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 
 /**
  * @author Clément Fournier
@@ -59,9 +59,9 @@ class ASTTypeTest : ParserTestSpec({
         // So @B binds to "java"
         // If the annotation is not applicable to TYPE_USE then it doesn't compile
 
-        // this happens in type context, eg in a cast, or in an extends list
+        // this happens in type context, e.g. in a cast, or in an extends list
 
-        // TYPE_USE annotations are prohibited eg before a declaration
+        // TYPE_USE annotations are prohibited e.g. before a declaration
 
         inContext(TypeParsingCtx) {
 

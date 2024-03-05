@@ -9,9 +9,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -35,8 +32,6 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * @author Brian Remedios
  */
 public class CommentRequiredRule extends AbstractJavaRulechainRule {
-    private static final Logger LOG = LoggerFactory.getLogger(CommentRequiredRule.class);
-
     // Used to pretty print a message
     private static final Map<String, String> DESCRIPTOR_NAME_TO_COMMENT_TYPE = new HashMap<>();
 
@@ -46,8 +41,6 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
     private static final PropertyDescriptor<CommentRequirement> OVERRIDE_CMT_DESCRIPTOR
         = requirementPropertyBuilder("methodWithOverrideCommentRequirement", "Comments on @Override methods")
         .defaultValue(CommentRequirement.Ignored).build();
-    private static final PropertyDescriptor<CommentRequirement> HEADER_CMT_REQUIREMENT_DESCRIPTOR
-        = requirementPropertyBuilder("headerCommentRequirement", "Deprecated! Header comments. Please use the property \"classCommentRequired\" instead.").build();
     private static final PropertyDescriptor<CommentRequirement> CLASS_CMT_REQUIREMENT_DESCRIPTOR
         = requirementPropertyBuilder("classCommentRequirement", "Class comments").build();
     private static final PropertyDescriptor<CommentRequirement> FIELD_CMT_REQUIREMENT_DESCRIPTOR
@@ -73,7 +66,6 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
         definePropertyDescriptor(OVERRIDE_CMT_DESCRIPTOR);
         definePropertyDescriptor(ACCESSOR_CMT_DESCRIPTOR);
         definePropertyDescriptor(CLASS_CMT_REQUIREMENT_DESCRIPTOR);
-        definePropertyDescriptor(HEADER_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(FIELD_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
@@ -94,20 +86,7 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
                 getProperty(SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR));
         propertyValues.put(SERIAL_PERSISTENT_FIELDS_CMT_REQUIREMENT_DESCRIPTOR,
                 getProperty(SERIAL_PERSISTENT_FIELDS_CMT_REQUIREMENT_DESCRIPTOR));
-
-        CommentRequirement headerCommentRequirementValue = getProperty(HEADER_CMT_REQUIREMENT_DESCRIPTOR);
-        boolean headerCommentRequirementValueOverridden = headerCommentRequirementValue != CommentRequirement.Required;
-        CommentRequirement classCommentRequirementValue = getProperty(CLASS_CMT_REQUIREMENT_DESCRIPTOR);
-        boolean classCommentRequirementValueOverridden = classCommentRequirementValue != CommentRequirement.Required;
-
-        if (headerCommentRequirementValueOverridden && !classCommentRequirementValueOverridden) {
-            LOG.warn("Rule CommentRequired uses deprecated property 'headerCommentRequirement'. "
-                    + "Future versions of PMD will remove support for this property. "
-                    + "Please use 'classCommentRequirement' instead!");
-            propertyValues.put(CLASS_CMT_REQUIREMENT_DESCRIPTOR, headerCommentRequirementValue);
-        } else {
-            propertyValues.put(CLASS_CMT_REQUIREMENT_DESCRIPTOR, classCommentRequirementValue);
-        }
+        propertyValues.put(CLASS_CMT_REQUIREMENT_DESCRIPTOR, getProperty(CLASS_CMT_REQUIREMENT_DESCRIPTOR));
     }
 
     private void checkCommentMeetsRequirement(Object data, JavadocCommentOwner node,
@@ -203,8 +182,7 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
 
         return getProperty(OVERRIDE_CMT_DESCRIPTOR) == CommentRequirement.Ignored
                 && getProperty(ACCESSOR_CMT_DESCRIPTOR) == CommentRequirement.Ignored
-                && (getProperty(CLASS_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
-                        || getProperty(HEADER_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored)
+                && getProperty(CLASS_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
                 && getProperty(FIELD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
                 && getProperty(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
                 && getProperty(PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored

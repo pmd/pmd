@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.scala.ast
 
-import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper
-import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest
-import net.sourceforge.pmd.lang.ast.test.SimpleNodePrinter
+import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper
+import net.sourceforge.pmd.lang.test.ast.BaseTreeDumpTest
+import net.sourceforge.pmd.lang.test.ast.SimpleNodePrinter
 import org.junit.jupiter.api.Test
 
 class ScalaParserTests : BaseTreeDumpTest(SimpleNodePrinter, ".scala") {

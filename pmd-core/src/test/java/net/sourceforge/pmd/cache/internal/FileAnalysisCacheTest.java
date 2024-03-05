@@ -48,6 +48,7 @@ import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.InternalApiBridge;
+import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleViolation;
 
 class FileAnalysisCacheTest {
@@ -146,6 +147,35 @@ class FileAnalysisCacheTest {
         assertEquals(textLocation.getEndColumn(), cachedViolation.getEndColumn());
     }
 
+    @Test
+    void testStorePersistsFilesWithViolationsAndProcessingErrors() throws IOException {
+        final FileAnalysisCache cache = new FileAnalysisCache(newCacheFile);
+        cache.checkValidity(mock(RuleSets.class), mock(ClassLoader.class), setOf(sourceFileBackend));
+        final FileAnalysisListener cacheListener = cache.startFileAnalysis(sourceFile);
+
+        cache.isUpToDate(sourceFile);
+
+        cacheListener.onError(new Report.ProcessingError(new RuntimeException("some rule failed"), sourceFile.getFileId()));
+
+        final RuleViolation rv = mock(RuleViolation.class);
+        final TextRange2d textLocation = TextRange2d.range2d(1, 2, 3, 4);
+        when(rv.getLocation()).thenReturn(FileLocation.range(sourceFile.getFileId(), textLocation));
+        final Rule rule = mock(Rule.class, Mockito.RETURNS_SMART_NULLS);
+        when(rule.getLanguage()).thenReturn(mock(Language.class));
+        when(rv.getRule()).thenReturn(rule);
+
+        // the next rule wants to report a violation
+        cacheListener.onRuleViolation(rv);
+        cache.persist();
+
+        final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
+        reloadedCache.checkValidity(mock(RuleSets.class), mock(ClassLoader.class), setOf(sourceFileBackend));
+        assertFalse(reloadedCache.isUpToDate(sourceFile),
+                "Cache believes file is up to date although processing errors happened earlier");
+
+        final List<RuleViolation> cachedViolations = reloadedCache.getCachedViolations(sourceFile);
+        assertTrue(cachedViolations.isEmpty(), "There should be no cached rule violations");
+    }
 
     @Test
     void testDisplayNameIsRespected() throws Exception {

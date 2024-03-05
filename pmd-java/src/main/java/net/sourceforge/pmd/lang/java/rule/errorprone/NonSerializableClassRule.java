@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
-import static net.sourceforge.pmd.properties.PropertyFactory.stringProperty;
 
 import java.io.Externalizable;
 import java.io.ObjectInputStream;
@@ -45,8 +44,6 @@ import net.sourceforge.pmd.reporting.RuleContext;
 // Note: This rule has been formerly known as "BeanMembersShouldSerialize".
 public class NonSerializableClassRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<String> PREFIX_DESCRIPTOR = stringProperty("prefix")
-            .desc("deprecated! A variable prefix to skip, i.e., m_").defaultValue("").build();
     private static final PropertyDescriptor<Boolean> CHECK_ABSTRACT_TYPES = booleanProperty("checkAbstractTypes")
             .desc("Enable to verify fields with abstract types like abstract classes, interfaces, generic types "
                 + "or java.lang.Object. Enabling this might lead to more false positives, since the concrete "
@@ -62,7 +59,6 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
     public NonSerializableClassRule() {
         super(ASTVariableId.class, ASTClassDeclaration.class, ASTEnumDeclaration.class,
                 ASTRecordDeclaration.class);
-        definePropertyDescriptor(PREFIX_DESCRIPTOR);
         definePropertyDescriptor(CHECK_ABSTRACT_TYPES);
     }
 

@@ -7,12 +7,15 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.assertions.withClue
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.*
-import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
+import net.sourceforge.pmd.lang.test.ast.component6
+import net.sourceforge.pmd.lang.test.ast.component7
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldBeA
+import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import java.util.function.DoubleConsumer
 import java.util.function.Supplier
 import kotlin.test.assertEquals

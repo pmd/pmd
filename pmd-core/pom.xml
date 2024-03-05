@@ -67,6 +67,15 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <!-- overrides the configuration from parent pom: we have here no offline links yet -->
+                    <offlineLinks combine.self="override"></offlineLinks>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <dependencies>

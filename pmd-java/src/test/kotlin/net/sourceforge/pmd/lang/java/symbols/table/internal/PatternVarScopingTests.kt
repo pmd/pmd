@@ -5,8 +5,8 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
 import io.kotest.assertions.withClue
-import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBeA
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.*
 
 /**
