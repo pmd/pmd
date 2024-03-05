@@ -4,9 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -112,6 +114,26 @@ class ApexQualifiedNameTest extends ApexParserTestBase {
         assertEquals("Outer.Inner", enumQName.toString());
         for (ASTMethod m : methods) {
             assertTrue(m.getQualifiedName().toString().startsWith("Outer.Inner#"));
+        }
+    }
+
+    @Test
+    void testOfString() {
+        assertQualifiedName(new String[] { "MyClass" }, true, null, ApexQualifiedName.ofString("MyClass"));
+        assertQualifiedName(new String[] { "Outer", "MyClass" }, true, null, ApexQualifiedName.ofString("Outer.MyClass"));
+        assertQualifiedName(new String[] { "Foo" }, false, "foo(String, Foo)", ApexQualifiedName.ofString("Foo#foo(String, Foo)"));
+    }
+
+    private static void assertQualifiedName(String[] expectedClasses, boolean isClass, String expectedOperation, ApexQualifiedName name) {
+        assertArrayEquals(expectedClasses, name.getClasses());
+        assertEquals(isClass, name.isClass());
+        assertEquals(!isClass, name.isOperation());
+        assertEquals(expectedOperation, name.getOperation());
+
+        if (isClass) {
+            assertSame(name, name.getClassName());
+        } else {
+            assertArrayEquals(expectedClasses, name.getClassName().getClasses());
         }
     }
 }

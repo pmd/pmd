@@ -105,7 +105,7 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  * equivalent to {@link Stream#findAny()}. The method {@link #first()}
  * is an equivalent to {@link Stream#findFirst()}. There is however a
  * {@link #last()} method, which may be implemented efficiently on some
- * streams (eg {@link #children()}). TODO maybe implement reverse
+ * streams (eg {@link #children()}).
  *
  * <p>Node streams are most of the time ordered in document order (w.r.t. the XPath specification),
  * a.k.a. prefix order. Some operations which explicitly manipulate the order of nodes, like

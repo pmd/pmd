@@ -151,7 +151,6 @@ public class Formatter {
         return sb.toString();
     }
 
-    // FIXME - hm, what about this consoleRenderer thing... need a test for this
     Renderer createRenderer() {
         if (StringUtils.isBlank(type)) {
             throw new BuildException(unknownRendererMessage("<unspecified>"));

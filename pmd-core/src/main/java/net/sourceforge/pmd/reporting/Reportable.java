@@ -12,9 +12,8 @@ import net.sourceforge.pmd.lang.document.FileLocation;
  * Interface implemented by those objects that can be the target of
  * a {@link RuleViolation}. {@link Node}s and {@link GenericToken tokens}
  * implement this interface.
- *
- * TODO use this in RuleViolationFactory
  */
+// TODO use this in RuleContext where RuleViolations are created
 public interface Reportable {
 
     // todo add optional method to get the nearest node, to implement

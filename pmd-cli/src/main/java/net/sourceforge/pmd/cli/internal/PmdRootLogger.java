@@ -64,7 +64,6 @@ public final class PmdRootLogger {
         // In pmd-cli, we use slf4j-simple.
 
         // create a top-level reporter
-        // TODO CLI errors should also be reported through this
         PmdReporter pmdReporter = new SimpleMessageReporter(log);
         // always install java.util.logging to slf4j bridge
         Slf4jSimpleConfiguration.installJulBridge();
