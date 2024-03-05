@@ -7,8 +7,9 @@ mkdir $HOME/pmd-demo
 cd $HOME/pmd-demo
 curl -L -o jdk-master.zip https://github.com/openjdk/jdk/archive/refs/heads/master.zip
 unzip jdk-master.zip
-alias pmd=$HOME/PMD/source/pmd/pmd-dist/target/pmd-bin-7.0.0-SNAPSHOT/bin
+alias pmd=$HOME/PMD/source/pmd/pmd-dist/target/pmd-bin-7.0.0-SNAPSHOT/bin/pmd
 clear
+pmd --version
 pmd check -R rulesets/java/quickstart.xml -d jdk-master/src/java.base -f text --cache pmd.cache --report-file jdk-report.txt
 ```
 
