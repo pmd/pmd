@@ -98,7 +98,7 @@ class BaseTestParserImpl {
             if (description == null) {
                 return;
             }
-            descriptor.setDescription(description);
+            descriptor.setDescription(description.trim());
         }
 
         parseBoolAttribute(testCode, "reinitializeRule", true, err, "Attribute 'reinitializeRule' is deprecated and ignored, assumed true");
@@ -206,11 +206,9 @@ class BaseTestParserImpl {
             }
             usedFragments.add(id.getValue());
             code = parseTextNodeNoTrim(fragment);
-            // first trim empty lines at beginning/end
-            code = code.trim();
-            // then trim any indentation
-            code = StringUtil.trimIndent(Chars.wrap(code)).toString();
         }
+        // first trim empty lines at beginning/end, then trim any indentation
+        code = StringUtil.trimIndent(Chars.wrap(code).trimBlankLines()).toString();
         return code;
     }
 
@@ -296,7 +294,7 @@ class BaseTestParserImpl {
         if (node == null) {
             return null;
         }
-        return parseTextNode(node);
+        return parseTextNodeNoTrim(node);
     }
 
     private Element getSingleChild(Element parentElm, String nodeName, boolean required, PmdXmlReporter err) {
