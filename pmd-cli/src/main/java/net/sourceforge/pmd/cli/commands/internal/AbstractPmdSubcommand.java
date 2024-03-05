@@ -5,11 +5,8 @@
 package net.sourceforge.pmd.cli.commands.internal;
 
 import java.util.concurrent.Callable;
-import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.cli.internal.CliExitCode;
-import net.sourceforge.pmd.cli.internal.PmdBanner;
 
 import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
@@ -29,8 +26,6 @@ public abstract class AbstractPmdSubcommand implements Callable<Integer> {
 
     @Override
     public final Integer call() throws Exception {
-        System.err.println(PmdBanner.loadBanner().stream().collect(Collectors.joining(System.lineSeparator())));
-        System.err.println(PMDVersion.getFullVersionName());
         validate();
         return execute().getExitCode();
     }
