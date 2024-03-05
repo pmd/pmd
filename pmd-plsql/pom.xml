@@ -43,7 +43,7 @@
                                     <property name="javacc.jar" value="${javacc.jar}" />
                                     <property name="lang-name" value="PLSQL" />
                                     <property name="lang-name-camelcase" value="Plsql" />
-                                    <property name="lang-terse-name" value="plsql" />
+                                    <property name="lang-id" value="plsql" />
                                 </ant>
                             </target>
                         </configuration>

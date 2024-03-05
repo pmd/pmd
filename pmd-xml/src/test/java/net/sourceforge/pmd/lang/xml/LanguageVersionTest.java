@@ -7,10 +7,10 @@ package net.sourceforge.pmd.lang.xml;
 import java.util.Arrays;
 import java.util.Collection;
 
-import net.sourceforge.pmd.AbstractLanguageVersionTest;
-import net.sourceforge.pmd.lang.pom.PomLanguageModule;
-import net.sourceforge.pmd.lang.wsdl.WsdlLanguageModule;
-import net.sourceforge.pmd.lang.xsl.XslLanguageModule;
+import net.sourceforge.pmd.test.AbstractLanguageVersionTest;
+import net.sourceforge.pmd.lang.xml.pom.PomLanguageModule;
+import net.sourceforge.pmd.lang.xml.wsdl.WsdlLanguageModule;
+import net.sourceforge.pmd.lang.xml.xsl.XslLanguageModule;
 
 class LanguageVersionTest extends AbstractLanguageVersionTest {
 

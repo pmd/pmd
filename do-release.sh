@@ -281,7 +281,7 @@ echo "Then proceed with releasing pmd-designer..."
 echo "<https://github.com/pmd/pmd-designer/blob/master/releasing.md>"
 echo
 echo "Press enter to continue when pmd-designer is available in maven-central..."
-echo "<https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-ui/maven-metadata.xml>."
+echo "<https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-designer/maven-metadata.xml>."
 echo
 echo "Note: If there is no new pmd-designer release needed, you can directly proceed."
 read -r

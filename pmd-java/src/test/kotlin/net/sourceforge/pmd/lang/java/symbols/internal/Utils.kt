@@ -8,7 +8,6 @@ import io.kotest.assertions.withClue
 import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.should
 import io.kotest.property.*
-import io.kotest.property.arbitrary.arbitrary
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver
 import net.sourceforge.pmd.lang.java.types.testTypeSystem
@@ -80,7 +79,7 @@ object TestClassesGen : Arb<Class<*>>() {
                 return
             }
             val files = directory.listFiles()
-            for (file in files) {
+            for (file in files!!) {
                 if (file.isDirectory) {
                     assert(!file.name.contains("."))
                     findClasses(file, packageName + "." + file.name)

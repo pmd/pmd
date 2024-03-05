@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import static net.sourceforge.pmd.lang.ast.test.NodeExtensionsKt.textOfReportLocation;
-import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertPosition;
+import static net.sourceforge.pmd.lang.test.ast.NodeExtensionsKt.textOfReportLocation;
+import static net.sourceforge.pmd.lang.test.ast.TestUtilsKt.assertPosition;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.StringContains.containsString;

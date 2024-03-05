@@ -84,7 +84,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
 
     parserTest("Unary expression ambiguity corner cases") {
 
-        // the following cases test ambiguity between cast of unary, and eg parenthesized additive expr
+        // the following cases test ambiguity between cast of unary, and e.g. parenthesized additive expr
 
         // see https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-UnaryExpressionNotPlusMinus
         // comments about ambiguity are below grammar

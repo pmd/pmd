@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.swift.rule.errorprone;
 
-import net.sourceforge.pmd.testframework.PmdRuleTst;
+import net.sourceforge.pmd.test.PmdRuleTst;
 
 class ForceCastTest extends PmdRuleTst {
     // no additional unit tests

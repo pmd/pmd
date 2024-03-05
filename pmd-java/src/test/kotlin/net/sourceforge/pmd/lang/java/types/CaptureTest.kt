@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.types
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.createUnresolvedAsmSymbol
 import net.sourceforge.pmd.lang.java.types.TypeConversion.*
 
@@ -58,7 +57,7 @@ class CaptureTest : FunSpec({
             }
 
             test("Capture of malformed types") {
-                val sym = ts.createUnresolvedAsmSymbol("does.not.Exist") as JClassSymbol
+                val sym = ts.createUnresolvedAsmSymbol("does.not.Exist")
 
                 val matcher = captureMatcher(`?` extends t_String).also {
                     capture(sym[t_String, `?` extends t_String]) shouldBe sym[t_String, it]

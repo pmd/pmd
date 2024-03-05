@@ -214,6 +214,28 @@ module `pmd-coco`.
 
 Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
 
+### Java 22 Support
+
+This release of PMD brings support for Java 22. There are the following new standard language features,
+that are supported now:
+
+* [JEP 456: Unnamed Variables & Patterns](https://openjdk.org/jeps/456)
+
+PMD also supports the following preview language features:
+
+* [JEP 447: Statements before super(...) (Preview)](https://openjdk.org/jeps/447)
+* [JEP 459: String Templates (Second Preview)](https://openjdk.org/jeps/459)
+* [JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)](https://openjdk.org/jeps/463)
+
+In order to analyze a project with PMD that uses these language features,
+you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
+version `22-preview`:
+
+    export PMD_JAVA_OPTS=--enable-preview
+    pmd check --use-version java-22-preview ...
+
+Note: Support for Java 20 preview language features have been removed. The version "20-preview" is no longer available.
+
 ### New: Java 21 Support
 
 This release of PMD brings support for Java 21. There are the following new standard language features,
@@ -330,7 +352,7 @@ can be parsed now. PMD should now be able to parse Apex code up to version 59.0 
       {% rule plsql/design/ExcessiveParameterList %}, {% rule plsql/design/ExcessiveTypeLength %},
       {% rule plsql/design/NcssMethodCount %}, {% rule plsql/design/NcssObjectCount %},
       {% rule plsql/design/NPathComplexity %}
-    * VM: {% rule vm/design/ExcessiveTemplateLength %}
+    * Velocity: {% rule velocity/design/ExcessiveTemplateLength %}
 
 * The general property `violationSuppressXPath` which is available for all rules to
   [suppress warnings](pmd_userdocs_suppressing_warnings.html) now uses XPath version 3.1 by default.
@@ -1717,7 +1739,7 @@ These deprecations have already been rolled out in a previous version for the
 following languages:
 * Java: {% jdoc_package java::lang.java.ast %}
 * Java Server Pages: {% jdoc_package jsp::lang.jsp.ast %}
-* Velocity Template Language: {% jdoc_package vm::lang.vm.ast %}
+* Velocity Template Language: {% jdoc_package velocity::lang.vm.ast %}
 
 Outside of these packages, these changes also concern the following TokenManager
 implementations, and their corresponding Parser if it exists (in the same package):
@@ -1732,7 +1754,7 @@ implementations, and their corresponding Parser if it exists (in the same packag
 *   {% jdoc plsql::lang.plsql.PLSQLTokenManager %}
 *   {% jdoc python::lang.python.PythonTokenManager %}
 *   {% jdoc visualforce::lang.vf.VfTokenManager %}
-*   {% jdoc vm::lang.vm.VmTokenManager %}
+*   {% jdoc velocity::lang.vm.VmTokenManager %}
 
 
 In the **Java AST** the following attributes are deprecated and will issue a warning when used in XPath rules:
@@ -1867,19 +1889,19 @@ The following usages are now deprecated **in the VM AST** (with other languages 
     Those constructors will be made package private with 7.0.0.
 *   **Subclassing of abstract node classes, or usage of their type**. The base classes are internal API
     and will be hidden in version 7.0.0. You should not couple your code to them.
-  *   In the meantime you should use interfaces like {% jdoc vm::lang.vm.ast.VmNode %} or
+  *   In the meantime you should use interfaces like {% jdoc velocity::lang.vm.ast.VmNode %} or
       {% jdoc core::lang.ast.Node %}, or the other published interfaces in this package,
       to refer to nodes generically.
   *   Concrete node classes will **be made final** with 7.0.0.
 *   Setters found in any node class or interface. **Rules should consider the AST immutable**.
     We will make those setters package private with 7.0.0.
-*   The package {% jdoc_package vm::lang.vm.directive %} as well as the classes
-    {% jdoc vm::lang.vm.util.DirectiveMapper %} and {% jdoc vm::lang.vm.util.LogUtil %} are deprecated
+*   The package {% jdoc_package velocity::lang.vm.directive %} as well as the classes
+    {% jdoc velocity::lang.vm.util.DirectiveMapper %} and {% jdoc velocity::lang.vm.util.LogUtil %} are deprecated
     for removal. They were only used internally during parsing.
-*   The class {% jdoc vm::lang.vm.VmParser %} is deprecated and should not be used directly.
+*   The class {% jdoc velocity::lang.vm.VmParser %} is deprecated and should not be used directly.
     Use {% jdoc !!core::lang.LanguageVersionHandler#getParser(ParserOptions) %} instead.
 
-Please look at {% jdoc_package vm::lang.vm.ast %} to find out the full list of deprecations.
+Please look at {% jdoc_package velocity::lang.vm.ast %} to find out the full list of deprecations.
 
 **PLSQL AST**
 
@@ -2089,7 +2111,7 @@ of deprecations.
   *   {% jdoc !q!jsp::lang.jsp.ast.DumpFacade %}
   *   {% jdoc !q!plsql::lang.plsql.ast.DumpFacade %}
   *   {% jdoc !q!visualforce::lang.vf.ast.DumpFacade %}
-  *   {% jdoc !q!vm::lang.vm.ast.AbstractVmNode#dump(String, boolean, Writer) %}
+  *   {% jdoc !q!velocity::lang.vm.ast.AbstractVmNode#dump(String, boolean, Writer) %}
   *   {% jdoc !q!xml::lang.xml.ast.DumpFacade %}
 *   The method {% jdoc !c!core::lang.LanguageVersionHandler#getDumpFacade(Writer, String, boolean) %} will be
     removed as well. It is deprecated, along with all its implementations in the subclasses of {% jdoc core::lang.LanguageVersionHandler %}.

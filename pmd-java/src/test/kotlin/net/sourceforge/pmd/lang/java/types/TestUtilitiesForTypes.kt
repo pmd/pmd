@@ -8,18 +8,18 @@
 package net.sourceforge.pmd.lang.java.types
 
 import io.kotest.assertions.*
-import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.print
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
-import net.sourceforge.pmd.lang.java.ast.*
+import net.sourceforge.pmd.lang.java.ast.InvocationNode
+import net.sourceforge.pmd.lang.java.ast.TypeNode
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.AsmSymbolResolver
 import net.sourceforge.pmd.lang.java.types.TypeOps.*
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import org.hamcrest.Description
+import java.util.stream.Collectors
 import kotlin.String
-import kotlin.streams.toList
 import kotlin.test.assertTrue
 
 /*
@@ -45,7 +45,7 @@ val TypeSystem.STRING get() = declaration(getClassSymbol(String::class.java)) as
 typealias TypePair = Pair<JTypeMirror, JTypeMirror>
 
 
-fun JTypeMirror.getMethodsByName(name: String) = streamMethods { it.simpleName == name }.toList()
+fun JTypeMirror.getMethodsByName(name: String): List<JMethodSig> = streamMethods { it.simpleName == name }.collect(Collectors.toList())
 
 fun JTypeMirror.shouldBeUnresolvedClass(canonicalName: String) =
     this.shouldBeA<JClassType> {
@@ -225,6 +225,7 @@ val JTypeMirror.isExlusiveIntersectionBound
 /**
  * Was added in java 12.
  */
+@Suppress("UNCHECKED_CAST")
 val <T> Class<T>.arrayType: Class<Array<T>>
     get() {
         val arr = java.lang.reflect.Array.newInstance(this, 0)

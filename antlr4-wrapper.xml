@@ -6,7 +6,7 @@
 
 <!--    Input properties:
         - lang-name: matches the grammar name (eg "Swift")
-        - lang-terse-name: uncapitalized package name (eg "swift")
+        - lang-id: the language id, used in the conventional package name (eg "swift")
         - node-prefix: prefix for generated AST nodes (eg "Sw")
         - root-node-name: name of the root node without prefix (eg "TopLevel"), will be made to implement RootNode
 
@@ -14,10 +14,10 @@
 
 -->
 
-    <property name="target-package-dir" value="${antlr4.outputDirectory}/net/sourceforge/pmd/lang/${lang-terse-name}/ast"/>
+    <property name="target-package-dir" value="${antlr4.outputDirectory}/net/sourceforge/pmd/lang/${lang-id}/ast"/>
 
 
-    <property name="lang-ast-package" value="net.sourceforge.pmd.lang.${lang-terse-name}.ast" />
+    <property name="lang-ast-package" value="net.sourceforge.pmd.lang.${lang-id}.ast" />
     <property name="ast-api-package" value="net.sourceforge.pmd.lang.ast" />
     <property name="ast-impl-package" value="${ast-api-package}.impl.antlr4" />
 

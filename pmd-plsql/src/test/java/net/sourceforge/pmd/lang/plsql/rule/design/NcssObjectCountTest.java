@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.plsql.rule.design;
 
-import net.sourceforge.pmd.testframework.PmdRuleTst;
+import net.sourceforge.pmd.test.PmdRuleTst;
 
 class NcssObjectCountTest extends PmdRuleTst {
     // no additional unit tests

@@ -13,9 +13,8 @@ import io.kotest.property.Exhaustive
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.ints
 import io.kotest.property.forAll
-import net.sourceforge.pmd.lang.ast.test.shouldBeA
+import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
-import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.UnresolvedClassStore
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.createUnresolvedAsmSymbol
 import net.sourceforge.pmd.lang.java.types.TypeConversion.*
@@ -157,10 +156,10 @@ class SubtypingTest : FunSpec({
 
             test("Test raw type is convertible to wildcard parameterized type without unchecked conversion") {
                 val `Class{String}` = Class::class[ts.STRING]
-                val `Class{?}` = Class::class[`?`]
+                val `Class{Wildcard}` = Class::class[`?`]
                 val Class = Class::class.raw
 
-                val `Comparable{?}` = java.lang.Comparable::class[`?`]
+                val `Comparable{Wildcard}` = java.lang.Comparable::class[`?`]
 
                 /*
                     Class raw = String.class;
@@ -179,15 +178,15 @@ class SubtypingTest : FunSpec({
 
 
                 `Class{String}` shouldBeSubtypeOf Class
-                `Class{?}` shouldBeSubtypeOf Class
+                `Class{Wildcard}` shouldBeSubtypeOf Class
 
-                `Class{String}` shouldBeSubtypeOf `Class{?}`
-                `Class{?}` shouldNotBeSubtypeOf `Class{String}`
+                `Class{String}` shouldBeSubtypeOf `Class{Wildcard}`
+                `Class{Wildcard}` shouldNotBeSubtypeOf `Class{String}`
 
-                assertSubtype(Class, `Class{?}`) { this == UNCHECKED_NO_WARNING }
+                assertSubtype(Class, `Class{Wildcard}`) { this == UNCHECKED_NO_WARNING }
                 Class shouldBeUncheckedSubtypeOf `Class{String}`
 
-                ts.STRING shouldBeSubtypeOf `Comparable{?}`
+                ts.STRING shouldBeSubtypeOf `Comparable{Wildcard}`
             }
 
             test("Test wildcard subtyping") {
@@ -319,7 +318,7 @@ class SubtypingTest : FunSpec({
             }
 
             test("Test non well-formed types") {
-                val sym = ts.createUnresolvedAsmSymbol("does.not.Exist") as JClassSymbol
+                val sym = ts.createUnresolvedAsmSymbol("does.not.Exist")
                 sym[t_String, t_String] shouldBeUnrelatedTo sym[t_String]
                 sym[t_String] shouldBeSubtypeOf sym[t_String]
                 sym[t_String] shouldBeSubtypeOf sym[`?` extends t_String] // containment

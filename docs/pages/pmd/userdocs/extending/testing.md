@@ -25,7 +25,7 @@ Each category-ruleset has a single abstract base test class, from which the indi
 We have one test class per rule, which executes all test cases for a single rule. The actual test cases are
 stored in separate XML files, for each rule a separate file is used.
 
-All the test classes inherit from {% jdoc test::testframework.PmdRuleTst %},
+All the test classes inherit from {% jdoc test::test.PmdRuleTst %},
 which provides the seamless integration with JUnit5. This base class determines the language, the category name
 and the rule name from the concrete test class. It then searches the test code on its own.
 E.g. the individual rule test class
@@ -41,7 +41,7 @@ test case and just execute this one.
 
 ## Where to place the test code
 
-The {% jdoc test::testframework.PmdRuleTst %} class searches the XML file, that describes the test cases
+The {% jdoc test::test.PmdRuleTst %} class searches the XML file, that describes the test cases
 for a certain rule using the following convention:
 
 The XML file is a test resource, so it is searched in the tree under `src/test/resources`.
@@ -76,13 +76,13 @@ see [Using the test framework externally](#using-the-test-framework-externally).
 
 ### Test Class: AbstractClassWithoutAbstractMethodTest
 
-This class inherits from {% jdoc test::testframework.PmdRuleTst %} and is located in the package "bestpractices",
+This class inherits from {% jdoc test::test.PmdRuleTst %} and is located in the package "bestpractices",
 since the rule belongs to the category "Best Practices":
 
 ``` java
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import net.sourceforge.pmd.testframework.PmdRuleTst;
+import net.sourceforge.pmd.test.PmdRuleTst;
 
 class AbstractClassWithoutAbstractMethodTest extends PmdRuleTst {
     // no additional unit tests
@@ -251,7 +251,7 @@ the rule test manually, as SimpleAggregatorTst will fail to determine it correct
 ``` java
 package com.example.pmd.rules;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.test.SimpleAggregatorTst;
 
 class CustomRuleTest extends SimpleAggregatorTst {
     @Override
@@ -272,19 +272,19 @@ The test data should be placed in an XML file located in "src/test/resources" un
 The framework uses the [dynamic test feature](https://junit.org/junit5/docs/current/user-guide/#writing-tests-dynamic-tests)
 of JUnit5 under the hood, among a couple of utility classes:
 
-* {% jdoc test::testframework.PmdRuleTst %}: This is the base class for tests in PMD's code base. It is a subclass of
-  {% jdoc test::testframework.RuleTst %} and just
+* {% jdoc test::test.PmdRuleTst %}: This is the base class for tests in PMD's code base. It is a subclass of
+  {% jdoc test::test.RuleTst %} and just
   contains the logic to determine the test resources based on the test class name.
 
-* {% jdoc test::testframework.SimpleAggregatorTst %}: This is a more generic base class for the test classes.
+* {% jdoc test::test.SimpleAggregatorTst %}: This is a more generic base class for the test classes.
   It doesn't register any test cases on its own. You can register your own rule tests.
-  It itself is a subclass of {% jdoc test::testframework.RuleTst %}.
+  It itself is a subclass of {% jdoc test::test.RuleTst %}.
 
 * The maven module "pmd-test-schema" contains the logic to parse the XML files and provides a
   {% jdoc test-schema::test.schema.RuleTestCollection %}. This in turn contains a list of
   {% jdoc test-schema::test.schema.RuleTestDescriptor %}s. Each rule test descriptor describes a single test case.
 
-* {% jdoc test::testframework.RuleTst %}: uses the {%jdoc test-schema::test.schema.TestSchemaParser %}
+* {% jdoc test::test.RuleTst %}: uses the {%jdoc test-schema::test.schema.TestSchemaParser %}
   from module "pmd-test-schema" to parse the test cases, executes each
   rule test descriptor and asserts the results. It defines a test method `ruleTests()` which is a test factory
   and returns one dynamic test per rule test.
