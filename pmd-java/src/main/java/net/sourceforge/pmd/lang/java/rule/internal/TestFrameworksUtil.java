@@ -181,7 +181,10 @@ public final class TestFrameworksUtil {
     }
 
     private static boolean isSoftAssert(ASTMethodCall call) {
-        return TypeTestUtil.isA("org.assertj.core.api.AbstractSoftAssertions", call.getMethodType().getDeclaringType())
+        JTypeMirror declaringType = call.getMethodType().getDeclaringType();
+        return (TypeTestUtil.isA("org.assertj.core.api.StandardSoftAssertionsProvider", declaringType)
+                || TypeTestUtil.isA("org.assertj.core.api.Java6StandardSoftAssertionsProvider", declaringType)
+                || TypeTestUtil.isA("org.assertj.core.api.AbstractSoftAssertions", declaringType))
             && !"assertAll".equals(call.getMethodName());
     }
 
