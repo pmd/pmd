@@ -96,15 +96,15 @@
         <dokka.version>1.7.20</dokka.version>
 
         <javacc.version>5.0</javacc.version>
-        <surefire.version>3.0.0-M8</surefire.version>
-        <checkstyle.version>10.7.0</checkstyle.version>
+        <surefire.version>3.2.5</surefire.version>
+        <checkstyle.version>10.14.0</checkstyle.version>
         <checkstyle.plugin.version>3.3.1</checkstyle.plugin.version>
         <pmd.plugin.version>3.21.2</pmd.plugin.version>
-        <ant.version>1.10.13</ant.version>
-        <javadoc.plugin.version>3.4.1</javadoc.plugin.version>
-        <antlr.version>4.9.1</antlr.version>
+        <ant.version>1.10.14</ant.version>
+        <javadoc.plugin.version>3.6.3</javadoc.plugin.version>
+        <antlr.version>4.9.3</antlr.version>
         <slf4j.version>1.7.36</slf4j.version>
-        <saxon.version>10.7</saxon.version>
+        <saxon.version>10.9</saxon.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -164,17 +164,17 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>3.5.0</version>
+                    <version>3.6.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.5.0</version>
+                    <version>3.6.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>3.0.0-M7</version>
+                    <version>3.0.1</version>
                     <configuration>
                         <releaseProfiles>pmd-release,sign</releaseProfiles>
                         <pushChanges>true</pushChanges>
@@ -187,14 +187,14 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>3.3.2</version>
                 </plugin>
 
                 <!-- adds kotlin source directories for checkstyle header checks -->
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>3.5.0</version>
                     <executions>
                         <execution>
                             <id>add-kotlin-source-dir</id>
@@ -257,7 +257,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.10.1</version>
+                    <version>3.12.1</version>
                     <configuration>
                         <release>${java.version}</release>
                     </configuration>
@@ -295,12 +295,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.1.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-install-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.1.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -310,7 +310,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>3.3.1</version>
                     <configuration>
                         <propertiesEncoding>${project.build.sourceEncoding}</propertiesEncoding>
                     </configuration>
@@ -318,7 +318,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-shade-plugin</artifactId>
-                    <version>3.4.1</version>
+                    <version>3.5.2</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -356,12 +356,12 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.2.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>3.2.1</version>
+                    <version>3.3.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -457,7 +457,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.2.1</version>
+                    <version>3.4.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -548,12 +548,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>4.0.0-M4</version>
+                    <version>4.0.0-M13</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>versions-maven-plugin</artifactId>
-                    <version>2.14.2</version>
+                    <version>2.16.2</version>
                 </plugin>
                 <plugin>
                     <groupId>org.sonatype.plugins</groupId>
@@ -568,7 +568,7 @@
                 <plugin>
                     <groupId>org.cyclonedx</groupId>
                     <artifactId>cyclonedx-maven-plugin</artifactId>
-                    <version>2.7.9</version>
+                    <version>2.7.11</version>
                 </plugin>
                 <!--This plugin's configuration is used to store Eclipse
                     m2e settings only. It has no influence on the Maven build itself. -->
@@ -721,7 +721,7 @@
             <dependency>
                 <groupId>info.picocli</groupId>
                 <artifactId>picocli</artifactId>
-                <version>4.7.0</version>
+                <version>4.7.5</version>
             </dependency>
             <dependency>
                 <groupId>me.tongfei</groupId>
@@ -736,7 +736,7 @@
             <dependency>
                 <groupId>org.pcollections</groupId>
                 <artifactId>pcollections</artifactId>
-                <version>3.1.3</version>
+                <version>3.2.0</version>
             </dependency>
             <dependency>
                 <groupId>net.sourceforge.pmd</groupId>
@@ -756,12 +756,7 @@
             <dependency>
                 <groupId>org.checkerframework</groupId>
                 <artifactId>checker-qual</artifactId>
-                <version>2.5.2</version>
-            </dependency>
-            <dependency>
-                <groupId>net.sourceforge.saxon</groupId>
-                <artifactId>saxon</artifactId>
-                <version>9.1.0.8</version>
+                <version>2.11.1</version>
             </dependency>
             <dependency>
                 <groupId>net.sf.saxon</groupId>
@@ -771,12 +766,12 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.8.1</version>
+                <version>3.14.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-text</artifactId>
-                <version>1.3</version> <!-- 1.3 is still compatible with java7 -->
+                <version>1.11.0</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -796,12 +791,12 @@
             <dependency>
                 <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy</artifactId>
-                <version>4.0.15</version>
+                <version>4.0.19</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
-                <version>2.8.9</version>
+                <version>2.10.1</version>
             </dependency>
             <dependency>
                 <groupId>org.yaml</groupId>
@@ -814,11 +809,16 @@
                 <version>33.0.0-jre</version>
             </dependency>
 
-            <!-- needed by pmd-apex via apex-link -->
+            <!-- scala-reflect and scala-library needed by pmd-apex via apex-link -->
             <dependency>
                 <groupId>org.scala-lang</groupId>
                 <artifactId>scala-reflect</artifactId>
-                <version>2.13.12</version>
+                <version>2.13.13</version>
+            </dependency>
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala-library</artifactId>
+                <version>2.13.13</version>
             </dependency>
 
             <!-- TEST DEPENDENCIES -->
@@ -834,6 +834,12 @@
                 <artifactId>pmd-lang-test</artifactId>
                 <version>${project.version}</version>
                 <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.oowekyala.ooxml</groupId>
+                <artifactId>nice-xml-messages</artifactId>
+                <version>3.1</version>
             </dependency>
 
             <dependency>
@@ -859,7 +865,7 @@
             <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
-                <version>5.8.2</version>
+                <version>${junit5.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -867,7 +873,7 @@
             <dependency>
                 <groupId>org.junit.platform</groupId>
                 <artifactId>junit-platform-suite</artifactId>
-                <version>1.9.0-M1</version>
+                <version>1.10.2</version>
                 <scope>test</scope>
             </dependency>
 
@@ -876,19 +882,6 @@
                 <artifactId>system-lambda</artifactId>
                 <version>1.2.1</version>
                 <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.13.1</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.hamcrest</groupId>
-                        <artifactId>hamcrest-core</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>
@@ -905,13 +898,13 @@
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy</artifactId>
-                <version>1.14.9</version>
+                <version>1.14.12</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy-agent</artifactId>
-                <version>1.14.9</version>
+                <version>1.14.12</version>
                 <scope>test</scope>
             </dependency>
 
@@ -993,7 +986,7 @@
             <dependency>
                 <groupId>org.jetbrains</groupId>
                 <artifactId>annotations</artifactId>
-                <version>13.0</version>
+                <version>24.1.0</version>
                 <scope>test</scope>
             </dependency>
 
@@ -1006,7 +999,7 @@
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
-                <version>3.16.3</version>
+                <version>3.25.3</version>
             </dependency>
 
             <!-- Make sure to use the correct version the JUnit5 needs. E.g. 5.8.2 needs 1.8.2
@@ -1122,7 +1115,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>3.0.1</version>
+                        <version>3.1.0</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
