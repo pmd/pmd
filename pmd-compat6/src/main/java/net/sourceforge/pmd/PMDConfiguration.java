@@ -45,7 +45,7 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  * PMD run. Once configured, use {@link PmdAnalysis#create(PMDConfiguration)}
  * in a try-with-resources to execute the analysis (see {@link PmdAnalysis}).
  *
- * <h3>Rulesets</h3>
+ * <h2>Rulesets</h2>
  *
  * <ul>
  * <li>You can configure paths to the rulesets to use with {@link #addRuleSet(String)}.
@@ -57,7 +57,7 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  * be loaded.
  * </ul>
  *
- * <h3>Source files</h3>
+ * <h2>Source files</h2>
  *
  * <ul>
  * <li>The default encoding of source files is the system default as
@@ -72,7 +72,7 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  * {@link #setForceLanguageVersion(LanguageVersion)}.</li>
  * </ul>
  *
- * <h3>Rendering</h3>
+ * <h2>Rendering</h2>
  *
  * <ul>
  * <li>The renderer format to use for Reports. {@link #getReportFormat()}</li>
@@ -85,7 +85,7 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  * {@link #isShowSuppressedViolations()}</li>
  * </ul>
  *
- * <h3>Language configuration </h3>
+ * <h2>Language configuration </h2>
  * <ul>
  * <li>Use {@link #setSuppressMarker(String)} to change the comment marker for suppression comments. Defaults to {@value #DEFAULT_SUPPRESS_MARKER}.</li>
  * <li>See {@link #setClassLoader(ClassLoader)} and {@link #prependAuxClasspath(String)} for
@@ -93,7 +93,7 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  * <li>You can set additional language properties with {@link #getLanguageProperties(Language)}</li>
  * </ul>
  *
- * <h3>Miscellaneous</h3>
+ * <h2>Miscellaneous</h2>
  * <ul>
  * <li>Use {@link #setThreads(int)} to control the parallelism of the analysis. Defaults
  * one thread per available processor. {@link #getThreads()}</li>
@@ -462,7 +462,6 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @return true, if the rule set factory compatibility feature is enabled
      *
-     * @see RuleSetLoader#enableCompatibility(boolean)
      */
     public boolean isRuleSetFactoryCompatibilityEnabled() {
         return ruleSetFactoryCompatibilityEnabled;
@@ -473,7 +472,6 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @param ruleSetFactoryCompatibilityEnabled {@code true} if the feature should be enabled
      *
-     * @see RuleSetLoader#enableCompatibility(boolean)
      */
     public void setRuleSetFactoryCompatibilityEnabled(boolean ruleSetFactoryCompatibilityEnabled) {
         this.ruleSetFactoryCompatibilityEnabled = ruleSetFactoryCompatibilityEnabled;

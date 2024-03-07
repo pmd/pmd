@@ -45,7 +45,6 @@ import net.sourceforge.pmd.util.BaseResultProducingCloseable;
  *     <li>{@link #union(Report)}</li>
  * </ul>
  * These methods create a new {@link Report} rather than modifying their receiver.
- * </p>
  */
 public class Report {
     // todo move to package reporting
