@@ -5,7 +5,8 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * A class or instance initializer. Don't confuse with {@link ASTVariableInitializer}.
+ * A class or instance initializer. Don't confuse with an initializer of a {@link ASTVariableDeclarator local variable}
+ * which is a {@link ASTExpression expression}.
  *
  * <pre class="grammar">
  *

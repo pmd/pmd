@@ -137,14 +137,14 @@ public final class JavaMetrics {
      * <p>Information about Cognitive complexity can be found in the original paper here:
      * <a href='https://www.sonarsource.com/docs/CognitiveComplexity.pdf'>CognitiveComplexity</a>
      *
-     * <h3>Basic Idea</h3>
+     * <h4>Basic Idea</h4>
      * <ol>
      * <li>Ignore structures that allow multiple statements to be readably shorthanded into one
      * <li>Increment (add one) for each break in the linear flow of the code
      * <li>Increment when flow-breaking structures are nested
      * </ol>
      *
-     * <h3>Increments</h3>
+     * <h4>Increments</h4>
      * There is an increment for each of the following:
      * <ul>
      * <li>`if`, `else if`, `else`, ternary operator
@@ -157,7 +157,7 @@ public final class JavaMetrics {
      * <li>each method in a recursion cycle
      * </ul>
      *
-     * <h3>Nesting level</h3>
+     * <h4>Nesting level</h4>
      * The following structures increment the nesting level:
      * <ul>
      * <li>`if`, `else if`, `else`, ternary operator
@@ -168,7 +168,7 @@ public final class JavaMetrics {
      * <li>nested methods and method-like structures such as lambdas
      * </ul>
      *
-     * <h3>Nesting increments</h3>
+     * <h4>Nesting increments</h4>
      * The following structures receive a nesting increment commensurate with their nested depth
      * inside nested structures:
      * <ul>
@@ -179,7 +179,7 @@ public final class JavaMetrics {
      * <li>`catch`
      * </ul>
      *
-     * <h3>Code example</h3>
+     * <h4>Code example</h4>
      *
      * <pre>{@code
      * class Foo {
