@@ -1934,6 +1934,14 @@ in the <a href="pmd_userdocs_migrating_to_pmd7.html">Migration Guide for PMD 7</
 See the use case <a href="pmd_userdocs_migrating_to_pmd7.html#im-using-custom-rules">I’m using custom rules</a>
 in the Migration Guide.</p>
 
+<p>Note: Once the default version of PMD is upgraded to PMD7 in maven-pmd-plugin
+(see <a href="https://issues.apache.org/jira/projects/MPMD/issues/MPMD-379">MPMD-379</a>), this
+compatibility module is no longer needed. The module pmd-compat6 might not be maintaned then
+any further, hence it is already declared as deprecated.</p>
+
+<p>No guarantee is given, that the (deprecated) module pmd-compat6 is being maintained over the
+whole lifetime of PMD 7.</p>
+
 <h5 id="java-22-support">Java 22 Support</h5>
 
 <p>This release of PMD brings support for Java 22. There are the following new standard language features,
@@ -4172,7 +4180,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Mar 5, 2024 <br />
+             Site last generated: Mar 7, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
