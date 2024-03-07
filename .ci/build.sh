@@ -66,6 +66,8 @@ function build() {
     # was green before. This is usually checked via a local build, see ./do-release.sh
     if pmd_ci_maven_isReleaseBuild; then
         PMD_MAVEN_EXTRA_OPTS+=(-DskipTests=true)
+        # note: skipping pmd in order to avoid failures due to #4757
+        PMD_MAVEN_EXTRA_OPTS+=(-Dpmd.skip=true -Dcpd.skip=true)
     fi
 
     if [ "$(pmd_ci_utils_get_os)" != "linux" ]; then

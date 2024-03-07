@@ -194,7 +194,8 @@ echo "Change version in the POMs to ${RELEASE_VERSION} and update build timestam
 echo "Transform the SCM information in the POM"
 sed -i "s|<tag>.\+</tag>|<tag>pmd_releases/${RELEASE_VERSION}</tag>|" pom.xml
 echo "Run the project tests against the changed POMs to confirm everything is in running order (skipping cli and dist)"
-./mvnw clean verify -Dskip-cli-dist -Pgenerate-rule-docs
+# note: skipping pmd in order to avoid failures due to #4757
+./mvnw clean verify -Dskip-cli-dist -Dpmd.skip=true -Dcpd.skip=true -Pgenerate-rule-docs
 echo "Commit and create tag"
 git commit -a -m "[release] prepare release pmd_releases/${RELEASE_VERSION}"
 git tag -m "[release] copy for tag pmd_releases/${RELEASE_VERSION}" "pmd_releases/${RELEASE_VERSION}"
