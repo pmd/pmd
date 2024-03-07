@@ -791,7 +791,7 @@
             <dependency>
                 <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy</artifactId>
-                <version>4.0.15</version>
+                <version>4.0.19</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
