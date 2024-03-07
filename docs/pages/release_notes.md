@@ -73,6 +73,14 @@ As PMD 7 revamped the Java module, if you have custom rules, you need to migrate
 See the use case [I'm using custom rules]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html#im-using-custom-rules)
 in the Migration Guide.
 
+Note: Once the default version of PMD is upgraded to PMD7 in maven-pmd-plugin
+(see [MPMD-379](https://issues.apache.org/jira/projects/MPMD/issues/MPMD-379)), this
+compatibility module is no longer needed. The module pmd-compat6 might not be maintaned then
+any further, hence it is already declared as deprecated.
+
+No guarantee is given, that the (deprecated) module pmd-compat6 is being maintained over the
+whole lifetime of PMD 7.
+
 ##### Java 22 Support
 
 This release of PMD brings support for Java 22. There are the following new standard language features,
