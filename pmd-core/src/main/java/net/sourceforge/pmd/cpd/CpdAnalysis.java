@@ -36,14 +36,14 @@ import net.sourceforge.pmd.util.log.PmdReporter;
  * Main programmatic API of CPD. This is not a CLI entry point, see module
  * {@code pmd-cli} for that.
  *
- * <h3>Usage overview</h3>
+ * <h2>Usage overview</h2>
  *
  * <p>Create and configure a {@link CPDConfiguration}, then use {@link #create(CPDConfiguration)} to
  * obtain an instance. You can perform additional configuration on the instance, e.g. adding
  * files to process or add a listener. Then call {@link #performAnalysis()} or {@link #performAnalysis(Consumer)}
  * in order to get the report directly.
  *
- * <h3>Simple example</h3>
+ * <h2>Simple example</h2>
  *
  * <pre>{@code
  *   CPDConfiguration config = new CPDConfiguration();

@@ -17,8 +17,7 @@ import net.sourceforge.pmd.lang.document.TextDocument;
 /**
  * Token document for Javacc implementations. This is a helper object
  * for generated token managers. Note: the extension point is a custom
- * implementation of {@link TokenDocumentBehavior}, see {@link JjtreeParserAdapter#tokenBehavior()},
- * {@link JavaccCpdLexer#tokenBehavior()}
+ * implementation of {@link TokenDocumentBehavior}, see {@link JjtreeParserAdapter#tokenBehavior()}.
  */
 public final class JavaccTokenDocument extends TokenDocument<JavaccToken> {
 
