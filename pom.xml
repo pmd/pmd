@@ -771,7 +771,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-text</artifactId>
-                <version>1.3</version> <!-- 1.3 is still compatible with java7 -->
+                <version>1.11.0</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
