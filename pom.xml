@@ -369,7 +369,8 @@
                     <version>${javadoc.plugin.version}</version>
                     <configuration>
                         <quiet>true</quiet>
-                        <doclint>none</doclint>
+                        <doclint>all</doclint>
+                        <failOnError>true</failOnError>
                         <!-- exclude any internal package and up to two sub-packages inside -->
                         <excludePackageNames>*.internal,*.internal.*,*.internal.*.*</excludePackageNames>
                         <detectOfflineLinks>false</detectOfflineLinks>
@@ -1163,7 +1164,7 @@
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-javadoc-plugin</artifactId>
                             <configuration>
-                                <doclint>all</doclint>
+                                <failOnWarnings>true</failOnWarnings>
                             </configuration>
                         </plugin>
                     </plugins>
