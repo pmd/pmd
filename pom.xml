@@ -102,7 +102,7 @@
         <pmd.plugin.version>3.21.2</pmd.plugin.version>
         <ant.version>1.10.14</ant.version>
         <javadoc.plugin.version>3.6.3</javadoc.plugin.version>
-        <antlr.version>4.9.1</antlr.version>
+        <antlr.version>4.9.3</antlr.version>
         <slf4j.version>1.7.36</slf4j.version>
         <saxon.version>10.7</saxon.version>
 
