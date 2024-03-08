@@ -140,8 +140,11 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 
 ### Updated PMD Designer
 
-This PMD release ships a new version of the pmd-designer.
-For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc1).
+This PMD release ships a new version of the pmd-designer. The designer artifact has been
+renamed from "pmd-ui" to "pmd-designer". While the designer still works with Java 8, the
+recommended Java Runtime is Java 11 (or later) with OpenJFX 17 (or later).
+
+For the detailed changes, see [PMD Designer Changelog (7.0.0)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0).
 
 ### New CPD report format cpdhtml-v2.xslt
 

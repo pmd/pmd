@@ -242,13 +242,16 @@ When creating a custom distribution which only integrates the languages you need
 * When fetching the scripts for the CLI with "maven-dependency-plugin", you need to additionally fetch the
   logging configuration. That means, the line
   `<includes>scripts/**,LICENSE</includes>` needs to be changed to `<includes>scripts/**,LICENSE,conf/**</includes>`.
-* Since the assembly descriptor `pmd-bin` includes now also a BOM (bill of material), you need to create one for
-  your custom distribution as well. Simply add the following plugin configuration:
+* Since the assembly descriptor `pmd-bin` includes now optionally also a BOM (bill of material). If you want to
+  create this for your custom distribution, simply add the following plugin configuration:
   ```xml
      <plugin>
         <groupId>org.cyclonedx</groupId>
         <artifactId>cyclonedx-maven-plugin</artifactId>
-        <version>2.7.6</version>
+        <version>2.7.11</version>
+        <configuration>
+          <outputName>pmd-${project.version}-cyclonedx</outputName>
+        </configuration>
         <executions>
           <execution>
             <phase>package</phase>
@@ -257,16 +260,10 @@ When creating a custom distribution which only integrates the languages you need
             </goals>
           </execution>
         </executions>
-        <!-- https://github.com/CycloneDX/cyclonedx-maven-plugin/issues/326 -->
-        <dependencies>
-          <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm</artifactId>
-            <version>9.5</version>
-          </dependency>
-        </dependencies>
       </plugin>
   ```
+* The artifact name for PMD Designer has been renamed, you need to use now `net.sourceforge.pmd:pmd-designer`
+  instead of "pmd-ui".
 
 {% include note.html content="
 The examples on <https://github.com/pmd/pmd-examples> have been updated.
