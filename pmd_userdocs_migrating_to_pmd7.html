@@ -2139,12 +2139,15 @@ with <code class="language-plaintext highlighter-rouge">--no-progress</code>.</l
   <li>When fetching the scripts for the CLI with “maven-dependency-plugin”, you need to additionally fetch the
 logging configuration. That means, the line
 <code class="language-plaintext highlighter-rouge">&lt;includes&gt;scripts/**,LICENSE&lt;/includes&gt;</code> needs to be changed to <code class="language-plaintext highlighter-rouge">&lt;includes&gt;scripts/**,LICENSE,conf/**&lt;/includes&gt;</code>.</li>
-  <li>Since the assembly descriptor <code class="language-plaintext highlighter-rouge">pmd-bin</code> includes now also a BOM (bill of material), you need to create one for
-your custom distribution as well. Simply add the following plugin configuration:
+  <li>Since the assembly descriptor <code class="language-plaintext highlighter-rouge">pmd-bin</code> includes now optionally also a BOM (bill of material). If you want to
+create this for your custom distribution, simply add the following plugin configuration:
     <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="nt">&lt;plugin&gt;</span>
       <span class="nt">&lt;groupId&gt;</span>org.cyclonedx<span class="nt">&lt;/groupId&gt;</span>
       <span class="nt">&lt;artifactId&gt;</span>cyclonedx-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
-      <span class="nt">&lt;version&gt;</span>2.7.6<span class="nt">&lt;/version&gt;</span>
+      <span class="nt">&lt;version&gt;</span>2.7.11<span class="nt">&lt;/version&gt;</span>
+      <span class="nt">&lt;configuration&gt;</span>
+        <span class="nt">&lt;outputName&gt;</span>pmd-${project.version}-cyclonedx<span class="nt">&lt;/outputName&gt;</span>
+      <span class="nt">&lt;/configuration&gt;</span>
       <span class="nt">&lt;executions&gt;</span>
         <span class="nt">&lt;execution&gt;</span>
           <span class="nt">&lt;phase&gt;</span>package<span class="nt">&lt;/phase&gt;</span>
@@ -2153,17 +2156,11 @@ your custom distribution as well. Simply add the following plugin configuration:
           <span class="nt">&lt;/goals&gt;</span>
         <span class="nt">&lt;/execution&gt;</span>
       <span class="nt">&lt;/executions&gt;</span>
-      <span class="c">&lt;!-- https://github.com/CycloneDX/cyclonedx-maven-plugin/issues/326 --&gt;</span>
-      <span class="nt">&lt;dependencies&gt;</span>
-        <span class="nt">&lt;dependency&gt;</span>
-          <span class="nt">&lt;groupId&gt;</span>org.ow2.asm<span class="nt">&lt;/groupId&gt;</span>
-          <span class="nt">&lt;artifactId&gt;</span>asm<span class="nt">&lt;/artifactId&gt;</span>
-          <span class="nt">&lt;version&gt;</span>9.5<span class="nt">&lt;/version&gt;</span>
-        <span class="nt">&lt;/dependency&gt;</span>
-      <span class="nt">&lt;/dependencies&gt;</span>
     <span class="nt">&lt;/plugin&gt;</span>
 </code></pre></div>    </div>
   </li>
+  <li>The artifact name for PMD Designer has been renamed, you need to use now <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-designer</code>
+instead of “pmd-ui”.</li>
 </ul>
 
 <div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> 
@@ -5478,7 +5475,7 @@ the ant task is in an own dependency with PMD 7:
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Mar 7, 2024 <br />
+             Site last generated: Mar 8, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
