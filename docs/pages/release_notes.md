@@ -17,21 +17,6 @@ We're excited to bring you the next major version of PMD!
 Since this is a big release, we provide here only a concise version of the release notes. We prepared a separate
 page with the full [Detailed Release Notes for PMD 7.0.0]({{ baseurl }}pmd_release_notes_pmd7.html).
 
-<div style="border: 1px solid; border-radius: .25rem; padding: .75rem 1.25rem;" role="alert">
-<strong>ℹ️ Release Candidates</strong>
-<p>PMD 7.0.0 is finally almost ready. In order to gather feedback, we are going to ship a couple of release candidates.
-These are officially available on GitHub and Maven Central and can be used as usual (e.g. as a dependency).
-We encourage you to try out the new features, but keep in mind that we may introduce API breaking changes between
-the release candidates. It should be stable enough if you don't use custom rules.</p>
-
-<p>We have still some tasks planned for the next release candidates.
-You can see the progress in <a href="https://github.com/pmd/pmd/issues/3898">PMD 7 Tracking Issue #3898</a>.</p>
-
-<p>If you find any problem or difficulty while updating from PMD 6, please provide feedback via our
-<a href="https://github.com/pmd/pmd/issues/new/choose">issue tracker</a>. That way we can improve the experience
-for all.</p>
-</div>
-
 {% tocmaker is_release_notes_processor %}
 
 ### Changes since 7.0.0-rc4
@@ -143,6 +128,8 @@ Under the hood, we use two open source libraries instead:
 
 Although the parsers is completely switched, there are only little known changes to the AST.
 These are documented in the [Migration Guide for PMD 7: Apex AST]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html#apex-ast).
+With the new Apex parser, the new language constructs like User Mode Database Operations
+can be parsed now. PMD should be able to parse Apex code up to version 59.0 (Winter '23).
 
 See [#3766](https://github.com/pmd/pmd/issues/3766) for details.
 
@@ -1014,11 +1001,14 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 
 #### Updated PMD Designer
 
-This PMD release ships a new version of the pmd-designer.
-For the changes, see
-* [PMD Designer Changelog (7.0.0-rc1)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc1).
-* [PMD Designer Changelog (7.0.0-rc4)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc4).
+This PMD release ships a new version of the pmd-designer. The designer artifact has been
+renamed from "pmd-ui" to "pmd-designer". While the designer still works with Java 8, the
+recommended Java Runtime is Java 11 (or later) with OpenJFX 17 (or later).
+
+For the detailed changes, see
 * [PMD Designer Changelog (7.0.0)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0).
+* [PMD Designer Changelog (7.0.0-rc4)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc4).
+* [PMD Designer Changelog (7.0.0-rc1)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc1).
 
 #### New CPD report format cpdhtml-v2.xslt
 
@@ -1069,6 +1059,28 @@ designed specifically for building event-driven software. It is shipped in the n
 module `pmd-coco`.
 
 Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
+
+#### New: Java 22 Support
+
+This release of PMD brings support for Java 22. There are the following new standard language features,
+that are supported now:
+
+* [JEP 456: Unnamed Variables & Patterns](https://openjdk.org/jeps/456)
+
+PMD also supports the following preview language features:
+
+* [JEP 447: Statements before super(...) (Preview)](https://openjdk.org/jeps/447)
+* [JEP 459: String Templates (Second Preview)](https://openjdk.org/jeps/459)
+* [JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)](https://openjdk.org/jeps/463)
+
+In order to analyze a project with PMD that uses these language features,
+you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
+version `22-preview`:
+
+    export PMD_JAVA_OPTS=--enable-preview
+    pmd check --use-version java-22-preview ...
+
+Note: Support for Java 20 preview language features have been removed. The version "20-preview" is no longer available.
 
 #### New: Java 21 Support
 
@@ -1143,6 +1155,8 @@ Under the hood, we use two open source libraries instead:
 
 Although the parsers is completely switched, there are only little known changes to the AST.
 These are documented in the [Migration Guide for PMD 7: Apex AST]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html#apex-ast).
+With the new Apex parser, the new language constructs like User Mode Database Operations
+can be parsed now. PMD should be able to parse Apex code up to version 59.0 (Winter '23).
 
 See [#3766](https://github.com/pmd/pmd/issues/3766) for details.
 

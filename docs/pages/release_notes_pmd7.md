@@ -144,7 +144,10 @@ This PMD release ships a new version of the pmd-designer. The designer artifact 
 renamed from "pmd-ui" to "pmd-designer". While the designer still works with Java 8, the
 recommended Java Runtime is Java 11 (or later) with OpenJFX 17 (or later).
 
-For the detailed changes, see [PMD Designer Changelog (7.0.0)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0).
+For the detailed changes, see
+* [PMD Designer Changelog (7.0.0)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0).
+* [PMD Designer Changelog (7.0.0-rc4)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc4).
+* [PMD Designer Changelog (7.0.0-rc1)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc1).
 
 ### New CPD report format cpdhtml-v2.xslt
 
@@ -217,7 +220,7 @@ module `pmd-coco`.
 
 Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
 
-### Java 22 Support
+### New: Java 22 Support
 
 This release of PMD brings support for Java 22. There are the following new standard language features,
 that are supported now:
@@ -300,10 +303,35 @@ Related issue: [[core] Explicitly name all language versions (#4120)](https://gi
   literals were ignored. The new option additional ignores identifiers as well in sequences.
 * See [PR #4470](https://github.com/pmd/pmd/pull/4470) for details.
 
-### Changed: Apex Jorje Updated
+### Changed: Apex Support: Replaced Jorje with fully open source front-end
 
-With the new version of Apex Jorje, the new language constructs like User Mode Database Operations
-can be parsed now. PMD should now be able to parse Apex code up to version 59.0 (Winter '23).
+When PMD added Apex support with version 5.5.0, it utilized the Apex Jorje library to parse Apex source
+and generate an AST. This library is however a binary-blob provided as part of the
+[Salesforce Extensions for VS Code](https://github.com/forcedotcom/salesforcedx-vscode), and it is closed-source.
+
+This causes problems, if binary blobs are not allowed by e.g. a company-wide policy. In that case, the Jorje
+library prevented that PMD Apex could be used at all.
+
+Also having access to the source code, enhancements and modifications are easier to do.
+
+Under the hood, we use two open source libraries instead:
+
+* [apex-parser](https://github.com/apex-dev-tools/apex-parser) originally by
+  [Kevin Jones](https://github.com/nawforce) (@nawforce).
+  This project provides the grammar for a ANTLR based parser.
+* [Summit-AST](https://github.com/google/summit-ast) by [Google](https://github.com/google) (@google)
+  This project translates the ANTLR parse tree into an AST, that is similar to the AST Jorje provided.
+  Note: This is not an official Google product.
+
+Although the parsers is completely switched, there are only little known changes to the AST.
+These are documented in the [Migration Guide for PMD 7: Apex AST]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html#apex-ast).
+With the new Apex parser, the new language constructs like User Mode Database Operations
+can be parsed now. PMD should be able to parse Apex code up to version 59.0 (Winter '23).
+
+See [#3766](https://github.com/pmd/pmd/issues/3766) for details.
+
+Contributors: [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-google),
+[Edward Klimoshenko](https://github.com/eklimo) (@eklimo)
 
 ### Changed: Groovy Support (CPD)
 
