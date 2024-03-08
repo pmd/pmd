@@ -81,7 +81,8 @@ in order to resolve Java API references.
 The auxiliary classpath (or short "auxClasspath") is configured via the
 [Language Property "auxClasspath"](pmd_languages_configuration.html#java-language-properties).
 It is a string containing multiple paths separated by either a colon (`:`) under Linux/MacOS
-or a semicolon (`;`) under Windows.
+or a semicolon (`;`) under Windows. This property can be provided on the CLI with parameter
+[`--aux-classpath`](pmd_userdocs_cli_reference.html#-aux-classpath).
 
 In order to resolve the types of the Java API correctly, the Java Runtime must be on the
 auxClasspath as well. As the Java API and Runtime evolves from version to version, it is important
@@ -100,9 +101,26 @@ needs to be added to the auxClasspath as the first entry. PMD will make sure, to
 using the jrt-filesystem.
 
 If neither `${JAVA_HOME}/jre/lib/rt.jar` nor `${JAVA_HOME}/lib/jrt-fs.jar` is added to the auxClasspath, PMD falls
-back to load the JAva runtime classes **from the current runtime**, that is the runtime that was used to
+back to load the Java runtime classes **from the current runtime**, that is the runtime that was used to
 execute PMD. This might not be the correct version, e.g. you might run PMD with Java 8, but analyze code
 written for Java 21. In that case, you have to provide "jrt-fs.jar" on the auxClasspath.
+
+Not providing the correct auxClasspath might result in false positives or negatives for some rules,
+such as {% rule java/bestpractices/MissingOverride %}.
+This rule needs to figure out, whether a method is defined already in the super class or interface. E.g. the method
+[Collection#toArray(IntFunction)](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collection.html#toArray(java.util.function.IntFunction))
+has been added in Java 11, and it does not exist yet in Java 8. Given a simple subclass of ArrayList, that overrides
+this method without adding `@Override`, then PMD won't be able to detect this missing override annotation, if
+it is executed with a Java 8 runtime but without the correct auxClasspath. Providing the correct `jrt-fs.jar` from
+Java 11 (or later) for the auxClasspath allows PMD to correctly identify the missing annotation.
+
+Example command line:
+
+```
+pmd check -d src/main/java \
+  --aux-classpath=path/to/java17/lib/jrt-fs.jar:target/classes/ \
+  -f xml -r pmd-report.xml -R rulesets/java/quickstart.xml
+```
 
 ## Symbol table APIs
 
