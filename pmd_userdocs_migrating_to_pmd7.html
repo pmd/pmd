@@ -2538,9 +2538,10 @@ type is used to share the disambiguation logic.</li>
 </ul>
 
 <details>
-  <summary>Annotation AST Examples</summary>
+  <summary>
+    <p>Annotation AST Examples&lt;/summary&gt;</p>
 
-<table>
+    <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -2674,23 +2675,24 @@ type is used to share the disambiguation logic.</li>
 </tr>
 </table>
 
-</details>
+    <p>&lt;/details&gt;</p>
 
-<h5 id="annotation-nesting">Annotation nesting</h5>
+    <h5 id="annotation-nesting">Annotation nesting</h5>
 
-<ul>
-  <li>What: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnnotation.html#"><code>ASTAnnotation</code></a>s are now nested within the node, to which they are applied to.
+    <ul>
+      <li>What: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnnotation.html#"><code>ASTAnnotation</code></a>s are now nested within the node, to which they are applied to.
 E.g. if a method is annotated, the Annotation node is now a child of a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTModifierList.html#"><code>ASTModifierList</code></a>,
 inside the <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#"><code>ASTMethodDeclaration</code></a>.</li>
-  <li>Why: Fixes a lot of inconsistencies, where sometimes the annotations were inside the node, and sometimes just
+      <li>Why: Fixes a lot of inconsistencies, where sometimes the annotations were inside the node, and sometimes just
 somewhere in the parent, with no real structure.</li>
-  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1875">[java] Move annotations inside the node they apply to (#1875)</a></li>
-</ul>
+      <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1875">[java] Move annotations inside the node they apply to (#1875)</a></li>
+    </ul>
 
-<details>
-  <summary>Annotation nesting Examples</summary>
+    <details>
+      <summary>
+        <p>Annotation nesting Examples&lt;/summary&gt;</p>
 
-<table>
+        <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 Method
@@ -3009,51 +3011,52 @@ Enum constants
 </td></tr>
 </table>
 
-</details>
+        <p>&lt;/details&gt;</p>
 
-<h4 id="types">Types</h4>
+        <h4 id="types">Types</h4>
 
-<h5 id="type-and-referencetype">Type and ReferenceType</h5>
+        <h5 id="type-and-referencetype">Type and ReferenceType</h5>
 
-<ul>
-  <li>What:
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTType.html#"><code>ASTType</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTReferenceType.html#"><code>ASTReferenceType</code></a> have been turned into
+        <ul>
+          <li>What:
+            <ul>
+              <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTType.html#"><code>ASTType</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTReferenceType.html#"><code>ASTReferenceType</code></a> have been turned into
 interfaces, implemented by <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPrimitiveType.html#"><code>ASTPrimitiveType</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a>,
 and the new node <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayType.html#"><code>ASTArrayType</code></a>. This reduces the depth of the relevant
 subtrees, and allows to explore them more easily and consistently.</li>
-    </ul>
-  </li>
-  <li>Why:
-    <ul>
-      <li>some syntactic contexts only allow reference types, other allow any kind of type. If you want to match all types
+            </ul>
+          </li>
+          <li>Why:
+            <ul>
+              <li>some syntactic contexts only allow reference types, other allow any kind of type. If you want to match all types
 of a program, then matching Type would be the intuitive solution. But in 6.0.x, it wouldn’t have sufficed,
 since in some contexts, no Type node was pushed, only a ReferenceType</li>
-      <li>Regardless of the original syntactic context, any reference type <em>is</em> a type, and searching for ASTType should
+              <li>Regardless of the original syntactic context, any reference type <em>is</em> a type, and searching for ASTType should
 yield all the types in the tree.</li>
-      <li>Using interfaces allows to abstract behaviour and make a nicer and safer API.</li>
-    </ul>
-  </li>
-  <li><strong>Migrating</strong>
-    <ul>
-      <li>There is currently no way to match abstract types (or interfaces) with XPath, so <code class="language-plaintext highlighter-rouge">Type</code>
+              <li>Using interfaces allows to abstract behaviour and make a nicer and safer API.</li>
+            </ul>
+          </li>
+          <li><strong>Migrating</strong>
+            <ul>
+              <li>There is currently no way to match abstract types (or interfaces) with XPath, so <code class="language-plaintext highlighter-rouge">Type</code>
 and <code class="language-plaintext highlighter-rouge">ReferenceType</code> name tests won’t match anything anymore.</li>
-      <li><code class="language-plaintext highlighter-rouge">Type/ReferenceType/ClassOrInterfaceType</code> ➡️ <code class="language-plaintext highlighter-rouge">ClassType</code></li>
-      <li><code class="language-plaintext highlighter-rouge">Type/PrimitiveType</code> ➡️ <code class="language-plaintext highlighter-rouge">PrimitiveType</code>.</li>
-      <li><code class="language-plaintext highlighter-rouge">Type/ReferenceType[@ArrayDepth &gt; 1]/ClassOrInterfaceType</code> ➡️ <code class="language-plaintext highlighter-rouge">ArrayType/ClassType</code>.</li>
-      <li><code class="language-plaintext highlighter-rouge">Type/ReferenceType/PrimitiveType</code> ➡️ <code class="language-plaintext highlighter-rouge">ArrayType/PrimitiveType</code>.</li>
-      <li>Note that in most cases you should check the type of a variable with e.g.
+              <li><code class="language-plaintext highlighter-rouge">Type/ReferenceType/ClassOrInterfaceType</code> ➡️ <code class="language-plaintext highlighter-rouge">ClassType</code></li>
+              <li><code class="language-plaintext highlighter-rouge">Type/PrimitiveType</code> ➡️ <code class="language-plaintext highlighter-rouge">PrimitiveType</code>.</li>
+              <li><code class="language-plaintext highlighter-rouge">Type/ReferenceType[@ArrayDepth &gt; 1]/ClassOrInterfaceType</code> ➡️ <code class="language-plaintext highlighter-rouge">ArrayType/ClassType</code>.</li>
+              <li><code class="language-plaintext highlighter-rouge">Type/ReferenceType/PrimitiveType</code> ➡️ <code class="language-plaintext highlighter-rouge">ArrayType/PrimitiveType</code>.</li>
+              <li>Note that in most cases you should check the type of a variable with e.g.
 <code class="language-plaintext highlighter-rouge">VariableId[pmd-java:typeIs("java.lang.String[]")]</code> because it
 considers the additional dimensions on declarations like <code class="language-plaintext highlighter-rouge">String foo[];</code>.
 The Java equivalent is <code class="language-plaintext highlighter-rouge">TypeHelper.isA(id, String[].class);</code></li>
-    </ul>
-  </li>
-</ul>
+            </ul>
+          </li>
+        </ul>
 
-<details>
-  <summary>Type and ReferenceType Examples</summary>
+        <details>
+          <summary>
+            <p>Type and ReferenceType Examples&lt;/summary&gt;</p>
 
-<table>
+            <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -3093,21 +3096,22 @@ The Java equivalent is <code class="language-plaintext highlighter-rouge">TypeHe
 </tr>
 </table>
 
-</details>
+            <p>&lt;/details&gt;</p>
 
-<h5 id="array-changes">Array changes</h5>
+            <h5 id="array-changes">Array changes</h5>
 
-<ul>
-  <li>What: Additional nodes <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayType.html#"><code>ASTArrayType</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayTypeDim.html#"><code>ASTArrayTypeDim</code></a>,
+            <ul>
+              <li>What: Additional nodes <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayType.html#"><code>ASTArrayType</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayTypeDim.html#"><code>ASTArrayTypeDim</code></a>,
 <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayTypeDims.html#"><code>ASTArrayTypeDims</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayAllocation.html#"><code>ASTArrayAllocation</code></a>.</li>
-  <li>Why: Support annotated array types (<a href="https://github.com/pmd/pmd/issues/997">[java] Java8 parsing corner case with annotated array types (#997)</a>)</li>
-  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1981">[java] Simplify array allocation expressions (#1981)</a></li>
-</ul>
+              <li>Why: Support annotated array types (<a href="https://github.com/pmd/pmd/issues/997">[java] Java8 parsing corner case with annotated array types (#997)</a>)</li>
+              <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1981">[java] Simplify array allocation expressions (#1981)</a></li>
+            </ul>
 
-<details>
-  <summary>Array Examples</summary>
+            <details>
+              <summary>
+                <p>Array Examples&lt;/summary&gt;</p>
 
-<table>
+                <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -3241,21 +3245,22 @@ The Java equivalent is <code class="language-plaintext highlighter-rouge">TypeHe
 </td></tr>
 </table>
 
-</details>
+                <p>&lt;/details&gt;</p>
 
-<h5 id="classtype-nesting">ClassType nesting</h5>
+                <h5 id="classtype-nesting">ClassType nesting</h5>
 
-<ul>
-  <li>What: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a> (formerly ASTClassOrInterfaceType) appears to be left recursive now,
+                <ul>
+                  <li>What: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a> (formerly ASTClassOrInterfaceType) appears to be left recursive now,
 and encloses its qualifying type.</li>
-  <li>Why: To preserve the position of annotations and type arguments</li>
-  <li>Related issue: <a href="https://github.com/pmd/pmd/issues/1150">[java] ClassOrInterfaceType AST improvements (#1150)</a></li>
-</ul>
+                  <li>Why: To preserve the position of annotations and type arguments</li>
+                  <li>Related issue: <a href="https://github.com/pmd/pmd/issues/1150">[java] ClassOrInterfaceType AST improvements (#1150)</a></li>
+                </ul>
 
-<details>
-  <summary>ClassType Examples</summary>
+                <details>
+                  <summary>
+                    <p>ClassType Examples&lt;/summary&gt;</p>
 
-<table>
+                    <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -3314,27 +3319,28 @@ and encloses its qualifying type.</li>
 </td></tr>
 </table>
 
-</details>
+                    <p>&lt;/details&gt;</p>
 
-<h5 id="typeargument-and-wildcardtype">TypeArgument and WildcardType</h5>
+                    <h5 id="typeargument-and-wildcardtype">TypeArgument and WildcardType</h5>
 
-<ul>
-  <li>What:
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTTypeArgument.html#"><code>ASTTypeArgument</code></a> is removed. Instead, the <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypeArguments.html#"><code>ASTTypeArguments</code></a> node contains directly
+                    <ul>
+                      <li>What:
+                        <ul>
+                          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTTypeArgument.html#"><code>ASTTypeArgument</code></a> is removed. Instead, the <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypeArguments.html#"><code>ASTTypeArguments</code></a> node contains directly
 a sequence of <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTType.html#"><code>ASTType</code></a> nodes. To support this, the new node type <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTWildcardType.html#"><code>ASTWildcardType</code></a>
 captures the syntax previously parsed as a TypeArgument.</li>
-      <li>The <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTWildcardBounds.html#"><code>ASTWildcardBounds</code></a> node is removed. Instead, the bound is a direct child of the WildcardType.</li>
-    </ul>
-  </li>
-  <li>Why: Because wildcard types are types in their own right, and having a node to represent them skims several levels
+                          <li>The <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTWildcardBounds.html#"><code>ASTWildcardBounds</code></a> node is removed. Instead, the bound is a direct child of the WildcardType.</li>
+                        </ul>
+                      </li>
+                      <li>Why: Because wildcard types are types in their own right, and having a node to represent them skims several levels
 of nesting off.</li>
-</ul>
+                    </ul>
 
-<details>
-  <summary>TypeArgument and WildcardType Examples</summary>
+                    <details>
+                      <summary>
+                        <p>TypeArgument and WildcardType Examples&lt;/summary&gt;</p>
 
-<table>
+                        <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -3387,24 +3393,25 @@ of nesting off.</li>
 </tr>
 </table>
 
-</details>
+                        <p>&lt;/details&gt;</p>
 
-<h4 id="declarations">Declarations</h4>
+                        <h4 id="declarations">Declarations</h4>
 
-<h5 id="import-and-package-declarations">Import and Package declarations</h5>
+                        <h5 id="import-and-package-declarations">Import and Package declarations</h5>
 
-<ul>
-  <li>What: Remove the Name node in imports and package declaration nodes.</li>
-  <li>Why: Name is a TypeNode, but it’s equivalent to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAmbiguousName.html#"><code>ASTAmbiguousName</code></a> in that it describes nothing
+                        <ul>
+                          <li>What: Remove the Name node in imports and package declaration nodes.</li>
+                          <li>Why: Name is a TypeNode, but it’s equivalent to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAmbiguousName.html#"><code>ASTAmbiguousName</code></a> in that it describes nothing
 about what it represents. The name in an import may represent a method name, a type name, a field name…
 It’s too ambiguous to treat in the parser and could just be the image of the import, or package, or module.</li>
-  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1888">[java] Remove Name nodes in Import- and PackageDeclaration (#1888)</a></li>
-</ul>
+                          <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1888">[java] Remove Name nodes in Import- and PackageDeclaration (#1888)</a></li>
+                        </ul>
 
-<details>
-  <summary>Import and Package declarations Examples</summary>
+                        <details>
+                          <summary>
+                            <p>Import and Package declarations Examples&lt;/summary&gt;</p>
 
-<table>
+                            <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -3448,26 +3455,27 @@ It’s too ambiguous to treat in the parser and could just be the image of the i
 </td></tr>
 </table>
 
-</details>
+                            <p>&lt;/details&gt;</p>
 
-<h5 id="modifier-lists">Modifier lists</h5>
+                            <h5 id="modifier-lists">Modifier lists</h5>
 
-<ul>
-  <li>What: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#"><code>ModifierOwner</code></a> (formerly AccessNode) is now based on a node: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTModifierList.html#"><code>ASTModifierList</code></a>.
+                            <ul>
+                              <li>What: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#"><code>ModifierOwner</code></a> (formerly AccessNode) is now based on a node: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTModifierList.html#"><code>ASTModifierList</code></a>.
 That node represents
 modifiers occurring before a declaration. It provides a flexible API to query modifiers, both explicit and
 implicit. All declaration nodes now have such a modifier list, even if it’s implicit (no explicit modifiers).</li>
-  <li>Why: ModifierOwner (formerly AccessNode) gave a lot of irrelevant methods to its subtypes.
+                              <li>Why: ModifierOwner (formerly AccessNode) gave a lot of irrelevant methods to its subtypes.
 E.g. <code class="language-plaintext highlighter-rouge">ASTFieldDeclaration::isSynchronized</code>
 makes no sense. Now, these irrelevant methods don’t clutter the API. The API of ModifierList is both more
 general and flexible.</li>
-  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/2259">[java] Rework AccessNode (#2259)</a></li>
-</ul>
+                              <li>Related issue: <a href="https://github.com/pmd/pmd/pull/2259">[java] Rework AccessNode (#2259)</a></li>
+                            </ul>
 
-<details>
-  <summary>Modifier lists Examples</summary>
+                            <details>
+                              <summary>
+                                <p>Modifier lists Examples&lt;/summary&gt;</p>
 
-<table>
+                                <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 Method
@@ -3541,22 +3549,23 @@ Top-level type declaration
 </tr>
 </table>
 
-</details>
+                                <p>&lt;/details&gt;</p>
 
-<h5 id="flattened-body-declarations">Flattened body declarations</h5>
+                                <h5 id="flattened-body-declarations">Flattened body declarations</h5>
 
-<ul>
-  <li>What: Removes <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceBodyDeclaration.html#"><code>ASTClassOrInterfaceBodyDeclaration</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTTypeDeclaration.html#"><code>ASTTypeDeclaration</code></a>,
+                                <ul>
+                                  <li>What: Removes <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceBodyDeclaration.html#"><code>ASTClassOrInterfaceBodyDeclaration</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTTypeDeclaration.html#"><code>ASTTypeDeclaration</code></a>,
 and <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTAnnotationTypeMemberDeclaration.html#"><code>ASTAnnotationTypeMemberDeclaration</code></a>.
 These were unnecessary since annotations are nested (see above <a href="#annotation-nesting">Annotation nesting</a>).</li>
-  <li>Why: This flattens the tree, makes it less verbose and simpler.</li>
-  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/2300">[java] Flatten body declarations (#2300)</a></li>
-</ul>
+                                  <li>Why: This flattens the tree, makes it less verbose and simpler.</li>
+                                  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/2300">[java] Flatten body declarations (#2300)</a></li>
+                                </ul>
 
-<details>
-  <summary>Flattened body declarations Examples</summary>
+                                <details>
+                                  <summary>
+                                    <p>Flattened body declarations Examples&lt;/summary&gt;</p>
 
-<table>
+                                    <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -3630,21 +3639,22 @@ These were unnecessary since annotations are nested (see above <a href="#annotat
 </td></tr>
 </table>
 
-</details>
+                                    <p>&lt;/details&gt;</p>
 
-<h5 id="module-declarations">Module declarations</h5>
+                                    <h5 id="module-declarations">Module declarations</h5>
 
-<ul>
-  <li>What: Removes the generic Name node and uses instead <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a> where appropriate. Also
+                                    <ul>
+                                      <li>What: Removes the generic Name node and uses instead <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a> where appropriate. Also
 uses specific node types for different directives (requires, exports, uses, provides).</li>
-  <li>Why: Simplify queries, support type resolution</li>
-  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/3890">[java] Improve module grammar (#3890)</a></li>
-</ul>
+                                      <li>Why: Simplify queries, support type resolution</li>
+                                      <li>Related issue: <a href="https://github.com/pmd/pmd/pull/3890">[java] Improve module grammar (#3890)</a></li>
+                                    </ul>
 
-<details>
-  <summary>Module declarations Examples</summary>
+                                    <details>
+                                      <summary>
+                                        <p>Module declarations Examples&lt;/summary&gt;</p>
 
-<table>
+                                        <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -3706,26 +3716,27 @@ uses specific node types for different directives (requires, exports, uses, prov
 </td></tr>
 </table>
 
-</details>
+                                        <p>&lt;/details&gt;</p>
 
-<h5 id="anonymous-class-declarations">Anonymous class declarations</h5>
+                                        <h5 id="anonymous-class-declarations">Anonymous class declarations</h5>
 
-<ul>
-  <li>What: A separate node type <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnonymousClassDeclaration.html#"><code>ASTAnonymousClassDeclaration</code></a> is introduced for anonymous classes.</li>
-  <li>Why: Unify the AST for type declarations including anonymous class declaration in constructor calls
+                                        <ul>
+                                          <li>What: A separate node type <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnonymousClassDeclaration.html#"><code>ASTAnonymousClassDeclaration</code></a> is introduced for anonymous classes.</li>
+                                          <li>Why: Unify the AST for type declarations including anonymous class declaration in constructor calls
 and enums.</li>
-  <li>Related issues:
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/905">[java] Add new node for anonymous class declaration (#905)</a></li>
-      <li><a href="https://github.com/pmd/pmd/pull/1759">[java] New expression and type grammar (#1759)</a></li>
-    </ul>
-  </li>
-</ul>
+                                          <li>Related issues:
+                                            <ul>
+                                              <li><a href="https://github.com/pmd/pmd/issues/905">[java] Add new node for anonymous class declaration (#905)</a></li>
+                                              <li><a href="https://github.com/pmd/pmd/pull/1759">[java] New expression and type grammar (#1759)</a></li>
+                                            </ul>
+                                          </li>
+                                        </ul>
 
-<details>
-  <summary>Anonymous class declarations Examples</summary>
+                                        <details>
+                                          <summary>
+                                            <p>Anonymous class declarations Examples&lt;/summary&gt;</p>
 
-<table>
+                                            <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -3767,25 +3778,26 @@ and enums.</li>
 </td></tr>
 </table>
 
-</details>
+                                            <p>&lt;/details&gt;</p>
 
-<h4 id="method-and-constructor-declarations">Method and Constructor declarations</h4>
+                                            <h4 id="method-and-constructor-declarations">Method and Constructor declarations</h4>
 
-<h5 id="method-grammar-simplification">Method grammar simplification</h5>
+                                            <h5 id="method-grammar-simplification">Method grammar simplification</h5>
 
-<ul>
-  <li>What: Simplify and align the grammar used for method and constructor declarations. The methods in an annotation
+                                            <ul>
+                                              <li>What: Simplify and align the grammar used for method and constructor declarations. The methods in an annotation
 type are now also method declarations.</li>
-  <li>Why: The method declaration had a nested node “MethodDeclarator”, which was not available for constructor
+                                              <li>Why: The method declaration had a nested node “MethodDeclarator”, which was not available for constructor
 declarations. This made it difficult to write rules, that concern both methods and constructors without
 explicitly differentiate between these two.</li>
-  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/2034">[java] Align method and constructor declaration grammar (#2034)</a></li>
-</ul>
+                                              <li>Related issue: <a href="https://github.com/pmd/pmd/pull/2034">[java] Align method and constructor declaration grammar (#2034)</a></li>
+                                            </ul>
 
-<details>
-  <summary>Method grammar Examples</summary>
+                                            <details>
+                                              <summary>
+                                                <p>Method grammar Examples&lt;/summary&gt;</p>
 
-<table>
+                                                <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -3887,27 +3899,28 @@ explicitly differentiate between these two.</li>
 </td></tr>
 </table>
 
-</details>
+                                                <p>&lt;/details&gt;</p>
 
-<h5 id="formal-parameters">Formal parameters</h5>
+                                                <h5 id="formal-parameters">Formal parameters</h5>
 
-<ul>
-  <li>What: Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTFormalParameter.html#"><code>ASTFormalParameter</code></a> only for method and constructor declaration. Lambdas use
+                                                <ul>
+                                                  <li>What: Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTFormalParameter.html#"><code>ASTFormalParameter</code></a> only for method and constructor declaration. Lambdas use
 <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLambdaParameter.html#"><code>ASTLambdaParameter</code></a>, catch clauses use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTCatchParameter.html#"><code>ASTCatchParameter</code></a>.</li>
-  <li>Why: FormalParameter’s API is different from the other ones.
-    <ul>
-      <li>FormalParameter must mention a type node.</li>
-      <li>LambdaParameter can be inferred</li>
-      <li>CatchParameter cannot be varargs</li>
-      <li>CatchParameter can have multiple exception types (a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTUnionType.html#"><code>ASTUnionType</code></a> now)</li>
-    </ul>
-  </li>
-</ul>
+                                                  <li>Why: FormalParameter’s API is different from the other ones.
+                                                    <ul>
+                                                      <li>FormalParameter must mention a type node.</li>
+                                                      <li>LambdaParameter can be inferred</li>
+                                                      <li>CatchParameter cannot be varargs</li>
+                                                      <li>CatchParameter can have multiple exception types (a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTUnionType.html#"><code>ASTUnionType</code></a> now)</li>
+                                                    </ul>
+                                                  </li>
+                                                </ul>
 
-<details>
-  <summary>Formal parameters Examples</summary>
+                                                <details>
+                                                  <summary>
+                                                    <p>Formal parameters Examples&lt;/summary&gt;</p>
 
-<table>
+                                                    <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -4048,23 +4061,24 @@ explicitly differentiate between these two.</li>
 </td></tr>
 </table>
 
-</details>
+                                                    <p>&lt;/details&gt;</p>
 
-<h5 id="new-node-for-explicit-receiver-parameter">New node for explicit receiver parameter</h5>
+                                                    <h5 id="new-node-for-explicit-receiver-parameter">New node for explicit receiver parameter</h5>
 
-<ul>
-  <li>What: A separate node type <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTReceiverParameter.html#"><code>ASTReceiverParameter</code></a> is introduced to differentiate it from formal parameters.</li>
-  <li>Why: A receiver parameter is not a formal parameter, even though it looks like one: it doesn’t declare a variable,
+                                                    <ul>
+                                                      <li>What: A separate node type <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTReceiverParameter.html#"><code>ASTReceiverParameter</code></a> is introduced to differentiate it from formal parameters.</li>
+                                                      <li>Why: A receiver parameter is not a formal parameter, even though it looks like one: it doesn’t declare a variable,
 and doesn’t affect the arity of the method or constructor. It’s so rarely used that giving it its own node avoids
 matching it by mistake and simplifies the API and grammar of the ubiquitous <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTFormalParameter.html#"><code>ASTFormalParameter</code></a>
 and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a>.</li>
-  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1980">[java] Separate receiver parameter from formal parameter (#1980)</a></li>
-</ul>
+                                                      <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1980">[java] Separate receiver parameter from formal parameter (#1980)</a></li>
+                                                    </ul>
 
-<details>
-  <summary>explicit receiver parameter Examples</summary>
+                                                    <details>
+                                                      <summary>
+                                                        <p>explicit receiver parameter Examples&lt;/summary&gt;</p>
 
-<table>
+                                                        <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -4102,19 +4116,20 @@ and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourc
 </td></tr>
 </table>
 
-</details>
+                                                        <p>&lt;/details&gt;</p>
 
-<h5 id="varargs">Varargs</h5>
+                                                        <h5 id="varargs">Varargs</h5>
 
-<ul>
-  <li>What: parse the varargs ellipsis as an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayType.html#"><code>ASTArrayType</code></a>.</li>
-  <li>Why: this improves regularity of the grammar, and allows type annotations to be added to the ellipsis</li>
-</ul>
+                                                        <ul>
+                                                          <li>What: parse the varargs ellipsis as an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayType.html#"><code>ASTArrayType</code></a>.</li>
+                                                          <li>Why: this improves regularity of the grammar, and allows type annotations to be added to the ellipsis</li>
+                                                        </ul>
 
-<details>
-  <summary>Varargs Examples</summary>
+                                                        <details>
+                                                          <summary>
+                                                            <p>Varargs Examples&lt;/summary&gt;</p>
 
-<table>
+                                                            <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -4196,20 +4211,21 @@ and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourc
 </td></tr>
 </table>
 
-</details>
+                                                            <p>&lt;/details&gt;</p>
 
-<h5 id="add-void-type-node-to-replace-resulttype">Add void type node to replace ResultType</h5>
+                                                            <h5 id="add-void-type-node-to-replace-resulttype">Add void type node to replace ResultType</h5>
 
-<ul>
-  <li>What: Add a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVoidType.html#"><code>ASTVoidType</code></a> node to replace <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTResultType.html#"><code>ASTResultType</code></a>.</li>
-  <li>Why: This means we don’t need the ResultType wrapper when the method is not void, and the result type node is never null.</li>
-  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/2715">[java] Add void type node to replace ResultType (#2715)</a></li>
-</ul>
+                                                            <ul>
+                                                              <li>What: Add a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVoidType.html#"><code>ASTVoidType</code></a> node to replace <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTResultType.html#"><code>ASTResultType</code></a>.</li>
+                                                              <li>Why: This means we don’t need the ResultType wrapper when the method is not void, and the result type node is never null.</li>
+                                                              <li>Related issue: <a href="https://github.com/pmd/pmd/pull/2715">[java] Add void type node to replace ResultType (#2715)</a></li>
+                                                            </ul>
 
-<details>
-  <summary>Void Type Examples</summary>
+                                                            <details>
+                                                              <summary>
+                                                                <p>Void Type Examples&lt;/summary&gt;</p>
 
-<table>
+                                                                <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -4254,27 +4270,28 @@ and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourc
 </td></tr>
 </table>
 
-</details>
+                                                                <p>&lt;/details&gt;</p>
 
-<h4 id="statements">Statements</h4>
+                                                                <h4 id="statements">Statements</h4>
 
-<h5 id="statements-are-flattened">Statements are flattened</h5>
+                                                                <h5 id="statements-are-flattened">Statements are flattened</h5>
 
-<ul>
-  <li>What: Statements are flattened. There are no superfluous BlockStatement and Statement nodes anymore.
+                                                                <ul>
+                                                                  <li>What: Statements are flattened. There are no superfluous BlockStatement and Statement nodes anymore.
 All children of a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTBlock.html#"><code>ASTBlock</code></a> are by definition
 <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTStatement.html#"><code>ASTStatement</code></a>s, which is now an interface implemented by all statements.</li>
-  <li>Why: This simplifies the tree traversal. The removed nodes BlockStatement and Statement didn’t add any
+                                                                  <li>Why: This simplifies the tree traversal. The removed nodes BlockStatement and Statement didn’t add any
 additional information. We only need a Statement abstraction. BlockStatement was used to enforce, that no
 variable or local class declaration is found alone as the child of e.g. an unbraced if, else, for, etc.
 This is a parser-only distinction that’s not that useful for analysis later on.</li>
-  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/2164">[java] Improve statement grammar (#2164)</a></li>
-</ul>
+                                                                  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/2164">[java] Improve statement grammar (#2164)</a></li>
+                                                                </ul>
 
-<details>
-  <summary>Statements Examples</summary>
+                                                                <details>
+                                                                  <summary>
+                                                                    <p>Statements Examples&lt;/summary&gt;</p>
 
-<table>
+                                                                    <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -4318,22 +4335,23 @@ This is a parser-only distinction that’s not that useful for analysis later on
 </td></tr>
 </table>
 
-</details>
+                                                                    <p>&lt;/details&gt;</p>
 
-<h5 id="new-node-for-for-each-statements">New node for For-each statements</h5>
+                                                                    <h5 id="new-node-for-for-each-statements">New node for For-each statements</h5>
 
-<ul>
-  <li>What: New node for For-each statements: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTForeachStatement.html#"><code>ASTForeachStatement</code></a> instead of ForStatement.</li>
-  <li>Why: This makes it a lot easier to distinguish in the AST between For-loops and For-Each-loops. E.g. some
+                                                                    <ul>
+                                                                      <li>What: New node for For-each statements: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTForeachStatement.html#"><code>ASTForeachStatement</code></a> instead of ForStatement.</li>
+                                                                      <li>Why: This makes it a lot easier to distinguish in the AST between For-loops and For-Each-loops. E.g. some
 rules only apply to one or the other, and it was complicated to write a rule that works with both different
 subtrees (for loops have additional children ForInit and ForUpdate)</li>
-  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/2164">[java] Improve statement grammar (#2164)</a></li>
-</ul>
+                                                                      <li>Related issue: <a href="https://github.com/pmd/pmd/pull/2164">[java] Improve statement grammar (#2164)</a></li>
+                                                                    </ul>
 
-<details>
-  <summary>For-each statement Examples</summary>
+                                                                    <details>
+                                                                      <summary>
+                                                                        <p>For-each statement Examples&lt;/summary&gt;</p>
 
-<table>
+                                                                        <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -4388,26 +4406,27 @@ subtrees (for loops have additional children ForInit and ForUpdate)</li>
 </td></tr>
 </table>
 
-</details>
+                                                                        <p>&lt;/details&gt;</p>
 
-<h5 id="new-nodes-for-expressionstatement-localclassstatement">New nodes for ExpressionStatement, LocalClassStatement</h5>
+                                                                        <h5 id="new-nodes-for-expressionstatement-localclassstatement">New nodes for ExpressionStatement, LocalClassStatement</h5>
 
-<ul>
-  <li>What: Renamed StatementExpression to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpressionStatement.html#"><code>ASTExpressionStatement</code></a>.
+                                                                        <ul>
+                                                                          <li>What: Renamed StatementExpression to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpressionStatement.html#"><code>ASTExpressionStatement</code></a>.
 Added new node <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLocalClassStatement.html#"><code>ASTLocalClassStatement</code></a>.</li>
-  <li>Why: ExpressionStatement is now a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTStatement.html#"><code>ASTStatement</code></a>, that can be used as a child in a
+                                                                          <li>Why: ExpressionStatement is now a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTStatement.html#"><code>ASTStatement</code></a>, that can be used as a child in a
 block. It itself has only one child, which is some kind of <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#"><code>ASTExpression</code></a>,
 which can be really any kind of expression (like assignment).
 In order to allow local class declarations as part of a block, we introduced <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLocalClassStatement.html#"><code>ASTLocalClassStatement</code></a>
 which is a statement that carries a type declaration. Now blocks are just a list of statements.
 This allows us to have two distinct hierarchies for expressions and statements.</li>
-  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/2164">[java] Improve statement grammar (#2164)</a></li>
-</ul>
+                                                                          <li>Related issue: <a href="https://github.com/pmd/pmd/pull/2164">[java] Improve statement grammar (#2164)</a></li>
+                                                                        </ul>
 
-<details>
-  <summary>ExpressionStatement, LocalClassStatement Examples</summary>
+                                                                        <details>
+                                                                          <summary>
+                                                                            <p>ExpressionStatement, LocalClassStatement Examples&lt;/summary&gt;</p>
 
-<table>
+                                                                            <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -4442,21 +4461,22 @@ This allows us to have two distinct hierarchies for expressions and statements.<
 </td></tr>
 </table>
 
-</details>
+                                                                            <p>&lt;/details&gt;</p>
 
-<h5 id="improve-try-with-resources-grammar">Improve try-with-resources grammar</h5>
+                                                                            <h5 id="improve-try-with-resources-grammar">Improve try-with-resources grammar</h5>
 
-<ul>
-  <li>What: The AST representation of a try-with-resources statement has been simplified.
+                                                                            <ul>
+                                                                              <li>What: The AST representation of a try-with-resources statement has been simplified.
 It uses now <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLocalVariableDeclaration.html#"><code>ASTLocalVariableDeclaration</code></a> unless it is a concise try-with-resources.</li>
-  <li>Why: Simpler integration try-with-resources into symboltable and type resolution.</li>
-  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1897">[java] Improve try-with-resources grammar (#1897)</a></li>
-</ul>
+                                                                              <li>Why: Simpler integration try-with-resources into symboltable and type resolution.</li>
+                                                                              <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1897">[java] Improve try-with-resources grammar (#1897)</a></li>
+                                                                            </ul>
 
-<details>
-  <summary>Try-With-Resources Examples</summary>
+                                                                            <details>
+                                                                              <summary>
+                                                                                <p>Try-With-Resources Examples&lt;/summary&gt;</p>
 
-<table>
+                                                                                <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -4530,55 +4550,56 @@ It uses now <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/n
 </td></tr>
 </table>
 
-</details>
+                                                                                <p>&lt;/details&gt;</p>
 
-<h4 id="expressions">Expressions</h4>
+                                                                                <h4 id="expressions">Expressions</h4>
 
-<ul>
-  <li>
-    <p><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#"><code>ASTExpression</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPrimaryExpression.html#"><code>ASTPrimaryExpression</code></a> have
+                                                                                <ul>
+                                                                                  <li>
+                                                                                    <p><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#"><code>ASTExpression</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPrimaryExpression.html#"><code>ASTPrimaryExpression</code></a> have
 been turned into interfaces. These added no information to the AST and increased
 its depth unnecessarily. All expressions implement the first interface. Both of
 those nodes can no more be found in ASTs.</p>
-  </li>
-  <li>
-    <p><strong>Migrating</strong>:</p>
-    <ul>
-      <li>Basically, <code class="language-plaintext highlighter-rouge">Expression/X</code> or <code class="language-plaintext highlighter-rouge">Expression/PrimaryExpression/X</code>, just becomes <code class="language-plaintext highlighter-rouge">X</code></li>
-      <li>There is currently no way to match abstract or interface types with XPath, so <code class="language-plaintext highlighter-rouge">Expression</code> or <code class="language-plaintext highlighter-rouge">PrimaryExpression</code>
+                                                                                  </li>
+                                                                                  <li>
+                                                                                    <p><strong>Migrating</strong>:</p>
+                                                                                    <ul>
+                                                                                      <li>Basically, <code class="language-plaintext highlighter-rouge">Expression/X</code> or <code class="language-plaintext highlighter-rouge">Expression/PrimaryExpression/X</code>, just becomes <code class="language-plaintext highlighter-rouge">X</code></li>
+                                                                                      <li>There is currently no way to match abstract or interface types with XPath, so <code class="language-plaintext highlighter-rouge">Expression</code> or <code class="language-plaintext highlighter-rouge">PrimaryExpression</code>
 name tests won’t match anything anymore. However, the axis step *[@Expression=true()] matches any expression.</li>
-    </ul>
-  </li>
-</ul>
+                                                                                    </ul>
+                                                                                  </li>
+                                                                                </ul>
 
-<h5 id="new-nodes-for-different-literals-types">New nodes for different literals types</h5>
+                                                                                <h5 id="new-nodes-for-different-literals-types">New nodes for different literals types</h5>
 
-<ul>
-  <li>What:
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLiteral.html#"><code>ASTLiteral</code></a> has been turned into an interface.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTNumericLiteral.html#"><code>ASTNumericLiteral</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTCharLiteral.html#"><code>ASTCharLiteral</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTStringLiteral.html#"><code>ASTStringLiteral</code></a>,
+                                                                                <ul>
+                                                                                  <li>What:
+                                                                                    <ul>
+                                                                                      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLiteral.html#"><code>ASTLiteral</code></a> has been turned into an interface.</li>
+                                                                                      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTNumericLiteral.html#"><code>ASTNumericLiteral</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTCharLiteral.html#"><code>ASTCharLiteral</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTStringLiteral.html#"><code>ASTStringLiteral</code></a>,
 and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassLiteral.html#"><code>ASTClassLiteral</code></a> are new nodes that implement that interface.</li>
-      <li>ASTLiteral implements <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPrimaryExpression.html#"><code>ASTPrimaryExpression</code></a></li>
-    </ul>
-  </li>
-  <li>Why: The fact that <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTNullLiteral.html#"><code>ASTNullLiteral</code></a>
+                                                                                      <li>ASTLiteral implements <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPrimaryExpression.html#"><code>ASTPrimaryExpression</code></a></li>
+                                                                                    </ul>
+                                                                                  </li>
+                                                                                  <li>Why: The fact that <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTNullLiteral.html#"><code>ASTNullLiteral</code></a>
 and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTBooleanLiteral.html#"><code>ASTBooleanLiteral</code></a> were nested within it but other literals types were all directly represented
 by it was inconsistent, and ultimately that level of nesting was unnecessary.</li>
-  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1759">[java] New expression and type grammar (#1759)</a></li>
-  <li><strong>Migrating</strong>:
-    <ul>
-      <li>Remove all <code class="language-plaintext highlighter-rouge">/Literal/</code> segments from your XPath expressions</li>
-      <li>If you tested several types of literals, you can e.g. do it like <code class="language-plaintext highlighter-rouge">/*[self::StringLiteral or self::CharLiteral]/</code></li>
-      <li>As usual, use the designer to explore the new AST structure</li>
-    </ul>
-  </li>
-</ul>
+                                                                                  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1759">[java] New expression and type grammar (#1759)</a></li>
+                                                                                  <li><strong>Migrating</strong>:
+                                                                                    <ul>
+                                                                                      <li>Remove all <code class="language-plaintext highlighter-rouge">/Literal/</code> segments from your XPath expressions</li>
+                                                                                      <li>If you tested several types of literals, you can e.g. do it like <code class="language-plaintext highlighter-rouge">/*[self::StringLiteral or self::CharLiteral]/</code></li>
+                                                                                      <li>As usual, use the designer to explore the new AST structure</li>
+                                                                                    </ul>
+                                                                                  </li>
+                                                                                </ul>
 
-<details>
-  <summary>Literals Examples</summary>
+                                                                                <details>
+                                                                                  <summary>
+                                                                                    <p>Literals Examples&lt;/summary&gt;</p>
 
-<table>
+                                                                                    <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -4610,27 +4631,28 @@ by it was inconsistent, and ultimately that level of nesting was unnecessary.</l
 
 </td></tr></table>
 
-</details>
+                                                                                    <p>&lt;/details&gt;</p>
 
-<h5 id="method-calls-constructor-calls-array-allocations">Method calls, constructor calls, array allocations</h5>
+                                                                                    <h5 id="method-calls-constructor-calls-array-allocations">Method calls, constructor calls, array allocations</h5>
 
-<ul>
-  <li>What: Extra nodes dedicated for method and constructor calls and array allocations
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTConstructorCall.html#"><code>ASTConstructorCall</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodCall.html#"><code>ASTMethodCall</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayAllocation.html#"><code>ASTArrayAllocation</code></a></li>
-    </ul>
-  </li>
-  <li>Why: It was extremely difficult to identify method calls in PMD 6 - these consisted of multiple nodes with
+                                                                                    <ul>
+                                                                                      <li>What: Extra nodes dedicated for method and constructor calls and array allocations
+                                                                                        <ul>
+                                                                                          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTConstructorCall.html#"><code>ASTConstructorCall</code></a></li>
+                                                                                          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodCall.html#"><code>ASTMethodCall</code></a></li>
+                                                                                          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayAllocation.html#"><code>ASTArrayAllocation</code></a></li>
+                                                                                        </ul>
+                                                                                      </li>
+                                                                                      <li>Why: It was extremely difficult to identify method calls in PMD 6 - these consisted of multiple nodes with
 primary prefix, suffix and expressions. This was too low level to be easy to be used.</li>
-  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1759">[java] New expression and type grammar (#1759)</a></li>
-</ul>
+                                                                                      <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1759">[java] New expression and type grammar (#1759)</a></li>
+                                                                                    </ul>
 
-<details>
-  <summary>Method calls, constructor calls, array allocations Examples</summary>
+                                                                                    <details>
+                                                                                      <summary>
+                                                                                        <p>Method calls, constructor calls, array allocations Examples&lt;/summary&gt;</p>
 
-<table>
+                                                                                        <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -4725,21 +4747,22 @@ primary prefix, suffix and expressions. This was too low level to be easy to be 
 
 </td></tr></table>
 
-</details>
+                                                                                        <p>&lt;/details&gt;</p>
 
-<h5 id="method-call-chains-are-left-recursive">Method call chains are left-recursive</h5>
+                                                                                        <h5 id="method-call-chains-are-left-recursive">Method call chains are left-recursive</h5>
 
-<ul>
-  <li>What: The nodes <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTPrimaryPrefix.html#"><code>ASTPrimaryPrefix</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTPrimarySuffix.html#"><code>ASTPrimarySuffix</code></a> are removed from the
+                                                                                        <ul>
+                                                                                          <li>What: The nodes <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTPrimaryPrefix.html#"><code>ASTPrimaryPrefix</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTPrimarySuffix.html#"><code>ASTPrimarySuffix</code></a> are removed from the
 grammar. Subtrees for primary expressions appear to be left-recursive now.</li>
-  <li>Why: Allows to reuse abstractions like method calls without introducing a new artificial node (like method chain).</li>
-  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1759">[java] New expression and type grammar (#1759)</a></li>
-</ul>
+                                                                                          <li>Why: Allows to reuse abstractions like method calls without introducing a new artificial node (like method chain).</li>
+                                                                                          <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1759">[java] New expression and type grammar (#1759)</a></li>
+                                                                                        </ul>
 
-<details>
-  <summary>Method call chain Examples</summary>
+                                                                                        <details>
+                                                                                          <summary>
+                                                                                            <p>Method call chain Examples&lt;/summary&gt;</p>
 
-<table>
+                                                                                            <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -4776,62 +4799,63 @@ grammar. Subtrees for primary expressions appear to be left-recursive now.</li>
 
 </td></tr></table>
 
-</details>
+                                                                                            <p>&lt;/details&gt;</p>
 
-<p>Instead of being flat, the subexpressions are now nested within one another.
+                                                                                            <p>Instead of being flat, the subexpressions are now nested within one another.
 The nesting follows the naturally recursive structure of expressions:</p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">new</span> <span class="nc">Foo</span><span class="o">().</span><span class="na">bar</span><span class="o">.</span><span class="na">foo</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
+                                                                                            <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">new</span> <span class="nc">Foo</span><span class="o">().</span><span class="na">bar</span><span class="o">.</span><span class="na">foo</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
 <span class="err">└───────┘</span>   <span class="err">│</span>      <span class="err">│</span> <span class="nc">ConstructorCall</span>
 <span class="err">└───────────┘</span>      <span class="err">│</span> <span class="nc">FieldAccess</span>
 <span class="err">└──────────────────┘</span> <span class="nc">MethodCall</span>
-</code></pre></div></div>
+</code></pre></div>                                                                                            </div>
 
-<p>This makes the AST more regular and easier to navigate. Each node contains
+                                                                                            <p>This makes the AST more regular and easier to navigate. Each node contains
 the other nodes that are relevant to it (e.g. arguments) instead of them
 being spread out over several siblings. The API of all nodes has been
 enriched with high-level accessors to query the AST in a semantic way,
 without bothering with the placement details.</p>
 
-<p>The amount of changes in the grammar that this change entails is enormous,
+                                                                                            <p>The amount of changes in the grammar that this change entails is enormous,
 but hopefully firing up the designer to inspect the new structure should
 give you the information you need quickly.</p>
 
-<p>Note: this doesn’t affect binary expressions like <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAdditiveExpression.html#"><code>ASTAdditiveExpression</code></a>.
+                                                                                            <p>Note: this doesn’t affect binary expressions like <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAdditiveExpression.html#"><code>ASTAdditiveExpression</code></a>.
 E.g. <code class="language-plaintext highlighter-rouge">a+b+c</code> is not parsed as</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>AdditiveExpression
+                                                                                            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>AdditiveExpression
 + AdditiveExpression
   + (a)
   + (b)
 + (c)  
-</code></pre></div></div>
-<p>It’s still</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>AdditiveExpression
+</code></pre></div>                                                                                            </div>
+                                                                                            <p>It’s still</p>
+                                                                                            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>AdditiveExpression
 + (a)
 + (b)
 + (c)  
-</code></pre></div></div>
-<p>which is easier to navigate, especially from XPath.</p>
+</code></pre></div>                                                                                            </div>
+                                                                                            <p>which is easier to navigate, especially from XPath.</p>
 
-<h5 id="field-access-array-access-variable-access">Field access, array access, variable access</h5>
+                                                                                            <h5 id="field-access-array-access-variable-access">Field access, array access, variable access</h5>
 
-<ul>
-  <li>What: New nodes dedicated to accessing field, variables and referencing arrays.
+                                                                                            <ul>
+                                                                                              <li>What: New nodes dedicated to accessing field, variables and referencing arrays.
 Also provide info about the access type, like whether a variable is read or written.
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTFieldAccess.html#"><code>ASTFieldAccess</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableAccess.html#"><code>ASTVariableAccess</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayAccess.html#"><code>ASTArrayAccess</code></a></li>
-    </ul>
-  </li>
-  <li>Why: Like MethodCalls, this was a missing abstraction in the AST that has been added now.</li>
-  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1759">[java] New expression and type grammar (#1759)</a></li>
-</ul>
+                                                                                                <ul>
+                                                                                                  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTFieldAccess.html#"><code>ASTFieldAccess</code></a></li>
+                                                                                                  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableAccess.html#"><code>ASTVariableAccess</code></a></li>
+                                                                                                  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayAccess.html#"><code>ASTArrayAccess</code></a></li>
+                                                                                                </ul>
+                                                                                              </li>
+                                                                                              <li>Why: Like MethodCalls, this was a missing abstraction in the AST that has been added now.</li>
+                                                                                              <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1759">[java] New expression and type grammar (#1759)</a></li>
+                                                                                            </ul>
 
-<details>
-  <summary>Field access, array access, variable access Examples</summary>
+                                                                                            <details>
+                                                                                              <summary>
+                                                                                                <p>Field access, array access, variable access Examples&lt;/summary&gt;</p>
 
-<table>
+                                                                                                <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -4929,25 +4953,26 @@ Also provide info about the access type, like whether a variable is read or writ
 
 </td></tr></table>
 
-</details>
+                                                                                                <p>&lt;/details&gt;</p>
 
-<h5 id="explicit-nodes-for-thissuper-expressions">Explicit nodes for this/super expressions</h5>
+                                                                                                <h5 id="explicit-nodes-for-thissuper-expressions">Explicit nodes for this/super expressions</h5>
 
-<ul>
-  <li>What: <code class="language-plaintext highlighter-rouge">this</code> and <code class="language-plaintext highlighter-rouge">super</code> are now explicit nodes instead of PrimaryPrefix.
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTThisExpression.html#"><code>ASTThisExpression</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTSuperExpression.html#"><code>ASTSuperExpression</code></a></li>
-    </ul>
-  </li>
-  <li>Why: That way these nodes can qualify other nodes like FieldAccess.</li>
-  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1759">[java] New expression and type grammar (#1759)</a></li>
-</ul>
+                                                                                                <ul>
+                                                                                                  <li>What: <code class="language-plaintext highlighter-rouge">this</code> and <code class="language-plaintext highlighter-rouge">super</code> are now explicit nodes instead of PrimaryPrefix.
+                                                                                                    <ul>
+                                                                                                      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTThisExpression.html#"><code>ASTThisExpression</code></a></li>
+                                                                                                      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTSuperExpression.html#"><code>ASTSuperExpression</code></a></li>
+                                                                                                    </ul>
+                                                                                                  </li>
+                                                                                                  <li>Why: That way these nodes can qualify other nodes like FieldAccess.</li>
+                                                                                                  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1759">[java] New expression and type grammar (#1759)</a></li>
+                                                                                                </ul>
 
-<details>
-  <summary>this/super expressions Examples</summary>
+                                                                                                <details>
+                                                                                                  <summary>
+                                                                                                    <p>this/super expressions Examples&lt;/summary&gt;</p>
 
-<table>
+                                                                                                    <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -5027,21 +5052,22 @@ Also provide info about the access type, like whether a variable is read or writ
 
 </td></tr></table>
 
-</details>
+                                                                                                    <p>&lt;/details&gt;</p>
 
-<h5 id="type-expressions">Type expressions</h5>
+                                                                                                    <h5 id="type-expressions">Type expressions</h5>
 
-<ul>
-  <li>What: The node <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypeExpression.html#"><code>ASTTypeExpression</code></a> wraps a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTType.html#"><code>ASTType</code></a> node (such as
+                                                                                                    <ul>
+                                                                                                      <li>What: The node <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypeExpression.html#"><code>ASTTypeExpression</code></a> wraps a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTType.html#"><code>ASTType</code></a> node (such as
 <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a>) and is used to qualify a method call or field access or method reference.</li>
-  <li>Why: Simplify the qualifier of method calls, treat instanceof as infix expression.</li>
-  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/2039">[java] Grammar type expr (#2039)</a></li>
-</ul>
+                                                                                                      <li>Why: Simplify the qualifier of method calls, treat instanceof as infix expression.</li>
+                                                                                                      <li>Related issue: <a href="https://github.com/pmd/pmd/pull/2039">[java] Grammar type expr (#2039)</a></li>
+                                                                                                    </ul>
 
-<details>
-  <summary>Type expressions Examples</summary>
+                                                                                                    <details>
+                                                                                                      <summary>
+                                                                                                        <p>Type expressions Examples&lt;/summary&gt;</p>
 
-<table>
+                                                                                                        <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -5112,34 +5138,35 @@ Also provide info about the access type, like whether a variable is read or writ
 
 </td></tr></table>
 
-</details>
+                                                                                                        <p>&lt;/details&gt;</p>
 
-<h5 id="merge-unary-expressions">Merge unary expressions</h5>
+                                                                                                        <h5 id="merge-unary-expressions">Merge unary expressions</h5>
 
-<ul>
-  <li>What: Merge AST nodes for postfix and prefix expressions into the single <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTUnaryExpression.html#"><code>ASTUnaryExpression</code></a> node.
+                                                                                                        <ul>
+                                                                                                          <li>What: Merge AST nodes for postfix and prefix expressions into the single <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTUnaryExpression.html#"><code>ASTUnaryExpression</code></a> node.
 The merged nodes are:
-    <ul>
-      <li>PreIncrementExpression</li>
-      <li>PreDecrementExpression</li>
-      <li>UnaryExpression</li>
-      <li>UnaryExpressionNotPlusMinus</li>
-    </ul>
-  </li>
-  <li>Why: Those nodes were asymmetric, and inconsistently nested within UnaryExpression. By definition, they’re all unary,
+                                                                                                            <ul>
+                                                                                                              <li>PreIncrementExpression</li>
+                                                                                                              <li>PreDecrementExpression</li>
+                                                                                                              <li>UnaryExpression</li>
+                                                                                                              <li>UnaryExpressionNotPlusMinus</li>
+                                                                                                            </ul>
+                                                                                                          </li>
+                                                                                                          <li>Why: Those nodes were asymmetric, and inconsistently nested within UnaryExpression. By definition, they’re all unary,
 so that using a single node is appropriate.</li>
-  <li>Related issues:
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/pull/1890">[java] Merge different increment/decrement expressions (#1890)</a></li>
-      <li><a href="https://github.com/pmd/pmd/pull/2155">[java] Merge prefix/postfix expressions into one node (#2155)</a></li>
-    </ul>
-  </li>
-</ul>
+                                                                                                          <li>Related issues:
+                                                                                                            <ul>
+                                                                                                              <li><a href="https://github.com/pmd/pmd/pull/1890">[java] Merge different increment/decrement expressions (#1890)</a></li>
+                                                                                                              <li><a href="https://github.com/pmd/pmd/pull/2155">[java] Merge prefix/postfix expressions into one node (#2155)</a></li>
+                                                                                                            </ul>
+                                                                                                          </li>
+                                                                                                        </ul>
 
-<details>
-  <summary>Unary Expressions Examples</summary>
+                                                                                                        <details>
+                                                                                                          <summary>
+                                                                                                            <p>Unary Expressions Examples&lt;/summary&gt;</p>
 
-<table>
+                                                                                                            <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -5222,27 +5249,28 @@ so that using a single node is appropriate.</li>
 </td></tr>
 </table>
 
-</details>
+                                                                                                            <p>&lt;/details&gt;</p>
 
-<h5 id="binary-operators-are-left-recursive">Binary operators are left-recursive</h5>
+                                                                                                            <h5 id="binary-operators-are-left-recursive">Binary operators are left-recursive</h5>
 
-<ul>
-  <li>What: For each operator, there were separate AST nodes (like AdditiveExpression, AndExpression, …).
+                                                                                                            <ul>
+                                                                                                              <li>What: For each operator, there were separate AST nodes (like AdditiveExpression, AndExpression, …).
 These are now unified into a <code class="language-plaintext highlighter-rouge">InfixExpression</code>, which gives access to the operator via <code class="language-plaintext highlighter-rouge">getOperator()</code>
 and to the operands (<code class="language-plaintext highlighter-rouge">getLhs()</code>, <code class="language-plaintext highlighter-rouge">getRhs()</code>). Additionally, the resulting AST is not flat anymore,
 but a more structured tree.</li>
-  <li>Why: Having different AST node types doesn’t add information, that the operator doesn’t already provide.
+                                                                                                              <li>Why: Having different AST node types doesn’t add information, that the operator doesn’t already provide.
 The new structure as a result, that the expressions are now parsed left recursive, makes the AST more JLS-like.
 This makes it easier for the type mapping algorithms. It also provides the information, which operands are
 used with which operator. This information was lost if more than 2 operands where used and the tree was
 flattened with PMD 6.</li>
-  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1979">[java] Make binary operators left-recursive (#1979)</a></li>
-</ul>
+                                                                                                              <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1979">[java] Make binary operators left-recursive (#1979)</a></li>
+                                                                                                            </ul>
 
-<details>
-  <summary>Binary operators Examples</summary>
+                                                                                                            <details>
+                                                                                                              <summary>
+                                                                                                                <p>Binary operators Examples&lt;/summary&gt;</p>
 
-<table>
+                                                                                                                <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -5278,22 +5306,23 @@ flattened with PMD 6.</li>
 </td></tr>
 </table>
 
-</details>
+                                                                                                                <p>&lt;/details&gt;</p>
 
-<h5 id="parenthesized-expressions">Parenthesized expressions</h5>
+                                                                                                                <h5 id="parenthesized-expressions">Parenthesized expressions</h5>
 
-<ul>
-  <li>What: Parentheses are not modelled in the AST anymore, but can be checked with the attributes <code class="language-plaintext highlighter-rouge">@Parenthesized</code>
+                                                                                                                <ul>
+                                                                                                                  <li>What: Parentheses are not modelled in the AST anymore, but can be checked with the attributes <code class="language-plaintext highlighter-rouge">@Parenthesized</code>
 and <code class="language-plaintext highlighter-rouge">@ParenthesisDepth</code></li>
-  <li>Why: This keeps the tree flat while still preserving the information. The tree is the same in case of unnecessary
+                                                                                                                  <li>Why: This keeps the tree flat while still preserving the information. The tree is the same in case of unnecessary
 parenthesis, which makes it harder to fool rules that look at the structure of the tree.</li>
-  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1872">[java] Remove ParenthesizedExpr (#1872)</a></li>
-</ul>
+                                                                                                                  <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1872">[java] Remove ParenthesizedExpr (#1872)</a></li>
+                                                                                                                </ul>
 
-<details>
-  <summary>Parenthesized expressions Examples</summary>
+                                                                                                                <details>
+                                                                                                                  <summary>
+                                                                                                                    <p>Parenthesized expressions Examples&lt;/summary&gt;</p>
 
-<table>
+                                                                                                                    <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 
@@ -5329,113 +5358,171 @@ parenthesis, which makes it harder to fool rules that look at the structure of t
 
 </td></tr></table>
 
-</details>
+                                                                                                                    <p>&lt;/details&gt;</p>
 
-<h3 id="apex-ast">Apex AST</h3>
+                                                                                                                    <h3 id="apex-ast">Apex AST</h3>
 
-<p>PMD 7.0.0 switched the underlying parser for Apex code from Jorje to <a href="https://github.com/google/summit-ast">Summit AST</a>,
+                                                                                                                    <p>PMD 7.0.0 switched the underlying parser for Apex code from Jorje to <a href="https://github.com/google/summit-ast">Summit AST</a>,
 which is based on an open source grammar for Apex: <a href="https://github.com/nawforce/apex-parser">apex-parser</a>.</p>
 
-<p>The produced AST is mostly compatible, there are some unavoidable changes however:</p>
+                                                                                                                    <p>The produced AST is mostly compatible, there are some unavoidable changes however:</p>
 
-<ul>
-  <li>Node <code class="language-plaintext highlighter-rouge">Method</code> (<a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTMethod.html#"><code>ASTMethod</code></a>)
-    <ul>
-      <li>No attribute <code class="language-plaintext highlighter-rouge">@Synthetic</code> anymore. Unlike Jorje, Summit AST doesn’t generate synthetic methods anymore, so
+                                                                                                                    <ul>
+                                                                                                                      <li>Node <code class="language-plaintext highlighter-rouge">Method</code> (<a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTMethod.html#"><code>ASTMethod</code></a>)
+                                                                                                                        <ul>
+                                                                                                                          <li>No attribute <code class="language-plaintext highlighter-rouge">@Synthetic</code> anymore. Unlike Jorje, Summit AST doesn’t generate synthetic methods anymore, so
 this attribute would have been always false and is of no use. Therefore it has been removed completely.</li>
-      <li>There will be no methods anymore with the name <code class="language-plaintext highlighter-rouge">&lt;clinit&gt;</code>, <code class="language-plaintext highlighter-rouge">&lt;init&gt;</code>.</li>
-    </ul>
-  </li>
-  <li>There is no node <code class="language-plaintext highlighter-rouge">BridgeMethodCreator</code> anymore. This was an artificially generated node by Jorje. Since the
+                                                                                                                          <li>There will be no methods anymore with the name <code class="language-plaintext highlighter-rouge">&lt;clinit&gt;</code>, <code class="language-plaintext highlighter-rouge">&lt;init&gt;</code>.</li>
+                                                                                                                        </ul>
+                                                                                                                      </li>
+                                                                                                                      <li>There is no node <code class="language-plaintext highlighter-rouge">BridgeMethodCreator</code> anymore. This was an artificially generated node by Jorje. Since the
 new parser doesn’t generate synthetic methods anymore, this node is not needed anymore.</li>
-  <li>There is in general no attribute <code class="language-plaintext highlighter-rouge">@Namespace</code> anymore. The attribute has been removed, as it was never fully
+                                                                                                                      <li>There is in general no attribute <code class="language-plaintext highlighter-rouge">@Namespace</code> anymore. The attribute has been removed, as it was never fully
 implemented. It always returned an empty string.</li>
-  <li>Node <code class="language-plaintext highlighter-rouge">ReferenceExpression</code> (<a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTReferenceExpression.html#"><code>ASTReferenceExpression</code></a>)
-    <ul>
-      <li>No attribute <code class="language-plaintext highlighter-rouge">@Context</code> anymore. It was not used and always returned <code class="language-plaintext highlighter-rouge">null</code>.</li>
-    </ul>
-  </li>
-</ul>
+                                                                                                                      <li>Node <code class="language-plaintext highlighter-rouge">ReferenceExpression</code> (<a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTReferenceExpression.html#"><code>ASTReferenceExpression</code></a>)
+                                                                                                                        <ul>
+                                                                                                                          <li>No attribute <code class="language-plaintext highlighter-rouge">@Context</code> anymore. It was not used and always returned <code class="language-plaintext highlighter-rouge">null</code>.</li>
+                                                                                                                        </ul>
+                                                                                                                      </li>
+                                                                                                                    </ul>
 
-<h3 id="language-versions">Language versions</h3>
+                                                                                                                    <h3 id="language-versions">Language versions</h3>
 
-<ul>
-  <li>Since all languages now have defined language versions, you could now write rules that apply only for specific
+                                                                                                                    <ul>
+                                                                                                                      <li>Since all languages now have defined language versions, you could now write rules that apply only for specific
 versions (using <code class="language-plaintext highlighter-rouge">minimumLanguageVersion</code> and <code class="language-plaintext highlighter-rouge">maximumLanguageVersion</code>).</li>
-  <li>All languages have a default version. If no specific version on the CLI is given using <code class="language-plaintext highlighter-rouge">--use-version</code>, then
+                                                                                                                      <li>All languages have a default version. If no specific version on the CLI is given using <code class="language-plaintext highlighter-rouge">--use-version</code>, then
 this default version will be used. Usually the latest version is the default version.</li>
-  <li>The available versions for each language can be seen in the help message of the CLI <code class="language-plaintext highlighter-rouge">pmd check --help</code>.</li>
-  <li>See also <a href="pmd_release_notes_pmd7.html#changed-language-versions">Changed: Language versions</a></li>
-</ul>
+                                                                                                                      <li>The available versions for each language can be seen in the help message of the CLI <code class="language-plaintext highlighter-rouge">pmd check --help</code>.</li>
+                                                                                                                      <li>See also <a href="pmd_release_notes_pmd7.html#changed-language-versions">Changed: Language versions</a></li>
+                                                                                                                    </ul>
 
-<h3 id="migrating-custom-cpd-language-modules">Migrating custom CPD language modules</h3>
+                                                                                                                    <h3 id="migrating-custom-cpd-language-modules">Migrating custom CPD language modules</h3>
 
-<p>This is only relevant, if you are maintaining a CPD language module for a custom language.</p>
+                                                                                                                    <p>This is only relevant, if you are maintaining a CPD language module for a custom language.</p>
 
-<ul>
-  <li>Instead of <code class="language-plaintext highlighter-rouge">AbstractLanguage</code> extend now <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/impl/CpdOnlyLanguageModuleBase.html#"><code>CpdOnlyLanguageModuleBase</code></a>.</li>
-  <li>Instead of <code class="language-plaintext highlighter-rouge">AntlrTokenManager</code> use now <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/TokenManager.html#"><code>TokenManager</code></a></li>
-  <li>Instead of <code class="language-plaintext highlighter-rouge">AntlrTokenFilter</code> also use now <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/TokenManager.html#"><code>TokenManager</code></a></li>
-  <li>Instead of <code class="language-plaintext highlighter-rouge">AntlrTokenFilter</code> extend now <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/impl/BaseTokenFilter.html#"><code>BaseTokenFilter</code></a></li>
-  <li>CPD Module discovery change. The service loader won’t load anymore <code class="language-plaintext highlighter-rouge">src/main/resources/META-INF/services/net.sourceforge.pmd.cpd.Language</code>
+                                                                                                                    <ul>
+                                                                                                                      <li>Instead of <code class="language-plaintext highlighter-rouge">AbstractLanguage</code> extend now <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/impl/CpdOnlyLanguageModuleBase.html#"><code>CpdOnlyLanguageModuleBase</code></a>.</li>
+                                                                                                                      <li>Instead of <code class="language-plaintext highlighter-rouge">AntlrTokenManager</code> use now <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/TokenManager.html#"><code>TokenManager</code></a></li>
+                                                                                                                      <li>Instead of <code class="language-plaintext highlighter-rouge">AntlrTokenFilter</code> also use now <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/TokenManager.html#"><code>TokenManager</code></a></li>
+                                                                                                                      <li>Instead of <code class="language-plaintext highlighter-rouge">AntlrTokenFilter</code> extend now <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/impl/BaseTokenFilter.html#"><code>BaseTokenFilter</code></a></li>
+                                                                                                                      <li>CPD Module discovery change. The service loader won’t load anymore <code class="language-plaintext highlighter-rouge">src/main/resources/META-INF/services/net.sourceforge.pmd.cpd.Language</code>
 but instead <code class="language-plaintext highlighter-rouge">src/main/resources/META-INF/services/net.sourceforge.pmd.lang.Language</code>. This is the unified
 language interface for both PMD and CPD capable languages. See also the subinterfaces
 <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CpdCapableLanguage.html#"><code>CpdCapableLanguage</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/PmdCapableLanguage.html#"><code>PmdCapableLanguage</code></a>.</li>
-  <li>The documentation <a href="pmd_devdocs_major_adding_new_cpd_language.html">How to add a new CPD language</a> has been updated
+                                                                                                                      <li>The documentation <a href="pmd_devdocs_major_adding_new_cpd_language.html">How to add a new CPD language</a> has been updated
 to reflect these changes.</li>
-</ul>
+                                                                                                                    </ul>
 
-<h3 id="build-tools">Build Tools</h3>
+                                                                                                                    <h3 id="build-tools">Build Tools</h3>
 
-<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> 
+                                                                                                                    <div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> 
 When you switch from PMD 6.x to PMD 7 in your build tools, you most likely need to review your
 ruleset(s) as well and check for removed rules.
 See the use case <a href="#im-using-only-built-in-rules">I’m using only built-in rules</a> above.
 </div>
 
-<h4 id="ant">Ant</h4>
+                                                                                                                    <h4 id="ant">Ant</h4>
 
-<ul>
-  <li>The Ant tasks <a href="https://docs.pmd-code.org/apidocs/pmd-ant/7.0.0-SNAPSHOT/net/sourceforge/pmd/ant/PMDTask.html#"><code>PMDTask</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-ant/7.0.0-SNAPSHOT/net/sourceforge/pmd/ant/CPDTask.html#"><code>CPDTask</code></a> have been moved from the module
+                                                                                                                    <ul>
+                                                                                                                      <li>The Ant tasks <a href="https://docs.pmd-code.org/apidocs/pmd-ant/7.0.0-SNAPSHOT/net/sourceforge/pmd/ant/PMDTask.html#"><code>PMDTask</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-ant/7.0.0-SNAPSHOT/net/sourceforge/pmd/ant/CPDTask.html#"><code>CPDTask</code></a> have been moved from the module
 <code class="language-plaintext highlighter-rouge">pmd-core</code> into the new module <code class="language-plaintext highlighter-rouge">pmd-ant</code>.</li>
-  <li>You need to add this dependency/jar file onto the class path (<code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-ant</code>) in order to
+                                                                                                                      <li>You need to add this dependency/jar file onto the class path (<code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-ant</code>) in order to
 import the tasks into your build file.</li>
-  <li>When using the guide <a href="pmd_userdocs_tools_ant.html">Ant Task Usage</a> then no change is needed, since
+                                                                                                                      <li>When using the guide <a href="pmd_userdocs_tools_ant.html">Ant Task Usage</a> then no change is needed, since
 the pmd-ant jar file is included in the binary distribution of PMD. It is part of PMD’s lib folder.</li>
-</ul>
+                                                                                                                    </ul>
 
-<h4 id="maven">Maven</h4>
+                                                                                                                    <h4 id="maven">Maven</h4>
 
-<ul>
-  <li>Due to some changes in PMD’s API, you can’t simply pull in the new PMD 7 dependency.</li>
-  <li>See <a href="pmd_userdocs_tools_maven.html#using-pmd-7-with-maven-pmd-plugin">Using PMD 7 with maven-pmd-plugin</a>.</li>
-</ul>
+                                                                                                                    <ul>
+                                                                                                                      <li>Due to some changes in PMD’s API, you can’t simply pull in the new PMD 7 dependency.</li>
+                                                                                                                      <li>See <a href="pmd_userdocs_tools_maven.html#using-pmd-7-with-maven-pmd-plugin">Using PMD 7 with maven-pmd-plugin</a>.</li>
+                                                                                                                    </ul>
 
-<h4 id="gradle">Gradle</h4>
+                                                                                                                    <h4 id="gradle">Gradle</h4>
 
-<ul>
-  <li>Gradle uses internally PMD’s Ant task to execute PMD</li>
-  <li>You can set <code class="language-plaintext highlighter-rouge">toolVersion = "7.0.0-SNAPSHOT"</code>, but you also need configure the dependencies manually for now, since
+                                                                                                                    <ul>
+                                                                                                                      <li>Gradle uses internally PMD’s Ant task to execute PMD</li>
+                                                                                                                      <li>You can set <code class="language-plaintext highlighter-rouge">toolVersion = "7.0.0-SNAPSHOT"</code>, but you also need configure the dependencies manually for now, since
 the ant task is in an own dependency with PMD 7:
-    <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pmd</span> <span class="s1">'net.sourceforge.pmd:pmd-ant:7.0.0-SNAPSHOT'</span>
+                                                                                                                        <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pmd</span> <span class="s1">'net.sourceforge.pmd:pmd-ant:7.0.0-SNAPSHOT'</span>
 <span class="n">pmd</span> <span class="s1">'net.sourceforge.pmd:pmd-java:7.0.0-SNAPSHOT'</span>
-</code></pre></div>    </div>
-  </li>
-  <li>Gradle 8.3 most likely will support PMD 7 out of the box.</li>
-  <li>See <a href="https://github.com/gradle/gradle/issues/24502">Support for PMD 7.0</a></li>
-</ul>
+</code></pre></div>                                                                                                                        </div>
+                                                                                                                      </li>
+                                                                                                                      <li>Gradle 8.3 most likely will support PMD 7 out of the box.</li>
+                                                                                                                      <li>See <a href="https://github.com/gradle/gradle/issues/24502">Support for PMD 7.0</a></li>
+                                                                                                                    </ul>
 
-<h3 id="xml-report-format">XML Report Format</h3>
+                                                                                                                    <h3 id="xml-report-format">XML Report Format</h3>
 
-<p>The <a href="pmd_userdocs_report_formats.html#xml">XML Report format</a> supports rendering <a href="pmd_userdocs_suppressing_warnings.html">suppressed violations</a>.</p>
+                                                                                                                    <p>The <a href="pmd_userdocs_report_formats.html#xml">XML Report format</a> supports rendering <a href="pmd_userdocs_suppressing_warnings.html">suppressed violations</a>.</p>
 
-<p>The content of the attribute <code class="language-plaintext highlighter-rouge">suppressiontype</code> is changed in PMD 7.0.0:</p>
-<ul>
-  <li><code class="language-plaintext highlighter-rouge">nopmd</code> ➡️ <code class="language-plaintext highlighter-rouge">//nopmd</code></li>
-  <li><code class="language-plaintext highlighter-rouge">annotation</code> ➡️ <code class="language-plaintext highlighter-rouge">@suppresswarnings</code></li>
-  <li><code class="language-plaintext highlighter-rouge">xpath</code> - new value. Suppressed via property “violationSuppressXPath”.</li>
-  <li><code class="language-plaintext highlighter-rouge">regex</code> - new value. Suppressed via property “violationSuppressRegex”.</li>
-</ul>
+                                                                                                                    <p>The content of the attribute <code class="language-plaintext highlighter-rouge">suppressiontype</code> is changed in PMD 7.0.0:</p>
+                                                                                                                    <ul>
+                                                                                                                      <li><code class="language-plaintext highlighter-rouge">nopmd</code> ➡️ <code class="language-plaintext highlighter-rouge">//nopmd</code></li>
+                                                                                                                      <li><code class="language-plaintext highlighter-rouge">annotation</code> ➡️ <code class="language-plaintext highlighter-rouge">@suppresswarnings</code></li>
+                                                                                                                      <li><code class="language-plaintext highlighter-rouge">xpath</code> - new value. Suppressed via property “violationSuppressXPath”.</li>
+                                                                                                                      <li><code class="language-plaintext highlighter-rouge">regex</code> - new value. Suppressed via property “violationSuppressRegex”.</li>
+                                                                                                                    </ul>
+                                                                                                                  </summary>
+                                                                                                                </details>
+                                                                                                              </summary>
+                                                                                                            </details>
+                                                                                                          </summary>
+                                                                                                        </details>
+                                                                                                      </summary>
+                                                                                                    </details>
+                                                                                                  </summary>
+                                                                                                </details>
+                                                                                              </summary>
+                                                                                            </details>
+                                                                                          </summary>
+                                                                                        </details>
+                                                                                      </summary>
+                                                                                    </details>
+                                                                                  </summary>
+                                                                                </details>
+                                                                              </summary>
+                                                                            </details>
+                                                                          </summary>
+                                                                        </details>
+                                                                      </summary>
+                                                                    </details>
+                                                                  </summary>
+                                                                </details>
+                                                              </summary>
+                                                            </details>
+                                                          </summary>
+                                                        </details>
+                                                      </summary>
+                                                    </details>
+                                                  </summary>
+                                                </details>
+                                              </summary>
+                                            </details>
+                                          </summary>
+                                        </details>
+                                      </summary>
+                                    </details>
+                                  </summary>
+                                </details>
+                              </summary>
+                            </details>
+                          </summary>
+                        </details>
+                      </summary>
+                    </details>
+                  </summary>
+                </details>
+              </summary>
+            </details>
+          </summary>
+        </details>
+      </summary>
+    </details>
+  </summary>
+</details>
 
 
     <div class="tags">

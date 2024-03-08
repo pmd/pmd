@@ -1874,16 +1874,17 @@
     </details>
 
   <details class="language-info">
-    <summary>Language Info for Java</summary>
-    <div class="card">
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item">Since PMD 1.0.0</li>
-            <li class="list-group-item">Implementation: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/JavaLanguageModule.html#"><code>JavaLanguageModule</code></a></li>
-            <li class="list-group-item">Id: java</li>
-            <li class="list-group-item">PMD: ✔️</li>
-            <li class="list-group-item">CPD: ✔️</li>
-        </ul>
-    </div>
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;summary&gt;Language Info for Java&lt;/summary&gt;
+&lt;div class="card"&gt;
+    &lt;ul class="list-group list-group-flush"&gt;
+        &lt;li class="list-group-item"&gt;Since PMD 1.0.0&lt;/li&gt;
+        &lt;li class="list-group-item"&gt;Implementation: &lt;a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/JavaLanguageModule.html#"&gt;&lt;code&gt;JavaLanguageModule&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+        &lt;li class="list-group-item"&gt;Id: java&lt;/li&gt;
+        &lt;li class="list-group-item"&gt;PMD: ✔️&lt;/li&gt;
+        &lt;li class="list-group-item"&gt;CPD: ✔️&lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/div&gt;
+</code></pre></div>  </div>
 </details>
 
 <h2 id="overview-of-supported-java-language-versions">Overview of supported Java language versions</h2>
@@ -2058,7 +2059,8 @@ in order to resolve Java API references.</p>
 <p>The auxiliary classpath (or short “auxClasspath”) is configured via the
 <a href="pmd_languages_configuration.html#java-language-properties">Language Property “auxClasspath”</a>.
 It is a string containing multiple paths separated by either a colon (<code class="language-plaintext highlighter-rouge">:</code>) under Linux/MacOS
-or a semicolon (<code class="language-plaintext highlighter-rouge">;</code>) under Windows.</p>
+or a semicolon (<code class="language-plaintext highlighter-rouge">;</code>) under Windows. This property can be provided on the CLI with parameter
+<a href="pmd_userdocs_cli_reference.html#-aux-classpath"><code class="language-plaintext highlighter-rouge">--aux-classpath</code></a>.</p>
 
 <p>In order to resolve the types of the Java API correctly, the Java Runtime must be on the
 auxClasspath as well. As the Java API and Runtime evolves from version to version, it is important
@@ -2077,9 +2079,25 @@ needs to be added to the auxClasspath as the first entry. PMD will make sure, to
 using the jrt-filesystem.</p>
 
 <p>If neither <code class="language-plaintext highlighter-rouge">${JAVA_HOME}/jre/lib/rt.jar</code> nor <code class="language-plaintext highlighter-rouge">${JAVA_HOME}/lib/jrt-fs.jar</code> is added to the auxClasspath, PMD falls
-back to load the JAva runtime classes <strong>from the current runtime</strong>, that is the runtime that was used to
+back to load the Java runtime classes <strong>from the current runtime</strong>, that is the runtime that was used to
 execute PMD. This might not be the correct version, e.g. you might run PMD with Java 8, but analyze code
 written for Java 21. In that case, you have to provide “jrt-fs.jar” on the auxClasspath.</p>
+
+<p>Not providing the correct auxClasspath might result in false positives or negatives for some rules,
+such as <a href="pmd_rules_java_bestpractices.html#missingoverride"><code class="language-plaintext highlighter-rouge">MissingOverride</code></a>.
+This rule needs to figure out, whether a method is defined already in the super class or interface. E.g. the method
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collection.html#toArray(java.util.function.IntFunction)">Collection#toArray(IntFunction)</a>
+has been added in Java 11, and it does not exist yet in Java 8. Given a simple subclass of ArrayList, that overrides
+this method without adding <code class="language-plaintext highlighter-rouge">@Override</code>, then PMD won’t be able to detect this missing override annotation, if
+it is executed with a Java 8 runtime but without the correct auxClasspath. Providing the correct <code class="language-plaintext highlighter-rouge">jrt-fs.jar</code> from
+Java 11 (or later) for the auxClasspath allows PMD to correctly identify the missing annotation.</p>
+
+<p>Example command line:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd check -d src/main/java \
+  --aux-classpath=path/to/java17/lib/jrt-fs.jar:target/classes/ \
+  -f xml -r pmd-report.xml -R rulesets/java/quickstart.xml
+</code></pre></div></div>
 
 <h2 id="symbol-table-apis">Symbol table APIs</h2>
 

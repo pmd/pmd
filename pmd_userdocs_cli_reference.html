@@ -1986,7 +1986,9 @@
                This is used to resolve types in source files. The platform specific path delimiter
                (":" on Linux, ";" on Windows) is used to separate the entries.
                Alternatively, a single <code>file:</code> URL
-               to a text file containing path elements on consecutive lines can be specified.</td>
+               to a text file containing path elements on consecutive lines can be specified.
+
+               <p>See also <a href="pmd_languages_java.html#providing-the-auxiliary-classpath">Providing the auxiliary classpath</a>.</p></td>
     <td><code></code></td>
     <td>Java</td>
 </tr>
@@ -2508,16 +2510,13 @@ if you want to analyze a project, that uses one of OpenJDK’s <a href="http://o
   </ul>
 
   <div class="tab-content border">
-    <div class="tab-pane fade show active" id="linux-preview" role="tabpanel" aria-labelledby="linux-tab">
-      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">export</span> PMD_JAVA_OPTS="--enable-preview"
-<span class="gp">~ $ </span><span class="s2">pmd</span> check -d src/main/java/ -f text -R rulesets/java/quickstart.xml
-</code></pre></figure>
-    </div>
-    <div class="tab-pane fade" id="windows-preview" role="tabpanel" aria-labelledby="windows-tab">
-      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">set</span> "PMD_JAVA_OPTS=--enable-preview"
-<span class="gp">C:\&gt; </span><span class="s2">pmd.bat</span> check -d src\main\java\ -f text -R rulesets/java/quickstart.xml
-</code></pre></figure>
-    </div>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;div class="tab-pane fade show active" id="linux-preview" role="tabpanel" aria-labelledby="linux-tab"&gt;
+  &lt;figure class="highlight"&gt;&lt;pre&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="gp"&gt;~ $ &lt;/span&gt;&lt;span class="s2"&gt;export&lt;/span&gt; PMD_JAVA_OPTS="--enable-preview" &lt;span class="gp"&gt;~ $ &lt;/span&gt;&lt;span class="s2"&gt;pmd&lt;/span&gt; check -d src/main/java/ -f text -R rulesets/java/quickstart.xml &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;/div&gt;
+&lt;div class="tab-pane fade" id="windows-preview" role="tabpanel" aria-labelledby="windows-tab"&gt;
+  &lt;figure class="highlight"&gt;&lt;pre&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="gp"&gt;C:\&amp;gt; &lt;/span&gt;&lt;span class="s2"&gt;set&lt;/span&gt; "PMD_JAVA_OPTS=--enable-preview" &lt;span class="gp"&gt;C:\&amp;gt; &lt;/span&gt;&lt;span class="s2"&gt;pmd.bat&lt;/span&gt; check -d src\main\java\ -f text -R rulesets/java/quickstart.xml &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;/div&gt;
+</code></pre></div>    </div>
   </div>
 </div>
 
@@ -2540,16 +2539,13 @@ standard distribution.</p>
   </ul>
 
   <div class="tab-content border">
-    <div class="tab-pane fade show active" id="linux-preview_classpath" role="tabpanel" aria-labelledby="linux-tab">
-      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">export</span> CLASSPATH=custom-rule-example.jar
-<span class="gp">~ $ </span><span class="s2">pmd</span> check -d ../../../src/main/java/ -f text -R myrule.xml
-</code></pre></figure>
-    </div>
-    <div class="tab-pane fade" id="windows-preview_classpath" role="tabpanel" aria-labelledby="windows-tab">
-      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">set</span> CLASSPATH=custom-rule-example.jar
-<span class="gp">C:\&gt; </span><span class="s2">pmd.bat</span> check -d ..\..\..\src\main\java\ -f text -R myrule.xml
-</code></pre></figure>
-    </div>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;div class="tab-pane fade show active" id="linux-preview_classpath" role="tabpanel" aria-labelledby="linux-tab"&gt;
+  &lt;figure class="highlight"&gt;&lt;pre&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="gp"&gt;~ $ &lt;/span&gt;&lt;span class="s2"&gt;export&lt;/span&gt; CLASSPATH=custom-rule-example.jar &lt;span class="gp"&gt;~ $ &lt;/span&gt;&lt;span class="s2"&gt;pmd&lt;/span&gt; check -d ../../../src/main/java/ -f text -R myrule.xml &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;/div&gt;
+&lt;div class="tab-pane fade" id="windows-preview_classpath" role="tabpanel" aria-labelledby="windows-tab"&gt;
+  &lt;figure class="highlight"&gt;&lt;pre&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="gp"&gt;C:\&amp;gt; &lt;/span&gt;&lt;span class="s2"&gt;set&lt;/span&gt; CLASSPATH=custom-rule-example.jar &lt;span class="gp"&gt;C:\&amp;gt; &lt;/span&gt;&lt;span class="s2"&gt;pmd.bat&lt;/span&gt; check -d ..\..\..\src\main\java\ -f text -R myrule.xml &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;/div&gt;
+</code></pre></div>    </div>
   </div>
 </div>
 
@@ -2605,14 +2601,13 @@ via the CLI option <code class="language-plaintext highlighter-rouge">--help</co
   </ul>
 
   <div class="tab-content border">
-    <div class="tab-pane fade show active" id="linux-lang-ver" role="tabpanel" aria-labelledby="linux-tab">
-      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">pmd</span> check -d src/main/java -f text -R rulesets/java/quickstart.xml --use-version java-1.8
-</code></pre></figure>
-    </div>
-    <div class="tab-pane fade" id="windows-lang-ver" role="tabpanel" aria-labelledby="windows-tab">
-      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">pmd.bat</span> check -d src\main\java -f text -R rulesets/java/quickstart.xml --use-version java-1.8
-</code></pre></figure>
-    </div>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;div class="tab-pane fade show active" id="linux-lang-ver" role="tabpanel" aria-labelledby="linux-tab"&gt;
+  &lt;figure class="highlight"&gt;&lt;pre&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="gp"&gt;~ $ &lt;/span&gt;&lt;span class="s2"&gt;pmd&lt;/span&gt; check -d src/main/java -f text -R rulesets/java/quickstart.xml --use-version java-1.8 &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;/div&gt;
+&lt;div class="tab-pane fade" id="windows-lang-ver" role="tabpanel" aria-labelledby="windows-tab"&gt;
+  &lt;figure class="highlight"&gt;&lt;pre&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="gp"&gt;C:\&amp;gt; &lt;/span&gt;&lt;span class="s2"&gt;pmd.bat&lt;/span&gt; check -d src\main\java -f text -R rulesets/java/quickstart.xml --use-version java-1.8 &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;/div&gt;
+</code></pre></div>    </div>
   </div>
 </div>
 
@@ -2661,14 +2656,13 @@ All formats are described at <a href="pmd_userdocs_report_formats.html">PMD Repo
   </ul>
 
   <div class="tab-content border">
-    <div class="tab-pane fade show active" id="linux-force" role="tabpanel" aria-labelledby="linux-tab">
-      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">pmd</span> check -d src/xml-file.ext -f text -R ruleset.xml --force-language xml
-</code></pre></figure>
-    </div>
-    <div class="tab-pane fade" id="windows-force" role="tabpanel" aria-labelledby="windows-tab">
-      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">pmd.bat</span> check -d src\xml-file.ext -f text -R ruleset.xml --force-language xml
-</code></pre></figure>
-    </div>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;div class="tab-pane fade show active" id="linux-force" role="tabpanel" aria-labelledby="linux-tab"&gt;
+  &lt;figure class="highlight"&gt;&lt;pre&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="gp"&gt;~ $ &lt;/span&gt;&lt;span class="s2"&gt;pmd&lt;/span&gt; check -d src/xml-file.ext -f text -R ruleset.xml --force-language xml &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;/div&gt;
+&lt;div class="tab-pane fade" id="windows-force" role="tabpanel" aria-labelledby="windows-tab"&gt;
+  &lt;figure class="highlight"&gt;&lt;pre&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="gp"&gt;C:\&amp;gt; &lt;/span&gt;&lt;span class="s2"&gt;pmd.bat&lt;/span&gt; check -d src\xml-file.ext -f text -R ruleset.xml --force-language xml &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;/div&gt;
+</code></pre></div>    </div>
   </div>
 </div>
 
@@ -2686,14 +2680,13 @@ parse errors are suppressed in order to reduce irrelevant noise:</p>
   </ul>
 
   <div class="tab-content border">
-    <div class="tab-pane fade show active" id="linux-force-dir" role="tabpanel" aria-labelledby="linux-tab">
-      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">pmd</span> check -d src/ -f text -R ruleset.xml --force-language xml
-</code></pre></figure>
-    </div>
-    <div class="tab-pane fade" id="windows-force-dir" role="tabpanel" aria-labelledby="windows-tab">
-      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">pmd.bat</span> check -d src\ -f text -R ruleset.xml --force-language xml
-</code></pre></figure>
-    </div>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;div class="tab-pane fade show active" id="linux-force-dir" role="tabpanel" aria-labelledby="linux-tab"&gt;
+  &lt;figure class="highlight"&gt;&lt;pre&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="gp"&gt;~ $ &lt;/span&gt;&lt;span class="s2"&gt;pmd&lt;/span&gt; check -d src/ -f text -R ruleset.xml --force-language xml &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;/div&gt;
+&lt;div class="tab-pane fade" id="windows-force-dir" role="tabpanel" aria-labelledby="windows-tab"&gt;
+  &lt;figure class="highlight"&gt;&lt;pre&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="gp"&gt;C:\&amp;gt; &lt;/span&gt;&lt;span class="s2"&gt;pmd.bat&lt;/span&gt; check -d src\ -f text -R ruleset.xml --force-language xml &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;/div&gt;
+</code></pre></div>    </div>
   </div>
 </div>
 
@@ -2710,16 +2703,13 @@ parse errors are suppressed in order to reduce irrelevant noise:</p>
   </ul>
 
   <div class="tab-content border">
-    <div class="tab-pane fade show active" id="linux-file-list" role="tabpanel" aria-labelledby="linux-tab">
-      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">find</span> src/ -name "*.ext" &gt; filelist.txt
-<span class="gp">~ $ </span><span class="s2">pmd</span> check --file-list filelist.txt -f text -R ruleset.xml --force-language xml
-</code></pre></figure>
-    </div>
-    <div class="tab-pane fade" id="windows-file-list" role="tabpanel" aria-labelledby="windows-tab">
-      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">for</span> /r src\ %i in (*.ext) do echo %i &gt;&gt; filelist.txt
-<span class="gp">C:\&gt; </span><span class="s2">pmd.bat</span> check --file-list filelist.txt -f text -R ruleset.xml --force-language xml
-</code></pre></figure>
-    </div>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;div class="tab-pane fade show active" id="linux-file-list" role="tabpanel" aria-labelledby="linux-tab"&gt;
+  &lt;figure class="highlight"&gt;&lt;pre&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="gp"&gt;~ $ &lt;/span&gt;&lt;span class="s2"&gt;find&lt;/span&gt; src/ -name "*.ext" &gt; filelist.txt &lt;span class="gp"&gt;~ $ &lt;/span&gt;&lt;span class="s2"&gt;pmd&lt;/span&gt; check --file-list filelist.txt -f text -R ruleset.xml --force-language xml &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;/div&gt;
+&lt;div class="tab-pane fade" id="windows-file-list" role="tabpanel" aria-labelledby="windows-tab"&gt;
+  &lt;figure class="highlight"&gt;&lt;pre&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="gp"&gt;C:\&amp;gt; &lt;/span&gt;&lt;span class="s2"&gt;for&lt;/span&gt; /r src\ %i in (*.ext) do echo %i &gt;&gt; filelist.txt &lt;span class="gp"&gt;C:\&amp;gt; &lt;/span&gt;&lt;span class="s2"&gt;pmd.bat&lt;/span&gt; check --file-list filelist.txt -f text -R ruleset.xml --force-language xml &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;/div&gt;
+</code></pre></div>    </div>
   </div>
 </div>
 
