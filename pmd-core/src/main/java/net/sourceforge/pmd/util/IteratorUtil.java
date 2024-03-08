@@ -27,6 +27,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 
 /**
+ * Operations for dealing with {@link Iterator}s.
+ *
  * @author Clément Fournier
  * @since 6.11.0
  */
@@ -513,7 +515,7 @@ public final class IteratorUtil {
 
     /**
      * Note, that this iterator doesn't support the {@code remove} operation.
-     * @param <T>
+     * @param <T> the type of the elements
      */
     public abstract static class AbstractIterator<T> implements Iterator<T> {
 

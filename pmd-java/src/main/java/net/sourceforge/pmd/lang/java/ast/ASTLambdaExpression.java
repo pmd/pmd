@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
  *
  * <pre class="grammar">
  *
- * LambdaExpression ::= {@link ASTLambdaParameterList LambdaParameterList} "->" ( {@link ASTExpression Expression} | {@link ASTBlock Block} )
+ * LambdaExpression ::= {@link ASTLambdaParameterList LambdaParameterList} {@code  "->"} ( {@link ASTExpression Expression} | {@link ASTBlock Block} )
  *
  * </pre>
  */

@@ -260,7 +260,6 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          *
          * <p>Example usage:
          * <pre>{@code
-         *
          * // this can be set with
          * // <value>a,b,c</value>
          * PropertyDescriptor<Set<String>> whitelistSet =
@@ -269,6 +268,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          *                     .to(Collectors.toSet())
          *                     .emptyDefaultValue()
          *                     .build();
+         * }</pre>
          *
          * @return A new list property builder
          *

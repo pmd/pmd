@@ -30,7 +30,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * and their constructors/ builders will be gradually
  * deprecated before 7.0.0.
  *
- * <h1>Usage</h1>
+ * <h2>Usage</h2>
  *
  * Properties are a way to make your rule configurable by
  * letting a user fill in some config value in their
@@ -50,7 +50,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * You can then retrieve the value configured by the user in your
  * rule using {@link PropertySource#getProperty(PropertyDescriptor)}.
  *
- * <h1>Example</h1>
+ * <h2>Example</h2>
  *
  * <pre>
  * class MyRule {

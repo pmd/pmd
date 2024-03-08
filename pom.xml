@@ -369,7 +369,8 @@
                     <version>${javadoc.plugin.version}</version>
                     <configuration>
                         <quiet>true</quiet>
-                        <doclint>none</doclint>
+                        <doclint>all</doclint>
+                        <failOnError>true</failOnError>
                         <!-- exclude any internal package and up to two sub-packages inside -->
                         <excludePackageNames>*.internal,*.internal.*,*.internal.*.*</excludePackageNames>
                         <detectOfflineLinks>false</detectOfflineLinks>
@@ -387,6 +388,30 @@
                                 <url>../../pmd-lang-test/${project.version}</url>
                             </offlineLink>
                         </offlineLinks>
+                        <tags>
+                            <tag>
+                                <name>apiNote</name>
+                                <placement>a</placement>
+                                <head>API Note:</head>
+                            </tag>
+                            <tag>
+                                <name>implSpec</name>
+                                <placement>a</placement>
+                                <head>Implementation Requirements:</head>
+                            </tag>
+                            <tag>
+                                <name>implNote</name>
+                                <placement>a</placement>
+                                <head>Implementation Note:</head>
+                            </tag>
+                            <tag><name>param</name></tag>
+                            <tag><name>return</name></tag>
+                            <tag><name>throws</name></tag>
+                            <tag><name>since</name></tag>
+                            <tag><name>version</name></tag>
+                            <tag><name>serialData</name></tag>
+                            <tag><name>see</name></tag>
+                        </tags>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -1139,7 +1164,7 @@
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-javadoc-plugin</artifactId>
                             <configuration>
-                                <doclint>all</doclint>
+                                <failOnWarnings>true</failOnWarnings>
                             </configuration>
                         </plugin>
                     </plugins>

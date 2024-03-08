@@ -36,18 +36,16 @@ import com.github.stefanbirkner.systemlambda.SystemLambda;
  * <p>Usage template:
  *
  * <pre>
- * {@code
  * class MyPMDTaskTest extends AbstractAntTestHelper {
  *     MyPMDTaskTest() {
  *          antTestScriptFilename = "mypmdtasktest.xml";
  *     }
  *
- *     @Test
+ *     &#64;Test
  *     void myTest() {
  *         executeTarget("testMyTarget");
  *         assertOutputContaining("Expected Violation Message");
  *     }
- * }
  * }
  * </pre>
  *

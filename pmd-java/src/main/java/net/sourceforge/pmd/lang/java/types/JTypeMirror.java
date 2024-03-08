@@ -358,7 +358,7 @@ public interface JTypeMirror extends JTypeVisitable {
      * <p>For example, {@code List}, {@code List<T>}, and {@code List<String>}
      * are generic, but {@code String} is not.
      *
-     * @see JClassType#isGeneric().
+     * @see JClassType#isGeneric()
      */
     default boolean isGeneric() {
         return false;

@@ -13,7 +13,7 @@ import java.util.Iterator;
 import net.sourceforge.pmd.cpd.Match;
 
 /**
- * @deprecated Use {@link CPDReportRenderer}
+ * @deprecated Use {@link net.sourceforge.pmd.cpd.CPDReportRenderer}
  */
 @Deprecated
 public interface CPDRenderer {
