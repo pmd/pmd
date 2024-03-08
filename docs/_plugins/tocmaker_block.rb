@@ -18,7 +18,7 @@ class TocMakerBlock < Liquid::Block
   end
 
   def to_internal_link(header)
-    url = header.downcase.gsub(/\s+/, "-")
+    url = header.downcase.gsub(/\s+/, "-").gsub(/[:\(\)]+/, "")
 
     "[#{header}](##{url})"
   end
