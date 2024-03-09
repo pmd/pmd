@@ -140,7 +140,7 @@ function build() {
         ./mvnw \
             --show-version --errors --batch-mode \
             clean package \
-            sonar:sonar -Dsonar.login="${SONAR_TOKEN}" -Psonar,fastSkip
+            sonar:sonar -Dsonar.token="${SONAR_TOKEN}" -Psonar,fastSkip
         pmd_ci_log_success "New sonar results: https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd"
     pmd_ci_log_group_end
 
