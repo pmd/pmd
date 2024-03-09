@@ -3369,13 +3369,14 @@ See the use case [I'm using only built-in rules](#im-using-only-built-in-rules) 
 #### Gradle
 
 * Gradle uses internally PMD's Ant task to execute PMD
-* You can set `toolVersion = "{{site.pmd.version}}"`, but you also need configure the dependencies manually for now, since
+* Gradle 8.6 supports PMD 7 out of the box, but does not yet use PMD 7 by default.
+* You can set `toolVersion = "{{site.pmd.version}}"`.
+* Only for older gradle versions you need to configure the dependencies manually for now, since
   the ant task is in an own dependency with PMD 7:
   ```groovy
   pmd 'net.sourceforge.pmd:pmd-ant:{{site.pmd.version}}'
   pmd 'net.sourceforge.pmd:pmd-java:{{site.pmd.version}}'
   ```
-* Gradle 8.3 most likely will support PMD 7 out of the box.
 * See [Support for PMD 7.0](https://github.com/gradle/gradle/issues/24502)
 
 ### XML Report Format
