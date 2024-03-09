@@ -10,7 +10,6 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.cpd.impl.JavaccCpdLexer;
 import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
