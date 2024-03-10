@@ -701,7 +701,7 @@ If you import rules, you also need to adjust the paths, e.g.
 #### Other changes
 
 The information about changed rules, removed rules and rulesets
-can be found in the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#-new-and-changed-rules)
+can be found in the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#-new-and-changed-rules).
 
 ### 🚨 API
 
@@ -741,7 +741,7 @@ Many thanks to the following contributors:
 @Debamoy, @eklimo, @ethauvin, @JerritEic, @joaodinissf, @kenji21, @krdabrowski, @lbovet, @lsoncini,
 @LynnBroe, @marcindabrowski, @matifraga, @mohan-chinnappan-n, @mohui1999, @nawforce, @nirvikpatel,
 @nwcm, @pguyot, @PimvanderLoos, @rcorfieldffdc, @sfdcsteve, @shai-bennathan, @tomidelucca,
-@tprouvot, @wener-tiobe
+@tprouvot, @wener-tiobe.
 
 See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#-external-contributions) for the
 full list of PRs.

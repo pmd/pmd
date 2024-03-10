@@ -27,7 +27,7 @@ As a convention, properties whose name start with an *x* are internal and may be
 Properties whose name start with **CPD** are used to configure CPD CpdLexer options.
 
 Programmatically, the language properties can be set on `PMDConfiguration` (or `CPDConfiguration`) before using the
-{%jdoc core::PmdAnalyzer %} (or {%jdoc core::cpd.CpdAnalyzer %}) instance
+{%jdoc core::PmdAnalysis %} (or {%jdoc core::cpd.CpdAnalysis %}) instance
 to start the analysis:
 
 ```java

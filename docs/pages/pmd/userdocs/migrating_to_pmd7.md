@@ -564,7 +564,7 @@ See also issue [Deprecate getImage/@Image #4787](https://github.com/pmd/pmd/issu
 
 #### XML (and POM)
 
-When using {% jdoc core::lang.rule.XPathRule %}, text of text nodes was exposed as `@Image` of
+When using {% jdoc core::lang.rule.xpath.XPathRule %}, text of text nodes was exposed as `@Image` of
 normal element type nodes. Now the attribute is called `@Text`.
 
 Note: In general, it is recommended to use {% jdoc xml::lang.xml.rule.DomXPathRule %} instead,
@@ -1154,7 +1154,7 @@ List<String> strs;
 ##### Array changes
 
 * What: Additional nodes {% jdoc jast::ASTArrayType %}, {% jdoc jast::ASTArrayTypeDim %},
-  {% jdoc jast::ASTArrayTypeDims %}, {% jdoc jast::ASTArrayAllocation %}.
+  {% jdoc jast::ASTArrayDimensions %}, {% jdoc jast::ASTArrayAllocation %}.
 * Why: Support annotated array types ([[java] Java8 parsing corner case with annotated array types (#997)](https://github.com/pmd/pmd/issues/997))
 * Related issue: [[java] Simplify array allocation expressions (#1981)](https://github.com/pmd/pmd/pull/1981)
 
@@ -2790,23 +2790,23 @@ The amount of changes in the grammar that this change entails is enormous,
 but hopefully firing up the designer to inspect the new structure should
 give you the information you need quickly.
 
-Note: this doesn't affect binary expressions like {% jdoc jast::ASTAdditiveExpression %}.
+Note: this also affect binary expressions like {% jdoc jast::ASTInfixExpression %}.
 E.g. `a+b+c` is not parsed as
-```
-AdditiveExpression
-+ AdditiveExpression
-  + (a)
-  + (b)
-+ (c)  
-``` 
-It's still
 ```
 AdditiveExpression
 + (a)
 + (b)
-+ (c)  
-``` 
-which is easier to navigate, especially from XPath.
++ (c)
+```
+
+But it is now (note: AdditiveExpression is now InfixExpression)
+```
+InfixExpression
++ InfixExpression
+  + (a)
+  + (b)
++ (c)
+```
 
 ##### Field access, array access, variable access
 
