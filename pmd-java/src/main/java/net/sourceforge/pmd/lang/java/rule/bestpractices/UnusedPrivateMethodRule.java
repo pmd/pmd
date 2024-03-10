@@ -104,25 +104,6 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
                         consideredNames.remove(methodName); // clear this name
                     }
                 }
-
-                // TODO workaround for missing method symbol resolution
-                // for some reason, we couldn't find the method declaration of the method call
-                // assume, it is in this class
-                // see test case: [java] UnusedPrivateMethod false-positive used in lambda #4817
-                if (reffed == null && ref instanceof ASTMethodCall) {
-                    ASTMethodCall call = (ASTMethodCall) ref;
-                    if (call.getQualifier() == null || call.getQualifier() instanceof ASTThisExpression) {
-                        Set<ASTMethodDeclaration> remainingUnused = consideredNames.get(methodName);
-
-                        // only remove this method, if we are sure, it's the correct and only overload
-                        if (remainingUnused.size() == 1) {
-                            ASTMethodDeclaration declaration = remainingUnused.iterator().next();
-                            if (declaration.getArity() == call.getArguments().size()) {
-                                consideredNames.remove(methodName);
-                            }
-                        }
-                    }
-                }
             });
 
         // those that remain are unused
