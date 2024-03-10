@@ -174,13 +174,18 @@ do {
 
     <test-code>
         <description>Bad, switch</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 switch(1) {
     case 1:
         {
         }
         break;
+    case 2:
+        {
+            1 + 2;
+        }
+        return;
 }
         ]]></code>
     </test-code>
@@ -239,6 +244,16 @@ let a, b, a1, b1, c, d, rest, pop, push;
 ({ a: a1, b: b1, ...rest } = obj);
 
 function fn( ({arg}) ){ return arg}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>not using semicolons case</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import { foo } from './someScript.js' // missing semicolon
+const { isLoggedIn } = useAuth();  // <--- violation here: unnecessary block
+import { foo2 } from './someScript2.js'; 
+const { isLoggedIn2 } = useAuth2()  //
         ]]></code>
     </test-code>
 </test-data>
