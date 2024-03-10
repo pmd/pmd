@@ -607,7 +607,7 @@ which can also display the AST.
 * Related issue: [[java] Use single node for annotations (#2282)](https://github.com/pmd/pmd/pull/2282)
 
 <details>
-  <summary>Annotation AST Examples</summary>
+  <summary markdown="span">Annotation AST Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -755,7 +755,7 @@ which can also display the AST.
 * Related issue: [[java] Move annotations inside the node they apply to (#1875)](https://github.com/pmd/pmd/pull/1875)
 
 <details>
-  <summary>Annotation nesting Examples</summary>
+  <summary markdown="span">Annotation nesting Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -1107,7 +1107,7 @@ enum E {
     The Java equivalent is `TypeHelper.isA(id, String[].class);`
 
 <details>
-  <summary>Type and ReferenceType Examples</summary>
+  <summary markdown="span">Type and ReferenceType Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -1159,7 +1159,7 @@ List<String> strs;
 * Related issue: [[java] Simplify array allocation expressions (#1981)](https://github.com/pmd/pmd/pull/1981)
 
 <details>
-  <summary>Array Examples</summary>
+  <summary markdown="span">Array Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -1305,7 +1305,7 @@ new Foo[] { f, g };
 * Related issue: [[java] ClassOrInterfaceType AST improvements (#1150)](https://github.com/pmd/pmd/issues/1150)
 
 <details>
-  <summary>ClassType Examples</summary>
+  <summary markdown="span">ClassType Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -1379,7 +1379,7 @@ First<K>.Second.Third<V>
   of nesting off.
 
 <details>
-  <summary>TypeArgument and WildcardType Examples</summary>
+  <summary markdown="span">TypeArgument and WildcardType Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -1447,7 +1447,7 @@ List<?>
 * Related issue: [[java] Remove Name nodes in Import- and PackageDeclaration (#1888)](https://github.com/pmd/pmd/pull/1888)
 
 <details>
-  <summary>Import and Package declarations Examples</summary>
+  <summary markdown="span">Import and Package declarations Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -1508,7 +1508,7 @@ package com.example.tool;
 * Related issue: [[java] Rework AccessNode (#2259)](https://github.com/pmd/pmd/pull/2259)
 
 <details>
-  <summary>Modifier lists Examples</summary>
+  <summary markdown="span">Modifier lists Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -1595,7 +1595,7 @@ public @A class C {}
 * Related issue: [[java] Flatten body declarations (#2300)](https://github.com/pmd/pmd/pull/2300)
 
 <details>
-  <summary>Flattened body declarations Examples</summary>
+  <summary markdown="span">Flattened body declarations Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -1681,7 +1681,7 @@ public @interface FlatAnnotation {
 * Related issue: [[java] Improve module grammar (#3890)](https://github.com/pmd/pmd/pull/3890)
 
 <details>
-  <summary>Module declarations Examples</summary>
+  <summary markdown="span">Module declarations Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -1757,7 +1757,7 @@ open module com.example.foo {
   * [[java] New expression and type grammar (#1759)](https://github.com/pmd/pmd/pull/1759)
 
 <details>
-  <summary>Anonymous class declarations Examples</summary>
+  <summary markdown="span">Anonymous class declarations Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -1815,7 +1815,7 @@ Object anonymous = new Object() {  };
 * Related issue: [[java] Align method and constructor declaration grammar (#2034)](https://github.com/pmd/pmd/pull/2034)
 
 <details>
-  <summary>Method grammar Examples</summary>
+  <summary markdown="span">Method grammar Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -1932,7 +1932,7 @@ public @interface MyAnnotation {
   * CatchParameter can have multiple exception types (a {% jdoc jast::ASTUnionType %} now)
 
 <details>
-  <summary>Formal parameters Examples</summary>
+  <summary markdown="span">Formal parameters Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -2087,7 +2087,7 @@ c -> {};
 * Related issue: [[java] Separate receiver parameter from formal parameter (#1980)](https://github.com/pmd/pmd/pull/1980)
 
 <details>
-  <summary>explicit receiver parameter Examples</summary>
+  <summary markdown="span">explicit receiver parameter Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -2135,7 +2135,7 @@ void myMethod(@A Foo this, Foo other) {}
 * Why: this improves regularity of the grammar, and allows type annotations to be added to the ellipsis
 
 <details>
-  <summary>Varargs Examples</summary>
+  <summary markdown="span">Varargs Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -2228,7 +2228,7 @@ void myMethod(int[]... is) {}
 * Related issue: [[java] Add void type node to replace ResultType (#2715)](https://github.com/pmd/pmd/pull/2715)
 
 <details>
-  <summary>Void Type Examples</summary>
+  <summary markdown="span">Void Type Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -2291,7 +2291,7 @@ int foo();
 * Related issue: [[java] Improve statement grammar (#2164)](https://github.com/pmd/pmd/pull/2164)
 
 <details>
-  <summary>Statements Examples</summary>
+  <summary markdown="span">Statements Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -2348,7 +2348,7 @@ i = 1;
 * Related issue: [[java] Improve statement grammar (#2164)](https://github.com/pmd/pmd/pull/2164)
 
 <details>
-  <summary>For-each statement Examples</summary>
+  <summary markdown="span">For-each statement Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -2420,7 +2420,7 @@ for (String s : List.of("a", "b")) { }
 * Related issue: [[java] Improve statement grammar (#2164)](https://github.com/pmd/pmd/pull/2164)
 
 <details>
-  <summary>ExpressionStatement, LocalClassStatement Examples</summary>
+  <summary markdown="span">ExpressionStatement, LocalClassStatement Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -2467,7 +2467,7 @@ class LocalClass {}
 * Related issue: [[java] Improve try-with-resources grammar (#1897)](https://github.com/pmd/pmd/pull/1897)
 
 <details>
-  <summary>Try-With-Resources Examples</summary>
+  <summary markdown="span">Try-With-Resources Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -2574,7 +2574,7 @@ try (in) {}
   * As usual, use the designer to explore the new AST structure
 
 <details>
-  <summary>Literals Examples</summary>
+  <summary markdown="span">Literals Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -2621,7 +2621,7 @@ Object n = null;
 * Related issue: [[java] New expression and type grammar (#1759)](https://github.com/pmd/pmd/pull/1759)
 
 <details>
-  <summary>Method calls, constructor calls, array allocations Examples</summary>
+  <summary markdown="span">Method calls, constructor calls, array allocations Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -2729,7 +2729,7 @@ new int[] { 1, 2, 3 };
 * Related issue: [[java] New expression and type grammar (#1759)](https://github.com/pmd/pmd/pull/1759)
 
 <details>
-  <summary>Method call chain Examples</summary>
+  <summary markdown="span">Method call chain Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -2819,7 +2819,7 @@ which is easier to navigate, especially from XPath.
 * Related issue: [[java] New expression and type grammar (#1759)](https://github.com/pmd/pmd/pull/1759)
 
 <details>
-  <summary>Field access, array access, variable access Examples</summary>
+  <summary markdown="span">Field access, array access, variable access Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -2930,7 +2930,7 @@ Foo.staticField = localVar;
 * Related issue: [[java] New expression and type grammar (#1759)](https://github.com/pmd/pmd/pull/1759)
 
 <details>
-  <summary>this/super expressions Examples</summary>
+  <summary markdown="span">this/super expressions Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -3022,7 +3022,7 @@ super.method();
 * Related issue: [[java] Grammar type expr (#2039)](https://github.com/pmd/pmd/pull/2039)
 
 <details>
-  <summary>Type expressions Examples</summary>
+  <summary markdown="span">Type expressions Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -3112,7 +3112,7 @@ var x = Foo::method;
   * [[java] Merge prefix/postfix expressions into one node (#2155)](https://github.com/pmd/pmd/pull/2155)
 
 <details>
-  <summary>Unary Expressions Examples</summary>
+  <summary markdown="span">Unary Expressions Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -3213,7 +3213,7 @@ x = +a;
 * Related issue: [[java] Make binary operators left-recursive (#1979)](https://github.com/pmd/pmd/pull/1979)
 
 <details>
-  <summary>Binary operators Examples</summary>
+  <summary markdown="span">Binary operators Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -3262,7 +3262,7 @@ int i = 1 * 2 * 3 % 4;
 * Related issue: [[java] Remove ParenthesizedExpr (#1872)](https://github.com/pmd/pmd/pull/1872)
 
 <details>
-  <summary>Parenthesized expressions Examples</summary>
+  <summary markdown="span">Parenthesized expressions Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>

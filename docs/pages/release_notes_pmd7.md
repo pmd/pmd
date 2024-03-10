@@ -52,7 +52,7 @@ Contributors: [Clément Fournier](https://github.com/oowekyala) (@oowekyala),
 [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
 
 {% include note.html content="
-The full detailed documentation of the changes are available in the
+The full detailed documentation of the changes to the Java AST are available in the
 [Migration Guide for PMD 7](pmd_userdocs_migrating_to_pmd7.html#java-ast)
 " %}
 
@@ -134,6 +134,9 @@ We expect this to enable both our dev team and external contributors to largely 
 
 Two languages (Swift and Kotlin) already use this new possibility.
 
+See the documentation page [Adding a new language with ANTLR](pmd_devdocs_major_adding_new_language_antlr.html)
+for instructions on how to use this new feature.
+
 Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 [Matías Fraga](https://github.com/matifraga) (@matifraga),
 [Tomás De Lucca](https://github.com/tomidelucca) (@tomidelucca)
@@ -156,7 +159,78 @@ It uses an XSLT stylesheet to convert CPD's XML format into HTML.
 
 See [the example report](report-examples/cpdhtml-v2.html).
 
+Contributors: [Mohan Chinnappan](https://github.com/mohan-chinnappan-n) (@mohan-chinnappan-n)
+
 ## 🎉 Language Related Changes
+
+### New: CPD support for Apache Velocity Template Language (VTL)
+
+PMD supported Apache Velocity for a very long time, but the CPD integration never got finished.
+This is now done and CPD supports Apache Velocity Template language for detecting copy and paste.
+It is shipped in the module `pmd-velocity`.
+
+### New: CPD support for Coco
+
+Thanks to a contribution, CPD now supports Coco, a modern programming language
+designed specifically for building event-driven software. It is shipped in the new
+module `pmd-coco`.
+
+Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
+
+### New: CPD support for Julia
+
+Thanks to a contribution, CPD now supports the Julia language. It is shipped
+in the new module `pmd-julia`.
+
+Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
+
+### New: CPD support for TypeScript
+
+Thanks to a contribution, CPD now supports the TypeScript language. It is shipped
+with the rest of the JavaScript support in the module `pmd-javascript`.
+
+Contributors: [Paul Guyot](https://github.com/pguyot) (@pguyot)
+
+### New: Java 21 and 22 Support
+
+This release of PMD brings support for Java 21 and 22. There are the following new standard language features,
+that are supported now:
+
+* [JEP 456: Unnamed Variables & Patterns](https://openjdk.org/jeps/456) (Java 22)
+* [JEP 440: Record Patterns](https://openjdk.org/jeps/440) (Java 21)
+* [JEP 441: Pattern Matching for switch](https://openjdk.org/jeps/441) (Java 21)
+
+PMD also supports the following preview language features:
+
+* [JEP 447: Statements before super(...) (Preview)](https://openjdk.org/jeps/447) (Java 22)
+* [JEP 459: String Templates (Second Preview)](https://openjdk.org/jeps/459) (Java 21 and 22)
+* [JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)](https://openjdk.org/jeps/463) (Java 21 and 22)
+
+In order to analyze a project with PMD that uses these preview language features,
+you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
+version `22-preview`:
+
+    export PMD_JAVA_OPTS=--enable-preview
+    pmd check --use-version java-22-preview ...
+
+Note: Support for Java 19 and Java 20 preview language features have been removed. The versions "19-preview" and
+"20-preview" are no longer available.
+
+### New: Kotlin support
+
+PMD now supports Kotlin as an additional language for analyzing source code. It is based on
+the official kotlin Antlr grammar for Kotlin 1.8. Java-based rules and XPath-based rules are supported.
+
+We are shipping the following rules:
+
+* {% rule kotlin/bestpractices/FunctionNameTooShort %} finds functions with a too
+  short name.
+* {% rule kotlin/errorprone/OverrideBothEqualsAndHashcode %} finds classes with only
+  either `equals` or `hashCode` overridden, but not both. This leads to unexpected behavior once instances
+  of such classes are used in collections (Lists, HashMaps, ...).
+
+Contributors: [Jeroen Borgers](https://github.com/jborgers) (@jborgers),
+[Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
 
 ### New: Swift support
 
@@ -167,141 +241,20 @@ are supported, but other features are not.
 
 We are pleased to announce we are shipping a number of rules starting with PMD 7.
 
-* {% rule "swift/errorprone/ForceCast" %} (`swift-errorprone`) flags all force casts, making sure you are
+* {% rule "swift/errorprone/ForceCast" %} flags all force casts, making sure you are
   defensively considering all types. Having the application crash shouldn't be an option.
-* {% rule "swift/errorprone/ForceTry" %} (`swift-errorprone`) flags all force tries, making sure you are
+* {% rule "swift/errorprone/ForceTry" %} flags all force tries, making sure you are
   defensively handling exceptions. Having the application crash shouldn't be an option.
-* {% rule "swift/bestpractices/ProhibitedInterfaceBuilder" %} (`swift-bestpractices`) flags any usage of interface
+* {% rule "swift/bestpractices/ProhibitedInterfaceBuilder" %} flags any usage of interface
   builder. Interface builder files are prone to merge conflicts, and are impossible to code review, so larger
   teams usually try to avoid it or reduce its usage.
-* {% rule "swift/bestpractices/UnavailableFunction" %} (`swift-bestpractices`) flags any function throwing
+* {% rule "swift/bestpractices/UnavailableFunction" %} flags any function throwing
   a `fatalError` not marked as `@available(*, unavailable)` to ensure no calls are actually performed in
   the codebase.
 
 Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 [Matías Fraga](https://github.com/matifraga) (@matifraga),
 [Tomás De Lucca](https://github.com/tomidelucca) (@tomidelucca)
-
-### New: Kotlin support
-
-PMD now supports Kotlin as an additional language for analyzing source code. It is based on
-the official kotlin Antlr grammar. Java-based rules and XPath-based rules are supported.
-
-We are shipping the following rules:
-
-* {% rule kotlin/bestpractices/FunctionNameTooShort %} (`kotlin-bestpractices`) finds functions with a too
-  short name.
-* {% rule kotlin/errorprone/OverrideBothEqualsAndHashcode %} (`kotlin-errorprone`) finds classes with only
-  either `equals` or `hashCode` overridden, but not both. This leads to unexpected behavior once instances
-  of such classes are used in collections (Lists, HashMaps, ...).
-
-Contributors: [Jeroen Borgers](https://github.com/jborgers) (@jborgers),
-[Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
-
-### New: CPD support for TypeScript
-
-Thanks to a contribution, CPD now supports the TypeScript language. It is shipped
-with the rest of the JavaScript support in the module `pmd-javascript`.
-
-Contributors: [Paul Guyot](https://github.com/pguyot) (@pguyot)
-
-### New: CPD support for Julia
-
-Thanks to a contribution, CPD now supports the Julia language. It is shipped
-in the new module `pmd-julia`.
-
-Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
-
-### New: CPD support for Coco
-
-Thanks to a contribution, CPD now supports Coco, a modern programming language
-designed specifically for building event-driven software. It is shipped in the new
-module `pmd-coco`.
-
-Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
-
-### New: Java 22 Support
-
-This release of PMD brings support for Java 22. There are the following new standard language features,
-that are supported now:
-
-* [JEP 456: Unnamed Variables & Patterns](https://openjdk.org/jeps/456)
-
-PMD also supports the following preview language features:
-
-* [JEP 447: Statements before super(...) (Preview)](https://openjdk.org/jeps/447)
-* [JEP 459: String Templates (Second Preview)](https://openjdk.org/jeps/459)
-* [JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)](https://openjdk.org/jeps/463)
-
-In order to analyze a project with PMD that uses these language features,
-you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
-version `22-preview`:
-
-    export PMD_JAVA_OPTS=--enable-preview
-    pmd check --use-version java-22-preview ...
-
-Note: Support for Java 20 preview language features have been removed. The version "20-preview" is no longer available.
-
-### New: Java 21 Support
-
-This release of PMD brings support for Java 21. There are the following new standard language features,
-that are supported now:
-
-* [JEP 440: Record Patterns](https://openjdk.org/jeps/440)
-* [JEP 441: Pattern Matching for switch](https://openjdk.org/jeps/441)
-
-PMD also supports the following preview language features:
-
-* [JEP 430: String Templates (Preview)](https://openjdk.org/jeps/430)
-* [JEP 443: Unnamed Patterns and Variables (Preview)](https://openjdk.org/jeps/443)
-* [JEP 445: Unnamed Classes and Instance Main Methods (Preview)](https://openjdk.org/jeps/445)
-
-In order to analyze a project with PMD that uses these language features,
-you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
-version `21-preview`:
-
-    export PMD_JAVA_OPTS=--enable-preview
-    pmd check --use-version java-21-preview ...
-
-Note: Support for Java 19 preview language features have been removed. The version "19-preview" is no longer available.
-
-### New: CPD support for Apache Velocity Template Language
-
-PMD supports Apache Velocity for a very long time, but the CPD integration never got finished.
-This is now done and CPD supports Apache Velocity Template language for detecting copy and paste.
-It is shipped in the module `pmd-vm`.
-
-### Changed: HTML support
-
-Support for HTML was introduced in PMD 6.55.0 as an experimental feature. With PMD 7.0.0 this
-is now considered stable.
-
-### Changed: JavaScript support
-
-The JS specific parser options have been removed. The parser now always retains comments and uses version ES6.
-The language module registers a couple of different versions. The latest version, which supports ES6 and also some
-new constructs (see [Rhino](https://github.com/mozilla/rhino)), is the default. This should be fine for most
-use cases.
-
-### Changed: Language versions
-
-We revisited the versions that were defined by each language module. Now many more versions are defined for each
-language. In general, you can expect that PMD can parse all these different versions. There might be situations
-where this fails and this can be considered a bug. Usually the latest version is selected as the default
-language version.
-
-The language versions can be used to mark rules to be useful only for a specific language version via
-the `minimumLanguageVersion` and `maximumLanguageVersion` attributes. While this feature is currently only used by
-the Java module, listing all possible versions enables other languages as well to use this feature.
-
-Related issue: [[core] Explicitly name all language versions (#4120)](https://github.com/pmd/pmd/issues/4120)
-
-### Changed: CPP can now ignore identifiers in sequences (CPD)
-
-* new command line option for CPD: `--ignore-sequences`.
-* This option is used for CPP only: with the already existing option `--ignore-literal-sequences`, only
-  literals were ignored. The new option additional ignores identifiers as well in sequences.
-* See [PR #4470](https://github.com/pmd/pmd/pull/4470) for details.
 
 ### Changed: Apex Support: Replaced Jorje with fully open source front-end
 
@@ -333,34 +286,104 @@ See [#3766](https://github.com/pmd/pmd/issues/3766) for details.
 Contributors: [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-google),
 [Edward Klimoshenko](https://github.com/eklimo) (@eklimo)
 
+### Changed: CPP can now ignore identifiers in sequences (CPD)
+
+* New command line option for CPD: `--ignore-sequences`.
+* This option is used for CPP only: with the already existing option `--ignore-literal-sequences`, only
+  literals were ignored. The new option additionally ignores identifiers as well in sequences.
+* See [PR #4470](https://github.com/pmd/pmd/pull/4470) for details.
+
 ### Changed: Groovy Support (CPD)
 
 * We now support parsing all Groovy features from Groovy 3 and 4.
 * We now support [suppression](pmd_userdocs_cpd.html#suppression) through `CPD-ON`/`CPD-OFF` comment pairs.
 * See [PR #4726](https://github.com/pmd/pmd/pull/4726) for details.
 
+### Changed: HTML support
+
+Support for HTML was introduced in PMD 6.55.0 as an experimental feature. With PMD 7.0.0 this
+is now considered stable.
+
+### Changed: JavaScript support
+
+The JS specific parser options have been removed. The parser now always retains comments and uses version ES6.
+The language module registers a couple of different versions. The latest version, which supports ES6 and also some
+new constructs (see [Rhino](https://github.com/mozilla/rhino)), is the default. This should be fine for most
+use cases.
+
+### Changed: Language versions
+
+We revisited the versions that were defined by each language module. Now many more versions are defined for each
+language. In general, you can expect that PMD can parse all these different versions. There might be situations
+where this fails and this can be considered a bug. Usually the latest version is selected as the default
+language version.
+
+The language versions can be used to mark rules to be useful only for a specific language version via
+the `minimumLanguageVersion` and `maximumLanguageVersion` attributes. While this feature is currently only used by
+the Java module, listing all possible versions enables other languages as well to use this feature.
+
+Related issue: [[core] Explicitly name all language versions (#4120)](https://github.com/pmd/pmd/issues/4120)
+
+### Changed: Rule properties
+
+* The old deprecated classes like `IntProperty` and `StringProperty` have been removed. Please use
+  {% jdoc core::properties.PropertyFactory %} to create properties.
+* All properties which accept multiple values now use a comma (`,`) as a delimiter. The previous default was a
+  pipe character (`|`). The delimiter is not configurable anymore. If needed, the comma can be escaped
+  with a backslash.
+* The `min` and `max` attributes in property definitions in the XML are now optional and can appear separately
+  or be omitted.
+
+### Changed: Velocity Template Language (VTL)
+
+The module was named just "vm" which was not a good name. Its module name, language id and
+package names have been renamed to "velocity".
+
+If you import rules, you also need to adjust the paths, e.g.
+
+* `category/vm/...` ➡️ `category/velocity/...`
+
+### Changed: Visualforce
+
+There was an inconsistency between the naming of the maven module and the language id. The language id
+used the abbreviation "vf", while the maven module used the longer name "visualforce". This has been
+solved by renaming the language module to its full name "visualforce". The java packages have
+been renamed as well.
+
+If you import rules, you also need to adjust the paths, e.g.
+
+* `category/vf/security.xml` ➡️ `category/visualforce/security.xml`
+
 ## 🌟 New and changed rules
 
 ### New Rules
 
 **Apex**
-* {% rule apex/design/UnusedMethod %} finds unused methods in your code.
 * {% rule apex/performance/OperationWithHighCostInLoop %} finds Schema class methods called in a loop, which is a
   potential performance issue.
+* {% rule apex/design/UnusedMethod %} finds unused methods in your code.
 
 **Java**
 * {% rule java/codestyle/UnnecessaryBoxing %} reports boxing and unboxing conversions that may be made implicit.
 * {% rule java/codestyle/UseExplicitTypes %} reports usages of `var` keyword, which was introduced with Java 10.
 
 **Kotlin**
-* {% rule kotlin/bestpractices/FunctionNameTooShort %}
-* {% rule kotlin/errorprone/OverrideBothEqualsAndHashcode %}
+* {% rule kotlin/bestpractices/FunctionNameTooShort %} finds functions with a too short name.
+* {% rule kotlin/errorprone/OverrideBothEqualsAndHashcode %} finds classes with only
+  either `equals` or `hashCode` overridden, but not both. This leads to unexpected behavior once instances
+  of such classes are used in collections (Lists, HashMaps, ...).
 
 **Swift**
-* {% rule swift/bestpractices/ProhibitedInterfaceBuilder %}
-* {% rule swift/bestpractices/UnavailableFunction %}
-* {% rule swift/errorprone/ForceCast %}
-* {% rule swift/errorprone/ForceTry %}
+* {% rule swift/errorprone/ForceCast %} flags all force casts, making sure you are
+  defensively considering all types. Having the application crash shouldn't be an option.
+* {% rule swift/errorprone/ForceTry %} flags all force tries, making sure you are
+  defensively handling exceptions. Having the application crash shouldn't be an option.
+* {% rule swift/bestpractices/ProhibitedInterfaceBuilder %} flags any usage of interface
+  builder. Interface builder files are prone to merge conflicts, and are impossible to code review, so larger
+  teams usually try to avoid it or reduce its usage.
+* {% rule swift/bestpractices/UnavailableFunction %} flags any function throwing
+  a `fatalError` not marked as `@available(*, unavailable)` to ensure no calls are actually performed in
+  the codebase.
 
 **XML**
 * {% rule xml/bestpractices/MissingEncoding %} finds XML files without explicit encoding.
@@ -372,7 +395,7 @@ Contributors: [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-g
 * All statistical rules (like ExcessiveClassLength, ExcessiveParameterList) have been simplified and unified.
   The properties `topscore` and `sigma` have been removed. The property `minimum` is still there, however the type is not
   a decimal number anymore but has been changed to an integer. This affects rules in the languages Apex, Java, PLSQL
-  and Velocity Template Language (vm):
+  and Velocity Template Language (velocity):
     * Apex: {% rule apex/design/ExcessiveClassLength %}, {% rule apex/design/ExcessiveParameterList %},
       {% rule apex/design/ExcessivePublicCount %}, {% rule apex/design/NcssConstructorCount %},
       {% rule apex/design/NcssMethodCount %}, {% rule apex/design/NcssTypeCount %}
@@ -649,9 +672,9 @@ The full detailed documentation of the changes are available in the
 ### For endusers
 
 * PMD 7 requires Java 8 or above to execute.
-* CLI changed: Custom scripts need to be updated (`run.sh pmd ...` ➡️ `pmd check ...`, `run.sh cpd ...`, `pmd cpd ...`).
+* CLI changed: Custom scripts need to be updated (`run.sh pmd ...` ➡️ `pmd check ...`, `run.sh cpd ...` ➡️ `pmd cpd ...`).
 * Java module revamped: Custom rules need to be updated.
-* Removed rules: Custom rulesets need to be reviewed. See below for a list of new and removed rules.
+* Removed rules: Custom rulesets need to be reviewed. See above for a list of new and removed rules.
 * XPath 1.0 and 2.0 support is removed, `violationSuppressXPath` now requires XPath 3.1: Custom rulesets need
   to be reviewed.
 * Custom rules using rulechains: Need to override {% jdoc core::lang.rule.AbstractRule#buildTargetSelector() %}
@@ -663,13 +686,16 @@ The full detailed documentation of the changes are available in the
   The structure inside the ZIP files stay the same, e.g. we still provide inside the binary distribution
   ZIP file the base directory `pmd-bin-<version>`.
 * For maven-pmd-plugin usage, see [Using PMD 7 with maven-pmd-plugin](pmd_userdocs_tools_maven.html#using-pmd-7-with-maven-pmd-plugin).
+* For gradle users, at least gradle 8.6 is required for PMD 7.
 
 ### For integrators
 
 * PMD 7 is a major release where many things have been moved or rewritten.
 * All integrators will require some level of change to adapt to the change in the API.
-* For more details look at the deprecations notes of the past PMD 6 releases.
-* The PMD Ant tasks, which were previously in the module `pmd-core` has been moved into its own module `pmd-ant`
+* For more details look at the deprecations notes of the past PMD 6 releases. These are collected below
+  under [API Changes](#api-changes).
+* The PMD Ant tasks, which were previously in the module `pmd-core` has been moved into its own module `pmd-ant`,
+  which needs to be added explicitly now as an additional dependency.
 * The CLI classes have also been moved out of `pmd-core` into its own module `pmd-cli`. The old entry point, the
   main class `PMD` is gone.
 
@@ -867,7 +893,7 @@ See [PR #4397](https://github.com/pmd/pmd/pull/4397) for details.
 
 These are the changes between 7.0.0-rc4 and final 7.0.0.
 
-##### pmd-java
+**pmd-java**
 
 * Support for Java 20 preview language features have been removed. The version "20-preview" is no longer available.
 * {%jdoc java::lang.java.ast.ASTPattern %}, {%jdoc java::lang.java.ast.ASTRecordPattern %},
@@ -878,23 +904,24 @@ These are the changes between 7.0.0-rc4 and final 7.0.0.
 * {%jdoc java::lang.java.ast.ASTUnnamedPattern %} is not experimental anymore. The language feature
   has been standardized with Java 22.
 
-##### New API
+**New API**
 
 The API around {%jdoc core::util.treeexport.TreeRenderer %} has been declared as stable. It was previously
 experimental. It can be used via the CLI subcommand `ast-dump` or programmatically, as described
 on [Creating XML dump of the AST](pmd_userdocs_extending_ast_dump.html).
 
-##### General AST Changes to avoid `@Image`
+**General AST Changes to avoid `@Image`**
 
 See [General AST Changes to avoid @Image](pmd_userdocs_migrating_to_pmd7.html#general-ast-changes-to-avoid-image)
 in the migration guide for details.
 
-##### XPath Rules
+**XPath Rules**
+
 * The property `version` was already deprecated and has finally been removed. Please don't define the version
   property anymore in your custom XPath rules. By default, the latest XPath version will be used, which
   is XPath 3.1.
 
-##### Moved classes/consolidated packages
+**Moved classes/consolidated packages**
 
 * pmd-core
   * Many types have been moved from the base package `net.sourceforge.pmd` into subpackage {% jdoc_package core::lang.rule %}
@@ -948,7 +975,7 @@ in the migration guide for details.
     * {%jdoc velocity::lang.velocity.cpd.VtlCpdLexer %}
     * {%jdoc velocity::lang.velocity.rule.AbstractVtlRule %}
 
-##### Internalized classes and interfaces and methods
+**Internalized classes and interfaces and methods**
 
 The following classes/methods have been marked as @<!-- -->InternalApi before and are now moved into a `internal`
 package or made (package) private and are _not accessible_ anymore.
@@ -1055,7 +1082,7 @@ package or made (package) private and are _not accessible_ anymore.
   * {%jdoc !!scala::ScalaLanguageModule %}
     * Method `dialectOf(LanguageVersion)` has been removed.
 
-##### Removed classes and members (previously deprecated)
+**Removed classes and members (previously deprecated)**
 
 The annotation `@DeprecatedUntil700` has been removed.
 
@@ -1298,7 +1325,7 @@ The annotation `@DeprecatedUntil700` has been removed.
     Use {%jdoc velocity::lang.vm.ast.VmVisitor %} or {%jdoc velocity::lang.vm.ast.VmVisitorBase %} instead.
   * `net.sourceforge.pmd.lang.vm.ast.VmParserVisitorAdapter`
 
-##### Removed classes, interfaces and methods (not previously deprecated)
+**Removed classes, interfaces and methods (not previously deprecated)**
 
 * pmd-apex
   * The method `isSynthetic()` in {%jdoc apex::lang.apex.ast.ASTMethod %} has been removed.
@@ -1328,7 +1355,7 @@ The annotation `@DeprecatedUntil700` has been removed.
     Use {% jdoc java::lang.java.ast.ModifierOwner#hasVisibility(java::lang.java.ast.ModifierOwner.Visibility) %} instead,
     which can correctly differentiate between local and package private classes.
 
-##### Renamed classes, interfaces, methods
+**Renamed classes, interfaces, methods**
 
 * pmd-core
   * {%jdoc core::util.log.PmdReporter %} - has been renamed from `net.sourceforge.pmd.util.log.MessageReporter`
@@ -1362,7 +1389,7 @@ The annotation `@DeprecatedUntil700` has been removed.
   * The class `ScalaParserVisitorAdapter` has been renamed to {%jdoc scala::lang.scala.ast.ScalaVisitorBase %} in order
     to align the naming scheme for the different language modules.
 
-##### Classes and methods, that are not experimental anymore
+**New API**
 
 These were annotated with `@Experimental`, but can now be considered stable.
 
@@ -1413,7 +1440,7 @@ These were annotated with `@Experimental`, but can now be considered stable.
 * pmd-test-schema
   * {%jdoc !!test-schema::test.schema.TestSchemaParser %}
 
-##### Removed functionality
+**Removed functionality**
 
 * The CLI parameter `--no-ruleset-compatibility` has been removed. It was only used to allow loading
   some rulesets originally written for PMD 5 also in PMD 6 without fixing the rulesets.
@@ -1427,11 +1454,11 @@ These were annotated with `@Experimental`, but can now be considered stable.
 
 #### 7.0.0-rc4
 
-##### pmd-java
+**pmd-java**
 
 * Support for Java 19 preview language features have been removed. The version "19-preview" is no longer available.
 
-##### Rule properties
+**Rule properties**
 
 * The old deprecated classes like `IntProperty` and `StringProperty` have been removed. Please use
   {% jdoc core::properties.PropertyFactory %} to create properties.
@@ -1441,12 +1468,12 @@ These were annotated with `@Experimental`, but can now be considered stable.
 * The `min` and `max` attributes in property definitions in the XML are now optional and can appear separately
   or be omitted.
 
-##### New Programmatic API for CPD
+**New Programmatic API for CPD**
 
 See [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html#new-programmatic-api-for-cpd)
 and [PR #4397](https://github.com/pmd/pmd/pull/4397) for details.
 
-##### Removed classes and methods
+**Removed classes and methods**
 
 The following previously deprecated classes have been removed:
 
@@ -1537,7 +1564,7 @@ The following classes have been removed:
   * `net.sourceforge.pmd.cpd.SourceCode` (and all inner classes like `FileCodeLoader`, ...)
   * `net.sourceforge.pmd.cpd.token.TokenFilter`
 
-##### Moved packages
+**Moved packages**
 
 * pmd-core
   * {%jdoc core::net.sourceforge.pmd.properties.NumericConstraints %} (old package: `net.sourceforge.pmd.properties.constraints.NumericConstraints`)
@@ -1550,7 +1577,7 @@ The following classes have been removed:
   * {%jdoc core::cpd.impl.BaseTokenFilter %} (old package: `net.sourceforge.pmd.cpd.token.internal`)
   * {%jdoc core::cpd.impl.JavaCCTokenFilter %} (old package: `net.sourceforge.pmd.cpd.token`)
 
-##### Changed types and other changes
+**Changed types and other changes**
 
 * pmd-core
   * {%jdoc core::net.sourceforge.pmd.properties.PropertyDescriptor %} is now a class (was an interface)
@@ -1580,12 +1607,12 @@ The following classes have been removed:
   * consistent static method `#getInstance()`
   * removed constants like `ID`, `TERSE_NAME` or `NAME`. Use `getInstance().getName()` etc. instead
 
-##### Internal APIs
+**Internal APIs**
 
 * {% jdoc core::cpd.Tokens %}
 * {% jdoc core::net.sourceforge.pmd.properties.internal.PropertyTypeId %}
 
-##### Deprecated API
+**Deprecated API**
 
 * {% jdoc !!core::lang.Language#getTerseName() %} ➡️ use {% jdoc core::lang.Language#getId() %} instead
 
@@ -1593,7 +1620,7 @@ The following classes have been removed:
   It was introduced for supporting parenthesized patterns, but that was removed with Java 21. It is only used when
   parsing code as java-19-preview.
 
-##### Experimental APIs
+**Experimental APIs**
 
 * To support the Java preview language features "String Templates" and "Unnamed Patterns and Variables", the following
   AST nodes have been introduced as experimental:
@@ -1608,22 +1635,24 @@ The following classes have been removed:
 
 #### 7.0.0-rc3
 
-* The following previously deprecated classes have been removed:
-  * pmd-core
-    * `net.sourceforge.pmd.PMD`
-    * `net.sourceforge.pmd.cli.PMDCommandLineInterface`
-    * `net.sourceforge.pmd.cli.PMDParameters`
-    * `net.sourceforge.pmd.cli.PmdParametersParseResult`
+**PMD Distribution**
+
 * The asset filenames of PMD on [GitHub Releases](https://github.com/pmd/pmd/releases) are
   now `pmd-dist-<version>-bin.zip`, `pmd-dist-<version>-src.zip` and `pmd-dist-<version>-doc.zip`.
   Keep that in mind, if you have an automated download script.
 
   The structure inside the ZIP files stay the same, e.g. we still provide inside the binary distribution
   ZIP file the base directory `pmd-bin-<version>`.
+
+**CLI**
+
 * The CLI option `--stress` (or `-stress`) has been removed without replacement.
 * The CLI option `--minimum-priority` was changed with 7.0.0-rc1 to only take the following values:
   High, Medium High, Medium, Medium Low, Low. With 7.0.0-rc2 compatibility has been restored, so that the equivalent
   integer values (1 to 5) are supported as well.
+
+**pmd-core**
+
 * Replaced `RuleViolation::getFilename` with new {% jdoc !!core::RuleViolation#getFileId() %}, that returns a
   {% jdoc core::lang.document.FileId %}. This is an identifier for a {% jdoc core::lang.document.TextFile %}
   and could represent a path name. This allows to have a separate display name, e.g. renderers use
@@ -1636,18 +1665,25 @@ The following classes have been removed:
 
 #### 7.0.0-rc2
 
-* The following previously deprecated classes have been removed:
-  * pmd-core 
-    * `net.sourceforge.pmd.PMD`
-    * `net.sourceforge.pmd.cli.PMDCommandLineInterface`
-    * `net.sourceforge.pmd.cli.PMDParameters`
-    * `net.sourceforge.pmd.cli.PmdParametersParseResult`
+**Removed classes and methods**
+
+The following previously deprecated classes have been removed:
+
+* pmd-core 
+  * `net.sourceforge.pmd.PMD`
+  * `net.sourceforge.pmd.cli.PMDCommandLineInterface`
+  * `net.sourceforge.pmd.cli.PMDParameters`
+  * `net.sourceforge.pmd.cli.PmdParametersParseResult`
+
+**CLI**
 
 * The CLI option `--minimum-priority` was changed with 7.0.0-rc1 to only take the following values:
   High, Medium High, Medium, Medium Low, Low. With 7.0.0-rc2 compatibility has been restored, so that the equivalent
   integer values (1 to 5) are supported as well.
 
 #### 7.0.0-rc1
+
+**CLI**
 
 * The CLI option `--stress` (or `-stress`) has been removed without replacement.
 * The CLI option `--minimum-priority` now takes one of the following values instead of an integer:

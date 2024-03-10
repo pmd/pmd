@@ -150,7 +150,7 @@ Under the hood, we use two open source libraries instead:
   This project translates the ANTLR parse tree into an AST, that is similar to the AST Jorje provided.
   Note: This is not an official Google product.
 
-Although the parsers is completely switched, there are only little known changes to the AST.
+Although the parser is completely switched, there are only little known changes to the AST.
 These are documented in the [Migration Guide for PMD 7: Apex AST]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html#apex-ast).
 With the new Apex parser, the new language constructs like User Mode Database Operations
 can be parsed now. PMD should be able to parse Apex code up to version 59.0 (Winter '23).
@@ -178,14 +178,15 @@ is now considered stable.
 
 ##### Changed: Kotlin support
 
-Experimental Kotlin support has been promoted as stable API now.
+Support for Kotlin was introduced with PMD 7.0.0-rc1 as an experimental feature. With PMD 7.0.0 this
+is now considered stable.
 
 ##### Changed: Velocity Template Language (VTL)
 
-The module was named just "vm" which was not a good name. It module and language id and
+The module was named just "vm" which was not a good name. Its module name, language id and
 package names have been renamed to "velocity".
 
-If you import rules, you also need to ajdust the paths, e.g.
+If you import rules, you also need to adjust the paths, e.g.
 
 * `category/vm/...` ➡️ `category/velocity/...`
 
@@ -244,6 +245,10 @@ The following previously deprecated rules have been finally removed:
 The following previously deprecated rulesets have been removed. These were the left-over rulesets from PMD 5.
 The rules have been moved into categories with PMD 6.
 
+<details>
+<summary markdown="span">List of deprecated rulesets
+</summary>
+
 * rulesets/apex/apexunit.xml
 * rulesets/apex/braces.xml
 * rulesets/apex/complexity.xml
@@ -299,6 +304,9 @@ The rules have been moved into categories with PMD 6.
 * rulesets/xml/basic.xml
 * rulesets/xsl/xpath.xml
 * rulesets/releases/*
+
+</details>
+
 
 #### Fixed issues
 
@@ -389,7 +397,7 @@ The rules have been moved into categories with PMD 6.
 
 #### API Changes
 
-See [Detailed Release Notes for PMD 7.0.0]({{ baseurl }}pmd_release_notes_pmd7.html#7-0-0).
+See [Detailed Release Notes for PMD 7.0.0]({{ baseurl }}pmd_release_notes_pmd7.html#700).
 
 #### External Contributions
 * [#4093](https://github.com/pmd/pmd/pull/4093): \[apex] Summit-AST Apex module - Part 1 - [Edward Klimoshenko](https://github.com/eklimo) (@eklimo)
@@ -422,6 +430,8 @@ The new official logo of PMD:
 
 ![New PMD Logo]({{ baseurl }}images/logo/pmd-logo-300px.png)
 
+For more information, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#new-official-logo).
+
 #### Revamped Java module
 
 * Java grammar substantially refactored - more correct regarding the Java Language Specification (JLS)
@@ -437,17 +447,17 @@ Contributors: [Clément Fournier](https://github.com/oowekyala) (@oowekyala),
 
 #### Revamped Command Line Interface
 
-* unified and consistent Command Line Interface for both Linux/Unix and Windows across our different utilities
-* single script `pmd` (`pmd.bat` for Windows) to launch the different utilities:
+* Unified and consistent Command Line Interface for both Linux/Unix and Windows across our different utilities
+* Single script `pmd` (`pmd.bat` for Windows) to launch the different utilities:
     * `pmd check` to run PMD rules and analyze a project
     * `pmd cpd` to run CPD (copy paste detector)
     * `pmd designer` to run the PMD Rule Designer
-* progress bar support for `pmd check`
-* shell completion
+* Progress bar support for `pmd check`
+* Shell completion
 
 ![Demo]({{ baseurl }}images/userdocs/pmd-demo.gif)
 
-For more information, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
+For more information, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#revamped-command-line-interface).
 
 Contributors: [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
 
@@ -457,7 +467,7 @@ Contributors: [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuy
 * Previously, Antlr grammar could only be used for CPD
 * New supported languages: Swift and Kotlin
 
-For more information, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
+For more information, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#full-antlr-support).
 
 Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 [Matías Fraga](https://github.com/matifraga) (@matifraga),
@@ -481,10 +491,18 @@ It uses an XSLT stylesheet to convert CPD's XML format into HTML.
 
 See [the example report]({{ baseurl }}report-examples/cpdhtml-v2.html).
 
+Contributors: [Mohan Chinnappan](https://github.com/mohan-chinnappan-n) (@mohan-chinnappan-n)
+
 ### 🎉 Language Related Changes
 
-Note that this is just a concise listing of the highlight.
-For more information on the languages, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
+Note that this is just a concise listing of the highlights.
+For more information on the languages, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#-language-related-changes).
+
+#### New: CPD support for Apache Velocity Template Language (VTL)
+
+PMD supported Apache Velocity for a very long time, but the CPD integration never got finished.
+This is now done and CPD supports Apache Velocity Template language for detecting copy and paste.
+It is shipped in the module `pmd-velocity`.
 
 #### New: CPD support for Coco
 
@@ -508,62 +526,46 @@ with the rest of the JavaScript support in the module `pmd-javascript`.
 
 Contributors: [Paul Guyot](https://github.com/pguyot) (@pguyot)
 
-#### New: Java 22 Support
+#### New: Java 21 and 22 Support
 
-This release of PMD brings support for Java 22. There are the following new standard language features,
+This release of PMD brings support for Java 21 and 22. There are the following new standard language features,
 that are supported now:
 
-* [JEP 456: Unnamed Variables & Patterns](https://openjdk.org/jeps/456)
+* [JEP 456: Unnamed Variables & Patterns](https://openjdk.org/jeps/456) (Java 22)
+* [JEP 440: Record Patterns](https://openjdk.org/jeps/440) (Java 21)
+* [JEP 441: Pattern Matching for switch](https://openjdk.org/jeps/441) (Java 21)
 
 PMD also supports the following preview language features:
 
-* [JEP 447: Statements before super(...) (Preview)](https://openjdk.org/jeps/447)
-* [JEP 459: String Templates (Second Preview)](https://openjdk.org/jeps/459)
-* [JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)](https://openjdk.org/jeps/463)
+* [JEP 447: Statements before super(...) (Preview)](https://openjdk.org/jeps/447) (Java 22)
+* [JEP 459: String Templates (Second Preview)](https://openjdk.org/jeps/459) (Java 21 and 22)
+* [JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)](https://openjdk.org/jeps/463) (Java 21 and 22)
 
-In order to analyze a project with PMD that uses these language features,
+In order to analyze a project with PMD that uses these preview language features,
 you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
 version `22-preview`:
 
     export PMD_JAVA_OPTS=--enable-preview
     pmd check --use-version java-22-preview ...
 
-Note: Support for Java 20 preview language features have been removed. The version "20-preview" is no longer available.
-
-#### New: Java 21 Support
-
-This release of PMD brings support for Java 21. There are the following new standard language features,
-that are supported now:
-
-* [JEP 440: Record Patterns](https://openjdk.org/jeps/440)
-* [JEP 441: Pattern Matching for switch](https://openjdk.org/jeps/441)
-
-PMD also supports the following preview language features:
-
-* [JEP 430: String Templates (Preview)](https://openjdk.org/jeps/430)
-* [JEP 443: Unnamed Patterns and Variables (Preview)](https://openjdk.org/jeps/443)
-* [JEP 445: Unnamed Classes and Instance Main Methods (Preview)](https://openjdk.org/jeps/445)
-
-In order to analyze a project with PMD that uses these language features,
-you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
-version `21-preview`:
-
-    export PMD_JAVA_OPTS=--enable-preview
-    pmd check --use-version java-21-preview ...
-
-Note: Support for Java 19 preview language features have been removed. The version "19-preview" is no longer available.
+Note: Support for Java 19 and Java 20 preview language features have been removed. The versions "19-preview" and
+"20-preview" are no longer available.
 
 #### New: Kotlin support
 
 * Use PMD to analyze Kotlin code with PMD rules.
 * Support for Kotlin 1.8 grammar
 * Initially 2 built-in rules
-* Experimental Kotlin support has been promoted as stable API now.
+* Support for Kotlin was introduced with PMD 7.0.0-rc1 as an experimental feature. With PMD 7.0.0 this
+  is now considered stable.
+
+Contributors: [Jeroen Borgers](https://github.com/jborgers) (@jborgers),
+[Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
 
 #### New: Swift support
 
 * Use PMD to analyze Swift code with PMD rules.
-* limited support for Swift 5.9 (Macro Expansions)
+* Limited support for Swift 5.9 (Macro Expansions)
 * Initially 4 built-in rules
 
 Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
@@ -601,16 +603,20 @@ Contributors: [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-g
 
 #### Changed: CPP can now ignore identifiers in sequences (CPD)
 
-* new command line option for CPD: `--ignore-sequences`.
+* New command line option for CPD: `--ignore-sequences`.
 * This option is used for CPP only: with the already existing option `--ignore-literal-sequences`, only
-  literals were ignored. The new option additional ignores identifiers as well in sequences.
+  literals were ignored. The new option additionally ignores identifiers as well in sequences.
 * See [PR #4470](https://github.com/pmd/pmd/pull/4470) for details.
+
+Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
 
 #### Changed: Groovy Support (CPD)
 
 * We now support parsing all Groovy features from Groovy 3 and 4.
-* We now support [suppression](pmd_userdocs_cpd.html#suppression) through `CPD-ON`/`CPD-OFF` comment pairs.
+* We now support [suppression]({{ baseurl }}pmd_userdocs_cpd.html#suppression) through `CPD-ON`/`CPD-OFF` comment pairs.
 * See [PR #4726](https://github.com/pmd/pmd/pull/4726) for details.
+
+Contributors: [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
 
 #### Changed: HTML support
 
@@ -619,13 +625,13 @@ is now considered stable.
 
 #### Changed: JavaScript support
 
-* latest version supports ES6 and also some new constructs (see [Rhino](https://github.com/mozilla/rhino)])
-* comments are retained
+* Latest version supports ES6 and also some new constructs (see [Rhino](https://github.com/mozilla/rhino))
+* Comments are retained
 
 #### Changed: Language versions
 
-* more predefined language versions for each supported language
-* can be used to limit rule execution for specific versions only with `minimumLanguageVersion` and
+* More predefined language versions for each supported language
+* Can be used to limit rule execution for specific versions only with `minimumLanguageVersion` and
   `maximumLanguageVersion` attributes.
 
 #### Changed: Rule properties
@@ -640,10 +646,10 @@ is now considered stable.
 
 #### Changed: Velocity Template Language (VTL)
 
-The module was named just "vm" which was not a good name. It module and language id and
+The module was named just "vm" which was not a good name. Its module name, language id and
 package names have been renamed to "velocity".
 
-If you import rules, you also need to ajdust the paths, e.g.
+If you import rules, you also need to adjust the paths, e.g.
 
 * `category/vm/...` ➡️ `category/velocity/...`
 
@@ -663,23 +669,31 @@ If you import rules, you also need to adjust the paths, e.g.
 #### New Rules
 
 **Apex**
-* {% rule apex/design/UnusedMethod %} finds unused methods in your code.
 * {% rule apex/performance/OperationWithHighCostInLoop %} finds Schema class methods called in a loop, which is a
   potential performance issue.
+* {% rule apex/design/UnusedMethod %} finds unused methods in your code.
 
 **Java**
 * {% rule java/codestyle/UnnecessaryBoxing %} reports boxing and unboxing conversions that may be made implicit.
 * {% rule java/codestyle/UseExplicitTypes %} reports usages of `var` keyword, which was introduced with Java 10.
 
 **Kotlin**
-* {% rule kotlin/bestpractices/FunctionNameTooShort %}
-* {% rule kotlin/errorprone/OverrideBothEqualsAndHashcode %}
+* {% rule kotlin/bestpractices/FunctionNameTooShort %} finds functions with a too short name.
+* {% rule kotlin/errorprone/OverrideBothEqualsAndHashcode %} finds classes with only
+  either `equals` or `hashCode` overridden, but not both. This leads to unexpected behavior once instances
+  of such classes are used in collections (Lists, HashMaps, ...).
 
 **Swift**
-* {% rule swift/bestpractices/ProhibitedInterfaceBuilder %}
-* {% rule swift/bestpractices/UnavailableFunction %}
-* {% rule swift/errorprone/ForceCast %}
-* {% rule swift/errorprone/ForceTry %}
+* {% rule swift/errorprone/ForceCast %} flags all force casts, making sure you are
+  defensively considering all types. Having the application crash shouldn't be an option.
+* {% rule swift/errorprone/ForceTry %} flags all force tries, making sure you are
+  defensively handling exceptions. Having the application crash shouldn't be an option.
+* {% rule swift/bestpractices/ProhibitedInterfaceBuilder %} flags any usage of interface
+  builder. Interface builder files are prone to merge conflicts, and are impossible to code review, so larger
+  teams usually try to avoid it or reduce its usage.
+* {% rule swift/bestpractices/UnavailableFunction %} flags any function throwing
+  a `fatalError` not marked as `@available(*, unavailable)` to ensure no calls are actually performed in
+  the codebase.
 
 **XML**
 * {% rule xml/bestpractices/MissingEncoding %} finds XML files without explicit encoding.
@@ -696,7 +710,7 @@ have a clear separation between a well-defined API and the implementation, which
 This should help us in future development.
 
 Also, there are some improvement and changes in different areas. For the detailed description
-of the changes listed here, see [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
+of the changes listed here, see [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#-api).
 
 * Miscellaneous smaller changes and cleanups
 * XPath 3.1 support for XPath-based rules
@@ -712,10 +726,11 @@ of the changes listed here, see [Detailed Release Notes for PMD 7]({{ baseurl }}
 A detailed documentation of required changes are available in the
 [Migration Guide for PMD 7]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html).
 
-See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
+See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#-compatibility-and-migration-notes).
 
 ### 🐛 Fixed Issues
 
+More than 300 issues have been fixed in PMD 7.
 See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#-fixed-issues) for the
 complete list of fixed issues.
 
