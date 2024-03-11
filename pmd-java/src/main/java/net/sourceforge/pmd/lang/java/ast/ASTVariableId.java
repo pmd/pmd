@@ -98,6 +98,10 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
         return hasModifiers(JModifier.FINAL);
     }
 
+    public boolean isStatic() {
+        return hasModifiers(JModifier.STATIC);
+    }
+
     @Override
     public Visibility getVisibility() {
         return isPatternBinding() ? Visibility.V_LOCAL

@@ -135,7 +135,7 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
         return true;
     }
 
-    private @Nullable ASTBodyDeclaration getEnclosingBodyDecl(ASTAnyTypeDeclaration enclosingType, ASTNamedReferenceExpr usage) {
+    private @Nullable ASTBodyDeclaration getEnclosingBodyDecl(ASTTypeDeclaration enclosingType, ASTNamedReferenceExpr usage) {
         ASTBodyDeclaration decl = usage.ancestors()
                                        .takeWhile(it -> it != enclosingType)
                                        .first(ASTBodyDeclaration.class);

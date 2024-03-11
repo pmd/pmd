@@ -973,7 +973,7 @@ public final class DataflowPass {
             return processTypeDecl(node, data);
         }
 
-        private static SpanInfo processTypeDecl(ASTAnyTypeDeclaration node, SpanInfo data) {
+        private static SpanInfo processTypeDecl(ASTTypeDeclaration node, SpanInfo data) {
             ReachingDefsVisitor instanceVisitor = new ReachingDefsVisitor(node.getSymbol(), false);
             ReachingDefsVisitor staticVisitor = new ReachingDefsVisitor(node.getSymbol(), true);
             // process initializers and ctors first
