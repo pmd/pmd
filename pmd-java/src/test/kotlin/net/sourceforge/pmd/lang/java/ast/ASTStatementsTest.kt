@@ -5,8 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.types.JPrimitiveType
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
 
 class ASTStatementsTest : ParserTestSpec({
@@ -21,11 +20,11 @@ class ASTStatementsTest : ParserTestSpec({
 
                 foreachLoop {
 
-                    it::getVarId shouldBe fromChild<ASTLocalVariableDeclaration, ASTVariableDeclaratorId> {
+                    it::getVarId shouldBe fromChild<ASTLocalVariableDeclaration, ASTVariableId> {
                         it::getModifiers shouldBe modifiers {}
 
                         it::getTypeNode shouldBe classType("Integer")
-                        fromChild<ASTVariableDeclarator, ASTVariableDeclaratorId> {
+                        fromChild<ASTVariableDeclarator, ASTVariableId> {
                             variableId("i") {
                                 it::isLocalVariable shouldBe false
                                 it::isForLoopVariable shouldBe false

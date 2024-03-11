@@ -4,16 +4,13 @@
 
 package net.sourceforge.pmd.lang.ast;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
@@ -22,11 +19,7 @@ import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
-import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.impl.AttributeAxisIterator;
-import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
-import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
-import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.reporting.Reportable;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
@@ -42,7 +35,7 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
  * like {@link #firstChild(Class)}, and {@link NodeStream}s.
  * <li>The API used to describe nodes in a form understandable by XPath expressions:
  * {@link #getXPathNodeName()},  {@link #getXPathAttributesIterator()}
- * <li>Location metadata: eg {@link #getBeginLine()}, {@link #getBeginColumn()}
+ * <li>Location metadata: {@link #getReportLocation()}
  * <li>An extensible metadata store: {@link #getUserMap()}
  * </ul>
  *
@@ -54,8 +47,7 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
  * no JSP node should have a Java node as its child. Embedding nodes from
  * different languages will not be done via these methods, and conforming
  * implementations should ensure that every node returned by these methods
- * are indeed of the same type. Possibly, a type parameter will be added to
- * the Node interface in 7.0.0 to enforce it at compile-time.
+ * are indeed of the same type.
  */
 public interface Node extends Reportable {
 
@@ -72,11 +64,12 @@ public interface Node extends Reportable {
      * node. This is usually an identifier, but you should check that using the Designer. On most nodes though, this
      * method returns {@code null}.
      *
-     * @deprecated Should be replaced with methods that have more specific
-     *     names in node classes.
+     * <p><strong>Note:</strong>
+     * This method will be deprecated in the future (<a href="https://github.com/pmd/pmd/issues/4787">#4787</a>).
+     * It will be replaced with methods that have more specific names in node classes. In some cases, there
+     * are already alternatives available that should be used.</p>
      */
-    @Deprecated
-    @DeprecatedUntil700
+    // @Deprecated // todo deprecate (#4787)
     default String getImage() {
         return null;
     }
@@ -85,12 +78,13 @@ public interface Node extends Reportable {
     /**
      * Returns true if this node's image is equal to the given string.
      *
+     * <p><strong>Note:</strong>
+     * This method will be deprecated in the future (<a href="https://github.com/pmd/pmd/issues/4787">#4787</a>).
+     * See {@link #getImage()}.
+     * </p>
      * @param image The image to check
-     *
-     * @deprecated See {@link #getImage()}
      */
-    @Deprecated
-    @DeprecatedUntil700
+    // @Deprecated // todo deprecate (#4787)
     default boolean hasImageEqualTo(String image) {
         return Objects.equals(getImage(), image);
     }
@@ -133,25 +127,22 @@ public interface Node extends Reportable {
 
     // Those are kept here because they're handled specially as XPath
     // attributes, for now
+    // ->  [core] Deprecate XPath attributes for node coordinates (eg @BeginLine) #3876 (https://github.com/pmd/pmd/issues/3876)
 
-    @Override
     default int getBeginLine() {
-        return Reportable.super.getBeginLine();
+        return getReportLocation().getStartLine();
     }
 
-    @Override
     default int getBeginColumn() {
-        return Reportable.super.getBeginColumn();
+        return getReportLocation().getStartColumn();
     }
 
-    @Override
     default int getEndLine() {
-        return Reportable.super.getEndLine();
+        return getReportLocation().getEndLine();
     }
 
-    @Override
     default int getEndColumn() {
-        return Reportable.super.getEndColumn();
+        return getReportLocation().getEndColumn();
     }
 
 
@@ -162,9 +153,6 @@ public interface Node extends Reportable {
      * expected thing to do. For example, in Java, lambdas and nested
      * classes are considered find boundaries.
      *
-     * <p>Note: This attribute is deprecated for XPath queries. It is not useful
-     * for XPath queries and will be removed with PMD 7.0.0.
-     *
      * @return True if this node is a find boundary
      *
      * @see DescendantNodeStream#crossFindBoundaries(boolean)
@@ -173,178 +161,6 @@ public interface Node extends Reportable {
     default boolean isFindBoundary() {
         return false;
     }
-
-    /**
-     * Returns the n-th parent or null if there are less than {@code n} ancestors.
-     *
-     * <pre>{@code
-     *    getNthParent(1) == jjtGetParent
-     * }</pre>
-     *
-     * @param n how many ancestors to iterate over.
-     * @return the n-th parent or null.
-     * @throws IllegalArgumentException if {@code n} is negative or zero.
-     *
-     * @deprecated Use node stream methods: {@code node.ancestors().get(n-1)}
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default Node getNthParent(int n) {
-        return ancestors().get(n - 1);
-    }
-
-    /**
-     * Traverses up the tree to find the first parent instance of type parentType or one of its subclasses.
-     *
-     * @param parentType Class literal of the type you want to find
-     * @param <T> The type you want to find
-     * @return Node of type parentType. Returns null if none found.
-     *
-     * @deprecated Use node stream methods: {@code node.ancestors(parentType).first()}
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default <T extends Node> T getFirstParentOfType(Class<? extends T> parentType) {
-        return this.<T>ancestors(parentType).first();
-    }
-
-    /**
-     * Traverses up the tree to find all of the parent instances of type parentType or one of its subclasses. The nodes
-     * are ordered deepest-first.
-     *
-     * @param parentType Class literal of the type you want to find
-     * @param <T> The type you want to find
-     * @return List of parentType instances found.
-     *
-     * @deprecated Use node stream methods: {@code node.ancestors(parentType).toList()}.
-     *     Most usages don't really need a list though, eg you can iterate the node stream instead
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default <T extends Node> List<T> getParentsOfType(Class<? extends T> parentType) {
-        return this.<T>ancestors(parentType).toList();
-    }
-
-
-    /**
-     * Traverses the children to find all the instances of type childType or one of its subclasses.
-     *
-     * @param childType class which you want to find.
-     * @return List of all children of type childType. Returns an empty list if none found.
-     * @see #findDescendantsOfType(Class) if traversal of the entire tree is needed.
-     *
-     * @deprecated Use node stream methods: {@code node.children(childType).toList()}.
-     *     Most usages don't really need a list though, eg you can iterate the node stream instead
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default <T extends Node> List<T> findChildrenOfType(Class<? extends T> childType) {
-        return this.<T>children(childType).toList();
-    }
-
-
-    /**
-     * Traverses down the tree to find all the descendant instances of type descendantType without crossing find
-     * boundaries.
-     *
-     * @param targetType class which you want to find.
-     * @return List of all children of type targetType. Returns an empty list if none found.
-     *
-     * @deprecated Use node stream methods: {@code node.descendants(targetType).toList()}.
-     *     Most usages don't really need a list though, eg you can iterate the node stream instead
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default <T extends Node> List<T> findDescendantsOfType(Class<? extends T> targetType) {
-        return this.<T>descendants(targetType).toList();
-    }
-
-
-    /**
-     * Traverses down the tree to find all the descendant instances of type
-     * descendantType.
-     *
-     * @param targetType
-     *            class which you want to find.
-     * @param crossFindBoundaries
-     *            if <code>false</code>, recursion stops for nodes for which
-     *            {@link #isFindBoundary()} is <code>true</code>
-     * @return List of all matching descendants
-     *
-     * @deprecated Use node stream methods: {@code node.descendants(targetType).crossFindBoundaries(b).toList()}.
-     *     Most usages don't really need a list though, eg you can iterate the node stream instead
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default <T extends Node> List<T> findDescendantsOfType(Class<? extends T> targetType, boolean crossFindBoundaries) {
-        return this.<T>descendants(targetType).crossFindBoundaries(crossFindBoundaries).toList();
-    }
-
-    /**
-     * Traverses the children to find the first instance of type childType.
-     *
-     * @param childType class which you want to find.
-     * @return Node of type childType. Returns <code>null</code> if none found.
-     * @see #getFirstDescendantOfType(Class) if traversal of the entire tree is needed.
-     *
-     * @deprecated Use {@link #firstChild(Class)}
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default <T extends Node> T getFirstChildOfType(Class<? extends T> childType) {
-        return firstChild(childType);
-    }
-
-
-    /**
-     * Traverses down the tree to find the first descendant instance of type descendantType without crossing find
-     * boundaries.
-     *
-     * @param descendantType class which you want to find.
-     * @return Node of type descendantType. Returns <code>null</code> if none found.
-     *
-     * @deprecated Use node stream methods: {@code node.descendants(targetType).first()}.
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default <T extends Node> T getFirstDescendantOfType(Class<? extends T> descendantType) {
-        return descendants(descendantType).first();
-    }
-
-    /**
-     * Finds if this node contains a descendant of the given type without crossing find boundaries.
-     *
-     * @param type the node type to search
-     * @return <code>true</code> if there is at least one descendant of the given type
-     *
-     * @deprecated Use node stream methods: {@code node.descendants(targetType).nonEmpty()}.
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default <T extends Node> boolean hasDescendantOfType(Class<? extends T> type) {
-        return descendants(type).nonEmpty();
-    }
-
-    /**
-     * Returns all the nodes matching the xpath expression.
-     *
-     * @param xpathString the expression to check
-     * @return List of all matching nodes. Returns an empty list if none found.
-     * @deprecated This is very inefficient and should not be used in new code. PMD 7.0.0 will remove
-     *             support for this method.
-     */
-    @Deprecated
-    default List<Node> findChildNodesWithXPath(String xpathString) {
-        return new SaxonXPathRuleQuery(
-            xpathString,
-            XPathVersion.DEFAULT,
-            Collections.emptyMap(),
-            XPathHandler.noFunctionDefinitions(),
-            // since this method will be removed, we don't log anything anymore
-            DeprecatedAttrLogger.noop()
-        ).evaluate(this);
-    }
-
 
 
     /**
@@ -455,6 +271,8 @@ public interface Node extends Reportable {
      * from XPath for this node.
      *
      * @return An attribute iterator for this node
+     *
+     * @see AttributeAxisIterator
      */
     default Iterator<Attribute> getXPathAttributesIterator() {
         return new AttributeAxisIterator(this);

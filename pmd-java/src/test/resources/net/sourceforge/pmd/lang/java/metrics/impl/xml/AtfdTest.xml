@@ -40,7 +40,7 @@ public class StatementAndBraceFinder {
         this.dataFlow.createStartNode(node.getBeginLine()); // +1
         this.dataFlow.createNewNode(node);
 
-        node.jjtAccept(this, dataFlow);
+        node.acceptVisitor(this, dataFlow);
 
         this.dataFlow.createEndNode(node.getEndLine()); // +1
         if (LOGGER.isLoggable(Level.FINE)) {

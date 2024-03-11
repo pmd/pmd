@@ -5,8 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility.*
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility.*
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
 
 class ModifiersTest : ParserTestSpec({
@@ -62,7 +62,7 @@ class ModifiersTest : ParserTestSpec({
                };
             """ should parseAs {
                 exprStatement {
-                    val (i, l) = it.descendants(ASTVariableDeclaratorId::class.java)
+                    val (i, l) = it.descendants(ASTVariableId::class.java)
                             .crossFindBoundaries()
                             .toList()
 

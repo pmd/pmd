@@ -18,9 +18,9 @@ class XMLElementTest extends AbstractPLSQLParserTst {
     @Test
     void testParseXMLElement() {
         ASTInput input = plsql.parseResource("XMLElement.pls");
-        List<ASTXMLElement> xmlelements = input.findDescendantsOfType(ASTXMLElement.class);
+        List<ASTXMLElement> xmlelements = input.descendants(ASTXMLElement.class).toList();
         assertEquals(10, xmlelements.size());
-        assertEquals("\"Emp\"", xmlelements.get(0).getFirstChildOfType(ASTID.class).getImage());
+        assertEquals("\"Emp\"", xmlelements.get(0).firstChild(ASTID.class).getImage());
         assertTrue(xmlelements.get(3).getChild(1) instanceof ASTXMLAttributesClause);
     }
 }

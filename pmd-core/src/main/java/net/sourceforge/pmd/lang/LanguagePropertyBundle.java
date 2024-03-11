@@ -23,6 +23,7 @@ public class LanguagePropertyBundle extends AbstractPropertySource {
 
     // todo for now i think an empty value might interpret every comment
     //  as a suppression. I think it should disable suppression comments.
+    //  #4846
     public static final PropertyDescriptor<String> SUPPRESS_MARKER
         = PropertyFactory.stringProperty("suppressMarker")
                          .desc("Marker to identify suppression comments. "
@@ -56,7 +57,7 @@ public class LanguagePropertyBundle extends AbstractPropertySource {
     }
 
     public void setLanguageVersion(String string) {
-        setProperty(languageVersion, languageVersion.valueFrom(string));
+        setProperty(languageVersion, languageVersion.serializer().fromString(string));
     }
 
     @Override

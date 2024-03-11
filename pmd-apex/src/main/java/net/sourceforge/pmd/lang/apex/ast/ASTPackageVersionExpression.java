@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.PackageVersionExpression;
+import com.google.summit.ast.Node;
 
-public final class ASTPackageVersionExpression extends AbstractApexNode<PackageVersionExpression> {
+public final class ASTPackageVersionExpression extends AbstractApexNode.Single<Node> {
 
-    ASTPackageVersionExpression(PackageVersionExpression packageVersionExpression) {
+    ASTPackageVersionExpression(Node packageVersionExpression) {
         super(packageVersionExpression);
     }
 

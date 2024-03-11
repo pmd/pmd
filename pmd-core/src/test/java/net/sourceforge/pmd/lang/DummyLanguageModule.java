@@ -6,7 +6,8 @@ package net.sourceforge.pmd.lang;
 
 import java.util.Objects;
 
-import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.cpd.CpdCapableLanguage;
+import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.ParseException;
@@ -16,19 +17,20 @@ import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
+import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
 
 /**
  * Dummy language used for testing PMD.
  */
-public class DummyLanguageModule extends SimpleLanguageModuleBase {
+public class DummyLanguageModule extends SimpleLanguageModuleBase implements CpdCapableLanguage {
 
     public static final String NAME = "Dummy";
     public static final String TERSE_NAME = "dummy";
     private static final String PARSER_THROWS = "parserThrows";
 
     public DummyLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("dummy")
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("dummy", "txt")
                               .addVersion("1.0")
                               .addVersion("1.1")
                               .addVersion("1.2")
@@ -43,6 +45,14 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase {
 
     public static DummyLanguageModule getInstance() {
         return (DummyLanguageModule) Objects.requireNonNull(LanguageRegistry.PMD.getLanguageByFullName(NAME));
+    }
+
+    @Override
+    public LanguagePropertyBundle newPropertyBundle() {
+        LanguagePropertyBundle bundle = super.newPropertyBundle();
+        bundle.definePropertyDescriptor(CpdLanguageProperties.CPD_ANONYMIZE_LITERALS);
+        bundle.definePropertyDescriptor(CpdLanguageProperties.CPD_ANONYMIZE_IDENTIFIERS);
+        return bundle;
     }
 
     public LanguageVersion getVersionWhereParserThrows() {
@@ -88,7 +98,14 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase {
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             if (c == '(') {
-                DummyNode node = new DummyNode();
+                DummyNode node;
+                if (text.startsWith("#text", i + 1)) {
+                    node = new DummyNode.DummyTextNode();
+                } else if (text.startsWith("#comment", i + 1)) {
+                    node = new DummyNode.DummyCommentNode();
+                } else {
+                    node = new DummyNode();
+                }
                 node.setParent(top);
                 top.addChild(node, top.getNumChildren());
                 // setup coordinates, temporary (will be completed when node closes)

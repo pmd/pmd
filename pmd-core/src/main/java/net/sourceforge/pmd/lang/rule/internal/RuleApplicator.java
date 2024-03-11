@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.rule.internal;
 
+import static net.sourceforge.pmd.lang.rule.InternalApiBridge.ruleSetApplies;
+
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -11,10 +13,6 @@ import org.apache.commons.lang3.exception.ExceptionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -22,7 +20,11 @@ import net.sourceforge.pmd.internal.SystemProps;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.InternalApiBridge;
+import net.sourceforge.pmd.reporting.Report.ProcessingError;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -57,11 +59,11 @@ public class RuleApplicator {
 
     private void applyOnIndex(TreeIndex idx, Collection<? extends Rule> rules, FileAnalysisListener listener) {
         for (Rule rule : rules) {
-            if (!RuleSet.applies(rule, currentLangVer)) {
+            if (!ruleSetApplies(rule, currentLangVer)) {
                 continue; // No point in even trying to apply the rule
             }
             
-            RuleContext ctx = RuleContext.create(listener, rule);
+            RuleContext ctx = InternalApiBridge.createRuleContext(listener, rule);
             rule.start(ctx);
             try (TimedOperation rcto = TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName())) {
 

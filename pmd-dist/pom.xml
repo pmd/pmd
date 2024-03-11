@@ -19,6 +19,13 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.cyclonedx</groupId>
+                <artifactId>cyclonedx-maven-plugin</artifactId>
+                <configuration>
+                    <outputName>pmd-${project.version}-cyclonedx</outputName>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
                     <execution>
@@ -86,18 +93,16 @@
                             <goal>copy</goal>
                         </goals>
                         <configuration>
-                            <!-- note: ant 1.9.x is still compatible with java7,
-                                 ant 1.10.x requires java8 -->
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.apache.ant</groupId>
                                     <artifactId>ant</artifactId>
-                                    <version>1.9.16</version>
+                                    <version>${ant.version}</version>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.ant</groupId>
                                     <artifactId>ant-launcher</artifactId>
-                                    <version>1.9.16</version>
+                                    <version>${ant.version}</version>
                                 </artifactItem>
                             </artifactItems>
                             <outputDirectory>${project.build.directory}/ant</outputDirectory>
@@ -132,14 +137,6 @@
             <artifactId>pmd-cli</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- include bash/zsh completions -->
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-cli</artifactId>
-            <version>${project.version}</version>
-            <type>sh</type>
-            <classifier>completion</classifier>
-        </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-ant</artifactId>
@@ -147,7 +144,7 @@
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-ui</artifactId>
+            <artifactId>pmd-designer</artifactId>
             <version>${pmd-designer.version}</version>
         </dependency>
         <dependency>
@@ -168,13 +165,6 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
-        <!-- needed for pmd-designer 7.0.0-rc1 -->
-        <dependency>
-            <groupId>com.beust</groupId>
-            <artifactId>jcommander</artifactId>
-            <version>1.48</version>
-        </dependency>
-
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -188,7 +178,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.21</version>
+            <version>1.26.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -248,6 +238,37 @@
                                     <environmentVariables>
                                         <JAVA_HOME>${java17.home}</JAVA_HOME>
                                         <PATH>${java17.home}/bin:${env.PATH}</PATH>
+                                    </environmentVariables>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>jdk21-compat-it</id>
+            <activation>
+                <property>
+                    <name>java21.home</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>jdk21-compat-it</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                                <configuration>
+                                    <environmentVariables>
+                                        <JAVA_HOME>${java21.home}</JAVA_HOME>
+                                        <PATH>${java21.home}/bin:${env.PATH}</PATH>
                                     </environmentVariables>
                                 </configuration>
                             </execution>

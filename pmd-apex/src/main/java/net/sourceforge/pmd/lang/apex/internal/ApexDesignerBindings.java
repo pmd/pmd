@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
-import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitorAdapter;
+import net.sourceforge.pmd.lang.apex.ast.ApexVisitorBase;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings.DefaultDesignerBindings;
@@ -22,7 +22,7 @@ public class ApexDesignerBindings extends DefaultDesignerBindings {
     @Override
     public Attribute getMainAttribute(Node node) {
         if (node instanceof ApexNode) {
-            Attribute attr = (Attribute) ((ApexNode<?>) node).jjtAccept(MainAttrVisitor.INSTANCE, null);
+            Attribute attr = (Attribute) node.acceptVisitor(MainAttrVisitor.INSTANCE, null);
             if (attr != null) {
                 return attr;
             }
@@ -46,12 +46,12 @@ public class ApexDesignerBindings extends DefaultDesignerBindings {
     }
 
 
-    private static final class MainAttrVisitor extends ApexParserVisitorAdapter {
+    private static final class MainAttrVisitor extends ApexVisitorBase<Object, Object> {
 
         private static final MainAttrVisitor INSTANCE = new MainAttrVisitor();
 
         @Override
-        public Object visit(ApexNode<?> node, Object data) {
+        public Object visitApexNode(ApexNode<?> node, Object data) {
             return null; // don't recurse
         }
 

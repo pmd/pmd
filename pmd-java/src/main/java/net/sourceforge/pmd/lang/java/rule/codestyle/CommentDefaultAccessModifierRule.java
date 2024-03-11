@@ -7,23 +7,23 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaComment;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaPropertyUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Check for Methods, Fields and Nested Classes that have a default access
@@ -52,16 +52,16 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
             "com.google.common.annotations.VisibleForTesting",
             "android.support.annotation.VisibleForTesting",
             "co.elastic.clients.util.VisibleForTesting",
-            "org.junit.jupiter.api.Test",
-            "org.junit.jupiter.api.extension.RegisterExtension",
-            "org.junit.jupiter.api.ParameterizedTest",
+            "org.junit.jupiter.api.AfterAll",
+            "org.junit.jupiter.api.AfterEach",
+            "org.junit.jupiter.api.BeforeAll",
+            "org.junit.jupiter.api.BeforeEach",
             "org.junit.jupiter.api.RepeatedTest",
+            "org.junit.jupiter.api.Test",
             "org.junit.jupiter.api.TestFactory",
             "org.junit.jupiter.api.TestTemplate",
-            "org.junit.jupiter.api.BeforeEach",
-            "org.junit.jupiter.api.BeforeAll",
-            "org.junit.jupiter.api.AfterEach",
-            "org.junit.jupiter.api.AfterAll",
+            "org.junit.jupiter.api.extension.RegisterExtension",
+            "org.junit.jupiter.params.ParameterizedTest",
             "org.testng.annotations.Test",
             "org.testng.annotations.AfterClass",
             "org.testng.annotations.AfterGroups",
@@ -77,7 +77,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
 
 
     public CommentDefaultAccessModifierRule() {
-        super(ASTMethodDeclaration.class, ASTAnyTypeDeclaration.class,
+        super(ASTMethodDeclaration.class, ASTTypeDeclaration.class,
               ASTConstructorDeclaration.class, ASTFieldDeclaration.class);
         definePropertyDescriptor(IGNORED_ANNOTS);
         definePropertyDescriptor(REGEX_DESCRIPTOR);
@@ -127,12 +127,12 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
     }
 
     @Override
-    public Object visit(final ASTClassOrInterfaceDeclaration decl, final Object data) {
+    public Object visit(final ASTClassDeclaration decl, final Object data) {
         checkTypeDecl(decl, (RuleContext) data, "class");
         return data;
     }
 
-    private void checkTypeDecl(ASTAnyTypeDeclaration decl, RuleContext ctx, String typeKind) {
+    private void checkTypeDecl(ASTTypeDeclaration decl, RuleContext ctx, String typeKind) {
         if (decl.isNested() && shouldReportNonTopLevel(decl)) {
             report(ctx, decl, "nested " + typeKind, decl.getSimpleName());
         } else if (!decl.isNested() && shouldReportTypeDeclaration(decl)) {
@@ -141,19 +141,21 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
     }
 
 
-    private void report(RuleContext ctx, AccessNode decl, String kind, String signature) {
+    private void report(RuleContext ctx, ModifierOwner decl, String kind, String signature) {
         ctx.addViolation(decl, kind, signature);
     }
 
-    private boolean shouldReportNonTopLevel(final AccessNode decl) {
-        final ASTAnyTypeDeclaration enclosing = decl.getEnclosingType();
+    private boolean shouldReportNonTopLevel(final ModifierOwner decl) {
+        final ASTTypeDeclaration enclosing = decl.getEnclosingType();
 
         return isMissingComment(decl)
             && isNotIgnored(decl)
-            && !(decl instanceof ASTFieldDeclaration && enclosing.isAnnotationPresent("lombok.Value"));
+            && !(decl instanceof ASTFieldDeclaration
+                && enclosing != null
+                && enclosing.isAnnotationPresent("lombok.Value"));
     }
 
-    private boolean isMissingComment(AccessNode decl) {
+    private boolean isMissingComment(ModifierOwner decl) {
         // check if the class/method/field has a default access
         // modifier
         return decl.getVisibility() == Visibility.V_PACKAGE
@@ -162,17 +164,17 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
             && !hasOkComment(decl);
     }
 
-    private boolean isNotIgnored(AccessNode decl) {
+    private boolean isNotIgnored(ModifierOwner decl) {
         return getProperty(IGNORED_ANNOTS).stream().noneMatch(decl::isAnnotationPresent);
     }
 
-    private boolean hasOkComment(AccessNode node) {
+    private boolean hasOkComment(ModifierOwner node) {
         Pattern regex = getProperty(REGEX_DESCRIPTOR);
         return JavaComment.getLeadingComments(node)
                           .anyMatch(it -> regex.matcher(it.getText()).matches());
     }
 
-    private boolean shouldReportTypeDeclaration(ASTAnyTypeDeclaration decl) {
+    private boolean shouldReportTypeDeclaration(ASTTypeDeclaration decl) {
         // don't report on interfaces
         return !(decl.isRegularInterface() && !decl.isAnnotation())
             && isMissingComment(decl)

@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-public final class ASTUnparsedText extends AbstractJspNode {
+public final class ASTUnparsedText extends AbstractContentNode {
 
     ASTUnparsedText(int id) {
         super(id);

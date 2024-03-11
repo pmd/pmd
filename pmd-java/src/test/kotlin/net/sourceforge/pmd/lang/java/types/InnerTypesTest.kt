@@ -7,8 +7,8 @@
 package net.sourceforge.pmd.lang.java.types
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldMatchN
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 
 class InnerTypesTest : ProcessorTestSpec({
@@ -44,7 +44,7 @@ class InnerTypesTest : ProcessorTestSpec({
         """.trimIndent())
 
         val (scratch, inner) =
-                acu.descendants(ASTAnyTypeDeclaration::class.java).toList()
+                acu.descendants(ASTTypeDeclaration::class.java).toList()
 
         val (implicitlyDecl, explicitlyRaw, explicitlyParam, explicitlyDecl) =
                 acu.descendants(ASTMethodDeclaration::class.java).map { it.formalParameters.toStream()[0]!! }.toList { it.typeMirror }
@@ -112,7 +112,7 @@ class InnerTypesTest : ProcessorTestSpec({
         """.trimIndent())
 
         val (scratch, inner) =
-                acu.descendants(ASTAnyTypeDeclaration::class.java).toList()
+                acu.descendants(ASTTypeDeclaration::class.java).toList()
 
         val (call, rawCall) = acu.descendants(ASTMethodCall::class.java).toList()
 
@@ -177,7 +177,7 @@ class O {
 
 
         val (t_Scratch, t_Inner, t_Sub) =
-                acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+                acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val (innerCtor, supCtor, innerCtor2, subCtor) =
                 acu.descendants(ASTConstructorCall::class.java).toList()

@@ -26,16 +26,16 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
 import net.sourceforge.pmd.lang.plsql.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ExecutableCode;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
-import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
+import net.sourceforge.pmd.lang.plsql.ast.PlsqlVisitorBase;
 
 /**
  * @author Clément Fournier
  */
-class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
+class NPathComplexityVisitor extends PlsqlVisitorBase<Object, Object> {
 
 
     public int compute(ExecutableCode root) {
-        return (int) root.jjtAccept(this, null);
+        return (int) root.acceptVisitor(this, null);
     }
 
     private int complexityMultipleOf(PLSQLNode node, Object data) {
@@ -45,7 +45,7 @@ class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
 
         for (int i = 0; i < node.getNumChildren(); i++) {
             n = (PLSQLNode) node.getChild(i);
-            npath *= (Integer) n.jjtAccept(this, data);
+            npath *= (Integer) n.acceptVisitor(this, data);
         }
 
         return npath;
@@ -86,7 +86,7 @@ class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
         // (npath of if + npath of else (or 1) + bool_comp of if) * npath of
         // next
 
-        int boolCompIf = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        int boolCompIf = NPathComplexityRule.sumExpressionComplexity(node.firstChild(ASTExpression.class));
 
         int complexity = 0;
 
@@ -101,9 +101,9 @@ class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
 
         /*
          * SRT if (statementChildren.isEmpty() || statementChildren.size() == 1
-         * && ( null != node.getFirstChildOfType(ASTElseClause.class) )
+         * && ( null != node.firstChild(ASTElseClause.class) )
          * //.hasElse() || statementChildren.size() != 1 && ( null ==
-         * node.getFirstChildOfType(ASTElseClause.class) ) // !node.hasElse() )
+         * node.firstChild(ASTElseClause.class) ) // !node.hasElse() )
          * { throw new
          * IllegalStateException("If node has wrong number of children"); }
          */
@@ -111,15 +111,15 @@ class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
         /*
          * @TODO Any explicit Elsif clause(s) and Else clause are included in
          * the list of statements // add path for not taking if if (null ==
-         * node.getFirstChildOfType(ASTElsifClause.class) ) //
+         * node.firstChild(ASTElsifClause.class) ) //
          * !node.hasElse()!node.hasElse()) { complexity++; }
          *
-         * if (null == node.getFirstChildOfType(ASTElseClause.class) ) //
+         * if (null == node.firstChild(ASTElseClause.class) ) //
          * !node.hasElse()!node.hasElse()) { complexity++; }
          */
 
         for (PLSQLNode element : statementChildren) {
-            complexity += (Integer) element.jjtAccept(this, data);
+            complexity += (Integer) element.acceptVisitor(this, data);
         }
 
         return boolCompIf + complexity;
@@ -130,28 +130,28 @@ class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
         // (npath of if + npath of else (or 1) + bool_comp of if) * npath of
         // next
 
-        int boolCompIf = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        int boolCompIf = NPathComplexityRule.sumExpressionComplexity(node.firstChild(ASTExpression.class));
 
         int complexity = 0;
 
         List<PLSQLNode> statementChildren = new ArrayList<>();
         for (int i = 0; i < node.getNumChildren(); i++) {
             if (node.getChild(i).getClass() == ASTStatement.class) {
-                statementChildren.add((PLSQLNode) node.getChild(i));
+                statementChildren.add(node.getChild(i));
             }
         }
 
         /*
          * SRT if (statementChildren.isEmpty() || statementChildren.size() == 1
-         * && ( null != node.getFirstChildOfType(ASTElseClause.class) )
+         * && ( null != node.firstChild(ASTElseClause.class) )
          * //.hasElse() || statementChildren.size() != 1 && ( null ==
-         * node.getFirstChildOfType(ASTElseClause.class) ) // !node.hasElse() )
+         * node.firstChild(ASTElseClause.class) ) // !node.hasElse() )
          * { throw new
          * IllegalStateException("If node has wrong number of children"); }
          */
 
         for (PLSQLNode element : statementChildren) {
-            complexity += (Integer) element.jjtAccept(this, data);
+            complexity += (Integer) element.acceptVisitor(this, data);
         }
 
         return boolCompIf + complexity;
@@ -167,12 +167,12 @@ class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
         List<PLSQLNode> statementChildren = new ArrayList<>();
         for (int i = 0; i < node.getNumChildren(); i++) {
             if (node.getChild(i).getClass() == ASTStatement.class) {
-                statementChildren.add((PLSQLNode) node.getChild(i));
+                statementChildren.add(node.getChild(i));
             }
         }
 
         for (PLSQLNode element : statementChildren) {
-            complexity += (Integer) element.jjtAccept(this, data);
+            complexity += (Integer) element.acceptVisitor(this, data);
         }
 
         return complexity;
@@ -182,9 +182,9 @@ class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
     public Object visit(ASTWhileStatement node, Object data) {
         // (npath of while + bool_comp of while + 1) * npath of next
 
-        int boolCompWhile = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        int boolCompWhile = NPathComplexityRule.sumExpressionComplexity(node.firstChild(ASTExpression.class));
 
-        Integer nPathWhile = (Integer) ((PLSQLNode) node.getFirstChildOfType(ASTStatement.class)).jjtAccept(this, data);
+        Integer nPathWhile = (Integer) node.firstChild(ASTStatement.class).acceptVisitor(this, data);
 
         return boolCompWhile + nPathWhile + 1;
     }
@@ -193,9 +193,9 @@ class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
     public Object visit(ASTLoopStatement node, Object data) {
         // (npath of do + bool_comp of do + 1) * npath of next
 
-        int boolCompDo = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        int boolCompDo = NPathComplexityRule.sumExpressionComplexity(node.firstChild(ASTExpression.class));
 
-        Integer nPathDo = (Integer) ((PLSQLNode) node.getFirstChildOfType(ASTStatement.class)).jjtAccept(this, data);
+        Integer nPathDo = (Integer) node.firstChild(ASTStatement.class).acceptVisitor(this, data);
 
         return boolCompDo + nPathDo + 1;
     }
@@ -204,9 +204,9 @@ class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
     public Object visit(ASTForStatement node, Object data) {
         // (npath of for + bool_comp of for + 1) * npath of next
 
-        int boolCompFor = NPathComplexityRule.sumExpressionComplexity(node.getFirstDescendantOfType(ASTExpression.class));
+        int boolCompFor = NPathComplexityRule.sumExpressionComplexity(node.descendants(ASTExpression.class).first());
 
-        Integer nPathFor = (Integer) ((PLSQLNode) node.getFirstChildOfType(ASTStatement.class)).jjtAccept(this, data);
+        Integer nPathFor = (Integer) node.firstChild(ASTStatement.class).acceptVisitor(this, data);
 
         return boolCompFor + nPathFor + 1;
     }
@@ -216,7 +216,7 @@ class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
         // return statements are valued at 1, or the value of the boolean
         // expression
 
-        ASTExpression expr = node.getFirstChildOfType(ASTExpression.class);
+        ASTExpression expr = node.firstChild(ASTExpression.class);
 
         if (expr == null) {
             return 1;
@@ -239,7 +239,7 @@ class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
     public Object visit(ASTCaseWhenClause node, Object data) {
         // bool_comp of switch + sum(npath(case_range))
 
-        int boolCompSwitch = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        int boolCompSwitch = NPathComplexityRule.sumExpressionComplexity(node.firstChild(ASTExpression.class));
 
         int npath = 1;
         int caseRange = 0;
@@ -247,7 +247,7 @@ class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
             PLSQLNode n = (PLSQLNode) node.getChild(i);
 
             // Fall-through labels count as 1 for complexity
-            Integer complexity = (Integer) n.jjtAccept(this, data);
+            Integer complexity = (Integer) n.acceptVisitor(this, data);
             caseRange *= complexity;
         }
         // add in npath of last label
@@ -259,7 +259,7 @@ class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
     public Object visit(ASTCaseStatement node, Object data) {
         // bool_comp of switch + sum(npath(case_range))
 
-        int boolCompSwitch = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        int boolCompSwitch = NPathComplexityRule.sumExpressionComplexity(node.firstChild(ASTExpression.class));
 
         int npath = 0;
         int caseRange = 0;
@@ -267,7 +267,7 @@ class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
             PLSQLNode n = (PLSQLNode) node.getChild(i);
 
             // Fall-through labels count as 1 for complexity
-            Integer complexity = (Integer) n.jjtAccept(this, data);
+            Integer complexity = (Integer) n.acceptVisitor(this, data);
             caseRange *= complexity;
         }
         // add in npath of last label

@@ -9,9 +9,9 @@ import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.isJ
 
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -26,17 +26,17 @@ public class TestClassWithoutTestCasesRule extends AbstractJavaRulechainRule {
             .build();
 
     public TestClassWithoutTestCasesRule() {
-        super(ASTClassOrInterfaceDeclaration.class);
+        super(ASTClassDeclaration.class);
         definePropertyDescriptor(TEST_CLASS_PATTERN);
     }
 
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+    public Object visit(ASTClassDeclaration node, Object data) {
         if (isJUnit3Class(node) || isJUnit5NestedClass(node) || isTestClassByPattern(node)) {
             boolean hasTests =
                 node.getDeclarations(ASTMethodDeclaration.class)
                     .any(TestFrameworksUtil::isTestMethod);
-            boolean hasNestedTestClasses = node.getDeclarations(ASTAnyTypeDeclaration.class)
+            boolean hasNestedTestClasses = node.getDeclarations(ASTTypeDeclaration.class)
                     .any(TestFrameworksUtil::isJUnit5NestedClass);
 
             if (!hasTests && !hasNestedTestClasses) {
@@ -46,7 +46,7 @@ public class TestClassWithoutTestCasesRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    private boolean isTestClassByPattern(ASTClassOrInterfaceDeclaration node) {
+    private boolean isTestClassByPattern(ASTClassDeclaration node) {
         Pattern testClassPattern = getProperty(TEST_CLASS_PATTERN);
         if (testClassPattern.pattern().isEmpty()) {
             // detection by pattern is disabled

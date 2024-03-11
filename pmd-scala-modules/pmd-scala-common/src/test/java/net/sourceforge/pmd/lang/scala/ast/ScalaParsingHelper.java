@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
+import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.lang.scala.ScalaLanguageModule;
 
 public final class ScalaParsingHelper extends BaseParsingHelper<ScalaParsingHelper, ASTSource> {
@@ -12,7 +12,7 @@ public final class ScalaParsingHelper extends BaseParsingHelper<ScalaParsingHelp
     public static final ScalaParsingHelper DEFAULT = new ScalaParsingHelper(Params.getDefault());
 
     private ScalaParsingHelper(Params params) {
-        super(ScalaLanguageModule.NAME, ASTSource.class, params);
+        super(ScalaLanguageModule.getInstance(), ASTSource.class, params);
     }
 
     @Override

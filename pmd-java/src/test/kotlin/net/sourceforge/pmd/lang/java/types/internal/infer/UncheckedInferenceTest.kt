@@ -7,7 +7,7 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
 
@@ -30,10 +30,10 @@ class C {
                 """.trimIndent()
         )
 
-        val (t_C) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_C) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
-        val id = acu.descendants(ASTVariableDeclaratorId::class.java).first { it.name == "c" }!!
+        val id = acu.descendants(ASTVariableId::class.java).first { it.name == "c" }!!
 
         spy.shouldBeOk {
             call.methodType.shouldMatchMethod(
@@ -65,10 +65,10 @@ class C {
                 """.trimIndent()
         )
 
-        val (t_C) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_C) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val call = acu.firstMethodCall()
-        val id = acu.descendants(ASTVariableDeclaratorId::class.java).first { it.name == "c" }!!
+        val id = acu.descendants(ASTVariableId::class.java).first { it.name == "c" }!!
 
         spy.shouldBeOk {
             call.methodType.shouldMatchMethod(
@@ -106,7 +106,7 @@ class C {
                 """.trimIndent()
         )
 
-        val (t_C) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_C) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
         spy.shouldBeOk {
@@ -138,10 +138,10 @@ class C {
                 """.trimIndent()
         )
 
-        val (t_C) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_C) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
-        val id = acu.descendants(ASTVariableDeclaratorId::class.java).first { it.name == "c" }!!
+        val id = acu.descendants(ASTVariableId::class.java).first { it.name == "c" }!!
 
 
         spy.shouldBeOk {
@@ -173,7 +173,7 @@ class Scratch<N extends Number> {
 }
         """)
 
-        val (t_Scratch, t_I) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Scratch, t_I) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
         val (nvar) = acu.descendants(ASTTypeParameter::class.java).toList { it.typeMirror }
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()

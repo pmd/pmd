@@ -8,7 +8,7 @@ import java.math.BigInteger;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
-import net.sourceforge.pmd.test.AbstractMetricTestRule;
+import net.sourceforge.pmd.lang.test.AbstractMetricTestRule;
 
 /**
  * @author Clément Fournier

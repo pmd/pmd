@@ -15,7 +15,4 @@
  * @see net.sourceforge.pmd.lang.document.TextDocument
  * @see net.sourceforge.pmd.reporting.Reportable
  */
-@Experimental
 package net.sourceforge.pmd.lang.document;
-
-import net.sourceforge.pmd.annotation.Experimental;

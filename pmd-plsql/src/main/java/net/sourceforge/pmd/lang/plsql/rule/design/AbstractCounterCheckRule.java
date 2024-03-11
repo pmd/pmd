@@ -4,10 +4,15 @@
 
 package net.sourceforge.pmd.lang.plsql.rule.design;
 
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import java.lang.reflect.Modifier;
+import java.util.Collection;
+import java.util.HashSet;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPackageBody;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPackageSpecification;
@@ -20,6 +25,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ExecutableCode;
 import net.sourceforge.pmd.lang.plsql.ast.OracleObject;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.rule.AbstractPLSQLRule;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.lang.rule.internal.CommonPropertyDescriptors;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -33,6 +39,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 // PACKAGE PRIVATE or move in internal package at most
 abstract class AbstractCounterCheckRule<T extends PLSQLNode> extends AbstractPLSQLRule {
 
+    private final Class<T> nodeType;
 
     private final PropertyDescriptor<Integer> reportLevel =
         CommonPropertyDescriptors.reportLevelProperty()
@@ -42,30 +49,36 @@ abstract class AbstractCounterCheckRule<T extends PLSQLNode> extends AbstractPLS
 
 
     AbstractCounterCheckRule(Class<T> nodeType) {
+        this.nodeType = nodeType;
         definePropertyDescriptor(reportLevel);
+    }
+
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
         if (!(Modifier.isAbstract(nodeType.getModifiers()) || nodeType.isInterface())) {
-            addRuleChainVisit(nodeType);
-        } else {
-            determineRulechainVisits(nodeType);
+            return RuleTargetSelector.forTypes(nodeType);
         }
+
+        return RuleTargetSelector.forTypes(determineRulechainVisits(nodeType));
     }
 
     // FIXME find a generic way to add a rulechain visit on an abstract node type
-    private void determineRulechainVisits(Class<T> abstractNodeType) {
-
+    private Collection<Class<? extends Node>> determineRulechainVisits(Class<T> abstractNodeType) {
+        Collection<Class<? extends Node>> classes = new HashSet<>();
         if (abstractNodeType == OracleObject.class) {
-            addRuleChainVisit(ASTPackageBody.class);
-            addRuleChainVisit(ASTPackageSpecification.class);
-            addRuleChainVisit(ASTProgramUnit.class);
-            addRuleChainVisit(ASTTriggerUnit.class);
-            addRuleChainVisit(ASTTypeSpecification.class);
+            classes.add(ASTPackageBody.class);
+            classes.add(ASTPackageSpecification.class);
+            classes.add(ASTProgramUnit.class);
+            classes.add(ASTTriggerUnit.class);
+            classes.add(ASTTypeSpecification.class);
         } else if (abstractNodeType == ExecutableCode.class) {
-            addRuleChainVisit(ASTMethodDeclaration.class);
-            addRuleChainVisit(ASTProgramUnit.class);
-            addRuleChainVisit(ASTTriggerTimingPointSection.class);
-            addRuleChainVisit(ASTTriggerUnit.class);
-            addRuleChainVisit(ASTTypeMethod.class);
+            classes.add(ASTMethodDeclaration.class);
+            classes.add(ASTProgramUnit.class);
+            classes.add(ASTTriggerTimingPointSection.class);
+            classes.add(ASTTriggerUnit.class);
+            classes.add(ASTTypeMethod.class);
         }
+        return classes;
     }
 
 
@@ -93,7 +106,7 @@ abstract class AbstractCounterCheckRule<T extends PLSQLNode> extends AbstractPLS
         if (!isIgnored(t)) {
             int metric = getMetric(t);
             if (metric >= getProperty(reportLevel)) {
-                addViolation(data, node, getViolationParameters(t, metric));
+                asCtx(data).addViolation(node, getViolationParameters(t, metric));
             }
         }
 

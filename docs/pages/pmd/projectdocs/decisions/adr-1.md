@@ -9,7 +9,7 @@ adr_status: "Accepted"
 last_updated: September 2022
 ---
 
-# Context
+## Context
 
 PMD has grown over 20 years as an open-source project. Along the way many decisions have been made, but they are not
 explicitly documented. PMD is also developed by many individuals and the original developers might
@@ -33,7 +33,7 @@ by Michael Nygard.
 There are many templates around to choose from. <https://github.com/joelparkerhenderson/architecture-decision-record>
 gives a nice summary. The page <https://adr.github.io/> gives a good overview on ADR and for adr-related tooling.
 
-# Decision
+## Decision
 
 We will document the decisions we make as a project as a collection of "Architecture Decision Records".
 In order to keep it simple, we will use only a simple template proposed by Michael Nygard.
@@ -49,11 +49,11 @@ The change can be to amend the ADR or to challenge it and maybe deprecate it. A 
 "Change History" section should be added to summary the change. When maintainer consensus is reached
 during the PR review, then the PR can be merged and the ADR is updated.
 
-# Status
+## Status
 
 {{ page.adr_status }} (Last updated: {{ page.last_updated }})
 
-# Consequences
+## Consequences
 
 Explicitly documenting decisions has the benefit that new developers joining the projects know about the decisions
 and can read the context and consequences of the decisions. This will likely also improve the overall quality
@@ -61,9 +61,9 @@ as the decisions need to be formulated and written down. Everybody is on the sam
 
 However, this also adds additional tasks, and it takes time to write down and document the decisions.
 
-# Change History
+## Change History
 
-2022-09-30: Status changed to "Accepted".
+2022-09-30: Status changed to "Accepted". ([#4072](https://github.com/pmd/pmd/pull/4072))
 
 2022-09-06: Added section "Change History" to the template. Added "Last updated" to "Status" section.
 

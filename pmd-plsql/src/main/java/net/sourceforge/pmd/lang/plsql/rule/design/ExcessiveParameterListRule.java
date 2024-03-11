@@ -24,7 +24,7 @@ public class ExcessiveParameterListRule extends AbstractCounterCheckRule<ASTForm
 
     @Override
     protected int getMetric(ASTFormalParameters node) {
-        return node.findChildrenOfType(ASTFormalParameter.class).size();
+        return node.children(ASTFormalParameter.class).count();
     }
 
 }

@@ -9,7 +9,6 @@ import org.mozilla.javascript.ast.StringLiteral;
 public final class ASTStringLiteral extends AbstractEcmascriptNode<StringLiteral> {
     ASTStringLiteral(StringLiteral stringLiteral) {
         super(stringLiteral);
-        super.setImage(stringLiteral.getValue());
     }
 
     @Override
@@ -27,5 +26,9 @@ public final class ASTStringLiteral extends AbstractEcmascriptNode<StringLiteral
 
     public boolean isDoubleQuoted() {
         return '"' == getQuoteCharacter();
+    }
+
+    public String getValue() {
+        return node.getValue();
     }
 }

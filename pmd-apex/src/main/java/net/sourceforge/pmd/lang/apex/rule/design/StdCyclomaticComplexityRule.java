@@ -4,13 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.rule.design;
 
+import static net.sourceforge.pmd.properties.NumericConstraints.inRange;
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.apex.ast.ASTBooleanExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForEachStatement;
@@ -27,6 +26,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 /**
@@ -100,8 +100,8 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
         Entry classEntry = entryStack.pop();
         if (showClassesComplexity) {
             if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
-                addViolation(data, node, new String[] { "class", node.getImage(),
-                    classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')', });
+                asCtx(data).addViolation(node, "class", node.getSimpleName(),
+                    classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')');
             }
         }
         return data;
@@ -114,8 +114,8 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
         Entry classEntry = entryStack.pop();
         if (showClassesComplexity) {
             if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
-                addViolation(data, node, new String[] { "trigger", node.getImage(),
-                    classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')', });
+                asCtx(data).addViolation(node, "trigger", node.getSimpleName(),
+                    classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')');
             }
         }
         return data;
@@ -133,24 +133,22 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTMethod node, Object data) {
-        if (!node.isSynthetic()) {
-            entryStack.push(new Entry());
-            super.visit(node, data);
-            Entry methodEntry = entryStack.pop();
-            int methodDecisionPoints = methodEntry.decisionPoints;
-            Entry classEntry = entryStack.peek();
-            classEntry.methodCount++;
-            classEntry.bumpDecisionPoints(methodDecisionPoints);
+        entryStack.push(new Entry());
+        super.visit(node, data);
+        Entry methodEntry = entryStack.pop();
+        int methodDecisionPoints = methodEntry.decisionPoints;
+        Entry classEntry = entryStack.peek();
+        classEntry.methodCount++;
+        classEntry.bumpDecisionPoints(methodDecisionPoints);
 
-            if (methodDecisionPoints > classEntry.highestDecisionPoints) {
-                classEntry.highestDecisionPoints = methodDecisionPoints;
-            }
+        if (methodDecisionPoints > classEntry.highestDecisionPoints) {
+            classEntry.highestDecisionPoints = methodDecisionPoints;
+        }
 
-            if (showMethodsComplexity && methodEntry.decisionPoints >= reportLevel) {
-                String methodType = node.isConstructor() ? "constructor" : "method";
-                addViolation(data, node,
-                        new String[] { methodType, node.getImage(), String.valueOf(methodEntry.decisionPoints) });
-            }
+        if (showMethodsComplexity && methodEntry.decisionPoints >= reportLevel) {
+            String methodType = node.isConstructor() ? "constructor" : "method";
+            asCtx(data).addViolation(node,
+                    methodType, node.getImage(), String.valueOf(methodEntry.decisionPoints));
         }
         return data;
     }

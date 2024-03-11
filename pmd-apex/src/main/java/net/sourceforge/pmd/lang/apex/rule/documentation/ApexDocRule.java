@@ -24,7 +24,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
-import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -108,8 +107,8 @@ public class ApexDocRule extends AbstractApexRule {
             }
 
             // Collect parameter names in order
-            final List<String> params = node.findChildrenOfType(ASTParameter.class)
-                    .stream().map(p -> p.getImage()).collect(Collectors.toList());
+            final List<String> params = node.children(ASTParameter.class).toStream()
+                    .map(ASTParameter::getImage).collect(Collectors.toList());
 
             if (!comment.params.equals(params)) {
                 asCtx(data).addViolationWithMessage(node, MISMATCHED_PARAM_MESSAGE);
@@ -155,8 +154,8 @@ public class ApexDocRule extends AbstractApexRule {
         }
 
         // is this a test?
-        for (final ASTAnnotation annotation : node.findDescendantsOfType(ASTAnnotation.class)) {
-            if ("IsTest".equals(annotation.getImage())) {
+        for (final ASTAnnotation annotation : node.descendants(ASTAnnotation.class)) {
+            if ("IsTest".equalsIgnoreCase(annotation.getName())) {
                 return false;
             }
         }
@@ -166,7 +165,7 @@ public class ApexDocRule extends AbstractApexRule {
             return false;
         }
 
-        ASTModifierNode modifier = node.getFirstChildOfType(ASTModifierNode.class);
+        ASTModifierNode modifier = node.firstChild(ASTModifierNode.class);
         if (modifier != null) {
             boolean flagPrivate = getProperty(REPORT_PRIVATE_DESCRIPTOR) && modifier.isPrivate();
             boolean flagProtected = getProperty(REPORT_PROTECTED_DESCRIPTOR) && modifier.isProtected();
@@ -177,9 +176,9 @@ public class ApexDocRule extends AbstractApexRule {
     }
 
     private ApexDocComment getApexDocComment(ApexNode<?> node) {
-        ASTFormalComment comment = node.getFirstChildOfType(ASTFormalComment.class);
+        ASTFormalComment comment = node.firstChild(ASTFormalComment.class);
         if (comment != null) {
-            Chars token = comment.getToken();
+            String token = comment.getImage();
 
             boolean hasDescription = DESCRIPTION_PATTERN.matcher(token).find();
             boolean hasReturn = RETURN_PATTERN.matcher(token).find();

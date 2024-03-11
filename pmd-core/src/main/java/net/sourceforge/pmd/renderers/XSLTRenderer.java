@@ -28,6 +28,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -40,8 +41,11 @@ public class XSLTRenderer extends XMLRenderer {
 
     public static final String NAME = "xslt";
 
-    // TODO 7.0.0 use PropertyDescriptor<Optional<File>>
-    public static final PropertyDescriptor<String> XSLT_FILENAME = PropertyFactory.stringProperty("xsltFilename").desc("The XSLT file name.").defaultValue("").build();
+    public static final PropertyDescriptor<String> XSLT_FILENAME = PropertyFactory
+            .stringProperty("xsltFilename")
+            .desc("The XSLT file name.")
+            .defaultValue("")
+            .build();
 
     private Transformer transformer;
     private String xsltFilename = "/pmd-nicerhtml.xsl";
@@ -129,6 +133,8 @@ public class XSLTRenderer extends XMLRenderer {
             transformer.transform(source, result);
         } catch (TransformerException e) {
             throw new RuntimeException(e);
+        } finally {
+            IOUtil.closeQuietly(outputWriter);
         }
     }
 

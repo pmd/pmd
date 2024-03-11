@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.Expression;
+import com.google.summit.ast.Node;
 
-public final class ASTExpression extends AbstractApexNode<Expression> {
+public final class ASTExpression extends AbstractApexNode.Single<Node> {
 
-    ASTExpression(Expression expression) {
+    ASTExpression(Node expression) {
         super(expression);
     }
 

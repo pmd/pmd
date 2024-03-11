@@ -9,10 +9,11 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.InternalApiBridge;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.PmdCapableLanguage;
 import net.sourceforge.pmd.lang.document.TextFile;
 
 /**
@@ -26,12 +27,17 @@ import net.sourceforge.pmd.lang.document.TextFile;
  */
 public abstract class BatchLanguageProcessor<P extends LanguagePropertyBundle> implements LanguageProcessor {
 
-    private final Language language;
+    private final PmdCapableLanguage language;
     private final P bundle;
     private final LanguageVersion version;
 
     protected BatchLanguageProcessor(P bundle) {
-        this.language = bundle.getLanguage();
+        if (!(bundle.getLanguage() instanceof PmdCapableLanguage)) {
+            throw new IllegalArgumentException(
+                "Cannot create a processor for a language which does not support PMD: " + bundle.getLanguage()
+            );
+        }
+        this.language = (PmdCapableLanguage) bundle.getLanguage();
         this.bundle = bundle;
         this.version = bundle.getLanguageVersion();
     }
@@ -46,7 +52,7 @@ public abstract class BatchLanguageProcessor<P extends LanguagePropertyBundle> i
     }
 
     @Override
-    public final @NonNull Language getLanguage() {
+    public final @NonNull PmdCapableLanguage getLanguage() {
         return language;
     }
 
@@ -55,7 +61,7 @@ public abstract class BatchLanguageProcessor<P extends LanguagePropertyBundle> i
         // The given analysis task has all files to analyse, not only the ones for this language.
         List<TextFile> files = new ArrayList<>(task.getFiles());
         files.removeIf(it -> !it.getLanguageVersion().getLanguage().equals(getLanguage()));
-        AnalysisTask newTask = task.withFiles(files);
+        AnalysisTask newTask = InternalApiBridge.taskWithFiles(task, files);
 
         task.getRulesets().initializeRules(task.getLpRegistry(), task.getMessageReporter());
 

@@ -3,7 +3,7 @@ repository: pmd/pmd
 pmd:
     version: 7.0.0-SNAPSHOT
     previous_version: 6.55.0
-    date: 27-June-2023
+    date: ??-?????-2023
     release_type: major
 
 # release types: major, minor, bugfix
@@ -70,6 +70,7 @@ kramdown:
   syntax_highlighter: rouge
   syntax_highlighter_opts:
       css_class: 'highlight'
+  parse_block_html: true
 # filter used to process markdown. note that kramdown differs from github-flavored markdown in some subtle ways
 
 collections:

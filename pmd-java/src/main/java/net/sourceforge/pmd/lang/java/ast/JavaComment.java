@@ -37,14 +37,6 @@ public class JavaComment implements Reportable {
         return getToken().getReportLocation();
     }
 
-    /**
-     * @deprecated Use {@link #getText()}
-     */
-    @Deprecated
-    public String getImage() {
-        return getToken().getImage();
-    }
-
     /** The token underlying this comment. */
     public final JavaccToken getToken() {
         return token;
@@ -132,16 +124,27 @@ public class JavaComment implements Reportable {
         return line.subSequence(subseqFrom, line.length()).trim();
     }
 
-    private static Stream<JavaccToken> getSpecialCommentsIn(JjtreeNode<?> node) {
+    private static Stream<JavaccToken> getSpecialTokensIn(JjtreeNode<?> node) {
         return GenericToken.streamRange(node.getFirstToken(), node.getLastToken())
                            .flatMap(it -> IteratorUtil.toStream(GenericToken.previousSpecials(it).iterator()));
     }
 
     public static Stream<JavaComment> getLeadingComments(JavaNode node) {
-        if (node instanceof AccessNode) {
-            node = ((AccessNode) node).getModifiers();
+        Stream<JavaccToken> specialTokens;
+        
+        if (node instanceof ModifierOwner) {
+            node = ((ModifierOwner) node).getModifiers();
+            specialTokens = getSpecialTokensIn(node);
+            
+            // if this was a non-implicit empty modifier node, we should also consider comments immediately after
+            if (!node.getFirstToken().isImplicit()) {
+                specialTokens = Stream.concat(specialTokens, getSpecialTokensIn(node.getNextSibling()));
+            }
+        } else {
+            specialTokens = getSpecialTokensIn(node);
         }
-        return getSpecialCommentsIn(node).filter(JavaComment::isComment)
+        
+        return specialTokens.filter(JavaComment::isComment)
                                          .map(JavaComment::toComment);
     }
 

@@ -14,13 +14,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
  *
  * <pre class="grammar">
  *
- * ExtendsList ::= "extends" {@link ASTType Type} ( "," {@link ASTType Type} )*
+ * ExtendsList ::= "extends" {@link ASTClassType ClassType} ( "," {@link ASTClassType ClassType} )*
  * </pre>
  */
-public final class ASTExtendsList extends ASTNonEmptyList<ASTClassOrInterfaceType> {
+public final class ASTExtendsList extends ASTNonEmptyList<ASTClassType> {
 
     ASTExtendsList(int id) {
-        super(id, ASTClassOrInterfaceType.class);
+        super(id, ASTClassType.class);
     }
 
 

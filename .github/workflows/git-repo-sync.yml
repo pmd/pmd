@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: false
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 100
     - name: Setup Environment

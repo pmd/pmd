@@ -7,13 +7,17 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.JModifier;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.java.rule.design.UseUtilityClassRule;
+import net.sourceforge.pmd.lang.java.rule.internal.AbstractIgnoredAnnotationRule;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 /**
  * This rule detects non-static classes with no constructors;
@@ -23,8 +27,9 @@ import net.sourceforge.pmd.lang.java.rule.design.UseUtilityClassRule;
  */
 public class AtLeastOneConstructorRule extends AbstractIgnoredAnnotationRule {
 
-    public AtLeastOneConstructorRule() {
-        addRuleChainVisit(ASTClassOrInterfaceDeclaration.class);
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTClassDeclaration.class);
     }
 
     @Override
@@ -38,7 +43,7 @@ public class AtLeastOneConstructorRule extends AbstractIgnoredAnnotationRule {
     }
 
     @Override
-    public Object visit(final ASTClassOrInterfaceDeclaration node, final Object data) {
+    public Object visit(final ASTClassDeclaration node, final Object data) {
         // Ignore interfaces / static classes / classes that have a constructor / classes ignored through annotations
         if (!node.isRegularClass()
             || node.isStatic()
@@ -47,12 +52,12 @@ public class AtLeastOneConstructorRule extends AbstractIgnoredAnnotationRule {
             return data;
         }
 
-        NodeStream<AccessNode> members = node.getDeclarations()
-                                             .filterIs(AccessNode.class)
-                                             .filterNot(it -> it instanceof ASTAnyTypeDeclaration);
-        if (members.isEmpty() || members.any(it -> !it.isStatic())) {
+        NodeStream<ModifierOwner> members = node.getDeclarations()
+                                             .filterIs(ModifierOwner.class)
+                                             .filterNot(it -> it instanceof ASTTypeDeclaration);
+        if (members.isEmpty() || members.any(it -> !it.hasModifiers(JModifier.STATIC))) {
             // Do we have any non-static members?
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
 
         return data;

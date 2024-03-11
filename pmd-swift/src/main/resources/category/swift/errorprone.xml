@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <ruleset name="Error Prone"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
@@ -13,7 +13,7 @@
           language="swift"
           since="7.0.0"
           message="Force casts should be avoided."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_swift_errorprone.html#forcecast">
         <description>
             Force casts should be avoided. This may lead to a crash if it's not used carefully.
@@ -43,7 +43,7 @@ NSNumber() as? Int // no violation
           language="swift"
           since="7.0.0"
           message="Force tries should be avoided."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_swift_errorprone.html#forcetry">
         <description>
             Force tries should be avoided. If the code being wrapped happens to raise and exception, our application will crash.

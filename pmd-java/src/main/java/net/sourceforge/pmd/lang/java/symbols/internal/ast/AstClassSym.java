@@ -14,10 +14,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
@@ -25,7 +24,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponentList;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
@@ -45,7 +45,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 
 
 final class AstClassSym
-    extends AbstractAstTParamOwner<ASTAnyTypeDeclaration>
+    extends AbstractAstTParamOwner<ASTTypeDeclaration>
     implements JClassSymbol {
 
     private final @Nullable JTypeParameterOwnerSymbol enclosing;
@@ -56,7 +56,7 @@ final class AstClassSym
     private final List<JFieldSymbol> enumConstants; // subset of declaredFields
     private final PSet<String> annotAttributes;
 
-    AstClassSym(ASTAnyTypeDeclaration node,
+    AstClassSym(ASTTypeDeclaration node,
                 AstSymFactory factory,
                 @Nullable JTypeParameterOwnerSymbol enclosing) {
         super(node, factory);
@@ -101,8 +101,8 @@ final class AstClassSym
 
         for (ASTBodyDeclaration dnode : node.getDeclarations()) {
 
-            if (dnode instanceof ASTAnyTypeDeclaration) {
-                myClasses.add(new AstClassSym((ASTAnyTypeDeclaration) dnode, factory, this));
+            if (dnode instanceof ASTTypeDeclaration) {
+                myClasses.add(new AstClassSym((ASTTypeDeclaration) dnode, factory, this));
             } else if (dnode instanceof ASTMethodDeclaration) {
                 if (!recordComponents.isEmpty() && ((ASTMethodDeclaration) dnode).getArity() == 0) {
                     // filter out record component, so that the accessor is not generated
@@ -112,7 +112,7 @@ final class AstClassSym
             } else if (dnode instanceof ASTConstructorDeclaration) {
                 myCtors.add(new AstCtorSym((ASTConstructorDeclaration) dnode, factory, this));
             } else if (dnode instanceof ASTFieldDeclaration) {
-                for (ASTVariableDeclaratorId varId : ((ASTFieldDeclaration) dnode).getVarIds()) {
+                for (ASTVariableId varId : ((ASTFieldDeclaration) dnode).getVarIds()) {
                     myFields.add(new AstFieldSym(varId, factory, this));
                 }
             }
@@ -225,9 +225,9 @@ final class AstClassSym
 
             return factory.enumSuperclass(this);
 
-        } else if (node instanceof ASTClassOrInterfaceDeclaration) {
+        } else if (node instanceof ASTClassDeclaration) {
 
-            ASTClassOrInterfaceType superClass = ((ASTClassOrInterfaceDeclaration) node).getSuperClassTypeNode();
+            ASTClassType superClass = ((ASTClassDeclaration) node).getSuperClassTypeNode();
             return superClass == null
                    ? ts.OBJECT
                    // this cast relies on the fact that the superclass is not a type variable

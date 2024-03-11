@@ -19,6 +19,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -53,49 +55,6 @@ public final class CollectionUtil {
 
     private CollectionUtil() {
     }
-
-    /**
-     * Creates and returns a map populated with the keyValuesSets where the
-     * value held by the tuples are they key and value in that order.
-     *
-     * @param keys
-     *            K[]
-     * @param values
-     *            V[]
-     * @return Map
-     *
-     * @deprecated Used by deprecated property types
-     */
-    @Deprecated
-    public static <K, V> Map<K, V> mapFrom(K[] keys, V[] values) {
-        if (keys.length != values.length) {
-            throw new RuntimeException("mapFrom keys and values arrays have different sizes");
-        }
-        Map<K, V> map = new HashMap<>(keys.length);
-        for (int i = 0; i < keys.length; i++) {
-            map.put(keys[i], values[i]);
-        }
-        return map;
-    }
-
-    /**
-     * Returns a map based on the source but with the key &amp; values swapped.
-     *
-     * @param source
-     *            Map
-     * @return Map
-     *
-     * @deprecated Used by deprecated property types
-     */
-    @Deprecated
-    public static <K, V> Map<V, K> invertedMapFrom(Map<K, V> source) {
-        Map<V, K> map = new HashMap<>(source.size());
-        for (Map.Entry<K, V> entry : source.entrySet()) {
-            map.put(entry.getValue(), entry.getKey());
-        }
-        return map;
-    }
-
 
     /**
      * Returns a list view that pretends it is the concatenation of
@@ -271,6 +230,7 @@ public final class CollectionUtil {
      * mapping. The returned map may be unmodifiable.
      */
     public static <K, V> Map<K, V> plus(Map<K, V> m, K k, V v) {
+        AssertionUtil.requireParamNotNull("map", m);
         if (m instanceof PMap) {
             return ((PMap<K, V>) m).plus(k, v);
         }
@@ -317,6 +277,29 @@ public final class CollectionUtil {
         newSet.add(first);
         Collections.addAll(newSet, newElements);
         return Collections.unmodifiableSet(newSet);
+    }
+
+    /**
+     * Returns the key that corresponds to the given value in the map,
+     * or null if it is not contained in the map.
+     *
+     * @param m   Map
+     * @param v   Value
+     * @param <K> Type of keys
+     * @param <V> Type of values
+     *
+     * @throws NullPointerException If the entry is found, but the key
+     *                              is null
+     * @throws NullPointerException If the map is null
+     */
+    public static <@NonNull K, V> @Nullable K getKeyOfValue(Map<K, V> m, V v) {
+        AssertionUtil.requireParamNotNull("map", m);
+        for (Entry<K, V> it : m.entrySet()) {
+            if (it.getValue().equals(v)) {
+                return Objects.requireNonNull(it.getKey(), "This method uses null as a sentinel value");
+            }
+        }
+        return null;
     }
 
 

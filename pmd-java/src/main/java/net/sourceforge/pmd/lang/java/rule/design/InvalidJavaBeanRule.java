@@ -13,7 +13,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -47,19 +47,18 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
     private static final PropertyDescriptor<List<String>> PACKAGES_DESCRIPTOR = stringListProperty("packages")
             .desc("Consider classes in only these package to be beans. Set to an empty value to check all classes.")
             .defaultValues("org.example.beans")
-            .delim(',')
             .build();
 
     private Map<String, PropertyInfo> properties;
 
     public InvalidJavaBeanRule() {
-        super(ASTClassOrInterfaceDeclaration.class);
+        super(ASTClassDeclaration.class);
         definePropertyDescriptor(ENSURE_SERIALIZATION);
         definePropertyDescriptor(PACKAGES_DESCRIPTOR);
     }
 
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+    public Object visit(ASTClassDeclaration node, Object data) {
         String packageName = "";
         ASTPackageDeclaration packageDeclaration = node.getRoot().getPackageDeclaration();
         if (packageDeclaration != null) {
@@ -140,13 +139,13 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    private void collectFields(ASTClassOrInterfaceDeclaration node) {
+    private void collectFields(ASTClassDeclaration node) {
         for (ASTFieldDeclaration fieldDeclaration : node.getDeclarations(ASTFieldDeclaration.class).toList()) {
-            for (ASTVariableDeclaratorId variableDeclaratorId : fieldDeclaration) {
-                String propertyName = StringUtils.capitalize(variableDeclaratorId.getName());
+            for (ASTVariableId variableId : fieldDeclaration) {
+                String propertyName = StringUtils.capitalize(variableId.getName());
                 if (!fieldDeclaration.hasModifiers(JModifier.STATIC) && !fieldDeclaration.hasModifiers(JModifier.TRANSIENT)) {
                     PropertyInfo field = getOrCreatePropertyInfo(propertyName);
-                    field.setDeclaratorId(variableDeclaratorId);
+                    field.setDeclaratorId(variableId);
                     field.setReadonly(fieldDeclaration.hasModifiers(JModifier.FINAL));
                 }
             }
@@ -162,7 +161,7 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
         return propertyInfo;
     }
 
-    private void collectMethods(ASTClassOrInterfaceDeclaration node) {
+    private void collectMethods(ASTClassDeclaration node) {
         for (ASTMethodDeclaration methodDeclaration : node.getDeclarations(ASTMethodDeclaration.class).toList()) {
             String methodName = methodDeclaration.getName();
             int parameterCount = methodDeclaration.getArity();
@@ -204,7 +203,7 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
         return resultType.getTypeMirror();
     }
 
-    private boolean hasNoArgConstructor(ASTClassOrInterfaceDeclaration node) {
+    private boolean hasNoArgConstructor(ASTClassDeclaration node) {
         int constructorCount = 0;
         for (ASTConstructorDeclaration ctor : node.getDeclarations(ASTConstructorDeclaration.class)) {
             if (ctor.getArity() == 0) {
@@ -240,7 +239,7 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
 
     private static class PropertyInfo {
         private final String name;
-        private ASTVariableDeclaratorId declaratorId;
+        private ASTVariableId declaratorId;
         private boolean readonly;
         private ASTMethodDeclaration getter;
         private ASTMethodDeclaration indexedGetter;
@@ -255,11 +254,11 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
             return name;
         }
 
-        public ASTVariableDeclaratorId getDeclaratorId() {
+        public ASTVariableId getDeclaratorId() {
             return declaratorId;
         }
 
-        public void setDeclaratorId(ASTVariableDeclaratorId declaratorId) {
+        public void setDeclaratorId(ASTVariableId declaratorId) {
             this.declaratorId = declaratorId;
         }
 

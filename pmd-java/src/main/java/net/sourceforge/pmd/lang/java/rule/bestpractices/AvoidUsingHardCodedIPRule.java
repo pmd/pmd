@@ -14,11 +14,11 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 public class AvoidUsingHardCodedIPRule extends AbstractJavaRulechainRule {
@@ -80,7 +80,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRulechainRule {
             boolean checkIPv4MappedIPv6 = kindsToCheck.contains(AddressKinds.IPV4_MAPPED_IPV6);
 
             if (checkIPv4 && isIPv4(firstChar, image) || isIPv6(firstChar, image, checkIPv6, checkIPv4MappedIPv6)) {
-                addViolation(data, node);
+                asCtx(data).addViolation(node);
             }
         }
         return data;

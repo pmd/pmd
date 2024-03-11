@@ -38,10 +38,10 @@ import net.sourceforge.pmd.properties.PropertySource;
 public class LoosePackageCouplingRule extends AbstractJavaRule {
 
     private static final PropertyDescriptor<List<String>> PACKAGES_DESCRIPTOR =
-            stringListProperty("packages").desc("Restricted packages").emptyDefaultValue().delim(',').build();
+            stringListProperty("packages").desc("Restricted packages").emptyDefaultValue().build();
 
     private static final PropertyDescriptor<List<String>> CLASSES_DESCRIPTOR =
-            stringListProperty("classes").desc("Allowed classes").emptyDefaultValue().delim(',').build();
+            stringListProperty("classes").desc("Allowed classes").emptyDefaultValue().build();
 
     // The package of this source file
     private String thisPackage;
@@ -86,11 +86,11 @@ public class LoosePackageCouplingRule extends AbstractJavaRule {
                     // On demand imports automatically fail because they include
                     // everything
                     if (node.isImportOnDemand()) {
-                        addViolation(data, node, new Object[] { node.getImportedName(), pkg });
+                        asCtx(data).addViolation(node, new Object[] { node.getImportedName(), pkg });
                         break;
                     } else {
                         if (!isAllowedClass(node)) {
-                            addViolation(data, node, new Object[] { node.getImportedName(), pkg });
+                            asCtx(data).addViolation(node, new Object[] { node.getImportedName(), pkg });
                             break;
                         }
                     }

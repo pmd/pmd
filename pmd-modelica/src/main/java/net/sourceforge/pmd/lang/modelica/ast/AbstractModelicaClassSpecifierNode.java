@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.modelica.ast;
 
-import net.sourceforge.pmd.lang.modelica.resolver.InternalModelicaResolverApi;
+import net.sourceforge.pmd.lang.modelica.resolver.InternalApiBridge;
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaClassType;
 
 /**
@@ -13,12 +13,6 @@ import net.sourceforge.pmd.lang.modelica.resolver.ModelicaClassType;
 abstract class AbstractModelicaClassSpecifierNode extends AbstractModelicaNode implements ModelicaClassSpecifierNode {
     AbstractModelicaClassSpecifierNode(int id) {
         super(id);
-    }
-
-    @Override
-    public void jjtClose() {
-        super.jjtClose();
-        setImage(getFirstChildOfType(ASTSimpleName.class).getImage());
     }
 
     /**
@@ -34,17 +28,17 @@ abstract class AbstractModelicaClassSpecifierNode extends AbstractModelicaNode i
         for (int i = 0; i < listNode.getNumChildren(); ++i) {
             AbstractModelicaNode child = (AbstractModelicaNode) listNode.getChild(i);
             if (child instanceof ASTExtendsClause) {
-                InternalModelicaResolverApi.addExtendToClass(
+                InternalApiBridge.addExtendToClass(
                         classTypeDeclaration,
                         listNode.getVisibility(),
-                        child.getFirstChildOfType(ASTName.class).getCompositeName()
+                        child.firstChild(ASTName.class).getCompositeName()
                 );
             }
             if (child instanceof ASTImportClause) {
-                InternalModelicaResolverApi.addImportToClass(
+                InternalApiBridge.addImportToClass(
                         classTypeDeclaration,
                         listNode.getVisibility(),
-                        child.getFirstChildOfType(ModelicaImportClause.class)
+                        child.firstChild(ModelicaImportClause.class)
                 );
             }
         }
@@ -61,6 +55,6 @@ abstract class AbstractModelicaClassSpecifierNode extends AbstractModelicaNode i
 
     @Override
     public String getSimpleClassName() {
-        return getImage();
+        return firstChild(ASTSimpleName.class).getName();
     }
 }

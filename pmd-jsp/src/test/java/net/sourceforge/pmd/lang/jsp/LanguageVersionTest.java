@@ -7,12 +7,11 @@ package net.sourceforge.pmd.lang.jsp;
 import java.util.Arrays;
 import java.util.Collection;
 
-import net.sourceforge.pmd.AbstractLanguageVersionTest;
+import net.sourceforge.pmd.test.AbstractLanguageVersionTest;
 
 class LanguageVersionTest extends AbstractLanguageVersionTest {
 
     static Collection<TestDescriptor> data() {
-        return Arrays.asList(new TestDescriptor(JspLanguageModule.NAME, JspLanguageModule.TERSE_NAME, "3",
-                getLanguage(JspLanguageModule.NAME).getDefaultVersion()));
+        return Arrays.asList(TestDescriptor.defaultVersionIs(JspLanguageModule.getInstance(), "3"));
     }
 }

@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -22,17 +21,16 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
-import java.util.List;
 import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import net.sourceforge.pmd.cache.FileAnalysisCache;
-import net.sourceforge.pmd.cache.NoopAnalysisCache;
+import net.sourceforge.pmd.cache.internal.FileAnalysisCache;
+import net.sourceforge.pmd.cache.internal.NoopAnalysisCache;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
+import net.sourceforge.pmd.lang.rule.RulePriority;
 import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 
@@ -73,7 +71,7 @@ class PmdConfigurationTest {
 
     @Test
     void auxClasspathWithRelativeFileEmpty() {
-        String relativeFilePath = "src/test/resources/net/sourceforge/pmd/cli/auxclasspath-empty.cp";
+        String relativeFilePath = "src/test/resources/net/sourceforge/pmd/auxclasspath-empty.cp";
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.prependAuxClasspath("file:" + relativeFilePath);
         URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
@@ -82,7 +80,7 @@ class PmdConfigurationTest {
 
     @Test
     void auxClasspathWithRelativeFileEmpty2() {
-        String relativeFilePath = "./src/test/resources/net/sourceforge/pmd/cli/auxclasspath-empty.cp";
+        String relativeFilePath = "./src/test/resources/net/sourceforge/pmd/auxclasspath-empty.cp";
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.prependAuxClasspath("file:" + relativeFilePath);
         URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
@@ -94,7 +92,7 @@ class PmdConfigurationTest {
         final String FILE_SCHEME = "file";
 
         String currentWorkingDirectory = new File("").getAbsoluteFile().toURI().getPath();
-        String relativeFilePath = "src/test/resources/net/sourceforge/pmd/cli/auxclasspath.cp";
+        String relativeFilePath = "src/test/resources/net/sourceforge/pmd/auxclasspath.cp";
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.prependAuxClasspath("file:" + relativeFilePath);
         URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
@@ -113,16 +111,6 @@ class PmdConfigurationTest {
             new URI(FILE_SCHEME, null, currentWorkingDirectory + "relative source dir/bar", null),
         };
         assertArrayEquals(expectedUris, uris);
-    }
-
-    @Test
-    void testRuleSetsLegacy() {
-        PMDConfiguration configuration = new PMDConfiguration();
-        assertNull(configuration.getRuleSets(), "Default RuleSets");
-        configuration.setRuleSets("/rulesets/basic.xml");
-        assertEquals("/rulesets/basic.xml", configuration.getRuleSets(), "Changed RuleSets");
-        configuration.setRuleSets((String) null);
-        assertNull(configuration.getRuleSets());
     }
 
     @Test
@@ -152,19 +140,8 @@ class PmdConfigurationTest {
     void testSourceEncoding() {
         PMDConfiguration configuration = new PMDConfiguration();
         assertEquals(System.getProperty("file.encoding"), configuration.getSourceEncoding().name(), "Default source encoding");
-        configuration.setSourceEncoding(StandardCharsets.UTF_16LE.name());
+        configuration.setSourceEncoding(StandardCharsets.UTF_16LE);
         assertEquals(StandardCharsets.UTF_16LE, configuration.getSourceEncoding(), "Changed source encoding");
-    }
-
-    @Test
-    void testInputPaths() {
-        PMDConfiguration configuration = new PMDConfiguration();
-        assertThat(configuration.getInputPathList(), empty());
-        configuration.setInputPaths("a,b,c");
-        List<Path> expected = listOf(
-            Paths.get("a"), Paths.get("b"), Paths.get("c")
-        );
-        assertEquals(expected, configuration.getInputPathList(), "Changed input paths");
     }
 
     @Test
@@ -187,14 +164,6 @@ class PmdConfigurationTest {
         renderer = configuration.createRenderer();
         assertEquals(CSVRenderer.class, renderer.getClass(), "Renderer class");
         assertEquals(true, renderer.isShowSuppressedViolations(), "Changed renderer show suppressed violations");
-    }
-
-    @Test
-    void testReportFile() {
-        PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals(null, configuration.getReportFile(), "Default report file");
-        configuration.setReportFile("somefile");
-        assertEquals("somefile", configuration.getReportFile(), "Changed report file");
     }
 
     @Test

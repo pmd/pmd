@@ -9,12 +9,11 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.cache.AnalysisCache;
+import net.sourceforge.pmd.cache.internal.AnalysisCache;
 import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
  * Stateful object managing the analysis for a given language.
@@ -46,7 +45,7 @@ public interface LanguageProcessor extends AutoCloseable {
     /**
      * The language of this processor.
      */
-    @NonNull Language getLanguage();
+    @NonNull PmdCapableLanguage getLanguage();
 
     /**
      * The language version that was configured when creating this processor.
@@ -65,21 +64,22 @@ public interface LanguageProcessor extends AutoCloseable {
         private final GlobalAnalysisListener listener;
         private final int threadCount;
         private final AnalysisCache analysisCache;
-        private final MessageReporter messageReporter;
+        private final PmdReporter messageReporter;
         private final LanguageProcessorRegistry lpRegistry;
 
 
         /**
          * Create a new task. This constructor is internal and will be
          * called by PMD.
+         *
+         * @apiNote Internal API
          */
-        @InternalApi
-        public AnalysisTask(RuleSets rulesets,
+        AnalysisTask(RuleSets rulesets,
                             List<TextFile> files,
                             GlobalAnalysisListener listener,
                             int threadCount,
                             AnalysisCache analysisCache,
-                            MessageReporter messageReporter,
+                            PmdReporter messageReporter,
                             LanguageProcessorRegistry lpRegistry) {
             this.rulesets = rulesets;
             this.files = files;
@@ -110,7 +110,7 @@ public interface LanguageProcessor extends AutoCloseable {
             return analysisCache;
         }
 
-        public MessageReporter getMessageReporter() {
+        public PmdReporter getMessageReporter() {
             return messageReporter;
         }
 
@@ -120,8 +120,10 @@ public interface LanguageProcessor extends AutoCloseable {
 
         /**
          * Produce a new analysis task with just different files.
+         *
+         * @apiNote Internal API
          */
-        public AnalysisTask withFiles(List<TextFile> newFiles) {
+        AnalysisTask withFiles(List<TextFile> newFiles) {
             return new AnalysisTask(
                 rulesets,
                 newFiles,

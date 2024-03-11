@@ -10,7 +10,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException.Phase;
 
 /**
@@ -21,7 +21,7 @@ class NodeIsFunctionTest extends BaseXPathFunctionTest {
 
     @Test
     void testWellFormedNodeName() {
-        Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceDeclaration[pmd-java:nodeIs('ClassOrInterfaceDeclaration')]");
+        Rule rule = makeXpathRuleFromXPath("//ClassDeclaration[pmd-java:nodeIs('ClassDeclaration')]");
         String code = "class Foo { Foo() {} void bar() {}}";
 
         assertFinds(rule, 1, code);
@@ -29,7 +29,7 @@ class NodeIsFunctionTest extends BaseXPathFunctionTest {
 
     @Test
     void testNodeNameStaticallyUnknown() {
-        Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceDeclaration[pmd-java:nodeIs(name())]");
+        Rule rule = makeXpathRuleFromXPath("//ClassDeclaration[pmd-java:nodeIs(name())]");
         String code = "class Foo { Foo() {} void bar() {}}";
 
         assertFinds(rule, 1, code);
@@ -38,7 +38,7 @@ class NodeIsFunctionTest extends BaseXPathFunctionTest {
 
     @Test
     void testWellFormedNodeNameForSupertype() {
-        Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceDeclaration[pmd-java:nodeIs('AnyTypeDeclaration')]");
+        Rule rule = makeXpathRuleFromXPath("//ClassDeclaration[pmd-java:nodeIs('TypeDeclaration')]");
         String code = "class Foo { Foo() {} void bar() {}}";
 
         assertFinds(rule, 1, code);

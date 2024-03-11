@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
-import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
@@ -29,7 +29,7 @@ class Java7InferenceTest : ProcessorTestSpec({
             """
         )
 
-        val (t_Gen) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Gen) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
         val (genCall) = acu.descendants(ASTConstructorCall::class.java).toList()
 
         spy.shouldBeOk {
@@ -52,7 +52,7 @@ class Java7InferenceTest : ProcessorTestSpec({
             """
         )
 
-        val (t_Gen) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Gen) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val (genCall) = acu.descendants(ASTConstructorCall::class.java).toList()
 
@@ -75,7 +75,7 @@ class Java7InferenceTest : ProcessorTestSpec({
             """
         )
 
-        val (t_Gen) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Gen) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val (genCall) = acu.descendants(ASTConstructorCall::class.java).toList()
 
@@ -100,7 +100,7 @@ class Java7InferenceTest : ProcessorTestSpec({
             class Sup<T> {}
             """
         )
-        val (t_Gen) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Gen) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
 
         val (conditional) = acu.descendants(ASTConditionalExpression::class.java).toList()
@@ -135,7 +135,7 @@ class Java7InferenceTest : ProcessorTestSpec({
             class Sup<T> {}
             """
         )
-        val (t_Gen, t_Sup) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Gen, t_Sup) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
 
         val (genDiamond, genDiamondString, genString) = acu.ctorCalls().toList()
@@ -172,7 +172,7 @@ class Java7InferenceTest : ProcessorTestSpec({
             class Sup<T> {}
             """
         )
-        val (t_Gen, t_Sup) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Gen, t_Sup) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
 
         val (genDiamond, genDiamondString, genString) = acu.ctorCalls().toList()
@@ -193,7 +193,7 @@ class Java7InferenceTest : ProcessorTestSpec({
 
 })
 
-private fun TypeDslMixin.ctorInfersTo(
+private fun ctorInfersTo(
     call: ASTConstructorCall,
     inferredType: JClassType
 ) {
@@ -204,7 +204,7 @@ private fun TypeDslMixin.ctorInfersTo(
     )
 }
 
-private fun TypeDslMixin.methodInfersTo(call: ASTMethodCall, returnType: JClassType) {
+private fun methodInfersTo(call: ASTMethodCall, returnType: JClassType) {
     call.methodType.shouldMatchMethod(
         named = call.methodName,
         declaredIn = null, // not asserted

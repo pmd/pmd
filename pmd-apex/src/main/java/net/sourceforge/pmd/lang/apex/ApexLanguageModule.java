@@ -4,33 +4,36 @@
 
 package net.sourceforge.pmd.lang.apex;
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-
-import java.util.List;
-
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.cpd.CpdCapableLanguage;
+import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.LanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
-import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.PmdCapableLanguage;
+import net.sourceforge.pmd.lang.apex.cpd.ApexCpdLexer;
 
-public class ApexLanguageModule extends LanguageModuleBase {
+public class ApexLanguageModule extends LanguageModuleBase implements PmdCapableLanguage, CpdCapableLanguage {
+    private static final String ID = "apex";
 
-    public static final String NAME = "Apex";
-    public static final String TERSE_NAME = "apex";
-
-    @InternalApi
-    public static final List<String> EXTENSIONS = listOf("cls", "trigger");
+    private static final ApexLanguageModule INSTANCE = new ApexLanguageModule();
 
     public ApexLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions(EXTENSIONS)
+        super(LanguageMetadata.withId(ID).name("Apex")
+                              .extensions("cls", "trigger")
                               .addVersion("52")
                               .addVersion("53")
                               .addVersion("54")
                               .addVersion("55")
                               .addVersion("56")
-                              .addDefaultVersion("57"));
+                              .addVersion("57")
+                              .addVersion("58")
+                              .addDefaultVersion("59"));
+    }
+
+    public static ApexLanguageModule getInstance() {
+        // note: can't load this language from registry, since VfLanguageModule requires
+        // an instance of ApexLanguageModule during construction (VfLanguageModule depends on ApexLanguageModule).
+        return INSTANCE;
     }
 
     @Override
@@ -43,7 +46,8 @@ public class ApexLanguageModule extends LanguageModuleBase {
         return new ApexLanguageProcessor((ApexLanguageProperties) bundle);
     }
 
-    public static Language getInstance() {
-        return LanguageRegistry.PMD.getLanguageByFullName(NAME);
+    @Override
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new ApexCpdLexer();
     }
 }

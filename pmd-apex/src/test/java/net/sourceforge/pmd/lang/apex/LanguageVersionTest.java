@@ -7,12 +7,13 @@ package net.sourceforge.pmd.lang.apex;
 import java.util.Arrays;
 import java.util.Collection;
 
-import net.sourceforge.pmd.AbstractLanguageVersionTest;
+import net.sourceforge.pmd.test.AbstractLanguageVersionTest;
 
 class LanguageVersionTest extends AbstractLanguageVersionTest {
 
     static Collection<TestDescriptor> data() {
-        return Arrays.asList(new TestDescriptor(ApexLanguageModule.NAME, ApexLanguageModule.TERSE_NAME, "57",
-            ApexLanguageModule.getInstance().getDefaultVersion()));
+        return Arrays.asList(
+            TestDescriptor.defaultVersionIs(ApexLanguageModule.getInstance(), "59")
+        );
     }
 }

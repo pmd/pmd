@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
@@ -14,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.StablePathMatcher;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class BrokenNullCheckRule extends AbstractJavaRulechainRule {
 
@@ -60,7 +60,7 @@ public class BrokenNullCheckRule extends AbstractJavaRulechainRule {
         for (ASTExpression subexpr : exprsToCheck) {
             NpeReason npeReason = willNpeWithReason(subexpr, pathToNullVar);
             if (npeReason != null) {
-                addViolationWithMessage(ctx, subexpr, npeReason.formatMessage);
+                ctx.addViolationWithMessage(subexpr, npeReason.formatMessage);
             }
         }
 

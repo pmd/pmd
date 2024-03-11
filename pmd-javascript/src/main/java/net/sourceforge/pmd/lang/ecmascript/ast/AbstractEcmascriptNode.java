@@ -13,7 +13,6 @@ import net.sourceforge.pmd.lang.document.TextRegion;
 abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNode<AbstractEcmascriptNode<?>, EcmascriptNode<?>> implements EcmascriptNode<T> {
 
     protected final T node;
-    private String image;
 
     AbstractEcmascriptNode(T node) {
         this.node = node;
@@ -22,15 +21,6 @@ abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNode<Ab
     @Override
     protected void addChild(AbstractEcmascriptNode<?> child, int index) {
         super.addChild(child, index);
-    }
-
-    @Override
-    public String getImage() {
-        return image;
-    }
-
-    protected void setImage(String image) {
-        this.image = image;
     }
 
     @Override
@@ -48,12 +38,6 @@ abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNode<Ab
     }
 
     protected abstract <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data);
-
-    @Override
-    @Deprecated
-    public T getNode() {
-        return node;
-    }
 
     @Override
     public String getJsDoc() {

@@ -17,10 +17,10 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
  *
  * <p>Record components declare a field, and if a canonical constructor
  * is synthesized by the compiler, also a formal parameter (which is in
- * scope in the body of a {@linkplain ASTRecordConstructorDeclaration compact record constructor}).
+ * scope in the body of a {@linkplain ASTCompactConstructorDeclaration compact record constructor}).
  * They also may imply the declaration of an accessor method.
  * <ul>
- * <li>The symbol exposed by the {@link ASTVariableDeclaratorId} is the field
+ * <li>The symbol exposed by the {@link ASTVariableId} is the field
  * symbol.
  * <li> The formal parameter symbol is accessible in the formal parameter
  * list of the {@link JConstructorSymbol} for the {@linkplain ASTRecordComponentList#getSymbol() canonical constructor}.
@@ -30,11 +30,11 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
  *
  * <pre class="grammar">
  *
- * RecordComponent ::= {@linkplain ASTAnnotation Annotation}* {@linkplain ASTType Type} {@linkplain ASTVariableDeclaratorId VariableDeclaratorId}
+ * RecordComponent ::= {@linkplain ASTAnnotation Annotation}* {@linkplain ASTType Type} {@linkplain ASTVariableId VariableId}
  *
  * </pre>
  */
-public final class ASTRecordComponent extends AbstractJavaNode implements AccessNode, VariableIdOwner {
+public final class ASTRecordComponent extends AbstractJavaNode implements ModifierOwner, VariableIdOwner {
 
     ASTRecordComponent(int id) {
         super(id);
@@ -56,11 +56,11 @@ public final class ASTRecordComponent extends AbstractJavaNode implements Access
     }
 
     public ASTType getTypeNode() {
-        return getFirstChildOfType(ASTType.class);
+        return firstChild(ASTType.class);
     }
 
     @Override
-    public ASTVariableDeclaratorId getVarId() {
-        return getFirstChildOfType(ASTVariableDeclaratorId.class);
+    public ASTVariableId getVarId() {
+        return firstChild(ASTVariableId.class);
     }
 }

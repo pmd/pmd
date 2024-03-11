@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
@@ -60,7 +60,7 @@ public class SwitchDensityRule extends AbstractJavaRulechainRule {
         // note: if labelCount is zero, double division will produce +Infinity or NaN, not ArithmeticException
         double density = stmtCount / (double) labelCount;
         if (density >= getProperty(REPORT_LEVEL)) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
         return null;
     }

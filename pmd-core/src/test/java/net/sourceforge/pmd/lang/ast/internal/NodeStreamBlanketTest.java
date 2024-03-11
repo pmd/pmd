@@ -68,7 +68,7 @@ class NodeStreamBlanketTest<T extends Node> {
     );
 
     @ParameterizedTest
-    @MethodSource("primeNumbers")
+    @MethodSource("allNodeStreamVariants")
     void testToListConsistency(NodeStream<T> stream) {
         List<T> toList = stream.toList();
         List<T> collected = stream.collect(Collectors.toList());
@@ -81,7 +81,7 @@ class NodeStreamBlanketTest<T extends Node> {
     }
 
     @ParameterizedTest
-    @MethodSource("primeNumbers")
+    @MethodSource("allNodeStreamVariants")
     void testToListSize(NodeStream<T> stream) {
         List<T> toList = stream.toList();
 
@@ -90,7 +90,7 @@ class NodeStreamBlanketTest<T extends Node> {
 
 
     @ParameterizedTest
-    @MethodSource("primeNumbers")
+    @MethodSource("nodeStreamVariantsNonEmpty")
     void testLast(NodeStream<T> stream) {
         assertImplication(
             stream,
@@ -100,7 +100,7 @@ class NodeStreamBlanketTest<T extends Node> {
     }
 
     @ParameterizedTest
-    @MethodSource("primeNumbers")
+    @MethodSource("nodeStreamVariantsNonEmpty")
     void testFirst(NodeStream<T> stream) {
         assertImplication(
             stream,
@@ -111,7 +111,7 @@ class NodeStreamBlanketTest<T extends Node> {
 
 
     @ParameterizedTest
-    @MethodSource("primeNumbers")
+    @MethodSource("nodeStreamVariantsNonEmpty")
     void testDrop(NodeStream<T> stream) {
         assertImplication(
             stream,
@@ -123,7 +123,7 @@ class NodeStreamBlanketTest<T extends Node> {
     }
 
     @ParameterizedTest
-    @MethodSource("primeNumbers")
+    @MethodSource("nodeStreamVariantsNonEmpty")
     void testDropLast(NodeStream<T> stream) {
         assertImplication(
             stream,
@@ -135,7 +135,7 @@ class NodeStreamBlanketTest<T extends Node> {
     }
 
     @ParameterizedTest
-    @MethodSource("primeNumbers")
+    @MethodSource("nodeStreamVariantsMoreThanOne")
     void testDropMoreThan1(NodeStream<T> stream) {
         assertImplication(
             stream,
@@ -146,7 +146,7 @@ class NodeStreamBlanketTest<T extends Node> {
     }
 
     @ParameterizedTest
-    @MethodSource("primeNumbers")
+    @MethodSource("nodeStreamVariantsNonEmpty")
     void testTake(NodeStream<T> stream) {
         assertImplication(
             stream,
@@ -158,7 +158,7 @@ class NodeStreamBlanketTest<T extends Node> {
     }
 
     @ParameterizedTest
-    @MethodSource("primeNumbers")
+    @MethodSource("allNodeStreamVariants")
     void testGet(NodeStream<T> stream) {
         for (int i = 0; i < 100; i++) {
             assertSame(stream.get(i), stream.drop(i).first(), "stream.get(i) == stream.drop(i).first()");
@@ -166,25 +166,25 @@ class NodeStreamBlanketTest<T extends Node> {
     }
 
     @ParameterizedTest
-    @MethodSource("primeNumbers")
+    @MethodSource("allNodeStreamVariants")
     void testGetNegative(NodeStream<T> stream) {
         assertThrows(IllegalArgumentException.class, () -> stream.get(-1));
     }
 
     @ParameterizedTest
-    @MethodSource("primeNumbers")
+    @MethodSource("allNodeStreamVariants")
     void testDropNegative(NodeStream<T> stream) {
         assertThrows(IllegalArgumentException.class, () -> stream.drop(-1));
     }
 
     @ParameterizedTest
-    @MethodSource("primeNumbers")
+    @MethodSource("allNodeStreamVariants")
     void testTakeNegative(NodeStream<T> stream) {
         assertThrows(IllegalArgumentException.class, () -> stream.take(-1));
     }
 
     @ParameterizedTest
-    @MethodSource("primeNumbers")
+    @MethodSource("allNodeStreamVariants")
     void testEmpty(NodeStream<T> stream) {
         assertEquivalence(
             stream,
@@ -201,11 +201,21 @@ class NodeStreamBlanketTest<T extends Node> {
         );
     }
 
-    static Collection<?> primeNumbers() {
+    static Collection<NodeStream<?>> nodeStreamVariantsNonEmpty() {
+        return allNodeStreamVariants().stream().filter(NodeStream::nonEmpty).collect(Collectors.toList());
+    }
+
+    static Collection<NodeStream<?>> nodeStreamVariantsMoreThanOne() {
+        return allNodeStreamVariants().stream().filter(n -> n.count() > 1).collect(Collectors.toList());
+    }
+
+
+    static Collection<NodeStream<?>> allNodeStreamVariants() {
         return ASTS.stream().flatMap(
             root -> Stream.of(
                 root.asStream(),
                 root.children().first().asStream(),
+                // keep this, so that transformation are tested on empty node streams as well
                 NodeStream.empty()
             )
         ).flatMap(
@@ -261,10 +271,10 @@ class NodeStreamBlanketTest<T extends Node> {
     private static <T> void assertImplication(T input, Prop<? super T> precond, Prop<? super T>... properties) {
         assumeTrue(precond.test(input));
 
-        for (Prop<? super T> prop2 : properties) {
+        for (Prop<? super T> prop : properties) {
             assertTrue(
-                prop2.test(input),
-                "Expected (" + precond.description + ") to entail (" + prop2.description
+                prop.test(input),
+                "Expected (" + precond.description + ") to entail (" + prop.description
                         + "), but the latter was false"
             );
         }

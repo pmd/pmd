@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.rule;
 
 import static net.sourceforge.pmd.PmdCoreTestUtils.setDummyLanguage;
-import static net.sourceforge.pmd.ReportTestUtil.getReportForRuleApply;
+import static net.sourceforge.pmd.reporting.ReportTestUtil.getReportForRuleApply;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,12 +15,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import net.sourceforge.pmd.DummyParsingHelper;
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithDeprecatedAttribute;
 import net.sourceforge.pmd.lang.document.TextRegion;
+import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
+import net.sourceforge.pmd.reporting.Report;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
@@ -30,15 +31,9 @@ class XPathRuleTest {
     private final DummyParsingHelper helper = new DummyParsingHelper();
 
     @Test
-    void testAttributeDeprecation10() throws Exception {
-        testDeprecation(XPathVersion.XPATH_1_0);
+    void testAttributeDeprecation() throws Exception {
+        testDeprecation(XPathVersion.DEFAULT);
     }
-
-    @Test
-    void testAttributeDeprecation20() throws Exception {
-        testDeprecation(XPathVersion.XPATH_2_0);
-    }
-
 
     void testDeprecation(XPathVersion version) throws Exception {
         XPathRule xpr = makeRule(version, "SomeRule");
@@ -91,7 +86,7 @@ class XPathRuleTest {
 
 
     XPathRule makeXPath(String xpathExpr) {
-        XPathRule xpr = new XPathRule(XPathVersion.XPATH_2_0, xpathExpr);
+        XPathRule xpr = new XPathRule(XPathVersion.DEFAULT, xpathExpr);
         setDummyLanguage(xpr);
         xpr.setName("name");
         xpr.setMessage("gotcha");
@@ -138,7 +133,7 @@ class XPathRuleTest {
         assertThat(report.getViolations(), hasSize(1));
     }
 
-    Report executeRule(net.sourceforge.pmd.Rule rule, DummyNode node) {
+    Report executeRule(Rule rule, DummyNode node) {
         return getReportForRuleApply(rule, node);
     }
 

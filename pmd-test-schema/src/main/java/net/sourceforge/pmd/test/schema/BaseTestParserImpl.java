@@ -20,13 +20,15 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.test.schema.TestSchemaParser.PmdXmlReporter;
+import net.sourceforge.pmd.util.StringUtil;
 
 import com.github.oowekyala.ooxml.DomUtils;
 import com.github.oowekyala.ooxml.messages.PositionedXmlDoc;
@@ -96,7 +98,7 @@ class BaseTestParserImpl {
             if (description == null) {
                 return;
             }
-            descriptor.setDescription(description);
+            descriptor.setDescription(description.trim());
         }
 
         parseBoolAttribute(testCode, "reinitializeRule", true, err, "Attribute 'reinitializeRule' is deprecated and ignored, assumed true");
@@ -204,8 +206,9 @@ class BaseTestParserImpl {
             }
             usedFragments.add(id.getValue());
             code = parseTextNodeNoTrim(fragment);
-            code = code.trim(); // todo replace with trimIndent in PMD 7
         }
+        // first trim empty lines at beginning/end, then trim any indentation
+        code = StringUtil.trimIndent(Chars.wrap(code).trimBlankLines()).toString();
         return code;
     }
 
@@ -225,17 +228,17 @@ class BaseTestParserImpl {
     }
 
     /** FIXME this is stupid, the language version may be of a different language than the Rule... */
-    private static LanguageVersion parseSourceType(String terseNameAndVersion) {
+    private static LanguageVersion parseSourceType(String languageIdAndVersion) {
         final String version;
-        final String terseName;
-        if (terseNameAndVersion.contains(" ")) {
-            version = StringUtils.trimToNull(terseNameAndVersion.substring(terseNameAndVersion.lastIndexOf(' ') + 1));
-            terseName = terseNameAndVersion.substring(0, terseNameAndVersion.lastIndexOf(' '));
+        final String languageId;
+        if (languageIdAndVersion.contains(" ")) {
+            version = StringUtils.trimToNull(languageIdAndVersion.substring(languageIdAndVersion.lastIndexOf(' ') + 1));
+            languageId = languageIdAndVersion.substring(0, languageIdAndVersion.lastIndexOf(' '));
         } else {
             version = null;
-            terseName = terseNameAndVersion;
+            languageId = languageIdAndVersion;
         }
-        Language language = LanguageRegistry.findLanguageByTerseName(terseName);
+        Language language = LanguageRegistry.PMD.getLanguageById(languageId);
         if (language != null) {
             if (version == null) {
                 return language.getDefaultVersion();
@@ -291,7 +294,7 @@ class BaseTestParserImpl {
         if (node == null) {
             return null;
         }
-        return parseTextNode(node);
+        return parseTextNodeNoTrim(node);
     }
 
     private Element getSingleChild(Element parentElm, String nodeName, boolean required, PmdXmlReporter err) {

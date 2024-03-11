@@ -4,49 +4,59 @@
 
 package net.sourceforge.pmd.lang.impl;
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
-import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
-import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.DummyLanguageModule;
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.document.FileId;
-import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.reporting.FileAnalysisListener;
-import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.lang.rule.RuleSet;
+import net.sourceforge.pmd.reporting.RuleContext;
 
-class MultiThreadProcessorTest {
+class MultiThreadProcessorTest extends AbstractPMDProcessorTest {
 
-    private SimpleReportListener reportListener;
+    @Override
+    protected int getThreads() {
+        return 2;
+    }
 
-    PmdAnalysis setupForTest(final String ruleset) {
-        PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setThreads(2);
-        configuration.setIgnoreIncrementalAnalysis(true);
-        PmdAnalysis pmd = PmdAnalysis.create(configuration);
-        LanguageVersion lv = DummyLanguageModule.getInstance().getDefaultVersion();
-        pmd.files().addFile(TextFile.forCharSeq("abc", FileId.fromPathLikeString("file1-violation.dummy"), lv));
-        pmd.files().addFile(TextFile.forCharSeq("DEF", FileId.fromPathLikeString("file2-foo.dummy"), lv));
+    @Override
+    protected Class<? extends AbstractPMDProcessor> getExpectedImplementation() {
+        return MultiThreadProcessor.class;
+    }
 
-        reportListener = new SimpleReportListener();
-        GlobalAnalysisListener listener = GlobalAnalysisListener.tee(listOf(
-            new GlobalReportBuilderListener(),
-            reportListener
-        ));
-
-        pmd.addListener(listener);
+    private PmdAnalysis createPmdAnalysis(final String ruleset) {
+        PmdAnalysis pmd = createPmdAnalysis();
         pmd.addRuleSet(pmd.newRuleSetLoader().loadFromResource(ruleset));
         return pmd;
+    }
+
+    @Test
+    void errorsShouldBeThrown() {
+        // in multithreading mode, the errors are detected when closing PmdAnalysis
+        Error error = assertThrows(Error.class, () -> {
+            try (PmdAnalysis pmd = createPmdAnalysis()) {
+                pmd.addRuleSet(RuleSet.forSingleRule(new RuleThatThrowsError()));
+                pmd.performAnalysis();
+            }
+        });
+        assertEquals("test error", error.getMessage());
+
+        // in multithreading mode, all files are started but eventually fail
+        // depending on how many tasks have been started before getting the first results
+        // we might have started only one file analysis or more. But we rethrow
+        // the error on the first.
+        assertTrue(reportListener.files.get() >= 1);
+        // we report the first error
+        Mockito.verify(reporter).error(Mockito.eq("Unknown error occurred while executing a PmdRunnable: {0}"),
+                Mockito.eq("java.lang.Error: test error"),
+                Mockito.any(Error.class));
     }
 
     // TODO: Dysfunctional rules are pruned upstream of the processor.
@@ -71,7 +81,7 @@ class MultiThreadProcessorTest {
 
     @Test
     void testRulesThreadSafety() throws Exception {
-        try (PmdAnalysis pmd = setupForTest("rulesets/MultiThreadProcessorTest/basic.xml")) {
+        try (PmdAnalysis pmd = createPmdAnalysis("rulesets/MultiThreadProcessorTest/basic.xml")) {
             pmd.performAnalysis();
         }
 
@@ -101,7 +111,7 @@ class MultiThreadProcessorTest {
 
             letTheOtherThreadRun(100);
             if (hasViolation) {
-                addViolation(ctx, target);
+                ctx.addViolation(target);
             }
         }
 
@@ -130,23 +140,4 @@ class MultiThreadProcessorTest {
         }
     }
 
-    private static class SimpleReportListener implements GlobalAnalysisListener {
-
-        public AtomicInteger violations = new AtomicInteger(0);
-        
-        @Override
-        public FileAnalysisListener startFileAnalysis(TextFile file) {
-            return new FileAnalysisListener() {
-                @Override
-                public void onRuleViolation(RuleViolation violation) {
-                    violations.incrementAndGet();
-                }
-            };
-        }
-
-        @Override
-        public void close() throws Exception {
-
-        }
-    }
 }

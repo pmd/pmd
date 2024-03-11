@@ -7,12 +7,11 @@ package net.sourceforge.pmd.lang;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.pmd.ViolationSuppressor;
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
+import net.sourceforge.pmd.reporting.ViolationSuppressor;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings.DefaultDesignerBindings;
 
@@ -59,12 +58,7 @@ public interface LanguageVersionHandler {
     /**
      * Returns the metrics provider for this language version,
      * or null if it has none.
-     *
-     * Note: this is experimental, ie unstable until 7.0.0, after
-     * which it will probably be promoted to a stable API. For
-     * instance the return type will probably be changed to an Optional.
      */
-    @Experimental
     default LanguageMetricsProvider getLanguageMetricsProvider() {
         return null;
     }
@@ -77,7 +71,6 @@ public interface LanguageVersionHandler {
      *
      * @since 6.20.0
      */
-    @Experimental
     default DesignerBindings getDesignerBindings() {
         return DefaultDesignerBindings.getInstance();
     }

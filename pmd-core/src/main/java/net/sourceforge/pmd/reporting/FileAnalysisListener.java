@@ -8,11 +8,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.Report.SuppressedViolation;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.reporting.Report.ProcessingError;
+import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
@@ -55,10 +53,10 @@ public interface FileAnalysisListener extends AutoCloseable {
      * Signals the end of the analysis: no further calls will be made
      * to this listener. This is run in the thread the listener has
      * been used in. This means, if this routine merges some state
-     * into some global state of the {@link GlobalAnalysisListener),
+     * into some global state of the {@link GlobalAnalysisListener},
      * then that must be synchronized.
      *
-     * @throws Exception If an exception occurs, eg IOException when writing to a renderer
+     * @throws Exception If an exception occurs, e.g. IOException when writing to a renderer
      */
     @Override
     default void close() throws Exception {

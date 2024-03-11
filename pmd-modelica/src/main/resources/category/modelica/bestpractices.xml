@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <ruleset name="Best Practices"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
@@ -13,7 +13,7 @@ Rules which enforce generally accepted best practices.
           since="6.21.0"
           message="Class ends with an end clause with a different name"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_modelica_bestpractices.html#classstartnameequalsendname"
-          class="net.sourceforge.pmd.lang.rule.XPathRule">
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
         <description>
             Having a class starting with some name and some *different*
             name in its end clause is an error.
@@ -23,7 +23,7 @@ Rules which enforce generally accepted best practices.
             <property name="xpath">
                 <value>
                     <![CDATA[
-//ClassSpecifier/*[SimpleName[1]/@Image != SimpleName[last()]/@Image]
+//ClassSpecifier/*[SimpleName[1]/@Name != SimpleName[last()]/@Name]
 ]]>
                 </value>
             </property>

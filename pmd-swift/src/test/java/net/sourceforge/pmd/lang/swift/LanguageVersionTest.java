@@ -7,12 +7,13 @@ package net.sourceforge.pmd.lang.swift;
 import java.util.Arrays;
 import java.util.Collection;
 
-import net.sourceforge.pmd.AbstractLanguageVersionTest;
+import net.sourceforge.pmd.test.AbstractLanguageVersionTest;
 
 class LanguageVersionTest extends AbstractLanguageVersionTest {
 
     static Collection<TestDescriptor> data() {
-        return Arrays.asList(new TestDescriptor(SwiftLanguageModule.NAME, SwiftLanguageModule.TERSE_NAME, "5.7",
-                getLanguage(SwiftLanguageModule.NAME).getDefaultVersion()));
+        return Arrays.asList(
+            new TestDescriptor(SwiftLanguageModule.getInstance(), "5.7")
+        );
     }
 }

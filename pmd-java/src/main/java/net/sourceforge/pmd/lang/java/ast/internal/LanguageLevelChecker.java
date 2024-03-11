@@ -13,14 +13,17 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTGuard;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTIntersectionType;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
@@ -37,19 +40,22 @@ import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchGuard;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
+import net.sourceforge.pmd.lang.java.ast.ASTTemplateExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTTypePattern;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTUnnamedPattern;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.util.IteratorUtil;
 
 /**
@@ -84,7 +90,7 @@ public class LanguageLevelChecker<T> {
 
     public void check(JavaNode node) {
         T accumulator = reportingStrategy.createAccumulator();
-        node.descendants(JavaNode.class).crossFindBoundaries().forEach(n -> n.acceptVisitor(visitor, accumulator));
+        node.descendantsOrSelf().crossFindBoundaries().filterIs(JavaNode.class).forEach(n -> n.acceptVisitor(visitor, accumulator));
         reportingStrategy.done(accumulator);
     }
 
@@ -119,44 +125,31 @@ public class LanguageLevelChecker<T> {
      */
     private enum PreviewFeature implements LanguageFeature {
         /**
-         * Pattern matching for switch
-         * @see <a href="https://openjdk.org/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> (Java 17)
-         * @see <a href="https://openjdk.org/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
-         * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
-         * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
+         * String Templates.
+         * @see <a href="https://openjdk.org/jeps/430">JEP 430: String Templates (Preview)</a> (Java 21)
+         * @see <a href="https://openjdk.org/jeps/459">JEP 459: String Templates (Second Preview)</a> (Java 22)
          */
-        PATTERNS_IN_SWITCH_STATEMENTS(17, 20, false),
+        STRING_TEMPLATES(21, 22, false),
 
         /**
-         * Part of pattern matching for switch
-         * @see #PATTERNS_IN_SWITCH_STATEMENTS
-         * @see <a href="https://openjdk.org/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> (Java 17)
-         * @see <a href="https://openjdk.org/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
-         * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
-         * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
+         * Unnamed variables and patterns.
+         * @see <a href="https://openjdk.org/jeps/443">JEP 443: Unnamed patterns and variables (Preview)</a> (Java 21)
+         * @see <a href="https://openjdk.org/jeps/456">JEP 456: Unnamed Variables & Patterns</a> (Java 22)
          */
-        NULL_IN_SWITCH_CASES(17, 20, false),
+        UNNAMED_VARIABLES_AND_PATTERNS(21, 21, true),
 
         /**
-         * Part of pattern matching for switch: Case refinement using "when"
-         * @see #PATTERNS_IN_SWITCH_STATEMENTS
-         * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
-         * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
+         * Unnamed Classes and Instance Main Methods
+         * @see <a href="https://openjdk.org/jeps/445">JEP 445: Unnamed Classes and Instance Main Methods (Preview)</a> (Java 21)
+         * @see <a href="https://openjdk.org/jeps/463">JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)</a> (Java 22)
          */
-        CASE_REFINEMENT(19, 20, false),
+        UNNAMED_CLASSES(21, 22, false),
 
         /**
-         * Record patterns
-         * @see <a href="https://openjdk.org/jeps/405">JEP 405: Record Patterns (Preview)</a> (Java 19)
-         * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a> (Java 20)
+         * Statements before super
+         * @see <a href="https://openjdk.org/jeps/447">JEP 447: Statements before super(...) (Preview)</a> (Java 22)
          */
-        DECONSTRUCTION_PATTERNS(19, 20, false),
-
-        /**
-         * Record deconstruction patterns in for-each loops
-         * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a> (Java 20)
-         */
-        DECONSTRUCTION_PATTERNS_IN_ENHANCED_FOR_STATEMENT(20, 20, false),
+        STATEMENTS_BEFORE_SUPER(22, 22, false),
 
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
@@ -183,10 +176,10 @@ public class LanguageLevelChecker<T> {
             }
 
             String message = StringUtils.capitalize(displayNameLower(name()));
-            if (canBePreview) {
+            if (wasStandardized) {
+                message += " was only standardized in Java " + (maxPreviewVersion + 1);
+            } else if (canBePreview) {
                 message += " is a preview feature of JDK " + jdk;
-            } else if (wasStandardized) {
-                message = message + " was only standardized in Java " + (maxPreviewVersion + 1);
             } else if (minPreviewVersion == maxPreviewVersion) {
                 message += " is a preview feature of JDK " + minPreviewVersion;
             } else {
@@ -350,6 +343,44 @@ public class LanguageLevelChecker<T> {
          */
         SEALED_CLASSES(17),
 
+        /**
+         * Pattern matching for switch
+         * @see <a href="https://openjdk.org/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> (Java 17)
+         * @see <a href="https://openjdk.org/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
+         * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
+         * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
+         * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a> (Java 21)
+         */
+        PATTERNS_IN_SWITCH_STATEMENTS(21),
+
+        /**
+         * Part of pattern matching for switch
+         * @see #PATTERNS_IN_SWITCH_STATEMENTS
+         * @see <a href="https://openjdk.org/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> (Java 17)
+         * @see <a href="https://openjdk.org/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
+         * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
+         * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
+         * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a> (Java 21)
+         */
+        NULL_IN_SWITCH_CASES(21),
+
+        /**
+         * Part of pattern matching for switch: Case refinement using "when"
+         * @see #PATTERNS_IN_SWITCH_STATEMENTS
+         * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
+         * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
+         * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a> (Java 21)
+         */
+        CASE_REFINEMENT(21),
+
+        /**
+         * Record patterns
+         * @see <a href="https://openjdk.org/jeps/405">JEP 405: Record Patterns (Preview)</a> (Java 19)
+         * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a> (Java 20)
+         * @see <a href="https://openjdk.org/jeps/440">JEP 440: Record Patterns</a> (Java 21)
+         */
+        RECORD_PATTERNS(21),
+
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
         private final int minJdkLevel;
@@ -390,8 +421,16 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
+        public Void visit(ASTCompilationUnit node, T data) {
+            if (node.isUnnamedClass()) {
+                check(node, PreviewFeature.UNNAMED_CLASSES, data);
+            }
+            return null;
+        }
+
+        @Override
         public Void visit(ASTStringLiteral node, T data) {
-            if (node.isStringLiteral() && SPACE_ESCAPE_PATTERN.matcher(node.getImage()).find()) {
+            if (!node.isTextBlock() && SPACE_ESCAPE_PATTERN.matcher(node.getLiteralText()).find()) {
                 check(node, RegularLanguageFeature.SPACE_STRING_ESCAPES, data);
             }
             if (node.isTextBlock()) {
@@ -476,16 +515,13 @@ public class LanguageLevelChecker<T> {
         @Override
         public Void visit(ASTForeachStatement node, T data) {
             check(node, RegularLanguageFeature.FOREACH_LOOPS, data);
-            if (node.getFirstChild() instanceof ASTRecordPattern) {
-                check(node, PreviewFeature.DECONSTRUCTION_PATTERNS_IN_ENHANCED_FOR_STATEMENT, data);
-            }
             return null;
         }
 
         @Override
         public Void visit(ASTEnumDeclaration node, T data) {
             check(node, RegularLanguageFeature.ENUMS, data);
-            visitTypeDecl((ASTAnyTypeDeclaration) node, data);
+            visitTypeDecl(node, data);
             return null;
         }
 
@@ -496,7 +532,7 @@ public class LanguageLevelChecker<T> {
                 check(node, RegularLanguageFeature.HEXADECIMAL_FLOATING_POINT_LITERALS, data);
             } else if (base == 2) {
                 check(node, RegularLanguageFeature.BINARY_NUMERIC_LITERALS, data);
-            } else if (node.getImage().indexOf('_') >= 0) {
+            } else if (node.getLiteralText().indexOf('_') >= 0) {
                 check(node, RegularLanguageFeature.UNDERSCORES_IN_NUMERIC_LITERALS, data);
             }
             return null;
@@ -520,11 +556,11 @@ public class LanguageLevelChecker<T> {
                 check(node, RegularLanguageFeature.DEFAULT_METHODS, data);
             }
 
-            if (node.isPrivate() && node.getEnclosingType().isInterface()) {
+            if (node.hasVisibility(ModifierOwner.Visibility.V_PRIVATE) && node.getEnclosingType() != null && node.getEnclosingType().isInterface()) {
                 check(node, RegularLanguageFeature.PRIVATE_METHODS_IN_INTERFACES, data);
             }
 
-            checkIdent(node, node.getMethodName(), data);
+            checkIdent(node, node.getName(), data);
             return null;
         }
 
@@ -542,13 +578,13 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTRecordPattern node, T data) {
-            check(node, PreviewFeature.DECONSTRUCTION_PATTERNS, data);
+            check(node, RegularLanguageFeature.RECORD_PATTERNS, data);
             return null;
         }
 
         @Override
-        public Void visit(ASTSwitchGuard node, T data) {
-            check(node, PreviewFeature.CASE_REFINEMENT, data);
+        public Void visit(ASTGuard node, T data) {
+            check(node, RegularLanguageFeature.CASE_REFINEMENT, data);
             return null;
         }
 
@@ -591,13 +627,13 @@ public class LanguageLevelChecker<T> {
                 check(node, RegularLanguageFeature.COMPOSITE_CASE_LABEL, data);
             }
             if (node.isDefault() && JavaTokenKinds.CASE == node.getFirstToken().getKind()) {
-                check(node, PreviewFeature.PATTERNS_IN_SWITCH_STATEMENTS, data);
+                check(node, RegularLanguageFeature.PATTERNS_IN_SWITCH_STATEMENTS, data);
             }
             if (node.getFirstChild() instanceof ASTNullLiteral) {
-                check(node, PreviewFeature.NULL_IN_SWITCH_CASES, data);
+                check(node, RegularLanguageFeature.NULL_IN_SWITCH_CASES, data);
             }
             if (node.getFirstChild() instanceof ASTPattern) {
-                check(node, PreviewFeature.PATTERNS_IN_SWITCH_STATEMENTS, data);
+                check(node, RegularLanguageFeature.PATTERNS_IN_SWITCH_STATEMENTS, data);
             }
             return null;
         }
@@ -615,13 +651,25 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
-        public Void visit(ASTVariableDeclaratorId node, T data) {
+        public Void visit(ASTVariableId node, T data) {
             checkIdent(node, node.getName(), data);
             return null;
         }
 
         @Override
-        public Void visitTypeDecl(ASTAnyTypeDeclaration node, T data) {
+        public Void visit(ASTTemplateExpression node, T data) {
+            check(node, PreviewFeature.STRING_TEMPLATES, data);
+            return null;
+        }
+
+        @Override
+        public Void visit(ASTUnnamedPattern node, T data) {
+            check(node, PreviewFeature.UNNAMED_VARIABLES_AND_PATTERNS, data);
+            return null;
+        }
+
+        @Override
+        public Void visitTypeDecl(ASTTypeDeclaration node, T data) {
             if (node.getModifiers().hasAnyExplicitly(JModifier.SEALED, JModifier.NON_SEALED)) {
                 check(node, RegularLanguageFeature.SEALED_CLASSES, data);
             } else if (node.isLocal() && !node.isRegularClass()) {
@@ -643,13 +691,28 @@ public class LanguageLevelChecker<T> {
             return null;
         }
 
+        @Override
+        public Void visit(ASTConstructorDeclaration node, T data) {
+            super.visit(node, data);
+            if (node.getBody().descendants(ASTExplicitConstructorInvocation.class).nonEmpty()) {
+                if (!(node.getBody().getFirstChild() instanceof ASTExplicitConstructorInvocation)) {
+                    check(node, PreviewFeature.STATEMENTS_BEFORE_SUPER, data);
+                }
+            }
+            return null;
+        }
+
         private void checkIdent(JavaNode node, String simpleName, T acc) {
             if ("enum".equals(simpleName)) {
                 check(node, Keywords.ENUM_AS_AN_IDENTIFIER, acc);
             } else if ("assert".equals(simpleName)) {
                 check(node, Keywords.ASSERT_AS_AN_IDENTIFIER, acc);
             } else if ("_".equals(simpleName)) {
-                check(node, Keywords.UNDERSCORE_AS_AN_IDENTIFIER, acc);
+                if (LanguageLevelChecker.this.jdkVersion >= 21) {
+                    check(node, PreviewFeature.UNNAMED_VARIABLES_AND_PATTERNS, acc);
+                } else {
+                    check(node, Keywords.UNDERSCORE_AS_AN_IDENTIFIER, acc);
+                }
             }
         }
 

@@ -6,9 +6,9 @@ package net.sourceforge.pmd.lang.scala.ast
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.should
-import net.sourceforge.pmd.lang.ast.test.matchNode
-import net.sourceforge.pmd.lang.ast.test.assertPosition
-import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.test.ast.assertPosition
+import net.sourceforge.pmd.lang.test.ast.matchNode
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 
 class ScalaTreeTests : FunSpec({
 
@@ -28,6 +28,11 @@ class Foo {
                 child<ASTTypeName> {
                     it.assertPosition(bline = 1, bcol = 7, eline = 1, ecol = 10)
                     it::isImplicit shouldBe false
+                }
+
+                child<ASTTypeParamClause> {
+                    it.assertPosition(bline = 1, bcol = 11, eline = 1, ecol = 11) // node has zero length
+                    it::isImplicit shouldBe true
                 }
 
                 child<ASTCtorPrimary> {

@@ -133,8 +133,8 @@ public final class DomainConversion {
         if (value == null) {
             return UntypedAtomicValue.ZERO_LENGTH_UNTYPED;
 
-        } else if (value instanceof String) {
-            return new StringValue((String) value);
+        } else if (value instanceof CharSequence) {
+            return new StringValue((CharSequence) value);
         } else if (value instanceof Boolean) {
             return BooleanValue.get((Boolean) value);
         } else if (value instanceof Integer) {

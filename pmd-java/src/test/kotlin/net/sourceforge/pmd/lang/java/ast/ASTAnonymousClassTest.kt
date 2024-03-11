@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.java.ast
 
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility.V_ANONYMOUS
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility.V_ANONYMOUS
 
 class ASTAnonymousClassTest : ParserTestSpec({
 
@@ -45,7 +45,7 @@ class ASTAnonymousClassTest : ParserTestSpec({
 
                             val anon = it
 
-                            child<ASTClassOrInterfaceBody> {
+                            child<ASTClassBody> {
                                 child<ASTMethodDeclaration>(ignoreChildren = true) {
                                     it::getEnclosingType shouldBe anon
                                 }

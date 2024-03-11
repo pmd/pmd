@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <ruleset name="Error Prone"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
@@ -13,7 +13,7 @@ Rules to detect constructs that are either broken, extremely confusing or prone 
           language="xml"
           since="5.0"
           message="Potentially mistyped CDATA section with extra [ at beginning or ] at the end."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_xml_errorprone.html#mistypedcdatasection">
         <description>
 An XML CDATA section begins with a &lt;![CDATA[ marker, which has only one [, and ends with a ]]&gt; marker, which has two ].
@@ -23,7 +23,7 @@ An XML CDATA section begins with a &lt;![CDATA[ marker, which has only one [, an
             <property name="xpath">
                 <value>
 <![CDATA[
-//cdata-section[starts-with(@Image,'[') or ends-with(@Image,']')]
+//cdata-section[starts-with(@Text,'[') or ends-with(@Text,']')]
 ]]>
                 </value>
             </property>

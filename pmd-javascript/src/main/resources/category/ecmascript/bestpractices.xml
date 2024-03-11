@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <ruleset name="Best Practices"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
@@ -13,7 +13,7 @@ Rules which enforce generally accepted best practices.
           message="Avoid using with - it's bad news"
           language="ecmascript"
           since="5.0.1"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_bestpractices.html#avoidwithstatement">
         <description>Avoid using with - it's bad news</description>
         <priority>1</priority>
@@ -72,7 +72,7 @@ function bar() {
           message="Avoid using global variables"
           language="ecmascript"
           since="5.0"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_bestpractices.html#globalvariable">
         <description>
 This rule helps to avoid using accidently global variables by simply missing the "var" declaration.
@@ -105,7 +105,7 @@ function(arg) {
           language="ecmascript"
           since="5.0"
           message="The for-in loop variable ''{0}'' should be explicitly scoped with 'var' to avoid pollution."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_bestpractices.html#scopeforinvariable">
         <description>
 A for-in loop in which the variable name is not explicitly scoped to the enclosing scope with the 'var' keyword can
@@ -161,7 +161,7 @@ function bar() {
           message="Always provide a base when using parseInt() functions"
           language="ecmascript"
           since="5.0.1"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_bestpractices.html#usebasewithparseint">
         <description>
 This rule checks for usages of parseInt. While the second parameter is optional and usually defaults
@@ -176,7 +176,7 @@ See also: [parseInt()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/R
                 <value>
 <![CDATA[
 //FunctionCall/Name[
-     @Image = 'parseInt'
+     @Identifier = 'parseInt'
      and
      count(../*) < 3
 ]

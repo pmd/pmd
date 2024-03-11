@@ -5,8 +5,8 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldMatchN
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
 import java.util.*
@@ -455,6 +455,38 @@ class Foo {
                 returning = captureMatcher(`?` extends (`@`(t_Nullable.symbol) on t_Iterator[`?` extends rvar]))
             )
             acu.firstMethodCall().overloadSelectionInfo::isFailed shouldBe false
+        }
+    }
+
+    parserTest("PMD crashes while using generics and wildcards #4753") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+import java.util.Collection;
+import java.util.List;
+import java.util.Arrays;
+public class SubClass<T> {
+
+   public <C extends Collection<? super T>> C into(C collection) {
+       List<T> list = null;
+       collection.addAll(list);
+       return collection;
+   }
+}
+                """.trimIndent()
+        )
+
+        val tvar = acu.typeVar("T")
+
+        spy.shouldBeOk {
+            val call = acu.firstMethodCall()
+
+            call.methodType.shouldMatchMethod(
+                named = "addAll",
+                withFormals = listOf(java.util.Collection::class[`?` extends captureMatcher(`?` `super` tvar)]),
+                returning = boolean
+            )
+            call.overloadSelectionInfo::isFailed shouldBe false
         }
     }
 

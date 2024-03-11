@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.rule;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
+import net.sourceforge.pmd.lang.java.ast.JavaVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 /**
@@ -17,7 +17,13 @@ import net.sourceforge.pmd.lang.rule.AbstractRule;
  * TODO add documentation
  *
  */
-public abstract class AbstractJavaRule extends AbstractRule implements JavaParserVisitor {
+public abstract class AbstractJavaRule extends AbstractRule implements JavaVisitor {
+
+    @Override
+    public Object visitNode(Node node, Object param) {
+        node.children().forEach(n -> n.acceptVisitor(this, param));
+        return param;
+    }
 
     @Override
     public void apply(Node target, RuleContext ctx) {

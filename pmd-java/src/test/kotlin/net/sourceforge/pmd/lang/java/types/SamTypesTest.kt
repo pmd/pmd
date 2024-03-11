@@ -7,7 +7,7 @@
 package net.sourceforge.pmd.lang.java.types
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration
 import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
 
@@ -29,7 +29,7 @@ interface Sub extends Top<Integer> {
 
         """.trimIndent())
 
-        val (t_Top, t_Sub) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.typeMirror }
+        val (t_Top, t_Sub) = acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
         val (topAccept, subAcceptOverride, subAccept) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.genericSignature }
 
         TypeOps.findFunctionalInterfaceMethod(t_Top) shouldBe topAccept

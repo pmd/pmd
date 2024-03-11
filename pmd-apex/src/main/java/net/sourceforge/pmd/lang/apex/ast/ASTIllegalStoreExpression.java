@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.IllegalStoreExpression;
+import com.google.summit.ast.Node;
 
-public final class ASTIllegalStoreExpression extends AbstractApexNode<IllegalStoreExpression> {
+public final class ASTIllegalStoreExpression extends AbstractApexNode.Single<Node> {
 
-    ASTIllegalStoreExpression(IllegalStoreExpression node) {
+    ASTIllegalStoreExpression(Node node) {
         super(node);
     }
 

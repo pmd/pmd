@@ -7,14 +7,6 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 import java.io.Writer;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Report.ConfigurationError;
-import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
-import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.Report.ReportBuilderListener;
-import net.sourceforge.pmd.Report.SuppressedViolation;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -25,6 +17,13 @@ import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.FileNameRenderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.ListenerInitializer;
+import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.Report.ConfigurationError;
+import net.sourceforge.pmd.reporting.Report.GlobalReportBuilderListener;
+import net.sourceforge.pmd.reporting.Report.ProcessingError;
+import net.sourceforge.pmd.reporting.Report.ReportBuilderListener;
+import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 /**
  * This is an interface for rendering a Report. When a Renderer is being
@@ -183,7 +182,6 @@ public interface Renderer extends PropertySource {
      *
      * @param reportFilename the filename (optional).
      */
-    @Experimental
     void setReportFile(String reportFilename);
 
 

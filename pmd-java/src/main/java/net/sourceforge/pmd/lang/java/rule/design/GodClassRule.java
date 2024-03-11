@@ -9,7 +9,7 @@ import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.ACCESS_TO_FOREIG
 import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.TIGHT_CLASS_COHESION;
 import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.WEIGHED_METHOD_COUNT;
 
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.util.StringUtil;
@@ -43,12 +43,12 @@ public class GodClassRule extends AbstractJavaRulechainRule {
 
 
     public GodClassRule() {
-        super(ASTClassOrInterfaceDeclaration.class);
+        super(ASTClassDeclaration.class);
     }
 
 
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+    public Object visit(ASTClassDeclaration node, Object data) {
         if (!MetricsUtil.supportsAll(node, WEIGHED_METHOD_COUNT, TIGHT_CLASS_COHESION, ACCESS_TO_FOREIGN_DATA)) {
             return data;
         }
@@ -59,9 +59,9 @@ public class GodClassRule extends AbstractJavaRulechainRule {
 
         if (wmc >= WMC_VERY_HIGH && atfd > FEW_ATFD_THRESHOLD && tcc < TCC_THRESHOLD) {
 
-            addViolation(data, node, new Object[] {wmc,
-                                                   StringUtil.percentageString(tcc, 3),
-                                                   atfd, });
+            asCtx(data).addViolation(node, new Object[] {wmc,
+                                                         StringUtil.percentageString(tcc, 3),
+                                                         atfd, });
         }
         return data;
     }

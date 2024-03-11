@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-public final class ASTElExpression extends AbstractJspNode {
+public final class ASTElExpression extends AbstractExpression {
 
     ASTElExpression(int id) {
         super(id);

@@ -23,24 +23,38 @@ public final class PMDVersion {
      */
     public static final String VERSION;
 
-    private static final String UNKNOWN_VERSION = "unknown";
+    private static final String RELEASE_TIMESTAMP;
+    private static final String GIT_COMMIT_ID;
+    private static final String GIT_COMMIT_TIME;
 
-    /**
+    private static final String UNKNOWN = "unknown";
+
+    /*
      * Determines the version from maven's generated pom.properties file.
      */
     static {
-        String pmdVersion = UNKNOWN_VERSION;
-        try (InputStream stream = PMDVersion.class.getResourceAsStream("/META-INF/maven/net.sourceforge.pmd/pmd-core/pom.properties")) {
+        String pmdVersion = UNKNOWN;
+        String releaseTimestamp = UNKNOWN;
+        String gitCommitId = UNKNOWN;
+        String gitCommitTime = UNKNOWN;
+        try (InputStream stream = PMDVersion.class.getResourceAsStream("pmd-core-version.properties")) {
             if (stream != null) {
                 final Properties properties = new Properties();
                 properties.load(stream);
                 pmdVersion = properties.getProperty("version");
+                releaseTimestamp = properties.getProperty("releaseTimestamp");
+
+                gitCommitId = properties.getProperty("gitCommitId");
+                gitCommitTime = properties.getProperty("gitCommitTime");
             }
         } catch (final IOException e) {
             LOG.debug("Couldn't determine version of PMD", e);
         }
 
         VERSION = pmdVersion;
+        RELEASE_TIMESTAMP = releaseTimestamp;
+        GIT_COMMIT_ID = gitCommitId;
+        GIT_COMMIT_TIME = gitCommitTime;
     }
 
     private PMDVersion() {
@@ -55,7 +69,7 @@ public final class PMDVersion {
      */
     public static String getNextMajorRelease() {
         if (isUnknown()) {
-            return UNKNOWN_VERSION;
+            return UNKNOWN;
         }
 
         final int major = Integer.parseInt(VERSION.split("\\.")[0]);
@@ -68,7 +82,7 @@ public final class PMDVersion {
      */
     @SuppressWarnings("PMD.LiteralsFirstInComparisons")
     public static boolean isUnknown() {
-        return UNKNOWN_VERSION.equals(VERSION);
+        return UNKNOWN.equals(VERSION);
     }
 
     /**
@@ -77,5 +91,12 @@ public final class PMDVersion {
      */
     public static boolean isSnapshot() {
         return VERSION.endsWith("-SNAPSHOT");
+    }
+
+    public static String getFullVersionName() {
+        if (isSnapshot()) {
+            return "PMD " + VERSION + " (" + GIT_COMMIT_ID + ", " + GIT_COMMIT_TIME + ")";
+        }
+        return "PMD " + VERSION + " (" + GIT_COMMIT_ID + ", " + RELEASE_TIMESTAMP + ")";
     }
 }

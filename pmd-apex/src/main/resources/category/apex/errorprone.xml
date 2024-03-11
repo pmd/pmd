@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <ruleset name="Error Prone"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
@@ -54,7 +54,7 @@ public class Foo {
           language="apex"
           since="6.0.0"
           message="Avoid directly accessing Trigger.old and Trigger.new"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#avoiddirectaccesstriggermap">
         <description>
 Avoid directly accessing Trigger.old and Trigger.new as it can lead to a bug. Triggers should be bulkified and iterate through the map to handle the actions for each item separately.
@@ -138,7 +138,7 @@ public without sharing class Foo {
           language="apex"
           since="6.0.0"
           message="Avoid empty catch blocks"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptycatchblock">
         <description>
 Empty Catch Block finds instances where an exception is caught, but nothing is done.
@@ -177,7 +177,7 @@ public void doSomething() {
           language="apex"
           since="6.0.0"
           message="Avoid empty 'if' statements"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptyifstmt">
         <description>
 Empty If Statement finds instances where a condition is checked but nothing is done about it.
@@ -210,7 +210,7 @@ public class Foo {
           language="apex"
           since="6.0.0"
           message="Avoid empty block statements."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptystatementblock">
         <description>
 Empty block statements serve no purpose and should be removed.
@@ -222,8 +222,17 @@ Empty block statements serve no purpose and should be removed.
             <property name="xpath">
                 <value>
 <![CDATA[
-//Method[$reportEmptyPrivateNoArgConstructor = true() or (@Constructor != true() or ./ModifierNode[@Private != true()] or ./Parameter[count(*) > 0])]/ModifierNode[@Abstract != true() and ($reportEmptyVirtualMethod = true() or @Virtual != true()) and ../BlockStatement[count(*) = 0]]
-| //Method/BlockStatement//BlockStatement[count(*) = 0 and @RealLoc = true()]
+//Method[$reportEmptyPrivateNoArgConstructor = true()
+    or (@Constructor != true()
+    or ./ModifierNode[@Private != true()]
+    or ./Parameter[count(*) > 0])]/ModifierNode[@Abstract != true()
+        and ($reportEmptyVirtualMethod = true() or @Virtual != true())
+        and ../BlockStatement[count(*) = 0]
+    ]
+| //Method/BlockStatement//BlockStatement
+    [not(parent::CatchBlockStatement)]
+    [count(*) = 0]
+    [@RealLoc = true()]
 ]]>
                 </value>
             </property>
@@ -247,7 +256,7 @@ public class Foo {
           language="apex"
           since="6.0.0"
           message="Avoid empty try or finally blocks"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptytryorfinallyblock">
         <description>
 Avoid empty try or finally blocks - what's the point?
@@ -291,7 +300,7 @@ public class Foo {
           language="apex"
           since="6.0.0"
           message="Avoid empty 'while' statements"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptywhilestmt">
         <description>
 Empty While Statement finds all instances where a while statement does nothing.
@@ -445,7 +454,7 @@ public class Foo {        // perfect, both methods provided
           language="apex"
           since="6.22.0"
           message="Test methods must be in test classes"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#testmethodsmustbeintestclasses">
        <description>
           Test methods marked as a testMethod or annotated with @IsTest,
@@ -462,9 +471,9 @@ public class Foo {        // perfect, both methods provided
              <value>
     <![CDATA[
     //UserClass[
-      not(./ModifierNode/Annotation[lower-case(@Image) = 'istest']) and
+      not(./ModifierNode/Annotation[lower-case(@Name) = 'istest']) and
       (
-        (./Method/ModifierNode/Annotation[lower-case(@Image) = 'istest']) or
+        (./Method/ModifierNode/Annotation[lower-case(@Name) = 'istest']) or
         (./Method/ModifierNode[@Test = true()])
       )
     ]

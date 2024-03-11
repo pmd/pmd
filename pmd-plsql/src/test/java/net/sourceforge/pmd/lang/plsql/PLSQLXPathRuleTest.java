@@ -8,9 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
+import net.sourceforge.pmd.reporting.Report;
 
 /**
  * Tests to use XPath rules with PLSQL.
@@ -22,28 +22,9 @@ class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
             + "        a_variable VARCHAR2(1);\n" + "    BEGIN \n" + "        --PRAGMA INLINE(output,'YES');\n"
             + "        a_variable := 'Y' ;\n" + "    END ;\n" + "end pkg_xpath_problem;\n" + "/\n";
 
-    /**
-     * See https://sourceforge.net/p/pmd/bugs/1166/
-     */
     @Test
-    void testXPathRule1() {
-        testOnVersion(XPathVersion.XPATH_1_0);
-    }
-
-    /**
-     * See https://sourceforge.net/p/pmd/bugs/1166/
-     */
-    @Test
-    void testXPathRule1Compatibility() {
-        testOnVersion(XPathVersion.XPATH_1_0_COMPATIBILITY);
-    }
-
-    /**
-     * See https://sourceforge.net/p/pmd/bugs/1166/
-     */
-    @Test
-    void testXPathRule2() {
-        testOnVersion(XPathVersion.XPATH_2_0);
+    void testXPathRule() {
+        testOnVersion(XPathVersion.DEFAULT);
     }
 
 

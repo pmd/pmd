@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.testdata.GenericMethodReference;
 
@@ -24,7 +24,7 @@ class GenericMethodReferenceTest {
     void typeResolveVariable() {
         ASTCompilationUnit root = JavaParsingHelper.DEFAULT.parseClass(GenericMethodReference.class);
 
-        root.descendants(ASTVariableDeclaratorId.class).forEach(variable -> {
+        root.descendants(ASTVariableId.class).forEach(variable -> {
             assertTrue(variable.getName().startsWith("supplier"));
             @Nullable
             JTypeDeclSymbol symbol = variable.getInitializer().getTypeMirror().getSymbol();

@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Sample rule that detect any node with an image of "Foo". Used for testing.
@@ -45,7 +46,7 @@ public class FooRule extends AbstractRule {
             apply(node.getChild(i), ctx);
         }
         if ("Foo".equals(node.getImage())) {
-            addViolation(ctx, node);
+            ctx.addViolation(node);
         }
     }
 }

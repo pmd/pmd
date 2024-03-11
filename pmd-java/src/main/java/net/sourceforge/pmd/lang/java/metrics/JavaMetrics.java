@@ -21,13 +21,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.document.FileLocation;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.java.metrics.internal.AtfdBaseVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.ClassFanOutVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.CognitiveComplexityVisitor;
@@ -121,7 +121,7 @@ public final class JavaMetrics {
      *
      * @see CycloOption
      */
-    public static final Metric<ASTMethodOrConstructorDeclaration, Integer> CYCLO =
+    public static final Metric<ASTExecutableDeclaration, Integer> CYCLO =
         Metric.of(JavaMetrics::computeCyclo, asMethodOrCtor(),
                   "Cyclomatic Complexity", "Cyclo");
 
@@ -137,14 +137,14 @@ public final class JavaMetrics {
      * <p>Information about Cognitive complexity can be found in the original paper here:
      * <a href='https://www.sonarsource.com/docs/CognitiveComplexity.pdf'>CognitiveComplexity</a>
      *
-     * <h3>Basic Idea</h3>
+     * <p><strong>Basic Idea</strong></p>
      * <ol>
      * <li>Ignore structures that allow multiple statements to be readably shorthanded into one
      * <li>Increment (add one) for each break in the linear flow of the code
      * <li>Increment when flow-breaking structures are nested
      * </ol>
      *
-     * <h3>Increments</h3>
+     * <p><strong>Increments</strong></p>
      * There is an increment for each of the following:
      * <ul>
      * <li>`if`, `else if`, `else`, ternary operator
@@ -157,7 +157,7 @@ public final class JavaMetrics {
      * <li>each method in a recursion cycle
      * </ul>
      *
-     * <h3>Nesting level</h3>
+     * <p><strong>Nesting level</strong></p>
      * The following structures increment the nesting level:
      * <ul>
      * <li>`if`, `else if`, `else`, ternary operator
@@ -168,7 +168,7 @@ public final class JavaMetrics {
      * <li>nested methods and method-like structures such as lambdas
      * </ul>
      *
-     * <h3>Nesting increments</h3>
+     * <p><strong>Nesting increments</strong></p>
      * The following structures receive a nesting increment commensurate with their nested depth
      * inside nested structures:
      * <ul>
@@ -179,8 +179,7 @@ public final class JavaMetrics {
      * <li>`catch`
      * </ul>
      *
-     * <h3>Code example</h3>
-     *
+     * <p><strong>Code example</strong></p>
      * <pre>{@code
      * class Foo {
      *   void myMethod () {
@@ -197,7 +196,7 @@ public final class JavaMetrics {
      * }
      * }</pre>
      */
-    public static final Metric<ASTMethodOrConstructorDeclaration, Integer> COGNITIVE_COMPLEXITY =
+    public static final Metric<ASTExecutableDeclaration, Integer> COGNITIVE_COMPLEXITY =
         Metric.of(JavaMetrics::computeCognitive, asMethodOrCtor(),
                   "Cognitive Complexity", "CognitiveComp");
 
@@ -345,15 +344,15 @@ public final class JavaMetrics {
      * </li>
      * </ul>
      */
-    public static final Metric<ASTMethodOrConstructorDeclaration, BigInteger> NPATH =
+    public static final Metric<ASTExecutableDeclaration, BigInteger> NPATH =
         Metric.of(JavaMetrics::computeNpath, asMethodOrCtor(),
                   "NPath Complexity", "NPath");
 
-    public static final Metric<ASTAnyTypeDeclaration, Integer> NUMBER_OF_ACCESSORS =
+    public static final Metric<ASTTypeDeclaration, Integer> NUMBER_OF_ACCESSORS =
         Metric.of(JavaMetrics::computeNoam, asClass(always()),
                   "Number of accessor methods", "NOAM");
 
-    public static final Metric<ASTAnyTypeDeclaration, Integer> NUMBER_OF_PUBLIC_FIELDS =
+    public static final Metric<ASTTypeDeclaration, Integer> NUMBER_OF_PUBLIC_FIELDS =
         Metric.of(JavaMetrics::computeNopa, asClass(always()),
                   "Number of public attributes", "NOPA");
 
@@ -371,7 +370,7 @@ public final class JavaMetrics {
      * values (&lt;50%) may indicate that the class tries to do too much
      * and defines several unrelated services, which is undesirable.
      */
-    public static final Metric<ASTAnyTypeDeclaration, Double> TIGHT_CLASS_COHESION =
+    public static final Metric<ASTTypeDeclaration, Double> TIGHT_CLASS_COHESION =
         Metric.of(JavaMetrics::computeTcc, asClass(it -> !it.isInterface()),
                   "Tight Class Cohesion", "TCC");
 
@@ -381,7 +380,7 @@ public final class JavaMetrics {
      *
      * <p>WMC uses the same options as CYCLO, which are provided to CYCLO when computing it ({@link CycloOption}).
      */
-    public static final Metric<ASTAnyTypeDeclaration, Integer> WEIGHED_METHOD_COUNT =
+    public static final Metric<ASTTypeDeclaration, Integer> WEIGHED_METHOD_COUNT =
         Metric.of(JavaMetrics::computeWmc, asClass(it -> !it.isInterface()),
                   "Weighed Method Count", "WMC");
 
@@ -398,7 +397,7 @@ public final class JavaMetrics {
      * that the class reveals much more data than behaviour, which is a
      * sign of poor encapsulation.
      */
-    public static final Metric<ASTAnyTypeDeclaration, Double> WEIGHT_OF_CLASS =
+    public static final Metric<ASTTypeDeclaration, Double> WEIGHT_OF_CLASS =
         Metric.of(JavaMetrics::computeWoc, asClass(it -> !it.isInterface()),
                   "Weight Of Class", "WOC");
 
@@ -411,8 +410,8 @@ public final class JavaMetrics {
         return n -> n instanceof JavaNode ? (JavaNode) n : null;
     }
 
-    private static Function<Node, @Nullable ASTMethodOrConstructorDeclaration> asMethodOrCtor() {
-        return n -> n instanceof ASTMethodOrConstructorDeclaration ? (ASTMethodOrConstructorDeclaration) n : null;
+    private static Function<Node, @Nullable ASTExecutableDeclaration> asMethodOrCtor() {
+        return n -> n instanceof ASTExecutableDeclaration ? (ASTExecutableDeclaration) n : null;
     }
 
 
@@ -421,22 +420,22 @@ public final class JavaMetrics {
     }
 
 
-    private static Function<Node, ASTAnyTypeDeclaration> asClass(Predicate<? super ASTAnyTypeDeclaration> pred) {
-        return filterMapNode(ASTAnyTypeDeclaration.class, pred);
+    private static Function<Node, ASTTypeDeclaration> asClass(Predicate<? super ASTTypeDeclaration> pred) {
+        return filterMapNode(ASTTypeDeclaration.class, pred);
     }
 
 
-    private static int computeNoam(ASTAnyTypeDeclaration node, MetricOptions ignored) {
+    private static int computeNoam(ASTTypeDeclaration node, MetricOptions ignored) {
         return node.getDeclarations()
                    .filterIs(ASTMethodDeclaration.class)
                    .filter(JavaRuleUtil::isGetterOrSetter)
                    .count();
     }
 
-    private static int computeNopa(ASTAnyTypeDeclaration node, MetricOptions ignored) {
+    private static int computeNopa(ASTTypeDeclaration node, MetricOptions ignored) {
         return node.getDeclarations()
                    .filterIs(ASTFieldDeclaration.class)
-                   .filter(AccessNode::isPublic)
+                   .filter(it -> it.hasVisibility(ModifierOwner.Visibility.V_PUBLIC))
                    .flatMap(ASTFieldDeclaration::getVarIds)
                    .count();
     }
@@ -471,12 +470,12 @@ public final class JavaMetrics {
         return state.getComplexity();
     }
 
-    private static int computeWmc(ASTAnyTypeDeclaration node, MetricOptions options) {
+    private static int computeWmc(ASTTypeDeclaration node, MetricOptions options) {
         return (int) MetricsUtil.computeStatistics(CYCLO, node.getOperations(), options).getSum();
     }
 
 
-    private static double computeTcc(ASTAnyTypeDeclaration node, MetricOptions ignored) {
+    private static double computeTcc(ASTTypeDeclaration node, MetricOptions ignored) {
         List<Set<String>> usagesByMethod = attributeAccessesByMethod(node);
 
         int numPairs = numMethodsRelatedByAttributeAccess(usagesByMethod);
@@ -493,7 +492,7 @@ public final class JavaMetrics {
     /**
      * Collects the attribute accesses by method into a map, for TCC.
      */
-    private static List<Set<String>> attributeAccessesByMethod(ASTAnyTypeDeclaration type) {
+    private static List<Set<String>> attributeAccessesByMethod(ASTTypeDeclaration type) {
         final List<Set<String>> map = new ArrayList<>();
         final JClassSymbol typeSym = type.getSymbol();
         for (ASTMethodDeclaration decl : type.getDeclarations(ASTMethodDeclaration.class)) {
@@ -603,11 +602,11 @@ public final class JavaMetrics {
     }
 
 
-    private static double computeWoc(ASTAnyTypeDeclaration node, MetricOptions ignored) {
+    private static double computeWoc(ASTTypeDeclaration node, MetricOptions ignored) {
         NodeStream<ASTMethodDeclaration> methods =
             node.getDeclarations()
                 .filterIs(ASTMethodDeclaration.class)
-                .filter(it -> !it.isPrivate());
+                .filter(it -> !it.hasVisibility(ModifierOwner.Visibility.V_PRIVATE));
 
         int notSetter = methods.filter(it -> !JavaRuleUtil.isGetterOrSetter(it)).count();
         int total = methods.count();

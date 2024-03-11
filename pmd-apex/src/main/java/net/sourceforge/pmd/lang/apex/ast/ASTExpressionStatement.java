@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.statement.ExpressionStatement;
+import com.google.summit.ast.statement.ExpressionStatement;
 
-public final class ASTExpressionStatement extends AbstractApexNode<ExpressionStatement> {
+public final class ASTExpressionStatement extends AbstractApexNode.Single<ExpressionStatement> {
 
-    ASTExpressionStatement(ExpressionStatement expressionStatement) {
-        super(expressionStatement);
+    ASTExpressionStatement(ExpressionStatement expression) {
+        super(expression);
     }
 
 

@@ -21,6 +21,7 @@ import scala.meta.Importee;
 import scala.meta.Importer;
 import scala.meta.Init;
 import scala.meta.Lit;
+import scala.meta.Member;
 import scala.meta.Mod;
 import scala.meta.Name;
 import scala.meta.Pat;
@@ -79,6 +80,7 @@ class ScalaTreeBuilder {
         register(Lit.String.class, ASTLitString.class);
         register(Lit.Symbol.class, ASTLitSymbol.class);
         register(Lit.Unit.class, ASTLitUnit.class);
+        register(Member.ParamClauseGroup.class, ASTMemberParamClauseGroup.class);
         register(Mod.Abstract.class, ASTModAbstract.class);
         register(Mod.Annot.class, ASTModAnnot.class);
         register(Mod.Case.class, ASTModCase.class);
@@ -97,6 +99,7 @@ class ScalaTreeBuilder {
         register(Name.Anonymous.class, ASTNameAnonymous.class);
         register(Name.Indeterminate.class, ASTNameIndeterminate.class);
         register(Pat.Alternative.class, ASTPatAlternative.class);
+        register(Pat.ArgClause.class, ASTPatArgClause.class);
         register(Pat.Bind.class, ASTPatBind.class);
         register(Pat.Extract.class, ASTPatExtract.class);
         register(Pat.ExtractInfix.class, ASTPatExtractInfix.class);
@@ -118,6 +121,7 @@ class ScalaTreeBuilder {
         register(Term.ApplyInfix.class, ASTTermApplyInfix.class);
         register(Term.ApplyType.class, ASTTermApplyType.class);
         register(Term.ApplyUnary.class, ASTTermApplyUnary.class);
+        register(Term.ArgClause.class, ASTTermArgClause.class);
         register(Term.Ascribe.class, ASTTermAscribe.class);
         register(Term.Assign.class, ASTTermAssign.class);
         register(Term.Block.class, ASTTermBlock.class);
@@ -133,6 +137,7 @@ class ScalaTreeBuilder {
         register(Term.NewAnonymous.class, ASTTermNewAnonymous.class);
         register(Term.New.class, ASTTermNew.class);
         register(Term.Param.class, ASTTermParam.class);
+        register(Term.ParamClause.class, ASTTermParamClause.class);
         register(Term.PartialFunction.class, ASTTermPartialFunction.class);
         register(Term.Placeholder.class, ASTTermPlaceholder.class);
         register(Term.Repeated.class, ASTTermRepeated.class);
@@ -150,9 +155,11 @@ class ScalaTreeBuilder {
         register(Type.Annotate.class, ASTTypeAnnotate.class);
         register(Type.Apply.class, ASTTypeApply.class);
         register(Type.ApplyInfix.class, ASTTypeApplyInfix.class);
+        register(Type.ArgClause.class, ASTTypeArgClause.class);
         register(Type.Bounds.class, ASTTypeBounds.class);
         register(Type.ByName.class, ASTTypeByName.class);
         register(Type.Existential.class, ASTTypeExistential.class);
+        register(Type.FuncParamClause.class, ASTTypeFuncParamClause.class);
         register(Type.Function.class, ASTTypeFunction.class);
         register(Type.ImplicitFunction.class, ASTTypeImplicitFunction.class);
         register(Type.Lambda.class, ASTTypeLambda.class);
@@ -160,6 +167,7 @@ class ScalaTreeBuilder {
         register(Type.Name.class, ASTTypeName.class);
         register(Type.Or.class, ASTTypeOr.class);
         register(Type.Param.class, ASTTypeParam.class);
+        register(Type.ParamClause.class, ASTTypeParamClause.class);
         register(Type.Placeholder.class, ASTTypePlaceholder.class);
         register(Type.Project.class, ASTTypeProject.class);
         register(Type.Refine.class, ASTTypeRefine.class);

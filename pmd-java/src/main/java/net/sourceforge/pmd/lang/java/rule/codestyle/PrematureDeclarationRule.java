@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
@@ -56,7 +56,7 @@ public class PrematureDeclarationRule extends AbstractJavaRulechainRule {
             return null;
         }
 
-        for (ASTVariableDeclaratorId id : node) {
+        for (ASTVariableId id : node) {
             ASTExpression initializer = id.getInitializer();
 
             if (JavaAstUtils.isNeverUsed(id) // avoid the duplicate with unused variables
@@ -76,7 +76,7 @@ public class PrematureDeclarationRule extends AbstractJavaRulechainRule {
                 }
 
                 if (hasExit(stmt)) {
-                    addViolation(data, node, id.getName());
+                    asCtx(data).addViolation(node, id.getName());
                     break;
                 }
             }
@@ -119,7 +119,7 @@ public class PrematureDeclarationRule extends AbstractJavaRulechainRule {
     /**
      * Returns whether the variable is mentioned within the statement or not.
      */
-    private static boolean hasReferencesIn(ASTStatement stmt, ASTVariableDeclaratorId var) {
+    private static boolean hasReferencesIn(ASTStatement stmt, ASTVariableId var) {
         return stmt.descendants(ASTVariableAccess.class)
                    .crossFindBoundaries()
                    .filterMatching(ASTNamedReferenceExpr::getReferencedSym, var.getSymbol())

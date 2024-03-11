@@ -7,11 +7,11 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * 1. Note all private constructors. 2. Note all instantiations from outside of
@@ -45,7 +45,7 @@ public class AccessorClassGenerationRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTConstructorCall node, Object data) {
         if (!node.isAnonymousClass()) {
-            AccessorMethodGenerationRule.checkMemberAccess(this, (RuleContext) data, node, node.getMethodType().getSymbol(), this.reportedNodes);
+            AccessorMethodGenerationRule.checkMemberAccess((RuleContext) data, node, node.getMethodType().getSymbol(), this.reportedNodes);
         }
         return null;
     }
@@ -53,7 +53,7 @@ public class AccessorClassGenerationRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTExplicitConstructorInvocation node, Object data) {
         if (node.isSuper()) {
-            AccessorMethodGenerationRule.checkMemberAccess(this, (RuleContext) data, node, node.getMethodType().getSymbol(), this.reportedNodes);
+            AccessorMethodGenerationRule.checkMemberAccess((RuleContext) data, node, node.getMethodType().getSymbol(), this.reportedNodes);
         }
         return null;
     }

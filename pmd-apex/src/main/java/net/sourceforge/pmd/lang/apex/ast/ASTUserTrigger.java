@@ -7,13 +7,12 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import apex.jorje.data.Identifier;
-import apex.jorje.semantic.ast.compilation.UserTrigger;
+import com.google.summit.ast.declaration.TriggerDeclaration;
 
-public final class ASTUserTrigger extends BaseApexClass<UserTrigger> {
+public final class ASTUserTrigger extends BaseApexClass<TriggerDeclaration> {
 
-    ASTUserTrigger(UserTrigger userTrigger) {
-        super(userTrigger);
+    ASTUserTrigger(TriggerDeclaration triggerDeclaration) {
+        super(triggerDeclaration);
     }
 
     @Override
@@ -22,11 +21,11 @@ public final class ASTUserTrigger extends BaseApexClass<UserTrigger> {
     }
 
     public String getTargetName() {
-        return node.getTargetName().stream().map(Identifier::getValue).collect(Collectors.joining("."));
+        return node.getTarget().getString();
     }
 
     public List<TriggerUsage> getUsages() {
-        return node.getUsages().stream()
+        return node.getCases().stream()
                 .map(TriggerUsage::of)
                 .sorted()
                 .collect(Collectors.toList());

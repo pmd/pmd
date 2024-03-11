@@ -19,13 +19,13 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
  *
  * <pre class="grammar">
  *
- * CatchParameter ::= {@link ASTModifierList LocalVarModifierList} {@link ASTType Type} {@link ASTVariableDeclaratorId VariableDeclaratorId}
+ * CatchParameter ::= {@link ASTModifierList LocalVarModifierList} {@link ASTType Type} {@link ASTVariableId VariableId}
  *
  * </pre>
  */
 public final class ASTCatchParameter extends AbstractJavaNode
     implements InternalInterfaces.VariableIdOwner,
-               FinalizableNode {
+        ModifierOwner {
 
     ASTCatchParameter(int id) {
         super(id);
@@ -50,8 +50,8 @@ public final class ASTCatchParameter extends AbstractJavaNode
 
     @Override
     @NonNull
-    public ASTVariableDeclaratorId getVarId() {
-        return (ASTVariableDeclaratorId) getLastChild();
+    public ASTVariableId getVarId() {
+        return (ASTVariableId) getLastChild();
     }
 
     /** Returns the name of this parameter. */
@@ -79,13 +79,16 @@ public final class ASTCatchParameter extends AbstractJavaNode
      * Since exception types cannot be interfaces, the LUB always erases
      * to a single class supertype (eg {@link RuntimeException}).
      */
-    public NodeStream<ASTClassOrInterfaceType> getAllExceptionTypes() {
+    public NodeStream<ASTClassType> getAllExceptionTypes() {
         ASTType typeNode = getTypeNode();
         if (typeNode instanceof ASTUnionType) {
-            return typeNode.children(ASTClassOrInterfaceType.class);
+            return typeNode.children(ASTClassType.class);
         } else {
-            return NodeStream.of((ASTClassOrInterfaceType) typeNode);
+            return NodeStream.of((ASTClassType) typeNode);
         }
     }
 
+    public boolean isFinal() {
+        return hasModifiers(JModifier.FINAL);
+    }
 }

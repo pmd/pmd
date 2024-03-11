@@ -10,14 +10,14 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.html.ast.ASTHtmlComment;
 import net.sourceforge.pmd.lang.html.ast.ASTHtmlDocument;
 import net.sourceforge.pmd.lang.html.ast.ASTHtmlTextNode;
 import net.sourceforge.pmd.lang.html.ast.HtmlParsingHelper;
-import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
+import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 class HtmlXPathRuleTest {
 
@@ -57,14 +57,14 @@ class HtmlXPathRuleTest {
     @Test
     void verifyTextNodeName() {
         ASTHtmlDocument document = HtmlParsingHelper.DEFAULT.parse("<p>foobar</p>");
-        ASTHtmlTextNode textNode = document.getFirstDescendantOfType(ASTHtmlTextNode.class);
+        ASTHtmlTextNode textNode = document.descendants(ASTHtmlTextNode.class).first();
         assertEquals("#text", textNode.getXPathNodeName());
     }
 
     @Test
     void verifyCommentNodeName() {
         ASTHtmlDocument document = HtmlParsingHelper.DEFAULT.parse("<p><!-- a comment --></p>");
-        ASTHtmlComment comment = document.getFirstDescendantOfType(ASTHtmlComment.class);
+        ASTHtmlComment comment = document.descendants(ASTHtmlComment.class).first();
         assertEquals("#comment", comment.getXPathNodeName());
     }
 

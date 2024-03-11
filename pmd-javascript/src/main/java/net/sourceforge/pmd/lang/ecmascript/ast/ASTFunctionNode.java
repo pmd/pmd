@@ -9,7 +9,6 @@ import org.mozilla.javascript.ast.FunctionNode;
 public final class ASTFunctionNode extends AbstractEcmascriptNode<FunctionNode> {
     ASTFunctionNode(FunctionNode functionNode) {
         super(functionNode);
-        super.setImage(functionNode.getName());
     }
 
     @Override
@@ -38,11 +37,6 @@ public final class ASTFunctionNode extends AbstractEcmascriptNode<FunctionNode> 
 
     public EcmascriptNode<?> getBody() {
         return (EcmascriptNode<?>) getChild(getNumChildren() - 1);
-    }
-
-    @Deprecated // use getBody() instead
-    public EcmascriptNode<?> getBody(int index) {
-        return getBody();
     }
 
     public boolean isClosure() {

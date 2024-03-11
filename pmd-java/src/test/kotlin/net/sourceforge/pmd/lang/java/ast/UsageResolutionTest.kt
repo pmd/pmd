@@ -8,8 +8,8 @@ import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBeA
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType.WRITE
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol
@@ -39,7 +39,7 @@ class UsageResolutionTest : ProcessorTestSpec({
                 }
             }
         """)
-        val (barF1, fooF1, fooF2, localF2, localF22) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+        val (barF1, fooF1, fooF2, localF2, localF22) = acu.descendants(ASTVariableId::class.java).toList()
         barF1.localUsages.map { it.text.toString() }.shouldContainExactly("this.f1", "super.f1")
         fooF1.localUsages.map { it.text.toString() }.shouldContainExactly("f1", "this.f1")
         fooF2.localUsages.map { it.text.toString() }.shouldContainExactly("this.f2")
@@ -60,18 +60,18 @@ class UsageResolutionTest : ProcessorTestSpec({
             }
         """)
 
-        val (p) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+        val (p) = acu.descendants(ASTVariableId::class.java).toList()
 
         p::isRecordComponent shouldBe true
         p.localUsages.shouldHaveSize(2)
         p.localUsages[0].shouldBeA<ASTVariableAccess> {
-            it.referencedSym!!.shouldBeA<JFormalParamSymbol> {
-                it.tryGetNode() shouldBe p
+            it.referencedSym!!.shouldBeA<JFormalParamSymbol> { symbol ->
+                symbol.tryGetNode() shouldBe p
             }
         }
         p.localUsages[1].shouldBeA<ASTVariableAccess> {
-            it.referencedSym!!.shouldBeA<JFieldSymbol> {
-                it.tryGetNode() shouldBe p
+            it.referencedSym!!.shouldBeA<JFieldSymbol> { symbol ->
+                symbol.tryGetNode() shouldBe p
             }
         }
     }

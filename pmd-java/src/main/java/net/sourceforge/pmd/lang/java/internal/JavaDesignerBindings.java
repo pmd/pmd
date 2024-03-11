@@ -15,9 +15,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompactConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
@@ -28,13 +28,15 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -66,14 +68,14 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
     public TreeIconId getIcon(Node node) {
         if (node instanceof ASTFieldDeclaration) {
             return TreeIconId.FIELD;
-        } else if (node instanceof ASTAnyTypeDeclaration) {
+        } else if (node instanceof ASTTypeDeclaration) {
             return TreeIconId.CLASS;
         } else if (node instanceof ASTMethodDeclaration) {
             return TreeIconId.METHOD;
         } else if (node instanceof ASTConstructorDeclaration
             || node instanceof ASTCompactConstructorDeclaration) {
             return TreeIconId.CONSTRUCTOR;
-        } else if (node instanceof ASTVariableDeclaratorId) {
+        } else if (node instanceof ASTVariableId) {
             return TreeIconId.VARIABLE;
         }
         return super.getIcon(node);
@@ -102,9 +104,9 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
             JTypeMirror typeMirror = ((TypeNode) node).getTypeMirror();
             info.add(new AdditionalInfo("Type: " + typeMirror));
         }
-        if (node instanceof AccessNode) {
-            String effective = formatModifierSet(((AccessNode) node).getModifiers().getEffectiveModifiers());
-            String explicit = formatModifierSet(((AccessNode) node).getModifiers().getExplicitModifiers());
+        if (node instanceof ModifierOwner) {
+            String effective = formatModifierSet(((ModifierOwner) node).getModifiers().getEffectiveModifiers());
+            String explicit = formatModifierSet(((ModifierOwner) node).getModifiers().getExplicitModifiers());
             info.add(new AdditionalInfo("pmd-java:modifiers(): " + effective));
             info.add(new AdditionalInfo("pmd-java:explicitModifiers(): " + explicit));
         }
@@ -146,7 +148,7 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         }
 
         @Override
-        public Attribute visitTypeDecl(ASTAnyTypeDeclaration node, Void data) {
+        public Attribute visitTypeDecl(ASTTypeDeclaration node, Void data) {
             return new Attribute(node, "SimpleName", node.getSimpleName());
         }
 
@@ -156,7 +158,7 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         }
 
         @Override
-        public Attribute visit(ASTClassOrInterfaceType node, Void data) {
+        public Attribute visit(ASTClassType node, Void data) {
             return new Attribute(node, "SimpleName", node.getSimpleName());
         }
 
@@ -192,8 +194,18 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         }
 
         @Override
-        public Attribute visit(ASTVariableDeclaratorId node, Void data) {
+        public Attribute visit(ASTVariableId node, Void data) {
             return new Attribute(node, "Name", node.getName());
+        }
+
+        @Override
+        public Attribute visit(ASTAssignmentExpression node, Void data) {
+            return new Attribute(node, "Operator", node.getOperator().getToken());
+        }
+
+        @Override
+        public Attribute visit(ASTUnaryExpression node, Void data) {
+            return new Attribute(node, "Operator", node.getOperator().getToken());
         }
     }
 }

@@ -5,14 +5,12 @@
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.AstNode;
-import org.mozilla.javascript.ast.AstRoot;
 import org.mozilla.javascript.ast.UpdateExpression;
 
 public final class ASTUpdateExpression extends AbstractEcmascriptNode<UpdateExpression> {
 
     ASTUpdateExpression(UpdateExpression updateExpression) {
         super(updateExpression);
-        super.setImage(AstRoot.operatorToString(updateExpression.getOperator()));
     }
 
     @Override

@@ -7,16 +7,15 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 import java.util.Objects;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Report.ConfigurationError;
-import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.Report.ConfigurationError;
+import net.sourceforge.pmd.reporting.Report.GlobalReportBuilderListener;
 
 /**
  * Abstract base class for {@link Renderer} implementations which only produce
@@ -25,8 +24,8 @@ import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
  * quite large in some scenarios. Consider using
  * {@link AbstractIncrementingRenderer} which can use significantly less memory.
  *
- * <p>Subclasses should only implement the {@link #end()} method to output the
- * complete {@link #report}.
+ * <p>Subclasses should only implement the {@link #outputReport(Report)} method to output the
+ * complete {@link Report} in the end.
  *
  * @see AbstractIncrementingRenderer
  */
@@ -54,13 +53,13 @@ public abstract class AbstractAccumulatingRenderer extends AbstractRenderer {
 
     /**
      * {@inheritDoc}
-     * 
-     * @deprecated This is internal API. Do not override when extending {@link AbstractAccumulatingRenderer}.
-     * In PMD7 this method will be made final.
+     *
+     * @implNote The implementation in this class does nothing. All the reported violations and
+     * errors are accumulated and can be rendered once with {@link #outputReport(Report)} in the
+     * end. Subclasses of {@link AbstractAccumulatingRenderer} cannot override this method
+     * anymore.
      */
     @Override
-    @InternalApi
-    @Deprecated
     public final void renderFileReport(Report report) throws IOException {
         // do nothing, final because it will never be called by the listener
         Objects.requireNonNull(report);

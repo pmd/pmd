@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
@@ -14,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * How this rule works: find additive expressions: + check that the addition is
@@ -50,7 +50,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRulechainRule {
         if (JavaAstUtils.isStringConcatExpr(arg)
             // ignore concatenations that produce constants
             && !arg.isCompileTimeConstant()) {
-            addViolation(ctx, arg);
+            ctx.addViolation(arg);
         }
     }
 

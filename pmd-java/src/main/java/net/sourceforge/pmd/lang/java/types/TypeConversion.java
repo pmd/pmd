@@ -144,6 +144,13 @@ public final class TypeConversion {
      * @return The capture conversion of t
      */
     public static JTypeMirror capture(JTypeMirror t) {
+        if (t instanceof JTypeVar) {
+            // Need to capture the upper bound because that bound contributes the methods of the tvar.
+            // Eg in `<C extends Collection<? super X>>` the methods available in C may mention the type
+            // parameter of collection. But this is a wildcard `? super X` that needs to be captured.
+            JTypeVar tv = (JTypeVar) t;
+            return tv.withUpperBound(capture(tv.getUpperBound()));
+        }
         return t instanceof JClassType ? capture((JClassType) t) : t;
     }
 

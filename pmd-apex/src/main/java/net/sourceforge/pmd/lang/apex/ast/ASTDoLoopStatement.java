@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.statement.DoLoopStatement;
+import com.google.summit.ast.statement.DoWhileLoopStatement;
 
-public final class ASTDoLoopStatement extends AbstractApexNode<DoLoopStatement> {
+public final class ASTDoLoopStatement extends AbstractApexNode.Single<DoWhileLoopStatement> {
 
-    ASTDoLoopStatement(DoLoopStatement doLoopStatement) {
-        super(doLoopStatement);
+    ASTDoLoopStatement(DoWhileLoopStatement doWhileLoopStatement) {
+        super(doWhileLoopStatement);
     }
 
 

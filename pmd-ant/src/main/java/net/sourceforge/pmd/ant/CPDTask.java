@@ -10,11 +10,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -23,17 +23,15 @@ import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.EnumeratedAttribute;
 import org.apache.tools.ant.types.FileSet;
 
-import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.cpd.CPDConfiguration;
 import net.sourceforge.pmd.cpd.CPDReport;
+import net.sourceforge.pmd.cpd.CPDReportRenderer;
 import net.sourceforge.pmd.cpd.CSVRenderer;
-import net.sourceforge.pmd.cpd.Language;
-import net.sourceforge.pmd.cpd.LanguageFactory;
-import net.sourceforge.pmd.cpd.ReportException;
+import net.sourceforge.pmd.cpd.CpdAnalysis;
 import net.sourceforge.pmd.cpd.SimpleRenderer;
-import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.XMLRenderer;
-import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 
 /**
  * CPD Ant task. Setters of this class are interpreted by Ant as properties
@@ -41,20 +39,26 @@ import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
  *
  * <p>Runs the CPD utility via ant. The ant task looks like this:</p>
  *
- * <pre>
- * &lt;project name="CPDProj" default="main" basedir="."&gt;
- *   &lt;taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" /&gt;
- *   &lt;target name="main"&gt;
- *     &lt;cpd encoding="UTF-16LE" language="java" ignoreIdentifiers="true"
- *          ignoreLiterals="true" ignoreAnnotations="true" minimumTokenCount="100"
- *          outputFile="c:\cpdrun.txt"&gt;
- *       &lt;fileset dir="/path/to/my/src"&gt;
- *         &lt;include name="*.java"/&gt;
- *       &lt;/fileset&gt;
- *     &lt;/cpd&gt;
- *   &lt;/target&gt;
- * &lt;/project&gt;
- * </pre>
+ * <pre>{@code
+ *   <project name="CPDProject" default="main" basedir=".">
+ *     <path id="pmd.classpath">
+ *         <fileset dir="/home/joe/pmd-bin-VERSION/lib">
+ *             <include name="*.jar"/>
+ *         </fileset>
+ *     </path>
+ *     <taskdef name="cpd" classname="net.sourceforge.pmd.ant.CPDTask" classpathref="pmd.classpath" />
+ *
+ *     <target name="main">
+ *       <cpd encoding="UTF-16LE" language="java" ignoreIdentifiers="true"
+ *            ignoreLiterals="true" ignoreAnnotations="true" minimumTokenCount="100"
+ *            outputFile="c:\cpdrun.txt">
+ *         <fileset dir="/path/to/my/src">
+ *           <include name="*.java"/>
+ *         </fileset>
+ *       </cpd>
+ *     </target>
+ *   </project>
+ * }</pre>
  *
  * <p>Required: minimumTokenCount, outputFile, and at least one file</p>
  */
@@ -74,7 +78,7 @@ public class CPDTask extends Task {
     private boolean skipLexicalErrors;
     private boolean skipDuplicateFiles;
     private boolean skipBlocks = true;
-    private String skipBlocksPattern = Tokenizer.DEFAULT_SKIP_BLOCKS_PATTERN;
+    private String skipBlocksPattern;
     private File outputFile;
     private String encoding = System.getProperty("file.encoding");
     private List<FileSet> filesets = new ArrayList<>();
@@ -92,20 +96,29 @@ public class CPDTask extends Task {
             log("Tokenizing files", Project.MSG_INFO);
             CPDConfiguration config = new CPDConfiguration();
             config.setMinimumTileSize(minimumTokenCount);
-            config.setLanguage(createLanguage());
-            config.setSourceEncoding(encoding);
+            config.setOnlyRecognizeLanguage(config.getLanguageRegistry().getLanguageById(language));
+            config.setSourceEncoding(Charset.forName(encoding));
             config.setSkipDuplicates(skipDuplicateFiles);
             config.setSkipLexicalErrors(skipLexicalErrors);
 
-            CPD cpd = new CPD(config);
-            tokenizeFiles(cpd);
+            config.setIgnoreAnnotations(ignoreAnnotations);
+            config.setIgnoreLiterals(ignoreLiterals);
+            config.setIgnoreIdentifiers(ignoreIdentifiers);
+            config.setIgnoreUsings(ignoreUsings);
+            if (skipBlocks) {
+                config.setSkipBlocksPattern(skipBlocksPattern);
+            }
 
-            log("Starting to analyze code", Project.MSG_INFO);
-            long timeTaken = analyzeCode(cpd);
-            log("Done analyzing code; that took " + timeTaken + " milliseconds");
+            try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
+                addFiles(cpd);
 
-            log("Generating report", Project.MSG_INFO);
-            report(cpd);
+                log("Starting to analyze code", Project.MSG_INFO);
+                long start = System.currentTimeMillis();
+                cpd.performAnalysis(this::report);
+                long timeTaken = System.currentTimeMillis() - start;
+                log("Done analyzing code; that took " + timeTaken + " milliseconds");
+
+            }
         } catch (IOException ioe) {
             log(ioe.toString(), Project.MSG_ERR);
             throw new BuildException("IOException during task execution", ioe);
@@ -118,31 +131,12 @@ public class CPDTask extends Task {
         }
     }
 
-    private Language createLanguage() {
-        Properties p = new Properties();
-        if (ignoreLiterals) {
-            p.setProperty(Tokenizer.IGNORE_LITERALS, "true");
-        }
-        if (ignoreIdentifiers) {
-            p.setProperty(Tokenizer.IGNORE_IDENTIFIERS, "true");
-        }
-        if (ignoreAnnotations) {
-            p.setProperty(Tokenizer.IGNORE_ANNOTATIONS, "true");
-        }
-        if (ignoreUsings) {
-            p.setProperty(Tokenizer.IGNORE_USINGS, "true");
-        }
-        p.setProperty(Tokenizer.OPTION_SKIP_BLOCKS, Boolean.toString(skipBlocks));
-        p.setProperty(Tokenizer.OPTION_SKIP_BLOCKS_PATTERN, skipBlocksPattern);
-        return LanguageFactory.createLanguage(language, p);
-    }
-
-    private void report(CPD cpd) throws ReportException {
-        if (!cpd.getMatches().hasNext()) {
+    private void report(CPDReport report) throws ReportException {
+        if (report.getMatches().isEmpty()) {
             log("No duplicates over " + minimumTokenCount + " tokens found", Project.MSG_INFO);
         }
+        log("Generating report", Project.MSG_INFO);
         CPDReportRenderer renderer = createRenderer();
-        CPDReport report = cpd.toReport();
 
         try {
             // will be closed via BufferedWriter/OutputStreamWriter chain down below
@@ -167,24 +161,15 @@ public class CPDTask extends Task {
         }
     }
 
-    private void tokenizeFiles(CPD cpd) throws IOException {
+    private void addFiles(CpdAnalysis cpd) throws IOException {
         for (FileSet fileSet : filesets) {
             DirectoryScanner directoryScanner = fileSet.getDirectoryScanner(getProject());
             String[] includedFiles = directoryScanner.getIncludedFiles();
-            for (int i = 0; i < includedFiles.length; i++) {
-                File file = new File(
-                        directoryScanner.getBasedir() + System.getProperty("file.separator") + includedFiles[i]);
-                log("Tokenizing " + file.getAbsolutePath(), Project.MSG_VERBOSE);
-                cpd.add(file);
+            for (String includedFile : includedFiles) {
+                Path file = directoryScanner.getBasedir().toPath().resolve(includedFile);
+                cpd.files().addFile(file);
             }
         }
-    }
-
-    private long analyzeCode(CPD cpd) {
-        long start = System.currentTimeMillis();
-        cpd.go();
-        long stop = System.currentTimeMillis();
-        return stop - start;
     }
 
     private CPDReportRenderer createRenderer() {
@@ -205,9 +190,9 @@ public class CPDTask extends Task {
             throw new BuildException("Must include at least one FileSet");
         }
 
-        if (!Arrays.asList(LanguageFactory.supportedLanguages).contains(language)) {
+        if (LanguageRegistry.CPD.getLanguageById(language) == null) {
             throw new BuildException("Language " + language + " is not supported. Available languages: "
-                    + Arrays.toString(LanguageFactory.supportedLanguages));
+                    + LanguageRegistry.CPD.commaSeparatedList(Language::getId));
         }
     }
 

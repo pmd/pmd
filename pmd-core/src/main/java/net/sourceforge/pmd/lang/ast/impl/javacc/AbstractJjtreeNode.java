@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.document.FileLocation;
@@ -13,13 +12,9 @@ import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Base class for node produced by JJTree. JJTree specific functionality
- * present on the API of {@link Node} and {@link AbstractNode} will be
- * moved here for 7.0.0.
- *
- * <p>This is experimental because it's expected to change for 7.0.0 in
- * unforeseeable ways. Don't use it directly, use the node interfaces.
+ * present on the API of {@link Node} and {@link AbstractNode} has been
+ * moved here for 7.0.0 (e.g. jjtClose methods).
  */
-@Experimental
 public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N extends JjtreeNode<N>> extends AbstractNode<B, N> implements JjtreeNode<N> {
     protected final int id;
     private JavaccToken firstToken;
@@ -38,7 +33,7 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
     }
 
     @Override
-    // @Deprecated // todo deprecate, will change tree dump tests
+    // @Deprecated // todo deprecate, will change tree dump tests (#4787)
     public String getImage() {
         return image;
     }

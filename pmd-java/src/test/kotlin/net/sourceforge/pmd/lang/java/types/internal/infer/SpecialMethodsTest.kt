@@ -5,12 +5,13 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBeA
-import net.sourceforge.pmd.lang.ast.test.shouldMatchN
+import io.kotest.matchers.shouldNotBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol
 import net.sourceforge.pmd.lang.java.types.*
+import net.sourceforge.pmd.lang.test.ast.shouldBeA
+import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import java.util.function.Supplier
 
 /**
@@ -44,7 +45,7 @@ class SpecialMethodsTest : ProcessorTestSpec({
 
         val t_Scratch = acu.declaredTypeSignatures()[0]
         val kvar = acu.typeVar("K")
-        val (k, k2, raw, call) = acu.methodCalls().toList()
+        val (k, k2, _, call) = acu.methodCalls().toList()
 
         doTest("Test this::getClass") {
             spy.shouldBeOk {
@@ -109,7 +110,7 @@ class SpecialMethodsTest : ProcessorTestSpec({
         """.trimIndent()
         )
 
-        val t_Foo = acu.descendants(ASTAnyTypeDeclaration::class.java).firstOrThrow().typeMirror
+        val t_Foo = acu.descendants(ASTTypeDeclaration::class.java).firstOrThrow().typeMirror
 
         val streamCall = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
@@ -137,7 +138,7 @@ class SpecialMethodsTest : ProcessorTestSpec({
 
         """.trimIndent())
 
-        val t_Scratch = acu.descendants(ASTAnyTypeDeclaration::class.java).firstOrThrow().typeMirror
+        acu.descendants(ASTTypeDeclaration::class.java).firstOrThrow().typeMirror shouldNotBe null
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 

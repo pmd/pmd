@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.statement.DmlUpsertStatement;
+import com.google.summit.ast.statement.DmlStatement;
 
-public final class ASTDmlUpsertStatement extends AbstractApexNode<DmlUpsertStatement> {
+public final class ASTDmlUpsertStatement extends AbstractDmlStatement {
 
-    ASTDmlUpsertStatement(DmlUpsertStatement dmlUpsertStatement) {
+    ASTDmlUpsertStatement(DmlStatement dmlUpsertStatement) {
         super(dmlUpsertStatement);
     }
 

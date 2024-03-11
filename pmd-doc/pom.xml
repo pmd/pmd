@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>pmd-doc</artifactId>
-    <name>PMD Documentation Generator</name>
+    <name>PMD Documentation Generator (internal)</name>
     <packaging>jar</packaging>
 
     <parent>
@@ -24,6 +24,9 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
+                        <configuration>
+                            <classpathScope>test</classpathScope>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>generate-rule-docs</id>
@@ -32,7 +35,7 @@
                                 </goals>
                                 <phase>package</phase>
                                 <configuration>
-                                    <mainClass>net.sourceforge.pmd.docs.GenerateRuleDocsCmd</mainClass>
+                                    <mainClass>net.sourceforge.pmd.doc.internal.GenerateRuleDocsCmd</mainClass>
                                     <arguments>
                                         <argument>${project.basedir}</argument>
                                     </arguments>
@@ -45,7 +48,7 @@
                                 </goals>
                                 <phase>verify</phase>
                                 <configuration>
-                                    <mainClass>net.sourceforge.pmd.docs.DeadLinksChecker</mainClass>
+                                    <mainClass>net.sourceforge.pmd.doc.internal.DeadLinksChecker</mainClass>
                                     <arguments>
                                         <argument>${project.basedir}</argument>
                                     </arguments>
@@ -58,7 +61,7 @@
                                 </goals>
                                 <phase>verify</phase>
                                 <configuration>
-                                    <mainClass>net.sourceforge.pmd.docs.RuleTagChecker</mainClass>
+                                    <mainClass>net.sourceforge.pmd.doc.internal.RuleTagChecker</mainClass>
                                     <arguments>
                                         <argument>${project.basedir}</argument>
                                     </arguments>
@@ -74,8 +77,9 @@
     <dependencies>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-dist</artifactId>
+            <artifactId>pmd-languages-deps</artifactId>
             <version>${project.version}</version>
+            <type>pom</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -96,6 +100,11 @@
             <artifactId>snakeyaml</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>

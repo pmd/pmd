@@ -20,55 +20,6 @@
                     <suppressionsLocation>pmd-cli-checkstyle-suppressions.xml</suppressionsLocation>
                 </configuration>
             </plugin>
-
-            <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>exec-maven-plugin</artifactId>
-              <executions>
-                <execution>
-                  <id>generate-autocompletion-script</id>
-                  <phase>package</phase>
-                  <goals>
-                    <goal>exec</goal>
-                  </goals>
-                </execution>
-              </executions>
-              <configuration>
-                <executable>java</executable>
-                <arguments>
-                  <argument>-Dpicocli.autocomplete.systemExitOnError</argument>
-                  <argument>-cp</argument>
-                  <classpath />
-                  <argument>picocli.AutoComplete</argument>
-                  <argument>--force</argument>
-                  <argument>--completionScript</argument>
-                  <argument>${project.build.directory}/pmd_completion.sh</argument>
-                  <argument>net.sourceforge.pmd.cli.commands.internal.PmdRootCommand</argument>
-                </arguments>
-              </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>add-completion-artifact</id>
-                        <goals>
-                            <goal>attach-artifact</goal>
-                        </goals>
-                        <configuration>
-                            <artifacts>
-                                <artifact>
-                                    <file>${project.build.directory}/pmd_completion.sh</file>
-                                    <type>sh</type>
-                                    <classifier>completion</classifier>
-                                </artifact>
-                            </artifacts>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
     <dependencies>
@@ -78,22 +29,10 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!--
-            Language Modules as runtime dependencies.
-            Needed for autocompletion of languages.
-        -->
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-languages-deps</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-            <scope>runtime</scope>
-        </dependency>
-
         <!-- Needed for Designer command -->
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-ui</artifactId>
+            <artifactId>pmd-designer</artifactId>
             <version>${pmd-designer.version}</version>
         </dependency>
 
@@ -117,9 +56,17 @@
             <groupId>org.checkerframework</groupId>
             <artifactId>checker-qual</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>com.github.tomakehurst</groupId>
-            <artifactId>wiremock-jre8</artifactId>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-java</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-javascript</artifactId>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

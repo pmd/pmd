@@ -20,13 +20,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.FooRule;
-import net.sourceforge.pmd.Report.ConfigurationError;
-import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.FileLocation;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.lang.rule.Rule;
+import net.sourceforge.pmd.reporting.InternalApiBridge;
+import net.sourceforge.pmd.reporting.Report.ConfigurationError;
+import net.sourceforge.pmd.reporting.Report.ProcessingError;
+import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 class YAHTMLRendererTest extends AbstractRendererTest {
@@ -46,7 +46,7 @@ class YAHTMLRendererTest extends AbstractRendererTest {
         FileLocation loc = createLocation(beginLine, beginColumn, endLine, endColumn);
         Map<String, String> additionalInfo = CollectionUtil.mapOf(RuleViolation.PACKAGE_NAME, packageNameArg,
                                                                   RuleViolation.CLASS_NAME, classNameArg);
-        return new ParametricRuleViolation(new FooRule(), loc, "blah", additionalInfo);
+        return InternalApiBridge.createRuleViolation(new FooRule(), loc, "blah", additionalInfo);
     }
 
     @Override

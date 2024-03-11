@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Timeout;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
-import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
+import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
@@ -323,8 +323,8 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
     @Test
     void testMethodReferenceConfused() {
         ASTCompilationUnit ast = java.parseResource("MethodReferenceConfused.java", "10");
-        ASTVariableDeclaratorId varWithMethodName = AstTestUtil.varId(ast, "method");
-        ASTVariableDeclaratorId someObject = AstTestUtil.varId(ast, "someObject");
+        ASTVariableId varWithMethodName = AstTestUtil.varId(ast, "method");
+        ASTVariableId someObject = AstTestUtil.varId(ast, "someObject");
 
         assertThat(varWithMethodName.getLocalUsages(), empty());
         assertThat(someObject.getLocalUsages(), hasSize(1));

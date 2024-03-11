@@ -2,7 +2,7 @@
 title: Language configuration
 permalink: pmd_languages_configuration.html
 author: Clément Fournier
-last_updated: July 2022 (7.0.0)
+last_updated: February 2024 (7.0.0)
 tags: [languages]
 keywords: [pmd, cpd, options, command, auxclasspath, language, properties]
 summary: "Summary of language configuration options and properties"
@@ -24,7 +24,10 @@ PropertyName is the name of the property converted to SCREAMING_SNAKE_CASE, that
 
 As a convention, properties whose name start with an *x* are internal and may be removed or changed without notice.
 
-Programmatically, the language properties can be set on `PMDConfiguration` before using the PmdAnalyzer instance
+Properties whose name start with **CPD** are used to configure CPD CpdLexer options.
+
+Programmatically, the language properties can be set on `PMDConfiguration` (or `CPDConfiguration`) before using the
+{%jdoc core::PmdAnalyzer %} (or {%jdoc core::cpd.CpdAnalyzer %}) instance
 to start the analysis:
 
 ```java
@@ -47,6 +50,39 @@ All languages support the following properties:
   version of the language will be used.
 
   This property can also be set via the CLI option `--use-version`.
+
+## CPD language properties
+
+Many languages support the following properties, which are centrally defined in {% jdoc core::cpd.CpdLanguageProperties %}:
+
+- `cpdIgnoreLiteralSequences`: Ignore sequences of literals, eg `0, 0, 0, 0`.
+
+  This property can also be set via the CLI option `--ignore-literal-sequences`.
+
+- `cpdIgnoreLiteralAndIdentifierSequences`: Ignore sequences of literals and identifiers, eg `a, b, 0, 0`.
+
+  This property can also be set via the CLI option `--ignore-sequences`.
+
+- `cpdAnonymizeLiterals`: Anonymize literals. They are still part of the token stream but all literals appear to have
+  the same value.
+
+  This property can also be set via the CLI option `--ignore-literals`.
+
+- `cpdAnonymizeIdentifiers`: Anonymize identifiers. They are still part of the token stream but all identifiers
+  appear to have the same value.
+
+  This property can also be set via the CLI option `--ignore-identifiers`.
+
+- `cpdIgnoreImports`: Ignore import statements and equivalent (eg using statements in C#).
+
+  This property can also be set via the CLI option `--ignore-usings`.
+
+- `cpdIgnoreMetadata`: Ignore metadata such as Java annotations or C# attributes.
+
+  This property can also be set via the CLI option `--ignore-annotations`.
+
+Note: {% jdoc core::cpd.CPDConfiguration %} has convenience methods to control these options, e.g.
+{% jdoc core::cpd.CPDConfiguration#setIgnoreAnnotations(boolean) %}.
 
 ## Java language properties
 
@@ -72,16 +108,24 @@ The Java language can be configured with the following properties:
 
   Environment variable: `PMD_APEX_ROOT_DIRECTORY`
 
-## VisualForce language properties
+## Visualforce language properties
 
 - `apexDirectories`: Comma separated list of directories for Apex classes. Absolute
   or relative to the Visualforce directory. Default is `../classes`. Specifying an
   empty string will disable data type resolution for Apex Controller properties.
 
-  Environment variable: `PMD_VF_APEX_DIRECTORIES`
+  Environment variable: `PMD_VISUALFORCE_APEX_DIRECTORIES`
 
 - `objectsDirectories`: Comma separated list of directories for Custom Objects.
   Absolute or relative to the Visualforce directory. Default is `../objects`.
   Specifying an empty string will disable data type resolution for Custom Object fields.
 
-  Environment variable: `PMD_VF_OBJECTS_DIRECTORIES`
+  Environment variable: `PMD_VISUALFORCE_OBJECTS_DIRECTORIES`
+
+## CPP language properties
+
+- `cpdSkipBlocksPattern`: Specifies a start and end delimiter for CPD to completely ignore.
+  The delimiters are separated by a pipe `|`. The default skips code
+  that is conditionally compiled out. Set this property to empty to disable this.
+
+  This property can also be set via the CLI option `--skip-blocks-pattern`.

@@ -13,7 +13,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * <pre class="grammar">
  *
  * SuperExpression ::= "super"
- *                   | {@link ASTClassOrInterfaceType TypeName} "." "super"
+ *                   | {@link ASTClassType ClassType} "." "super"
  *
  * </pre>
  */
@@ -24,8 +24,8 @@ public final class ASTSuperExpression extends AbstractJavaExpr implements ASTPri
 
 
     @Nullable
-    public ASTClassOrInterfaceType getQualifier() {
-        return getNumChildren() > 0 ? (ASTClassOrInterfaceType) getChild(0) : null;
+    public ASTClassType getQualifier() {
+        return getNumChildren() > 0 ? (ASTClassType) getChild(0) : null;
     }
 
     @Override

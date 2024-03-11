@@ -15,15 +15,14 @@ import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.InternalApiBridge;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Basic abstract implementation of all parser-independent methods of the Rule
@@ -58,34 +57,6 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     @Override
     protected String getPropertySourceType() {
         return "rule";
-    }
-
-    /**
-     * @deprecated Use {@link #deepCopy()} to create verbatim copies of rules.
-     */
-    @Deprecated
-    public void deepCopyValuesTo(AbstractRule otherRule) {
-        otherRule.language = language;
-        otherRule.minimumLanguageVersion = minimumLanguageVersion;
-        otherRule.maximumLanguageVersion = maximumLanguageVersion;
-        otherRule.deprecated = deprecated;
-        otherRule.name = name;
-        otherRule.since = since;
-        otherRule.ruleClass = ruleClass;
-        otherRule.ruleSetName = ruleSetName;
-        otherRule.message = message;
-        otherRule.description = description;
-        otherRule.examples = copyExamples();
-        otherRule.externalInfoUrl = externalInfoUrl;
-        otherRule.priority = priority;
-        otherRule.propertyDescriptors = new ArrayList<>(getPropertyDescriptors());
-        otherRule.propertyValuesByDescriptor = copyPropertyValues();
-        otherRule.ruleChainVisits = new LinkedHashSet<>(ruleChainVisits);
-        otherRule.classRuleChainVisits = new LinkedHashSet<>(classRuleChainVisits);
-    }
-
-    private List<String> copyExamples() {
-        return new ArrayList<>(examples);
     }
 
     @Override
@@ -237,16 +208,6 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         return classRuleChainVisits;
     }
 
-
-    /**
-     * @deprecated Override {@link #buildTargetSelector()}, this is
-     *     provided for legacy compatibility
-     */
-    @Deprecated
-    protected void addRuleChainVisit(Class<? extends Node> nodeClass) {
-        classRuleChainVisits.add(nodeClass);
-    }
-
     @Override
     public final RuleTargetSelector getTargetSelector() {
         if (myStrategy == null) {
@@ -256,8 +217,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     }
 
     /**
-     * Create the targeting strategy for this rule. Please override
-     * this instead of using {@link #addRuleChainVisit(Class)}.
+     * Create the targeting strategy for this rule.
      * Use the factory methods of {@link RuleTargetSelector}.
      */
     @NonNull
@@ -286,14 +246,14 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
      *  asCtx(data).addViolationWithMessage(node, "Some message");
      * }</pre>
      *
-     * In PMD 7, rules will have type-safe access to a RuleContext, and
-     * this will be deprecated as useless. In PMD 6, you can use this to
-     * stop using the deprecated {@link #addViolation(Object, Node)} overloads
-     * of this class.
+     * In longer term, rules will have type-safe access to a RuleContext, when the
+     * rules use an appropriate visitor. Many rules have not been refactored yet.
+     * Once this is done, this method will be deprecated as useless. Until then,
+     * this is a way to hide the explicit cast to {@link RuleContext} in rules.
      */
     protected final RuleContext asCtx(Object ctx) {
         if (ctx instanceof RuleContext) {
-            assert isThisRule(((RuleContext) ctx).getRule())
+            assert isThisRule(InternalApiBridge.getRule((RuleContext) ctx))
                 : "not an appropriate rule context!";
             return (RuleContext) ctx;
         } else {
@@ -303,57 +263,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     private boolean isThisRule(Rule rule) {
         return rule == this // NOPMD CompareObjectsWithEquals
-            || rule instanceof AbstractDelegateRule && this.isThisRule(((AbstractDelegateRule) rule).getRule());
-    }
-
-    /**
-     * @see RuleContext#addViolation(Node)
-     * @deprecated Replace with {@code asCtx(data).addViolation(node)}.
-     */
-    public void addViolation(Object data, Node node) {
-        asCtx(data).addViolation(node);
-    }
-
-    /**
-     * @see RuleContext#addViolation(Node, Object[])
-     *
-     * @deprecated Replace with {@code asCtx(data).addViolation(node, arg)}.
-     */
-    public void addViolation(Object data, Node node, String arg) {
-        asCtx(data).addViolation(node, arg);
-    }
-
-    /**
-     * @see RuleContext#addViolation(Node, Object[])
-     *
-     * @deprecated Replace with {@code asCtx(data).addViolation(node, arg1, arg2)}.
-     */
-    public void addViolation(Object data, Node node, Object... args) {
-        asCtx(data).addViolation(node, args);
-    }
-
-    /**
-     * @see RuleContext#addViolationWithMessage(Node, String)
-     * @deprecated Replace with {@code asCtx(data).addViolationWithMessage(node, message)}.
-     */
-    public void addViolationWithMessage(Object data, Node node, String message) {
-        asCtx(data).addViolationWithMessage(node, message);
-    }
-
-    /**
-     * @see RuleContext#addViolationWithPosition(Node, int, int, String, Object...)
-     * @deprecated Replace with {@code asCtx(data).addViolationWithPosition(node, beginLine, endLine, message)}.
-     */
-    public void addViolationWithMessage(Object data, Node node, String message, int beginLine, int endLine) {
-        asCtx(data).addViolationWithPosition(node, beginLine, endLine, message);
-    }
-
-    /**
-     * @see RuleContext#addViolationWithMessage(Node, String, Object...)
-     * @deprecated Replace with {@code asCtx(data).addViolationWithMessage(node, message, args)}.
-     */
-    public void addViolationWithMessage(Object data, Node node, String message, Object[] args) {
-        asCtx(data).addViolationWithMessage(node, message, args);
+            || rule instanceof RuleReference && this.isThisRule(((RuleReference) rule).getRule());
     }
 
     /**

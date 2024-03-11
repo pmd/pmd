@@ -9,7 +9,6 @@ import java.util.List;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTRunAsBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
-import net.sourceforge.pmd.lang.apex.rule.AbstractApexUnitTestRule;
 
 /**
  * Apex unit tests should have System.runAs methods in them
@@ -28,10 +27,10 @@ public class ApexUnitTestClassShouldHaveRunAsRule extends AbstractApexUnitTestRu
     }
 
     private Object checkForRunAsStatements(ApexNode<?> node, Object data) {
-        final List<ASTRunAsBlockStatement> runAsStatements = node.findDescendantsOfType(ASTRunAsBlockStatement.class);
+        final List<ASTRunAsBlockStatement> runAsStatements = node.descendants(ASTRunAsBlockStatement.class).toList();
 
         if (runAsStatements.isEmpty()) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
         return data;
     }

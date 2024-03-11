@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
@@ -19,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  *
@@ -79,7 +79,7 @@ public class AssignmentInOperandRule extends AbstractJavaRulechainRule {
             || parent instanceof ASTWhileStatement && !getProperty(ALLOW_WHILE_DESCRIPTOR)
             || parent instanceof ASTForStatement && ((ASTForStatement) parent).getCondition() == toplevel && !getProperty(ALLOW_FOR_DESCRIPTOR)) {
 
-            addViolation(ctx, impureExpr);
+            ctx.addViolation(impureExpr);
         }
     }
 

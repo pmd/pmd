@@ -25,11 +25,11 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMDVersion;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -39,7 +39,6 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
 
     public static final String NAME = "xml";
 
-    // TODO 7.0.0 use PropertyDescriptor<String> or something more specialized
     public static final PropertyDescriptor<String> ENCODING =
         PropertyFactory.stringProperty("encoding").desc("XML encoding format").defaultValue("UTF-8").build();
 

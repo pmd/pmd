@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 /**
  * @author Clément Fournier
@@ -34,13 +34,13 @@ class TypeIsFunctionTest extends BaseXPathFunctionTest {
     void testTypeIsArray() {
         Rule rule = makeXpathRuleFromXPath("//*[pmd-java:typeIs('int[]')]");
 
-        // ArrayType + VariableDeclaratorId
+        // ArrayType + VariableId
         assertFinds(rule, 2, "class K { int[] i; }");
     }
 
     @Test
     void testWrongTypeReturnsFalse() {
-        Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceBody[pmd-java:typeIs('java.lang.Override')]");
+        Rule rule = makeXpathRuleFromXPath("//ClassBody[pmd-java:typeIs('java.lang.Override')]");
 
         assertFinds(rule, 0, "interface O { @Override void foo(); }");
     }

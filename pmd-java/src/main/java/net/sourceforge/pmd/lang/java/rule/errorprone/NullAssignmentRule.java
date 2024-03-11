@@ -30,11 +30,11 @@ public class NullAssignmentRule extends AbstractJavaRulechainRule {
                 return data;
             }
             if (assignment.getRightOperand() == node) {
-                addViolation(data, node);
+                asCtx(data).addViolation(node);
             }
         } else if (node.getParent() instanceof ASTConditionalExpression) {
             if (isBadTernary((ASTConditionalExpression) node.getParent(), node)) {
-                addViolation(data, node);
+                asCtx(data).addViolation(node);
             }
         }
 

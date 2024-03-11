@@ -19,7 +19,7 @@ class StringLiteralsTest extends AbstractPLSQLParserTst {
     @Test
     void parseStringLiterals() throws Exception {
         ASTInput input = plsql.parseResource("StringLiterals.pls");
-        List<ASTStringLiteral> strings = input.findDescendantsOfType(ASTStringLiteral.class);
+        List<ASTStringLiteral> strings = input.descendants(ASTStringLiteral.class).toList();
         assertEquals(20, strings.size());
 
         assertString("'Hello'", "Hello", 0, strings);
@@ -34,7 +34,7 @@ class StringLiteralsTest extends AbstractPLSQLParserTst {
     @Test
     void parseMultilineVarchar() throws Exception {
         ASTInput input = plsql.parseResource("MultilineVarchar.pls");
-        List<ASTStringLiteral> strings = input.findDescendantsOfType(ASTStringLiteral.class);
+        List<ASTStringLiteral> strings = input.descendants(ASTStringLiteral.class).toList();
         assertEquals(1, strings.size());
         assertTrue(normalizeEol(strings.get(0).getString()).startsWith("\ncreate or replace and"));
     }

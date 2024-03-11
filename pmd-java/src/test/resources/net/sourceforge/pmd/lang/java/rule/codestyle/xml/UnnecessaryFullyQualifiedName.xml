@@ -1069,4 +1069,35 @@ class Scratch {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UnnecessaryFullyQualifiedName fails to recognize illegal self reference in enums #4631</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package impl;
+
+import api.ObjectID;
+import static api.ObjectID.*;
+
+public enum Tree {
+    // src/impl/Tree.java:8:   UnnecessaryFullyQualifiedName:  Unnecessary use of fully qualified name 'ObjectID.TEAK_TREE' due to existing static import 'api.ObjectID.*'
+    TEAK_TREE(ObjectID.TEAK_TREE, TEAK_TREE_30437, TEAK_TREE_40758);
+
+    private final int[] treeIds;
+
+    Tree(int... treeIds) {
+        this.treeIds = treeIds;
+    }
+}
+/*
+package api;
+
+public final class ObjectID {
+    public static final int TEAK_TREE = 9036;
+    public static final int TEAK_TREE_30437 = 30437;
+    public static final int TEAK_TREE_40758 = 40758;
+}
+*/
+]]></code>
+    </test-code>
 </test-data>

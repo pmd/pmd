@@ -46,7 +46,7 @@ public final class TypesFromReflection {
      * JTypeMirror streamOfInt = fromReflect(new TypeLiteral<Stream<Integer>>() {}, node.getTypeSystem());
      *
      * if (node.getTypeMirror().equals(streamOfInt))
-     *   addViolation(node, "Use IntStream instead of Stream<Integer>");
+     *   ruleContext.addViolation(node, "Use IntStream instead of Stream<Integer>");
      *
      * // going the long way:
      * TypeSystem ts = node.getTypeSystem();
@@ -187,7 +187,7 @@ public final class TypesFromReflection {
 
     /**
      * Load a class. Supports loading array types like 'java.lang.String[]' and
-     * converting a canonical name to a binary name (eg 'java.util.Map.Entry' ->
+     * converting a canonical name to a binary name (e.g. 'java.util.Map.Entry' -&gt;
      * 'java.util.Map$Entry').
      */
     public static @Nullable JTypeMirror loadType(TypeSystem ctr, String className) {
@@ -196,7 +196,7 @@ public final class TypesFromReflection {
 
     /**
      * Load a class. Supports loading array types like 'java.lang.String[]' and
-     * converting a canonical name to a binary name (eg 'java.util.Map.Entry' ->
+     * converting a canonical name to a binary name (e.g. 'java.util.Map.Entry' -&gt;
      * 'java.util.Map$Entry'). Types that are not on the classpath may
      * be replaced by placeholder types if the {@link UnresolvedClassStore}
      * parameter is non-null.

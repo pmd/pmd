@@ -12,7 +12,7 @@ import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isRefToFie
 import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isThisOrSuper;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isGetterCall;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isNullChecked;
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -21,7 +21,6 @@ import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
@@ -38,7 +37,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -57,6 +56,7 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.util.OptionalBool;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * This rule can detect possible violations of the Law of Demeter. The Law of
@@ -129,8 +129,8 @@ public class LawOfDemeterRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTFieldAccess node, Object data) {
         if (shouldReport(node)) {
-            addViolationWithMessage(
-                data, node,
+            asCtx(data).addViolationWithMessage(
+                node,
                 FIELD_ACCESS_ON_FOREIGN_VALUE,
                 new Object[] {
                     node.getName(),
@@ -144,8 +144,8 @@ public class LawOfDemeterRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTMethodCall node, Object data) {
         if (shouldReport(node)) {
-            addViolationWithMessage(
-                data, node,
+            asCtx(data).addViolationWithMessage(
+                node,
                 METHOD_CALL_ON_FOREIGN_VALUE,
                 new Object[] {
                     node.getMethodName(),
@@ -182,7 +182,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         return false;
     }
 
-    private boolean isAllowedStore(ASTVariableDeclaratorId varId) {
+    private boolean isAllowedStore(ASTVariableId varId) {
         return varId != null && varId.getLocalUsages().stream().noneMatch(this::escapesMethod);
     }
 

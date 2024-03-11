@@ -9,7 +9,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre class="grammar">
  *
- * TypeBody ::= {@link ASTClassOrInterfaceBody ClassOrInterfaceBody}
+ * TypeBody ::= {@link ASTClassBody ClassBody}
  *            | {@link ASTEnumBody EnumBody}
  *            | {@link ASTRecordBody RecordBody}
  *            | {@link ASTAnnotationTypeBody AnnotationTypeBody}

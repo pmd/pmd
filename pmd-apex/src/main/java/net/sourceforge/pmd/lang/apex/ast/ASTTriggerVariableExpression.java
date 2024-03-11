@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.TriggerVariableExpression;
+import com.google.summit.ast.expression.FieldExpression;
 
-public final class ASTTriggerVariableExpression extends AbstractApexNode<TriggerVariableExpression> {
+public final class ASTTriggerVariableExpression extends AbstractApexNode.Single<FieldExpression> {
 
-    ASTTriggerVariableExpression(TriggerVariableExpression triggerVariableExpression) {
-        super(triggerVariableExpression);
+    ASTTriggerVariableExpression(FieldExpression fieldExpression) {
+        super(fieldExpression);
     }
 
 

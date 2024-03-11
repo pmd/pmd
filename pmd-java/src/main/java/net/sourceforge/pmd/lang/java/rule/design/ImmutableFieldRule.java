@@ -10,16 +10,16 @@ import java.util.Set;
 import java.util.function.Function;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
@@ -43,7 +43,7 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
         );
     private static final Function<Object, JavaNode> INTERESTING_ANCESTOR =
         NodeStream.asInstanceOf(ASTLambdaExpression.class,
-                                ASTAnyTypeDeclaration.class,
+                                ASTTypeDeclaration.class,
                                 ASTConstructorDeclaration.class);
 
     public ImmutableFieldRule() {
@@ -53,7 +53,7 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTFieldDeclaration field, Object data) {
-        ASTAnyTypeDeclaration enclosingType = field.getEnclosingType();
+        ASTTypeDeclaration enclosingType = field.getEnclosingType();
         if (field.getEffectiveVisibility().isAtMost(Visibility.V_PRIVATE)
             && !field.getModifiers().hasAny(JModifier.VOLATILE, JModifier.STATIC, JModifier.FINAL)
             && !JavaAstUtils.hasAnyAnnotation(enclosingType, INVALIDATING_CLASS_ANNOT)
@@ -62,7 +62,7 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
             DataflowResult dataflow = DataflowPass.getDataflowResult(field.getRoot());
 
             outer:
-            for (ASTVariableDeclaratorId varId : field.getVarIds()) {
+            for (ASTVariableId varId : field.getVarIds()) {
 
                 boolean hasWrite = false;
                 for (ASTNamedReferenceExpr usage : varId.getLocalUsages()) {
@@ -94,7 +94,7 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    private boolean defaultValueDoesNotReachEndOfCtor(DataflowResult dataflow, ASTVariableDeclaratorId varId) {
+    private boolean defaultValueDoesNotReachEndOfCtor(DataflowResult dataflow, ASTVariableId varId) {
         AssignmentEntry fieldDef = DataflowPass.getFieldDefinition(varId);
         // first assignments to the field
         Set<AssignmentEntry> killers = dataflow.getKillers(fieldDef);

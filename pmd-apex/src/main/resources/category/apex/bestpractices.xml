@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <ruleset name="Best Practices"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
@@ -106,7 +106,7 @@ private class TestRunAs {
           since="6.13.0"
           language="apex"
           message="Apex test methods should have @isTest annotation."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestmethodshouldhaveistestannotation">
         <description>
 Apex test methods should have `@isTest` annotation instead of the `testMethod` keyword,
@@ -116,7 +116,6 @@ annotation for test classes and methods.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -231,7 +230,7 @@ trigger Accounts on Account (before insert, before update, before delete, after 
           since="6.18.0"
           language="apex"
           message="Calls to System.debug should specify a logging level."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#debugsshoulduselogginglevel">
        <description>
 The first parameter of System.debug, when using the signature with two parameters, is a LoggingLevel enum.

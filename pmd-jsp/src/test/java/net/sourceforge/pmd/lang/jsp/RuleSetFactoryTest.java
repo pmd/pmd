@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.jsp;
 
-import net.sourceforge.pmd.AbstractRuleSetFactoryTest;
+import net.sourceforge.pmd.test.lang.rule.AbstractRuleSetFactoryTest;
 
 /**
  * Test jsp's rulesets

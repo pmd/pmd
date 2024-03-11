@@ -7,16 +7,18 @@ package net.sourceforge.pmd.renderers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.FooRule;
-import net.sourceforge.pmd.Report.ConfigurationError;
-import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.InternalApiBridge;
+import net.sourceforge.pmd.reporting.Report.ConfigurationError;
+import net.sourceforge.pmd.reporting.Report.ProcessingError;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 class SummaryHTMLRendererTest extends AbstractRendererTest {
 
@@ -24,7 +26,7 @@ class SummaryHTMLRendererTest extends AbstractRendererTest {
     Renderer getRenderer() {
         Renderer result = new SummaryHTMLRenderer();
         result.setProperty(HTMLRenderer.LINK_PREFIX, "link_prefix");
-        result.setProperty(HTMLRenderer.LINE_PREFIX, "line_prefix");
+        result.setProperty(HTMLRenderer.LINE_PREFIX, Optional.of("line_prefix"));
         result.setProperty(HTMLRenderer.HTML_EXTENSION, true);
         return result;
     }
@@ -68,8 +70,8 @@ class SummaryHTMLRendererTest extends AbstractRendererTest {
         return "<html><head><title>PMD</title></head><body>" + EOL + "<center><h2>Summary</h2></center>" + EOL
                 + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + EOL
                 + "<tr><th>Rule name</th><th>Number of violations</th></tr>" + EOL
-                + "<tr><td>Boo</td><td align=center>1</td></tr>" + EOL
-                + "<tr><td>Foo</td><td align=center>1</td></tr>" + EOL + "</table>" + EOL
+                + "<tr><td>Foo</td><td align=center>1</td></tr>" + EOL
+                + "<tr><td>Boo</td><td align=center>1</td></tr>" + EOL + "</table>" + EOL
                 + "<center><h2>Detail</h2></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
                 + EOL
                 + "<center><h3>PMD report</h3></center><center><h3>Problems found</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
@@ -147,7 +149,7 @@ class SummaryHTMLRendererTest extends AbstractRendererTest {
             DummyRootNode root = helper.parse("dummy code", getSourceCodeFilename())
                                        .withNoPmdComments(Collections.singletonMap(1, "test"));
 
-            RuleContext ruleContext = RuleContext.create(listener, new FooRule());
+            RuleContext ruleContext = InternalApiBridge.createRuleContext(listener, new FooRule());
             ruleContext.addViolationWithPosition(root, 1, 1, "suppress test");
         };
     }

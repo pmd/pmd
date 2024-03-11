@@ -13,7 +13,6 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
-import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 
 /**
@@ -42,7 +41,9 @@ import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
  *
  * </pre>
  */
-public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration<JMethodSymbol> {
+public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JMethodSymbol> {
+
+    private String name;
 
     /**
      * Populated by {@link OverrideResolutionPass}.
@@ -89,24 +90,15 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
         return ident.getReportLocation();
     }
 
-    /**
-     * Returns the simple name of the method.
-     *
-     * @deprecated Use {@link #getName()}
-     */
-    @Deprecated
-    @DeprecatedAttribute(replaceWith = "@Name")
-    public String getMethodName() {
-        return getName();
-    }
-
-
     /** Returns the simple name of the method. */
     @Override
     public String getName() {
-        return getImage();
+        return name;
     }
 
+    void setName(String name) {
+        this.name = name;
+    }
 
     /**
      * If this method declaration is an explicit record component accessor,
@@ -132,6 +124,14 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
         return getResultTypeNode().isVoid();
     }
 
+    /** Returns true if this method is static. */
+    public boolean isStatic() {
+        return hasModifiers(JModifier.STATIC);
+    }
+
+    public boolean isFinal() {
+        return hasModifiers(JModifier.FINAL);
+    }
 
     /**
      * Returns the default clause, if this is an annotation method declaration
@@ -166,6 +166,20 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
             && "main".equals(this.getName())
             && this.isVoid()
             && this.getArity() == 1
-            && TypeTestUtil.isExactlyA(String[].class, this.getFormalParameters().get(0));
+            && TypeTestUtil.isExactlyA(String[].class, this.getFormalParameters().get(0))
+            || isMainMethodUnnamedClass();
+    }
+
+    /**
+     * With JEP 445 (Java 21 Preview) the main method does not need to be static anymore and
+     * does not need to be public or have a formal parameter.
+     */
+    private boolean isMainMethodUnnamedClass() {
+        return this.getRoot().isUnnamedClass()
+                && "main".equals(this.getName())
+                && !this.hasModifiers(JModifier.PRIVATE)
+                && this.isVoid()
+                && (this.getArity() == 0
+                    || this.getArity() == 1 && TypeTestUtil.isExactlyA(String[].class, this.getFormalParameters().get(0)));
     }
 }

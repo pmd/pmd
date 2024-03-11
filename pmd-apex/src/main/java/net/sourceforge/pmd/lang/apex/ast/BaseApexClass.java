@@ -4,11 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+import com.google.summit.ast.declaration.TypeDeclaration;
 
-import apex.jorje.semantic.ast.compilation.Compilation;
-
-abstract class BaseApexClass<T extends Compilation> extends AbstractApexNode<T> implements ASTUserClassOrInterface<T> {
+abstract class BaseApexClass<T extends TypeDeclaration> extends AbstractApexNode.Single<T> implements ASTUserClassOrInterface<T> {
 
     private ApexQualifiedName qname;
 
@@ -21,27 +19,21 @@ abstract class BaseApexClass<T extends Compilation> extends AbstractApexNode<T> 
         return true;
     }
 
-    /**
-     * @deprecated Use {@link #getSimpleName()}
-     */
     @Override
-    @Deprecated
-    @DeprecatedUntil700
     public String getImage() {
         return getSimpleName();
     }
 
     @Override
     public String getSimpleName() {
-        String apexName = getDefiningType();
-        return apexName.substring(apexName.lastIndexOf('.') + 1);
+        return node.getId().getString();
     }
 
     @Override
     public ApexQualifiedName getQualifiedName() {
         if (qname == null) {
 
-            ASTUserClass parent = this.getFirstParentOfType(ASTUserClass.class);
+            ASTUserClass parent = ancestors(ASTUserClass.class).first();
 
             if (parent != null) {
                 qname = ApexQualifiedName.ofNestedClass(parent.getQualifiedName(), this);

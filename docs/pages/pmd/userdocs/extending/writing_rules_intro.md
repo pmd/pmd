@@ -2,7 +2,7 @@
 title: Introduction to writing PMD rules
 tags: [extending, userdocs, getting_started]
 summary: "Writing your own PMD rules"
-last_updated: February 2020 (6.22.0)
+last_updated: December 2023 (7.0.0)
 permalink: pmd_userdocs_extending_writing_rules_intro.html
 author: Clément Fournier <clement.fournier76@gmail.com>
 ---
@@ -14,19 +14,16 @@ team.
 ## How rules work: the AST
 
 Before running rules, PMD parses the source file into a data structure called an
-**abstract syntax tree (AST)**. This tree represents the syntactic structure of the
+**[abstract syntax tree (AST)](https://en.wikipedia.org/wiki/Abstract_syntax_tree)**.
+This tree represents the syntactic structure of the
 code, and encodes syntactic relations between source code elements. For instance,
 in Java, method declarations belong to a class: in the AST, the nodes representing
 method declarations will be descendants of a node representing the declaration of
 their enclosing class. This representation is thus much richer than the original
 source code (which, for a program, is just a chain of characters), or the token
-chain produced by a lexer (which is e.g. what Checkstyle works on). For example:
+chain produced by a lexer. For example:
 
 <table>
-<colgroup>
-<col width="40%" />
-<col width="70%" />
-</colgroup>
 <thead>
 <tr class="header">
 <th>Sample code (Java)</th>
@@ -49,10 +46,11 @@ class Foo extends Object {
 ```java
 └─ CompilationUnit
    └─ TypeDeclaration
-      └─ ClassOrInterfaceDeclaration "Foo"
+      └─ ClassDeclaration "Foo"
+         ├─ ModifierList
          ├─ ExtendsList
-         │  └─ ClassOrInterfaceType "Object"
-         └─ ClassOrInterfaceBody
+         │  └─ ClassType "Object"
+         └─ ClassBody
 ```
 
 </td>
@@ -75,7 +73,7 @@ example, all Java AST nodes extend {% jdoc java::lang.java.ast.JavaNode %}.
 
 The structure of the AST can be discovered through
  * the [Rule Designer](pmd_userdocs_extending_designer_reference.html#ast-inspection)
- * the [AST dump feature](pmd_devdocs_experimental_ast_dump.html)
+ * the [AST dump feature](pmd_userdocs_extending_ast_dump.html)
 
 
 
@@ -95,6 +93,8 @@ complicated processing, to which an XPath rule couldn't scale.
 In the end, choosing one strategy or the other depends on the difficulty of what
 your rule does. I'd advise to keep to XPath unless you have no other choice.
 
+Note: Despite that fact, the Java rules are written in Java, any language that PMD supports
+can be analyzed. E.g. you can write a Java rule to analyze Apex source code.
 
 ## XML rule definition
 
@@ -103,16 +103,18 @@ case for both XPath and Java rules. To do this, the `rule` element is used, but
 instead of mentioning the `ref` attribute, it mentions the `class` attribute,
 with the implementation class of your rule.
 
-* **For Java rules:** this is the class extending AbstractRule (transitively)
-* **For XPath rules:** this is `net.sourceforge.pmd.lang.rule.XPathRule`
+* **For Java rules:** this is the concrete class extending AbstractRule (transitively)
+* **For XPath rules:** this is `net.sourceforge.pmd.lang.rule.xpath.XPathRule`.
+* **For XPath rules analyzing XML-based languages:** this is `net.sourceforge.pmd.lang.xml.rule.DomXPathRule`.
+  See [XPath rules in XML](pmd_languages_xml.html#xpath-rules-in-xml) for more info.
 
-Example:
+Example for Java rule:
 
 ```xml
 <rule name="MyJavaRule"
       language="java"
       message="Violation!"
-      class="com.me.MyJavaRule" >
+      class="com.me.MyJavaRule">
     <description>
         Description
     </description>
@@ -120,11 +122,31 @@ Example:
 </rule>
 ```
 
-{% include note.html content="In PMD 7, the `language` attribute will be required on all `rule`
-    elements that declare a new rule. Some base rule classes set the language implicitly in their
-    constructor, and so this is not required in all cases for the rule to work. But this
-    behavior will be discontinued in PMD 7, so missing `language` attributes are
-    reported beginning with PMD 6.27.0 as a forward compatibility warning." %}
+Example for XPath rule:
+
+```xml
+<rule name="MyXPathRule"
+      language="java"
+      message="Violation!"
+      class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+    <description>
+        Description
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value><![CDATA[
+//ClassOrInterfaceDeclaration
+]]></value>
+        </property>
+    </properties>
+</rule>
+```
+
+
+{% include note.html content="Since PMD 7, the `language` attribute is required on all `rule`
+    elements that declare a new rule. In PMD 6, this was optional, as the base rule classes sometimes set
+    the language implicitly in their constructor." %}
 
 ## Resource index
 

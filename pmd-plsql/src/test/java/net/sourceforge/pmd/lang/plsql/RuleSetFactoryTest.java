@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.plsql;
 
-import net.sourceforge.pmd.AbstractRuleSetFactoryTest;
+import net.sourceforge.pmd.test.lang.rule.AbstractRuleSetFactoryTest;
 
 /**
  * Test plsql's rulesets

@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-public final class ASTJspScriptlet extends AbstractJspNode {
+public final class ASTJspScriptlet extends AbstractContentNode {
 
     ASTJspScriptlet(int id) {
         super(id);

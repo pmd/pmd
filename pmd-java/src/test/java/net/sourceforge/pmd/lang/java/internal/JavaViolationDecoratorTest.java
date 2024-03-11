@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.internal;
 
-import static net.sourceforge.pmd.RuleViolation.CLASS_NAME;
-import static net.sourceforge.pmd.RuleViolation.METHOD_NAME;
-import static net.sourceforge.pmd.RuleViolation.PACKAGE_NAME;
-import static net.sourceforge.pmd.RuleViolation.VARIABLE_NAME;
+import static net.sourceforge.pmd.reporting.RuleViolation.CLASS_NAME;
+import static net.sourceforge.pmd.reporting.RuleViolation.METHOD_NAME;
+import static net.sourceforge.pmd.reporting.RuleViolation.PACKAGE_NAME;
+import static net.sourceforge.pmd.reporting.RuleViolation.VARIABLE_NAME;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,7 +19,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
@@ -95,7 +95,7 @@ class JavaViolationDecoratorTest {
     @Test
     void testPackageAndClassNameForField() {
         ASTCompilationUnit ast = parse("package pkg; public class Foo { int a; }");
-        ASTClassOrInterfaceDeclaration classDeclaration = ast.descendants(ASTClassOrInterfaceDeclaration.class).first();
+        ASTClassDeclaration classDeclaration = ast.descendants(ASTClassDeclaration.class).first();
         ASTFieldDeclaration field = ast.descendants(ASTFieldDeclaration.class).first();
 
         Map<String, String> violation = decorate(classDeclaration);
@@ -154,7 +154,7 @@ class JavaViolationDecoratorTest {
     @Test
     void testInnerClass() {
         ASTCompilationUnit ast = parse("class Foo { int a; class Bar { int a; } }");
-        List<ASTClassOrInterfaceDeclaration> classes = ast.descendants(ASTClassOrInterfaceDeclaration.class).toList();
+        List<ASTClassDeclaration> classes = ast.descendants(ASTClassDeclaration.class).toList();
         assertEquals(2, classes.size());
 
         assertThat(decorate(classes.get(0)), hasEntry(CLASS_NAME, "Foo"));

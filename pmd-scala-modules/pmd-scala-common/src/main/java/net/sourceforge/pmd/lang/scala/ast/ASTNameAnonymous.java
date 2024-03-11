@@ -16,12 +16,11 @@ public final class ASTNameAnonymous extends AbstractScalaNode<Name.Anonymous> {
     }
 
     @Override
-    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
+    protected <P, R> R acceptVisitor(ScalaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
-    @Override
-    public String getImage() {
+    public String getValue() {
         return node.value();
     }
 }

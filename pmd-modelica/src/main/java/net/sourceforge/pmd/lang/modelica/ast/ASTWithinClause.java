@@ -14,15 +14,11 @@ public final class ASTWithinClause extends AbstractModelicaNode {
         return visitor.visit(this, data);
     }
 
-    @Override
-    public void jjtClose() {
-        super.jjtClose();
-
-        ASTName name = getFirstChildOfType(ASTName.class);
+    public String getName() {
+        ASTName name = firstChild(ASTName.class);
         if (name != null) {
-            setImage(name.getImage());
-        } else {
-            setImage("");
+            return name.getName();
         }
+        return "";
     }
 }

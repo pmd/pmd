@@ -11,13 +11,13 @@ import java.util.Set;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -30,11 +30,11 @@ public class UseUtilityClassRule extends AbstractJavaRulechainRule {
     );
 
     public UseUtilityClassRule() {
-        super(ASTClassOrInterfaceDeclaration.class);
+        super(ASTClassDeclaration.class);
     }
 
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration klass, Object data) {
+    public Object visit(ASTClassDeclaration klass, Object data) {
         if (JavaAstUtils.hasAnyAnnotation(klass, IGNORED_CLASS_ANNOT)
             || TypeTestUtil.isA("junit.framework.TestSuite", klass) // suite method is ok
             || klass.isInterface()
@@ -79,12 +79,12 @@ public class UseUtilityClassRule extends AbstractJavaRulechainRule {
         String message;
         if (hasAnyMethods && hasNonPrivateCtor) {
             message = "This utility class has a non-private constructor";
-            addViolationWithMessage(data, klass, message);
+            asCtx(data).addViolationWithMessage(klass, message);
         }
         return null;
     }
 
-    private boolean hasLombokPrivateCtor(ASTClassOrInterfaceDeclaration parent) {
+    private boolean hasLombokPrivateCtor(ASTClassDeclaration parent) {
         // check if there's a lombok no arg private constructor, if so skip the rest of the rules
 
         return parent.getDeclaredAnnotations()

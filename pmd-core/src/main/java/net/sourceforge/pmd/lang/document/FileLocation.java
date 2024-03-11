@@ -9,10 +9,10 @@ import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.reporting.Reportable;
+import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
@@ -22,10 +22,6 @@ import net.sourceforge.pmd.util.AssertionUtil;
  *
  * <p>This should replace the text coordinates methods in {@link Node},
  * {@link GenericToken}, and {@link RuleViolation} at least (see {@link Reportable}).
- *
- * TODO the end line/end column are barely used, mostly ignored even by
- *  renderers. Maybe these could be optional, or replaced by just a length
- *  in case a renderer wants to cut out a piece of the file.
  */
 public final class FileLocation {
 
@@ -134,6 +130,10 @@ public final class FileLocation {
      */
     public String startPosToStringWithFile() {
         return getFileId().getOriginalPath() + ":" + getStartPos().toDisplayStringWithColon();
+    }
+
+    public int getLineCount() {
+        return getEndLine() - getStartLine() + 1;
     }
 
     /**

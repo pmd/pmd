@@ -37,7 +37,7 @@ class LineNumbers {
         } else if (n instanceof ASTHtmlXmlDeclaration) {
             nextIndex = htmlString.indexOf("<?", nextIndex);
         } else if (n instanceof ASTHtmlTextNode) {
-            textLength = ((ASTHtmlTextNode) n).getText().length();
+            textLength = ((ASTHtmlTextNode) n).getWholeText().length();
         } else if (n instanceof ASTHtmlDocumentType) {
             nextIndex = index;
         }

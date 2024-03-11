@@ -8,7 +8,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypingContext;
-import net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver;
+import net.sourceforge.pmd.lang.java.types.ast.internal.LazyTypeResolver;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 /**

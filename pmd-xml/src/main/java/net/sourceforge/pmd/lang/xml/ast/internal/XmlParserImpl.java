@@ -8,6 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -23,6 +24,8 @@ import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.impl.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 
 public final class XmlParserImpl {
@@ -107,6 +110,24 @@ public final class XmlParserImpl {
         @Override
         public Document getNode() {
             return (Document) super.getNode();
+        }
+        
+        public String getXmlEncoding() {
+            return getNode().getXmlEncoding();
+        }
+        
+        public boolean isXmlStandalone() {
+            return getNode().getXmlStandalone();
+        }
+        
+        public String getXmlVersion() {
+            return getNode().getXmlVersion();
+        }
+
+        @Override
+        public Iterator<Attribute> getXPathAttributesIterator() {
+            // Expose this node's attributes through reflection
+            return new AttributeAxisIterator(this);
         }
     }
 

@@ -9,12 +9,12 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -38,24 +38,24 @@ public class UnusedPrivateFieldRule extends AbstractJavaRulechainRule {
             .build();
 
     public UnusedPrivateFieldRule() {
-        super(ASTAnyTypeDeclaration.class);
+        super(ASTTypeDeclaration.class);
         definePropertyDescriptor(IGNORED_FIELD_NAMES);
         definePropertyDescriptor(REPORT_FOR_ANNOTATIONS_DESCRIPTOR);
     }
 
     @Override
     public Object visitJavaNode(JavaNode node, Object data) {
-        if (node instanceof ASTAnyTypeDeclaration) {
-            ASTAnyTypeDeclaration type = (ASTAnyTypeDeclaration) node;
+        if (node instanceof ASTTypeDeclaration) {
+            ASTTypeDeclaration type = (ASTTypeDeclaration) node;
             if (hasAnyAnnotation(type)) {
                 return null;
             }
 
             for (ASTFieldDeclaration field : type.getDeclarations().filterIs(ASTFieldDeclaration.class)) {
                 if (!isIgnored(field)) {
-                    for (ASTVariableDeclaratorId varId : field.getVarIds()) {
+                    for (ASTVariableId varId : field.getVarIds()) {
                         if (JavaAstUtils.isNeverUsed(varId)) {
-                            addViolation(data, varId, varId.getName());
+                            asCtx(data).addViolation(varId, varId.getName());
                         }
                     }
                 }

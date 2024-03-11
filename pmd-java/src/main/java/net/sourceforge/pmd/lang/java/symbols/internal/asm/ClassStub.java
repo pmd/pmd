@@ -135,6 +135,15 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
             }
 
             @Override
+            protected boolean canReenter() {
+                // We might call the parsing logic again in the same thread,
+                // e.g. in order to determine "annotAttributes", getDeclaredMethods() is called, which
+                // calls ensureParsed().
+                // Note: Other threads can't reenter, since our thread own the ParseLock monitor.
+                return true;
+            }
+
+            @Override
             protected boolean postCondition() {
                 return signature != null && enclosingInfo != null;
             }
@@ -538,6 +547,14 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     @Override
     public boolean isAnonymousClass() {
         return getSimpleName().isEmpty();
+    }
+
+    boolean isFailed() {
+        return this.parseLock.isFailed();
+    }
+
+    boolean isNotParsed() {
+        return this.parseLock.isNotParsed();
     }
 
 

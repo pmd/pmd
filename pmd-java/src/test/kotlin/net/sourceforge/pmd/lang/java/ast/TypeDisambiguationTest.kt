@@ -8,12 +8,11 @@ import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
-import net.sourceforge.pmd.lang.ast.test.*
-import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
-import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors.*
 import net.sourceforge.pmd.lang.java.types.JClassType
+import net.sourceforge.pmd.lang.test.ast.*
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
@@ -30,10 +29,10 @@ class TypeDisambiguationTest : ParserTestSpec({
             }
         """)
 
-        val (foo, inner) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+        val (foo, inner) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.symbol }
         val (f1) = acu.descendants(ASTFieldDeclaration::class.java).toList()
 
-        f1.typeNode.shouldMatchNode<ASTClassOrInterfaceType> {
+        f1.typeNode.shouldMatchNode<ASTClassType> {
             it::isFullyQualified shouldBe false
             it::getSimpleName shouldBe "Inner"
             it::getReferencedSym shouldBe inner
@@ -108,14 +107,14 @@ class TypeDisambiguationTest : ParserTestSpec({
             }
         """)
 
-        val (foo) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList()
-        val (fooBar) = acu.descendants(ASTClassOrInterfaceType::class.java).toList()
+        val (foo) = acu.descendants(ASTTypeDeclaration::class.java).toList()
+        val (fooBar) = acu.descendants(ASTClassType::class.java).toList()
 
 
         doTest("Unresolved inner type should produce a warning") {
             val (node, args) = logger.warnings[CANNOT_RESOLVE_MEMBER]!![0]
             args.map { it.toString() } shouldBe listOf("Bar", "com.Foo", "an unresolved type")
-            node.shouldBeA<ASTClassOrInterfaceType> { }
+            node.shouldBeA<ASTClassType> { }
         }
 
         doTest("Unresolved inner type should have a symbol anyway") {
@@ -151,8 +150,8 @@ class TypeDisambiguationTest : ParserTestSpec({
         """)
 
         val (refInFoo, refInScratch) = acu.descendants(ASTFieldDeclaration::class.java)
-            .crossFindBoundaries().map { it.typeNode as ASTClassOrInterfaceType }.toList()
-        val (_, _, aMem) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java)
+            .crossFindBoundaries().map { it.typeNode as ASTClassType }.toList()
+        val (_, _, aMem) = acu.descendants(ASTClassDeclaration::class.java)
             .crossFindBoundaries().toList { it.symbol }
 
 
@@ -203,16 +202,16 @@ class TypeDisambiguationTest : ParserTestSpec({
         """)
 
         val (m0, m1, m2, m3, m4, m5, s0, s1, s2) =
-                acu.descendants(ASTFieldDeclaration::class.java).map { it.typeNode as ASTClassOrInterfaceType }.toList()
+                acu.descendants(ASTFieldDeclaration::class.java).map { it.typeNode as ASTClassType }.toList()
 
-        fun assertErrored(t: ASTClassOrInterfaceType, expected: Int, actual: Int) {
+        fun assertErrored(t: ASTClassType, expected: Int, actual: Int) {
             val errs = logger.warnings[MALFORMED_GENERIC_TYPE]?.filter { it.first == t }
                     ?: emptyList()
             assertEquals(errs.size, 1, "`${t.text}` should have produced a single error")
             errs.single().second.toList() shouldBe listOf(expected, actual)
         }
 
-        fun assertNoError(t: ASTClassOrInterfaceType) {
+        fun assertNoError(t: ASTClassType) {
             val err = logger.warnings[MALFORMED_GENERIC_TYPE]?.firstOrNull { it.first == t }
             assertNull(err, "`${t.text}` should not have produced an error")
         }
@@ -243,22 +242,22 @@ class TypeDisambiguationTest : ParserTestSpec({
         """)
 
         val (m0) =
-                acu.descendants(ASTFieldDeclaration::class.java).map { it.typeNode as ASTClassOrInterfaceType }.toList()
+                acu.descendants(ASTFieldDeclaration::class.java).map { it.typeNode as ASTClassType }.toList()
 
         val outerUnresolved = m0.qualifier!!
         val outerT = outerUnresolved.typeMirror.shouldBeA<JClassType> {
-            it.symbol.shouldBeA<JClassSymbol> {
-                it::isUnresolved shouldBe true
-                it::getSimpleName shouldBe "OuterUnresolved"
+            it.symbol.shouldBeA<JClassSymbol> { classSymbol ->
+                classSymbol::isUnresolved shouldBe true
+                classSymbol::getSimpleName shouldBe "OuterUnresolved"
             }
         }
 
         val innerT = m0.typeMirror.shouldBeA<JClassType> {
             it::getEnclosingType shouldBe outerT
-            it.symbol.shouldBeA<JClassSymbol> {
-                it::isUnresolved shouldBe true
-                it::getSimpleName shouldBe "InnerUnresolved"
-                it.enclosingClass.shouldBeSameInstanceAs(outerT.symbol)
+            it.symbol.shouldBeA<JClassSymbol> { classSymbol ->
+                classSymbol::isUnresolved shouldBe true
+                classSymbol::getSimpleName shouldBe "InnerUnresolved"
+                classSymbol.enclosingClass.shouldBeSameInstanceAs(outerT.symbol)
             }
         }
 
@@ -287,14 +286,14 @@ class TypeDisambiguationTest : ParserTestSpec({
         val (aT, aC, aI, aUnresolved, aOk) =
                 acu.descendants(ASTAnnotation::class.java).map { it.typeNode }.toList()
 
-        fun assertErrored(t: ASTClassOrInterfaceType) {
+        fun assertErrored(t: ASTClassType) {
             val errs = logger.warnings[EXPECTED_ANNOTATION_TYPE]?.filter { it.first == t }
                     ?: emptyList()
             assertEquals(errs.size, 1, "`${t.text}` should have produced a single error")
             errs.single().second.toList() shouldBe emptyList()
         }
 
-        fun assertNoError(t: ASTClassOrInterfaceType) {
+        fun assertNoError(t: ASTClassType) {
             val err = logger.warnings[MALFORMED_GENERIC_TYPE]?.firstOrNull { it.first == t }
             assertNull(err, "`${t.text}` should not have produced an error")
         }
@@ -315,7 +314,7 @@ class TypeDisambiguationTest : ParserTestSpec({
         // before all classes of the CU have been visited
         enableProcessing()
 
-        val acu = parser.parse("""
+        @Suppress("UNUSED_VARIABLE") val acu = parser.parse("""
 package p;
 import static p.Assert2.*;
 

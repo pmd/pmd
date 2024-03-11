@@ -9,14 +9,15 @@ import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import net.sourceforge.pmd.lang.ast.Node
-import net.sourceforge.pmd.lang.ast.test.NodeSpec
-import net.sourceforge.pmd.lang.ast.test.shouldBeA
+import net.sourceforge.pmd.lang.test.ast.NodeSpec
+import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.JClassType
 import net.sourceforge.pmd.lang.java.types.shouldHaveType
 import net.sourceforge.pmd.lang.java.types.testdata.BoolLogic
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
 import net.sourceforge.pmd.lang.java.types.typeDsl
+import java.util.*
 import kotlin.system.measureTimeMillis
 import kotlin.test.assertFalse
 
@@ -37,7 +38,8 @@ class StressTest : ProcessorTestSpec({
 
         fun TreeNodeWrapper<Node, out TypeNode>.typeIs(value: Boolean) {
             it.typeMirror.shouldBeA<JClassType> {
-                it.symbol.binaryName  shouldBe "net.sourceforge.pmd.lang.java.types.testdata.BoolLogic\$${value.toString().capitalize()}"
+                it.symbol.binaryName  shouldBe "net.sourceforge.pmd.lang.java.types.testdata.BoolLogic\$${value.toString()
+                    .replaceFirstChar { char -> if (char.isLowerCase()) char.titlecase(Locale.getDefault()) else char.toString() }}"
             }
         }
 

@@ -6,11 +6,7 @@ package net.sourceforge.pmd.cli.commands.internal;
 
 import java.util.concurrent.Callable;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
-
 import net.sourceforge.pmd.cli.internal.CliExitCode;
-import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 
 import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
@@ -30,7 +26,6 @@ public abstract class AbstractPmdSubcommand implements Callable<Integer> {
 
     @Override
     public final Integer call() throws Exception {
-        setupCliLogger();
         validate();
         return execute().getExitCode();
     }
@@ -48,18 +43,4 @@ public abstract class AbstractPmdSubcommand implements Callable<Integer> {
 
     protected abstract CliExitCode execute();
 
-    private void setupCliLogger() {
-        // only reconfigure logging, if debug flag was used on command line
-        // otherwise just use whatever is in conf/simplelogger.properties which happens automatically
-        if (debug) {
-            Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(Level.TRACE);
-        }
-
-        // always install java.util.logging to slf4j bridge
-        Slf4jSimpleConfiguration.installJulBridge();
-
-        // log the current log level. This is used in unit tests to verify that --debug actually works
-        Level defaultLogLevel = Slf4jSimpleConfiguration.getDefaultLogLevel();
-        LoggerFactory.getLogger(AbstractPmdSubcommand.class).info("Log level is at {}", defaultLogLevel);
-    }
 }

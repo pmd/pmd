@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.scala.ast;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser;
-import net.sourceforge.pmd.lang.scala.ScalaLanguageModule;
+import net.sourceforge.pmd.lang.scala.internal.ScalaDialect;
 
 import scala.meta.Dialect;
 import scala.meta.Source;
@@ -22,8 +22,8 @@ public final class ScalaParser implements Parser {
 
     @Override
     public ASTSource parse(ParserTask task) throws ParseException {
-        Input.VirtualFile virtualFile = new Input.VirtualFile(task.getFileDisplayName(), task.getSourceText());
-        Dialect dialect = ScalaLanguageModule.dialectOf(task.getLanguageVersion());
+        Input.VirtualFile virtualFile = new Input.VirtualFile(task.getFileId().getAbsolutePath(), task.getSourceText());
+        Dialect dialect = ScalaDialect.dialectOf(task.getLanguageVersion());
         Source src = new ScalametaParser(virtualFile, dialect).parseSource();
         ASTSource root = (ASTSource) new ScalaTreeBuilder().build(src);
         root.addTaskInfo(task);

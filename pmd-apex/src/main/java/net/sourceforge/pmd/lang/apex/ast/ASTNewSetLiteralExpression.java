@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.NewSetLiteralExpression;
+import com.google.summit.ast.initializer.ValuesInitializer;
 
-public final class ASTNewSetLiteralExpression extends AbstractApexNode<NewSetLiteralExpression> {
+public final class ASTNewSetLiteralExpression extends AbstractApexNode.Single<ValuesInitializer> {
 
-    ASTNewSetLiteralExpression(NewSetLiteralExpression newSetLiteralExpression) {
-        super(newSetLiteralExpression);
+    ASTNewSetLiteralExpression(ValuesInitializer valuesInitializer) {
+        super(valuesInitializer);
     }
 
 

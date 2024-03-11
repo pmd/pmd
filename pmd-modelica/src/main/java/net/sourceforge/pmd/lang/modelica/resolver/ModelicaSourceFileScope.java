@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang.modelica.resolver;
 
 import net.sourceforge.pmd.lang.modelica.ast.ASTStoredDefinition;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionContext;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.Watchdog;
 
 /**
  * A scope corresponding to some specific Modelica source code file.
@@ -14,7 +16,7 @@ public final class ModelicaSourceFileScope extends AbstractModelicaScope {
     private final String[] packageComponents;
 
     ModelicaSourceFileScope(ASTStoredDefinition node) {
-        fileFQCN = node.getImage();
+        fileFQCN = node.getName();
         if (fileFQCN.isEmpty()) {
             packageComponents = new String[0];
         } else {

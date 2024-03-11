@@ -20,11 +20,6 @@ public final class ASTTryStatement extends AbstractEcmascriptNode<TryStatement> 
         return (EcmascriptNode<?>) getChild(0);
     }
 
-    @Deprecated // use hasCatch() instead
-    public boolean isCatch() {
-        return hasCatch();
-    }
-
     public boolean hasCatch() {
         return getNumCatchClause() != 0;
     }
@@ -38,11 +33,6 @@ public final class ASTTryStatement extends AbstractEcmascriptNode<TryStatement> 
             return null;
         }
         return (ASTCatchClause) getChild(index + 1);
-    }
-
-    @Deprecated // use hasFinally() instead
-    public boolean isFinally() {
-        return hasFinally();
     }
 
     public boolean hasFinally() {

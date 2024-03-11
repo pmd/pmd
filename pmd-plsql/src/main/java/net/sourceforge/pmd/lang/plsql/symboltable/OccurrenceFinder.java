@@ -12,11 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.plsql.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
+import net.sourceforge.pmd.lang.plsql.ast.PlsqlVisitorBase;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
-public class OccurrenceFinder extends PLSQLParserVisitorAdapter {
+public class OccurrenceFinder extends PlsqlVisitorBase<Object, Object> {
     private static final Logger LOG = LoggerFactory.getLogger(OccurrenceFinder.class);
 
     @Override

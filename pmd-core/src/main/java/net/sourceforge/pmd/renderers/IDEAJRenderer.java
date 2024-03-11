@@ -11,9 +11,9 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 /**
  * Renderer for IntelliJ IDEA integration.
@@ -25,7 +25,6 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
 
     public static final String NAME = "ideaj";
 
-    // TODO 7.0.0 use PropertyDescriptor<String>
     public static final PropertyDescriptor<String> FILE_NAME =
         PropertyFactory.stringProperty("fileName").desc("File name.").defaultValue("").build();
     public static final PropertyDescriptor<String> SOURCE_PATH =

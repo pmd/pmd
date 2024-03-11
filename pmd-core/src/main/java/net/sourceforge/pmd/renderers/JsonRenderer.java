@@ -15,19 +15,15 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMDVersion;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.ViolationSuppressor;
+import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.RuleViolation;
+import net.sourceforge.pmd.reporting.ViolationSuppressor;
 
 import com.google.gson.stream.JsonWriter;
 
 public class JsonRenderer extends AbstractIncrementingRenderer {
     public static final String NAME = "json";
 
-    // TODO do we make this public? It would make it possible to write eg
-    //  if (jsonObject.getInt("formatVersion") > JsonRenderer.FORMAT_VERSION)
-    //    /* handle unsupported version */
-    //  because the JsonRenderer.FORMAT_VERSION would be hardcoded by the compiler
     private static final int FORMAT_VERSION = 0;
 
     private static final Map<String, String> SUPPRESSION_TYPE_FORMAT_0 = new HashMap<>();

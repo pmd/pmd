@@ -6,16 +6,14 @@ package net.sourceforge.pmd.util.log.internal;
 
 import org.slf4j.event.Level;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
  * A logger that ignores all messages.
  *
  * @author Clément Fournier
  */
-@InternalApi
-public class QuietReporter extends MessageReporterBase implements MessageReporter {
+public class QuietReporter extends MessageReporterBase implements PmdReporter {
 
     // note: not singleton because PmdLogger accumulates error count.
     // note: not final because used as mock in tests.

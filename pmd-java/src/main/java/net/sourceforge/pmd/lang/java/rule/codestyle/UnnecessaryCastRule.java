@@ -115,7 +115,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
     }
 
     private void reportCast(ASTCastExpression castExpr, Object data) {
-        addViolation(data, castExpr, PrettyPrintingUtil.prettyPrintType(castExpr.getCastType()));
+        asCtx(data).addViolation(castExpr, PrettyPrintingUtil.prettyPrintType(castExpr.getCastType()));
     }
 
     private static boolean castIsUnnecessaryToMatchContext(ExprContext context,

@@ -11,7 +11,6 @@ import java.util.AbstractList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -21,6 +20,7 @@ import org.w3c.dom.Text;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 import net.sourceforge.pmd.lang.rule.xpath.internal.CoordinateXPathFunction;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 import net.sourceforge.pmd.util.DataMap;
@@ -96,14 +96,12 @@ class XmlNodeWrapper implements XmlNode {
         return node.hasChildNodes() ? node.getChildNodes().getLength() : 0;
     }
 
-    @Override
-    public String getImage() {
+    /**
+     * Returns the text, if the underlying node is a text node.
+     */
+    @NoAttribute // see getXPathAttributesIterator() for how this is exposed as XPath attribute
+    public String getText() {
         return node instanceof Text ? ((Text) node).getData() : null;
-    }
-
-    @Override
-    public boolean hasImageEqualTo(String image) {
-        return Objects.equals(image, getImage());
     }
 
     @Override
@@ -135,9 +133,9 @@ class XmlNodeWrapper implements XmlNode {
     @Override
     public Iterator<Attribute> getXPathAttributesIterator() {
 
-        // Expose Text/CDATA nodes to have an 'Image' attribute like AST Nodes
+        // Expose Text/CDATA nodes to have an 'Text' attribute like AST Nodes
         if (node instanceof Text) {
-            return Collections.singletonList(new Attribute(this, "Image", ((Text) node).getData())).iterator();
+            return Collections.singletonList(new Attribute(this, "Text", getText())).iterator();
         }
 
         // Expose DOM Attributes

@@ -13,11 +13,11 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -59,7 +59,7 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
     }
 
     @Override
-    public Void visit(ASTVariableDeclaratorId node, AstSymFactory data) {
+    public Void visit(ASTVariableId node, AstSymFactory data) {
 
         if (isTrueLocalVar(node)) {
             data.setLocalVarSymbol(node);
@@ -71,16 +71,27 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
         return super.visit(node, data);
     }
 
-    private boolean isTrueLocalVar(ASTVariableDeclaratorId node) {
+    private boolean isTrueLocalVar(ASTVariableId node) {
         return !(node.isField()
             || node.isEnumConstant()
             || node.isRecordComponent()
             || node.getParent() instanceof ASTFormalParameter);
     }
 
+    @Override
+    public Void visit(ASTCompilationUnit node, AstSymFactory data) {
+        if (node.isUnnamedClass()) {
+            JClassSymbol sym = data.setClassSymbol(node);
+            enclosingSymbols.push(sym);
+            visitChildren(node, data);
+            enclosingSymbols.pop();
+            return null;
+        }
+        return super.visit(node, data);
+    }
 
     @Override
-    public Void visitTypeDecl(ASTAnyTypeDeclaration node, AstSymFactory data) {
+    public Void visitTypeDecl(ASTTypeDeclaration node, AstSymFactory data) {
         String binaryName = makeBinaryName(node);
         @Nullable String canonicalName = makeCanonicalName(node, binaryName);
         InternalApiBridge.setQname(node, binaryName, canonicalName);
@@ -109,7 +120,7 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
     }
 
     @NonNull
-    private String makeBinaryName(ASTAnyTypeDeclaration node) {
+    private String makeBinaryName(ASTTypeDeclaration node) {
         String simpleName = node.getSimpleName();
         if (node.isLocal()) {
             simpleName = getNextIndexFromHistogram(currentLocalIndices.getFirst(), node.getSimpleName(), 1)
@@ -125,7 +136,7 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
     }
 
     @Nullable
-    private String makeCanonicalName(ASTAnyTypeDeclaration node, String binaryName) {
+    private String makeCanonicalName(ASTTypeDeclaration node, String binaryName) {
         if (node.isAnonymous() || node.isLocal()) {
             return null;
         }
@@ -143,7 +154,7 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
     }
 
     @Override
-    public Void visitMethodOrCtor(ASTMethodOrConstructorDeclaration node, AstSymFactory data) {
+    public Void visitMethodOrCtor(ASTExecutableDeclaration node, AstSymFactory data) {
         enclosingSymbols.push(node.getSymbol());
         visitChildren(node, data);
         enclosingSymbols.pop();

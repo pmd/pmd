@@ -454,16 +454,16 @@ public enum MyEnum {
     </test-code>
 
     <test-code>
-        <description>#3859 #4273 [java] CommentDefaultAccessModifier is triggered in JUnit5 method and it was conflicting with rule JUnit5TestShouldBePackagePrivate</description>
+        <description>#3859 #4273 #4645 [java] CommentDefaultAccessModifier is triggered in JUnit5 method and it was conflicting with rule JUnit5TestShouldBePackagePrivate</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.ParameterizedTest;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class SomeTest {
 
@@ -564,6 +564,22 @@ class C {
 
     @AfterSuite
     void afterSuite() {}
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>#4578 failure with comment after annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    @SuppressWarnings("")
+    /* package */ void test1() {
+    }
+
+    /* package */ @SuppressWarnings("")
+    void test2() {
+    }
 }
         ]]></code>
     </test-code>

@@ -19,7 +19,7 @@ SafeYAML::OPTIONS[:default_mode] = :safe
 
 # START OF THE SCRIPT
 
-unless ARGV.length == 1 && File.exists?(ARGV[0])
+unless ARGV.length == 1 && File.exist?(ARGV[0])
   print "\e[31m[ERROR] In #{$0}: The first arg must be a valid file name\e[0m\n"
   exit 1
 end

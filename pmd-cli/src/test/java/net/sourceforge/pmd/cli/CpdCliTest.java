@@ -11,11 +11,15 @@ import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
 
-import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,19 +31,24 @@ import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
-import com.google.common.collect.ImmutableMap;
 
 class CpdCliTest extends BaseCliTest {
 
     private static final String BASE_RES_PATH = "src/test/resources/net/sourceforge/pmd/cli/cpd/";
     private static final String SRC_DIR = BASE_RES_PATH + "files/";
+    private static final Path SRC_PATH = Paths.get(SRC_DIR).toAbsolutePath();
 
-    private static final Map<String, Integer> NUMBER_OF_TOKENS = ImmutableMap.of(
-            new File(SRC_DIR, "dup1.java").getAbsolutePath(), 89,
-            new File(SRC_DIR, "dup2.java").getAbsolutePath(), 89,
-            new File(SRC_DIR, "file_with_ISO-8859-1_encoding.java").getAbsolutePath(), 8,
-            new File(SRC_DIR, "file_with_utf8_bom.java").getAbsolutePath(), 9
-    );
+    private static final Map<String, Integer> NUMBER_OF_TOKENS;
+
+    static {
+        Map<String, Integer> map = new LinkedHashMap<>();
+        map.put(SRC_PATH.resolve("dup1.java").toString(), 89);
+        map.put(SRC_PATH.resolve("dup2.java").toString(), 89);
+        map.put(SRC_PATH.resolve("fileWith_ISO8859_1_Encoding.java").toString(), 5);
+        map.put(SRC_PATH.resolve("fileWith_UTF_8_BOM_Encoding.java").toString(), 5);
+        NUMBER_OF_TOKENS = Collections.unmodifiableMap(map);
+    }
+
     @TempDir
     private Path tempDir;
 
@@ -67,7 +76,7 @@ class CpdCliTest extends BaseCliTest {
     private String getExpectedFileEntryXml(final String filename) {
         final int numberOfTokens = NUMBER_OF_TOKENS.get(filename);
         return String.format("   <file path=\"%s\"\n         totalNumberOfTokens=\"%d\"/>\n",
-                new File(filename).getAbsolutePath(),
+                filename,
                 numberOfTokens);
     }
 
@@ -82,13 +91,19 @@ class CpdCliTest extends BaseCliTest {
     @Test
     void debugLogging() throws Exception {
         CliExecutionResult result = runCliSuccessfully("--debug", "--minimum-tokens", "340", "--dir", SRC_DIR);
-        result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at TRACE"));
+        result.checkStdErr(containsString("[DEBUG] Log level is at TRACE"));
+    }
+
+    @Test
+    void debugLoggingShouldMentionLanguage() throws Exception {
+        final CliExecutionResult result = runCli(VIOLATIONS_FOUND, "--minimum-tokens", "34", "--dir", SRC_DIR, "--debug");
+        result.checkStdErr(containsString("Created new FileCollector with LanguageVersionDiscoverer(LanguageRegistry(java))"));
     }
 
     @Test
     void defaultLogging() throws Exception {
         CliExecutionResult result = runCliSuccessfully("--minimum-tokens", "340", "--dir", SRC_DIR);
-        result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at INFO"));
+        result.checkStdErr(not(containsString("[DEBUG] Log level is at TRACE")));
     }
 
     @Test
@@ -111,6 +126,20 @@ class CpdCliTest extends BaseCliTest {
     }
 
     @Test
+    void testWrongCliOptionResultsInErrorLoggingAfterDir() throws Exception {
+        // --ignore-identifiers doesn't take an argument anymore - it is interpreted as a file for inputPaths
+        final CliExecutionResult result = runCli(VIOLATIONS_FOUND, "--minimum-tokens", "34", "--dir", SRC_DIR, "--ignore-identifiers", "false");
+        result.checkStdErr(containsString("No such file false"));
+    }
+
+    @Test
+    void testWrongCliOptionResultsInErrorLoggingBeforeDir() throws Exception {
+        // --ignore-identifiers doesn't take an argument anymore - it is interpreted as a file for inputPaths
+        final CliExecutionResult result = runCli(VIOLATIONS_FOUND, "--minimum-tokens", "34", "--ignore-identifiers", "false", "--dir", SRC_DIR);
+        result.checkStdErr(containsString("No such file false"));
+    }
+
+    @Test
     void testFindJavaDuplication() throws Exception {
         runCli(VIOLATIONS_FOUND, "--minimum-tokens", "7", "--dir", SRC_DIR)
             .verify(result -> result.checkStdOut(containsString(
@@ -123,7 +152,7 @@ class CpdCliTest extends BaseCliTest {
      */
     @Test
     void testIgnoreIdentifiers() throws Exception {
-        runCli(VIOLATIONS_FOUND, "--minimum-tokens", "34", "--dir", SRC_DIR, "--ignore-identifiers")
+        runCli(VIOLATIONS_FOUND, "--minimum-tokens", "34", "--dir", SRC_DIR, "--ignore-identifiers", "false", "--debug")
             .verify(result -> result.checkStdOut(containsString(
                     "Found a 14 line (89 tokens) duplication"
         )));
@@ -147,19 +176,17 @@ class CpdCliTest extends BaseCliTest {
 
     @Test
     void testNoDuplicatesResultRendering() throws Exception {
-        final Path absoluteSrcDir = Paths.get(SRC_DIR).toAbsolutePath();
         String expectedReport = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                + "<pmd-cpd>\n"
-                + "   <file path=\"" + absoluteSrcDir.resolve("dup1.java") + "\"\n"
-                + "         totalNumberOfTokens=\"89\"/>\n"
-                + "   <file path=\"" + absoluteSrcDir.resolve("dup2.java") + "\"\n"
-                + "         totalNumberOfTokens=\"89\"/>\n"
-                + "   <file path=\"" + absoluteSrcDir.resolve("file_with_ISO-8859-1_encoding.java")
-                + "\"\n"
-                + "         totalNumberOfTokens=\"8\"/>\n"
-                + "   <file path=\"" + absoluteSrcDir.resolve("file_with_utf8_bom.java") + "\"\n"
-                + "         totalNumberOfTokens=\"9\"/>\n"
-                + "</pmd-cpd>\n";
+            + "<pmd-cpd>\n"
+            + "   <file path=\"" + SRC_PATH.resolve("dup1.java") + "\"\n"
+            + "         totalNumberOfTokens=\"89\"/>\n"
+            + "   <file path=\"" + SRC_PATH.resolve("dup2.java") + "\"\n"
+            + "         totalNumberOfTokens=\"89\"/>\n"
+            + "   <file path=\"" + SRC_PATH.resolve("fileWith_ISO8859_1_Encoding.java") + "\"\n"
+            + "         totalNumberOfTokens=\"5\"/>\n"
+            + "   <file path=\"" + SRC_PATH.resolve("fileWith_UTF_8_BOM_Encoding.java") + "\"\n"
+            + "         totalNumberOfTokens=\"5\"/>\n"
+            + "</pmd-cpd>\n";
 
         runCliSuccessfully("--minimum-tokens", "340", "--language", "java", "--dir", SRC_DIR, "--format", "xml")
                 .verify(result -> result.checkStdOut(equalTo(expectedReport)));
@@ -179,7 +206,8 @@ class CpdCliTest extends BaseCliTest {
                    "-d", BASE_RES_PATH + "encodingTest/",
                    "--ignore-identifiers", "--format", "xml",
                    // request UTF-8 for CPD
-                   "--encoding", "UTF-8")
+                   "--encoding", "UTF-8",
+                   "--debug")
                 .verify(r -> {
                     r.checkStdOut(startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
                     r.checkStdOut(containsPattern("System\\.out\\.println\\([ij] \\+ \"ä\"\\);"));
@@ -198,7 +226,7 @@ class CpdCliTest extends BaseCliTest {
                "--format", "text",
                "--skip-lexical-errors")
             .verify(r -> {
-                r.checkStdErr(containsPattern("Skipping .*?BadFile\\.java\\. Reason: Lexical error in file"));
+                r.checkStdErr(containsPattern("Skipping file: Lexical error in file .*?BadFile\\.java"));
                 r.checkStdOut(containsString("Found a 5 line (13 tokens) duplication"));
             });
     }
@@ -206,25 +234,38 @@ class CpdCliTest extends BaseCliTest {
 
     @Test
     void jsShouldFindDuplicatesWithDifferentFileExtensions() throws Exception {
-        runCli(VIOLATIONS_FOUND, "--minimum-tokens", "5", "--language", "js",
+        runCli(VIOLATIONS_FOUND, "--minimum-tokens", "5", "--language", "typescript",
                "-d", BASE_RES_PATH + "tsFiles/File1.ts", BASE_RES_PATH + "tsFiles/File2.ts")
             .checkStdOut(containsString("Found a 9 line (32 tokens) duplication in the following files"));
     }
 
     @Test
     void jsShouldFindNoDuplicatesWithDifferentFileExtensions() throws Exception {
-        runCli(OK, "--minimum-tokens", "5", "--language", "js",
+        runCli(OK, "--minimum-tokens", "5", "--language", "ecmascript",
                "-d", BASE_RES_PATH + "tsFiles/")
             .checkStdOut(emptyString());
     }
 
     @Test
     void renderEmptyReportXml() throws Exception {
-        runCli(OK, "--minimum-tokens", "5", "--language", "js",
+        runCli(OK, "--minimum-tokens", "5", "--language", "ecmascript",
                "-f", "xml",
                "-d", BASE_RES_PATH + "tsFiles/")
             .checkStdOut(equalTo(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<pmd-cpd/>\n"
             ));
+    }
+
+    @Test
+    void testFileListOnly() throws Exception {
+        Path fileList = tempDir.resolve("fileList.txt");
+        StringBuilder fileListContent = new StringBuilder();
+        fileListContent.append(SRC_PATH.resolve("dup1.java")).append(System.lineSeparator());
+        fileListContent.append(SRC_PATH.resolve("dup2.java")).append(System.lineSeparator());
+        Files.write(fileList, fileListContent.toString().getBytes(StandardCharsets.UTF_8));
+        runCli(VIOLATIONS_FOUND, "--minimum-tokens", "5", "--file-list", fileList.toString())
+            .verify(result -> result.checkStdOut(containsString(
+                    "Found a 14 line (86 tokens) duplication in the following files:"
+            )));
     }
 }

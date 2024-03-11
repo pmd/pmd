@@ -9,7 +9,6 @@ import java.io.Writer;
 import java.util.Objects;
 
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
@@ -96,6 +95,7 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
     }
 
     @Override
+    // TODO: consider to rename the flush method - this is actually closing the writer
     public void flush() {
         if (writer == null) {
             // might happen, if no writer is set. E.g. in maven-pmd-plugin's PmdCollectingRenderer
@@ -115,7 +115,6 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
      * <p>This default implementation always uses the system default charset for the writer.
      * Overwrite in specific renderers to support other charsets.
      */
-    @Experimental
     @Override
     public void setReportFile(String reportFilename) {
         this.setWriter(IOUtil.createWriter(reportFilename));

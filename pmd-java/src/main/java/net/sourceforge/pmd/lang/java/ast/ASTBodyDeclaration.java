@@ -11,7 +11,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre class="grammar">
  *
- * BodyDeclaration ::= {@link ASTAnyTypeDeclaration AnyTypeDeclaration}
+ * BodyDeclaration ::= {@link ASTTypeDeclaration TypeDeclaration}
  *                   | {@link ASTMethodDeclaration MethodDeclaration}
  *                   | {@link ASTConstructorDeclaration ConstructorDeclaration}
  *                   | {@link ASTCompactConstructorDeclaration CompactConstructorDeclaration}

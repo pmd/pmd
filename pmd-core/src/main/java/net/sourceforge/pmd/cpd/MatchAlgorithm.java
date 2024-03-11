@@ -6,91 +6,73 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class MatchAlgorithm {
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+class MatchAlgorithm {
 
     private static final int MOD = 37;
     private int lastMod = 1;
 
-    private List<Match> matches;
-    private Map<String, SourceCode> source;
-    private Tokens tokens;
-    private List<TokenEntry> code;
-    private CPDListener cpdListener;
-    private int min;
+    private final Tokens tokens;
+    private final List<TokenEntry> code;
+    private final int minTileSize;
 
-    public MatchAlgorithm(Map<String, SourceCode> sourceCode, Tokens tokens, int min) {
-        this(sourceCode, tokens, min, new CPDNullListener());
-    }
-
-    public MatchAlgorithm(Map<String, SourceCode> sourceCode, Tokens tokens, int min, CPDListener listener) {
-        this.source = sourceCode;
+    MatchAlgorithm(Tokens tokens, int minTileSize) {
         this.tokens = tokens;
         this.code = tokens.getTokens();
-        this.min = min;
-        this.cpdListener = listener;
-        for (int i = 0; i < min; i++) {
+        this.minTileSize = minTileSize;
+        for (int i = 0; i < minTileSize; i++) {
             lastMod *= MOD;
         }
     }
 
-    public void setListener(CPDListener listener) {
-        this.cpdListener = listener;
-    }
-
-    public Iterator<Match> matches() {
-        return matches.iterator();
-    }
-
-    List<Match> getMatches() {
-        return matches;
-    }
 
     public TokenEntry tokenAt(int offset, TokenEntry m) {
         return code.get(offset + m.getIndex());
     }
 
     public int getMinimumTileSize() {
-        return this.min;
+        return this.minTileSize;
     }
 
-    public void findMatches() {
-        cpdListener.phaseUpdate(CPDListener.HASH);
-        Map<TokenEntry, Object> markGroups = hash();
-
-        cpdListener.phaseUpdate(CPDListener.MATCH);
+    public List<Match> findMatches(@NonNull CPDListener cpdListener, SourceManager sourceManager) {
         MatchCollector matchCollector = new MatchCollector(this);
-        for (Iterator<Object> i = markGroups.values().iterator(); i.hasNext();) {
-            Object o = i.next();
-            if (o instanceof List) {
-                @SuppressWarnings("unchecked")
-                List<TokenEntry> l = (List<TokenEntry>) o;
-                Collections.reverse(l);
-                matchCollector.collect(l);
-            }
-            i.remove();
+        {
+            cpdListener.phaseUpdate(CPDListener.HASH);
+            Map<TokenEntry, Object> markGroups = hash();
+
+            cpdListener.phaseUpdate(CPDListener.MATCH);
+            markGroups.values()
+                      .stream()
+                      .filter(it -> it instanceof List)
+                      .forEach(it -> {
+                          @SuppressWarnings("unchecked")
+                          List<TokenEntry> l = (List<TokenEntry>) it;
+                          Collections.reverse(l);
+                          matchCollector.collect(l);
+                      });
+            // put markGroups out of scope
         }
+
         cpdListener.phaseUpdate(CPDListener.GROUPING);
-        matches = matchCollector.getMatches();
+        List<Match> matches = matchCollector.getMatches();
+        matches.sort(Comparator.naturalOrder());
 
         for (Match match : matches) {
             for (Mark mark : match) {
                 TokenEntry token = mark.getToken();
-                int lineCount = tokens.getLineCount(token, match);
                 TokenEntry endToken = tokens.getEndToken(token, match);
 
-                mark.setLineCount(lineCount);
                 mark.setEndToken(endToken);
-                SourceCode sourceCode = source.get(token.getTokenSrcID());
-                assert sourceCode != null : token.getTokenSrcID() + " is not registered in " + source.keySet();
-                mark.setSourceCode(sourceCode);
             }
         }
         cpdListener.phaseUpdate(CPDListener.DONE);
+        return matches;
     }
 
     @SuppressWarnings("PMD.JumbledIncrementer")
@@ -99,8 +81,8 @@ public class MatchAlgorithm {
         Map<TokenEntry, Object> markGroups = new HashMap<>(tokens.size());
         for (int i = code.size() - 1; i >= 0; i--) {
             TokenEntry token = code.get(i);
-            if (!TokenEntry.EOF.equals(token)) {
-                int last = tokenAt(min, token).getIdentifier();
+            if (!token.isEof()) {
+                int last = tokenAt(minTileSize, token).getIdentifier();
                 lastHash = MOD * lastHash + token.getIdentifier() - lastMod * last;
                 token.setHashCode(lastHash);
                 Object o = markGroups.get(token);
@@ -122,10 +104,10 @@ public class MatchAlgorithm {
                 }
             } else {
                 lastHash = 0;
-                for (int end = Math.max(0, i - min + 1); i > end; i--) {
+                for (int end = Math.max(0, i - minTileSize + 1); i > end; i--) {
                     token = code.get(i - 1);
                     lastHash = MOD * lastHash + token.getIdentifier();
-                    if (TokenEntry.EOF.equals(token)) {
+                    if (token.isEof()) {
                         break;
                     }
                 }

@@ -10,7 +10,6 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
-import java.nio.file.FileSystemAlreadyExistsException;
 import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitOption;
@@ -35,14 +34,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PmdAnalysis;
-import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.util.AssertionUtil;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
  * Collects files to analyse before a PMD run. This API allows opening
@@ -59,32 +56,35 @@ public final class FileCollector implements AutoCloseable {
     private final List<Closeable> resourcesToClose = new ArrayList<>();
     private Charset charset = StandardCharsets.UTF_8;
     private final LanguageVersionDiscoverer discoverer;
-    private final MessageReporter reporter;
+    private final PmdReporter reporter;
     private final FileId outerFsPath;
     private boolean closed;
+    private boolean recursive = true;
 
     // construction
 
-    private FileCollector(LanguageVersionDiscoverer discoverer, MessageReporter reporter, FileId outerFsPath) {
+    private FileCollector(LanguageVersionDiscoverer discoverer, PmdReporter reporter, FileId outerFsPath) {
         this.discoverer = discoverer;
         this.reporter = reporter;
         this.outerFsPath = outerFsPath;
+        LOG.debug("Created new FileCollector with {}", discoverer);
     }
 
     /**
-     * Internal API: please use {@link PmdAnalysis#files()} instead of
+     * @apiNote Internal API - please use {@link PmdAnalysis#files()} instead of
      * creating a collector yourself.
      */
-    @InternalApi
-    public static FileCollector newCollector(LanguageVersionDiscoverer discoverer, MessageReporter reporter) {
+    static FileCollector newCollector(LanguageVersionDiscoverer discoverer, PmdReporter reporter) {
         return new FileCollector(discoverer, reporter, null);
     }
 
     /**
-     * Returns a new collector using the configuration except for the logger.
+     * Returns a new collector using the same configuration except for the logger.
+     *
+     * @apiNote Internal API - please use {@link PmdAnalysis#files()} instead of
+     * creating a collector yourself.
      */
-    @InternalApi
-    public FileCollector newCollector(MessageReporter logger) {
+    FileCollector newCollector(PmdReporter logger) {
         FileCollector fileCollector = new FileCollector(discoverer, logger, null);
         fileCollector.charset = this.charset;
         return fileCollector;
@@ -95,9 +95,8 @@ public final class FileCollector implements AutoCloseable {
     /**
      * Returns an unmodifiable list of all files that have been collected.
      *
-     * <p>Internal: This might be unstable until PMD 7, but it's internal.
+     * @throws IllegalStateException if the collector was already closed
      */
-    @InternalApi
     public List<TextFile> getCollectedFiles() {
         if (closed) {
             throw new IllegalStateException("Collector was closed!");
@@ -111,8 +110,7 @@ public final class FileCollector implements AutoCloseable {
     /**
      * Returns the reporter for the file collection phase.
      */
-    @InternalApi
-    public MessageReporter getReporter() {
+    public PmdReporter getReporter() {
         return reporter;
     }
 
@@ -263,11 +261,16 @@ public final class FileCollector implements AutoCloseable {
      * @return True if the directory has been added
      */
     public boolean addDirectory(Path dir) throws IOException {
+        return addDirectory(dir, recursive);
+    }
+
+    public boolean addDirectory(Path dir, boolean recurse) throws IOException {
         if (!Files.isDirectory(dir)) {
             reporter.error("Not a directory {0}", dir);
             return false;
         }
-        Files.walkFileTree(dir, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE, new SimpleFileVisitor<Path>() {
+        int maxDepth = recurse ? Integer.MAX_VALUE : 1;
+        Files.walkFileTree(dir, EnumSet.of(FileVisitOption.FOLLOW_LINKS), maxDepth, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 if (attrs.isRegularFile()) {
@@ -287,37 +290,23 @@ public final class FileCollector implements AutoCloseable {
      * @return True if the file or directory has been added
      */
     public boolean addFileOrDirectory(Path file) throws IOException {
+        return addFileOrDirectory(file, true);
+    }
+
+    /**
+     * Add a file or directory recursively. Language is determined automatically
+     * from the extension/file patterns.
+     *
+     * @return True if the file or directory has been added
+     */
+    public boolean addFileOrDirectory(Path file, boolean recurseIfDirectory) throws IOException {
         if (Files.isDirectory(file)) {
-            return addDirectory(file);
+            return addDirectory(file, recurseIfDirectory);
         } else if (Files.isRegularFile(file)) {
             return addFile(file);
         } else {
             reporter.error("Not a file or directory {0}", file);
             return false;
-        }
-    }
-
-    /**
-     * Opens a zip file and returns a FileSystem for its contents, so
-     * it can be explored with the {@link Path} API. You can then call
-     * {@link #addFile(Path)} and such. The zip file is registered as
-     * a resource to close at the end of analysis.
-     *
-     * @deprecated Use {@link #addZipFileWithContent(Path)} instead.
-     */
-    @Deprecated
-    public FileSystem addZipFile(Path zipFile) {
-        if (!Files.isRegularFile(zipFile)) {
-            throw new IllegalArgumentException("Not a regular file: " + zipFile);
-        }
-        URI zipUri = URI.create("jar:" + zipFile.toUri());
-        try {
-            FileSystem fs = FileSystems.newFileSystem(zipUri, Collections.<String, Object>emptyMap());
-            resourcesToClose.add(fs);
-            return fs;
-        } catch (FileSystemAlreadyExistsException | ProviderNotFoundException | IOException e) {
-            reporter.errorEx("Cannot open zip file " + zipFile, e);
-            return null;
         }
     }
 
@@ -329,7 +318,6 @@ public final class FileCollector implements AutoCloseable {
      *
      * @return True if the zip file including its content has been added without errors
      */
-    @Experimental
     public boolean addZipFileWithContent(Path zipFile) throws IOException {
         if (!Files.isRegularFile(zipFile)) {
             throw new IllegalArgumentException("Not a regular file: " + zipFile);
@@ -369,12 +357,15 @@ public final class FileCollector implements AutoCloseable {
 
 
     /** A collector that prefixes the display name of the files it will contain with the path of the zip. */
-    @Experimental
     private FileCollector newZipCollector(Path zipFilePath) {
         return new FileCollector(discoverer, reporter, FileId.fromPath(zipFilePath));
     }
 
     // configuration
+
+    public void setRecursive(boolean collectFilesRecursively) {
+        this.recursive = collectFilesRecursively;
+    }
 
     /**
      * Sets the charset to use for subsequent calls to {@link #addFile(Path)}

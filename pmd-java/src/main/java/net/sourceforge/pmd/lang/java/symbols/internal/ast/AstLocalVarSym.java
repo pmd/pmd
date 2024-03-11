@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
 import static net.sourceforge.pmd.lang.java.types.TypeOps.subst;
 
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.java.types.Substitution;
  */
 public final class AstLocalVarSym extends AbstractAstVariableSym implements JLocalVariableSymbol {
 
-    AstLocalVarSym(ASTVariableDeclaratorId node, AstSymFactory factory) {
+    AstLocalVarSym(ASTVariableId node, AstSymFactory factory) {
         super(node, factory);
     }
 

@@ -1,0 +1,16 @@
+<ruleset xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" name="Exception throwing ruleset">
+    <description/>
+    <rule name="ExceptionThrowingRule"
+          language="java"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <description>Use this rule to produce a processing error.</description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+error()
+            ]]></value></property>
+        </properties>
+    </rule>
+</ruleset>
+

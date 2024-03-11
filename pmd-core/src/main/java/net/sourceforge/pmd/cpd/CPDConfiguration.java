@@ -6,24 +6,22 @@ package net.sourceforge.pmd.cpd;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.Reader;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
+import java.nio.charset.Charset;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.LoggerFactory;
+
 import net.sourceforge.pmd.AbstractConfiguration;
-import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
-import net.sourceforge.pmd.internal.util.FileFinder;
-import net.sourceforge.pmd.internal.util.FileUtil;
+import net.sourceforge.pmd.cpd.internal.CpdLanguagePropertiesDefaults;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 /**
  *
@@ -37,6 +35,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private static final Map<String, Class<? extends CPDReportRenderer>> RENDERERS = new HashMap<>();
 
+
     static {
         RENDERERS.put(DEFAULT_RENDERER, SimpleRenderer.class);
         RENDERERS.put("xml", XMLRenderer.class);
@@ -45,15 +44,14 @@ public class CPDConfiguration extends AbstractConfiguration {
         RENDERERS.put("vs", VSRenderer.class);
     }
 
-    private Language language;
 
     private int minimumTileSize;
 
     private boolean skipDuplicates;
 
-    private String rendererName;
+    private String rendererName = DEFAULT_RENDERER;
 
-    private CPDReportRenderer cpdReportRenderer;
+    private @Nullable CPDReportRenderer cpdReportRenderer;
 
     private boolean ignoreLiterals;
 
@@ -71,45 +69,30 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private boolean noSkipBlocks = false;
 
-    private String skipBlocksPattern = Tokenizer.DEFAULT_SKIP_BLOCKS_PATTERN;
-
-    private List<File> files;
-
-    private String fileListPath;
-
-    private List<File> excludes;
-
-    private boolean nonRecursive;
-
-    private String uri;
+    private String skipBlocksPattern = CpdLanguagePropertiesDefaults.DEFAULT_SKIP_BLOCKS_PATTERN;
 
     private boolean help;
 
     private boolean failOnViolation = true;
 
-    public SourceCode sourceCodeFor(File file) {
-        return new SourceCode(new SourceCode.FileCodeLoader(file, getSourceEncoding().name()));
+
+    public CPDConfiguration() {
+        this(LanguageRegistry.CPD);
     }
 
-    public SourceCode sourceCodeFor(Reader reader, String sourceCodeName) {
-        return new SourceCode(new SourceCode.ReaderCodeLoader(reader, sourceCodeName));
+    public CPDConfiguration(LanguageRegistry languageRegistry) {
+        super(languageRegistry, new SimpleMessageReporter(LoggerFactory.getLogger(CpdAnalysis.class)));
     }
 
-    public void postContruct() {
-        if (getLanguage() == null) {
-            setLanguage(CPDConfiguration.getLanguageFromString(DEFAULT_LANGUAGE));
-        }
-        if (getRendererName() == null) {
-            setRendererName(DEFAULT_RENDERER);
-        }
-        if (this.cpdReportRenderer == null) {
-            //may throw
-            CPDReportRenderer renderer = createRendererByName(getRendererName(), getSourceEncoding().name());
-            setRenderer(renderer);
+    @Override
+    public void setSourceEncoding(Charset sourceEncoding) {
+        super.setSourceEncoding(sourceEncoding);
+        if (cpdReportRenderer != null) {
+            setRendererEncoding(cpdReportRenderer, sourceEncoding);
         }
     }
 
-    static CPDReportRenderer createRendererByName(String name, String encoding) {
+    static CPDReportRenderer createRendererByName(String name, Charset encoding) {
         if (name == null || "".equals(name)) {
             name = DEFAULT_RENDERER;
         }
@@ -128,7 +111,7 @@ public class CPDConfiguration extends AbstractConfiguration {
             }
         }
 
-        CPDReportRenderer renderer = null;
+        CPDReportRenderer renderer;
         try {
             renderer = rendererClass.getDeclaredConstructor().newInstance();
             setRendererEncoding(renderer, encoding);
@@ -139,73 +122,25 @@ public class CPDConfiguration extends AbstractConfiguration {
         return renderer;
     }
 
-
-    private static void setRendererEncoding(Object renderer, String encoding)
-            throws IllegalAccessException, InvocationTargetException {
+    private static void setRendererEncoding(@NonNull Object renderer, Charset encoding) {
         try {
             PropertyDescriptor encodingProperty = new PropertyDescriptor("encoding", renderer.getClass());
             Method method = encodingProperty.getWriteMethod();
-            if (method != null) {
-                method.invoke(renderer, encoding);
+            if (method == null) {
+                return;
             }
-        } catch (IntrospectionException ignored) {
+            if (method.getParameterTypes()[0] == Charset.class) {
+                method.invoke(renderer, encoding);
+            } else if (method.getParameterTypes()[0] == String.class) {
+                method.invoke(renderer, encoding.name());
+            }
+        } catch (IntrospectionException | ReflectiveOperationException ignored) {
             // ignored - maybe this renderer doesn't have a encoding property
         }
     }
 
-    public static String[] getRenderers() {
-        String[] result = RENDERERS.keySet().toArray(new String[0]);
-        Arrays.sort(result);
-        return result;
-    }
-
-    public static Language getLanguageFromString(String languageString) {
-        return LanguageFactory.createLanguage(languageString);
-    }
-
-    public static void setSystemProperties(CPDConfiguration configuration) {
-        Properties properties = new Properties();
-        if (configuration.isIgnoreLiterals()) {
-            properties.setProperty(Tokenizer.IGNORE_LITERALS, "true");
-        } else {
-            properties.remove(Tokenizer.IGNORE_LITERALS);
-        }
-        if (configuration.isIgnoreIdentifiers()) {
-            properties.setProperty(Tokenizer.IGNORE_IDENTIFIERS, "true");
-        } else {
-            properties.remove(Tokenizer.IGNORE_IDENTIFIERS);
-        }
-        if (configuration.isIgnoreAnnotations()) {
-            properties.setProperty(Tokenizer.IGNORE_ANNOTATIONS, "true");
-        } else {
-            properties.remove(Tokenizer.IGNORE_ANNOTATIONS);
-        }
-        if (configuration.isIgnoreUsings()) {
-            properties.setProperty(Tokenizer.IGNORE_USINGS, "true");
-        } else {
-            properties.remove(Tokenizer.IGNORE_USINGS);
-        }
-        if (configuration.isIgnoreLiteralSequences()) {
-            properties.setProperty(Tokenizer.OPTION_IGNORE_LITERAL_SEQUENCES, "true");
-        } else {
-            properties.remove(Tokenizer.OPTION_IGNORE_LITERAL_SEQUENCES);
-        }
-        if (configuration.isIgnoreIdentifierAndLiteralSequences()) {
-            properties.setProperty(Tokenizer.OPTION_IGNORE_IDENTIFIER_AND_LITERAL_SEQUENCES, "true");
-        } else {
-            properties.remove(Tokenizer.OPTION_IGNORE_IDENTIFIER_AND_LITERAL_SEQUENCES);
-        }
-        properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS, Boolean.toString(!configuration.isNoSkipBlocks()));
-        properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS_PATTERN, configuration.getSkipBlocksPattern());
-        configuration.getLanguage().setProperties(properties);
-    }
-
-    public Language getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(Language language) {
-        this.language = language;
+    public static Set<String> getRenderers() {
+        return Collections.unmodifiableSet(RENDERERS.keySet());
     }
 
     public int getMinimumTileSize() {
@@ -230,52 +165,16 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     public void setRendererName(String rendererName) {
         this.rendererName = rendererName;
+        if (rendererName == null) {
+            this.cpdReportRenderer = null;
+        }
+        this.cpdReportRenderer = createRendererByName(rendererName, getSourceEncoding());
     }
 
 
     public CPDReportRenderer getCPDReportRenderer() {
         return cpdReportRenderer;
     }
-
-    public Tokenizer tokenizer() {
-        if (language == null) {
-            throw new IllegalStateException("Language is null.");
-        }
-        return language.getTokenizer();
-    }
-
-    public FilenameFilter filenameFilter() {
-        if (language == null) {
-            throw new IllegalStateException("Language is null.");
-        }
-
-        final FilenameFilter languageFilter = language.getFileFilter();
-        final Set<String> exclusions = new HashSet<>();
-
-        if (excludes != null) {
-            FileFinder finder = new FileFinder();
-            for (File excludedFile : excludes) {
-                if (excludedFile.isDirectory()) {
-                    List<File> files = finder.findFilesFrom(excludedFile, languageFilter, true);
-                    for (File f : files) {
-                        exclusions.add(FileUtil.normalizeFilename(f.getAbsolutePath()));
-                    }
-                } else {
-                    exclusions.add(FileUtil.normalizeFilename(excludedFile.getAbsolutePath()));
-                }
-            }
-        }
-
-        return (dir, name) -> {
-            File f = new File(dir, name);
-            if (exclusions.contains(FileUtil.normalizeFilename(f.getAbsolutePath()))) {
-                System.err.println("Excluding " + f.getAbsolutePath());
-                return false;
-            }
-            return languageFilter.accept(dir, name);
-        };
-    }
-
 
     void setRenderer(CPDReportRenderer renderer) {
         this.cpdReportRenderer = renderer;
@@ -335,46 +234,6 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     public void setSkipLexicalErrors(boolean skipLexicalErrors) {
         this.skipLexicalErrors = skipLexicalErrors;
-    }
-
-    public List<File> getFiles() {
-        return files;
-    }
-
-    public void setFiles(List<File> files) {
-        this.files = files;
-    }
-
-    public String getFileListPath() {
-        return fileListPath;
-    }
-
-    public void setFileListPath(String fileListPath) {
-        this.fileListPath = fileListPath;
-    }
-
-    public String getURI() {
-        return uri;
-    }
-
-    public void setURI(String uri) {
-        this.uri = uri;
-    }
-
-    public List<File> getExcludes() {
-        return excludes;
-    }
-
-    public void setExcludes(List<File> excludes) {
-        this.excludes = excludes;
-    }
-
-    public boolean isNonRecursive() {
-        return nonRecursive;
-    }
-
-    public void setNonRecursive(boolean nonRecursive) {
-        this.nonRecursive = nonRecursive;
     }
 
     public boolean isHelp() {

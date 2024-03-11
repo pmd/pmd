@@ -33,7 +33,7 @@ class SuperTypesEnumeratorTest : ParserTestSpec({
         """)
 
         val (i1, i2, sup, sub) =
-                acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+                acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         doTest("ALL_SUPERTYPES_INCLUDING_SELF") {
             with(acu.typeDsl) {

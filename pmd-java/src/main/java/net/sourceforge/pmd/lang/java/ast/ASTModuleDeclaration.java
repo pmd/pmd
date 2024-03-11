@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  * A module declaration. This is found at the top-level of a
  * {@linkplain ASTCompilationUnit modular compilation unit}.
  *
- * <pre clas="grammar">
+ * <pre class="grammar">
  *
  * ModuleDeclaration ::= {@linkplain ASTModifierList AnnotationList} "open"?
  *                       "module" {@linkplain ASTModuleName ModuleName}

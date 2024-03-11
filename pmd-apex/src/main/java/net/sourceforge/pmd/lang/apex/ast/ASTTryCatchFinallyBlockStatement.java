@@ -6,12 +6,12 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import java.util.List;
 
-import apex.jorje.semantic.ast.statement.TryCatchFinallyBlockStatement;
+import com.google.summit.ast.statement.TryStatement;
 
-public final class ASTTryCatchFinallyBlockStatement extends AbstractApexNode<TryCatchFinallyBlockStatement> {
+public final class ASTTryCatchFinallyBlockStatement extends AbstractApexNode.Single<TryStatement> {
 
-    ASTTryCatchFinallyBlockStatement(TryCatchFinallyBlockStatement tryCatchFinallyBlockStatement) {
-        super(tryCatchFinallyBlockStatement);
+    ASTTryCatchFinallyBlockStatement(TryStatement tryStatement) {
+        super(tryStatement);
     }
 
 
@@ -25,7 +25,7 @@ public final class ASTTryCatchFinallyBlockStatement extends AbstractApexNode<Try
     }
 
     public List<ASTCatchBlockStatement> getCatchClauses() {
-        return findChildrenOfType(ASTCatchBlockStatement.class);
+        return children(ASTCatchBlockStatement.class).toList();
     }
 
     public ASTBlockStatement getFinallyBlock() {

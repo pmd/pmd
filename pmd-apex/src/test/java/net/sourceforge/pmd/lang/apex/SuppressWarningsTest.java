@@ -4,19 +4,19 @@
 
 package net.sourceforge.pmd.lang.apex;
 
-import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSize;
-import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSuppressed;
+import static net.sourceforge.pmd.lang.test.ast.TestUtilsKt.assertSize;
+import static net.sourceforge.pmd.lang.test.ast.TestUtilsKt.assertSuppressed;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.ViolationSuppressor;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserTestBase;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.ViolationSuppressor;
 
 class SuppressWarningsTest extends ApexParserTestBase {
 
@@ -32,7 +32,7 @@ class SuppressWarningsTest extends ApexParserTestBase {
         @Override
         public Object visit(ASTUserClass clazz, Object ctx) {
             if (clazz.getSimpleName().equalsIgnoreCase("bar")) {
-                addViolation(ctx, clazz);
+                asCtx(ctx).addViolation(clazz);
             }
             return super.visit(clazz, ctx);
         }

@@ -7,10 +7,10 @@ package net.sourceforge.pmd.lang.modelica.ast
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.matchNode
-import net.sourceforge.pmd.lang.ast.test.assertPosition
-import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldHaveText
+import net.sourceforge.pmd.lang.test.ast.matchNode
+import net.sourceforge.pmd.lang.test.ast.assertPosition
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldHaveText
 import net.sourceforge.pmd.lang.modelica.ModelicaParsingHelper
 
 class ModelicaCoordsTest : FunSpec({
@@ -130,7 +130,7 @@ end TestPackage"""
                                                 }
                                                 child<ASTSimpleName> {
                                                     it shouldHaveText "EmptyPackage"
-                                                    it::getImage shouldBe "EmptyPackage"
+                                                    it.name shouldBe "EmptyPackage"
                                                     it.assertPosition(3, 7, 3, 19)
                                                 }
                                             }

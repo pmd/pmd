@@ -93,12 +93,12 @@ entries:
     - title: null
       output: web, pdf
       subfolders:
-      - title: Salesforce VisualForce Rules
+      - title: Salesforce Visualforce Rules
         output: web, pdf
         subfolderitems:
         - title: Index
           output: web, pdf
-          url: /pmd_rules_vf.html
+          url: /pmd_rules_visualforce.html
     - title: null
       output: web, pdf
       subfolders:
@@ -120,12 +120,12 @@ entries:
     - title: null
       output: web, pdf
       subfolders:
-      - title: VM Rules
+      - title: Velocity Template Language (VTL) Rules
         output: web, pdf
         subfolderitems:
         - title: Index
           output: web, pdf
-          url: /pmd_rules_vm.html
+          url: /pmd_rules_velocity.html
     - title: null
       output: web, pdf
       subfolders:

@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
+import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
@@ -86,7 +86,7 @@ class Java16TreeDumpTest extends BaseJavaTreeDumpTest {
         List<ASTRecordComponent> components = recordDecl.descendants(ASTRecordComponentList.class)
                 .children(ASTRecordComponent.class).toList();
 
-        ASTVariableDeclaratorId varId = components.get(0).getVarId();
+        ASTVariableId varId = components.get(0).getVarId();
         JElementSymbol symbol = varId.getSymbol();
         assertEquals("x", symbol.getSimpleName());
         assertTrue(varId.getTypeMirror().isPrimitive(JPrimitiveType.PrimitiveTypeKind.INT));

@@ -20,10 +20,10 @@ class ASTNewKeyValueObjectExpressionTest extends ApexParserTestBase {
                 + "            upsert new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');\n"
                 + "        }\n" + "    } \n" + "}");
 
-        ASTNewKeyValueObjectExpression keyValueExpr = node.getFirstDescendantOfType(ASTNewKeyValueObjectExpression.class);
+        ASTNewKeyValueObjectExpression keyValueExpr = node.descendants(ASTNewKeyValueObjectExpression.class).first();
         assertEquals(3, keyValueExpr.getParameterCount());
 
-        List<ASTLiteralExpression> literals = keyValueExpr.findDescendantsOfType(ASTLiteralExpression.class);
+        List<ASTLiteralExpression> literals = keyValueExpr.descendants(ASTLiteralExpression.class).toList();
         assertEquals(3, literals.size());
         assertEquals("FirstName", literals.get(0).getName());
         assertEquals("LastName", literals.get(1).getName());

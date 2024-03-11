@@ -33,11 +33,11 @@ public class UselessOperationOnImmutableRule extends AbstractJavaRulechainRule {
             // result is ignored is a violation
             if (TypeTestUtil.isA(String.class, qualifier)) {
                 if (!"getChars".equals(node.getMethodName())) {
-                    addViolation(data, node);
+                    asCtx(data).addViolation(node);
                 }
             } else if (TypeTestUtil.isA(BigDecimal.class, qualifier)
                 || TypeTestUtil.isA(BigInteger.class, qualifier)) {
-                addViolation(data, node);
+                asCtx(data).addViolation(node);
             }
         }
         return null;

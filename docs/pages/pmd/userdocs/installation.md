@@ -47,7 +47,7 @@ On Windows this is achieved by:
 
 PMD ships with built-in completion support for Bash / Zsh.
 
-To enable it, simply add `source *path_to_pmd*/shell/pmd-completion.sh` to your `~/.bashrc` / `~/.zshrc` file.
+To enable it, simply add `source <(pmd generate-completion)` to your `~/.bashrc` / `~/.zshrc` file.
 
 ## Running PMD via command line
 
@@ -99,11 +99,11 @@ Additionally, the following options, are specified most of the time even though 
   .../src/main/java/com/me/RuleSetWriter.java:66     Avoid empty catch blocks"
    windows="pmd.bat check -f text -R rulesets/java/quickstart.xml ..\..\src\main\java
 
-  .../src/main/java/com/me/RuleSet.java:123  These nested if statements could be combined
-  .../src/main/java/com/me/RuleSet.java:231  Useless parentheses.
-  .../src/main/java/com/me/RuleSet.java:232  Useless parentheses.
-  .../src/main/java/com/me/RuleSet.java:357  These nested if statements could be combined
-  .../src/main/java/com/me/RuleSetWriter.java:66     Avoid empty catch blocks" %}
+  ...\src\main\java\com\me\RuleSet.java:123  These nested if statements could be combined
+  ...\src\main\java\com\me\RuleSet.java:231  Useless parentheses.
+  ...\src\main\java\com\me\RuleSet.java:232  Useless parentheses.
+  ...\src\main\java\com\me\RuleSet.java:357  These nested if statements could be combined
+  ...\src\main\java\com\me\RuleSetWriter.java:66     Avoid empty catch blocks" %}
 
 ## Running CPD via command line
 
@@ -140,7 +140,7 @@ sources. Alternatively You can use the `-d` or `--dir` flag, which is equivalent
           assertEquals(Boolean.TYPE, expressions.get(index++).getType());
           assertEquals(Boolean.TYPE, expressions.get(index++).getType());
           assertEquals(Boolean.TYPE, expressions.get(index++).getType());"
-    windows="pmd.bat cpd --minimum-tokens 100 /home/me/src
+    windows="pmd.bat cpd --minimum-tokens 100 c:\temp\src
 
   Found a 7 line (110 tokens) duplication in the following files:
   Starting at line 579 of c:\temp\src\test\java\foo\FooTypeTest.java

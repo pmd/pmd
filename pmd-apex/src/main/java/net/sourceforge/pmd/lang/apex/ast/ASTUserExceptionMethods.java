@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.compilation.UserExceptionMethods;
+import com.google.summit.ast.Node;
 
-public final class ASTUserExceptionMethods extends AbstractApexNode<UserExceptionMethods> {
+public final class ASTUserExceptionMethods extends AbstractApexNode.Single<Node> {
 
-    ASTUserExceptionMethods(UserExceptionMethods userExceptionMethods) {
+    ASTUserExceptionMethods(Node userExceptionMethods) {
         super(userExceptionMethods);
     }
 

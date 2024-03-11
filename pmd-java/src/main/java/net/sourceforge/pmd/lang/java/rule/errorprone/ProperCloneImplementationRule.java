@@ -7,9 +7,9 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -24,19 +24,19 @@ public class ProperCloneImplementationRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTMethodDeclaration method, Object data) {
         if (JavaAstUtils.isCloneMethod(method) && !method.isAbstract()) {
-            ASTAnyTypeDeclaration enclosingType = method.getEnclosingType();
+            ASTTypeDeclaration enclosingType = method.getEnclosingType();
             if (isNotFinal(enclosingType) && hasAnyAllocationOfClass(method, enclosingType)) {
-                addViolation(data, method);
+                asCtx(data).addViolation(method);
             }
         }
         return data;
     }
 
-    private boolean isNotFinal(ASTAnyTypeDeclaration classOrInterfaceDecl) {
+    private boolean isNotFinal(ASTTypeDeclaration classOrInterfaceDecl) {
         return !classOrInterfaceDecl.hasModifiers(JModifier.FINAL);
     }
 
-    private boolean hasAnyAllocationOfClass(ASTMethodDeclaration method, ASTAnyTypeDeclaration enclosingType) {
+    private boolean hasAnyAllocationOfClass(ASTMethodDeclaration method, ASTTypeDeclaration enclosingType) {
         @NonNull
         JClassSymbol typeSymbol = enclosingType.getTypeMirror().getSymbol();
         return method.descendants(ASTConstructorCall.class)

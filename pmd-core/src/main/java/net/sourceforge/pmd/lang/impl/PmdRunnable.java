@@ -9,13 +9,10 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
-import net.sourceforge.pmd.cache.AnalysisCache;
+import net.sourceforge.pmd.cache.internal.AnalysisCache;
 import net.sourceforge.pmd.internal.SystemProps;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageProcessor.AnalysisTask;
@@ -28,7 +25,10 @@ import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.ast.SemanticException;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 /**
  * A processing task for a single file.

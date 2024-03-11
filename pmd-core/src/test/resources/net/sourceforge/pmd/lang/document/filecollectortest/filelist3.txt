@@ -1,0 +1,1 @@
+src/test/resources/net/sourceforge/pmd/lang/document/filecollectortest/src/somefile1.dummy,src/test/resources/net/sourceforge/pmd/lang/document/filecollectortest/src/somefile2.dummy,src/test/resources/net/sourceforge/pmd/lang/document/filecollectortest/src/somefile3.dummy,src/test/resources/net/sourceforge/pmd/lang/document/filecollectortest/src/somefile4.dummy

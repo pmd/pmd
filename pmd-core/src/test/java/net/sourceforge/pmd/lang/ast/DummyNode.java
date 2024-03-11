@@ -20,6 +20,8 @@ import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.CommentNode;
+import net.sourceforge.pmd.lang.rule.xpath.TextNode;
 
 public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
 
@@ -169,6 +171,30 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
 
         public DummyNodeTypeB() {
             super("dummyNodeB");
+        }
+    }
+
+    public static class DummyTextNode extends DummyNode implements TextNode {
+        @Override
+        public String getText() {
+            return getImage();
+        }
+
+        @Override
+        public String getXPathNodeName() {
+            return TextNode.super.getXPathNodeName();
+        }
+    }
+
+    public static class DummyCommentNode extends DummyNode implements CommentNode {
+        @Override
+        public String getData() {
+            return getImage();
+        }
+
+        @Override
+        public String getXPathNodeName() {
+            return CommentNode.super.getXPathNodeName();
         }
     }
 }

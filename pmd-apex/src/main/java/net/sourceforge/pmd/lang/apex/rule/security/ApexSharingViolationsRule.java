@@ -8,7 +8,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.WeakHashMap;
 
-import net.sourceforge.pmd.RuleContext;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlInsertStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlMergeStatement;
@@ -23,6 +24,8 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Finds Apex class that do not define sharing
@@ -36,16 +39,18 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
      */
     private Map<ApexNode<?>, Object> localCacheOfReportedNodes = new WeakHashMap<>();
 
-    public ApexSharingViolationsRule() {
-        addRuleChainVisit(ASTDmlDeleteStatement.class);
-        addRuleChainVisit(ASTDmlInsertStatement.class);
-        addRuleChainVisit(ASTDmlMergeStatement.class);
-        addRuleChainVisit(ASTDmlUndeleteStatement.class);
-        addRuleChainVisit(ASTDmlUpdateStatement.class);
-        addRuleChainVisit(ASTDmlUpsertStatement.class);
-        addRuleChainVisit(ASTMethodCallExpression.class);
-        addRuleChainVisit(ASTSoqlExpression.class);
-        addRuleChainVisit(ASTSoslExpression.class);
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(
+                ASTDmlDeleteStatement.class,
+                ASTDmlInsertStatement.class,
+                ASTDmlMergeStatement.class,
+                ASTDmlUndeleteStatement.class,
+                ASTDmlUpdateStatement.class,
+                ASTDmlUpsertStatement.class,
+                ASTMethodCallExpression.class,
+                ASTSoqlExpression.class,
+                ASTSoslExpression.class);
     }
 
     @Override
@@ -113,12 +118,12 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
 
     private void checkForViolation(ApexNode<?> node, Object data) {
         // The closest ASTUserClass class in the tree hierarchy is the node that requires the sharing declaration
-        ASTUserClass sharingDeclarationClass = node.getFirstParentOfType(ASTUserClass.class);
+        ASTUserClass sharingDeclarationClass = node.ancestors(ASTUserClass.class).first();
 
         // This is null in the case of triggers
         if (sharingDeclarationClass != null) {
             // Apex allows a single level of class nesting. Check to see if sharingDeclarationClass has an outer class
-            ASTUserClass outerClass = sharingDeclarationClass.getFirstParentOfType(ASTUserClass.class);
+            ASTUserClass outerClass = sharingDeclarationClass.ancestors(ASTUserClass.class).first();
             // The test annotation needs to be on the outermost class
             ASTUserClass testAnnotationClass = Optional.ofNullable(outerClass).orElse(sharingDeclarationClass);
 
@@ -130,14 +135,14 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
     }
 
     private void reportViolation(ApexNode<?> node, Object data) {
-        ASTModifierNode modifier = node.getFirstChildOfType(ASTModifierNode.class);
+        ASTModifierNode modifier = node.firstChild(ASTModifierNode.class);
         if (modifier != null) {
             if (localCacheOfReportedNodes.put(modifier, data) == null) {
-                addViolation(data, modifier);
+                asCtx(data).addViolation(modifier);
             }
         } else {
             if (localCacheOfReportedNodes.put(node, data) == null) {
-                addViolation(data, node);
+                asCtx(data).addViolation(node);
             }
         }
     }

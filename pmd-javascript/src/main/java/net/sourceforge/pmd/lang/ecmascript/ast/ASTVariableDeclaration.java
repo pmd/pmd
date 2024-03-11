@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
-import java.util.Locale;
-
-import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.VariableDeclaration;
 
 public final class ASTVariableDeclaration extends AbstractEcmascriptNode<VariableDeclaration> {
     ASTVariableDeclaration(VariableDeclaration variableDeclaration) {
         super(variableDeclaration);
-        super.setImage(Token.typeToName(variableDeclaration.getType()).toLowerCase(Locale.ROOT));
     }
 
     @Override

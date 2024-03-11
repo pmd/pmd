@@ -4,14 +4,28 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.TEST_METHOD;
+import java.util.List;
+import java.util.Map;
 
-import apex.jorje.semantic.ast.modifier.ModifierNode;
-import apex.jorje.semantic.symbol.type.ModifierTypeInfos;
+import com.google.common.collect.ImmutableMap;
+import com.google.summit.ast.modifier.AnnotationModifier;
+import com.google.summit.ast.modifier.KeywordModifier;
+import com.google.summit.ast.modifier.KeywordModifier.Keyword;
+import com.google.summit.ast.modifier.Modifier;
 
-public final class ASTModifierNode extends AbstractApexNode<ModifierNode> implements AccessNode {
+public final class ASTModifierNode extends AbstractApexNode.Many<Modifier> implements AccessNode {
 
-    ASTModifierNode(ModifierNode modifierNode) {
+    private static final Map<Keyword, Integer> OPCODES = ImmutableMap.<Keyword, Integer>builder()
+            .put(Keyword.PUBLIC, AccessNode.PUBLIC)
+            .put(Keyword.PRIVATE, AccessNode.PRIVATE)
+            .put(Keyword.PROTECTED, AccessNode.PROTECTED)
+            .put(Keyword.ABSTRACT, AccessNode.ABSTRACT)
+            .put(Keyword.STATIC, AccessNode.STATIC)
+            .put(Keyword.FINAL, AccessNode.FINAL)
+            .put(Keyword.TRANSIENT, AccessNode.TRANSIENT)
+            .build();
+
+    ASTModifierNode(List<Modifier> modifierNode) {
         super(modifierNode);
     }
 
@@ -23,87 +37,126 @@ public final class ASTModifierNode extends AbstractApexNode<ModifierNode> implem
 
     @Override
     public int getModifiers() {
-        return node.getModifiers().getJavaModifiers();
+        int modifiers = nodes
+                .stream()
+                .filter(mod -> mod instanceof KeywordModifier)
+                .map(mod -> (KeywordModifier) mod)
+                .filter(mod -> OPCODES.containsKey(mod.getKeyword()))
+                .mapToInt(mod -> OPCODES.get(mod.getKeyword()))
+                .reduce(0, (current, bit) -> current | bit);
+
+        // interface methods are implicit public and abstract
+        ApexNode<?> classOrInterface = ancestors().get(1);
+        if (nodes.isEmpty() && classOrInterface instanceof ASTUserInterface) {
+            modifiers |= PUBLIC | ABSTRACT;
+        }
+
+        if ((modifiers & PUBLIC) > 0) {
+            // Remove PROTECTED and PRIVATE if PUBLIC
+            modifiers &= ~PROTECTED;
+            modifiers &= ~PRIVATE;
+        } else if ((modifiers & PROTECTED) > 0) {
+            // Remove PRIVATE if PROTECTED
+            modifiers &= ~PRIVATE;
+        }
+
+        return modifiers;
     }
 
     @Override
     public boolean isPublic() {
-        return (node.getModifiers().getJavaModifiers() & PUBLIC) == PUBLIC;
+        return (getModifiers() & PUBLIC) == PUBLIC;
     }
 
     @Override
     public boolean isProtected() {
-        return (node.getModifiers().getJavaModifiers() & PROTECTED) == PROTECTED;
+        return (getModifiers() & PROTECTED) == PROTECTED;
     }
 
     @Override
     public boolean isPrivate() {
-        return (node.getModifiers().getJavaModifiers() & PRIVATE) == PRIVATE;
+        return (getModifiers() & PRIVATE) == PRIVATE;
     }
 
     @Override
     public boolean isAbstract() {
-        return (node.getModifiers().getJavaModifiers() & ABSTRACT) == ABSTRACT;
+        return (getModifiers() & ABSTRACT) == ABSTRACT;
     }
 
     @Override
     public boolean isStatic() {
-        return (node.getModifiers().getJavaModifiers() & STATIC) == STATIC;
+        return (getModifiers() & STATIC) == STATIC;
     }
 
     @Override
     public boolean isFinal() {
-        return (node.getModifiers().getJavaModifiers() & FINAL) == FINAL;
+        return (getModifiers() & FINAL) == FINAL;
     }
 
     @Override
     public boolean isTransient() {
-        return (node.getModifiers().getJavaModifiers() & TRANSIENT) == TRANSIENT;
+        return (getModifiers() & TRANSIENT) == TRANSIENT;
+    }
+
+    private boolean hasKeyword(Keyword keyword) {
+        return nodes
+                .stream()
+                .filter(mod -> mod instanceof KeywordModifier)
+                .map(mod -> (KeywordModifier) mod)
+                .anyMatch(mod -> mod.getKeyword() == keyword);
+    }
+
+    private boolean hasAnnotation(String name) {
+        return nodes
+                .stream()
+                .filter(mod -> mod instanceof AnnotationModifier)
+                .map(mod -> (AnnotationModifier) mod)
+                .anyMatch(mod -> mod.getName().getString().equalsIgnoreCase(name));
     }
 
     /**
      * Returns true if function has `@isTest` annotation or `testmethod` modifier
      */
     public boolean isTest() {
-        return node.getModifiers().isTest();
+        return hasAnnotation("isTest") || hasKeyword(Keyword.TESTMETHOD);
     }
 
     /**
      * Returns true if function has `testmethod` modifier
      */
     public boolean hasDeprecatedTestMethod() {
-        return node.getModifiers().has(TEST_METHOD);
+        return hasKeyword(Keyword.TESTMETHOD);
     }
 
     public boolean isTestOrTestSetup() {
-        return node.getModifiers().isTestOrTestSetup();
+        return isTest() || hasAnnotation("testSetup");
     }
 
     public boolean isWithSharing() {
-        return node.getModifiers().has(ModifierTypeInfos.WITH_SHARING);
+        return hasKeyword(Keyword.WITHSHARING);
     }
 
     public boolean isWithoutSharing() {
-        return node.getModifiers().has(ModifierTypeInfos.WITHOUT_SHARING);
+        return hasKeyword(Keyword.WITHOUTSHARING);
     }
 
     public boolean isInheritedSharing() {
-        return node.getModifiers().has(ModifierTypeInfos.INHERITED_SHARING);
+        return hasKeyword(Keyword.INHERITEDSHARING);
     }
 
     public boolean isWebService() {
-        return node.getModifiers().has(ModifierTypeInfos.WEB_SERVICE);
+        return hasKeyword(Keyword.WEBSERVICE);
     }
 
     public boolean isGlobal() {
-        return node.getModifiers().has(ModifierTypeInfos.GLOBAL);
+        return hasKeyword(Keyword.GLOBAL);
     }
 
     public boolean isOverride() {
-        return node.getModifiers().has(ModifierTypeInfos.OVERRIDE);
+        return hasKeyword(Keyword.OVERRIDE);
     }
 
     public boolean isVirtual() {
-        return node.getModifiers().has(ModifierTypeInfos.VIRTUAL);
+        return hasKeyword(Keyword.VIRTUAL);
     }
 }

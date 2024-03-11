@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.kotlin.ast;
 
 import org.jetbrains.annotations.NotNull;
 
-import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
+import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.lang.kotlin.KotlinLanguageModule;
 
 /**
@@ -18,7 +18,7 @@ public class KotlinParsingHelper extends BaseParsingHelper<KotlinParsingHelper, 
 
 
     public KotlinParsingHelper(@NotNull Params params) {
-        super(KotlinLanguageModule.NAME, KotlinParser.KtKotlinFile.class, params);
+        super(KotlinLanguageModule.getInstance(), KotlinParser.KtKotlinFile.class, params);
     }
 
     @NotNull

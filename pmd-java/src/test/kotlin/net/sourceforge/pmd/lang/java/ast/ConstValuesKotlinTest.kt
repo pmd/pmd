@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBeA
+import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
 
 /**
@@ -24,7 +24,7 @@ class ConstValuesKotlinTest : ProcessorTestSpec({
             }
         """.trimIndent())
 
-        val (i1, i2, i3) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+        val (i1, i2, i3) = acu.descendants(ASTVariableId::class.java).toList()
 
 
         i1.initializer!!.constValue shouldBe null

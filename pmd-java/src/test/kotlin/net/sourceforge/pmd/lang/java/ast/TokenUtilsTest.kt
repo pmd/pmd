@@ -9,8 +9,8 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestScope
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken
-import net.sourceforge.pmd.lang.ast.test.Assertions
-import net.sourceforge.pmd.lang.ast.test.IntelliMarker
+import net.sourceforge.pmd.lang.test.ast.Assertions
+import net.sourceforge.pmd.lang.test.ast.IntelliMarker
 
 /**
  * @author Clément Fournier
@@ -21,7 +21,7 @@ class TokenUtilsTest : IntelliMarker, FunSpec({
 
 
         val decl =
-                TopLevelTypeDeclarationParsingCtx.parseAndFind<ASTClassOrInterfaceDeclaration>(
+                TopLevelTypeDeclarationParsingCtx.parseAndFind<ASTClassDeclaration>(
                         "class Foo { /* wassup */ abstract void bar(); }",
                         ParserTestCtx(this@setup1, JavaVersion.J11)
                 )

@@ -43,13 +43,13 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode<AbstractSc
     @Override
     @SuppressWarnings("unchecked")
     public <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
-        if (visitor instanceof ScalaParserVisitor) {
-            return this.acceptVisitor((ScalaParserVisitor<P, R>) visitor, data);
+        if (visitor instanceof ScalaVisitor) {
+            return this.acceptVisitor((ScalaVisitor<P, R>) visitor, data);
         }
         return visitor.cannotVisit(this, data);
     }
 
-    protected abstract <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data);
+    protected abstract <P, R> R acceptVisitor(ScalaVisitor<? super P, ? extends R> visitor, P data);
 
     // overridden to make it visible
     @Override
@@ -73,12 +73,6 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode<AbstractSc
             return POS_CMP.compare(((AbstractScalaNode<?>) node).pos, pos);
         }
         return ScalaNode.super.compareLocation(node);
-    }
-
-    @Override
-    @Deprecated
-    public T getNode() {
-        return node;
     }
 
     @Override

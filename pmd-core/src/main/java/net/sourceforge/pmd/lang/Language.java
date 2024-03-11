@@ -8,22 +8,28 @@ import java.util.List;
 import java.util.ServiceLoader;
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.cpd.CpdCapableLanguage;
+
 /**
  * Represents a language module, and provides access to language-specific
- * functionality. You can get a language instance from a {@link LanguageRegistry}.
+ * functionality. You can get a language instance from a {@link LanguageRegistry},
+ * see {@link LanguageRegistry#PMD} for instance.
  *
  * <p>Language instances are extensions to the core of PMD. They can be
- * registered with a {@linkplain ServiceLoader service file} so that the
- * PMD CLI automatically finds them on the classpath.
+ * registered with a {@linkplain ServiceLoader service file} so that
+ * PMD automatically finds them on the classpath.
  *
  * <p>Instances of this interface are stateless and immutable after construction.
  * They mostly provide metadata about the language, like ID, name and different
- * versions that are supported. Languages can create a {@link LanguageProcessor}
- * to actually run the analysis. That object can maintain analysis-global state,
- * and has a proper lifecycle.
+ * versions that are supported.
+ *
+ * <p>Languages should implement the interfaces {@link PmdCapableLanguage}
+ * or {@link CpdCapableLanguage} to be usable by PMD or CPD, respectively.
  *
  * @see LanguageVersion
- * @see LanguageVersionDiscoverer
  */
 public interface Language extends Comparable<Language> {
 
@@ -47,17 +53,6 @@ public interface Language extends Comparable<Language> {
     String getShortName();
 
     /**
-     * Returns the terse name of this language. This is a short, alphanumeric,
-     * lowercase name, eg {@code "java"}. It's used to identify the language
-     * in the ruleset XML, and is also in the package name of the language
-     * module.
-     *
-     * @return The terse name of this language.
-     */
-    String getTerseName();
-
-
-    /**
      * Returns the ID of this language. This is a short, alphanumeric,
      * lowercase name, eg {@code "java"}. It's used to identify the language
      * in the ruleset XML, and is also in the package name of the language
@@ -65,9 +60,7 @@ public interface Language extends Comparable<Language> {
      *
      * @return The ID of this language.
      */
-    default String getId() {
-        return getTerseName();
-    }
+    String getId();
 
     /**
      * Returns the list of file extensions associated with this language.
@@ -137,7 +130,7 @@ public interface Language extends Comparable<Language> {
      * @return The corresponding LanguageVersion, {@code null} if the
      *     version string is not recognized.
      */
-    default LanguageVersion getVersion(String version) {
+    default @Nullable LanguageVersion getVersion(String version) {
         for (LanguageVersion v : getVersions()) {
             if (v.getVersion().equals(version)) {
                 return v;
@@ -153,33 +146,22 @@ public interface Language extends Comparable<Language> {
      *
      * @return The current default language version for this language.
      */
-    LanguageVersion getDefaultVersion();
+    @NonNull LanguageVersion getDefaultVersion();
 
 
     /**
      * Creates a new bundle of properties that will serve to configure
      * the {@link LanguageProcessor} for this language. The returned
-     * bundle must have all relevant properties already declared.
+     * bundle must have all supported properties already declared. See
+     * {@link PmdCapableLanguage} and {@link CpdCapableLanguage} for sites
+     * where properties are passed back to the language with user-provided
+     * values.
      *
      * @return A new set of properties
      */
     default LanguagePropertyBundle newPropertyBundle() {
         return new LanguagePropertyBundle(this);
     }
-
-
-    /**
-     * Create a new {@link LanguageProcessor} for this language, given
-     * a property bundle with configuration. The bundle was created by
-     * this instance using {@link #newPropertyBundle()}. It can be assumed
-     * that the bundle will never be mutated anymore, and this method
-     * takes ownership of it.
-     *
-     * @param bundle A bundle of properties created by this instance.
-     *
-     * @return A new language processor
-     */
-    LanguageProcessor createProcessor(LanguagePropertyBundle bundle);
 
 
     /**

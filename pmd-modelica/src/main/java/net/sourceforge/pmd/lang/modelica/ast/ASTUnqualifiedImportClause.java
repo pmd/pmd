@@ -5,13 +5,13 @@
 package net.sourceforge.pmd.lang.modelica.ast;
 
 import net.sourceforge.pmd.lang.modelica.resolver.CompositeName;
-import net.sourceforge.pmd.lang.modelica.resolver.InternalModelicaResolverApi;
+import net.sourceforge.pmd.lang.modelica.resolver.InternalApiBridge;
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaDeclaration;
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaScope;
-import net.sourceforge.pmd.lang.modelica.resolver.ResolutionContext;
 import net.sourceforge.pmd.lang.modelica.resolver.ResolutionResult;
-import net.sourceforge.pmd.lang.modelica.resolver.ResolutionState;
-import net.sourceforge.pmd.lang.modelica.resolver.Watchdog;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionContext;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionState;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.Watchdog;
 
 public final class ASTUnqualifiedImportClause extends AbstractModelicaImportClause {
     private ASTName importFromWhere;
@@ -29,7 +29,7 @@ public final class ASTUnqualifiedImportClause extends AbstractModelicaImportClau
     public void jjtClose() {
         super.jjtClose();
 
-        importFromWhere = getFirstChildOfType(ASTName.class);
+        importFromWhere = firstChild(ASTName.class);
     }
 
     @Override
@@ -40,7 +40,7 @@ public final class ASTUnqualifiedImportClause extends AbstractModelicaImportClau
     @Override
     protected void fetchImportedClassesFromSource(ResolutionContext result, ModelicaDeclaration source, String simpleName) throws Watchdog.CountdownException {
         result.watchdogTick();
-        InternalModelicaResolverApi.resolveFurtherNameComponents(source, result, CompositeName.create(simpleName));
+        InternalApiBridge.resolveFurtherNameComponents(source, result, CompositeName.create(simpleName));
     }
 
     @Override

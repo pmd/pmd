@@ -4,23 +4,27 @@
 
 package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 public class OverrideBothEqualsAndHashcodeRule extends AbstractApexRule {
 
-    public OverrideBothEqualsAndHashcodeRule() {
-        addRuleChainVisit(ASTUserClass.class);
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTUserClass.class);
     }
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
         ApexNode<?> equalsNode = null;
         ApexNode<?> hashNode = null;
-        for (ASTMethod method : node.findChildrenOfType(ASTMethod.class)) {
+        for (ASTMethod method : node.children(ASTMethod.class)) {
             if (equalsNode == null && isEquals(method)) {
                 equalsNode = method;
             }
@@ -33,9 +37,9 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractApexRule {
         }
 
         if (equalsNode != null && hashNode == null) {
-            addViolation(data, equalsNode);
+            asCtx(data).addViolation(equalsNode);
         } else if (hashNode != null && equalsNode == null) {
-            addViolation(data, hashNode);
+            asCtx(data).addViolation(hashNode);
         }
 
         return data;

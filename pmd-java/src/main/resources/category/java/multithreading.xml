@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <ruleset name="Multithreading"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
@@ -13,7 +13,7 @@ Rules that flag issues when dealing with multiple threads of execution.
           language="java"
           since="3.0"
           message="Use block level rather than method level synchronization"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#avoidsynchronizedatmethodlevel">
         <description>
 Method-level synchronization can cause problems when new code is added to the method.
@@ -76,7 +76,7 @@ public class Foo {
           language="java"
           since="3.6"
           message="Avoid using java.lang.ThreadGroup; it is not thread safe"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#avoidthreadgroup">
         <description>
 Avoid using java.lang.ThreadGroup; although it is intended to be used in a threaded environment
@@ -87,7 +87,7 @@ it contains methods that are not thread-safe.
             <property name="xpath">
                 <value>
 <![CDATA[
-  //ConstructorCall/ClassOrInterfaceType[pmd-java:typeIs('java.lang.ThreadGroup')]
+  //ConstructorCall/ClassType[pmd-java:typeIs('java.lang.ThreadGroup')]
 | //MethodCall[@MethodName = 'getThreadGroup']
 ]]>
                 </value>
@@ -110,7 +110,7 @@ public class Bar {
     <rule name="AvoidUsingVolatile"
           language="java"
           since="4.1"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           message="Use of modifier volatile is not recommended."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#avoidusingvolatile">
         <description>
@@ -137,7 +137,7 @@ public class ThrDeux {
     <rule name="DoNotUseThreads"
           language="java"
           since="4.1"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           message="To be compliant to J2EE, a webapp should not use any thread."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#donotusethreads">
         <description>
@@ -150,7 +150,7 @@ Also, EJBs might be moved between machines in a cluster and only managed resourc
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceType
+//ClassType
 [pmd-java:typeIs('java.lang.Thread') or pmd-java:typeIs('java.util.concurrent.ExecutorService')]
 (: allow Thread.currentThread().getContextClassLoader() :)
 [not(parent::TypeExpression[parent::MethodCall[pmd-java:matchesSig('_#currentThread()')
@@ -161,7 +161,7 @@ Also, EJBs might be moved between machines in a cluster and only managed resourc
 (: exclude duplicated types on the same line :)
  [not((parent::FieldDeclaration|parent::LocalVariableDeclaration)/VariableDeclarator/*[2][pmd-java:typeIs('java.lang.Thread') or pmd-java:typeIs('java.util.concurrent.ExecutorService')])
  or
-  @BeginLine != (parent::FieldDeclaration|parent::LocalVariableDeclaration)/VariableDeclarator/ConstructorCall/ClassOrInterfaceType/@BeginLine]
+  @BeginLine != (parent::FieldDeclaration|parent::LocalVariableDeclaration)/VariableDeclarator/ConstructorCall/ClassType/@BeginLine]
 |
 //MethodCall[*[1][not(pmd-java:nodeIs('MethodCall'))][pmd-java:nodeIs('Expression') and (pmd-java:typeIs('java.util.concurrent.Executors')
    or pmd-java:typeIs('java.util.concurrent.ExecutorService'))]]
@@ -209,7 +209,7 @@ public class UsingExecutors {
           language="java"
           since="4.3"
           message="Don't call Thread.run() explicitly, use Thread.start()"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#dontcallthreadrun">
         <description>
 Explicitly calling Thread.run() method will execute in the caller's thread of control.  Instead, call Thread.start() for the intended behavior.
@@ -339,7 +339,7 @@ public class Foo {
           minimumLanguageVersion="1.5"
           since="4.2.6"
           message="If you run in Java5 or newer and have concurrent access, you should use the ConcurrentHashMap implementation"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#useconcurrenthashmap">
         <description>
 Since Java5 brought a new implementation of the Map designed for multi-threaded access, you can
@@ -350,7 +350,7 @@ perform efficient map reads without blocking other threads.
             <property name="xpath">
                 <value>
 <![CDATA[
-//VariableDeclarator[VariableDeclaratorId[pmd-java:typeIsExactly('java.util.Map')] and *[2][self::ConstructorCall and not(pmd-java:typeIs('java.util.concurrent.ConcurrentHashMap'))]]
+//VariableDeclarator[VariableId[pmd-java:typeIsExactly('java.util.Map')] and *[2][self::ConstructorCall and not(pmd-java:typeIs('java.util.concurrent.ConcurrentHashMap'))]]
 ]]>
                 </value>
             </property>
@@ -374,7 +374,7 @@ public class ConcurrentApp {
           language="java"
           since="3.0"
           message="Call Thread.notifyAll() rather than Thread.notify()"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#usenotifyallinsteadofnotify">
         <description>
 Thread.notify() awakens a thread monitoring the object. If more than one thread is monitoring, then only

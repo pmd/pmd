@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <ruleset name="Code Style"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
@@ -96,7 +96,7 @@ END;
           language="plsql"
           since="5.5.2"
           message="Pragma should be used only inside the declaration block before 'BEGIN'."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_codestyle.html#misplacedpragma">
         <description>
 Oracle states that the PRAQMA AUTONOMOUS_TRANSACTION must be in the declaration block,
@@ -139,7 +139,7 @@ end inline_pragma_error;
           language="plsql"
           since="6.7.0"
           message="Use meaningful names for loop variables"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_codestyle.html#forloopnaming">
         <description>
 In case you have loops please name the loop variables more meaningful.
@@ -164,7 +164,7 @@ In case you have loops please name the loop variables more meaningful.
                 </value>
             </property>
             <property name="allowSimpleLoops" type="Boolean" description="Ignore simple loops, that are not nested" value="false" />
-            <property name="cursorPattern" type="Regex" description="The pattern used for the curosr loop variable" value="[a-zA-Z_0-9]{5,}" />
+            <property name="cursorPattern" type="Regex" description="The pattern used for the cursor loop variable" value="[a-zA-Z_0-9]{5,}" />
             <property name="indexPattern" type="Regex" description="The pattern used for the index loop variable" value="[a-zA-Z_0-9]{5,}" />
         </properties>
         <example>

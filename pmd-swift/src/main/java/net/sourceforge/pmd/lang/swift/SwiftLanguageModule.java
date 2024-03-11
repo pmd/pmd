@@ -4,32 +4,24 @@
 
 package net.sourceforge.pmd.lang.swift;
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-
-import java.util.List;
-
-import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.cpd.CpdLexer;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
+import net.sourceforge.pmd.lang.swift.cpd.SwiftCpdLexer;
 
 /**
  * Language Module for Swift
  */
 public class SwiftLanguageModule extends SimpleLanguageModuleBase {
-
-    /** The name. */
-    public static final String NAME = "Swift";
-    /** The terse name. */
-    public static final String TERSE_NAME = "swift";
-
-    @InternalApi
-    public static final List<String> EXTENSIONS = listOf("swift");
+    private static final String ID = "swift";
 
     /**
      * Create a new instance of Swift Language Module.
      */
     public SwiftLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
-                              .extensions(EXTENSIONS)
+        super(LanguageMetadata.withId(ID).name("Swift")
+                              .extensions("swift")
                               .addVersion("4.2")
                               .addVersion("5.0")
                               .addVersion("5.1")
@@ -38,7 +30,18 @@ public class SwiftLanguageModule extends SimpleLanguageModuleBase {
                               .addVersion("5.4")
                               .addVersion("5.5")
                               .addVersion("5.6")
-                              .addDefaultVersion("5.7"),
-                new SwiftHandler());
+                              .addVersion("5.7")
+                              .addVersion("5.8")
+                              .addDefaultVersion("5.9"),
+              new SwiftHandler());
+    }
+
+    public static SwiftLanguageModule getInstance() {
+        return (SwiftLanguageModule) LanguageRegistry.PMD.getLanguageById(ID);
+    }
+
+    @Override
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new SwiftCpdLexer();
     }
 }

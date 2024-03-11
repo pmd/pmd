@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.xml;
 
-import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
-import net.sourceforge.pmd.lang.pom.PomLanguageModule;
-import net.sourceforge.pmd.lang.wsdl.WsdlLanguageModule;
+import net.sourceforge.pmd.lang.PmdCapableLanguage;
+import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
 
 /**
@@ -14,17 +13,15 @@ import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
  */
 public final class XmlParsingHelper extends BaseParsingHelper<XmlParsingHelper, RootXmlNode> {
 
-    public static final XmlParsingHelper XML = new XmlParsingHelper(XmlLanguageModule.NAME, Params.getDefault());
-    public static final XmlParsingHelper WSDL = new XmlParsingHelper(WsdlLanguageModule.NAME, Params.getDefault());
-    public static final XmlParsingHelper POM = new XmlParsingHelper(PomLanguageModule.NAME, Params.getDefault());
+    public static final XmlParsingHelper XML = new XmlParsingHelper(XmlLanguageModule.getInstance(), Params.getDefault());
 
 
-    private XmlParsingHelper(String langName, Params params) {
+    private XmlParsingHelper(PmdCapableLanguage langName, Params params) {
         super(langName, RootXmlNode.class, params);
     }
 
     @Override
     protected XmlParsingHelper clone(Params params) {
-        return new XmlParsingHelper(this.getLangName(), params);
+        return new XmlParsingHelper(this.getLanguage(), params);
     }
 }

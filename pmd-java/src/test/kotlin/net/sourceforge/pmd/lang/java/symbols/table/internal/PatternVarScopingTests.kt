@@ -5,8 +5,8 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
 import io.kotest.assertions.withClue
-import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBeA
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.*
 
 /**
@@ -285,7 +285,7 @@ class PatternVarScopingTests : ProcessorTestSpec({
                 """
                 ).shouldBeA<ASTForStatement>()
 
-                val (x, v) = loop.descendants(ASTVariableDeclaratorId::class.java).toList()
+                val (x, v) = loop.descendants(ASTVariableId::class.java).toList()
 
                 val (_, vref, xref) = loop.descendants(ASTVariableAccess::class.java).toList()
                 vref.shouldResolveToLocal(v)

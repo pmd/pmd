@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
@@ -53,7 +53,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
         super.visit(cu, data);
 
         if (couplingCount > getProperty(THRESHOLD_DESCRIPTOR)) {
-            addViolation(data, cu,
+            asCtx(data).addViolation(cu,
                          "A value of " + couplingCount + " may denote a high amount of coupling within the class");
         }
 
@@ -63,7 +63,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+    public Object visit(ASTClassDeclaration node, Object data) {
         boolean prev = inInterface;
         inInterface = node.isInterface();
         super.visit(node, data);
@@ -127,7 +127,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
      * @return boolean true if variableType is not what we care about
      */
     private boolean ignoreType(ASTType typeNode, JTypeMirror t) {
-        if (typeNode.getEnclosingType().getSymbol().equals(t.getSymbol())) {
+        if (typeNode.getEnclosingType() != null && typeNode.getEnclosingType().getSymbol().equals(t.getSymbol())) {
             return true;
         }
         JTypeDeclSymbol symbol = t.getSymbol();

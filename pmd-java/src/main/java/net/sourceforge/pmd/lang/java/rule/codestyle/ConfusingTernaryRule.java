@@ -69,7 +69,7 @@ public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
             if (!getProperty(IGNORE_ELSE_IF)
                 || !(node.getElseBranch() instanceof ASTIfStatement)
                 && !(node.getParent() instanceof ASTIfStatement)) {
-                addViolation(data, node);
+                asCtx(data).addViolation(node);
             }
         }
         return data;
@@ -79,7 +79,7 @@ public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
     public Object visit(ASTConditionalExpression node, Object data) {
         // look for "match ? .. : .."
         if (isMatch(node.getCondition())) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
         return data;
     }

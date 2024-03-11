@@ -19,7 +19,6 @@ import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
  */
 public class ApexCSRFRule extends AbstractApexRule {
     public static final String INIT = "init";
-    private static final String STATIC_INITIALIZER = "<clinit>";
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
@@ -41,23 +40,23 @@ public class ApexCSRFRule extends AbstractApexRule {
     @Override
     public Object visit(ASTBlockStatement node, Object data) {
         if (node.getParent() instanceof ASTUserClass && Helper.foundAnyDML(node)) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
         return data;
     }
 
     private void checkForCSRF(ASTMethod node, Object data) {
         if (node.isConstructor() && Helper.foundAnyDML(node)) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
 
         String name = node.getImage();
-        if (isInitializerMethod(name) && Helper.foundAnyDML(node)) {
-            addViolation(data, node);
+        if ((node.isStaticInitializer() || isInitializerMethod(name)) && Helper.foundAnyDML(node)) {
+            asCtx(data).addViolation(node);
         }
     }
 
     private boolean isInitializerMethod(String name) {
-        return INIT.equalsIgnoreCase(name) || STATIC_INITIALIZER.equals(name);
+        return INIT.equalsIgnoreCase(name);
     }
 }

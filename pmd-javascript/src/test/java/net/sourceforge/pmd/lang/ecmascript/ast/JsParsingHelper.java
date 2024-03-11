@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
-import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
+import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptLanguageModule;
 
 public final class JsParsingHelper extends BaseParsingHelper<JsParsingHelper, ASTAstRoot> {
@@ -12,7 +12,7 @@ public final class JsParsingHelper extends BaseParsingHelper<JsParsingHelper, AS
     public static final JsParsingHelper DEFAULT = new JsParsingHelper(Params.getDefault());
 
     private JsParsingHelper(Params params) {
-        super(EcmascriptLanguageModule.NAME, ASTAstRoot.class, params);
+        super(EcmascriptLanguageModule.getInstance(), ASTAstRoot.class, params);
     }
 
     @Override

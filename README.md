@@ -22,7 +22,8 @@ Scala is supported, but there are currently no Scala rules available.
 
 Additionally, it includes **CPD**, the copy-paste-detector. CPD finds duplicated code in
 C/C++, C#, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Kotlin, Lua, Matlab, Modelica,
-Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex and Visualforce, Scala, Swift, T-SQL and XML.
+Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex and Visualforce, Scala, Swift, T-SQL,
+Apache Velocity, and XML.
 
 In the future we hope to add support for data/control flow analysis and automatic (quick) fixes where
 it makes sense.
@@ -38,7 +39,7 @@ See also [Getting Started](https://docs.pmd-code.org/latest/pmd_userdocs_install
 
 **Demo:**
 
-This shows how PMD can detect for loops, that can be replaced by for-each loops.
+This shows how PMD analyses [openjdk](https://github.com/openjdk/jdk):
 
 ![Demo](docs/images/userdocs/pmd-demo.gif)
 

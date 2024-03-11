@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.statement.IfBlockStatement;
+import com.google.summit.ast.statement.IfStatement;
 
-public final class ASTIfBlockStatement extends AbstractApexNode<IfBlockStatement> {
+public final class ASTIfBlockStatement extends AbstractApexNode.Single<IfStatement> {
 
-    ASTIfBlockStatement(IfBlockStatement ifBlockStatement) {
-        super(ifBlockStatement);
+    ASTIfBlockStatement(IfStatement ifStatement) {
+        super(ifStatement);
     }
 
 

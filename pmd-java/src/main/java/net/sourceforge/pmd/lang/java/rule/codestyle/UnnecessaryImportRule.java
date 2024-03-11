@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
@@ -171,7 +171,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
                 continue;
             }
             for (Pattern p : PATTERNS) {
-                Matcher m = p.matcher(comment.getImage());
+                Matcher m = p.matcher(comment.getText());
                 while (m.find()) {
                     String fullname = m.group(1);
 
@@ -213,11 +213,11 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
     }
 
     private void reportWithMessage(ASTImportDeclaration node, Object data, String message) {
-        addViolationWithMessage(data, node, message, new String[] { PrettyPrintingUtil.prettyImport(node) });
+        asCtx(data).addViolationWithMessage(node, message, new String[] { PrettyPrintingUtil.prettyImport(node) });
     }
 
     @Override
-    public Object visit(ASTClassOrInterfaceType node, Object data) {
+    public Object visit(ASTClassType node, Object data) {
         if (node.getQualifier() == null
             && !node.isFullyQualified()
             && node.getTypeMirror().isClassOrInterface()) {
@@ -235,7 +235,8 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         if (node.getQualifier() == null) {
             OverloadSelectionResult overload = node.getOverloadSelectionInfo();
             if (overload.isFailed()) {
-                return null; // todo we're erring towards FPs
+                // don't try further, but still visit all ASTClassType nodes in the AST.
+                return super.visit(node, data); // todo we're erring towards FPs
             }
 
             ShadowChainIterator<JMethodSig, ScopeInfo> scopeIter =

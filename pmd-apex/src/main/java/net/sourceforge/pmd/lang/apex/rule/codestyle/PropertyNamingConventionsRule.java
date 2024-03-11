@@ -38,7 +38,7 @@ public class PropertyNamingConventionsRule extends AbstractNamingConventionsRule
 
     @Override
     public Object visit(ASTField node, Object data) {
-        if (node.getFirstParentOfType(ASTProperty.class) == null) {
+        if (node.ancestors(ASTProperty.class).first() == null) {
             return data;
         }
 

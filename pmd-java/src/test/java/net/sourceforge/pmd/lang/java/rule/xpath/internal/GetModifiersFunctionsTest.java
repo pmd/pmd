@@ -10,7 +10,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException.Phase;
 
 /**
@@ -22,7 +22,7 @@ class GetModifiersFunctionsTest extends BaseXPathFunctionTest {
 
     @Test
     void testEffectiveModifiers() {
-        Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceDeclaration[pmd-java:modifiers() = ('public', 'abstract')]");
+        Rule rule = makeXpathRuleFromXPath("//ClassDeclaration[pmd-java:modifiers() = ('public', 'abstract')]");
         String code = "interface O { class Foo { } }";
 
         assertFinds(rule, 2, code);
@@ -30,7 +30,7 @@ class GetModifiersFunctionsTest extends BaseXPathFunctionTest {
 
     @Test
     void testExplicitModifiers() {
-        Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceDeclaration[pmd-java:explicitModifiers() = ('public', 'abstract')]");
+        Rule rule = makeXpathRuleFromXPath("//ClassDeclaration[pmd-java:explicitModifiers() = ('public', 'abstract')]");
         String code = "interface O { class Foo { } }";
 
         assertFinds(rule, 0, code);
@@ -38,8 +38,8 @@ class GetModifiersFunctionsTest extends BaseXPathFunctionTest {
 
 
     @Test
-    void testNotAccessNodeReturnsEmptySequence() {
-        Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceBody[pmd-java:modifiers()]");
+    void testNotModifierOwnerReturnsEmptySequence() {
+        Rule rule = makeXpathRuleFromXPath("//ClassBody[pmd-java:modifiers()]");
         String code = "interface O { class Foo { } }";
 
         assertFinds(rule, 0, code);
