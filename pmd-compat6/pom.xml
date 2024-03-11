@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>pmd-compat6</artifactId>
-    <name>PMD Compatibility Classes for PMD6</name>
+    <name>PMD Compatibility Classes for PMD6 (deprecated)</name>
 
     <properties>
         <pmd.version.for.integrationtest>${project.version}</pmd.version.for.integrationtest>
@@ -37,6 +37,11 @@
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-jsp</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-cs</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

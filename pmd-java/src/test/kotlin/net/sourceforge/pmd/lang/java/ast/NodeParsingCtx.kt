@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.Node
+import net.sourceforge.pmd.lang.ast.ParseException
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
 
 /**
@@ -139,7 +140,7 @@ $construct
     }
 
     override fun retrieveNode(acu: ASTCompilationUnit): ASTBodyDeclaration =
-            acu.typeDeclarations.firstOrThrow().getDeclarations().firstOrThrow()
+            acu.typeDeclarations.firstOrThrow().declarations.firstOrThrow()
 }
 
 object TopLevelTypeDeclarationParsingCtx : NodeParsingCtx<ASTTypeDeclaration>("top-level declaration") {

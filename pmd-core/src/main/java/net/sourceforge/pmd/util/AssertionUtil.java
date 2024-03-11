@@ -136,7 +136,7 @@ public final class AssertionUtil {
 
 
     /**
-     * @throws IllegalArgumentException If value < 0
+     * @throws IllegalArgumentException If {@code value < 0}
      */
     public static int requireNonNegative(String name, int value) {
         if (value < 0) {
@@ -147,7 +147,7 @@ public final class AssertionUtil {
 
 
     /**
-     * @throws IndexOutOfBoundsException If value < 0
+     * @throws IndexOutOfBoundsException If {@code value < 0}
      */
     public static int requireIndexNonNegative(String name, int value) {
         if (value < 0) {
@@ -157,14 +157,14 @@ public final class AssertionUtil {
     }
 
     /**
-     * @throws IndexOutOfBoundsException If value < 0 || value >= maxValue
+     * @throws IndexOutOfBoundsException If {@code value < 0 || value >= maxValue}
      */
     public static int requireInNonNegativeRange(String name, int value, int maxValue) {
         return requireInExclusiveRange(name, value, 0, maxValue);
     }
 
     /**
-     * @throws IndexOutOfBoundsException If value < 1 || value >= maxValue
+     * @throws IndexOutOfBoundsException If {@code value < 1 || value >= maxValue}
      */
     public static int requireInPositiveRange(String name, int value, int maxValue) {
         return requireInExclusiveRange(name, value, 1, maxValue);

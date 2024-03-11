@@ -74,6 +74,8 @@ You might encounter additionally the following types of problems:
   see [Release downloads](#release-downloads).
 * Some CLI options have been removed, because they have been deprecated. See [CLI Changes](#cli-changes) for details.
 * If you call CPD programmatically, the API has changed, see [New Programmatic API for CPD](pmd_release_notes_pmd7.html#new-programmatic-api-for-cpd).
+* If you use Visualforce, then you need to change "vf" to "visualforce", e.g. `category/vf/security.xml` ➡️ `category/visualforce/security.xml`
+* If you use Velocity, then you need to change "vm" to "velocity", e.g. `category/vm/...` ➡️ `category/velocity/...`
 
 The following topics describe well known migration challenges in more detail.
 
@@ -115,8 +117,12 @@ Once you have reviewed your ruleset(s), you can switch to PMD 7.
 
 ### I'm using custom rules
 
+#### Testing
 Ideally, you have written good tests already for your custom rules - see [Testing your rules](pmd_userdocs_extending_testing.html).
 This helps to identify problems early on.
+
+The base test classes {%jdoc test::test.PmdRuleTst %} and {%jdoc test::test.SimpleAggregatorTst %} have been moved out
+of package `net.sourceforge.pmd.testframework`. You'll need to adjust your imports.
 
 #### Ruleset XML
 The `<rule>` tag, that defines your custom rule, is required to have a `language` attribute now. This was always the
@@ -236,13 +242,16 @@ When creating a custom distribution which only integrates the languages you need
 * When fetching the scripts for the CLI with "maven-dependency-plugin", you need to additionally fetch the
   logging configuration. That means, the line
   `<includes>scripts/**,LICENSE</includes>` needs to be changed to `<includes>scripts/**,LICENSE,conf/**</includes>`.
-* Since the assembly descriptor `pmd-bin` includes now also a BOM (bill of material), you need to create one for
-  your custom distribution as well. Simply add the following plugin configuration:
+* Since the assembly descriptor `pmd-bin` includes now optionally also a BOM (bill of material). If you want to
+  create this for your custom distribution, simply add the following plugin configuration:
   ```xml
      <plugin>
         <groupId>org.cyclonedx</groupId>
         <artifactId>cyclonedx-maven-plugin</artifactId>
-        <version>2.7.6</version>
+        <version>2.7.11</version>
+        <configuration>
+          <outputName>pmd-${project.version}-cyclonedx</outputName>
+        </configuration>
         <executions>
           <execution>
             <phase>package</phase>
@@ -251,16 +260,10 @@ When creating a custom distribution which only integrates the languages you need
             </goals>
           </execution>
         </executions>
-        <!-- https://github.com/CycloneDX/cyclonedx-maven-plugin/issues/326 -->
-        <dependencies>
-          <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm</artifactId>
-            <version>9.5</version>
-          </dependency>
-        </dependencies>
       </plugin>
   ```
+* The artifact name for PMD Designer has been renamed, you need to use now `net.sourceforge.pmd:pmd-designer`
+  instead of "pmd-ui".
 
 {% include note.html content="
 The examples on <https://github.com/pmd/pmd-examples> have been updated.

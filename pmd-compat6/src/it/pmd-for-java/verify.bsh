@@ -36,6 +36,9 @@ if (!pmdXml.contains(mainFile + "\">")) {
 if (!pmdXml.contains("<error filename=\"" + mainFile.getAbsolutePath()) || !pmdXml.contains(mainFile + "\" msg=\"PmdXPathException")) {
     throw new RuntimeException("Processing error has not been reported");
 }
+if (!pmdXml.contains("<configerror rule=\"LoosePackageCoupling\" msg=\"No packages or classes specified\"/>")) {
+    throw new RuntimeException("Configuration error has not been reported");
+}
 
 File pmdCsvReport = new File(basedir, "target/pmd.csv");
 if (!pmdCsvReport.exists()) {

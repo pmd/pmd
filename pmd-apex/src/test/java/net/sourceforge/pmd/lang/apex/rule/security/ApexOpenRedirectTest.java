@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.rule.security;
 
-import net.sourceforge.pmd.testframework.PmdRuleTst;
+import net.sourceforge.pmd.test.PmdRuleTst;
 
 class ApexOpenRedirectTest extends PmdRuleTst {
     // no additional unit tests

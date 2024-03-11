@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.java.types
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBeA
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import net.sourceforge.pmd.lang.java.types.testdata.GenericFbound
 import net.sourceforge.pmd.lang.java.types.testdata.MutualTypeRecursion
 

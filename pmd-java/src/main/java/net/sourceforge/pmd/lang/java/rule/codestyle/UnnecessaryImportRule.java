@@ -235,7 +235,8 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         if (node.getQualifier() == null) {
             OverloadSelectionResult overload = node.getOverloadSelectionInfo();
             if (overload.isFailed()) {
-                return null; // todo we're erring towards FPs
+                // don't try further, but still visit all ASTClassType nodes in the AST.
+                return super.visit(node, data); // todo we're erring towards FPs
             }
 
             ShadowChainIterator<JMethodSig, ScopeInfo> scopeIter =

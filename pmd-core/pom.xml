@@ -11,8 +11,42 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <properties>
+        <!-- default values for the properties provided by git-commit-id-maven-plugin -->
+        <git.commit.id>unknown</git.commit.id>
+        <git.commit.time>unknown</git.commit.time>
+    </properties>
+
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
         <plugins>
+            <plugin>
+                <groupId>io.github.git-commit-id</groupId>
+                <artifactId>git-commit-id-maven-plugin</artifactId>
+                <version>7.0.0</version>
+                <executions>
+                    <execution>
+                        <id>get-the-git-infos</id>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                        <phase>initialize</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <failOnUnableToExtractRepoInfo>true</failOnUnableToExtractRepoInfo>
+                    <includeOnlyProperties>
+                        <includeOnlyProperty>^git.commit.id$</includeOnlyProperty>
+                        <includeOnlyProperty>^git.commit.time$</includeOnlyProperty>
+                    </includeOnlyProperties>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -32,6 +66,15 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <!-- overrides the configuration from parent pom: we have here no offline links yet -->
+                    <offlineLinks combine.self="override"></offlineLinks>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -78,7 +121,6 @@
         <dependency>
             <groupId>com.github.oowekyala.ooxml</groupId>
             <artifactId>nice-xml-messages</artifactId>
-            <version>3.1</version>
         </dependency>
 
         <dependency>

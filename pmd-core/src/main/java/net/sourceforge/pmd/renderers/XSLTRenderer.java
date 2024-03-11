@@ -41,8 +41,11 @@ public class XSLTRenderer extends XMLRenderer {
 
     public static final String NAME = "xslt";
 
-    // TODO 7.0.0 use PropertyDescriptor<Optional<File>>
-    public static final PropertyDescriptor<String> XSLT_FILENAME = PropertyFactory.stringProperty("xsltFilename").desc("The XSLT file name.").defaultValue("").build();
+    public static final PropertyDescriptor<String> XSLT_FILENAME = PropertyFactory
+            .stringProperty("xsltFilename")
+            .desc("The XSLT file name.")
+            .defaultValue("")
+            .build();
 
     private Transformer transformer;
     private String xsltFilename = "/pmd-nicerhtml.xsl";

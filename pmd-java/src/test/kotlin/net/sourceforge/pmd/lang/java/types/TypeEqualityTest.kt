@@ -10,9 +10,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.checkAll
 import io.kotest.property.forAll
-import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.createUnresolvedAsmSymbol
-import net.sourceforge.pmd.lang.java.symbols.internal.forAllEqual
 
 /**
  * @author Clément Fournier
@@ -83,7 +81,7 @@ class TypeEqualityTest : FunSpec({
 
 
             test("Test non well-formed types") {
-                val sym = ts.createUnresolvedAsmSymbol("does.not.Exist") as JClassSymbol
+                val sym = ts.createUnresolvedAsmSymbol("does.not.Exist")
                 // not equal
                 sym[t_String, t_String] shouldNotBe sym[t_String]
                 sym[t_String] shouldNotBe sym[t_String, t_String]

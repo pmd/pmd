@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.ast.SemanticException;
-import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
+import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;

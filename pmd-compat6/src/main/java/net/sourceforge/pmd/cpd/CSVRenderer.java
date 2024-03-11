@@ -30,7 +30,7 @@ import net.sourceforge.pmd.lang.document.FileLocation;
  * of fields describing each file where the duplication was found in the format
  * {@code (start line, line count (optional), file path)}. These repeat at least twice.
  *
- * <h3>Examples</h3>
+ * <h2>Examples</h2>
  * <p>
  * Example without {@code lineCountPerFile}:
  * <pre>{@code

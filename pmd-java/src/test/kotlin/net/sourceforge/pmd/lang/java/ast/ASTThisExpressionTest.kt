@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 
 /**
  * @author Clément Fournier
@@ -47,7 +47,7 @@ class ASTThisExpressionTest : ParserTestSpec({
     parserTest("Neg cases") {
         inContext(ExpressionParsingCtx) {
 
-            // type arguments and annots are disallowed on the qualifier
+            // type arguments and annotations are disallowed on the qualifier
             "T.B<C>.this" shouldNot parse()
             "T.@F B.this" shouldNot parse()
         }

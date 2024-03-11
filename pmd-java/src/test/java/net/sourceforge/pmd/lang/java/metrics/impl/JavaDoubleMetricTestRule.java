@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.metrics.Metric;
-import net.sourceforge.pmd.test.AbstractMetricTestRule;
+import net.sourceforge.pmd.lang.test.AbstractMetricTestRule;
 
 /**
  *

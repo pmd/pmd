@@ -215,13 +215,18 @@ abstract class AbstractAnalysisCache implements AnalysisCache {
         final FileId fileName = file.getFileId();
 
         return new FileAnalysisListener() {
+            private boolean failed = false;
+
             @Override
             public void onRuleViolation(RuleViolation violation) {
-                updatedResultsCache.get(fileName).addViolation(violation);
+                if (!failed) {
+                    updatedResultsCache.get(fileName).addViolation(violation);
+                }
             }
 
             @Override
             public void onError(ProcessingError error) {
+                failed = true;
                 analysisFailed(file);
             }
         };

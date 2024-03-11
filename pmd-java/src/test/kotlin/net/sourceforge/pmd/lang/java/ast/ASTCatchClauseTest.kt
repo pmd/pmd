@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import io.kotest.matchers.string.shouldContain
-import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest

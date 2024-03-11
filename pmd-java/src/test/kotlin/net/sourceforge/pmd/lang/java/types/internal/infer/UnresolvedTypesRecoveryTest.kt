@@ -7,8 +7,8 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBeA
-import net.sourceforge.pmd.lang.ast.test.shouldMatchN
+import net.sourceforge.pmd.lang.test.ast.shouldBeA
+import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.types.*
@@ -261,7 +261,7 @@ class C {
         val (fooM, idM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.symbol }
 
         val t_Foo = fooM.getReturnType(Substitution.EMPTY).shouldBeUnresolvedClass("ooo.Foo")
-        val t_Bound = idM.typeParameters[0].upperBound.shouldBeUnresolvedClass("ooo.Bound")
+        idM.typeParameters[0].upperBound.shouldBeUnresolvedClass("ooo.Bound")
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 

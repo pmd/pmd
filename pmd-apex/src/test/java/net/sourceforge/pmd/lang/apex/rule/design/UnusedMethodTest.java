@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -61,7 +62,7 @@ class UnusedMethodTest {
         configuration.setThreads(0); // don't use separate threads
         configuration.prependAuxClasspath(".");
 
-        configuration.getLanguageProperties(apexLanguage).setProperty(ApexLanguageProperties.MULTIFILE_DIRECTORY, testProjectDir.toString());
+        configuration.getLanguageProperties(apexLanguage).setProperty(ApexLanguageProperties.MULTIFILE_DIRECTORY, Optional.of(testProjectDir.toString()));
 
         RuleSet parsedRset = new RuleSetLoader().warnDeprecated(false).loadFromResource("category/apex/design.xml");
         Rule rule = parsedRset.getRuleByName("UnusedMethod");

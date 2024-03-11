@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.jsp.rule.errorprone;
 
-import net.sourceforge.pmd.testframework.PmdRuleTst;
+import net.sourceforge.pmd.test.PmdRuleTst;
 
 class JspEncodingTest extends PmdRuleTst {
     // no additional unit tests

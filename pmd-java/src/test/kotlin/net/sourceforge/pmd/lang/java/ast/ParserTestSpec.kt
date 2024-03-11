@@ -17,10 +17,10 @@ import io.kotest.core.test.TestType
 import io.kotest.matchers.Matcher
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.ParseException
-import net.sourceforge.pmd.lang.ast.test.Assertions
-import net.sourceforge.pmd.lang.ast.test.IntelliMarker
-import net.sourceforge.pmd.lang.ast.test.ValuedNodeSpec
-import net.sourceforge.pmd.lang.ast.test.shouldMatchN
+import net.sourceforge.pmd.lang.test.ast.Assertions
+import net.sourceforge.pmd.lang.test.ast.IntelliMarker
+import net.sourceforge.pmd.lang.test.ast.ValuedNodeSpec
+import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import net.sourceforge.pmd.lang.java.types.JTypeMirror
 import net.sourceforge.pmd.lang.java.types.TypeDslMixin
 import net.sourceforge.pmd.lang.java.types.TypeDslOf

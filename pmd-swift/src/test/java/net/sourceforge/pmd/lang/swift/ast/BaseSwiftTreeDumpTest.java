@@ -7,8 +7,8 @@ package net.sourceforge.pmd.lang.swift.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
-import net.sourceforge.pmd.lang.ast.test.NodePrintersKt;
+import net.sourceforge.pmd.lang.test.ast.BaseTreeDumpTest;
+import net.sourceforge.pmd.lang.test.ast.NodePrintersKt;
 
 /**
  *
