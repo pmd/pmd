@@ -563,7 +563,6 @@ public final class Infer {
             addArgsConstraints(infCtx, m, site, phase); // c
             infCtx.incorporate(); // b2
 
-            // TODO : check why we allow some inferences to skip the invocation phase… maybe an optimization?
             if (phase.isInvocation() || site.canSkipInvocation()) {
                 // this may throw for incompatible bounds
                 return tryToSolve(m, site, infCtx, phase);
@@ -589,7 +588,7 @@ public final class Infer {
             // bounds may still throw ResolutionFailedException, in which case
             // by the laws of finally, this exception will be thrown and the
             // return value will be ignored.
-            if (phase.isInvocation()) {
+            if (phase.isInvocation() || site.canSkipInvocation()) {
                 infCtx.callListeners();
             }
         }
