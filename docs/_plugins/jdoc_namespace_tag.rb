@@ -104,7 +104,9 @@ class JDocNamespaceDeclaration < Liquid::Tag
     'javascript', 'jsp', 'julia',
     'kotlin', 'lang-test', 'lua', 'matlab', 'objectivec', 'perl', 'php', 'plsql', 'python', 'ruby', 'scala', 'swift',
     'test', 'test-schema', 'tsql', 'ui',
-    'modelica', 'visualforce', 'velocity', 'xml'].flat_map {|m| [m, "pmd-" + m]}
+    'modelica', 'visualforce', 'velocity', 'xml',
+    'vm', # pre-pmd7 name for velocity, only useful for jdoc_old or jdoc_package_old
+    ].flat_map {|m| [m, "pmd-" + m]}
 
   def self.make_base_namespaces
     res = {}

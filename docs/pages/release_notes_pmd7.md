@@ -2525,7 +2525,7 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
     * {% jdoc_old !!java::lang.java.ast.ASTAnyTypeDeclaration#getQualifiedName() %}
     * {% jdoc_old !!java::lang.java.ast.ASTMethodOrConstructorDeclaration#getQualifiedName() %}
     * {% jdoc_old !!java::lang.java.ast.ASTLambdaExpression#getQualifiedName() %}
-  * [`net.sourceforge.pmd.lang.java.qname`](https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/qname/package-summary.html) and its contents
+  * {% jdoc_package_old !!java::lang.java.qname %} and its contents
   * {% jdoc_old java::lang.java.ast.MethodLikeNode %}
     * Its methods will also be removed from its implementations,
       {% jdoc_old java::lang.java.ast.ASTMethodOrConstructorDeclaration %},
@@ -2569,7 +2569,7 @@ The following usages are now deprecated **in the JSP AST** (with other languages
 *   The class {% jdoc_old jsp::lang.jsp.JspParser %} is deprecated and should not be used directly.
     Use {% jdoc !!core::lang.LanguageVersionHandler#getParser(ParserOptions) %} instead.
 
-Please look at [`net.sourceforge.pmd.lang.jsp.ast`](https://docs.pmd-code.org/apidocs/pmd-jsp/6.55.0/net/sourceforge/pmd/lang/jsp/ast/package-summary.html) to find out the full list of deprecations.
+Please look at {% jdoc_package_old !!jsp::lang.jsp.ast %} to find out the full list of deprecations.
 
 **In ASTs (Velocity)**
 
@@ -2589,13 +2589,13 @@ The following usages are now deprecated **in the VM AST** (with other languages 
   *   Concrete node classes will **be made final** with 7.0.0.
 *   Setters found in any node class or interface. **Rules should consider the AST immutable**.
     We will make those setters package private with 7.0.0.
-*   The package [`net.sourceforge.pmd.lang.vm.directive`](https://docs.pmd-code.org/apidocs/pmd-vm/6.55.0/net/sourceforge/pmd/lang/vm/directive/package-summary.html) as well as the classes
+*   The package {% jdoc_package_old !!vm::lang.vm.directive %} as well as the classes
     {% jdoc_old velocity::lang.vm.util.DirectiveMapper %} and {% jdoc_old velocity::lang.vm.util.LogUtil %} are deprecated
     for removal. They were only used internally during parsing.
 *   The class {% jdoc_old velocity::lang.vm.VmParser %} is deprecated and should not be used directly.
     Use {% jdoc !!core::lang.LanguageVersionHandler#getParser(ParserOptions) %} instead.
 
-Please look at {% jdoc_package velocity::lang.vm.ast %} to find out the full list of deprecations.
+Please look at {% jdoc_package_old vm::lang.vm.ast %} to find out the full list of deprecations.
 
 **PLSQL AST**
 

@@ -10,7 +10,7 @@ require_relative 'jdoc_namespace_tag'
 # though, links on the published jekyll site will work.
 # To refer to the previous API version, e.g. to refer to a type or member that was removed,
 # the tag "jdoc_old" may be used. This tag is used exactly the same way as "jdoc". There's
-# no "jdoc_package_old" tag.
+# also a "jdoc_package_old" tag.
 #
 #
 # Usage (don't miss the DO NOT section at the bottom):
@@ -137,9 +137,10 @@ class JavadocTag < Liquid::Tag
 
     @opts = Options.new(opts.last) # ignore first empty string, may be nil
 
-    if tag_name == "jdoc_package"
+    if tag_name == "jdoc_package" || tag_name == "jdoc_package_old"
       @is_package_ref = true
-    elsif tag_name == "jdoc_old"
+    end
+    if tag_name == "jdoc_old" || tag_name == "jdoc_package_old"
       @use_previous_api_version = true
     end
 
@@ -323,3 +324,4 @@ end
 Liquid::Template.register_tag('jdoc', JavadocTag)
 Liquid::Template.register_tag('jdoc_package', JavadocTag)
 Liquid::Template.register_tag('jdoc_old', JavadocTag)
+Liquid::Template.register_tag('jdoc_package_old', JavadocTag)
