@@ -2966,84 +2966,84 @@ You're highly encouraged to migrate to using this new API as soon as possible, t
 **For internalization**
 
 *   The implementation of the adapters for the XPath engines Saxon and Jaxen (package {% jdoc_package_old :xpath %})
-    are now deprecated. They'll be moved to an internal package come 7.0.0. Only {% jdoc xpath::Attribute %} remains public API.
+    are now deprecated. They'll be moved to an internal package come 7.0.0. Only {% jdoc core::lang.rule.xpath.Attribute %} remains public API.
 
-*   The classes {% jdoc props::PropertyDescriptorField %}, {% jdoc props::builders.PropertyDescriptorBuilderConversionWrapper %}, and the methods
-    {% jdoc !c!:PDr#attributeValuesById %}, {% jdoc !c!:PDr#isDefinedExternally() %} and {% jdoc !c!props::PropertyTypeId#getFactory() %}.
+*   The classes {% jdoc_old props::PropertyDescriptorField %}, {% jdoc_old props::builders.PropertyDescriptorBuilderConversionWrapper %}, and the methods
+    {% jdoc_old !c!:PDr#attributeValuesById %}, {% jdoc_old !c!:PDr#isDefinedExternally() %} and {% jdoc_old !c!props::PropertyTypeId#getFactory() %}.
     These were used to read and write properties to and from XML, but were not intended as public API.
 
-*   The class {% jdoc props::ValueParserConstants %} and the interface {% jdoc props::ValueParser %}.
+*   The class {% jdoc_old props::ValueParserConstants %} and the interface {% jdoc_old props::ValueParser %}.
 
-*   All classes from {% jdoc_package java::lang.java.metrics.impl.visitors %} are now considered internal API. They're deprecated
+*   All classes from {% jdoc_package_old java::lang.java.metrics.impl.visitors %} are now considered internal API. They're deprecated
     and will be moved into an internal package with 7.0.0. To implement your own metrics visitors,
-    {% jdoc jast::JavaParserVisitorAdapter %} should be directly subclassed.
+    {% jdoc_old jast::JavaParserVisitorAdapter %} should be directly subclassed.
 
-*   {% jdoc !ac!:lvh#getDataFlowHandler() %}, {% jdoc !ac!:lvh#getDFAGraphRule() %}
+*   {% jdoc_old !ac!:lvh#getDataFlowHandler() %}, {% jdoc_old !ac!:lvh#getDFAGraphRule() %}
 
-*   {% jdoc core::lang.VisitorStarter %}
+*   {% jdoc_old core::lang.VisitorStarter %}
 
 **For removal**
 
-*   All classes from {% jdoc_package props::modules %} will be removed.
+*   All classes from {% jdoc_package_old props::modules %} will be removed.
 
-*   The interface {% jdoc jast::Dimensionable %} has been deprecated.
+*   The interface {% jdoc_old jast::Dimensionable %} has been deprecated.
     It gets in the way of a grammar change for 7.0.0 and won't be needed anymore (see [#997](https://github.com/pmd/pmd/issues/997)).
 
-*   Several methods from {% jdoc jast::ASTLocalVariableDeclaration %} and {% jdoc jast::ASTFieldDeclaration %} have
+*   Several methods from {% jdoc_old jast::ASTLocalVariableDeclaration %} and {% jdoc_old jast::ASTFieldDeclaration %} have
     also been deprecated:
 
-  *   {% jdoc jast::ASTFieldDeclaration %} won't be a {% jdoc jast::TypeNode %} come 7.0.0, so
-      {% jdoc jast::ASTFieldDeclaration#getType() %} and
-      {% jdoc jast::ASTFieldDeclaration#getTypeDefinition() %} are deprecated.
+  *   {% jdoc_old jast::ASTFieldDeclaration %} won't be a {% jdoc jast::TypeNode %} come 7.0.0, so
+      {% jdoc_old jast::ASTFieldDeclaration#getType() %} and
+      {% jdoc_old jast::ASTFieldDeclaration#getTypeDefinition() %} are deprecated.
 
   *   The method `getVariableName` on those two nodes will be removed, too.
 
-    All these are deprecated because those nodes may declare several variables at once, possibly
-    with different types (and obviously with different names). They both implement `Iterator<`{% jdoc jast::ASTVariableDeclaratorId %}`>`
-    though, so you should iterate on each declared variable. See [#910](https://github.com/pmd/pmd/issues/910).
+  *   All these are deprecated because those nodes may declare several variables at once, possibly
+      with different types (and obviously with different names). They both implement `Iterator<`{% jdoc jast::ASTVariableId %}`>`
+      though, so you should iterate on each declared variable. See [#910](https://github.com/pmd/pmd/issues/910).
 
 *   Visitor decorators are now deprecated and will be removed in PMD 7.0.0. They were originally a way to write
     composable visitors, used in the metrics framework, but they didn't prove cost-effective.
 
-  *   In {% jdoc_package :jast %}: {% jdoc jast::JavaParserDecoratedVisitor %}, {% jdoc jast::JavaParserControllessVisitor %},
-      {% jdoc jast::JavaParserControllessVisitorAdapter %}, and {% jdoc jast::JavaParserVisitorDecorator %} are deprecated with no intended replacement.
+  *   In {% jdoc_package_old :jast %}: {% jdoc_old jast::JavaParserDecoratedVisitor %}, {% jdoc_old jast::JavaParserControllessVisitor %},
+      {% jdoc_old jast::JavaParserControllessVisitorAdapter %}, and {% jdoc_old jast::JavaParserVisitorDecorator %} are deprecated with no intended replacement.
 
 
 *   The LanguageModules of several languages, that only support CPD execution, have been deprecated. These languages
     are not fully supported by PMD, so having a language module does not make sense. The functionality of CPD is
     not affected by this change. The following classes have been deprecated and will be removed with PMD 7.0.0:
 
-  *   {% jdoc cpp::lang.cpp.CppHandler %}
-  *   {% jdoc cpp::lang.cpp.CppLanguageModule %}
-  *   {% jdoc cpp::lang.cpp.CppParser %}
-  *   {% jdoc cs::lang.cs.CsLanguageModule %}
-  *   {% jdoc fortran::lang.fortran.FortranLanguageModule %}
-  *   {% jdoc groovy::lang.groovy.GroovyLanguageModule %}
-  *   {% jdoc matlab::lang.matlab.MatlabHandler %}
-  *   {% jdoc matlab::lang.matlab.MatlabLanguageModule %}
-  *   {% jdoc matlab::lang.matlab.MatlabParser %}
-  *   {% jdoc objectivec::lang.objectivec.ObjectiveCHandler %}
-  *   {% jdoc objectivec::lang.objectivec.ObjectiveCLanguageModule %}
-  *   {% jdoc objectivec::lang.objectivec.ObjectiveCParser %}
-  *   {% jdoc php::lang.php.PhpLanguageModule %}
-  *   {% jdoc python::lang.python.PythonHandler %}
-  *   {% jdoc python::lang.python.PythonLanguageModule %}
-  *   {% jdoc python::lang.python.PythonParser %}
-  *   {% jdoc ruby::lang.ruby.RubyLanguageModule %}
-  *   {% jdoc scala::lang.scala.ScalaLanguageModule %}
-  *   {% jdoc swift::lang.swift.SwiftLanguageModule %}
+  *   {% jdoc_old cpp::lang.cpp.CppHandler %}
+  *   {% jdoc_old cpp::lang.cpp.CppLanguageModule %}
+  *   {% jdoc_old cpp::lang.cpp.CppParser %}
+  *   {% jdoc_old cs::lang.cs.CsLanguageModule %}
+  *   {% jdoc_old fortran::lang.fortran.FortranLanguageModule %}
+  *   {% jdoc_old groovy::lang.groovy.GroovyLanguageModule %}
+  *   {% jdoc_old matlab::lang.matlab.MatlabHandler %}
+  *   {% jdoc_old matlab::lang.matlab.MatlabLanguageModule %}
+  *   {% jdoc_old matlab::lang.matlab.MatlabParser %}
+  *   {% jdoc_old objectivec::lang.objectivec.ObjectiveCHandler %}
+  *   {% jdoc_old objectivec::lang.objectivec.ObjectiveCLanguageModule %}
+  *   {% jdoc_old objectivec::lang.objectivec.ObjectiveCParser %}
+  *   {% jdoc_old php::lang.php.PhpLanguageModule %}
+  *   {% jdoc_old python::lang.python.PythonHandler %}
+  *   {% jdoc_old python::lang.python.PythonLanguageModule %}
+  *   {% jdoc_old python::lang.python.PythonParser %}
+  *   {% jdoc_old ruby::lang.ruby.RubyLanguageModule %}
+  *   {% jdoc_old scala::lang.scala.ScalaLanguageModule %}
+  *   {% jdoc_old swift::lang.swift.SwiftLanguageModule %}
 
 
 * Optional AST processing stages like symbol table, type resolution or data-flow analysis will be reified
   in 7.0.0 to factorise common logic and make them extensible. Further explanations about this change can be
   found on [#1426](https://github.com/pmd/pmd/pull/1426). Consequently, the following APIs are deprecated for
   removal:
-  * In {% jdoc :rule %}: {% jdoc !a!:rule#isDfa() %}, {% jdoc !a!:rule#isTypeResolution() %}, {% jdoc !a!:rule#isMultifile() %} and their
+  * In {% jdoc_old :rule %}: {% jdoc_old !a!:rule#isDfa() %}, {% jdoc_old !a!:rule#isTypeResolution() %}, {% jdoc_old !a!:rule#isMultifile() %} and their
     respective setters.
-  * In {% jdoc :rset %}: {% jdoc !a!:rset#usesDFA(core::lang.Language) %}, {% jdoc !a!:rset#usesTypeResolution(core::lang.Language) %}, {% jdoc !a!:rset#usesMultifile(core::lang.Language) %}
-  * In {% jdoc :rsets %}: {% jdoc !a!:rsets#usesDFA(core::lang.Language) %}, {% jdoc !a!:rsets#usesTypeResolution(core::lang.Language) %}, {% jdoc !a!:rsets#usesMultifile(core::lang.Language) %}
-  * In {% jdoc :lvh %}: {% jdoc !a!:lvh#getDataFlowFacade() %}, {% jdoc !a!:lvh#getSymbolFacade() %}, {% jdoc !a!:lvh#getSymbolFacade(java.lang.ClassLoader) %},
-    {% jdoc !a!:lvh#getTypeResolutionFacade(java.lang.ClassLoader) %}, {% jdoc !a!:lvh#getQualifiedNameResolutionFacade(java.lang.ClassLoader) %}
+  * In {% jdoc_old :rset %}: {% jdoc_old !a!:rset#usesDFA(core::lang.Language) %}, {% jdoc_old !a!:rset#usesTypeResolution(core::lang.Language) %}, {% jdoc_old !a!:rset#usesMultifile(core::lang.Language) %}
+  * In {% jdoc_old :rsets %}: {% jdoc_old !a!:rsets#usesDFA(core::lang.Language) %}, {% jdoc_old !a!:rsets#usesTypeResolution(core::lang.Language) %}, {% jdoc_old !a!:rsets#usesMultifile(core::lang.Language) %}
+  * In {% jdoc_old :lvh %}: {% jdoc_old !a!:lvh#getDataFlowFacade() %}, {% jdoc_old !a!:lvh#getSymbolFacade() %}, {% jdoc_old !a!:lvh#getSymbolFacade(java.lang.ClassLoader) %},
+    {% jdoc_old !a!:lvh#getTypeResolutionFacade(java.lang.ClassLoader) %}, {% jdoc_old !a!:lvh#getQualifiedNameResolutionFacade(java.lang.ClassLoader) %}
 
 #### 6.9.0
 
@@ -3051,27 +3051,27 @@ No changes.
 
 #### 6.8.0
 
-*   A couple of methods and fields in `net.sourceforge.pmd.properties.AbstractPropertySource` have been
+*   A couple of methods and fields in {%jdoc_old !!core::properties.AbstractPropertySource%} have been
     deprecated, as they are replaced by already existing functionality or expose internal implementation
     details: `propertyDescriptors`, `propertyValuesByDescriptor`,
     `copyPropertyDescriptors()`, `copyPropertyValues()`, `ignoredProperties()`, `usesDefaultValues()`,
     `useDefaultValueFor()`.
 
-*   Some methods in `net.sourceforge.pmd.properties.PropertySource` have been deprecated as well:
+*   Some methods in {%jdoc_old !!core::properties.PropertySource%} have been deprecated as well:
     `usesDefaultValues()`, `useDefaultValueFor()`, `ignoredProperties()`.
 
-*   The class `net.sourceforge.pmd.lang.rule.AbstractDelegateRule` has been deprecated and will
+*   The class {%jdoc_old !!core::lang.rule.AbstractDelegateRule%} has been deprecated and will
     be removed with PMD 7.0.0. It is internally only in use by RuleReference.
 
-*   The default constructor of `net.sourceforge.pmd.lang.rule.RuleReference` has been deprecated
+*   The default constructor of {%jdoc_old !!core::lang.rule.RuleReference%} has been deprecated
     and will be removed with PMD 7.0.0. RuleReferences should only be created by providing a Rule and
-    a RuleSetReference. Furthermore the following methods are deprecated: `setRuleReference()`,
+    a RuleSetReference. Furthermore, the following methods are deprecated: `setRuleReference()`,
     `hasOverriddenProperty()`, `usesDefaultValues()`, `useDefaultValueFor()`.
 
 #### 6.7.0
 
-*   All classes in the package `net.sourceforge.pmd.lang.dfa.report` have been deprecated and will be removed
-    with PMD 7.0.0. This includes the class `net.sourceforge.pmd.lang.dfa.report.ReportTree`. The reason is,
+*   All classes in the package {%jdoc_package_old core::lang.dfa.report%} have been deprecated and will be removed
+    with PMD 7.0.0. This includes the class {%jdoc_old !!core::lang.dfa.report.ReportTree%}. The reason is,
     that this class is very specific to Java and not suitable for other languages. It has only been used for
     `YAHTMLRenderer`, which has been rewritten to work without these classes.
 
@@ -3082,7 +3082,7 @@ No changes.
 
 #### 6.5.0
 
-*   The utility class `net.sourceforge.pmd.lang.java.ast.CommentUtil` has been deprecated and will be removed
+*   The utility class {%jdoc_old java::lang.java.ast.CommentUtil%} has been deprecated and will be removed
     with PMD 7.0.0. Its methods have been intended to parse javadoc tags. A more useful solution will be added
     around the AST node `FormalComment`, which contains as children `JavadocElement` nodes, which in
     turn provide access to the `JavadocTag`.
@@ -3097,46 +3097,45 @@ No changes.
 
 #### 6.4.0
 
-* The following classes in package `net.sourceforge.pmd.benchmark` have been deprecated: `Benchmark`, `Benchmarker`,
-  `BenchmarkReport`, `BenchmarkResult`, `RuleDuration`, `StringBuilderCR` and `TextReport`. Their API is not supported anymore
-  and is disconnected from the internals of PMD. Use the newer API based around `TimeTracker` instead, which can be found
+* The following classes in package {%jdoc_package_old core::benchmark%} have been deprecated: {%jdoc_old core::benchmark.Benchmark%}, {%jdoc_old core::benchmark.Benchmarker%},
+  {%jdoc_old core::benchmark.BenchmarkReport%}, {%jdoc_old core::benchmark.BenchmarkResult%}, {%jdoc_old core::benchmark.RuleDuration%}, {%jdoc_old core::benchmark.StringBuilderCR%} and {%jdoc_old core::benchmark.TextReport%}. Their API is not supported anymore
+  and is disconnected from the internals of PMD. Use the newer API based around {%jdoc core::benchmark.TimeTracker%} instead, which can be found
   in the same package.
-* The class `net.sourceforge.pmd.lang.java.xpath.TypeOfFunction` has been deprecated. Use the newer `TypeIsFunction` in the same package.
-* The `typeof` methods in `net.sourceforge.pmd.lang.java.xpath.JavaFunctions` have been deprecated.
-  Use the newer `typeIs` method in the same class instead..
-* The methods `isA`, `isEither` and `isNeither` of `net.sourceforge.pmd.lang.java.typeresolution.TypeHelper`.
+* The class {%jdoc_old java::lang.java.xpath.TypeOfFunction%} has been deprecated. Use the newer {%jdoc_old java::lang.java.xpath.TypeIsFunction%} in the same package.
+* The `typeof` methods in {%jdoc_old java::lang.java.xpath.JavaFunctions%} have been deprecated.
+  Use the newer `typeIs` method in the same class instead.
+* The methods `isA`, `isEither` and `isNeither` of {%jdoc_old java::lang.java.typeresolution.TypeHelper%}.
   Use the new `isExactlyAny` and `isExactlyNone` methods in the same class instead.
 
 #### 6.2.0
 
-*   The static method `PMDParameters.transformParametersIntoConfiguration(PMDParameters)` is now deprecated,
-    for removal in 7.0.0. The new instance method `PMDParameters.toConfiguration()` replaces it.
+*   The static method {%jdoc_old !!core::cli.PMDParameters#transformParametersIntoConfiguration(core::cli.PMDParameters)%} is now deprecated,
+    for removal in 7.0.0. The new instance method {%jdoc_old core::cli.PMDParameters#toConfiguration()%} replaces it.
 
-*   The method `ASTConstructorDeclaration.getParameters()` has been deprecated in favor of the new method
-    `getFormalParameters()`. This method is available for both `ASTConstructorDeclaration` and
-    `ASTMethodDeclaration`.
+*   The method {%jdoc_old !!java::lang.java.ast.ASTConstructorDeclaration#getParameters()%} has been deprecated in favor of the new method
+    {%jdoc_old java::lang.java.ast.ASTConstructorDeclaration#getFormalParameters()%}. This method is available for both
+    {%jdoc_old java::lang.java.ast.ASTConstructorDeclaration%} and {%jdoc_old java::lang.java.ast.ASTMethodDeclaration%}.
 
 #### 6.1.0
 
-* The method `getXPathNodeName` is added to the `Node` interface, which removes the
-  use of the `toString` of a node to get its XPath element name (see [#569](https://github.com/pmd/pmd/issues/569)).
-  * The default implementation provided in  `AbstractNode`, will
-    be removed with 7.0.0
+* The method {%jdoc core::lang.ast.Node#getXPathNodeName()%} is added to the {%jdoc core::lang.ast.Node%} interface, which removes the
+  use of `toString` of a node to get its XPath element name (see [#569](https://github.com/pmd/pmd/issues/569)).
+  * The default implementation provided in {%jdoc_old core::lang.ast.AbstractNode%}, will be removed with 7.0.0
   * With 7.0.0, the `Node.toString` method will not necessarily provide its XPath node
     name anymore.
 
-* The interface `net.sourceforge.pmd.cpd.Renderer` has been deprecated. A new interface
-  `net.sourceforge.pmd.cpd.renderer.CPDRenderer` has been introduced to replace it. The main
+* The interface {%jdoc_old !!core::cpd.Renderer%} has been deprecated. A new interface
+  {%jdoc_old core::cpd.renderer.CPDRenderer%} has been introduced to replace it. The main
   difference is that the new interface is meant to render directly to a `java.io.Writer`
   rather than to a String. This allows to greatly reduce the memory footprint of CPD, as on
   large projects, with many duplications, it was causing `OutOfMemoryError`s (see [#795](https://github.com/pmd/pmd/issues/795)).
 
-  `net.sourceforge.pmd.cpd.FileReporter` has also been deprecated as part of this change, as it's no longer needed.
+  {%jdoc_old !!core::cpd.FileReporter%} has also been deprecated as part of this change, as it's no longer needed.
 
 #### 6.0.1
 
-*   The constant `net.sourceforge.pmd.PMD.VERSION` has been deprecated and will be removed with PMD 7.0.0.
-    Please use `net.sourceforge.pmd.PMDVersion.VERSION` instead.
+*   The constant {%jdoc_old !!core::PMD#VERSION%} has been deprecated and will be removed with PMD 7.0.0.
+    Please use {%jdoc !!core::PMDVersion#VERSION%} instead.
 
 
 ## 🐛 Fixed Issues
