@@ -697,7 +697,7 @@ The full detailed documentation of the changes are available in the
 * The PMD Ant tasks, which were previously in the module `pmd-core` has been moved into its own module `pmd-ant`,
   which needs to be added explicitly now as an additional dependency.
 * The CLI classes have also been moved out of `pmd-core` into its own module `pmd-cli`. The old entry point, the
-  main class {%jdoc_old core::PMD %} is gone.
+  main class <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMD.html#"><code>PMD</code></a> is gone.
 
 ## 🚨 API
 
@@ -2868,41 +2868,41 @@ to remove them in 7.0.0. The proposed changes to the API are described [on the w
 **Changes to how you define properties**
 
 * Construction of property descriptors has been possible through builders since 6.0.0. The 7.0.0 API will only allow
-  construction through builders. The builder hierarchy, currently found in the package {% jdoc_package props::builders %},
+  construction through builders. The builder hierarchy, currently found in the package <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/builders/package-summary.html#"><code>net.sourceforge.pmd.properties.builders</code></a>,
   is being replaced by the simpler {% jdoc props::PropertyBuilder %}. Their APIs enjoy a high degree of source compatibility.
 
-* Concrete property classes like {% jdoc_old props::IntegerProperty %} and {% jdoc_old props::StringMultiProperty %} will gradually
+* Concrete property classes like <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/IntegerProperty.html#"><code>IntegerProperty</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/StringMultiProperty.html#"><code>StringMultiProperty</code></a> will gradually
   all be deprecated until 7.0.0. Their usages should be replaced by direct usage of the {% jdoc props::PropertyDescriptor %}
   interface, e.g. `PropertyDescriptor<Integer>` or `PropertyDescriptor<List<String>>`.
 
 * Instead of spreading properties across countless classes, the utility class {% jdoc :PF %} will become
   from 7.0.0 on the only provider for property descriptor builders. Each current property type will be replaced
   by a corresponding method on `PropertyFactory`:
-  * {% jdoc_old props::IntegerProperty %} is replaced by {% jdoc !c!:PF#intProperty(java.lang.String) %}
-    * {% jdoc_old props::IntegerMultiProperty %} is replaced by {% jdoc !c!:PF#intListProperty(java.lang.String) %}
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/IntegerProperty.html#"><code>IntegerProperty</code></a> is replaced by {% jdoc !c!:PF#intProperty(java.lang.String) %}
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/IntegerMultiProperty.html#"><code>IntegerMultiProperty</code></a> is replaced by {% jdoc !c!:PF#intListProperty(java.lang.String) %}
 
-  * {% jdoc_old props::FloatProperty %} and {% jdoc_old props::DoubleProperty %} are both replaced by {% jdoc !c!:PF#doubleProperty(java.lang.String) %}.
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/FloatProperty.html#"><code>FloatProperty</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/DoubleProperty.html#"><code>DoubleProperty</code></a> are both replaced by {% jdoc !c!:PF#doubleProperty(java.lang.String) %}.
     Having a separate property for floats wasn't that useful.
-    * Similarly, {% jdoc_old props::FloatMultiProperty %} and {% jdoc_old props::DoubleMultiProperty %} are replaced by {% jdoc !c!:PF#doubleListProperty(java.lang.String) %}.
+    * Similarly, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/FloatMultiProperty.html#"><code>FloatMultiProperty</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/DoubleMultiProperty.html#"><code>DoubleMultiProperty</code></a> are replaced by {% jdoc !c!:PF#doubleListProperty(java.lang.String) %}.
 
-  * {% jdoc_old props::StringProperty %} is replaced by {% jdoc !c!:PF#stringProperty(java.lang.String) %}
-    * {% jdoc_old props::StringMultiProperty %} is replaced by {% jdoc !c!:PF#stringListProperty(java.lang.String) %}
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/StringProperty.html#"><code>StringProperty</code></a> is replaced by {% jdoc !c!:PF#stringProperty(java.lang.String) %}
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/StringMultiProperty.html#"><code>StringMultiProperty</code></a> is replaced by {% jdoc !c!:PF#stringListProperty(java.lang.String) %}
 
-  * {% jdoc_old props::RegexProperty %} is replaced by {% jdoc !c!:PF#regexProperty(java.lang.String) %}
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/RegexProperty.html#"><code>RegexProperty</code></a> is replaced by {% jdoc !c!:PF#regexProperty(java.lang.String) %}
 
-  * {% jdoc_old props::EnumeratedProperty %} is replaced by {% jdoc !c!:PF#enumProperty(java.lang.String,java.util.Map) %}
-    * {% jdoc_old props::EnumeratedProperty %} is replaced by {% jdoc !c!:PF#enumListProperty(java.lang.String,java.util.Map) %}
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/EnumeratedProperty.html#"><code>EnumeratedProperty</code></a> is replaced by {% jdoc !c!:PF#enumProperty(java.lang.String,java.util.Map) %}
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/EnumeratedProperty.html#"><code>EnumeratedProperty</code></a> is replaced by {% jdoc !c!:PF#enumListProperty(java.lang.String,java.util.Map) %}
 
-  * {% jdoc_old props::BooleanProperty %} is replaced by {% jdoc !c!:PF#booleanProperty(java.lang.String) %}
-    * Its multi-valued counterpart, {% jdoc_old props::BooleanMultiProperty %}, is not replaced, because it doesn't have a use case.
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/BooleanProperty.html#"><code>BooleanProperty</code></a> is replaced by {% jdoc !c!:PF#booleanProperty(java.lang.String) %}
+    * Its multi-valued counterpart, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/BooleanMultiProperty.html#"><code>BooleanMultiProperty</code></a>, is not replaced, because it doesn't have a use case.
 
-  * {% jdoc_old props::CharacterProperty %} is replaced by {% jdoc !c!:PF#charProperty(java.lang.String) %}
-    * {% jdoc_old props::CharacterMultiProperty %} is replaced by {% jdoc !c!:PF#charListProperty(java.lang.String) %}
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/CharacterProperty.html#"><code>CharacterProperty</code></a> is replaced by {% jdoc !c!:PF#charProperty(java.lang.String) %}
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/CharacterMultiProperty.html#"><code>CharacterMultiProperty</code></a> is replaced by {% jdoc !c!:PF#charListProperty(java.lang.String) %}
 
-  * {% jdoc_old props::LongProperty %} is replaced by {% jdoc !c!:PF#longIntProperty(java.lang.String) %}
-    * {% jdoc_old props::LongMultiProperty %} is replaced by {% jdoc !c!:PF#longIntListProperty(java.lang.String) %}
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/LongProperty.html#"><code>LongProperty</code></a> is replaced by {% jdoc !c!:PF#longIntProperty(java.lang.String) %}
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/LongMultiProperty.html#"><code>LongMultiProperty</code></a> is replaced by {% jdoc !c!:PF#longIntListProperty(java.lang.String) %}
 
-  * {% jdoc_old props::MethodProperty %}, {% jdoc_old props::FileProperty %}, {% jdoc_old props::TypeProperty %} and their multi-valued counterparts
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/MethodProperty.html#"><code>MethodProperty</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/FileProperty.html#"><code>FileProperty</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/TypeProperty.html#"><code>TypeProperty</code></a> and their multi-valued counterparts
     are discontinued for lack of a use-case, and have no planned replacement in 7.0.0 for now.
 
 
@@ -2922,37 +2922,37 @@ You're highly encouraged to migrate to using this new API as soon as possible, t
 
 **Architectural simplifications**
 
-* {% jdoc_old props::EnumeratedPropertyDescriptor %}, {% jdoc_old props::NumericPropertyDescriptor %}, {% jdoc_old props::PackagedPropertyDescriptor %},
-  and the related builders (in {% jdoc_package_old props::builders %}) will be removed.
+* <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/EnumeratedPropertyDescriptor.html#"><code>EnumeratedPropertyDescriptor</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/NumericPropertyDescriptor.html#"><code>NumericPropertyDescriptor</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/PackagedPropertyDescriptor.html#"><code>PackagedPropertyDescriptor</code></a>,
+  and the related builders (in <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/builders/package-summary.html#"><code>net.sourceforge.pmd.properties.builders</code></a>) will be removed.
   These specialized interfaces allowed additional constraints to be enforced on the
   value of a property, but made the property class hierarchy very large and impractical
   to maintain. Their functionality will be mapped uniformly to {% jdoc props::PropertyConstraint %}s,
   which will allow virtually any constraint to be defined, and improve documentation and error reporting. The
-  related methods {% jdoc_old !c!props::PropertyTypeId#isPropertyNumeric() %} and
-  {% jdoc_old !c!props::PropertyTypeId#isPropertyPackaged() %} are also deprecated.
+  related methods <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/PropertyTypeId.html#isPropertyNumeric()"><code>PropertyTypeId#isPropertyNumeric</code></a> and
+  <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/PropertyTypeId.html#isPropertyPackaged()"><code>PropertyTypeId#isPropertyPackaged</code></a> are also deprecated.
 
-* {% jdoc_old props::MultiValuePropertyDescriptor %} and {% jdoc_old props::SingleValuePropertyDescriptor %}
+* <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/MultiValuePropertyDescriptor.html#"><code>MultiValuePropertyDescriptor</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/SingleValuePropertyDescriptor.html#"><code>SingleValuePropertyDescriptor</code></a>
   are deprecated. 7.0.0 will introduce a new XML syntax which will remove the need for such a divide
-  between single- and multi-valued properties. The method {% jdoc_old !c!:PDr#isMultiValue() %} will be removed
+  between single- and multi-valued properties. The method <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#isMultiValue()"><code>PropertyDescriptor#isMultiValue</code></a> will be removed
   accordingly.
 
 **Changes to the PropertyDescriptor interface**
 
-* {% jdoc_old :PDr#preferredRowCount() %} is deprecated with no intended replacement. It was never implemented, and does not belong
-  in this interface. The methods {% jdoc_old :PDr#uiOrder() %} and `compareTo(PropertyDescriptor)` are deprecated for the
+* <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#preferredRowCount()"><code>preferredRowCount</code></a> is deprecated with no intended replacement. It was never implemented, and does not belong
+  in this interface. The methods <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#uiOrder()"><code>uiOrder</code></a> and `compareTo(PropertyDescriptor)` are deprecated for the
   same reason. These methods mix presentation logic with business logic and are not necessary for PropertyDescriptors to work.
   `PropertyDescriptor` will not extend `Comparable<PropertyDescriptor>` anymore come 7.0.0.
-* The method {% jdoc_old :PDr#propertyErrorFor(core::Rule) %} is deprecated and will be removed with no intended
+* The method <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#propertyErrorFor(net.sourceforge.pmd.Rule)"><code>propertyErrorFor</code></a> is deprecated and will be removed with no intended
   replacement. It's really just a shortcut for `prop.errorFor(rule.getProperty(prop))`.
-* `T `{% jdoc_old !a!:PDr#valueFrom(java.lang.String) %} and `String `{% jdoc_old :PDr#asDelimitedString(java.lang.Object) %}`(T)` are deprecated and will be removed. These were
+* `T `<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#valueFrom(java.lang.String)"><code>valueFrom(String)</code></a> and `String `<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#asDelimitedString(java.lang.Object)"><code>asDelimitedString</code></a>`(T)` are deprecated and will be removed. These were
   used to serialize and deserialize properties to/from a string, but 7.0.0 will introduce a more flexible
   XML syntax which will make them obsolete.
-* {% jdoc_old :PDr#isMultiValue() %} and {% jdoc_old :PDr#type() %} are deprecated and won't be replaced. The new XML syntax will remove the need
+* <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#isMultiValue()"><code>isMultiValue</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#type()"><code>type</code></a> are deprecated and won't be replaced. The new XML syntax will remove the need
   for a divide between multi- and single-value properties, and will allow arbitrary types to be represented.
   Since arbitrary types may be represented, `type` will become obsolete as it can't represent generic types,
   which will nevertheless be representable with the XML syntax. It was only used for documentation, but a
   new way to document these properties exhaustively will be added with 7.0.0.
-* {% jdoc_old :PDr#errorFor(java.lang.Object) %} is deprecated as its return type will be changed to `Optional<String>` with the shift to Java 8.
+* <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#errorFor(java.lang.Object)"><code>errorFor</code></a> is deprecated as its return type will be changed to `Optional<String>` with the shift to Java 8.
 
 **Deprecated APIs**
 
@@ -2965,36 +2965,36 @@ You're highly encouraged to migrate to using this new API as soon as possible, t
 
 **For internalization**
 
-*   The implementation of the adapters for the XPath engines Saxon and Jaxen (package {% jdoc_package_old :xpath %})
+*   The implementation of the adapters for the XPath engines Saxon and Jaxen (package <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/ast/xpath/package-summary.html#"><code>net.sourceforge.pmd.lang.ast.xpath</code></a>)
     are now deprecated. They'll be moved to an internal package come 7.0.0. Only {% jdoc core::lang.rule.xpath.Attribute %} remains public API.
 
-*   The classes {% jdoc_old props::PropertyDescriptorField %}, {% jdoc_old props::builders.PropertyDescriptorBuilderConversionWrapper %}, and the methods
-    {% jdoc_old !c!:PDr#attributeValuesById %}, {% jdoc_old !c!:PDr#isDefinedExternally() %} and {% jdoc_old !c!props::PropertyTypeId#getFactory() %}.
+*   The classes <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/PropertyDescriptorField.html#"><code>PropertyDescriptorField</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/builders/PropertyDescriptorBuilderConversionWrapper.html#"><code>PropertyDescriptorBuilderConversionWrapper</code></a>, and the methods
+    <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#attributeValuesById()"><code>PropertyDescriptor#attributeValuesById</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#isDefinedExternally()"><code>PropertyDescriptor#isDefinedExternally</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/PropertyTypeId.html#getFactory()"><code>PropertyTypeId#getFactory</code></a>.
     These were used to read and write properties to and from XML, but were not intended as public API.
 
-*   The class {% jdoc_old props::ValueParserConstants %} and the interface {% jdoc_old props::ValueParser %}.
+*   The class <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/ValueParserConstants.html#"><code>ValueParserConstants</code></a> and the interface <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/ValueParser.html#"><code>ValueParser</code></a>.
 
-*   All classes from {% jdoc_package_old java::lang.java.metrics.impl.visitors %} are now considered internal API. They're deprecated
+*   All classes from <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/metrics/impl/visitors/package-summary.html#"><code>net.sourceforge.pmd.lang.java.metrics.impl.visitors</code></a> are now considered internal API. They're deprecated
     and will be moved into an internal package with 7.0.0. To implement your own metrics visitors,
-    {% jdoc_old jast::JavaParserVisitorAdapter %} should be directly subclassed.
+    <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/JavaParserVisitorAdapter.html#"><code>JavaParserVisitorAdapter</code></a> should be directly subclassed.
 
-*   {% jdoc_old !ac!:lvh#getDataFlowHandler() %}, {% jdoc_old !ac!:lvh#getDFAGraphRule() %}
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getDataFlowHandler()"><code>LanguageVersionHandler#getDataFlowHandler()</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getDFAGraphRule()"><code>LanguageVersionHandler#getDFAGraphRule()</code></a>
 
-*   {% jdoc_old core::lang.VisitorStarter %}
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/VisitorStarter.html#"><code>VisitorStarter</code></a>
 
 **For removal**
 
-*   All classes from {% jdoc_package_old props::modules %} will be removed.
+*   All classes from <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/modules/package-summary.html#"><code>net.sourceforge.pmd.properties.modules</code></a> will be removed.
 
-*   The interface {% jdoc_old jast::Dimensionable %} has been deprecated.
+*   The interface <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/Dimensionable.html#"><code>Dimensionable</code></a> has been deprecated.
     It gets in the way of a grammar change for 7.0.0 and won't be needed anymore (see [#997](https://github.com/pmd/pmd/issues/997)).
 
-*   Several methods from {% jdoc_old jast::ASTLocalVariableDeclaration %} and {% jdoc_old jast::ASTFieldDeclaration %} have
+*   Several methods from <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTLocalVariableDeclaration.html#"><code>ASTLocalVariableDeclaration</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#"><code>ASTFieldDeclaration</code></a> have
     also been deprecated:
 
-  *   {% jdoc_old jast::ASTFieldDeclaration %} won't be a {% jdoc jast::TypeNode %} come 7.0.0, so
-      {% jdoc_old jast::ASTFieldDeclaration#getType() %} and
-      {% jdoc_old jast::ASTFieldDeclaration#getTypeDefinition() %} are deprecated.
+  *   <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#"><code>ASTFieldDeclaration</code></a> won't be a {% jdoc jast::TypeNode %} come 7.0.0, so
+      <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#getType()"><code>getType</code></a> and
+      <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#getTypeDefinition()"><code>getTypeDefinition</code></a> are deprecated.
 
   *   The method `getVariableName` on those two nodes will be removed, too.
 
@@ -3005,45 +3005,43 @@ You're highly encouraged to migrate to using this new API as soon as possible, t
 *   Visitor decorators are now deprecated and will be removed in PMD 7.0.0. They were originally a way to write
     composable visitors, used in the metrics framework, but they didn't prove cost-effective.
 
-  *   In {% jdoc_package_old :jast %}: {% jdoc_old jast::JavaParserDecoratedVisitor %}, {% jdoc_old jast::JavaParserControllessVisitor %},
-      {% jdoc_old jast::JavaParserControllessVisitorAdapter %}, and {% jdoc_old jast::JavaParserVisitorDecorator %} are deprecated with no intended replacement.
+  *   In <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.java.ast</code></a>: <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/JavaParserDecoratedVisitor.html#"><code>JavaParserDecoratedVisitor</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/JavaParserControllessVisitor.html#"><code>JavaParserControllessVisitor</code></a>,
+      <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/JavaParserControllessVisitorAdapter.html#"><code>JavaParserControllessVisitorAdapter</code></a>, and <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/JavaParserVisitorDecorator.html#"><code>JavaParserVisitorDecorator</code></a> are deprecated with no intended replacement.
 
 
 *   The LanguageModules of several languages, that only support CPD execution, have been deprecated. These languages
     are not fully supported by PMD, so having a language module does not make sense. The functionality of CPD is
     not affected by this change. The following classes have been deprecated and will be removed with PMD 7.0.0:
 
-  *   {% jdoc_old cpp::lang.cpp.CppHandler %}
-  *   {% jdoc_old cpp::lang.cpp.CppLanguageModule %}
-  *   {% jdoc_old cpp::lang.cpp.CppParser %}
-  *   {% jdoc_old cs::lang.cs.CsLanguageModule %}
-  *   {% jdoc_old fortran::lang.fortran.FortranLanguageModule %}
-  *   {% jdoc_old groovy::lang.groovy.GroovyLanguageModule %}
-  *   {% jdoc_old matlab::lang.matlab.MatlabHandler %}
-  *   {% jdoc_old matlab::lang.matlab.MatlabLanguageModule %}
-  *   {% jdoc_old matlab::lang.matlab.MatlabParser %}
-  *   {% jdoc_old objectivec::lang.objectivec.ObjectiveCHandler %}
-  *   {% jdoc_old objectivec::lang.objectivec.ObjectiveCLanguageModule %}
-  *   {% jdoc_old objectivec::lang.objectivec.ObjectiveCParser %}
-  *   {% jdoc_old php::lang.php.PhpLanguageModule %}
-  *   {% jdoc_old python::lang.python.PythonHandler %}
-  *   {% jdoc_old python::lang.python.PythonLanguageModule %}
-  *   {% jdoc_old python::lang.python.PythonParser %}
-  *   {% jdoc_old ruby::lang.ruby.RubyLanguageModule %}
-  *   {% jdoc_old scala::lang.scala.ScalaLanguageModule %}
-  *   {% jdoc_old swift::lang.swift.SwiftLanguageModule %}
+  *   <a href="https://docs.pmd-code.org/apidocs/pmd-cpp/6.55.0/net/sourceforge/pmd/lang/cpp/CppHandler.html#"><code>CppHandler</code></a>
+  *   <a href="https://docs.pmd-code.org/apidocs/pmd-cpp/6.55.0/net/sourceforge/pmd/lang/cpp/CppLanguageModule.html#"><code>CppLanguageModule</code></a>
+  *   <a href="https://docs.pmd-code.org/apidocs/pmd-cpp/6.55.0/net/sourceforge/pmd/lang/cpp/CppParser.html#"><code>CppParser</code></a>
+  *   <a href="https://docs.pmd-code.org/apidocs/pmd-cs/6.55.0/net/sourceforge/pmd/lang/cs/CsLanguageModule.html#"><code>CsLanguageModule</code></a>
+  *   <a href="https://docs.pmd-code.org/apidocs/pmd-fortran/6.55.0/net/sourceforge/pmd/lang/fortran/FortranLanguageModule.html#"><code>FortranLanguageModule</code></a>
+  *   <a href="https://docs.pmd-code.org/apidocs/pmd-groovy/6.55.0/net/sourceforge/pmd/lang/groovy/GroovyLanguageModule.html#"><code>GroovyLanguageModule</code></a>
+  *   <a href="https://docs.pmd-code.org/apidocs/pmd-matlab/6.55.0/net/sourceforge/pmd/lang/matlab/MatlabHandler.html#"><code>MatlabHandler</code></a>
+  *   <a href="https://docs.pmd-code.org/apidocs/pmd-matlab/6.55.0/net/sourceforge/pmd/lang/matlab/MatlabLanguageModule.html#"><code>MatlabLanguageModule</code></a>
+  *   <a href="https://docs.pmd-code.org/apidocs/pmd-matlab/6.55.0/net/sourceforge/pmd/lang/matlab/MatlabParser.html#"><code>MatlabParser</code></a>
+  *   <a href="https://docs.pmd-code.org/apidocs/pmd-objectivec/6.55.0/net/sourceforge/pmd/lang/objectivec/ObjectiveCHandler.html#"><code>ObjectiveCHandler</code></a>
+  *   <a href="https://docs.pmd-code.org/apidocs/pmd-objectivec/6.55.0/net/sourceforge/pmd/lang/objectivec/ObjectiveCLanguageModule.html#"><code>ObjectiveCLanguageModule</code></a>
+  *   <a href="https://docs.pmd-code.org/apidocs/pmd-objectivec/6.55.0/net/sourceforge/pmd/lang/objectivec/ObjectiveCParser.html#"><code>ObjectiveCParser</code></a>
+  *   <a href="https://docs.pmd-code.org/apidocs/pmd-php/6.55.0/net/sourceforge/pmd/lang/php/PhpLanguageModule.html#"><code>PhpLanguageModule</code></a>
+  *   <a href="https://docs.pmd-code.org/apidocs/pmd-python/6.55.0/net/sourceforge/pmd/lang/python/PythonHandler.html#"><code>PythonHandler</code></a>
+  *   <a href="https://docs.pmd-code.org/apidocs/pmd-python/6.55.0/net/sourceforge/pmd/lang/python/PythonLanguageModule.html#"><code>PythonLanguageModule</code></a>
+  *   <a href="https://docs.pmd-code.org/apidocs/pmd-python/6.55.0/net/sourceforge/pmd/lang/python/PythonParser.html#"><code>PythonParser</code></a>
+  *   <a href="https://docs.pmd-code.org/apidocs/pmd-ruby/6.55.0/net/sourceforge/pmd/lang/ruby/RubyLanguageModule.html#"><code>RubyLanguageModule</code></a>
 
 
 * Optional AST processing stages like symbol table, type resolution or data-flow analysis will be reified
   in 7.0.0 to factorise common logic and make them extensible. Further explanations about this change can be
   found on [#1426](https://github.com/pmd/pmd/pull/1426). Consequently, the following APIs are deprecated for
   removal:
-  * In {% jdoc_old :rule %}: {% jdoc_old !a!:rule#isDfa() %}, {% jdoc_old !a!:rule#isTypeResolution() %}, {% jdoc_old !a!:rule#isMultifile() %} and their
+  * In <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/Rule.html#"><code>Rule</code></a>: <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/Rule.html#isDfa()"><code>isDfa()</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/Rule.html#isTypeResolution()"><code>isTypeResolution()</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/Rule.html#isMultifile()"><code>isMultifile()</code></a> and their
     respective setters.
-  * In {% jdoc_old :rset %}: {% jdoc_old !a!:rset#usesDFA(core::lang.Language) %}, {% jdoc_old !a!:rset#usesTypeResolution(core::lang.Language) %}, {% jdoc_old !a!:rset#usesMultifile(core::lang.Language) %}
-  * In {% jdoc_old :rsets %}: {% jdoc_old !a!:rsets#usesDFA(core::lang.Language) %}, {% jdoc_old !a!:rsets#usesTypeResolution(core::lang.Language) %}, {% jdoc_old !a!:rsets#usesMultifile(core::lang.Language) %}
-  * In {% jdoc_old :lvh %}: {% jdoc_old !a!:lvh#getDataFlowFacade() %}, {% jdoc_old !a!:lvh#getSymbolFacade() %}, {% jdoc_old !a!:lvh#getSymbolFacade(java.lang.ClassLoader) %},
-    {% jdoc_old !a!:lvh#getTypeResolutionFacade(java.lang.ClassLoader) %}, {% jdoc_old !a!:lvh#getQualifiedNameResolutionFacade(java.lang.ClassLoader) %}
+  * In <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSet.html#"><code>RuleSet</code></a>: <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSet.html#usesDFA(net.sourceforge.pmd.lang.Language)"><code>usesDFA(Language)</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSet.html#usesTypeResolution(net.sourceforge.pmd.lang.Language)"><code>usesTypeResolution(Language)</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSet.html#usesMultifile(net.sourceforge.pmd.lang.Language)"><code>usesMultifile(Language)</code></a>
+  * In <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSets.html#"><code>RuleSets</code></a>: <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSets.html#usesDFA(net.sourceforge.pmd.lang.Language)"><code>usesDFA(Language)</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSets.html#usesTypeResolution(net.sourceforge.pmd.lang.Language)"><code>usesTypeResolution(Language)</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSets.html#usesMultifile(net.sourceforge.pmd.lang.Language)"><code>usesMultifile(Language)</code></a>
+  * In <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#"><code>LanguageVersionHandler</code></a>: <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getDataFlowFacade()"><code>getDataFlowFacade()</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getSymbolFacade()"><code>getSymbolFacade()</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getSymbolFacade(java.lang.ClassLoader)"><code>getSymbolFacade(ClassLoader)</code></a>,
+    <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getTypeResolutionFacade(java.lang.ClassLoader)"><code>getTypeResolutionFacade(ClassLoader)</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getQualifiedNameResolutionFacade(java.lang.ClassLoader)"><code>getQualifiedNameResolutionFacade(ClassLoader)</code></a>
 
 #### 6.9.0
 
@@ -3051,27 +3049,27 @@ No changes.
 
 #### 6.8.0
 
-*   A couple of methods and fields in {%jdoc_old !!core::properties.AbstractPropertySource%} have been
+*   A couple of methods and fields in <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/AbstractPropertySource.html#"><code>net.sourceforge.pmd.properties.AbstractPropertySource</code></a> have been
     deprecated, as they are replaced by already existing functionality or expose internal implementation
     details: `propertyDescriptors`, `propertyValuesByDescriptor`,
     `copyPropertyDescriptors()`, `copyPropertyValues()`, `ignoredProperties()`, `usesDefaultValues()`,
     `useDefaultValueFor()`.
 
-*   Some methods in {%jdoc_old !!core::properties.PropertySource%} have been deprecated as well:
+*   Some methods in <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/PropertySource.html#"><code>net.sourceforge.pmd.properties.PropertySource</code></a> have been deprecated as well:
     `usesDefaultValues()`, `useDefaultValueFor()`, `ignoredProperties()`.
 
-*   The class {%jdoc_old !!core::lang.rule.AbstractDelegateRule%} has been deprecated and will
+*   The class <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/rule/AbstractDelegateRule.html#"><code>net.sourceforge.pmd.lang.rule.AbstractDelegateRule</code></a> has been deprecated and will
     be removed with PMD 7.0.0. It is internally only in use by RuleReference.
 
-*   The default constructor of {%jdoc_old !!core::lang.rule.RuleReference%} has been deprecated
+*   The default constructor of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/rule/RuleReference.html#"><code>net.sourceforge.pmd.lang.rule.RuleReference</code></a> has been deprecated
     and will be removed with PMD 7.0.0. RuleReferences should only be created by providing a Rule and
     a RuleSetReference. Furthermore, the following methods are deprecated: `setRuleReference()`,
     `hasOverriddenProperty()`, `usesDefaultValues()`, `useDefaultValueFor()`.
 
 #### 6.7.0
 
-*   All classes in the package {%jdoc_package_old core::lang.dfa.report%} have been deprecated and will be removed
-    with PMD 7.0.0. This includes the class {%jdoc_old !!core::lang.dfa.report.ReportTree%}. The reason is,
+*   All classes in the package <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/dfa/report/package-summary.html#"><code>net.sourceforge.pmd.lang.dfa.report</code></a> have been deprecated and will be removed
+    with PMD 7.0.0. This includes the class <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/dfa/report/ReportTree.html#"><code>net.sourceforge.pmd.lang.dfa.report.ReportTree</code></a>. The reason is,
     that this class is very specific to Java and not suitable for other languages. It has only been used for
     `YAHTMLRenderer`, which has been rewritten to work without these classes.
 
@@ -3082,7 +3080,7 @@ No changes.
 
 #### 6.5.0
 
-*   The utility class {%jdoc_old java::lang.java.ast.CommentUtil%} has been deprecated and will be removed
+*   The utility class <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/CommentUtil.html#"><code>CommentUtil</code></a> has been deprecated and will be removed
     with PMD 7.0.0. Its methods have been intended to parse javadoc tags. A more useful solution will be added
     around the AST node `FormalComment`, which contains as children `JavadocElement` nodes, which in
     turn provide access to the `JavadocTag`.
@@ -3097,44 +3095,44 @@ No changes.
 
 #### 6.4.0
 
-* The following classes in package {%jdoc_package_old core::benchmark%} have been deprecated: {%jdoc_old core::benchmark.Benchmark%}, {%jdoc_old core::benchmark.Benchmarker%},
-  {%jdoc_old core::benchmark.BenchmarkReport%}, {%jdoc_old core::benchmark.BenchmarkResult%}, {%jdoc_old core::benchmark.RuleDuration%}, {%jdoc_old core::benchmark.StringBuilderCR%} and {%jdoc_old core::benchmark.TextReport%}. Their API is not supported anymore
+* The following classes in package <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/benchmark/package-summary.html#"><code>net.sourceforge.pmd.benchmark</code></a> have been deprecated: <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/benchmark/Benchmark.html#"><code>Benchmark</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/benchmark/Benchmarker.html#"><code>Benchmarker</code></a>,
+  <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/benchmark/BenchmarkReport.html#"><code>BenchmarkReport</code></a>, <code>BenchmarkResult</code>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/benchmark/RuleDuration.html#"><code>RuleDuration</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/benchmark/StringBuilderCR.html#"><code>StringBuilderCR</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/benchmark/TextReport.html#"><code>TextReport</code></a>. Their API is not supported anymore
   and is disconnected from the internals of PMD. Use the newer API based around {%jdoc core::benchmark.TimeTracker%} instead, which can be found
   in the same package.
-* The class {%jdoc_old java::lang.java.xpath.TypeOfFunction%} has been deprecated. Use the newer {%jdoc_old java::lang.java.xpath.TypeIsFunction%} in the same package.
-* The `typeof` methods in {%jdoc_old java::lang.java.xpath.JavaFunctions%} have been deprecated.
+* The class <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/xpath/TypeOfFunction.html#"><code>TypeOfFunction</code></a> has been deprecated. Use the newer <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/xpath/TypeIsFunction.html#"><code>TypeIsFunction</code></a> in the same package.
+* The `typeof` methods in <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/xpath/JavaFunctions.html#"><code>JavaFunctions</code></a> have been deprecated.
   Use the newer `typeIs` method in the same class instead.
-* The methods `isA`, `isEither` and `isNeither` of {%jdoc_old java::lang.java.typeresolution.TypeHelper%}.
+* The methods `isA`, `isEither` and `isNeither` of <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/typeresolution/TypeHelper.html#"><code>TypeHelper</code></a>.
   Use the new `isExactlyAny` and `isExactlyNone` methods in the same class instead.
 
 #### 6.2.0
 
-*   The static method {%jdoc_old !!core::cli.PMDParameters#transformParametersIntoConfiguration(core::cli.PMDParameters)%} is now deprecated,
-    for removal in 7.0.0. The new instance method {%jdoc_old core::cli.PMDParameters#toConfiguration()%} replaces it.
+*   The static method <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/cli/PMDParameters.html#transformParametersIntoConfiguration(net.sourceforge.pmd.cli.PMDParameters)"><code>PMDParameters#transformParametersIntoConfiguration</code></a> is now deprecated,
+    for removal in 7.0.0. The new instance method <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/cli/PMDParameters.html#toConfiguration()"><code>toConfiguration</code></a> replaces it.
 
-*   The method {%jdoc_old !!java::lang.java.ast.ASTConstructorDeclaration#getParameters()%} has been deprecated in favor of the new method
-    {%jdoc_old java::lang.java.ast.ASTConstructorDeclaration#getFormalParameters()%}. This method is available for both
-    {%jdoc_old java::lang.java.ast.ASTConstructorDeclaration%} and {%jdoc_old java::lang.java.ast.ASTMethodDeclaration%}.
+*   The method <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTConstructorDeclaration.html#getParameters()"><code>ASTConstructorDeclaration#getParameters</code></a> has been deprecated in favor of the new method
+    <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTConstructorDeclaration.html#getFormalParameters()"><code>getFormalParameters</code></a>. This method is available for both
+    <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTConstructorDeclaration.html#"><code>ASTConstructorDeclaration</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#"><code>ASTMethodDeclaration</code></a>.
 
 #### 6.1.0
 
 * The method {%jdoc core::lang.ast.Node#getXPathNodeName()%} is added to the {%jdoc core::lang.ast.Node%} interface, which removes the
   use of `toString` of a node to get its XPath element name (see [#569](https://github.com/pmd/pmd/issues/569)).
-  * The default implementation provided in {%jdoc_old core::lang.ast.AbstractNode%}, will be removed with 7.0.0
+  * The default implementation provided in <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/ast/AbstractNode.html#"><code>AbstractNode</code></a>, will be removed with 7.0.0
   * With 7.0.0, the `Node.toString` method will not necessarily provide its XPath node
     name anymore.
 
-* The interface {%jdoc_old !!core::cpd.Renderer%} has been deprecated. A new interface
-  {%jdoc_old core::cpd.renderer.CPDRenderer%} has been introduced to replace it. The main
+* The interface <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/cpd/Renderer.html#"><code>net.sourceforge.pmd.cpd.Renderer</code></a> has been deprecated. A new interface
+  <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/cpd/renderer/CPDRenderer.html#"><code>CPDRenderer</code></a> has been introduced to replace it. The main
   difference is that the new interface is meant to render directly to a `java.io.Writer`
   rather than to a String. This allows to greatly reduce the memory footprint of CPD, as on
   large projects, with many duplications, it was causing `OutOfMemoryError`s (see [#795](https://github.com/pmd/pmd/issues/795)).
 
-  {%jdoc_old !!core::cpd.FileReporter%} has also been deprecated as part of this change, as it's no longer needed.
+  <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/cpd/FileReporter.html#"><code>net.sourceforge.pmd.cpd.FileReporter</code></a> has also been deprecated as part of this change, as it's no longer needed.
 
 #### 6.0.1
 
-*   The constant {%jdoc_old !!core::PMD#VERSION%} has been deprecated and will be removed with PMD 7.0.0.
+*   The constant <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMD.html#VERSION"><code>PMD#VERSION</code></a> has been deprecated and will be removed with PMD 7.0.0.
     Please use {%jdoc !!core::PMDVersion#VERSION%} instead.
 
 
