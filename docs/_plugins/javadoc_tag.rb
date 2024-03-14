@@ -147,7 +147,7 @@ class JavadocTag < Liquid::Tag
     artifact_name, @type_fqcn = JDocNamespaceDeclaration::parse_fqcn(@type_fqcn, var_ctx)
     resolved_type = JavadocTag::fqcn_type(artifact_name, @type_fqcn)
 
-    # don't warn for unresolved reference when pointing to old api
+    # don't fail for unresolved reference when pointing to old api
     diagnose(var_ctx, artifact_name, @type_fqcn, @is_package_ref, resolved_type) unless @use_previous_api_version
 
     # Expand FQCN of arguments
@@ -238,11 +238,11 @@ class JavadocTag < Liquid::Tag
     location = "#{context['page']['path']}:#{@line_number}+?"
 
     if resolved_type == :package && !expect_package
-      warn "\e[33;1m#{location}: #{tag_name} generated link to #{fqcn}, but it was found to be a package name. Did you mean to use jdoc_package instead of jdoc?\e[0m"
+      fail "\e[31;1m#{location}: #{tag_name} generated link to #{fqcn}, but it was found to be a package name. Did you mean to use jdoc_package instead of jdoc?\e[0m"
     elsif resolved_type == :file && expect_package
-      warn "\e[33;1m#{location}: #{tag_name} generated link to #{fqcn}, but it was found to be a java file name. Did you mean to use jdoc instead of jdoc_package?\e[0m"
+      fail "\e[31;1m#{location}: #{tag_name} generated link to #{fqcn}, but it was found to be a java file name. Did you mean to use jdoc instead of jdoc_package?\e[0m"
     elsif !resolved_type
-      warn "\e[33;1m#{location}: #{tag_name} generated link to #{fqcn}, but the #{expect_package ? "directory" : "source file"} couldn't be found in the source tree of #{artifact_id}\e[0m"
+      fail "\e[31;1m#{location}: #{tag_name} generated link to #{fqcn}, but the #{expect_package ? "directory" : "source file"} couldn't be found in the source tree of #{artifact_id}\e[0m"
     end
   end
 
