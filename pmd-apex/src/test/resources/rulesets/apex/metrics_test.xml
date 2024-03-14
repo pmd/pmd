@@ -12,19 +12,19 @@
     <rule name="CycloTest"
           language="apex"
           message = "''{0}'' has value {1}."
-          class="net.sourceforge.pmd.lang.apex.metrics.impl.CycloTestRule">
+          class="net.sourceforge.pmd.lang.apex.metrics.internal.CycloTestRule">
     </rule>
 
     <rule name="WmcTest"
           language="apex"
           message = "''{0}'' has value {1}."
-          class="net.sourceforge.pmd.lang.apex.metrics.impl.WmcTestRule">
+          class="net.sourceforge.pmd.lang.apex.metrics.internal.WmcTestRule">
     </rule>
 
     <rule name="CognitiveComplexityTest"
           language="apex"
           message = "''{0}'' has value {1}."
-          class="net.sourceforge.pmd.lang.apex.metrics.impl.CognitiveComplexityTestRule">
+          class="net.sourceforge.pmd.lang.apex.metrics.internal.CognitiveComplexityTestRule">
     </rule>
 
 </ruleset>

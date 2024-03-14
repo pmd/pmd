@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.plsql;
 
-import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
+import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 
 public class PlsqlParsingHelper extends BaseParsingHelper<PlsqlParsingHelper, ASTInput> {

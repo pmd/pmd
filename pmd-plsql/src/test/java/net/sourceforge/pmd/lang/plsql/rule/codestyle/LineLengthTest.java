@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.plsql.rule.codestyle;
 
-import net.sourceforge.pmd.testframework.PmdRuleTst;
+import net.sourceforge.pmd.test.PmdRuleTst;
 
 class LineLengthTest extends PmdRuleTst {
     // no additional unit tests

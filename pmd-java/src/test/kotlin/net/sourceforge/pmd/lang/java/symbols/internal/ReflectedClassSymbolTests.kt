@@ -7,8 +7,8 @@ package net.sourceforge.pmd.lang.java.symbols.internal
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
-import net.sourceforge.pmd.lang.ast.test.IntelliMarker
-import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.test.ast.IntelliMarker
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.types.testTypeSystem
 
 /**
@@ -40,7 +40,7 @@ class ReflectedClassSymbolTests : IntelliMarker, WordSpec({
 
         "reflect its superinterfaces correctly" {
             TestClassesGen.forAllEqual {
-                classSym(it)!!.superInterfaces to it.interfaces.toList().map { classSym(it) }
+                classSym(it)!!.superInterfaces to it.interfaces.toList().map { clazz -> classSym(clazz) }
             }
         }
 

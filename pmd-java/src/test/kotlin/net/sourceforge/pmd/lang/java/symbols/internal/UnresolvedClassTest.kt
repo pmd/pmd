@@ -7,8 +7,8 @@ package net.sourceforge.pmd.lang.java.symbols.internal
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.should
-import net.sourceforge.pmd.lang.ast.test.IntelliMarker
-import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.test.ast.IntelliMarker
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.types.testTypeSystem
 
 /**

@@ -4,9 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
@@ -16,6 +19,7 @@ import java.util.stream.Collectors;
  * @author Clément Fournier
  */
 public final class ApexQualifiedName {
+    private static final Pattern QUALIFIED_NAME_PATTERN = Pattern.compile("(?<class1>\\w+)(?:.(?<class2>\\w+))?(?:#(?<operation>\\w+\\(.*\\)))?");
 
     private final String[] classes;
     private final String operation;
@@ -105,7 +109,6 @@ public final class ApexQualifiedName {
 
     }
 
-
     /**
      * Parses a string conforming to the format defined below and returns an ApexQualifiedName.
      *
@@ -119,9 +122,17 @@ public final class ApexQualifiedName {
      *
      * @return An ApexQualifiedName, or null if the string couldn't be parsed
      */
-    // private static final Pattern FORMAT = Pattern.compile("(\\w+)(.(\\w+))?(#(\\w+))?"); // TODO
     public static ApexQualifiedName ofString(String toParse) {
-        throw new UnsupportedOperationException();
+        Matcher matcher = QUALIFIED_NAME_PATTERN.matcher(toParse);
+        if (matcher.matches()) {
+            List<String> classNames = new ArrayList<>();
+            classNames.add(matcher.group("class1"));
+            if (matcher.group("class2") != null) {
+                classNames.add(matcher.group("class2"));
+            }
+            return new ApexQualifiedName(classNames.toArray(new String[0]), matcher.group("operation"));
+        }
+        return null;
     }
 
 

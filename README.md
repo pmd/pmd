@@ -39,7 +39,7 @@ See also [Getting Started](https://docs.pmd-code.org/latest/pmd_userdocs_install
 
 **Demo:**
 
-This shows how PMD can detect for loops, that can be replaced by for-each loops.
+This shows how PMD analyses [openjdk](https://github.com/openjdk/jdk):
 
 ![Demo](docs/images/userdocs/pmd-demo.gif)
 

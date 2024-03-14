@@ -53,7 +53,7 @@ import net.sourceforge.pmd.util.StringUtil;
  * an overload that does not exist (the char is widened to an int,
  * so the int overload is selected).
  *
- * <h5 id='ebnf'>Full EBNF grammar</h5>
+ * <h2 id='ebnf'>Full EBNF grammar</h2>
  *
  * <p>(no whitespace is tolerated anywhere):
  * <pre>{@code

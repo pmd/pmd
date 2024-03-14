@@ -8,8 +8,6 @@ import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.annotation.Experimental;
-
 /**
  * A type pattern (JDK16). This can be found on
  * the right-hand side of an {@link ASTInfixExpression InstanceOfExpression},
@@ -21,11 +19,9 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * </pre>
  *
- * @see <a href="https://openjdk.java.net/jeps/394">JEP 394: Pattern Matching for instanceof</a>
+ * @see <a href="https://openjdk.org/jeps/394">JEP 394: Pattern Matching for instanceof</a> (Java 16)
 */
 public final class ASTTypePattern extends AbstractJavaNode implements ASTPattern, ModifierOwner {
-
-    private int parenDepth;
 
     ASTTypePattern(int id) {
         super(id);
@@ -46,15 +42,5 @@ public final class ASTTypePattern extends AbstractJavaNode implements ASTPattern
     /** Returns the declared variable. */
     public @NonNull ASTVariableId getVarId() {
         return Objects.requireNonNull(firstChild(ASTVariableId.class));
-    }
-
-    void bumpParenDepth() {
-        parenDepth++;
-    }
-
-    @Override
-    @Experimental("Parenthesized patterns is a Java 20 Preview feature")
-    public int getParenthesisDepth() {
-        return parenDepth;
     }
 }

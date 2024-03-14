@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
@@ -69,7 +70,7 @@ class ApexMultifileAnalysisTest {
 
     private @NonNull ApexMultifileAnalysis getAnalysisForTempFolder() {
         ApexLanguageProperties props = new ApexLanguageProperties();
-        props.setProperty(ApexLanguageProperties.MULTIFILE_DIRECTORY, tempFolder.toAbsolutePath().toString());
+        props.setProperty(ApexLanguageProperties.MULTIFILE_DIRECTORY, Optional.of(tempFolder.toAbsolutePath().toString()));
         return new ApexMultifileAnalysis(props);
     }
 

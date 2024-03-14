@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.rule.documentation;
 
-import net.sourceforge.pmd.testframework.PmdRuleTst;
+import net.sourceforge.pmd.test.PmdRuleTst;
 
 class ApexDocTest extends PmdRuleTst {
     // no additional unit tests

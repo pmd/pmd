@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
  *
  * <p>Record components declare a field, and if a canonical constructor
  * is synthesized by the compiler, also a formal parameter (which is in
- * scope in the body of a {@linkplain ASTRecordConstructorDeclaration compact record constructor}).
+ * scope in the body of a {@linkplain ASTCompactConstructorDeclaration compact record constructor}).
  * They also may imply the declaration of an accessor method.
  * <ul>
  * <li>The symbol exposed by the {@link ASTVariableId} is the field

@@ -29,7 +29,6 @@ public final class ASTSwitchCase extends AbstractEcmascriptNode<SwitchCase> {
     }
 
     public int getNumStatements() {
-        // TODO Tell Rhino folks about null Statements, should be empty List?
         return node.getStatements() != null ? node.getStatements().size() : 0;
     }
 

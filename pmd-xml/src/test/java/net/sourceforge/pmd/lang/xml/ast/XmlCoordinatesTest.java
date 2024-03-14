@@ -7,10 +7,10 @@ package net.sourceforge.pmd.lang.xml.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
-import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
-import net.sourceforge.pmd.lang.ast.test.CoordinatesPrinter;
-import net.sourceforge.pmd.lang.ast.test.TestUtilsKt;
+import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
+import net.sourceforge.pmd.lang.test.ast.BaseTreeDumpTest;
+import net.sourceforge.pmd.lang.test.ast.CoordinatesPrinter;
+import net.sourceforge.pmd.lang.test.ast.TestUtilsKt;
 import net.sourceforge.pmd.lang.xml.XmlParsingHelper;
 
 class XmlCoordinatesTest extends BaseTreeDumpTest {

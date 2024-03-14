@@ -12,25 +12,34 @@ keywords: changelog, release notes
 
 ## {{ site.pmd.date }} - {{ site.pmd.version }}
 
-We're excited to bring you the next major version of PMD!
+🎉 After a long time, we're excited to bring you now the next major version of PMD! 🎉
 
 Since this is a big release, we provide here only a concise version of the release notes. We prepared a separate
 page with the full [Detailed Release Notes for PMD 7.0.0]({{ baseurl }}pmd_release_notes_pmd7.html).
 
-<div style="border: 1px solid; border-radius: .25rem; padding: .75rem 1.25rem;" role="alert">
-<strong>ℹ️ Release Candidates</strong>
-<p>PMD 7.0.0 is finally almost ready. In order to gather feedback, we are going to ship a couple of release candidates.
-These are officially available on GitHub and Maven Central and can be used as usual (e.g. as a dependency).
-We encourage you to try out the new features, but keep in mind that we may introduce API breaking changes between
-the release candidates. It should be stable enough if you don't use custom rules.</p>
+🤝🙏 Many thanks to all users and contributors who were testing the release candidates and
+provided feedback and/or PRs!
 
-<p>We have still some tasks planned for the next release candidates.
-You can see the progress in <a href="https://github.com/pmd/pmd/issues/3898">PMD 7 Tracking Issue #3898</a>.</p>
+✨ PMD 7...
 
-<p>If you find any problem or difficulty while updating from PMD 6, please provide feedback via our
-<a href="https://github.com/pmd/pmd/issues/new/choose">issue tracker</a>. That way we can improve the experience
-for all.</p>
-</div>
+* ...has a new logo
+* ...analyzes Java 21 and Java 22 projects with even better type resolution and symbol table support
+* ...analyzes Kotlin and Swift
+* ...analyzes Apex with a new parser
+* ...finds duplicated code in Coco, Julia, TypeScript
+* ...ships 11 new rules and tons of improvements for existing rules
+* ...provides a new CLI interface with progress bar
+* ...supports Antlr based languages
+* ...and many more enhancements
+
+💥 Note: Since PMD 7 is a major release, it is not a drop-in replacement for PMD 6.55.0.
+A detailed documentation of required changes are available in the [Migration Guide for PMD 7]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html).
+
+{% if is_release_notes_processor %}
+<details>
+<summary markdown="span">Expand to see Release Notes
+</summary>
+{% endif %}
 
 {% tocmaker is_release_notes_processor %}
 
@@ -73,6 +82,36 @@ As PMD 7 revamped the Java module, if you have custom rules, you need to migrate
 See the use case [I'm using custom rules]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html#im-using-custom-rules)
 in the Migration Guide.
 
+Note: Once the default version of PMD is upgraded to PMD7 in maven-pmd-plugin
+(see [MPMD-379](https://issues.apache.org/jira/projects/MPMD/issues/MPMD-379)), this
+compatibility module is no longer needed. The module pmd-compat6 might not be maintaned then
+any further, hence it is already declared as deprecated.
+
+No guarantee is given, that the (deprecated) module pmd-compat6 is being maintained over the
+whole lifetime of PMD 7.
+
+##### Java 22 Support
+
+This release of PMD brings support for Java 22. There are the following new standard language features,
+that are supported now:
+
+* [JEP 456: Unnamed Variables & Patterns](https://openjdk.org/jeps/456)
+
+PMD also supports the following preview language features:
+
+* [JEP 447: Statements before super(...) (Preview)](https://openjdk.org/jeps/447)
+* [JEP 459: String Templates (Second Preview)](https://openjdk.org/jeps/459)
+* [JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)](https://openjdk.org/jeps/463)
+
+In order to analyze a project with PMD that uses these language features,
+you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
+version `22-preview`:
+
+    export PMD_JAVA_OPTS=--enable-preview
+    pmd check --use-version java-22-preview ...
+
+Note: Support for Java 20 preview language features have been removed. The version "20-preview" is no longer available.
+
 ##### Swift Support
 
 * limited support for Swift 5.9 (Macro Expansions)
@@ -85,9 +124,11 @@ in the Migration Guide.
 
 ##### Updated PMD Designer
 
-This PMD release ships a new version of the pmd-designer.
-For the changes, see
-* [PMD Designer Changelog (7.0.0)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0).
+This PMD release ships a new version of the pmd-designer. The designer artifact has been
+renamed from "pmd-ui" to "pmd-designer". While the designer still works with Java 8, the
+recommended Java Runtime is Java 11 (or later) with OpenJFX 17 (or later).
+
+For the detailed changes, see [PMD Designer Changelog (7.0.0)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0).
 
 ##### Apex Support: Replaced Jorje with fully open source front-end
 
@@ -102,7 +143,8 @@ Also having access to the source code, enhancements and modifications are easier
 
 Under the hood, we use two open source libraries instead:
 
-* [apex-parser](https://github.com/nawforce/apex-parser) by [Kevin Jones](https://github.com/nawforce) (@nawforce)
+* [apex-parser](https://github.com/apex-dev-tools/apex-parser) originally by
+  [Kevin Jones](https://github.com/nawforce) (@nawforce).
   This project provides the grammar for a ANTLR based parser.
 * [Summit-AST](https://github.com/google/summit-ast) by [Google](https://github.com/google) (@google)
   This project translates the ANTLR parse tree into an AST, that is similar to the AST Jorje provided.
@@ -111,15 +153,25 @@ Under the hood, we use two open source libraries instead:
 Although the parsers is completely switched, there are only little known changes to the AST.
 These are documented in the [Migration Guide for PMD 7: Apex AST]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html#apex-ast).
 
+With the new Apex parser, the new language constructs like User Mode Database Operations
+and the new [Null Coalescing Operator `??`](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_NullCoalescingOperator.htm)
+can be parsed now. PMD should be able to parse Apex code up to version 60.0 (Spring '24).
+
 See [#3766](https://github.com/pmd/pmd/issues/3766) for details.
 
 Contributors: [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-google),
   [Edward Klimoshenko](https://github.com/eklimo) (@eklimo)
 
-##### Updated Apex Support: Version 60 (Spring '24)
+##### Changed: Visualforce
 
-* The Apex language has been updated to support version 60.0 (Spring '24).
-* This includes support for the new [Null Coalescing Operator `??`](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_NullCoalescingOperator.htm).
+There was an inconsistency between the naming of the maven module and the language id. The language id
+used the abbreviation "vf", while the maven module used the longer name "visualforce". This has been
+solved by renaming the language module to its full name "visualforce". The java packages have
+been renamed as well.
+
+If you import rules, you also need to adjust the paths, e.g.
+
+* `category/vf/security.xml` ➡️ `category/visualforce/security.xml`
 
 ##### Changed: HTML support
 
@@ -129,6 +181,15 @@ is now considered stable.
 ##### Changed: Kotlin support
 
 Experimental Kotlin support has been promoted as stable API now.
+
+##### Changed: Velocity Template Language (VTL)
+
+The module was named just "vm" which was not a good name. It module and language id and
+package names have been renamed to "velocity".
+
+If you import rules, you also need to ajdust the paths, e.g.
+
+* `category/vm/...` ➡️ `category/velocity/...`
 
 #### Rule Changes
 
@@ -150,6 +211,13 @@ Experimental Kotlin support has been promoted as stable API now.
   Use the property `classCommentRequirement` instead.
 * {% rule java/errorprone/NonSerializableClass %}: The deprecated property `prefix` has been removed
   without replacement. In a serializable class all fields have to be serializable regardless of the name.
+
+**Renamed Rulesets**
+
+* `category/vf/security.xml` ➡️ `category/visualforce/security.xml`
+* `category/vm/bestpractices.xml` ➡️ `category/velocity/bestpractices.xml`
+* `category/vm/design.xml` ➡️ `category/velocity/design.xml`
+* `category/vm/errorprone.xml` ➡️ `category/velocity/errorprone.xml`
 
 **Removed Rules**
 
@@ -277,6 +345,9 @@ The rules have been moved into categories with PMD 6.
   * [#4749](https://github.com/pmd/pmd/pull/4749):   Fixes NoSuchMethodError on processing errors in pmd-compat6
   * [#4776](https://github.com/pmd/pmd/issues/4776): \[ci] Upgrade to ruby 3
   * [#4796](https://github.com/pmd/pmd/pull/4796):   Remove deprecated and release rulesets
+  * [#4823](https://github.com/pmd/pmd/pull/4823):   Update to use renamed pmd-designer
+  * [#4827](https://github.com/pmd/pmd/pull/4827):   \[compat6] Support config errors and cpd for csharp
+  * [#4830](https://github.com/pmd/pmd/issues/4830): Consolidate packages in each maven module
 * apex
   * [#3766](https://github.com/pmd/pmd/issues/3766): \[apex] Replace Jorje with fully open source front-end
   * [#4828](https://github.com/pmd/pmd/issues/4828): \[apex] Support null coalescing operator ?? (apex 60)
@@ -292,6 +363,8 @@ The rules have been moved into categories with PMD 6.
   * [#3751](https://github.com/pmd/pmd/issues/3751): \[java] Rename some node types
   * [#4628](https://github.com/pmd/pmd/pull/4628):   \[java] Support loading classes from java runtime images
   * [#4753](https://github.com/pmd/pmd/issues/4753): \[java] PMD crashes while using generics and wildcards
+  * [#4757](https://github.com/pmd/pmd/issues/4757): \[java] Intermittent NPEs while analyzing Java code
+  * [#4794](https://github.com/pmd/pmd/issues/4794): \[java] Support JDK 22
 * java-bestpractices
   * [#4603](https://github.com/pmd/pmd/issues/4603): \[java] UnusedAssignment false positive in record compact constructor
   * [#4625](https://github.com/pmd/pmd/issues/4625): \[java] UnusedPrivateMethod false positive: Autoboxing into Number
@@ -307,6 +380,7 @@ The rules have been moved into categories with PMD 6.
   * [#174](https://github.com/pmd/pmd/issues/174):   \[java] SingularField false positive with switch in method that both assigns and reads field
 * java-errorprone
   * [#718](https://github.com/pmd/pmd/issues/718):   \[java] BrokenNullCheck false positive with parameter/field confusion
+  * [#932](https://github.com/pmd/pmd/issues/932):   \[java] SingletonClassReturningNewInstance false positive with double assignment
   * [#1831](https://github.com/pmd/pmd/issues/1831): \[java] DetachedTestCase reports abstract methods
   * [#4719](https://github.com/pmd/pmd/pull/4719):   \[java] UnnecessaryCaseChange: example doc toUpperCase() should compare to a capitalized string
 * javascript
@@ -320,515 +394,7 @@ The rules have been moved into categories with PMD 6.
 
 #### API Changes
 
-**New API**
-
-The API around {%jdoc core::util.treeexport.TreeRenderer %} has been declared as stable. It was previously
-experimental. It can be used via the CLI subcommand `ast-dump` or programmatically, as described
-on [Creating XML dump of the AST]({{ baseurl }}pmd_userdocs_extending_ast_dump.html).
-
-**General AST Changes to avoid `@Image`**
-
-See [General AST Changes to avoid @Image]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html#general-ast-changes-to-avoid-image)
-in the migration guide for details.
-
-**XPath Rules**
-* The property `version` was already deprecated and has finally been removed. Please don't define the version
-  property anymore in your custom XPath rules. By default, the latest XPath version will be used, which
-  is XPath 3.1.
-
-**Moved classes/consolidated packages**
-
-* pmd-core
-  * Many types have been moved from the base package `net.sourceforge.pmd` into subpackage {% jdoc_package core::lang.rule %}
-    * {%jdoc core::lang.rule.Rule %}
-    * {%jdoc core::lang.rule.RulePriority %}
-    * {%jdoc core::lang.rule.RuleSet %}
-    * {%jdoc core::lang.rule.RuleSetFactory %}
-    * {%jdoc core::lang.rule.RuleSetLoader %}
-    * {%jdoc core::lang.rule.RuleSetLoadException %}
-    * {%jdoc core::lang.rule.RuleSetWriter %}
-  * Many types have been moved from the base package `net.sourceforge.pmd` into subpackage {% jdoc_package core::reporting %}
-    * {%jdoc core::reporting.Report %}
-    * {%jdoc core::reporting.RuleContext %}
-    * {%jdoc core::reporting.RuleViolation %}
-    * {%jdoc core::reporting.ViolationSuppressor %}
-  * {%jdoc core::lang.rule.xpath.XPathRule %} has been moved into subpackage {% jdoc_package core::lang.rule.xpath %}.
-
-**Internalized classes and interfaces and methods**
-
-The following classes/methods have been marked as @<!-- -->InternalApi before and are now moved into a `internal`
-package or made (package) private and are _not accessible_ anymore.
-
-* pmd-core
-  * `net.sourceforge.pmd.cache.AbstractAnalysisCache` (moved to internal, now package private)
-  * `net.sourceforge.pmd.cache.AnalysisCache` (moved to internal)
-  * `net.sourceforge.pmd.cache.AnalysisCacheListener` (moved to internal)
-  * `net.sourceforge.pmd.cache.AnalysisResult` (moved to internal)
-  * `net.sourceforge.pmd.cache.CachedRuleMapper` (moved to internal, now package private)
-  * `net.sourceforge.pmd.cache.CachedRuleViolation` (moved to internal, now package private)
-  * `net.sourceforge.pmd.cache.ChecksumAware` (moved to internal)
-  * `net.sourceforge.pmd.cache.FileAnalysisCache` (moved to internal)
-  * `net.sourceforge.pmd.cache.NoopAnalysisCache` (moved to internal)
-  * `net.sourceforge.pmd.util.ResourceLoader` (moved to internal)
-  * {%jdoc !!core::cpd.Tokens %}
-    * Constructor is now package private.
-  * {%jdoc !!core::lang.LanguageProcessor.AnalysisTask %}
-    * Constructor is now package private.
-    * Method `withFiles(java.util.List)` is now package private. Note: it was not previously marked with @<!-- -->InternalApi.
-  * {%jdoc !!core::lang.rule.RuleTargetSelector %}
-    * Method `isRuleChain()` has been removed.
-  * {%jdoc !!core::renderers.AbstractAccumulatingRenderer %}
-    * {%jdoc core::renderers.AbstractAccumulatingRenderer#renderFileReport(core::reporting.Report) %} - this method is now final
-      and can't be overridden anymore.
-  * {%jdoc !!core::reporting.Report %}
-    * Constructor as well as the methods `addRuleViolation`, `addConfigError`, `addError` are now private.
-  * {%jdoc !!core::reporting.RuleContext %}
-    * Method `getRule()` is now package private.
-    * Method `create(FileAnalysisListener listener, Rule rule)` has been removed.
-  * `net.sourceforge.pmd.rules.RuleFactory`: moved into subpackage `lang.rule` and made package private.
-    It has now been hidden completely from public API.
-  * Many types have been moved from into subpackage `lang.rule.internal`.
-    * `net.sourceforge.pmd.RuleSetReference`
-    * `net.sourceforge.pmd.RuleSetReferenceId`
-    * `net.sourceforge.pmd.RuleSets`
-  * `net.sourceforge.pmd.lang.rule.ParametricRuleViolation` is now package private and moved to `net.sourceforge.pmd.reporting.ParametricRuleViolation`.
-    The only public API is {%jdoc core::reporting.RuleViolation %}.
-  * {%jdoc !!core::lang.rule.RuleSet %}
-    * Method `applies(Rule,LanguageVersion)` is now package private.
-    * Method `applies(TextFile)` has been removed.
-    * Method `applies(FileId)` is now package private.
-  * {%jdoc !!core::lang.rule.RuleSetLoader %}
-    * Method `loadRuleSetsWithoutException(java.util.List)` is now package private.
-  * {%jdoc !!core::lang.rule.RuleSetLoadException %}
-    * All constructors are package private now.
-  * {%jdoc !!core::lang.ast.LexException %} - the constructor `LexException(boolean, String, int, int, String, char)` is now package private.
-    It is only used by JavaCC-generated token managers.
-  * {%jdoc !!core::PMDConfiguration %}
-    * Method `setAnalysisCache(AnalysisCache)` is now package private. Use {%jdoc core::PMDConfiguration#setAnalysisCacheLocation(java.lang.String) %} instead.
-    * Method `getAnalysisCache()` is now package private.
-  * {%jdoc !!core::lang.document.FileCollector %}
-    * Method `newCollector(LanguageVersionDiscoverer, PmdReporter)` is now package private.
-    * Method `newCollector(PmdReporter)` is now package private.
-    * In order to create a FileCollector, use {%jdoc core::PmdAnalysis#files() %} instead.
-  * {%jdoc !!core::lang.rule.xpath.Attribute %}
-    * Method `replacementIfDeprecated()` is now package private.
-  * `net.sourceforge.pmd.properties.PropertyTypeId` - moved in subpackage `internal`.
-  * {%jdoc !!core::properties.PropertyDescriptor %} - method `getTypeId()` is now package private.
-* pmd-ant
-  * {%jdoc !!ant::ant.Formatter %}
-    * Method `getRenderer()` has been removed.
-    * Method `start(String)` is private now.
-    * Method `end(Report)` has been removed.
-    * Method `isNoOutputSupplied()` is now package private.
-    * Method `newListener(Project)` is now package private.
-  * {%jdoc !!ant::ant.PMDTask %}
-    * Method `getRelativizeRoots()` has been removed.
-  * `net.sourceforge.pmd.ant.ReportException` is now package private. Note: It was not marked with @<!-- -->InternalApi before.
-* pmd-apex
-  * {%jdoc !!apex::ast.ApexNode %}
-    * Method `getNode()` has been removed. It was only deprecated before and not marked with @<!-- -->InternalApi.
-      However, it gave access to the wrapped Jorje node and was thus internal API.
-  * {%jdoc !!apex::ast.AbstractApexNode %}
-    * Method `getNode()` is now package private.
-  * {%jdoc !!apex::multifile.ApexMultifileAnalysis %}
-    * Constructor is now package private.
-  * `net.sourceforge.pmd.lang.apex.rule.design.AbstractNcssCountRule` (now package private)
-  * `net.sourceforge.pmd.lang.apex.rule.AbstractApexUnitTestRule` (moved to package `net.sourceforge.pmd.apex.rule.bestpractices`, now package private)
-* pmd-java
-  * `net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule` (moved to internal)
-  * `net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver` (moved to internal)
-  * {%jdoc !!java::types.JMethodSig %}
-    * Method `internalApi()` has been removed.
-  * {%jdoc !!java::types.TypeOps %}
-    * Method `isSameTypeInInference(JTypeMirror,JTypeMirror)` is now package private.
-* pmd-jsp
-  * {%jdoc !!jsp::ast.JspParser %}
-    * Method `getTokenBehavior()` has been removed.
-* pmd-modelica
-  * {%jdoc !!modelica::ast.InternalApiBridge %} renamed from `InternalModelicaNodeApi`.
-  * {%jdoc !!modelica::resolver.InternalApiBridge %} renamed from `InternalModelicaResolverApi`.
-  * `net.sourceforge.pmd.lang.modelica.resolver.ModelicaSymbolFacade` has been removed.
-  * `net.sourceforge.pmd.lang.modelica.resolver.ResolutionContext` (moved to internal)
-  * `net.sourceforge.pmd.lang.modelica.resolver.ResolutionState` (moved to internal). Note: it was not previously marked with @<!-- -->InternalApi.
-  * `net.sourceforge.pmd.lang.modelica.resolver.Watchdog` (moved to internal). Note: it was not previously marked with @<!-- -->InternalApi.
-* pmd-plsql
-  * `net.sourceforge.pmd.lang.plsql.rule.design.AbstractNcssCountRule` is now package private.
-* pmd-scala
-  * {%jdoc !!scala::ScalaLanguageModule %}
-    * Method `dialectOf(LanguageVersion)` has been removed.
-
-**Removed classes and members (previously deprecated)**
-
-The annotation `@DeprecatedUntil700` has been removed.
-
-* pmd-core
-  * {%jdoc !!core::cpd.CpdLanguageProperties %}. The field `DEFAULT_SKIP_BLOCKS_PATTERN` has been removed.
-  * {%jdoc !!core::lang.ast.impl.antlr4.BaseAntlrNode %} - method `joinTokenText()` has been removed.
-  * {%jdoc !!core::lang.ast.Node %} - many methods have been removed:
-    * `getNthParent(int)` - Use {%jdoc core::lang.ast.Node#ancestors() %} instead, e.g. `node.ancestors().get(n-1)`
-    * `getFirstParentOfType(Class)` - Use {%jdoc core::lang.ast.Node#ancestors(java.lang.Class) %} instead, e.g. `node.ancestors(parentType).first()`
-    * `getParentsOfType(Class)` - Use {%jdoc core::lang.ast.Node#ancestors(java.lang.Class) %} instead, e.g. `node.ancestors(parentType).toList()`
-    * `findChildrenOfType(Class)` - Use {%jdoc core::lang.ast.Node#children(java.lang.Class) %} instead, e.g. `node.children(childType).toList()`
-    * `findDescendantsOfType(Class)` - Use {%jdoc core::lang.ast.Node#descendants(java.lang.Class) %} instead, e.g. `node.descendants(targetType).toList()`
-    * `findDescendantsOfType(Class,boolean)` - Use {%jdoc core::lang.ast.Node#descendants(java.lang.Class) %} instead, e.g. `node.descendants(targetType).crossFindBoundaries(b).toList()`
-    * `getFirstChildOfType(Class)` - Use {%jdoc core::lang.ast.Node#firstChild(java.lang.Class) %} instead
-    * `getFirstDescendantOfType(Class)` - Use {%jdoc core::lang.ast.Node#descendants(java.lang.Class) %} instead, e.g. `node.descendants(targetType).first()`
-    * `hasDescendantOfType(Class)` - Use {%jdoc core::lang.ast.Node#descendants(java.lang.Class) %} instead, e.g. `node.descendants(targetType).nonEmpty()`
-    * `findChildNodesWithXPath(String)` - Use the {%jdoc core::lang.ast.NodeStream %} API instead.
-  * {%jdoc !!core::lang.ast.impl.GenericNode %} - method `getNthParent(int)` has been removed. Use {%jdoc core::lang.ast.Node#ancestors() %} instead, e.g. `node.ancestors().get(n-1)`
-  * {%jdoc !!core::lang.document.FileCollector %} - method `addZipFile(java.nio.file.Path)` has been removed. Use {%jdoc core::lang.document.FileCollector#addZipFileWithContent(java.nio.file.Path) %} instead
-  * {%jdoc !!core::lang.document.TextDocument %} - method `readOnlyString(CharSequence,String,LanguageVersion)` has been removed.
-    Use {%jdoc core::lang.document.TextDocument#readOnlyString(java.lang.CharSequence,core::lang.document.FileId,core::lang.LanguageVersion) %} instead.
-  * {%jdoc !!core::lang.document.TextFile %} - method `dataSourceCompat(DataSource,PMDConfiguration)` has been removed.
-    Use {%jdoc core::lang.document.TextFile %} directly, e.g. {%jdoc core::lang.document.TextFile.forPath(java.nio.file.Path,java.nio.charset.Charset,core::lang.LanguageVersion) %}
-  * {%jdoc !!core::lang.rule.xpath.XPathVersion %}
-    * `XPATH_1_0`
-    * `XPATH_1_0_COMPATIBILITY`
-    * `XPATH_2_0`
-    * Only XPath version 3.1 is now supported.  This version of the XPath language is mostly identical to
-      XPath 2.0. XPath rules by default use now {%jdoc core::lang.rule.xpath.XPathVersion#XPATH_3_1 %}.
-  * `net.sourceforge.pmd.lang.rule.AbstractDelegateRule` removed. It has been merged with {%jdoc core::lang.rule.RuleReference %}.
-  * {%jdoc !!core::lang.rule.AbstractRule %} - the following methods have been removed:
-    * `deepCopyValuesTo(AbstractRule)` - use {%jdoc core::lang.rule.AbstractRule#deepCopy() %} instead.
-    * `addRuleChainVisit(Class)` - override {%jdoc core::lang.rule.AbstractRule#buildTargetSelector() %} in order to register nodes for rule chain visits.
-    * `addViolation(...)` - use {%jdoc core::RuleContext#addViolation(core::lang.ast.Node) %} instead, e.g. via `asCtx(data).addViolation(...)`.
-      Note: These methods were only marked as deprected in javadoc.
-    * `addViolationWithMessage(...)` - use {%jdoc core::RuleContext#addViolationWithMessage(core::lang.ast.Node,java.lang.String) %} instead, e.g. via
-      `asCtx(data).addViolationWithMessage(...)`. Note: These methods were only marked as deprected in javadoc.
-  * {%jdoc !!core::lang.rule.RuleReference %} - the following methods have been removed:
-    * `setRuleSetReference(RuleSetReference)` - without replacement. Just construct new {%jdoc core::lang.rule.RuleReference %} instead.
-    * `hasOverriddenProperty(PropertyDescriptor)` - use {%jdoc core::lang.rule.RuleReference#isPropertyOverridden(core::properties.PropertyDescriptor) %} instead.
-  * {%jdoc !!core::lang.rule.XPathRule %}
-    * The constant `XPATH_DESCRIPTOR` has been made private and is not accessible anymore.
-  * {%jdoc !!core::lang.Language %} - method `getTerseName()` removed. Use {%jdoc core::lang.Language#getId() %} instead.
-  * {%jdoc !!core::lang.LanguageModuleBase %} - method `getTerseName()` removed. Use {%jdoc core::lang.LanguageModuleBase#getId() %} instead.
-  * {%jdoc !!core::lang.LanguageRegistry %} - the following methods have been removed:
-    * `getLanguage(String)` - use {%jdoc core::lang.LanguageRegistry.getLanguageByFullName(java.lang.String) %}
-      via {%jdoc core::lang.LanguageRegistry#PMD %} or {%jdoc core::lang.LanguageRegistry#CPD %} instead.
-    * `findLanguageByTerseName(String)` - use {%jdoc core::lang.LanguageRegistry#getLanguageById(java.lang.String) %}
-      via {%jdoc core::lang.LanguageRegistry#PMD %} or {%jdoc core::lang.LanguageRegistry#CPD %} instead.
-    * `findByExtension(String)` - removed without replacement.
-  * {%jdoc !!core::lang.LanguageVersionDiscoverer %} - method `getLanguagesForFile(java.io.File)` removed.
-    Use {%jdoc core::lang.LanguageVersionDiscoverer#getLanguagesForFile(java.lang.String) %} instead.
-  * {%jdoc !!core::properties.AbstractPropertySource %}
-    * field `propertyDescriptors` has been made private and is not accessible anymore.
-      Use {%jdoc core::properties.AbstractPropertySource#getPropertyDescriptors() %} instead.
-    * field `propertyValuesByDescriptor` has been made private and is not accessible anymore.
-      Use {%jdoc core::properties.AbstractPropertySource#getPropertiesByPropertyDescriptor() %}
-      or {%jdoc core::properties.AbstractPropertySource#getOverriddenPropertiesByPropertyDescriptor() %} instead.
-    * method `copyPropertyDescriptors()` has been removed. Use {%jdoc core::properties.AbstractPropertySource#getPropertyDescriptors() %} instead.
-    * method `copyPropertyValues()` has been removed. Use {%jdoc core::properties.AbstractPropertySource#getPropertiesByPropertyDescriptor() %}
-      or {%jdoc core::properties.AbstractPropertySource#getOverriddenPropertiesByPropertyDescriptor() %} instead.
-  * {%jdoc !!core::reporting.Reportable %} - the following methods have been removed. Use {%jdoc core::reporting.Reportable#getReportLocation() %} instead
-    * `getBeginLine()`
-    * `getBeginColumn()`
-    * `getEndLine()`
-    * `getEndColumn()`
-  * `net.sourceforge.pmd.util.datasource.DataSource` - use {%jdoc core::lang.document.TextFile %} instead.
-  * `net.sourceforge.pmd.util.datasource.FileDataSource`
-  * `net.sourceforge.pmd.util.datasource.ReaderDataSource`
-  * `net.sourceforge.pmd.util.datasource.ZipDataSource`
-  * {%jdoc !!core::util.CollectionUtil %}
-    * method `invertedMapFrom(...)` has been removed.
-    * method `mapFrom(...)` has been removed.
-  * {%jdoc !!core::AbstractConfiguration %} - the following methods have been removed:
-    * `setIgnoreFilePath(String)` - use {%jdoc core::AbstractConfiguration#setIgnoreFilePath(java.nio.file.Path) %} instead.
-    * `setInputFilePath(String)` - use {%jdoc core::AbstractConfiguration#setInputFilePath(java.nio.file.Path) %} instead.
-    * `setInputPaths(String)` - use {%jdoc core::AbstractConfiguration#setInputPathList(java.util.List) %} or
-      {%jdoc core::AbstractConfiguration#addInputPath(java.nio.file.Path) %} instead.
-    * `setInputUri(String)` - use {%jdoc core::AbstractConfiguration#setInputUri(java.net.URI) %} instead.
-  * {%jdoc !!core::PMDConfiguration %} - the following methods have been removed
-    * `prependClasspath(String)` - use {%jdoc core::PMDConfiguration#prependAuxClasspath(java.lang.String) %} instead.
-    * `getRuleSets()` - use {%jdoc core::PMDConfiguration#getRuleSetPaths() %} instead.
-    * `setRuleSets(String)` - use {%jdoc core::PMDConfiguration#setRuleSets(java.util.List) %} or
-      {%jdoc core::PMDConfiguration#addRuleSet(java.lang.String) %} instead.
-    * `setReportFile(String)` - use {%jdoc core::PMDConfiguration#setReportFile(java.nio.file.Path) %} instead.
-    * `getReportFile()` - use {%jdoc core::PMDConfiguration#getReportFilePath() %} instead.
-  * {%jdoc !!core::Report %} - method `merge(Report)` has been removed. Use {%jdoc core::Report#union(core::Report) %} instead.
-  * {%jdoc !!core::RuleSetLoader %} - method `toFactory()` has been made package private and is not accessible anymore.
-  * {%jdoc !!core::RuleViolation %} - the following methods have been removed:
-    * `getPackageName()` - use {%jdoc core::RuleViolation#getAdditionalInfo() %} with {%jdoc core::RuleViolation#PACKAGE_NAME %} instead, e.g. `getAdditionalInfo().get(PACKAGE_NAME)`.
-    * `getClassName()` - use {%jdoc core::RuleViolation#getAdditionalInfo() %} with {%jdoc core::RuleViolation#CLASS_NAME %} instead, e.g. `getAdditionalInfo().get(CLASS_NAME)`.
-    * `getMethodName()` - use {%jdoc core::RuleViolation#getAdditionalInfo() %} with {%jdoc core::RuleViolation#METHOD_NAME %} instead, e.g. `getAdditionalInfo().get(METHOD_NAME)`.
-    * `getVariableName()` - use {%jdoc core::RuleViolation#getAdditionalInfo() %} with {%jdoc core::RuleViolation#VARIABLE_NAME %} instead, e.g. `getAdditionalInfo().get(VARIABLE_NAME)`.
-* pmd-apex
-  * {%jdoc apex::lang.apex.ast.ApexNode %} and {% jdoc apex::lang.apex.ast.ASTApexFile %}
-    * `#getApexVersion()`: In PMD 6, this method has been deprecated but was defined in the class `ApexRootNode`.
-      The version returned is always "Version.CURRENT", as the apex compiler integration
-      doesn't use additional information which Apex version actually is used. Therefore, this method can't be
-      used to determine the Apex version of the project that is being analyzed.
-
-      If the current version is needed, then `Node.getTextDocument().getLanguageVersion()` can be used. This
-      is the version that has been selected via CLI `--use-version` parameter.
-  * {%jdoc !!apex::lang.apex.ast.ApexNode %}
-    * method `jjtAccept()` has been removed.
-      Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
-    * method `getNode()` has been removed. The underlying node is only available in AST nodes, but not in rule implementations.
-  * {%jdoc !!apex::lang.apex.ast.AbstractApexNode %} - method `getNode()` is now package private.
-    AST nodes still have access to the underlying Jorje node via the protected property `node`.
-  * `net.sourceforge.pmd.lang.apex.ast.ApexParserVisitor`
-    Use {%jdoc apex::lang.apex.ast.ApexVisitor %} or {%jdoc apex::lang.apex.ast.ApexVisitorBase %} instead.
-  * `net.sourceforge.pmd.lang.apex.ast.ApexParserVisitorAdapter`
-  * {%jdoc !!apex::lang.apex.ast.ASTAssignmentExpression %} - method `getOperator()` removed.
-    Use {%jdoc apex::lang.apex.ast.ASTAssignmentExpression#getOp() %} instead.
-  * {%jdoc !!apex::lang.apex.ast.ASTBinaryExpression %} - method `getOperator()` removed.
-    Use {%jdoc apex::lang.apex.ast.ASTBinaryExpression#getOp() %} instead.
-  * {%jdoc !!apex::lang.apex.ast.ASTBooleanExpression %} - method `getOperator()` removed.
-    Use {%jdoc apex::lang.apex.ast.ASTBooleanExpression#getOp() %} instead.
-  * {%jdoc !!apex::lang.apex.ast.ASTPostfixExpression %} - method `getOperator()` removed.
-    Use {%jdoc apex::lang.apex.ast.ASTPostfixExpression#getOp() %} instead.
-  * {%jdoc !!apex::lang.apex.ast.ASTPrefixExpression %} - method `getOperator()` removed.
-    Use {%jdoc apex::lang.apex.ast.ASTPrefixExpression#getOp() %} instead.
-  * `net.sourceforge.pmd.lang.apex.rule.security.Helper` removed. This was actually internal API.
-* pmd-java
-  * {%jdoc !!java::lang.java.ast.AbstractPackageNameModuleDirective %} - method `getImage()` has been removed.
-    Use {%jdoc java::lang.java.ast.AbstractPackageNameModuleDirective#getPackageName() %} instead.
-  * {%jdoc !!java::lang.java.ast.AbstractTypeDeclaration %} - method `getImage()` has been removed.
-    Use {%jdoc java::lang.java.ast.AbstractTypeDeclaration#getSimpleName() %} instead.
-  * {%jdoc !!java::lang.java.ast.ASTAnnotation %} - method `getAnnotationName()` has been removed.
-  * {%jdoc !!java::lang.java.ast.ASTClassType %}
-    * constructor `ASTClassType(java.lang.String)` has been removed.
-    * method `getImage()` has been removed.
-    * method `isReferenceToClassSameCompilationUnit()` has been removed.
-  * {%jdoc !!java::lang.java.ast.ASTFieldDeclaration %} - method `getVariableName()` has been removed.
-  * {%jdoc !!java::lang.java.ast.ASTLiteral %} - the following methods have been removed:
-    * `isStringLiteral()` - use `node instanceof ASTStringLiteral` instead.
-    * `isCharLiteral()` - use `node instanceof ASTCharLiteral` instead.
-    * `isNullLiteral()` - use `node instanceof ASTNullLiteral` instead.
-    * `isBooleanLiteral()` - use `node instanceof ASTBooleanLiteral` instead.
-    * `isNumericLiteral()` - use `node instanceof ASTNumericLiteral` instead.
-    * `isIntLiteral()` - use {%jdoc java::lang.java.ast.ASTNumericLiteral#isIntLiteral() %} instead.
-    * `isLongLiteral()` - use {%jdoc java::lang.java.ast.ASTNumericLiteral#isLongLiteral() %} instead.
-    * `isFloatLiteral()` - use {%jdoc java::lang.java.ast.ASTNumericLiteral#isFloatLiteral() %} instead.
-    * `isDoubleLiteral()` - use {%jdoc java::lang.java.ast.ASTNumericLiteral#isDoubleLiteral() %} instead.
-  * {%jdoc !!java::lang.java.ast.ASTMethodDeclaration %} - methods `getImage()` and `getMethodName()` have been removed.
-    Use {%jdoc java::lang.java.ast.ASTMethodDeclaration#getName() %} instead.
-  * {%jdoc !!java::lang.java.ast.ASTMethodReference %} - method `getImage()` has been removed.
-  * {%jdoc !!java::lang.java.ast.ASTModuleName %} - method `getImage()` has been removed.
-  * {%jdoc !!java::lang.java.ast.ASTPrimitiveType %} - method `getImage()` has been removed.
-  * {%jdoc !!java::lang.java.ast.ASTType %}
-    * `getTypeImage()` has been removed.
-    * `getArrayDepth()` has been removed. It's only available for arrays: {%jdoc java::lang.java.ast.ASTArrayType#getArrayDepth() %}.
-    * `isPrimitiveType()` - use `node instanceof ASTPrimitiveType` instead.
-    * `isArrayType()` - use `node instanceof ASTArrayType` instead.
-    * `isClassOrInterfaceType()` - use `node instanceof ASTClassType` instead.
-  * {%jdoc !!java::lang.java.ast.ASTTypeDeclaration %} - method `getImage()` has been removed.
-  * {%jdoc !!java::lang.java.ast.ASTUnaryExpression %} - method `isPrefix()` has been removed.
-    Use {%jdoc java::lang.java.ast.ASTUnaryExpression#getOperator() %}`.isPrefix()` instead.
-  * {%jdoc !!java::lang.java.ast.ASTVariableId %} - methods `getImage()` and `getVariableName()` have been removed.
-    Use {%jdoc java::lang.java.ast.ASTVariableId#getName() %} instead.
-  * {%jdoc !!java::lang.java.ast.JavaComment %} - method `getImage()` has been removed.
-    Use {%jdoc java::lang.java.ast.JavaComment#getText() %} instead.
-  * {%jdoc !!java::lang.java.ast.JavaNode %} - method `jjtAccept()` has been removed.
-    Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
-  * `net.sourceforge.pmd.lang.java.ast.JavaParserVisitor`
-    Use {%jdoc java::lang.java.ast.JavaVisitor %} or {%jdoc java::lang.java.ast.JavaVisitorBase %} instead.
-  * `net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter`
-  * {%jdoc !!java::lang.java.ast.ModifierOwner %} 
-    * `isFinal()` - This is still available in various subtypes, where it makes sense, e.g. {%jdoc java::lang.java.ast.ASTLocalVariableDeclaration#isFinal() %}.
-    * `isAbstract()` - This is still available in subtypes, e.g. {%jdoc java::lang.java.ast.ASTTypeDeclaration#isAbstract() %}.
-    * `isStrictfp()` - Use {%jdoc java::lang.java.ast.ModifierOwner#hasModifiers(java::lang.java.ast.JModifier,java::lang.java.ast.JModifier...) %} instead, e.g. `hasModifiers(STRICTFP)`.
-    * `isSynchronized()` - Use {%jdoc java::lang.java.ast.ModifierOwner#hasModifiers(java::lang.java.ast.JModifier,java::lang.java.ast.JModifier...) %} instead, e.g. `hasModifiers(SYNCHRONIZED)`.
-    * `isNative()` - Use {%jdoc java::lang.java.ast.ModifierOwner#hasModifiers(java::lang.java.ast.JModifier,java::lang.java.ast.JModifier...) %} instead, e.g. `hasModifiers(NATIVE)`.
-    * `isStatic()` - This is still available in subtypes, e.g. {%jdoc java::lang.java.ast.ASTMethodDeclaration#isStatic() %}.
-    * `isVolatile()` - Use {%jdoc java::lang.java.ast.ModifierOwner#hasModifiers(java::lang.java.ast.JModifier,java::lang.java.ast.JModifier...) %} instead, e.g. `hasModifiers(VOLATILE)`.
-    * `isTransient()` - Use {%jdoc java::lang.java.ast.ModifierOwner#hasModifiers(java::lang.java.ast.JModifier,java::lang.java.ast.JModifier...) %} instead, e.g. `hasModifiers(TRANSIENT)`.
-    * `isPrivate()` - Use {%jdoc java::lang.java.ast.ModifierOwner#getVisibility() %} instead, e.g. `getVisibility() == Visibility.V_PRIVATE`.
-    * `isPublic()` - Use {%jdoc java::lang.java.ast.ModifierOwner#getVisibility() %} instead, e.g. `getVisibility() == Visibility.V_PUBLIC`.
-    * `isProtected()` - Use {%jdoc java::lang.java.ast.ModifierOwner#getVisibility() %} instead, e.g. `getVisibility() == Visibility.V_PROTECTED`.
-    * `isPackagePrivate()` - Use {%jdoc java::lang.java.ast.ModifierOwner#getVisibility() %} instead, e.g. `getVisibility() == Visibility.V_PACKAGE`.
-    * `isSyntacticallyAbstract()` - Use {%jdoc java::lang.java.ast.ModifierOwner#hasExplicitModifiers(java::lang.java.ast.JModifier,java::lang.java.ast.JModifier...) %} instead, e.g. `hasExplicitModifiers(ABSTRACT)`.
-    * `isSyntacticallyPublic()` - Use {%jdoc java::lang.java.ast.ModifierOwner#hasExplicitModifiers(java::lang.java.ast.JModifier,java::lang.java.ast.JModifier...) %} instead, e.g. `hasExplicitModifiers(PUBLIC)`.
-    * `isSyntacticallyStatic()` - Use {%jdoc java::lang.java.ast.ModifierOwner#hasExplicitModifiers(java::lang.java.ast.JModifier,java::lang.java.ast.JModifier...) %} instead, e.g. `hasExplicitModifiers(STATIC)`.
-    * `isSyntacticallyFinal()` - Use {%jdoc java::lang.java.ast.ModifierOwner#hasExplicitModifiers(java::lang.java.ast.JModifier,java::lang.java.ast.JModifier...) %} instead, e.g. `hasExplicitModifiers(FINAL)`.
-  * {%jdoc !!java::lang.java.ast.TypeNode %} - method `getType()` has been removed. Use {%jdoc java::lang.java.ast.TypeNode#getTypeMirror() %} instead.
-* pmd-javascript
-  * {%jdoc javascript::lang.ecmascript.ast.AbstractEcmascriptNode %} - method `getNode()` has been removed.
-    AST nodes still have access to the underlying Rhino node via the protected property `node`.
-  * {%jdoc javascript::lang.ecmascript.ast.ASTFunctionNode %} - method `getBody(int)` removed.
-    Use {%jdoc javascript::lang.ecmascript.ast.ASTFunctionNode#getBody() %} instead.
-  * {%jdoc javascript::lang.ecmascript.ast.ASTTryStatement %}
-    * method `isCatch()` has been removed. Use {%jdoc javascript::lang.ecmascript.ast.ASTTryStatement#hasCatch() %} instead.
-    * method `isFinally()` has been removed. USe {%jdoc javascript::lang.ecmascript.ast.ASTTryStatement#hasFinally() %} instead.
-  * {%jdoc javascript::lang.ecmascript.ast.EcmascriptNode %}
-    * method `jjtAccept()` has been removed. Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
-    * method `getNode()` has been removed.  The underlying node is only available in AST nodes, but not in rule implementations.
-  * `net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParserVisitor`
-    Use {%jdoc javascript::lang.ecmascript.ast.EcmascriptVisitor %} or {%jdoc javascript::lang.ecmascript.ast.EcmascriptVisitorBase %} instead.
-  * `net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParserVisitorAdapter`
-* pmd-jsp
-  * `net.sourceforge.pmd.lang.jsp.ast.JspParserVisitor`
-    Use {%jdoc jsp::lang.jsp.ast.JspVisitor %} or {%jdoc jsp::lang.jsp.ast.JspVisitorBase %} instead.
-  * `net.sourceforge.pmd.lang.jsp.ast.JspParserVisitorAdapter`
-  * {%jdoc !!jsp::lang.jsp.ast.JspNode %} - method `jjtAccept()` has been removed.
-    Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
-* pmd-modelica
-  * `net.sourceforge.pmd.lang.modelica.ast.ModelicaParserVisitor`
-    Use {%jdoc modelica::lang.modelica.ast.ModelicaVisitor %} or {%jdoc modelica::lang.modelica.ast.ModelicaVisitorBase %} instead.
-  * `net.sourceforge.pmd.lang.modelica.ast.ModelicaParserVisitorAdapter`
-  * {%jdoc !!modelica::lang.modelica.ast.ModelicaNode %} - method `jjtAccept()` has been removed.
-    Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
-  * `net.sourceforge.pmd.lang.modelica.rule.AmbiguousResolutionRule`
-    Use {%jdoc modelica::lang.modelica.rule.bestpractices.AmbiguousResolutionRule %} instead.
-  * `net.sourceforge.pmd.lang.modelica.rule.ConnectUsingNonConnector`
-    Use {%jdoc modelica::lang.modelica.rule.bestpractices.ConnectUsingNonConnectorRule %}
-* pmd-plsql
-  * `net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitor`
-    Use {%jdoc plsql::lang.plsql.ast.PlsqlVisitor %} or {% jdoc plsql::lang.plsql.ast.PlsqlVisitorBase %} instead.
-  * `net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter`
-  * {%jdoc !!plsql::lang.plsql.ast.PLSQLNode %} - method `jjtAccept()` has been removed.
-    Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
-* pmd-scala
-  * {%jdoc !!scala::lang.scala.ast.ScalaNode %}
-    * Method `accept()` has been removed. Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
-    * Method `getNode()` has been removed. The underlying node is only available in AST nodes, but not in rule implementations.
-  * {%jdoc !!scala::lang.scala.ast.AbstractScalaNode %} - method `getNode()` has been removed. AST nodes still have access
-    to the underlying Scala node via the protected property `node`.
-* pmd-visualforce
-  * {%jdoc !!visualforce::lang.vf.ast.VfNode %} - method `jjtAccept()` has been removed.
-    Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
-  * `net.sourceforge.pmd.lang.vf.ast.VfParserVisitor`
-    Use {%jdoc visualforce::lang.vf.ast.VfVisitor %} or {%jdoc visualforce::lang.vf.ast.VfVisitorBase %} instead.
-  * `net.sourceforge.pmd.lang.vf.ast.VfParserVisitorAdapter`
-  * {%jdoc !!visualforce::lang.vf.DataType %} - method `fromBasicType(BasicType)` has been removed.
-    Use {%jdoc visualforce::lang.vf.DataType#fromTypeName(java.lang.String) %} instead.
-* pmd-vm
-  * {%jdoc !!vm::lang.vm.ast.VmNode %} - method `jjtAccept()` has been removed.
-    Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
-  * `net.sourceforge.pmd.lang.vm.ast.VmParserVisitor`
-    Use {%jdoc vm::lang.vm.ast.VmVisitor %} or {%jdoc vm::lang.vm.ast.VmVisitorBase %} instead.
-  * `net.sourceforge.pmd.lang.vm.ast.VmParserVisitorAdapter`
-
-**Removed classes, interfaces and methods (not previously deprecated)**
-
-* pmd-apex
-  * The method `isSynthetic()` in {%jdoc apex::lang.apex.ast.ASTMethod %} has been removed.
-    With the switch from Jorje to Summit AST as underlying parser, no synthetic methods are generated by the
-    parser anymore. This also means, that there is no XPath attribute `@Synthetic` anymore.
-  * The constant `STATIC_INITIALIZER_METHOD_NAME` in {%jdoc apex::lang.apex.rule.codestyle.FieldDeclarationsShouldBeAtStartRule %}
-    has been removed. It was used to filter out synthetic methods, but these are not generated anymore with the
-    new parser.
-  * The method `getContext()` in {%jdoc apex::lang.apex.ast.ASTReferenceExpression %} has been removed.
-    It was not used and always returned `null`.
-  * The method `getNamespace()` in all AST nodes (defined in {%jdoc apex::lang.apex.ast.ApexNode %}) has
-    been removed, as it was never fully implemented. It always returned an empty string.
-  * The method `getNameSpace()` in {%jdoc apex::lang.apex.ast.ApexQualifiedName %} has been removed.
-  * The class `net.sourceforge.pmd.lang.apex.ast.ASTBridgeMethodCreator` has been removed. This was a node that has
-    been generated by the old Jorje parser only.
-* pmd-apex-jorje
-  * With the switch from Jorje to Summit AST, this maven module is no longer needed and has been removed.
-* pmd-core
-  * `net.sourceforge.pmd.util.Predicate` has been removed. It was marked as Experimental before. Use
-    `java.util.function.Predicate` instead.
-* pmd-java
-  * The interface `FinalizableNode` (introduced in 7.0.0-rc1) has been removed.
-    Its method `isFinal()` has been moved down to the
-    nodes where needed, e.g. {% jdoc !!java::lang.java.ast.ASTLocalVariableDeclaration#isFinal() %}.
-  * The method `isPackagePrivate()` in {% jdoc java::lang.java.ast.ASTClassDeclaration %} (formerly ASTClassOrInterfaceDeclaration)
-    has been removed.
-    Use {% jdoc java::lang.java.ast.ModifierOwner#hasVisibility(java::lang.java.ast.ModifierOwner.Visibility) %} instead,
-    which can correctly differentiate between local and package private classes.
-
-**Renamed classes, interfaces**
-
-* pmd-core
-  * {%jdoc core::util.log.PmdReporter %} - has been renamed from `net.sourceforge.pmd.util.log.MessageReporter`
-
-* pmd-java
-  * The interface `AccessNode` has been renamed to {% jdoc java::lang.ast.ModifierOwner %}. This is only relevant
-    for Java rules, which use that type directly e.g. through downcasting.
-    Or when using the XPath function `pmd-java:nodeIs()`.
-  * The node `ASTClassOrInterfaceType` has been renamed to {% jdoc java::lang.ast.ASTClassType %}. XPath rules
-    need to be adjusted.
-  * The node `ASTClassOrInterfaceDeclaration` has been renamed to {% jdoc java::lang.ast.ASTClassDeclaration %}.
-    XPath rules need to be adjusted.
-  * The interface `ASTAnyTypeDeclaration` has been renamed to {% jdoc java::lang.ast.ASTTypeDeclaration %}.
-    This is only relevant for Java rules, which use that type directly, e.g. through downcasting.
-    Or when using the XPath function `pmd-java:nodeIs()`.
-  * The interface `ASTMethodOrConstructorDeclaration` has been renamed to
-    {% jdoc java::lang.ast.ASTExecutableDeclaration %}. This is only relevant for Java rules, which sue that type
-    directly, e.g. through downcasting. Or when using the XPath function `pmd-java:nodeIs()`.
-  * The node `ASTVariableDeclaratorId` has been renamed to {% jdoc java::lang.ast.ASTVariableId %}. XPath rules
-    need to be adjusted.
-  * The node `ASTClassOrInterfaceBody` has been renamed to {% jdoc java::lang.ast.ASTClassBody %}. XPath rules
-    need to be adjusted.
-* pmd-scala
-  * The interface `ScalaParserVisitor` has been renamed to {%jdoc scala::lang.scala.ast.ScalaVisitor %} in order
-    to align the naming scheme for the different language modules.
-  * The class `ScalaParserVisitorAdapter` has been renamed to {%jdoc scala::lang.scala.ast.ScalaVisitorBase %} in order
-    to align the naming scheme for the different language modules.
-
-**Renamed classes and methods**
-
-* pmd-core
-  * {%jdoc_old core::lang.ast.TokenMgrError %} has been renamed to {% jdoc core::lang.ast.LexException %}
-  * {%jdoc_old core::cpd.Tokenizer %} has been renamed to {% jdoc core::cpd.CpdLexer %}. Along with this rename,
-    all the implementations have been renamed as well (`Tokenizer` -> `CpdLexer`), e.g. "CppCpdLexer", "JavaCpdLexer".
-    This affects all language modules.
-  * {%jdoc_old core::cpd.AnyTokenizer %} has been renamed to {% jdoc core::cpd.AnyCpdLexer %}.
-
-**Classes and methods, that are not experimental anymore**
-
-These were annotated with `@Experimental`, but can now be considered stable.
-
-* pmd-apex
-  * {%jdoc !!apex::lang.apex.ast.ASTCommentContainer %}
-  * {%jdoc !!apex::lang.apex.multifile.ApexMultifileAnalysis %}
-* pmd-core
-  * {%jdoc !!core::cpd.CPDReport#filterMatches(java.util.function.Predicate) %}
-  * {%jdoc !!core::lang.ast.impl.antlr4.AntlrToken.getKind() %}
-  * {%jdoc !!core::lang.ast.impl.javacc.AbstractJjtreeNode %}
-  * {%jdoc !!core::lang.ast.impl.TokenDocument %}
-  * {%jdoc !!core::lang.ast.AstInfo.getSuppressionComments() %}
-  * {%jdoc !!core::lang.ast.AstInfo.withSuppressMap(java.util.Map) %}
-  * {%jdoc !!core::lang.ast.GenericToken.getKind() %}
-  * {%jdoc !!core::lang.document.FileCollector.addZipFileWithContent(java.nio.file.Path) %}
-  * {%jdoc_package core::lang.document %}
-  * {%jdoc !!core::lang.LanguageVersionHandler.getLanguageMetricsProvider() %}
-  * {%jdoc !!core::lang.LanguageVersionHandler.getDesignerBindings() %}
-  * {%jdoc !!core::lang.PlainTextLanguage %}
-  * {%jdoc !!core::properties.PropertyConstraint.getXmlConstraint() %}
-  * {%jdoc !!core::properties.PropertyConstraint.toOptionalConstraint() %}
-  * {%jdoc !!core::properties.PropertyConstraint.fromPredicate(java.util.function.Predicate,java.lang.String) %}
-  * {%jdoc !!core::properties.PropertyConstraint.fromPredicate(java.util.function.Predicate,java.lang.String,java.util.Map) %}
-  * {%jdoc !!core::renderers.AbstractRenderer.setReportFile(java.lang.String) %}
-  * {%jdoc !!core::renderers.Renderer.setReportFile(java.lang.String) %}
-  * {%jdoc !!core::util.designerbindings.DesignerBindings %}
-  * {%jdoc !!core::util.designerbindings.DesignerBindings.TreeIconId %}
-  * {%jdoc !!core::util.designerbindings.RelatedNodesSelector %}
-  * {%jdoc !!core::Report.filterViolations(java.util.function.Predicate) %}
-  * {%jdoc !!core::Report.union(core::Report) %}
-* pmd-groovy
-  * {%jdoc !!groovy::lang.groovy.ast.impl.antlr4.GroovyToken.getKind() %}
-* pmd-html
-  * {%jdoc_package html::lang.html %}
-* pmd-java
-  * {%jdoc !!java::lang.java.ast.ASTExpression#getConversionContext() %}
-  * {%jdoc !!java::lang.java.rule.AbstractJavaRulechainRule#AbstractJavaRulechainRule(java.lang.Class,java.lang.Class...) %}
-  * {%jdoc !!java::lang.java.symbols.table.JSymbolTable %}
-  * {%jdoc !!java::lang.java.symbols.JElementSymbol %}
-  * {%jdoc_package java::lang.java.symbols %}
-  * {%jdoc !!java::lang.java.types.ast.ExprContext %}
-  * {%jdoc !!java::lang.java.types.JIntersectionType#getInducedClassType() %}
-  * {%jdoc !!java::lang.java.types.JTypeMirror#streamMethods(java.util.function.Predicate) %}
-  * {%jdoc !!java::lang.java.types.JTypeMirror#streamDeclaredMethods(java.util.function.Predicate) %}
-  * {%jdoc !!java::lang.java.types.JTypeMirror#getConstructors() %}
-* pmd-kotlin
-  * {%jdoc !!kotlin::lang.kotlin.KotlinLanguageModule %}
-* pmd-test-schema
-  * {%jdoc !!test-schema::test.schema.TestSchemaParser %}
-
-**Removed functionality**
-
-* The CLI parameter `--no-ruleset-compatibility` has been removed. It was only used to allow loading
-  some rulesets originally written for PMD 5 also in PMD 6 without fixing the rulesets.
-* The class {% jdoc_old core::RuleSetFactoryCompatibility %} has been removed without replacement.
-  The different ways to enable/disable this filter in {% jdoc core::PMDConfiguration %}
-  (Property "RuleSetFactoryCompatibilityEnabled") and
-  {% jdoc ant::ant.PMDTask %} (Property "noRuleSetCompatibility") have been removed as well.
-* `textcolor` renderer ({%jdoc core::renderers.TextColorRenderer %}) now renders always in color.
-  The property `color` has been removed. The possibility to override this with the system property `pmd.color`
-  has been removed as well. If you don't want colors, use `text` renderer ({%jdoc core::renderers.TextRenderer %}).
+See [Detailed Release Notes for PMD 7.0.0]({{ baseurl }}pmd_release_notes_pmd7.html#7-0-0).
 
 #### External Contributions
 * [#4093](https://github.com/pmd/pmd/pull/4093): \[apex] Summit-AST Apex module - Part 1 - [Edward Klimoshenko](https://github.com/eklimo) (@eklimo)
@@ -904,11 +470,14 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 
 #### Updated PMD Designer
 
-This PMD release ships a new version of the pmd-designer.
-For the changes, see
-* [PMD Designer Changelog (7.0.0-rc1)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc1).
-* [PMD Designer Changelog (7.0.0-rc4)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc4).
+This PMD release ships a new version of the pmd-designer. The designer artifact has been
+renamed from "pmd-ui" to "pmd-designer". While the designer still works with Java 8, the
+recommended Java Runtime is Java 11 (or later) with OpenJFX 17 (or later).
+
+For the detailed changes, see
 * [PMD Designer Changelog (7.0.0)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0).
+* [PMD Designer Changelog (7.0.0-rc4)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc4).
+* [PMD Designer Changelog (7.0.0-rc1)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc1).
 
 #### New CPD report format cpdhtml-v2.xslt
 
@@ -959,6 +528,28 @@ designed specifically for building event-driven software. It is shipped in the n
 module `pmd-coco`.
 
 Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
+
+#### New: Java 22 Support
+
+This release of PMD brings support for Java 22. There are the following new standard language features,
+that are supported now:
+
+* [JEP 456: Unnamed Variables & Patterns](https://openjdk.org/jeps/456)
+
+PMD also supports the following preview language features:
+
+* [JEP 447: Statements before super(...) (Preview)](https://openjdk.org/jeps/447)
+* [JEP 459: String Templates (Second Preview)](https://openjdk.org/jeps/459)
+* [JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)](https://openjdk.org/jeps/463)
+
+In order to analyze a project with PMD that uses these language features,
+you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
+version `22-preview`:
+
+    export PMD_JAVA_OPTS=--enable-preview
+    pmd check --use-version java-22-preview ...
+
+Note: Support for Java 20 preview language features have been removed. The version "20-preview" is no longer available.
 
 #### New: Java 21 Support
 
@@ -1033,6 +624,8 @@ Under the hood, we use two open source libraries instead:
 
 Although the parsers is completely switched, there are only little known changes to the AST.
 These are documented in the [Migration Guide for PMD 7: Apex AST]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html#apex-ast).
+With the new Apex parser, the new language constructs like User Mode Database Operations
+can be parsed now. PMD should be able to parse Apex code up to version 59.0 (Winter '23).
 
 See [#3766](https://github.com/pmd/pmd/issues/3766) for details.
 
@@ -1093,7 +686,7 @@ Contributors: [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-g
       {% rule plsql/design/ExcessiveParameterList %}, {% rule plsql/design/ExcessiveTypeLength %},
       {% rule plsql/design/NcssMethodCount %}, {% rule plsql/design/NcssObjectCount %},
       {% rule plsql/design/NPathComplexity %}
-    * VM: {% rule vm/design/ExcessiveTemplateLength %}
+    * Velocity: {% rule velocity/design/ExcessiveTemplateLength %}
 
 * The general property `violationSuppressXPath` which is available for all rules to
   [suppress warnings]({{ baseurl }}pmd_userdocs_suppressing_warnings.html) now uses XPath version 3.1 by default.
@@ -1253,6 +846,9 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4749](https://github.com/pmd/pmd/pull/4749):   Fixes NoSuchMethodError on processing errors in pmd-compat6
     * [#4776](https://github.com/pmd/pmd/issues/4776): \[ci] Upgrade to ruby 3
     * [#4796](https://github.com/pmd/pmd/pull/4796):   Remove deprecated and release rulesets
+    * [#4823](https://github.com/pmd/pmd/pull/4823):   Update to use renamed pmd-designer
+    * [#4827](https://github.com/pmd/pmd/pull/4827):   \[compat6] Support config errors and cpd for csharp
+    * [#4830](https://github.com/pmd/pmd/issues/4830): Consolidate packages in each maven module
 * ant
     * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule
 * core
@@ -1401,6 +997,8 @@ Language specific fixes:
     * [#4583](https://github.com/pmd/pmd/issues/4583): \[java] Support JDK 21 (LTS)
     * [#4628](https://github.com/pmd/pmd/pull/4628):   \[java] Support loading classes from java runtime images
     * [#4753](https://github.com/pmd/pmd/issues/4753): \[java] PMD crashes while using generics and wildcards
+    * [#4757](https://github.com/pmd/pmd/issues/4757): \[java] Intermittent NPEs while analyzing Java code
+    * [#4794](https://github.com/pmd/pmd/issues/4794): \[java] Support JDK 22
 * java-bestpractices
     * [#342](https://github.com/pmd/pmd/issues/342):   \[java] AccessorMethodGeneration: Name clash with another public field not properly handled
     * [#755](https://github.com/pmd/pmd/issues/755):   \[java] AccessorClassGeneration false positive for private constructors
@@ -1506,6 +1104,7 @@ Language specific fixes:
 * java-errorprone
     * [#659](https://github.com/pmd/pmd/issues/659):   \[java] MissingBreakInSwitch - last default case does not contain a break
     * [#718](https://github.com/pmd/pmd/issues/718):   \[java] BrokenNullCheck false positive with parameter/field confusion
+    * [#932](https://github.com/pmd/pmd/issues/932):   \[java] SingletonClassReturningNewInstance false positive with double assignment
     * [#1005](https://github.com/pmd/pmd/issues/1005): \[java] CloneMethodMustImplementCloneable triggers for interfaces
     * [#1669](https://github.com/pmd/pmd/issues/1669): \[java] NullAssignment - FP with ternay and null as constructor argument
     * [#1831](https://github.com/pmd/pmd/issues/1831): \[java] DetachedTestCase reports abstract methods
@@ -1626,8 +1225,13 @@ Language specific fixes:
 * [#4825](https://github.com/pmd/pmd/pull/4825): \[plsql] Fix ignored WITH clause for SELECT INTO statements - [Laurent Bovet](https://github.com/lbovet) (@lbovet)
 
 ### 📈 Stats
-* 5007 commits
-* 658 closed tickets & PRs
-* Days since last release: 122
+* 5662 commits
+* 796 closed tickets & PRs
+* Days since last release (6.55.0): 377
+* Days since last release (7.0.0-rc4): 160
+
+{% if is_release_notes_processor %}
+</details>
+{% endif %}
 
 {% endtocmaker %}

@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserTrigger;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserTestBase;
-import net.sourceforge.pmd.lang.ast.test.TestUtilsKt;
+import net.sourceforge.pmd.lang.test.ast.TestUtilsKt;
 import net.sourceforge.pmd.reporting.Report;
 
 class AbstractApexRuleTest extends ApexParserTestBase {

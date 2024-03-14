@@ -117,8 +117,8 @@ public abstract class AbstractNode<B extends AbstractNode<B, N>,
      * children to the right.
      *
      * @param child New child
-     * @param index Index (must be 0 <= index <= getNumChildren()), ie
-     *              you can insert a node beyond the end, because that
+     * @param index Index (must be {@code 0 <= index <= getNumChildren()}), i.e.
+     *              you cannot insert a node beyond the end, because that
      *              would leave holes in the array
      */
     protected void insertChild(final B child, final int index) {

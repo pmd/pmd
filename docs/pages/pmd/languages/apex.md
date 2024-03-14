@@ -33,8 +33,10 @@ See [Apex language properties](pmd_languages_configuration.html#apex-language-pr
 
 ## Parser
 
-We use Jorje, the Apex parsers that is shipped within the Apex Language Server. This is part of
-the [Salesforce Extensions for VS Code](https://github.com/forcedotcom/salesforcedx-vscode).
+Since PMD 7.0.0 we use the open source [apex-parser](https://github.com/apex-dev-tools/apex-parser),
+together with [Summit AST](https://github.com/google/summit-ast) which translates the ANTLR parse tree
+into an AST.
 
-We take the binary from <https://github.com/forcedotcom/salesforcedx-vscode/tree/develop/packages/salesforcedx-vscode-apex/out>
-and provide it as a maven dependency (see [pmd-apex-jorje](https://github.com/pmd/pmd/tree/master/pmd-apex-jorje)).
+When PMD added Apex support with version 5.5.0, it utilized the Apex Jorje library to parse Apex source
+and generate an AST. This library is however a binary-blob provided as part of the
+[Salesforce Extensions for VS Code](https://github.com/forcedotcom/salesforcedx-vscode), and it is closed-source.

@@ -2,7 +2,7 @@
 title: Language configuration
 permalink: pmd_languages_configuration.html
 author: Clément Fournier
-last_updated: August 2023 (7.0.0)
+last_updated: February 2024 (7.0.0)
 tags: [languages]
 keywords: [pmd, cpd, options, command, auxclasspath, language, properties]
 summary: "Summary of language configuration options and properties"
@@ -114,13 +114,13 @@ The Java language can be configured with the following properties:
   or relative to the Visualforce directory. Default is `../classes`. Specifying an
   empty string will disable data type resolution for Apex Controller properties.
 
-  Environment variable: `PMD_VF_APEX_DIRECTORIES`
+  Environment variable: `PMD_VISUALFORCE_APEX_DIRECTORIES`
 
 - `objectsDirectories`: Comma separated list of directories for Custom Objects.
   Absolute or relative to the Visualforce directory. Default is `../objects`.
   Specifying an empty string will disable data type resolution for Custom Object fields.
 
-  Environment variable: `PMD_VF_OBJECTS_DIRECTORIES`
+  Environment variable: `PMD_VISUALFORCE_OBJECTS_DIRECTORIES`
 
 ## CPP language properties
 

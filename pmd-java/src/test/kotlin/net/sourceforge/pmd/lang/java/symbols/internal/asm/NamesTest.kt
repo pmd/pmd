@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.IntelliMarker
+import net.sourceforge.pmd.lang.test.ast.IntelliMarker
 
 class NamesTest : IntelliMarker, FunSpec({
 

@@ -10,7 +10,9 @@ import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
-import io.kotest.property.arbitrary.*
+import io.kotest.property.arbitrary.arbitrary
+import io.kotest.property.arbitrary.filter
+import io.kotest.property.arbitrary.pair
 import io.kotest.property.exhaustive.exhaustive
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter
@@ -18,8 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
 import net.sourceforge.pmd.lang.java.symbols.internal.TestClassesGen
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.createUnresolvedAsmSymbol
-import javax.lang.model.type.TypeMirror
-import kotlin.streams.toList
+import java.util.stream.Collectors
 
 
 val TypeSystem.primitiveGen: Exhaustive<JPrimitiveType> get() = exhaustive(this.allPrimitives.toList())
@@ -48,7 +49,7 @@ class RefTypeGenArb(val ts: TypeSystem) : Arb<JTypeMirror>() {
         // we exclude the null type because it's not ok as an array component
         ts.SERIALIZABLE,
         ts.CLONEABLE
-        );
+        )
 
     override fun edgecase(rs: RandomSource): JTypeMirror {
         return allEdgecases.random(rs.random)
@@ -105,7 +106,7 @@ class RefTypeGenArb(val ts: TypeSystem) : Arb<JTypeMirror>() {
 
 
 
-@Suppress("ObjectPropertyName", "MemberVisibilityCanBePrivate")
+@Suppress("MemberVisibilityCanBePrivate", "DANGEROUS_CHARACTERS")
 class RefTypeConstants(override val ts: TypeSystem) : TypeDslMixin {
 
     val t_String: JClassType                        get() = java.lang.String::class.decl
@@ -192,7 +193,7 @@ fun JavaParsingHelper.makeDummyTVars(vararg names: String): List<JTypeVar> {
             .toStream()
             .map {
                 it.typeMirror
-            }.toList()
+            }.collect(Collectors.toList())
 
 }
 

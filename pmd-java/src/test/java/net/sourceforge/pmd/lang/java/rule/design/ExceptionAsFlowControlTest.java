@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import net.sourceforge.pmd.testframework.PmdRuleTst;
+import net.sourceforge.pmd.test.PmdRuleTst;
 
 class ExceptionAsFlowControlTest extends PmdRuleTst {
     // no additional unit tests

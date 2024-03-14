@@ -6,9 +6,9 @@ package net.sourceforge.pmd.lang.scala.ast
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.should
-import net.sourceforge.pmd.lang.ast.test.assertPosition
-import net.sourceforge.pmd.lang.ast.test.matchNode
-import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.test.ast.assertPosition
+import net.sourceforge.pmd.lang.test.ast.matchNode
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 
 class ScalaTreeTests : FunSpec({
 

@@ -149,7 +149,7 @@ public final class LanguageProcessorRegistry implements AutoCloseable {
         return new LanguageProcessorRegistry(processors);
     }
 
-    // TODO this should be reused when implementing the CLI
+    // TODO this should be reused when implementing the CLI - see https://github.com/pmd/pmd/issues/2947
     public static Map<Language, LanguagePropertyBundle> derivePropertiesFromStrings(
         Map<Language, Properties> stringProperties,
         PmdReporter reporter

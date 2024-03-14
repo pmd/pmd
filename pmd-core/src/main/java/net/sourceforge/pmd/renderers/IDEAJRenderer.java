@@ -25,7 +25,6 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
 
     public static final String NAME = "ideaj";
 
-    // TODO 7.0.0 use PropertyDescriptor<String>
     public static final PropertyDescriptor<String> FILE_NAME =
         PropertyFactory.stringProperty("fileName").desc("File name.").defaultValue("").build();
     public static final PropertyDescriptor<String> SOURCE_PATH =

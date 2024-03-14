@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -150,7 +151,6 @@ public class Formatter {
         return sb.toString();
     }
 
-    // FIXME - hm, what about this consoleRenderer thing... need a test for this
     Renderer createRenderer() {
         if (StringUtils.isBlank(type)) {
             throw new BuildException(unknownRendererMessage("<unspecified>"));
@@ -196,8 +196,21 @@ public class Formatter {
 
     private static String getConsoleEncoding() {
         Console console = System.console();
-        // in case of pipe or redirect, no interactive console.
+        // in case of pipe or redirect, no interactive console, we get null
         if (console != null) {
+            // Since Java 22, this returns a console even for redirected streams.
+            // In that case, we need to check Console.isTerminal()
+            // See: JLine As The Default Console Provider (JDK-8308591)
+            try {
+                Boolean isTerminal = (Boolean) MethodUtils.invokeMethod(console, "isTerminal");
+                if (!isTerminal) {
+                    // stop here, we don't have an interactive console.
+                    return null;
+                }
+            } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException ignored) {
+                // fall-through - we use a Java Runtime < 22.
+            }
+
             try {
                 Object res = FieldUtils.readDeclaredField(console, "cs", true);
                 if (res instanceof Charset) {

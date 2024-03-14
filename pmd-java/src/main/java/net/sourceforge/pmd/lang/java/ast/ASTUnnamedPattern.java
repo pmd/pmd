@@ -5,10 +5,8 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
-import net.sourceforge.pmd.annotation.Experimental;
-
 /**
- * An unnamed pattern, a Java 21 Preview language feature.
+ * An unnamed pattern, a Java 22 language feature.
  *
  * <pre class="grammar">
  *
@@ -16,9 +14,8 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * </pre>
  *
- * @see <a href="https://openjdk.org/jeps/443">JEP 443: Unnamed patterns and variables (Preview)</a> (Java 21)
+ * @see <a href="https://openjdk.org/jeps/456">JEP 456: Unnamed Variables &amp; Patterns</a> (Java 22)
 */
-@Experimental("Unnamed patterns is a Java 21 Preview feature")
 public final class ASTUnnamedPattern extends AbstractJavaNode implements ASTPattern {
 
     ASTUnnamedPattern(int id) {
@@ -28,10 +25,5 @@ public final class ASTUnnamedPattern extends AbstractJavaNode implements ASTPatt
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-    @Override
-    public int getParenthesisDepth() {
-        return 0;
     }
 }

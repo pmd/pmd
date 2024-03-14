@@ -76,10 +76,9 @@ import com.google.summit.ast.statement.WhileLoopStatement
 
 import kotlin.reflect.KClass
 
-@Suppress("DEPRECATION")
-class ApexTreeBuilder(val task: ParserTask, val proc: ApexLanguageProcessor) {
-    private val sourceCode = task.getTextDocument()
-    private val commentBuilder = ApexCommentBuilder(sourceCode, proc.getProperties().getSuppressMarker())
+class ApexTreeBuilder(private val task: ParserTask, private val proc: ApexLanguageProcessor) {
+    private val sourceCode = task.textDocument
+    private val commentBuilder = ApexCommentBuilder(sourceCode, proc.properties.suppressMarker)
 
     /** Builds and returns an [ASTApexFile] corresponding to the given [CompilationUnit]. */
     fun buildTree(compilationUnit: CompilationUnit): ASTApexFile {
@@ -87,7 +86,7 @@ class ApexTreeBuilder(val task: ParserTask, val proc: ApexLanguageProcessor) {
         val baseClass =
             build(compilationUnit, parent = null) as? BaseApexClass<*>
                 ?: throw ParseException("Unable to build tree")
-        val result = ASTApexFile(task, compilationUnit, commentBuilder.getSuppressMap(), proc)
+        val result = ASTApexFile(task, compilationUnit, commentBuilder.suppressMap, proc)
         baseClass.setParent(result)
 
         // Post-processing passes
@@ -760,8 +759,8 @@ class ApexTreeBuilder(val task: ParserTask, val proc: ApexLanguageProcessor) {
         }
       }
 
-      for(i in 0..node.getNumChildren()-1) {
-        node.setChild(children.get(i) as AbstractApexNode, i)
+      for(i in 0 until node.getNumChildren()) {
+        node.setChild(children[i] as AbstractApexNode, i)
       }
     }
 
@@ -795,12 +794,10 @@ class ApexTreeBuilder(val task: ParserTask, val proc: ApexLanguageProcessor) {
     }
 
     /**
-     * If [parent] is not null, adds this [ApexNode] as a [child][ApexNode.jjtAddChild] and sets
-     * [parent] as the [parent][ApexNode.jjtSetParent].
+     * If [parent] is not null, adds this [ApexNode] as a [child][AbstractApexNode.addChild] and sets
+     * [parent] as the [parent][AbstractApexNode.setParent].
      */
     private fun AbstractApexNode.setParent(parent: AbstractApexNode?) {
-        if (parent != null) {
-            parent.addChild(this, parent.numChildren)
-        }
+        parent?.addChild(this, parent.numChildren)
     }
 }

@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.JClassType
 import net.sourceforge.pmd.lang.java.types.shouldHaveType
@@ -112,7 +112,7 @@ class LocalTypeScopesTest : ParserTestSpec({
             }
         """)
 
-        val (foo, inner, other) =
+        val (foo, inner, _) =
                 acu.descendants(ASTClassDeclaration::class.java).toList()
 
         val (insideFoo, insideInner, insideOther) =

@@ -66,7 +66,7 @@ import net.sourceforge.pmd.util.log.PmdReporter;
  * Main programmatic API of PMD. This is not a CLI entry point, see module
  * {@code pmd-cli} for that.
  *
- * <h3>Usage overview</h3>
+ * <h2>Usage overview</h2>
  *
  * <p>Create and configure a {@link PMDConfiguration},
  * then use {@link #create(PMDConfiguration)} to obtain an instance.
@@ -74,7 +74,7 @@ import net.sourceforge.pmd.util.log.PmdReporter;
  * files to process, or additional rulesets and renderers. Then, call
  * {@link #performAnalysis()} or one of the related terminal methods.
  *
- * <h3>Simple example</h3>
+ * <h2>Simple example</h2>
  *
  * <pre>{@code
  *   PMDConfiguration config = new PMDConfiguration();
@@ -99,13 +99,13 @@ import net.sourceforge.pmd.util.log.PmdReporter;
  *   }
  * }</pre>
  *
- * <h3>Rendering reports</h3>
+ * <h2>Rendering reports</h2>
  *
  * <p>If you just want to render a report to a file like with the CLI, you
  * should use a {@link Renderer}. You can add a custom one with {@link PmdAnalysis#addRenderer(Renderer)}.
  * You can add one of the builtin renderers from its ID using {@link PMDConfiguration#setReportFormat(String)}.
  *
- * <h3>Reports and events</h3>
+ * <h2>Reports and events</h2>
  *
  * <p>If you want strongly typed access to violations and other analysis events,
  * you can implement and register a {@link GlobalAnalysisListener} with {@link #addListener(GlobalAnalysisListener)}.
@@ -123,12 +123,12 @@ import net.sourceforge.pmd.util.log.PmdReporter;
  *
  * <p>Listeners can be used alongside renderers.
  *
- * <h3>Specifying the Java classpath</h3>
+ * <h2>Specifying the Java classpath</h2>
  *
  * <p>Java rules work better if you specify the path to the compiled classes
  * of the analysed sources. See {@link PMDConfiguration#prependAuxClasspath(String)}.
  *
- * <h3>Customizing message output</h3>
+ * <h2>Customizing message output</h2>
  *
  * <p>The analysis reports messages like meta warnings and errors through a
  * {@link PmdReporter} instance. To override how those messages are output,
@@ -211,7 +211,7 @@ public final class PmdAnalysis implements AutoCloseable {
             }
 
             // TODO replace those with actual language properties when the
-            //  CLI syntax is implemented.
+            //  CLI syntax is implemented. #2947
             props.setProperty(LanguagePropertyBundle.SUPPRESS_MARKER, config.getSuppressMarker());
             if (props instanceof JvmLanguagePropertyBundle) {
                 ((JvmLanguagePropertyBundle) props).setClassLoader(config.getClassLoader());

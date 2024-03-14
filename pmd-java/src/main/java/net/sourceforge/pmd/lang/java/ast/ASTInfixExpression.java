@@ -19,23 +19,17 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.BinaryExpressionLike
  * The {@linkplain BinaryOp operator} is used to differentiate those expressions.
  *
  * <pre class="grammar">
- *
  * InfixExpression ::= {@link ASTExpression Expression} {@link BinaryOp} {@link ASTExpression Expression}
- *
  * </pre>
  *
  * <p>Binary expressions are all left-associative, and are parsed left-recursively.
  * For example, the expression {@code 1 * 2 * 3 % 4} parses as the following tree:
  *
- * <figure>
- * <img src="doc-files/binaryExpr_70x.svg" />
- * </figure>
+ * <p><img src="doc-files/binaryExpr_70x.svg" alt="AST of the expression '1*2*3%4' in PMD 7">
  *
  * <p>In PMD 6.0.x, it would have parsed into the tree:
  *
- * <figure>
- * <img src="doc-files/binaryExpr_60x.svg" />
- * </figure>
+ * <p><img src="doc-files/binaryExpr_60x.svg" alt="AST of the expression '1*2*3%4' in PMD 6">
  */
 public final class ASTInfixExpression extends AbstractJavaExpr implements BinaryExpressionLike, AtLeastOneChild {
 
