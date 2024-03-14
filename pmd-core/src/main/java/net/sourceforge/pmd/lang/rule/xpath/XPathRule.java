@@ -25,6 +25,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.IteratorUtil;
+import net.sourceforge.pmd.util.internal.ResourceLoader;
 
 
 /**
@@ -51,12 +52,10 @@ public final class XPathRule extends AbstractRule {
 
 
     /**
-     * @deprecated This is now only used by the ruleset loader. When
-     *     we have syntactic sugar for XPath rules in the XML, we won't
-     *     need this anymore.
+     * This is only used by the ruleset loader.
+     * @see ResourceLoader#loadRuleFromClassPath(String)
      */
-    @Deprecated
-    public XPathRule() {
+    XPathRule() {
         definePropertyDescriptor(XPATH_DESCRIPTOR);
     }
 

@@ -1129,6 +1129,7 @@ The annotation `@DeprecatedUntil700` has been removed.
     * `hasOverriddenProperty(PropertyDescriptor)` - use {%jdoc core::lang.rule.RuleReference#isPropertyOverridden(core::properties.PropertyDescriptor) %} instead.
   * {%jdoc core::lang.rule.xpath.XPathRule %}
     * The constant `XPATH_DESCRIPTOR` has been made private and is not accessible anymore.
+    * The default constructor has been made package-private and is not accessible anymore.
   * {%jdoc core::lang.Language %} - method `getTerseName()` removed. Use {%jdoc core::lang.Language#getId() %} instead.
   * {%jdoc core::lang.LanguageModuleBase %} - method `getTerseName()` removed. Use {%jdoc core::lang.LanguageModuleBase#getId() %} instead.
   * {%jdoc core::lang.LanguageRegistry %} - the following methods have been removed:
