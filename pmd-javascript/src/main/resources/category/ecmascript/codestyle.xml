@@ -223,15 +223,9 @@ be misleading.  Considering removing this unnecessary Block.
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-                    //Scope[
-                        count(ancestor::*) = 1
-                        and not(preceding::EmptyStatement)
-                    ]
-                    | //SwitchCase[./Scope]
-                    | //(Scope|Block)[
-                        ./(Scope|Block)
-                        and count(./*) = 1
-                    ]
+                      /AstRoot/Scope[not(preceding::EmptyStatement)]
+                    | //SwitchCase[Scope]
+                    | //(Scope|Block)[Scope|Block][count(*) = 1]
                 ]]></value>
             </property>
         </properties>

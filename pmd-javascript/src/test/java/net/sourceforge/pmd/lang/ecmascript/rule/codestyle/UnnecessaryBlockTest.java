@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.ecmascript.rule.codestyle;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-public class UnnecessaryBlockTest extends PmdRuleTst {
+class UnnecessaryBlockTest extends PmdRuleTst {
     // no additional unit tests
 }
