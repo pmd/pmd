@@ -89,22 +89,18 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
     }
 
 
-    @Override
     public boolean isIntLiteral() {
         return isIntegral && !is64bits;
     }
 
-    @Override
     public boolean isLongLiteral() {
         return isIntegral && is64bits;
     }
 
-    @Override
     public boolean isFloatLiteral() {
         return !isIntegral && !is64bits;
     }
 
-    @Override
     public boolean isDoubleLiteral() {
         return !isIntegral && is64bits;
     }

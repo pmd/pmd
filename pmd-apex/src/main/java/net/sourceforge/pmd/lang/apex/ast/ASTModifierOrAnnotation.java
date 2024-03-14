@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.modifier.ModifierOrAnnotation;
+import com.google.summit.ast.Node;
 
-public final class ASTModifierOrAnnotation extends AbstractApexNode<ModifierOrAnnotation> {
+public final class ASTModifierOrAnnotation extends AbstractApexNode.Single<Node> {
 
-    ASTModifierOrAnnotation(ModifierOrAnnotation modifierOrAnnotation) {
+    ASTModifierOrAnnotation(Node modifierOrAnnotation) {
         super(modifierOrAnnotation);
     }
 

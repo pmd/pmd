@@ -4,17 +4,24 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.lang.document.TextRegion;
-
-import apex.jorje.data.Identifier;
-import apex.jorje.semantic.ast.expression.MethodCallExpression;
+import com.google.summit.ast.Identifier;
+import com.google.summit.ast.expression.CallExpression;
 
 
-public final class ASTMethodCallExpression extends AbstractApexNode<MethodCallExpression> {
-    ASTMethodCallExpression(MethodCallExpression methodCallExpression) {
-        super(methodCallExpression);
+public final class ASTMethodCallExpression extends AbstractApexNode.Single<CallExpression> {
+
+    /**
+     * The {@link Identifier}s that constitute the {@link CallExpression#getReceiver() receiver} of
+     * this method call.
+     */
+    private final List<Identifier> receiverComponents;
+
+    ASTMethodCallExpression(CallExpression callExpression, List<Identifier> receiverComponents) {
+        super(callExpression);
+        this.receiverComponents = receiverComponents;
     }
 
 
@@ -24,30 +31,14 @@ public final class ASTMethodCallExpression extends AbstractApexNode<MethodCallEx
     }
 
     public String getMethodName() {
-        return node.getMethodName();
+        return node.getId().getString();
     }
 
     public String getFullMethodName() {
-        final String methodName = getMethodName();
-        StringBuilder typeName = new StringBuilder();
-        for (Identifier identifier : node.getReferenceContext().getNames()) {
-            typeName.append(identifier.getValue()).append('.');
-        }
-        return typeName.toString() + methodName;
+        return receiverComponents.stream().map(id -> id.getString() + ".").collect(Collectors.joining()) + getMethodName();
     }
 
     public int getInputParametersSize() {
-        return node.getInputParameters().size();
-    }
-
-    @Override
-    public @NonNull TextRegion getTextRegion() {
-        int fullLength = getFullMethodName().length();
-        int nameLength = getMethodName().length();
-        TextRegion base = super.getTextRegion();
-        if (fullLength > nameLength) {
-            base = base.growLeft(fullLength - nameLength);
-        }
-        return base;
+        return node.getArgs().size();
     }
 }

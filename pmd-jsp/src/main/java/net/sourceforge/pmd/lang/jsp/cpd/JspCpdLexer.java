@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.document.TextDocument;
-import net.sourceforge.pmd.lang.jsp.ast.JspParser;
+import net.sourceforge.pmd.lang.jsp.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.jsp.ast.JspTokenKinds;
 
 /**
@@ -19,7 +19,7 @@ public class JspCpdLexer extends JavaccCpdLexer {
 
     @Override
     protected TokenManager<JavaccToken> makeLexerImpl(TextDocument doc) {
-        return JspTokenKinds.newTokenManager(CharStream.create(doc, JspParser.getTokenBehavior()));
+        return JspTokenKinds.newTokenManager(CharStream.create(doc, InternalApiBridge.getJspTokenBehavior()));
     }
 
 }

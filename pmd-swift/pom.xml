@@ -43,7 +43,7 @@
                             <target>
                                 <ant antfile="${antlr4.ant.wrapper}" target="pmd-language">
                                     <property name="lang-name" value="Swift" />
-                                    <property name="lang-terse-name" value="swift" />
+                                    <property name="lang-id" value="swift" />
                                     <property name="root-node-name" value="TopLevel" />
                                     <property name="node-prefix" value="Sw" />
                                 </ant>

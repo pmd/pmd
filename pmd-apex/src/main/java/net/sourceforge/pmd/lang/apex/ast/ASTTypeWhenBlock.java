@@ -4,28 +4,26 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import org.apache.commons.lang3.reflect.FieldUtils;
+import com.google.summit.ast.statement.SwitchStatement;
 
-import apex.jorje.semantic.ast.statement.TypeWhenBlock;
+public final class ASTTypeWhenBlock extends AbstractApexNode.Single<SwitchStatement.WhenType> {
 
-public final class ASTTypeWhenBlock extends AbstractApexNode<TypeWhenBlock> {
-
-
-    ASTTypeWhenBlock(TypeWhenBlock node) {
-        super(node);
+    ASTTypeWhenBlock(SwitchStatement.WhenType whenType) {
+        super(whenType);
     }
 
+    /**
+     * Returns the when block's matching type name.
+     *
+     * This includes any type arguments.
+     * If the type is a primitive, its case will be normalized.
+     */
     public String getType() {
-        return String.valueOf(node.getTypeRef());
+        return caseNormalizedTypeIfPrimitive(node.getType().asCodeString());
     }
 
     public String getName() {
-        // unfortunately the name is not exposed...
-        try {
-            return String.valueOf(FieldUtils.readDeclaredField(node, "name", true));
-        } catch (IllegalArgumentException | ReflectiveOperationException e) {
-            return null;
-        }
+        return node.getDowncast().getDeclarations().get(0).getId().getString();
     }
 
 

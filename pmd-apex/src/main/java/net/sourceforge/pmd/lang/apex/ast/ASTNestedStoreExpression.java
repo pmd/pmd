@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.NestedStoreExpression;
+import com.google.summit.ast.Node;
 
-public final class ASTNestedStoreExpression extends AbstractApexNode<NestedStoreExpression> {
+public final class ASTNestedStoreExpression extends AbstractApexNode.Single<Node> {
 
-    ASTNestedStoreExpression(NestedStoreExpression node) {
+    ASTNestedStoreExpression(Node node) {
         super(node);
     }
 

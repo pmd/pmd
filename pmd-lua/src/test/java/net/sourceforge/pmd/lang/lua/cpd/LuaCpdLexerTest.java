@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.lua.cpd;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
+import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 
 class LuaCpdLexerTest extends CpdTextComparisonTest {
     LuaCpdLexerTest() {

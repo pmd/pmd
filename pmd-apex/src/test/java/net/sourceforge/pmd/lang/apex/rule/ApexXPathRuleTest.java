@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.rule;
 
-import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSize;
+import static net.sourceforge.pmd.lang.test.ast.TestUtilsKt.assertSize;
 
 import org.junit.jupiter.api.Test;
 
@@ -34,10 +34,8 @@ class ApexXPathRuleTest extends ApexParserTestBase {
 
     @Test
     void testBooleanExpressions() {
-        Report report = apex.executeRuleOnResource(makeXPath("//BooleanExpression[@Operator='&&']"),
+        Report report = apex.executeRuleOnResource(makeXPath("//BooleanExpression[@Op='&&']"),
                                                    "BooleanExpressions.cls");
         assertSize(report, 1);
     }
-
-
 }

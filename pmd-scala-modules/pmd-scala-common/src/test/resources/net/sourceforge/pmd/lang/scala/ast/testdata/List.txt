@@ -551,17 +551,18 @@
             |     |                          +- LitString
             |     |                          +- LitString
             |     |                          +- TermName
-            |     |                          +- TermApplyInfix
-            |     |                             +- TermName
-            |     |                             +- TermName
-            |     |                             +- TypeArgClause
-            |     |                             +- TermArgClause
-            |     |                                +- TermApplyInfix
-            |     |                                   +- TermName
-            |     |                                   +- TermName
-            |     |                                   +- TypeArgClause
-            |     |                                   +- TermArgClause
-            |     |                                      +- LitInt
+            |     |                          +- TermBlock
+            |     |                             +- TermApplyInfix
+            |     |                                +- TermName
+            |     |                                +- TermName
+            |     |                                +- TypeArgClause
+            |     |                                +- TermArgClause
+            |     |                                   +- TermApplyInfix
+            |     |                                      +- TermName
+            |     |                                      +- TermName
+            |     |                                      +- TypeArgClause
+            |     |                                      +- TermArgClause
+            |     |                                         +- LitInt
             |     +- DefnDef
             |     |  +- ModFinal
             |     |  +- ModOverride

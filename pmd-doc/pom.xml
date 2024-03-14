@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>pmd-doc</artifactId>
-    <name>PMD Documentation Generator</name>
+    <name>PMD Documentation Generator (internal)</name>
     <packaging>jar</packaging>
 
     <parent>
@@ -35,7 +35,7 @@
                                 </goals>
                                 <phase>package</phase>
                                 <configuration>
-                                    <mainClass>net.sourceforge.pmd.docs.GenerateRuleDocsCmd</mainClass>
+                                    <mainClass>net.sourceforge.pmd.doc.internal.GenerateRuleDocsCmd</mainClass>
                                     <arguments>
                                         <argument>${project.basedir}</argument>
                                     </arguments>
@@ -48,7 +48,7 @@
                                 </goals>
                                 <phase>verify</phase>
                                 <configuration>
-                                    <mainClass>net.sourceforge.pmd.docs.DeadLinksChecker</mainClass>
+                                    <mainClass>net.sourceforge.pmd.doc.internal.DeadLinksChecker</mainClass>
                                     <arguments>
                                         <argument>${project.basedir}</argument>
                                     </arguments>
@@ -61,7 +61,7 @@
                                 </goals>
                                 <phase>verify</phase>
                                 <configuration>
-                                    <mainClass>net.sourceforge.pmd.docs.RuleTagChecker</mainClass>
+                                    <mainClass>net.sourceforge.pmd.doc.internal.RuleTagChecker</mainClass>
                                     <arguments>
                                         <argument>${project.basedir}</argument>
                                     </arguments>

@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 import net.sourceforge.pmd.lang.LanguageProcessor.AnalysisTask;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.internal.RuleSets;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 
 /**
@@ -43,7 +43,7 @@ final class MultiThreadProcessor extends AbstractPMDProcessor {
             RuleSets copy = new RuleSets(task.getRulesets());
             // use a noop reporter because the copy should only contain rules that
             // initialized properly
-            copy.initializeRules(task.getLpRegistry(), MessageReporter.quiet());
+            copy.initializeRules(task.getLpRegistry(), PmdReporter.quiet());
             return copy;
         });
 

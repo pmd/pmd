@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.statement.RunAsBlockStatement;
+import com.google.summit.ast.statement.RunAsStatement;
 
-public final class ASTRunAsBlockStatement extends AbstractApexNode<RunAsBlockStatement> {
+public final class ASTRunAsBlockStatement extends AbstractApexNode.Single<RunAsStatement> {
 
-    ASTRunAsBlockStatement(RunAsBlockStatement runAsBlockStatement) {
-        super(runAsBlockStatement);
+    ASTRunAsBlockStatement(RunAsStatement runAsStatement) {
+        super(runAsStatement);
     }
 
 

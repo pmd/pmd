@@ -7,13 +7,12 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import apex.jorje.data.Identifier;
-import apex.jorje.data.ast.TypeRef;
-import apex.jorje.semantic.ast.compilation.UserClass;
+import com.google.summit.ast.TypeRef;
+import com.google.summit.ast.declaration.ClassDeclaration;
 
-public final class ASTUserClass extends BaseApexClass<UserClass> implements ASTUserClassOrInterface<UserClass> {
+public final class ASTUserClass extends BaseApexClass<ClassDeclaration> implements ASTUserClassOrInterface<ClassDeclaration> {
 
-    ASTUserClass(UserClass userClass) {
+    ASTUserClass(ClassDeclaration userClass) {
         super(userClass);
     }
 
@@ -22,15 +21,28 @@ public final class ASTUserClass extends BaseApexClass<UserClass> implements ASTU
         return visitor.visit(this, data);
     }
 
+
+    /**
+     * Returns the name of the superclass of this class, or an empty string if there is none.
+     *
+     * The type name does NOT include type arguments.
+     */
     public String getSuperClassName() {
-        return node.getDefiningType().getCodeUnitDetails().getSuperTypeRef().map(TypeRef::getNames)
-            .map(it -> it.stream().map(Identifier::getValue).collect(Collectors.joining(".")))
-            .orElse("");
+        TypeRef extendsType = node.getExtendsType();
+        if (extendsType != null) {
+            return extendsType.asTypeErasedString();
+        }
+        return "";
     }
 
+    /**
+     * Returns a list of the names of the interfaces implemented by this class.
+     *
+     * The type names do NOT include type arguments. (This is tested.)
+     */
     public List<String> getInterfaceNames() {
-        return node.getDefiningType().getCodeUnitDetails().getInterfaceTypeRefs().stream()
-                .map(TypeRef::getNames).map(it -> it.stream().map(Identifier::getValue).collect(Collectors.joining(".")))
-                .collect(Collectors.toList());
+        return node.getImplementsTypes().stream()
+            .map(TypeRef::asTypeErasedString)
+            .collect(Collectors.toList());
     }
 }

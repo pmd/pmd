@@ -66,6 +66,8 @@ function build() {
     # was green before. This is usually checked via a local build, see ./do-release.sh
     if pmd_ci_maven_isReleaseBuild; then
         PMD_MAVEN_EXTRA_OPTS+=(-DskipTests=true)
+        # note: skipping pmd in order to avoid failures due to #4757
+        PMD_MAVEN_EXTRA_OPTS+=(-Dpmd.skip=true -Dcpd.skip=true)
     fi
 
     if [ "$(pmd_ci_utils_get_os)" != "linux" ]; then
@@ -136,13 +138,9 @@ function build() {
         pmd_ci_openjdk_setdefault 17
         # Note: Sonar also needs GITHUB_TOKEN (!)
         ./mvnw \
-            -Dmaven.javadoc.skip=true \
-            -Dmaven.source.skip \
-            -Dcheckstyle.skip \
-            -Dpmd.skip \
             --show-version --errors --batch-mode \
             clean package \
-            sonar:sonar -Dsonar.login="${SONAR_TOKEN}" -Psonar
+            sonar:sonar -Dsonar.token="${SONAR_TOKEN}" -Psonar,fastSkip
         pmd_ci_log_success "New sonar results: https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd"
     pmd_ci_log_group_end
 
@@ -151,15 +149,22 @@ function build() {
         export CI_NAME="github actions"
         export CI_BUILD_URL="${PMD_CI_JOB_URL}"
         export CI_BRANCH="${PMD_CI_BRANCH}"
+        # first create jacoco report
         ./mvnw \
-            -Dmaven.javadoc.skip=true \
-            -Dmaven.source.skip \
-            -Dcheckstyle.skip \
-            -Dpmd.skip \
-            -DrepoToken="${COVERALLS_REPO_TOKEN}" \
             --show-version --errors --batch-mode \
-            clean package jacoco:report \
-            coveralls:report -Pcoveralls
+            clean package \
+            jacoco:report -Pcoveralls,fastSkip
+
+        # workaround, maybe https://github.com/jacoco/jacoco/issues/654
+        sed -i 's$Comparisons.kt$ApexTreeBuilder.kt$g' pmd-apex/target/site/jacoco/jacoco.xml
+
+        # then create and send coveralls report
+        # note: generate-sources is needed, so that antlr4 generated directories are on the compileSourceRoots
+        ./mvnw \
+            --show-version --errors --batch-mode \
+            generate-sources \
+            coveralls:report -DrepoToken="${COVERALLS_REPO_TOKEN}" -Pcoveralls,fastSkip
+
         pmd_ci_log_success "New coveralls result: https://coveralls.io/github/pmd/pmd"
     pmd_ci_log_group_end
     fi
@@ -211,8 +216,6 @@ function pmd_ci_deploy_build_artifacts() {
         pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-bin.zip"
         pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-src.zip"
         # Deploy SBOM
-        cp pmd-dist/target/bom.xml  "pmd-dist/target/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}-cyclonedx.xml"
-        cp pmd-dist/target/bom.json "pmd-dist/target/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}-cyclonedx.json"
         pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}-cyclonedx.xml"
         pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}-cyclonedx.json"
     fi
@@ -230,8 +233,6 @@ function pmd_ci_deploy_build_artifacts() {
         pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-bin.zip"
         pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-src.zip"
         # Deploy SBOM
-        cp pmd-dist/target/bom.xml  "pmd-dist/target/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}-cyclonedx.xml"
-        cp pmd-dist/target/bom.json "pmd-dist/target/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}-cyclonedx.json"
         pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}-cyclonedx.xml"
         pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}-cyclonedx.json"
 

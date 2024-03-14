@@ -23,7 +23,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil.CaseConvention;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
  * Stores all currently initialized {@link LanguageProcessor}s during analysis.
@@ -116,14 +116,14 @@ public final class LanguageProcessorRegistry implements AutoCloseable {
      */
     public static LanguageProcessorRegistry create(LanguageRegistry registry,
                                                    Map<Language, LanguagePropertyBundle> languageProperties,
-                                                   MessageReporter messageReporter) {
+                                                   PmdReporter messageReporter) {
         return create(registry, languageProperties, messageReporter, System.getenv());
     }
 
     // overload for testing to allow mocking the system env vars.
     static LanguageProcessorRegistry create(LanguageRegistry registry,
                                             Map<Language, LanguagePropertyBundle> languageProperties,
-                                            MessageReporter messageReporter,
+                                            PmdReporter messageReporter,
                                             Map<String, String> env) {
         Set<LanguageProcessor> processors = new HashSet<>();
         for (Language language : registry) {
@@ -149,10 +149,10 @@ public final class LanguageProcessorRegistry implements AutoCloseable {
         return new LanguageProcessorRegistry(processors);
     }
 
-    // TODO this should be reused when implementing the CLI
+    // TODO this should be reused when implementing the CLI - see https://github.com/pmd/pmd/issues/2947
     public static Map<Language, LanguagePropertyBundle> derivePropertiesFromStrings(
         Map<Language, Properties> stringProperties,
-        MessageReporter reporter
+        PmdReporter reporter
     ) {
         Map<Language, LanguagePropertyBundle> typedProperties = new HashMap<>();
         stringProperties.forEach((l, props) -> {
@@ -163,7 +163,7 @@ public final class LanguageProcessorRegistry implements AutoCloseable {
     }
 
 
-    private static void setLanguageProperties(Map<Language, Properties> languageProperties, MessageReporter messageReporter, Language language, LanguagePropertyBundle properties) {
+    private static void setLanguageProperties(Map<Language, Properties> languageProperties, PmdReporter messageReporter, Language language, LanguagePropertyBundle properties) {
         Properties props = languageProperties.get(language);
         if (props != null) {
             props.forEach((k, v) -> {
@@ -182,7 +182,7 @@ public final class LanguageProcessorRegistry implements AutoCloseable {
     private static <T> void trySetPropertyCapture(PropertySource source,
                                                   PropertyDescriptor<T> propertyDescriptor,
                                                   String propertyValue,
-                                                  MessageReporter reporter) {
+                                                  PmdReporter reporter) {
         try {
             T value = propertyDescriptor.serializer().fromString(propertyValue);
             source.setProperty(propertyDescriptor, value);
@@ -194,7 +194,7 @@ public final class LanguageProcessorRegistry implements AutoCloseable {
         }
     }
 
-    private static void readLanguagePropertiesFromEnv(LanguagePropertyBundle props, MessageReporter reporter, Map<String, String> env) {
+    private static void readLanguagePropertiesFromEnv(LanguagePropertyBundle props, PmdReporter reporter, Map<String, String> env) {
         for (PropertyDescriptor<?> propertyDescriptor : props.getPropertyDescriptors()) {
 
             String envVarName = getEnvironmentVariableName(props.getLanguage(), propertyDescriptor);

@@ -18,6 +18,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.properties.internal.PropertyParsingUtil;
+import net.sourceforge.pmd.properties.internal.PropertyTypeId;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.IteratorUtil;
@@ -258,7 +260,6 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          *
          * <p>Example usage:
          * <pre>{@code
-         *
          * // this can be set with
          * // <value>a,b,c</value>
          * PropertyDescriptor<Set<String>> whitelistSet =
@@ -267,6 +268,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          *                     .to(Collectors.toSet())
          *                     .emptyDefaultValue()
          *                     .build();
+         * }</pre>
          *
          * @return A new list property builder
          *

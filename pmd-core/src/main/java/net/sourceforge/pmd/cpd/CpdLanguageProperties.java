@@ -47,8 +47,4 @@ public final class CpdLanguageProperties {
                        .defaultValue(false)
                        .desc("Ignore metadata such as Java annotations or C# attributes.")
                        .build();
-
-    @Deprecated
-    // TODO what to do with this?
-    public static final String DEFAULT_SKIP_BLOCKS_PATTERN = "#if 0|#endif";
 }

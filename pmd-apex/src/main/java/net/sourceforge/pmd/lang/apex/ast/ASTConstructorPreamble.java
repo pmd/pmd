@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.compilation.ConstructorPreamble;
+import com.google.summit.ast.Node;
 
-public final class ASTConstructorPreamble extends AbstractApexNode<ConstructorPreamble> {
+public final class ASTConstructorPreamble extends AbstractApexNode.Single<Node> {
 
-    ASTConstructorPreamble(ConstructorPreamble node) {
+    ASTConstructorPreamble(Node node) {
         super(node);
     }
 

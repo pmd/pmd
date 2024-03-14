@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
-import net.sourceforge.pmd.lang.modelica.resolver.ModelicaSymbolFacade;
+import net.sourceforge.pmd.lang.modelica.resolver.InternalApiBridge;
 
 
 public class ModelicaParser extends JjtreeParserAdapter<ASTStoredDefinition> {
@@ -24,7 +24,7 @@ public class ModelicaParser extends JjtreeParserAdapter<ASTStoredDefinition> {
     @Override
     protected ASTStoredDefinition parseImpl(CharStream cs, ParserTask task) throws ParseException {
         ASTStoredDefinition root = new ModelicaParserImpl(cs).StoredDefinition().makeTaskInfo(task);
-        TimeTracker.bench("Modelica symbols", () -> ModelicaSymbolFacade.process(root));
+        TimeTracker.bench("Modelica symbols", () -> InternalApiBridge.ModelicaSymbolFacade.process(root));
         return root;
     }
 

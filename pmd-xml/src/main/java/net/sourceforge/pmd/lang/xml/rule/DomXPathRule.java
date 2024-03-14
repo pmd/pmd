@@ -23,7 +23,7 @@ import net.sourceforge.pmd.reporting.RuleContext;
  * class is strongly recommended over the standard {@link XPathRule}, which
  * is mostly useful in other PMD languages.
  *
- * <h3>Differences with {@link XPathRule}</h3>
+ * <h2>Differences with {@link XPathRule}</h2>
  *
  * This rule and {@link XPathRule} do not accept exactly the same queries,
  * because {@link XPathRule} implements the XPath spec in an ad-hoc way.
@@ -68,7 +68,7 @@ import net.sourceforge.pmd.reporting.RuleContext;
  * <p>Additionally, this rule only supports XPath 2.0, with no option
  * for configuration. This will be bumped to XPath 3.1 in PMD 7.
  *
- * <h4>Namespace-sensitivity</h4>
+ * <h3>Namespace-sensitivity</h3>
  *
  * <p>Another important difference is that this rule is namespace-sensitive.
  * If the tested XML documents use a schema ({@code xmlns} attribute on the root),

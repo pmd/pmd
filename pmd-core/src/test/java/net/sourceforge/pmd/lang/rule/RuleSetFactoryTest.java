@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.util.ResourceLoader;
+import net.sourceforge.pmd.util.internal.ResourceLoader;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;

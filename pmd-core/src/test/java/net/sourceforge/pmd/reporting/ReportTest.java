@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.StringWriter;
+import java.util.Collections;
 import java.util.function.Consumer;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -106,7 +107,7 @@ class ReportTest {
     }
 
     public static @NonNull RuleViolation violation(Rule rule, FileLocation loc1, String rule1) {
-        return new ParametricRuleViolation(rule, loc1, rule1);
+        return new ParametricRuleViolation(rule, loc1, rule1, Collections.emptyMap());
     }
 
 

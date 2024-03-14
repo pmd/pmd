@@ -13,16 +13,21 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeSpecification;
 import net.sourceforge.pmd.lang.plsql.ast.ExecutableCode;
-import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitor;
+import net.sourceforge.pmd.lang.plsql.ast.PlsqlVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.reporting.RuleContext;
 
-public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLParserVisitor {
-
+public abstract class AbstractPLSQLRule extends AbstractRule implements PlsqlVisitor<Object, Object> {
 
     @Override
     public void apply(Node target, RuleContext ctx) {
         target.acceptVisitor(this, ctx);
+    }
+
+    @Override
+    public Object visitNode(Node node, Object param) {
+        node.children().forEach(c -> c.acceptVisitor(this, param));
+        return param;
     }
 
     /**

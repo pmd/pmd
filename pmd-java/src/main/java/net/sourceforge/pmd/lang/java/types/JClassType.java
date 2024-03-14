@@ -34,19 +34,21 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
  * <li>If the symbol is not generic, then it may be either
  * <i>{@linkplain #hasErasedSuperTypes() erased}</i> (where all supertypes are erased),
  * or not. Note that a non-erased type may have some erased supertypes,
- * see {@link #getErasure()}.
+ * see {@link #getErasure()}.</li>
  * <li>If the symbol is generic, then the type could be in one of the
  * following configurations:
- * <ul>
- * <li><i>{@linkplain #isGenericTypeDeclaration() Generic declaration}</i>:
- * the type arguments are the formal type parameters. All enclosing types are
- * either non-generic or also generic type declarations. Eg {@code interface List<T> { .. } }.
- * <li><i>{@linkplain #isParameterizedType() Parameterized}</i>: the type
- * has type arguments. All enclosing types are either non-generic or
- * also parameterised. Eg {@code List<String>}.
- * <li><i>{@linkplain #isRaw() Raw}</i>: the type doesn't have type arguments,
- * it's considered {@linkplain #hasErasedSuperTypes() erased}, so all its supertypes are
- * also erased. All enclosing types are also erased. Eg {@code List}.
+ *   <ul>
+ *   <li><i>{@linkplain #isGenericTypeDeclaration() Generic declaration}</i>:
+ *   the type arguments are the formal type parameters. All enclosing types are
+ *   either non-generic or also generic type declarations. Eg {@code interface List<T> { .. } }.</li>
+ *   <li><i>{@linkplain #isParameterizedType() Parameterized}</i>: the type
+ *   has type arguments. All enclosing types are either non-generic or
+ *   also parameterised. Eg {@code List<String>}.</li>
+ *   <li><i>{@linkplain #isRaw() Raw}</i>: the type doesn't have type arguments,
+ *   it's considered {@linkplain #hasErasedSuperTypes() erased}, so all its supertypes are
+ *   also erased. All enclosing types are also erased. Eg {@code List}.</li>
+ *   </ul>
+ * </li>
  * </ul>
  */
 public interface JClassType extends JTypeMirror {

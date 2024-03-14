@@ -12,11 +12,11 @@ import static net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKin
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
-import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
+import net.sourceforge.pmd.lang.java.types.ast.internal.InvocCtx;
+import net.sourceforge.pmd.lang.java.types.ast.internal.RegularCtx;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
@@ -25,14 +25,13 @@ import net.sourceforge.pmd.util.AssertionUtil;
  * determines what kinds of conversions apply to the value to make it
  * compatible with the context.
  */
-@Experimental("The API is minimal until more use cases show up, and this is better tested.")
 public abstract class ExprContext {
     // note: most members of this class are quite low-level and should
     // stay package-private for exclusive use by PolyResolution.
 
-    final ExprContextKind kind;
+    protected final ExprContextKind kind;
 
-    private ExprContext(ExprContextKind kind) {
+    protected ExprContext(ExprContextKind kind) {
         this.kind = kind;
     }
 
@@ -86,7 +85,7 @@ public abstract class ExprContext {
     }
 
     public @Nullable InvocationNode getInvocNodeIfInvocContext() {
-        return this instanceof InvocCtx ? ((InvocCtx) this).node : null;
+        return this instanceof InvocCtx ? ((InvocCtx) this).getNode() : null;
     }
 
     public @NonNull ExprContext getToplevelCtx() {
@@ -107,15 +106,6 @@ public abstract class ExprContext {
         return getTargetType();
     }
 
-    static ExprContext newOtherContext(@NonNull JTypeMirror targetType, ExprContextKind kind) {
-        AssertionUtil.requireParamNotNull("target type", targetType);
-        return new RegularCtx(targetType, kind);
-    }
-
-    static ExprContext newInvocContext(InvocationNode invocNode, int argumentIndex) {
-        return new InvocCtx(argumentIndex, invocNode);
-    }
-
     /**
      * Returns an {@link ExprContext} instance which represents a
      * missing context. Use {@link #isMissing()} instead of testing
@@ -127,38 +117,6 @@ public abstract class ExprContext {
 
     public boolean hasKind(ExprContextKind kind) {
         return getKind() == kind;
-    }
-
-    private static final class InvocCtx extends ExprContext {
-
-        final int arg;
-        final InvocationNode node;
-
-        InvocCtx(int arg, InvocationNode node) {
-            super(INVOCATION);
-            this.arg = arg;
-            this.node = node;
-        }
-
-        @Override
-        public @Nullable JTypeMirror getTargetType() {
-            // this triggers type resolution of the enclosing expr.
-            OverloadSelectionResult overload = node.getOverloadSelectionInfo();
-            if (overload.isFailed()) {
-                return null;
-            }
-            return overload.ithFormalParam(arg);
-        }
-
-        @Override
-        public boolean isMissing() {
-            return false;
-        }
-
-        @Override
-        public String toString() {
-            return "InvocCtx{arg=" + arg + ", node=" + node + '}';
-        }
     }
 
     /**
@@ -231,26 +189,4 @@ public abstract class ExprContext {
         BOOLEAN,
     }
 
-    static final class RegularCtx extends ExprContext {
-
-        private static final RegularCtx NO_CTX = new RegularCtx(null, MISSING);
-
-        final @Nullable JTypeMirror targetType;
-
-        RegularCtx(@Nullable JTypeMirror targetType, ExprContextKind kind) {
-            super(kind);
-            assert kind != INVOCATION;
-            this.targetType = targetType;
-        }
-
-        @Override
-        public @Nullable JTypeMirror getTargetType() {
-            return targetType;
-        }
-
-        @Override
-        public String toString() {
-            return "RegularCtx{kind=" + kind + ", targetType=" + targetType + '}';
-        }
-    }
 }

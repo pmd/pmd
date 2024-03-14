@@ -1,0 +1,5 @@
+<ruleset xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" name="RuleSet that creates a config error">
+    <description/>
+    <!-- Rule LoosePackageCoupling is enabled, but not configured -->
+    <rule ref="category/java/design.xml/LoosePackageCoupling" />
+</ruleset>

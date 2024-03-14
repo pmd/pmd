@@ -20,6 +20,10 @@ import net.sourceforge.pmd.lang.java.types.SubstVar;
  */
 public interface InternalMethodTypeItf {
 
+    static InternalMethodTypeItf cast(JMethodSig methodSig) {
+        return (InternalMethodTypeItf) methodSig;
+    }
+
     /**
      * Returns a new method type with the given return type and all the
      * same characteristics as this one.

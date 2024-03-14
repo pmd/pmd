@@ -4,15 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.EmptyReferenceExpression;
-
-public final class ASTEmptyReferenceExpression extends AbstractApexNode<EmptyReferenceExpression> {
-
-
-    ASTEmptyReferenceExpression(EmptyReferenceExpression node) {
-        super(node);
-    }
-
+public final class ASTEmptyReferenceExpression extends AbstractApexNode.Empty {
 
 
     @Override
@@ -20,4 +12,8 @@ public final class ASTEmptyReferenceExpression extends AbstractApexNode<EmptyRef
         return visitor.visit(this, data);
     }
 
+    @Override
+    public String getDefiningType() {
+        return null;
+    }
 }

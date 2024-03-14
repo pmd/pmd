@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-import net.sourceforge.pmd.testframework.PmdRuleTst;
+import net.sourceforge.pmd.test.PmdRuleTst;
 
 class AvoidInstantiatingObjectsInLoopsTest extends PmdRuleTst {
     // no additional unit tests

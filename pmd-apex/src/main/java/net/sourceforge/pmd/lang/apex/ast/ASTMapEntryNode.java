@@ -4,17 +4,29 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.MapEntryNode;
+import java.util.Arrays;
 
-public final class ASTMapEntryNode extends AbstractApexNode<MapEntryNode> {
+import com.google.summit.ast.expression.Expression;
 
-    ASTMapEntryNode(MapEntryNode mapEntryNode) {
-        super(mapEntryNode);
+public final class ASTMapEntryNode extends AbstractApexNode.Many<Expression> {
+
+    private final Expression key;
+    private final Expression value;
+
+    ASTMapEntryNode(Expression key, Expression value) {
+        super(Arrays.asList(key, value));
+        this.key = key;
+        this.value = value;
     }
 
 
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
+    }
+
+    @Override
+    public String getImage() {
+        return String.format("%s: %s", key, value);
     }
 }

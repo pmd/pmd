@@ -4,22 +4,16 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.util.Optional;
+import net.sourceforge.pmd.lang.document.Chars;
 
-import org.apache.commons.lang3.reflect.FieldUtils;
+import com.google.summit.ast.expression.LiteralExpression;
+import com.google.summit.ast.expression.VariableExpression;
 
-import apex.jorje.data.Identifier;
-import apex.jorje.data.ast.LiteralType;
-import apex.jorje.semantic.ast.expression.LiteralExpression;
-import apex.jorje.semantic.ast.expression.NewKeyValueObjectExpression.NameValueParameter;
-
-
-public final class ASTLiteralExpression extends AbstractApexNode<LiteralExpression> {
+public final class ASTLiteralExpression extends AbstractApexNode.Single<LiteralExpression> {
 
     ASTLiteralExpression(LiteralExpression literalExpression) {
         super(literalExpression);
     }
-
 
 
     @Override
@@ -27,64 +21,94 @@ public final class ASTLiteralExpression extends AbstractApexNode<LiteralExpressi
         return visitor.visit(this, data);
     }
 
+    public enum LiteralType {
+        STRING,
+        INTEGER,
+        LONG,
+        DOUBLE,
+        DECIMAL,
+        TRUE,
+        FALSE,
+        NULL
+    }
+
     public LiteralType getLiteralType() {
-        return node.getLiteralType();
+        if (node instanceof LiteralExpression.StringVal) {
+            return LiteralType.STRING;
+        } else if (node instanceof LiteralExpression.BooleanVal) {
+            return ((LiteralExpression.BooleanVal) node).getValue() ? LiteralType.TRUE : LiteralType.FALSE;
+        } else if (node instanceof LiteralExpression.IntegerVal) {
+            return LiteralType.INTEGER;
+        } else if (node instanceof LiteralExpression.DoubleVal) {
+            // TODO Replace this workaround with LiteralExpression.DecimalVal, see below and https://github.com/google/summit-ast/pull/47
+            Chars source = getTextDocument().getText().slice(getTextRegion());
+            if (source.indexOf('d') > -1 || source.indexOf('D') > -1) {
+                return LiteralType.DOUBLE;
+            } else {
+                return LiteralType.DECIMAL;
+            }
+        } else if (node instanceof LiteralExpression.LongVal) {
+            return LiteralType.LONG;
+        /* TODO(b/239648780): the parser must distinguish decimal vs. double
+        } else if (node instanceof LiteralExpression.DecimalVal) {
+            return LiteralType.DECIMAL;
+        */
+        } else if (node instanceof LiteralExpression.NullVal) {
+            return LiteralType.NULL;
+        } else {
+            return null;
+        }
     }
 
     public boolean isString() {
-        return node.getLiteralType() == LiteralType.STRING;
+        return getLiteralType() == LiteralType.STRING;
     }
 
     public boolean isBoolean() {
-        return node.getLiteralType() == LiteralType.TRUE || node.getLiteralType() == LiteralType.FALSE;
+        return getLiteralType() == LiteralType.TRUE || getLiteralType() == LiteralType.FALSE;
     }
 
     public boolean isInteger() {
-        return node.getLiteralType() == LiteralType.INTEGER;
+        return getLiteralType() == LiteralType.INTEGER;
     }
 
     public boolean isDouble() {
-        return node.getLiteralType() == LiteralType.DOUBLE;
+        return getLiteralType() == LiteralType.DOUBLE;
     }
 
     public boolean isLong() {
-        return node.getLiteralType() == LiteralType.LONG;
+        return getLiteralType() == LiteralType.LONG;
     }
 
     public boolean isDecimal() {
-        return node.getLiteralType() == LiteralType.DECIMAL;
+        return getLiteralType() == LiteralType.DECIMAL;
     }
 
     public boolean isNull() {
-        return node.getLiteralType() == LiteralType.NULL;
+        return getLiteralType() == LiteralType.NULL;
     }
 
     @Override
     public String getImage() {
-        if (node.getLiteral() != null) {
-            return String.valueOf(node.getLiteral());
-        }
-        return null;
+        return literalToString(node);
     }
 
+    /**
+     * Returns the name of this literal when it is labeled in an object initializer with named
+     * arguments ({@link ASTNewKeyValueObjectExpression}).
+     *
+     * <p>For example, in the Apex code
+     * <pre>{@code
+     * new X(a = 1, b = 2)
+     * }</pre>
+     * , the {@link ASTLiteralExpression} corresponding to {@code 2} will have the {@code name}
+     * "{@code b}".
+     */
     public String getName() {
-        if (getParent() instanceof ASTNewKeyValueObjectExpression) {
-            ASTNewKeyValueObjectExpression parent = (ASTNewKeyValueObjectExpression) getParent();
-            Optional<NameValueParameter> parameter = parent.node.getParameters().stream().filter(p -> {
-                try {
-                    return this.node.equals(FieldUtils.readDeclaredField(p, "expression", true));
-                } catch (IllegalArgumentException | ReflectiveOperationException e) {
-                    return false;
-                }
-            }).findFirst();
-
-            return parameter.map(p -> {
-                try {
-                    return (Identifier) FieldUtils.readDeclaredField(p, "name", true);
-                } catch (IllegalArgumentException | ReflectiveOperationException e) {
-                    return null;
-                }
-            }).map(Identifier::getValue).orElse(null);
+        if (getParent() instanceof ASTAssignmentExpression && getParent().getParent() instanceof ASTNewKeyValueObjectExpression) {
+            ASTAssignmentExpression parent = (ASTAssignmentExpression) getParent();
+            VariableExpression target = (VariableExpression) parent.node.getTarget();
+            return target.getId().getString();
         }
         return null;
     }

@@ -199,14 +199,13 @@ class PmdCliTest extends BaseCliTest {
     @Test
     void debugLogging() throws Exception {
         CliExecutionResult result = runCliSuccessfully("--debug", "--dir", srcDir.toString(), "--rulesets", RULESET_NO_VIOLATIONS);
-        result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd.cli - Log level is at TRACE"));
+        result.checkStdErr(containsString("[DEBUG] Log level is at TRACE"));
     }
 
     @Test
     void defaultLogging() throws Exception {
         CliExecutionResult result = runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", RULESET_NO_VIOLATIONS);
-        result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd.cli - Log level is at INFO"));
-        result.checkStdErr(not(containsPattern("Adding file .*"))); // not in debug mode
+        result.checkStdErr(not(containsString("[DEBUG] Log level is at TRACE")));
     }
 
     @Test

@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.properties;
 
 import static java.util.Arrays.asList;
-import static net.sourceforge.pmd.properties.PropertyParsingUtil.enumerationParser;
+import static net.sourceforge.pmd.properties.internal.PropertyParsingUtil.enumerationParser;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,6 +19,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
+import net.sourceforge.pmd.properties.internal.PropertyParsingUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 //@formatter:off
@@ -29,7 +30,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * and their constructors/ builders will be gradually
  * deprecated before 7.0.0.
  *
- * <h1>Usage</h1>
+ * <h2>Usage</h2>
  *
  * Properties are a way to make your rule configurable by
  * letting a user fill in some config value in their
@@ -49,7 +50,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * You can then retrieve the value configured by the user in your
  * rule using {@link PropertySource#getProperty(PropertyDescriptor)}.
  *
- * <h1>Example</h1>
+ * <h2>Example</h2>
  *
  * <pre>
  * class MyRule {

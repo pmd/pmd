@@ -44,7 +44,7 @@
          |  +- VariableDeclarator[@Initializer = true, @Name = "SUNDAY"]
          |     +- VariableId[@ArrayType = false, @EffectiveVisibility = Visibility.V_PRIVATE, @EnumConstant = false, @ExceptionBlockParameter = false, @Field = true, @Final = true, @ForLoopVariable = false, @ForeachVariable = false, @FormalParameter = false, @LambdaParameter = false, @LocalVariable = false, @Name = "SUNDAY", @PatternBinding = false, @RecordComponent = false, @ResourceDeclaration = false, @TypeInferred = false, @Visibility = Visibility.V_PRIVATE]
          |     +- NumericLiteral[@Base = 10, @CompileTimeConstant = true, @DoubleLiteral = false, @FloatLiteral = false, @Image = "7", @IntLiteral = true, @Integral = true, @LiteralText = "7", @LongLiteral = false, @ParenthesisDepth = 0, @Parenthesized = false, @ValueAsDouble = 7.0, @ValueAsFloat = 7.0, @ValueAsInt = 7, @ValueAsLong = 7]
-         +- MethodDeclaration[@Abstract = false, @Arity = 1, @EffectiveVisibility = Visibility.V_PUBLIC, @Final = false, @Image = "main", @MainMethod = true, @Name = "main", @Overridden = false, @Static = true, @Varargs = false, @Visibility = Visibility.V_PUBLIC, @Void = true]
+         +- MethodDeclaration[@Abstract = false, @Arity = 1, @EffectiveVisibility = Visibility.V_PUBLIC, @Final = false, @MainMethod = true, @Name = "main", @Overridden = false, @Static = true, @Varargs = false, @Visibility = Visibility.V_PUBLIC, @Void = true]
             +- ModifierList[@EffectiveModifiers = "{public, static}", @ExplicitModifiers = "{public, static}"]
             +- VoidType[]
             +- FormalParameters[@Empty = false, @Size = 1]

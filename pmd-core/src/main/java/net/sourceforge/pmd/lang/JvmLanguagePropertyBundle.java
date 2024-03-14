@@ -22,7 +22,6 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  */
 public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
 
-    // TODO make that a PropertyDescriptor<ClassLoader>
     public static final PropertyDescriptor<String> AUX_CLASSPATH
         = PropertyFactory.stringProperty("auxClasspath")
                          .desc("A classpath to use to resolve references to external types in the analysed sources. "

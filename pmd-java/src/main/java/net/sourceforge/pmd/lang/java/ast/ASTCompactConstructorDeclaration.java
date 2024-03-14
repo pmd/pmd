@@ -14,8 +14,6 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
  *
  * <p>Compact record constructors must be declared "public".
  *
- * TODO make implicit formal parameter node and implement ASTExecutableDeclaration.
- *
  * <pre class="grammar">
  *
  * CompactConstructorDeclaration ::=  {@link ASTModifierList Modifiers}
@@ -24,6 +22,8 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
  *
  * </pre>
  */
+// TODO make implicit formal parameter node and implement ASTExecutableDeclaration.
+// This might help UnusedAssignmentRule / DataflowPass.ReachingDefsVisitor, see also #4603
 public final class ASTCompactConstructorDeclaration extends AbstractJavaNode implements ASTBodyDeclaration, SymbolDeclaratorNode, ModifierOwner {
 
     ASTCompactConstructorDeclaration(int id) {

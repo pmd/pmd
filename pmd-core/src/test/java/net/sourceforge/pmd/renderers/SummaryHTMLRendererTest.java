@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.InternalApiBridge;
 import net.sourceforge.pmd.reporting.Report.ConfigurationError;
 import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.reporting.RuleContext;
@@ -148,7 +149,7 @@ class SummaryHTMLRendererTest extends AbstractRendererTest {
             DummyRootNode root = helper.parse("dummy code", getSourceCodeFilename())
                                        .withNoPmdComments(Collections.singletonMap(1, "test"));
 
-            RuleContext ruleContext = RuleContext.create(listener, new FooRule());
+            RuleContext ruleContext = InternalApiBridge.createRuleContext(listener, new FooRule());
             ruleContext.addViolationWithPosition(root, 1, 1, "suppress test");
         };
     }

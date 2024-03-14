@@ -4,11 +4,8 @@
 
 package net.sourceforge.pmd.cli.commands.internal;
 
-import net.sourceforge.pmd.PMDVersion;
-
 import picocli.AutoComplete.GenerateCompletion;
 import picocli.CommandLine.Command;
-import picocli.CommandLine.IVersionProvider;
 
 @Command(name = "pmd", mixinStandardHelpOptions = true,
     versionProvider = PMDVersionProvider.class,
@@ -19,12 +16,4 @@ import picocli.CommandLine.IVersionProvider;
         CpdGuiCommand.class, TreeExportCommand.class, GenerateCompletion.class })
 public class PmdRootCommand {
 
-}
-
-class PMDVersionProvider implements IVersionProvider {
-
-    @Override
-    public String[] getVersion() throws Exception {
-        return new String[] { "PMD " + PMDVersion.VERSION };
-    }
 }

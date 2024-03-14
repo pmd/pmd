@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.SuperMethodCallExpression;
+import com.google.summit.ast.expression.CallExpression;
 
-public final class ASTSuperMethodCallExpression extends AbstractApexNode<SuperMethodCallExpression> {
+public final class ASTSuperMethodCallExpression extends AbstractApexNode.Single<CallExpression> {
 
-    ASTSuperMethodCallExpression(SuperMethodCallExpression superMethodCallExpression) {
-        super(superMethodCallExpression);
+    ASTSuperMethodCallExpression(CallExpression callExpression) {
+        super(callExpression);
     }
 
 

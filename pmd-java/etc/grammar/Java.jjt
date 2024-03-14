@@ -1,4 +1,16 @@
 /**
+ * Support "JEP 447: Statements before super(...) (Preview)" (Java 22)
+ *     Changes in ConstructorBlock
+ * Support "JEP 456: Unnamed Variables & Patterns" (Java 22)
+ *     This is now a regular language feature. Otherwise no changes.
+ * Support "JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)" (Java 22)
+ *     No changes.
+ * Support "JEP 459: String Templates (Second Preview)" (Java 22)
+ *     Use ASTTemplate.setContent instead of setImage.
+ * Remove support for Record pattern in enhanced for statements. This was only a Java 20 Preview feature.
+ * Remove support for ParenthesizedPatterns. This was only a Java 20 Preview feature.
+ * Andreas Dangel 02/2024
+ *====================================================================
  * Renamed various nodes:
  * ClassOrInterfaceType -> ClassType
  * ClassOrInterfaceDeclaration -> ClassDeclaration
@@ -664,7 +676,7 @@ SPECIAL_TOKEN :
     {
         int startOfNOPMD = matchedToken.getImage().indexOf(suppressMarker);
         if (startOfNOPMD != -1) {
-            suppressMap.put(matchedToken.getBeginLine(), matchedToken.getImage().substring(startOfNOPMD + suppressMarker.length()));
+            suppressMap.put(matchedToken.getReportLocation().getStartLine(), matchedToken.getImage().substring(startOfNOPMD + suppressMarker.length()));
         }
         comments.add(new JavaComment(matchedToken));
     }
@@ -1049,7 +1061,7 @@ TOKEN :
 // In order to produce the correct token sequence, the ambiguity needs to be resolved using the context.
 // That means, that STRING_TEMPLATE_MID/END and TEXT_BLOCK_TEMPLATE_MID/END could actually be a closing bracket ("}").
 // Additionally, a STRING_TEMPLATE_MID could be a TEXT_BLOCK_TEMPLATE_MID and the other way round.
-// See JLS 3.13 Fragments (Java 21 Preview)
+// See JLS 3.13 Fragments (Java 21 Preview and Java 22 Preview)
 
 TOKEN :
 {
@@ -1147,7 +1159,7 @@ ASTCompilationUnit CompilationUnit() :
   // OrdinaryCompilationUnit: -> TopLevelClassOrInterfaceDeclaration
   ( TypeDeclaration() ( EmptyDeclaration() )* )*
 
-  // UnnamedClassCompilationUnit:
+  // SimpleCompilationUnit:
   [
       ( LOOKAHEAD(3) ClassMemberDeclarationNoMethod() )*
       ModifierList() MethodDeclaration()
@@ -1250,7 +1262,7 @@ void ClassOrInterfaceDeclaration() #ClassDeclaration:
 {}
 {
   ( "class" | "interface" { jjtThis.setInterface(); } )
-  <IDENTIFIER> { setLastTokenImage(jjtThis); }
+  <IDENTIFIER> { jjtThis.setSimpleName(getToken(0).getImage()); }
   [ TypeParameters() ]
   [ ExtendsList() ]
   [ ImplementsList() ]
@@ -1284,7 +1296,7 @@ void EnumDeclaration():
 {}
 {
   softKeyword("enum")
-  <IDENTIFIER> {setLastTokenImage(jjtThis);}
+  <IDENTIFIER> { jjtThis.setSimpleName(getToken(0).getImage()); }
   [ ImplementsList() ]
   EnumBody()
 }
@@ -1309,7 +1321,7 @@ void RecordDeclaration():
 {}
 {
   softKeyword("record")
-  <IDENTIFIER> {setLastTokenImage(jjtThis);}
+  <IDENTIFIER> { jjtThis.setSimpleName(getToken(0).getImage()); }
   [ TypeParameters() ]
   RecordHeader()
   [ ImplementsList() ]
@@ -1418,13 +1430,13 @@ void VariableDeclarator() :
 void VariableDeclaratorId() #VariableId:
 {}
 {
-  <IDENTIFIER> { setLastTokenImage(jjtThis); }
+  <IDENTIFIER> { jjtThis.setName(getToken(0).getImage()); }
 }
 
 void VariableIdWithDims() #VariableId :
 {}
 {
-  <IDENTIFIER> { setLastTokenImage(jjtThis); }
+  <IDENTIFIER> { jjtThis.setName(getToken(0).getImage()); }
   [ Dims() ]
 }
 
@@ -1454,7 +1466,7 @@ void MethodDeclaration() :
 {
   [ TypeParameters() ]
   ResultType()
-  <IDENTIFIER> { setLastTokenImage(jjtThis); }
+  <IDENTIFIER> { jjtThis.setName(getToken(0).getImage()); }
   FormalParameters()
   [ Dims() ]
   [ ThrowsList() ]
@@ -1512,7 +1524,12 @@ private void ConstructorBlock() #Block:
 {}
 {
     "{" { tokenContexts.push(TokenContext.BLOCK); }
-        [ LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation() ]
+        (
+            LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation()
+               |
+            ( LOOKAHEAD(2) BlockStatement() )*
+            [ LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation() ]
+        )
         ( BlockStatement() )*
     "}" { tokenContexts.pop(); }
 }
@@ -1689,7 +1706,7 @@ void ClassOrInterfaceType() #void:
         // a type name, otherwise it wouldn't have compiled. So it's not ambiguous and we can
         // start fresh: "@B Map.Entry" will be unambiguously [[@B Map].Entry]
 
-        (<IDENTIFIER> {setLastTokenImage(jjtThis);} [ TypeArguments() ]) #ClassType
+        (<IDENTIFIER> { jjtThis.setSimpleName(getToken(0).getImage()); } [ TypeArguments() ]) #ClassType
   |
 
 
@@ -1701,7 +1718,7 @@ void ClassOrInterfaceType() #void:
       AmbiguousName()
       [ TypeArguments() #ClassType(2) ]
       {
-        // At this point the first ClassOrInterfaceType may be on top of the stack,
+        // At this point the first ClassType may be on top of the stack,
         // but its image is not set. If it is on the stack we need to shrink the bounds
         // of the ambiguous name, or delete it.
         Node first = jjtree.peekNode();
@@ -1731,7 +1748,7 @@ private void ClassTypeSegment() #ClassType(jjtree.nodeArity() + 1):
      TypeAnnotListNoInject()
      <IDENTIFIER>
      // We'll enclose the previous segment
-     { setLastTokenImage(jjtThis); }
+     { jjtThis.setSimpleName(getToken(0).getImage()); }
      [ TypeArguments() ]
 }
 
@@ -1895,16 +1912,7 @@ void Pattern() #void:
 {}
 {
     LOOKAHEAD((Annotation())* ReferenceType() "(") RecordPattern()
-    | LOOKAHEAD("(") ParenthesizedPattern()
     | TypePattern()
-}
-
-// ParenthesizedPatterns are removed with Java 21 (JEP 441), but needed for now to support Java 20 Preview
-// TODO: Remove ParenthesizedPattern once java 20-preview is removed
-void ParenthesizedPattern() #void:
-{}
-{
-    "(" Pattern() ")" { AstImplUtil.bumpParenDepth((ASTPattern) jjtree.peekNode()); }
 }
 
 void TypePattern():
@@ -2259,7 +2267,7 @@ void MethodReference() #MethodReference(jjtree.nodeArity() + 1): // LHS is injec
 {
   "::"
   [TypeArguments()]
-  ( "new" | <IDENTIFIER> ) {setLastTokenImage(jjtThis);}
+  ( "new" | <IDENTIFIER> ) { jjtThis.setMethodName(getToken(0).getImage()); }
   {/* empty, to set the image before jjtClose */}
 }
 
@@ -2341,10 +2349,10 @@ void StringTemplate() #void :
 {
   { tokenContexts.push(TokenContext.STRING_TEMPLATE); }
 
-        <STRING_TEMPLATE_BEGIN> { setLastTokenImage(jjtThis); } #TemplateFragment
+        <STRING_TEMPLATE_BEGIN> { jjtThis.setContent(getToken(0).getImage()); } #TemplateFragment
         EmbeddedExpression()
-        ( <STRING_TEMPLATE_MID> { setLastTokenImage(jjtThis); } #TemplateFragment EmbeddedExpression() )*
-        <STRING_TEMPLATE_END> { setLastTokenImage(jjtThis); } #TemplateFragment
+        ( <STRING_TEMPLATE_MID> { jjtThis.setContent(getToken(0).getImage()); } #TemplateFragment EmbeddedExpression() )*
+        <STRING_TEMPLATE_END> { jjtThis.setContent(getToken(0).getImage()); } #TemplateFragment
 
   { tokenContexts.pop(); }
 }
@@ -2354,10 +2362,10 @@ void TextBlockTemplate() #void :
 {
   { tokenContexts.push(TokenContext.TEXT_BLOCK_TEMPLATE); }
 
-        <TEXT_BLOCK_TEMPLATE_BEGIN> { setLastTokenImage(jjtThis); } #TemplateFragment
+        <TEXT_BLOCK_TEMPLATE_BEGIN> { jjtThis.setContent(getToken(0).getImage()); } #TemplateFragment
         EmbeddedExpression()
-        ( <TEXT_BLOCK_TEMPLATE_MID> { setLastTokenImage(jjtThis); } #TemplateFragment EmbeddedExpression() )*
-        <TEXT_BLOCK_TEMPLATE_END> { setLastTokenImage(jjtThis); } #TemplateFragment
+        ( <TEXT_BLOCK_TEMPLATE_MID> { jjtThis.setContent(getToken(0).getImage()); } #TemplateFragment EmbeddedExpression() )*
+        <TEXT_BLOCK_TEMPLATE_END> { jjtThis.setContent(getToken(0).getImage()); } #TemplateFragment
 
   { tokenContexts.pop(); }
 }
@@ -2771,9 +2779,7 @@ void ForStatement() #void:
 void EnhancedForDeclaration() #void:
 {}
 {
-      LOOKAHEAD(LocalVariableDeclaration()) LocalVariableDeclaration()
-    // TODO: a recored pattern here is only valid with Java 20 Preview and not anymore with Java 21 (see JEP 440)
-    | RecordPattern()
+      LocalVariableDeclaration()
 }
 
 void ForInit() :
@@ -2980,7 +2986,7 @@ void TypeAnnotation() #void:
 void AnnotationTypeDeclaration():
 {}
 {
-  "@" "interface" <IDENTIFIER> { setLastTokenImage(jjtThis); }
+  "@" "interface" <IDENTIFIER> { jjtThis.setSimpleName(getToken(0).getImage()); }
   AnnotationTypeBody()
 }
 
@@ -3015,7 +3021,7 @@ void AnnotationMethodDeclaration() #MethodDeclaration:
 {}
 {
   Type()
-  <IDENTIFIER> { setLastTokenImage(jjtThis); }
+  <IDENTIFIER> { jjtThis.setName(getToken(0).getImage()); }
   ("(" ")") #FormalParameters
   [ Dims() ]
   [ DefaultValue() ] ";"
@@ -3057,7 +3063,7 @@ void ModuleDirective() #void:
 void ModuleName():
 { String name; }
 {
-  name=VoidNameNoLookahead() { jjtThis.setImage(name); }
+  name=VoidNameNoLookahead() { jjtThis.setName(name); }
 }
 
 void AmbiguousName():

@@ -13,7 +13,7 @@ import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 /**
@@ -44,9 +44,13 @@ public final class PmdRootLogger {
                 // need to reload the logger with the new configuration
                 log = LoggerFactory.getLogger(PMD_CLI_LOGGER);
                 resetLogLevel = true;
+
+                // logging, mostly for testing purposes
+                Level defaultLogLevel = Slf4jSimpleConfiguration.getDefaultLogLevel();
+                log.debug("Log level is at {}", defaultLogLevel);
             }
 
-            MessageReporter pmdReporter = setupMessageReporter();
+            PmdReporter pmdReporter = setupMessageReporter();
             conf.setReporter(pmdReporter);
             return runnable.apply(conf);
         } finally {
@@ -58,19 +62,15 @@ public final class PmdRootLogger {
         }
     }
 
-    private static @NonNull MessageReporter setupMessageReporter() {
+    private static @NonNull PmdReporter setupMessageReporter() {
         // Note: This implementation uses slf4j as the backend. If PMD is integrated into an application
         // a slf4j implementation binding must be provided to see any loggings (even errors).
         // In pmd-cli, we use slf4j-simple.
 
         // create a top-level reporter
-        // TODO CLI errors should also be reported through this
-        MessageReporter pmdReporter = new SimpleMessageReporter(log);
+        PmdReporter pmdReporter = new SimpleMessageReporter(log);
         // always install java.util.logging to slf4j bridge
         Slf4jSimpleConfiguration.installJulBridge();
-        // logging, mostly for testing purposes
-        Level defaultLogLevel = Slf4jSimpleConfiguration.getDefaultLogLevel();
-        log.info("Log level is at {}", defaultLogLevel);
         return pmdReporter;
     }
 }

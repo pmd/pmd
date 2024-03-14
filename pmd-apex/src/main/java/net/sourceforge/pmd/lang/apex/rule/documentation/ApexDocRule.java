@@ -24,7 +24,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
-import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -179,7 +178,7 @@ public class ApexDocRule extends AbstractApexRule {
     private ApexDocComment getApexDocComment(ApexNode<?> node) {
         ASTFormalComment comment = node.firstChild(ASTFormalComment.class);
         if (comment != null) {
-            Chars token = comment.getToken();
+            String token = comment.getImage();
 
             boolean hasDescription = DESCRIPTION_PATTERN.matcher(token).find();
             boolean hasReturn = RETURN_PATTERN.matcher(token).find();

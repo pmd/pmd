@@ -3,7 +3,7 @@ title: Old Release Notes
 permalink: pmd_release_notes_old.html
 ---
 
-Previous versions of PMD can be downloaded here: https://github.com/pmd/pmd/releases
+Previous versions of PMD can be downloaded here: [Releases - pmd/pmd (GitHub)](https://github.com/pmd/pmd/releases)
 
 
 
@@ -225,8 +225,8 @@ The following previously deprecated methods have been removed:
 * pmd-core
   * `net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder#delim(char)`
   * `net.sourceforge.pmd.properties.PropertySource#setProperty(...)`
-  * `net.sourceforge.pmd.properties.PropertyTypeId#factoryFor(...)`
-  * `net.sourceforge.pmd.properties.PropertyTypeId#typeIdFor(...)`
+  * `net.sourceforge.pmd.properties.internal.PropertyTypeId#factoryFor(...)`
+  * `net.sourceforge.pmd.properties.internal.PropertyTypeId#typeIdFor(...)`
   * `net.sourceforge.pmd.properties.PropertyDescriptor`: removed methods errorFor, type, isMultiValue,
      uiOrder, compareTo, isDefinedExternally, valueFrom, asDelimitedString
 

@@ -7,7 +7,6 @@ package net.sourceforge.pmd.util.designerbindings;
 import java.util.Collection;
 import java.util.Collections;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
@@ -19,7 +18,6 @@ import net.sourceforge.pmd.lang.symboltable.ScopedNode;
  * @author Clément Fournier
  * @since 6.20.0
  */
-@Experimental
 public interface DesignerBindings {
 
     /**
@@ -120,7 +118,6 @@ public interface DesignerBindings {
     /**
      * See {@link #getIcon(Node)}.
      */
-    @Experimental
     enum TreeIconId {
         CLASS,
         METHOD,

@@ -8,8 +8,8 @@ import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.Node
-import net.sourceforge.pmd.lang.ast.test.NodeSpec
-import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.test.ast.NodeSpec
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.since
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J9
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol

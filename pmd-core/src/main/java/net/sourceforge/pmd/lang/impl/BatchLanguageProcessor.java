@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.lang.InternalApiBridge;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -60,7 +61,7 @@ public abstract class BatchLanguageProcessor<P extends LanguagePropertyBundle> i
         // The given analysis task has all files to analyse, not only the ones for this language.
         List<TextFile> files = new ArrayList<>(task.getFiles());
         files.removeIf(it -> !it.getLanguageVersion().getLanguage().equals(getLanguage()));
-        AnalysisTask newTask = task.withFiles(files);
+        AnalysisTask newTask = InternalApiBridge.taskWithFiles(task, files);
 
         task.getRulesets().initializeRules(task.getLpRegistry(), task.getMessageReporter());
 

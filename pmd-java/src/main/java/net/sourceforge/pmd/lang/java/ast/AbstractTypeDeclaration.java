@@ -11,7 +11,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
-import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 
 /**
@@ -22,6 +21,7 @@ abstract class AbstractTypeDeclaration extends AbstractTypedSymbolDeclarator<JCl
 
     private String binaryName;
     private @Nullable String canonicalName;
+    private String simpleName;
 
     AbstractTypeDeclaration(int i) {
         super(i);
@@ -37,21 +37,15 @@ abstract class AbstractTypeDeclaration extends AbstractTypedSymbolDeclarator<JCl
         }
     }
 
-    /**
-     * @deprecated Use {@link #getSimpleName()}
-     */
-    @Deprecated // note: already deprecated in 6.55.0
-    @DeprecatedAttribute(replaceWith = "@SimpleName")
-    @Override
-    public String getImage() {
-        return getSimpleName();
-    }
-
     @NonNull
     @Override
     public String getSimpleName() {
-        assert super.getImage() != null : "Null simple name";
-        return super.getImage();
+        assert simpleName != null : "Null simple name";
+        return simpleName;
+    }
+
+    final void setSimpleName(String simpleName) {
+        this.simpleName = simpleName;
     }
 
     @Override

@@ -9,7 +9,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
-import net.sourceforge.pmd.lang.apex.rule.AbstractApexUnitTestRule;
 
 /**
  * <p>
@@ -24,7 +23,6 @@ public class ApexUnitTestShouldNotUseSeeAllDataTrueRule extends AbstractApexUnit
 
     @Override
     public Object visit(final ASTUserClass node, final Object data) {
-        // @isTest(seeAllData) was introduced in v24, and was set to false by default
         if (!isTestMethodOrClass(node)) {
             return data;
         }

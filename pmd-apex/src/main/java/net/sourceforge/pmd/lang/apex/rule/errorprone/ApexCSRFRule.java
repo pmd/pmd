@@ -19,7 +19,6 @@ import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
  */
 public class ApexCSRFRule extends AbstractApexRule {
     public static final String INIT = "init";
-    private static final String STATIC_INITIALIZER = "<clinit>";
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
@@ -52,12 +51,12 @@ public class ApexCSRFRule extends AbstractApexRule {
         }
 
         String name = node.getImage();
-        if (isInitializerMethod(name) && Helper.foundAnyDML(node)) {
+        if ((node.isStaticInitializer() || isInitializerMethod(name)) && Helper.foundAnyDML(node)) {
             asCtx(data).addViolation(node);
         }
     }
 
     private boolean isInitializerMethod(String name) {
-        return INIT.equalsIgnoreCase(name) || STATIC_INITIALIZER.equals(name);
+        return INIT.equalsIgnoreCase(name);
     }
 }

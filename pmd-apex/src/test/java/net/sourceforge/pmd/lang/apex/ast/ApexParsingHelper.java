@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
-import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
+import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 
 public class ApexParsingHelper extends BaseParsingHelper<ApexParsingHelper, ASTApexFile> {
 

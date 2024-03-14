@@ -8,8 +8,6 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
-import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.VerboseLogger
-import java.util.*
 
 /**
  */

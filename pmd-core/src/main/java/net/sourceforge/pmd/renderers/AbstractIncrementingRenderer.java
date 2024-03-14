@@ -21,7 +21,7 @@ import net.sourceforge.pmd.reporting.RuleViolation;
  * delivery of source file reports are reflected in the output of the
  * {@link Renderer}, so report output can be different between runs.
  *
- * Only processing errors and suppressed violations are accumulated across all
+ * <p>Only processing errors and suppressed violations are accumulated across all
  * files. These are intended to be processed in the {@link #end()} method.
  */
 public abstract class AbstractIncrementingRenderer extends AbstractRenderer {

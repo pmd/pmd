@@ -29,6 +29,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.AbstractConfiguration;
+import net.sourceforge.pmd.cpd.internal.CpdLanguagePropertiesDefaults;
 import net.sourceforge.pmd.internal.util.FileFinder;
 import net.sourceforge.pmd.internal.util.FileUtil;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -83,7 +84,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private boolean noSkipBlocks = false;
 
-    private String skipBlocksPattern = CpdLanguageProperties.DEFAULT_SKIP_BLOCKS_PATTERN;
+    private String skipBlocksPattern = CpdLanguagePropertiesDefaults.DEFAULT_SKIP_BLOCKS_PATTERN;
 
     private boolean help;
 
@@ -295,6 +296,9 @@ public class CPDConfiguration extends AbstractConfiguration {
         } else if (language instanceof JSPLanguage) {
             filenameFilter = language.getFileFilter();
             setForceLanguageVersion(JspLanguageModule.getInstance().getDefaultVersion());
+        } else if (language instanceof LanguageFactory.CpdLanguageAdapter) {
+            filenameFilter = language.getFileFilter();
+            setForceLanguageVersion(((LanguageFactory.CpdLanguageAdapter) language).getLanguage().getDefaultVersion());
         } else {
             throw new UnsupportedOperationException("Language " + language.getName() + " is not supported");
         }

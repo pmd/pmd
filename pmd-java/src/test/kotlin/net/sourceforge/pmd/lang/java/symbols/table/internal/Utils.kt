@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBeA
+import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId
 import net.sourceforge.pmd.lang.java.ast.JavaNode
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol

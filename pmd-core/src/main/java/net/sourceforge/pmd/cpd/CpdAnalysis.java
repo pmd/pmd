@@ -26,23 +26,24 @@ import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.document.InternalApiBridge;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
  * Main programmatic API of CPD. This is not a CLI entry point, see module
  * {@code pmd-cli} for that.
  *
- * <h3>Usage overview</h3>
+ * <h2>Usage overview</h2>
  *
  * <p>Create and configure a {@link CPDConfiguration}, then use {@link #create(CPDConfiguration)} to
  * obtain an instance. You can perform additional configuration on the instance, e.g. adding
  * files to process or add a listener. Then call {@link #performAnalysis()} or {@link #performAnalysis(Consumer)}
  * in order to get the report directly.
  *
- * <h3>Simple example</h3>
+ * <h2>Simple example</h2>
  *
  * <pre>{@code
  *   CPDConfiguration config = new CPDConfiguration();
@@ -70,7 +71,7 @@ public final class CpdAnalysis implements AutoCloseable {
     private static final Logger LOGGER = LoggerFactory.getLogger(CpdAnalysis.class);
     private final CPDConfiguration configuration;
     private final FileCollector files;
-    private final MessageReporter reporter;
+    private final PmdReporter reporter;
     private final @Nullable CPDReportRenderer renderer;
     private @NonNull CPDListener listener = new CPDNullListener();
 
@@ -78,7 +79,7 @@ public final class CpdAnalysis implements AutoCloseable {
     private CpdAnalysis(CPDConfiguration config) {
         this.configuration = config;
         this.reporter = config.getReporter();
-        this.files = FileCollector.newCollector(
+        this.files = InternalApiBridge.newCollector(
             config.getLanguageVersionDiscoverer(),
             reporter
         );

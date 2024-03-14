@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.ClassRefExpression;
+import com.google.summit.ast.expression.TypeRefExpression;
 
-public final class ASTClassRefExpression extends AbstractApexNode<ClassRefExpression> {
+public final class ASTClassRefExpression extends AbstractApexNode.Single<TypeRefExpression> {
 
-    ASTClassRefExpression(ClassRefExpression classRefExpression) {
-        super(classRefExpression);
+    ASTClassRefExpression(TypeRefExpression typeRefExpression) {
+        super(typeRefExpression);
     }
 
 

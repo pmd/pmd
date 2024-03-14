@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.modelica.resolver;
 
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionState;
+
 /**
  * This interface represents something that, being looked up by some prefix of composite name,
  * may resolve further name parts. Lexically, this is represented by a dot-notation.

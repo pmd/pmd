@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import net.sourceforge.pmd.testframework.PmdRuleTst;
+import net.sourceforge.pmd.test.PmdRuleTst;
 
 class UnnecessaryFullyQualifiedNameTest extends PmdRuleTst {
     // Do not delete these two enums - it is needed for a test case
