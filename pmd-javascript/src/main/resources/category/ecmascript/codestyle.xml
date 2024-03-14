@@ -222,15 +222,11 @@ be misleading.  Considering removing this unnecessary Block.
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>
-<![CDATA[
-//Block[not(parent::FunctionNode or parent::IfStatement or parent::ForLoop or parent::ForInLoop
-    or parent::WhileLoop or parent::DoLoop or parent::TryStatement or parent::CatchClause)]
-|
-//Scope[not(parent::FunctionNode or parent::IfStatement or parent::ForLoop or parent::ForInLoop
-    or parent::WhileLoop or parent::DoLoop or parent::TryStatement or parent::CatchClause)]
-]]>
-                </value>
+                <value><![CDATA[
+                      /AstRoot/Scope[not(preceding::EmptyStatement)]
+                    | //SwitchCase[Scope]
+                    | //(Scope|Block)[Scope|Block][count(*) = 1]
+                ]]></value>
             </property>
         </properties>
         <example>
