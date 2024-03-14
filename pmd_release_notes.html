@@ -2261,6 +2261,11 @@ The rules have been moved into categories with PMD 6.</p>
       <li><a href="https://github.com/pmd/pmd/issues/3766">#3766</a>: [apex] Replace Jorje with fully open source front-end</li>
     </ul>
   </li>
+  <li>apex-bestpractices
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4556">#4556</a>: [apex] UnusedLocalVariable flags for variables which are using in SOQL/SOSL binds</li>
+    </ul>
+  </li>
   <li>apex-documentation
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4774">#4774</a>: [apex] ApexDoc false-positive for the first method of an annotated Apex class</li>
@@ -2318,6 +2323,7 @@ The rules have been moved into categories with PMD 6.</p>
   </li>
   <li>javascript
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2305">#2305</a>: [javascript] UnnecessaryBlock - false positives with destructuring assignments</li>
       <li><a href="https://github.com/pmd/pmd/pull/4673">#4673</a>:   [javascript] CPD: Added support for decorator notation</li>
     </ul>
   </li>
@@ -2353,6 +2359,7 @@ The rules have been moved into categories with PMD 6.</p>
   <li><a href="https://github.com/pmd/pmd/pull/4251">#4251</a>: [apex] Summit-AST Apex module - Part 6 Passing testsuite - <a href="https://github.com/aaronhurst-google">Aaron Hurst</a> (@aaronhurst-google)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4448">#4448</a>: [apex] Bump summit-ast to new release 2.1.0 (and remove workaround) - <a href="https://github.com/aaronhurst-google">Aaron Hurst</a> (@aaronhurst-google)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4479">#4479</a>: [apex] Merge main (7.x) branch into experimental-apex-parser and fix tests - <a href="https://github.com/aaronhurst-google">Aaron Hurst</a> (@aaronhurst-google)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4562">#4562</a>: [apex] Fixes #4556 - Update Apex bind regex match for all possible combinations - <a href="https://github.com/nwcm">nwcm</a> (@nwcm)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4640">#4640</a>: [cli] Launch script fails if run via “bash pmd” - <a href="https://github.com/shai-bennathan">Shai Bennathan</a> (@shai-bennathan)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4673">#4673</a>: [javascript] CPD: Added support for decorator notation - <a href="https://github.com/wener-tiobe">Wener</a> (@wener-tiobe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4677">#4677</a>: [apex] Add new rule: OperationWithHighCostInLoop - <a href="https://github.com/tprouvot">Thomas Prouvot</a> (@tprouvot)</li>
@@ -2365,6 +2372,7 @@ The rules have been moved into categories with PMD 6.</p>
   <li><a href="https://github.com/pmd/pmd/pull/4754">#4754</a>: [java] EmptyControlStatementRule: Add allowCommentedBlocks property - <a href="https://github.com/bergander">Andreas Bergander</a> (@bergander)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4759">#4759</a>: [java] fix: remove delimiter attribute from ruleset category/java/errorprone.xml - <a href="https://github.com/marcindabrowski">Marcin Dąbrowski</a> (@marcindabrowski)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4825">#4825</a>: [plsql] Fix ignored WITH clause for SELECT INTO statements - <a href="https://github.com/lbovet">Laurent Bovet</a> (@lbovet)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4857">#4857</a>: [javascript] Fix UnnecessaryBlock issues with empty statements - <a href="https://github.com/oleksandr-shvets">Oleksandr Shvets</a> (@oleksandr-shvets)</li>
 </ul>
 
 <h3 id="-major-features-and-enhancements">🚀 Major Features and Enhancements</h3>
@@ -3005,6 +3013,11 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/4453">#4453</a>: [apex] [7.0-rc1] Exception while initializing Apexlink (Index 34812 out of bounds for length 34812)</li>
     </ul>
   </li>
+  <li>apex-bestpractices
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4556">#4556</a>: [apex] UnusedLocalVariable flags for variables which are using in SOQL/SOSL binds</li>
+    </ul>
+  </li>
   <li>apex-design
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2667">#2667</a>: [apex] Integrate nawforce/ApexLink to build robust Unused rule</li>
@@ -3240,6 +3253,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
   </li>
   <li>javascript
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2305">#2305</a>: [javascript] UnnecessaryBlock - false positives with destructuring assignments</li>
       <li><a href="https://github.com/pmd/pmd/pull/4673">#4673</a>:   [javascript] CPD: Added support for decorator notation</li>
     </ul>
   </li>
@@ -3318,6 +3332,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
   <li><a href="https://github.com/pmd/pmd/pull/4541">#4541</a>: [java] Fix #4458: A false positive about RedundantFieldInitializer and @<!-- -->Value - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4542">#4542</a>: [java] Fix #4510: A false positive about ConstructorCallsOverridableMethod and @<!-- -->Value - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4553">#4553</a>: [java] Fix #4492: GuardLogStatement gives false positive when argument is a Java method reference - <a href="https://github.com/anastasiia-koba">Anastasiia Koba</a> (@anastasiia-koba)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4562">#4562</a>: [apex] Fixes #4556 - Update Apex bind regex match for all possible combinations - <a href="https://github.com/nwcm">nwcm</a> (@nwcm)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4637">#4637</a>: [java] fix #4634 - JUnit4TestShouldUseTestAnnotation false positive with TestNG - <a href="https://github.com/krdabrowski">Krystian Dabrowski</a> (@krdabrowski)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4640">#4640</a>: [cli] Launch script fails if run via “bash pmd” - <a href="https://github.com/shai-bennathan">Shai Bennathan</a> (@shai-bennathan)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4649">#4649</a>: [apex] Add SObjectType and SObjectField to list of injectable SOQL variable types - <a href="https://github.com/rcorfieldffdc">Richard Corfield</a> (@rcorfieldffdc)</li>
@@ -3335,6 +3350,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
   <li><a href="https://github.com/pmd/pmd/pull/4754">#4754</a>: [java] EmptyControlStatementRule: Add allowCommentedBlocks property - <a href="https://github.com/bergander">Andreas Bergander</a> (@bergander)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4759">#4759</a>: [java] fix: remove delimiter attribute from ruleset category/java/errorprone.xml - <a href="https://github.com/marcindabrowski">Marcin Dąbrowski</a> (@marcindabrowski)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4825">#4825</a>: [plsql] Fix ignored WITH clause for SELECT INTO statements - <a href="https://github.com/lbovet">Laurent Bovet</a> (@lbovet)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4857">#4857</a>: [javascript] Fix UnnecessaryBlock issues with empty statements - <a href="https://github.com/oleksandr-shvets">Oleksandr Shvets</a> (@oleksandr-shvets)</li>
 </ul>
 
 <h3 id="-stats">📈 Stats</h3>
@@ -3374,7 +3390,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Mar 11, 2024 <br />
+             Site last generated: Mar 14, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
