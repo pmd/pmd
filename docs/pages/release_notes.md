@@ -398,7 +398,7 @@ The rules have been moved into categories with PMD 6.
 
 #### API Changes
 
-See [Detailed Release Notes for PMD 7.0.0]({{ baseurl }}pmd_release_notes_pmd7.html#700).
+See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#700).
 
 #### External Contributions
 * [#4093](https://github.com/pmd/pmd/pull/4093): \[apex] Summit-AST Apex module - Part 1 - [Edward Klimoshenko](https://github.com/eklimo) (@eklimo)

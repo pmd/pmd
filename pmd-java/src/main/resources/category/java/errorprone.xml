@@ -69,7 +69,7 @@ If the call to `setAccessible` is wrapped within a `PrivilegedAction`, then the 
 is assumed to be deliberate and is not reported.
 
 Note that with Java 17 the Security Manager, which is used for `PrivilegedAction` execution,
-is deprecated: [JEP 411: Deprecate the Security Manager for Removal](https://openjdk.java.net/jeps/411).
+is deprecated: [JEP 411: Deprecate the Security Manager for Removal](https://openjdk.org/jeps/411).
 For future-proof code, deliberate access alteration should be suppressed using the usual
 suppression methods (e.g. by using `@SuppressWarnings` annotation).
         </description>
