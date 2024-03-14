@@ -10,9 +10,7 @@ import java.io.Reader;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * Represents a textual document, providing methods to edit it incrementally
@@ -20,18 +18,14 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  * to a {@link TextFile}. It reflects some in-memory snapshot of the file,
  * though the file may still be edited externally.
  *
- * <p>TextDocument is meant to replace CPD's {@link SourceCode} and PMD's
- * {@link DataSource}, though the abstraction level of {@link DataSource}
- * is the {@link TextFile}.
- *
  * <p>Note that the backing {@link TextFile} is purposefully not accessible
  * from a text document. Exposing it here could lead to files being written
  * to from within rules, while we want to eventually build an API that allows
  * file edition based on AST manipulation.
  *
- * <h3>Coordinates in TextDocument</h3>
+ * <h2>Coordinates in TextDocument</h2>
  *
- * This interface is an abstraction over a piece of text, which might not
+ * <p>This interface is an abstraction over a piece of text, which might not
  * correspond to the backing source file. This allows the document to
  * be a view on a piece of a larger document (eg, a Javadoc comment, or
  * a string in which a language is injected). Another use case is to perform
@@ -42,7 +36,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  * the backing text file, which we call the <i>root</i> text document.
  * Logical documents built on top of it are called <i>views</i>.
  *
- * Text documents use <i>offsets</i> and {@link TextRegion} to address their
+ * <p>Text documents use <i>offsets</i> and {@link TextRegion} to address their
  * contents. These are always relative to the {@linkplain #getText() text} of
  * the document. Line and column information are provided by {@link FileLocation}
  * (see {@link #toLocation(TextRegion)}), and are always absolute (ie,
@@ -86,14 +80,9 @@ public interface TextDocument extends Closeable {
     LanguageVersion getLanguageVersion();
 
     /**
-     * Returns {@link TextFile#getPathId()} for the text file backing this document.
+     * Returns {@link TextFile#getFileId()} for the text file backing this document.
      */
-    String getPathId();
-
-    /**
-     * Returns {@link TextFile#getDisplayName()} for the text file backing this document.
-     */
-    String getDisplayName();
+    FileId getFileId();
 
 
     /**
@@ -168,7 +157,6 @@ public interface TextDocument extends Closeable {
 
     /**
      * Returns a region that spans the text of all the given lines.
-     * This is intended to provide a replacement for {@link SourceCode#getSlice(int, int)}.
      *
      * <p>Note that, as line numbers may only be obtained from {@link #toLocation(TextRegion)},
      * and hence are line numbers of the original source, both parameters
@@ -200,12 +188,12 @@ public interface TextDocument extends Closeable {
 
     /**
      * Returns the line and column at the given offset (inclusive).
-     * Note that the line/column cannot be converted back. They are
-     * absolute in the coordinate system of the original document.
      *
      * @param offset A source offset (0-based), can range in {@code [0, length]}.
      *
      * @throws IndexOutOfBoundsException if the offset is out of bounds
+     * @see #lineColumnAtOffset(int, boolean)
+     * @see #offsetAtLineColumn(TextPos2d)
      */
     default TextPos2d lineColumnAtOffset(int offset) {
         return lineColumnAtOffset(offset, true);
@@ -225,9 +213,19 @@ public interface TextDocument extends Closeable {
      * @return A position, in the coordinate system of the root document
      *
      * @throws IndexOutOfBoundsException if the offset is out of bounds
+     * @see #offsetAtLineColumn(TextPos2d)
      */
     TextPos2d lineColumnAtOffset(int offset, boolean inclusive);
 
+    /**
+     * Calculates the offset from a given line/column.
+     *
+     * @param position the line/column
+     *
+     * @see #lineColumnAtOffset(int)
+     * @see #lineColumnAtOffset(int, boolean)
+     */
+    int offsetAtLineColumn(TextPos2d position);
 
     /**
      * Closing a document closes the underlying {@link TextFile}.
@@ -261,23 +259,23 @@ public interface TextDocument extends Closeable {
     /**
      * Returns a read-only document for the given text.
      *
-     * @see TextFile#forCharSeq(CharSequence, String, LanguageVersion)
+     * @see TextFile#forCharSeq(CharSequence, FileId, LanguageVersion)
      */
     static TextDocument readOnlyString(final CharSequence source, LanguageVersion lv) {
-        return readOnlyString(source, TextFile.UNKNOWN_FILENAME, lv);
+        return readOnlyString(source, FileId.UNKNOWN, lv);
     }
 
     /**
      * Returns a read-only document for the given text. This works as
      * if by calling {@link TextDocument#create(TextFile)} on a textfile
-     * produced by {@link TextFile#forCharSeq(CharSequence, String, LanguageVersion) forString},
+     * produced by {@link TextFile#forCharSeq(CharSequence, FileId, LanguageVersion) forString},
      * but doesn't throw {@link IOException}, as such text files will
      * not throw.
      *
-     * @see TextFile#forCharSeq(CharSequence, String, LanguageVersion)
+     * @see TextFile#forCharSeq(CharSequence, FileId, LanguageVersion)
      */
     @SuppressWarnings("PMD.CloseResource")
-    static TextDocument readOnlyString(@NonNull CharSequence source, @NonNull String filename, @NonNull LanguageVersion lv) {
+    static TextDocument readOnlyString(@NonNull CharSequence source, @NonNull FileId filename, @NonNull LanguageVersion lv) {
         TextFile textFile = TextFile.forCharSeq(source, filename, lv);
         try {
             return create(textFile);
@@ -285,5 +283,4 @@ public interface TextDocument extends Closeable {
             throw new AssertionError("String text file should never throw IOException", e);
         }
     }
-
 }

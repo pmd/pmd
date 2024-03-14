@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
@@ -16,7 +16,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * @author Clément Fournier
  * @since 6.6.0
  */
-public final class LocalVariableNamingConventionsRule extends AbstractNamingConventionRule<ASTVariableDeclaratorId> {
+public final class LocalVariableNamingConventionsRule extends AbstractNamingConventionRule<ASTVariableId> {
 
     // These are not exhaustive, but are chosen to be the most useful, for a start
 
@@ -27,19 +27,17 @@ public final class LocalVariableNamingConventionsRule extends AbstractNamingConv
 
 
     public LocalVariableNamingConventionsRule() {
-        super(ASTVariableDeclaratorId.class);
+        super(ASTVariableId.class);
 
         definePropertyDescriptor(localVarRegex);
         definePropertyDescriptor(finalVarRegex);
         definePropertyDescriptor(exceptionBlockParameterRegex);
-
-        addRuleChainVisit(ASTVariableDeclaratorId.class);
     }
 
 
 
     @Override
-    public Object visit(ASTVariableDeclaratorId node, Object data) {
+    public Object visit(ASTVariableId node, Object data) {
 
         if (node.isExceptionBlockParameter()) {
             checkMatches(node, exceptionBlockParameterRegex, data);
@@ -58,13 +56,13 @@ public final class LocalVariableNamingConventionsRule extends AbstractNamingConv
 
 
     @Override
-    String nameExtractor(ASTVariableDeclaratorId node) {
+    String nameExtractor(ASTVariableId node) {
         return node.getName();
     }
 
 
     @Override
-    String kindDisplayName(ASTVariableDeclaratorId node, PropertyDescriptor<Pattern> descriptor) {
+    String kindDisplayName(ASTVariableId node, PropertyDescriptor<Pattern> descriptor) {
         if (node.isExceptionBlockParameter()) {
             return "exception block parameter";
         } else if (node.isLocalVariable()) {

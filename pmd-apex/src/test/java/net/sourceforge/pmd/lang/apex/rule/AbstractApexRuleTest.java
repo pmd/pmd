@@ -6,14 +6,14 @@ package net.sourceforge.pmd.lang.apex.rule;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.lang.apex.ast.ASTAnonymousClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserTrigger;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserTestBase;
-import net.sourceforge.pmd.lang.ast.test.TestUtilsKt;
+import net.sourceforge.pmd.lang.test.ast.TestUtilsKt;
+import net.sourceforge.pmd.reporting.Report;
 
 class AbstractApexRuleTest extends ApexParserTestBase {
 
@@ -53,31 +53,31 @@ class AbstractApexRuleTest extends ApexParserTestBase {
 
         @Override
         public Object visit(ASTUserClass node, Object data) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
             return data;
         }
 
         @Override
         public Object visit(ASTUserInterface node, Object data) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
             return data;
         }
 
         @Override
         public Object visit(ASTUserTrigger node, Object data) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
             return data;
         }
 
         @Override
         public Object visit(ASTUserEnum node, Object data) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
             return data;
         }
 
         @Override
         public Object visit(ASTAnonymousClass node, Object data) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
             return data;
         }
     }

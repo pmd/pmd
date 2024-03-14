@@ -7,13 +7,13 @@ package net.sourceforge.pmd.lang.java.rule.internal;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -100,9 +100,8 @@ public class TypeResTestRule extends AbstractJavaRule {
     }
 
 
-    @NonNull
-    public String position(JavaNode node) {
-        return "In: " + node.getTextDocument().getDisplayName() + ":" + node.getBeginLine() + ":" + node.getBeginColumn();
+    public @NonNull String position(JavaNode node) {
+        return "In: " + node.getReportLocation().startPosToStringWithFile();
     }
 
     @Override

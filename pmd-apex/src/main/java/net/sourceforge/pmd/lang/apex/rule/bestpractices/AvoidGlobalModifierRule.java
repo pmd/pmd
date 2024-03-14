@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 
-import java.util.List;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
@@ -27,10 +25,10 @@ public class AvoidGlobalModifierRule extends AbstractApexRule {
     }
 
     private Object checkForGlobal(ApexNode<?> node, Object data) {
-        ASTModifierNode modifierNode = node.getFirstChildOfType(ASTModifierNode.class);
+        ASTModifierNode modifierNode = node.firstChild(ASTModifierNode.class);
 
         if (isGlobal(modifierNode) && !hasRestAnnotation(modifierNode) && !hasWebServices(node)) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
 
         // Note, the rule reports the whole class, since that's enough and stops to visit right here.
@@ -41,9 +39,8 @@ public class AvoidGlobalModifierRule extends AbstractApexRule {
     }
 
     private boolean hasWebServices(ApexNode<?> node) {
-        List<ASTMethod> methods = node.findChildrenOfType(ASTMethod.class);
-        for (ASTMethod method : methods) {
-            ASTModifierNode methodModifier = method.getFirstChildOfType(ASTModifierNode.class);
+        for (ASTMethod method : node.children(ASTMethod.class)) {
+            ASTModifierNode methodModifier = method.firstChild(ASTModifierNode.class);
             if (isWebService(methodModifier)) {
                 return true;
             }
@@ -60,9 +57,8 @@ public class AvoidGlobalModifierRule extends AbstractApexRule {
     }
 
     private boolean hasRestAnnotation(ASTModifierNode modifierNode) {
-        List<ASTAnnotation> annotations = modifierNode.findChildrenOfType(ASTAnnotation.class);
-        for (ASTAnnotation annotation : annotations) {
-            if (annotation.hasImageEqualTo("RestResource")) {
+        for (ASTAnnotation annotation : modifierNode.children(ASTAnnotation.class)) {
+            if ("RestResource".equalsIgnoreCase(annotation.getName())) {
                 return true;
             }
         }

@@ -7,8 +7,8 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 import java.util.Iterator;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 /**
  * Renderer to another HTML format.
@@ -47,7 +47,7 @@ public class VBHTMLRenderer extends AbstractIncrementingRenderer {
         while (violations.hasNext()) {
             sb.setLength(0);
             RuleViolation rv = violations.next();
-            String nextFilename = determineFileName(rv.getFilename());
+            String nextFilename = determineFileName(rv.getFileId());
             if (!nextFilename.equals(filename)) { // New File
                 if (filename != null) {
                     sb.append("</table></br>");
@@ -97,7 +97,7 @@ public class VBHTMLRenderer extends AbstractIncrementingRenderer {
                     sb.append("<tr id=RowColor2>");
                 }
                 colorize = !colorize;
-                sb.append("<td><font class=body>").append(determineFileName(error.getFile())).append("</font></td>");
+                sb.append("<td><font class=body>").append(determineFileName(error.getFileId())).append("</font></td>");
                 sb.append("<td><font class=body><pre>").append(error.getDetail()).append("</pre></font></td></tr>");
             }
             sb.append("</table>");

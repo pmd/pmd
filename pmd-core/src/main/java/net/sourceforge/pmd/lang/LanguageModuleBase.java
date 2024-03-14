@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang;
 
+import static net.sourceforge.pmd.util.CollectionUtil.emptyList;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.LanguageModuleBase.LanguageMetadata.LangVersionMetadata;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -55,13 +57,19 @@ public abstract class LanguageModuleBase implements Language {
         LanguageVersion defaultVersion = null;
 
         if (metadata.versionMetadata.isEmpty()) {
-            throw new IllegalStateException("No versions for '" + getId() + "'");
+            if (this instanceof PmdCapableLanguage) {
+                // pmd languages need to have versions
+                throw new IllegalStateException("No versions for '" + getId() + "'");
+            } else {
+                // for others, a version is declared implicitly
+                metadata.versionMetadata.add(new LangVersionMetadata());
+            }
         }
 
         int i = 0;
         for (LanguageMetadata.LangVersionMetadata versionId : metadata.versionMetadata) {
             String versionStr = versionId.name;
-            LanguageVersion languageVersion = new LanguageVersion(this, versionStr, i++);
+            LanguageVersion languageVersion = new LanguageVersion(this, versionStr, i++, versionId.aliases);
 
             versions.add(languageVersion);
 
@@ -100,7 +108,7 @@ public abstract class LanguageModuleBase implements Language {
     }
 
     @Override
-    public LanguageVersion getDefaultVersion() {
+    public @NonNull LanguageVersion getDefaultVersion() {
         return defaultVersion;
     }
 
@@ -130,7 +138,7 @@ public abstract class LanguageModuleBase implements Language {
     }
 
     @Override
-    public String getTerseName() {
+    public String getId() {
         return meta.id;
     }
 
@@ -141,7 +149,7 @@ public abstract class LanguageModuleBase implements Language {
 
     @Override
     public String toString() {
-        return getTerseName();
+        return getId();
     }
 
     @Override
@@ -151,7 +159,7 @@ public abstract class LanguageModuleBase implements Language {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
+        return getId().hashCode();
     }
 
     @Override
@@ -181,7 +189,7 @@ public abstract class LanguageModuleBase implements Language {
      * </ul>
      *
      */
-    protected static final class LanguageMetadata {
+    public static final class LanguageMetadata {
 
         /** Language IDs should be conventional Java package names. */
         private static final Pattern VALID_LANG_ID = Pattern.compile("[a-z][_a-z0-9]*");
@@ -269,13 +277,13 @@ public abstract class LanguageModuleBase implements Language {
          * assigned to the language. Extensions should not start with a period
          * {@code .}.
          *
-         * @param e1     First extensions
-         * @param others Other extensions (optional)
+         * @param extensionWithoutPeriod First extensions
+         * @param others                 Other extensions (optional)
          *
          * @throws NullPointerException If any extension is null
          */
-        public LanguageMetadata extensions(String e1, String... others) {
-            this.extensions = new ArrayList<>(setOf(e1, others));
+        public LanguageMetadata extensions(String extensionWithoutPeriod, String... others) {
+            this.extensions = new ArrayList<>(setOf(extensionWithoutPeriod, others));
             AssertionUtil.requireContainsNoNullValue("extensions", this.extensions);
             return this;
         }
@@ -287,7 +295,7 @@ public abstract class LanguageModuleBase implements Language {
          *
          * @param extensions the extensions
          *
-         * @throws NullPointerException If any extension is null
+         * @throws NullPointerException     If any extension is null
          * @throws IllegalArgumentException If no extensions are provided
          */
         public LanguageMetadata extensions(Collection<String> extensions) {
@@ -328,6 +336,25 @@ public abstract class LanguageModuleBase implements Language {
             return this;
         }
 
+
+        /**
+         * Add all the versions of the given language, including the
+         * default version.
+         *
+         * @param language Other language
+         *
+         * @throws NullPointerException     If any parameter is null
+         * @throws IllegalArgumentException If the name or aliases are empty or contain spaces
+         */
+        public LanguageMetadata addAllVersionsOf(Language language) {
+            for (LanguageVersion version : language.getVersions()) {
+                versionMetadata.add(new LangVersionMetadata(version.getVersion(),
+                                                            version.getAliases(),
+                                                            version.equals(language.getDefaultVersion())));
+            }
+            return this;
+        }
+
         /**
          * Record that this language depends on another language, identified
          * by its id. This means any {@link LanguageProcessorRegistry} that
@@ -354,6 +381,12 @@ public abstract class LanguageModuleBase implements Language {
             final String name;
             final List<String> aliases;
             final boolean isDefault;
+
+            private LangVersionMetadata() {
+                this.name = "";
+                this.aliases = emptyList();
+                this.isDefault = true;
+            }
 
             private LangVersionMetadata(String name, List<String> aliases, boolean isDefault) {
                 checkVersionName(name);

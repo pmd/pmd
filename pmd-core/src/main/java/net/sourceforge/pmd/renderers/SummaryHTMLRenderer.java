@@ -5,14 +5,14 @@
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 /**
  * Renderer to a summarized HTML format.
@@ -74,7 +74,7 @@ public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
     }
 
     private static Map<String, MutableInt> getSummary(Report report) {
-        Map<String, MutableInt> summary = new HashMap<>();
+        Map<String, MutableInt> summary = new LinkedHashMap<>();
         for (RuleViolation rv : report.getViolations()) {
             String name = rv.getRule().getName();
             MutableInt count = summary.get(name);

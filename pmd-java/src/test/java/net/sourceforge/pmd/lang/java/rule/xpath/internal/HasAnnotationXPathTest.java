@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 /**
  * @author Clément Fournier
@@ -35,7 +35,7 @@ class HasAnnotationXPathTest extends BaseXPathFunctionTest {
 
     @Test
     void testWrongTypeReturnsFalse() {
-        Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceBody[pmd-java:hasAnnotation('java.lang.Override')]");
+        Rule rule = makeXpathRuleFromXPath("//ClassBody[pmd-java:hasAnnotation('java.lang.Override')]");
         String code = "interface O { @Override void foo(); }";
 
         assertFinds(rule, 0, code);

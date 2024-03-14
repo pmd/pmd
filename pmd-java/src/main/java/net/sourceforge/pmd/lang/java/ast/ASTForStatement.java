@@ -31,7 +31,7 @@ public final class ASTForStatement extends AbstractStatement implements ASTLoopS
 
     @Override
     public ASTExpression getCondition() {
-        return getFirstChildOfType(ASTExpression.class);
+        return firstChild(ASTExpression.class);
     }
 
     /**

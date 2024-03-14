@@ -4,18 +4,20 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+
 import java.lang.reflect.Modifier;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.pcollections.PVector;
 import org.pcollections.TreePVector;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -28,6 +30,8 @@ import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+import net.sourceforge.pmd.reporting.RuleContext;
+
 
 /**
  * Searches through all methods and constructors called from constructors. It
@@ -54,6 +58,11 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
 
     private static final Deque<JMethodSymbol> EMPTY_STACK = new LinkedList<>();
 
+    private static final Set<String> MAKE_FIELD_FINAL_CLASS_ANNOT =
+        setOf(
+            "lombok.Value"
+        );
+
     public ConstructorCallsOverridableMethodRule() {
         super(ASTConstructorDeclaration.class);
     }
@@ -66,7 +75,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
 
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
-        if (node.getEnclosingType().isFinal()) {
+        if (node.getEnclosingType().isFinal() || JavaAstUtils.hasAnyAnnotation(node.getEnclosingType(), MAKE_FIELD_FINAL_CLASS_ANNOT)) {
             return null; // then cannot be overridden
         }
         for (ASTMethodCall call : node.getBody().descendants(ASTMethodCall.class)) {

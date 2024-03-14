@@ -9,7 +9,6 @@ import org.mozilla.javascript.ast.Name;
 public final class ASTName extends AbstractEcmascriptNode<Name> {
     ASTName(Name name) {
         super(name);
-        super.setImage(name.getIdentifier());
     }
 
     @Override

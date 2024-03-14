@@ -2,6 +2,7 @@
 title: PMD Java API
 tags: [userdocs, tools]
 permalink: pmd_userdocs_tools_java_api.html
+last_updated: August 2023 (7.0.0)
 ---
 
 The easiest way to run PMD is to just use a build plugin in your favorite build tool
@@ -33,3 +34,7 @@ This will transitively pull in the artifact `pmd-core` which contains the API.
 ## Running PMD programmatically
 
 The programmatic API for PMD is centered around {% jdoc core::PmdAnalysis %}, please see the javadocs for usage information.
+
+## Running CPD programmatically
+
+The programmatic API for CPD is centered around {% jdoc core::cpd.CpdAnalysis %}, please see the javadocs for usage information.

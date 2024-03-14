@@ -12,9 +12,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.testframework.PmdRuleTst;
+import net.sourceforge.pmd.test.PmdRuleTst;
 
 class CommentRequiredTest extends PmdRuleTst {
     @Test
@@ -23,9 +23,6 @@ class CommentRequiredTest extends PmdRuleTst {
         assertNull(rule.dysfunctionReason(), "By default, the rule should be functional");
 
         List<PropertyDescriptor<?>> propertyDescriptors = getProperties(rule);
-        // remove  deprecated properties
-        propertyDescriptors.removeIf(property -> property.description().startsWith("Deprecated!"));
-
         for (PropertyDescriptor<?> property : propertyDescriptors) {
             setPropertyValue(rule, property, "Ignored");
         }
@@ -53,6 +50,6 @@ class CommentRequiredTest extends PmdRuleTst {
     }
 
     private static <T> void setPropertyValue(Rule rule, PropertyDescriptor<T> property, String value) {
-        rule.setProperty(property, property.valueFrom(value));
+        rule.setProperty(property, property.serializer().fromString(value));
     }
 }

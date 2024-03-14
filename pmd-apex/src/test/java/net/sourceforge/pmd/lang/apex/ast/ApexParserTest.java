@@ -4,13 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import static net.sourceforge.pmd.lang.ast.test.NodeExtensionsKt.textOfReportLocation;
-import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertPosition;
+import static net.sourceforge.pmd.lang.test.ast.NodeExtensionsKt.textOfReportLocation;
+import static net.sourceforge.pmd.lang.test.ast.TestUtilsKt.assertPosition;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -22,6 +23,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.document.FileLocation;
 
 class ApexParserTest extends ApexParserTestBase {
@@ -41,17 +43,14 @@ class ApexParserTest extends ApexParserTestBase {
         ASTUserClassOrInterface<?> rootNode = parse(code);
 
         // Verify
-        List<ASTMethod> methods = rootNode.findDescendantsOfType(ASTMethod.class);
-        assertEquals(4, methods.size());
+        List<ASTMethod> methods = rootNode.descendants(ASTMethod.class).toList();
+        assertEquals(1, methods.size());
     }
 
     @Test
-    void fileName() {
-        String code = "class Outer { class Inner {}}";
-
-        ASTUserClass rootNode = (ASTUserClass) parse(code, "src/filename.cls");
-
-        assertEquals("src/filename.cls", rootNode.getTextDocument().getDisplayName());
+    void parseErrors() {
+        ParseException exception = assertThrows(ParseException.class, () -> parse("public class SimpleClass { String x = \"a\"; }"));
+        assertThat(exception.getMessage(), containsString("Syntax error at 1:38: token recognition error at: '\"'"));
     }
 
     private final String testCodeForLineNumbers =
@@ -76,21 +75,21 @@ class ApexParserTest extends ApexParserTestBase {
     }
 
     private void assertLineNumbersForTestCode(ASTUserClassOrInterface<?> classNode) {
-        // whole source code, well from the beginning of the class
-        // name Modifier of the class - doesn't work. This node just
-        // sees the identifier ("SimpleClass")
-        // assertPosition(rootNode.getChild(0), 1, 1, 1, 6);
-
+        
         // identifier: "SimpleClass"
-        assertPosition(classNode, 1, 14, 1, 25);
-        assertTextEquals("SimpleClass", classNode);
+        assertEquals("SimpleClass", classNode.getSimpleName());
+        // Class location starts at the "class" keyword. (It excludes modifiers.)
+        assertPosition(classNode, 1, 8, 6, 2);
+        // "public" modifier for class
+        assertPosition(classNode.getChild(0), 1, 1, 1, 7);
 
-        // identifier: "method1"
+        // identifier: "method1"                                                                                                                                                                  
         Node method1 = classNode.getChild(1);
-        assertTextEquals("method1", method1);
-        assertPosition(method1, 2, 17, 2, 24);
-        // modifiers have same location
-        assertPosition(method1.getChild(0), 2, 17, 2, 24);
+        assertEquals("method1", ((ASTMethod) method1).getCanonicalName());
+        // "method1" - spans from return type to end of its block statement. (It excludes modifiers.)
+        assertPosition(method1, 2, 12, 5, 6);
+        // "public" modifier for "method1"
+        assertPosition(method1.getChild(0), 2, 5, 2, 11);
 
         // BlockStatement - the whole method body
         Node blockStatement = method1.getChild(1);
@@ -99,8 +98,8 @@ class ApexParserTest extends ApexParserTestBase {
 
         // the expression ("System.out...")
         Node expressionStatement = blockStatement.getChild(0);
-        assertPosition(expressionStatement, 3, 20, 3, 35);
-        assertTextEquals("println('abc');", expressionStatement);
+        assertPosition(expressionStatement, 3, 9, 3, 35);
+        assertTextEquals("System.out.println('abc');", expressionStatement);
     }
 
     @Test
@@ -115,11 +114,12 @@ class ApexParserTest extends ApexParserTestBase {
 
         ASTUserClassOrInterface<?> rootNode = parse(code);
 
+        // The method subtree spans the return type to the end of the method body.
         Node method1 = rootNode.getChild(1);
-        assertPosition(method1, 2, 17, 2, 24);
+        assertPosition(method1, 2, 12, 3, 6);
 
         Node method2 = rootNode.getChild(2);
-        assertPosition(method2, 4, 17, 4, 24);
+        assertPosition(method2, 4, 12, 5, 6);
     }
 
     @Test
@@ -140,14 +140,14 @@ class ApexParserTest extends ApexParserTestBase {
         assertThat(comment, instanceOf(ASTFormalComment.class));
 
         assertPosition(comment, 1, 9, 1, 32);
-        assertEquals("/** Comment on Class */", ((ASTFormalComment) comment).getToken().toString());
+        assertEquals("/** Comment on Class */", ((ASTFormalComment) comment).getImage());
 
         ApexNode<?> m1 = root.getChild(2);
         assertThat(m1, instanceOf(ASTMethod.class));
 
         ApexNode<?> comment2 = m1.getChild(0);
         assertThat(comment2, instanceOf(ASTFormalComment.class));
-        assertEquals("/** Comment on m1 */", ((ASTFormalComment) comment2).getToken().toString());
+        assertEquals("/** Comment on m1 */", ((ASTFormalComment) comment2).getImage());
     }
 
     @Test
@@ -187,7 +187,7 @@ class ApexParserTest extends ApexParserTestBase {
         assertNotNull(rootNode);
 
         int count = visitPosition(rootNode, 0);
-        assertEquals(487, count);
+        assertEquals(471, count);
     }
 
     @Test
@@ -199,28 +199,22 @@ class ApexParserTest extends ApexParserTestBase {
 
         ASTUserClassOrInterface<?> classNode = rootNode.getMainNode();
         assertEquals("InnerClassLocations", classNode.getSimpleName());
-        assertTextEquals("InnerClassLocations", classNode);
-        // Note: Apex parser doesn't provide positions for "public class" keywords. The
-        // position of the UserClass node is just the identifier. So, the node starts
-        // with the identifier and not with the first keyword in the file...
-        assertPosition(classNode, 1, 14, 1, 33);
+        // Class location starts at the "class" keyword. (It excludes any modifiers.)                                                                                                             
+        assertPosition(classNode, 1, 8, 16, 2);
 
         List<ASTUserClass> classes = classNode.descendants(ASTUserClass.class).toList();
         assertEquals(2, classes.size());
         assertEquals("bar1", classes.get(0).getSimpleName());
         List<ASTMethod> methods = classes.get(0).children(ASTMethod.class).toList();
-        assertEquals(2, methods.size()); // m() and synthetic clone()
+        assertEquals(1, methods.size()); // m(). No synthetic clone()
         assertEquals("m", methods.get(0).getImage());
-        assertPosition(methods.get(0), 4, 21, 4, 22);
-        assertEquals("clone", methods.get(1).getImage());
-        assertFalse(methods.get(1).hasRealLoc());
-        assertPosition(methods.get(1), 3, 18, 3, 22);
+        assertPosition(methods.get(0), 4, 16, 7, 10);
 
         // Position of the first inner class is its identifier
-        assertPosition(classes.get(0), 3, 18, 3, 22);
+        assertPosition(classes.get(0), 3, 12, 8, 6);
 
         assertEquals("bar2", classes.get(1).getSimpleName());
-        assertPosition(classes.get(1), 10, 18, 10, 22);
+        assertPosition(classes.get(1), 10, 12, 15, 6);
     }
 
     // TEST HELPER

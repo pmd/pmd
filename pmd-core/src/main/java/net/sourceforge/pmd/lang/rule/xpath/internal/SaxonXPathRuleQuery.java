@@ -17,10 +17,10 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException.Phase;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionDefinition;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.DataMap;
@@ -194,12 +194,13 @@ public class SaxonXPathRuleQuery {
 
         for (final PropertyDescriptor<?> propertyDescriptor : properties.keySet()) {
             final String name = propertyDescriptor.name();
-            if (!"xpath".equals(name) && !XPathRule.VERSION_DESCRIPTOR.name().equals(name)) {
+            if (!"xpath".equals(name)) {
                 staticCtx.declareProperty(propertyDescriptor);
             }
         }
 
-        for (ExtensionFunctionDefinition fun : xPathHandler.getRegisteredExtensionFunctions()) {
+        for (XPathFunctionDefinition xpathFun : xPathHandler.getRegisteredExtensionFunctions()) {
+            ExtensionFunctionDefinition fun = new SaxonExtensionFunctionDefinitionAdapter(xpathFun);
             StructuredQName qname = fun.getFunctionQName();
             staticCtx.declareNamespace(qname.getPrefix(), qname.getURI());
             this.configuration.registerExtensionFunction(fun);

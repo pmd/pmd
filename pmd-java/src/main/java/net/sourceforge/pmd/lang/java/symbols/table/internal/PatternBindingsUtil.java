@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTTypePattern;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.util.AssertionUtil;
@@ -92,7 +92,7 @@ final class PatternBindingsUtil {
             return BindSet.whenTrue(HashTreePSet.singleton(((ASTTypePattern) pattern).getVarId()));
         } else if (pattern instanceof ASTRecordPattern) {
             // record pattern might not bind a variable for the whole record...
-            ASTVariableDeclaratorId varId = ((ASTRecordPattern) pattern).getVarId();
+            ASTVariableId varId = ((ASTRecordPattern) pattern).getVarId();
             if (varId == null) {
                 return BindSet.whenTrue(BindSet.noBindings());
             }
@@ -112,8 +112,8 @@ final class PatternBindingsUtil {
         static final BindSet EMPTY = new BindSet(HashTreePSet.empty(),
                                                  HashTreePSet.empty());
 
-        private final PSet<ASTVariableDeclaratorId> trueBindings;
-        private final PSet<ASTVariableDeclaratorId> falseBindings;
+        private final PSet<ASTVariableId> trueBindings;
+        private final PSet<ASTVariableId> falseBindings;
 
         public BindSet union(BindSet bindSet) {
             if (this.isEmpty()) {
@@ -127,21 +127,21 @@ final class PatternBindingsUtil {
             );
         }
 
-        static PSet<ASTVariableDeclaratorId> noBindings() {
+        static PSet<ASTVariableId> noBindings() {
             return HashTreePSet.empty();
         }
 
-        BindSet(PSet<ASTVariableDeclaratorId> trueBindings,
-                PSet<ASTVariableDeclaratorId> falseBindings) {
+        BindSet(PSet<ASTVariableId> trueBindings,
+                PSet<ASTVariableId> falseBindings) {
             this.trueBindings = trueBindings;
             this.falseBindings = falseBindings;
         }
 
-        public PSet<ASTVariableDeclaratorId> getTrueBindings() {
+        public PSet<ASTVariableId> getTrueBindings() {
             return trueBindings;
         }
 
-        public PSet<ASTVariableDeclaratorId> getFalseBindings() {
+        public PSet<ASTVariableId> getFalseBindings() {
             return falseBindings;
         }
 
@@ -153,15 +153,15 @@ final class PatternBindingsUtil {
             return this == EMPTY;
         }
 
-        BindSet addBinding(ASTVariableDeclaratorId e) {
+        BindSet addBinding(ASTVariableId e) {
             return new BindSet(trueBindings.plus(e), falseBindings);
         }
 
-        static BindSet whenTrue(PSet<ASTVariableDeclaratorId> bindings) {
+        static BindSet whenTrue(PSet<ASTVariableId> bindings) {
             return new BindSet(bindings, HashTreePSet.empty());
         }
 
-        static BindSet whenFalse(PSet<ASTVariableDeclaratorId> bindings) {
+        static BindSet whenFalse(PSet<ASTVariableId> bindings) {
             return new BindSet(HashTreePSet.empty(), bindings);
         }
 

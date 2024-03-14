@@ -14,13 +14,12 @@ import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -30,14 +29,15 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
@@ -157,12 +157,12 @@ public final class JavaRuleUtil {
      * Returns true if the node is a utility class, according to this
      * custom definition.
      */
-    public static boolean isUtilityClass(ASTAnyTypeDeclaration node) {
+    public static boolean isUtilityClass(ASTTypeDeclaration node) {
         if (!node.isRegularClass()) {
             return false;
         }
 
-        ASTClassOrInterfaceDeclaration classNode = (ASTClassOrInterfaceDeclaration) node;
+        ASTClassDeclaration classNode = (ASTClassDeclaration) node;
 
         // A class with a superclass or interfaces should not be considered
         if (classNode.getSuperClassTypeNode() != null
@@ -178,7 +178,7 @@ public final class JavaRuleUtil {
                 || declNode instanceof ASTMethodDeclaration) {
 
                 hasAny = isNonPrivate(declNode) && !JavaAstUtils.isMainMethod(declNode);
-                if (!((AccessNode) declNode).hasModifiers(JModifier.STATIC)) {
+                if (!((ModifierOwner) declNode).hasModifiers(JModifier.STATIC)) {
                     return false;
                 }
 
@@ -193,7 +193,7 @@ public final class JavaRuleUtil {
     }
 
     private static boolean isNonPrivate(ASTBodyDeclaration decl) {
-        return ((AccessNode) decl).getVisibility() != Visibility.V_PRIVATE;
+        return ((ModifierOwner) decl).getVisibility() != Visibility.V_PRIVATE;
     }
 
     /**
@@ -202,7 +202,9 @@ public final class JavaRuleUtil {
     public static boolean isExplicitUnusedVarName(String name) {
         return name.startsWith("ignored")
             || name.startsWith("unused")
-            || "_".equals(name); // before java 9 it's ok
+            // before java 9 it's ok, after that, "_" is a reserved keyword
+            // with Java 21 Preview (JEP 443), "_" means explicitly unused
+            || "_".equals(name);
     }
 
     /**
@@ -277,7 +279,7 @@ public final class JavaRuleUtil {
             return false;
         }
 
-        ASTAnyTypeDeclaration enclosing = node.getEnclosingType();
+        ASTTypeDeclaration enclosing = node.getEnclosingType();
         if (startsWithCamelCaseWord(node.getName(), "get")) {
             return JavaAstUtils.hasField(enclosing, node.getName().substring(3));
         } else if (startsWithCamelCaseWord(node.getName(), "is")
@@ -295,7 +297,7 @@ public final class JavaRuleUtil {
             return false;
         }
 
-        ASTAnyTypeDeclaration enclosing = node.getEnclosingType();
+        ASTTypeDeclaration enclosing = node.getEnclosingType();
 
         if (startsWithCamelCaseWord(node.getName(), "set")) {
             return JavaAstUtils.hasField(enclosing, node.getName().substring(3));
@@ -387,7 +389,7 @@ public final class JavaRuleUtil {
         return isGetterCall(call) || KNOWN_PURE_METHODS.anyMatch(call);
     }
 
-    public static @Nullable ASTVariableDeclaratorId getReferencedNode(ASTNamedReferenceExpr expr) {
+    public static @Nullable ASTVariableId getReferencedNode(ASTNamedReferenceExpr expr) {
         JVariableSymbol referencedSym = expr.getReferencedSym();
         return referencedSym == null ? null : referencedSym.tryGetNode();
     }

@@ -13,8 +13,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.InputSource;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 import com.github.oowekyala.ooxml.messages.NiceXmlMessageSpec;
 import com.github.oowekyala.ooxml.messages.OoxmlFacade;
@@ -33,7 +32,6 @@ import com.github.oowekyala.ooxml.messages.XmlSeverity;
  *
  * @author Clément Fournier
  */
-@Experimental
 public class TestSchemaParser {
 
     private final TestSchemaVersion version;

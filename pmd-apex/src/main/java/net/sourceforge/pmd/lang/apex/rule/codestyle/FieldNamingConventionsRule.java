@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
+import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
@@ -51,25 +52,33 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionsRule {
 
     @Override
     public Object visit(ASTField node, Object data) {
-        if (node.getFirstParentOfType(ASTProperty.class) != null) {
+        if (node.ancestors(ASTProperty.class).first() != null) {
             return data;
         }
 
         ASTModifierNode modifiers = node.getModifiers();
+        ASTFieldDeclaration reportNode = getFieldDeclaration(node);
 
-        if (node.getFirstParentOfType(ASTUserEnum.class) != null) {
+        if (node.ancestors(ASTUserEnum.class).nonEmpty()) {
+            // enums don't have a FieldDeclaration, so reportNode would be null
             checkMatches(ENUM_CONSTANT_REGEX, node, data);
+        } else if (modifiers == null) {
+            checkMatches(INSTANCE_REGEX, reportNode, data);
         } else if (modifiers.isFinal() && modifiers.isStatic()) {
-            checkMatches(CONSTANT_REGEX, node, data);
+            checkMatches(CONSTANT_REGEX, reportNode, data);
         } else if (modifiers.isFinal()) {
-            checkMatches(FINAL_REGEX, node, data);
+            checkMatches(FINAL_REGEX, reportNode, data);
         } else if (modifiers.isStatic()) {
-            checkMatches(STATIC_REGEX, node, data);
+            checkMatches(STATIC_REGEX, reportNode, data);
         } else {
-            checkMatches(INSTANCE_REGEX, node, data);
+            checkMatches(INSTANCE_REGEX, reportNode, data);
         }
 
         return data;
+    }
+
+    private ASTFieldDeclaration getFieldDeclaration(ASTField field) {
+        return field.getParent().descendants(ASTFieldDeclaration.class).first(fieldDeclaration -> fieldDeclaration.getName().equals(field.getName()));
     }
 
     @Override

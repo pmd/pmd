@@ -10,11 +10,11 @@ import java.util.Deque;
 import net.sourceforge.pmd.lang.modelica.ast.ASTClassDefinition;
 import net.sourceforge.pmd.lang.modelica.ast.ASTComponentDeclaration;
 import net.sourceforge.pmd.lang.modelica.ast.ASTStoredDefinition;
-import net.sourceforge.pmd.lang.modelica.ast.InternalModelicaNodeApi;
+import net.sourceforge.pmd.lang.modelica.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaNode;
-import net.sourceforge.pmd.lang.modelica.ast.ModelicaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.modelica.ast.ModelicaVisitorBase;
 
-class ScopeAndDeclarationFinder extends ModelicaParserVisitorAdapter {
+class ScopeAndDeclarationFinder extends ModelicaVisitorBase<Object, Object> {
     private final Deque<AbstractModelicaScope> scopes = new ArrayDeque<>();
 
     ScopeAndDeclarationFinder() {
@@ -25,7 +25,7 @@ class ScopeAndDeclarationFinder extends ModelicaParserVisitorAdapter {
         AbstractModelicaScope prevTop = scopes.peek();
         ownScope.setParent(prevTop);
         scopes.push(ownScope);
-        InternalModelicaNodeApi.setNodeOwnScope(node, ownScope);
+        InternalApiBridge.setNodeOwnScope(node, ownScope);
     }
 
     private void createClassDeclaration(ASTClassDefinition node) {

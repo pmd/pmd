@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.plsql.rule.design;
 
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -102,7 +102,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
 
     @Override
     public Object visit(ASTElsifClause node, Object data) {
-        int boolCompIf = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        int boolCompIf = NPathComplexityRule.sumExpressionComplexity(node.firstChild(ASTExpression.class));
         // If statement always has a complexity of at least 1
         boolCompIf++;
 
@@ -113,7 +113,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
 
     @Override
     public Object visit(ASTIfStatement node, Object data) {
-        int boolCompIf = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        int boolCompIf = NPathComplexityRule.sumExpressionComplexity(node.firstChild(ASTExpression.class));
         // If statement always has a complexity of at least 1
         boolCompIf++;
 
@@ -132,7 +132,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
     @Override
     public Object visit(ASTForStatement node, Object data) {
         int boolCompFor = NPathComplexityRule
-                .sumExpressionComplexity(node.getFirstDescendantOfType(ASTExpression.class));
+                .sumExpressionComplexity(node.descendants(ASTExpression.class).first());
         // For statement always has a complexity of at least 1
         boolCompFor++;
 
@@ -143,7 +143,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
 
     @Override
     public Object visit(ASTLoopStatement node, Object data) {
-        int boolCompDo = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        int boolCompDo = NPathComplexityRule.sumExpressionComplexity(node.firstChild(ASTExpression.class));
         // Do statement always has a complexity of at least 1
         boolCompDo++;
 
@@ -156,7 +156,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
     public Object visit(ASTCaseStatement node, Object data) {
         Entry entry = entryStack.peek();
 
-        int boolCompSwitch = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        int boolCompSwitch = NPathComplexityRule.sumExpressionComplexity(node.firstChild(ASTExpression.class));
         entry.bumpDecisionPoints(boolCompSwitch);
 
         super.visit(node, data);
@@ -174,7 +174,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
 
     @Override
     public Object visit(ASTWhileStatement node, Object data) {
-        int boolCompWhile = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        int boolCompWhile = NPathComplexityRule.sumExpressionComplexity(node.firstChild(ASTExpression.class));
         // While statement always has a complexity of at least 1
         boolCompWhile++;
 
@@ -210,7 +210,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
                 classEntry.getComplexityAverage(), classEntry.highestDecisionPoints);
         if (showClassesComplexity) {
             if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
-                addViolation(data, node, new String[] { "class", node.getImage(),
+                asCtx(data).addViolation(node, new String[] { "class", node.getImage(),
                     classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')', });
             }
         }
@@ -227,7 +227,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
                 classEntry.highestDecisionPoints);
         if (showClassesComplexity) {
             if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
-                addViolation(data, node, new String[] { "class", node.getImage(),
+                asCtx(data).addViolation(node, new String[] { "class", node.getImage(),
                     classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')', });
             }
         }
@@ -256,12 +256,12 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
             // Entry methodEntry = entryStack.pop();
             int methodDecisionPoints = methodEntry.decisionPoints;
             // PackageBody (including Object Type Body)
-            if (null != node.getFirstParentOfType(ASTPackageBody.class)
+            if (null != node.ancestors(ASTPackageBody.class).first()
                     // Trigger of any form
-                    || null != node.getFirstParentOfType(ASTTriggerUnit.class)
-            // TODO || null != node.getFirstParentOfType(ASTProgramUnit.class)
+                    || null != node.ancestors(ASTTriggerUnit.class).first()
+            // TODO || null != node.ancestors(ASTProgramUnit.class).first()
             // //Another Procedure
-            // TODO || null != node.getFirstParentOfType(ASTTypeMethod.class)
+            // TODO || null != node.ancestors(ASTTypeMethod.class).first()
             // //Another Type method
             ) {
                 /*
@@ -273,9 +273,9 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
                 updateClassEntry(methodDecisionPoints);
             }
 
-            ASTMethodDeclarator methodDeclarator = node.getFirstChildOfType(ASTMethodDeclarator.class);
+            ASTMethodDeclarator methodDeclarator = node.firstChild(ASTMethodDeclarator.class);
             if (methodEntry.decisionPoints >= reportLevel) {
-                addViolation(data, node,
+                asCtx(data).addViolation(node,
                         new String[] { "method", methodDeclarator == null ? "" : methodDeclarator.getImage(),
                             String.valueOf(methodEntry.decisionPoints), });
             }
@@ -295,7 +295,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
             // Entry methodEntry = entryStack.pop();
             int methodDecisionPoints = methodEntry.decisionPoints;
             // PAckageBody (including Object Type Body)
-            if (null != node.getFirstParentOfType(ASTPackageBody.class)) {
+            if (null != node.ancestors(ASTPackageBody.class).first()) {
                 /*
                  * TODO This does not cope with nested methods We need the
                  * outer most ASTPackageBody
@@ -303,9 +303,9 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
                 updateClassEntry(methodDecisionPoints);
             }
 
-            ASTMethodDeclarator methodDeclarator = node.getFirstChildOfType(ASTMethodDeclarator.class);
+            ASTMethodDeclarator methodDeclarator = node.firstChild(ASTMethodDeclarator.class);
             if (methodEntry.decisionPoints >= reportLevel) {
-                addViolation(data, node,
+                asCtx(data).addViolation(node,
                         new String[] { "method", methodDeclarator == null ? "" : methodDeclarator.getImage(),
                             String.valueOf(methodEntry.decisionPoints), });
             }
@@ -331,9 +331,9 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
                 classEntry.highestDecisionPoints = methodDecisionPoints;
             }
 
-            ASTMethodDeclarator methodDeclarator = node.getFirstChildOfType(ASTMethodDeclarator.class);
+            ASTMethodDeclarator methodDeclarator = node.firstChild(ASTMethodDeclarator.class);
             if (methodEntry.decisionPoints >= reportLevel) {
-                addViolation(data, node,
+                asCtx(data).addViolation(node,
                         new String[] { "method", methodDeclarator == null ? "" : methodDeclarator.getImage(),
                             String.valueOf(methodEntry.decisionPoints), });
             }

@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.java.types
 
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.shouldHaveSize
-import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBeA
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.JavaNode
 import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol.PRIMITIVE_PACKAGE
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.symbols.internal.getDeclaredMethods
  */
 class ArraySymbolTests : WordSpec({
 
-    val INT_SYM = testTypeSystem.getClassSymbol(java.lang.Integer.TYPE)
+    val INT_SYM = testTypeSystem.getClassSymbol(Integer.TYPE)
     val STRING_SYM = testTypeSystem.getClassSymbol(java.lang.String::class.java)
 
     fun makeArraySym(comp: JTypeDeclSymbol?) = ArraySymbolImpl(testTypeSystem, comp)

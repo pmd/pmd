@@ -5,9 +5,10 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldMatchN
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.testdata.Overloads
@@ -283,7 +284,7 @@ class OverloadResolutionTest : ProcessorTestSpec({
                     void foo(long i) {
                         foo('c');
                     }
-                    
+
                     void foo(String other) {}
                 }
             """)
@@ -307,10 +308,77 @@ class OverloadResolutionTest : ProcessorTestSpec({
         }
     }
 
+    parserTest("#4557 two overloads with boxed types") {
+
+        val acu = parser.parse(
+            """
+            package p;
+
+            import static p.Static.assertThat;
+
+            class Klass {
+                static {
+                    // This is assertThat(Integer)
+                    // Integer is more specific than Long because int -> Integer
+                    // only involves boxing, while int -> Long needs widening and
+                    // then boxing.
+                    assertThat(1);
+                }
+            }
+            class Static {
+
+                public static Object assertThat(Integer actual) {
+                    return null;
+                }
+
+                public static Object assertThat(Long actual) {
+                    return null;
+                }
+
+            }
+            """.trimIndent()
+        )
+
+        val fooM = acu.methodDeclarations().firstOrThrow()
+        val call = acu.firstMethodCall()
+
+        call.overloadSelectionInfo.should {
+            it.isFailed shouldBe false
+            it.methodType.symbol shouldBe fooM.symbol
+        }
+    }
+    parserTest("Two overloads with boxed types, widening required, ambiguous") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Static {
+                static {
+                    // ambiguous: 1 is int, and neither Double nor Long is more
+                    // specific because they both involve boxing + widening
+                    assertThat(1);
+                }
+
+                public static Object assertThat(Double actual) {
+                    return null;
+                }
+
+                public static Object assertThat(Long actual) {
+                    return null;
+                }
+
+            }
+            """.trimIndent()
+        )
+
+        val call = acu.firstMethodCall()
+        spy.shouldBeAmbiguous(call)
+    }
+
 
     parserTest("Overload selection must identify fallbacks if any") {
 
-        val acu = parser.parse("""
+        val acu = parser.parse(
+            """
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.lang.reflect.Type;

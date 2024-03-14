@@ -7,7 +7,7 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 import java.util.Iterator;
 
-import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 /**
  * Renderer to GNU Emacs parsable format.
@@ -33,7 +33,7 @@ public class EmacsRenderer extends AbstractIncrementingRenderer {
         while (violations.hasNext()) {
             RuleViolation rv = violations.next();
             buf.setLength(0);
-            buf.append(determineFileName(rv.getFilename()));
+            buf.append(determineFileName(rv.getFileId()));
             buf.append(':').append(Integer.toString(rv.getBeginLine()));
             buf.append(": ").append(rv.getDescription()).append(EOL);
             writer.write(buf.toString());

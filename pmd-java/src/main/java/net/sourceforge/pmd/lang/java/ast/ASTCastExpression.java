@@ -21,7 +21,7 @@ public final class ASTCastExpression extends AbstractJavaExpr implements ASTExpr
     }
 
     public ASTType getCastType() {
-        return getFirstChildOfType(ASTType.class);
+        return firstChild(ASTType.class);
     }
 
     public ASTExpression getOperand() {

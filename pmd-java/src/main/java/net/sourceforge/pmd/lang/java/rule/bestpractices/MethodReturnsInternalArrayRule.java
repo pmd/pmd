@@ -15,8 +15,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
@@ -45,14 +45,14 @@ public class MethodReturnsInternalArrayRule extends AbstractJavaRulechainRule {
                 ASTNamedReferenceExpr reference = (ASTNamedReferenceExpr) expr;
 
                 if (JavaAstUtils.isRefToFieldOfThisInstance(reference)) {
-                    addViolation(data, returnStmt, reference.getName());
+                    asCtx(data).addViolation(returnStmt, reference.getName());
                 } else {
                     // considers static, non-final fields
                     JVariableSymbol symbol = reference.getReferencedSym();
                     if (symbol instanceof JFieldSymbol) {
                         JFieldSymbol field = (JFieldSymbol) symbol;
                         if (field.isStatic() && isInternal(field) && !isZeroLengthArrayConstant(field)) {
-                            addViolation(data, returnStmt, reference.getName());
+                            asCtx(data).addViolation(returnStmt, reference.getName());
                         }
                     }
                 }
@@ -69,7 +69,7 @@ public class MethodReturnsInternalArrayRule extends AbstractJavaRulechainRule {
     private static boolean isZeroLengthArrayConstant(JFieldSymbol sym) {
         return sym.isFinal()
                 && NodeStream.of(sym.tryGetNode())
-                         .map(ASTVariableDeclaratorId::getInitializer)
+                         .map(ASTVariableId::getInitializer)
                          .filter(MethodReturnsInternalArrayRule::isZeroLengthArrayExpr)
                          .nonEmpty();
     }

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.ant;
 
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -15,15 +14,38 @@ import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
-import org.apache.tools.ant.types.Resource;
 
-import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.ant.internal.PMDTaskImpl;
+import net.sourceforge.pmd.lang.rule.RulePriority;
 
 /**
  * PMD Ant task. Setters of this class are interpreted by Ant as properties
  * settable in the XML. This is therefore published API.
+ *
+ * <p>Runs PMD analysis via ant. The ant task looks like this:</p>
+ *
+ * <pre>{@code
+ *   <project name="PMDProject" default="main" basedir=".">
+ *     <path id="pmd.classpath">
+ *         <fileset dir="/home/joe/pmd-bin-VERSION/lib">
+ *             <include name="*.jar"/>
+ *         </fileset>
+ *     </path>
+ *     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.classpath" />
+ *
+ *     <target name="main">
+ *       <pmd>
+ *         <ruleset>rulesets/java/quickstart.xml</ruleset>
+ *         <ruleset>config/my-ruleset.xml</ruleset>
+ *         <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
+ *             <include name="java/lang/*.java"/>
+ *         </fileset>
+ *       </pmd>
+ *     </target>
+ *   </project>
+ * }</pre>
+ *
+ * <p>Required: rulesetfiles/ruleset, fileset</p>
  */
 public class PMDTask extends Task {
 
@@ -36,7 +58,6 @@ public class PMDTask extends Task {
     private final List<Path> relativizePathsWith = new ArrayList<>();
     private String suppressMarker;
     private String rulesetFiles;
-    private boolean noRuleSetCompatibility;
     private String encoding;
     private int threads = 1; // same default as in PMDParameters (CLI)
     private int minimumPriority = RulePriority.LOW.getPriority(); // inclusive
@@ -242,14 +263,6 @@ public class PMDTask extends Task {
         return nestedRules;
     }
 
-    public boolean isNoRuleSetCompatibility() {
-        return noRuleSetCompatibility;
-    }
-
-    public void setNoRuleSetCompatibility(boolean noRuleSetCompatibility) {
-        this.noRuleSetCompatibility = noRuleSetCompatibility;
-    }
-
     public String getCacheLocation() {
         return cacheLocation;
     }
@@ -273,16 +286,5 @@ public class PMDTask extends Task {
 
     public List<Path> getRelativizePathsWith() {
         return relativizePathsWith;
-    }
-
-    @InternalApi
-    public List<java.nio.file.Path> getRelativizeRoots() {
-        List<java.nio.file.Path> paths = new ArrayList<>();
-        for (Path path : getRelativizePathsWith()) {
-            for (Resource resource : path) {
-                paths.add(Paths.get(resource.toString()));
-            }
-        }
-        return paths;
     }
 }

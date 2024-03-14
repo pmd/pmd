@@ -4,29 +4,34 @@
 
 package net.sourceforge.pmd.lang.jsp;
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-
-import java.util.List;
-
-import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.cpd.CpdCapableLanguage;
+import net.sourceforge.pmd.cpd.CpdLexer;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
+import net.sourceforge.pmd.lang.jsp.cpd.JspCpdLexer;
 
 /**
  * Created by christoferdutz on 20.09.14.
  */
-public class JspLanguageModule extends SimpleLanguageModuleBase {
+public class JspLanguageModule extends SimpleLanguageModuleBase implements CpdCapableLanguage {
+    private static final String ID = "jsp";
 
-    public static final String NAME = "Java Server Pages";
-    public static final String TERSE_NAME = "jsp";
-    @InternalApi
-    public static final List<String> EXTENSIONS = listOf("jsp", "jspx", "jspf", "tag");
 
     public JspLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).shortName("JSP")
-                              .extensions(EXTENSIONS)
+        super(LanguageMetadata.withId(ID).name("Java Server Pages").shortName("JSP")
+                              .extensions("jsp", "jspx", "jspf", "tag")
                               .addVersion("2")
                               .addDefaultVersion("3"),
               new JspHandler());
     }
 
+    public static JspLanguageModule getInstance() {
+        return (JspLanguageModule) LanguageRegistry.PMD.getLanguageById(ID);
+    }
+
+    @Override
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new JspCpdLexer();
+    }
 }

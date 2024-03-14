@@ -1007,9 +1007,12 @@ span.soft {
     }
 }
 
-@media (max-width: 990px) {
+@media (min-height: 600px) and (min-width: 990px) {
+    /* sticky sidebar for big screens */
     #mysidebar {
-        position: relative;
+        position: fixed !important;
+        overflow: scroll;
+        height: 80%;
     }
 }
 
@@ -1022,6 +1025,15 @@ span.soft {
 @media (max-width: 900px) {
     ul#mysidebar {
         max-width: 100%;
+    }
+}
+
+#inline-toc-details {
+    display: none;
+}
+@media (max-width: 1350px) {
+    #inline-toc-details {
+        display: block;
     }
 }
 
@@ -1258,4 +1270,8 @@ h4.panel-title {
 
 a.edit-header {
     font-size: 15px;
+}
+
+.language-info {
+    margin: 2em;
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <ruleset name="Code Style"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
@@ -13,7 +13,7 @@ Rules which enforce a specific coding style.
           language="xsl"
           since="5.0"
           message="The xpath concat() function accepts as many arguments as required, you may be able to factorize this expression"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_xsl_codestyle.html#useconcatonce">
         <description>
 The XPath concat() functions accepts as many arguments as required so you can have

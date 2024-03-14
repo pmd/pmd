@@ -7,7 +7,6 @@ package net.sourceforge.pmd.cli.commands.internal;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,29 +14,31 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimingReport;
 import net.sourceforge.pmd.benchmark.TimingReportRenderer;
 import net.sourceforge.pmd.cli.commands.typesupport.internal.PmdLanguageTypeSupport;
 import net.sourceforge.pmd.cli.commands.typesupport.internal.PmdLanguageVersionTypeSupport;
+import net.sourceforge.pmd.cli.commands.typesupport.internal.RulePriorityTypeSupport;
 import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.cli.internal.ProgressBarListener;
 import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.rule.RulePriority;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.util.StringUtil;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 import picocli.CommandLine.Command;
@@ -46,7 +47,7 @@ import picocli.CommandLine.ParameterException;
 
 @Command(name = "check", showDefaultValues = true,
     description = "The PMD standard source code analyzer")
-public class PmdCommand extends AbstractAnalysisPmdSubcommand {
+public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> {
     private static final Logger LOG = LoggerFactory.getLogger(PmdCommand.class);
 
     static {
@@ -85,8 +86,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
 
     private boolean benchmark;
 
-    private List<Path> relativizeRootPaths;
-
     private boolean showSuppressed;
 
     private String suppressMarker;
@@ -102,8 +101,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
     private Language forceLanguage;
 
     private String auxClasspath;
-
-    private boolean noRuleSetCompatibility;
 
     private Path cacheLocation;
 
@@ -141,23 +138,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         this.benchmark = benchmark;
     }
 
-    @Option(names = { "--relativize-paths-with", "-z"}, description = "Path relative to which directories are rendered in the report. "
-            + "This option allows shortening directories in the report; "
-            + "without it, paths are rendered as mentioned in the source directory (option \"--dir\"). "
-            + "The option can be repeated, in which case the shortest relative path will be used. "
-            + "If the root path is mentioned (e.g. \"/\" or \"C:\\\"), then the paths will be rendered as absolute.",
-        arity = "1..*", split = ",")
-    public void setRelativizePathsWith(List<Path> rootPaths) {
-        this.relativizeRootPaths = rootPaths;
-
-        for (Path path : this.relativizeRootPaths) {
-            if (Files.isRegularFile(path)) {
-                throw new ParameterException(spec.commandLine(),
-                        "Expected a directory path for option '--relativize-paths-with', found a file: " + path);
-            }
-        }
-    }
-
     @Option(names = "--show-suppressed", description = "Report should show suppressed rule violations.")
     public void setShowSuppressed(final boolean showSuppressed) {
         this.showSuppressed = showSuppressed;
@@ -173,7 +153,8 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
     @Option(names = "--minimum-priority",
             description = "Rule priority threshold; rules with lower priority than configured here won't be used.%n"
                     + "Valid values (case insensitive): ${COMPLETION-CANDIDATES}",
-            defaultValue = "Low")
+            defaultValue = "Low",
+            completionCandidates = RulePriorityTypeSupport.class, converter = RulePriorityTypeSupport.class)
     public void setMinimumPriority(final RulePriority priority) {
         this.minimumPriority = priority;
     }
@@ -230,12 +211,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         this.auxClasspath = auxClasspath;
     }
 
-    @Option(names = "--no-ruleset-compatibility",
-            description = "Disable the ruleset compatibility filter. The filter is active by default and tries automatically 'fix' old ruleset files with old rule names")
-    public void setNoRuleSetCompatibility(final boolean noRuleSetCompatibility) {
-        this.noRuleSetCompatibility = noRuleSetCompatibility;
-    }
-
     @Option(names = "--cache",
             description = "Specify the location of the cache file for incremental analysis. "
                     + "This should be the full path to the file, including the desired file name (not just the parent directory). "
@@ -273,16 +248,17 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
      *
      * @throws ParameterException if the parameters are inconsistent or incomplete
      */
-    public PMDConfiguration toConfiguration() {
+    @Override
+    protected PMDConfiguration toConfiguration() {
         final PMDConfiguration configuration = new PMDConfiguration();
         if (inputPaths != null) {
-            configuration.setInputPathList(inputPaths);
+            configuration.setInputPathList(new ArrayList<>(inputPaths));
         }
         configuration.setInputFilePath(fileListPath);
         configuration.setIgnoreFilePath(ignoreListPath);
         configuration.setInputUri(uri);
         configuration.setReportFormat(format);
-        configuration.setSourceEncoding(encoding.getEncoding().name());
+        configuration.setSourceEncoding(encoding.getEncoding());
         configuration.setMinimumPriority(minimumPriority);
         configuration.setReportFile(reportFile);
         configuration.setReportProperties(properties);
@@ -290,7 +266,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
             configuration.addRelativizeRoots(relativizeRootPaths);
         }
         configuration.setRuleSets(rulesets);
-        configuration.setRuleSetFactoryCompatibilityEnabled(!this.noRuleSetCompatibility);
         configuration.setShowSuppressedViolations(showSuppressed);
         configuration.setSuppressMarker(suppressMarker);
         configuration.setThreads(threads);
@@ -321,13 +296,13 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
     }
 
     @Override
-    protected CliExitCode execute() {
+    @NonNull
+    protected CliExitCode doExecute(PMDConfiguration configuration) {
         if (benchmark) {
             TimeTracker.startGlobalTracking();
         }
 
-        final PMDConfiguration configuration = toConfiguration();
-        final MessageReporter pmdReporter = configuration.getReporter();
+        final PmdReporter pmdReporter = configuration.getReporter();
 
         try {
             PmdAnalysis pmd = null;
@@ -339,7 +314,8 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
                     return CliExitCode.ERROR;
                 }
 
-                LOG.debug("Current classpath:\n{}", System.getProperty("java.class.path"));
+                LOG.debug("Runtime classpath:\n{}", System.getProperty("java.class.path"));
+                LOG.debug("Aux classpath: {}", configuration.getClassLoader());
 
                 if (showProgressBar) {
                     if (reportFile == null) {
@@ -374,14 +350,14 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         }
     }
 
-    private void printErrorDetected(MessageReporter reporter, int errors) {
+    private void printErrorDetected(PmdReporter reporter, int errors) {
         String msg = LogMessages.errorDetectedMessage(errors, "pmd");
         // note: using error level here increments the error count of the reporter,
         // which we don't want.
         reporter.info(StringUtil.quoteMessageFormat(msg));
     }
 
-    private void finishBenchmarker(final MessageReporter pmdReporter) {
+    private void finishBenchmarker(final PmdReporter pmdReporter) {
         if (benchmark) {
             final TimingReport timingReport = TimeTracker.stopGlobalTracking();
 

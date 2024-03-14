@@ -16,10 +16,10 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -28,7 +28,6 @@ import net.sourceforge.pmd.util.StringUtil;
 public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
 
     public static final String NAME = "yahtml";
-    // TODO 7.0.0 use PropertyDescriptor<Optional<File>> with a constraint that the file is an existing directory
     public static final PropertyDescriptor<String> OUTPUT_DIR =
         PropertyFactory.stringProperty("outputDir")
                        .desc("Output directory.")

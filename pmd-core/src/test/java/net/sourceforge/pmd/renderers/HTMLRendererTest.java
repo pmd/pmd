@@ -7,21 +7,24 @@ package net.sourceforge.pmd.renderers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.Report.ConfigurationError;
-import net.sourceforge.pmd.Report.ProcessingError;
+import net.sourceforge.pmd.reporting.Report.ConfigurationError;
+import net.sourceforge.pmd.reporting.Report.ProcessingError;
 
 class HTMLRendererTest extends AbstractRendererTest {
 
     @Override
     protected String getSourceCodeFilename() {
-        return "someFilename<br>thatNeedsEscaping.ext";
+        // note: the file name should still be a valid file name on both win and nix.
+        // This precludes using chars like <> to test escaping (https://stackoverflow.com/questions/1976007/what-characters-are-forbidden-in-windows-and-linux-directory-names)
+        return "someFilename\u00A0thatNeedsEscaping.ext";
     }
 
     private String getEscapedFilename() {
-        return "someFilename&lt;br&gt;thatNeedsEscaping.ext";
+        return "someFilename&nbsp;thatNeedsEscaping.ext";
     }
 
     @Override
@@ -93,7 +96,7 @@ class HTMLRendererTest extends AbstractRendererTest {
         final String linkPrefix = "https://github.com/pmd/pmd/blob/master/";
         final String linePrefix = "L";
         renderer.setProperty(HTMLRenderer.LINK_PREFIX, linkPrefix);
-        renderer.setProperty(HTMLRenderer.LINE_PREFIX, linePrefix);
+        renderer.setProperty(HTMLRenderer.LINE_PREFIX, Optional.of(linePrefix));
         renderer.setProperty(HTMLRenderer.HTML_EXTENSION, false);
 
         String actual = renderReport(renderer, reportOneViolation());
@@ -117,7 +120,7 @@ class HTMLRendererTest extends AbstractRendererTest {
         final HTMLRenderer renderer = new HTMLRenderer();
         final String linkPrefix = "https://github.com/pmd/pmd/blob/master/";
         renderer.setProperty(HTMLRenderer.LINK_PREFIX, linkPrefix);
-        renderer.setProperty(HTMLRenderer.LINE_PREFIX, "");
+        renderer.setProperty(HTMLRenderer.LINE_PREFIX, Optional.of(""));
         renderer.setProperty(HTMLRenderer.HTML_EXTENSION, false);
 
         String actual = renderReport(renderer, reportOneViolation());

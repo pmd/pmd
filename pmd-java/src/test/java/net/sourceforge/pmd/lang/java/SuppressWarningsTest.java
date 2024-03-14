@@ -4,16 +4,15 @@
 
 package net.sourceforge.pmd.lang.java;
 
-import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSize;
+import static net.sourceforge.pmd.lang.test.ast.TestUtilsKt.assertSize;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.FooRule;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.reporting.Report;
 
 class SuppressWarningsTest {
 
@@ -30,9 +29,9 @@ class SuppressWarningsTest {
         public Object visit(ASTCompilationUnit cu, Object ctx) {
             // Convoluted rule to make sure the violation is reported for the
             // ASTCompilationUnit node
-            for (ASTClassOrInterfaceDeclaration c : cu.descendants(ASTClassOrInterfaceDeclaration.class)) {
+            for (ASTClassDeclaration c : cu.descendants(ASTClassDeclaration.class)) {
                 if ("bar".equalsIgnoreCase(c.getSimpleName())) {
-                    addViolation(ctx, cu);
+                    asCtx(ctx).addViolation(cu);
                 }
             }
             return super.visit(cu, ctx);

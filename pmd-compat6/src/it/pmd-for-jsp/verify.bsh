@@ -1,0 +1,33 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+
+String readFile(File file) throws IOException {
+    StringBuilder content = new StringBuilder();
+    for (String line : Files.readAllLines(file.toPath(), StandardCharsets.UTF_8)) {
+        content.append(line).append(System.lineSeparator());
+    }
+    return content.toString();
+}
+
+File buildLogPath = new File(basedir, "build.log");
+String buildLog = readFile(buildLogPath);
+if (!buildLog.contains("[INFO] PMD Failure: classAttribute.jsp:2 Rule:NoClassAttribute")) {
+    throw new RuntimeException("No pmd violation detected, did PMD run?");
+}
+
+File pmdXmlReport = new File(basedir, "target/pmd.xml");
+if(!pmdXmlReport.exists())
+{
+    throw new FileNotFoundException("Could not find pmd xml report: " + pmdXmlReport);
+}
+String pmdXml = readFile(pmdXmlReport);
+if (!pmdXml.contains("<violation beginline=\"2\" endline=\"2\" begincolumn=\"4\" endcolumn=\"24\" rule=\"NoClassAttribute\" ruleset=\"Best Practices\"")) {
+    throw new RuntimeException("Expected violation has not been reported");
+}
+File classAttribute = new File("pmd-for-jsp/src/main/jsp/classAttribute.jsp");
+if (!pmdXml.contains(classAttribute + "\">")) {
+    throw new RuntimeException("Expected violation has not been reported");
+}

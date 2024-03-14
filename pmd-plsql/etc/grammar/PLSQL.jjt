@@ -157,13 +157,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import java.util.List;
-import java.util.ArrayList;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.Chars;
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.plsql.ast.internal.ParsingExclusion;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PLSQLParserImpl {
 
@@ -719,9 +717,8 @@ ASTMethodDeclarator MethodDeclarator() :
         {
           throw new ParseException("FUNCTION must RETURN a value or must be WRAPPED : found \""
 		                              + nextToken.getImage()
-		                              + "\" at line "+nextToken.getBeginLine()
-		                              + ", column "+nextToken.getBeginColumn()
-		                             );
+		                              + "\""
+		                             ).withLocation(nextToken);
         }
       }
        // There is no RETURN for a WRAPPED object
@@ -1276,12 +1273,17 @@ void AbstractSelectStatement(AbstractSelectStatement node) #void :
 }
 
 /**
- * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/SELECT-INTO-statement.html
- * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/img_text/select_into_statement.html
+ * Note: The SELECT INTO statement can be preceded by a WithClause, even though this is not in the
+ * official reference documentation.
+ *
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/SELECT-INTO-statement.html">SELECT INTO (18)</a>
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/23/lnpls/SELECT-INTO-statement.html">SELECT INTO (23)</a>
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/SELECT.html">SELECT (23)</a>
  */
 ASTSelectIntoStatement SelectIntoStatement() :
 {}
 {
+    [ WithClause() ]  // Although undocumented, WITH works with SELECT INTO !
     AbstractSelectStatement(jjtThis)
     SelectList()
     ( IntoClause() | BulkCollectIntoClause() )
@@ -1306,7 +1308,7 @@ void RestOfStatement() #void :
 }
 
 /**
- * @see https://docs.oracle.com/database/121/SQLRF/statements_10002.htm#i2126016
+ * @see <a href="https://docs.oracle.com/database/121/SQLRF/statements_10002.htm#i2126016">SELECT - for_update_clause</a>
  */
 void ForUpdateClause() :
 {}
@@ -1351,7 +1353,7 @@ ASTSubqueryOperation SubqueryOperation() :
 }
 
 /**
- * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/img_text/order_by_clause.html
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/img_text/order_by_clause.html">ORDER BY clause</a>
  */
 ASTOrderByClause OrderByClause() :
 {}
@@ -1370,7 +1372,7 @@ void OrderByEntry() #void :
 }
 
 /**
- * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/img_text/row_limiting_clause.html
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/img_text/row_limiting_clause.html">Row Limiting Clause</a>
  */
 ASTRowLimitingClause RowLimitingClause() :
 {}
@@ -1398,7 +1400,7 @@ ASTQueryBlock QueryBlock() :
 }
 
 /**
- * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/img_text/group_by_clause.html
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/img_text/group_by_clause.html">Group By Clause</a>
  */
 ASTGroupByClause GroupByClause() :
 {}
@@ -1460,7 +1462,7 @@ ASTWhereClause WhereClause() :
 }
 
 /**
- * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/About-SQL-Conditions.html
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/About-SQL-Conditions.html">About SQL Conditions</a>
  */
 ASTCondition Condition() :
 {}
@@ -1653,7 +1655,7 @@ ASTExpressionList ExpressionList() :
 }
 
 /**
- * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/About-SQL-Expressions.html
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/About-SQL-Expressions.html">About SQL Expressions</a>
  */
 ASTSqlExpression SqlExpression() :
 { PLSQLNode simpleNode = null; }
@@ -1995,7 +1997,7 @@ void FromClauseEntry() #void :
 }
 
 /**
- * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/img_text/select_list.html
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/img_text/select_list.html">SELECT list</a>
  */
 ASTSelectList SelectList() :
 {}
@@ -2174,7 +2176,7 @@ ASTTableName TableName() :
 }
 
 /**
- * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/SELECT.html#GUID-CFA006CA-6FF1-4972-821E-6996142A51C6__CHDIJFDJ
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/SELECT.html#GUID-CFA006CA-6FF1-4972-821E-6996142A51C6__CHDIJFDJ">SELECT</a>
  */
 ASTJoinClause JoinClause() :
 {}
@@ -2223,7 +2225,7 @@ ASTOuterJoinClause OuterJoinClause() :
 }
 
 /**
- * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/img_text/query_partition_clause.html
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/img_text/query_partition_clause.html">Query Partition Clause</a>
  */
 ASTQueryPartitionClause QueryPartitionClause() :
 {}
@@ -2333,11 +2335,11 @@ ASTUnlabelledStatement UnlabelledStatement()  :
 {}
 {
        (
-       // small optimization: SelectIntoStatement and SelectStatement both begin with SELECT
+       // small optimization: SelectIntoStatement and SelectStatement both begin with WITH or SELECT
        // but to distinguish the two, a complete lookahead of SelectIntoStatement needs to be parsed.
        // Using a lookahead of a single token first avoids this the syntatic lookahead for all other choices
        // not related to SELECT statements.
-       LOOKAHEAD(<SELECT>) (
+       LOOKAHEAD(<WITH>|<SELECT>) (
             LOOKAHEAD(SelectIntoStatement()) SelectIntoStatement() ";" |
             SelectStatement() ";"
        ) |
@@ -4722,7 +4724,7 @@ SPECIAL_TOKEN :
   	<PARSING_EXCLUSION: "--" (" ")* "PMD-EXCLUDE-END" (~["\n", "\r"])* >
     {
       String excluded_source = matchedToken.getImage();
-      exclusions.add(new ParsingExclusion(matchedToken.getBeginLine(), matchedToken.getEndLine(), excluded_source));
+      exclusions.add(new ParsingExclusion(matchedToken.getReportLocation().getStartLine(), matchedToken.getReportLocation().getEndLine(), excluded_source));
     } : DEFAULT
 }
 
@@ -5428,9 +5430,8 @@ void KEYWORD(String id) #void:
     {
         if (!token.getImage().equalsIgnoreCase(id)) {
             String eol = System.getProperty("line.separator", "\n");
-            throw new ParseException("Encountered \"" + token.getImage() + "\" at line "
-                + token.getBeginLine() + ", column " + token.getBeginColumn() + "." + eol
-                + "Was expecting: " + id);
+            throw new ParseException("Encountered \"" + token.getImage() + "\" "
+                + "Was expecting: " + id).withLocation(token);
         }
     }
 }

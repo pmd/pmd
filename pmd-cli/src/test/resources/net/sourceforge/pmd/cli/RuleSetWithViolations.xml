@@ -7,7 +7,7 @@
   </description>
 
     <rule name="ReportAllRootNodes" language="dummy" since="1.0" message="Violation from ReportAllRootNodes"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
         externalInfoUrl="${pmd.website.baseurl}/rules/test/TestRuleset3.xml#Ruleset3Rule1">
         <description>Just for test</description>
         <priority>3</priority>

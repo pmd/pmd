@@ -29,7 +29,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTTypeSpecification;
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclaratorId;
 import net.sourceforge.pmd.lang.plsql.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
-import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
+import net.sourceforge.pmd.lang.plsql.ast.PlsqlVisitorBase;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 /**
@@ -42,7 +42,7 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  * each scope object is linked to its parent scope, which is the scope object of
  * the next embedding syntactic entity that has a scope.
  */
-public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
+public class ScopeAndDeclarationFinder extends PlsqlVisitorBase<Object, Object> {
     private static final Logger LOG = LoggerFactory.getLogger(ScopeAndDeclarationFinder.class);
 
     /**
@@ -265,7 +265,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
 
     private Object visitMethodLike(PLSQLNode node, Object data) {
         createMethodScope(node);
-        final ASTMethodDeclarator md = node.getFirstChildOfType(ASTMethodDeclarator.class);
+        final ASTMethodDeclarator md = node.firstChild(ASTMethodDeclarator.class);
         // A PLSQL Method (FUNCTION|PROCEDURE) may be schema-level
         try {
             node.getScope().getEnclosingScope(ClassScope.class).addDeclaration(new MethodNameDeclaration(md));
@@ -279,9 +279,9 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
 
                 // A File-level/Schema-level object may have a Schema-name
                 // explicitly specified in the declaration
-                ASTObjectNameDeclaration on = md.getFirstChildOfType(ASTObjectNameDeclaration.class);
+                ASTObjectNameDeclaration on = md.firstChild(ASTObjectNameDeclaration.class);
                 if (1 < on.getNumChildren()) {
-                    ASTID schemaName = on.getFirstChildOfType(ASTID.class);
+                    ASTID schemaName = on.firstChild(ASTID.class);
                     LOG.trace("SchemaName for Schema-level method: methodName={}; Image={} is {}",
                             md.getImage(), node.getImage(), schemaName.getImage());
 

@@ -4,35 +4,43 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import net.sourceforge.pmd.lang.apex.ApexLanguageProcessor;
+import net.sourceforge.pmd.lang.apex.internal.AntlrVersionCheckSuppression;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser;
 
-import apex.jorje.data.Locations;
-import apex.jorje.semantic.ast.compilation.Compilation;
+import com.google.summit.SummitAST;
+import com.google.summit.ast.CompilationUnit;
+import com.google.summit.translation.Translate;
 
-@InternalApi
+@SuppressWarnings("PMD.DoNotUseJavaUtilLogging")
 public final class ApexParser implements Parser {
 
-    public ApexParser() {
-        ApexJorjeLogging.disableLogging();
-        Locations.useIndexFactory();
+    // This is static - it keeps the Logger from being garbage collected
+    // we want to configure the log level for this once.
+    private static final Logger TRANSLATE_LOGGER = Logger.getLogger(Translate.class.getName());
+
+    static {
+        AntlrVersionCheckSuppression.initApexLexer();
+        // Suppress INFO-level output
+        TRANSLATE_LOGGER.setLevel(Level.WARNING);
     }
 
     @Override
     public ASTApexFile parse(final ParserTask task) {
+        CompilationUnit astRoot = null;
         try {
-
-            final Compilation astRoot = CompilerService.INSTANCE.parseApex(task.getTextDocument());
-
-            assert astRoot != null : "Normally replaced by Compilation.INVALID";
-
-            final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(task, (ApexLanguageProcessor) task.getLanguageProcessor());
-            return treeBuilder.buildTree(astRoot);
-        } catch (apex.jorje.services.exception.ParseException e) {
-            throw new ParseException(e).setFileName(task.getFileDisplayName());
+            astRoot = SummitAST.INSTANCE.parseAndTranslate(task.getFileId().getOriginalPath(), task.getTextDocument().getText().toString(), null);
+        } catch (SummitAST.ParseException e) {
+            throw new ParseException(e);
         }
+
+        assert astRoot != null;
+
+        final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(task, (ApexLanguageProcessor) task.getLanguageProcessor());
+        return treeBuilder.buildTree(astRoot);
     }
 }

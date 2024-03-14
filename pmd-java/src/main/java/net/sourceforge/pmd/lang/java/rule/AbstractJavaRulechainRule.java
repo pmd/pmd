@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.rule;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
@@ -28,7 +27,6 @@ public abstract class AbstractJavaRulechainRule extends AbstractJavaRule {
      * @param visits The rest
      */
     @SafeVarargs
-    @Experimental
     public AbstractJavaRulechainRule(Class<? extends JavaNode> first, Class<? extends JavaNode>... visits) {
         selector = RuleTargetSelector.forTypes(first, visits);
     }

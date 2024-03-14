@@ -30,7 +30,7 @@ class CtorInferenceTest : ProcessorTestSpec({
             }
             """)
 
-        val (t_Gen) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Gen) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val (paramCall, genCall) = acu.descendants(ASTConstructorCall::class.java).toList()
 
@@ -70,7 +70,7 @@ class CtorInferenceTest : ProcessorTestSpec({
             }
             """)
 
-        val (t_E) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_E) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
         val (intCtor, doubleCtor, defaultCtor) = acu.descendants(ASTConstructorDeclaration::class.java).toList { it.symbol }
 
         val (a, b, c, d) = acu.descendants(ASTEnumConstant::class.java).toList()
@@ -115,7 +115,7 @@ class CtorInferenceTest : ProcessorTestSpec({
             }
             """)
 
-        val (t_E) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_E) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
         val (_, _, genericCtor) = acu.descendants(ASTConstructorDeclaration::class.java).toList { it.symbol }
 
         val (a) = acu.descendants(ASTEnumConstant::class.java).toList()
@@ -143,7 +143,7 @@ class CtorInferenceTest : ProcessorTestSpec({
             }
             """)
 
-        val (t_E) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_E) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val (a) = acu.descendants(ASTEnumConstant::class.java).toList()
 
@@ -173,7 +173,7 @@ class CtorInferenceTest : ProcessorTestSpec({
 
             """)
 
-        val (t_Sup) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Sup) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val (supCtor) = acu.descendants(ASTConstructorDeclaration::class.java).toList()
         val (ctor) = acu.descendants(ASTExplicitConstructorInvocation::class.java).toList()
@@ -215,7 +215,7 @@ class CtorInferenceTest : ProcessorTestSpec({
 
             """)
 
-        val (t_Outer, t_Inner, t_Scratch) = acu.declaredTypeSignatures()
+        val (t_Outer, t_Inner, _) = acu.declaredTypeSignatures()
 
         val (innerCtor) = acu.ctorDeclarations().toList()
         val (ctor) = acu.descendants(ASTExplicitConstructorInvocation::class.java).toList()
@@ -260,7 +260,7 @@ class CtorInferenceTest : ProcessorTestSpec({
             """)
 
 
-        val (t_Outer, t_Inner, t_Scratch) = acu.declaredTypeSignatures()
+        val (t_Outer, t_Inner, _) = acu.declaredTypeSignatures()
 
         val (innerCtor) = acu.ctorDeclarations().toList()
         val (ctor) = acu.descendants(ASTExplicitConstructorInvocation::class.java).toList()
@@ -335,7 +335,7 @@ class CtorInferenceTest : ProcessorTestSpec({
 
     parserTest("Mapping of type params doesn't fail") {
 
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+        val (acu, _) = parser.parseWithTypeInferenceSpy(
             """
 
     class Gen<A,B> {

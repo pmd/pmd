@@ -23,7 +23,7 @@ class ASTTryStatementTest extends EcmascriptParserTestBase {
 
     private ASTTryStatement getTryStmt(String js) {
         EcmascriptNode<AstRoot> node = this.js.parse(js);
-        List<ASTTryStatement> trys = node.findDescendantsOfType(ASTTryStatement.class);
+        List<ASTTryStatement> trys = node.descendants(ASTTryStatement.class).toList();
         assertEquals(1, trys.size());
         ASTTryStatement tryStmt = trys.get(0);
         return tryStmt;

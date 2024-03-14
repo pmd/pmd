@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
@@ -19,12 +18,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
 
@@ -61,7 +61,7 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
         if (checkNonStaticFields || node.hasModifiers(JModifier.STATIC)) {
-            for (ASTVariableDeclaratorId varId : node.getVarIds()) {
+            for (ASTVariableId varId : node.getVarIds()) {
                 fields.add(varId.getName());
             }
         }
@@ -104,7 +104,7 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
                 }
             }
             if (violation) {
-                addViolation(data, ifStatement);
+                asCtx(data).addViolation(ifStatement);
             }
         }
         return data;

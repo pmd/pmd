@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.plsql.rule.design;
 
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +52,7 @@ public class TooManyFieldsRule extends AbstractPLSQLRule {
 
         int maxFields = getProperty(MAX_FIELDS_DESCRIPTOR);
 
-        List<ASTVariableOrConstantDeclaration> l = node.findDescendantsOfType(ASTVariableOrConstantDeclaration.class);
+        List<ASTVariableOrConstantDeclaration> l = node.descendants(ASTVariableOrConstantDeclaration.class).toList();
 
         for (ASTVariableOrConstantDeclaration fd : l) {
             bumpCounterFor(fd);
@@ -61,7 +61,7 @@ public class TooManyFieldsRule extends AbstractPLSQLRule {
             int val = stats.get(k);
             Node n = nodes.get(k);
             if (val > maxFields) {
-                addViolation(data, n);
+                asCtx(data).addViolation(n);
             }
         }
         return data;
@@ -72,7 +72,7 @@ public class TooManyFieldsRule extends AbstractPLSQLRule {
 
         int maxFields = getProperty(MAX_FIELDS_DESCRIPTOR);
 
-        List<ASTVariableOrConstantDeclaration> l = node.findDescendantsOfType(ASTVariableOrConstantDeclaration.class);
+        List<ASTVariableOrConstantDeclaration> l = node.descendants(ASTVariableOrConstantDeclaration.class).toList();
 
         for (ASTVariableOrConstantDeclaration fd : l) {
             bumpCounterFor(fd);
@@ -81,7 +81,7 @@ public class TooManyFieldsRule extends AbstractPLSQLRule {
             int val = stats.get(k);
             Node n = nodes.get(k);
             if (val > maxFields) {
-                addViolation(data, n);
+                asCtx(data).addViolation(n);
             }
         }
         return data;

@@ -20,43 +20,42 @@ import java.util.function.Function;
  * and PackageOrTypeName productions of the JLS.
  *
  * <pre class="grammar">
- *
  * AmbiguousNameExpr ::= &lt;IDENTIFIER&gt; ( "." &lt;IDENTIFIER&gt;)*
- *
  * </pre>
  *
- * @implNote <h3>Disambiguation</h3>
+ * @implNote
+ *    <h2>Disambiguation</h2>
  *
- * <p>Some ambiguous names are pushed by the expression parser because
- * we don't want to look too far ahead (in primary prefix). But it can
- * happen that the next segment (primary suffix) constrains the name to
- * be e.g. a type name or an expression name. E.g. From the JLS:
+ *     <p>Some ambiguous names are pushed by the expression parser because
+ *     we don't want to look too far ahead (in primary prefix). But it can
+ *     happen that the next segment (primary suffix) constrains the name to
+ *     be e.g. a type name or an expression name. E.g. From the JLS:
  *
- * <blockquote>
- * A name is syntactically classified as an ExpressionName in these contexts:
- *   ...
- * - As the qualifying expression in a qualified class instance creation
- *  expression (§15.9)
- * </blockquote>
+ *     <blockquote>
+ *     A name is syntactically classified as an ExpressionName in these contexts:
+ *       ...
+ *     - As the qualifying expression in a qualified class instance creation
+ *      expression (§15.9)
+ *     </blockquote>
  *
- * We don't know at the moment the name is parsed that it will be
- * followed by "." "new" and a constructor call. But as soon as the
- * {@link ASTConstructorCall} is pushed, we know that the LHS must be an
- * expression. In that case, the name can be reclassified, and e.g. if
- * it's a simple name be promoted to {@link ASTVariableAccess}. This
- * type of immediate disambiguation is carried out by the {@link AbstractJavaNode#jjtClose()}
- * method of those nodes that do force a specific context on their
- * left-hand side. See also {@link LeftRecursiveNode}.
+ *     We don't know at the moment the name is parsed that it will be
+ *     followed by "." "new" and a constructor call. But as soon as the
+ *     {@link ASTConstructorCall} is pushed, we know that the LHS must be an
+ *     expression. In that case, the name can be reclassified, and e.g. if
+ *     it's a simple name be promoted to {@link ASTVariableAccess}. This
+ *     type of immediate disambiguation is carried out by the {@link AbstractJavaNode#jjtClose()}
+ *     method of those nodes that do force a specific context on their
+ *     left-hand side. See also {@link LeftRecursiveNode}.
  *
- * <p>Another mechanism is {@link #forceExprContext()} and {@link #forceTypeContext()},
- * which are called by the parser to promote an ambiguous name to an
- * expression or a type when exiting from the {@link JavaParserImpl#PrimaryExpression()}
- * production or {@link JavaParserImpl#ClassOrInterfaceType()}.
+ *     <p>Another mechanism is {@link #forceExprContext()} and {@link #forceTypeContext()},
+ *     which are called by the parser to promote an ambiguous name to an
+ *     expression or a type when exiting from the {@link JavaParserImpl#PrimaryExpression()}
+ *     production or {@link JavaParserImpl#ClassOrInterfaceType()}.
  *
- * <p>Those two mechanisms perform the first classification step, the
- * one that only depends on the syntactic context and not on semantic
- * information. A second pass on the AST after building the symbol tables
- * would allow us to remove all the remaining ambiguous names.
+ *     <p>Those two mechanisms perform the first classification step, the
+ *     one that only depends on the syntactic context and not on semantic
+ *     information. A second pass on the AST after building the symbol tables
+ *     would allow us to remove all the remaining ambiguous names.
  */
 public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTReferenceType, ASTPrimaryExpression {
     // if true, then this was explitly left in the tree by the disambig
@@ -117,14 +116,14 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
 
     /**
      * Called by the parser if this ambiguous name was expected to be
-     * a type name. Then we simply promote it to an {@link ASTClassOrInterfaceType}
+     * a type name. Then we simply promote it to an {@link ASTClassType}
      * with the appropriate LHS.
      *
      * @return the node which will replace this node in the tree
      */
-    ASTClassOrInterfaceType forceTypeContext() {
+    ASTClassType forceTypeContext() {
         // same, there's no parent here
-        return shrinkOneSegment(ASTClassOrInterfaceType::new, ASTClassOrInterfaceType::new);
+        return shrinkOneSegment(ASTClassType::new, ASTClassType::new);
     }
 
 
@@ -197,14 +196,23 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
         // this reference and the lambdas can be optimised to a singleton
         shrinkOneSegment(
             simpleName -> {
+                String simpleNameImage = simpleName.getFirstToken().getImage();
                 AbstractJavaNode parent = (AbstractJavaNode) simpleName.getParent();
-                parent.setImage(simpleName.getFirstToken().getImage());
+                if (parent instanceof ASTClassType) {
+                    ((ASTClassType) parent).setSimpleName(simpleNameImage);
+                } else {
+                    parent.setImage(simpleName.getFirstToken().getImage());
+                }
                 parent.removeChildAtIndex(simpleName.getIndexInParent());
                 return null;
             },
             (ambig, simpleName) -> {
                 AbstractJavaNode parent = (AbstractJavaNode) ambig.getParent();
-                parent.setImage(simpleName);
+                if (parent instanceof ASTClassType) {
+                    ((ASTClassType) parent).setSimpleName(simpleName);
+                } else {
+                    parent.setImage(simpleName);
+                }
                 return null;
             }
         );

@@ -7,14 +7,6 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 import java.io.Writer;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Report.ConfigurationError;
-import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
-import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.Report.ReportBuilderListener;
-import net.sourceforge.pmd.Report.SuppressedViolation;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -22,7 +14,16 @@ import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.FileNameRenderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.reporting.ListenerInitializer;
+import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.Report.ConfigurationError;
+import net.sourceforge.pmd.reporting.Report.GlobalReportBuilderListener;
+import net.sourceforge.pmd.reporting.Report.ProcessingError;
+import net.sourceforge.pmd.reporting.Report.ReportBuilderListener;
+import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 /**
  * This is an interface for rendering a Report. When a Renderer is being
@@ -109,10 +110,19 @@ public interface Renderer extends PropertySource {
     Writer getWriter();
 
     /**
+     * Set the {@link FileNameRenderer} used to render file paths to the report.
+     * Note that this renderer does not have to use the parameter to output paths.
+     * Some report formats require a specific format for paths (eg a URI), and are
+     * allowed to circumvent the provided strategy.
+     *
+     * @param fileNameRenderer a non-null file name renderer
+     */
+    void setFileNameRenderer(FileNameRenderer fileNameRenderer);
+
+    /**
      * Set the Writer for the Renderer.
      *
-     * @param writer
-     *            The Writer.
+     * @param writer The Writer.
      */
     void setWriter(Writer writer);
 
@@ -172,7 +182,6 @@ public interface Renderer extends PropertySource {
      *
      * @param reportFilename the filename (optional).
      */
-    @Experimental
     void setReportFile(String reportFilename);
 
 
@@ -200,6 +209,16 @@ public interface Renderer extends PropertySource {
             @Override
             public void onConfigError(ConfigurationError error) {
                 configErrorReport.onConfigError(error);
+            }
+
+            @Override
+            public ListenerInitializer initializer() {
+                return new ListenerInitializer() {
+                    @Override
+                    public void setFileNameRenderer(FileNameRenderer fileNameRenderer) {
+                        Renderer.this.setFileNameRenderer(fileNameRenderer);
+                    }
+                };
             }
 
             @Override

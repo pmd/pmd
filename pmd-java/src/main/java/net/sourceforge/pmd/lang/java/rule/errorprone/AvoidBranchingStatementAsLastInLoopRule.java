@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTFinallyClause;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
@@ -75,18 +76,23 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
         Node parent = node.getParent();
         if (parent instanceof ASTBlock) {
             parent = parent.getParent();
+            if (parent instanceof ASTFinallyClause) {
+                // get the parent of the block, in which the try statement is: ForStatement/Block/TryStatement/Finally
+                // e.g. a ForStatement
+                parent = ((ASTFinallyClause) parent).ancestors().get(2);
+            }
         }
         if (parent instanceof ASTForStatement || parent instanceof ASTForeachStatement) {
             if (hasPropertyValue(property, CHECK_FOR)) {
-                super.addViolation(data, node);
+                asCtx(data).addViolation(node);
             }
         } else if (parent instanceof ASTWhileStatement) {
             if (hasPropertyValue(property, CHECK_WHILE)) {
-                super.addViolation(data, node);
+                asCtx(data).addViolation(node);
             }
         } else if (parent instanceof ASTDoStatement) {
             if (hasPropertyValue(property, CHECK_DO)) {
-                super.addViolation(data, node);
+                asCtx(data).addViolation(node);
             }
         }
         return data;

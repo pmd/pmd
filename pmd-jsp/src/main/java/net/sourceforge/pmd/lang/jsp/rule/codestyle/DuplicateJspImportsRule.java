@@ -8,9 +8,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.jsp.ast.ASTJspDirectiveAttribute;
 import net.sourceforge.pmd.lang.jsp.rule.AbstractJspRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class DuplicateJspImportsRule extends AbstractJspRule {
 
@@ -33,7 +33,7 @@ public class DuplicateJspImportsRule extends AbstractJspRule {
         for (int ix = 0; ix < count; ix++) {
             String token = st.nextToken();
             if (imports.contains(token)) {
-                addViolation(data, node, node.getImage());
+                asCtx(data).addViolation(node, token);
             } else {
                 imports.add(token);
             }

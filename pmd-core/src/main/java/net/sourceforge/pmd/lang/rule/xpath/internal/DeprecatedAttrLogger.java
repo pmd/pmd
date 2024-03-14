@@ -10,9 +10,10 @@ import java.util.concurrent.ConcurrentMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.InternalApiBridge;
+import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 
 /**
  * Records usages of deprecated attributes in XPath rules. This needs
@@ -84,7 +85,7 @@ public abstract class DeprecatedAttrLogger {
 
         @Override
         public void recordUsageOf(Attribute attribute) {
-            String replacement = attribute.replacementIfDeprecated();
+            String replacement = InternalApiBridge.replacementIfDeprecated(attribute);
             if (replacement != null) {
                 String name = getLoggableAttributeName(attribute);
                 Boolean b = deprecated.putIfAbsent(name, Boolean.TRUE);
@@ -116,7 +117,7 @@ public abstract class DeprecatedAttrLogger {
     private static final class AdhocLoggerImpl extends DeprecatedAttrLogger {
         @Override
         public void recordUsageOf(Attribute attribute) {
-            String replacement = attribute.replacementIfDeprecated();
+            String replacement = InternalApiBridge.replacementIfDeprecated(attribute);
             if (replacement != null) {
                 String name = getLoggableAttributeName(attribute);
                 // this message needs to be kept in sync with PMDCoverageTest / BinaryDistributionIT

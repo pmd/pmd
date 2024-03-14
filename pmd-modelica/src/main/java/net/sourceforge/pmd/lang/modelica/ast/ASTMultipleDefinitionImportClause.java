@@ -8,13 +8,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.modelica.resolver.CompositeName;
-import net.sourceforge.pmd.lang.modelica.resolver.InternalModelicaResolverApi;
+import net.sourceforge.pmd.lang.modelica.resolver.InternalApiBridge;
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaDeclaration;
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaScope;
-import net.sourceforge.pmd.lang.modelica.resolver.ResolutionContext;
 import net.sourceforge.pmd.lang.modelica.resolver.ResolutionResult;
-import net.sourceforge.pmd.lang.modelica.resolver.ResolutionState;
-import net.sourceforge.pmd.lang.modelica.resolver.Watchdog;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionContext;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionState;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.Watchdog;
 
 public final class ASTMultipleDefinitionImportClause extends AbstractModelicaImportClause {
     private ASTName importFrom;
@@ -32,11 +32,11 @@ public final class ASTMultipleDefinitionImportClause extends AbstractModelicaImp
     @Override
     public void jjtClose() {
         super.jjtClose();
-        importFrom = getFirstChildOfType(ASTName.class);
-        ASTImportList importList = getFirstChildOfType(ASTImportList.class);
+        importFrom = firstChild(ASTName.class);
+        ASTImportList importList = firstChild(ASTImportList.class);
         for (int i = 0; i < importList.getNumChildren(); ++i) {
             ASTSimpleName namePart = (ASTSimpleName) importList.getChild(i);
-            importedNames.add(namePart.getImage());
+            importedNames.add(namePart.getName());
         }
     }
 
@@ -48,7 +48,7 @@ public final class ASTMultipleDefinitionImportClause extends AbstractModelicaImp
     @Override
     protected void fetchImportedClassesFromSource(ResolutionContext result, ModelicaDeclaration source, String simpleName) throws Watchdog.CountdownException {
         if (importedNames.contains(simpleName)) {
-            InternalModelicaResolverApi.resolveFurtherNameComponents(source, result, CompositeName.create(simpleName));
+            InternalApiBridge.resolveFurtherNameComponents(source, result, CompositeName.create(simpleName));
         }
     }
 

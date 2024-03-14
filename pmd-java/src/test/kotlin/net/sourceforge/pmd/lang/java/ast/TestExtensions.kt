@@ -13,12 +13,12 @@ import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken
-import net.sourceforge.pmd.lang.ast.test.NodeSpec
-import net.sourceforge.pmd.lang.ast.test.ValuedNodeSpec
-import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.test.ast.NodeSpec
+import net.sourceforge.pmd.lang.test.ast.ValuedNodeSpec
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
-import net.sourceforge.pmd.util.IteratorUtil
 
 fun <T, C : Collection<T>> C?.shouldContainAtMostOneOf(vararg expected: T) {
     this shouldNotBe null
@@ -28,26 +28,32 @@ fun <T, C : Collection<T>> C?.shouldContainAtMostOneOf(vararg expected: T) {
 }
 
 
-fun haveModifier(mod: JModifier): Matcher<AccessNode> = object : Matcher<AccessNode> {
-    override fun test(value: AccessNode): MatcherResult =
-            MatcherResult(value.hasModifiers(mod), "Expected $value to have modifier $mod", "Expected $value to not have modifier $mod")
+fun haveModifier(mod: JModifier): Matcher<ModifierOwner> = object : Matcher<ModifierOwner> {
+    override fun test(value: ModifierOwner): MatcherResult =
+            MatcherResult(value.hasModifiers(mod),
+                { "Expected $value to have modifier $mod" },
+                { "Expected $value to not have modifier $mod" })
 }
 
-fun haveExplicitModifier(mod: JModifier): Matcher<AccessNode> = object : Matcher<AccessNode> {
-    override fun test(value: AccessNode): MatcherResult {
-        return MatcherResult(value.hasExplicitModifiers(mod), "Expected $value to have modifier $mod", "Expected $value to not have modifier $mod")
+fun haveExplicitModifier(mod: JModifier): Matcher<ModifierOwner> = object : Matcher<ModifierOwner> {
+    override fun test(value: ModifierOwner): MatcherResult {
+        return MatcherResult(value.hasExplicitModifiers(mod),
+            { "Expected $value to have modifier $mod" },
+            { "Expected $value to not have modifier $mod" })
     }
 }
 
-fun haveVisibility(vis: AccessNode.Visibility): Matcher<AccessNode> = object : Matcher<AccessNode> {
-    override fun test(value: AccessNode): MatcherResult =
-            MatcherResult(value.visibility == vis, "Expected $value to have visibility $vis", "Expected $value to not have visibility $vis")
+fun haveVisibility(vis: ModifierOwner.Visibility): Matcher<ModifierOwner> = object : Matcher<ModifierOwner> {
+    override fun test(value: ModifierOwner): MatcherResult =
+            MatcherResult(value.visibility == vis,
+                { "Expected $value to have visibility $vis" },
+                { "Expected $value to not have visibility $vis" })
 }
 
 fun JavaNode.tokenList(): List<JavaccToken> =
         tokens().toList()
 
-fun String.addArticle() = when (this[0].toLowerCase()) {
+fun String.addArticle() = when (this[0].lowercaseChar()) {
     'a', 'e', 'i', 'o', 'u' -> "an $this"
     else -> "a $this"
 }
@@ -105,23 +111,23 @@ fun TreeNodeWrapper<Node, *>.enumBody(contents: NodeSpec<ASTEnumBody> = EmptyAss
             contents()
         }
 
-fun TreeNodeWrapper<Node, *>.thisExpr(qualifier: ValuedNodeSpec<ASTThisExpression, ASTClassOrInterfaceType?> = { null }) =
+fun TreeNodeWrapper<Node, *>.thisExpr(qualifier: ValuedNodeSpec<ASTThisExpression, ASTClassType?> = { null }) =
         child<ASTThisExpression> {
             it::getQualifier shouldBe qualifier()
         }
 
-fun TreeNodeWrapper<Node, *>.variableId(name: String, otherAssertions: NodeSpec<ASTVariableDeclaratorId> = EmptyAssertions) =
-        child<ASTVariableDeclaratorId>(ignoreChildren = otherAssertions == EmptyAssertions) {
-            it::getVariableName shouldBe name
+fun TreeNodeWrapper<Node, *>.variableId(name: String, otherAssertions: NodeSpec<ASTVariableId> = EmptyAssertions) =
+        child<ASTVariableId>(ignoreChildren = otherAssertions == EmptyAssertions) {
+            it::getName shouldBe name
             otherAssertions()
         }
 
-fun TreeNodeWrapper<Node, *>.simpleLambdaParam(name: String, otherAssertions: NodeSpec<ASTVariableDeclaratorId> = EmptyAssertions) =
+fun TreeNodeWrapper<Node, *>.simpleLambdaParam(name: String, otherAssertions: NodeSpec<ASTVariableId> = EmptyAssertions) =
         child<ASTLambdaParameter> {
             it::getModifiers shouldBe modifiers {  }
 
-            child<ASTVariableDeclaratorId>(ignoreChildren = otherAssertions == EmptyAssertions) {
-                it::getVariableName shouldBe name
+            child<ASTVariableId>(ignoreChildren = otherAssertions == EmptyAssertions) {
+                it::getName shouldBe name
                 otherAssertions()
             }
         }
@@ -250,8 +256,8 @@ fun TreeNodeWrapper<Node, *>.returnStatement(contents: ValuedNodeSpec<ASTReturnS
 
 fun TreeNodeWrapper<Node, *>.forLoop(body: ValuedNodeSpec<ASTForStatement, ASTStatement?> = { null }) =
         child<ASTForStatement> {
-            val body = body()
-            if (body != null) it::getBody shouldBe body
+            val expectedBody = body()
+            if (expectedBody != null) it::getBody shouldBe expectedBody
             else unspecifiedChildren(it.numChildren)
         }
 
@@ -274,22 +280,22 @@ fun TreeNodeWrapper<Node, *>.statementExprList(body: NodeSpec<ASTStatementExpres
 
 fun TreeNodeWrapper<Node, *>.foreachLoop(body: ValuedNodeSpec<ASTForeachStatement, ASTStatement?> = { null }) =
         child<ASTForeachStatement> {
-            val body = body()
-            if (body != null) it::getBody shouldBe body
+            val expectedBody = body()
+            if (expectedBody != null) it::getBody shouldBe expectedBody
             else unspecifiedChildren(it.numChildren)
         }
 
 fun TreeNodeWrapper<Node, *>.doLoop(body: ValuedNodeSpec<ASTDoStatement, ASTStatement?> = { null }) =
         child<ASTDoStatement> {
-            val body = body()
-            if (body != null) it::getBody shouldBe body
+            val expectedBody = body()
+            if (expectedBody != null) it::getBody shouldBe expectedBody
             else unspecifiedChildren(it.numChildren)
         }
 
 fun TreeNodeWrapper<Node, *>.whileLoop(body: ValuedNodeSpec<ASTWhileStatement, ASTStatement?> = { null }) =
         child<ASTWhileStatement> {
-            val body = body()
-            if (body != null) it::getBody shouldBe body
+            val expectedBody = body()
+            if (expectedBody != null) it::getBody shouldBe expectedBody
             else unspecifiedChildren(it.numChildren)
         }
 
@@ -334,7 +340,7 @@ fun TreeNodeWrapper<Node, *>.localVarDecl(contents: NodeSpec<ASTLocalVariableDec
             contents()
         }
 
-fun TreeNodeWrapper<Node, *>.localClassDecl(simpleName: String, contents: NodeSpec<ASTClassOrInterfaceDeclaration> = EmptyAssertions) =
+fun TreeNodeWrapper<Node, *>.localClassDecl(simpleName: String, contents: NodeSpec<ASTClassDeclaration> = EmptyAssertions) =
         child<ASTLocalClassStatement> {
             it::getDeclaration shouldBe classDecl(simpleName, contents)
         }
@@ -373,14 +379,14 @@ fun TreeNodeWrapper<Node, *>.typeParam(name: String, contents: ValuedNodeSpec<AS
             it::getTypeBoundNode shouldBe contents()
         }
 
-fun TreeNodeWrapper<Node, *>.classType(simpleName: String, contents: NodeSpec<ASTClassOrInterfaceType> = EmptyAssertions) =
-        child<ASTClassOrInterfaceType>(ignoreChildren = contents == EmptyAssertions) {
+fun TreeNodeWrapper<Node, *>.classType(simpleName: String, contents: NodeSpec<ASTClassType> = EmptyAssertions) =
+        child<ASTClassType>(ignoreChildren = contents == EmptyAssertions) {
             it::getSimpleName shouldBe simpleName
             contents()
         }
 
-fun TreeNodeWrapper<Node, *>.qualClassType(canoName: String, contents: NodeSpec<ASTClassOrInterfaceType> = EmptyAssertions) =
-        child<ASTClassOrInterfaceType>(ignoreChildren = contents == EmptyAssertions) {
+fun TreeNodeWrapper<Node, *>.qualClassType(canoName: String, contents: NodeSpec<ASTClassType> = EmptyAssertions) =
+        child<ASTClassType>(ignoreChildren = contents == EmptyAssertions) {
             val simpleName = canoName.substringAfterLast('.')
             it::getSimpleName shouldBe simpleName
             it.text.toString() shouldBe canoName
@@ -392,7 +398,7 @@ fun TreeNodeWrapper<Node, *>.unionType(contents: NodeSpec<ASTUnionType> = EmptyA
             contents()
         }
 
-fun TreeNodeWrapper<Node, *>.voidType() = child<ASTVoidType>() {}
+fun TreeNodeWrapper<Node, *>.voidType() = child<ASTVoidType> {}
 
 
 fun TreeNodeWrapper<Node, *>.typeExpr(contents: ValuedNodeSpec<ASTTypeExpression, ASTType>) =
@@ -419,7 +425,7 @@ fun TreeNodeWrapper<Node, *>.arrayType(contents: NodeSpec<ASTArrayType> = EmptyA
 fun TreeNodeWrapper<Node, *>.primitiveType(type: PrimitiveTypeKind, assertions: NodeSpec<ASTPrimitiveType> = EmptyAssertions) =
         child<ASTPrimitiveType> {
             it::getKind shouldBe type
-            it::getTypeImage shouldBe type.toString()
+            PrettyPrintingUtil.prettyPrintType(it) shouldBe type.toString()
             assertions()
         }
 
@@ -431,7 +437,7 @@ fun TreeNodeWrapper<Node, *>.castExpr(contents: NodeSpec<ASTCastExpression>) =
 
 fun TreeNodeWrapper<Node, *>.stringLit(image: String, contents: NodeSpec<ASTStringLiteral> = EmptyAssertions) =
         child<ASTStringLiteral> {
-            it::getImage shouldBe image
+            it.literalText.toString() shouldBe image
             it::isTextBlock shouldBe false
             it::isEmpty shouldBe it.constValue.isEmpty()
             contents()
@@ -440,7 +446,7 @@ fun TreeNodeWrapper<Node, *>.stringLit(image: String, contents: NodeSpec<ASTStri
 
 fun TreeNodeWrapper<Node, *>.charLit(image: String, contents: NodeSpec<ASTCharLiteral> = EmptyAssertions) =
         child<ASTCharLiteral> {
-            it::getImage shouldBe image
+            it.literalText.toString() shouldBe image
             contents()
         }
 
@@ -580,8 +586,8 @@ fun TreeNodeWrapper<Node, *>.switchStmt(assertions: NodeSpec<ASTSwitchStatement>
 
 fun TreeNodeWrapper<Node, *>.switchArrow(rhs: ValuedNodeSpec<ASTSwitchArrowBranch, ASTSwitchArrowRHS?> = { null }) =
         child<ASTSwitchArrowBranch> {
-            val rhs = rhs()
-            if (rhs != null) it::getRightHandSide shouldBe rhs
+            val expectedRhs = rhs()
+            if (expectedRhs != null) it::getRightHandSide shouldBe expectedRhs
             else unspecifiedChildren(2) // label + rhs
         }
 
@@ -693,9 +699,9 @@ fun TreeNodeWrapper<Node, *>.annotationMethod(contents: NodeSpec<ASTMethodDeclar
         }
 
 
-fun TreeNodeWrapper<Node, *>.classDecl(simpleName: String, assertions: NodeSpec<ASTClassOrInterfaceDeclaration> = EmptyAssertions) =
-        child<ASTClassOrInterfaceDeclaration>(ignoreChildren = assertions == EmptyAssertions) {
-            it::getImage shouldBe simpleName
+fun TreeNodeWrapper<Node, *>.classDecl(simpleName: String, assertions: NodeSpec<ASTClassDeclaration> = EmptyAssertions) =
+        child<ASTClassDeclaration>(ignoreChildren = assertions == EmptyAssertions) {
+            it::getSimpleName shouldBe simpleName
 
             assertions()
         }

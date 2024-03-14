@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.ant.internal;
 
+import static net.sourceforge.pmd.lang.rule.InternalApiBridge.loadRuleSetsWithoutException;
+
+import java.nio.charset.Charset;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,6 +19,7 @@ import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
+import org.apache.tools.ant.types.Resource;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +27,8 @@ import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
-import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.ant.Formatter;
+import net.sourceforge.pmd.ant.InternalApiBridge;
 import net.sourceforge.pmd.ant.PMDTask;
 import net.sourceforge.pmd.ant.SourceLanguage;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
@@ -34,6 +38,8 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.rule.RulePriority;
+import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.ReportStats;
@@ -53,7 +59,7 @@ public class PMDTaskImpl {
     private Project project;
 
     public PMDTaskImpl(PMDTask task) {
-        configuration.addRelativizeRoots(task.getRelativizeRoots());
+        configuration.addRelativizeRoots(getRelativizeRoots(task));
         if (task.getSuppressMarker() != null) {
             configuration.setSuppressMarker(task.getSuppressMarker());
         }
@@ -67,9 +73,8 @@ public class PMDTaskImpl {
             configuration.setRuleSets(Arrays.asList(task.getRulesetFiles().split(",")));
         }
 
-        configuration.setRuleSetFactoryCompatibilityEnabled(!task.isNoRuleSetCompatibility());
         if (task.getEncoding() != null) {
-            configuration.setSourceEncoding(task.getEncoding());
+            configuration.setSourceEncoding(Charset.forName(task.getEncoding()));
         }
         configuration.setThreads(task.getThreads());
         this.failuresPropertyName = task.getFailuresPropertyName();
@@ -96,6 +101,17 @@ public class PMDTaskImpl {
         project = task.getProject();
     }
 
+    private static List<java.nio.file.Path> getRelativizeRoots(PMDTask pmdTask) {
+        List<java.nio.file.Path> paths = new ArrayList<>();
+        for (Path path : pmdTask.getRelativizePathsWith()) {
+            for (Resource resource : path) {
+                paths.add(Paths.get(resource.toString()));
+            }
+        }
+        return paths;
+    }
+
+
     private void doTask() {
         setupClassLoader();
 
@@ -111,7 +127,7 @@ public class PMDTaskImpl {
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
             RuleSetLoader rulesetLoader =
                 pmd.newRuleSetLoader().loadResourcesWith(setupResourceLoader());
-            pmd.addRuleSets(rulesetLoader.loadRuleSetsWithoutException(ruleSetPaths));
+            pmd.addRuleSets(loadRuleSetsWithoutException(rulesetLoader, ruleSetPaths));
 
             for (FileSet fileset : filesets) {
                 DirectoryScanner ds = fileset.getDirectoryScanner(project);
@@ -119,6 +135,7 @@ public class PMDTaskImpl {
                     pmd.files().addFile(ds.getBasedir().toPath().resolve(srcFile));
                 }
             }
+
 
             @SuppressWarnings("PMD.CloseResource")
             ReportStatsListener reportStatsListener = new ReportStatsListener();
@@ -159,7 +176,7 @@ public class PMDTaskImpl {
             renderers.add(reportSizeListener);
             for (Formatter formatter : formatters) {
                 project.log("Sending a report to " + formatter, Project.MSG_VERBOSE);
-                renderers.add(formatter.newListener(project));
+                renderers.add(InternalApiBridge.newListener(formatter, project));
             }
             return GlobalAnalysisListener.tee(renderers);
         } catch (Exception e) {
@@ -177,7 +194,7 @@ public class PMDTaskImpl {
 
             @Override
             public FileAnalysisListener startFileAnalysis(TextFile dataSource) {
-                String name = dataSource.getDisplayName();
+                String name = dataSource.getFileId().getUriString();
                 project.log("Processing file " + name, Project.MSG_VERBOSE);
                 return FileAnalysisListener.noop();
             }

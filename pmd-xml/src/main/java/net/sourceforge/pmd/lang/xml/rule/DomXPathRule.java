@@ -6,14 +6,14 @@ package net.sourceforge.pmd.lang.xml.rule;
 
 import java.util.Objects;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * XPath rule that executes an expression on the DOM directly, and not
@@ -23,7 +23,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * class is strongly recommended over the standard {@link XPathRule}, which
  * is mostly useful in other PMD languages.
  *
- * <h3>Differences with {@link XPathRule}</h3>
+ * <h2>Differences with {@link XPathRule}</h2>
  *
  * This rule and {@link XPathRule} do not accept exactly the same queries,
  * because {@link XPathRule} implements the XPath spec in an ad-hoc way.
@@ -31,10 +31,10 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * <ul>
  * <li>{@link XPathRule} uses <i>elements</i> to represent text nodes.
  * This is contrary to the XPath spec, in which element and text nodes
- * are different kinds of nodes. To replace the query {@code //elt/text[@Image="abc"]},
+ * are different kinds of nodes. To replace the query {@code //elt/text[@Text="abc"]},
  * use the XPath function {@code text()}, eg {@code //elt[text()="abc"]}.
  * <li>{@link XPathRule} adds additional attributes to each element
- * (eg {@code @BeginLine} and {@code @Image}). These attributes are not
+ * (eg {@code @BeginLine} and {@code @Text}). These attributes are not
  * XML attributes, so they are not accessible using DomXPathRule rule.
  * Instead, use the XPath functions {@code pmd:startLine(node)}, {@code pmd:endLine(node)} and related.
  * For instance, replace {@code //elt[@EndLine - @BeginLine > 10]} with
@@ -68,7 +68,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * <p>Additionally, this rule only supports XPath 2.0, with no option
  * for configuration. This will be bumped to XPath 3.1 in PMD 7.
  *
- * <h4>Namespace-sensitivity</h4>
+ * <h3>Namespace-sensitivity</h3>
  *
  * <p>Another important difference is that this rule is namespace-sensitive.
  * If the tested XML documents use a schema ({@code xmlns} attribute on the root),
@@ -128,8 +128,6 @@ public class DomXPathRule extends AbstractRule {
     public DomXPathRule() {
         definePropertyDescriptor(XPATH_EXPR);
         definePropertyDescriptor(DEFAULT_NS_URI);
-        // for compatibility, but is ignored.
-        definePropertyDescriptor(XPathRule.VERSION_DESCRIPTOR);
     }
 
 

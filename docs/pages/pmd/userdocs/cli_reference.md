@@ -54,7 +54,9 @@ The tool comes with a rather extensive help text, simply running with `--help`!
                This is used to resolve types in source files. The platform specific path delimiter
                (\":\" on Linux, \";\" on Windows) is used to separate the entries.
                Alternatively, a single `file:` URL
-               to a text file containing path elements on consecutive lines can be specified."
+               to a text file containing path elements on consecutive lines can be specified.
+
+               <p>See also [Providing the auxiliary classpath](pmd_languages_java.html#providing-the-auxiliary-classpath).</p>"
                languages="Java"
     %}
     {% include custom/cli_option_row.html options="--benchmark,-b"
@@ -120,17 +122,12 @@ The tool comes with a rather extensive help text, simply running with `--help`!
                             Language detection is only influenced by file extensions and the `--force-language` option.</p>
                             <p>See also [Supported Languages](#supported-languages).</p>"
     %}
-    {% include custom/cli_option_row.html options="-language,-l"
-               option_arg="lang"
-               description="Specify the language PMD should use. Used together with `-version`. See also [Supported Languages](#supported-languages).
-                    <p><span class=\"label label-default\">Deprecated</span> since PMD 6.52.0. Use `--use-version` instead.</p>"
-    %}
     {% include custom/cli_option_row.html options="--minimum-priority"
                option_arg="priority"
-               description="Rule priority threshold; rules with lower priority
-                              than configured here won't be used.
-                            Valid values (case insensitive): High, Medium High,
-                              Medium, Medium Low, Low"
+               description="Rule priority threshold; rules with lower priority than configured here won't be used.
+                            Valid values (case insensitive): High, Medium_High, Medium, Medium_Low, Low.
+                            An integer between 1 (High) and 5 (Low) is also supported. See [Configuring rules](pmd_userdocs_configuring_rules.html)
+                            on how to override priorities in custom rulesets."
                default="Low"
     %}
     {% include custom/cli_option_row.html options="--no-ruleset-compatibility"
@@ -268,8 +265,8 @@ Example:
 *   [pom](pmd_rules_pom.html) (Maven POM)
 *   [scala](pmd_rules_scala.html)
 *   [swift](pmd_rules_swift.html)
-*   [vf](pmd_rules_vf.html) (Salesforce VisualForce)
-*   [vm](pmd_rules_vm.html) (Apache Velocity)
+*   [velocity](pmd_rules_velocity.html) (Apache Velocity Template Language)
+*   [visualforce](pmd_rules_visualforce.html) (Salesforce VisualForce)
 *   [xml](pmd_rules_xml.html)
 *   [xsl](pmd_rules_xsl.html)
 
@@ -303,6 +300,6 @@ Alternatively, you can create a filelist to only analyze files with a given exte
    id="file-list"
    linux="find src/ -name \"*.ext\" > filelist.txt
      pmd check --file-list filelist.txt -f text -R ruleset.xml --force-language xml"
-   windows="for /r src/ %i in (*.ext) do echo %i >> filelist.txt
+   windows="for /r src\ %i in (*.ext) do echo %i >> filelist.txt
      pmd.bat check --file-list filelist.txt -f text -R ruleset.xml --force-language xml" %}
 

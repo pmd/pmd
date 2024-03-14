@@ -5,11 +5,8 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.component6
-import net.sourceforge.pmd.lang.ast.test.component7
-import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
-import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.types.JClassType
 import net.sourceforge.pmd.lang.java.types.shouldHaveType
 import net.sourceforge.pmd.lang.java.types.typeDsl
@@ -39,7 +36,7 @@ class LocalTypeScopesTest : ParserTestSpec({
         """)
 
         val (foo, inner, other) =
-                acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+                acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val (insideFoo, _, insideOther) =
                 acu.descendants(ASTFieldDeclaration::class.java).crossFindBoundaries().toList()
@@ -79,7 +76,7 @@ class LocalTypeScopesTest : ParserTestSpec({
             }
         """)
 
-        val (_, inner, localInner) = acu.descendants(ASTAnyTypeDeclaration::class.java).crossFindBoundaries().toList { it.typeMirror }
+        val (_, inner, localInner) = acu.descendants(ASTTypeDeclaration::class.java).crossFindBoundaries().toList { it.typeMirror }
 
         val (_/*the block*/, iVar, localClass, i2Var) =
                 acu.descendants(ASTStatement::class.java).toList()
@@ -115,8 +112,8 @@ class LocalTypeScopesTest : ParserTestSpec({
             }
         """)
 
-        val (foo, inner, other) =
-                acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList()
+        val (foo, inner, _) =
+                acu.descendants(ASTClassDeclaration::class.java).toList()
 
         val (insideFoo, insideInner, insideOther) =
                 acu.descendants(ASTFieldDeclaration::class.java).crossFindBoundaries().toList()
@@ -178,10 +175,10 @@ class LocalTypeScopesTest : ParserTestSpec({
 
 
         val (n2, mapEntry, kkEntry, n2i2, i4) =
-                acu.descendants(ASTClassOrInterfaceType::class.java).toList()
+                acu.descendants(ASTClassType::class.java).toList()
 
         val (_, cKK, cKkEntry, cN2, cN2i2) =
-                acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+                acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         // setup
         n2.typeMirror.symbol shouldBe cN2.symbol

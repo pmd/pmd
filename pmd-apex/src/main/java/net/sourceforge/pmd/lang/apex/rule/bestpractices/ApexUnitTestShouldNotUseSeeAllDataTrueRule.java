@@ -4,14 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 
-import java.util.List;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTAnnotationParameter;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
-import net.sourceforge.pmd.lang.apex.rule.AbstractApexUnitTestRule;
 
 /**
  * <p>
@@ -26,7 +23,6 @@ public class ApexUnitTestShouldNotUseSeeAllDataTrueRule extends AbstractApexUnit
 
     @Override
     public Object visit(final ASTUserClass node, final Object data) {
-        // @isTest(seeAllData) was introduced in v24, and was set to false by default
         if (!isTestMethodOrClass(node)) {
             return data;
         }
@@ -45,13 +41,12 @@ public class ApexUnitTestShouldNotUseSeeAllDataTrueRule extends AbstractApexUnit
     }
 
     private Object checkForSeeAllData(final ApexNode<?> node, final Object data) {
-        final ASTModifierNode modifierNode = node.getFirstChildOfType(ASTModifierNode.class);
+        final ASTModifierNode modifierNode = node.firstChild(ASTModifierNode.class);
 
         if (modifierNode != null) {
-            List<ASTAnnotationParameter> annotationParameters = modifierNode.findDescendantsOfType(ASTAnnotationParameter.class);
-            for (ASTAnnotationParameter parameter : annotationParameters) {
+            for (ASTAnnotationParameter parameter : modifierNode.descendants(ASTAnnotationParameter.class)) {
                 if (ASTAnnotationParameter.SEE_ALL_DATA.equals(parameter.getName()) && parameter.getBooleanValue()) {
-                    addViolation(data, node);
+                    asCtx(data).addViolation(node);
                     return data;
                 }
             }

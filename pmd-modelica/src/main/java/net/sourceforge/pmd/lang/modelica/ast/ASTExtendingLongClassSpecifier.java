@@ -19,7 +19,7 @@ public final class ASTExtendingLongClassSpecifier extends AbstractModelicaClassS
     @Override
     public void populateExtendsAndImports(ModelicaClassType classTypeDeclaration) {
         super.populateExtendsAndImports(classTypeDeclaration);
-        pushExtendsAndImports(classTypeDeclaration, getFirstChildOfType(ASTComposition.class));
+        pushExtendsAndImports(classTypeDeclaration, firstChild(ASTComposition.class));
         // TODO
     }
 }

@@ -1,12 +1,13 @@
 ---
 title: Tools / Integrations
 tags: [userdocs, tools]
-
 permalink: pmd_userdocs_tools.html
 author: David Dixon-Peugh <dpeugh@users.sourceforge.net>
 ---
 
 ## Automated Code Review
+
+{% include note.html content="The tools are listed in alphabetical order without rating." %}
 
 ### Codacy
 
@@ -42,6 +43,24 @@ The action can also be used as a code scanner to create "Code scanning alerts".
 
 * Homepage: [pmd/pmd-github-action](https://github.com/pmd/pmd-github-action)
 
+### TCA
+
+[Tencent Cloud Code Analysis](http://tca.tencent.com/) (TCA for short, code-named CodeDog inside the company early)
+is a comprehensive platform for code analysis and issue tracking. TCA consist of three components, server, web and
+client. It integrates of a number of self-developed tools, and also supports dynamic integration of code analysis
+tools in various programming languages.
+
+Using TCA can help team find normative, structural, security vulnerabilities and other issues in the code,
+continuously monitor the quality of the project code and issue alerts. At the same time, TCA opens up APIs to
+support connection with upstream and downstream systems, so as to integrate code analysis capabilities, ensure
+code quality, and be more conducive to inheriting an excellent team code culture.
+
+With TCA you have PMD analysis out-of-the-box, and it is open source under the MIT license.
+
+* Homepage: [http://tca.tencent.com/](http://tca.tencent.com/)
+* Source code: [https://github.com/Tencent/CodeAnalysis](https://github.com/Tencent/CodeAnalysis)
+* Documentation: [https://tencent.github.io/CodeAnalysis](https://tencent.github.io/CodeAnalysis)
+* Maintainer: TCA
 
 ## IDE Integrations
 

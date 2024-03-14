@@ -7,8 +7,8 @@ package net.sourceforge.pmd.lang.java.types.ast
 
 import io.kotest.assertions.withClue
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.component6
-import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.test.ast.component6
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils
 import net.sourceforge.pmd.lang.java.types.STRING
@@ -49,7 +49,7 @@ class ConversionContextTests : ProcessorTestSpec({
             }
         """)
 
-        val (ternary, _, num1, shortCast, num5) = acu.descendants(ASTExpression::class.java).toList()
+        val (ternary, _, num1, shortCast, _) = acu.descendants(ASTExpression::class.java).toList()
 
         spy.shouldBeOk {
             // ternary is in double assignment context
@@ -80,7 +80,7 @@ class ConversionContextTests : ProcessorTestSpec({
             }
         """)
 
-        val (ternary, _, integerCast, nullLit, num4) = acu.descendants(ASTExpression::class.java).toList()
+        val (ternary, _, integerCast, _, num4) = acu.descendants(ASTExpression::class.java).toList()
 
         spy.shouldBeOk {
             // ternary is in double assignment context

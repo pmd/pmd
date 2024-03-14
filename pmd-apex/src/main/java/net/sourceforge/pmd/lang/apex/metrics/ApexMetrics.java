@@ -10,7 +10,6 @@ import java.util.function.Predicate;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.internal.util.PredicateUtil;
-import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
@@ -85,12 +84,12 @@ public final class ApexMetrics {
                   "Cyclomatic Complexity", "Cyclo");
 
     /**
-     * See the corresponding {@link net.sourceforge.pmd.lang.java.metrics.JavaMetrics.COGNITIVE_COMPLEXITY Cognitive Complexity}
+     * See the corresponding Cognitive Complexity in pmd-java ({@code net.sourceforge.pmd.lang.java.metrics.JavaMetrics#COGNITIVE_COMPLEXITY})
      * for a general description.
-     * <p>
-     * The rule {@link net.sourceforge.pmd.lang.apex.rule.design.CognitiveComplexityRule CognitiveComplexity}
+     *
+     * <p>The rule {@link net.sourceforge.pmd.lang.apex.rule.design.CognitiveComplexityRule CognitiveComplexity}
      * by default reports methods with a complexity of 15 or more
-     * and classes the have a total complexity (sum of all methods) of 50 or more.
+     * and classes that have a total complexity (sum of all methods) of 50 or more.
      * These reported methods should be broken down into less complex components.
      */
     public static final Metric<ApexNode<?>, Integer> COGNITIVE_COMPLEXITY =
@@ -114,7 +113,7 @@ public final class ApexMetrics {
 
 
     private static Function<Node, ApexNode<?>> isRegularApexNode() {
-        return filterMapNode(GENERIC_APEX_NODE_CLASS, n -> !(n instanceof ASTMethod && ((ASTMethod) n).isSynthetic()));
+        return filterMapNode(GENERIC_APEX_NODE_CLASS, PredicateUtil.always());
     }
 
 

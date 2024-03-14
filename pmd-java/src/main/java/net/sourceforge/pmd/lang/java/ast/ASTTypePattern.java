@@ -8,8 +8,6 @@ import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.annotation.Experimental;
-
 /**
  * A type pattern (JDK16). This can be found on
  * the right-hand side of an {@link ASTInfixExpression InstanceOfExpression},
@@ -17,15 +15,13 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * <pre class="grammar">
  *
- * TypePattern ::= ( "final" | {@linkplain ASTAnnotation Annotation} )* {@linkplain ASTType Type} {@link ASTVariableDeclaratorId VariableDeclaratorId}
+ * TypePattern ::= ( "final" | {@linkplain ASTAnnotation Annotation} )* {@linkplain ASTType Type} {@link ASTVariableId VariableId}
  *
  * </pre>
  *
- * @see <a href="https://openjdk.java.net/jeps/394">JEP 394: Pattern Matching for instanceof</a>
+ * @see <a href="https://openjdk.org/jeps/394">JEP 394: Pattern Matching for instanceof</a> (Java 16)
 */
-public final class ASTTypePattern extends AbstractJavaNode implements ASTPattern, AccessNode {
-
-    private int parenDepth;
+public final class ASTTypePattern extends AbstractJavaNode implements ASTPattern, ModifierOwner {
 
     ASTTypePattern(int id) {
         super(id);
@@ -44,17 +40,7 @@ public final class ASTTypePattern extends AbstractJavaNode implements ASTPattern
     }
 
     /** Returns the declared variable. */
-    public @NonNull ASTVariableDeclaratorId getVarId() {
-        return Objects.requireNonNull(firstChild(ASTVariableDeclaratorId.class));
-    }
-
-    void bumpParenDepth() {
-        parenDepth++;
-    }
-
-    @Override
-    @Experimental
-    public int getParenthesisDepth() {
-        return parenDepth;
+    public @NonNull ASTVariableId getVarId() {
+        return Objects.requireNonNull(firstChild(ASTVariableId.class));
     }
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <ruleset name="Documentation"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
@@ -83,7 +83,7 @@ Determines whether the dimensions of non-header comments found are within the sp
           language="java"
           since="3.4"
           message="Document empty constructor"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_documentation.html#uncommentedemptyconstructor">
         <description>
 Uncommented Empty Constructor finds instances where a constructor does not
@@ -123,7 +123,7 @@ public Foo() {
           language="java"
           since="3.4"
           message="Document empty method body"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_documentation.html#uncommentedemptymethodbody">
         <description>
 Uncommented Empty Method Body finds instances where a method body does not contain

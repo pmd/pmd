@@ -12,7 +12,6 @@ import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
@@ -21,6 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class LiteralsFirstInComparisonsRule extends AbstractJavaRulechainRule {
 
@@ -76,7 +76,7 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRulechainRule {
         ASTExpression arg = call.getArguments().get(0);
         ASTExpression qualifier = call.getQualifier();
         if (!isConstantString(qualifier) && (arg instanceof ASTStringLiteral || isConstantString(arg))) {
-            addViolation(ctx, call);
+            ctx.addViolation(call);
         }
     }
 }

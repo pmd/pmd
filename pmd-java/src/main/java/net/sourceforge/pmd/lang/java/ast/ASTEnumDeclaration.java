@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * </pre>
  */
-public final class ASTEnumDeclaration extends AbstractAnyTypeDeclaration {
+public final class ASTEnumDeclaration extends AbstractTypeDeclaration {
 
 
     ASTEnumDeclaration(int id) {

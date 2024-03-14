@@ -16,15 +16,15 @@ import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
@@ -66,13 +66,13 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
         );
 
     public SingularFieldRule() {
-        super(ASTAnyTypeDeclaration.class);
+        super(ASTTypeDeclaration.class);
         definePropertyDescriptor(IGNORED_FIELD_ANNOTATIONS);
     }
 
     @Override
     public Object visitJavaNode(JavaNode node, Object data) {
-        ASTAnyTypeDeclaration enclosingType = (ASTAnyTypeDeclaration) node;
+        ASTTypeDeclaration enclosingType = (ASTTypeDeclaration) node;
         if (JavaAstUtils.hasAnyAnnotation(enclosingType, INVALIDATING_CLASS_ANNOT)) {
             return null;
         }
@@ -83,24 +83,24 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
                 || JavaAstUtils.hasAnyAnnotation(fieldDecl, getProperty(IGNORED_FIELD_ANNOTATIONS))) {
                 continue;
             }
-            for (ASTVariableDeclaratorId varId : fieldDecl.getVarIds()) {
+            for (ASTVariableId varId : fieldDecl.getVarIds()) {
                 if (dataflow == null) { //compute lazily
                     dataflow = DataflowPass.getDataflowResult(node.getRoot());
                 }
                 if (isSingularField(enclosingType, varId, dataflow)) {
-                    addViolation(data, varId, varId.getName());
+                    asCtx(data).addViolation(varId, varId.getName());
                 }
             }
         }
         return null;
     }
 
-    public static boolean mayBeSingular(AccessNode varId) {
+    public static boolean mayBeSingular(ModifierOwner varId) {
         return varId.getEffectiveVisibility().isAtMost(Visibility.V_PRIVATE)
             && !varId.getModifiers().hasAny(STATIC, FINAL);
     }
 
-    private boolean isSingularField(ASTAnyTypeDeclaration fieldOwner, ASTVariableDeclaratorId varId, DataflowResult dataflow) {
+    private boolean isSingularField(ASTTypeDeclaration fieldOwner, ASTVariableId varId, DataflowResult dataflow) {
         if (JavaAstUtils.isNeverUsed(varId)) {
             return false; // don't report unused field
         }

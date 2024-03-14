@@ -68,4 +68,26 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Valid annotations are not flagged (TestVisible)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @TestVisible
+    public Integer bar() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NPE for enum values (#4722)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MyClass {
+    public enum MyEnum { A, B }
+}
+]]></code>
+    </test-code>
 </test-data>

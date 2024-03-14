@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <ruleset name="Performance"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
@@ -53,7 +53,7 @@ sb.append('a');     // use this instead
           language="java"
           since="3.5"
           message="Arrays.copyOf or System.arraycopy are more efficient"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidarrayloops">
         <description>
 Instead of manually copying data between two arrays, use the more efficient `Arrays.copyOf`
@@ -85,10 +85,10 @@ If you want to copy/move elements inside the _same_ array (e.g. shift the elemen
                                             [not(parent::FieldAccess[@Name='length'])]
                                             [
                                                (: exclude referenced constants :)
-                                               not(@Name = (ancestor::MethodDeclaration|//FieldDeclaration)//VariableDeclarator[NumericLiteral][not(../../../parent::ForInit)]/VariableDeclaratorId/@Name)
+                                               not(@Name = (ancestor::MethodDeclaration|//FieldDeclaration)//VariableDeclarator[NumericLiteral][not(../../../parent::ForInit)]/VariableId/@Name)
                                                or
                                                (: include loop variable :)
-                                               @Name = ancestor::ForStatement/ForInit/LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId/@Name
+                                               @Name = ancestor::ForStatement/ForInit/LocalVariableDeclaration/VariableDeclarator/VariableId/@Name
                                             ]
                                             /@Name)),
                                         sort(distinct-values(ArrayAccess[2]/(VariableAccess[2]|InfixExpression//VariableAccess)
@@ -96,10 +96,10 @@ If you want to copy/move elements inside the _same_ array (e.g. shift the elemen
                                             [not(parent::FieldAccess[@Name='length'])]
                                             [
                                                (: exclude referenced constants :)
-                                               not(@Name = (ancestor::MethodDeclaration|//FieldDeclaration)//VariableDeclarator[NumericLiteral][not(../../../parent::ForInit)]/VariableDeclaratorId/@Name)
+                                               not(@Name = (ancestor::MethodDeclaration|//FieldDeclaration)//VariableDeclarator[NumericLiteral][not(../../../parent::ForInit)]/VariableId/@Name)
                                                or
                                                (: include loop variable :)
-                                               @Name = ancestor::ForStatement/ForInit/LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId/@Name
+                                               @Name = ancestor::ForStatement/ForInit/LocalVariableDeclaration/VariableDeclarator/VariableId/@Name
                                             ]
                                             /@Name))
                                       )]
@@ -157,7 +157,7 @@ class Scratch {
           since="6.25.0"
           language="java"
           message="A Calendar is used to get the current time, this is expensive."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidcalendardatecreation">
         <description>
@@ -187,7 +187,7 @@ Solution: Use `new Date()`, Java 8+ `java.time.LocalDateTime.now()` or `ZonedDat
       [pmd-java:matchesSig("java.util.Calendar#getInstance()")
        or pmd-java:matchesSig("java.util.GregorianCalendar#getInstance()")
        or pmd-java:matchesSig("java.util.GregorianCalendar#new()")]
-  ]/VariableDeclaratorId/@Name]
+  ]/VariableId/@Name]
 |
 //ConstructorCall[pmd-java:typeIs("org.joda.time.DateTime") or pmd-java:typeIs("org.joda.time.LocalDateTime")]
   [ArgumentList[(MethodCall | ConstructorCall)
@@ -231,7 +231,7 @@ public class DateStuff {
           message="Avoid instantiating FileInputStream, FileOutputStream, FileReader, or FileWriter"
           language="java"
           minimumLanguageVersion="1.7"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidfilestream">
         <description>
 The FileInputStream and FileOutputStream classes contains a finalizer method which will cause garbage
@@ -256,7 +256,7 @@ that one covers both.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ConstructorCall/ClassOrInterfaceType[
+//ConstructorCall/ClassType[
        pmd-java:typeIs('java.io.FileInputStream')
     or pmd-java:typeIs('java.io.FileOutputStream')
     or pmd-java:typeIs('java.io.FileReader')
@@ -487,7 +487,7 @@ good.append("This is a long string, which is pre-sized");
           since="1.8"
           minimumLanguageVersion="1.6"
           message="This call to Collection.toArray() may be optimizable"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#optimizabletoarraycall">
         <description>
 Calls to a collection's `toArray(E[])` method should specify a target array of zero size. This allows the JVM
@@ -584,7 +584,7 @@ private String bar = new String("bar"); // just do a String bar = "bar";
           language="java"
           since="1.0"
           message="Avoid calling toString() on String objects; this is unnecessary."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#stringtostring">
         <description>
 Avoid calling toString() on objects already known to be string instances; this is unnecessary.
@@ -610,7 +610,7 @@ private String baz() {
     <rule name="TooFewBranchesForASwitchStatement"
           language="java"
           since="4.2"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           message="A switch with less than three branches is inefficient, use a 'if statement' instead."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#toofewbranchesforaswitchstatement">
         <description>
@@ -651,7 +651,7 @@ public class Foo {
           language="java"
           since="3.0"
           message="Use ArrayList instead of Vector"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#usearraylistinsteadofvector">
         <description>
 ArrayList is a much better Collection implementation than Vector if thread-safe operation is not required.
@@ -661,7 +661,7 @@ ArrayList is a much better Collection implementation than Vector if thread-safe 
             <property name="xpath">
                 <value>
 <![CDATA[
-//ConstructorCall/ClassOrInterfaceType[pmd-java:typeIsExactly('java.util.Vector') or pmd-java:typeIsExactly('Vector')]
+//ConstructorCall/ClassType[pmd-java:typeIsExactly('java.util.Vector') or pmd-java:typeIsExactly('Vector')]
 ]]>
                 </value>
             </property>
@@ -683,7 +683,7 @@ public class SimpleTest extends TestCase {
           language="java"
           since="3.5"
           message="Use asList instead of tight loops"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#usearraysaslist">
         <description>
 <![CDATA[
@@ -714,7 +714,7 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
     MethodCall
       [pmd-java:matchesSig('java.util.Collection#add(_)')]
       [ArgumentList/ArrayAccess
-        [VariableAccess[@Name = ancestor::ForStatement/ForInit/LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId/@Name]]
+        [VariableAccess[@Name = ancestor::ForStatement/ForInit/LocalVariableDeclaration/VariableDeclarator/VariableId/@Name]]
       ]
 |
 //ForeachStatement
@@ -722,7 +722,7 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
   /*[last()]/ExpressionStatement/MethodCall
       [pmd-java:matchesSig('java.util.Collection#add(_)')]
       [ArgumentList
-        [VariableAccess[@Name = ancestor::ForeachStatement/LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId/@Name]]
+        [VariableAccess[@Name = ancestor::ForeachStatement/LocalVariableDeclaration/VariableDeclarator/VariableId/@Name]]
       ]
 ]]>
                 </value>
@@ -773,7 +773,7 @@ if (s.indexOf('d') {}
           since="6.25.0"
           language="java"
           message="Avoid memory intensive FileItem.get() or FileItem.getString()"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#useiostreamswithapachecommonsfileitem">
         <description>
@@ -786,7 +786,6 @@ and buffering.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
                     <![CDATA[
@@ -877,7 +876,7 @@ public class Foo {
           language="java"
           since="3.4"
           message="This is an inefficient use of CharSequence.toString; call CharSequence.length instead."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#usestringbufferlength">
         <description>
 Use StringBuffer.length() to determine StringBuffer length rather than using StringBuffer.toString().equals("")
@@ -894,7 +893,7 @@ or StringBuffer.toString().length() == ...
 //MethodCall[pmd-java:matchesSig('_#equals(_)')
   and MethodCall[pmd-java:matchesSig('java.lang.AbstractStringBuilder#toString()')]
   and ArgumentList/VariableAccess[@Name = //VariableDeclarator[StringLiteral[@Image='""']]
-                                            /VariableDeclaratorId[pmd-java:modifiers() = 'final']/@Name]]
+                                            /VariableId[pmd-java:modifiers() = 'final']/@Name]]
 ]]></value>
             </property>
         </properties>

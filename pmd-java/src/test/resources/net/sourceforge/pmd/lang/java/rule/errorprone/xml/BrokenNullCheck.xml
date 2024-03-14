@@ -364,4 +364,44 @@ public class Library {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] BrokenNullCheck false positive with parameter/field confusion #718 - Part 1</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class PmdTest {
+    public static boolean test1(final boolean hasFoo, final boolean hasBar, final Object foo, final Object bar) {
+        final boolean hasFooObject = foo != null;
+        final boolean hasBarObject = bar != null;
+        if (hasFoo == hasFooObject && hasBar == hasBarObject) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean test2(final boolean hasFoo, final boolean hasBar, final Object foo, final Object bar) {
+        if (hasFoo == (foo != null) && hasBar == (bar != null)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] BrokenNullCheck false positive with parameter/field confusion #718 - Part 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class PmdTest2 {
+  private Boolean f;
+
+  // parameter of the same name as field
+  public void f(Boolean f) {
+    if (f != null || this.f == null)
+      ;
+  }
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -4,13 +4,14 @@
 
 package net.sourceforge.pmd.lang.xml.rule;
 
-import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSize;
+import static net.sourceforge.pmd.lang.test.ast.TestUtilsKt.assertSize;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.xml.XmlParsingHelper;
+import net.sourceforge.pmd.reporting.Report;
 
 class XmlXPathRuleTest {
 
@@ -44,7 +45,7 @@ class XmlXPathRuleTest {
     void testFileNameInXpath() {
         Report report = xml.executeRule(makeXPath("//b[pmd:fileName() = 'Foo.xml']"),
                                         "<a><b></b></a>",
-                                        "src/Foo.xml");
+                                        FileId.fromPathLikeString("src/Foo.xml"));
 
         assertSize(report, 1);
     }

@@ -4,7 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import net.sourceforge.pmd.lang.ast.test.shouldBe
+import io.kotest.matchers.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_3
@@ -37,7 +38,7 @@ class ASTAnnotationTest : ParserTestSpec({
 
                     it::getMemberList shouldBe null
 
-                    it::getAnnotationName shouldBe "F"
+                    it.typeNode.text.toString() shouldBe "F"
                 }
             }
 
@@ -49,7 +50,7 @@ class ASTAnnotationTest : ParserTestSpec({
 
                     it::getMemberList shouldBe null
 
-                    it::getAnnotationName shouldBe "java.lang.Override"
+                    it.typeNode.text.toString() shouldBe "java.lang.Override"
                 }
             }
 
@@ -61,7 +62,7 @@ class ASTAnnotationTest : ParserTestSpec({
 
                     it::getMemberList shouldBe null
 
-                    it::getAnnotationName shouldBe "Override"
+                    it.typeNode.text.toString() shouldBe "Override"
                 }
             }
         }

@@ -12,12 +12,11 @@ import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -27,6 +26,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class UnusedAssignmentRule extends AbstractJavaRulechainRule {
 
@@ -153,7 +153,7 @@ public class UnusedAssignmentRule extends AbstractJavaRulechainRule {
                 // practice for exceptions, and may be useful for resources/foreach vars
                 continue;
             }
-            addViolationWithMessage(ruleCtx, entry.getLocation(), makeMessage(entry, reason, entry.isField()));
+            ruleCtx.addViolationWithMessage(entry.getLocation(), makeMessage(entry, reason, entry.isField()));
         }
     }
 
@@ -161,14 +161,14 @@ public class UnusedAssignmentRule extends AbstractJavaRulechainRule {
         return !getProperty(REPORT_UNUSED_VARS) && (entry.isInitializer() || entry.isBlankDeclaration());
     }
 
-    private static String getKind(ASTVariableDeclaratorId id) {
+    private static String getKind(ASTVariableId id) {
         if (id.isField()) {
             return "field";
         } else if (id.isResourceDeclaration()) {
             return "resource";
         } else if (id.isExceptionBlockParameter()) {
             return "exception parameter";
-        } else if (id.getNthParent(3) instanceof ASTForeachStatement) {
+        } else if (id.ancestors().get(2) instanceof ASTForeachStatement) {
             return "loop variable";
         } else if (id.isFormalParameter()) {
             return "parameter";

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.util.designerbindings;
 
 import java.util.List;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -18,13 +17,9 @@ import net.sourceforge.pmd.lang.ast.Node;
  * is subject to change at the implementation's discretion. In particular it's
  * not necessarily the usages of a variable.
  *
- * <p>The binary API is <b>unstable</b> until at least 7.0, meaning the only
- * place this can be implemented safely is within PMD's own codebase.
- *
  * @author Clément Fournier
  * @since 6.20.0
  */
-@Experimental
 public interface RelatedNodesSelector {
 
 

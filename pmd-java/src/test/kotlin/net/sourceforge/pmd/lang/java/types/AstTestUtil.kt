@@ -11,7 +11,8 @@ import net.sourceforge.pmd.lang.java.ast.*
 
 
 fun JavaNode.methodDeclarations(): DescendantNodeStream<ASTMethodDeclaration> = descendants(ASTMethodDeclaration::class.java).crossFindBoundaries()
-fun JavaNode.typeDeclarations(): DescendantNodeStream<ASTAnyTypeDeclaration> = descendants(ASTAnyTypeDeclaration::class.java).crossFindBoundaries()
+fun JavaNode.typeDeclarations(): DescendantNodeStream<ASTTypeDeclaration> = descendants(
+    ASTTypeDeclaration::class.java).crossFindBoundaries()
 fun JavaNode.ctorDeclarations(): DescendantNodeStream<ASTConstructorDeclaration> = descendants(ASTConstructorDeclaration::class.java).crossFindBoundaries()
 
 fun JavaNode.firstTypeSignature(): JClassType = typeDeclarations().firstOrThrow().typeMirror
@@ -26,5 +27,5 @@ fun JavaNode.firstCtorCall() = ctorCalls().crossFindBoundaries().firstOrThrow()
 
 fun JavaNode.typeVariables(): MutableList<JTypeVar> = descendants(ASTTypeParameter::class.java).crossFindBoundaries().toList { it.typeMirror }
 fun JavaNode.varAccesses(name: String): NodeStream<ASTVariableAccess> = descendants(ASTVariableAccess::class.java).filter { it.name == name }
-fun JavaNode.varId(name: String) = descendants(ASTVariableDeclaratorId::class.java).filter { it.name == name }.firstOrThrow()
+fun JavaNode.varId(name: String) = descendants(ASTVariableId::class.java).filter { it.name == name }.firstOrThrow()
 fun JavaNode.typeVar(name: String) = descendants(ASTTypeParameter::class.java).filter { it.name == name }.firstOrThrow().typeMirror

@@ -11,9 +11,9 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 /**
  * Renderer for IntelliJ IDEA integration.
@@ -25,7 +25,6 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
 
     public static final String NAME = "ideaj";
 
-    // TODO 7.0.0 use PropertyDescriptor<String>
     public static final PropertyDescriptor<String> FILE_NAME =
         PropertyFactory.stringProperty("fileName").desc("File name.").defaultValue("").build();
     public static final PropertyDescriptor<String> SOURCE_PATH =
@@ -69,8 +68,9 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
             buf.setLength(0);
             RuleViolation rv = violations.next();
             buf.append(rv.getDescription()).append(System.lineSeparator());
-            buf.append(" at ").append(getFullyQualifiedClassName(rv.getFilename(), sourcePath)).append(".method(");
-            buf.append(getSimpleFileName(rv.getFilename())).append(':').append(rv.getBeginLine()).append(')');
+            // todo is this the right thing?                                    vvvvvvvvvvvvvvvv
+            buf.append(" at ").append(getFullyQualifiedClassName(rv.getFileId().getAbsolutePath(), sourcePath)).append(".method(");
+            buf.append(rv.getFileId().getFileName()).append(':').append(rv.getBeginLine()).append(')');
             writer.println(buf);
         }
     }
@@ -90,11 +90,7 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
     private String getFullyQualifiedClassName(String fileName, SourcePath sourcePath) {
         String classNameWithSlashes = sourcePath.clipPath(fileName);
         String className = classNameWithSlashes.replace(FILE_SEPARATOR.charAt(0), '.');
-        return className.substring(0, className.length() - 5);
-    }
-
-    private String getSimpleFileName(String fileName) {
-        return fileName.substring(fileName.lastIndexOf(FILE_SEPARATOR) + 1);
+        return className.substring(0, className.length() - ".java".length());
     }
 
     private static class SourcePath {

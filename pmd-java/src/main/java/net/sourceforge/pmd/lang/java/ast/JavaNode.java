@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.annotation.DeprecatedUntil700;
-import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeNode;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
@@ -20,21 +18,6 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
 public interface JavaNode extends JjtreeNode<JavaNode> {
 
     /**
-     * Calls back the visitor's visit method corresponding to the runtime type of this Node.
-     *
-     * @param visitor Visitor to dispatch
-     * @param data    Visit data
-     *
-     * @deprecated Use {@link #acceptVisitor(AstVisitor, Object)}
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return acceptVisitor(visitor, data);
-    }
-
-
-    /**
      * Returns the node representing the type declaration this node is
      * found in. The type of that node is the type of the {@code this}
      * expression.
@@ -44,10 +27,10 @@ public interface JavaNode extends JjtreeNode<JavaNode> {
      * This includes {@linkplain ASTImportDeclaration ImportDeclaration},
      * {@linkplain ASTModuleDeclaration ModuleDeclaration},
      * {@linkplain ASTCompilationUnit CompilationUnit}, and top-level
-     * {@linkplain ASTAnyTypeDeclaration AnyTypeDeclaration}s.
+     * {@linkplain ASTTypeDeclaration TypeDeclaration}s.
      */
-    default ASTAnyTypeDeclaration getEnclosingType() {
-        return getFirstParentOfType(ASTAnyTypeDeclaration.class);
+    default ASTTypeDeclaration getEnclosingType() {
+        return ancestors(ASTTypeDeclaration.class).first();
     }
 
 

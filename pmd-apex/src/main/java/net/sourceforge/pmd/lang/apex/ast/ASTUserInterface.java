@@ -4,15 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.util.stream.Collectors;
+import com.google.summit.ast.TypeRef;
+import com.google.summit.ast.declaration.InterfaceDeclaration;
 
-import apex.jorje.data.Identifier;
-import apex.jorje.data.ast.TypeRef;
-import apex.jorje.semantic.ast.compilation.UserInterface;
+public final class ASTUserInterface extends BaseApexClass<InterfaceDeclaration> implements ASTUserClassOrInterface<InterfaceDeclaration> {
 
-public final class ASTUserInterface extends BaseApexClass<UserInterface> implements ASTUserClassOrInterface<UserInterface> {
-
-    ASTUserInterface(UserInterface userInterface) {
+    ASTUserInterface(InterfaceDeclaration userInterface) {
         super(userInterface);
     }
 
@@ -22,9 +19,12 @@ public final class ASTUserInterface extends BaseApexClass<UserInterface> impleme
     }
 
 
+    /**
+     * Returns the name of the superclass of this class, or an empty string if there is none.
+     *
+     * The type name does NOT include type arguments.
+     */
     public String getSuperInterfaceName() {
-        return node.getDefiningType().getCodeUnitDetails().getInterfaceTypeRefs().stream().map(TypeRef::getNames)
-                .map(it -> it.stream().map(Identifier::getValue).collect(Collectors.joining(".")))
-                .findFirst().orElse("");
+        return node.getExtendsTypes().stream().map(TypeRef::asTypeErasedString).findFirst().orElse("");
     }
 }

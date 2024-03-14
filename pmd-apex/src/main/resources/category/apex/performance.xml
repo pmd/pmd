@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <ruleset name="Performance"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
@@ -13,7 +13,7 @@ Rules that flag suboptimal code.
           language="apex"
           since="6.36.0"
           message="Avoid debug statements since they impact on performance"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#avoiddebugstatements">
         <description>
 Debug statements contribute to longer transactions and consume Apex CPU time even when debug logs are not being captured.
@@ -24,7 +24,6 @@ For other valid use cases that the statement is in fact valid make use of the `@
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -54,94 +53,11 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="AvoidDmlStatementsInLoops"
-          language="apex"
-          since="5.5.0"
-          deprecated="true"
-          message="Avoid DML statements inside loops"
-          class="net.sourceforge.pmd.lang.apex.rule.performance.AvoidDmlStatementsInLoopsRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#avoiddmlstatementsinloops">
-        <description>
-Avoid DML statements inside loops to avoid hitting the DML governor limit. Instead, try to batch up the data into a list and invoke your DML once on that list of data outside the loop.
-
-_Note:_ This rule is deprecated since PMD 6.29.0 and will be removed with PMD 7.0.0. The rule is replaced
-by the more general rule {% rule "apex/performance/OperationWithLimitsInLoop" %}.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public class Something {
-    public void foo() {
-        for (Integer i = 0; i < 151; i++) {
-            Account account;
-            // ...
-            insert account;
-        }
-    }
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="AvoidSoqlInLoops"
-          language="apex"
-          since="5.5.0"
-          deprecated="true"
-          message="Avoid Soql queries inside loops"
-          class="net.sourceforge.pmd.lang.apex.rule.performance.AvoidSoqlInLoopsRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#avoidsoqlinloops">
-        <description>
-New objects created within loops should be checked to see if they can created outside them and reused.
-
-_Note:_ This rule is deprecated since PMD 6.29.0 and will be removed with PMD 7.0.0. The rule is replaced
-by the more general rule {% rule "apex/performance/OperationWithLimitsInLoop" %}.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public class Something {
-    public static void main( String as[] ) {
-        for (Integer i = 0; i < 10; i++) {
-            List<Account> accounts = [SELECT Id FROM Account];
-        }
-    }
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="AvoidSoslInLoops"
-          language="apex"
-          since="6.0.0"
-          deprecated="true"
-          message="Avoid Sosl queries inside loops"
-          class="net.sourceforge.pmd.lang.apex.rule.performance.AvoidSoslInLoopsRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#avoidsoslinloops">
-        <description>
-Sosl calls within loops can cause governor limit exceptions.
-
-_Note:_ This rule is deprecated since PMD 6.29.0 and will be removed with PMD 7.0.0. The rule is replaced
-by the more general rule {% rule "apex/performance/OperationWithLimitsInLoop" %}.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public class Something {
-    public static void main( String as[] ) {
-        for (Integer i = 0; i < 10; i++) {
-            List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead];
-        }
-    }
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="EagerlyLoadedDescribeSObjectResult"
           language="apex"
           since="6.40.0"
           message="DescribeSObjectResult could be being loaded eagerly with all child relationships."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#eagerlyloadeddescribesobjectresult">
         <description>
 This rule finds `DescribeSObjectResult`s which could have been loaded eagerly via `SObjectType.getDescribe()`.
@@ -172,7 +88,6 @@ Properties:
         <priority>3</priority>
         <properties>
             <property name="noDefault" type="Boolean" value="false" description="Do not allow SObjectDescribeOptions.DEFAULT option to ensure consistent results no matter where getDescribe is called"/>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -205,6 +120,74 @@ public class Foo {
 }
 ]]>
         </example>
+    </rule>
+
+    <rule name="OperationWithHighCostInLoop"
+          language="apex"
+          since="7.0.0"
+          message="Avoid operations in loops that may impact performances"
+          class="net.sourceforge.pmd.lang.apex.rule.performance.OperationWithHighCostInLoopRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#operationwithhighcostinloop">
+        <description>
+This rule finds method calls inside loops that are known to be likely a performance issue. These methods should be
+called only once before the loop.
+
+Schema class methods like [Schema.getGlobalDescribe()](https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_methods_system_schema.htm#apex_System_Schema_getGlobalDescribe)
+and [Schema.describeSObjects()](https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_methods_system_schema.htm#apex_System_Schema_describeSObjects)
+might be slow depending on the size of your organization. Calling these methods repeatedly inside a loop creates
+a potential performance issue.
+        </description>
+        <priority>3</priority>
+        <example><![CDATA[
+public class GlobalDescribeExample {
+    // incorrect example
+    public void getGlobalDescribeInLoop() {
+        Set<String> fieldNameSet = new Set<String> {'Id'};
+        for (String fieldNameOrDefaultValue : fieldNameOrDefaultValueList) {
+            // Schema.getGlobalDescribe() should be called only once before the for-loop
+            if (Schema.getGlobalDescribe().get(objectName).getDescribe().fields.getMap().containsKey(fieldNameOrDefaultValue.trim())) {
+                fieldNameSet.add(fieldNameOrDefaultValue);
+            }
+        }
+    }
+
+    // corrected example
+    public void getGlobalDescribeInLoopCorrected() {
+        Map<String, Schema.SObjectField> fieldMap = Schema.getGlobalDescribe().get(objectName).getDescribe().fields.getMap();
+        Set<String> fieldNameSet = new Set<String> {'Id'};
+        for (String fieldNameOrDefaultValue : fieldNameOrDefaultValueList) {
+            if (fieldMap.containsKey(fieldNameOrDefaultValue.trim())) {
+                fieldNameSet.add(fieldNameOrDefaultValue);
+            }
+        }
+    }
+}
+        ]]></example>
+        <example><![CDATA[
+public class DescribeSObjectsExample {
+    // incorrect example
+    public void describeSObjectsInLoop() {
+        Set<String> fieldNameSet = new Set<String> {'Id'};
+        for (String fieldNameOrDefaultValue : fieldNameOrDefaultValueList) {
+            Schema.DescribeSObjectResult dsr = Account.sObjectType.getDescribe();
+            if (Schema.describeSObjects(new List<String> { sObjectType })[0].fields.getMap().containsKey(fieldNameOrDefaultValue.trim())) {
+                fieldNameSet.add(fieldNameOrDefaultValue);
+            }
+        }
+    }
+
+    // corrected example
+    public void describeSObjectsInLoop() {
+        Map<String, Schema.SObjectField> fieldMap = Schema.describeSObjects(new List<String> { 'Account' })[0].fields.getMap();
+        Set<String> fieldNameSet = new Set<String> {'Id'};
+        for (String fieldNameOrDefaultValue : fieldNameOrDefaultValueList) {
+            if (fieldMap.containsKey(fieldNameOrDefaultValue.trim())) {
+                fieldNameSet.add(fieldNameOrDefaultValue);
+            }
+        }
+    }
+}
+        ]]></example>
     </rule>
 
     <rule name="OperationWithLimitsInLoop"
@@ -275,4 +258,5 @@ public class Something {
 ]]>
         </example>
     </rule>
+
 </ruleset>

@@ -4,20 +4,20 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * If a method or constructor receives an array as an argument, the array should
@@ -49,7 +49,7 @@ public class ArrayIsStoredDirectlyRule extends AbstractJavaRulechainRule {
         return data;
     }
 
-    private void checkAssignments(RuleContext context, ASTMethodOrConstructorDeclaration method) {
+    private void checkAssignments(RuleContext context, ASTExecutableDeclaration method) {
         if (method.getVisibility() == Visibility.V_PRIVATE && getProperty(ALLOW_PRIVATE)
             || method.getBody() == null) {
             return;
@@ -69,7 +69,7 @@ public class ArrayIsStoredDirectlyRule extends AbstractJavaRulechainRule {
                     if (usage.getParent() instanceof ASTAssignmentExpression && usage.getIndexInParent() == 1) {
                         ASTAssignableExpr assigned = ((ASTAssignmentExpression) usage.getParent()).getLeftOperand();
                         if (JavaAstUtils.isRefToFieldOfThisInstance(assigned)) {
-                            addViolation(context, usage.getParent(), usage.getName());
+                            context.addViolation(usage.getParent(), usage.getName());
                         }
                     }
                 }

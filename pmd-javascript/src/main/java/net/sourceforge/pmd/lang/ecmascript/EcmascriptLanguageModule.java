@@ -4,28 +4,22 @@
 
 package net.sourceforge.pmd.lang.ecmascript;
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-
-import java.util.List;
-
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.cpd.CpdLexer;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParser;
+import net.sourceforge.pmd.lang.ecmascript.cpd.EcmascriptCpdLexer;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 
 /**
  * Created by christoferdutz on 20.09.14.
  */
 public class EcmascriptLanguageModule extends SimpleLanguageModuleBase {
-
-    public static final String NAME = "JavaScript";
-    public static final String TERSE_NAME = "ecmascript";
-    @InternalApi
-    public static final List<String> EXTENSIONS = listOf("js");
+    static final String ID = "ecmascript";
+    static final String NAME = "JavaScript";
 
     public EcmascriptLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions(EXTENSIONS)
+        super(LanguageMetadata.withId(ID).name(NAME).extensions("js")
                               .addVersion("3")
                               .addVersion("5")
                               .addVersion("6", "ES6", "ES2015")
@@ -35,7 +29,12 @@ public class EcmascriptLanguageModule extends SimpleLanguageModuleBase {
               properties -> () -> new EcmascriptParser(properties));
     }
 
-    public static Language getInstance() {
-        return LanguageRegistry.PMD.getLanguageByFullName(NAME);
+    public static EcmascriptLanguageModule getInstance() {
+        return (EcmascriptLanguageModule) LanguageRegistry.PMD.getLanguageById(ID);
+    }
+
+    @Override
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new EcmascriptCpdLexer();
     }
 }

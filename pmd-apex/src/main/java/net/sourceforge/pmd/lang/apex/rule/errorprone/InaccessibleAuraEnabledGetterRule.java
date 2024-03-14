@@ -4,13 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
-import java.util.List;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 /**
  * In the Summer '21 release, a mandatory security update enforces access
@@ -22,8 +23,9 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
  */
 public class InaccessibleAuraEnabledGetterRule extends AbstractApexRule {
 
-    public InaccessibleAuraEnabledGetterRule() {
-        addRuleChainVisit(ASTProperty.class);
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTProperty.class);
     }
 
     @Override
@@ -32,14 +34,13 @@ public class InaccessibleAuraEnabledGetterRule extends AbstractApexRule {
         ASTModifierNode propModifiers = node.getModifiers();
         if (hasAuraEnabledAnnotation(propModifiers)) {
             // Find getters/setters if any
-            List<ASTMethod> methods = node.findChildrenOfType(ASTMethod.class);
-            for (ASTMethod method : methods) {
+            for (ASTMethod method : node.children(ASTMethod.class)) {
                 // Find getter method
                 if (!"void".equals(method.getReturnType())) {
                     // Ensure getter is not private or protected
                     ASTModifierNode methodModifiers = method.getModifiers();
                     if (isPrivate(methodModifiers) || isProtected(methodModifiers)) {
-                        addViolation(data, node);
+                        asCtx(data).addViolation(node);
                     }
                 }
             }
@@ -56,9 +57,8 @@ public class InaccessibleAuraEnabledGetterRule extends AbstractApexRule {
     }
 
     private boolean hasAuraEnabledAnnotation(ASTModifierNode modifierNode) {
-        List<ASTAnnotation> annotations = modifierNode.findChildrenOfType(ASTAnnotation.class);
-        for (ASTAnnotation annotation : annotations) {
-            if (annotation.hasImageEqualTo("AuraEnabled")) {
+        for (ASTAnnotation annotation : modifierNode.children(ASTAnnotation.class)) {
+            if ("AuraEnabled".equalsIgnoreCase(annotation.getName())) {
                 return true;
             }
         }

@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
-import net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver;
+import net.sourceforge.pmd.lang.java.types.ast.internal.LazyTypeResolver;
 
 /**
  * This implements name disambiguation following <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.5.2">JLS§6.5.2</a>.
@@ -62,7 +62,7 @@ final class AstDisambiguationPass {
     // those ignore JTypeParameterSymbol, for error handling logic to be uniform
 
 
-    private static void checkParentIsMember(ReferenceCtx ctx, ASTClassOrInterfaceType resolvedType, ASTClassOrInterfaceType parent) {
+    private static void checkParentIsMember(ReferenceCtx ctx, ASTClassType resolvedType, ASTClassType parent) {
         JTypeDeclSymbol sym = resolvedType.getReferencedSym();
         JClassSymbol parentClass = ctx.findTypeMember(sym, parent.getSimpleName(), parent);
         if (parentClass == null) {
@@ -95,7 +95,7 @@ final class AstDisambiguationPass {
         }
 
         @Override
-        public Void visitTypeDecl(ASTAnyTypeDeclaration node, ReferenceCtx data) {
+        public Void visitTypeDecl(ASTTypeDeclaration node, ReferenceCtx data) {
             // since type headers are disambiguated early it doesn't matter
             // if the context is inaccurate in type headers
             return visitChildren(node, data.scopeDownToNested(node.getSymbol()));
@@ -112,7 +112,7 @@ final class AstDisambiguationPass {
             assert symbolTable != null : "Symbol tables haven't been set yet??";
 
             boolean isPackageOrTypeOnly;
-            if (name.getParent() instanceof ASTClassOrInterfaceType) {
+            if (name.getParent() instanceof ASTClassType) {
                 isPackageOrTypeOnly = true;
             } else if (name.getParent() instanceof ASTExpression) {
                 isPackageOrTypeOnly = false;
@@ -132,9 +132,9 @@ final class AstDisambiguationPass {
             if (isPackageOrTypeOnly && resolved instanceof ASTTypeExpression) {
                 // unambiguous, we just have to check that the parent is a member of the enclosing type
 
-                ASTClassOrInterfaceType resolvedType = (ASTClassOrInterfaceType) ((ASTTypeExpression) resolved).getTypeNode();
+                ASTClassType resolvedType = (ASTClassType) ((ASTTypeExpression) resolved).getTypeNode();
                 resolved = resolvedType;
-                ASTClassOrInterfaceType parent = (ASTClassOrInterfaceType) name.getParent();
+                ASTClassType parent = (ASTClassType) name.getParent();
 
                 checkParentIsMember(processor, resolvedType, parent);
             }
@@ -147,7 +147,7 @@ final class AstDisambiguationPass {
         }
 
         @Override
-        public Void visit(ASTClassOrInterfaceType type, ReferenceCtx ctx) {
+        public Void visit(ASTClassType type, ReferenceCtx ctx) {
 
             if (type.getReferencedSym() != null) {
                 return null;
@@ -165,7 +165,7 @@ final class AstDisambiguationPass {
                 return null;
             }
 
-            ASTClassOrInterfaceType lhsType = type.getQualifier();
+            ASTClassType lhsType = type.getQualifier();
             if (lhsType != null) {
                 JTypeDeclSymbol lhsSym = lhsType.getReferencedSym();
                 assert lhsSym != null : "Unresolved LHS for " + type;
@@ -190,7 +190,7 @@ final class AstDisambiguationPass {
             return null;
         }
 
-        private static void setClassSymbolIfNoQualifier(ASTClassOrInterfaceType type, ReferenceCtx ctx) {
+        private static void setClassSymbolIfNoQualifier(ASTClassType type, ReferenceCtx ctx) {
             final JTypeMirror resolved = ctx.resolveSingleTypeName(type.getSymbolTable(), type.getSimpleName(), type);
             JTypeDeclSymbol sym;
             if (resolved == null) {
@@ -206,7 +206,7 @@ final class AstDisambiguationPass {
             type.setImplicitEnclosing(enclosingType(resolved));
         }
 
-        private void postProcess(ASTClassOrInterfaceType type, ReferenceCtx ctx) {
+        private void postProcess(ASTClassType type, ReferenceCtx ctx) {
             JTypeDeclSymbol sym = type.getReferencedSym();
             if (type.getParent() instanceof ASTAnnotation) {
                 if (!(sym instanceof JClassSymbol && (sym.isUnresolved() || ((JClassSymbol) sym).isAnnotation()))) {
@@ -222,7 +222,7 @@ final class AstDisambiguationPass {
             }
         }
 
-        private static @NonNull JTypeDeclSymbol setArity(ASTClassOrInterfaceType type, ReferenceCtx ctx, String canonicalName) {
+        private static @NonNull JTypeDeclSymbol setArity(ASTClassType type, ReferenceCtx ctx, String canonicalName) {
             int arity = ASTList.sizeOrZero(type.getTypeArguments());
             return ctx.makeUnresolvedReference(canonicalName, arity);
         }
@@ -339,7 +339,7 @@ final class AstDisambiguationPass {
          *
          * @param isPackageOrTypeOnly If true, expressions are disallowed by the context, so we don't check fields
          */
-        private static ASTExpression resolveType(final @Nullable ASTClassOrInterfaceType qualifier, // lhs
+        private static ASTExpression resolveType(final @Nullable ASTClassType qualifier, // lhs
                                                  final @Nullable JClassType implicitEnclosing,      // enclosing type, if it is implicitly inherited
                                                  final JTypeDeclSymbol sym,                         // symbol for the type
                                                  final boolean isFqcn,                              // whether this is a fully-qualified name
@@ -351,7 +351,7 @@ final class AstDisambiguationPass {
 
             TokenUtils.expectKind(identifier, JavaTokenKinds.IDENTIFIER);
 
-            final ASTClassOrInterfaceType type = new ASTClassOrInterfaceType(qualifier, isFqcn, ambig.getFirstToken(), identifier);
+            final ASTClassType type = new ASTClassType(qualifier, isFqcn, ambig.getFirstToken(), identifier);
             type.setSymbol(sym);
             type.setImplicitEnclosing(implicitEnclosing);
 
@@ -451,7 +451,7 @@ final class AstDisambiguationPass {
          * The parent type's image is set to a package name + simple name.
          */
         private static void forceResolveAsFullPackageNameOfParent(StringBuilder packageImage, ASTAmbiguousName ambig, ReferenceCtx ctx) {
-            ASTClassOrInterfaceType parent = (ASTClassOrInterfaceType) ambig.getParent();
+            ASTClassType parent = (ASTClassType) ambig.getParent();
 
             packageImage.append('.').append(parent.getSimpleName());
             String fullName = packageImage.toString();

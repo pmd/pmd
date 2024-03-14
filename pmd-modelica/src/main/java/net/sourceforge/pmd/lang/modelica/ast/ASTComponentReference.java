@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.modelica.ast;
 
 import net.sourceforge.pmd.lang.modelica.resolver.CompositeName;
 import net.sourceforge.pmd.lang.modelica.resolver.ResolutionResult;
-import net.sourceforge.pmd.lang.modelica.resolver.ResolutionState;
 import net.sourceforge.pmd.lang.modelica.resolver.ResolvableEntity;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionState;
 
 public final class ASTComponentReference extends AbstractModelicaNode implements ResolvableModelicaNode {
     private String[] nameComponentsWithoutSubscripts;
@@ -66,7 +66,7 @@ public final class ASTComponentReference extends AbstractModelicaNode implements
 
         nameComponentsWithoutSubscripts = new String[getNumChildren()];
         for (int i = 0; i < nameComponentsWithoutSubscripts.length; ++i) {
-            String name = getChild(i).getFirstChildOfType(ASTSimpleName.class).getImage();
+            String name = getChild(i).firstChild(ASTSimpleName.class).getName();
             nameComponentsWithoutSubscripts[i] = name;
         }
     }

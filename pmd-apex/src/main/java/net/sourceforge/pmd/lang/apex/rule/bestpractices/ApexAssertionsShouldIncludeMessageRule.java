@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
-import net.sourceforge.pmd.lang.apex.rule.AbstractApexUnitTestRule;
 
 public class ApexAssertionsShouldIncludeMessageRule extends AbstractApexUnitTestRule {
 
@@ -27,18 +26,18 @@ public class ApexAssertionsShouldIncludeMessageRule extends AbstractApexUnitTest
         String methodName = node.getFullMethodName();
 
         if (FAIL.equalsIgnoreCase(methodName) && node.getNumChildren() == 1) {
-            addViolationWithMessage(data, node,
+            asCtx(data).addViolationWithMessage(node,
                     "''{0}'' should have 1 parameters.",
-                    new Object[] { FAIL });
+                    FAIL);
         } else if ((ASSERT.equalsIgnoreCase(methodName)
                 || IS_FALSE.equalsIgnoreCase(methodName)
                 || IS_NOT_NULL.equalsIgnoreCase(methodName)
                 || IS_NULL.equalsIgnoreCase(methodName)
                 || IS_TRUE.equalsIgnoreCase(methodName))
                 && node.getNumChildren() == 2) {
-            addViolationWithMessage(data, node,
+            asCtx(data).addViolationWithMessage(node,
                     "''{0}'' should have 2 parameters.",
-                    new Object[] { methodName });
+                    methodName);
         } else if ((ASSERT_EQUALS.equalsIgnoreCase(methodName)
                 || ASSERT_NOT_EQUALS.equalsIgnoreCase(methodName)
                 || ARE_EQUAL.equalsIgnoreCase(methodName)
@@ -46,9 +45,9 @@ public class ApexAssertionsShouldIncludeMessageRule extends AbstractApexUnitTest
                 || IS_INSTANCE_OF_TYPE.equalsIgnoreCase(methodName)
                 || IS_NOT_INSTANCE_OF_TYPE.equalsIgnoreCase(methodName))
                 && node.getNumChildren() == 3) {
-            addViolationWithMessage(data, node,
+            asCtx(data).addViolationWithMessage(node,
                     "''{0}'' should have 3 parameters.",
-                    new Object[] { methodName });
+                    methodName);
         }
         return data;
     }

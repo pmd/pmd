@@ -10,15 +10,15 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -30,7 +30,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
@@ -40,10 +39,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTUnionType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.ASTVoidType;
 import net.sourceforge.pmd.lang.java.ast.ASTWildcardType;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -95,8 +95,8 @@ public final class PrettyPrintingUtil {
     private static void prettyPrintTypeNode(StringBuilder sb, ASTType t) {
         if (t instanceof ASTPrimitiveType) {
             sb.append(((ASTPrimitiveType) t).getKind().getSimpleName());
-        } else if (t instanceof ASTClassOrInterfaceType) {
-            ASTClassOrInterfaceType classT = (ASTClassOrInterfaceType) t;
+        } else if (t instanceof ASTClassType) {
+            ASTClassType classT = (ASTClassType) t;
             sb.append(classT.getSimpleName());
 
             ASTTypeArguments targs = classT.getTypeArguments();
@@ -142,15 +142,15 @@ public final class PrettyPrintingUtil {
     /**
      * Returns a normalized method name. This just looks at the image of the types of the parameters.
      */
-    public static String displaySignature(ASTMethodOrConstructorDeclaration node) {
+    public static String displaySignature(ASTExecutableDeclaration node) {
         return displaySignature(node.getName(), node.getFormalParameters());
     }
 
     /**
      * Returns the generic kind of declaration this is, eg "enum" or "class".
      */
-    public static String getPrintableNodeKind(ASTAnyTypeDeclaration decl) {
-        if (decl instanceof ASTClassOrInterfaceDeclaration && decl.isInterface()) {
+    public static String getPrintableNodeKind(ASTTypeDeclaration decl) {
+        if (decl instanceof ASTClassDeclaration && decl.isInterface()) {
             return "interface";
         } else if (decl instanceof ASTAnnotationTypeDeclaration) {
             return "annotation";
@@ -170,19 +170,19 @@ public final class PrettyPrintingUtil {
         // constructors are differentiated by their parameters, while we only use method name for methods
         if (node instanceof ASTMethodDeclaration) {
             return ((ASTMethodDeclaration) node).getName();
-        } else if (node instanceof ASTMethodOrConstructorDeclaration) {
+        } else if (node instanceof ASTExecutableDeclaration) {
             // constructors are differentiated by their parameters, while we only use method name for methods
             return displaySignature((ASTConstructorDeclaration) node);
         } else if (node instanceof ASTFieldDeclaration) {
             return ((ASTFieldDeclaration) node).getVarIds().firstOrThrow().getName();
         } else if (node instanceof ASTResource) {
             return ((ASTResource) node).getStableName();
-        } else if (node instanceof ASTAnyTypeDeclaration) {
-            return ((ASTAnyTypeDeclaration) node).getSimpleName();
-        } else if (node instanceof ASTVariableDeclaratorId) {
-            return ((ASTVariableDeclaratorId) node).getName();
+        } else if (node instanceof ASTTypeDeclaration) {
+            return ((ASTTypeDeclaration) node).getSimpleName();
+        } else if (node instanceof ASTVariableId) {
+            return ((ASTVariableId) node).getName();
         } else {
-            return node.getImage(); // todo get rid of this
+            throw new IllegalArgumentException("Node has no defined name: " + node);
         }
     }
 
@@ -192,11 +192,11 @@ public final class PrettyPrintingUtil {
      * returns "field".
      *
      * @throws UnsupportedOperationException If unimplemented for a node kind
-     * @see #getPrintableNodeKind(ASTAnyTypeDeclaration)
+     * @see #getPrintableNodeKind(ASTTypeDeclaration)
      */
     public static String getPrintableNodeKind(JavaNode node) {
-        if (node instanceof ASTAnyTypeDeclaration) {
-            return getPrintableNodeKind((ASTAnyTypeDeclaration) node);
+        if (node instanceof ASTTypeDeclaration) {
+            return getPrintableNodeKind((ASTTypeDeclaration) node);
         } else if (node instanceof ASTMethodDeclaration) {
             return "method";
         } else if (node instanceof ASTConstructorDeclaration) {

@@ -19,11 +19,11 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
  *
  * <pre class="grammar">
  *
- * AnonymousClassDeclaration ::= {@link ASTModifierList EmptyModifierList} {@link ASTClassOrInterfaceBody}
+ * AnonymousClassDeclaration ::= {@link ASTModifierList EmptyModifierList} {@link ASTClassBody}
  *
  * </pre>
  */
-public final class ASTAnonymousClassDeclaration extends AbstractAnyTypeDeclaration {
+public final class ASTAnonymousClassDeclaration extends AbstractTypeDeclaration {
 
 
     ASTAnonymousClassDeclaration(int id) {
@@ -42,7 +42,7 @@ public final class ASTAnonymousClassDeclaration extends AbstractAnyTypeDeclarati
     }
 
     @Override
-    public @NonNull NodeStream<ASTClassOrInterfaceType> getSuperInterfaceTypeNodes() {
+    public @NonNull NodeStream<ASTClassType> getSuperInterfaceTypeNodes() {
         if (getParent() instanceof ASTConstructorCall) {
             ASTConstructorCall ctor = (ASTConstructorCall) getParent();
             @NonNull JTypeMirror type = ctor.getTypeMirror();

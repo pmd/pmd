@@ -15,32 +15,32 @@ class ASTSwitchStatementTest extends ApexParserTestBase {
 
     @Test
     void testExamples() {
-        ApexNode<?> node = parseResource("SwitchStatements.cls");
-        List<ASTSwitchStatement> switchStatements = node.findDescendantsOfType(ASTSwitchStatement.class);
+        ApexNode<?> node = apex.parseResource("SwitchStatements.cls").getMainNode();
+        List<ASTSwitchStatement> switchStatements = node.descendants(ASTSwitchStatement.class).toList();
         assertEquals(4, switchStatements.size());
 
         assertTrue(switchStatements.get(0).getChild(0) instanceof ASTVariableExpression);
-        assertEquals(5, switchStatements.get(0).findChildrenOfType(ASTValueWhenBlock.class).size());
-        assertEquals(3, switchStatements.get(0).findChildrenOfType(ASTValueWhenBlock.class)
-            .get(1).findChildrenOfType(ASTLiteralCase.class).size());
-        assertEquals(1, switchStatements.get(0).findChildrenOfType(ASTElseWhenBlock.class).size());
+        assertEquals(5, switchStatements.get(0).children(ASTValueWhenBlock.class).count());
+        assertEquals(3, switchStatements.get(0).children(ASTValueWhenBlock.class)
+            .get(1).children(ASTLiteralCase.class).count());
+        assertEquals(1, switchStatements.get(0).children(ASTElseWhenBlock.class).count());
 
         assertTrue(switchStatements.get(1).getChild(0) instanceof ASTMethodCallExpression);
-        assertEquals(2, switchStatements.get(1).findChildrenOfType(ASTValueWhenBlock.class).size());
-        assertEquals(1, switchStatements.get(1).findChildrenOfType(ASTElseWhenBlock.class).size());
+        assertEquals(2, switchStatements.get(1).children(ASTValueWhenBlock.class).count());
+        assertEquals(1, switchStatements.get(1).children(ASTElseWhenBlock.class).count());
 
         assertTrue(switchStatements.get(2).getChild(0) instanceof ASTVariableExpression);
-        assertEquals(2, switchStatements.get(2).findChildrenOfType(ASTTypeWhenBlock.class).size());
-        assertEquals("Account", switchStatements.get(2).findChildrenOfType(ASTTypeWhenBlock.class)
+        assertEquals(2, switchStatements.get(2).children(ASTTypeWhenBlock.class).count());
+        assertEquals("Account", switchStatements.get(2).children(ASTTypeWhenBlock.class)
             .get(0).getType());
-        assertEquals("a", switchStatements.get(2).findChildrenOfType(ASTTypeWhenBlock.class)
+        assertEquals("a", switchStatements.get(2).children(ASTTypeWhenBlock.class)
             .get(0).getName());
-        assertEquals(1, switchStatements.get(2).findChildrenOfType(ASTValueWhenBlock.class).size());
-        assertEquals(1, switchStatements.get(2).findChildrenOfType(ASTElseWhenBlock.class).size());
+        assertEquals(1, switchStatements.get(2).children(ASTValueWhenBlock.class).count());
+        assertEquals(1, switchStatements.get(2).children(ASTElseWhenBlock.class).count());
 
         assertTrue(switchStatements.get(3).getChild(0) instanceof ASTVariableExpression);
-        assertEquals(2, switchStatements.get(3).findChildrenOfType(ASTValueWhenBlock.class).size());
-        assertEquals(1, switchStatements.get(3).findChildrenOfType(ASTElseWhenBlock.class).size());
+        assertEquals(2, switchStatements.get(3).children(ASTValueWhenBlock.class).count());
+        assertEquals(1, switchStatements.get(3).children(ASTElseWhenBlock.class).count());
     }
 
 }

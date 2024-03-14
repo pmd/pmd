@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.statement.StatementExecuted;
+import com.google.summit.ast.Node;
 
-public final class ASTStatementExecuted extends AbstractApexNode<StatementExecuted> {
+public final class ASTStatementExecuted extends AbstractApexNode.Single<Node> {
 
-    ASTStatementExecuted(StatementExecuted node) {
+    ASTStatementExecuted(Node node) {
         super(node);
     }
 

@@ -6,10 +6,12 @@ package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
@@ -55,7 +57,7 @@ final class AstSymFactory {
     /**
      * Builds, sets and returns the symbol for the given local variable.
      */
-    void setLocalVarSymbol(ASTVariableDeclaratorId id) {
+    void setLocalVarSymbol(ASTVariableId id) {
         assert !id.isField() && !id.isEnumConstant() : "Local var symbol is not appropriate for fields";
         assert !id.isFormalParameter()
             || id.isLambdaParameter()
@@ -67,7 +69,7 @@ final class AstSymFactory {
     /**
      * Builds, sets and returns the symbol for the given class.
      */
-    JClassSymbol setClassSymbol(@Nullable JTypeParameterOwnerSymbol enclosing, ASTAnyTypeDeclaration klass) {
+    JClassSymbol setClassSymbol(@Nullable JTypeParameterOwnerSymbol enclosing, ASTTypeDeclaration klass) {
         if (enclosing instanceof JClassSymbol && klass.isNested()) {
             JClassSymbol inner = ((JClassSymbol) enclosing).getDeclaredClass(klass.getSimpleName());
             assert inner != null : "Inner class symbol was not created for " + klass;
@@ -76,7 +78,7 @@ final class AstSymFactory {
         return new AstClassSym(klass, this, enclosing);
     }
 
-
-
-
+    JClassSymbol setClassSymbol(@NonNull ASTCompilationUnit compilationUnit) {
+        return new AstUnnamedClassSym(compilationUnit, this);
+    }
 }

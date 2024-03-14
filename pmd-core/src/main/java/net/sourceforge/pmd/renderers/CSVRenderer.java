@@ -14,11 +14,11 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.renderers.ColumnDescriptor.Accessor;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 
 /**
@@ -43,7 +43,7 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
     private final ColumnDescriptor<RuleViolation>[] allColumns = new ColumnDescriptor[] {
         newColDescriptor("problem", "Problem", (idx, rv, cr) -> Integer.toString(idx)),
         newColDescriptor("package", "Package", (idx, rv, cr) -> rv.getAdditionalInfo().getOrDefault(RuleViolation.PACKAGE_NAME, "")),
-        newColDescriptor("file", "File", (idx, rv, cr) -> determineFileName(rv.getFilename())),
+        newColDescriptor("file", "File", (idx, rv, cr) -> determineFileName(rv.getFileId())),
         newColDescriptor("priority", "Priority", (idx, rv, cr) -> Integer.toString(rv.getRule().getPriority().getPriority())),
         newColDescriptor("line", "Line", (idx, rv, cr) -> Integer.toString(rv.getBeginLine())),
         newColDescriptor("desc", "Description", (idx, rv, cr) -> StringUtils.replaceChars(rv.getDescription(), '\"', '\'')),

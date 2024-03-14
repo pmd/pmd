@@ -6,7 +6,7 @@
 
 <!--    Input properties:
         - lang-name: matches the grammar name (eg "Swift")
-        - lang-terse-name: uncapitalized package name (eg "swift")
+        - lang-id: the language id, used in the conventional package name (eg "swift")
         - node-prefix: prefix for generated AST nodes (eg "Sw")
         - root-node-name: name of the root node without prefix (eg "TopLevel"), will be made to implement RootNode
 
@@ -14,10 +14,10 @@
 
 -->
 
-    <property name="target-package-dir" value="${antlr4.outputDirectory}/net/sourceforge/pmd/lang/${lang-terse-name}/ast"/>
+    <property name="target-package-dir" value="${antlr4.outputDirectory}/net/sourceforge/pmd/lang/${lang-id}/ast"/>
 
 
-    <property name="lang-ast-package" value="net.sourceforge.pmd.lang.${lang-terse-name}.ast" />
+    <property name="lang-ast-package" value="net.sourceforge.pmd.lang.${lang-id}.ast" />
     <property name="ast-api-package" value="net.sourceforge.pmd.lang.ast" />
     <property name="ast-impl-package" value="${ast-api-package}.impl.antlr4" />
 
@@ -64,6 +64,8 @@
             <include name="${listener-name}.java"/>
             <include name="${base-listener-name}.java"/>
             <replacefilter token="${lang-name}." value="${parser-name}."/>
+            <replacefilter token="${lang-name}#" value="${parser-name}#"/>
+            <replacefilter token="{@link ${lang-name}}" value="{@link ${parser-name}}"/>
         </replace>
 
         <move file="${target-package-dir}/${lang-name}.java"
@@ -115,6 +117,8 @@
         <!-- Transform the visitor to PMD-style. -->
         <replace file="${visitor-file}">
 
+            <replacefilter token="@param &lt;T> The return type of the visit operation. Use {@link Void} for"
+                           value="@param &lt;P> The parameter type of the visit&#10; * @param &lt;R> The return type of the visit operation. Use {@link Void} for"/>
             <replacefilter token="Visitor&lt;T> extends ParseTreeVisitor&lt;T> {"
                            value="Visitor&lt;P, R> extends net.sourceforge.pmd.lang.ast.AstVisitor&lt;P, R> {&#10;
 &#10;
@@ -133,6 +137,7 @@
 
             <replacefilter token="T visit" value="default R visit"/>
             <replacefilter token="ctx);" value="node, P data) { return visit${node-itf-name}(node, data); }"/>
+            <replacefilter token="@param ctx the parse tree" value="@param node Node to visit&#10;&#9; * @param data Parameter of the visit"/>
 
         </replace>
 

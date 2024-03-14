@@ -20,7 +20,7 @@ public class CheckSkipResultRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTMethodCall call, Object data) {
         if (SKIP_METHOD.matchesCall(call) && !isResultUsed(call)) {
-            addViolation(data, call);
+            asCtx(data).addViolation(call);
         }
         return null;
     }

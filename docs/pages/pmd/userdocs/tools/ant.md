@@ -181,7 +181,6 @@ automatically and the latest language version is used.
 `ruleset` nested element - another way to specify rulesets. You can specify multiple elements. Here's an example:
 
     <target name="pmd">
-        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
         <pmd>
             <ruleset>rulesets/java/quickstart.xml</ruleset>
             <ruleset>config/my-ruleset.xml</ruleset>
@@ -213,7 +212,7 @@ accordingly and this rule won't be executed.
 The specific version of a language to be used is selected via the `sourceLanguage`
 nested element. Example:
 
-    <sourceLanguage name="java" version="17"/>
+    <sourceLanguage name="java" version="22"/>
 
 The available versions depend on the language. You can get a list of the currently supported language versions
 via the CLI option `--help`.
@@ -373,7 +372,6 @@ You can run pmd then with `ant pmd`.
 An HTML report with the "linkPrefix" and "linePrefix" properties:
 
     <target name="pmd">
-        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
         <pmd rulesetfiles="rulesets/java/quickstart.xml">
             <formatter type="html" toFile="pmd_report.html">
                 <param name="linkPrefix" value="https://maven.apache.org/plugins/maven-pmd-plugin/xref/"/>

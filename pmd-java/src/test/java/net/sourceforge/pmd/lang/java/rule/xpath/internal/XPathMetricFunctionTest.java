@@ -9,7 +9,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 /**
  * @author Clément Fournier
@@ -19,7 +19,7 @@ class XPathMetricFunctionTest extends BaseXPathFunctionTest {
 
     @Test
     void testWellFormedClassMetricRule() {
-        Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceDeclaration[pmd-java:metric('NCSS') > 0]");
+        Rule rule = makeXpathRuleFromXPath("//ClassDeclaration[pmd-java:metric('NCSS') > 0]");
         String code = "class Foo { Foo() {} void bar() {}}";
 
         assertFinds(rule, 1, code);

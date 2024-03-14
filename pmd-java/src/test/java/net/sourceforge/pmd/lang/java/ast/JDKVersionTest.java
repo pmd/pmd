@@ -4,10 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
+import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
@@ -299,7 +300,7 @@ class JDKVersionTest extends BaseJavaTreeDumpTest {
     @Test
     void jdk7PrivateMethodInnerClassInterface1() {
         ASTCompilationUnit acu = java7.parseResource("private_method_in_inner_class_interface1.java");
-        List<ASTMethodDeclaration> methods = acu.findDescendantsOfType(ASTMethodDeclaration.class, true);
+        List<ASTMethodDeclaration> methods = acu.descendants(ASTMethodDeclaration.class).crossFindBoundaries().toList();
         assertEquals(3, methods.size());
         for (ASTMethodDeclaration method : methods) {
             assertFalse(method.getEnclosingType().isInterface());
@@ -309,7 +310,7 @@ class JDKVersionTest extends BaseJavaTreeDumpTest {
     @Test
     void jdk7PrivateMethodInnerClassInterface2() {
         ParseException thrown = assertThrows(ParseException.class, () -> java7.parseResource("private_method_in_inner_class_interface2.java"));
-        assertTrue(thrown.getMessage().contains("line 19"));
+        assertThat(thrown.getMessage(), containsString("line 19"));
     }
 
     @Override

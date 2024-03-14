@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.member.Parameter;
+import com.google.summit.ast.declaration.ParameterDeclaration;
 
-public final class ASTParameter extends AbstractApexNode<Parameter> {
+public final class ASTParameter extends AbstractApexNode.Single<ParameterDeclaration> {
 
-    ASTParameter(Parameter parameter) {
-        super(parameter);
+    ASTParameter(ParameterDeclaration parameterDeclaration) {
+        super(parameterDeclaration);
     }
 
 
@@ -20,14 +20,20 @@ public final class ASTParameter extends AbstractApexNode<Parameter> {
 
     @Override
     public String getImage() {
-        return node.getName().getValue();
+        return node.getId().getString();
     }
 
     public ASTModifierNode getModifiers() {
-        return getFirstChildOfType(ASTModifierNode.class);
+        return firstChild(ASTModifierNode.class);
     }
 
+    /**
+     * Returns the parameter's type name.
+     *
+     * <p>This includes any type arguments.
+     * If the type is a primitive, its case will be normalized.
+     */
     public String getType() {
-        return node.getType().getApexName();
+        return caseNormalizedTypeIfPrimitive(node.getType().asCodeString());
     }
 }

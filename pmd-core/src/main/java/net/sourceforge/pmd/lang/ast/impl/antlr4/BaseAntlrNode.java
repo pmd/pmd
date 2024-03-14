@@ -48,19 +48,6 @@ public abstract class BaseAntlrNode<A extends AntlrToPmdParseTreeAdapter<N>, N e
         // protected
     }
 
-    /**
-     * Recurses over the text of all terminal descendants to build the
-     * text of this node (without spaces). This is extremely inefficient
-     * and should not be used to write rules. The antlr impl doesn't even
-     * use a single stringbuilder.
-     *
-     * @deprecated Some rules depend on it and have not been rewritten
-     */
-    @Deprecated
-    public String joinTokenText() {
-        return asAntlrNode().getText();
-    }
-
     // these are an implementation detail, meant as a crutch while some
     // rules depend on it
     // Should be made protected
@@ -72,7 +59,7 @@ public abstract class BaseAntlrNode<A extends AntlrToPmdParseTreeAdapter<N>, N e
     @Override
     public TextRegion getTextRegion() {
         return TextRegion.fromBothOffsets(getFirstAntlrToken().getStartIndex(),
-                                          getFirstAntlrToken().getStopIndex());
+                                          getLastAntlrToken().getStopIndex() + 1);
     }
 
     void setIndexInParent(int indexInParent) {

@@ -29,13 +29,15 @@ import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
-import net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver;
+import net.sourceforge.pmd.lang.java.types.ast.internal.LazyTypeResolver;
 import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
- * Acts as a bridge between outer parts of PMD and the restricted access
+ * Internal API.
+ *
+ * <p>Acts as a bridge between outer parts of PMD and the restricted access
  * internal API of this package.
  *
  * <p><b>None of this is published API, and compatibility can be broken anytime!</b>
@@ -43,31 +45,21 @@ import net.sourceforge.pmd.util.AssertionUtil;
  *
  * @author Clément Fournier
  * @since 7.0.0
+ * @apiNote Internal API
  */
 @InternalApi
 public final class InternalApiBridge {
-
-
-    private InternalApiBridge() {
-
-    }
-
-    @Deprecated
-    public static ASTVariableDeclaratorId newVarId(String image) {
-        ASTVariableDeclaratorId varid = new ASTVariableDeclaratorId(JavaParserImplTreeConstants.JJTVARIABLEDECLARATORID);
-        varid.setImage(image);
-        return varid;
-    }
+    private InternalApiBridge() {}
 
     public static void setSymbol(SymbolDeclaratorNode node, JElementSymbol symbol) {
         if (node instanceof ASTMethodDeclaration) {
             ((ASTMethodDeclaration) node).setSymbol((JMethodSymbol) symbol);
         } else if (node instanceof ASTConstructorDeclaration) {
             ((ASTConstructorDeclaration) node).setSymbol((JConstructorSymbol) symbol);
-        } else if (node instanceof ASTAnyTypeDeclaration) {
-            ((AbstractAnyTypeDeclaration) node).setSymbol((JClassSymbol) symbol);
-        } else if (node instanceof ASTVariableDeclaratorId) {
-            ((ASTVariableDeclaratorId) node).setSymbol((JVariableSymbol) symbol);
+        } else if (node instanceof ASTTypeDeclaration) {
+            ((AbstractTypeDeclaration) node).setSymbol((JClassSymbol) symbol);
+        } else if (node instanceof ASTVariableId) {
+            ((ASTVariableId) node).setSymbol((JVariableSymbol) symbol);
         } else if (node instanceof ASTTypeParameter) {
             ((ASTTypeParameter) node).setSymbol((JTypeParameterSymbol) symbol);
         } else if (node instanceof ASTRecordComponentList) {
@@ -104,7 +96,7 @@ public final class InternalApiBridge {
             .forEach(node -> {
                 JVariableSymbol sym = node.getReferencedSym();
                 if (sym != null) {
-                    ASTVariableDeclaratorId reffed = sym.tryGetNode();
+                    ASTVariableId reffed = sym.tryGetNode();
                     if (reffed != null) { // declared in this file
                         reffed.addUsage(node);
                     }
@@ -113,7 +105,7 @@ public final class InternalApiBridge {
     }
 
     public static void overrideResolution(JavaAstProcessor processor, ASTCompilationUnit root) {
-        root.descendants(ASTAnyTypeDeclaration.class)
+        root.descendants(ASTTypeDeclaration.class)
             .crossFindBoundaries()
             .forEach(OverrideResolutionPass::resolveOverrides);
     }
@@ -184,8 +176,8 @@ public final class InternalApiBridge {
         ((AbstractJavaNode) node).setSymbolTable(table);
     }
 
-    public static void setQname(ASTAnyTypeDeclaration declaration, String binaryName, @Nullable String canon) {
-        ((AbstractAnyTypeDeclaration) declaration).setBinaryName(binaryName, canon);
+    public static void setQname(ASTTypeDeclaration declaration, String binaryName, @Nullable String canon) {
+        ((AbstractTypeDeclaration) declaration).setBinaryName(binaryName, canon);
     }
 
     public static void assignComments(ASTCompilationUnit root) {
@@ -208,7 +200,7 @@ public final class InternalApiBridge {
         return TypesFromAst.fromAst(ts, lexicalSubst, node);
     }
 
-    public static JTypeDeclSymbol getReferencedSym(ASTClassOrInterfaceType type) {
+    public static JTypeDeclSymbol getReferencedSym(ASTClassType type) {
         return type.getReferencedSym();
     }
 

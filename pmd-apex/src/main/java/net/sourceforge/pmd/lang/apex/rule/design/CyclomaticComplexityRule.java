@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.apex.rule.design;
 
 
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -63,7 +63,7 @@ public class CyclomaticComplexityRule extends AbstractApexRule {
     @Override
     public Object visit(ASTUserClass node, Object data) {
 
-        classNames.push(node.getImage());
+        classNames.push(node.getSimpleName());
         super.visit(node, data);
         classNames.pop();
 
@@ -74,11 +74,11 @@ public class CyclomaticComplexityRule extends AbstractApexRule {
                 int classHighest = (int) MetricsUtil.computeStatistics(ApexMetrics.CYCLO, node.getMethods()).getMax();
 
                 String[] messageParams = {"class",
-                                          node.getImage(),
+                                          node.getSimpleName(),
                                           " total",
                                           classWmc + " (highest " + classHighest + ")", };
 
-                addViolation(data, node, messageParams);
+                asCtx(data).addViolation(node, messageParams);
             }
         }
         return data;
@@ -95,10 +95,10 @@ public class CyclomaticComplexityRule extends AbstractApexRule {
                                           : node.getImage().equals(classNames.peek()) ? "constructor"
                                                                                       : "method";
 
-                addViolation(data, node, new String[] {opType,
-                                                       node.getQualifiedName().getOperation(),
-                                                       "",
-                                                       "" + cyclo, });
+                asCtx(data).addViolation(node, opType,
+                        node.getQualifiedName().getOperation(),
+                        "",
+                        "" + cyclo);
             }
         }
 

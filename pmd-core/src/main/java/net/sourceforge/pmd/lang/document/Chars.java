@@ -40,7 +40,11 @@ import net.sourceforge.pmd.util.IteratorUtil.AbstractIterator;
  */
 public final class Chars implements CharSequence {
 
-    public static final Chars EMPTY = wrap("");
+    /**
+     * An empty Chars instance.
+     */
+    public static final Chars EMPTY = new Chars("", 0, 0);
+
     /**
      * Special sentinel used by {@link #lines()}.
      */
@@ -83,6 +87,8 @@ public final class Chars implements CharSequence {
     public static Chars wrap(CharSequence chars) {
         if (chars instanceof Chars) {
             return (Chars) chars;
+        } else if (chars.length() == 0) {
+            return EMPTY;
         }
         return new Chars(chars.toString(), 0, chars.length());
     }
@@ -190,6 +196,13 @@ public final class Chars implements CharSequence {
             strpos = str.indexOf(fst, strpos + 1);
         }
         return NOT_FOUND;
+    }
+
+    /**
+     * See {@link String#indexOf(int)}
+     */
+    public int indexOf(int ch) {
+        return indexOf(ch, 0);
     }
 
     /**

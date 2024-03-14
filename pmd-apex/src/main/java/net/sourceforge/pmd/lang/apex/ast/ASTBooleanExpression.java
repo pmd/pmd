@@ -4,29 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.data.ast.BooleanOp;
-import apex.jorje.semantic.ast.expression.BooleanExpression;
+import com.google.summit.ast.expression.BinaryExpression;
 
+public final class ASTBooleanExpression extends AbstractApexNode.Single<BinaryExpression> {
 
-public final class ASTBooleanExpression extends AbstractApexNode<BooleanExpression> {
-
-    ASTBooleanExpression(BooleanExpression booleanExpression) {
-        super(booleanExpression);
+    ASTBooleanExpression(BinaryExpression binaryExpression) {
+        super(binaryExpression);
     }
-
-
 
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-    /**
-     * @deprecated Use {@link #getOp()} instead.
-     */
-    @Deprecated
-    public BooleanOp getOperator() {
-        return this.node.getOp();
     }
 
     public BooleanOperator getOp() {

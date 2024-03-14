@@ -10,15 +10,15 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
-import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
-import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
+import net.sourceforge.pmd.lang.java.rule.internal.AbstractIgnoredAnnotationRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 /**
@@ -30,7 +30,7 @@ public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
 
     @Override
     protected @NonNull RuleTargetSelector buildTargetSelector() {
-        return RuleTargetSelector.forTypes(ASTEnumDeclaration.class, ASTClassOrInterfaceDeclaration.class);
+        return RuleTargetSelector.forTypes(ASTEnumDeclaration.class, ASTClassDeclaration.class);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
     }
 
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+    public Object visit(ASTClassDeclaration node, Object data) {
         if (node.isRegularClass()) {
             checkClassOrEnum(node, data);
         }
@@ -54,15 +54,15 @@ public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
         return data;
     }
 
-    private void checkClassOrEnum(ASTAnyTypeDeclaration node, Object data) {
+    private void checkClassOrEnum(ASTTypeDeclaration node, Object data) {
         List<ASTConstructorDeclaration> ctors = node.getDeclarations(ASTConstructorDeclaration.class).take(2).toList();
         if (ctors.size() == 1 && isExplicitDefaultConstructor(node, ctors.get(0))) {
-            addViolation(data, ctors.get(0));
+            asCtx(data).addViolation(ctors.get(0));
         }
     }
 
 
-    private boolean isExplicitDefaultConstructor(ASTAnyTypeDeclaration declarator, ASTConstructorDeclaration ctor) {
+    private boolean isExplicitDefaultConstructor(ASTTypeDeclaration declarator, ASTConstructorDeclaration ctor) {
         return ctor.getArity() == 0
             && !hasIgnoredAnnotation(ctor)
             && hasDefaultCtorVisibility(declarator, ctor)
@@ -84,8 +84,8 @@ public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
         return false;
     }
 
-    private boolean hasDefaultCtorVisibility(ASTAnyTypeDeclaration node, ASTConstructorDeclaration cons) {
-        if (node instanceof ASTClassOrInterfaceDeclaration) {
+    private boolean hasDefaultCtorVisibility(ASTTypeDeclaration node, ASTConstructorDeclaration cons) {
+        if (node instanceof ASTClassDeclaration) {
             return node.getVisibility() == cons.getVisibility();
         } else if (node instanceof ASTEnumDeclaration) {
             return cons.getVisibility() == Visibility.V_PRIVATE;

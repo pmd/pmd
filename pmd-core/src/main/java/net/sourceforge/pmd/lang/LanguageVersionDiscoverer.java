@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
@@ -24,7 +23,7 @@ import net.sourceforge.pmd.util.AssertionUtil;
  */
 public class LanguageVersionDiscoverer {
 
-    private final LanguageRegistry languageRegistry;
+    private LanguageRegistry languageRegistry;
     private final Map<Language, LanguageVersion> languageToLanguageVersion = new HashMap<>();
     private LanguageVersion forcedVersion;
 
@@ -125,21 +124,6 @@ public class LanguageVersionDiscoverer {
     /**
      * Get the Languages of a given source file.
      *
-     * @param sourceFile
-     *            The file.
-     * @return The Languages for the source file, may be empty.
-     *
-     * @deprecated PMD 7 avoids using {@link File}.
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    public List<Language> getLanguagesForFile(File sourceFile) {
-        return getLanguagesForFile(sourceFile.getName());
-    }
-
-    /**
-     * Get the Languages of a given source file.
-     *
      * @param fileName
      *            The file name.
      * @return The Languages for the source file, may be empty.
@@ -156,5 +140,23 @@ public class LanguageVersionDiscoverer {
         return StringUtils.substringAfterLast(fileName, ".");
     }
 
+    /**
+     * Make it so that the only extensions that are considered are those
+     * of the given language. This is different from {@link #setForcedVersion(LanguageVersion)}.
+     * because that one will assign the given language version to all files
+     * irrespective of extension. This method, on the other hand, will
+     * ignore files that do not match the given language.
+     *
+     * @param lang A language
+     */
+    public void onlyRecognizeLanguages(LanguageRegistry lang) {
+        this.languageRegistry = Objects.requireNonNull(lang);
+    }
 
+    @Override
+    public String toString() {
+        return "LanguageVersionDiscoverer(" + languageRegistry
+                + (forcedVersion != null ? ",forcedVersion=" + forcedVersion : "")
+                + ")";
+    }
 }

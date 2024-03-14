@@ -24,21 +24,20 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
  * (for the same reason) is quite inefficient as trim() causes a new String to
  * be created. A Smarter code to check for an empty string would be:
  *
- * <pre>
+ * <pre>{@code
  * private boolean checkTrimEmpty(String str) {
- *     for(int i = 0; i &lt; str.length(); i++) {
+ *     for(int i = 0; i < str.length(); i++) {
  *         if(!Character.isWhitespace(str.charAt(i))) {
  *             return false;
  *         }
  *     }
  *     return true;
  * }
- * </pre>
+ * }</pre>
  * or you can refer to Apache's <code>StringUtils#isBlank</code>
  * (in commons-lang), Spring's <code>StringUtils#hasText</code> (in the Spring
  * framework) or Google's <code>CharMatcher#whitespace</code> (in Guava) for
  * existing implementations (some might include the check for != null).
- * </p>
  *
  * @author acaplan
  */
@@ -52,7 +51,7 @@ public class InefficientEmptyStringCheckRule extends AbstractJavaRulechainRule {
     public Object visit(ASTMethodCall call, Object data) {
         if (isTrimCall(call.getQualifier())
             && (isLengthZeroCheck(call) || isIsEmptyCall(call))) {
-            addViolation(data, call);
+            asCtx(data).addViolation(call);
         }
         return null;
     }

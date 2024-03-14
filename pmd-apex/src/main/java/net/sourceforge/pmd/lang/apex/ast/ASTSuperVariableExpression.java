@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.SuperVariableExpression;
+import com.google.summit.ast.expression.SuperExpression;
 
-public final class ASTSuperVariableExpression extends AbstractApexNode<SuperVariableExpression> {
+public final class ASTSuperVariableExpression extends AbstractApexNode.Single<SuperExpression> {
 
-    ASTSuperVariableExpression(SuperVariableExpression superVariableExpression) {
-        super(superVariableExpression);
+    ASTSuperVariableExpression(SuperExpression superExpression) {
+        super(superExpression);
     }
 
 

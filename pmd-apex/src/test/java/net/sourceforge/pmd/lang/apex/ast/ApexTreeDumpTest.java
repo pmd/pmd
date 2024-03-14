@@ -7,9 +7,9 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
-import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
-import net.sourceforge.pmd.lang.ast.test.RelevantAttributePrinter;
+import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
+import net.sourceforge.pmd.lang.test.ast.BaseTreeDumpTest;
+import net.sourceforge.pmd.lang.test.ast.RelevantAttributePrinter;
 
 class ApexTreeDumpTest extends BaseTreeDumpTest {
 
@@ -25,5 +25,15 @@ class ApexTreeDumpTest extends BaseTreeDumpTest {
     @Test
     void safeNavigationOperator() {
         doTest("SafeNavigationOperator");
+    }
+
+    @Test
+    void userEnumType() {
+        doTest("UserEnumType");
+    }
+
+    @Test
+    void innerClassLocations() {
+        doTest("InnerClassLocations");
     }
 }

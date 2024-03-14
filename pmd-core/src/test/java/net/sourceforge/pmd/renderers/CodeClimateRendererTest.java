@@ -9,8 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.document.FileLocation;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
-import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 class CodeClimateRendererTest extends AbstractRendererTest {
@@ -91,7 +90,7 @@ class CodeClimateRendererTest extends AbstractRendererTest {
         theRule.setDescription("Description with Unicode Character U+2013: – .");
         theRule.setName("Foo");
 
-        String rendered = renderReport(getRenderer(), it -> it.onRuleViolation(new ParametricRuleViolation(theRule, node, "blah")));
+        String rendered = renderReport(getRenderer(), it -> it.onRuleViolation(newRuleViolation(theRule, node, "blah")));
 
         // Output should be the exact same as for non xpath rules
         assertEquals(filter(getExpected()), filter(rendered));

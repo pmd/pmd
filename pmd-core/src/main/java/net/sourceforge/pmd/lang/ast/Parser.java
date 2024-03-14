@@ -9,6 +9,7 @@ import java.util.Objects;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.util.AssertionUtil;
 
@@ -54,12 +55,8 @@ public interface Parser {
             return textDoc.getLanguageVersion();
         }
 
-        /**
-         * The display name for where the file comes from. This should
-         * not be interpreted, it may not be a file-system path.
-         */
-        public String getFileDisplayName() {
-            return textDoc.getDisplayName();
+        public FileId getFileId() {
+            return textDoc.getFileId();
         }
 
         /**

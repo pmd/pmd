@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule.design;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
@@ -33,11 +32,8 @@ import net.sourceforge.pmd.lang.ast.Node;
  * <a href="http://www.kclee.de/clemens/java/javancss/">JavaNCSS rules</a>.
  *
  * @author ported from Java original of Jason Bennett
- * @deprecated Internal API
  */
-@Deprecated
-@InternalApi
-public abstract class AbstractNcssCountRule<T extends ApexNode<?>> extends AbstractCounterCheckRule<T> {
+abstract class AbstractNcssCountRule<T extends ApexNode<?>> extends AbstractCounterCheckRule<T> {
 
 
     /**
@@ -154,7 +150,7 @@ public abstract class AbstractNcssCountRule<T extends ApexNode<?>> extends Abstr
 
         @Override
         public Integer visit(ASTMethod node, Void data) {
-            return node.isSynthetic() ? 0 : countNodeChildren(node, data);
+            return countNodeChildren(node, data);
         }
 
         @Override

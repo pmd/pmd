@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.statement.FieldDeclaration;
+import com.google.summit.ast.declaration.FieldDeclaration;
 
-public final class ASTFieldDeclaration extends AbstractApexNode<FieldDeclaration> {
+public final class ASTFieldDeclaration extends AbstractApexNode.Single<FieldDeclaration> {
 
     ASTFieldDeclaration(FieldDeclaration fieldDeclaration) {
         super(fieldDeclaration);
@@ -24,13 +24,6 @@ public final class ASTFieldDeclaration extends AbstractApexNode<FieldDeclaration
     }
 
     public String getName() {
-        if (node.getFieldInfo() != null) {
-            return node.getFieldInfo().getName();
-        }
-        ASTVariableExpression variable = getFirstChildOfType(ASTVariableExpression.class);
-        if (variable != null) {
-            return variable.getImage();
-        }
-        return null;
+        return node.getId().getString();
     }
 }

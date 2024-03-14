@@ -4,23 +4,24 @@
 
 package net.sourceforge.pmd.lang.apex.multifile;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ApexLanguageProcessor;
 import net.sourceforge.pmd.lang.apex.ApexLanguageProperties;
 
-import com.nawforce.common.api.FileIssueOptions;
-import com.nawforce.common.api.Org;
-import com.nawforce.common.api.ServerOps;
-import com.nawforce.common.diagnostics.Issue;
+import com.nawforce.apexlink.api.Org;
+import com.nawforce.pkgforce.api.Issue;
+import com.nawforce.pkgforce.diagnostics.LoggerOps;
 
 /**
  * Stores multi-file analysis data. The 'Org' here is the primary ApexLink structure for maintaining information
@@ -30,46 +31,56 @@ import com.nawforce.common.diagnostics.Issue;
  * issues after packages are loaded and throw away the 'Org'. That would be a better model if all you wanted was the
  * issues but more complex rules will need the ability to traverse the internal graph of the 'Org'.
  *
+ * <p>Note: This is used by {@link net.sourceforge.pmd.lang.apex.rule.design.UnusedMethodRule}.
+ *
  * @author Kevin Jones
  */
-@Experimental
 public final class ApexMultifileAnalysis {
 
     // test only
     static final Logger LOG = LoggerFactory.getLogger(ApexMultifileAnalysis.class);
 
-    // An arbitrary large number of errors to report
-    private static final int MAX_ERRORS_PER_FILE = 100;
-
     // Create a new org for each analysis
     // Null if failed.
     private final @Nullable Org org;
-    private final FileIssueOptions options = makeOptions();
-
 
     static {
-        // Default some library wide settings
-        ServerOps.setAutoFlush(false);
-        ServerOps.setLogger(new AnalysisLogger());
-        ServerOps.setDebugLogging(new String[] { "ALL" });
+        // Setup logging
+        LoggerOps.setLogger(new AnalysisLogger());
+        // TODO: Provide means to control logging
+        LoggerOps.setLoggingLevel(LoggerOps.NO_LOGGING());
     }
 
 
-    @InternalApi
-    public ApexMultifileAnalysis(ApexLanguageProperties properties) {
-        String rootDir = properties.getProperty(ApexLanguageProperties.MULTIFILE_DIRECTORY);
+    ApexMultifileAnalysis(ApexLanguageProperties properties) {
+        Optional<String> rootDir = properties.getProperty(ApexLanguageProperties.MULTIFILE_DIRECTORY);
         LOG.debug("MultiFile Analysis created for {}", rootDir);
 
-        Org org;
+        Org org = null;
         try {
-            org = Org.newOrg();
-            if (rootDir != null && !rootDir.isEmpty()) {
-                // Load the package into the org, this can take some time!
-                org.newSFDXPackage(rootDir); // this may fail if the config is wrong
-                org.flush();
+            // Load the package into the org, this can take some time!
+            if (rootDir.isPresent() && !rootDir.get().isEmpty()) {
+                Path projectPath = Paths.get(rootDir.get());
+                Path sfdxProjectJson = projectPath.resolve("sfdx-project.json");
 
-                // FIXME: Syntax & Semantic errors found during Org loading are not currently being reported. These
-                // should be routed to the new SemanticErrorReporter but that is not available for use just yet.
+                // Limit analysis to SFDX Projects
+                // MDAPI analysis is currently supported but is expected to be deprecated soon
+                if (Files.isDirectory(projectPath) && Files.isRegularFile(sfdxProjectJson)) {
+                    org = Org.newOrg(rootDir.get());
+
+                    // FIXME: Syntax & Semantic errors found during Org loading are not currently being reported. These
+                    // should be routed to the new SemanticErrorReporter but that is not available for use just yet.
+                    // Specifically we should check sfdx-project.json was ok as errors will disable further analysis
+                    Issue[] projectErrors =
+                            Arrays.stream(org.issues().issuesForFile(sfdxProjectJson.toString()))
+                                    .filter(Issue::isError).toArray(Issue[]::new);
+                    Arrays.stream(projectErrors).forEach(issue -> LOG.info(issue.toString()));
+                    if (projectErrors.length != 0) {
+                        org = null;
+                    }
+                } else {
+                    LOG.info("Missing project file at {}", sfdxProjectJson);
+                }
             }
         } catch (Exception | ExceptionInInitializerError | NoClassDefFoundError e) {
             // Note: Org.newOrg() will try to find the base Apex Types through the current classloader
@@ -83,17 +94,8 @@ public final class ApexMultifileAnalysis {
             // and later NoClassDefFoundErrors, because PlatformTypeDeclaration couldn't be loaded.
             LOG.error("Exception while initializing Apexlink ({})", e.getMessage(), e);
             LOG.error("PMD will not attempt to initialize Apexlink further, this can cause rules like UnusedMethod to be dysfunctional");
-            org = null;
         }
         this.org = org;
-    }
-
-    private static FileIssueOptions makeOptions() {
-        FileIssueOptions options = new FileIssueOptions();
-        // Default issue options, zombies gets us unused methods & fields as well as deploy problems
-        options.includeZombies_$eq(true);
-        options.maxErrorsPerFile_$eq(MAX_ERRORS_PER_FILE);
-        return options;
     }
 
     /**
@@ -109,18 +111,13 @@ public final class ApexMultifileAnalysis {
     public List<Issue> getFileIssues(String filename) {
         // Extract issues for a specific metadata file from the org
         return org == null ? Collections.emptyList()
-                           : Collections.unmodifiableList(Arrays.asList(org.getFileIssues(filename, options)));
+                           : Collections.unmodifiableList(Arrays.asList(org.issues().issuesForFile(filename)));
     }
 
     /*
      * Very simple logger to aid debugging, relays ApexLink logging into PMD
      */
-    private static final class AnalysisLogger implements com.nawforce.common.api.Logger {
-
-        @Override
-        public void error(String message) {
-            LOG.error(message);
-        }
+    private static final class AnalysisLogger implements com.nawforce.pkgforce.diagnostics.Logger {
 
         @Override
         public void info(String message) {
@@ -130,6 +127,11 @@ public final class ApexMultifileAnalysis {
         @Override
         public void debug(String message) {
             LOG.debug(message);
+        }
+
+        @Override
+        public void trace(String message) {
+            LOG.trace(message);
         }
     }
 }

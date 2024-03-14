@@ -8,8 +8,8 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -20,7 +20,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
@@ -55,6 +54,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
 import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
@@ -67,10 +67,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
@@ -130,7 +131,7 @@ public final class DataflowPass {
      * there, using the kill record, we can draw the graph of all assignments.
      * Returns null if not a field, or the compilation unit has not been processed.
      */
-    public static @Nullable AssignmentEntry getFieldDefinition(ASTVariableDeclaratorId varId) {
+    public static @Nullable AssignmentEntry getFieldDefinition(ASTVariableId varId) {
         if (!varId.isField()) {
             return null;
         }
@@ -139,7 +140,7 @@ public final class DataflowPass {
 
     private static DataflowResult process(ASTCompilationUnit node) {
         DataflowResult dataflowResult = new DataflowResult();
-        for (ASTAnyTypeDeclaration typeDecl : node.getTypeDeclarations()) {
+        for (ASTTypeDeclaration typeDecl : node.getTypeDeclarations()) {
             GlobalAlgoState subResult = new GlobalAlgoState();
             typeDecl.acceptVisitor(ReachingDefsVisitor.ONLY_LOCALS, new SpanInfo(subResult));
             if (subResult.usedAssignments.size() < subResult.allAssignments.size()) {
@@ -212,7 +213,7 @@ public final class DataflowPass {
             this.containsInitialFieldValue |= reaching.containsInitialFieldValue;
             this.isNotFullyKnown |= reaching.isNotFullyKnown;
             if (this.reaching.isEmpty()) { // unmodifiable
-                this.reaching = new HashSet<>(reaching.reaching);
+                this.reaching = new LinkedHashSet<>(reaching.reaching);
             } else {
                 this.reaching.addAll(reaching.reaching);
             }
@@ -234,8 +235,8 @@ public final class DataflowPass {
 
 
         DataflowResult() {
-            this.unusedAssignments = new HashSet<>();
-            this.killRecord = new HashMap<>();
+            this.unusedAssignments = new LinkedHashSet<>();
+            this.killRecord = new LinkedHashMap<>();
         }
 
         /**
@@ -281,7 +282,7 @@ public final class DataflowPass {
                 return ReachingDefinitionSet.unknown();
             }
 
-            ASTVariableDeclaratorId node = sym.tryGetNode();
+            ASTVariableId node = sym.tryGetNode();
             if (node == null) {
                 return ReachingDefinitionSet.unknown(); // we don't care about non-local declarations
             }
@@ -360,19 +361,19 @@ public final class DataflowPass {
             // next iteration
 
             SpanInfo state = data;
-            Set<ASTVariableDeclaratorId> localsToKill = new HashSet<>();
+            Set<ASTVariableId> localsToKill = new LinkedHashSet<>();
 
             for (JavaNode child : node.children()) {
                 // each output is passed as input to the next (most relevant for blocks)
                 state = acceptOpt(child, state);
                 if (child instanceof ASTLocalVariableDeclaration) {
-                    for (ASTVariableDeclaratorId id : (ASTLocalVariableDeclaration) child) {
+                    for (ASTVariableId id : (ASTLocalVariableDeclaration) child) {
                         localsToKill.add(id);
                     }
                 }
             }
 
-            for (ASTVariableDeclaratorId var : localsToKill) {
+            for (ASTVariableId var : localsToKill) {
                 state.deleteVar(var.getSymbol());
             }
 
@@ -589,7 +590,7 @@ public final class DataflowPass {
 
             // In the 7.0 grammar, the resources should be explicitly
             // used here. For now they don't trigger anything as their
-            // node is not a VariableDeclaratorId. There's a test to
+            // node is not a VariableId. There's a test to
             // check that.
 
             return finalState;
@@ -654,7 +655,7 @@ public final class DataflowPass {
                                     JavaNode update,
                                     ASTStatement body,
                                     boolean checkFirstIter,
-                                    ASTVariableDeclaratorId foreachVar) {
+                                    ASTVariableId foreachVar) {
             final GlobalAlgoState globalState = before.global;
 
             //todo while(true) and do {}while(true); are special-cased
@@ -818,6 +819,23 @@ public final class DataflowPass {
             return data;
         }
 
+        @Override
+        public SpanInfo visit(ASTCompactConstructorDeclaration node, SpanInfo data) {
+            super.visit(node, data);
+
+            // mark any write to a variable that is named like a record component as usage
+            // record compact constructors do an implicit assignment at the end.
+            for (ASTRecordComponent component : node.getEnclosingType().getRecordComponents()) {
+                node.descendants(ASTAssignmentExpression.class)
+                        .descendants(ASTVariableAccess.class)
+                        .filter(v -> v.getAccessType() == AccessType.WRITE)
+                        .filter(v -> v.getName().equals(component.getVarId().getName()))
+                        .forEach(varAccess -> data.use(varAccess.getReferencedSym(), null));
+            }
+
+            return data;
+        }
+
         /**
          * Whether the variable has an implicit initializer, that is not
          * an expression. For instance, formal parameters have a value
@@ -825,7 +843,7 @@ public final class DataflowPass {
          * fields (default value), etc. Only blank local variables have
          * no initial value.
          */
-        private boolean isAssignedImplicitly(ASTVariableDeclaratorId var) {
+        private boolean isAssignedImplicitly(ASTVariableId var) {
             return !var.isLocalVariable() || var.isForeachVariable();
         }
 
@@ -952,7 +970,7 @@ public final class DataflowPass {
         // ctor/initializer handling
 
         @Override
-        public SpanInfo visitTypeDecl(ASTAnyTypeDeclaration node, SpanInfo data) {
+        public SpanInfo visitTypeDecl(ASTTypeDeclaration node, SpanInfo data) {
             // process initializers and ctors first
             processInitializers(node.getDeclarations(), data, node.getSymbol());
 
@@ -966,8 +984,8 @@ public final class DataflowPass {
                         }
                         ONLY_LOCALS.acceptOpt(decl, span);
                     }
-                } else if (decl instanceof ASTAnyTypeDeclaration) {
-                    visitTypeDecl((ASTAnyTypeDeclaration) decl, data.forkEmptyNonLocal());
+                } else if (decl instanceof ASTTypeDeclaration) {
+                    visitTypeDecl((ASTTypeDeclaration) decl, data.forkEmptyNonLocal());
                 }
             }
             return data; // type doesn't contribute anything to the enclosing control flow
@@ -1060,9 +1078,9 @@ public final class DataflowPass {
         }
 
         private GlobalAlgoState() {
-            this(new HashSet<>(),
-                 new HashSet<>(),
-                 new HashMap<>());
+            this(new LinkedHashSet<>(),
+                 new LinkedHashSet<>(),
+                 new LinkedHashMap<>());
         }
     }
 
@@ -1081,7 +1099,7 @@ public final class DataflowPass {
             if (other == this) { // NOPMD #3205
                 return this;
             }
-            Set<AssignmentEntry> merged = new HashSet<>(reachingDefs.size() + other.reachingDefs.size());
+            Set<AssignmentEntry> merged = new LinkedHashSet<>(reachingDefs.size() + other.reachingDefs.size());
             merged.addAll(reachingDefs);
             merged.addAll(other.reachingDefs);
             return new VarLocalInfo(merged);
@@ -1123,7 +1141,7 @@ public final class DataflowPass {
         private OptionalBool hasCompletedAbruptly = OptionalBool.NO;
 
         private SpanInfo(GlobalAlgoState global) {
-            this(null, global, new HashMap<>());
+            this(null, global, new LinkedHashMap<>());
         }
 
         private SpanInfo(SpanInfo parent,
@@ -1135,11 +1153,11 @@ public final class DataflowPass {
             this.myCatches = Collections.emptyList();
         }
 
-        boolean hasVar(ASTVariableDeclaratorId var) {
+        boolean hasVar(ASTVariableId var) {
             return symtable.containsKey(var.getSymbol());
         }
 
-        void declareBlank(ASTVariableDeclaratorId id) {
+        void declareBlank(ASTVariableId id) {
             assign(id.getSymbol(), id);
         }
 
@@ -1148,7 +1166,7 @@ public final class DataflowPass {
         }
 
         void assign(JVariableSymbol var, JavaNode rhs, boolean outOfScope, boolean isFieldBeforeMethod) {
-            ASTVariableDeclaratorId node = var.tryGetNode();
+            ASTVariableId node = var.tryGetNode();
             if (node == null) {
                 return; // we don't care about non-local declarations
             }
@@ -1163,7 +1181,7 @@ public final class DataflowPass {
                         continue;
                     }
 
-                    global.killRecord.computeIfAbsent(killed, k -> new HashSet<>(1))
+                    global.killRecord.computeIfAbsent(killed, k -> new LinkedHashSet<>(1))
                                      .add(entry);
                 }
             }
@@ -1173,7 +1191,7 @@ public final class DataflowPass {
         void declareSpecialFieldValues(JClassSymbol sym) {
             List<JFieldSymbol> declaredFields = sym.getDeclaredFields();
             for (JFieldSymbol field : declaredFields) {
-                ASTVariableDeclaratorId id = field.tryGetNode();
+                ASTVariableId id = field.tryGetNode();
                 if (id == null || !SingularFieldRule.mayBeSingular(id)) {
                     // useless to track final fields
                     // static fields are out of scope of this impl for now
@@ -1202,7 +1220,7 @@ public final class DataflowPass {
             if (info != null) {
                 global.usedAssignments.addAll(info.reachingDefs);
                 if (reachingDefSink != null) {
-                    ReachingDefinitionSet reaching = new ReachingDefinitionSet(new HashSet<>(info.reachingDefs));
+                    ReachingDefinitionSet reaching = new ReachingDefinitionSet(new LinkedHashSet<>(info.reachingDefs));
                     // need to merge into previous to account for cyclic control flow
                     reachingDefSink.getUserMap().compute(REACHING_DEFS, current -> {
                         if (current != null) {
@@ -1256,12 +1274,12 @@ public final class DataflowPass {
         }
 
         SpanInfo forkEmpty() {
-            return doFork(this, new HashMap<>());
+            return doFork(this, new LinkedHashMap<>());
         }
 
 
         SpanInfo forkEmptyNonLocal() {
-            return doFork(null, new HashMap<>());
+            return doFork(null, new LinkedHashMap<>());
         }
 
         SpanInfo forkCapturingNonLocal() {
@@ -1269,7 +1287,7 @@ public final class DataflowPass {
         }
 
         private Map<JVariableSymbol, VarLocalInfo> copyTable() {
-            return new HashMap<>(this.symtable);
+            return new LinkedHashMap<>(this.symtable);
         }
 
         private SpanInfo doFork(/*nullable*/ SpanInfo parent, Map<JVariableSymbol, VarLocalInfo> reaching) {
@@ -1377,7 +1395,7 @@ public final class DataflowPass {
     static class TargetStack {
 
         final Deque<SpanInfo> unnamedTargets = new ArrayDeque<>();
-        final Map<String, SpanInfo> namedTargets = new HashMap<>();
+        final Map<String, SpanInfo> namedTargets = new LinkedHashMap<>();
 
 
         void push(SpanInfo state) {
@@ -1412,13 +1430,13 @@ public final class DataflowPass {
     public static class AssignmentEntry implements Comparable<AssignmentEntry> {
 
         final JVariableSymbol var;
-        final ASTVariableDeclaratorId node;
+        final ASTVariableId node;
 
         // this is not necessarily an expression, it may be also the
         // variable declarator of a foreach loop
         final JavaNode rhs;
 
-        AssignmentEntry(JVariableSymbol var, ASTVariableDeclaratorId node, JavaNode rhs) {
+        AssignmentEntry(JVariableSymbol var, ASTVariableId node, JavaNode rhs) {
             this.var = var;
             this.node = node;
             this.rhs = rhs;
@@ -1436,7 +1454,7 @@ public final class DataflowPass {
         }
 
         public boolean isBlankDeclaration() {
-            return rhs instanceof ASTVariableDeclaratorId;
+            return rhs instanceof ASTVariableId;
         }
 
         public boolean isFieldDefaultValue() {
@@ -1472,7 +1490,7 @@ public final class DataflowPass {
             return node.isForeachVariable();
         }
 
-        public ASTVariableDeclaratorId getVarId() {
+        public ASTVariableId getVarId() {
             return node;
         }
 
@@ -1579,7 +1597,7 @@ public final class DataflowPass {
          */
         private final boolean isFieldStartValue;
 
-        UnboundAssignment(JVariableSymbol var, ASTVariableDeclaratorId node, JavaNode rhs, boolean isFieldStartValue) {
+        UnboundAssignment(JVariableSymbol var, ASTVariableId node, JavaNode rhs, boolean isFieldStartValue) {
             super(var, node, rhs);
             this.isFieldStartValue = isFieldStartValue;
         }
@@ -1596,7 +1614,7 @@ public final class DataflowPass {
 
         @Override
         public boolean isFieldAssignmentAtEndOfCtor() {
-            return rhs instanceof ASTAnyTypeDeclaration;
+            return rhs instanceof ASTTypeDeclaration;
         }
     }
 }

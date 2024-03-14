@@ -1,0 +1,47 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L13
+    [class]                                 1         6
+    [StringTemplateReduction]               7         30
+    [{]                                     31        32
+L14
+    [boolean]                               5         12
+    [isRuleName]                            13        23
+    [(]                                     23        24
+    [Object]                                24        30
+    [o]                                     31        32
+    [)]                                     32        33
+    [{]                                     34        35
+L15
+    [if]                                    9         11
+    [(]                                     12        13
+    [o]                                     13        14
+    [!=]                                    15        17
+    [null]                                  18        22
+    [)]                                     22        23
+    [{]                                     24        25
+L16
+    [return]                                13        19
+    [true]                                  20        24
+L17
+    [}]                                     9         10
+    [else]                                  11        15
+    [if]                                    16        18
+    [(]                                     19        20
+    [o]                                     20        21
+    [.]                                     21        22
+    [equals]                                22        28
+    [(]                                     28        29
+    ["ref"]                                 29        34
+    [)]                                     34        35
+    [)]                                     35        36
+    [{]                                     37        38
+L18
+    [return]                                13        19
+    [false]                                 20        25
+L19
+    [}]                                     9         10
+L20
+    [}]                                     5         6
+L21
+    [}]                                     1         2
+EOF

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <ruleset name="Best Practices"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
@@ -14,7 +14,7 @@ Rules which enforce generally accepted best practices.
           language="plsql"
           since="5.1"
           message="WHEN OTHERS THEN NULL - when you do this, Tom Kyte cries"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_bestpractices.html#tomkytesdespair">
         <description>
 "WHEN OTHERS THEN NULL" hides all errors - (Re)RAISE an exception or call RAISE_APPLICATION_ERROR

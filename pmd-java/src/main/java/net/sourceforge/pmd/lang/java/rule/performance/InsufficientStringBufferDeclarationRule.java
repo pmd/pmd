@@ -26,7 +26,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
@@ -48,17 +48,17 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
     private static final int DEFAULT_BUFFER_SIZE = 16;
 
     public InsufficientStringBufferDeclarationRule() {
-        super(ASTVariableDeclaratorId.class);
+        super(ASTVariableId.class);
     }
 
     private static class State {
-        ASTVariableDeclaratorId variable;
+        ASTVariableId variable;
         TypeNode rootNode;
         int capacity;
         int anticipatedLength;
         Map<Node, Map<Node, Integer>> branches = new HashMap<>();
 
-        State(ASTVariableDeclaratorId variable, TypeNode rootNode, int capacity, int anticipatedLength) {
+        State(ASTVariableId variable, TypeNode rootNode, int capacity, int anticipatedLength) {
             this.variable = variable;
             this.rootNode = rootNode;
             this.capacity = capacity;
@@ -123,7 +123,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
     }
 
     @Override
-    public Object visit(ASTVariableDeclaratorId node, Object data) {
+    public Object visit(ASTVariableId node, Object data) {
         if (!TypeTestUtil.isA(StringBuilder.class, node) && !TypeTestUtil.isA(StringBuffer.class, node)) {
             return data;
         }
@@ -144,7 +144,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
 
                 if (newState.rootNode != null) {
                     if (state.isInsufficient()) {
-                        addViolation(data, state.rootNode, state.getParamsForViolation());
+                        asCtx(data).addViolation(state.rootNode, state.getParamsForViolation());
                     }
                     state = newState;
                 } else {
@@ -154,7 +154,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
         }
 
         if (state.isInsufficient()) {
-            addViolation(data, state.rootNode, state.getParamsForViolation());
+            asCtx(data).addViolation(state.rootNode, state.getParamsForViolation());
         }
         return data;
     }
@@ -213,7 +213,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
         }
     }
 
-    private State getConstructorCapacity(ASTVariableDeclaratorId variable, ASTExpression node) {
+    private State getConstructorCapacity(ASTVariableId variable, ASTExpression node) {
         State state = new State(variable, null, -1, 0);
 
         JavaNode possibleConstructorCall = node;

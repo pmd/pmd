@@ -5,10 +5,10 @@
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.test.SimpleAggregatorTst;
 
 /**
  * Executes the metrics testing rules.
@@ -39,11 +39,11 @@ class AllMetricsTest extends SimpleAggregatorTst {
 
     static String formatJavaMessage(Node node, Object result, String defaultMessage) {
         String qname = null;
-        if (node instanceof ASTAnyTypeDeclaration) {
-            qname = ((ASTAnyTypeDeclaration) node).getBinaryName();
-        } else if (node instanceof ASTMethodOrConstructorDeclaration) {
-            String enclosing = ((ASTMethodOrConstructorDeclaration) node).getEnclosingType().getBinaryName();
-            qname = enclosing + "#" + PrettyPrintingUtil.displaySignature((ASTMethodOrConstructorDeclaration) node);
+        if (node instanceof ASTTypeDeclaration) {
+            qname = ((ASTTypeDeclaration) node).getBinaryName();
+        } else if (node instanceof ASTExecutableDeclaration) {
+            String enclosing = ((ASTExecutableDeclaration) node).getEnclosingType().getBinaryName();
+            qname = enclosing + "#" + PrettyPrintingUtil.displaySignature((ASTExecutableDeclaration) node);
         }
 
         if (qname != null) {

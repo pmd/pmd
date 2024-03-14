@@ -7,8 +7,8 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 import java.util.Iterator;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 /**
  * Renderer to simple text format.
@@ -37,7 +37,7 @@ public class TextRenderer extends AbstractIncrementingRenderer {
         while (violations.hasNext()) {
             buf.setLength(0);
             RuleViolation rv = violations.next();
-            buf.append(determineFileName(rv.getFilename()));
+            buf.append(determineFileName(rv.getFileId()));
             buf.append(SMALL_SEPARATOR).append(rv.getBeginLine());
             buf.append(MEDIUM_SEPARATOR).append(rv.getRule().getName());
             buf.append(MEDIUM_SEPARATOR).append(rv.getDescription());
@@ -51,7 +51,7 @@ public class TextRenderer extends AbstractIncrementingRenderer {
 
         for (Report.ProcessingError error : errors) {
             buf.setLength(0);
-            buf.append(determineFileName(error.getFile()));
+            buf.append(determineFileName(error.getFileId()));
             buf.append(LARGE_SEPARATOR).append(error.getMsg());
             writer.println(buf);
         }
@@ -62,7 +62,7 @@ public class TextRenderer extends AbstractIncrementingRenderer {
                .append(" rule violation suppressed by ")
                .append(excluded.getSuppressor().getId())
                .append(" in ")
-                .append(determineFileName(excluded.getRuleViolation().getFilename()));
+                .append(determineFileName(excluded.getRuleViolation().getFileId()));
             writer.println(buf);
         }
 

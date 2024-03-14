@@ -88,12 +88,12 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTReturnStatement node, Object data) {
-        ASTBinaryExpression binaryExpression = node.getFirstChildOfType(ASTBinaryExpression.class);
+        ASTBinaryExpression binaryExpression = node.firstChild(ASTBinaryExpression.class);
         if (binaryExpression != null) {
             processBinaryExpression(binaryExpression, data);
         }
 
-        ASTMethodCallExpression methodCall = node.getFirstChildOfType(ASTMethodCallExpression.class);
+        ASTMethodCallExpression methodCall = node.firstChild(ASTMethodCallExpression.class);
         if (methodCall != null) {
             String retType = getReturnType(node);
             if ("string".equalsIgnoreCase(retType)) {
@@ -101,11 +101,11 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
             }
         }
 
-        List<ASTVariableExpression> nodes = node.findChildrenOfType(ASTVariableExpression.class);
+        List<ASTVariableExpression> nodes = node.children(ASTVariableExpression.class).toList();
 
         for (ASTVariableExpression varExpression : nodes) {
             if (urlParameterStrings.contains(Helper.getFQVariableName(varExpression))) {
-                addViolation(data, nodes.get(0));
+                asCtx(data).addViolation(nodes.get(0));
             }
         }
 
@@ -113,7 +113,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
     }
 
     private String getReturnType(ASTReturnStatement node) {
-        ASTMethod method = node.getFirstParentOfType(ASTMethod.class);
+        ASTMethod method = node.ancestors(ASTMethod.class).first();
         if (method != null) {
             return method.getReturnType();
         }
@@ -142,7 +142,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
     }
 
     private void processInlineMethodCalls(ASTMethodCallExpression methodNode, Object data, final boolean isNested) {
-        ASTMethodCallExpression nestedCall = methodNode.getFirstChildOfType(ASTMethodCallExpression.class);
+        ASTMethodCallExpression nestedCall = methodNode.firstChild(ASTMethodCallExpression.class);
         if (nestedCall != null) {
 
             if (!isEscapingMethod(methodNode)) {
@@ -152,20 +152,20 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 
         if (Helper.isMethodCallChain(methodNode, URL_PARAMETER_METHOD)) {
             if (isNested) {
-                addViolation(data, methodNode);
+                asCtx(data).addViolation(methodNode);
             }
         }
 
     }
 
     private void findTaintedVariables(ApexNode<?> node, Object data) {
-        final ASTMethodCallExpression right = node.getFirstChildOfType(ASTMethodCallExpression.class);
+        final ASTMethodCallExpression right = node.firstChild(ASTMethodCallExpression.class);
         // Looks for: (String) foo =
         // ApexPages.currentPage().getParameters().get(..)
 
         if (right != null) {
             if (Helper.isMethodCallChain(right, URL_PARAMETER_METHOD)) {
-                ASTVariableExpression left = node.getFirstChildOfType(ASTVariableExpression.class);
+                ASTVariableExpression left = node.firstChild(ASTVariableExpression.class);
 
                 String varType = null;
 
@@ -186,17 +186,17 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
     }
 
     private void processEscapingMethodCalls(ASTMethodCallExpression methodNode, Object data) {
-        ASTMethodCallExpression nestedCall = methodNode.getFirstChildOfType(ASTMethodCallExpression.class);
+        ASTMethodCallExpression nestedCall = methodNode.firstChild(ASTMethodCallExpression.class);
         if (nestedCall != null) {
             processEscapingMethodCalls(nestedCall, data);
         }
 
-        final ASTVariableExpression variable = methodNode.getFirstChildOfType(ASTVariableExpression.class);
+        final ASTVariableExpression variable = methodNode.firstChild(ASTVariableExpression.class);
 
         if (variable != null) {
             if (urlParameterStrings.contains(Helper.getFQVariableName(variable))) {
                 if (!isEscapingMethod(methodNode)) {
-                    addViolation(data, variable);
+                    asCtx(data).addViolation(variable);
                 }
             }
         }
@@ -204,7 +204,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
     }
 
     private void processVariableAssignments(ApexNode<?> node, Object data, final boolean reverseOrder) {
-        ASTMethodCallExpression methodCallAssignment = node.getFirstChildOfType(ASTMethodCallExpression.class);
+        ASTMethodCallExpression methodCallAssignment = node.firstChild(ASTMethodCallExpression.class);
         if (methodCallAssignment != null) {
 
             String varType = null;
@@ -217,12 +217,12 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
             }
         }
 
-        List<ASTVariableExpression> nodes = node.findChildrenOfType(ASTVariableExpression.class);
+        List<ASTVariableExpression> nodes = node.children(ASTVariableExpression.class).toList();
 
         switch (nodes.size()) {
         case 1: {
             // Look for: foo + bar
-            final List<ASTBinaryExpression> ops = node.findChildrenOfType(ASTBinaryExpression.class);
+            final List<ASTBinaryExpression> ops = node.children(ASTBinaryExpression.class).toList();
             if (!ops.isEmpty()) {
                 for (ASTBinaryExpression o : ops) {
                     processBinaryExpression(o, data);
@@ -236,7 +236,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
             final ASTVariableExpression right = reverseOrder ? nodes.get(0) : nodes.get(1);
 
             if (urlParameterStrings.contains(Helper.getFQVariableName(right))) {
-                addViolation(data, right);
+                asCtx(data).addViolation(right);
             }
         }
             break;
@@ -247,21 +247,20 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
     }
 
     private void processBinaryExpression(ApexNode<?> node, Object data) {
-        ASTBinaryExpression nestedBinaryExpression = node.getFirstChildOfType(ASTBinaryExpression.class);
+        ASTBinaryExpression nestedBinaryExpression = node.firstChild(ASTBinaryExpression.class);
         if (nestedBinaryExpression != null) {
             processBinaryExpression(nestedBinaryExpression, data);
         }
 
-        ASTMethodCallExpression methodCallAssignment = node.getFirstChildOfType(ASTMethodCallExpression.class);
+        ASTMethodCallExpression methodCallAssignment = node.firstChild(ASTMethodCallExpression.class);
         if (methodCallAssignment != null) {
             processInlineMethodCalls(methodCallAssignment, data, true);
         }
 
-        final List<ASTVariableExpression> nodes = node.findChildrenOfType(ASTVariableExpression.class);
-        for (ASTVariableExpression n : nodes) {
+        for (ASTVariableExpression n : node.children(ASTVariableExpression.class)) {
 
             if (urlParameterStrings.contains(Helper.getFQVariableName(n))) {
-                addViolation(data, n);
+                asCtx(data).addViolation(n);
             }
         }
     }

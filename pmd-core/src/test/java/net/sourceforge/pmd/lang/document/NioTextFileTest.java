@@ -16,8 +16,8 @@ import java.util.zip.ZipOutputStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
+import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.PmdAnalysis;
 
 class NioTextFileTest {
 
@@ -34,14 +34,15 @@ class NioTextFileTest {
             zipOutputStream.closeEntry();
         }
 
-        LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer(LanguageRegistry.PMD, null);
-        try (FileCollector collector = FileCollector.newCollector(discoverer, new TestMessageReporter())) {
-            collector.addZipFileWithContent(zipArchive);
-            List<TextFile> collectedFiles = collector.getCollectedFiles();
+        PMDConfiguration config = new PMDConfiguration();
+        config.setReporter(new TestMessageReporter());
+        try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
+            pmd.files().addZipFileWithContent(zipArchive);
+            List<TextFile> collectedFiles = pmd.files().getCollectedFiles();
             assertEquals(1, collectedFiles.size());
             TextFile textFile = collectedFiles.get(0);
             assertEquals(zipArchive.toAbsolutePath() + "!/path/inside/someSource.dummy",
-                    textFile.getDisplayName());
+                    pmd.fileNameRenderer().getDisplayName(textFile));
         }
     }
 }

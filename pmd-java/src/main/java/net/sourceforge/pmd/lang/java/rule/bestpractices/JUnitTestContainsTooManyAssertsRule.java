@@ -9,9 +9,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
+import net.sourceforge.pmd.properties.NumericConstraints;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
-import net.sourceforge.pmd.properties.constraints.NumericConstraints;
 
 public class JUnitTestContainsTooManyAssertsRule extends AbstractJavaRulechainRule {
 
@@ -36,7 +36,7 @@ public class JUnitTestContainsTooManyAssertsRule extends AbstractJavaRulechainRu
                                   .filter(TestFrameworksUtil::isProbableAssertCall)
                                   .count();
             if (assertCount > getProperty(MAX_ASSERTS)) {
-                addViolation(data, method);
+                asCtx(data).addViolation(method);
             }
         }
         return data;

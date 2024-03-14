@@ -10,7 +10,6 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
@@ -23,6 +22,7 @@ import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  *
@@ -157,7 +157,7 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
                     }
                 }
 
-                addViolation(rctx, conversionExpr, reason);
+                rctx.addViolation(conversionExpr, reason);
             }
         }
     }
@@ -176,7 +176,7 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
         if (ctxType != null) {
             if (isImplicitlyConvertible(conversionOutput, ctxType)) {
                 if (conversionOutput.unbox().equals(ctxType)) {
-                    addViolation(rctx, methodCall, "implicit unboxing. Use "
+                    rctx.addViolation(methodCall, "implicit unboxing. Use "
                             + conversionOutput.getSymbol().getSimpleName() + ".parse"
                             + StringUtils.capitalize(ctxType.getSymbol().getSimpleName()) + "(...) instead");
                 }

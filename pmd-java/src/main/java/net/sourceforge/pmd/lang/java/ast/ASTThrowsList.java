@@ -11,14 +11,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
  *
  * <pre class="grammar">
  *
- * ThrowsList ::= "throws" {@link ASTClassOrInterfaceType ClassType} ("," {@link ASTClassOrInterfaceType ClassType})*
+ * ThrowsList ::= "throws" {@link ASTClassType ClassType} ("," {@link ASTClassType ClassType})*
  *
  * </pre>
  */
-public final class ASTThrowsList extends ASTNonEmptyList<ASTClassOrInterfaceType> {
+public final class ASTThrowsList extends ASTNonEmptyList<ASTClassType> {
 
     ASTThrowsList(int id) {
-        super(id, ASTClassOrInterfaceType.class);
+        super(id, ASTClassType.class);
     }
 
     @Override
@@ -27,7 +27,7 @@ public final class ASTThrowsList extends ASTNonEmptyList<ASTClassOrInterfaceType
     }
 
     /** Returns the method or constructor that owns this throws clause. */
-    public ASTMethodOrConstructorDeclaration getOwner() {
-        return (ASTMethodOrConstructorDeclaration) getParent();
+    public ASTExecutableDeclaration getOwner() {
+        return (ASTExecutableDeclaration) getParent();
     }
 }

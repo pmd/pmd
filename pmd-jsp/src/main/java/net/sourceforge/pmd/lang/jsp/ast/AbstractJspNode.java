@@ -24,12 +24,6 @@ abstract class AbstractJspNode extends AbstractJjtreeNode<AbstractJspNode, JspNo
 
     protected abstract <P, R> R acceptVisitor(JspVisitor<? super P, ? extends R> visitor, P data);
 
-
-    @Override // override to make protected member accessible to parser
-    protected void setImage(String image) {
-        super.setImage(image);
-    }
-
     @Override
     public String getXPathNodeName() {
         return JspParserImplTreeConstants.jjtNodeName[id];

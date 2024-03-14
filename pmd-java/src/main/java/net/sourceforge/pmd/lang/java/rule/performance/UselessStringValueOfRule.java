@@ -29,7 +29,7 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
             if (valueOfArg == null) {
                 return data; //not a valueOf call
             } else if (TypeTestUtil.isExactlyA(String.class, valueOfArg)) {
-                addViolation(data, node); // valueOf call on a string
+                asCtx(data).addViolation(node); // valueOf call on a string
                 return data;
             }
 
@@ -39,7 +39,7 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
                 // In `String.valueOf(a) + String.valueOf(b)`,
                 // only report the second call
                 && (getValueOfArg(sibling) == null || node.getIndexInParent() == 1)) {
-                addViolation(data, node);
+                asCtx(data).addViolation(node);
             }
         }
         return data;

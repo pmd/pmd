@@ -14,7 +14,7 @@ class ASTFunctionNodeTest extends EcmascriptParserTestBase {
     @Test
     void testGetBody() {
         ASTAstRoot node = js.parse("function foo() { var a = 'a'; }");
-        ASTFunctionNode fn = node.getFirstDescendantOfType(ASTFunctionNode.class);
+        ASTFunctionNode fn = node.descendants(ASTFunctionNode.class).first();
         assertFalse(fn.isClosure());
         EcmascriptNode<?> body = fn.getBody();
         assertTrue(body instanceof ASTBlock);
@@ -23,7 +23,7 @@ class ASTFunctionNodeTest extends EcmascriptParserTestBase {
     @Test
     void testGetBodyFunctionClosureExpression() {
         ASTAstRoot node = js.parse("(function(x) x*x)");
-        ASTFunctionNode fn = node.getFirstDescendantOfType(ASTFunctionNode.class);
+        ASTFunctionNode fn = node.descendants(ASTFunctionNode.class).first();
         assertTrue(fn.isClosure());
         EcmascriptNode<?> body = fn.getBody();
         assertTrue(body instanceof ASTBlock);

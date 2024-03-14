@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTLiteralExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
@@ -17,6 +19,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 /**
  * Finds encryption schemes using hardcoded IV, hardcoded key
@@ -35,8 +38,9 @@ public class ApexBadCryptoRule extends AbstractApexRule {
 
     private final Set<String> potentiallyStaticBlob = new HashSet<>();
 
-    public ApexBadCryptoRule() {
-        addRuleChainVisit(ASTUserClass.class);
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTUserClass.class);
     }
 
     @Override
@@ -45,17 +49,17 @@ public class ApexBadCryptoRule extends AbstractApexRule {
             return data;
         }
 
-        List<ASTFieldDeclaration> fieldDecl = node.findDescendantsOfType(ASTFieldDeclaration.class);
+        List<ASTFieldDeclaration> fieldDecl = node.descendants(ASTFieldDeclaration.class).toList();
         for (ASTFieldDeclaration var : fieldDecl) {
             findSafeVariables(var);
         }
 
-        List<ASTVariableDeclaration> variableDecl = node.findDescendantsOfType(ASTVariableDeclaration.class);
+        List<ASTVariableDeclaration> variableDecl = node.descendants(ASTVariableDeclaration.class).toList();
         for (ASTVariableDeclaration var : variableDecl) {
             findSafeVariables(var);
         }
 
-        List<ASTMethodCallExpression> methodCalls = node.findDescendantsOfType(ASTMethodCallExpression.class);
+        List<ASTMethodCallExpression> methodCalls = node.descendants(ASTMethodCallExpression.class).toList();
         for (ASTMethodCallExpression methodCall : methodCalls) {
             if (Helper.isMethodName(methodCall, CRYPTO, ENCRYPT) || Helper.isMethodName(methodCall, CRYPTO, DECRYPT)
                     || Helper.isMethodName(methodCall, CRYPTO, ENCRYPT_WITH_MANAGED_IV)
@@ -71,9 +75,9 @@ public class ApexBadCryptoRule extends AbstractApexRule {
     }
 
     private void findSafeVariables(ApexNode<?> var) {
-        ASTMethodCallExpression methodCall = var.getFirstChildOfType(ASTMethodCallExpression.class);
+        ASTMethodCallExpression methodCall = var.firstChild(ASTMethodCallExpression.class);
         if (methodCall != null && Helper.isMethodName(methodCall, BLOB, VALUE_OF)) {
-            ASTVariableExpression variable = var.getFirstChildOfType(ASTVariableExpression.class);
+            ASTVariableExpression variable = var.firstChild(ASTVariableExpression.class);
             if (variable != null) {
                 potentiallyStaticBlob.add(Helper.getFQVariableName(variable));
             }
@@ -112,14 +116,14 @@ public class ApexBadCryptoRule extends AbstractApexRule {
                 if (potentialStaticIV instanceof ASTLiteralExpression) {
                     ASTLiteralExpression variable = (ASTLiteralExpression) potentialStaticIV;
                     if (variable.isString()) {
-                        addViolation(data, variable);
+                        asCtx(data).addViolation(variable);
                     }
                 }
             }
         } else if (potentialIV instanceof ASTVariableExpression) {
             ASTVariableExpression variable = (ASTVariableExpression) potentialIV;
             if (potentiallyStaticBlob.contains(Helper.getFQVariableName(variable))) {
-                addViolation(data, variable);
+                asCtx(data).addViolation(variable);
             }
         }
     }

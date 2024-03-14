@@ -7,6 +7,7 @@ package net.sourceforge.pmd;
 import net.sourceforge.pmd.lang.Dummy2LanguageModule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 /**
  * Helper methods.

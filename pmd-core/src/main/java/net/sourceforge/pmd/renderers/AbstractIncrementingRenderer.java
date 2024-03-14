@@ -9,9 +9,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 /**
  * Abstract base class for {@link Renderer} implementations which can produce
@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.document.TextFile;
  * delivery of source file reports are reflected in the output of the
  * {@link Renderer}, so report output can be different between runs.
  *
- * Only processing errors and suppressed violations are accumulated across all
+ * <p>Only processing errors and suppressed violations are accumulated across all
  * files. These are intended to be processed in the {@link #end()} method.
  */
 public abstract class AbstractIncrementingRenderer extends AbstractRenderer {

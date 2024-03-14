@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.modelica.ast;
 
-import net.sourceforge.pmd.lang.modelica.resolver.InternalModelicaResolverApi;
+import net.sourceforge.pmd.lang.modelica.resolver.InternalApiBridge;
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaClassType;
 
 public final class ASTSimpleShortClassSpecifier extends AbstractModelicaClassSpecifierNode {
@@ -20,10 +20,10 @@ public final class ASTSimpleShortClassSpecifier extends AbstractModelicaClassSpe
     @Override
     public void populateExtendsAndImports(ModelicaClassType classTypeDeclaration) {
         super.populateExtendsAndImports(classTypeDeclaration);
-        InternalModelicaResolverApi.addExtendToClass(
+        InternalApiBridge.addExtendToClass(
                 classTypeDeclaration,
                 Visibility.UNSPEC,
-                getFirstChildOfType(ASTName.class).getCompositeName()
+                firstChild(ASTName.class).getCompositeName()
         );
     }
 }

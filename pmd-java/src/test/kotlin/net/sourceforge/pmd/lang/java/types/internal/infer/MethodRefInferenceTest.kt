@@ -5,10 +5,10 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.component6
-import net.sourceforge.pmd.lang.ast.test.component7
-import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldMatchN
+import net.sourceforge.pmd.lang.test.ast.component6
+import net.sourceforge.pmd.lang.test.ast.component7
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
 import java.util.*
@@ -38,7 +38,7 @@ class MethodRefInferenceTest : ProcessorTestSpec({
         """.trimIndent())
 
 
-        val t_Archive = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).firstOrThrow().typeMirror
+        val t_Archive = acu.descendants(ASTClassDeclaration::class.java).firstOrThrow().typeMirror
         val anyMatch = acu.descendants(ASTMethodCall::class.java).first()!!
 
         anyMatch.shouldMatchN {
@@ -440,7 +440,7 @@ abstract class NodeStream<T> implements Iterable<T> {
 
         """.trimIndent())
 
-        val (t_NodeStream) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.typeMirror }
+        val (t_NodeStream) = acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
         val (tvar, rvar, kvar) = acu.descendants(ASTTypeParameter::class.java).toList { it.typeMirror }
 
         val call = acu.firstMethodCall()
@@ -550,7 +550,7 @@ class Scratch {
 }
         """.trimIndent())
 
-        val (_, t_Sink) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.typeMirror }
+        val (_, t_Sink) = acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
         val (_, acceptInt, acceptLong) = acu.descendants(ASTMethodDeclaration::class.java).crossFindBoundaries().toList()
         val (castRef, returnRef) = acu.descendants(ASTMethodReference::class.java).toList()
 
@@ -939,7 +939,7 @@ class Scratch {
 }
         """.trimIndent())
 
-        val (_, t_NodeStream) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.typeMirror }
+        val (_, t_NodeStream) = acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
         val (_, tvar) = acu.descendants(ASTTypeParameter::class.java).crossFindBoundaries().toList { it.typeMirror }
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 

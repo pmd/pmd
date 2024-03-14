@@ -26,12 +26,6 @@ abstract class AbstractModelicaNode extends AbstractJjtreeNode<AbstractModelicaN
     }
 
 
-    @Override // override to make protected member accessible to parser
-    protected void setImage(String image) {
-        super.setImage(image);
-    }
-
-
     @Override
     @SuppressWarnings("unchecked")
     public final <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {

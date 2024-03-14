@@ -16,10 +16,12 @@ import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
-import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.CommentNode;
+import net.sourceforge.pmd.lang.rule.xpath.TextNode;
 
 public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
 
@@ -133,7 +135,7 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
         public DummyRootNode() {
             TextDocument document = TextDocument.readOnlyString(
                 "dummy text",
-                TextFile.UNKNOWN_FILENAME,
+                FileId.UNKNOWN,
                 DummyLanguageModule.getInstance().getDefaultVersion()
             );
             astInfo = new AstInfo<>(
@@ -169,6 +171,30 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
 
         public DummyNodeTypeB() {
             super("dummyNodeB");
+        }
+    }
+
+    public static class DummyTextNode extends DummyNode implements TextNode {
+        @Override
+        public String getText() {
+            return getImage();
+        }
+
+        @Override
+        public String getXPathNodeName() {
+            return TextNode.super.getXPathNodeName();
+        }
+    }
+
+    public static class DummyCommentNode extends DummyNode implements CommentNode {
+        @Override
+        public String getData() {
+            return getImage();
+        }
+
+        @Override
+        public String getXPathNodeName() {
+            return CommentNode.super.getXPathNodeName();
         }
     }
 }

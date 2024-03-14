@@ -32,11 +32,11 @@ public class AvoidThrowingNullPointerExceptionRule extends AbstractJavaRulechain
     public Object visit(ASTThrowStatement throwStmt, Object data) {
         ASTExpression thrown = throwStmt.getExpr();
         if (TypeTestUtil.isA(NullPointerException.class, thrown)) {
-            addViolation(data, throwStmt);
+            asCtx(data).addViolation(throwStmt);
         } else if (thrown instanceof ASTVariableAccess) {
             JVariableSymbol sym = ((ASTVariableAccess) thrown).getReferencedSym();
             if (sym instanceof JLocalVariableSymbol && hasNpeValue((ASTVariableAccess) thrown)) {
-                addViolation(data, throwStmt);
+                asCtx(data).addViolation(throwStmt);
             }
         }
         return null;

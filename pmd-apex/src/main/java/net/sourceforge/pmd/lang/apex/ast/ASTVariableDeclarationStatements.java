@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.statement.VariableDeclarationStatements;
+import com.google.summit.ast.declaration.VariableDeclarationGroup;
 
-public final class ASTVariableDeclarationStatements extends AbstractApexNode<VariableDeclarationStatements> {
+public final class ASTVariableDeclarationStatements extends AbstractApexNode.Single<VariableDeclarationGroup> {
 
-    ASTVariableDeclarationStatements(VariableDeclarationStatements variableDeclarationStatements) {
-        super(variableDeclarationStatements);
+    ASTVariableDeclarationStatements(VariableDeclarationGroup variableDeclarations) {
+        super(variableDeclarations);
     }
 
 
@@ -19,6 +19,6 @@ public final class ASTVariableDeclarationStatements extends AbstractApexNode<Var
     }
 
     public ASTModifierNode getModifiers() {
-        return getFirstChildOfType(ASTModifierNode.class);
+        return firstChild(ASTModifierNode.class);
     }
 }

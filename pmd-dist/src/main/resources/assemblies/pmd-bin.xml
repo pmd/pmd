@@ -1,7 +1,7 @@
-<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.1.1 https://maven.apache.org/xsd/assembly-2.1.1.xsd">
 
-    <id>pmd-bin</id>
+    <id>bin</id>
     <formats>
         <format>zip</format>
     </formats>
@@ -12,7 +12,7 @@
     <fileSets>
         <fileSet>
             <includes>
-                <include>*.bat</include>
+                <include>pmd.bat</include>
             </includes>
             <directory>target/extra-resources/scripts</directory>
             <outputDirectory>bin</outputDirectory>
@@ -51,41 +51,22 @@
             <directoryMode>0755</directoryMode>
             <fileMode>0644</fileMode>
         </fileSet>
+
+        <fileSet>
+            <includes>
+                <include>pmd-*-cyclonedx.xml</include>
+                <include>pmd-*-cyclonedx.json</include>
+            </includes>
+            <directory>target</directory>
+            <outputDirectory>sbom</outputDirectory>
+        </fileSet>
     </fileSets>
 
-    <files>
-        <file>
-            <source>target/bom.xml</source>
-            <outputDirectory>sbom</outputDirectory>
-            <destName>pmd-${project.version}-cyclonedx.xml</destName>
-        </file>
-        <file>
-            <source>target/bom.json</source>
-            <outputDirectory>sbom</outputDirectory>
-            <destName>pmd-${project.version}-cyclonedx.json</destName>
-        </file>
-    </files>
-
     <dependencySets>
-        <!-- shell completion goes to shell/ -->
-        <dependencySet>
-            <scope>runtime</scope>
-            <includes>
-                <include>net.sourceforge.pmd:pmd-cli:sh:completion:*</include>
-            </includes>
-            <outputFileNameMapping>pmd-completion.sh</outputFileNameMapping>
-            <outputDirectory>shell</outputDirectory>
-            <directoryMode>0755</directoryMode>
-            <fileMode>0644</fileMode>
-            <useProjectArtifact>false</useProjectArtifact>
-        </dependencySet>
-
         <!-- jar dependencies go to lib/ -->
         <dependencySet>
             <scope>runtime</scope>
             <excludes>
-                <exclude>net.sourceforge.pmd:pmd-apex-jorje:pom</exclude>
-                <exclude>net.sourceforge.pmd:pmd-cli:sh:completion:*</exclude>
                 <exclude>net.sourceforge.pmd:pmd-languages-deps:pom</exclude>
             </excludes>
             <outputDirectory>lib</outputDirectory>

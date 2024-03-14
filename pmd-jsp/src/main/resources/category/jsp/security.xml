@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <ruleset name="Security"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
@@ -13,7 +13,7 @@ Rules that flag potential security flaws.
           language="jsp"
           since="3.6"
           message="IFrames must have a src attribute."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_security.html#iframemissingsrcattribute">
         <description>
 IFrames which are missing a src element can cause security information popups in IE if you are accessing the page

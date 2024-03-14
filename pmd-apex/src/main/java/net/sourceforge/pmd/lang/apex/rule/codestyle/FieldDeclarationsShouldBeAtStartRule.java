@@ -8,13 +8,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTField;
+import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclarationStatements;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
@@ -27,7 +26,6 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
         Comparator
             .<ApexNode<?>>comparingInt(ApexNode::getBeginLine)
             .thenComparing(ApexNode::getBeginColumn);
-    public static final String STATIC_INITIALIZER_METHOD_NAME = "<clinit>";
 
     @Override
     protected @NonNull RuleTargetSelector buildTargetSelector() {
@@ -39,14 +37,16 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
         // Unfortunately the parser re-orders the AST to put field declarations before method declarations
         // so we have to rely on line numbers / positions to work out where the first non-field declaration starts
         // so we can check if the fields are in acceptable places.
-        List<ASTField> fields = node.findChildrenOfType(ASTField.class);
+        List<ASTFieldDeclaration> fields = node.children(ASTFieldDeclarationStatements.class)
+                                               .children(ASTFieldDeclaration.class)
+                                               .toList();
 
         List<ApexNode<?>> nonFieldDeclarations = new ArrayList<>();
 
         nonFieldDeclarations.addAll(getMethodNodes(node));
-        nonFieldDeclarations.addAll(node.findChildrenOfType(ASTUserClass.class));
-        nonFieldDeclarations.addAll(node.findChildrenOfType(ASTProperty.class));
-        nonFieldDeclarations.addAll(node.findChildrenOfType(ASTBlockStatement.class));
+        nonFieldDeclarations.addAll(node.children(ASTUserClass.class).toList());
+        nonFieldDeclarations.addAll(node.children(ASTProperty.class).toList());
+        nonFieldDeclarations.addAll(node.children(ASTBlockStatement.class).toList());
 
         Optional<ApexNode<?>> firstNonFieldDeclaration = nonFieldDeclarations.stream()
             .filter(ApexNode::hasRealLoc)
@@ -57,22 +57,16 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
             return data;
         }
 
-        for (ASTField field : fields) {
+        for (ASTFieldDeclaration field : fields) {
             if (NODE_BY_SOURCE_LOCATION_COMPARATOR.compare(field, firstNonFieldDeclaration.get()) > 0) {
-                addViolation(data, field, field.getName());
+                asCtx(data).addViolation(field, field.getName());
             }
         }
 
         return data;
     }
 
-    private List<ApexNode<?>> getMethodNodes(ASTUserClass node) {
-        // The method <clinit> represents static initializer blocks, of which there can be many. The
-        // <clinit> method doesn't contain location information, however the containing ASTBlockStatements do,
-        // so we fetch them for that method only.
-        return node.findChildrenOfType(ASTMethod.class).stream()
-            .<ApexNode<?>>flatMap(method -> STATIC_INITIALIZER_METHOD_NAME.equals(method.getImage())
-                ? method.findChildrenOfType(ASTBlockStatement.class).stream() : Stream.of(method))
-            .collect(Collectors.toList());
+    private List<? extends ApexNode<?>> getMethodNodes(ASTUserClass node) {
+        return node.descendants(ASTMethod.class).map(m -> (ApexNode<?>) m).toList();
     }
 }

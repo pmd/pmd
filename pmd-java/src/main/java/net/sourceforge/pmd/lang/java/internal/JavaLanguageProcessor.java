@@ -8,8 +8,9 @@ import java.util.List;
 import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.ViolationSuppressor;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.impl.BatchLanguageProcessor;
@@ -28,6 +29,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.Ve
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
+import net.sourceforge.pmd.reporting.ViolationSuppressor;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 
 /**
@@ -35,6 +37,8 @@ import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
  */
 public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguageProperties>
     implements LanguageVersionHandler {
+
+    private static final Logger LOG = LoggerFactory.getLogger(JavaLanguageProcessor.class);
 
     private final LanguageMetricsProvider myMetricsProvider = new JavaMetricsProvider();
     private final JavaParser parser;
@@ -52,6 +56,7 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
 
     public JavaLanguageProcessor(JavaLanguageProperties properties) {
         this(properties, TypeSystem.usingClassLoaderClasspath(properties.getAnalysisClassLoader()));
+        LOG.debug("Using analysis classloader: {}", properties.getAnalysisClassLoader());
     }
 
     @Override
@@ -123,5 +128,11 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
 
     public void setTypeSystem(TypeSystem ts) {
         this.typeSystem = Objects.requireNonNull(ts);
+    }
+
+    @Override
+    public void close() throws Exception {
+        this.typeSystem.logStats();
+        super.close();
     }
 }

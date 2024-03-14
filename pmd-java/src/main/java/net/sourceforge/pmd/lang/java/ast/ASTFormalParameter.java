@@ -20,12 +20,12 @@ import net.sourceforge.pmd.lang.java.types.TypingContext;
  *
  * <pre class="grammar">
  *
- * FormalParameter ::= {@link ASTModifierList LocalVarModifierList} {@link ASTType Type} {@link ASTVariableDeclaratorId VariableDeclaratorId}
+ * FormalParameter ::= {@link ASTModifierList LocalVarModifierList} {@link ASTType Type} {@link ASTVariableId VariableId}
  *
  * </pre>
  */
 public final class ASTFormalParameter extends AbstractJavaNode
-    implements FinalizableNode,
+    implements ModifierOwner,
                TypeNode,
                Annotatable,
                VariableIdOwner {
@@ -69,8 +69,8 @@ public final class ASTFormalParameter extends AbstractJavaNode
      * Returns the declarator ID of this formal parameter.
      */
     @Override
-    public @NonNull ASTVariableDeclaratorId getVarId() {
-        return firstChild(ASTVariableDeclaratorId.class);
+    public @NonNull ASTVariableId getVarId() {
+        return firstChild(ASTVariableId.class);
     }
 
 
@@ -89,5 +89,9 @@ public final class ASTFormalParameter extends AbstractJavaNode
     @Override
     public @NonNull JTypeMirror getTypeMirror(TypingContext ctx) {
         return getVarId().getTypeMirror(ctx);
+    }
+
+    public boolean isFinal() {
+        return hasModifiers(JModifier.FINAL);
     }
 }

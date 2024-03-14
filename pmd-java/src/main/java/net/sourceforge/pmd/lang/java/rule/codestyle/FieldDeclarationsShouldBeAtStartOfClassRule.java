@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEmptyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
@@ -14,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -42,7 +42,7 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
             .desc("Ignore interface declarations that precede fields").build();
 
     public FieldDeclarationsShouldBeAtStartOfClassRule() {
-        super(ASTAnyTypeDeclaration.class);
+        super(ASTTypeDeclaration.class);
         definePropertyDescriptor(IGNORE_ANONYMOUS_CLASS_DECLARATIONS);
         definePropertyDescriptor(IGNORE_INTERFACE_DECLARATIONS);
         definePropertyDescriptor(IGNORE_ENUM_DECLARATIONS);
@@ -50,11 +50,11 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
 
     @Override
     public Object visitJavaNode(JavaNode node, Object data) {
-        assert node instanceof ASTAnyTypeDeclaration;
-        return visit((ASTAnyTypeDeclaration) node, data);
+        assert node instanceof ASTTypeDeclaration;
+        return visit((ASTTypeDeclaration) node, data);
     }
 
-    public Object visit(ASTAnyTypeDeclaration node, Object data) {
+    public Object visit(ASTTypeDeclaration node, Object data) {
         boolean inStartOfClass = true;
         for (ASTBodyDeclaration declaration : node.getDeclarations()) {
             if (!isAllowedAtStartOfClass(declaration)) {
@@ -63,7 +63,7 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
             if (!inStartOfClass && declaration instanceof ASTFieldDeclaration) {
                 ASTFieldDeclaration field = (ASTFieldDeclaration) declaration;
                 if (!isInitializerOk(field)) {
-                    addViolation(data, declaration);
+                    asCtx(data).addViolation(declaration);
                 }
             }
         }
@@ -80,8 +80,8 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
     }
 
     private boolean isInterface(ASTBodyDeclaration declaration) {
-        return declaration instanceof ASTAnyTypeDeclaration
-            && ((ASTAnyTypeDeclaration) declaration).isRegularInterface();
+        return declaration instanceof ASTTypeDeclaration
+            && ((ASTTypeDeclaration) declaration).isRegularInterface();
     }
 
     private boolean isInitializerOk(ASTFieldDeclaration fieldDeclaration) {

@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.statement.DmlUndeleteStatement;
+import com.google.summit.ast.statement.DmlStatement;
 
-public final class ASTDmlUndeleteStatement extends AbstractApexNode<DmlUndeleteStatement> {
+public final class ASTDmlUndeleteStatement extends AbstractDmlStatement {
 
-    ASTDmlUndeleteStatement(DmlUndeleteStatement dmlUndeleteStatement) {
+    ASTDmlUndeleteStatement(DmlStatement dmlUndeleteStatement) {
         super(dmlUndeleteStatement);
     }
 

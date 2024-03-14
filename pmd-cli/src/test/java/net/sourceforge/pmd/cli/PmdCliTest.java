@@ -40,11 +40,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.MockRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
@@ -174,30 +174,38 @@ class PmdCliTest extends BaseCliTest {
         assertFalse(Files.exists(absoluteReportFile), "Report file must not exist yet!");
 
         try {
-            runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", RULESET_NO_VIOLATIONS, "--report-file", reportFile.toString());
+            runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", RULESET_NO_VIOLATIONS, "--report-file", reportFile);
             assertTrue(Files.exists(absoluteReportFile), "Report file should have been created");
         } finally {
             Files.deleteIfExists(absoluteReportFile);
         }
     }
 
+
+    @Test
+    void testRelativeFileInputs() throws Exception {
+        SystemLambda.restoreSystemProperties(() -> {
+            // change working directory
+            System.setProperty("user.dir", srcDir.toString());
+            runCli(VIOLATIONS_FOUND, "--dir", ".", "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS)
+                .verify(res -> res.checkStdOut(containsString(
+                    "./src/test/resources/net/sourceforge/pmd/cli/src/anotherfile.dummy".replace('/', File.separatorChar)
+                )));
+
+        });
+    }
+
+
     @Test
     void debugLogging() throws Exception {
         CliExecutionResult result = runCliSuccessfully("--debug", "--dir", srcDir.toString(), "--rulesets", RULESET_NO_VIOLATIONS);
-        result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at TRACE"));
+        result.checkStdErr(containsString("[DEBUG] Log level is at TRACE"));
     }
 
     @Test
     void defaultLogging() throws Exception {
         CliExecutionResult result = runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", RULESET_NO_VIOLATIONS);
-        result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at INFO"));
-        result.checkStdErr(not(containsPattern("Adding file .*"))); // not in debug mode
-    }
-
-    @Test
-    void testDeprecatedRulesetSyntaxOnCommandLine() throws Exception {
-        CliExecutionResult result = runCli(VIOLATIONS_FOUND, "--dir", srcDir.toString(), "--rulesets", "dummy-basic");
-        result.checkStdErr(containsString("Ruleset reference 'dummy-basic' uses a deprecated form, use 'rulesets/dummy/basic.xml' instead"));
+        result.checkStdErr(not(containsString("[DEBUG] Log level is at TRACE")));
     }
 
     @Test
@@ -351,7 +359,7 @@ class PmdCliTest extends BaseCliTest {
     @Test
     void testNoRelativizeWithRelativeSrcDir() throws Exception {
         // Note, that we can't reliably change the current working directory for the current java process
-        // therefore we use the current directory and make sure, we are at the correct place - in pmd-core
+        // therefore we use the current directory and make sure, we are at the correct place - in pmd-cli
         Path cwd = Paths.get(".").toRealPath();
         assertThat(cwd.toString(), endsWith("pmd-cli"));
         String relativeSrcDir = "src/test/resources/net/sourceforge/pmd/cli/src";
@@ -366,25 +374,25 @@ class PmdCliTest extends BaseCliTest {
     @Test
     void testNoRelativizeWithRelativeSrcDirParent() throws Exception {
         // Note, that we can't reliably change the current working directory for the current java process
-        // therefore we use the current directory and make sure, we are at the correct place - in pmd-core
+        // therefore we use the current directory and make sure, we are at the correct place - in pmd-cli
         Path cwd = Paths.get(".").toRealPath();
         assertThat(cwd.toString(), endsWith("pmd-cli"));
-        String relativeSrcDir = IOUtil.normalizePath("src/test/resources/net/sourceforge/pmd/cli/src");
+        String relativeSrcDir = "src/test/resources/net/sourceforge/pmd/cli/src";
         assertTrue(Files.isDirectory(cwd.resolve(relativeSrcDir)));
 
         // use the parent directory
-        String relativeSrcDirWithParent = relativeSrcDir + File.separator + "..";
+        Path relativeSrcDirWithParent = Paths.get(relativeSrcDir, "..");
 
-        runCli(VIOLATIONS_FOUND, "--dir", relativeSrcDirWithParent, "--rulesets",
-                DUMMY_RULESET_WITH_VIOLATIONS)
-                .verify(result -> result.checkStdOut(
-                        containsString("\n" + relativeSrcDirWithParent + IOUtil.normalizePath("/src/somefile.dummy"))));
+        String expectedFile = "\n" + relativeSrcDirWithParent.resolve("src/somefile.dummy");
+        runCli(VIOLATIONS_FOUND, "--dir", relativeSrcDirWithParent.toString(), "--rulesets",
+               DUMMY_RULESET_WITH_VIOLATIONS)
+                .verify(result -> result.checkStdOut(containsString(expectedFile)));
     }
 
     @Test
     void testRelativizeWithRootRelativeSrcDir() throws Exception {
         // Note, that we can't reliably change the current working directory for the current java process
-        // therefore we use the current directory and make sure, we are at the correct place - in pmd-core
+        // therefore we use the current directory and make sure, we are at the correct place - in pmd-cli
         Path cwd = Paths.get(".").toRealPath();
         assertThat(cwd.toString(), endsWith("pmd-cli"));
         String relativeSrcDir = "src/test/resources/net/sourceforge/pmd/cli/src";
@@ -472,6 +480,27 @@ class PmdCliTest extends BaseCliTest {
                 .verify(r -> r.checkStdOut(
                         containsString("Violation from ReportAllRootNodes")
                 ));
+    }
+
+    @Test
+    void minimumPriorityOption() throws Exception {
+        runCli(VIOLATIONS_FOUND, "-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION, "--minimum-priority", "Medium")
+                .verify(r -> r.checkStdOut(
+                        containsString("Violation from ReportAllRootNodes")
+                ));
+        runCliSuccessfully("-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION, "--minimum-priority", "High");
+        runCliSuccessfully("-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION, "--minimum-priority", "medium HIGH");
+        runCliSuccessfully("-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION, "--minimum-priority", "Medium_High");
+    }
+
+    @Test
+    void minimumPriorityOptionNumeric() throws Exception {
+        runCli(VIOLATIONS_FOUND, "-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION, "--minimum-priority", "3")
+                .verify(r -> r.checkStdOut(
+                        containsString("Violation from ReportAllRootNodes")
+                ));
+        runCliSuccessfully("-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION, "--minimum-priority", "1");
+        runCliSuccessfully("-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION, "--minimum-priority", "2");
     }
 
     // utilities

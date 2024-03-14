@@ -137,10 +137,10 @@ class NodeStreamTest {
         assertThat(pathsOf(node.ancestors()), contains("01", "0", ""));
         assertThat(pathsOf(node.ancestorsOrSelf()), contains("010", "01", "0", ""));
 
-        assertEquals("01", node.getNthParent(1).getImage());
-        assertEquals("0", node.getNthParent(2).getImage());
-        assertEquals("", node.getNthParent(3).getImage());
-        assertNull(node.getNthParent(4));
+        assertEquals("01", node.ancestors().get(0).getImage());
+        assertEquals("0", node.ancestors().get(1).getImage());
+        assertEquals("", node.ancestors().get(2).getImage());
+        assertNull(node.ancestors().get(3));
     }
 
     @Test

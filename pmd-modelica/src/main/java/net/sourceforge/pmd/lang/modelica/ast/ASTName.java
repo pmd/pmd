@@ -4,10 +4,12 @@
 
 package net.sourceforge.pmd.lang.modelica.ast;
 
+import java.util.stream.Collectors;
+
 import net.sourceforge.pmd.lang.modelica.resolver.CompositeName;
 import net.sourceforge.pmd.lang.modelica.resolver.ResolutionResult;
-import net.sourceforge.pmd.lang.modelica.resolver.ResolutionState;
 import net.sourceforge.pmd.lang.modelica.resolver.ResolvableEntity;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionState;
 
 public final class ASTName extends AbstractModelicaNode implements ResolvableModelicaNode {
     private String[] nameComponents;
@@ -27,19 +29,17 @@ public final class ASTName extends AbstractModelicaNode implements ResolvableMod
     public void jjtClose() {
         super.jjtClose();
 
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < getNumChildren(); ++i) {
-            if (i != 0 || absolute) {
-                sb.append('.');
-            }
-            sb.append(((ASTSimpleName) getChild(i)).getImage());
-        }
-        setImage(sb.toString());
-
         nameComponents = new String[getNumChildren()];
         for (int i = 0; i < getNumChildren(); ++i) {
-            nameComponents[i] = getChild(i).getImage();
+            nameComponents[i] = ((ASTSimpleName) getChild(i)).getName();
         }
+    }
+
+    public String getName() {
+        String prefix = absolute ? "." : "";
+        return prefix + children(ASTSimpleName.class).toStream()
+                .map(ASTSimpleName::getName)
+                .collect(Collectors.joining("."));
     }
 
     void markAbsolute() {

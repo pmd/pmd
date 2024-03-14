@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.apex.rule.design;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclarationStatements;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
+import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.internal.AbstractCounterCheckRule;
 
@@ -36,20 +37,21 @@ public class ExcessivePublicCountRule extends AbstractCounterCheckRule<ASTUserCl
 
     @Override
     protected int getMetric(ASTUserClass node) {
-        // node streams would be useful here
         int publicMethods =
-            (int) node.findChildrenOfType(ASTMethod.class)
-                      .stream()
-                      .filter(it -> it.getModifiers().isPublic() && !it.isSynthetic())
-                      .count();
-
+                node.children(ASTMethod.class)
+                        .filter(it -> it.getModifiers().isPublic())
+                        .count();
         int publicFields =
-            (int) node.findChildrenOfType(ASTFieldDeclarationStatements.class)
-                      .stream()
-                      .filter(it -> it.getModifiers().isPublic() && !it.getModifiers().isStatic())
-                      .count();
+                node.children(ASTFieldDeclarationStatements.class)
+                        .filter(it -> it.getModifiers().isPublic() && !it.getModifiers().isStatic())
+                        .count();
 
-        return publicFields + publicMethods;
+        int publicProperties =
+                node.children(ASTProperty.class)
+                        .filter(it -> it.getModifiers().isPublic() && !it.getModifiers().isStatic())
+                        .count();
+
+        return publicFields + publicMethods + publicProperties;
     }
 
     @Override

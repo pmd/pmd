@@ -10,10 +10,11 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Objects;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -24,40 +25,56 @@ import net.sourceforge.pmd.lang.ast.Node;
  * <p>Two attributes are equal if they have the same name
  * and their parent nodes are equal.
  *
- * @author daniels
+ * <p>Note that attributes do not support just any type, but
+ * a restricted set of value types that can be mapped to XPath types.
+ * The exact supported types are not specified, but include at
+ * least Java primitives and String.
+ *
+ * @see Node#getXPathAttributesIterator()
  */
-public class Attribute {
+public final class Attribute {
     private static final Logger LOG = LoggerFactory.getLogger(Attribute.class);
 
-    private final Node parent;
-    private final String name;
+    private final @NonNull Node parent;
+    private final @NonNull String name;
 
-    private final MethodHandle handle;
-    private final Method method;
+    private final @Nullable MethodHandle handle;
+    private final @Nullable Method method;
+    /** If true, we won't invoke the method handle again. */
     private boolean invoked;
 
-    private Object value;
+    /** May be null after invocation too. */
+    private @Nullable Object value;
+
+    /** Must be non-null after {@link #getStringValue()} has been invoked. */
     private String stringValue;
 
-    /** Creates a new attribute belonging to the given node using its accessor. */
-    public Attribute(Node parent, String name, MethodHandle handle, Method m) {
-        this.parent = parent;
-        this.name = name;
-        this.handle = handle;
-        this.method = m;
+    /**
+     * Creates a new attribute belonging to the given node using its accessor.
+     *
+     * @param handle A method handle, used to fetch the attribute.
+     * @param method The method corresponding to the method handle. This
+     *               is used to perform reflective queries, eg to
+     *               find annotations on the attribute getter, but only
+     *               the method handle is ever invoked.
+     */
+    public Attribute(@NonNull Node parent, @NonNull String name, @NonNull MethodHandle handle, @NonNull Method method) {
+        this.parent = Objects.requireNonNull(parent);
+        this.name = Objects.requireNonNull(name);
+        this.handle = Objects.requireNonNull(handle);
+        this.method = Objects.requireNonNull(method);
     }
 
     /** Creates a new attribute belonging to the given node using its string value. */
-    public Attribute(Node parent, String name, String value) {
-        this.parent = parent;
-        this.name = name;
+    public Attribute(@NonNull Node parent, @NonNull String name, @Nullable String value) {
+        this.parent = Objects.requireNonNull(parent);
+        this.name = Objects.requireNonNull(name);
         this.value = value;
         this.handle = null;
         this.method = null;
-        this.stringValue = value;
+        this.stringValue = value == null ? "" : value;
         this.invoked = true;
     }
-
 
 
     /**
@@ -67,21 +84,24 @@ public class Attribute {
         return method == null ? String.class : method.getGenericReturnType();
     }
 
-    public String getName() {
+    /** Return the name of the attribute (without leading @ sign). */
+    public @NonNull String getName() {
         return name;
     }
 
 
-    public Node getParent() {
+    /** Return the node that owns this attribute. */
+    public @NonNull Node getParent() {
         return parent;
     }
 
     /**
      * Returns null for "not deprecated", empty string for "deprecated without replacement",
      * otherwise name of replacement attribute.
+     *
+     * @apiNote Internal API
      */
-    @InternalApi
-    public String replacementIfDeprecated() {
+    String replacementIfDeprecated() {
         if (method == null) {
             return null;
         } else {
@@ -99,13 +119,23 @@ public class Attribute {
         }
     }
 
+    /**
+     * Return whether this attribute was deprecated. This is the case if the getter
+     * has the annotation {@link Deprecated} or {@link DeprecatedAttribute}.
+     */
     public boolean isDeprecated() {
         return replacementIfDeprecated() != null;
     }
 
+    /**
+     * Return the value of the attribute. This may return null. The getter
+     * is invoked at most once.
+     */
     public Object getValue() {
         if (this.invoked) {
             return this.value;
+        } else if (handle == null) {
+            throw new NullPointerException("Cannot fetch value of attribute with null getter! " + this);
         }
 
         Object value;
@@ -121,13 +151,23 @@ public class Attribute {
         return value;
     }
 
-    public String getStringValue() {
+    /**
+     * Return the string value of the attribute. If the getter returned null,
+     * then return the empty string (which is a falsy value in XPath).
+     * Otherwise, return a string representation of the value (e.g. with
+     * {@link Object#toString()}, but this is not guaranteed).
+     */
+    public @NonNull String getStringValue() {
         if (stringValue != null) {
             return stringValue;
         }
         Object v = getValue();
 
-        stringValue = v == null ? "" : String.valueOf(v);
+        if (v == null) {
+            stringValue = "";
+        } else {
+            stringValue = v.toString();
+        }
         return stringValue;
     }
 
@@ -148,11 +188,11 @@ public class Attribute {
 
     @Override
     public int hashCode() {
-        return Objects.hash(parent, name);
+        return parent.hashCode() * 31 + name.hashCode();
     }
 
     @Override
     public String toString() {
-        return name + ':' + getValue() + ':' + parent.getXPathNodeName();
+        return parent.getXPathNodeName() + "/@" + name + " = " + getValue();
     }
 }

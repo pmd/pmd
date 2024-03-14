@@ -5,11 +5,11 @@
 
 package net.sourceforge.pmd.lang.java.symbols;
 
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 
 
 /**
- * Represents all use cases of {@link ASTVariableDeclaratorId} except field declarations.
+ * Represents all use cases of {@link ASTVariableId} except field declarations.
  * Method formal parameter symbols extend this interface.
  *
  * @since 7.0.0

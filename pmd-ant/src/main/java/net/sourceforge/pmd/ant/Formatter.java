@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -25,16 +27,30 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Parameter;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.FileNameRenderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.reporting.ListenerInitializer;
 
-@InternalApi
+/**
+ * Part of PMD Ant task configuration. Setters of this class are interpreted by Ant as properties
+ * settable in the XML. This is therefore published API.
+ *
+ * <p>This class is used to configure a specific {@link Renderer} for outputting the violations. This is called
+ * a formatter in PMD Ant task configuration and might look like this:
+ *
+ * <pre>{@code
+ * <pmd>
+ *   <formatter type="html" toFile="${build}/pmd_report.html"/>
+ * </pmd>
+ * }</pre>
+ *
+ * @see PMDTask#addFormatter(Formatter)
+ */
 public class Formatter {
 
     private File toFile;
@@ -65,15 +81,7 @@ public class Formatter {
         this.parameters.add(parameter);
     }
 
-    @Deprecated
-    @InternalApi
-    public Renderer getRenderer() {
-        return renderer;
-    }
-
-    @Deprecated
-    @InternalApi
-    public void start(String baseDir) {
+    private void start(String baseDir) {
 
         Properties properties = createProperties();
 
@@ -119,25 +127,7 @@ public class Formatter {
         }
     }
 
-    @Deprecated
-    @InternalApi
-    public void end(Report errorReport) {
-        try {
-            renderer.renderFileReport(errorReport);
-            renderer.end();
-            if (toConsole) {
-                writer.flush();
-            } else {
-                writer.close();
-            }
-        } catch (IOException ioe) {
-            throw new BuildException(ioe.getMessage(), ioe);
-        }
-    }
-
-    @Deprecated
-    @InternalApi
-    public boolean isNoOutputSupplied() {
+    boolean isNoOutputSupplied() {
         return toFile == null && !toConsole;
     }
 
@@ -161,7 +151,6 @@ public class Formatter {
         return sb.toString();
     }
 
-    // FIXME - hm, what about this consoleRenderer thing... need a test for this
     Renderer createRenderer() {
         if (StringUtils.isBlank(type)) {
             throw new BuildException(unknownRendererMessage("<unspecified>"));
@@ -207,8 +196,21 @@ public class Formatter {
 
     private static String getConsoleEncoding() {
         Console console = System.console();
-        // in case of pipe or redirect, no interactive console.
+        // in case of pipe or redirect, no interactive console, we get null
         if (console != null) {
+            // Since Java 22, this returns a console even for redirected streams.
+            // In that case, we need to check Console.isTerminal()
+            // See: JLine As The Default Console Provider (JDK-8308591)
+            try {
+                Boolean isTerminal = (Boolean) MethodUtils.invokeMethod(console, "isTerminal");
+                if (!isTerminal) {
+                    // stop here, we don't have an interactive console.
+                    return null;
+                }
+            } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException ignored) {
+                // fall-through - we use a Java Runtime < 22.
+            }
+
             try {
                 Object res = FieldUtils.readDeclaredField(console, "cs", true);
                 if (res instanceof Charset) {
@@ -218,11 +220,12 @@ public class Formatter {
                 // fall-through
             }
 
-            // Maybe this is Java17? Then there will be
+            // Maybe this is Java17+? Then there will be
             // https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Console.html#charset()
             // instead of the field "cs".
             try {
-                Charset charset = (Charset) MethodUtils.invokeMethod(console, "charset");
+                Method charsetMethod = Console.class.getDeclaredMethod("charset");
+                Charset charset = (Charset) charsetMethod.invoke(console);
                 return charset.name();
             } catch (IllegalArgumentException | ReflectiveOperationException ignored) {
                 // fall-through
@@ -244,14 +247,20 @@ public class Formatter {
         return null;
     }
 
-    @Deprecated
-    @InternalApi
-    public GlobalAnalysisListener newListener(Project project) throws IOException {
+    GlobalAnalysisListener newListener(Project project) throws IOException {
         start(project.getBaseDir().toString());
-        Renderer renderer = getRenderer();
-
         return new GlobalAnalysisListener() {
             final GlobalAnalysisListener listener = renderer.newListener();
+
+            @Override
+            public ListenerInitializer initializer() {
+                return new ListenerInitializer() {
+                    @Override
+                    public void setFileNameRenderer(FileNameRenderer fileNameRenderer) {
+                        renderer.setFileNameRenderer(fileNameRenderer);
+                    }
+                };
+            }
 
             @Override
             public FileAnalysisListener startFileAnalysis(TextFile file) {

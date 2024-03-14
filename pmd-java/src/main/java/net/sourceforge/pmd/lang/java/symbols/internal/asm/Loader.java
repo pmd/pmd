@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -35,27 +34,23 @@ abstract class Loader {
 
     }
 
-    static class UrlLoader extends Loader {
+    static class StreamLoader extends Loader {
+        private final @NonNull String name;
+        private final @NonNull InputStream stream;
 
-        private final @NonNull URL url;
-
-        UrlLoader(@NonNull URL url) {
-            assert url != null : "Null url";
-            this.url = url;
+        StreamLoader(@NonNull String name, @NonNull InputStream stream) {
+            this.name = name;
+            this.stream = stream;
         }
 
-
         @Override
-        @Nullable
-        InputStream getInputStream() throws IOException {
-            return url.openStream();
+        @NonNull InputStream getInputStream() {
+            return stream;
         }
 
         @Override
         public String toString() {
-            return "(URL loader)";
+            return "(StreamLoader for " + name + ")";
         }
     }
-
-
 }

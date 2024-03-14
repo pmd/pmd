@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
 
 /**
@@ -246,5 +246,5 @@ class ASTMethodReferenceTest : ParserTestSpec({
 
 
 
-fun ASTClassOrInterfaceType.getAmbiguousLhs(): ASTAmbiguousName? =
+fun ASTClassType.getAmbiguousLhs(): ASTAmbiguousName? =
         children(ASTAmbiguousName::class.java).first()

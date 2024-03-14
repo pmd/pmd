@@ -26,13 +26,8 @@ abstract class BaseMappedDocument implements TextDocument {
     }
 
     @Override
-    public String getPathId() {
-        return base.getPathId();
-    }
-
-    @Override
-    public String getDisplayName() {
-        return base.getDisplayName();
+    public FileId getFileId() {
+        return base.getFileId();
     }
 
     @Override
@@ -54,6 +49,11 @@ abstract class BaseMappedDocument implements TextDocument {
     @Override
     public TextPos2d lineColumnAtOffset(int offset, boolean inclusive) {
         return base.lineColumnAtOffset(inputOffset(offset, inclusive));
+    }
+
+    @Override
+    public int offsetAtLineColumn(TextPos2d position) {
+        throw new UnsupportedOperationException();
     }
 
     /**

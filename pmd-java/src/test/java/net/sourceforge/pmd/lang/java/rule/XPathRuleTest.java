@@ -5,28 +5,29 @@
 package net.sourceforge.pmd.lang.java.rule;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.Rule;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 /**
  * @author daniels
@@ -38,8 +39,8 @@ class XPathRuleTest {
     }
 
     @Test
-    void testPluginname() {
-        XPathRule rule = makeXPath("//VariableDeclaratorId[string-length(@Name) < 3]");
+    void testImageIsAccessibleAsFormatArgument() {
+        XPathRule rule = makeXPath("//VariableId[string-length(@Name) < 3]");
         rule.setMessage("{0}");
         Report report = getReportForTestString(rule, TEST1);
         RuleViolation rv = report.getViolations().get(0);
@@ -49,13 +50,13 @@ class XPathRuleTest {
 
     @Test
     void testXPathMultiProperty() throws Exception {
-        XPathRule rule = makeXPath("//VariableDeclaratorId[@Name=$forbiddenNames]");
+        XPathRule rule = makeXPath("//VariableId[@Name=$forbiddenNames]");
         rule.setMessage("Avoid vars");
         PropertyDescriptor<List<String>> varDescriptor
             = PropertyFactory.stringListProperty("forbiddenNames")
                              .desc("Forbidden names")
                              .defaultValues("forbid1", "forbid2")
-                             .delim('$')
+                             .availableInXPath(true)
                              .build();
 
         rule.definePropertyDescriptor(varDescriptor);
@@ -67,10 +68,10 @@ class XPathRuleTest {
 
     @Test
     void testVariables() throws Exception {
-        XPathRule rule = makeXPath("//VariableDeclaratorId[@Name=$var]");
+        XPathRule rule = makeXPath("//VariableId[@Name=$var]");
         rule.setMessage("Avoid vars");
         PropertyDescriptor<String> varDescriptor =
-            PropertyFactory.stringProperty("var").desc("Test var").defaultValue("").build();
+            PropertyFactory.stringProperty("var").desc("Test var").defaultValue("").availableInXPath(true).build();
         rule.definePropertyDescriptor(varDescriptor);
         rule.setProperty(varDescriptor, "fiddle");
         Report report = getReportForTestString(rule, TEST2);
@@ -80,7 +81,7 @@ class XPathRuleTest {
 
     @Test
     void testFnPrefixOnSaxon() throws Exception {
-        XPathRule rule = makeXPath("//VariableDeclaratorId[fn:matches(@Name, 'fiddle')]");
+        XPathRule rule = makeXPath("//VariableId[fn:matches(@Name, 'fiddle')]");
         Report report = getReportForTestString(rule, TEST2);
         RuleViolation rv = report.getViolations().get(0);
         assertEquals(3, rv.getBeginLine());
@@ -88,7 +89,7 @@ class XPathRuleTest {
 
     @Test
     void testNoFnPrefixOnSaxon() {
-        XPathRule rule = makeXPath("//VariableDeclaratorId[matches(@Name, 'fiddle')]");
+        XPathRule rule = makeXPath("//VariableId[matches(@Name, 'fiddle')]");
         Report report = getReportForTestString(rule, TEST2);
         RuleViolation rv = report.getViolations().get(0);
         assertEquals(3, rv.getBeginLine());
@@ -96,21 +97,21 @@ class XPathRuleTest {
 
     @Test
     void testSimpleQueryIsRuleChain() {
-        // ((/)/descendant::element(Q{}VariableDeclaratorId))[matches(convertUntyped(data(@Name)), "fiddle", "")]
-        assertIsRuleChain("//VariableDeclaratorId[matches(@Name, 'fiddle')]");
+        // ((/)/descendant::element(Q{}VariableId))[matches(convertUntyped(data(@Name)), "fiddle", "")]
+        assertIsRuleChain("//VariableId[matches(@Name, 'fiddle')]");
     }
 
     @Test
     void testSimpleQueryIsRuleChain2() {
-        // docOrder(((/)/descendant-or-self::node())/(child::element(ClassOrInterfaceType)[typeIs("java.util.Vector")]))
-        assertIsRuleChain("//ClassOrInterfaceType[pmd-java:typeIs('java.util.Vector')]");
+        // docOrder(((/)/descendant-or-self::node())/(child::element(ClassType)[typeIs("java.util.Vector")]))
+        assertIsRuleChain("//ClassType[pmd-java:typeIs('java.util.Vector')]");
     }
 
     private void assertIsRuleChain(String xpath) {
         XPathRule rule = makeXPath(xpath);
         try (LanguageProcessor proc = JavaParsingHelper.DEFAULT.newProcessor()) {
             rule.initialize(proc);
-            assertTrue(rule.getTargetSelector().isRuleChain(), "Not recognized as a rulechain query: " + xpath);
+            assertNotSame(rule.getTargetSelector(), RuleTargetSelector.forRootOnly(), "Not recognized as a rulechain query: " + xpath);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -127,7 +128,7 @@ class XPathRuleTest {
         final String source = "public interface dummy extends Foo, Bar, Baz {}";
         ASTCompilationUnit cu = JavaParsingHelper.DEFAULT.parse(source);
 
-        String xpath = "//ExtendsList/ClassOrInterfaceType/following-sibling::ClassOrInterfaceType";
+        String xpath = "//ExtendsList/ClassType/following-sibling::ClassType";
 
 
         SaxonXPathRuleQuery xpathRuleQuery = new SaxonXPathRuleQuery(xpath,

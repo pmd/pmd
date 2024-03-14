@@ -66,20 +66,20 @@ We have some additional custom liquid tags that help in writing the documentatio
 
 Here's a short overview:
 
-| Liquid | Rendered as |
-|:-------|:------------|
-| `{% raw %}{% rule "java/codestyle/LinguisticNaming" %}{% endraw %}`               | {% rule "java/codestyle/LinguisticNaming" %} |
-| `{% raw %}{% jdoc core::Rule %}{% endraw %}`                                      | {% jdoc core::Rule %} |
-| `{% raw %}{% jdoc !q!core::Rule %}{% endraw %}`                                   | {% jdoc !q!core::Rule %} |
-| `{% raw %}{% jdoc core::Rule#setName(java.lang.String) %}{% endraw %}`            | {% jdoc core::Rule#setName(java.lang.String) %} |
-| `{% raw %}{% jdoc !c!core::Rule#setName(java.lang.String) %}{% endraw %}`         | {% jdoc !c!core::Rule#setName(java.lang.String) %} |
-| `{% raw %}{% jdoc !a!core::Rule#setName(java.lang.String) %}{% endraw %}`         | {% jdoc !a!core::Rule#setName(java.lang.String) %} |
-| `{% raw %}{% jdoc !ac!core::Rule#setName(java.lang.String) %}{% endraw %}`        | {% jdoc !ac!core::Rule#setName(java.lang.String) %} |
-| `{% raw %}{% jdoc core::properties.PropertyDescriptor %}{% endraw %}`             | {% jdoc core::properties.PropertyDescriptor %} |
-| `{% raw %}{% jdoc_nspace :jast java::lang.java.ast %}{% jdoc jast::ASTAnyTypeDeclaration %}{% endraw %}`       | {% jdoc_nspace :jast java::lang.java.ast %}{% jdoc jast::ASTAnyTypeDeclaration %} |
-| `{% raw %}{% jdoc_nspace :jast java::lang.java.ast %}{% jdoc_package :jast %}{% endraw %}`                     | {% jdoc_nspace :jast java::lang.java.ast %}{% jdoc_package :jast %} |
+| Liquid                                                                                                         | Rendered as                                                                             |
+|:---------------------------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------------------|
+| `{% raw %}{% rule "java/codestyle/LinguisticNaming" %}{% endraw %}`                                            | {% rule "java/codestyle/LinguisticNaming" %}                                            |
+| `{% raw %}{% jdoc core::lang.rule.Rule %}{% endraw %}`                                                         | {% jdoc core::lang.rule.Rule %}                                                         |
+| `{% raw %}{% jdoc !q!core::lang.rule.Rule %}{% endraw %}`                                                      | {% jdoc !q!core::lang.rule.Rule %}                                                      |
+| `{% raw %}{% jdoc core::lang.rule.Rule#setName(java.lang.String) %}{% endraw %}`                               | {% jdoc core::lang.rule.Rule#setName(java.lang.String) %}                               |
+| `{% raw %}{% jdoc !c!core::lang.rule.Rule#setName(java.lang.String) %}{% endraw %}`                            | {% jdoc !c!core::lang.rule.Rule#setName(java.lang.String) %}                            |
+| `{% raw %}{% jdoc !a!core::lang.rule.Rule#setName(java.lang.String) %}{% endraw %}`                            | {% jdoc !a!core::lang.rule.Rule#setName(java.lang.String) %}                            |
+| `{% raw %}{% jdoc !ac!core::lang.rule.Rule#setName(java.lang.String) %}{% endraw %}`                           | {% jdoc !ac!core::lang.rule.Rule#setName(java.lang.String) %}                           |
+| `{% raw %}{% jdoc core::properties.PropertyDescriptor %}{% endraw %}`                                          | {% jdoc core::properties.PropertyDescriptor %}                                          |
+| `{% raw %}{% jdoc_nspace :jast java::lang.java.ast %}{% jdoc jast::ASTTypeDeclaration %}{% endraw %}`          | {% jdoc_nspace :jast java::lang.java.ast %}{% jdoc jast::ASTTypeDeclaration %}          |
+| `{% raw %}{% jdoc_nspace :jast java::lang.java.ast %}{% jdoc_package :jast %}{% endraw %}`                     | {% jdoc_nspace :jast java::lang.java.ast %}{% jdoc_package :jast %}                     |
 | `{% raw %}{% jdoc_nspace :PrD core::properties.PropertyDescriptor %}{% jdoc !ac!:PrD#uiOrder() %}{% endraw %}` | {% jdoc_nspace :PrD core::properties.PropertyDescriptor %}{% jdoc !ac!:PrD#uiOrder() %} |
-| `{% raw %}{% jdoc_old core::Rule %}{% endraw %}`                                  | {% jdoc_old core::Rule %}
+| `{% raw %}{% jdoc_old core::Rule %}{% endraw %}`                                                               | {% jdoc_old core::Rule %}                                                               |
 
 For the javadoc tags, the standard PMD maven modules are already defined as namespaces, e.g. `core`, `java`, `apex`, ....
 

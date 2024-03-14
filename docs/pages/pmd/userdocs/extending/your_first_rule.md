@@ -1,8 +1,8 @@
 ---
-title:  Your first rule XPath
+title:  Your first rule
 tags: [extending, userdocs]
-summary: "Introduction to rule writing through an example."
-last_updated: February 2020 (6.22.0)
+summary: "Introduction to rule writing through an example for a XPath rule."
+last_updated: December 2023 (7.0.0)
 permalink: pmd_userdocs_extending_your_first_rule.html
 author: Miguel Griffa <mikkey@users.sourceforge.net>, Clément Fournier <clement.fournier76@gmail.com>
 ---
@@ -11,7 +11,7 @@ This page is a gentle introduction to rule writing, and the Rule Designer.
 
 Using the designer is useful both to write Java
 rules and XPath rules, but it's more specifically geared towards XPath rules.
-This page uses a simple XPath rule to illustrate the common workflow. We assume
+This page uses a **simple XPath rule** to illustrate the common workflow. We assume
 here that you already know what XPath is and how to read basic XPath queries. W3C
 has a good tutorial [here](https://www.w3schools.com/xml/xpath_syntax.asp) if
 you don't (in the context of XML only), and [the Saxon documentation](https://www.saxonica.com/documentation/index.html#!expressions)
@@ -35,11 +35,11 @@ The interface looks like the following:
 {% include image.html file="userdocs/designer-overview-with-nums.png" alt="Designer overview" %}
 
 The zone (2) is the **main editor**. When you write a code snippet in the
- code area to the left, you'll see that the tree to the right will be updated
- automatically: it's the AST of the code.
- Note that the code snippet must be a syntactically valid compilation unit for the
- language you've chosen, e.g. for Java, a compilation unit necessarily has a top-level
- type declaration.
+code area to the left, you'll see that the tree to the right will be updated
+automatically: it's the AST of the code.
+Note that the code snippet must be a syntactically valid compilation unit for the
+language you've chosen, e.g. for Java, a compilation unit necessarily has a top-level
+type declaration.
 
 If you select a node in the AST, its specific properties will also be displayed
 in the panel (1): they're the XPath attributes of the node. More on that later.
@@ -57,7 +57,7 @@ The basic development process is straightforward:
 2.  Examine the AST and determine what node the violation should be reported on
 3.  Write an XPath expression matching that node in the XPath editor
 4.  Refine the XPath expression iteratively using different code snippets, so that
-    it matches violation cases, but no other node
+    it matches violation cases, but no other nodes
 5.  Export your XPath expression to an XML rule element, and place it in your ruleset
 
 Each time you test your rule against a different snippet, it's a good idea to
@@ -83,11 +83,11 @@ public class KeepingItSerious {
 
 ```
 
-Examining the AST, you find out that the LocalVariableDeclaration has a VariableDeclaratorId
-descendant, whose `Image` XPath attribute is exactly `bill`. You thus write your first attempt
+Examining the AST, you find out that the LocalVariableDeclaration has a VariableId
+descendant, whose `Name` XPath attribute is exactly `bill`. You thus write your first attempt
 in the XPath editor:
 ```xpath
-//VariableDeclaratorId[@Image = "bill"]
+//VariableId[@Name = "bill"]
 ```
 
 You can see the XPath result list is updated with the variable declarator.
@@ -112,13 +112,14 @@ based on your examination of the Type node of the field and local variable
 declaration nodes.
 
 ```xpath
-//VariableDeclaratorId[@Image = "bill" and ../../Type[@TypeImage = "short"]]
+//VariableId[@Name = "bill" and ../../Type[@TypeImage = "short"]]
 ```
 
 ### Exporting to XML
 
 You estimate that your rule is now production ready, and you'd like to use it in your ruleset.
-The `File > Export XPath to rule...` allows you to do that in a few clicks: just enter some
+The second button in the toolbar above the XPath editor (Tooltip: `Export XPath to rule...`)
+allows you to do that in a few clicks: just enter some
 additional metadata for your rule, and the popup will generate an XML element that you can
 copy-paste into your ruleset XML. The resulting element looks like so:
 
@@ -126,16 +127,16 @@ copy-paste into your ruleset XML. The resulting element looks like so:
 <rule name="DontCallBossShort"
       language="java"
       message="Boss wants to talk to you."
-      class="net.sourceforge.pmd.lang.rule.XPathRule" >
+      class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
     <description>
-TODO
+        TODO
     </description>
     <priority>3</priority>
     <properties>
         <property name="xpath">
             <value>
 <![CDATA[
-//VariableDeclaratorId[../../Type[@TypeImage="short"] and @Image = "bill"]
+//VariableId[@Name = "bill"][../../Type[@TypeImage="short"]]
 ]]>
             </value>
         </property>

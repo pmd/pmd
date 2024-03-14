@@ -6,9 +6,9 @@ package net.sourceforge.pmd.lang.modelica.ast;
 
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaDeclaration;
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaScope;
-import net.sourceforge.pmd.lang.modelica.resolver.ResolutionContext;
 import net.sourceforge.pmd.lang.modelica.resolver.ResolutionResult;
-import net.sourceforge.pmd.lang.modelica.resolver.ResolutionState;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionContext;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionState;
 
 public class ASTSingleDefinitionImportClause extends AbstractModelicaImportClause {
     private ASTName importWhat;
@@ -27,8 +27,8 @@ public class ASTSingleDefinitionImportClause extends AbstractModelicaImportClaus
     public void jjtClose() {
         super.jjtClose();
 
-        importWhat = getFirstChildOfType(ASTName.class);
-        importedName = importWhat.getChild(importWhat.getNumChildren() - 1).getImage();
+        importWhat = firstChild(ASTName.class);
+        importedName = ((ASTSimpleName) importWhat.getChild(importWhat.getNumChildren() - 1)).getName();
     }
 
     @Override

@@ -19,14 +19,14 @@ class SelectForUpdateTest extends AbstractPLSQLParserTst {
     void parseSelectForUpdateWait() {
         ASTInput input = plsql.parseResource("SelectForUpdateWait.pls");
         assertNotNull(input);
-        assertEquals(5, input.findDescendantsOfType(ASTForUpdateClause.class).size());
+        assertEquals(5, input.descendants(ASTForUpdateClause.class).count());
     }
 
     @Test
     void parseSelectForUpdate() {
         ASTInput input = plsql.parseResource("SelectForUpdate.pls");
         assertNotNull(input);
-        List<ASTForUpdateClause> forUpdateClauses = input.findDescendantsOfType(ASTForUpdateClause.class);
+        List<ASTForUpdateClause> forUpdateClauses = input.descendants(ASTForUpdateClause.class).toList();
         assertEquals(2, forUpdateClauses.size());
         assertEquals(2, forUpdateClauses.get(1).getNumChildren());
         assertEquals("e", forUpdateClauses.get(1).getChild(0).getImage());

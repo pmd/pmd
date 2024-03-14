@@ -128,4 +128,21 @@ public abstract class AbstractBaseClass {
 }
 ]]></code>
     </test-code>
+
+
+    <test-code>
+        <description>Empty catch blocks should not be reported</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void myMethod() {
+        try {
+            println('a');
+        } catch (Exception e) {
+            // empty - this is a EmptyCatchBlock violation and not a EmptyStatementBlock!
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

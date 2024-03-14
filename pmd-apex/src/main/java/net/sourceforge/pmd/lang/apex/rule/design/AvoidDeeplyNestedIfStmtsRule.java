@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.rule.design;
 
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTIfBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
@@ -41,7 +41,7 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractApexRule {
 
         super.visit(node, data);
         if (depth == depthLimit) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
         depth--;
 

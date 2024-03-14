@@ -4,30 +4,30 @@
 
 package net.sourceforge.pmd.lang.html;
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-
-import java.util.List;
-
-import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.cpd.CpdLexer;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.html.cpd.HtmlCpdLexer;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 
 public final class HtmlLanguageModule extends SimpleLanguageModuleBase {
-
-    public static final String NAME = "HTML";
-    public static final String TERSE_NAME = "html";
-    @InternalApi
-    public static final List<String> EXTENSIONS = listOf("html", "htm", "xhtml", "xht", "shtml");
+    static final String ID = "html";
+    static final String NAME = "HTML";
 
     public HtmlLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
-                              .extensions(EXTENSIONS)
+        super(LanguageMetadata.withId(ID).name(NAME)
+                              .extensions("html", "htm", "xhtml", "xht", "shtml")
                               .addVersion("4")
                               .addDefaultVersion("5"),
               new HtmlHandler());
     }
 
     public static HtmlLanguageModule getInstance() {
-        return (HtmlLanguageModule) LanguageRegistry.PMD.getLanguageById(TERSE_NAME);
+        return (HtmlLanguageModule) LanguageRegistry.PMD.getLanguageById(ID);
+    }
+
+    @Override
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new HtmlCpdLexer();
     }
 }

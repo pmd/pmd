@@ -30,10 +30,6 @@ options {
 PARSER_BEGIN(JspParserImpl)
 package net.sourceforge.pmd.lang.jsp.ast;
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
-
 /**
  * JSP Parser for PMD.
  * @author Pieter, Application Engineers NV/SA, http://www.ae.be
@@ -395,7 +391,7 @@ void JspScriptlet() :
 {	Token t; }
 {
 	<JSP_SCRIPTLET_START>
-	t = <JSP_SCRIPTLET> { jjtThis.setImage(t.image.trim()); }
+	t = <JSP_SCRIPTLET> { jjtThis.setContent(t.image.trim()); }
 	<JSP_SCRIPTLET_END>
 }
 
@@ -403,7 +399,7 @@ void JspExpression() :
 {	Token t; }
 {
 	<JSP_EXPRESSION_START>
-	t = <JSP_EXPRESSION> { jjtThis.setImage(t.image.trim()); }
+	t = <JSP_EXPRESSION> { jjtThis.setContent(t.image.trim()); }
 	<JSP_EXPRESSION_END>
 }
 
@@ -411,7 +407,7 @@ void JspDeclaration() :
 {	Token t; }
 {
 	<JSP_DECLARATION_START>
-	t = <JSP_DECLARATION> { jjtThis.setImage(t.image.trim()); }
+	t = <JSP_DECLARATION> { jjtThis.setContent(t.image.trim()); }
 	<JSP_DECLARATION_END>
 }
 
@@ -419,7 +415,7 @@ void JspComment() :
 { 	Token t; }
 {
 	<JSP_COMMENT_START>
-	t = <JSP_COMMENT_CONTENT> { jjtThis.setImage(t.image.trim()); }
+	t = <JSP_COMMENT_CONTENT> { jjtThis.setContent(t.image.trim()); }
 	<JSP_COMMENT_END>
 }
 
@@ -430,7 +426,7 @@ void JspComment() :
  */
 void Text() :
 {
-	StringBuffer content = new StringBuffer();
+	StringBuilder content = new StringBuilder();
 	String tmp;
 }
 {	 
@@ -438,7 +434,7 @@ void Text() :
 	  	tmp = UnparsedText() { content.append(tmp); }
 	  | tmp = ElExpression() { content.append(tmp); }
 	  )+
-		{jjtThis.setImage(content.toString());}
+		{jjtThis.setContent(content.toString());}
 	  
 }
 
@@ -447,7 +443,7 @@ String UnparsedText() :
 {   
 	t = <UNPARSED_TEXT> 
 	{
-		jjtThis.setImage(t.image); 
+		jjtThis.setContent(t.image);
 		return t.image;
 	}
 }
@@ -459,7 +455,7 @@ String UnparsedTextNoWhitespace() #UnparsedText :
     t = <UNPARSED_TEXT_NO_WHITESPACE>
   )
   {
-		jjtThis.setImage(t.image); 
+		jjtThis.setContent(t.image);
 		return t.image;
   }
 }
@@ -475,7 +471,7 @@ String UnparsedTextNoSingleQuotes() #UnparsedText :
 {
 	t = <UNPARSED_TEXT_NO_SINGLE_QUOTES> 
 	{ 
-		jjtThis.setImage(t.image); 
+		jjtThis.setContent(t.image);
 		return t.image;
 	}
 }
@@ -489,7 +485,7 @@ String UnparsedTextNoDoubleQuotes() #UnparsedText :
 {
 	t = <UNPARSED_TEXT_NO_DOUBLE_QUOTES> 
 	{ 
-		jjtThis.setImage(t.image); 
+		jjtThis.setContent(t.image);
 		return t.image;
 	}
 }
@@ -502,7 +498,7 @@ String ElExpression() :
 {
 	t = <EL_EXPRESSION> 
 	{ 
-		jjtThis.setImage(expressionContent(t.image)); 
+		jjtThis.setContent(expressionContent(t.image));
 		return t.image;
 	}
 }
@@ -512,7 +508,7 @@ String ValueBindingInAttribute() #ValueBinding :
 {
 	t = <VALUE_BINDING_IN_ATTRIBUTE> 
 	{ 
-		jjtThis.setImage(expressionContent(t.image)); 
+		jjtThis.setContent(expressionContent(t.image));
 		return t.image;
 	}
 }
@@ -522,20 +518,20 @@ String ElExpressionInAttribute() #ElExpression :
 {
 	t = <EL_EXPRESSION_IN_ATTRIBUTE> 
 	{ 
-		jjtThis.setImage(expressionContent(t.image)); 
+		jjtThis.setContent(expressionContent(t.image));
 		return t.image;
 	}
 }
 
 void CData() :
 {
-	StringBuffer content = new StringBuffer();
+	StringBuilder content = new StringBuilder();
 	Token t;
 }
 {
 	<CDATA_START> ( t = <UNPARSED>  { content.append(t.image); } )* <CDATA_END>
 	{
-		jjtThis.setImage(content.toString());
+		jjtThis.setContent(content.toString());
 	}
 }
 
@@ -595,7 +591,7 @@ void Attribute() :
  */
 void AttributeValue() : 
 {
-	StringBuffer content = new StringBuffer();
+	StringBuilder content = new StringBuilder();
 	String tmp;
 	Token t = null ;
 }
@@ -626,7 +622,7 @@ void AttributeValue() :
 		)
 		| <IN_ATTR_WHITESPACE> 
 	)
-	{ jjtThis.setImage( content.toString() );
+	{ jjtThis.setValue( content.toString() );
 	}
 }
 
@@ -649,14 +645,14 @@ String JspExpressionInAttribute() :
 {
 	t = <JSP_EXPRESSION_IN_ATTRIBUTE> 
 	{ 
-		jjtThis.setImage(t.image.substring(3, t.image.length()-2).trim()); // without <% and %>
+		jjtThis.setContent(t.image.substring(3, t.image.length()-2).trim()); // without <% and %>
 		return t.image;
 	}
 }
 
 void CommentTag() :
 {
-	StringBuffer content = new StringBuffer();
+	StringBuilder content = new StringBuilder();
 	Token t;
 }
 {
@@ -664,7 +660,7 @@ void CommentTag() :
   ( t = <COMMENT_TEXT> { content.append(t.image); } )* 
   <COMMENT_END>
   	{
-		jjtThis.setImage(content.toString().trim());
+		jjtThis.setContent(content.toString().trim());
 	}
 }
   
@@ -712,7 +708,7 @@ void DoctypeExternalId() :
 
 void HtmlScript() :
 {
-	StringBuffer content = new StringBuffer();
+	StringBuilder content = new StringBuilder();
 	String tagName;
 	Token t;
 }
@@ -723,7 +719,7 @@ void HtmlScript() :
   	  (
   	   <TAG_END>				    {token_source.SwitchTo(HtmlScriptContentState);}
   	   (t = <HTML_SCRIPT_CONTENT>  { content.append(t.image); })*
-	   <HTML_SCRIPT_END_TAG>		{ jjtThis.setImage(content.toString().trim());}
+	   <HTML_SCRIPT_END_TAG>		{ jjtThis.setContent(content.toString().trim());}
 	  )
 	|
 	  (

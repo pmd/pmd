@@ -45,7 +45,7 @@ public class UnusedLocalVariableRule extends AbstractApexRule {
     public Object visit(ASTVariableDeclaration node, Object data) {
         String variableName = node.getImage();
 
-        ASTBlockStatement variableContext = node.getFirstParentOfType(ASTBlockStatement.class);
+        ASTBlockStatement variableContext = node.ancestors(ASTBlockStatement.class).first();
         if (variableContext == null) {
             // if there is no parent BlockStatement, e.g. in triggers
             return data;
@@ -54,9 +54,9 @@ public class UnusedLocalVariableRule extends AbstractApexRule {
         List<ApexNode<?>> potentialUsages = new ArrayList<>();
 
         // Variable expression catch things like the `a` in `a + b`
-        potentialUsages.addAll(variableContext.findDescendantsOfType(ASTVariableExpression.class));
+        potentialUsages.addAll(variableContext.descendants(ASTVariableExpression.class).toList());
         // Reference expressions catch things like the `a` in `a.foo()`
-        potentialUsages.addAll(variableContext.findDescendantsOfType(ASTReferenceExpression.class));
+        potentialUsages.addAll(variableContext.descendants(ASTReferenceExpression.class).toList());
 
         for (ApexNode<?> usage : potentialUsages) {
             if (usage.getParent() == node) {
@@ -73,38 +73,36 @@ public class UnusedLocalVariableRule extends AbstractApexRule {
             return data;
         }
 
-        addViolation(data, node, variableName);
+        asCtx(data).addViolation(node, variableName);
         return data;
     }
 
     private List<String> findBindingsInSOQLStringLiterals(ASTBlockStatement variableContext) {
         List<String> bindingVariables = new ArrayList<>();
 
-        List<ASTMethodCallExpression> methodCalls = variableContext.findDescendantsOfType(ASTMethodCallExpression.class)
-            .stream()
+        List<ASTMethodCallExpression> methodCalls = variableContext.descendants(ASTMethodCallExpression.class)
             .filter(m -> DATABASE_QUERY_METHODS.contains(m.getFullMethodName().toLowerCase(Locale.ROOT)))
             .collect(Collectors.toList());
 
         methodCalls.forEach(databaseMethodCall -> {
             List<String> stringLiterals = new ArrayList<>();
-            stringLiterals.addAll(databaseMethodCall.findDescendantsOfType(ASTLiteralExpression.class)
-                    .stream()
+            stringLiterals.addAll(databaseMethodCall.descendants(ASTLiteralExpression.class)
                     .filter(ASTLiteralExpression::isString)
+                    .toStream()
                     .map(ASTLiteralExpression::getImage)
                     .collect(Collectors.toList()));
 
-            databaseMethodCall.findDescendantsOfType(ASTVariableExpression.class).forEach(variableUsage -> {
+            databaseMethodCall.descendants(ASTVariableExpression.class).forEach(variableUsage -> {
                 String referencedVariable = variableUsage.getImage();
 
                 // Search other usages of the same variable within this code block
-                variableContext.findDescendantsOfType(ASTVariableExpression.class)
-                        .stream()
+                variableContext.descendants(ASTVariableExpression.class)
                         .filter(usage -> referencedVariable.equalsIgnoreCase(usage.getImage()))
                         .forEach(usage -> {
                             stringLiterals.addAll(usage.getParent()
-                                    .findChildrenOfType(ASTLiteralExpression.class)
-                                    .stream()
+                                    .children(ASTLiteralExpression.class)
                                     .filter(ASTLiteralExpression::isString)
+                                    .toStream()
                                     .map(ASTLiteralExpression::getImage)
                                     .collect(Collectors.toList()));
                         });

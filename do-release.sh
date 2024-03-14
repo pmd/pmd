@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+
+# abort the script on the first failing sub command
 set -e
 
 # Make sure, everything is English...
@@ -14,6 +16,30 @@ if [ ! -f pom.xml ] || [ ! -d ../pmd.github.io ]; then
     echo
     exit 1
 fi
+
+#
+# Make sure, we have ruby and bundler available
+#
+set +e # don't stop for error "command not found" - it is handled
+ruby_version_full=$(ruby --version 2>&1)
+ruby_version=$(echo "${ruby_version_full}" | grep "ruby 3" | head -1 2>&1)
+if [ $? -eq 0 ] && [ -n "${ruby_version}" ]; then
+  echo "Using ${ruby_version_full}"
+else
+  echo "Wrong ruby version! Expected ruby 3"
+  echo "${ruby_version_full}"
+  exit 1
+fi
+bundler_version=$(bundler --version 2>&1)
+if [ $? -eq 0 ]; then
+  echo "Using ${bundler_version}"
+else
+  echo "Missing bundler!"
+  echo "${bundler_version}"
+  exit 1
+fi
+# abort the script on the first failing sub command
+set -e
 
 CURRENT_BRANCH=
 
@@ -82,27 +108,19 @@ if [ "${BUILD_TOOLS_VERSION}" != "${BUILD_TOOLS_VERSION_RELEASE}" ]; then
   exit 1
 fi
 
-RELEASE_RULESET="pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION//\./}.xml"
-
 echo "*   Update date info in **docs/_config.yml**."
 echo "    date: $(date -u +%d-%B-%Y)"
 echo
 echo "*   Update version info in **docs/_config.yml**."
 echo "    remove the SNAPSHOT from site.pmd.version"
 echo
-echo "*   Ensure all the new rules are listed in the proper file:"
-echo "    ${RELEASE_RULESET}"
-echo
 echo "*   Update **pmd-apex/src/main/resources/rulesets/apex/quickstart.xml** and"
 echo "    **pmd-java/src/main/resources/rulesets/java/quickstart.xml** with the new rules."
 echo
-echo "*   Update **docs/pages/next_major_development.md** with the API changes for"
-echo "    the new release based on the release notes. Also add any deprecated rules to the list."
-echo
 echo "*   Update **../pmd.github.io/_config.yml** to mention the new release"
 echo
-echo "*   Update property \`pmd-designer.version\` in **pom.xml** to reference the latest pmd-designer release"
-echo "    See <https://search.maven.org/search?q=g:net.sourceforge.pmd%20AND%20a:pmd-ui&core=gav> for the available releases."
+echo "*   Update property \`pmd-designer.version\` in **pom.xml** to reference the version, that will be released"
+echo "    later in this process."
 echo
 echo "Press enter to continue..."
 read -r
@@ -149,11 +167,6 @@ EOF
 
 echo "Committing current changes (pmd)"
 
-if [[ -e "${RELEASE_RULESET}" ]]
-then
-    git add "${RELEASE_RULESET}"
-fi
-
 git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
 (
     cd ../pmd.github.io
@@ -165,12 +178,32 @@ git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
     fi
 )
 
-./mvnw -B release:clean release:prepare \
-    -Dtag="pmd_releases/${RELEASE_VERSION}" \
-    -DreleaseVersion="${RELEASE_VERSION}" \
-    -DdevelopmentVersion="${DEVELOPMENT_VERSION}" \
-    -DscmCommentPrefix="[release] " \
-    -Pgenerate-rule-docs
+# check that there are no uncommitted changes
+UNCOMMITTED_CHANGES=$(git status --short --untracked-files=no)
+if [ -n "${UNCOMMITTED_CHANGES}" ]; then
+  echo "There are uncommitted changes:"
+  echo "${UNCOMMITTED_CHANGES}"
+  exit 1
+fi
+# check that there are no SNAPSHOT dependencies -> done by the enforcer plugin, see enforce-no-snapshots
+echo "Change version in the POMs to ${RELEASE_VERSION} and update build timestamp"
+./mvnw --quiet versions:set -DnewVersion="${RELEASE_VERSION}" -DgenerateBackupPoms=false -DupdateBuildOutputTimestampPolicy=always
+echo "Transform the SCM information in the POM"
+sed -i "s|<tag>.\+</tag>|<tag>pmd_releases/${RELEASE_VERSION}</tag>|" pom.xml
+echo "Run the project tests against the changed POMs to confirm everything is in running order (skipping cli and dist)"
+# note: skipping pmd in order to avoid failures due to #4757
+./mvnw clean verify -Dskip-cli-dist -Dpmd.skip=true -Dcpd.skip=true -Pgenerate-rule-docs
+echo "Commit and create tag"
+git commit -a -m "[release] prepare release pmd_releases/${RELEASE_VERSION}"
+git tag -m "[release] copy for tag pmd_releases/${RELEASE_VERSION}" "pmd_releases/${RELEASE_VERSION}"
+echo "Update POMs to set the new development version ${DEVELOPMENT_VERSION}"
+./mvnw --quiet versions:set -DnewVersion="${DEVELOPMENT_VERSION}" -DgenerateBackupPoms=false -DupdateBuildOutputTimestampPolicy=never
+sed -i "s|<tag>.\+</tag>|<tag>HEAD</tag>|" pom.xml
+echo "Commit"
+git commit -a -m "[release] prepare for next development iteration"
+echo "Push branch and tag pmd_releases/${RELEASE_VERSION}"
+git push origin "${CURRENT_BRANCH}"
+git push origin tag "pmd_releases/${RELEASE_VERSION}"
 
 
 echo
@@ -232,17 +265,39 @@ This is a {{ site.pmd.release_type }} release.
 
 EOF
 
-git commit -a -m "Prepare next development version [skip ci]"
+git commit -a -m "[release] Prepare next development version [skip ci]"
 git push origin "${CURRENT_BRANCH}"
-./mvnw -B release:clean
+
 echo
+echo
+echo
+echo "*   Wait until the new version is synced to maven central and appears as latest version in"
+echo "    <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/maven-metadata.xml>."
+echo
+echo
+echo "Then proceed with releasing pmd-designer..."
+echo "<https://github.com/pmd/pmd-designer/blob/master/releasing.md>"
+echo
+echo "Press enter to continue when pmd-designer is available in maven-central..."
+echo "<https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-designer/maven-metadata.xml>."
+echo
+echo "Note: If there is no new pmd-designer release needed, you can directly proceed."
+read -r
+
+echo
+echo "Continuing with release of pmd-cli and pmd-dist..."
+echo
+echo "Go to <https://github.com/pmd/pmd/actions/workflows/build.yml> and manually trigger a new build"
+echo "from tag 'pmd_releases/${RELEASE_VERSION}' and with option 'Build only modules cli and dist' checked."
+echo
+echo "This triggers the second stage release and eventually publishes the release on GitHub."
+echo
+echo "Now check github actions: <https://github.com/pmd/pmd/actions>"
 echo
 echo
 echo "Verify the new release on github: <https://github.com/pmd/pmd/releases/tag/pmd_releases/${RELEASE_VERSION}>"
 echo "and the news entry at <https://sourceforge.net/p/pmd/news/>"
 echo
-echo "*   Wait until the new version is synced to maven central and appears as latest version in"
-echo "    <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/maven-metadata.xml>."
 echo "*   Send out an announcement mail to the mailing list:"
 echo
 echo "To: PMD Developers List <pmd-devel@lists.sourceforge.net>"
@@ -265,5 +320,3 @@ echo "------------------------------------------"
 echo "Done."
 echo "------------------------------------------"
 echo
-
-

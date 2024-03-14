@@ -64,10 +64,6 @@ public interface ApexVisitor<P, R> extends AstVisitor<P, R> {
         return visitApexNode(node, data);
     }
 
-    default R visit(ASTBridgeMethodCreator node, P data) {
-        return visitApexNode(node, data);
-    }
-
     default R visit(ASTCastExpression node, P data) {
         return visitApexNode(node, data);
     }

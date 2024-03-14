@@ -19,7 +19,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymEnum;
 import net.sourceforge.pmd.lang.java.types.JArrayType;
@@ -47,7 +47,7 @@ import net.sourceforge.pmd.lang.java.types.Substitution;
  */
 public interface JClassSymbol extends JTypeDeclSymbol,
                                       JTypeParameterOwnerSymbol,
-                                      BoundToNode<ASTAnyTypeDeclaration> {
+                                      BoundToNode<ASTTypeDeclaration> {
 
 
     /**

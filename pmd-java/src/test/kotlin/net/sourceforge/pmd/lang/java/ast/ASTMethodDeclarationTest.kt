@@ -7,10 +7,10 @@ package net.sourceforge.pmd.lang.java.ast
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
-import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.textOfReportLocation
-import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility.V_PRIVATE
-import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility.V_PUBLIC
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.test.ast.textOfReportLocation
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility.V_PRIVATE
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility.V_PUBLIC
 import net.sourceforge.pmd.lang.java.ast.JModifier.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
@@ -138,7 +138,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
             }
         }
 
-        // default abstract is an invalid combination of modifiers so we won't encounter it in real analysis
+        // default abstract is an invalid combination of modifiers, so we won't encounter it in real analysis
     }
 
     parserTest("Throws list") {

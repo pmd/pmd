@@ -28,9 +28,9 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
 /**
  * A sequence of AST nodes. Conceptually similar to a {@link Stream},
  * and exposes a specialized API to navigate abstract syntax trees.
- * This API replaces the defunct {@link Node#findChildNodesWithXPath(String)}.
+ * This API can make it as easy as a XPath expression to navigate the tree.
  *
- * <h1>API usage</h1>
+ * <h2>API usage</h2>
  *
  * <p>The {@link Node} interface exposes methods like {@link Node#children()}
  * or {@link Node#asStream()} to obtain new NodeStreams. Null-safe construction
@@ -54,10 +54,10 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  * the emptiness of a node stream. E.g. the following tests if the node
  * is a variable declarator id initialized to the value {@code 0}:
  * <pre>
- *     {@linkplain #of(Node) NodeStream.of}(someNode)                           <i>// the stream here is empty if the node is null</i>
- *               {@linkplain #filterIs(Class) .filterIs}(ASTVariableDeclaratorId.class)<i>// the stream here is empty if the node was not a variable declarator id</i>
- *               {@linkplain #followingSiblings() .followingSiblings}()                    <i>// the stream here contains only the siblings, not the original node</i>
- *               {@linkplain #take(int) .take}(1)                                <i>// the stream here contains only the first sibling, if it exists</i>
+ *     {@linkplain #of(Node) NodeStream.of}(someNode)                    <i>// the stream here is empty if the node is null</i>
+ *               {@linkplain #filterIs(Class) .filterIs}(ASTVariableId.class)   <i>// the stream here is empty if the node was not a variable declarator id</i>
+ *               {@linkplain #followingSiblings() .followingSiblings}()             <i>// the stream here contains only the siblings, not the original node</i>
+ *               {@linkplain #take(int) .take}(1)                         <i>// the stream here contains only the first sibling, if it exists</i>
  *               {@linkplain #filterIs(Class) .filterIs}(ASTNumericLiteral.class)
  *               {@linkplain #filter(Predicate) .filter}(it -&gt; !it.isFloatingPoint() &amp;&amp; it.getValueAsInt() == 0)
  *               {@linkplain #nonEmpty() .nonEmpty}(); <i>// If the stream is non empty here, then all the pipeline matched</i>
@@ -65,16 +65,16 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  *
  * <p>Many existing operations from the node interface can be written with streams too:
  * <ul>
- * <li><tt>node.{@link Node#getFirstChildOfType(Class) getFirstChildOfType(t)} === node.{@link Node#children(Class) children(t)}.{@link #first()}</tt></li>
- * <li><tt>node.{@link Node#getFirstDescendantOfType(Class) getFirstDescendantOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #first()}</tt></li>
- * <li><tt>node.{@link Node#getFirstParentOfType(Class) getFirstParentOfType(t)} === node.{@link Node#ancestors(Class) ancestors(t)}.{@link #first()}</tt></li>
- * <li><tt>node.{@link Node#findChildrenOfType(Class) findChildrenOfType(t)} === node.{@link Node#descendants(Class) children(t)}.{@link #toList()}</tt></li>
- * <li><tt>node.{@link Node#findDescendantsOfType(Class) findDescendantsOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #toList()}</tt></li>
- * <li><tt>node.{@link Node#getParentsOfType(Class) getParentsOfType(t)} === node.{@link Node#descendants(Class) ancestors(t)}.{@link #toList()}</tt></li>
- * <li><tt>node.{@link Node#getNthParent(int) getNthParent(n)} === node.{@link Node#ancestors() ancestors()}.{@link #get(int) get(n - 1)}</tt></li>
- * <li><tt>node.{@link Node#hasDescendantOfType(Class) hasDescendantOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #nonEmpty()}</tt></li>
- * <li><tt>node.getFirstParentOfAnyType(c1, c2) ===  node.{@link Node#ancestors() ancestors()}.{@link #firstNonNull(Function) firstNonNull}({@link #asInstanceOf(Class, Class[]) asInstanceOf(c1, c2)})</tt></li>
- * <li><tt>node.hasDescendantOfAnyType(c1, c2) ===  node.{@link Node#descendants() descendants()}.{@link #map(Function) map}({@link #asInstanceOf(Class, Class[]) asInstanceOf(c1, c2)}).{@link #nonEmpty()}</tt></li>
+ * <li>Traverse the children to find the first instance of type childType: <code>node.{@link Node#children(Class) children(t)}.{@link #first()}</code></li>
+ * <li>Traverse down the tree to find the first descendant instance of type descendantType without crossing find boundaries: <code>node.{@link Node#descendants(Class) descendants(t)}.{@link #first()}</code></li>
+ * <li>Traverse up the tree to find the first parent instance of type parentType or one of its subclasses: <code>node.{@link Node#ancestors(Class) ancestors(t)}.{@link #first()}</code></li>
+ * <li>Traverse the children to find all the instances of type childType or one of its subclasses: <code>node.{@link Node#descendants(Class) children(t)}.{@link #toList()}</code></li>
+ * <li>Traverse down the tree to find all the descendant instances of type descendantType without crossing find boundaries: <code>node.{@link Node#descendants(Class) descendants(t)}.{@link #toList()}</code></li>
+ * <li>Traverse up the tree to find all of the parent instances of type parentType or one of its subclasses, ordering the nodes deepest first: <code>node.{@link Node#descendants(Class) ancestors(t)}.{@link #toList()}</code></li>
+ * <li>Get the n-th parent or null if there are less than {@code n} ancestors: <code>node.{@link Node#ancestors() ancestors()}.{@link #get(int) get(n - 1)}</code></li>
+ * <li>Find if this node contains a descendant of the given type without crossing find boundaries: <code>node.{@link Node#descendants(Class) descendants(t)}.{@link #nonEmpty()}</code></li>
+ * <li><code>node.getFirstParentOfAnyType(c1, c2) ===  node.{@link Node#ancestors() ancestors()}.{@link #firstNonNull(Function) firstNonNull}({@link #asInstanceOf(Class, Class[]) asInstanceOf(c1, c2)})</code></li>
+ * <li><code>node.hasDescendantOfAnyType(c1, c2) ===  node.{@link Node#descendants() descendants()}.{@link #map(Function) map}({@link #asInstanceOf(Class, Class[]) asInstanceOf(c1, c2)}).{@link #nonEmpty()}</code></li>
  * </ul>
  * The new way to write those is as efficient as the old way.
  *
@@ -89,7 +89,7 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  *
  * <p>Node streams may contain duplicates, which can be pruned with {@link #distinct()}.
  *
- * <h1>Details</h1>
+ * <h2>Details</h2>
  *
  * <p>NodeStreams are not necessarily implemented with {@link Stream}, but
  * when a method has an equivalent in the {@link Stream} API, their
@@ -105,7 +105,7 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  * equivalent to {@link Stream#findAny()}. The method {@link #first()}
  * is an equivalent to {@link Stream#findFirst()}. There is however a
  * {@link #last()} method, which may be implemented efficiently on some
- * streams (eg {@link #children()}). TODO maybe implement reverse
+ * streams (eg {@link #children()}).
  *
  * <p>Node streams are most of the time ordered in document order (w.r.t. the XPath specification),
  * a.k.a. prefix order. Some operations which explicitly manipulate the order of nodes, like
@@ -732,10 +732,10 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      * Returns the element at index n in this stream.
      * If no such element exists, {@code null} is returned.
      *
-     * <p>This is equivalent to <tt>{@link #drop(int) drop(n)}.{@link #first()}</tt>
+     * <p>This is equivalent to <code>{@link #drop(int) drop(n)}.{@link #first()}</code>.
      *
      * <p>If you'd rather continue processing the nth element as a node stream,
-     * you can use <tt>{@link #drop(int) drop(n)}.{@link #take(int) take(1)}.</tt>
+     * you can use <code>{@link #drop(int) drop(n)}.{@link #take(int) take(1)}</code>.
      *
      * @param n Index of the element to find
      *
@@ -953,7 +953,7 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      * depending on whether the argument is null or not.
      *
      * <p>If you know the node is not null, you can also
-     * call <tt>node.{@link Node#asStream() asStream()}</tt>.
+     * call <code>node.{@link Node#asStream() asStream()}</code>.
      *
      * @param node The node to contain
      * @param <T>  Element type of the returned stream
@@ -1113,9 +1113,9 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      * explicit type arguments:
      *
      * <pre>{@code
-     *    ASTAnyTypeDeclaration ts =
+     *    ASTTypeDeclaration ts =
      *       node.ancestors()
-     *           .<ASTAnyTypeDeclaration>map(asInstanceOf(ASTClassOrInterfaceDeclaration.class, ASTEnumDeclaration.class))
+     *           .<ASTTypeDeclaration>map(asInstanceOf(ASTClassDeclaration.class, ASTEnumDeclaration.class))
      *           .first(); // would not compile without the explicit type arguments
      * }</pre>
      *
@@ -1123,8 +1123,8 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      * may be used, which reduces the above to
      *
      * <pre>{@code
-     *    ASTAnyTypeDeclaration ts =
-     *       node.ancestors().firstNonNull(asInstanceOf(ASTClassOrInterfaceDeclaration.class, ASTEnumDeclaration.class));
+     *    ASTTypeDeclaration ts =
+     *       node.ancestors().firstNonNull(asInstanceOf(ASTClassDeclaration.class, ASTEnumDeclaration.class));
      * }</pre>
      *
      * @param c1   First type to test

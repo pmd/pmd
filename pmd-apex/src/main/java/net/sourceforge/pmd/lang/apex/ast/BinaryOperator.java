@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.data.ast.BinaryOp;
+import com.google.summit.ast.expression.BinaryExpression;
 
 /**
  * Apex binary operator
@@ -33,9 +33,10 @@ public enum BinaryOperator {
     }
 
     /**
-     * Returns a {@link BinaryOperator} corresponding to the given {@link BinaryOp}.
+     * Returns a {@link BinaryOperator} corresponding to the given {@link
+     * BinaryExpression.Operator}.
      */
-    public static BinaryOperator valueOf(BinaryOp op) {
+    public static BinaryOperator valueOf(BinaryExpression.Operator op) {
         switch (op) {
         case ADDITION:
             return ADDITION;
@@ -47,15 +48,15 @@ public enum BinaryOperator {
             return DIVISION;
         case LEFT_SHIFT:
             return LEFT_SHIFT;
-        case RIGHT_SHIFT:
+        case RIGHT_SHIFT_SIGNED:
             return RIGHT_SHIFT_SIGNED;
-        case UNSIGNED_RIGHT_SHIFT:
+        case RIGHT_SHIFT_UNSIGNED:
             return RIGHT_SHIFT_UNSIGNED;
-        case AND:
+        case BITWISE_AND:
             return BITWISE_AND;
-        case OR:
+        case BITWISE_OR:
             return BITWISE_OR;
-        case XOR:
+        case BITWISE_XOR:
             return BITWISE_XOR;
         default:
             throw new IllegalArgumentException("Invalid binary operator " + op);

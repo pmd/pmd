@@ -4,16 +4,20 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import static net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility.V_PUBLIC;
 import static net.sourceforge.pmd.lang.java.ast.JModifier.FINAL;
 import static net.sourceforge.pmd.lang.java.ast.JModifier.STATIC;
+import static net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility.V_PUBLIC;
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -24,7 +28,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * @author Clément Fournier
  * @since 6.7.0
  */
-public class FieldNamingConventionsRule extends AbstractNamingConventionRule<ASTVariableDeclaratorId> {
+public class FieldNamingConventionsRule extends AbstractNamingConventionRule<ASTVariableId> {
     // TODO we need a more powerful scheme to match some fields, e.g. include modifiers/type
     // We could define a new property, but specifying property values as a single string doesn't scale
     private static final PropertyDescriptor<List<String>> EXCLUDED_NAMES =
@@ -32,6 +36,11 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
                            .desc("Names of fields to whitelist.")
                            .defaultValues("serialVersionUID", "serialPersistentFields")
                            .build();
+
+    private static final Set<String> MAKE_FIELD_STATIC_CLASS_ANNOT =
+        setOf(
+            "lombok.experimental.UtilityClass"
+        );
 
 
     private final PropertyDescriptor<Pattern> publicConstantFieldRegex = defaultProp("public constant").defaultValue("[A-Z][A-Z_0-9]*").build();
@@ -55,13 +64,13 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
-        for (ASTVariableDeclaratorId id : node) {
-            if (getProperty(EXCLUDED_NAMES).contains(id.getVariableName())) {
+        for (ASTVariableId id : node) {
+            if (getProperty(EXCLUDED_NAMES).contains(id.getName())) {
                 continue;
             }
-
+            ASTTypeDeclaration enclosingType = node.getEnclosingType();
             boolean isFinal = node.hasModifiers(FINAL);
-            boolean isStatic = node.hasModifiers(STATIC);
+            boolean isStatic = node.hasModifiers(STATIC) || JavaAstUtils.hasAnyAnnotation(enclosingType, MAKE_FIELD_STATIC_CLASS_ANNOT);
             if (isFinal && isStatic) {
                 checkMatches(id, node.getVisibility() == V_PUBLIC ? publicConstantFieldRegex : constantFieldRegex, data);
             } else if (isFinal) {
@@ -81,7 +90,7 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
         // This inlines checkMatches because there's no variable declarator id
 
         if (!getProperty(enumConstantRegex).matcher(node.getImage()).matches()) {
-            addViolation(data, node, new Object[]{
+            asCtx(data).addViolation(node, new Object[]{
                 "enum constant",
                 node.getImage(),
                 getProperty(enumConstantRegex).toString(),
@@ -98,12 +107,12 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
     }
 
     @Override
-    String nameExtractor(ASTVariableDeclaratorId node) {
+    String nameExtractor(ASTVariableId node) {
         return node.getName();
     }
 
     @Override
-    String kindDisplayName(ASTVariableDeclaratorId node, PropertyDescriptor<Pattern> descriptor) {
+    String kindDisplayName(ASTVariableId node, PropertyDescriptor<Pattern> descriptor) {
 
         boolean isFinal = node.hasModifiers(FINAL);
         boolean isStatic = node.hasModifiers(STATIC);

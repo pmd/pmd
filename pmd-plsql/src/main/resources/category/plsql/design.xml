@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <ruleset name="Design"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
@@ -489,7 +489,7 @@ END pkg_too_many_fields;
     <rule name="TooManyMethods"
           language="plsql"
           since="5.1"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           message="This object has too many methods, consider refactoring it."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_design.html#toomanymethods">
         <description>

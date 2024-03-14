@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.plsql.rule;
 
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPackageBody;
@@ -14,15 +13,21 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeSpecification;
 import net.sourceforge.pmd.lang.plsql.ast.ExecutableCode;
-import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitor;
+import net.sourceforge.pmd.lang.plsql.ast.PlsqlVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
-public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLParserVisitor {
-
+public abstract class AbstractPLSQLRule extends AbstractRule implements PlsqlVisitor<Object, Object> {
 
     @Override
     public void apply(Node target, RuleContext ctx) {
         target.acceptVisitor(this, ctx);
+    }
+
+    @Override
+    public Object visitNode(Node node, Object param) {
+        node.children().forEach(c -> c.acceptVisitor(this, param));
+        return param;
     }
 
     /**
@@ -38,28 +43,28 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
         /*
          * Choose the Object Type
          */
-        c = node.getFirstParentOfType(ASTPackageSpecification.class);
+        c = node.ancestors(ASTPackageSpecification.class).first();
         if (c != null) {
             return c.getImage();
         }
 
-        c = node.getFirstParentOfType(ASTTypeSpecification.class);
+        c = node.ancestors(ASTTypeSpecification.class).first();
         if (c != null) {
             return c.getImage();
         }
 
-        c = node.getFirstParentOfType(ASTPackageBody.class);
+        c = node.ancestors(ASTPackageBody.class).first();
         if (c != null) {
             return c.getImage();
         }
 
-        c = node.getFirstParentOfType(ASTTriggerUnit.class);
+        c = node.ancestors(ASTTriggerUnit.class).first();
         if (c != null) {
             return c.getImage();
         }
 
         // Finally Schema-level Methods
-        c = node.getFirstParentOfType(ASTProgramUnit.class);
+        c = node.ancestors(ASTProgramUnit.class).first();
         if (c != null) {
             return c.getImage();
         }

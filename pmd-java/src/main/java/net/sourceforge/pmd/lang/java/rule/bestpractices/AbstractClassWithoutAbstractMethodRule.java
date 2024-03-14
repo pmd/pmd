@@ -5,33 +5,33 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 
 public class AbstractClassWithoutAbstractMethodRule extends AbstractJavaRulechainRule {
 
     public AbstractClassWithoutAbstractMethodRule() {
-        super(ASTClassOrInterfaceDeclaration.class);
+        super(ASTClassDeclaration.class);
     }
 
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+    public Object visit(ASTClassDeclaration node, Object data) {
         if (node.isInterface() || !node.isAbstract() || doesExtend(node) || doesImplement(node)) {
             return data;
         }
 
         if (node.getDeclarations(ASTMethodDeclaration.class).none(ASTMethodDeclaration::isAbstract)) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
         return data;
     }
 
-    private boolean doesExtend(ASTClassOrInterfaceDeclaration node) {
+    private boolean doesExtend(ASTClassDeclaration node) {
         return node.getSuperClassTypeNode() != null;
     }
 
-    private boolean doesImplement(ASTClassOrInterfaceDeclaration node) {
+    private boolean doesImplement(ASTClassDeclaration node) {
         return !node.getSuperInterfaceTypeNodes().isEmpty();
     }
 }

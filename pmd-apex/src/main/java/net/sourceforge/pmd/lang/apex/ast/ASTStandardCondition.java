@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.condition.StandardCondition;
+import com.google.summit.ast.Node;
 
-public final class ASTStandardCondition extends AbstractApexNode<StandardCondition> {
+public final class ASTStandardCondition extends AbstractApexNode.Single<Node> {
 
-    ASTStandardCondition(StandardCondition standardCondition) {
+    ASTStandardCondition(Node standardCondition) {
         super(standardCondition);
     }
 

@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.plsql.rule.codestyle;
 
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
+import static net.sourceforge.pmd.properties.NumericConstraints.inRange;
 
 import java.util.List;
 
@@ -82,15 +82,15 @@ public class CodeFormatRule extends AbstractPLSQLRule {
             lineNumber++;
             Node child = node.getChild(i);
             if (child.getBeginLine() != lineNumber) {
-                addViolationWithMessage(data, child, child.getXPathNodeName() + " should be on line " + lineNumber);
+                asCtx(data).addViolationWithMessage(child, child.getXPathNodeName() + " should be on line " + lineNumber);
             }
-            List<ASTEqualityExpression> conditions = child.findDescendantsOfType(ASTEqualityExpression.class);
+            List<ASTEqualityExpression> conditions = child.descendants(ASTEqualityExpression.class).toList();
 
             if (conditions.size() == 1) {
                 // one condition should be on the same line
                 ASTEqualityExpression singleCondition = conditions.get(0);
                 if (singleCondition.getBeginLine() != lineNumber) {
-                    addViolationWithMessage(data, child,
+                    asCtx(data).addViolationWithMessage(child,
                             "Join condition \"" + singleCondition.getImage() + "\" should be on line " + lineNumber);
                 }
             } else {
@@ -98,7 +98,7 @@ public class CodeFormatRule extends AbstractPLSQLRule {
                 for (ASTEqualityExpression singleCondition : conditions) {
                     lineNumber++;
                     if (singleCondition.getBeginLine() != lineNumber) {
-                        addViolationWithMessage(data, child,
+                        asCtx(data).addViolationWithMessage(child,
                                 "Join condition \"" + singleCondition.getImage() + "\" should be on line "
                                         + lineNumber);
                     }
@@ -118,7 +118,7 @@ public class CodeFormatRule extends AbstractPLSQLRule {
 
         // it should also be on the next line
         if (node.getBeginLine() != prevSibling.getEndLine() + 1) {
-            addViolationWithMessage(data, node,
+            asCtx(data).addViolationWithMessage(node,
                     node.getImage() + " should be on line " + (prevSibling.getEndLine() + 1));
         }
 
@@ -134,9 +134,9 @@ public class CodeFormatRule extends AbstractPLSQLRule {
                 image = child.getChild(0).getImage();
             }
             if (child.getBeginLine() != currentLine) {
-                addViolationWithMessage(data, child, image + " should be on line " + currentLine);
+                asCtx(data).addViolationWithMessage(child, image + " should be on line " + currentLine);
             } else if (i > 0 && child.getBeginColumn() != indentation) {
-                addViolationWithMessage(data, child, image + " should begin at column " + indentation);
+                asCtx(data).addViolationWithMessage(child, image + " should begin at column " + indentation);
             }
             // next entry needs to be on the next line
             currentLine++;
@@ -146,15 +146,15 @@ public class CodeFormatRule extends AbstractPLSQLRule {
 
     private void checkLineAndIndentation(Object data, Node node, int line, int indentation, String name) {
         if (node.getBeginLine() != line) {
-            addViolationWithMessage(data, node, name + " should be on line " + line);
+            asCtx(data).addViolationWithMessage(node, name + " should be on line " + line);
         } else if (node.getBeginColumn() != indentation) {
-            addViolationWithMessage(data, node, name + " should begin at column " + indentation);
+            asCtx(data).addViolationWithMessage(node, name + " should begin at column " + indentation);
         }
     }
 
     private void checkIndentation(Object data, Node node, int indentation, String name) {
         if (node.getBeginColumn() != indentation) {
-            addViolationWithMessage(data, node, name + " should begin at column " + indentation);
+            asCtx(data).addViolationWithMessage(node, name + " should begin at column " + indentation);
         }
     }
 
@@ -164,11 +164,11 @@ public class CodeFormatRule extends AbstractPLSQLRule {
         checkEachChildOnNextLine(data, node, node.getBeginLine() + 1, parameterIndentation);
 
         // check the data type alignment
-        List<ASTFormalParameter> parameters = node.findChildrenOfType(ASTFormalParameter.class);
+        List<ASTFormalParameter> parameters = node.children(ASTFormalParameter.class).toList();
         if (parameters.size() > 1) {
-            ASTDatatype first = parameters.get(0).getFirstChildOfType(ASTDatatype.class);
+            ASTDatatype first = parameters.get(0).firstChild(ASTDatatype.class);
             for (int i = 1; first != null && i < parameters.size(); i++) {
-                ASTDatatype nextType = parameters.get(i).getFirstChildOfType(ASTDatatype.class);
+                ASTDatatype nextType = parameters.get(i).firstChild(ASTDatatype.class);
                 if (nextType != null) {
                     checkIndentation(data, nextType, first.getBeginColumn(), "Type " + nextType.getImage());
                 }
@@ -179,15 +179,15 @@ public class CodeFormatRule extends AbstractPLSQLRule {
 
     @Override
     public Object visit(ASTDeclarativeSection node, Object data) {
-        int variableIndentation = node.getNthParent(2).getBeginColumn() + 2 * indentation;
+        int variableIndentation = node.ancestors().get(1).getBeginColumn() + 2 * indentation;
         int line = node.getBeginLine();
 
         List<ASTVariableOrConstantDeclarator> variables = node
-                .findDescendantsOfType(ASTVariableOrConstantDeclarator.class);
+                .descendants(ASTVariableOrConstantDeclarator.class).toList();
 
         int datatypeIndentation = variableIndentation;
         if (!variables.isEmpty()) {
-            ASTDatatype datatype = variables.get(0).getFirstChildOfType(ASTDatatype.class);
+            ASTDatatype datatype = variables.get(0).firstChild(ASTDatatype.class);
             if (datatype != null) {
                 datatypeIndentation = datatype.getBeginColumn();
             }
@@ -196,7 +196,7 @@ public class CodeFormatRule extends AbstractPLSQLRule {
         for (ASTVariableOrConstantDeclarator variable : variables) {
             checkLineAndIndentation(data, variable, line, variableIndentation, variable.getImage());
 
-            ASTDatatype datatype = variable.getFirstChildOfType(ASTDatatype.class);
+            ASTDatatype datatype = variable.firstChild(ASTDatatype.class);
             if (datatype != null) {
                 checkIndentation(data, datatype, datatypeIndentation, "Type " + datatype.getImage());
             }
@@ -209,18 +209,18 @@ public class CodeFormatRule extends AbstractPLSQLRule {
 
     @Override
     public Object visit(ASTArgumentList node, Object data) {
-        List<ASTArgument> arguments = node.findChildrenOfType(ASTArgument.class);
+        List<ASTArgument> arguments = node.children(ASTArgument.class).toList();
 
         // note: end column is exclusive
         if (node.getEndColumn() >= 120) {
-            addViolationWithMessage(data, node, "Line is too long, please split parameters on separate lines");
+            asCtx(data).addViolationWithMessage(node, "Line is too long, please split parameters on separate lines");
             return super.visit(node, data);
         }
 
         if (arguments.size() > 3) {
             // procedure calls with more than 3 parameters should use named parameters
             if (usesSimpleParameters(arguments)) {
-                addViolationWithMessage(data, node,
+                asCtx(data).addViolationWithMessage(node,
                         "Procedure call with more than three parameters should use named parameters.");
             }
 
@@ -254,9 +254,9 @@ public class CodeFormatRule extends AbstractPLSQLRule {
             }
 
             // closing parenthesis should be on a new line
-            Node primaryExpression = node.getNthParent(3);
+            Node primaryExpression = node.ancestors().get(2);
             if (primaryExpression.getEndLine() != node.getEndLine() + 1) {
-                addViolationWithMessage(data, primaryExpression, "Closing parenthesis should be on a new line.");
+                asCtx(data).addViolationWithMessage(primaryExpression, "Closing parenthesis should be on a new line.");
             }
         }
 

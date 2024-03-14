@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.statement.VariableDeclaration;
+import com.google.summit.ast.declaration.VariableDeclaration;
 
-public final class ASTVariableDeclaration extends AbstractApexNode<VariableDeclaration> {
+public final class ASTVariableDeclaration extends AbstractApexNode.Single<VariableDeclaration> {
 
     ASTVariableDeclaration(VariableDeclaration variableDeclaration) {
         super(variableDeclaration);
@@ -20,17 +20,17 @@ public final class ASTVariableDeclaration extends AbstractApexNode<VariableDecla
 
     @Override
     public String getImage() {
-        if (node.getLocalInfo() != null) {
-            return node.getLocalInfo().getName();
-        }
-        return null;
+        return node.getId().getString();
     }
 
 
+    /**
+     * Returns the variable's type name.
+     *
+     * <p>This includes any type arguments.
+     * If the type is a primitive, its case will be normalized.
+     */
     public String getType() {
-        if (node.getLocalInfo() != null) {
-            return node.getLocalInfo().getType().getApexName();
-        }
-        return null;
+        return caseNormalizedTypeIfPrimitive(node.getType().asCodeString());
     }
 }

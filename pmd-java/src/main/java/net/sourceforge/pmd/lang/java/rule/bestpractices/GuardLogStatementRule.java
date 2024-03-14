@@ -14,7 +14,6 @@ import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -23,14 +22,16 @@ import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Check that log.debug, log.trace, log.error, etc... statements are guarded by
@@ -67,14 +68,13 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
                     .desc("LogLevels to guard")
                     .defaultValues("trace", "debug", "info", "warn", "error",
                                    "log", "finest", "finer", "fine", "info", "warning", "severe")
-                    .delim(',')
                     .build();
 
     private static final PropertyDescriptor<List<String>> GUARD_METHODS =
             stringListProperty("guardsMethods")
                     .desc("Method use to guard the log statement")
                     .defaultValues("isTraceEnabled", "isDebugEnabled", "isInfoEnabled", "isWarnEnabled", "isErrorEnabled", "isLoggable")
-                    .delim(',').build();
+                    .build();
 
     private final Map<String, String> guardStmtByLogLevel = new HashMap<>(12);
 
@@ -107,7 +107,7 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
         String logLevel = getLogLevelName(methodCall);
         if (logLevel != null && guardStmtByLogLevel.containsKey(logLevel)) {
             if (needsGuard(methodCall) && !hasGuard(methodCall, logLevel)) {
-                addViolation(data, node);
+                asCtx(data).addViolation(node);
             }
         }
         return null;
@@ -155,7 +155,7 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
                 return false;
             }
             @Nullable
-            ASTVariableDeclaratorId declaratorId = symbol.tryGetNode();
+            ASTVariableId declaratorId = symbol.tryGetNode();
             if (declaratorId != null) {
                 return isConstantStringExpression(declaratorId.getInitializer());
             }
@@ -237,7 +237,7 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
         // so that we can ignore it
         return call.getArguments().toStream()
                    .drop(messageArgIndex) // remove the level argument if needed
-                   .all(it -> it instanceof ASTStringLiteral || it instanceof ASTLambdaExpression || it instanceof ASTVariableAccess);
+                   .all(it -> it instanceof ASTStringLiteral || it instanceof ASTLambdaExpression || it instanceof ASTVariableAccess || it instanceof ASTMethodReference);
     }
 
     private void extractProperties() {

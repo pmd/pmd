@@ -6,12 +6,13 @@ package net.sourceforge.pmd.lang.java.symbols.internal
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.ints.shouldBeExactly
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.arbitrary.filterNot
 import javasymbols.testdata.impls.IdenticalToSomeFields
 import javasymbols.testdata.impls.SomeFields
-import net.sourceforge.pmd.lang.ast.test.IntelliMarker
+import net.sourceforge.pmd.lang.test.ast.IntelliMarker
 
 /**
  * @author Clément Fournier
@@ -39,8 +40,8 @@ class ReflectedFieldSymbolTest : IntelliMarker, WordSpec({
         "reflect its modifiers properly" {
             TestClassesGen.filterNot { it.isArray }.forAllEqual {
                 Pair(
-                        classSym(it)!!.declaredFields.map { it.simpleName to it.modifiers },
-                        it.declaredFields.map { it.name to it.modifiers }
+                        classSym(it)!!.declaredFields.map { fieldSymbol -> fieldSymbol.simpleName to fieldSymbol.modifiers },
+                        it.declaredFields.map { field -> field.name to field.modifiers }
                 )
             }
         }
@@ -56,9 +57,14 @@ class ReflectedFieldSymbolTest : IntelliMarker, WordSpec({
         }
 
         "be unmodifiable" {
-            shouldThrow<UnsupportedOperationException> {
-                classSym(SomeFields::class.java)!!.getDeclaredField("foo")!!.declaredAnnotations.add(null)
-            }
+            val declaredAnnotations = classSym(SomeFields::class.java)!!.getDeclaredField("foo")!!.declaredAnnotations
+            declaredAnnotations.size shouldBeExactly 1
+            val annot = declaredAnnotations.first()
+            declaredAnnotations.plus(annot)
+            declaredAnnotations.size shouldBeExactly 1
+
+            // still unmodified
+            classSym(SomeFields::class.java)!!.getDeclaredField("foo")!!.declaredAnnotations.size shouldBeExactly 1
         }
     }
 

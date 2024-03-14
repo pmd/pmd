@@ -19,6 +19,9 @@ import net.sourceforge.pmd.lang.modelica.ast.ASTSimpleName;
 import net.sourceforge.pmd.lang.modelica.ast.ASTStreamClause;
 import net.sourceforge.pmd.lang.modelica.ast.ASTTypePrefix;
 import net.sourceforge.pmd.lang.modelica.ast.ASTTypeSpecifier;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionContext;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionState;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.Watchdog;
 
 public class ModelicaComponentDeclaration extends AbstractModelicaDeclaration implements ModelicaDeclaration {
     public enum ComponentKind {
@@ -83,14 +86,14 @@ public class ModelicaComponentDeclaration extends AbstractModelicaDeclaration im
     private final ASTConditionAttribute condition;
 
     public ModelicaComponentDeclaration(ASTComponentDeclaration node) {
-        declarationName = node.getFirstChildOfType(ASTDeclaration.class).getFirstChildOfType(ASTSimpleName.class).getImage();
-        condition = node.getFirstChildOfType(ASTConditionAttribute.class);
-        ASTComponentClause declarationRoot = node.getFirstParentOfType(ASTComponentClause.class);
-        ASTTypePrefix prefixes = declarationRoot.getFirstChildOfType(ASTTypePrefix.class);
+        declarationName = node.firstChild(ASTDeclaration.class).firstChild(ASTSimpleName.class).getName();
+        condition = node.firstChild(ASTConditionAttribute.class);
+        ASTComponentClause declarationRoot = node.ancestors(ASTComponentClause.class).first();
+        ASTTypePrefix prefixes = declarationRoot.firstChild(ASTTypePrefix.class);
         parseTypePrefix(prefixes);
         typeName = declarationRoot
-                .getFirstChildOfType(ASTTypeSpecifier.class)
-                .getFirstChildOfType(ASTName.class);
+                .firstChild(ASTTypeSpecifier.class)
+                .firstChild(ASTName.class);
     }
 
     void setContainingScope(ModelicaClassScope scope) {
@@ -103,27 +106,27 @@ public class ModelicaComponentDeclaration extends AbstractModelicaDeclaration im
     }
 
     private void parseTypePrefix(ASTTypePrefix prefix) {
-        if (prefix.getFirstChildOfType(ASTFlowClause.class) != null) {
+        if (prefix.firstChild(ASTFlowClause.class) != null) {
             kind = ComponentKind.FLOW;
-        } else if (prefix.getFirstChildOfType(ASTStreamClause.class) != null) {
+        } else if (prefix.firstChild(ASTStreamClause.class) != null) {
             kind = ComponentKind.STREAM;
         } else {
             kind = ComponentKind.NOTHING_SPECIAL;
         }
 
-        if (prefix.getFirstChildOfType(ASTDiscreteClause.class) != null) {
+        if (prefix.firstChild(ASTDiscreteClause.class) != null) {
             variability = ComponentVariability.DISCRETE;
-        } else if (prefix.getFirstChildOfType(ASTParameterClause.class) != null) {
+        } else if (prefix.firstChild(ASTParameterClause.class) != null) {
             variability = ComponentVariability.PARAMETER;
-        } else if (prefix.getFirstChildOfType(ASTConstantClause.class) != null) {
+        } else if (prefix.firstChild(ASTConstantClause.class) != null) {
             variability = ComponentVariability.CONSTANT;
         } else {
             variability = ComponentVariability.CONTINUOUS;
         }
 
-        if (prefix.getFirstChildOfType(ASTInputClause.class) != null) {
+        if (prefix.firstChild(ASTInputClause.class) != null) {
             causality = ComponentCausality.INPUT;
-        } else if (prefix.getFirstChildOfType(ASTOutputClause.class) != null) {
+        } else if (prefix.firstChild(ASTOutputClause.class) != null) {
             causality = ComponentCausality.OUTPUT;
         } else {
             causality = ComponentCausality.ACAUSAL;

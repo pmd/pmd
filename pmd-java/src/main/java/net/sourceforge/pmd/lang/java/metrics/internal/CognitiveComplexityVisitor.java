@@ -10,7 +10,7 @@ import java.util.Deque;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
+import net.sourceforge.pmd.lang.java.ast.ASTClassBody;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
@@ -270,7 +270,7 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
     }
 
     @Override
-    public Void visit(ASTClassOrInterfaceBody node, State state) {
+    public Void visit(ASTClassBody node, State state) {
         return nonStructural(node, state);
     }
 

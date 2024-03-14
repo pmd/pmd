@@ -16,6 +16,6 @@ public final class ASTSelectStatement extends AbstractSelectStatement {
     }
 
     public ASTFromClause getFromClause() {
-        return getFirstChildOfType(ASTFromClause.class);
+        return firstChild(ASTFromClause.class);
     }
 }

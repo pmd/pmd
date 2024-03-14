@@ -5,7 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import net.sourceforge.pmd.testframework.PmdRuleTst;
+import net.sourceforge.pmd.test.PmdRuleTst;
 
 class UnnecessaryCastTest extends PmdRuleTst {
     // no additional unit tests

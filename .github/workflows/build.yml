@@ -14,6 +14,12 @@ on:
     # build it monthly: At 04:00 on day-of-month 1.
     - cron:  '0 4 1 * *'
   workflow_dispatch:
+    inputs:
+      build_cli_dist_only:
+        description: "Build only modules cli and dist"
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read # to fetch code (actions/checkout)
@@ -32,10 +38,10 @@ jobs:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 2
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       with:
         path: |
           ~/.m2/repository
@@ -46,16 +52,16 @@ jobs:
         key: v3-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
           v3-${{ runner.os }}-
-    - name: Set up Ruby 2.7
+    - name: Set up Ruby 3.3
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 2.7
+        ruby-version: 3.3
     - name: Setup Environment
       shell: bash
       run: |
         echo "LANG=en_US.UTF-8" >> $GITHUB_ENV
-        echo "MAVEN_OPTS=-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3 -DautoReleaseAfterClose=true -DstagingProgressTimeoutMinutes=30" >> $GITHUB_ENV
-        echo "PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/21/scripts" >> $GITHUB_ENV
+        echo "MAVEN_OPTS=-Daether.connector.http.connectionMaxTtl=180 -DautoReleaseAfterClose=true -DstagingProgressTimeoutMinutes=30" >> $GITHUB_ENV
+        echo "PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/master/scripts" >> $GITHUB_ENV
     - name: Check Environment
       shell: bash
       run: |
@@ -68,5 +74,15 @@ jobs:
       run: .ci/build.sh
       shell: bash
       env:
+        BUILD_CLI_DIST_ONLY: ${{ inputs.build_cli_dist_only }}
         PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Workaround actions/upload-artifact#176
+      run: |
+        echo "artifacts_path=$(realpath ..)" >> $GITHUB_ENV
+    - name: Upload regression tester report
+      uses: actions/upload-artifact@v4
+      with:
+        name: pmd-regression-tester
+        path: ${{ env.artifacts_path }}/target/pr-*-diff-report-*.tar.gz
+        if-no-files-found: ignore

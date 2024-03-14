@@ -18,30 +18,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import net.sourceforge.pmd.DummyParsingHelper;
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithListAndEnum;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
-import net.sourceforge.pmd.lang.rule.xpath.impl.AbstractXPathFunctionDef;
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionDefinition;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
 import net.sf.saxon.expr.Expression;
-import net.sf.saxon.expr.XPathContext;
-import net.sf.saxon.lib.ExtensionFunctionCall;
-import net.sf.saxon.om.Sequence;
-import net.sf.saxon.trans.XPathException;
-import net.sf.saxon.value.BooleanValue;
-import net.sf.saxon.value.SequenceType;
 
 class SaxonXPathRuleQueryTest {
 
@@ -421,27 +417,21 @@ class SaxonXPathRuleQueryTest {
     }
 
     @NonNull
-    private static AbstractXPathFunctionDef imageIsFunction() {
-        return new AbstractXPathFunctionDef("imageIs", "dummy") {
+    private static XPathFunctionDefinition imageIsFunction() {
+        return new XPathFunctionDefinition("imageIs", DummyLanguageModule.getInstance()) {
             @Override
-            public SequenceType[] getArgumentTypes() {
-                return new SequenceType[] {SequenceType.SINGLE_STRING};
+            public Type[] getArgumentTypes() {
+                return new Type[] {Type.SINGLE_STRING};
             }
 
             @Override
-            public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
-                return SequenceType.SINGLE_BOOLEAN;
+            public Type getResultType() {
+                return Type.SINGLE_BOOLEAN;
             }
 
             @Override
-            public ExtensionFunctionCall makeCallExpression() {
-                return new ExtensionFunctionCall() {
-                    @Override
-                    public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
-                        Node contextNode = ((AstElementNode) context.getContextItem()).getUnderlyingNode();
-                        return BooleanValue.get(arguments[0].head().getStringValue().equals(contextNode.getImage()));
-                    }
-                };
+            public FunctionCall makeCallExpression() {
+                return (contextNode, arguments) -> StringUtils.equals(arguments[0].toString(), contextNode.getImage());
             }
         };
     }

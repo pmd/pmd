@@ -7,10 +7,10 @@ package net.sourceforge.pmd.lang.java.metrics.impl;
 import java.util.Locale;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.metrics.Metric;
-import net.sourceforge.pmd.test.AbstractMetricTestRule;
+import net.sourceforge.pmd.lang.test.AbstractMetricTestRule;
 
 /**
  *
@@ -24,8 +24,8 @@ public abstract class JavaDoubleMetricTestRule extends AbstractMetricTestRule.Of
     @Override
     protected boolean reportOn(Node node) {
         return super.reportOn(node)
-            && (node instanceof ASTMethodOrConstructorDeclaration
-            || node instanceof ASTAnyTypeDeclaration);
+            && (node instanceof ASTExecutableDeclaration
+            || node instanceof ASTTypeDeclaration);
     }
 
     @Override

@@ -4,29 +4,19 @@
 
 package net.sourceforge.pmd.lang.document;
 
-import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
-import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.annotation.DeprecatedUntil700;
-import net.sourceforge.pmd.cpd.SourceCode;
-import net.sourceforge.pmd.internal.util.BaseCloseable;
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForCharSeq;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForNio;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForReader;
-import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * Represents some location containing character data. Despite the name,
@@ -37,24 +27,14 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  * <p>Text files must provide read access, and may provide write access.
  * This interface only provides block IO operations, while {@link TextDocument} adds logic
  * about incremental edition (eg replacing a single region of text).
- *
- * <p>This interface is meant to replace {@link DataSource} and {@link SourceCode.CodeLoader}.
- * "DataSource" is not an appropriate name for a file which can be written
- * to, also, the "data" it provides is text, not bytes.
  */
 public interface TextFile extends Closeable {
-
-    /**
-     * The name used for a file that has no name. This is mostly only
-     * relevant for unit tests.
-     */
-    String UNKNOWN_FILENAME = "(unknown file)";
 
 
     /**
      * Returns the language version which should be used to process this
      * file. This is a property of the file, which allows sources for
-     * several different language versions to be processed in the same
+     * different language versions to be processed in the same
      * PMD run. It also makes it so, that the file extension is not interpreted
      * to find out the language version after the initial file collection
      * phase.
@@ -66,27 +46,13 @@ public interface TextFile extends Closeable {
 
 
     /**
-     * Returns an identifier for the path of this file. This should not
+     * Returns an identifier for this file. This should not
      * be interpreted as a {@link File}, it may not be a file on this
-     * filesystem. The only requirement for this method, is that two
-     * distinct text files should have distinct path IDs, and that from
-     * one analysis to the next, the path ID of logically identical files
-     * be the same.
-     *
-     * <p>Basically this may be implemented as a URL, or a file path. It
-     * is used to index violation caches.
+     * filesystem. Two distinct text files should have distinct path IDs,
+     * and from one analysis to the next, the path ID of logically identical
+     * files should be the same.
      */
-    String getPathId();
-
-
-    /**
-     * Returns a display name for the file. This name is used for
-     * reporting and should not be interpreted. It may be relative
-     * to a directory or so, it may also not be normalized. Use
-     * {@link #getPathId()} when you want an identifier.
-     */
-    @NonNull
-    String getDisplayName();
+    FileId getFileId();
 
 
     /**
@@ -161,7 +127,6 @@ public interface TextFile extends Closeable {
      */
     static TextFile forPath(Path path, Charset charset, LanguageVersion languageVersion) {
         return builderForPath(path, charset, languageVersion)
-                .withDisplayName(path.toString())
                 .build();
     }
 
@@ -190,14 +155,13 @@ public interface TextFile extends Closeable {
      * may not produce exactly the same char sequence.
      *
      * @param charseq         Text of the file
-     * @param pathId          File name to use as path id
+     * @param fileId          File name to use as path id
      * @param languageVersion Language version
      *
      * @throws NullPointerException If any parameter is null
      */
-    static TextFile forCharSeq(CharSequence charseq, String pathId, LanguageVersion languageVersion) {
-        return builderForCharSeq(charseq, pathId, languageVersion)
-                .withDisplayName(pathId)
+    static TextFile forCharSeq(CharSequence charseq, FileId fileId, LanguageVersion languageVersion) {
+        return builderForCharSeq(charseq, fileId, languageVersion)
                 .build();
     }
 
@@ -207,13 +171,13 @@ public interface TextFile extends Closeable {
      * may not produce exactly the same char sequence.
      *
      * @param charseq         Text of the file
-     * @param pathId          File name to use as path id
+     * @param fileId          File name to use as path id
      * @param languageVersion Language version
      *
      * @throws NullPointerException If any parameter is null
      */
-    static TextFileBuilder builderForCharSeq(CharSequence charseq, String pathId, LanguageVersion languageVersion) {
-        return new ForCharSeq(charseq, pathId, languageVersion);
+    static TextFileBuilder builderForCharSeq(CharSequence charseq, FileId fileId, LanguageVersion languageVersion) {
+        return new ForCharSeq(charseq, fileId, languageVersion);
     }
 
     /**
@@ -224,14 +188,13 @@ public interface TextFile extends Closeable {
      * throw an {@link IOException}.
      *
      * @param reader          Text of the file
-     * @param pathId          File name to use as path id
+     * @param fileId          File name to use as path id
      * @param languageVersion Language version
      *
      * @throws NullPointerException If any parameter is null
      */
-    static TextFile forReader(Reader reader, String pathId, LanguageVersion languageVersion) {
-        return builderForReader(reader, pathId, languageVersion)
-                .withDisplayName(pathId)
+    static TextFile forReader(Reader reader, FileId fileId, LanguageVersion languageVersion) {
+        return builderForReader(reader, fileId, languageVersion)
                 .build();
     }
 
@@ -243,65 +206,12 @@ public interface TextFile extends Closeable {
      * throw an {@link IOException}.
      *
      * @param reader          Text of the file
-     * @param pathId          File name to use as path id
+     * @param fileId          File name to use as path id
      * @param languageVersion Language version
      *
      * @throws NullPointerException If any parameter is null
      */
-    static TextFileBuilder builderForReader(Reader reader, String pathId, LanguageVersion languageVersion) {
-        return new ForReader(languageVersion, reader, pathId);
-    }
-
-    /**
-     * Wraps the given {@link DataSource} (provided for compatibility).
-     * Note that data sources are only usable once (even {@link DataSource#forString(String, String)}),
-     * so calling {@link TextFile#readContents()} twice will throw the second time.
-     *
-     * @deprecated This is deprecated until PMD 7 is out, after which
-     *     {@link DataSource} will be removed.
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    static TextFile dataSourceCompat(DataSource ds, PMDConfiguration config) {
-        String pathId = ds.getNiceFileName(false, null);
-        LanguageVersion languageVersion = config.getLanguageVersionOfFile(pathId);
-        if (languageVersion == null) {
-            throw new NullPointerException("no language version detected for " + pathId);
-        }
-        String shortPaths = config.getInputPathList().stream().map(Path::toString).collect(Collectors.joining(","));
-        class DataSourceTextFile extends BaseCloseable implements TextFile {
-
-            @Override
-            public @NonNull LanguageVersion getLanguageVersion() {
-                return languageVersion;
-            }
-
-            @Override
-            public String getPathId() {
-                return pathId;
-            }
-
-            @Override
-            public @NonNull String getDisplayName() {
-                return ds.getNiceFileName(false, shortPaths);
-            }
-
-            @Override
-            public TextFileContent readContents() throws IOException {
-                ensureOpen();
-                try (InputStream is = ds.getInputStream();
-                     Reader reader = new BufferedReader(new InputStreamReader(is, config.getSourceEncoding()))) {
-                    String contents = IOUtil.readToString(reader);
-                    return TextFileContent.fromCharSeq(contents);
-                }
-            }
-
-            @Override
-            protected void doClose() throws IOException {
-                ds.close();
-            }
-        }
-
-        return new DataSourceTextFile();
+    static TextFileBuilder builderForReader(Reader reader, FileId fileId, LanguageVersion languageVersion) {
+        return new ForReader(languageVersion, reader, fileId);
     }
 }

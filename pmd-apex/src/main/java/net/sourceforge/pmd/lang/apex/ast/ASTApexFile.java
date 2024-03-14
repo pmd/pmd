@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.net.URI;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -16,22 +14,22 @@ import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextRegion;
 
-import apex.jorje.semantic.ast.AstNode;
-import apex.jorje.semantic.ast.compilation.Compilation;
-import com.nawforce.common.diagnostics.Issue;
+import com.google.summit.ast.CompilationUnit;
+import com.nawforce.pkgforce.api.Issue;
 
-public final class ASTApexFile extends AbstractApexNode<AstNode> implements RootNode {
+public final class ASTApexFile extends AbstractApexNode.Single<CompilationUnit> implements RootNode {
 
     private final AstInfo<ASTApexFile> astInfo;
     private final @NonNull ApexMultifileAnalysis multifileAnalysis;
 
     ASTApexFile(ParserTask task,
-                Compilation jorjeNode,
+                CompilationUnit compilationUnit,
                 Map<Integer, String> suppressMap,
                 @NonNull ApexLanguageProcessor apexLang) {
-        super(jorjeNode);
+        super(compilationUnit);
         this.astInfo = new AstInfo<>(task, this).withSuppressMap(suppressMap);
         this.multifileAnalysis = apexLang.getMultiFileState();
         this.setRegion(TextRegion.fromOffsetLength(0, task.getTextDocument().getLength()));
@@ -40,11 +38,6 @@ public final class ASTApexFile extends AbstractApexNode<AstNode> implements Root
     @Override
     public AstInfo<ASTApexFile> getAstInfo() {
         return astInfo;
-    }
-
-    @Override
-    public double getApexVersion() {
-        return getNode().getDefiningType().getCodeUnitDetails().getVersion().getExternal();
     }
 
     public ASTUserClassOrInterface<?> getMainNode() {
@@ -63,11 +56,17 @@ public final class ASTApexFile extends AbstractApexNode<AstNode> implements Root
     }
 
     public List<Issue> getGlobalIssues() {
-        String filename = getAstInfo().getTextDocument().getPathId();
-        if (filename.length() > 7 && "file://".equalsIgnoreCase(filename.substring(0, 7))) {
-            URI uri = URI.create(filename);
-            filename = Paths.get(uri).toString();
+        FileId fileId = getAstInfo().getTextDocument().getFileId();
+        return multifileAnalysis.getFileIssues(fileId.getAbsolutePath());
+    }
+
+    @Override
+    public String getDefiningType() {
+        // an apex file can contain only one top level type
+        BaseApexClass baseApexClass = firstChild(BaseApexClass.class);
+        if (baseApexClass != null) {
+            return baseApexClass.getQualifiedName().toString();
         }
-        return multifileAnalysis.getFileIssues(filename);
+        return null;
     }
 }

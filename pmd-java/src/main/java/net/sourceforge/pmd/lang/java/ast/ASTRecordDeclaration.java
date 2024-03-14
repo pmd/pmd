@@ -28,7 +28,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  *
  * @see <a href="https://openjdk.java.net/jeps/395">JEP 395: Records</a>
  */
-public final class ASTRecordDeclaration extends AbstractAnyTypeDeclaration {
+public final class ASTRecordDeclaration extends AbstractTypeDeclaration {
     ASTRecordDeclaration(int id) {
         super(id);
     }
@@ -40,12 +40,12 @@ public final class ASTRecordDeclaration extends AbstractAnyTypeDeclaration {
 
     @Override
     public NodeStream<ASTBodyDeclaration> getDeclarations() {
-        return getFirstChildOfType(ASTRecordBody.class).children(ASTBodyDeclaration.class);
+        return firstChild(ASTRecordBody.class).children(ASTBodyDeclaration.class);
     }
 
     @Override
     @NonNull
     public ASTRecordComponentList getRecordComponents() {
-        return getFirstChildOfType(ASTRecordComponentList.class);
+        return firstChild(ASTRecordComponentList.class);
     }
 }

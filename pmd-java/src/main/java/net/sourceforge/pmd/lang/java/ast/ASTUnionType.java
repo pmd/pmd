@@ -19,14 +19,16 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChildOfTyp
  *
  * <pre class="grammar">
  *
- * UnionType ::= {@link ASTClassOrInterfaceType ClassType} ("|" {@link ASTClassOrInterfaceType ClassType})+
+ * UnionType ::= {@link ASTClassType ClassType} ("|" {@link ASTClassType ClassType})+
  *
  * </pre>
+ *
+ * @see ASTCatchParameter#getAllExceptionTypes()
  */
 public final class ASTUnionType extends AbstractJavaTypeNode
     implements ASTReferenceType,
-               AtLeastOneChildOfType<ASTClassOrInterfaceType>,
-               Iterable<ASTClassOrInterfaceType> {
+               AtLeastOneChildOfType<ASTClassType>,
+               Iterable<ASTClassType> {
 
     ASTUnionType(int id) {
         super(id);
@@ -38,13 +40,13 @@ public final class ASTUnionType extends AbstractJavaTypeNode
     }
 
     /** Returns a stream of component types. */
-    public NodeStream<ASTClassOrInterfaceType> getComponents() {
-        return children(ASTClassOrInterfaceType.class);
+    public NodeStream<ASTClassType> getComponents() {
+        return children(ASTClassType.class);
     }
 
     @Override
-    public Iterator<ASTClassOrInterfaceType> iterator() {
-        return children(ASTClassOrInterfaceType.class).iterator();
+    public Iterator<ASTClassType> iterator() {
+        return children(ASTClassType.class).iterator();
     }
 
 }

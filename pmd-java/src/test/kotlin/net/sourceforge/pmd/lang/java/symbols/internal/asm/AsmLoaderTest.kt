@@ -20,8 +20,8 @@ import javasymbols.testdata.deep.AClassWithLocals
 import javasymbols.testdata.deep.`Another$ClassWith$Dollar`
 import javasymbols.testdata.deep.OuterWithoutDollar
 import javasymbols.testdata.impls.GenericClass
-import net.sourceforge.pmd.lang.ast.test.IntelliMarker
-import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.test.ast.IntelliMarker
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.types.testTypeSystem
 import org.objectweb.asm.Opcodes
 import kotlin.test.assertSame
@@ -38,7 +38,7 @@ class AsmLoaderTest : IntelliMarker, FunSpec({
     //   access flags
     //   method reference with static ctdecl & zero formal parameters (asInstanceMethod)
 
-    val contextClasspath = Classpath {  Thread.currentThread().contextClassLoader.getResource(it) }
+    val contextClasspath = Classpath {  Thread.currentThread().contextClassLoader.getResourceAsStream(it) }
 
     test("First ever ASM test") {
 

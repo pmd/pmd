@@ -9,7 +9,7 @@ adr_status: "Accepted"
 last_updated: September 2022
 ---
 
-# Context
+## Context
 
 We currently use Kotlin only for unit tests at some places (e.g. pmd-lang-test module provides a couple of base
 test classes). We were cautious to expand Kotlin because of poor development support outside JetBrain's
@@ -26,7 +26,7 @@ However - PMD is a tool that deals with many, many languages anyway, so this is 
 
 Nevertheless, extending the usage of Kotlin within PMD can also increase contributions.
 
-# Decision
+## Decision
 
 We are generally open to the idea to increase usage of Kotlin within PMD. In order to gain experience
 and to keep it within bounds and therefore maintainable we came up with the following rules:
@@ -50,11 +50,11 @@ and to keep it within bounds and therefore maintainable we came up with the foll
   not make incompatible changes. If compatibility (binary or source) can't be maintained, then that would be a
   major version change.
 
-# Status
+## Status
 
 {{ page.adr_status }} (Last updated: {{ page.last_updated }})
 
-# Consequences
+## Consequences
 
 Allowing more Kotlin in PMD can attract new contributions. It might make it easier to develop small DSLs.
 In the future we might also consider to use other languages than Kotlin, e.g. for `pmd-scala` Scala might make sense.
@@ -64,8 +64,8 @@ when Kotlin is used. Eclipse can't be used practically anymore.
 
 Maintaining a polyglot code base with multiple languages is likely to be more challenging.
 
-# Change History
+## Change History
 
-2022-09-30: Changed status to "Accepted".
+2022-09-30: Changed status to "Accepted". ([#4072](https://github.com/pmd/pmd/pull/4072))
 
 2022-07-28: Proposed initial version.

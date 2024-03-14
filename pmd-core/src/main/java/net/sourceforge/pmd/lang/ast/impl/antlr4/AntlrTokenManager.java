@@ -10,7 +10,7 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
 /**
@@ -63,7 +63,7 @@ public class AntlrTokenManager implements TokenManager<AntlrToken> {
                                 final int charPositionInLine,
                                 final String msg,
                                 final RecognitionException ex) {
-            throw new TokenMgrError(line, charPositionInLine, textDoc.getDisplayName(), msg, ex);
+            throw new LexException(line, charPositionInLine, textDoc.getFileId(), msg, ex);
         }
     }
 

@@ -22,9 +22,9 @@ import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
  * </pre>
  */
 public final class ASTFieldDeclaration extends AbstractJavaNode
-    implements Iterable<ASTVariableDeclaratorId>,
+    implements Iterable<ASTVariableId>,
                LeftRecursiveNode,
-               AccessNode,
+        ModifierOwner,
                ASTBodyDeclaration,
                InternalInterfaces.MultiVariableIdOwner,
                JavadocCommentOwner {
@@ -48,16 +48,16 @@ public final class ASTFieldDeclaration extends AbstractJavaNode
 
     /**
      * Gets the variable name of this field. This method searches the first
-     * VariableDeclaratorId node and returns its image or <code>null</code> if
+     * VariableId node and returns its image or <code>null</code> if
      * the child node is not found.
      *
      * @return a String representing the name of the variable
      *
      * @deprecated FieldDeclaration may declare several variables, so this is not exhaustive
-     *     Iterate on the {@linkplain ASTVariableDeclaratorId VariableDeclaratorIds} instead
+     *     Iterate on the {@linkplain ASTVariableId VariableIds} instead
      */
     @Deprecated
-    @DeprecatedAttribute(replaceWith = "VariableDeclaratorId/@Name")
+    @DeprecatedAttribute(replaceWith = "VariableId/@Name")
     public String getVariableName() {
         return getVarIds().firstOrThrow().getName();
     }
@@ -66,11 +66,17 @@ public final class ASTFieldDeclaration extends AbstractJavaNode
     /**
      * Returns the type node at the beginning of this field declaration.
      * The type of this node is not necessarily the type of the variables,
-     * see {@link ASTVariableDeclaratorId#getType()}.
+     * see {@link ASTVariableId#getTypeNode()}.
      */
     @Override
     public ASTType getTypeNode() {
-        return getFirstChildOfType(ASTType.class);
+        return firstChild(ASTType.class);
     }
 
+    /**
+     * Returns true if this field is static.
+     */
+    public boolean isStatic() {
+        return hasModifiers(JModifier.STATIC);
+    }
 }

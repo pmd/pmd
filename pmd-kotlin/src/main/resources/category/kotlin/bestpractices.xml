@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <ruleset name="Best Practices"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
@@ -13,14 +13,13 @@ Rules which enforce generally accepted best practices.
           since="7.0.0"
           language="kotlin"
           message="Function names should have non-cryptic and clear names."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#functionnametooshort">
         <description>
             Function names should be easy to understand and describe the intention. Makes developers happy.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="3.1"/>
             <property name="xpath">
                 <value><![CDATA[
                     //FunctionDeclaration/SimpleIdentifier/T-Identifier[string-length(@Text) < 3]

@@ -10,13 +10,13 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
-import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
-import net.sourceforge.pmd.lang.ast.test.RelevantAttributePrinter;
+import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
+import net.sourceforge.pmd.lang.test.ast.BaseTreeDumpTest;
+import net.sourceforge.pmd.lang.test.ast.RelevantAttributePrinter;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
@@ -69,8 +69,8 @@ class TypesTreeDumpTest extends BaseTreeDumpTest {
             if (node instanceof ASTNamedReferenceExpr) {
                 result.add(new AttributeInfo("Name", ((ASTNamedReferenceExpr) node).getName()));
             }
-            if (node instanceof ASTVariableDeclaratorId) {
-                result.add(new AttributeInfo("Name", ((ASTVariableDeclaratorId) node).getName()));
+            if (node instanceof ASTVariableId) {
+                result.add(new AttributeInfo("Name", ((ASTVariableId) node).getName()));
             }
             if (node instanceof ASTMethodDeclaration) {
                 result.add(new AttributeInfo("Name", ((ASTMethodDeclaration) node).getName()));

@@ -4,16 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
@@ -23,6 +22,7 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 
@@ -63,7 +63,7 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
 
 
     public NcssCountRule() {
-        super(ASTMethodOrConstructorDeclaration.class, ASTAnyTypeDeclaration.class);
+        super(ASTExecutableDeclaration.class, ASTTypeDeclaration.class);
         definePropertyDescriptor(METHOD_REPORT_LEVEL_DESCRIPTOR);
         definePropertyDescriptor(CLASS_REPORT_LEVEL_DESCRIPTOR);
         definePropertyDescriptor(NCSS_OPTIONS_DESCRIPTOR);
@@ -76,10 +76,10 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
         int classReportLevel = getProperty(CLASS_REPORT_LEVEL_DESCRIPTOR);
         MetricOptions ncssOptions = MetricOptions.ofOptions(getProperty(NCSS_OPTIONS_DESCRIPTOR));
 
-        if (node instanceof ASTAnyTypeDeclaration) {
-            visitTypeDecl((ASTAnyTypeDeclaration) node, classReportLevel, ncssOptions, (RuleContext) data);
-        } else if (node instanceof ASTMethodOrConstructorDeclaration) {
-            visitMethod((ASTMethodOrConstructorDeclaration) node, methodReportLevel, ncssOptions, (RuleContext) data);
+        if (node instanceof ASTTypeDeclaration) {
+            visitTypeDecl((ASTTypeDeclaration) node, classReportLevel, ncssOptions, (RuleContext) data);
+        } else if (node instanceof ASTExecutableDeclaration) {
+            visitMethod((ASTExecutableDeclaration) node, methodReportLevel, ncssOptions, (RuleContext) data);
         } else {
             throw AssertionUtil.shouldNotReachHere("unreachable");
         }
@@ -87,7 +87,7 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
     }
 
 
-    private void visitTypeDecl(ASTAnyTypeDeclaration node,
+    private void visitTypeDecl(ASTTypeDeclaration node,
                                int level,
                                MetricOptions ncssOptions,
                                RuleContext data) {
@@ -101,13 +101,13 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
                                           node.getSimpleName(),
                                           classSize + " (Highest = " + classHighest + ")", };
 
-                addViolation(data, node, messageParams);
+                asCtx(data).addViolation(node, messageParams);
             }
         }
     }
 
 
-    private void visitMethod(ASTMethodOrConstructorDeclaration node,
+    private void visitMethod(ASTExecutableDeclaration node,
                              int level,
                              MetricOptions ncssOptions,
                              RuleContext data) {
@@ -115,7 +115,7 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
         if (JavaMetrics.NCSS.supports(node)) {
             int methodSize = MetricsUtil.computeMetric(JavaMetrics.NCSS, node, ncssOptions);
             if (methodSize >= level) {
-                addViolation(data, node, new String[] {
+                asCtx(data).addViolation(node, new String[] {
                     node instanceof ASTMethodDeclaration ? "method" : "constructor",
                     PrettyPrintingUtil.displaySignature(node), "" + methodSize, });
             }

@@ -8,16 +8,8 @@ public class ApexParserTestBase {
 
     protected final ApexParsingHelper apex = ApexParsingHelper.DEFAULT.withResourceContext(getClass());
 
-
     protected ASTUserClassOrInterface<?> parse(String code) {
         return apex.parse(code).getMainNode();
     }
 
-    protected ASTUserClassOrInterface<?> parse(String code, String fileName) {
-        return apex.parse(code, null, fileName).getMainNode();
-    }
-
-    protected ASTUserClassOrInterface<?> parseResource(String code) {
-        return apex.parseResource(code).getMainNode();
-    }
 }

@@ -1143,4 +1143,56 @@ public class Sample {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>#4557 - UnnecessaryImport FP with static imports of overloaded methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package p;
+
+            import static p.Static.assertThat;
+
+            class Klass {
+                static {
+                    assertThat(1); // This is assertThat(Integer)
+                }
+            }
+            class Static {
+
+                public static Object assertThat(Integer actual) {
+                    return null;
+                }
+
+                public static Object assertThat(Long actual) {
+                    return null;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnnecessaryImport false-positive on generic method call with on lambda #4816</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport;
+
+import java.util.function.Function;
+import java.util.stream.Collectors; // UnnecessaryImport:	Unused import 'java.util.stream.Collectors'
+import java.util.TreeSet; // UnnecessaryImport:	Unused import 'java.util.TreeSet'
+import java.util.Set;
+
+import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.item.Item; // UnnecessaryImport:	Unused import 'net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.item.Item'
+import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.item.ItemProducer;
+
+public class Example {
+    private <X> X run(Function<ItemProducer, X> f) { return null; }
+
+    public Set<String> sample() {
+        return run((producer) -> producer
+            .stream()
+            .map(Item::getValue)
+            .collect(Collectors.toCollection(TreeSet::new)));
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

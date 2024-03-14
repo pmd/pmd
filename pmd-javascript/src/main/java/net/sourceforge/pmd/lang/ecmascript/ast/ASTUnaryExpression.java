@@ -11,7 +11,6 @@ import org.mozilla.javascript.ast.UnaryExpression;
 public final class ASTUnaryExpression extends AbstractEcmascriptNode<UnaryExpression> {
     ASTUnaryExpression(UnaryExpression unaryExpression) {
         super(unaryExpression);
-        super.setImage(AstRoot.operatorToString(unaryExpression.getOperator()));
     }
 
     @Override
@@ -29,5 +28,9 @@ public final class ASTUnaryExpression extends AbstractEcmascriptNode<UnaryExpres
 
     public boolean isPostfix() {
         return node.getOperator() == Token.INC || node.getOperator() == Token.DEC;
+    }
+
+    public String getOperator() {
+        return AstRoot.operatorToString(node.getOperator());
     }
 }

@@ -1788,4 +1788,22 @@ public class UnusedAssignmentRule {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>[java] UnusedPrivateMethod false positive: Autoboxing into Number #4625</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Example {
+
+    public Example() {
+        foo(2);
+    }
+
+    //src/Example.java:8:     UnusedPrivateMethod:    Avoid unused private methods such as 'foo(Number)'.
+    private void foo(Number bar) {
+        System.out.println(bar);
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

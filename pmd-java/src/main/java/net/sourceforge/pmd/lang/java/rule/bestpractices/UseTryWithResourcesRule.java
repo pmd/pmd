@@ -25,7 +25,6 @@ public final class UseTryWithResourcesRule extends AbstractJavaRulechainRule {
             stringListProperty("closeMethods")
                     .desc("Method names in finally block, which trigger this rule")
                     .defaultValues("close", "closeQuietly")
-                    .delim(',')
                     .build();
 
     public UseTryWithResourcesRule() {
@@ -48,7 +47,7 @@ public final class UseTryWithResourcesRule extends AbstractJavaRulechainRule {
                         && TypeTestUtil.isA(AutoCloseable.class, closeTarget)
                         && (isJava9OrLater || JavaAstUtils.isReferenceToLocal(closeTarget))
                         || hasAutoClosableArguments(method)) {
-                    addViolation(data, node);
+                    asCtx(data).addViolation(node);
                     break; // only report the first closeable
                 }
             }

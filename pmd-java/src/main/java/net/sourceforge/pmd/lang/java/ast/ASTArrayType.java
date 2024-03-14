@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  * <pre class="grammar">
  *
  * ArrayType ::= {@link ASTPrimitiveType PrimitiveType} {@link ASTArrayDimensions ArrayDimensions}
- *             | {@link ASTClassOrInterfaceType ClassOrInterfaceType} {@link ASTArrayDimensions ArrayDimensions}
+ *             | {@link ASTClassType ClassOrInterfaceType} {@link ASTArrayDimensions ArrayDimensions}
  *
  * </pre>
  */
@@ -36,7 +36,6 @@ public final class ASTArrayType extends AbstractJavaTypeNode implements ASTRefer
         return (ASTType) getChild(0);
     }
 
-    @Override
     public int getArrayDepth() {
         return getDimensions().size();
     }

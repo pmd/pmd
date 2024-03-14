@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
-import net.sourceforge.pmd.testframework.PmdRuleTst;
+import net.sourceforge.pmd.test.PmdRuleTst;
 
 class ApexCSRFTest extends PmdRuleTst {
     // no additional unit tests

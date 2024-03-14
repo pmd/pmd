@@ -163,7 +163,7 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
 
         @Override
         protected boolean postCondition() {
-            return (superItfs != null && superType != null || signature == null) && typeParameters != null;
+            return superItfs != null && (superType != null || signature == null) && typeParameters != null;
         }
 
         void setSuperInterfaces(List<JClassType> supers) {

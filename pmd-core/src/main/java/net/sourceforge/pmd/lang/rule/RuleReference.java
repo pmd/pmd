@@ -12,11 +12,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.RuleSetReference;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.internal.RuleSetReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -26,8 +28,9 @@ import net.sourceforge.pmd.util.StringUtil;
  * explicitly tracked. Modification operations which set a value to the current
  * underlying value do not override.
  */
-public class RuleReference extends AbstractDelegateRule {
+public class RuleReference implements Rule {
 
+    private Rule rule;
     private LanguageVersion minimumLanguageVersion;
     private LanguageVersion maximumLanguageVersion;
     private Boolean deprecated;
@@ -48,14 +51,14 @@ public class RuleReference extends AbstractDelegateRule {
      * @param theRuleSetReference the rule set, where the rule is defined
      */
     public RuleReference(Rule theRule, RuleSetReference theRuleSetReference) {
-        setRule(theRule);
+        rule = theRule;
         ruleSetReference = theRuleSetReference;
     }
 
 
     /** copy constructor */
     private RuleReference(RuleReference ref) {
-
+        this.rule = ref.rule.deepCopy();
         this.minimumLanguageVersion = ref.minimumLanguageVersion;
         this.maximumLanguageVersion = ref.maximumLanguageVersion;
         this.deprecated = ref.deprecated;
@@ -68,8 +71,10 @@ public class RuleReference extends AbstractDelegateRule {
         this.externalInfoUrl = ref.externalInfoUrl;
         this.priority = ref.priority;
         this.ruleSetReference = ref.ruleSetReference;
+    }
 
-        this.setRule(ref.getRule().deepCopy());
+    public Rule getRule() {
+        return rule;
     }
 
     public LanguageVersion getOverriddenMinimumLanguageVersion() {
@@ -80,8 +85,8 @@ public class RuleReference extends AbstractDelegateRule {
     public void setMinimumLanguageVersion(LanguageVersion minimumLanguageVersion) {
         // Only override if different than current value, or if already
         // overridden.
-        if (!Objects.equals(minimumLanguageVersion, super.getMinimumLanguageVersion()) || this.minimumLanguageVersion != null) {
-            super.setMinimumLanguageVersion(minimumLanguageVersion); // might throw
+        if (!Objects.equals(minimumLanguageVersion, rule.getMinimumLanguageVersion()) || this.minimumLanguageVersion != null) {
+            rule.setMinimumLanguageVersion(minimumLanguageVersion); // might throw
             this.minimumLanguageVersion = minimumLanguageVersion;
         }
     }
@@ -94,8 +99,8 @@ public class RuleReference extends AbstractDelegateRule {
     public void setMaximumLanguageVersion(LanguageVersion maximumLanguageVersion) {
         // Only override if different than current value, or if already
         // overridden.
-        if (!Objects.equals(maximumLanguageVersion, super.getMaximumLanguageVersion()) || this.maximumLanguageVersion != null) {
-            super.setMaximumLanguageVersion(maximumLanguageVersion); // might throw
+        if (!Objects.equals(maximumLanguageVersion, rule.getMaximumLanguageVersion()) || this.maximumLanguageVersion != null) {
+            rule.setMaximumLanguageVersion(maximumLanguageVersion); // might throw
             this.maximumLanguageVersion = maximumLanguageVersion;
         }
     }
@@ -121,14 +126,14 @@ public class RuleReference extends AbstractDelegateRule {
     }
 
     public String getOriginalName() {
-        return super.getName();
+        return rule.getName();
     }
 
     @Override
     public void setName(String name) {
         // Only override if different than current value, or if already
         // overridden.
-        if (!isSame(name, super.getName()) || this.name != null) {
+        if (!isSame(name, rule.getName()) || this.name != null) {
             this.name = name;
         }
     }
@@ -138,7 +143,7 @@ public class RuleReference extends AbstractDelegateRule {
         if (this.name != null) {
             return this.name;
         }
-        return super.getName();
+        return rule.getName();
     }
 
     public String getOverriddenMessage() {
@@ -149,9 +154,9 @@ public class RuleReference extends AbstractDelegateRule {
     public void setMessage(String message) {
         // Only override if different than current value, or if already
         // overridden.
-        if (!isSame(message, super.getMessage()) || this.message != null) {
+        if (!isSame(message, rule.getMessage()) || this.message != null) {
             this.message = message;
-            super.setMessage(message);
+            rule.setMessage(message);
         }
     }
 
@@ -163,9 +168,9 @@ public class RuleReference extends AbstractDelegateRule {
     public void setDescription(String description) {
         // Only override if different than current value, or if already
         // overridden.
-        if (!isSame(description, super.getDescription()) || this.description != null) {
+        if (!isSame(description, rule.getDescription()) || this.description != null) {
             this.description = description;
-            super.setDescription(description);
+            rule.setDescription(description);
         }
     }
 
@@ -189,7 +194,7 @@ public class RuleReference extends AbstractDelegateRule {
         // properties.
 
         // Only override if different than current values.
-        if (!contains(super.getExamples(), example)) {
+        if (!contains(rule.getExamples(), example)) {
             if (examples == null) {
                 examples = new ArrayList<>(1);
             }
@@ -197,7 +202,7 @@ public class RuleReference extends AbstractDelegateRule {
             // we're only going to keep track of the last one.
             examples.clear();
             examples.add(example);
-            super.addExample(example);
+            rule.addExample(example);
         }
     }
 
@@ -209,9 +214,9 @@ public class RuleReference extends AbstractDelegateRule {
     public void setExternalInfoUrl(String externalInfoUrl) {
         // Only override if different than current value, or if already
         // overridden.
-        if (!isSame(externalInfoUrl, super.getExternalInfoUrl()) || this.externalInfoUrl != null) {
+        if (!isSame(externalInfoUrl, rule.getExternalInfoUrl()) || this.externalInfoUrl != null) {
             this.externalInfoUrl = externalInfoUrl;
-            super.setExternalInfoUrl(externalInfoUrl);
+            rule.setExternalInfoUrl(externalInfoUrl);
         }
     }
 
@@ -223,9 +228,9 @@ public class RuleReference extends AbstractDelegateRule {
     public void setPriority(RulePriority priority) {
         // Only override if different than current value, or if already
         // overridden.
-        if (priority != super.getPriority() || this.priority != null) {
+        if (priority != rule.getPriority() || this.priority != null) {
             this.priority = priority;
-            super.setPriority(priority);
+            rule.setPriority(priority);
         }
     }
 
@@ -241,7 +246,7 @@ public class RuleReference extends AbstractDelegateRule {
         // Define on the underlying Rule, where it is impossible to have two
         // property descriptors with the same name. Therefore, there is no need
         // to check if the property is already overridden at this level.
-        super.definePropertyDescriptor(propertyDescriptor);
+        rule.definePropertyDescriptor(propertyDescriptor);
         if (propertyDescriptors == null) {
             propertyDescriptors = new ArrayList<>();
         }
@@ -257,12 +262,12 @@ public class RuleReference extends AbstractDelegateRule {
     @Override
     public <T> void setProperty(PropertyDescriptor<T> propertyDescriptor, T value) {
         // Only override if different than current value.
-        if (!Objects.equals(super.getProperty(propertyDescriptor), value)) {
+        if (!Objects.equals(rule.getProperty(propertyDescriptor), value)) {
             if (propertyValues == null) {
                 propertyValues = new HashMap<>();
             }
             propertyValues.put(propertyDescriptor, value);
-            super.setProperty(propertyDescriptor, value);
+            rule.setProperty(propertyDescriptor, value);
         }
     }
 
@@ -271,14 +276,6 @@ public class RuleReference extends AbstractDelegateRule {
         return ruleSetReference;
     }
 
-
-    /**
-     * @deprecated There's no use in setting the ruleset reference after construction
-     */
-    @Deprecated
-    public void setRuleSetReference(RuleSetReference ruleSetReference) {
-        this.ruleSetReference = ruleSetReference;
-    }
 
     private static boolean isSame(String s1, String s2) {
         return StringUtil.isSame(s1, s2, true, false, true);
@@ -297,15 +294,7 @@ public class RuleReference extends AbstractDelegateRule {
     @Override
     public boolean hasDescriptor(PropertyDescriptor<?> descriptor) {
         return propertyDescriptors != null && propertyDescriptors.contains(descriptor)
-                || super.hasDescriptor(descriptor);
-    }
-
-    /**
-     * @deprecated Use {@link #isPropertyOverridden(PropertyDescriptor)} instead
-     */
-    @Deprecated
-    public boolean hasOverriddenProperty(PropertyDescriptor<?> descriptor) {
-        return isPropertyOverridden(descriptor);
+                || rule.hasDescriptor(descriptor);
     }
 
     @Override
@@ -329,5 +318,130 @@ public class RuleReference extends AbstractDelegateRule {
                 || maximumLanguageVersion != null || minimumLanguageVersion != null
                 || message != null || name != null || priority != null
                 || propertyDescriptors != null || propertyValues != null;
+    }
+
+    @Override
+    public Language getLanguage() {
+        return rule.getLanguage();
+    }
+
+    @Override
+    public void setLanguage(Language language) {
+        rule.setLanguage(language);
+    }
+
+    @Override
+    public LanguageVersion getMinimumLanguageVersion() {
+        return rule.getMinimumLanguageVersion();
+    }
+
+    @Override
+    public LanguageVersion getMaximumLanguageVersion() {
+        return rule.getMaximumLanguageVersion();
+    }
+
+    @Override
+    public String getSince() {
+        return rule.getSince();
+    }
+
+    @Override
+    public void setSince(String since) {
+        rule.setSince(since);
+    }
+
+    @Override
+    public String getRuleClass() {
+        return rule.getRuleClass();
+    }
+
+    @Override
+    public void setRuleClass(String ruleClass) {
+        rule.setRuleClass(ruleClass);
+    }
+
+    @Override
+    public String getRuleSetName() {
+        return rule.getRuleSetName();
+    }
+
+    @Override
+    public void setRuleSetName(String name) {
+        rule.setRuleSetName(name);
+    }
+
+    @Override
+    public String getMessage() {
+        return rule.getMessage();
+    }
+
+    @Override
+    public String getDescription() {
+        return rule.getDescription();
+    }
+
+    @Override
+    public List<String> getExamples() {
+        return rule.getExamples();
+    }
+
+    @Override
+    public String getExternalInfoUrl() {
+        return rule.getExternalInfoUrl();
+    }
+
+    @Override
+    public RulePriority getPriority() {
+        return rule.getPriority();
+    }
+
+    @Override
+    public RuleTargetSelector getTargetSelector() {
+        return rule.getTargetSelector();
+    }
+
+    @Override
+    public void initialize(LanguageProcessor languageProcessor) {
+        rule.initialize(languageProcessor);
+    }
+
+    @Override
+    public void start(RuleContext ctx) {
+        rule.start(ctx);
+    }
+
+    @Override
+    public void apply(Node target, RuleContext ctx) {
+        rule.apply(target, ctx);
+    }
+
+    @Override
+    public void end(RuleContext ctx) {
+        rule.end(ctx);
+    }
+
+    @Override
+    public PropertyDescriptor<?> getPropertyDescriptor(String name) {
+        return rule.getPropertyDescriptor(name);
+    }
+
+    @Override
+    public List<PropertyDescriptor<?>> getPropertyDescriptors() {
+        return rule.getPropertyDescriptors();
+    }
+
+    @Override
+    public <T> T getProperty(PropertyDescriptor<T> propertyDescriptor) {
+        return rule.getProperty(propertyDescriptor);
+    }
+
+    @Override
+    public Map<PropertyDescriptor<?>, Object> getPropertiesByPropertyDescriptor() {
+        return rule.getPropertiesByPropertyDescriptor();
+    }
+
+    @Override
+    public String dysfunctionReason() {
+        return rule.dysfunctionReason();
     }
 }

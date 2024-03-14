@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex;
 
-import net.sourceforge.pmd.AbstractRuleSetFactoryTest;
+import net.sourceforge.pmd.test.lang.rule.AbstractRuleSetFactoryTest;
 
 class RuleSetFactoryTest extends AbstractRuleSetFactoryTest {
     // no additional tests yet
