@@ -367,6 +367,7 @@ The rules have been moved into categories with PMD 6.
   * [#3751](https://github.com/pmd/pmd/issues/3751): \[java] Rename some node types
   * [#4628](https://github.com/pmd/pmd/pull/4628):   \[java] Support loading classes from java runtime images
   * [#4753](https://github.com/pmd/pmd/issues/4753): \[java] PMD crashes while using generics and wildcards
+  * [#4757](https://github.com/pmd/pmd/issues/4757): \[java] Intermittent NPEs while analyzing Java code
   * [#4794](https://github.com/pmd/pmd/issues/4794): \[java] Support JDK 22
 * java-bestpractices
   * [#4603](https://github.com/pmd/pmd/issues/4603): \[java] UnusedAssignment false positive in record compact constructor
