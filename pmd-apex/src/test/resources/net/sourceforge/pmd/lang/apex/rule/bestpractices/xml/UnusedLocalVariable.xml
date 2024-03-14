@@ -158,4 +158,88 @@ class Foo {
         ]]>
         </code>
     </test-code>
+
+    <test-code>
+        <description>[apex] UnusedLocalVariable flags for variables which are using in SOQL/SOSL binds #4556</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void example1() {
+        String unusedFlag1a = 'this string'; // Variable 'unusedFlag1a' defined but not used
+        String query1a = 'SELECT Id From Account WHERE Name =: unusedFlag1a';
+        Database.query(query1a, System.AccessLevel.USER_MODE);
+
+        String unusedFlag1b = 'this string'; // Variable 'unusedFlag1b' defined but not used
+        String query1b = 'SELECT Id From Account WHERE Name  =:  unusedFlag1b';
+        Database.query(query1b, System.AccessLevel.USER_MODE);
+    }
+
+    public void example2() {
+        String unusedFlag2 = 'this string';
+        String query2 = 'SELECT Id From Account WHERE Name=:unusedFlag2';
+        Database.query(query2, System.AccessLevel.USER_MODE);
+    }
+
+    public void example3() {
+        String unusedFlag3a = 'this string';
+        String query3a = 'SELECT Id From Account WHERE Name= :unusedFlag3a';
+        Database.query(query3a, System.AccessLevel.USER_MODE);
+
+        String unusedFlag3b = 'this string';
+        String query3b = 'SELECT Id From Account WHERE Name=  :unusedFlag3b';
+        Database.query(query3b, System.AccessLevel.USER_MODE);
+
+        String unusedFlag3c = 'this string'; // Variable 'unusedFlag3c' defined but not used
+        String query3c = 'SELECT Id From Account WHERE Name=  :  unusedFlag3c';
+        Database.query(query3c, System.AccessLevel.USER_MODE);
+
+        String unusedFlag4d = 'this string'; // Variable 'unusedFlag4d' defined but not used
+        String query4d = 'SELECT Id From Account WHERE Name  =  :  unusedFlag4d';
+        Database.query(query4d, System.AccessLevel.USER_MODE);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[apex] UnusedLocalVariable flags for variables which are using in SOQL/SOSL binds #4556 - qualified</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void example1() {
+        Account a1a = new Account(); // Variable 'a1a' defined but not used
+        String query1a = 'SELECT Name From Account WHERE Id =: a1a.Id';
+        Database.query(query1a, System.AccessLevel.USER_MODE);
+
+        Account a1b = new Account(); // Variable 'a1b' defined but not used
+        String query1b = 'SELECT Name From Account WHERE Id  =:  a1b.Id';
+        Database.query(query1b, System.AccessLevel.USER_MODE);
+    }
+
+    public void example2() {
+        Account a2a = new Account();
+        String query2a = 'SELECT Name From Account WHERE Id=:a2a.Id';
+        Database.query(query2a, System.AccessLevel.USER_MODE);
+    }
+
+    public void example3() {
+        Account a3a = new Account();
+        String query3a = 'SELECT Name From Account WHERE Id= :a3a.Id';
+        Database.query(query3a, System.AccessLevel.USER_MODE);
+
+        Account a3b = new Account();
+        String query3b = 'SELECT Name From Account WHERE Id=  :a3b.Id';
+        Database.query(query3b, System.AccessLevel.USER_MODE);
+
+        Account a3c = new Account(); // Variable 'a3c' defined but not used
+        String query3c = 'SELECT Name From Account WHERE Id=  :  a3c.Id';
+        Database.query(query3c, System.AccessLevel.USER_MODE);
+
+        Account a3d = new Account(); // Variable 'a3d' defined but not used
+        String query3d = 'SELECT Name From Account WHERE Id  =  :  a3d.Id';
+        Database.query(query3d, System.AccessLevel.USER_MODE);
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
