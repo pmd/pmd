@@ -380,6 +380,7 @@ The rules have been moved into categories with PMD 6.
   * [#1831](https://github.com/pmd/pmd/issues/1831): \[java] DetachedTestCase reports abstract methods
   * [#4719](https://github.com/pmd/pmd/pull/4719):   \[java] UnnecessaryCaseChange: example doc toUpperCase() should compare to a capitalized string
 * javascript
+  * [#2305](https://github.com/pmd/pmd/issues/2305): \[javascript] UnnecessaryBlock - false positives with destructuring assignments
   * [#4673](https://github.com/pmd/pmd/pull/4673):   \[javascript] CPD: Added support for decorator notation
 * plsql
   * [#4820](https://github.com/pmd/pmd/issues/4820): \[plsql] WITH clause is ignored for SELECT INTO statements
@@ -414,6 +415,7 @@ See [Detailed Release Notes for PMD 7.0.0]({{ baseurl }}pmd_release_notes_pmd7.h
 * [#4754](https://github.com/pmd/pmd/pull/4754): \[java] EmptyControlStatementRule: Add allowCommentedBlocks property - [Andreas Bergander](https://github.com/bergander) (@bergander)
 * [#4759](https://github.com/pmd/pmd/pull/4759): \[java] fix: remove delimiter attribute from ruleset category/java/errorprone.xml - [Marcin Dąbrowski](https://github.com/marcindabrowski) (@marcindabrowski)
 * [#4825](https://github.com/pmd/pmd/pull/4825): \[plsql] Fix ignored WITH clause for SELECT INTO statements - [Laurent Bovet](https://github.com/lbovet) (@lbovet)
+* [#4857](https://github.com/pmd/pmd/pull/4857): \[javascript] Fix UnnecessaryBlock issues with empty statements - [Oleksandr Shvets](https://github.com/oleksandr-shvets) (@oleksandr-shvets)
 
 ### 🚀 Major Features and Enhancements
 
@@ -1141,6 +1143,7 @@ Language specific fixes:
     * [#4070](https://github.com/pmd/pmd/issues/4070): \[java] A false positive about the rule RedundantFieldInitializer
     * [#4458](https://github.com/pmd/pmd/issues/4458): \[java] RedundantFieldInitializer: false positive with lombok's @<!-- -->Value
 * javascript
+    * [#2305](https://github.com/pmd/pmd/issues/2305): \[javascript] UnnecessaryBlock - false positives with destructuring assignments
     * [#4673](https://github.com/pmd/pmd/pull/4673):   \[javascript] CPD: Added support for decorator notation
 * kotlin
     * [#419](https://github.com/pmd/pmd/issues/419):   \[kotlin] Add support for Kotlin
@@ -1217,6 +1220,7 @@ Language specific fixes:
 * [#4754](https://github.com/pmd/pmd/pull/4754): \[java] EmptyControlStatementRule: Add allowCommentedBlocks property - [Andreas Bergander](https://github.com/bergander) (@bergander)
 * [#4759](https://github.com/pmd/pmd/pull/4759): \[java] fix: remove delimiter attribute from ruleset category/java/errorprone.xml - [Marcin Dąbrowski](https://github.com/marcindabrowski) (@marcindabrowski)
 * [#4825](https://github.com/pmd/pmd/pull/4825): \[plsql] Fix ignored WITH clause for SELECT INTO statements - [Laurent Bovet](https://github.com/lbovet) (@lbovet)
+* [#4857](https://github.com/pmd/pmd/pull/4857): \[javascript] Fix UnnecessaryBlock issues with empty statements - [Oleksandr Shvets](https://github.com/oleksandr-shvets) (@oleksandr-shvets)
 
 ### 📈 Stats
 * 5662 commits
