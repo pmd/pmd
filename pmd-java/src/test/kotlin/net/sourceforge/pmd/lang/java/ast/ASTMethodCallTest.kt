@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 
 /**
  * @author Clément Fournier
@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.ast.test.shouldBe
 class ASTMethodCallTest : ParserTestSpec({
 
 
-    parserTest("Method call exprs") {
+    parserTest("Method call expressions") {
 
         inContext(ExpressionParsingCtx) {
 

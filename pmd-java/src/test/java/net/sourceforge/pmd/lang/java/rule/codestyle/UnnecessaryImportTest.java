@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import net.sourceforge.pmd.testframework.PmdRuleTst;
+import net.sourceforge.pmd.test.PmdRuleTst;
 
 class UnnecessaryImportTest extends PmdRuleTst {
     // these 2 methods are used for a test case, do not delete

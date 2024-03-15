@@ -83,7 +83,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
 *   For a minimal implementation, it just needs to return a parser *(see step #5)*.
 *   It can be used to provide other features for your language like
     *   violation suppression logic
-    *   {% jdoc core::reporting::ViolationDecorator %}s, to add additional language specific information to the
+    *   {% jdoc core::reporting.ViolationDecorator %}s, to add additional language specific information to the
         created violations. The [Java language module](pmd_languages_java.html#violation-decorators) uses this to
         provide the method name or class name, where the violation occurred.
     *   metrics (see below "Optional features")
@@ -119,7 +119,7 @@ against a previously recorded version. If there are differences, the test fails.
 This helps to detect anything in the AST structure that changed, maybe unexpectedly.
 
 *   Create a test class in the package `net.sourceforge.pmd.lang.$lang.ast` with the name `$langTreeDumpTest`.
-*   This test class must extend `net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest`. Note: This class
+*   This test class must extend `net.sourceforge.pmd.lang.test.ast.BaseTreeDumpTest`. Note: This class
     is written in kotlin and is available in the module "lang-test".
 *   Add a default constructor, that calls the super constructor like so:
     
@@ -131,7 +131,7 @@ This helps to detect anything in the AST structure that changed, maybe unexpecte
     
     Replace "$lang" and "$extension" accordingly.
 *   Implement the method `getParser()`. It must return a
-    subclass of `net.sourceforge.pmd.lang.ast.test.BaseParsingHelper`. See 
+    subclass of `net.sourceforge.pmd.lang.test.ast.BaseParsingHelper`. See 
     `net.sourceforge.pmd.lang.ecmascript.ast.JsParsingHelper` for an example.
     With this parser helper you can also specify, where the test files are searched, by using
     the method `withResourceContext(Class<?>, String)`.
@@ -252,7 +252,7 @@ This can be achieved with Rule Designer:
     *   Fork and clone the [pmd/pmd-designer](https://github.com/pmd/pmd-designer) repository.
     *   Add a syntax highlighter implementation to `net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting` (you could use Java as an example).
     *   Register it in the `AvailableSyntaxHighlighters` enumeration.
-    *   Now build your implementation and place the `target/pmd-ui-<version>-SNAPSHOT.jar` to the `lib` directory inside your `pmd-bin-...` distribution (you have to delete old `pmd-ui-*.jar` from there).
+    *   Now build your implementation and place the `target/pmd-designer-<version>-SNAPSHOT.jar` to the `lib` directory inside your `pmd-bin-...` distribution (you have to delete old `pmd-designer-*.jar` from there).
 
 ## Optional features
 

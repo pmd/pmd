@@ -7,10 +7,10 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.NodeSpec
-import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBeA
-import net.sourceforge.pmd.lang.ast.test.shouldMatchN
+import net.sourceforge.pmd.lang.test.ast.NodeSpec
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldBeA
+import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.types.*
@@ -248,7 +248,7 @@ class Scratch<O> {
 }
         """.trimIndent())
 
-        val (t_I, t_C) = acu.declaredTypeSignatures()
+        val (_, t_C) = acu.declaredTypeSignatures()
         val tParam = acu.typeVariables().first { it.name == "T" }
 
         spy.shouldBeOk {

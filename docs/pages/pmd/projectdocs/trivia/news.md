@@ -78,7 +78,7 @@ author: Tom Copeland <tom@infoether.org>
     mentions both PMD and CPD as useful code-checking tools.
 
 *   October 2005 - Levent Gurses' article "Improving Code Quality with PMD and Eclipse" in
-    [EclipseZone](http://www.eclipsezone.com/articles/pmd/) talks about the PMD Eclipse plugin and explains many
+    [EclipseZone](https://web.archive.org/web/20080807160502/http://www.eclipsezone.com/articles/pmd/) talks about the PMD Eclipse plugin and explains many
     different facets of PMD - XPath, writing rules, the AST, all that.  Good stuff!
 
 *   June 2005 - Amit Chaturvedi's article "Java & Static Analysis" in
@@ -103,7 +103,7 @@ author: Tom Copeland <tom@infoether.org>
 
 *   June 2004 - [Open Source-Perlen](http://tinyurl.com/3dgpe) - A German article on PMD in Java Magazin
 
-*   June 2004 - [Improving Project Quality with PMD](http://jnb.ociweb.com/jnb/jnbJun2004.html) - Tom Wheeler's
+*   June 2004 - [Improving Project Quality with PMD](https://web.archive.org/web/20211203041417/http://jnb.ociweb.com/jnb/jnbJun2004.html) - Tom Wheeler's
     "Java News Brief", June 2004 issue
 
 *   February 2004 - [Software Development](http://www.drdobbs.com/free-as-in-freedom/184415103) - Listed as one of

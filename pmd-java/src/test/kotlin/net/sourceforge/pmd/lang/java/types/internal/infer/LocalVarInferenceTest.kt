@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
-import net.sourceforge.pmd.lang.ast.test.shouldMatchN
+import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
 import net.sourceforge.pmd.lang.java.ast.variableAccess
 import net.sourceforge.pmd.lang.java.types.*

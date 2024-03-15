@@ -15,11 +15,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 
 class Java21PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
     private final JavaParsingHelper java21p =
@@ -59,10 +59,7 @@ class Java21PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
     @Test
     void unnamedPatternsAndVariablesBeforeJava21Preview() {
         ParseException thrown = assertThrows(ParseException.class, () -> java21.parseResource("Jep443_UnnamedPatternsAndVariables.java"));
-        assertThat(thrown.getMessage(), containsString("Since Java 9, '_' is reserved and cannot be used as an identifier"));
-
-        thrown = assertThrows(ParseException.class, () -> java21.parseResource("Jep443_UnnamedPatternsAndVariables2.java"));
-        assertThat(thrown.getMessage(), containsString("Unnamed patterns and variables is a preview feature of JDK 21, you should select your language version accordingly"));
+        assertThat(thrown.getMessage(), containsString("Unnamed variables and patterns was only standardized in Java 22, you should select your language version accordingly"));
     }
 
     @Test

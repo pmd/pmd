@@ -31,7 +31,7 @@
                             <target>
                                 <ant antfile="${antlr4.ant.wrapper}" target="cpd-language">
                                     <property name="lang-name" value="Dart" />
-                                    <property name="lang-terse-name" value="dart" />
+                                    <property name="lang-id" value="dart" />
                                 </ant>
                             </target>
                         </configuration>

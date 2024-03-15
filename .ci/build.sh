@@ -66,6 +66,8 @@ function build() {
     # was green before. This is usually checked via a local build, see ./do-release.sh
     if pmd_ci_maven_isReleaseBuild; then
         PMD_MAVEN_EXTRA_OPTS+=(-DskipTests=true)
+        # note: skipping pmd in order to avoid failures due to #4757
+        PMD_MAVEN_EXTRA_OPTS+=(-Dpmd.skip=true -Dcpd.skip=true)
     fi
 
     if [ "$(pmd_ci_utils_get_os)" != "linux" ]; then
@@ -138,7 +140,7 @@ function build() {
         ./mvnw \
             --show-version --errors --batch-mode \
             clean package \
-            sonar:sonar -Dsonar.login="${SONAR_TOKEN}" -Psonar,fastSkip
+            sonar:sonar -Dsonar.token="${SONAR_TOKEN}" -Psonar,fastSkip
         pmd_ci_log_success "New sonar results: https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd"
     pmd_ci_log_group_end
 

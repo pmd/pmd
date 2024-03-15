@@ -37,7 +37,7 @@ import net.sourceforge.pmd.util.BaseResultProducingCloseable;
  *     <li>{@link #union(Report)}</li>
  * </ul>
  * These methods create a new {@link Report} rather than modifying their receiver.
- * </p>
+ *
  */
 public final class Report {
     private final List<RuleViolation> violations = synchronizedList(new ArrayList<>());

@@ -24,4 +24,8 @@ public final class InternalApiBridge {
     public static String replacementIfDeprecated(Attribute attribute) {
         return attribute.replacementIfDeprecated();
     }
+
+    public static XPathRule newXPathRule() {
+        return new XPathRule();
+    }
 }

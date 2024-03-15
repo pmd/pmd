@@ -730,4 +730,21 @@ public class MyClass {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[apex] ApexDoc false-positive for the first method of an annotated Apex class #4774</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description       : rest service
+ **/
+@RestResource(urlMapping='/api/v1/get/*')
+global without sharing class TestService {
+    /**
+     * @description Bar
+     */
+    public void bar() { return; }
+}
+]]></code>
+    </test-code>
 </test-data>

@@ -19,12 +19,8 @@ import java.util.Objects;
  */
 public abstract class AbstractPropertySource implements PropertySource {
 
-    // setProperty should probably be hidden from Rule implementations, they have no business using that
+    // TODO setProperty should probably be hidden from Rule implementations, they have no business using that
     // The apex rules that do that could be refactored to do it in the XML
-
-    // TODO RuleReference should extend this class
-    // This would avoid duplicating the implementation between Rule and RuleReference,
-    // which should use exactly the same mechanism to override properties (XML).
 
     /**
      * The list of known properties that can be configured.

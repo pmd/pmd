@@ -18,6 +18,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.rule.Rule;
+import net.sourceforge.pmd.lang.rule.xpath.InternalApiBridge;
+import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 
 /**
  * @apiNote  Internal API
@@ -129,6 +131,9 @@ public class ResourceLoader {
      * Load the rule from the classloader from resource loader, consistent with the ruleset
      */
     public Rule loadRuleFromClassPath(final String clazz) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        if (XPathRule.class.getName().equals(clazz)) {
+            return InternalApiBridge.newXPathRule();
+        }
         return (Rule) classLoader.loadClass(clazz).newInstance();
     }
 }

@@ -54,7 +54,9 @@ The tool comes with a rather extensive help text, simply running with `--help`!
                This is used to resolve types in source files. The platform specific path delimiter
                (\":\" on Linux, \";\" on Windows) is used to separate the entries.
                Alternatively, a single `file:` URL
-               to a text file containing path elements on consecutive lines can be specified."
+               to a text file containing path elements on consecutive lines can be specified.
+
+               <p>See also [Providing the auxiliary classpath](pmd_languages_java.html#providing-the-auxiliary-classpath).</p>"
                languages="Java"
     %}
     {% include custom/cli_option_row.html options="--benchmark,-b"
@@ -178,7 +180,7 @@ The tool comes with a rather extensive help text, simply running with `--help`!
 ## Additional Java Runtime Options
 
 PMD is executed via a Java runtime. In some cases, you might need to set additional runtime options, e.g.
-if you want to analyze a project, that uses one of OpenJDK's [Preview Language Features](http://openjdk.java.net/jeps/12).
+if you want to analyze a project, that uses one of OpenJDK's [JEP 12: Preview Language Features](https://openjdk.org/jeps/12).
 
 Just set the environment variable `PMD_JAVA_OPTS` before executing PMD, e.g.
 
@@ -263,8 +265,8 @@ Example:
 *   [pom](pmd_rules_pom.html) (Maven POM)
 *   [scala](pmd_rules_scala.html)
 *   [swift](pmd_rules_swift.html)
-*   [vf](pmd_rules_vf.html) (Salesforce VisualForce)
-*   [vm](pmd_rules_vm.html) (Apache Velocity)
+*   [velocity](pmd_rules_velocity.html) (Apache Velocity Template Language)
+*   [visualforce](pmd_rules_visualforce.html) (Salesforce VisualForce)
 *   [xml](pmd_rules_xml.html)
 *   [xsl](pmd_rules_xsl.html)
 

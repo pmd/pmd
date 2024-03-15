@@ -173,13 +173,30 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
      */
     @Test
     void testXorAssignment() {
-        ASTAstRoot rootNode = js.parse("function f() { var x = 2; x ^= 2; x &= 2; x |= 2; "
-                                           + "x &&= true; x ||= false; x *= 2; x /= 2; x %= 2; x += 2; x -= 2; "
-                                           + "x <<= 2; x >>= 2; x >>>= 2; }");
+        ASTAstRoot rootNode = js.parse(
+                "function f() {\n"
+                         + "  var x = 2;\n"
+                         + "  x ^= 2;\n"
+                         + "  x &= 2;\n"
+                         + "  x |= 2;\n"
+                         + "  x &&= true;\n"
+                         + "  x ||= false;\n"
+                         + "  x *= 2;\n"
+                         + "  x /= 2;\n"
+                         + "  x %= 2;\n"
+                         + "  x += 2;\n"
+                         + "  x -= 2;\n"
+                         + "  x <<= 2;\n"
+                         + "  x >>= 2;\n"
+                         + "  x >>>= 2;\n"
+                         + "}");
         ASTAssignment infix = rootNode.descendants(ASTAssignment.class).first();
         assertEquals("^=", infix.getOperator());
     }
 
+    /**
+     * See  [js] Support unicode characters #2605
+     */
     @Test
     void testUnicodeCjk() {
         // the first is u+4F60

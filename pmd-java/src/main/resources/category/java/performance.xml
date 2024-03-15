@@ -236,7 +236,7 @@ public class DateStuff {
         <description>
 The FileInputStream and FileOutputStream classes contains a finalizer method which will cause garbage
 collection pauses.
-See [JDK-8080225](https://bugs.openjdk.java.net/browse/JDK-8080225) for details.
+See [JDK-8080225](https://bugs.openjdk.org/browse/JDK-8080225) for details.
 
 The FileReader and FileWriter constructors instantiate FileInputStream and FileOutputStream,
 again causing garbage collection issues while finalizer methods are called.
@@ -777,11 +777,11 @@ if (s.indexOf('d') {}
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#useiostreamswithapachecommonsfileitem">
         <description>
-Problem: Use of [FileItem.get()](https://commons.apache.org/proper/commons-fileupload/apidocs/org/apache/commons/fileupload/FileItem.html#get--)
-and [FileItem.getString()](https://commons.apache.org/proper/commons-fileupload/apidocs/org/apache/commons/fileupload/FileItem.html#getString--)
+Problem: Use of [FileItem.get()](https://javadoc.io/static/commons-fileupload/commons-fileupload/1.5/org/apache/commons/fileupload/FileItem.html#get--)
+and [FileItem.getString()](https://javadoc.io/static/commons-fileupload/commons-fileupload/1.5/org/apache/commons/fileupload/FileItem.html#getString--)
 could exhaust memory since they load the entire file into memory.
 
-Solution: Use [FileItem.getInputStream()](https://commons.apache.org/proper/commons-fileupload/apidocs/org/apache/commons/fileupload/FileItem.html#getInputStream--)
+Solution: Use [FileItem.getInputStream()](https://javadoc.io/static/commons-fileupload/commons-fileupload/1.5/org/apache/commons/fileupload/FileItem.html#getInputStream--)
 and buffering.
         </description>
         <priority>3</priority>

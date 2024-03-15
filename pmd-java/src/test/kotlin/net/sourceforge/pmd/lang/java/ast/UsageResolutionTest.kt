@@ -8,8 +8,8 @@ import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBeA
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType.WRITE
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol
@@ -65,13 +65,13 @@ class UsageResolutionTest : ProcessorTestSpec({
         p::isRecordComponent shouldBe true
         p.localUsages.shouldHaveSize(2)
         p.localUsages[0].shouldBeA<ASTVariableAccess> {
-            it.referencedSym!!.shouldBeA<JFormalParamSymbol> {
-                it.tryGetNode() shouldBe p
+            it.referencedSym!!.shouldBeA<JFormalParamSymbol> { symbol ->
+                symbol.tryGetNode() shouldBe p
             }
         }
         p.localUsages[1].shouldBeA<ASTVariableAccess> {
-            it.referencedSym!!.shouldBeA<JFieldSymbol> {
-                it.tryGetNode() shouldBe p
+            it.referencedSym!!.shouldBeA<JFieldSymbol> { symbol ->
+                symbol.tryGetNode() shouldBe p
             }
         }
     }

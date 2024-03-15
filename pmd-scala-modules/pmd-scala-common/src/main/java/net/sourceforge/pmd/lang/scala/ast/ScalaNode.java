@@ -25,6 +25,5 @@ public interface ScalaNode<T extends Tree> extends GenericNode<ScalaNode<?>> {
      */
     // TODO this would be useful on the node interface for 7.0.0.
     //  we could filter them out from violations transparently
-    //  Apex has the same problem
     boolean isImplicit();
 }

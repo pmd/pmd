@@ -23,9 +23,9 @@ import net.sourceforge.pmd.lang.LanguageVersion;
  * to from within rules, while we want to eventually build an API that allows
  * file edition based on AST manipulation.
  *
- * <h3>Coordinates in TextDocument</h3>
+ * <h2>Coordinates in TextDocument</h2>
  *
- * This interface is an abstraction over a piece of text, which might not
+ * <p>This interface is an abstraction over a piece of text, which might not
  * correspond to the backing source file. This allows the document to
  * be a view on a piece of a larger document (eg, a Javadoc comment, or
  * a string in which a language is injected). Another use case is to perform
@@ -36,7 +36,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
  * the backing text file, which we call the <i>root</i> text document.
  * Logical documents built on top of it are called <i>views</i>.
  *
- * Text documents use <i>offsets</i> and {@link TextRegion} to address their
+ * <p>Text documents use <i>offsets</i> and {@link TextRegion} to address their
  * contents. These are always relative to the {@linkplain #getText() text} of
  * the document. Line and column information are provided by {@link FileLocation}
  * (see {@link #toLocation(TextRegion)}), and are always absolute (ie,

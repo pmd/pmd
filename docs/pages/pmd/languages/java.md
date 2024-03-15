@@ -15,9 +15,10 @@ Usually the latest non-preview Java Version is the default version.
 
 | Java Version | Alias | Supported by PMD since |
 |--------------|-------|------------------------|
+| 22-preview   |       | 7.0.0                  |
+| 22 (default) |       | 7.0.0                  |
 | 21-preview   |       | 7.0.0                  |
-| 21 (default) |       | 7.0.0                  |
-| 20-preview   |       | 6.55.0                 |
+| 21           |       | 7.0.0                  |
 | 20           |       | 6.55.0                 |
 | 19           |       | 6.48.0                 |
 | 18           |       | 6.44.0                 |
@@ -40,10 +41,10 @@ Usually the latest non-preview Java Version is the default version.
 ## Using Java preview features
 
 In order to analyze a project with PMD that uses preview language features, you'll need to enable
-it via the environment variable `PMD_JAVA_OPTS` and select the new language version, e.g. `21-preview`:
+it via the environment variable `PMD_JAVA_OPTS` and select the new language version, e.g. `22-preview`:
 
     export PMD_JAVA_OPTS=--enable-preview
-    pmd check --use-version java-21-preview ...
+    pmd check --use-version java-22-preview ...
 
 Note: we only support preview language features for the latest two java versions.
 
@@ -80,7 +81,8 @@ in order to resolve Java API references.
 The auxiliary classpath (or short "auxClasspath") is configured via the
 [Language Property "auxClasspath"](pmd_languages_configuration.html#java-language-properties).
 It is a string containing multiple paths separated by either a colon (`:`) under Linux/MacOS
-or a semicolon (`;`) under Windows.
+or a semicolon (`;`) under Windows. This property can be provided on the CLI with parameter
+[`--aux-classpath`](pmd_userdocs_cli_reference.html#-aux-classpath).
 
 In order to resolve the types of the Java API correctly, the Java Runtime must be on the
 auxClasspath as well. As the Java API and Runtime evolves from version to version, it is important
@@ -99,9 +101,26 @@ needs to be added to the auxClasspath as the first entry. PMD will make sure, to
 using the jrt-filesystem.
 
 If neither `${JAVA_HOME}/jre/lib/rt.jar` nor `${JAVA_HOME}/lib/jrt-fs.jar` is added to the auxClasspath, PMD falls
-back to load the JAva runtime classes **from the current runtime**, that is the runtime that was used to
+back to load the Java runtime classes **from the current runtime**, that is the runtime that was used to
 execute PMD. This might not be the correct version, e.g. you might run PMD with Java 8, but analyze code
 written for Java 21. In that case, you have to provide "jrt-fs.jar" on the auxClasspath.
+
+Not providing the correct auxClasspath might result in false positives or negatives for some rules,
+such as {% rule java/bestpractices/MissingOverride %}.
+This rule needs to figure out, whether a method is defined already in the super class or interface. E.g. the method
+[Collection#toArray(IntFunction)](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collection.html#toArray(java.util.function.IntFunction))
+has been added in Java 11, and it does not exist yet in Java 8. Given a simple subclass of ArrayList, that overrides
+this method without adding `@Override`, then PMD won't be able to detect this missing override annotation, if
+it is executed with a Java 8 runtime but without the correct auxClasspath. Providing the correct `jrt-fs.jar` from
+Java 11 (or later) for the auxClasspath allows PMD to correctly identify the missing annotation.
+
+Example command line:
+
+```
+pmd check -d src/main/java \
+  --aux-classpath=path/to/java17/lib/jrt-fs.jar:target/classes/ \
+  -f xml -r pmd-report.xml -R rulesets/java/quickstart.xml
+```
 
 ## Symbol table APIs
 
@@ -119,11 +138,11 @@ A {% jdoc ast::ASTExpression %} might represent a {% jdoc ast::ASTAssignableExpr
 if it e.g. references a variable name. In that case, you can access the referenced variable symbol
 with the method {% jdoc ast::ASTAssignableExpr.ASTNamedReferenceExpr#getReferencedSym() %}.
 
-Declaration nodes, such as {% jdoc ast::ASTVariableDeclaratorId %} implement the interface
+Declaration nodes, such as {% jdoc ast::ASTVariableId %} implement the interface
 {%jdoc ast::SymbolDeclaratorNode %}. Through the method
 {% jdoc ast::SymbolDeclaratorNode#getSymbol() %} you can also access the symbol.
 
-To find usages, you can call {% jdoc ast::ASTVariableDeclaratorId#getLocalUsages() %}.
+To find usages, you can call {% jdoc ast::ASTVariableId#getLocalUsages() %}.
 
 ## Type resolution APIs
 

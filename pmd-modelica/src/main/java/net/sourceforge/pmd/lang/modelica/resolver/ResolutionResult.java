@@ -36,21 +36,21 @@ public interface ResolutionResult<A extends ResolvableEntity> {
     /**
      * Whether any resolution candidate exists.
      *
-     * @return getBestCandidates().size != 0
+     * @return {@code getBestCandidates().size != 0}
      */
     boolean isUnresolved();
 
     /**
      *  Whether the symbol resolver found multiple equally relevant resolution candidates.
      *
-     * @return getBestCandidates().size > 1
+     * @return {@code getBestCandidates().size > 1}
      */
     boolean isClashed();
 
     /**
      * Whether the symbol resolver found any symbol suspiciously hidden by other ones.
      *
-     * @return getHiddenCandidates().size != 0
+     * @return {@code getHiddenCandidates().size != 0}
      */
     boolean hasHiddenResults();
 

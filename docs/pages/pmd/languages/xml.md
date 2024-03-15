@@ -6,10 +6,10 @@ tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 summary: "XML-specific features and guidance"
 ---
 
-{% include language_info.html name='Maven POM' id='pom' implementation='xml::lang.pom.PomLanguageModule' supports_pmd=true supports_cpd=true since='5.4.0' %}
-{% include language_info.html name='WSDL' id='wsdl' implementation='xml::lang.wsdl.WsdlLanguageModule' supports_pmd=true supports_cpd=true since='5.4.0' %}
+{% include language_info.html name='Maven POM' id='pom' implementation='xml::lang.xml.pom.PomLanguageModule' supports_pmd=true supports_cpd=true since='5.4.0' %}
+{% include language_info.html name='WSDL' id='wsdl' implementation='xml::lang.xml.wsdl.WsdlLanguageModule' supports_pmd=true supports_cpd=true since='5.4.0' %}
 {% include language_info.html name='XML' id='xml' implementation='xml::lang.xml.XmlLanguageModule' supports_pmd=true supports_cpd=true since='5.0.0' %}
-{% include language_info.html name='XSL' id='xsl' implementation='xml::lang.xsl.XslLanguageModule' supports_pmd=true supports_cpd=true since='5.0.0' %}
+{% include language_info.html name='XSL' id='xsl' implementation='xml::lang.xml.xsl.XslLanguageModule' supports_pmd=true supports_cpd=true since='5.0.0' %}
 
 ## The XML language module
 
@@ -46,7 +46,7 @@ for more examples.
 
 ### XPath rules in XML
 
-While other languages use {% jdoc core::lang.rule.XPathRule %} to create XPath rules,
+While other languages use {% jdoc core::lang.rule.xpath.XPathRule %} to create XPath rules,
 the use of this class is not recommended for XML languages. Instead, since 6.44.0, you
 are advised to use {% jdoc xml::lang.xml.rule.DomXPathRule %}. This rule class interprets
 XPath queries exactly as regular XPath, while `XPathRule` works on a wrapper for the

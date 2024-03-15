@@ -1276,9 +1276,9 @@ void AbstractSelectStatement(AbstractSelectStatement node) #void :
  * Note: The SELECT INTO statement can be preceded by a WithClause, even though this is not in the
  * official reference documentation.
  *
- * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/SELECT-INTO-statement.html
- * @see https://docs.oracle.com/en/database/oracle/oracle-database/23/lnpls/SELECT-INTO-statement.html
- * @see https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/SELECT.html
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/SELECT-INTO-statement.html">SELECT INTO (18)</a>
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/23/lnpls/SELECT-INTO-statement.html">SELECT INTO (23)</a>
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/SELECT.html">SELECT (23)</a>
  */
 ASTSelectIntoStatement SelectIntoStatement() :
 {}
@@ -1308,7 +1308,7 @@ void RestOfStatement() #void :
 }
 
 /**
- * @see https://docs.oracle.com/database/121/SQLRF/statements_10002.htm#i2126016
+ * @see <a href="https://docs.oracle.com/database/121/SQLRF/statements_10002.htm#i2126016">SELECT - for_update_clause</a>
  */
 void ForUpdateClause() :
 {}
@@ -1353,7 +1353,7 @@ ASTSubqueryOperation SubqueryOperation() :
 }
 
 /**
- * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/img_text/order_by_clause.html
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/img_text/order_by_clause.html">ORDER BY clause</a>
  */
 ASTOrderByClause OrderByClause() :
 {}
@@ -1372,7 +1372,7 @@ void OrderByEntry() #void :
 }
 
 /**
- * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/img_text/row_limiting_clause.html
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/img_text/row_limiting_clause.html">Row Limiting Clause</a>
  */
 ASTRowLimitingClause RowLimitingClause() :
 {}
@@ -1400,7 +1400,7 @@ ASTQueryBlock QueryBlock() :
 }
 
 /**
- * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/img_text/group_by_clause.html
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/img_text/group_by_clause.html">Group By Clause</a>
  */
 ASTGroupByClause GroupByClause() :
 {}
@@ -1462,7 +1462,7 @@ ASTWhereClause WhereClause() :
 }
 
 /**
- * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/About-SQL-Conditions.html
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/About-SQL-Conditions.html">About SQL Conditions</a>
  */
 ASTCondition Condition() :
 {}
@@ -1655,7 +1655,7 @@ ASTExpressionList ExpressionList() :
 }
 
 /**
- * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/About-SQL-Expressions.html
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/About-SQL-Expressions.html">About SQL Expressions</a>
  */
 ASTSqlExpression SqlExpression() :
 { PLSQLNode simpleNode = null; }
@@ -1997,7 +1997,7 @@ void FromClauseEntry() #void :
 }
 
 /**
- * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/img_text/select_list.html
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/img_text/select_list.html">SELECT list</a>
  */
 ASTSelectList SelectList() :
 {}
@@ -2176,7 +2176,7 @@ ASTTableName TableName() :
 }
 
 /**
- * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/SELECT.html#GUID-CFA006CA-6FF1-4972-821E-6996142A51C6__CHDIJFDJ
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/SELECT.html#GUID-CFA006CA-6FF1-4972-821E-6996142A51C6__CHDIJFDJ">SELECT</a>
  */
 ASTJoinClause JoinClause() :
 {}
@@ -2225,7 +2225,7 @@ ASTOuterJoinClause OuterJoinClause() :
 }
 
 /**
- * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/img_text/query_partition_clause.html
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/img_text/query_partition_clause.html">Query Partition Clause</a>
  */
 ASTQueryPartitionClause QueryPartitionClause() :
 {}

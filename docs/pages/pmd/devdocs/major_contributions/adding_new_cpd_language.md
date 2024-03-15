@@ -10,7 +10,7 @@ author: Matías Fraga, Clément Fournier
 
 ## Adding support for a CPD language
 
-CPD works generically on the tokens produced by a {% jdoc core::cpd.Tokenizer %}.
+CPD works generically on the tokens produced by a {% jdoc core::cpd.CpdLexer %}.
 To add support for a new language, the crucial piece is writing a CpdLexer that
 splits the source file into the tokens specific to your language. Thankfully you
 can use a stock [Antlr grammar](https://github.com/antlr/grammars-v4) or JavaCC
@@ -26,7 +26,7 @@ Use the following guide to set up a new language module that supports CPD.
    - Also add your new module to the dependencies list in "pmd-languages-deps/pom.xml", so that the new language
      is automatically available in the binary distribution (pmd-dist).
 
-2. Implement a {% jdoc core::cpd.Tokenizer %}.
+2. Implement a {% jdoc core::cpd.CpdLexer %}.
     - For Antlr grammars you can take the grammar from [antlr/grammars-v4](https://github.com/antlr/grammars-v4) and place it in `src/main/antlr4` followed by the package name of the language. You then need to call the appropriate ant wrapper to generate
     the lexer from the grammar. To do so, edit `pom.xml` (eg like [the Golang module](https://github.com/pmd/pmd/tree/master/pmd-go/pom.xml)).
       Once that is done, `mvn generate-sources` should generate the lexer sources for you.
@@ -46,7 +46,7 @@ Use the following guide to set up a new language module that supports CPD.
     ```
     
     - For JavaCC grammars, place your grammar in `etc/grammar` and edit the `pom.xml` like the [Python implementation](https://github.com/pmd/pmd/blob/master/pmd-python/pom.xml) does.
-      You can then subclass {% jdoc core::cpd.impl.JavaCCTokenizer %} instead of AntlrTokenizer.
+      You can then subclass {% jdoc core::cpd.impl.JavaccCpdLexer %} instead of AntlrCpdLexer.
     - For any other scenario just implement the interface however you can. Look at the Scala or Apex module for existing implementations.
 
 3. Create a {% jdoc core::lang.Language %} implementation, and make it implement {% jdoc core::cpd.CpdCapableLanguage %}.
@@ -75,7 +75,7 @@ If your language only supports CPD, then you can subclass {% jdoc core::lang.imp
 
    At this point the new language module should be available in {% jdoc core::lang.LanguageRegistry#CPD %} and usable by CPD like any other language.
 
-4. Update the test that asserts the list of supported languages by updating the `SUPPORTED_LANGUAGES` constant in [BinaryDistributionIT](https://github.com/pmd/pmd/blob/master/pmd-dist/src/test/java/net/sourceforge/pmd/it/BinaryDistributionIT.java).
+4. Update the test that asserts the list of supported languages by updating the `SUPPORTED_LANGUAGES` constant in [BinaryDistributionIT](https://github.com/pmd/pmd/blob/master/pmd-dist/src/test/java/net/sourceforge/pmd/dist/BinaryDistributionIT.java).
 
 5. Add some tests for your CpdLexer by following the [section below](#testing-your-implementation).
 
@@ -103,9 +103,9 @@ If your language only supports CPD, then you can subclass {% jdoc core::lang.imp
 ### Declaring CpdLexer options
 
 To make the CpdLexer configurable, first define some property descriptors using
-{% jdoc core::properties.PropertyFactory %}. Look at {% jdoc core::cpd.CpdLexer %}
+{% jdoc core::properties.PropertyFactory %}. Look at {% jdoc core::cpd.CpdLanguageProperties %}
 for some predefined ones which you can reuse (prefer reusing property descriptors if you can).
-You need to override {% jdoc core::Language#newPropertyBundle() %}
+You need to override {% jdoc core::lang.Language#newPropertyBundle() %}
 and call `definePropertyDescriptor` to register the descriptors.
 After that you can access the values of the properties from the parameter
 of {% jdoc core::cpd.CpdCapableLanguage#createCpdTokenizer(core::lang.LanguagePropertyBundle) %}.
@@ -120,7 +120,7 @@ Take a look at the [Kotlin token filter implementation](https://github.com/pmd/p
 Add a Maven dependency on `pmd-lang-test` (scope `test`) in your `pom.xml`.
 This contains utilities to test your CpdLexer.
 
-Create a test class extending from {% jdoc lang-test::cpd.test.CpdTextComparisonTest %}.
+Create a test class extending from {% jdoc lang-test::lang.test.cpd.CpdTextComparisonTest %}.
 To add tests, you need to write regular JUnit `@Test`-annotated methods, and
 call the method `doTest` with the name of the test file.
 

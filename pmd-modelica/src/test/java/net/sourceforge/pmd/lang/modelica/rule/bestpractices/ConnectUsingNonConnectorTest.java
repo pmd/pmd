@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.modelica.rule.bestpractices;
 
-import net.sourceforge.pmd.testframework.PmdRuleTst;
+import net.sourceforge.pmd.test.PmdRuleTst;
 
 class ConnectUsingNonConnectorTest extends PmdRuleTst {
     // no additional unit tests

@@ -117,9 +117,6 @@ echo
 echo "*   Update **pmd-apex/src/main/resources/rulesets/apex/quickstart.xml** and"
 echo "    **pmd-java/src/main/resources/rulesets/java/quickstart.xml** with the new rules."
 echo
-echo "*   Update **docs/pages/next_major_development.md** with the API changes for"
-echo "    the new release based on the release notes. Also add any deprecated rules to the list."
-echo
 echo "*   Update **../pmd.github.io/_config.yml** to mention the new release"
 echo
 echo "*   Update property \`pmd-designer.version\` in **pom.xml** to reference the version, that will be released"
@@ -168,6 +165,9 @@ title: PMD ${RELEASE_VERSION} released
 ${NEW_RELEASE_NOTES}
 EOF
 
+echo "Prerendering release notes pmd 7..."
+RELEASE_NOTES_PMD7=$(bundle exec docs/render_release_notes.rb docs/pages/release_notes_pmd7.md)
+
 echo "Committing current changes (pmd)"
 
 git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
@@ -194,7 +194,8 @@ echo "Change version in the POMs to ${RELEASE_VERSION} and update build timestam
 echo "Transform the SCM information in the POM"
 sed -i "s|<tag>.\+</tag>|<tag>pmd_releases/${RELEASE_VERSION}</tag>|" pom.xml
 echo "Run the project tests against the changed POMs to confirm everything is in running order (skipping cli and dist)"
-./mvnw clean verify -Dskip-cli-dist -Pgenerate-rule-docs
+# note: skipping pmd in order to avoid failures due to #4757
+./mvnw clean verify -Dskip-cli-dist -Dpmd.skip=true -Dcpd.skip=true -Pgenerate-rule-docs
 echo "Commit and create tag"
 git commit -a -m "[release] prepare release pmd_releases/${RELEASE_VERSION}"
 git tag -m "[release] copy for tag pmd_releases/${RELEASE_VERSION}" "pmd_releases/${RELEASE_VERSION}"
@@ -239,6 +240,9 @@ ${NEW_RELEASE_NOTES}
 
 ${OLD_RELEASE_NOTES}" > docs/pages/release_notes_old.md
 
+# update release_notes_pmd7 with prerendered version (jdoc tags are replaced with released version)
+echo "$RELEASE_NOTES_PMD7" > docs/pages/release_notes_pmd7.md
+
 # reset release notes template
 cat > docs/pages/release_notes.md <<EOF
 ---
@@ -281,7 +285,7 @@ echo "Then proceed with releasing pmd-designer..."
 echo "<https://github.com/pmd/pmd-designer/blob/master/releasing.md>"
 echo
 echo "Press enter to continue when pmd-designer is available in maven-central..."
-echo "<https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-ui/maven-metadata.xml>."
+echo "<https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-designer/maven-metadata.xml>."
 echo
 echo "Note: If there is no new pmd-designer release needed, you can directly proceed."
 read -r

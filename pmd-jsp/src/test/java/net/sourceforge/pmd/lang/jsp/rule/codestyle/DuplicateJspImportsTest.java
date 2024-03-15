@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.jsp.rule.codestyle;
 
-import net.sourceforge.pmd.testframework.PmdRuleTst;
+import net.sourceforge.pmd.test.PmdRuleTst;
 
 class DuplicateJspImportsTest extends PmdRuleTst {
     // no additional unit tests
