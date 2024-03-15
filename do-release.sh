@@ -165,6 +165,9 @@ title: PMD ${RELEASE_VERSION} released
 ${NEW_RELEASE_NOTES}
 EOF
 
+echo "Prerendering release notes pmd 7..."
+RELEASE_NOTES_PMD7=$(bundle exec docs/render_release_notes.rb docs/pages/release_notes_pmd7.md)
+
 echo "Committing current changes (pmd)"
 
 git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
@@ -236,6 +239,9 @@ echo "${OLD_RELEASE_NOTES_HEADER}
 ${NEW_RELEASE_NOTES}
 
 ${OLD_RELEASE_NOTES}" > docs/pages/release_notes_old.md
+
+# update release_notes_pmd7 with prerendered version (jdoc tags are replaced with released version)
+echo "$RELEASE_NOTES_PMD7" > docs/pages/release_notes_pmd7.md
 
 # reset release notes template
 cat > docs/pages/release_notes.md <<EOF

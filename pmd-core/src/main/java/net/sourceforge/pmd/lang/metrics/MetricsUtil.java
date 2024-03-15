@@ -76,6 +76,8 @@ public final class MetricsUtil {
      * @param node The node on which to compute the metric
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
+     *
+     * @throws IllegalArgumentException If the metric does not support the given node
      */
     public static <N extends Node, R extends Number> R computeMetric(Metric<? super N, R> key, N node) {
         return computeMetric(key, node, MetricOptions.emptyOptions());

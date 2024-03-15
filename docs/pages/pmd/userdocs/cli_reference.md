@@ -180,7 +180,7 @@ The tool comes with a rather extensive help text, simply running with `--help`!
 ## Additional Java Runtime Options
 
 PMD is executed via a Java runtime. In some cases, you might need to set additional runtime options, e.g.
-if you want to analyze a project, that uses one of OpenJDK's [Preview Language Features](http://openjdk.java.net/jeps/12).
+if you want to analyze a project, that uses one of OpenJDK's [JEP 12: Preview Language Features](https://openjdk.org/jeps/12).
 
 Just set the environment variable `PMD_JAVA_OPTS` before executing PMD, e.g.
 

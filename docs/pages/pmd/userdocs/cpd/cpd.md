@@ -529,7 +529,7 @@ CPD has been through three major incarnations:
     [here](http://www.onjava.com/pub/a/onjava/2003/03/12/pmd_cpd.html)).
 
 *   Then it was completely rewritten by Brian Ewins using the
-    [Burrows-Wheeler transform](http://dogma.net/markn/articles/bwt/bwt.htm).
+    [Burrows-Wheeler transform](https://en.wikipedia.org/wiki/Burrows%E2%80%93Wheeler_transform).
 
 *   Finally, it was rewritten by Steve Hawkins to use the
     [Karp-Rabin](http://www.nist.gov/dads/HTML/karpRabin.html) string matching algorithm.

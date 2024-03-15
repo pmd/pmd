@@ -84,7 +84,7 @@ in the Migration Guide.
 
 Note: Once the default version of PMD is upgraded to PMD7 in maven-pmd-plugin
 (see [MPMD-379](https://issues.apache.org/jira/projects/MPMD/issues/MPMD-379)), this
-compatibility module is no longer needed. The module pmd-compat6 might not be maintaned then
+compatibility module is no longer needed. The module pmd-compat6 might not be maintained then
 any further, hence it is already declared as deprecated.
 
 No guarantee is given, that the (deprecated) module pmd-compat6 is being maintained over the
@@ -150,7 +150,7 @@ Under the hood, we use two open source libraries instead:
   This project translates the ANTLR parse tree into an AST, that is similar to the AST Jorje provided.
   Note: This is not an official Google product.
 
-Although the parsers is completely switched, there are only little known changes to the AST.
+Although the parser is completely switched, there are only little known changes to the AST.
 These are documented in the [Migration Guide for PMD 7: Apex AST]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html#apex-ast).
 With the new Apex parser, the new language constructs like User Mode Database Operations
 can be parsed now. PMD should be able to parse Apex code up to version 59.0 (Winter '23).
@@ -178,14 +178,15 @@ is now considered stable.
 
 ##### Changed: Kotlin support
 
-Experimental Kotlin support has been promoted as stable API now.
+Support for Kotlin was introduced with PMD 7.0.0-rc1 as an experimental feature. With PMD 7.0.0 this
+is now considered stable.
 
 ##### Changed: Velocity Template Language (VTL)
 
-The module was named just "vm" which was not a good name. It module and language id and
+The module was named just "vm" which was not a good name. Its module name, language id and
 package names have been renamed to "velocity".
 
-If you import rules, you also need to ajdust the paths, e.g.
+If you import rules, you also need to adjust the paths, e.g.
 
 * `category/vm/...` ➡️ `category/velocity/...`
 
@@ -244,6 +245,10 @@ The following previously deprecated rules have been finally removed:
 The following previously deprecated rulesets have been removed. These were the left-over rulesets from PMD 5.
 The rules have been moved into categories with PMD 6.
 
+<details>
+<summary markdown="span">List of deprecated rulesets
+</summary>
+
 * rulesets/apex/apexunit.xml
 * rulesets/apex/braces.xml
 * rulesets/apex/complexity.xml
@@ -300,6 +305,9 @@ The rules have been moved into categories with PMD 6.
 * rulesets/xsl/xpath.xml
 * rulesets/releases/*
 
+</details>
+
+
 #### Fixed issues
 
 * cli
@@ -333,7 +341,7 @@ The rules have been moved into categories with PMD 6.
   * [#4659](https://github.com/pmd/pmd/pull/4659):   \[doc] Improve ant documentation
   * [#4669](https://github.com/pmd/pmd/pull/4669):   \[doc] Add bld PMD Extension to Tools / Integrations
   * [#4676](https://github.com/pmd/pmd/issues/4676): \[doc] Clarify how CPD `--ignore-literals` and `--ignore-identifiers` work
-  * [#4704](https://github.com/pmd/pmd/issues/4704): \[doc] Multivalued properties do not accept | as a separator
+  * [#4704](https://github.com/pmd/pmd/issues/4704): \[doc] Multivalued properties do not accept \| as a separator
 * miscellaneous
   * [#4699](https://github.com/pmd/pmd/pull/4699):   Make PMD buildable with java 21
   * [#4586](https://github.com/pmd/pmd/pull/4586):   Use explicit encoding in ruleset xml files
@@ -393,7 +401,7 @@ The rules have been moved into categories with PMD 6.
 
 #### API Changes
 
-See [Detailed Release Notes for PMD 7.0.0]({{ baseurl }}pmd_release_notes_pmd7.html#7-0-0).
+See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#700).
 
 #### External Contributions
 * [#4093](https://github.com/pmd/pmd/pull/4093): \[apex] Summit-AST Apex module - Part 1 - [Edward Klimoshenko](https://github.com/eklimo) (@eklimo)
@@ -429,6 +437,8 @@ The new official logo of PMD:
 
 ![New PMD Logo]({{ baseurl }}images/logo/pmd-logo-300px.png)
 
+For more information, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#new-official-logo).
+
 #### Revamped Java module
 
 * Java grammar substantially refactored - more correct regarding the Java Language Specification (JLS)
@@ -444,17 +454,17 @@ Contributors: [Clément Fournier](https://github.com/oowekyala) (@oowekyala),
 
 #### Revamped Command Line Interface
 
-* unified and consistent Command Line Interface for both Linux/Unix and Windows across our different utilities
-* single script `pmd` (`pmd.bat` for Windows) to launch the different utilities:
+* Unified and consistent Command Line Interface for both Linux/Unix and Windows across our different utilities
+* Single script `pmd` (`pmd.bat` for Windows) to launch the different utilities:
     * `pmd check` to run PMD rules and analyze a project
     * `pmd cpd` to run CPD (copy paste detector)
     * `pmd designer` to run the PMD Rule Designer
-* progress bar support for `pmd check`
-* shell completion
+* Progress bar support for `pmd check`
+* Shell completion
 
 ![Demo]({{ baseurl }}images/userdocs/pmd-demo.gif)
 
-For more information, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
+For more information, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#revamped-command-line-interface).
 
 Contributors: [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
 
@@ -464,7 +474,7 @@ Contributors: [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuy
 * Previously, Antlr grammar could only be used for CPD
 * New supported languages: Swift and Kotlin
 
-For more information, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
+For more information, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#full-antlr-support).
 
 Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 [Matías Fraga](https://github.com/matifraga) (@matifraga),
@@ -488,40 +498,18 @@ It uses an XSLT stylesheet to convert CPD's XML format into HTML.
 
 See [the example report]({{ baseurl }}report-examples/cpdhtml-v2.html).
 
+Contributors: [Mohan Chinnappan](https://github.com/mohan-chinnappan-n) (@mohan-chinnappan-n)
+
 ### 🎉 Language Related Changes
 
-Note that this is just a concise listing of the highlight.
-For more information on the languages, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
+Note that this is just a concise listing of the highlights.
+For more information on the languages, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#-language-related-changes).
 
-#### New: Swift support
+#### New: CPD support for Apache Velocity Template Language (VTL)
 
-* use PMD to analyze Swift code with PMD rules
-* limited support for Swift 5.9 (Macro Expansions)
-* initially 4 built-in rules
-
-Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
-[Matías Fraga](https://github.com/matifraga) (@matifraga),
-[Tomás De Lucca](https://github.com/tomidelucca) (@tomidelucca)
-
-#### New: Kotlin support
-
-* use PMD to analyze Kotlin code with PMD rules
-* Support for Kotlin 1.8 grammar
-* initially 2 built-in rules
-
-#### New: CPD support for TypeScript
-
-Thanks to a contribution, CPD now supports the TypeScript language. It is shipped
-with the rest of the JavaScript support in the module `pmd-javascript`.
-
-Contributors: [Paul Guyot](https://github.com/pguyot) (@pguyot)
-
-#### New: CPD support for Julia
-
-Thanks to a contribution, CPD now supports the Julia language. It is shipped
-in the new module `pmd-julia`.
-
-Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
+PMD supported Apache Velocity for a very long time, but the CPD integration never got finished.
+This is now done and CPD supports Apache Velocity Template language for detecting copy and paste.
+It is shipped in the module `pmd-velocity`.
 
 #### New: CPD support for Coco
 
@@ -531,79 +519,65 @@ module `pmd-coco`.
 
 Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
 
-#### New: Java 22 Support
+#### New: CPD support for Julia
 
-This release of PMD brings support for Java 22. There are the following new standard language features,
+Thanks to a contribution, CPD now supports the Julia language. It is shipped
+in the new module `pmd-julia`.
+
+Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
+
+#### New: CPD support for TypeScript
+
+Thanks to a contribution, CPD now supports the TypeScript language. It is shipped
+with the rest of the JavaScript support in the module `pmd-javascript`.
+
+Contributors: [Paul Guyot](https://github.com/pguyot) (@pguyot)
+
+#### New: Java 21 and 22 Support
+
+This release of PMD brings support for Java 21 and 22. There are the following new standard language features,
 that are supported now:
 
-* [JEP 456: Unnamed Variables & Patterns](https://openjdk.org/jeps/456)
+* [JEP 456: Unnamed Variables & Patterns](https://openjdk.org/jeps/456) (Java 22)
+* [JEP 440: Record Patterns](https://openjdk.org/jeps/440) (Java 21)
+* [JEP 441: Pattern Matching for switch](https://openjdk.org/jeps/441) (Java 21)
 
 PMD also supports the following preview language features:
 
-* [JEP 447: Statements before super(...) (Preview)](https://openjdk.org/jeps/447)
-* [JEP 459: String Templates (Second Preview)](https://openjdk.org/jeps/459)
-* [JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)](https://openjdk.org/jeps/463)
+* [JEP 447: Statements before super(...) (Preview)](https://openjdk.org/jeps/447) (Java 22)
+* [JEP 459: String Templates (Second Preview)](https://openjdk.org/jeps/459) (Java 21 and 22)
+* [JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)](https://openjdk.org/jeps/463) (Java 21 and 22)
 
-In order to analyze a project with PMD that uses these language features,
+In order to analyze a project with PMD that uses these preview language features,
 you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
 version `22-preview`:
 
     export PMD_JAVA_OPTS=--enable-preview
     pmd check --use-version java-22-preview ...
 
-Note: Support for Java 20 preview language features have been removed. The version "20-preview" is no longer available.
+Note: Support for Java 19 and Java 20 preview language features have been removed. The versions "19-preview" and
+"20-preview" are no longer available.
 
-#### New: Java 21 Support
+#### New: Kotlin support
 
-This release of PMD brings support for Java 21. There are the following new standard language features,
-that are supported now:
+* Use PMD to analyze Kotlin code with PMD rules.
+* Support for Kotlin 1.8 grammar
+* Initially 2 built-in rules
+* Support for Kotlin was introduced with PMD 7.0.0-rc1 as an experimental feature. With PMD 7.0.0 this
+  is now considered stable.
 
-* [JEP 440: Record Patterns](https://openjdk.org/jeps/440)
-* [JEP 441: Pattern Matching for switch](https://openjdk.org/jeps/441)
+Contributors: [Jeroen Borgers](https://github.com/jborgers) (@jborgers),
+[Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
 
-PMD also supports the following preview language features:
+#### New: Swift support
 
-* [JEP 430: String Templates (Preview)](https://openjdk.org/jeps/430)
-* [JEP 443: Unnamed Patterns and Variables (Preview)](https://openjdk.org/jeps/443)
-* [JEP 445: Unnamed Classes and Instance Main Methods (Preview)](https://openjdk.org/jeps/445)
+* Use PMD to analyze Swift code with PMD rules.
+* Limited support for Swift 5.9 (Macro Expansions)
+* Initially 4 built-in rules
 
-In order to analyze a project with PMD that uses these language features,
-you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
-version `21-preview`:
-
-    export PMD_JAVA_OPTS=--enable-preview
-    pmd check --use-version java-21-preview ...
-
-Note: Support for Java 19 preview language features have been removed. The version "19-preview" is no longer available.
-
-#### Changed: HTML support
-
-Support for HTML was introduced in PMD 6.55.0 as an experimental feature. With PMD 7.0.0 this
-is now considered stable.
-
-#### Changed: JavaScript support
-
-* latest version supports ES6 and also some new constructs (see [Rhino](https://github.com/mozilla/rhino)])
-* comments are retained
-
-#### Changed: Language versions
-
-* more predefined language versions for each supported language
-* can be used to limit rule execution for specific versions only with `minimumLanguageVersion` and
-  `maximumLanguageVersion` attributes.
-
-#### Changed: CPP can now ignore identifiers in sequences (CPD)
-
-* new command line option for CPD: `--ignore-sequences`.
-* This option is used for CPP only: with the already existing option `--ignore-literal-sequences`, only
-  literals were ignored. The new option additional ignores identifiers as well in sequences.
-* See [PR #4470](https://github.com/pmd/pmd/pull/4470) for details.
-
-#### Changed: Groovy Support (CPD)
-
-* We now support parsing all Groovy features from Groovy 3 and 4.
-* We now support [suppression](pmd_userdocs_cpd.html#suppression) through `CPD-ON`/`CPD-OFF` comment pairs.
-* See [PR #4726](https://github.com/pmd/pmd/pull/4726) for details.
+Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
+[Matías Fraga](https://github.com/matifraga) (@matifraga),
+[Tomás De Lucca](https://github.com/tomidelucca) (@tomidelucca)
 
 #### Changed: Apex Support: Replaced Jorje with fully open source front-end
 
@@ -634,6 +608,39 @@ See [#3766](https://github.com/pmd/pmd/issues/3766) for details.
 Contributors: [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-google),
 [Edward Klimoshenko](https://github.com/eklimo) (@eklimo)
 
+#### Changed: CPP can now ignore identifiers in sequences (CPD)
+
+* New command line option for CPD: `--ignore-sequences`.
+* This option is used for CPP only: with the already existing option `--ignore-literal-sequences`, only
+  literals were ignored. The new option additionally ignores identifiers as well in sequences.
+* See [PR #4470](https://github.com/pmd/pmd/pull/4470) for details.
+
+Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
+
+#### Changed: Groovy Support (CPD)
+
+* We now support parsing all Groovy features from Groovy 3 and 4.
+* We now support [suppression]({{ baseurl }}pmd_userdocs_cpd.html#suppression) through `CPD-ON`/`CPD-OFF` comment pairs.
+* See [PR #4726](https://github.com/pmd/pmd/pull/4726) for details.
+
+Contributors: [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
+
+#### Changed: HTML support
+
+Support for HTML was introduced in PMD 6.55.0 as an experimental feature. With PMD 7.0.0 this
+is now considered stable.
+
+#### Changed: JavaScript support
+
+* Latest version supports ES6 and also some new constructs (see [Rhino](https://github.com/mozilla/rhino))
+* Comments are retained
+
+#### Changed: Language versions
+
+* More predefined language versions for each supported language
+* Can be used to limit rule execution for specific versions only with `minimumLanguageVersion` and
+  `maximumLanguageVersion` attributes.
+
 #### Changed: Rule properties
 
 * The old deprecated classes like `IntProperty` and `StringProperty` have been removed. Please use
@@ -644,161 +651,64 @@ Contributors: [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-g
 * The `min` and `max` attributes in property definitions in the XML are now optional and can appear separately
   or be omitted.
 
+#### Changed: Velocity Template Language (VTL)
+
+The module was named just "vm" which was not a good name. Its module name, language id and
+package names have been renamed to "velocity".
+
+If you import rules, you also need to adjust the paths, e.g.
+
+* `category/vm/...` ➡️ `category/velocity/...`
+
+#### Changed: Visualforce
+
+There was an inconsistency between the naming of the maven module and the language id. The language id
+used the abbreviation "vf", while the maven module used the longer name "visualforce". This has been
+solved by renaming the language module to its full name "visualforce". The java packages have
+been renamed as well.
+
+If you import rules, you also need to adjust the paths, e.g.
+
+* `category/vf/security.xml` ➡️ `category/visualforce/security.xml`
+
 ### 🌟 New and changed rules
 
 #### New Rules
 
 **Apex**
-* {% rule apex/design/UnusedMethod %} finds unused methods in your code.
 * {% rule apex/performance/OperationWithHighCostInLoop %} finds Schema class methods called in a loop, which is a
   potential performance issue.
+* {% rule apex/design/UnusedMethod %} finds unused methods in your code.
 
 **Java**
 * {% rule java/codestyle/UnnecessaryBoxing %} reports boxing and unboxing conversions that may be made implicit.
 * {% rule java/codestyle/UseExplicitTypes %} reports usages of `var` keyword, which was introduced with Java 10.
 
 **Kotlin**
-* {% rule kotlin/bestpractices/FunctionNameTooShort %}
-* {% rule kotlin/errorprone/OverrideBothEqualsAndHashcode %}
+* {% rule kotlin/bestpractices/FunctionNameTooShort %} finds functions with a too short name.
+* {% rule kotlin/errorprone/OverrideBothEqualsAndHashcode %} finds classes with only
+  either `equals` or `hashCode` overridden, but not both. This leads to unexpected behavior once instances
+  of such classes are used in collections (Lists, HashMaps, ...).
 
 **Swift**
-* {% rule swift/bestpractices/ProhibitedInterfaceBuilder %}
-* {% rule swift/bestpractices/UnavailableFunction %}
-* {% rule swift/errorprone/ForceCast %}
-* {% rule swift/errorprone/ForceTry %}
+* {% rule swift/errorprone/ForceCast %} flags all force casts, making sure you are
+  defensively considering all types. Having the application crash shouldn't be an option.
+* {% rule swift/errorprone/ForceTry %} flags all force tries, making sure you are
+  defensively handling exceptions. Having the application crash shouldn't be an option.
+* {% rule swift/bestpractices/ProhibitedInterfaceBuilder %} flags any usage of interface
+  builder. Interface builder files are prone to merge conflicts, and are impossible to code review, so larger
+  teams usually try to avoid it or reduce its usage.
+* {% rule swift/bestpractices/UnavailableFunction %} flags any function throwing
+  a `fatalError` not marked as `@available(*, unavailable)` to ensure no calls are actually performed in
+  the codebase.
 
 **XML**
 * {% rule xml/bestpractices/MissingEncoding %} finds XML files without explicit encoding.
 
-#### Changed Rules
+#### Other changes
 
-**General changes**
-
-* All statistical rules (like ExcessiveClassLength, ExcessiveParameterList) have been simplified and unified.
-  The properties `topscore` and `sigma` have been removed. The property `minimum` is still there, however the type is not
-  a decimal number anymore but has been changed to an integer. This affects rules in the languages Apex, Java, PLSQL
-  and Velocity Template Language (vm):
-    * Apex: {% rule apex/design/ExcessiveClassLength %}, {% rule apex/design/ExcessiveParameterList %},
-      {% rule apex/design/ExcessivePublicCount %}, {% rule apex/design/NcssConstructorCount %},
-      {% rule apex/design/NcssMethodCount %}, {% rule apex/design/NcssTypeCount %}
-    * Java: {% rule java/design/ExcessiveImports %}, {% rule java/design/ExcessiveParameterList %},
-      {% rule java/design/ExcessivePublicCount %}, {% rule java/design/SwitchDensity %}
-    * PLSQL: {% rule plsql/design/ExcessiveMethodLength %}, {% rule plsql/design/ExcessiveObjectLength %},
-      {% rule plsql/design/ExcessivePackageBodyLength %}, {% rule plsql/design/ExcessivePackageSpecificationLength %},
-      {% rule plsql/design/ExcessiveParameterList %}, {% rule plsql/design/ExcessiveTypeLength %},
-      {% rule plsql/design/NcssMethodCount %}, {% rule plsql/design/NcssObjectCount %},
-      {% rule plsql/design/NPathComplexity %}
-    * Velocity: {% rule velocity/design/ExcessiveTemplateLength %}
-
-* The general property `violationSuppressXPath` which is available for all rules to
-  [suppress warnings]({{ baseurl }}pmd_userdocs_suppressing_warnings.html) now uses XPath version 3.1 by default.
-  This version of the XPath language is mostly identical to XPath 2.0. In PMD 6, XPath 1.0 has been used.
-  If you upgrade from PMD 6, you need to verify your `violationSuppressXPath` properties.
-
-**Apex General changes**
-
-* The properties `cc_categories`, `cc_remediation_points_multiplier`, `cc_block_highlighting` have been removed
-  from all rules. These properties have been deprecated since PMD 6.13.0.
-  See [issue #1648](https://github.com/pmd/pmd/issues/1648) for more details.
-
-**Apex Codestyle**
-
-* {% rule apex/codestyle/MethodNamingConventions %}: The deprecated rule property `skipTestMethodUnderscores` has
-  been removed. It was actually deprecated since PMD 6.15.0, but was not mentioned in the release notes
-  back then. Use the property `testPattern` instead to configure valid names for test methods.
-
-**Java General changes**
-
-* Violations reported on methods or classes previously reported the line range of the entire method
-  or class. With PMD 7.0.0, the reported location is now just the identifier of the method or class.
-  This affects various rules, e.g. {% rule java/design/CognitiveComplexity %}.
-
-  The report location is controlled by the overrides of the method {% jdoc core::lang.ast.Node#getReportLocation() %}
-  in different node types.
-
-  See [issue #4439](https://github.com/pmd/pmd/issues/4439) and [issue #730](https://github.com/pmd/pmd/issues/730)
-  for more details.
-
-**Java Best Practices**
-
-* {% rule java/bestpractices/ArrayIsStoredDirectly %}: Violations are now reported on the assignment and not
-  anymore on the formal parameter. The reported line numbers will probably move.
-* {% rule java/bestpractices/AvoidReassigningLoopVariables %}: This rule might not report anymore all
-  reassignments of the control variable in for-loops when the property `forReassign` is set to `skip`.
-  See [issue #4500](https://github.com/pmd/pmd/issues/4500) for more details.
-* {% rule java/bestpractices/LooseCoupling %}: The rule has a new property to allow some types to be coupled
-  to (`allowedTypes`).
-* {% rule java/bestpractices/UnusedLocalVariable %}: This rule has some important false-negatives fixed
-  and finds many more cases now. For details see issues [#2130](https://github.com/pmd/pmd/issues/2130),
-  [#4516](https://github.com/pmd/pmd/issues/4516), and [#4517](https://github.com/pmd/pmd/issues/4517).
-
-**Java Codestyle**
-
-* {% rule java/codestyle/MethodNamingConventions %}: The property `checkNativeMethods` has been removed. The
-  property was deprecated since PMD 6.3.0. Use the property `nativePattern` to control whether native methods
-  should be considered or not.
-* {% rule java/codestyle/ShortVariable %}: This rule now also reports short enum constant names.
-* {% rule java/codestyle/UseDiamondOperator %}: The property `java7Compatibility` has been removed. The rule now
-  handles Java 7 properly without a property.
-* {% rule java/codestyle/UnnecessaryFullyQualifiedName %}: The rule has two new properties,
-  to selectively disable reporting on static field and method qualifiers. The rule also has been improved
-  to be more precise.
-* {% rule java/codestyle/UselessParentheses %}: The rule has two new properties which control how strict
-  the rule should be applied. With `ignoreClarifying` (default: true) parentheses that are strictly speaking
-  not necessary are allowed, if they separate expressions of different precedence.
-  The other property `ignoreBalancing` (default: true) is similar, in that it allows parentheses that help
-  reading and understanding the expressions.
-* {% rule java/codestyle/EmptyControlStatement %}: The rule has a new property to allow empty blocks when
-  they contain a comment (`allowCommentedBlocks`).
-
-**Java Design**
-
-* {% rule java/design/CyclomaticComplexity %}: The property `reportLevel` has been removed. The property was
-  deprecated since PMD 6.0.0. The report level can now be configured separated for classes and methods using
-  `classReportLevel` and `methodReportLevel` instead.
-* {% rule java/design/ImmutableField %}: The property `ignoredAnnotations` has been removed. The property was
-  deprecated since PMD 6.52.0.
-* {% rule java/design/LawOfDemeter %}: The rule has a new property `trustRadius`. This defines the maximum degree
-  of trusted data. The default of 1 is the most restrictive.
-* {% rule java/design/NPathComplexity %}: The property `minimum` has been removed. It was deprecated since PMD 6.0.0.
-  Use the property `reportLevel` instead.
-* {% rule java/design/SingularField %}: The properties `checkInnerClasses` and `disallowNotAssignment` have been removed.
-  The rule is now more precise and will check these cases properly.
-* {% rule java/design/UseUtilityClass %}: The property `ignoredAnnotations` has been removed.
-
-**Java Documentation**
-
-* {% rule java/documentation/CommentContent %}: The properties `caseSensitive` and `disallowedTerms` are removed. The
-  new property `forbiddenRegex` can be used now to define the disallowed terms with a single regular
-  expression.
-* {% rule java/documentation/CommentRequired %}:
-    * Overridden methods are now detected even without the `@Override`
-      annotation. This is relevant for the property `methodWithOverrideCommentRequirement`.
-      See also [pull request #3757](https://github.com/pmd/pmd/pull/3757).
-    * Elements in annotation types are now detected as well. This might lead to an increased number of violations
-      for missing public method comments.
-    * The deprecated property `headerCommentRequirement` has been removed. Use the property `classCommentRequirement`
-      instead.
-* {% rule java/documentation/CommentSize %}: When determining the line-length of a comment, the leading comment
-  prefix markers (e.g. `*` or `//`) are ignored and don't add up to the line-length.
-  See also [pull request #4369](https://github.com/pmd/pmd/pull/4369).
-
-**Java Error Prone**
-
-* {% rule java/errorprone/AvoidDuplicateLiterals %}: The property `exceptionfile` has been removed. The property was
-  deprecated since PMD 6.10.0. Use the property `exceptionList` instead.
-* {% rule java/errorprone/DontImportSun %}: `sun.misc.Signal` is not special-cased anymore.
-* {% rule java/errorprone/EmptyCatchBlock %}: `CloneNotSupportedException` and `InterruptedException` are not
-  special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
-* {% rule java/errorprone/ImplicitSwitchFallThrough %}: Violations are now reported on the case statements
-  rather than on the switch statements. This is more accurate but might result in more violations now.
-* {% rule java/errorprone/NonSerializableClass %}: The deprecated property `prefix` has been removed
-  without replacement. In a serializable class all fields have to be serializable regardless of the name.
-
-#### Removed Rules
-
-Many rules, that were previously deprecated have been finally removed.
-See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html) for the complete list.
+The information about changed rules, removed rules and rulesets
+can be found in the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#-new-and-changed-rules).
 
 ### 🚨 API
 
@@ -807,7 +717,7 @@ have a clear separation between a well-defined API and the implementation, which
 This should help us in future development.
 
 Also, there are some improvement and changes in different areas. For the detailed description
-of the changes listed here, see [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
+of the changes listed here, see [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#-api).
 
 * Miscellaneous smaller changes and cleanups
 * XPath 3.1 support for XPath-based rules
@@ -823,412 +733,25 @@ of the changes listed here, see [Detailed Release Notes for PMD 7]({{ baseurl }}
 A detailed documentation of required changes are available in the
 [Migration Guide for PMD 7]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html).
 
-See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
+See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#-compatibility-and-migration-notes).
 
 ### 🐛 Fixed Issues
 
-* miscellaneous
-    * [#881](https://github.com/pmd/pmd/issues/881):   \[all] Breaking API changes for 7.0.0
-    * [#896](https://github.com/pmd/pmd/issues/896):   \[all] Use slf4j
-    * [#1431](https://github.com/pmd/pmd/pull/1431):   \[ui] Remove old GUI applications (designerold, bgastviewer)
-    * [#1451](https://github.com/pmd/pmd/issues/1451): \[core] RulesetFactoryCompatibility stores the whole ruleset file in memory as a string
-    * [#2496](https://github.com/pmd/pmd/issues/2496): Update PMD 7 Logo on landing page
-    * [#2497](https://github.com/pmd/pmd/issues/2497): PMD 7 Logo page
-    * [#2498](https://github.com/pmd/pmd/issues/2498): Update PMD 7 Logo in documentation
-    * [#3797](https://github.com/pmd/pmd/issues/3797): \[all] Use JUnit5
-    * [#4462](https://github.com/pmd/pmd/issues/4462): Provide Software Bill of Materials (SBOM)
-    * [#4460](https://github.com/pmd/pmd/pull/4460):   Fix assembly-plugin warnings
-    * [#4582](https://github.com/pmd/pmd/issues/4582): \[dist] Download link broken
-    * [#4586](https://github.com/pmd/pmd/pull/4586):   Use explicit encoding in ruleset xml files
-    * [#4642](https://github.com/pmd/pmd/issues/4642): Update regression tests with Java 21 language features
-    * [#4691](https://github.com/pmd/pmd/issues/4691): \[CVEs] Critical and High CEVs reported on PMD and PMD dependencies
-    * [#4699](https://github.com/pmd/pmd/pull/4699):   Make PMD buildable with java 21
-    * [#4736](https://github.com/pmd/pmd/issues/4736): \[ci] Improve build procedure
-    * [#4741](https://github.com/pmd/pmd/pull/4741):   Add pmd-compat6 module for maven-pmd-plugin
-    * [#4749](https://github.com/pmd/pmd/pull/4749):   Fixes NoSuchMethodError on processing errors in pmd-compat6
-    * [#4776](https://github.com/pmd/pmd/issues/4776): \[ci] Upgrade to ruby 3
-    * [#4796](https://github.com/pmd/pmd/pull/4796):   Remove deprecated and release rulesets
-    * [#4823](https://github.com/pmd/pmd/pull/4823):   Update to use renamed pmd-designer
-    * [#4827](https://github.com/pmd/pmd/pull/4827):   \[compat6] Support config errors and cpd for csharp
-    * [#4830](https://github.com/pmd/pmd/issues/4830): Consolidate packages in each maven module
-* ant
-    * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule
-* core
-    * [#880](https://github.com/pmd/pmd/issues/880):   \[core] Make visitors generic
-    * [#1027](https://github.com/pmd/pmd/issues/1027): \[core] Apply the new PropertyDescriptor&lt;Pattern&gt; type where applicable
-    * [#1204](https://github.com/pmd/pmd/issues/1204): \[core] Allow numeric properties in XML to be within an unbounded range
-    * [#1622](https://github.com/pmd/pmd/pull/1622):   \[core] NodeStream API
-    * [#1687](https://github.com/pmd/pmd/issues/1687): \[core] Deprecate and Remove XPath 1.0 support
-    * [#1785](https://github.com/pmd/pmd/issues/1785): \[core] Allow abstract node types to be valid rulechain visits
-    * [#1825](https://github.com/pmd/pmd/pull/1825):   \[core] Support NoAttribute for XPath
-    * [#2038](https://github.com/pmd/pmd/issues/2038): \[core] Remove DCD
-    * [#2218](https://github.com/pmd/pmd/issues/2218): \[core] `isFindBoundary` should not be an attribute
-    * [#2234](https://github.com/pmd/pmd/issues/2234): \[core] Consolidate PMD CLI into a single command
-    * [#2239](https://github.com/pmd/pmd/issues/2239): \[core] Merging Javacc build scripts
-    * [#2500](https://github.com/pmd/pmd/issues/2500): \[core] Clarify API for ANTLR based languages
-    * [#2518](https://github.com/pmd/pmd/issues/2518): \[core] Language properties
-    * [#2602](https://github.com/pmd/pmd/issues/2602): \[core] Remove ParserOptions
-    * [#2614](https://github.com/pmd/pmd/pull/2614):   \[core] Upgrade Saxon, add XPath 3.1, remove Jaxen
-    * [#2696](https://github.com/pmd/pmd/pull/2696):   \[core] Remove DFA
-    * [#2821](https://github.com/pmd/pmd/issues/2821): \[core] Rule processing error filenames are missing paths
-    * [#2873](https://github.com/pmd/pmd/issues/2873): \[core] Utility classes in pmd 7
-    * [#2885](https://github.com/pmd/pmd/issues/2885): \[core] Error recovery mode
-    * [#3203](https://github.com/pmd/pmd/issues/3203): \[core] Replace RuleViolationFactory implementations with ViolationDecorator
-    * [#3692](https://github.com/pmd/pmd/pull/3692):   \[core] Analysis listeners
-    * [#3782](https://github.com/pmd/pmd/issues/3782): \[core] Language lifecycle
-    * [#3815](https://github.com/pmd/pmd/issues/3815): \[core] Update Saxon HE to 10.7
-    * [#3893](https://github.com/pmd/pmd/pull/3893):   \[core] Text documents
-    * [#3902](https://github.com/pmd/pmd/issues/3902): \[core] Violation decorators
-    * [#3903](https://github.com/pmd/pmd/issues/3903): \[core] Consolidate `n.s.pmd.reporting` package
-    * [#3905](https://github.com/pmd/pmd/issues/3905): \[core] Stabilize tree export API
-    * [#3917](https://github.com/pmd/pmd/issues/3917): \[core] Consolidate `n.s.pmd.lang.rule` package
-    * [#3918](https://github.com/pmd/pmd/issues/3918): \[core] Make LanguageRegistry non static
-    * [#3919](https://github.com/pmd/pmd/issues/3919): \[core] Merge CPD and PMD language
-    * [#3922](https://github.com/pmd/pmd/pull/3922):   \[core] Better error reporting for the ruleset parser
-    * [#4035](https://github.com/pmd/pmd/issues/4035): \[core] ConcurrentModificationException in DefaultRuleViolationFactory
-    * [#4065](https://github.com/pmd/pmd/issues/4065): \[core] Rename TokenMgrError to LexException, Tokenizer to CpdLexer
-    * [#4120](https://github.com/pmd/pmd/issues/4120): \[core] Explicitly name all language versions
-    * [#4204](https://github.com/pmd/pmd/issues/4204): \[core] Provide a CpdAnalysis class as a programmatic entry point into CPD
-    * [#4301](https://github.com/pmd/pmd/issues/4301): \[core] Remove deprecated property concrete classes
-    * [#4302](https://github.com/pmd/pmd/issues/4302): \[core] Migrate Property Framework API to Java 8
-    * [#4309](https://github.com/pmd/pmd/issues/4309): \[core] Cleanups in XPath area
-    * [#4312](https://github.com/pmd/pmd/issues/4312): \[core] Remove unnecessary property `color` and system property `pmd.color` in `TextColorRenderer`
-    * [#4313](https://github.com/pmd/pmd/issues/4313): \[core] Remove support for &lt;lang&gt;-&lt;ruleset&gt; hyphen notation for ruleset references
-    * [#4314](https://github.com/pmd/pmd/issues/4314): \[core] Remove ruleset compatibility filter (RuleSetFactoryCompatibility) and CLI option `--no-ruleset-compatibility`
-    * [#4323](https://github.com/pmd/pmd/issues/4323): \[core] Refactor CPD integration
-    * [#4348](https://github.com/pmd/pmd/issues/4348): \[core] Consolidate @<!-- -->InternalApi classes
-    * [#4349](https://github.com/pmd/pmd/issues/4349): \[core] Cleanup remaining experimental and deprecated API
-    * [#4353](https://github.com/pmd/pmd/pull/4353):   \[core] Micro optimizations for Node API
-    * [#4365](https://github.com/pmd/pmd/pull/4365):   \[core] Improve benchmarking
-    * [#4397](https://github.com/pmd/pmd/pull/4397):   \[core] Refactor CPD
-    * [#4378](https://github.com/pmd/pmd/issues/4378): \[core] Ruleset loading processes commented rules
-    * [#4420](https://github.com/pmd/pmd/pull/4420):   \[core] Remove PMD.EOL
-    * [#4425](https://github.com/pmd/pmd/pull/4425):   \[core] Replace TextFile::pathId
-    * [#4454](https://github.com/pmd/pmd/issues/4454): \[core] "Unknown option: '-min'" but is referenced in documentation
-    * [#4611](https://github.com/pmd/pmd/pull/4611):   \[core] Fix loading language properties from env vars
-    * [#4621](https://github.com/pmd/pmd/issues/4621): \[core] Make `ClasspathClassLoader::getResource` child first
-    * [#4674](https://github.com/pmd/pmd/issues/4674): \[core] WARNING: Illegal reflective access by org.codehaus.groovy.reflection.CachedClass
-    * [#4694](https://github.com/pmd/pmd/pull/4694):   \[core] Fix line/col numbers in TokenMgrError
-    * [#4717](https://github.com/pmd/pmd/issues/4717): \[core] XSLTRenderer doesn't close report file
-    * [#4750](https://github.com/pmd/pmd/pull/4750):   \[core] Fix flaky SummaryHTMLRenderer
-    * [#4782](https://github.com/pmd/pmd/pull/4782):   \[core] Avoid using getImage/@<!-- -->Image
-* cli
-    * [#2234](https://github.com/pmd/pmd/issues/2234): \[core] Consolidate PMD CLI into a single command
-    * [#3828](https://github.com/pmd/pmd/issues/3828): \[core] Progress reporting
-    * [#4079](https://github.com/pmd/pmd/issues/4079): \[cli] Split off CLI implementation into a pmd-cli submodule
-    * [#4423](https://github.com/pmd/pmd/pull/4423):   \[cli] Fix NPE when only `--file-list` is specified
-    * [#4482](https://github.com/pmd/pmd/issues/4482): \[cli] pmd.bat can only be executed once
-    * [#4484](https://github.com/pmd/pmd/issues/4484): \[cli] ast-dump with no properties produce an NPE
-    * [#4594](https://github.com/pmd/pmd/pull/4594):   \[cli] Change completion generation to runtime
-    * [#4685](https://github.com/pmd/pmd/pull/4685):   \[cli] Clarify CPD documentation, fix positional parameter handling
-    * [#4723](https://github.com/pmd/pmd/issues/4723): \[cli] Launch fails for "bash pmd"
-* doc
-    * [#995](https://github.com/pmd/pmd/issues/995):   \[doc] Document API evolution principles as ADR
-    * [#2501](https://github.com/pmd/pmd/issues/2501): \[doc] Verify ANTLR Documentation
-    * [#2511](https://github.com/pmd/pmd/issues/2511): \[doc] Review guides for writing java/xpath rules for correctness with PMD 7
-    * [#3175](https://github.com/pmd/pmd/issues/3175): \[doc] Document language module features
-    * [#4294](https://github.com/pmd/pmd/issues/4294): \[doc] Migration Guide for upgrading PMD 6 ➡️ 7
-    * [#4303](https://github.com/pmd/pmd/issues/4303): \[doc] Document new property framework
-    * [#4308](https://github.com/pmd/pmd/issues/4308): \[doc] Document XPath API @<!-- ->NoAttribute and @<!-- -->DeprecatedAttribute
-    * [#4319](https://github.com/pmd/pmd/issues/4319): \[doc] Document TypeRes API and Symbols API
-    * [#4438](https://github.com/pmd/pmd/issues/4438): \[doc] Documentation links in VS Code are outdated
-    * [#4521](https://github.com/pmd/pmd/issues/4521): \[doc] Website is not mobile friendly
-    * [#4676](https://github.com/pmd/pmd/issues/4676): \[doc] Clarify how CPD `--ignore-literals` and `--ignore-identifiers` work
-    * [#4659](https://github.com/pmd/pmd/pull/4659):   \[doc] Improve ant documentation
-    * [#4669](https://github.com/pmd/pmd/pull/4669):   \[doc] Add bld PMD Extension to Tools / Integrations
-    * [#4704](https://github.com/pmd/pmd/issues/4704): \[doc] Multivalued properties do not accept | as a separator
-* testing
-    * [#2435](https://github.com/pmd/pmd/issues/2435): \[test] Remove duplicated Dummy language module
-    * [#4234](https://github.com/pmd/pmd/issues/4234): \[test] Tests that change the logging level do not work
-
-Language specific fixes:
-
-* apex
-    * [#1937](https://github.com/pmd/pmd/issues/1937): \[apex] Apex should only have a single RootNode
-    * [#1648](https://github.com/pmd/pmd/issues/1648): \[apex,vf] Remove CodeClimate dependency
-    * [#1750](https://github.com/pmd/pmd/pull/1750):   \[apex] Remove apex statistical rules
-    * [#2836](https://github.com/pmd/pmd/pull/2836):   \[apex] Remove Apex ProjectMirror
-    * [#3766](https://github.com/pmd/pmd/issues/3766): \[apex] Replace Jorje with fully open source front-end
-    * [#3973](https://github.com/pmd/pmd/issues/3973): \[apex] Update parser to support new 'as user' keywords (User Mode for Database Operations)
-    * [#4427](https://github.com/pmd/pmd/issues/4427): \[apex] ApexBadCrypto test failing to detect inline code
-    * [#4453](https://github.com/pmd/pmd/issues/4453): \[apex] \[7.0-rc1] Exception while initializing Apexlink (Index 34812 out of bounds for length 34812)
-* apex-bestpractices
-    * [#4556](https://github.com/pmd/pmd/issues/4556): \[apex] UnusedLocalVariable flags for variables which are using in SOQL/SOSL binds
-* apex-design
-    * [#2667](https://github.com/pmd/pmd/issues/2667): \[apex] Integrate nawforce/ApexLink to build robust Unused rule
-    * [#4509](https://github.com/pmd/pmd/issues/4509): \[apex] ExcessivePublicCount doesn't consider inner classes correctly
-    * [#4596](https://github.com/pmd/pmd/issues/4596): \[apex] ExcessivePublicCount ignores properties
-* apex-documentation
-    * [#4774](https://github.com/pmd/pmd/issues/4774): \[apex] ApexDoc false-positive for the first method of an annotated Apex class
-* apex-performance
-    * [#4675](https://github.com/pmd/pmd/issues/4675): \[apex] New Rule: OperationWithHighCostInLoop
-* apex-security
-    * [#4646](https://github.com/pmd/pmd/issues/4646): \[apex] ApexSOQLInjection does not recognise SObjectType or SObjectField as safe variable types
-* groovy
-    * [#4726](https://github.com/pmd/pmd/pull/4726):   \[groovy] Support Groovy to 3 and 4 and CPD suppressions
-* java
-    * [#520](https://github.com/pmd/pmd/issues/520):   \[java] Allow `@SuppressWarnings` with constants instead of literals
-    * [#864](https://github.com/pmd/pmd/issues/864):   \[java] Similar/duplicated implementations for determining FQCN
-    * [#905](https://github.com/pmd/pmd/issues/905):   \[java] Add new node for anonymous class declaration
-    * [#910](https://github.com/pmd/pmd/issues/910):   \[java] AST inconsistency between primitive and reference type arrays
-    * [#997](https://github.com/pmd/pmd/issues/997):   \[java] Java8 parsing corner case with annotated array types
-    * [#998](https://github.com/pmd/pmd/issues/998):   \[java] AST inconsistencies around FormalParameter
-    * [#1019](https://github.com/pmd/pmd/issues/1019): \[java] Breaking Java Grammar changes for PMD 7.0.0
-    * [#1124](https://github.com/pmd/pmd/issues/1124): \[java] ImmutableList implementation in the qname codebase
-    * [#1128](https://github.com/pmd/pmd/issues/1128): \[java] Improve ASTLocalVariableDeclaration
-    * [#1150](https://github.com/pmd/pmd/issues/1150): \[java] ClassOrInterfaceType AST improvements
-    * [#1207](https://github.com/pmd/pmd/issues/1207): \[java] Resolve explicit types using FQCNs, without hitting the classloader
-    * [#1307](https://github.com/pmd/pmd/issues/1307): \[java] AccessNode API changes
-    * [#1367](https://github.com/pmd/pmd/issues/1367): \[java] Parsing error on annotated inner class
-    * [#1661](https://github.com/pmd/pmd/issues/1661): \[java] About operator nodes
-    * [#2366](https://github.com/pmd/pmd/pull/2366):   \[java] Remove qualified names
-    * [#2819](https://github.com/pmd/pmd/issues/2819): \[java] GLB bugs in pmd 7
-    * [#3642](https://github.com/pmd/pmd/issues/3642): \[java] Parse error on rare extra dimensions on method return type on annotation methods
-    * [#3763](https://github.com/pmd/pmd/issues/3763): \[java] Ambiguous reference error in valid code
-    * [#3749](https://github.com/pmd/pmd/issues/3749): \[java] Improve `isOverridden` in ASTMethodDeclaration
-    * [#3750](https://github.com/pmd/pmd/issues/3750): \[java] Make symbol table support instanceof pattern bindings
-    * [#3751](https://github.com/pmd/pmd/issues/3751): \[java] Rename some node types
-    * [#3752](https://github.com/pmd/pmd/issues/3752): \[java] Expose annotations in symbol API
-    * [#4237](https://github.com/pmd/pmd/pull/4237):   \[java] Cleanup handling of Java comments
-    * [#4317](https://github.com/pmd/pmd/issues/4317): \[java] Some AST nodes should not be TypeNodes
-    * [#4359](https://github.com/pmd/pmd/issues/4359): \[java] Type resolution fails with NPE when the scope is not a type declaration
-    * [#4367](https://github.com/pmd/pmd/issues/4367): \[java] Move testrule TypeResTest into internal
-    * [#4383](https://github.com/pmd/pmd/issues/4383): \[java] IllegalStateException: Object is not an array type!
-    * [#4401](https://github.com/pmd/pmd/issues/4401): \[java] PMD 7 fails to build under Java 19
-    * [#4405](https://github.com/pmd/pmd/issues/4405): \[java] Processing error with ArrayIndexOutOfBoundsException
-    * [#4583](https://github.com/pmd/pmd/issues/4583): \[java] Support JDK 21 (LTS)
-    * [#4628](https://github.com/pmd/pmd/pull/4628):   \[java] Support loading classes from java runtime images
-    * [#4753](https://github.com/pmd/pmd/issues/4753): \[java] PMD crashes while using generics and wildcards
-    * [#4757](https://github.com/pmd/pmd/issues/4757): \[java] Intermittent NPEs while analyzing Java code
-    * [#4794](https://github.com/pmd/pmd/issues/4794): \[java] Support JDK 22
-* java-bestpractices
-    * [#342](https://github.com/pmd/pmd/issues/342):   \[java] AccessorMethodGeneration: Name clash with another public field not properly handled
-    * [#755](https://github.com/pmd/pmd/issues/755):   \[java] AccessorClassGeneration false positive for private constructors
-    * [#770](https://github.com/pmd/pmd/issues/770):   \[java] UnusedPrivateMethod yields false positive for counter-variant arguments
-    * [#807](https://github.com/pmd/pmd/issues/807):   \[java] AccessorMethodGeneration false positive with overloads
-    * [#833](https://github.com/pmd/pmd/issues/833):   \[java] ForLoopCanBeForeach should consider iterating on this
-    * [#1189](https://github.com/pmd/pmd/issues/1189): \[java] UnusedPrivateMethod false positive from inner class via external class
-    * [#1205](https://github.com/pmd/pmd/issues/1205): \[java] Improve ConstantsInInterface message to mention alternatives
-    * [#1212](https://github.com/pmd/pmd/issues/1212): \[java] Don't raise JUnitTestContainsTooManyAsserts on JUnit 5's assertAll
-    * [#1422](https://github.com/pmd/pmd/issues/1422): \[java] JUnitTestsShouldIncludeAssert false positive with inherited @<!-- -->Rule field
-    * [#1455](https://github.com/pmd/pmd/issues/1455): \[java] JUnitTestsShouldIncludeAssert: False positives for assert methods named "check" and "verify"
-    * [#1563](https://github.com/pmd/pmd/issues/1563): \[java] ForLoopCanBeForeach false positive with method call using index variable
-    * [#1565](https://github.com/pmd/pmd/issues/1565): \[java] JUnitAssertionsShouldIncludeMessage false positive with AssertJ
-    * [#1747](https://github.com/pmd/pmd/issues/1747): \[java] PreserveStackTrace false-positive
-    * [#1969](https://github.com/pmd/pmd/issues/1969): \[java] MissingOverride false-positive triggered by package-private method overwritten in another package by extending class
-    * [#1998](https://github.com/pmd/pmd/issues/1998): \[java] AccessorClassGeneration false-negative: subclass calls private constructor
-    * [#2130](https://github.com/pmd/pmd/issues/2130): \[java] UnusedLocalVariable: false-negative with array
-    * [#2147](https://github.com/pmd/pmd/issues/2147): \[java] JUnitTestsShouldIncludeAssert - false positives with lambdas and static methods
-    * [#2464](https://github.com/pmd/pmd/issues/2464): \[java] LooseCoupling must ignore class literals: ArrayList.class
-    * [#2542](https://github.com/pmd/pmd/issues/2542): \[java] UseCollectionIsEmpty can not detect the case `foo.bar().size()`
-    * [#2650](https://github.com/pmd/pmd/issues/2650): \[java] UseTryWithResources false positive when AutoCloseable helper used
-    * [#2796](https://github.com/pmd/pmd/issues/2796): \[java] UnusedAssignment false positive with call chains
-    * [#2797](https://github.com/pmd/pmd/issues/2797): \[java] MissingOverride long-standing issues
-    * [#2806](https://github.com/pmd/pmd/issues/2806): \[java] SwitchStmtsShouldHaveDefault false-positive with Java 14 switch non-fallthrough branches
-    * [#2822](https://github.com/pmd/pmd/issues/2822): \[java] LooseCoupling rule: Extend to cover user defined implementations and interfaces
-    * [#2843](https://github.com/pmd/pmd/pull/2843):   \[java] Fix UnusedAssignment FP with field accesses
-    * [#2882](https://github.com/pmd/pmd/issues/2882): \[java] UseTryWithResources - false negative for explicit close
-    * [#2883](https://github.com/pmd/pmd/issues/2883): \[java] JUnitAssertionsShouldIncludeMessage false positive with method call
-    * [#2890](https://github.com/pmd/pmd/issues/2890): \[java] UnusedPrivateMethod false positive with generics
-    * [#2946](https://github.com/pmd/pmd/issues/2946): \[java] SwitchStmtsShouldHaveDefault false positive on enum inside enums
-    * [#3672](https://github.com/pmd/pmd/pull/3672):   \[java] LooseCoupling - fix false positive with generics
-    * [#3675](https://github.com/pmd/pmd/pull/3675):   \[java] MissingOverride - fix false positive with mixing type vars
-    * [#3858](https://github.com/pmd/pmd/issues/3858): \[java] UseCollectionIsEmpty should infer local variable type from method invocation
-    * [#4433](https://github.com/pmd/pmd/issues/4433): \[java] \[7.0-rc1] ReplaceHashtableWithMap on java.util.Properties
-    * [#4492](https://github.com/pmd/pmd/issues/4492): \[java] GuardLogStatement gives false positive when argument is a Java method reference
-    * [#4503](https://github.com/pmd/pmd/issues/4503): \[java] JUnitTestsShouldIncludeAssert: false negative with TestNG
-    * [#4516](https://github.com/pmd/pmd/issues/4516): \[java] UnusedLocalVariable: false-negative with try-with-resources
-    * [#4517](https://github.com/pmd/pmd/issues/4517): \[java] UnusedLocalVariable: false-negative with compound assignments
-    * [#4518](https://github.com/pmd/pmd/issues/4518): \[java] UnusedLocalVariable: false-positive with multiple for-loop indices
-    * [#4603](https://github.com/pmd/pmd/issues/4603): \[java] UnusedAssignment false positive in record compact constructor
-    * [#4625](https://github.com/pmd/pmd/issues/4625): \[java] UnusedPrivateMethod false positive: Autoboxing into Number
-    * [#4634](https://github.com/pmd/pmd/issues/4634): \[java] JUnit4TestShouldUseTestAnnotation false positive with TestNG
-* java-codestyle
-    * [#1208](https://github.com/pmd/pmd/issues/1208): \[java] PrematureDeclaration rule false-positive on variable declared to measure time
-    * [#1429](https://github.com/pmd/pmd/issues/1429): \[java] PrematureDeclaration as result of method call (false positive)
-    * [#1480](https://github.com/pmd/pmd/issues/1480): \[java] IdenticalCatchBranches false positive with return expressions
-    * [#1673](https://github.com/pmd/pmd/issues/1673): \[java] UselessParentheses false positive with conditional operator
-    * [#1790](https://github.com/pmd/pmd/issues/1790): \[java] UnnecessaryFullyQualifiedName false positive with enum constant
-    * [#1918](https://github.com/pmd/pmd/issues/1918): \[java] UselessParentheses false positive with boolean operators
-    * [#2134](https://github.com/pmd/pmd/issues/2134): \[java] PreserveStackTrace not handling `Throwable.addSuppressed(...)`
-    * [#2299](https://github.com/pmd/pmd/issues/2299): \[java] UnnecessaryFullyQualifiedName false positive with similar package name
-    * [#2391](https://github.com/pmd/pmd/issues/2391): \[java] UseDiamondOperator FP when expected type and constructed type have a different parameterization
-    * [#2528](https://github.com/pmd/pmd/issues/2528): \[java] MethodNamingConventions - JUnit 5 method naming not support ParameterizedTest
-    * [#2739](https://github.com/pmd/pmd/issues/2739): \[java] UselessParentheses false positive for string concatenation
-    * [#2748](https://github.com/pmd/pmd/issues/2748): \[java] UnnecessaryCast false positive with unchecked cast
-    * [#2847](https://github.com/pmd/pmd/issues/2847): \[java] New Rule: Use Explicit Types
-    * [#2973](https://github.com/pmd/pmd/issues/2973): \[java] New rule: UnnecessaryBoxing
-    * [#3195](https://github.com/pmd/pmd/pull/3195):   \[java] Improve rule UnnecessaryReturn to detect more cases
-    * [#3218](https://github.com/pmd/pmd/pull/3218):   \[java] Generalize UnnecessaryCast to flag all unnecessary casts
-    * [#3221](https://github.com/pmd/pmd/issues/3221): \[java] PrematureDeclaration false positive for unused variables
-    * [#3238](https://github.com/pmd/pmd/issues/3238): \[java] Improve ExprContext, fix FNs of UnnecessaryCast
-    * [#3500](https://github.com/pmd/pmd/pull/3500):   \[java] UnnecessaryBoxing - check for Integer.valueOf(String) calls
-    * [#4239](https://github.com/pmd/pmd/issues/4239): \[java] UnnecessaryLocalBeforeReturn - false positive with catch clause
-    * [#4268](https://github.com/pmd/pmd/issues/4268): \[java] CommentDefaultAccessModifier: false positive with TestNG annotations
-    * [#4273](https://github.com/pmd/pmd/issues/4273): \[java] CommentDefaultAccessModifier ignoredAnnotations should include "org.junit.jupiter.api.extension.RegisterExtension" by default
-    * [#4357](https://github.com/pmd/pmd/pull/4357):   \[java] Fix IllegalStateException in UseDiamondOperator rule
-    * [#4432](https://github.com/pmd/pmd/issues/4432): \[java] \[7.0-rc1] UnnecessaryImport - Unused static import is being used
-    * [#4455](https://github.com/pmd/pmd/issues/4455): \[java] FieldNamingConventions: false positive with lombok's @<!-- -->UtilityClass
-    * [#4487](https://github.com/pmd/pmd/issues/4487): \[java] UnnecessaryConstructor: false-positive with @<!-- -->Inject and @<!-- -->Autowired
-    * [#4511](https://github.com/pmd/pmd/issues/4511): \[java] LocalVariableCouldBeFinal shouldn't report unused variables
-    * [#4512](https://github.com/pmd/pmd/issues/4512): \[java] MethodArgumentCouldBeFinal shouldn't report unused parameters
-    * [#4557](https://github.com/pmd/pmd/issues/4557): \[java] UnnecessaryImport FP with static imports of overloaded methods
-    * [#4578](https://github.com/pmd/pmd/issues/4578): \[java] CommentDefaultAccessModifier comment needs to be before annotation if present
-    * [#4631](https://github.com/pmd/pmd/issues/4631): \[java] UnnecessaryFullyQualifiedName fails to recognize illegal self reference in enums
-    * [#4645](https://github.com/pmd/pmd/issues/4645): \[java] CommentDefaultAccessModifier - False Positive with JUnit5's ParameterizedTest
-    * [#4754](https://github.com/pmd/pmd/pull/4754):   \[java] EmptyControlStatementRule: Add allowCommentedBlocks property
-    * [#4816](https://github.com/pmd/pmd/issues/4816): \[java] UnnecessaryImport false-positive on generic method call with on lambda
-* java-design
-    * [#174](https://github.com/pmd/pmd/issues/174):   \[java] SingularField false positive with switch in method that both assigns and reads field
-    * [#1014](https://github.com/pmd/pmd/issues/1014): \[java] LawOfDemeter: False positive with lambda expression
-    * [#1605](https://github.com/pmd/pmd/issues/1605): \[java] LawOfDemeter: False positive for standard UTF-8 charset name
-    * [#2160](https://github.com/pmd/pmd/issues/2160): \[java] Issues with Law of Demeter
-    * [#2175](https://github.com/pmd/pmd/issues/2175): \[java] LawOfDemeter: False positive for chained methods with generic method call
-    * [#2179](https://github.com/pmd/pmd/issues/2179): \[java] LawOfDemeter: False positive with static property access - should treat class-level property as global object, not dot-accessed property
-    * [#2180](https://github.com/pmd/pmd/issues/2180): \[java] LawOfDemeter: False positive with Thread and ThreadLocalRandom
-    * [#2182](https://github.com/pmd/pmd/issues/2182): \[java] LawOfDemeter: False positive with package-private access
-    * [#2188](https://github.com/pmd/pmd/issues/2188): \[java] LawOfDemeter: False positive with fields assigned to local vars
-    * [#2536](https://github.com/pmd/pmd/issues/2536): \[java] ClassWithOnlyPrivateConstructorsShouldBeFinal can't detect inner class
-    * [#3668](https://github.com/pmd/pmd/pull/3668):   \[java] ClassWithOnlyPrivateConstructorsShouldBeFinal - fix FP with inner private classes
-    * [#3754](https://github.com/pmd/pmd/issues/3754): \[java] SingularField false positive with read in while condition
-    * [#3786](https://github.com/pmd/pmd/issues/3786): \[java] SimplifyBooleanReturns should consider operator precedence
-    * [#3840](https://github.com/pmd/pmd/issues/3840): \[java] LawOfDemeter disallows method call on locally created object
-    * [#4238](https://github.com/pmd/pmd/pull/4238):   \[java] Make LawOfDemeter not use the rulechain
-    * [#4254](https://github.com/pmd/pmd/issues/4254): \[java] ImmutableField - false positive with Lombok @<!-- -->Setter
-    * [#4434](https://github.com/pmd/pmd/issues/4434): \[java] \[7.0-rc1] ExceptionAsFlowControl when simply propagating
-    * [#4456](https://github.com/pmd/pmd/issues/4456): \[java] FinalFieldCouldBeStatic: false positive with lombok's @<!-- -->UtilityClass
-    * [#4477](https://github.com/pmd/pmd/issues/4477): \[java] SignatureDeclareThrowsException: false-positive with TestNG annotations
-    * [#4490](https://github.com/pmd/pmd/issues/4490): \[java] ImmutableField - false negative with Lombok @<!-- -->Getter
-    * [#4549](https://github.com/pmd/pmd/pull/4549):   \[java] Make LawOfDemeter results deterministic
-* java-documentation
-    * [#4369](https://github.com/pmd/pmd/pull/4369):   \[java] Improve CommentSize
-    * [#4416](https://github.com/pmd/pmd/pull/4416):   \[java] Fix reported line number in CommentContentRule
-* java-errorprone
-    * [#659](https://github.com/pmd/pmd/issues/659):   \[java] MissingBreakInSwitch - last default case does not contain a break
-    * [#718](https://github.com/pmd/pmd/issues/718):   \[java] BrokenNullCheck false positive with parameter/field confusion
-    * [#932](https://github.com/pmd/pmd/issues/932):   \[java] SingletonClassReturningNewInstance false positive with double assignment
-    * [#1005](https://github.com/pmd/pmd/issues/1005): \[java] CloneMethodMustImplementCloneable triggers for interfaces
-    * [#1669](https://github.com/pmd/pmd/issues/1669): \[java] NullAssignment - FP with ternay and null as constructor argument
-    * [#1831](https://github.com/pmd/pmd/issues/1831): \[java] DetachedTestCase reports abstract methods
-    * [#1899](https://github.com/pmd/pmd/issues/1899): \[java] Recognize @<!-- -->SuppressWanings("fallthrough") for MissingBreakInSwitch
-    * [#2320](https://github.com/pmd/pmd/issues/2320): \[java] NullAssignment - FP with ternary and null as method argument
-    * [#2532](https://github.com/pmd/pmd/issues/2532): \[java] AvoidDecimalLiteralsInBigDecimalConstructor can not detect the case `new BigDecimal(Expression)`
-    * [#2579](https://github.com/pmd/pmd/issues/2579): \[java] MissingBreakInSwitch detects the lack of break in the last case
-    * [#2880](https://github.com/pmd/pmd/issues/2880): \[java] CompareObjectsWithEquals - false negative with type res
-    * [#2893](https://github.com/pmd/pmd/issues/2893): \[java] Remove special cases from rule EmptyCatchBlock
-    * [#2894](https://github.com/pmd/pmd/issues/2894): \[java] Improve MissingBreakInSwitch
-    * [#3071](https://github.com/pmd/pmd/issues/3071): \[java] BrokenNullCheck FP with PMD 6.30.0
-    * [#3087](https://github.com/pmd/pmd/issues/3087): \[java] UnnecessaryBooleanAssertion overlaps with SimplifiableTestAssertion
-    * [#3100](https://github.com/pmd/pmd/issues/3100): \[java] UseCorrectExceptionLogging FP in 6.31.0
-    * [#3173](https://github.com/pmd/pmd/issues/3173): \[java] UseProperClassLoader false positive
-    * [#3351](https://github.com/pmd/pmd/issues/3351): \[java] ConstructorCallsOverridableMethod ignores abstract methods
-    * [#3400](https://github.com/pmd/pmd/issues/3400): \[java] AvoidUsingOctalValues FN with underscores
-    * [#3843](https://github.com/pmd/pmd/issues/3843): \[java] UseEqualsToCompareStrings should consider return type
-    * [#4063](https://github.com/pmd/pmd/issues/4063): \[java] AvoidBranchingStatementAsLastInLoop: False-negative about try/finally block
-    * [#4356](https://github.com/pmd/pmd/pull/4356):   \[java] Fix NPE in CloseResourceRule
-    * [#4449](https://github.com/pmd/pmd/issues/4449): \[java] AvoidAccessibilityAlteration: Possible false positive in AvoidAccessibilityAlteration rule when using Lambda expression
-    * [#4457](https://github.com/pmd/pmd/issues/4457): \[java] OverrideBothEqualsAndHashcode: false negative with anonymous classes
-    * [#4493](https://github.com/pmd/pmd/issues/4493): \[java] MissingStaticMethodInNonInstantiatableClass: false-positive about @<!-- -->Inject
-    * [#4505](https://github.com/pmd/pmd/issues/4505): \[java] ImplicitSwitchFallThrough NPE in PMD 7.0.0-rc1
-    * [#4510](https://github.com/pmd/pmd/issues/4510): \[java] ConstructorCallsOverridableMethod: false positive with lombok's @<!-- -->Value
-    * [#4513](https://github.com/pmd/pmd/issues/4513): \[java] UselessOperationOnImmutable various false negatives with String
-    * [#4514](https://github.com/pmd/pmd/issues/4514): \[java] AvoidLiteralsInIfCondition false positive and negative for String literals when ignoreExpressions=true
-    * [#4546](https://github.com/pmd/pmd/issues/4546): \[java] OverrideBothEqualsAndHashCode ignores records
-    * [#4719](https://github.com/pmd/pmd/pull/4719):   \[java] UnnecessaryCaseChange: example doc toUpperCase() should compare to a capitalized string
-* java-multithreading
-    * [#2537](https://github.com/pmd/pmd/issues/2537): \[java] DontCallThreadRun can't detect the case that call run() in `this.run()`
-    * [#2538](https://github.com/pmd/pmd/issues/2538): \[java] DontCallThreadRun can't detect the case that call run() in `foo.bar.run()`
-    * [#2577](https://github.com/pmd/pmd/issues/2577): \[java] UseNotifyAllInsteadOfNotify falsely detect a special case with argument: `foo.notify(bar)`
-    * [#4483](https://github.com/pmd/pmd/issues/4483): \[java] NonThreadSafeSingleton false positive with double-checked locking
-* java-performance
-    * [#1224](https://github.com/pmd/pmd/issues/1224): \[java] InefficientEmptyStringCheck false negative in anonymous class
-    * [#2587](https://github.com/pmd/pmd/issues/2587): \[java] AvoidArrayLoops could also check for list copy through iterated List.add()
-    * [#2712](https://github.com/pmd/pmd/issues/2712): \[java] SimplifyStartsWith false-positive with AssertJ
-    * [#3486](https://github.com/pmd/pmd/pull/3486):   \[java] InsufficientStringBufferDeclaration: Fix NPE
-    * [#3848](https://github.com/pmd/pmd/issues/3848): \[java] StringInstantiation: false negative when using method result
-    * [#4070](https://github.com/pmd/pmd/issues/4070): \[java] A false positive about the rule RedundantFieldInitializer
-    * [#4458](https://github.com/pmd/pmd/issues/4458): \[java] RedundantFieldInitializer: false positive with lombok's @<!-- -->Value
-* javascript
-    * [#2305](https://github.com/pmd/pmd/issues/2305): \[javascript] UnnecessaryBlock - false positives with destructuring assignments
-    * [#4673](https://github.com/pmd/pmd/pull/4673):   \[javascript] CPD: Added support for decorator notation
-* kotlin
-    * [#419](https://github.com/pmd/pmd/issues/419):   \[kotlin] Add support for Kotlin
-    * [#4389](https://github.com/pmd/pmd/pull/4389):   \[kotlin] Update grammar to version 1.8
-* plsql
-    * [#4820](https://github.com/pmd/pmd/issues/4820): \[plsql] WITH clause is ignored for SELECT INTO statements
-* swift
-    * [#1877](https://github.com/pmd/pmd/pull/1877):   \[swift] Feature/swift rules
-    * [#1882](https://github.com/pmd/pmd/pull/1882):   \[swift] UnavailableFunction Swift rule
-    * [#4697](https://github.com/pmd/pmd/issues/4697): \[swift] Support Swift 5.9 features (mainly macros expansion expressions)
-* xml
-    * [#1800](https://github.com/pmd/pmd/pull/1800):   \[xml] Unimplement org.w3c.dom.Node from the XmlNodeWrapper
-* xml-bestpractices
-    * [#4592](https://github.com/pmd/pmd/pull/4592):   \[xml] Add MissingEncoding rule
+More than 300 issues have been fixed in PMD 7.
+See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#-fixed-issues) for the
+complete list of fixed issues.
 
 ### ✨ External Contributions
 
-* [#1658](https://github.com/pmd/pmd/pull/1658): \[core] Node support for Antlr-based languages - [Matías Fraga](https://github.com/matifraga) (@matifraga)
-* [#1698](https://github.com/pmd/pmd/pull/1698): \[core] [swift] Antlr Base Parser adapter and Swift Implementation - [Lucas Soncini](https://github.com/lsoncini) (@lsoncini)
-* [#1774](https://github.com/pmd/pmd/pull/1774): \[core] Antlr visitor rules - [Lucas Soncini](https://github.com/lsoncini) (@lsoncini)
-* [#1877](https://github.com/pmd/pmd/pull/1877): \[swift] Feature/swift rules - [Matías Fraga](https://github.com/matifraga) (@matifraga)
-* [#1881](https://github.com/pmd/pmd/pull/1881): \[doc] Add ANTLR documentation - [Matías Fraga](https://github.com/matifraga) (@matifraga)
-* [#1882](https://github.com/pmd/pmd/pull/1882): \[swift] UnavailableFunction Swift rule - [Tomás de Lucca](https://github.com/tomidelucca) (@tomidelucca)
-* [#2830](https://github.com/pmd/pmd/pull/2830): \[apex] Apexlink POC - [Kevin Jones](https://github.com/nawforce) (@nawforce)
-* [#3866](https://github.com/pmd/pmd/pull/3866): \[core] Add CLI Progress Bar - [@JerritEic](https://github.com/JerritEic) (@JerritEic)
-* [#4093](https://github.com/pmd/pmd/pull/4093): \[apex] Summit-AST Apex module - Part 1 - [Edward Klimoshenko](https://github.com/eklimo) (@eklimo)
-* [#4151](https://github.com/pmd/pmd/pull/4151): \[apex] Summit-AST Apex module - Part 2 - expression nodes - [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-google)
-* [#4171](https://github.com/pmd/pmd/pull/4171): \[apex] Summit-AST Apex module - Part 3 - initializers - [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-google)
-* [#4206](https://github.com/pmd/pmd/pull/4206): \[apex] Summit-AST Apex module - Part 4 - statements - [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-google)
-* [#4219](https://github.com/pmd/pmd/pull/4219): \[apex] Summit-AST Apex module - Part 5 - annotations, triggers, misc. - [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-google)
-* [#4242](https://github.com/pmd/pmd/pull/4242): \[apex] Merge 6.52 into experimental-apex-parser - [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-google)
-* [#4251](https://github.com/pmd/pmd/pull/4251): \[apex] Summit-AST Apex module - Part 6 Passing testsuite - [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-google)
-* [#4402](https://github.com/pmd/pmd/pull/4402): \[javascript] CPD: add support for Typescript using antlr4 grammar - [Paul Guyot](https://github.com/pguyot) (@pguyot)
-* [#4403](https://github.com/pmd/pmd/pull/4403): \[julia] CPD: Add support for Julia code duplication  - [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
-* [#4412](https://github.com/pmd/pmd/pull/4412): \[doc] Added new error msg to ConstantsInInterface - [David Ljunggren](https://github.com/dague1) (@dague1)
-* [#4426](https://github.com/pmd/pmd/pull/4426): \[cpd] New XML to HTML XLST report format for PMD CPD - [mohan-chinnappan-n](https://github.com/mohan-chinnappan-n) (@mohan-chinnappan-n)
-* [#4428](https://github.com/pmd/pmd/pull/4428): \[apex] ApexBadCrypto bug fix for #4427 - inline detection of hard coded values - [Steven Stearns](https://github.com/sfdcsteve) (@sfdcsteve)
-* [#4431](https://github.com/pmd/pmd/pull/4431): \[coco] CPD: Coco support for code duplication detection - [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
-* [#4444](https://github.com/pmd/pmd/pull/4444): \[java] CommentDefaultAccessModifier - ignore org.junit.jupiter.api.extension.RegisterExtension by default - [Nirvik Patel](https://github.com/nirvikpatel) (@nirvikpatel)
-* [#4448](https://github.com/pmd/pmd/pull/4448): \[apex] Bump summit-ast to new release 2.1.0 (and remove workaround) - [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-google)
-* [#4450](https://github.com/pmd/pmd/pull/4450): \[java] Fix #4449 AvoidAccessibilityAlteration: Correctly handle Lambda expressions in PrivilegedAction scenarios - [Seren](https://github.com/mohui1999) (@mohui1999)
-* [#4452](https://github.com/pmd/pmd/pull/4452): \[doc] Update PMD_APEX_ROOT_DIRECTORY documentation reference - [nwcm](https://github.com/nwcm) (@nwcm)
-* [#4470](https://github.com/pmd/pmd/pull/4470): \[cpp] CPD: Added strings as literal and ignore identifiers in sequences - [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
-* [#4474](https://github.com/pmd/pmd/pull/4474): \[java] ImmutableField: False positive with lombok (fixes #4254) - [Pim van der Loos](https://github.com/PimvanderLoos) (@PimvanderLoos)
-* [#4479](https://github.com/pmd/pmd/pull/4479): \[apex] Merge main (7.x) branch into experimental-apex-parser and fix tests - [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-google)
-* [#4488](https://github.com/pmd/pmd/pull/4488): \[java] Fix #4477: A false-positive about SignatureDeclareThrowsException - [AnnaDev](https://github.com/LynnBroe) (@LynnBroe)
-* [#4494](https://github.com/pmd/pmd/pull/4494): \[java] Fix #4487: A false-positive about UnnecessaryConstructor and @<!-- -->Inject and @<!-- -->Autowired - [AnnaDev](https://github.com/LynnBroe) (@LynnBroe)
-* [#4495](https://github.com/pmd/pmd/pull/4495): \[java] Fix #4493: false-positive about MissingStaticMethodInNonInstantiatableClass and @<!-- -->Inject - [AnnaDev](https://github.com/LynnBroe) (@LynnBroe)
-* [#4507](https://github.com/pmd/pmd/pull/4507): \[java] Fix #4503: A false negative about JUnitTestsShouldIncludeAssert and testng - [AnnaDev](https://github.com/LynnBroe) (@LynnBroe)
-* [#4520](https://github.com/pmd/pmd/pull/4520): \[doc] Fix typo: missing closing quotation mark after CPD-END - [João Dinis Ferreira](https://github.com/joaodinissf) (@joaodinissf)
-* [#4528](https://github.com/pmd/pmd/pull/4528): \[apex] Update to apexlink - [Kevin Jones](https://github.com/nawforce) (@nawforce)
-* [#4533](https://github.com/pmd/pmd/pull/4533): \[java] Fix #4063: False-negative about try/catch block in Loop - [AnnaDev](https://github.com/LynnBroe) (@LynnBroe)
-* [#4536](https://github.com/pmd/pmd/pull/4536): \[java] Fix #4268: CommentDefaultAccessModifier - false positive with TestNG's @<!-- -->Test annotation - [AnnaDev](https://github.com/LynnBroe) (@LynnBroe)
-* [#4537](https://github.com/pmd/pmd/pull/4537): \[java] Fix #4455: A false positive about FieldNamingConventions and UtilityClass - [AnnaDev](https://github.com/LynnBroe) (@LynnBroe)
-* [#4538](https://github.com/pmd/pmd/pull/4538): \[java] Fix #4456: A false positive about FinalFieldCouldBeStatic and UtilityClass - [AnnaDev](https://github.com/LynnBroe) (@LynnBroe)
-* [#4540](https://github.com/pmd/pmd/pull/4540): \[java] Fix #4457: false negative about OverrideBothEqualsAndHashcode - [AnnaDev](https://github.com/LynnBroe) (@LynnBroe)
-* [#4541](https://github.com/pmd/pmd/pull/4541): \[java] Fix #4458: A false positive about RedundantFieldInitializer and @<!-- -->Value - [AnnaDev](https://github.com/LynnBroe) (@LynnBroe)
-* [#4542](https://github.com/pmd/pmd/pull/4542): \[java] Fix #4510: A false positive about ConstructorCallsOverridableMethod and @<!-- -->Value - [AnnaDev](https://github.com/LynnBroe) (@LynnBroe)
-* [#4553](https://github.com/pmd/pmd/pull/4553): \[java] Fix #4492: GuardLogStatement gives false positive when argument is a Java method reference - [Anastasiia Koba](https://github.com/anastasiia-koba) (@anastasiia-koba)
-* [#4562](https://github.com/pmd/pmd/pull/4562): \[apex] Fixes #4556 - Update Apex bind regex match for all possible combinations - [nwcm](https://github.com/nwcm) (@nwcm)
-* [#4637](https://github.com/pmd/pmd/pull/4637): \[java] fix #4634 - JUnit4TestShouldUseTestAnnotation false positive with TestNG - [Krystian Dabrowski](https://github.com/krdabrowski) (@krdabrowski)
-* [#4640](https://github.com/pmd/pmd/pull/4640): \[cli] Launch script fails if run via "bash pmd" - [Shai Bennathan](https://github.com/shai-bennathan) (@shai-bennathan)
-* [#4649](https://github.com/pmd/pmd/pull/4649): \[apex] Add SObjectType and SObjectField to list of injectable SOQL variable types - [Richard Corfield](https://github.com/rcorfieldffdc) (@rcorfieldffdc)
-* [#4651](https://github.com/pmd/pmd/pull/4651): \[doc] Add "Tencent Cloud Code Analysis" in Tools / Integrations - [yale](https://github.com/cyw3) (@cyw3)
-* [#4664](https://github.com/pmd/pmd/pull/4664): \[cli] CPD: Fix NPE when only `--file-list` is specified - [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
-* [#4665](https://github.com/pmd/pmd/pull/4665): \[java] Doc: Fix references AutoClosable -> AutoCloseable - [Andrey Bozhko](https://github.com/AndreyBozhko) (@AndreyBozhko)
-* [#4673](https://github.com/pmd/pmd/pull/4673): \[javascript] CPD: Added support for decorator notation - [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
-* [#4677](https://github.com/pmd/pmd/pull/4677): \[apex] Add new rule: OperationWithHighCostInLoop - [Thomas Prouvot](https://github.com/tprouvot) (@tprouvot)
-* [#4698](https://github.com/pmd/pmd/pull/4698): \[swift] Add macro expansion support for swift 5.9 - [Richard B.](https://github.com/kenji21) (@kenji21)
-* [#4706](https://github.com/pmd/pmd/pull/4706): \[java] DetachedTestCase should not report on abstract methods - [Debamoy Datta](https://github.com/Debamoy) (@Debamoy)
-* [#4719](https://github.com/pmd/pmd/pull/4719): \[java] UnnecessaryCaseChange: example doc toUpperCase() should compare to a capitalized string - [ciufudean](https://github.com/ciufudean) (@ciufudean)
-* [#4738](https://github.com/pmd/pmd/pull/4738): \[doc] Added reference to the PMD extension for bld - [Erik C. Thauvin](https://github.com/ethauvin) (@ethauvin)
-* [#4749](https://github.com/pmd/pmd/pull/4749):   Fixes NoSuchMethodError on processing errors in pmd-compat6 - [Andreas Bergander](https://github.com/bergander) (@bergander)
-* [#4750](https://github.com/pmd/pmd/pull/4750): \[core] Fix flaky SummaryHTMLRenderer - [219sansim](https://github.com/219sansim) (@219sansim)
-* [#4752](https://github.com/pmd/pmd/pull/4752): \[core] Fix flaky LatticeRelationTest - [219sansim](https://github.com/219sansim) (@219sansim)
-* [#4754](https://github.com/pmd/pmd/pull/4754): \[java] EmptyControlStatementRule: Add allowCommentedBlocks property - [Andreas Bergander](https://github.com/bergander) (@bergander)
-* [#4759](https://github.com/pmd/pmd/pull/4759): \[java] fix: remove delimiter attribute from ruleset category/java/errorprone.xml - [Marcin Dąbrowski](https://github.com/marcindabrowski) (@marcindabrowski)
-* [#4825](https://github.com/pmd/pmd/pull/4825): \[plsql] Fix ignored WITH clause for SELECT INTO statements - [Laurent Bovet](https://github.com/lbovet) (@lbovet)
-* [#4857](https://github.com/pmd/pmd/pull/4857): \[javascript] Fix UnnecessaryBlock issues with empty statements - [Oleksandr Shvets](https://github.com/oleksandr-shvets) (@oleksandr-shvets)
+Many thanks to the following contributors:
+@219sansim, @aaronhurst-google, @anastasiia-koba, @AndreyBozhko, @bergander, @ciufudean, @cyw3, @dague1,
+@Debamoy, @eklimo, @ethauvin, @JerritEic, @joaodinissf, @kenji21, @krdabrowski, @lbovet, @lsoncini,
+@LynnBroe, @marcindabrowski, @matifraga, @mohan-chinnappan-n, @mohui1999, @nawforce, @nirvikpatel,
+@nwcm, @pguyot, @PimvanderLoos, @rcorfieldffdc, @sfdcsteve, @shai-bennathan, @tomidelucca,
+@tprouvot, @wener-tiobe.
+
+See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#-external-contributions) for the
+full list of PRs.
 
 ### 📈 Stats
 * 5662 commits

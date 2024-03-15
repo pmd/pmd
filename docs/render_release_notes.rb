@@ -39,6 +39,10 @@ liquid_env = {
 
 
 to_render = File.read(release_notes_file)
+if to_render.match(/\{%\s*include/)
+    STDERR.printf("\n\n\e[31;1mERROR\e[0m Detected an include tag - this is jekyll specific and not supported here! Please replace it manually\n\n")
+    exit 1
+end
 rendered = Liquid::Template.parse(to_render).render(liquid_env)
 
 

@@ -138,11 +138,11 @@ A {% jdoc ast::ASTExpression %} might represent a {% jdoc ast::ASTAssignableExpr
 if it e.g. references a variable name. In that case, you can access the referenced variable symbol
 with the method {% jdoc ast::ASTAssignableExpr.ASTNamedReferenceExpr#getReferencedSym() %}.
 
-Declaration nodes, such as {% jdoc ast::ASTVariableDeclaratorId %} implement the interface
+Declaration nodes, such as {% jdoc ast::ASTVariableId %} implement the interface
 {%jdoc ast::SymbolDeclaratorNode %}. Through the method
 {% jdoc ast::SymbolDeclaratorNode#getSymbol() %} you can also access the symbol.
 
-To find usages, you can call {% jdoc ast::ASTVariableDeclaratorId#getLocalUsages() %}.
+To find usages, you can call {% jdoc ast::ASTVariableId#getLocalUsages() %}.
 
 ## Type resolution APIs
 

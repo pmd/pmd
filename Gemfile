@@ -13,6 +13,7 @@ group :release_notes_preprocessing do
   gem 'liquid'
   gem 'safe_yaml'
   gem 'rouge'
+  gem 'bigdecimal'
 end
 
 # vim: syntax=ruby
