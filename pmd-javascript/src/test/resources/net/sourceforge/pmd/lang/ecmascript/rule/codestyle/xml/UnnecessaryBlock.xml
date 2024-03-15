@@ -43,6 +43,15 @@ for (var i in obj) {
     </test-code>
 
     <test-code>
+        <description>Ok, for of</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+for (let value of obj) {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>Ok, while</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -165,11 +174,17 @@ do {
 
     <test-code>
         <description>Bad, switch</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,6</expected-linenumbers>
         <code><![CDATA[
 switch(1) {
     case 1:
         {
+        }
+        break;
+    case 2:
+        {
+            1 + 2;
         }
         break;
 }
@@ -190,6 +205,98 @@ try {
     {
     }
 }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, destructure assigments (#2305)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import {foo} from 'bar'
+
+const [a, b] = array;
+const [a, , b] = array;
+const [a = aDefault, b] = array;
+const [a, b, ...rest] = array;
+const [a, , b, ...rest] = array;
+const [a, b, ...{ pop, push }] = array;
+const [a, b, ...[c, d]] = array;
+
+const { a, b } = obj;
+const { a: a1, b: b1 } = obj;
+const { a: a1 = aDefault, b = bDefault } = obj;
+const { a, b, ...rest } = obj;
+const { a: a1, b: b1, ...rest } = obj;
+const { [key]: a } = obj;
+
+let a, b, a1, b1, c, d, rest, pop, push;
+[a, b] = array;
+[a, , b] = array;
+[a = aDefault, b] = array;
+[a, b, ...rest] = array;
+[a, , b, ...rest] = array;
+[a, b, ...{ pop, push }] = array;
+[a, b, ...[c, d]] = array;
+
+({ a, b } = obj); // parentheses are required
+({ a: a1, b: b1 } = obj);
+({ a: a1 = aDefault, b = bDefault } = obj);
+({ a, b, ...rest } = obj);
+({ a: a1, b: b1, ...rest } = obj);
+
+function fn( ({arg}) ){ return arg}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, destructure assigments (#2305) - without semicolons</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+// note: this code can't be parsed by rhino, we get several syntax errors
+import {foo} from 'bar'
+
+const [a, b] = array
+const [a, , b] = array
+const [a = aDefault, b] = array
+const [a, b, ...rest] = array
+const [a, , b, ...rest] = array
+const [a, b, ...{ pop, push }] = array
+const [a, b, ...[c, d]] = array
+
+const { a, b } = obj
+const { a: a1, b: b1 } = obj
+const { a: a1 = aDefault, b = bDefault } = obj
+const { a, b, ...rest } = obj
+const { a: a1, b: b1, ...rest } = obj
+const { [key]: a } = obj
+
+let a, b, a1, b1, c, d, rest, pop, push
+[a, b] = array
+[a, , b] = array
+[a = aDefault, b] = array
+[a, b, ...rest] = array
+[a, , b, ...rest] = array
+[a, b, ...{ pop, push }] = array
+[a, b, ...[c, d]] = array
+
+({ a, b } = obj) // parentheses are required
+({ a: a1, b: b1 } = obj)
+({ a: a1 = aDefault, b = bDefault } = obj)
+({ a, b, ...rest } = obj)
+({ a: a1, b: b1, ...rest } = obj)
+
+function fn( ({arg}) ){ return arg}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>not using semicolons case (#2305)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import { foo } from './someScript.js' // missing semicolon
+const { isLoggedIn } = useAuth();  // <--- violation here: unnecessary block
+import { foo2 } from './someScript2.js'; 
+const { isLoggedIn2 } = useAuth2()  //
         ]]></code>
     </test-code>
 </test-data>
