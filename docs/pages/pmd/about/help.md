@@ -16,6 +16,6 @@ There are numerous ways of getting help:
 *   You can also ask questions on [github discussions](https://github.com/pmd/pmd/discussions).
 
 *   Or you can join the [Mailing List](https://lists.sourceforge.net/lists/listinfo/pmd-devel) or browse
-    through the archives ([archive1](http://java-pmd.30631.n5.nabble.com/), [archive2](http://web.archive.org/web/20160715035623/http://blog.gmane.org:80/gmane.comp.java.audit.pmd.devel)).
+    through the [mailing list archive](https://sourceforge.net/p/pmd/mailman/pmd-devel/).
 
 *   Of course, you can also directly jump to our [source code on github](https://github.com/pmd/pmd).

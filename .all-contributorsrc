@@ -7156,7 +7156,8 @@
       "profile": "https://github.com/nwcm",
       "contributions": [
         "doc",
-        "bug"
+        "bug",
+        "code"
       ]
     },
     {
@@ -7387,6 +7388,15 @@
       "profile": "https://www.linkedin.com/in/thu-vo-cat-79143b181/",
       "contributions": [
         "bug"
+      ]
+    },
+    {
+      "login": "oleksandr-shvets",
+      "name": "Sashko",
+      "avatar_url": "https://avatars.githubusercontent.com/u/908526?v=4",
+      "profile": "https://github.com/oleksandr-shvets",
+      "contributions": [
+        "code"
       ]
     }
   ],

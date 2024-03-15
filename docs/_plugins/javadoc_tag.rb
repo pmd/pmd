@@ -10,7 +10,7 @@ require_relative 'jdoc_namespace_tag'
 # though, links on the published jekyll site will work.
 # To refer to the previous API version, e.g. to refer to a type or member that was removed,
 # the tag "jdoc_old" may be used. This tag is used exactly the same way as "jdoc". There's
-# no "jdoc_package_old" tag.
+# also a "jdoc_package_old" tag.
 #
 #
 # Usage (don't miss the DO NOT section at the bottom):
@@ -107,6 +107,9 @@ class JavadocTag < Liquid::Tag
     super
 
     @doc_ref = doc_ref
+    # in case the doc_ref is a variable (like in %include usage), remember the original value
+    # so that we can restore it after we resolved the variable
+    @initial_doc_ref = doc_ref
   end
 
   def render(var_ctx)
@@ -134,16 +137,18 @@ class JavadocTag < Liquid::Tag
 
     @opts = Options.new(opts.last) # ignore first empty string, may be nil
 
-    if tag_name == "jdoc_package"
+    if tag_name == "jdoc_package" || tag_name == "jdoc_package_old"
       @is_package_ref = true
-    elsif tag_name == "jdoc_old"
+    end
+    if tag_name == "jdoc_old" || tag_name == "jdoc_package_old"
       @use_previous_api_version = true
     end
 
     artifact_name, @type_fqcn = JDocNamespaceDeclaration::parse_fqcn(@type_fqcn, var_ctx)
     resolved_type = JavadocTag::fqcn_type(artifact_name, @type_fqcn)
 
-    diagnose(var_ctx, artifact_name, @type_fqcn, @is_package_ref, resolved_type)
+    # don't fail for unresolved reference when pointing to old api
+    diagnose(var_ctx, artifact_name, @type_fqcn, @is_package_ref, resolved_type) unless @use_previous_api_version
 
     # Expand FQCN of arguments
     @member_suffix.gsub!(JDocNamespaceDeclaration::NAMESPACED_FQCN_REGEX) {|fqcn| JDocNamespaceDeclaration::parse_fqcn(fqcn, var_ctx)[1]}
@@ -161,6 +166,11 @@ class JavadocTag < Liquid::Tag
     api_version = var_ctx["site.pmd." + (@use_previous_api_version ? "previous_version" : "version")]
 
     link_url = doclink(var_ctx["site.javadoc_url_prefix"], artifact_name, api_version, @type_fqcn, @member_suffix, resolved_type)
+
+    # reset the doc_ref, if we resolved a variable reference
+    @doc_ref = @initial_doc_ref
+
+    # return the markup
     markup_link(visible_name, link_url)
   end
 
@@ -228,11 +238,11 @@ class JavadocTag < Liquid::Tag
     location = "#{context['page']['path']}:#{@line_number}+?"
 
     if resolved_type == :package && !expect_package
-      warn "\e[33;1m#{location}: #{tag_name} generated link to #{fqcn}, but it was found to be a package name. Did you mean to use jdoc_package instead of jdoc?\e[0m"
+      fail "\e[31;1m#{location}: #{tag_name} generated link to #{fqcn}, but it was found to be a package name. Did you mean to use jdoc_package instead of jdoc?\e[0m"
     elsif resolved_type == :file && expect_package
-      warn "\e[33;1m#{location}: #{tag_name} generated link to #{fqcn}, but it was found to be a java file name. Did you mean to use jdoc instead of jdoc_package?\e[0m"
+      fail "\e[31;1m#{location}: #{tag_name} generated link to #{fqcn}, but it was found to be a java file name. Did you mean to use jdoc instead of jdoc_package?\e[0m"
     elsif !resolved_type
-      warn "\e[33;1m#{location}: #{tag_name} generated link to #{fqcn}, but the #{expect_package ? "directory" : "source file"} couldn't be found in the source tree of #{artifact_id}\e[0m"
+      fail "\e[31;1m#{location}: #{tag_name} generated link to #{fqcn}, but the #{expect_package ? "directory" : "source file"} couldn't be found in the source tree of #{artifact_id}\e[0m"
     end
   end
 
@@ -248,15 +258,24 @@ class JavadocTag < Liquid::Tag
 
     src_dirs = [
         File.join(artifact_dir, "src", "main", "java"),
+        File.join(artifact_dir, "src", "main", "kotlin"),
         File.join(artifact_dir, "target", "generated-sources", "javacc"),
         File.join(artifact_dir, "target", "generated-sources", "antlr4")
     ].select {|dir| File.exist?(dir)}
 
     targets = src_dirs
                   .map {|dir| File.join(dir, fqcn.split("."))}
-                  .map {|f| File.file?(f + ".java") ? :file : File.exist?(f) ? :package : nil}
+                  .map do |f|
+                    if File.file?(f + ".java") || File.file?(f + ".kt")
+                        next :file
+                    end
+                    if File.exist?(f)
+                        next :package
+                    end
+                    next nil
+                   end
 
-    # consider nested classes (one level is only supported...)
+    # consider nested classes (one level is only supported... and only java...)
     nested_targets = src_dirs
                         .map { |dir| File.join(dir, fqcn.split(".")[0..-2]) }
                         .map {|f| File.file?(f + ".java") ? :nested : File.exist?(f) ? :package : nil}
@@ -305,3 +324,4 @@ end
 Liquid::Template.register_tag('jdoc', JavadocTag)
 Liquid::Template.register_tag('jdoc_package', JavadocTag)
 Liquid::Template.register_tag('jdoc_old', JavadocTag)
+Liquid::Template.register_tag('jdoc_package_old', JavadocTag)
