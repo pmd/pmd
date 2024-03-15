@@ -1175,10 +1175,6 @@ a code {
     color: #248ec2;
 }
 
-code + a > code {
-    margin-left: -7px;
-}
-
 table th code {
     color: white;
 }

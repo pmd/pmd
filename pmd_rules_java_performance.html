@@ -2093,7 +2093,7 @@ calendar calculations are needed.</p>
 
 <p>The FileInputStream and FileOutputStream classes contains a finalizer method which will cause garbage
 collection pauses.
-See <a href="https://bugs.openjdk.java.net/browse/JDK-8080225">JDK-8080225</a> for details.</p>
+See <a href="https://bugs.openjdk.org/browse/JDK-8080225">JDK-8080225</a> for details.</p>
 
 <p>The FileReader and FileWriter constructors instantiate FileInputStream and FileOutputStream,
 again causing garbage collection issues while finalizer methods are called.</p>
@@ -2676,11 +2676,11 @@ You must use <code class="language-plaintext highlighter-rouge">new ArrayList&lt
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Problem: Use of <a href="https://commons.apache.org/proper/commons-fileupload/apidocs/org/apache/commons/fileupload/FileItem.html#get--">FileItem.get()</a>
-and <a href="https://commons.apache.org/proper/commons-fileupload/apidocs/org/apache/commons/fileupload/FileItem.html#getString--">FileItem.getString()</a>
+<p>Problem: Use of <a href="https://javadoc.io/static/commons-fileupload/commons-fileupload/1.5/org/apache/commons/fileupload/FileItem.html#get--">FileItem.get()</a>
+and <a href="https://javadoc.io/static/commons-fileupload/commons-fileupload/1.5/org/apache/commons/fileupload/FileItem.html#getString--">FileItem.getString()</a>
 could exhaust memory since they load the entire file into memory.</p>
 
-<p>Solution: Use <a href="https://commons.apache.org/proper/commons-fileupload/apidocs/org/apache/commons/fileupload/FileItem.html#getInputStream--">FileItem.getInputStream()</a>
+<p>Solution: Use <a href="https://javadoc.io/static/commons-fileupload/commons-fileupload/1.5/org/apache/commons/fileupload/FileItem.html#getInputStream--">FileItem.getInputStream()</a>
 and buffering.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>

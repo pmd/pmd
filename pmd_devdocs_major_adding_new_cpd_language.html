@@ -1875,7 +1875,7 @@
 
   <h2 id="adding-support-for-a-cpd-language">Adding support for a CPD language</h2>
 
-<p>CPD works generically on the tokens produced by a <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/Tokenizer.html#"><code>Tokenizer</code></a>.
+<p>CPD works generically on the tokens produced by a <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CpdLexer.html#"><code>CpdLexer</code></a>.
 To add support for a new language, the crucial piece is writing a CpdLexer that
 splits the source file into the tokens specific to your language. Thankfully you
 can use a stock <a href="https://github.com/antlr/grammars-v4">Antlr grammar</a> or JavaCC
@@ -1894,7 +1894,7 @@ other languages.</li>
 is automatically available in the binary distribution (pmd-dist).</li>
     </ul>
   </li>
-  <li>Implement a <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/Tokenizer.html#"><code>Tokenizer</code></a>.
+  <li>Implement a <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CpdLexer.html#"><code>CpdLexer</code></a>.
     <ul>
       <li>
         <p>For Antlr grammars you can take the grammar from <a href="https://github.com/antlr/grammars-v4">antlr/grammars-v4</a> and place it in <code class="language-plaintext highlighter-rouge">src/main/antlr4</code> followed by the package name of the language. You then need to call the appropriate ant wrapper to generate
@@ -1918,7 +1918,7 @@ Once that is done, <code class="language-plaintext highlighter-rouge">mvn genera
 
     <ul>
       <li>For JavaCC grammars, place your grammar in <code class="language-plaintext highlighter-rouge">etc/grammar</code> and edit the <code class="language-plaintext highlighter-rouge">pom.xml</code> like the <a href="https://github.com/pmd/pmd/blob/master/pmd-python/pom.xml">Python implementation</a> does.
-You can then subclass <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/impl/JavaCCTokenizer.html#"><code>JavaCCTokenizer</code></a> instead of AntlrTokenizer.</li>
+You can then subclass <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/impl/JavaccCpdLexer.html#"><code>JavaccCpdLexer</code></a> instead of AntlrCpdLexer.</li>
       <li>For any other scenario just implement the interface however you can. Look at the Scala or Apex module for existing implementations.</li>
     </ul>
   </li>
@@ -1979,9 +1979,9 @@ There is also the following Jekyll Include, that creates summary box for the lan
 <h3 id="declaring-cpdlexer-options">Declaring CpdLexer options</h3>
 
 <p>To make the CpdLexer configurable, first define some property descriptors using
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#"><code>PropertyFactory</code></a>. Look at <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CpdLexer.html#"><code>CpdLexer</code></a>
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#"><code>PropertyFactory</code></a>. Look at <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CpdLanguageProperties.html#"><code>CpdLanguageProperties</code></a>
 for some predefined ones which you can reuse (prefer reusing property descriptors if you can).
-You need to override <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Language.html#newPropertyBundle()"><code>newPropertyBundle</code></a>
+You need to override <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/Language.html#newPropertyBundle()"><code>newPropertyBundle</code></a>
 and call <code class="language-plaintext highlighter-rouge">definePropertyDescriptor</code> to register the descriptors.
 After that you can access the values of the properties from the parameter
 of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CpdCapableLanguage.html#createCpdTokenizer(net.sourceforge.pmd.lang.LanguagePropertyBundle)"><code>createCpdTokenizer</code></a>.</p>
@@ -1995,7 +1995,7 @@ Take a look at the <a href="https://github.com/pmd/pmd/blob/master/pmd-kotlin/sr
 <p>Add a Maven dependency on <code class="language-plaintext highlighter-rouge">pmd-lang-test</code> (scope <code class="language-plaintext highlighter-rouge">test</code>) in your <code class="language-plaintext highlighter-rouge">pom.xml</code>.
 This contains utilities to test your CpdLexer.</p>
 
-<p>Create a test class extending from <a href="https://docs.pmd-code.org/apidocs/pmd-lang-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/test/CpdTextComparisonTest.html#"><code>CpdTextComparisonTest</code></a>.
+<p>Create a test class extending from <a href="https://docs.pmd-code.org/apidocs/pmd-lang-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/test/cpd/CpdTextComparisonTest.html#"><code>CpdTextComparisonTest</code></a>.
 To add tests, you need to write regular JUnit <code class="language-plaintext highlighter-rouge">@Test</code>-annotated methods, and
 call the method <code class="language-plaintext highlighter-rouge">doTest</code> with the name of the test file.</p>
 

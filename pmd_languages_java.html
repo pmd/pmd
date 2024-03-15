@@ -1874,17 +1874,18 @@
     </details>
 
   <details class="language-info">
-  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;summary&gt;Language Info for Java&lt;/summary&gt;
-&lt;div class="card"&gt;
-    &lt;ul class="list-group list-group-flush"&gt;
-        &lt;li class="list-group-item"&gt;Since PMD 1.0.0&lt;/li&gt;
-        &lt;li class="list-group-item"&gt;Implementation: &lt;a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/JavaLanguageModule.html#"&gt;&lt;code&gt;JavaLanguageModule&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
-        &lt;li class="list-group-item"&gt;Id: java&lt;/li&gt;
-        &lt;li class="list-group-item"&gt;PMD: ✔️&lt;/li&gt;
-        &lt;li class="list-group-item"&gt;CPD: ✔️&lt;/li&gt;
-    &lt;/ul&gt;
-&lt;/div&gt;
-</code></pre></div>  </div>
+  <summary>Language Info for Java
+</summary>
+
+  <div class="card">
+    <ul class="list-group list-group-flush">
+<li class="list-group-item">Since PMD 1.0.0</li>
+<li class="list-group-item">Implementation: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/JavaLanguageModule.html#"><code>JavaLanguageModule</code></a></li>
+<li class="list-group-item">Id: java</li>
+<li class="list-group-item">PMD: ✔️</li>
+<li class="list-group-item">CPD: ✔️</li>
+</ul>
+  </div>
 </details>
 
 <h2 id="overview-of-supported-java-language-versions">Overview of supported Java language versions</h2>
@@ -2112,11 +2113,11 @@ within scope.</p>
 if it e.g. references a variable name. In that case, you can access the referenced variable symbol
 with the method <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAssignableExpr.ASTNamedReferenceExpr.html#getReferencedSym()"><code>getReferencedSym</code></a>.</p>
 
-<p>Declaration nodes, such as <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#"><code>ASTVariableDeclaratorId</code></a> implement the interface
+<p>Declaration nodes, such as <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a> implement the interface
 <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/SymbolDeclaratorNode.html#"><code>SymbolDeclaratorNode</code></a>. Through the method
 <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/SymbolDeclaratorNode.html#getSymbol()"><code>getSymbol</code></a> you can also access the symbol.</p>
 
-<p>To find usages, you can call <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#getLocalUsages()"><code>getLocalUsages</code></a>.</p>
+<p>To find usages, you can call <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#getLocalUsages()"><code>getLocalUsages</code></a>.</p>
 
 <h2 id="type-resolution-apis">Type resolution APIs</h2>
 
