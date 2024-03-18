@@ -747,7 +747,7 @@ Many thanks to the following contributors:
 @219sansim, @aaronhurst-google, @anastasiia-koba, @AndreyBozhko, @bergander, @ciufudean, @cyw3, @dague1,
 @Debamoy, @eklimo, @ethauvin, @JerritEic, @joaodinissf, @kenji21, @krdabrowski, @lbovet, @lsoncini,
 @LynnBroe, @marcindabrowski, @matifraga, @mohan-chinnappan-n, @mohui1999, @nawforce, @nirvikpatel,
-@nwcm, @pguyot, @PimvanderLoos, @rcorfieldffdc, @sfdcsteve, @shai-bennathan, @tomidelucca,
+@nwcm, @oleksandr-shvets, @pguyot, @PimvanderLoos, @rcorfieldffdc, @sfdcsteve, @shai-bennathan, @tomidelucca,
 @tprouvot, @wener-tiobe.
 
 See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#-external-contributions) for the
