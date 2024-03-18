@@ -152,8 +152,11 @@ Under the hood, we use two open source libraries instead:
 
 Although the parser is completely switched, there are only little known changes to the AST.
 These are documented in the [Migration Guide for PMD 7: Apex AST]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html#apex-ast).
-With the new Apex parser, the new language constructs like User Mode Database Operations
-can be parsed now. PMD should be able to parse Apex code up to version 59.0 (Winter '23).
+
+With the new Apex parser, the new language constructs like
+[User Mode Database Operations](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_enforce_usermode.htm)
+and the new [Null Coalescing Operator `??`](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_NullCoalescingOperator.htm)
+can be parsed now. PMD should be able to parse Apex code up to version 60.0 (Spring '24).
 
 See [#3766](https://github.com/pmd/pmd/issues/3766) for details.
 
@@ -356,6 +359,8 @@ The rules have been moved into categories with PMD 6.
   * [#4830](https://github.com/pmd/pmd/issues/4830): Consolidate packages in each maven module
 * apex
   * [#3766](https://github.com/pmd/pmd/issues/3766): \[apex] Replace Jorje with fully open source front-end
+  * [#4828](https://github.com/pmd/pmd/issues/4828): \[apex] Support null coalescing operator ?? (apex 60)
+  * [#4845](https://github.com/pmd/pmd/issues/4845): \[apex] Use same ANLTR version for apex-parser
 * apex-bestpractices
   * [#4556](https://github.com/pmd/pmd/issues/4556): \[apex] UnusedLocalVariable flags for variables which are using in SOQL/SOSL binds
 * apex-documentation
@@ -600,8 +605,10 @@ Under the hood, we use two open source libraries instead:
 
 Although the parsers is completely switched, there are only little known changes to the AST.
 These are documented in the [Migration Guide for PMD 7: Apex AST]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html#apex-ast).
-With the new Apex parser, the new language constructs like User Mode Database Operations
-can be parsed now. PMD should be able to parse Apex code up to version 59.0 (Winter '23).
+With the new Apex parser, the new language constructs like
+[User Mode Database Operations](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_enforce_usermode.htm)
+and the new [Null Coalescing Operator `??`](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_NullCoalescingOperator.htm)
+can be parsed now. PMD should be able to parse Apex code up to version 60.0 (Spring '24).
 
 See [#3766](https://github.com/pmd/pmd/issues/3766) for details.
 

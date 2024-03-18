@@ -278,8 +278,10 @@ Under the hood, we use two open source libraries instead:
 
 Although the parsers is completely switched, there are only little known changes to the AST.
 These are documented in the [Migration Guide for PMD 7: Apex AST](pmd_userdocs_migrating_to_pmd7.html#apex-ast).
-With the new Apex parser, the new language constructs like User Mode Database Operations
-can be parsed now. PMD should be able to parse Apex code up to version 59.0 (Winter '23).
+With the new Apex parser, the new language constructs like
+[User Mode Database Operations](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_enforce_usermode.htm)
+and the new [Null Coalescing Operator `??`](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_NullCoalescingOperator.htm)
+can be parsed now. PMD should be able to parse Apex code up to version 60.0 (Spring '24).
 
 See [#3766](https://github.com/pmd/pmd/issues/3766) for details.
 
@@ -3263,6 +3265,8 @@ Language specific fixes:
   * [#3973](https://github.com/pmd/pmd/issues/3973): \[apex] Update parser to support new 'as user' keywords (User Mode for Database Operations)
   * [#4427](https://github.com/pmd/pmd/issues/4427): \[apex] ApexBadCrypto test failing to detect inline code
   * [#4453](https://github.com/pmd/pmd/issues/4453): \[apex] \[7.0-rc1] Exception while initializing Apexlink (Index 34812 out of bounds for length 34812)
+  * [#4828](https://github.com/pmd/pmd/issues/4828): \[apex] Support null coalescing operator ?? (apex 60)
+  * [#4845](https://github.com/pmd/pmd/issues/4845): \[apex] Use same ANLTR version for apex-parser
 * apex-design
   * [#2667](https://github.com/pmd/pmd/issues/2667): \[apex] Integrate nawforce/ApexLink to build robust Unused rule
   * [#4509](https://github.com/pmd/pmd/issues/4509): \[apex] ExcessivePublicCount doesn't consider inner classes correctly
