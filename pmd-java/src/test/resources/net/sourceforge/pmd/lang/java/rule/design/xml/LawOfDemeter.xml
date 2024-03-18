@@ -1224,4 +1224,35 @@ class LawOfDemeterFields {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3802 FN with lambdas</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.function.Function;
+public class Example {
+
+    public void func() {
+        MyObject myObject = MyObjectProvider.get();
+        Function<Integer, Integer> f = (i) -> {
+            Object obj = myObject.getFunc(); //false-negative here
+            obj.hashCode();
+        };
+    }
+}
+
+class MyObject {
+    public Object getFunc(){
+        return new Object();
+    }
+}
+
+class MyObjectProvider {
+    public static MyObject get(){
+        return new MyObject();
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
