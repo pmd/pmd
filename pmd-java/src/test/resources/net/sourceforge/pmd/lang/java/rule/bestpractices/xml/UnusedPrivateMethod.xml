@@ -1834,4 +1834,16 @@ public class OuterClass {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3627 FN with anonymous class</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Tester {
+  Object anonymousClass = new Object() {
+      private void foo() {}  // unused, should report a warning
+  };
+}
+]]></code>
+    </test-code>
 </test-data>
