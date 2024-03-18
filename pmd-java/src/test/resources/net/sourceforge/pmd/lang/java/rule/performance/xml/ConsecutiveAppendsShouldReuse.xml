@@ -257,4 +257,21 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1081 ConsecutiveAppendsShouldReuse not detect on field</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private final StringBuilder sb = new StringBuilder();
+
+    public String bar() {
+        sb.append("foo");
+        sb.append("bar");
+        sb.append("baz");
+        return sb.toString();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
