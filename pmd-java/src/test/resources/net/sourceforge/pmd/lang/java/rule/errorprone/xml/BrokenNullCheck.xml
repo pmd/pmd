@@ -404,4 +404,22 @@ public class PmdTest2 {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#3430 FP within ternary operator</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+class BrokenNullCheck {
+    private List<Object> properties = new ArrayList<>();
+
+    void test(int index, Object replacement, Object old) {
+        if (index < 0 || (replacement != null ? properties.set(index, replacement) : properties.remove(index)) != old) { // detected
+            // ...
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
