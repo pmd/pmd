@@ -419,6 +419,18 @@ public class Generic<T> {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>#2710 FP with Lombok val initializer</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.val;
+import java.util.ArrayList;
+
+public class Foo {
+    val foo = new ArrayList<String>(5);
+}
+            ]]></code>
+    </test-code>
     <code-fragment id="generic-anon-class"><![CDATA[
         class Foo {
 
