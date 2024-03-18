@@ -88,4 +88,23 @@ final class Test {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4277 FP when invoking a method called toLowerCase on a non-String class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static String generateUlid(boolean uppercase) {
+        Ulid ulid = new Ulid();
+        return uppercase ? ulid.toString() : ulid.toLowerCase(); // not a String, should be ok
+    }
+
+    private static class Ulid {
+        public Strinc toLowerCase() {
+            return null;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
