@@ -1836,6 +1836,35 @@ public class OuterClass {
     </test-code>
 
     <test-code>
+        <description>[java] UnusedPrivateMethod false-positive used in lambda #4817</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedprivatemethod;
+
+import java.util.Collections;
+import java.util.List;
+
+import net.sourceforge.pmd.lang.java.rule.bestpractices.unusedprivatemethod.cache.CacheBuilder;
+import net.sourceforge.pmd.lang.java.rule.bestpractices.unusedprivatemethod.cache.CacheLoader;
+import net.sourceforge.pmd.lang.java.rule.bestpractices.unusedprivatemethod.cache.LoadingCache;
+
+public class NotUsedPrivateMethodFalsePositive {
+
+    private final LoadingCache<String, List<? extends String>> clientIdsToDps = CacheBuilder.newBuilder()
+            .build(CacheLoader.from(clientId -> notCachedGetAllDps(clientId))); // unqualified call
+
+    private List<? extends String> notCachedGetAllDps(String clientId) { // UnusedPrivateMethod:	Avoid unused private methods such as 'notCachedGetAllDps(String)'
+        return Collections.singletonList(clientId);
+    }
+
+    public List<?> getClientIdsToDps() {
+        return clientIdsToDps.getUnchecked("");
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
         <description>#3627 FN with anonymous class</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -1843,6 +1872,34 @@ public class Tester {
   Object anonymousClass = new Object() {
       private void foo() {}  // unused, should report a warning
   };
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] UnusedPrivateMethod false-positive used in lambda - qualified #4817</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedprivatemethod;
+
+import java.util.Collections;
+import java.util.List;
+
+import net.sourceforge.pmd.lang.java.rule.bestpractices.unusedprivatemethod.cache.CacheBuilder;
+import net.sourceforge.pmd.lang.java.rule.bestpractices.unusedprivatemethod.cache.CacheLoader;
+import net.sourceforge.pmd.lang.java.rule.bestpractices.unusedprivatemethod.cache.LoadingCache;
+
+public class NotUsedPrivateMethodFalsePositive {
+
+    private final LoadingCache<String, List<? extends String>> clientIdsToDps = CacheBuilder.newBuilder()
+            .build(CacheLoader.from(clientId -> this.notCachedGetAllDps(clientId))); // qualified call
+
+    private List<? extends String> notCachedGetAllDps(String clientId) { // UnusedPrivateMethod:	Avoid unused private methods such as 'notCachedGetAllDps(String)'
+        return Collections.singletonList(clientId);
+    }
+
+    public List<?> getClientIdsToDps() {
+        return clientIdsToDps.getUnchecked("");
+    }
 }
 ]]></code>
     </test-code>

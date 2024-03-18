@@ -96,6 +96,21 @@ final class InferenceContext {
         }
     }
 
+    public InferenceContext copy() {
+        final InferenceContext copy = new InferenceContext(ts, supertypeCheckCache, Collections.emptyList(), logger);
+        copy.freeVars.addAll(this.freeVars);
+        copy.inferenceVars.addAll(this.inferenceVars);
+        copy.incorporationActions.addAll(this.incorporationActions);
+        copy.mapping = mapping; // mapping is immutable, so we can share it safely
+
+        // recursively copy parents…
+        if (this.parent != null) {
+            copy.parent = this.parent.copy();
+        }
+
+        return copy;
+    }
+
     public int getId() {
         return id;
     }
