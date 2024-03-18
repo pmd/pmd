@@ -2019,9 +2019,12 @@ Note: This is not an official Google product.</li>
 </ul>
 
 <p>Although the parser is completely switched, there are only little known changes to the AST.
-These are documented in the <a href="pmd_userdocs_migrating_to_pmd7.html#apex-ast">Migration Guide for PMD 7: Apex AST</a>.
-With the new Apex parser, the new language constructs like User Mode Database Operations
-can be parsed now. PMD should be able to parse Apex code up to version 59.0 (Winter ‘23).</p>
+These are documented in the <a href="pmd_userdocs_migrating_to_pmd7.html#apex-ast">Migration Guide for PMD 7: Apex AST</a>.</p>
+
+<p>With the new Apex parser, the new language constructs like
+<a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_enforce_usermode.htm">User Mode Database Operations</a>
+and the new <a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_NullCoalescingOperator.htm">Null Coalescing Operator <code class="language-plaintext highlighter-rouge">??</code></a>
+can be parsed now. PMD should be able to parse Apex code up to version 60.0 (Spring ‘24).</p>
 
 <p>See <a href="https://github.com/pmd/pmd/issues/3766">#3766</a> for details.</p>
 
@@ -2257,6 +2260,8 @@ The rules have been moved into categories with PMD 6.</p>
   <li>apex
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/3766">#3766</a>: [apex] Replace Jorje with fully open source front-end</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4828">#4828</a>: [apex] Support null coalescing operator ?? (apex 60)</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4845">#4845</a>: [apex] Use same ANLTR version for apex-parser</li>
     </ul>
   </li>
   <li>apex-bestpractices
@@ -2293,6 +2298,7 @@ The rules have been moved into categories with PMD 6.</p>
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4603">#4603</a>: [java] UnusedAssignment false positive in record compact constructor</li>
       <li><a href="https://github.com/pmd/pmd/issues/4625">#4625</a>: [java] UnusedPrivateMethod false positive: Autoboxing into Number</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4817">#4817</a>: [java] UnusedPrivateMethod false-positive used in lambda</li>
     </ul>
   </li>
   <li>java-codestyle
@@ -2567,8 +2573,10 @@ Note: This is not an official Google product.</li>
 
 <p>Although the parsers is completely switched, there are only little known changes to the AST.
 These are documented in the <a href="pmd_userdocs_migrating_to_pmd7.html#apex-ast">Migration Guide for PMD 7: Apex AST</a>.
-With the new Apex parser, the new language constructs like User Mode Database Operations
-can be parsed now. PMD should be able to parse Apex code up to version 59.0 (Winter ‘23).</p>
+With the new Apex parser, the new language constructs like
+<a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_enforce_usermode.htm">User Mode Database Operations</a>
+and the new <a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_NullCoalescingOperator.htm">Null Coalescing Operator <code class="language-plaintext highlighter-rouge">??</code></a>
+can be parsed now. PMD should be able to parse Apex code up to version 60.0 (Spring ‘24).</p>
 
 <p>See <a href="https://github.com/pmd/pmd/issues/3766">#3766</a> for details.</p>
 
@@ -2740,7 +2748,7 @@ complete list of fixed issues.</p>
 @219sansim, @aaronhurst-google, @anastasiia-koba, @AndreyBozhko, @bergander, @ciufudean, @cyw3, @dague1,
 @Debamoy, @eklimo, @ethauvin, @JerritEic, @joaodinissf, @kenji21, @krdabrowski, @lbovet, @lsoncini,
 @LynnBroe, @marcindabrowski, @matifraga, @mohan-chinnappan-n, @mohui1999, @nawforce, @nirvikpatel,
-@nwcm, @pguyot, @PimvanderLoos, @rcorfieldffdc, @sfdcsteve, @shai-bennathan, @tomidelucca,
+@nwcm, @oleksandr-shvets, @pguyot, @PimvanderLoos, @rcorfieldffdc, @sfdcsteve, @shai-bennathan, @tomidelucca,
 @tprouvot, @wener-tiobe.</p>
 
 <p>See <a href="pmd_release_notes_pmd7.html#-external-contributions">Detailed Release Notes for PMD 7</a> for the

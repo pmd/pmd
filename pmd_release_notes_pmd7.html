@@ -2153,8 +2153,10 @@ Note: This is not an official Google product.</li>
 
 <p>Although the parsers is completely switched, there are only little known changes to the AST.
 These are documented in the <a href="pmd_userdocs_migrating_to_pmd7.html#apex-ast">Migration Guide for PMD 7: Apex AST</a>.
-With the new Apex parser, the new language constructs like User Mode Database Operations
-can be parsed now. PMD should be able to parse Apex code up to version 59.0 (Winter ‘23).</p>
+With the new Apex parser, the new language constructs like
+<a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_enforce_usermode.htm">User Mode Database Operations</a>
+and the new <a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_NullCoalescingOperator.htm">Null Coalescing Operator <code class="language-plaintext highlighter-rouge">??</code></a>
+can be parsed now. PMD should be able to parse Apex code up to version 60.0 (Spring ‘24).</p>
 
 <p>See <a href="https://github.com/pmd/pmd/issues/3766">#3766</a> for details.</p>
 
@@ -6055,6 +6057,8 @@ Please use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/ne
       <li><a href="https://github.com/pmd/pmd/issues/3973">#3973</a>: [apex] Update parser to support new ‘as user’ keywords (User Mode for Database Operations)</li>
       <li><a href="https://github.com/pmd/pmd/issues/4427">#4427</a>: [apex] ApexBadCrypto test failing to detect inline code</li>
       <li><a href="https://github.com/pmd/pmd/issues/4453">#4453</a>: [apex] [7.0-rc1] Exception while initializing Apexlink (Index 34812 out of bounds for length 34812)</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4828">#4828</a>: [apex] Support null coalescing operator ?? (apex 60)</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4845">#4845</a>: [apex] Use same ANLTR version for apex-parser</li>
     </ul>
   </li>
   <li>apex-design
@@ -6165,6 +6169,7 @@ Please use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/ne
       <li><a href="https://github.com/pmd/pmd/issues/4603">#4603</a>: [java] UnusedAssignment false positive in record compact constructor</li>
       <li><a href="https://github.com/pmd/pmd/issues/4625">#4625</a>: [java] UnusedPrivateMethod false positive: Autoboxing into Number</li>
       <li><a href="https://github.com/pmd/pmd/issues/4634">#4634</a>: [java] JUnit4TestShouldUseTestAnnotation false positive with TestNG</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4817">#4817</a>: [java] UnusedPrivateMethod false-positive used in lambda</li>
     </ul>
   </li>
   <li>java-codestyle
@@ -6370,6 +6375,7 @@ Please use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/ne
   <li><a href="https://github.com/pmd/pmd/pull/4541">#4541</a>: [java] Fix #4458: A false positive about RedundantFieldInitializer and @<!-- -->Value - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4542">#4542</a>: [java] Fix #4510: A false positive about ConstructorCallsOverridableMethod and @<!-- -->Value - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4553">#4553</a>: [java] Fix #4492: GuardLogStatement gives false positive when argument is a Java method reference - <a href="https://github.com/anastasiia-koba">Anastasiia Koba</a> (@anastasiia-koba)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4562">#4562</a>: [apex] Fixes #4556 - Update Apex bind regex match for all possible combinations - <a href="https://github.com/nwcm">nwcm</a> (@nwcm)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4637">#4637</a>: [java] fix #4634 - JUnit4TestShouldUseTestAnnotation false positive with TestNG - <a href="https://github.com/krdabrowski">Krystian Dabrowski</a> (@krdabrowski)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4640">#4640</a>: [cli] Launch script fails if run via “bash pmd” - <a href="https://github.com/shai-bennathan">Shai Bennathan</a> (@shai-bennathan)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4649">#4649</a>: [apex] Add SObjectType and SObjectField to list of injectable SOQL variable types - <a href="https://github.com/rcorfieldffdc">Richard Corfield</a> (@rcorfieldffdc)</li>
@@ -6384,9 +6390,11 @@ Please use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/ne
   <li><a href="https://github.com/pmd/pmd/pull/4738">#4738</a>: [doc] Added reference to the PMD extension for bld - <a href="https://github.com/ethauvin">Erik C. Thauvin</a> (@ethauvin)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4749">#4749</a>:   Fixes NoSuchMethodError on processing errors in pmd-compat6 - <a href="https://github.com/bergander">Andreas Bergander</a> (@bergander)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4750">#4750</a>: [core] Fix flaky SummaryHTMLRenderer - <a href="https://github.com/219sansim">219sansim</a> (@219sansim)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4752">#4752</a>: [core] Fix flaky LatticeRelationTest - <a href="https://github.com/219sansim">219sansim</a> (@219sansim)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4754">#4754</a>: [java] EmptyControlStatementRule: Add allowCommentedBlocks property - <a href="https://github.com/bergander">Andreas Bergander</a> (@bergander)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4759">#4759</a>: [java] fix: remove delimiter attribute from ruleset category/java/errorprone.xml - <a href="https://github.com/marcindabrowski">Marcin Dąbrowski</a> (@marcindabrowski)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4825">#4825</a>: [plsql] Fix ignored WITH clause for SELECT INTO statements - <a href="https://github.com/lbovet">Laurent Bovet</a> (@lbovet)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4857">#4857</a>: [javascript] Fix UnnecessaryBlock issues with empty statements - <a href="https://github.com/oleksandr-shvets">Oleksandr Shvets</a> (@oleksandr-shvets)</li>
 </ul>
 
 
