@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.internal;
 
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
+import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
@@ -170,14 +171,15 @@ public final class TestFrameworksUtil {
                         || TypeTestUtil.isA("junit.framework.Assert", declaring));
     }
 
-    public static boolean isProbableAssertCall(ASTMethodCall call) {
+    public static boolean isProbableAssertCall(ASTMethodCall call, List<String> extraAssertMethodNames) {
         String name = call.getMethodName();
         return name.startsWith("assert") && !isSoftAssert(call)
-            || name.startsWith("check")
-            || name.startsWith("verify")
-            || "fail".equals(name)
-            || "failWith".equals(name)
-            || isExpectExceptionCall(call);
+                || name.startsWith("check")
+                || name.startsWith("verify")
+                || "fail".equals(name)
+                || "failWith".equals(name)
+                || extraAssertMethodNames.stream().anyMatch(name::startsWith)
+                || isExpectExceptionCall(call);
     }
 
     private static boolean isSoftAssert(ASTMethodCall call) {
