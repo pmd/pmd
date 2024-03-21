@@ -61,6 +61,7 @@ feedback_disable: true
 # if you uncomment the previous line, it changes where the feedback link points to
 
 
+# filter used to process markdown. note that kramdown differs from github-flavored markdown in some subtle ways
 markdown: kramdown
 highlighter: rouge
 kramdown:
@@ -70,8 +71,10 @@ kramdown:
   syntax_highlighter: rouge
   syntax_highlighter_opts:
       css_class: 'highlight'
-  parse_block_html: true
-# filter used to process markdown. note that kramdown differs from github-flavored markdown in some subtle ways
+  parse_block_html: false
+  # selectively enable kramdown parsing for block html elements with attribute 'markdown="block"'
+  # see https://kramdown.gettalong.org/syntax.html
+
 
 collections:
   tooltips:

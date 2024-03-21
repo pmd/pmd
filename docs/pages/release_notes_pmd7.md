@@ -51,7 +51,7 @@ Contributors: [Clément Fournier](https://github.com/oowekyala) (@oowekyala),
 [Andreas Dangel](https://github.com/adangel) (@adangel),
 [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
 
-<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b>
+<div class="alert alert-info" role="alert" markdown="block"><i class="fas fa-info-circle"></i> <b>Note:</b>
 The full detailed documentation of the changes to the Java AST are available in the
 [Migration Guide for PMD 7](pmd_userdocs_migrating_to_pmd7.html#java-ast)
 </div>
@@ -666,7 +666,7 @@ The rules have been moved into categories with PMD 6.
 
 ## 💥 Compatibility and Migration Notes
 
-<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b>
+<div class="alert alert-info" role="alert" markdown="block"><i class="fas fa-info-circle"></i> <b>Note:</b>
 The full detailed documentation of the changes are available in the
 [Migration Guide for PMD 7](pmd_userdocs_migrating_to_pmd7.html)
 </div>
@@ -3164,6 +3164,7 @@ No changes.
   * [#4823](https://github.com/pmd/pmd/pull/4823):   Update to use renamed pmd-designer
   * [#4827](https://github.com/pmd/pmd/pull/4827):   \[compat6] Support config errors and cpd for csharp
   * [#4830](https://github.com/pmd/pmd/issues/4830): Consolidate packages in each maven module
+  * [#4867](https://github.com/pmd/pmd/issues/4867): \[dist] ./mvnw command not found in dist-src
 * ant
   * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule
 * core

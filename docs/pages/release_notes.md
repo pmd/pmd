@@ -36,7 +36,7 @@ provided feedback and/or PRs!
 A detailed documentation of required changes are available in the [Migration Guide for PMD 7]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html).
 
 {% if is_release_notes_processor %}
-<details>
+<details markdown="block" class="no-background">
 <summary markdown="span">Expand to see Release Notes
 </summary>
 {% endif %}
@@ -248,7 +248,7 @@ The following previously deprecated rules have been finally removed:
 The following previously deprecated rulesets have been removed. These were the left-over rulesets from PMD 5.
 The rules have been moved into categories with PMD 6.
 
-<details>
+<details markdown="block">
 <summary markdown="span">List of deprecated rulesets
 </summary>
 
@@ -357,6 +357,7 @@ The rules have been moved into categories with PMD 6.
   * [#4823](https://github.com/pmd/pmd/pull/4823):   Update to use renamed pmd-designer
   * [#4827](https://github.com/pmd/pmd/pull/4827):   \[compat6] Support config errors and cpd for csharp
   * [#4830](https://github.com/pmd/pmd/issues/4830): Consolidate packages in each maven module
+  * [#4867](https://github.com/pmd/pmd/issues/4867): \[dist] ./mvnw command not found in dist-src
 * apex
   * [#3766](https://github.com/pmd/pmd/issues/3766): \[apex] Replace Jorje with fully open source front-end
   * [#4828](https://github.com/pmd/pmd/issues/4828): \[apex] Support null coalescing operator ?? (apex 60)
@@ -767,8 +768,9 @@ full list of PRs.
 * Days since last release (6.55.0): 377
 * Days since last release (7.0.0-rc4): 160
 
+{% endtocmaker %}
+
 {% if is_release_notes_processor %}
 </details>
 {% endif %}
 
-{% endtocmaker %}

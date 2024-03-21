@@ -901,4 +901,37 @@ interface Listener {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description> [java] SingularField false positive with non static inner classes #1688 </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class A {
+
+                private String value;
+                private String derivedValue;
+
+                public A(String value) {
+                    this.value = value;
+                    this.derivedValue = this.value + "-more";
+                }
+
+                private void run() {
+                    final B b = new B();
+                    b.useA();
+                }
+
+                public static void main(String[] args) {
+                    new A("").run();
+                }
+
+                public class B {
+
+                    public void useA() {
+                        final String field = A.this.value;
+                        System.out.println(field);
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
 </test-data>
