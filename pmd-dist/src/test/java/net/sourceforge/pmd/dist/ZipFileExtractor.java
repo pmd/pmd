@@ -7,9 +7,9 @@ package net.sourceforge.pmd.dist;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -27,7 +27,7 @@ import net.sourceforge.pmd.internal.util.IOUtil;
  */
 public class ZipFileExtractor {
     // unix file permission for executable flag by owner
-    private static final int OWNER_EXECUTABLE = 0x40;
+    static final int OWNER_EXECUTABLE = 0x40;
 
     private ZipFileExtractor() {
         // Helper class
@@ -40,7 +40,7 @@ public class ZipFileExtractor {
      * @throws Exception if any error happens during extraction
      */
     public static void extractZipFile(Path zipPath, Path tempDir) throws Exception {
-        try (ZipFile zip = new ZipFile(zipPath.toFile())) {
+        try (ZipFile zip = ZipFile.builder().setFile(zipPath.toFile()).get()) {
             Enumeration<ZipArchiveEntry> entries = zip.getEntries();
             while (entries.hasMoreElements()) {
                 ZipArchiveEntry entry = entries.nextElement();
@@ -49,11 +49,11 @@ public class ZipFileExtractor {
                     assertTrue(file.mkdirs());
                 } else {
                     try (InputStream data = zip.getInputStream(entry);
-                         OutputStream fileOut = new FileOutputStream(file);) {
+                         OutputStream fileOut = Files.newOutputStream(file.toPath());) {
                         IOUtil.copy(data, fileOut);
                     }
                     if ((entry.getUnixMode() & OWNER_EXECUTABLE) == OWNER_EXECUTABLE) {
-                        file.setExecutable(true);
+                        assertTrue(file.setExecutable(true));
                     }
                 }
             }
@@ -68,7 +68,7 @@ public class ZipFileExtractor {
      */
     public static List<String> readZipFile(Path zipPath) throws Exception {
         List<String> result = new ArrayList<>();
-        try (ZipFile zip = new ZipFile(zipPath.toFile())) {
+        try (ZipFile zip = ZipFile.builder().setFile(zipPath.toFile()).get()) {
             Enumeration<ZipArchiveEntry> entries = zip.getEntries();
             while (entries.hasMoreElements()) {
                 ZipArchiveEntry entry = entries.nextElement();

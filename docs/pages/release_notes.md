@@ -357,6 +357,7 @@ The rules have been moved into categories with PMD 6.
   * [#4823](https://github.com/pmd/pmd/pull/4823):   Update to use renamed pmd-designer
   * [#4827](https://github.com/pmd/pmd/pull/4827):   \[compat6] Support config errors and cpd for csharp
   * [#4830](https://github.com/pmd/pmd/issues/4830): Consolidate packages in each maven module
+  * [#4867](https://github.com/pmd/pmd/issues/4867): \[dist] ./mvnw command not found in dist-src
 * apex
   * [#3766](https://github.com/pmd/pmd/issues/3766): \[apex] Replace Jorje with fully open source front-end
   * [#4828](https://github.com/pmd/pmd/issues/4828): \[apex] Support null coalescing operator ?? (apex 60)
