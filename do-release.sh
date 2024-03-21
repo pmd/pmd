@@ -192,7 +192,7 @@ fi
 echo "Change version in the POMs to ${RELEASE_VERSION} and update build timestamp"
 ./mvnw --quiet versions:set -DnewVersion="${RELEASE_VERSION}" -DgenerateBackupPoms=false -DupdateBuildOutputTimestampPolicy=always
 echo "Transform the SCM information in the POM"
-sed -i "s|<tag>.\+</tag>|<tag>pmd_releases/${RELEASE_VERSION}</tag>|" pom.xml
+sed -i "s|<tag>HEAD</tag>|<tag>pmd_releases/${RELEASE_VERSION}</tag>|" pom.xml
 echo "Run the project tests against the changed POMs to confirm everything is in running order (skipping cli and dist)"
 # note: skipping pmd in order to avoid failures due to #4757
 ./mvnw clean verify -Dskip-cli-dist -Dpmd.skip=true -Dcpd.skip=true -Pgenerate-rule-docs
@@ -201,7 +201,7 @@ git commit -a -m "[release] prepare release pmd_releases/${RELEASE_VERSION}"
 git tag -m "[release] copy for tag pmd_releases/${RELEASE_VERSION}" "pmd_releases/${RELEASE_VERSION}"
 echo "Update POMs to set the new development version ${DEVELOPMENT_VERSION}"
 ./mvnw --quiet versions:set -DnewVersion="${DEVELOPMENT_VERSION}" -DgenerateBackupPoms=false -DupdateBuildOutputTimestampPolicy=never
-sed -i "s|<tag>.\+</tag>|<tag>HEAD</tag>|" pom.xml
+sed -i "s|<tag>pmd_releases/${RELEASE_VERSION}</tag>|<tag>HEAD</tag>|" pom.xml
 echo "Commit"
 git commit -a -m "[release] prepare for next development iteration"
 echo "Push branch and tag pmd_releases/${RELEASE_VERSION}"
