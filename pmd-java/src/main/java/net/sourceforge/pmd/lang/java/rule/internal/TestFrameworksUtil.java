@@ -171,14 +171,13 @@ public final class TestFrameworksUtil {
                         || TypeTestUtil.isA("junit.framework.Assert", declaring));
     }
 
-    public static boolean isProbableAssertCall(ASTMethodCall call, List<String> extraAssertMethodNames) {
+    public static boolean isProbableAssertCall(ASTMethodCall call) {
         String name = call.getMethodName();
         return name.startsWith("assert") && !isSoftAssert(call)
                 || name.startsWith("check")
                 || name.startsWith("verify")
                 || "fail".equals(name)
                 || "failWith".equals(name)
-                || extraAssertMethodNames.stream().anyMatch(name::startsWith)
                 || isExpectExceptionCall(call);
     }
 

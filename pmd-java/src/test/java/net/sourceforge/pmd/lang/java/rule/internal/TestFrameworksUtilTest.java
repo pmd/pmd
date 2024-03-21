@@ -5,8 +5,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,7 +16,7 @@ class TestFrameworksUtilTest {
     void testIsProbableAssertCallWithoutExtraMethodNames() {
         ASTCompilationUnit root = java.parse("class A { { assertThat(1); } }");
         ASTMethodCall m = root.descendants(ASTMethodCall.class).toList().get(0);
-        assertThat(TestFrameworksUtil.isProbableAssertCall(m, Collections.emptyList())).isTrue();
+        assertThat(TestFrameworksUtil.isProbableAssertCall(m)).isTrue();
     }
 
     @Test

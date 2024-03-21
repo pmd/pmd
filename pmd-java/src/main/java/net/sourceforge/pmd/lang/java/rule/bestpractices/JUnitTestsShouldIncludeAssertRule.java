@@ -12,13 +12,15 @@ import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class JUnitTestsShouldIncludeAssertRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<List<String>> EXTRA_ASSERT_METHOD_NAMES =
-            PropertyFactory.stringListProperty("extraAssertMethodNames")
+    private static final PropertyDescriptor<Set<String>> EXTRA_ASSERT_METHOD_NAMES =
+            PropertyFactory.stringProperty("extraAssertMethodNames")
                            .desc("Extra valid assertion methods names")
+                           .map(Collectors.toSet())
                            .emptyDefaultValue()
                            .build();
 
@@ -30,11 +32,13 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJavaRulechainRule
     @Override
     public Object visit(ASTMethodDeclaration method, Object data) {
         ASTBlock body = method.getBody();
+        Set<String> extraAsserts = getProperty(EXTRA_ASSERT_METHOD_NAMES);
         if (body != null
                 && TestFrameworksUtil.isTestMethod(method)
                 && !TestFrameworksUtil.isExpectAnnotated(method)
                 && body.descendants(ASTMethodCall.class)
-                       .none(call -> TestFrameworksUtil.isProbableAssertCall(call, getProperty(EXTRA_ASSERT_METHOD_NAMES)))) {
+                       .none(call -> TestFrameworksUtil.isProbableAssertCall(call)
+                               || extraAsserts.contains(call.getMethodName()))) {
             asCtx(data).addViolation(method);
         }
         return data;
