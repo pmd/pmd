@@ -476,4 +476,56 @@ public class Foo {
         <code-ref id="generic-anon-class"/>
         <source-type>java 17</source-type>
     </test-code>
+    <test-code>
+        <description>Issue #3353 - FNs in PMD 6</description>
+        <expected-problems>3</expected-problems>
+        <expected-messages>
+            <message>Explicit type arguments can be replaced by a diamond: `new ArrayList&lt;&gt;()`</message>
+            <message>Explicit type arguments can be replaced by a diamond: `new ArrayList&lt;&gt;(timestamps)`</message>
+            <message>Explicit type arguments can be replaced by a diamond: `new MyConsumer&lt;&gt;()`</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.sql.Timestamp;
+            import java.util.ArrayList;
+            import java.util.Arrays;
+            import java.util.Date;
+            import java.util.List;
+            import java.util.function.Consumer;
+
+            public class DiamondIssues {
+
+                public static void main(final String[] args) {
+                    // <String> is not necessary. IntelliJ does not catch this one either
+                    doStuff(new ArrayList<String>());
+
+                    // specifying <Date> is also not necessary. IntelliJ does not catch this one either
+                    final List<Timestamp> timestamps = Arrays.asList(new Timestamp(new Date().getTime()));
+                    doOtherStuff(new ArrayList<Date>(timestamps));
+
+                    // <Integer> is not required. IntelliJ correctly reports this one as un-necessary
+                    addConsumer(Integer.class, new MyConsumer<Integer>());
+                }
+
+                private static void doStuff(final Object object) {
+                    System.out.println(object);
+                }
+
+                private static void doOtherStuff(final List<? extends Date> dates) {
+                    System.out.println(dates);
+                }
+
+                private static <T> void addConsumer(final Class<? extends T> type, final Consumer<T> consumer) {
+                    // do something useful here
+                }
+
+                private static class MyConsumer<T extends Number> implements Consumer<T> {
+
+                    @Override
+                    public void accept(final T t) {
+                        System.out.println(t);
+                    }
+                }
+            }]]>
+        </code>
+    </test-code>
 </test-data>
