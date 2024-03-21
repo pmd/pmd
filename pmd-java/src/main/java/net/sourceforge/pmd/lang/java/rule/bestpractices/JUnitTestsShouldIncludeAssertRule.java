@@ -34,11 +34,11 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJavaRulechainRule
         ASTBlock body = method.getBody();
         Set<String> extraAsserts = getProperty(EXTRA_ASSERT_METHOD_NAMES);
         if (body != null
-                && TestFrameworksUtil.isTestMethod(method)
-                && !TestFrameworksUtil.isExpectAnnotated(method)
-                && body.descendants(ASTMethodCall.class)
-                       .none(call -> TestFrameworksUtil.isProbableAssertCall(call)
-                               || extraAsserts.contains(call.getMethodName()))) {
+            && TestFrameworksUtil.isTestMethod(method)
+            && !TestFrameworksUtil.isExpectAnnotated(method)
+            && body.descendants(ASTMethodCall.class)
+                   .none(call -> TestFrameworksUtil.isProbableAssertCall(call)
+                           || extraAsserts.contains(call.getMethodName()))) {
             asCtx(data).addViolation(method);
         }
         return data;

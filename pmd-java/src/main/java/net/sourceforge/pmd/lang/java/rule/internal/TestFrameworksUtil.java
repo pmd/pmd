@@ -174,11 +174,11 @@ public final class TestFrameworksUtil {
     public static boolean isProbableAssertCall(ASTMethodCall call) {
         String name = call.getMethodName();
         return name.startsWith("assert") && !isSoftAssert(call)
-                || name.startsWith("check")
-                || name.startsWith("verify")
-                || "fail".equals(name)
-                || "failWith".equals(name)
-                || isExpectExceptionCall(call);
+            || name.startsWith("check")
+            || name.startsWith("verify")
+            || "fail".equals(name)
+            || "failWith".equals(name)
+            || isExpectExceptionCall(call);
     }
 
     private static boolean isSoftAssert(ASTMethodCall call) {
