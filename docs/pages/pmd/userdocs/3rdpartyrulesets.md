@@ -1,5 +1,7 @@
 ---
 title: 3rd party rulesets
+# language_name is used by shuffle_panel in index.md
+language_name: 3rd party rulesets
 tags: [rule_references, userdocs]
 summary: Lists rulesets and rules from the community
 permalink: pmd_userdocs_3rdpartyrulesets.html

@@ -36,7 +36,7 @@ provided feedback and/or PRs!
 A detailed documentation of required changes are available in the [Migration Guide for PMD 7]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html).
 
 {% if is_release_notes_processor %}
-<details>
+<details markdown="block" class="no-background">
 <summary markdown="span">Expand to see Release Notes
 </summary>
 {% endif %}
@@ -248,7 +248,7 @@ The following previously deprecated rules have been finally removed:
 The following previously deprecated rulesets have been removed. These were the left-over rulesets from PMD 5.
 The rules have been moved into categories with PMD 6.
 
-<details>
+<details markdown="block">
 <summary markdown="span">List of deprecated rulesets
 </summary>
 
@@ -768,8 +768,9 @@ full list of PRs.
 * Days since last release (6.55.0): 377
 * Days since last release (7.0.0-rc4): 160
 
+{% endtocmaker %}
+
 {% if is_release_notes_processor %}
 </details>
 {% endif %}
 
-{% endtocmaker %}

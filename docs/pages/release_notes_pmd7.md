@@ -51,7 +51,7 @@ Contributors: [Clément Fournier](https://github.com/oowekyala) (@oowekyala),
 [Andreas Dangel](https://github.com/adangel) (@adangel),
 [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
 
-<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b>
+<div class="alert alert-info" role="alert" markdown="block"><i class="fas fa-info-circle"></i> <b>Note:</b>
 The full detailed documentation of the changes to the Java AST are available in the
 [Migration Guide for PMD 7](pmd_userdocs_migrating_to_pmd7.html#java-ast)
 </div>
@@ -666,7 +666,7 @@ The rules have been moved into categories with PMD 6.
 
 ## 💥 Compatibility and Migration Notes
 
-<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b>
+<div class="alert alert-info" role="alert" markdown="block"><i class="fas fa-info-circle"></i> <b>Note:</b>
 The full detailed documentation of the changes are available in the
 [Migration Guide for PMD 7](pmd_userdocs_migrating_to_pmd7.html)
 </div>
