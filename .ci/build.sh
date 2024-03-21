@@ -70,16 +70,34 @@ function build() {
         PMD_MAVEN_EXTRA_OPTS+=(-Dpmd.skip=true -Dcpd.skip=true)
     fi
 
+    # make sure, BUILD_CLI_DIST_ONLY is set to false by default
+    pmd_ci_log_info "BUILD_CLI_DIST_ONLY=${BUILD_CLI_DIST_ONLY}"
+    : "${BUILD_CLI_DIST_ONLY:=false}"
+    pmd_ci_log_info "BUILD_CLI_DIST_ONLY=${BUILD_CLI_DIST_ONLY}"
+
     if [ "$(pmd_ci_utils_get_os)" != "linux" ]; then
-        pmd_ci_log_group_start "Build with mvnw"
+        pmd_ci_log_group_start "Build with mvnw verify on $(pmd_ci_utils_get_os)"
+        if pmd_ci_maven_isReleaseBuild; then
+            pmd_ci_log_info "This is a release version build..."
+            # There are two possible (release) builds:
+            if [ "${BUILD_CLI_DIST_ONLY}" = "false" ]; then
+                # a) everything without pmd-cli and pmd-dist
+                ./mvnw clean verify -P"${mvn_profiles}" -Dskip-cli-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
+            else
+                # b) only pmd-cli and pmd-dist
+                ./mvnw clean verify -P"${mvn_profiles}" -pl pmd-cli,pmd-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
+            fi
+        else
+            # snapshot build - just verify on the different OS
             ./mvnw clean verify --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
+        fi
         pmd_ci_log_group_end
 
         pmd_ci_log_info "Stopping build here, because os is not linux"
         exit 0
     fi
 
-    # only builds on pmd/pmd continue here
+    # only builds on pmd/pmd on linux continue here
     pmd_ci_log_group_start "Setup environment"
         pmd_ci_setup_secrets_private_env
         pmd_ci_setup_secrets_gpg_key
@@ -144,6 +162,8 @@ function build() {
             jacoco:report -Pcoveralls,fastSkip
 
         # workaround, maybe https://github.com/jacoco/jacoco/issues/654
+        # we use $ as a regex separator, not a shell variable, so no expansion
+        # shellcheck disable=SC2016
         sed -i 's$Comparisons.kt$ApexTreeBuilder.kt$g' pmd-apex/target/site/jacoco/jacoco.xml
 
         # then create and send coveralls report
@@ -242,20 +262,23 @@ function pmd_ci_deploy_build_artifacts() {
 # Renders release notes and uploads them as ReadMe.md to sourceforge
 #
 function pmd_ci_build_and_upload_doc() {
-    pmd_doc_generate_jekyll_site
-    pmd_doc_create_archive
+    # generate the site only for snapshots from master and for release builds for case a) (everything without cli/dist)
+    # to avoid building it twice during a release...
+    if pmd_ci_maven_isSnapshotBuild && [ "${PMD_CI_BRANCH}" = "master" ] || [ "${BUILD_CLI_DIST_ONLY}" = "false" ]; then
+        pmd_doc_generate_jekyll_site
+        pmd_doc_create_archive
 
-    pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "docs/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-doc.zip"
-    if pmd_ci_maven_isReleaseBuild && [ "${BUILD_CLI_DIST_ONLY}" = "false" ]; then
-        pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "docs/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-doc.zip"
-    fi
+        pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "docs/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-doc.zip"
 
-    # Deploy doc to https://docs.pmd-code.org/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}/
-    pmd_code_uploadDocumentation "${PMD_CI_MAVEN_PROJECT_VERSION}" "docs/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-doc.zip"
-    # Deploy javadoc to https://docs.pmd-code.org/apidocs/*/${PMD_CI_MAVEN_PROJECT_VERSION}/
-    pmd_code_uploadJavadoc "${PMD_CI_MAVEN_PROJECT_VERSION}" "$(pwd)"
+        if pmd_ci_maven_isReleaseBuild; then
+            pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "docs/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-doc.zip"
+        fi
 
-    if pmd_ci_maven_isSnapshotBuild || [ "${BUILD_CLI_DIST_ONLY}" = "false" ]; then
+        # Deploy doc to https://docs.pmd-code.org/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}/
+        pmd_code_uploadDocumentation "${PMD_CI_MAVEN_PROJECT_VERSION}" "docs/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-doc.zip"
+        # Deploy javadoc to https://docs.pmd-code.org/apidocs/*/${PMD_CI_MAVEN_PROJECT_VERSION}/
+        pmd_code_uploadJavadoc "${PMD_CI_MAVEN_PROJECT_VERSION}" "$(pwd)"
+
         # render release notes
         # updating github release text
         rm -f .bundle/config
