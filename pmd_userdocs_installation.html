@@ -1973,27 +1973,26 @@ require it to function properly.</li>
   </ul>
 
   <div class="tab-content border">
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;div class="tab-pane fade show active" id="linux-pmd" role="tabpanel" aria-labelledby="linux-tab"&gt;
-  &lt;figure class="highlight"&gt;&lt;pre&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="gp"&gt;~ $ &lt;/span&gt;&lt;span class="s2"&gt;pmd&lt;/span&gt; check -f text -R rulesets/java/quickstart.xml src/main/java
-</code></pre></div>    </div>
+    <div class="tab-pane fade show active" id="linux-pmd" role="tabpanel" aria-labelledby="linux-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">pmd</span> check -f text -R rulesets/java/quickstart.xml src/main/java
 
-    <p>…/src/main/java/com/me/RuleSet.java:123  These nested if statements could be combined
-…/src/main/java/com/me/RuleSet.java:231  Useless parentheses.
-…/src/main/java/com/me/RuleSet.java:232  Useless parentheses.
-…/src/main/java/com/me/RuleSet.java:357  These nested if statements could be combined
-…/src/main/java/com/me/RuleSetWriter.java:66     Avoid empty catch blocks
-&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-    &lt;/div&gt;
-    &lt;div class="tab-pane fade" id="windows-pmd" role="tabpanel" aria-labelledby="windows-tab"&gt;
-      <figure class="highlight">&lt;pre&gt;<code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">pmd.bat</span> check -f text -R rulesets/java/quickstart.xml ..\..\src\main\java</code></figure></p>
+.../src/main/java/com/me/RuleSet.java:123  These nested if statements could be combined
+.../src/main/java/com/me/RuleSet.java:231  Useless parentheses.
+.../src/main/java/com/me/RuleSet.java:232  Useless parentheses.
+.../src/main/java/com/me/RuleSet.java:357  These nested if statements could be combined
+.../src/main/java/com/me/RuleSetWriter.java:66     Avoid empty catch blocks
+</code></pre></figure>
+    </div>
+    <div class="tab-pane fade" id="windows-pmd" role="tabpanel" aria-labelledby="windows-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">pmd.bat</span> check -f text -R rulesets/java/quickstart.xml ..\..\src\main\java
 
-    <p>…\src\main\java\com\me\RuleSet.java:123  These nested if statements could be combined
-…\src\main\java\com\me\RuleSet.java:231  Useless parentheses.
-…\src\main\java\com\me\RuleSet.java:232  Useless parentheses.
-…\src\main\java\com\me\RuleSet.java:357  These nested if statements could be combined
-…\src\main\java\com\me\RuleSetWriter.java:66     Avoid empty catch blocks
-&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-    &lt;/div&gt;</p>
+...\src\main\java\com\me\RuleSet.java:123  These nested if statements could be combined
+...\src\main\java\com\me\RuleSet.java:231  Useless parentheses.
+...\src\main\java\com\me\RuleSet.java:232  Useless parentheses.
+...\src\main\java\com\me\RuleSet.java:357  These nested if statements could be combined
+...\src\main\java\com\me\RuleSetWriter.java:66     Avoid empty catch blocks
+</code></pre></figure>
+    </div>
   </div>
 </div>
 
@@ -2028,39 +2027,38 @@ sources. Alternatively You can use the <code class="language-plaintext highlight
   </ul>
 
   <div class="tab-content border">
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;div class="tab-pane fade show active" id="linux-cpd" role="tabpanel" aria-labelledby="linux-tab"&gt;
-  &lt;figure class="highlight"&gt;&lt;pre&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="gp"&gt;~ $ &lt;/span&gt;&lt;span class="s2"&gt;pmd&lt;/span&gt; cpd --minimum-tokens 100 /home/me/src
-</code></pre></div>    </div>
+    <div class="tab-pane fade show active" id="linux-cpd" role="tabpanel" aria-labelledby="linux-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">pmd</span> cpd --minimum-tokens 100 /home/me/src
 
-    <p>Found a 7 line (110 tokens) duplication in the following files:
+Found a 7 line (110 tokens) duplication in the following files:
 Starting at line 579 of /home/me/src/test/java/foo/FooTypeTest.java
-Starting at line 586 of /home/me/src/test/java/foo/FooTypeTest.java</p>
+Starting at line 586 of /home/me/src/test/java/foo/FooTypeTest.java
 
-    <p>assertEquals(Boolean.TYPE, expressions.get(index++).getType());
 assertEquals(Boolean.TYPE, expressions.get(index++).getType());
 assertEquals(Boolean.TYPE, expressions.get(index++).getType());
 assertEquals(Boolean.TYPE, expressions.get(index++).getType());
 assertEquals(Boolean.TYPE, expressions.get(index++).getType());
 assertEquals(Boolean.TYPE, expressions.get(index++).getType());
 assertEquals(Boolean.TYPE, expressions.get(index++).getType());
-&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-    &lt;/div&gt;
-    &lt;div class="tab-pane fade" id="windows-cpd" role="tabpanel" aria-labelledby="windows-tab"&gt;
-      <figure class="highlight">&lt;pre&gt;<code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">pmd.bat</span> cpd --minimum-tokens 100 c:\temp\src</code></figure></p>
+assertEquals(Boolean.TYPE, expressions.get(index++).getType());
+</code></pre></figure>
+    </div>
+    <div class="tab-pane fade" id="windows-cpd" role="tabpanel" aria-labelledby="windows-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">pmd.bat</span> cpd --minimum-tokens 100 c:\temp\src
 
-    <p>Found a 7 line (110 tokens) duplication in the following files:
+Found a 7 line (110 tokens) duplication in the following files:
 Starting at line 579 of c:\temp\src\test\java\foo\FooTypeTest.java
-Starting at line 586 of c:\temp\src\test\java\foo\FooTypeTest.java</p>
+Starting at line 586 of c:\temp\src\test\java\foo\FooTypeTest.java
 
-    <p>assertEquals(Boolean.TYPE, expressions.get(index++).getType());
 assertEquals(Boolean.TYPE, expressions.get(index++).getType());
 assertEquals(Boolean.TYPE, expressions.get(index++).getType());
 assertEquals(Boolean.TYPE, expressions.get(index++).getType());
 assertEquals(Boolean.TYPE, expressions.get(index++).getType());
 assertEquals(Boolean.TYPE, expressions.get(index++).getType());
 assertEquals(Boolean.TYPE, expressions.get(index++).getType());
-&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-    &lt;/div&gt;</p>
+assertEquals(Boolean.TYPE, expressions.get(index++).getType());
+</code></pre></figure>
+    </div>
   </div>
 </div>
 
@@ -2105,7 +2103,7 @@ assertEquals(Boolean.TYPE, expressions.get(index++).getType());
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Mar 19, 2024 <br />
+             Site last generated: Mar 21, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

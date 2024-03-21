@@ -1918,13 +1918,14 @@ directory. It should be the directory, that contain the sub-folder “lib” in 
   </ul>
 
   <div class="tab-content border">
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;div class="tab-pane fade show active" id="linux-pmd" role="tabpanel" aria-labelledby="linux-tab"&gt;
-  &lt;figure class="highlight"&gt;&lt;pre&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="gp"&gt;~ $ &lt;/span&gt;&lt;span class="s2"&gt;pmd&lt;/span&gt; designer &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-&lt;/div&gt;
-&lt;div class="tab-pane fade" id="windows-pmd" role="tabpanel" aria-labelledby="windows-tab"&gt;
-  &lt;figure class="highlight"&gt;&lt;pre&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="gp"&gt;C:\&amp;gt; &lt;/span&gt;&lt;span class="s2"&gt;pmd.bat&lt;/span&gt; designer &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-&lt;/div&gt;
-</code></pre></div>    </div>
+    <div class="tab-pane fade show active" id="linux-pmd" role="tabpanel" aria-labelledby="linux-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">pmd</span> designer
+</code></pre></figure>
+    </div>
+    <div class="tab-pane fade" id="windows-pmd" role="tabpanel" aria-labelledby="windows-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">pmd.bat</span> designer
+</code></pre></figure>
+    </div>
   </div>
 </div>
 
@@ -1978,250 +1979,214 @@ or click on the <code class="language-plaintext highlighter-rouge">Search</code>
 and is empty if you have no selection:</li>
 </ul>
 
-<details>
-  <summary>
-    <p>Ancestor crumb bar demo&lt;/summary&gt;</p>
-    <p><img src="images/designer/parents-bar.gif" alt="Ancestor crumb bar demo" /></p>
+<details><summary>Ancestor crumb bar demo</summary>
+<p><img src="images/designer/parents-bar.gif" alt="Ancestor crumb bar demo" /></p>
 
-    <p>&lt;/details&gt;</p>
+</details>
 
-    <ul>
-      <li><strong>From the source code:</strong> maintain <kbd>Ctrl</kbd> for a second until the code area becomes mostly blue.
+<ul>
+  <li><strong>From the source code:</strong> maintain <kbd>Ctrl</kbd> for a second until the code area becomes mostly blue.
 Then, each node you hover over on the code area will be selected automatically. Example:</li>
-    </ul>
+</ul>
 
-    <details>
-      <summary>
-        <p>Ctrl-hover selection demo&lt;/summary&gt;</p>
-        <p><img src="images/designer/hover-selection.gif" alt="CTRL-hover selection demo" /></p>
+<details><summary>Ctrl-hover selection demo</summary>
+<p><img src="images/designer/hover-selection.gif" alt="CTRL-hover selection demo" /></p>
 
-        <p>&lt;/details&gt;</p>
+</details>
 
-        <h3 id="node-inspection">Node inspection</h3>
+<h3 id="node-inspection">Node inspection</h3>
 
-        <p>The left panel displays the following information:</p>
+<p>The left panel displays the following information:</p>
 
-        <ul>
-          <li><strong>XPath attributes:</strong> this basically are all the attributes available in XPath queries. Those attributes are
+<ul>
+  <li><strong>XPath attributes:</strong> this basically are all the attributes available in XPath queries. Those attributes are
 wrappers around a Java getter, so you can obtain documentation on the relevant Javadoc (that’s not yet
 integrated into the designer)</li>
-          <li><strong>Metrics:</strong> for nodes that support it, the values of metrics are displayed in this panel</li>
-          <li><strong>Scopes:</strong> This is java specific and displays some representation of the symbol table. You mostly don’t need
+  <li><strong>Metrics:</strong> for nodes that support it, the values of metrics are displayed in this panel</li>
+  <li><strong>Scopes:</strong> This is java specific and displays some representation of the symbol table. You mostly don’t need
 it. If you select e.g. a variable id, its usages are already highlighted automatically without opening the panel:</li>
-        </ul>
+</ul>
 
-        <p><img src="images/designer/usages.gif" alt="Usages highlight example" /></p>
+<p><img src="images/designer/usages.gif" alt="Usages highlight example" /></p>
 
-        <h2 id="xpath-rule-design">XPath rule design</h2>
+<h2 id="xpath-rule-design">XPath rule design</h2>
 
-        <p>The bottom part of the UI is dedicated to designing XPath rules:</p>
+<p>The bottom part of the UI is dedicated to designing XPath rules:</p>
 
-        <p><img src="images/designer/bottom-ui.png" alt="Bottom UI" /></p>
+<p><img src="images/designer/bottom-ui.png" alt="Bottom UI" /></p>
 
-        <p>The center is an XPath expression. As you type it, the matched nodes are updated on the right, and highlighted
+<p>The center is an XPath expression. As you type it, the matched nodes are updated on the right, and highlighted
 on the code area. Autocompletion is available on some languages.</p>
 
-        <p>Note: you can keep several rules in the editor (there’s a tab for each of them).</p>
+<p>Note: you can keep several rules in the editor (there’s a tab for each of them).</p>
 
-        <h3 id="rule-properties">Rule properties</h3>
+<h3 id="rule-properties">Rule properties</h3>
 
-        <p>Above the XPath expression area, the <strong>“Properties”</strong> button allows you to
+<p>Above the XPath expression area, the <strong>“Properties”</strong> button allows you to
 <a href="pmd_userdocs_extending_defining_properties.html#for-xpath-rules">define new properties</a> for your prototype rule.
 You can also edit the existing properties.</p>
 
-        <p>When you click on it, a small popup appears:</p>
+<p>When you click on it, a small popup appears:</p>
 
-        <p><img src="images/designer/property-defs.png" alt="Property definition popup" /></p>
+<p><img src="images/designer/property-defs.png" alt="Property definition popup" /></p>
 
-        <p>The popup contains in the center a list of currently defined properties, displaying their name and expected type.</p>
+<p>The popup contains in the center a list of currently defined properties, displaying their name and expected type.</p>
 
-        <ul>
-          <li><strong>Adding</strong>: the “Add property” button adds a row to the table</li>
-          <li><strong>Deleting</strong>: each item has a “Trash” button to delete the property</li>
-          <li><strong>Editing</strong>: each property can be further edited by clicking on the “Ellipsis” button on the right</li>
-        </ul>
+<ul>
+  <li><strong>Adding</strong>: the “Add property” button adds a row to the table</li>
+  <li><strong>Deleting</strong>: each item has a “Trash” button to delete the property</li>
+  <li><strong>Editing</strong>: each property can be further edited by clicking on the “Ellipsis” button on the right</li>
+</ul>
 
-        <h4 id="editing-properties">Editing properties</h4>
+<h4 id="editing-properties">Editing properties</h4>
 
-        <p>The edit menu of a property looks like the following:</p>
+<p>The edit menu of a property looks like the following:</p>
 
-        <p><img src="images/designer/property-edit.png" alt="Property edition popup" /></p>
+<p><img src="images/designer/property-edit.png" alt="Property edition popup" /></p>
 
-        <ul>
-          <li>You can edit the name, description, expected type, and default value of the property</li>
-          <li>All this information is exported with the rule definition (see <a href="#exporting-to-an-xml-rule">Exporting to an XML rule</a>)</li>
-          <li>The default value is used unless you’re editing a test case, and you set a custom value for the test case
+<ul>
+  <li>You can edit the name, description, expected type, and default value of the property</li>
+  <li>All this information is exported with the rule definition (see <a href="#exporting-to-an-xml-rule">Exporting to an XML rule</a>)</li>
+  <li>The default value is used unless you’re editing a test case, and you set a custom value for the test case
 (see <a href="#testing-a-rule">Testing a rule</a>)</li>
-        </ul>
+</ul>
 
-        <h3 id="exporting-to-an-xml-rule">Exporting to an XML rule</h3>
+<h3 id="exporting-to-an-xml-rule">Exporting to an XML rule</h3>
 
-        <p>The little <strong>export icon</strong> next to the gear icon opens a menu to export your rule. This menu lets you fill-in the
+<p>The little <strong>export icon</strong> next to the gear icon opens a menu to export your rule. This menu lets you fill-in the
 metadata necessary for an XPath rule to be included in a ruleset.</p>
 
-        <details>
-          <summary>
-            <p>Rule export demo&lt;/summary&gt;</p>
-            <p><img src="images/designer/export-example.gif" alt="Rule export demo" /></p>
+<details><summary>Rule export demo</summary>
+<p><img src="images/designer/export-example.gif" alt="Rule export demo" /></p>
 
-            <p>&lt;/details&gt;</p>
+</details>
 
-            <h2 id="testing-a-rule">Testing a rule</h2>
+<h2 id="testing-a-rule">Testing a rule</h2>
 
-            <p>PMD has its own XML format to describe rule tests and execute them using our test framework. The designer includes
+<p>PMD has its own XML format to describe rule tests and execute them using our test framework. The designer includes
 a test editor, which allows you to edit such files or create a new one directly as you edit the rule.
 This is what the panel left of the XPath expression area is for.</p>
 
-            <p>See also <a href="pmd_userdocs_extending_testing.html">the test framework documentation</a>.</p>
+<p>See also <a href="pmd_userdocs_extending_testing.html">the test framework documentation</a>.</p>
 
-            <h3 id="testing-model">Testing model</h3>
+<h3 id="testing-model">Testing model</h3>
 
-            <p>A rule test describes</p>
-            <ul>
-              <li>the configuration of the rule</li>
-              <li>the source on which to run</li>
-              <li>the expected violations</li>
-              <li>a description (to name the test)</li>
-            </ul>
+<p>A rule test describes</p>
+<ul>
+  <li>the configuration of the rule</li>
+  <li>the source on which to run</li>
+  <li>the expected violations</li>
+  <li>a description (to name the test)</li>
+</ul>
 
-            <p>When executing a test, the rule is run on the source with the given configuration, then the violations it finds
+<p>When executing a test, the rule is run on the source with the given configuration, then the violations it finds
 are compared to the expected ones.</p>
 
-            <h3 id="adding-tests">Adding tests</h3>
+<h3 id="adding-tests">Adding tests</h3>
 
-            <p>Tests can be added in one of four ways:</p>
-            <ul>
-              <li><strong>From an XML file:</strong> if you already have a test XML file for your tests, you can load all the tests it defines easily.</li>
-            </ul>
+<p>Tests can be added in one of four ways:</p>
+<ul>
+  <li><strong>From an XML file:</strong> if you already have a test XML file for your tests, you can load all the tests it defines easily.</li>
+</ul>
 
-            <details>
-              <summary>
-                <p>Test import demo&lt;/summary&gt;</p>
-                <p><img src="images/designer/tests/import.gif" alt="Test import example" /></p>
+<details><summary>Test import demo</summary>
+<p><img src="images/designer/tests/import.gif" alt="Test import example" /></p>
 
-                <p>&lt;/details&gt;</p>
+</details>
 
-                <ul>
-                  <li>
-                    <p><strong>From the current source:</strong> A new test case with a default configuration is created, with the source that is
+<ul>
+  <li>
+    <p><strong>From the current source:</strong> A new test case with a default configuration is created, with the source that is
 currently in the editor</p>
-                  </li>
-                  <li>
-                    <p><strong>With an empty source:</strong> A new test case with a default configuration is created, with an empty source file.
+  </li>
+  <li>
+    <p><strong>With an empty source:</strong> A new test case with a default configuration is created, with an empty source file.
 You must edit the source yourself then.</p>
-                  </li>
-                  <li>
-                    <p><strong>From an existing test case:</strong> Each test case list item has a “Copy” button which duplicates the test and loads
+  </li>
+  <li>
+    <p><strong>From an existing test case:</strong> Each test case list item has a “Copy” button which duplicates the test and loads
 the new one.</p>
-                  </li>
-                </ul>
+  </li>
+</ul>
 
-                <h3 id="test-status">Test status</h3>
+<h3 id="test-status">Test status</h3>
 
-                <p>In the designer, the test panel is a list of test cases. Their status (passing, failing, error, unknown) is color coded.</p>
+<p>In the designer, the test panel is a list of test cases. Their status (passing, failing, error, unknown) is color coded.</p>
 
-                <details>
-                  <summary>
-                    <p>Test status color coding examples&lt;/summary&gt;</p>
-                    <p>All tests passing (green):</p>
+<details><summary>Test status color coding examples</summary>
+<p>All tests passing (green):</p>
 
-                    <p><img src="images/designer/tests/all-green.png" alt="All green" /></p>
+<p><img src="images/designer/tests/all-green.png" alt="All green" /></p>
 
-                    <p>A failing test (orange):</p>
+<p>A failing test (orange):</p>
 
-                    <p><img src="images/designer/tests/failing.png" alt="Failing" /></p>
+<p><img src="images/designer/tests/failing.png" alt="Failing" /></p>
 
-                    <p>&lt;/details&gt;</p>
+</details>
 
-                    <h3 id="loading-a-test-case">Loading a test case</h3>
+<h3 id="loading-a-test-case">Loading a test case</h3>
 
-                    <p>Each test has a piece of source, which you can edit independently of the others, when the test is
+<p>Each test has a piece of source, which you can edit independently of the others, when the test is
 <strong>loaded in the editor</strong>. Additional rule configuration options can be chosen when the test is loaded.</p>
 
-                    <p>Loading is done with the <strong>Load</strong> button:</p>
+<p>Loading is done with the <strong>Load</strong> button:</p>
 
-                    <details>
-                      <summary>
-                        <p>Test loading demo&lt;/summary&gt;</p>
-                        <p><img src="images/designer/tests/load.gif" alt="Test loading demo" /></p>
+<details><summary>Test loading demo</summary>
+<p><img src="images/designer/tests/load.gif" alt="Test loading demo" /></p>
 
-                        <p>&lt;/details&gt;</p>
+</details>
 
-                        <p>Only one test case may be loaded at a time. If the loaded test is unloaded, the editor reverts back to the state
+<p>Only one test case may be loaded at a time. If the loaded test is unloaded, the editor reverts back to the state
 it had before the first test case was loaded.</p>
 
-                        <h3 id="editing-a-loaded-test-case">Editing a loaded test case</h3>
+<h3 id="editing-a-loaded-test-case">Editing a loaded test case</h3>
 
-                        <p>When a test is loaded, <em>the source you edit in the code area is the source of the test</em>. Changes are independent
+<p>When a test is loaded, <em>the source you edit in the code area is the source of the test</em>. Changes are independent
 from other tests, and from the piece of source that was previously in the editor.</p>
 
-                        <p>When a test is loaded, an additional toolbar shows up at the top of the code area:</p>
+<p>When a test is loaded, an additional toolbar shows up at the top of the code area:</p>
 
-                        <p><img src="images/designer/tests/toolbar.png" alt="Failing" /></p>
+<p><img src="images/designer/tests/toolbar.png" alt="Failing" /></p>
 
-                        <h4 id="expected-violations">Expected violations</h4>
+<h4 id="expected-violations">Expected violations</h4>
 
-                        <p>The <strong>“Expected violations”</strong> button is used to add or edit the expected violations.</p>
+<p>The <strong>“Expected violations”</strong> button is used to add or edit the expected violations.</p>
 
-                        <p>Initially the list of violations is empty. You can add violations by <strong>dragging and dropping nodes</strong> onto the
+<p>Initially the list of violations is empty. You can add violations by <strong>dragging and dropping nodes</strong> onto the
 button or its popup, from any control that displays nodes. For example:</p>
 
-                        <details>
-                          <summary>
-                            <p>Adding a violation demo&lt;/summary&gt;</p>
-                            <p><img src="images/designer/tests/add-violation.gif" alt="Add violation gif" /></p>
+<details><summary>Adding a violation demo</summary>
+<p><img src="images/designer/tests/add-violation.gif" alt="Add violation gif" /></p>
 
-                            <p>&lt;/details&gt;</p>
+</details>
 
-                            <h4 id="test-case-rule-configuration">Test case rule configuration</h4>
+<h4 id="test-case-rule-configuration">Test case rule configuration</h4>
 
-                            <p>Rule properties can be configured for each test case independently using the <strong>“Property mapping”</strong> button. For example:</p>
+<p>Rule properties can be configured for each test case independently using the <strong>“Property mapping”</strong> button. For example:</p>
 
-                            <details>
-                              <summary>
-                                <p>Test rule property demo&lt;/summary&gt;</p>
-                                <p><img src="images/designer/tests/property.gif" alt="Configure properties demo" /></p>
+<details><summary>Test rule property demo</summary>
+<p><img src="images/designer/tests/property.gif" alt="Configure properties demo" /></p>
 
-                                <p>&lt;/details&gt;</p>
+</details>
 
-                                <p>This configuration will be used when executing the test to check its status.</p>
+<p>This configuration will be used when executing the test to check its status.</p>
 
-                                <h3 id="exporting-tests">Exporting tests</h3>
+<h3 id="exporting-tests">Exporting tests</h3>
 
-                                <p>When you’re done editing tests, it’s a good idea to save the test file to an XML file. Exporting is done using
+<p>When you’re done editing tests, it’s a good idea to save the test file to an XML file. Exporting is done using
 the <strong>“Export”</strong> button above the list of test cases:</p>
 
-                                <details>
-                                  <summary>
-                                    <p>Test export demo&lt;/summary&gt;</p>
-                                    <p><img src="images/designer/tests/export.gif" alt="Test export demo" /></p>
+<details><summary>Test export demo</summary>
+<p><img src="images/designer/tests/export.gif" alt="Test export demo" /></p>
 
-                                    <p>&lt;/details&gt;</p>
+</details>
 
-                                    <p>Note that the exported file does not contain any information about the rule. The rule must be in a ruleset file
+<p>Note that the exported file does not contain any information about the rule. The rule must be in a ruleset file
 somewhere else.</p>
 
-                                    <p>If you want to use PMD’s test framework to use the test file in your build, please refer to the conventions
+<p>If you want to use PMD’s test framework to use the test file in your build, please refer to the conventions
 explained in <a href="pmd_userdocs_extending_testing.html#where-to-place-the-test-code">the test framework documentation</a>.</p>
 
-                                  </summary>
-                                </details>
-                              </summary>
-                            </details>
-                          </summary>
-                        </details>
-                      </summary>
-                    </details>
-                  </summary>
-                </details>
-              </summary>
-            </details>
-          </summary>
-        </details>
-      </summary>
-    </details>
-  </summary>
-</details>
 
 
     <div class="tags">
@@ -2264,7 +2229,7 @@ explained in <a href="pmd_userdocs_extending_testing.html#where-to-place-the-tes
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            March 2024 (7.0.0)<br /> Site last generated: Mar 19, 2024 <br />
+            March 2024 (7.0.0)<br /> Site last generated: Mar 21, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

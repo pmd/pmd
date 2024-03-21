@@ -1985,405 +1985,393 @@ information from the AST.</p>
 <p>Functions available to all languages are in the namespace <code>pmd</code>.</p>
 
 <div class="table-responsive">
-  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;table width="100%"&gt;
-
-    &lt;thead&gt;
-    &lt;tr&gt;
-        &lt;th&gt;Function name&lt;/th&gt;
-        &lt;th&gt;Description (click for details)&lt;/th&gt;
-        &lt;th&gt;&lt;/th&gt;
-    &lt;/tr&gt;
-    &lt;/thead&gt;
-
-
-    
-
-    
-
-    &lt;tr data-toggle="collapse" id="pmd-fileName" data-target="#pmd-fileName-expand" class="accordion-toggle"&gt;
-
-        &lt;td&gt;fileName&lt;/td&gt;
-        &lt;td&gt;Returns the simple name of the current file&lt;/td&gt;
-        &lt;td&gt;
-            &lt;button type="button" class="btn btn-link"&gt;&lt;i
-                    class="fas fa-ellipsis-h"&gt;&lt;/i&gt;&lt;/button&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr&gt;
-        &lt;td colspan="4" class="hiddenRow"&gt;
-            &lt;div class="accordion-body collapse" id="pmd-fileName-expand"&gt;
-
-                &lt;div style="margin-left: 15px" class="xpath-fun-doc"&gt;
-
-                    &lt;!-- Yeah the ID is duplicated but it's ok on my browser and makes --&gt;
-                    &lt;!--links somehow work when details are collapsed --&gt;
-                    &lt;h4 class="fun-details-header" id="pmd-fileName"&gt;
-                        &lt;span class="fun-ns"&gt;pmd:&lt;/span&gt;&lt;span
-                            class="fun-name"&gt;fileName&lt;/span&gt;&lt;span
-                            class="fun-ns"&gt;() as xs:string&lt;/span&gt;
-                    &lt;/h4&gt;
-
-                    &lt;div style="margin-left: 30px"&gt;
-
-                        &lt;dl&gt;
-                            &lt;dd&gt;Returns the current simple file name, without path but including the extension. This can be used to write rules that check file naming conventions.
-</code></pre></div>  </div>
-  <p>&lt;/dd&gt;</p>
-
-  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                            &lt;dt&gt;Since&lt;/dt&gt;
-                            &lt;dd&gt;PMD 6.38.0&lt;/dd&gt;
-                            
-                            &lt;dt&gt;Remarks&lt;/dt&gt;
-                            &lt;dd&gt;The requires the context node to be an element&lt;/dd&gt;
-
-                            
-
-                            
-
-                            &lt;dt&gt;Examples&lt;/dt&gt;
-
-                            &lt;dd&gt;
-                                &lt;dl class="code-examples"&gt;
-                                    
-                                    &lt;dt&gt;&lt;code&gt;//b[pmd:fileName() = 'Foo.xml']&lt;/code&gt;&lt;/dt&gt;
-                                    &lt;dd&gt;Matches any &lt;code&gt;&amp;lt;b&amp;gt;&lt;/code&gt; tags in files called &lt;code&gt;Foo.xml&lt;/code&gt;.&lt;/dd&gt;
-                                    
-                                &lt;/dl&gt;
-                            &lt;/dd&gt;
-                            
-                        &lt;/dl&gt;
-                    &lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-
-    
-
-    
-
-    &lt;tr data-toggle="collapse" id="pmd-startLine" data-target="#pmd-startLine-expand" class="accordion-toggle"&gt;
-
-        &lt;td&gt;startLine&lt;/td&gt;
-        &lt;td&gt;Returns the start line of the given node&lt;/td&gt;
-        &lt;td&gt;
-            &lt;button type="button" class="btn btn-link"&gt;&lt;i
-                    class="fas fa-ellipsis-h"&gt;&lt;/i&gt;&lt;/button&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr&gt;
-        &lt;td colspan="4" class="hiddenRow"&gt;
-            &lt;div class="accordion-body collapse" id="pmd-startLine-expand"&gt;
-
-                &lt;div style="margin-left: 15px" class="xpath-fun-doc"&gt;
-
-                    &lt;!-- Yeah the ID is duplicated but it's ok on my browser and makes --&gt;
-                    &lt;!--links somehow work when details are collapsed --&gt;
-                    &lt;h4 class="fun-details-header" id="pmd-startLine"&gt;
-                        &lt;span class="fun-ns"&gt;pmd:&lt;/span&gt;&lt;span
-                            class="fun-name"&gt;startLine&lt;/span&gt;&lt;span
-                            class="fun-ns"&gt;(xs:element) as xs:int&lt;/span&gt;
-                    &lt;/h4&gt;
-
-                    &lt;div style="margin-left: 30px"&gt;
-
-                        &lt;dl&gt;
-                            &lt;dd&gt;Returns the line where the node starts in the source file. Line numbers are 1-based.
-</code></pre></div>  </div>
-  <p>&lt;/dd&gt;</p>
-
-  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                            &lt;dt&gt;Since&lt;/dt&gt;
-                            &lt;dd&gt;PMD 6.44.0&lt;/dd&gt;
-                            
-                            &lt;dt&gt;Remarks&lt;/dt&gt;
-                            &lt;dd&gt;The function is not context-dependent, but takes a node as its first parameter.
-</code></pre></div>  </div>
-  <p>&lt;/dd&gt;</p>
-
-  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                            &lt;dt&gt;Parameters&lt;/dt&gt;
-
-                            &lt;dd&gt;
-                                &lt;dl&gt;
-                                    
-                                    &lt;dt&gt;
-                                        &lt;span class="param-name"&gt;element&lt;/span&gt;
-                                        &lt;span class="param-type"&gt; as xs:element&lt;/span&gt;
-                                    &lt;/dt&gt;
-                                    &lt;dd&gt;Any element node&lt;/dd&gt;
-                                    
-                                &lt;/dl&gt;
-                            &lt;/dd&gt;
-
-                            
-
-                            
-
-                            &lt;dt&gt;Examples&lt;/dt&gt;
-
-                            &lt;dd&gt;
-                                &lt;dl class="code-examples"&gt;
-                                    
-                                    &lt;dt&gt;&lt;code&gt;//b[pmd:startLine(.) &gt; 5]&lt;/code&gt;&lt;/dt&gt;
-                                    &lt;dd&gt;Matches any &lt;code&gt;&amp;lt;b&amp;gt;&lt;/code&gt; node which starts after the fifth line.&lt;/dd&gt;
-                                    
-                                &lt;/dl&gt;
-                            &lt;/dd&gt;
-                            
-                        &lt;/dl&gt;
-                    &lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-
-    
-
-    
-
-    &lt;tr data-toggle="collapse" id="pmd-endLine" data-target="#pmd-endLine-expand" class="accordion-toggle"&gt;
-
-        &lt;td&gt;endLine&lt;/td&gt;
-        &lt;td&gt;Returns the end line of the given node&lt;/td&gt;
-        &lt;td&gt;
-            &lt;button type="button" class="btn btn-link"&gt;&lt;i
-                    class="fas fa-ellipsis-h"&gt;&lt;/i&gt;&lt;/button&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr&gt;
-        &lt;td colspan="4" class="hiddenRow"&gt;
-            &lt;div class="accordion-body collapse" id="pmd-endLine-expand"&gt;
-
-                &lt;div style="margin-left: 15px" class="xpath-fun-doc"&gt;
-
-                    &lt;!-- Yeah the ID is duplicated but it's ok on my browser and makes --&gt;
-                    &lt;!--links somehow work when details are collapsed --&gt;
-                    &lt;h4 class="fun-details-header" id="pmd-endLine"&gt;
-                        &lt;span class="fun-ns"&gt;pmd:&lt;/span&gt;&lt;span
-                            class="fun-name"&gt;endLine&lt;/span&gt;&lt;span
-                            class="fun-ns"&gt;(xs:element) as xs:int&lt;/span&gt;
-                    &lt;/h4&gt;
-
-                    &lt;div style="margin-left: 30px"&gt;
-
-                        &lt;dl&gt;
-                            &lt;dd&gt;Returns the line where the node ends in the source file. Line numbers are 1-based.
-</code></pre></div>  </div>
-  <p>&lt;/dd&gt;</p>
-
-  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                            &lt;dt&gt;Since&lt;/dt&gt;
-                            &lt;dd&gt;PMD 6.44.0&lt;/dd&gt;
-                            
-                            &lt;dt&gt;Remarks&lt;/dt&gt;
-                            &lt;dd&gt;The function is not context-dependent, but takes a node as its first parameter.
-</code></pre></div>  </div>
-  <p>&lt;/dd&gt;</p>
-
-  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                            &lt;dt&gt;Parameters&lt;/dt&gt;
-
-                            &lt;dd&gt;
-                                &lt;dl&gt;
-                                    
-                                    &lt;dt&gt;
-                                        &lt;span class="param-name"&gt;element&lt;/span&gt;
-                                        &lt;span class="param-type"&gt; as xs:element&lt;/span&gt;
-                                    &lt;/dt&gt;
-                                    &lt;dd&gt;Any element node&lt;/dd&gt;
-                                    
-                                &lt;/dl&gt;
-                            &lt;/dd&gt;
-
-                            
-
-                            
-
-                            &lt;dt&gt;Examples&lt;/dt&gt;
-
-                            &lt;dd&gt;
-                                &lt;dl class="code-examples"&gt;
-                                    
-                                    &lt;dt&gt;&lt;code&gt;//b[pmd:endLine(.) == pmd:startLine(.)]&lt;/code&gt;&lt;/dt&gt;
-                                    &lt;dd&gt;Matches any &lt;code&gt;&amp;lt;b&amp;gt;&lt;/code&gt; node which doesn't span more than one line.&lt;/dd&gt;
-                                    
-                                &lt;/dl&gt;
-                            &lt;/dd&gt;
-                            
-                        &lt;/dl&gt;
-                    &lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-
-    
-
-    
-
-    &lt;tr data-toggle="collapse" id="pmd-startColumn" data-target="#pmd-startColumn-expand" class="accordion-toggle"&gt;
-
-        &lt;td&gt;startColumn&lt;/td&gt;
-        &lt;td&gt;Returns the start column of the given node (inclusive)&lt;/td&gt;
-        &lt;td&gt;
-            &lt;button type="button" class="btn btn-link"&gt;&lt;i
-                    class="fas fa-ellipsis-h"&gt;&lt;/i&gt;&lt;/button&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr&gt;
-        &lt;td colspan="4" class="hiddenRow"&gt;
-            &lt;div class="accordion-body collapse" id="pmd-startColumn-expand"&gt;
-
-                &lt;div style="margin-left: 15px" class="xpath-fun-doc"&gt;
-
-                    &lt;!-- Yeah the ID is duplicated but it's ok on my browser and makes --&gt;
-                    &lt;!--links somehow work when details are collapsed --&gt;
-                    &lt;h4 class="fun-details-header" id="pmd-startColumn"&gt;
-                        &lt;span class="fun-ns"&gt;pmd:&lt;/span&gt;&lt;span
-                            class="fun-name"&gt;startColumn&lt;/span&gt;&lt;span
-                            class="fun-ns"&gt;(xs:element) as xs:int&lt;/span&gt;
-                    &lt;/h4&gt;
-
-                    &lt;div style="margin-left: 30px"&gt;
-
-                        &lt;dl&gt;
-                            &lt;dd&gt;Returns the column number where the node starts in the source file. Column numbers are 1-based. The start column is inclusive.
-</code></pre></div>  </div>
-  <p>&lt;/dd&gt;</p>
-
-  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                            &lt;dt&gt;Since&lt;/dt&gt;
-                            &lt;dd&gt;PMD 6.44.0&lt;/dd&gt;
-                            
-                            &lt;dt&gt;Remarks&lt;/dt&gt;
-                            &lt;dd&gt;The function is not context-dependent, but takes a node as its first parameter.
-</code></pre></div>  </div>
-  <p>&lt;/dd&gt;</p>
-
-  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                            &lt;dt&gt;Parameters&lt;/dt&gt;
-
-                            &lt;dd&gt;
-                                &lt;dl&gt;
-                                    
-                                    &lt;dt&gt;
-                                        &lt;span class="param-name"&gt;element&lt;/span&gt;
-                                        &lt;span class="param-type"&gt; as xs:element&lt;/span&gt;
-                                    &lt;/dt&gt;
-                                    &lt;dd&gt;Any element node&lt;/dd&gt;
-                                    
-                                &lt;/dl&gt;
-                            &lt;/dd&gt;
-
-                            
-
-                            
-
-                            &lt;dt&gt;Examples&lt;/dt&gt;
-
-                            &lt;dd&gt;
-                                &lt;dl class="code-examples"&gt;
-                                    
-                                    &lt;dt&gt;&lt;code&gt;//b[pmd:startColumn(.) = 1]&lt;/code&gt;&lt;/dt&gt;
-                                    &lt;dd&gt;Matches any &lt;code&gt;&amp;lt;b&amp;gt;&lt;/code&gt; node which starts on the first column of a line&lt;/dd&gt;
-                                    
-                                &lt;/dl&gt;
-                            &lt;/dd&gt;
-                            
-                        &lt;/dl&gt;
-                    &lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-
-    
-
-    
-
-    &lt;tr data-toggle="collapse" id="pmd-endColumn" data-target="#pmd-endColumn-expand" class="accordion-toggle"&gt;
-
-        &lt;td&gt;endColumn&lt;/td&gt;
-        &lt;td&gt;Returns the end column of the given node (exclusive)&lt;/td&gt;
-        &lt;td&gt;
-            &lt;button type="button" class="btn btn-link"&gt;&lt;i
-                    class="fas fa-ellipsis-h"&gt;&lt;/i&gt;&lt;/button&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr&gt;
-        &lt;td colspan="4" class="hiddenRow"&gt;
-            &lt;div class="accordion-body collapse" id="pmd-endColumn-expand"&gt;
-
-                &lt;div style="margin-left: 15px" class="xpath-fun-doc"&gt;
-
-                    &lt;!-- Yeah the ID is duplicated but it's ok on my browser and makes --&gt;
-                    &lt;!--links somehow work when details are collapsed --&gt;
-                    &lt;h4 class="fun-details-header" id="pmd-endColumn"&gt;
-                        &lt;span class="fun-ns"&gt;pmd:&lt;/span&gt;&lt;span
-                            class="fun-name"&gt;endColumn&lt;/span&gt;&lt;span
-                            class="fun-ns"&gt;(xs:element) as xs:int&lt;/span&gt;
-                    &lt;/h4&gt;
-
-                    &lt;div style="margin-left: 30px"&gt;
-
-                        &lt;dl&gt;
-                            &lt;dd&gt;Returns the column number where the node ends in the source file. Column numbers are 1-based. The end column is exclusive.
-</code></pre></div>  </div>
-  <p>&lt;/dd&gt;</p>
-
-  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                            &lt;dt&gt;Since&lt;/dt&gt;
-                            &lt;dd&gt;PMD 6.44.0&lt;/dd&gt;
-                            
-                            &lt;dt&gt;Remarks&lt;/dt&gt;
-                            &lt;dd&gt;The function is not context-dependent, but takes a node as its first parameter.
-</code></pre></div>  </div>
-  <p>&lt;/dd&gt;</p>
-
-  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                            &lt;dt&gt;Parameters&lt;/dt&gt;
-
-                            &lt;dd&gt;
-                                &lt;dl&gt;
-                                    
-                                    &lt;dt&gt;
-                                        &lt;span class="param-name"&gt;element&lt;/span&gt;
-                                        &lt;span class="param-type"&gt; as xs:element&lt;/span&gt;
-                                    &lt;/dt&gt;
-                                    &lt;dd&gt;Any element node&lt;/dd&gt;
-                                    
-                                &lt;/dl&gt;
-                            &lt;/dd&gt;
-
-                            
-
-                            
-
-                            &lt;dt&gt;Examples&lt;/dt&gt;
-
-                            &lt;dd&gt;
-                                &lt;dl class="code-examples"&gt;
-                                    
-                                    &lt;dt&gt;&lt;code&gt;//b[pmd:startLine(.) = pmd:endLine(.) and pmd:endColumn(.) - pmd:startColumn(.) = 1]&lt;/code&gt;&lt;/dt&gt;
-                                    &lt;dd&gt;Matches any &lt;code&gt;&amp;lt;b&amp;gt;&lt;/code&gt; node which spans exactly one character&lt;/dd&gt;
-                                    
-                                &lt;/dl&gt;
-                            &lt;/dd&gt;
-                            
-                        &lt;/dl&gt;
-                    &lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-
-    
-
-&lt;/table&gt;
-</code></pre></div>  </div>
+    <table width="100%">
+
+        <thead>
+        <tr>
+            <th>Function name</th>
+            <th>Description (click for details)</th>
+            <th></th>
+        </tr>
+        </thead>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-fileName" data-target="#pmd-fileName-expand" class="accordion-toggle">
+
+            <td>fileName</td>
+            <td>Returns the simple name of the current file</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-fileName-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-fileName">
+                            <span class="fun-ns">pmd:</span><span class="fun-name">fileName</span><span class="fun-ns">() as xs:string</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns the current simple file name, without path but including the extension.
+This can be used to write rules that check file naming conventions.
+</dd>
+                                
+                                <dt>Since</dt>
+                                <dd>PMD 6.38.0</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd>The requires the context node to be an element</dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//b[pmd:fileName() = 'Foo.xml']</code></dt>
+                                        <dd>Matches any <code>&lt;b&gt;</code> tags in files called <code>Foo.xml</code>.</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-startLine" data-target="#pmd-startLine-expand" class="accordion-toggle">
+
+            <td>startLine</td>
+            <td>Returns the start line of the given node</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-startLine-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-startLine">
+                            <span class="fun-ns">pmd:</span><span class="fun-name">startLine</span><span class="fun-ns">(xs:element) as xs:int</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns the line where the node starts in the source file.
+Line numbers are 1-based.
+</dd>
+                                
+                                <dt>Since</dt>
+                                <dd>PMD 6.44.0</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd>The function is not context-dependent, but takes a node as its first parameter.
+</dd>
+
+                                
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <dl>
+                                        
+                                        <dt>
+                                            <span class="param-name">element</span>
+                                            <span class="param-type"> as xs:element</span>
+                                        </dt>
+                                        <dd>Any element node</dd>
+                                        
+                                    </dl>
+                                </dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//b[pmd:startLine(.) &gt; 5]</code></dt>
+                                        <dd>Matches any <code>&lt;b&gt;</code> node which starts after the fifth line.</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-endLine" data-target="#pmd-endLine-expand" class="accordion-toggle">
+
+            <td>endLine</td>
+            <td>Returns the end line of the given node</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-endLine-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-endLine">
+                            <span class="fun-ns">pmd:</span><span class="fun-name">endLine</span><span class="fun-ns">(xs:element) as xs:int</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns the line where the node ends in the source file.
+Line numbers are 1-based.
+</dd>
+                                
+                                <dt>Since</dt>
+                                <dd>PMD 6.44.0</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd>The function is not context-dependent, but takes a node as its first parameter.
+</dd>
+
+                                
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <dl>
+                                        
+                                        <dt>
+                                            <span class="param-name">element</span>
+                                            <span class="param-type"> as xs:element</span>
+                                        </dt>
+                                        <dd>Any element node</dd>
+                                        
+                                    </dl>
+                                </dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//b[pmd:endLine(.) == pmd:startLine(.)]</code></dt>
+                                        <dd>Matches any <code>&lt;b&gt;</code> node which doesn't span more than one line.</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-startColumn" data-target="#pmd-startColumn-expand" class="accordion-toggle">
+
+            <td>startColumn</td>
+            <td>Returns the start column of the given node (inclusive)</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-startColumn-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-startColumn">
+                            <span class="fun-ns">pmd:</span><span class="fun-name">startColumn</span><span class="fun-ns">(xs:element) as xs:int</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns the column number where the node starts in the source file.
+Column numbers are 1-based. The start column is inclusive.
+</dd>
+                                
+                                <dt>Since</dt>
+                                <dd>PMD 6.44.0</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd>The function is not context-dependent, but takes a node as its first parameter.
+</dd>
+
+                                
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <dl>
+                                        
+                                        <dt>
+                                            <span class="param-name">element</span>
+                                            <span class="param-type"> as xs:element</span>
+                                        </dt>
+                                        <dd>Any element node</dd>
+                                        
+                                    </dl>
+                                </dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//b[pmd:startColumn(.) = 1]</code></dt>
+                                        <dd>Matches any <code>&lt;b&gt;</code> node which starts on the first column of a line</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-endColumn" data-target="#pmd-endColumn-expand" class="accordion-toggle">
+
+            <td>endColumn</td>
+            <td>Returns the end column of the given node (exclusive)</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-endColumn-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-endColumn">
+                            <span class="fun-ns">pmd:</span><span class="fun-name">endColumn</span><span class="fun-ns">(xs:element) as xs:int</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns the column number where the node ends in the source file.
+Column numbers are 1-based. The end column is exclusive.
+</dd>
+                                
+                                <dt>Since</dt>
+                                <dd>PMD 6.44.0</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd>The function is not context-dependent, but takes a node as its first parameter.
+</dd>
+
+                                
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <dl>
+                                        
+                                        <dt>
+                                            <span class="param-name">element</span>
+                                            <span class="param-type"> as xs:element</span>
+                                        </dt>
+                                        <dd>Any element node</dd>
+                                        
+                                    </dl>
+                                </dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//b[pmd:startLine(.) = pmd:endLine(.) and pmd:endColumn(.) - pmd:startColumn(.) = 1]</code></dt>
+                                        <dd>Matches any <code>&lt;b&gt;</code> node which spans exactly one character</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+    </table>
 
 </div>
 
@@ -2394,622 +2382,597 @@ information from the AST.</p>
 <p>Java functions are in the namespace <code class="language-plaintext highlighter-rouge">pmd-java</code>.</p>
 
 <div class="table-responsive">
-  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;table width="100%"&gt;
-
-    &lt;thead&gt;
-    &lt;tr&gt;
-        &lt;th&gt;Function name&lt;/th&gt;
-        &lt;th&gt;Description (click for details)&lt;/th&gt;
-        &lt;th&gt;&lt;/th&gt;
-    &lt;/tr&gt;
-    &lt;/thead&gt;
-
-
-    
-
-    
-
-    &lt;tr data-toggle="collapse" id="pmd-java-nodeIs" data-target="#pmd-java-nodeIs-expand" class="accordion-toggle"&gt;
-
-        &lt;td&gt;nodeIs&lt;/td&gt;
-        &lt;td&gt;Tests the runtime type of the node instance&lt;/td&gt;
-        &lt;td&gt;
-            &lt;button type="button" class="btn btn-link"&gt;&lt;i
-                    class="fas fa-ellipsis-h"&gt;&lt;/i&gt;&lt;/button&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr&gt;
-        &lt;td colspan="4" class="hiddenRow"&gt;
-            &lt;div class="accordion-body collapse" id="pmd-java-nodeIs-expand"&gt;
-
-                &lt;div style="margin-left: 15px" class="xpath-fun-doc"&gt;
-
-                    &lt;!-- Yeah the ID is duplicated but it's ok on my browser and makes --&gt;
-                    &lt;!--links somehow work when details are collapsed --&gt;
-                    &lt;h4 class="fun-details-header" id="pmd-java-nodeIs"&gt;
-                        &lt;span class="fun-ns"&gt;pmd-java:&lt;/span&gt;&lt;span
-                            class="fun-name"&gt;nodeIs&lt;/span&gt;&lt;span
-                            class="fun-ns"&gt;(xs:string) as xs:boolean&lt;/span&gt;
-                    &lt;/h4&gt;
-
-                    &lt;div style="margin-left: 30px"&gt;
-
-                        &lt;dl&gt;
-                            &lt;dd&gt;Returns true if the runtime type of the AST node is a subtype of the given class. Contrary to typeIs, this tests the type of the AST node. For example, the AST node for a literal (e.g. &lt;code&gt;5d&lt;/code&gt;) has type ASTNumericLiteral, and this function will ignore the static type of the expression (double)&lt;/dd&gt;
-                            
-                            &lt;dt&gt;Remarks&lt;/dt&gt;
-                            &lt;dd&gt;&lt;/dd&gt;
-
-                            
-
-                            &lt;dt&gt;Parameters&lt;/dt&gt;
-
-                            &lt;dd&gt;
-                                &lt;dl&gt;
-                                    
-                                    &lt;dt&gt;
-                                        &lt;span class="param-name"&gt;nodeClassName&lt;/span&gt;
-                                        &lt;span class="param-type"&gt; as xs:string&lt;/span&gt;
-                                    &lt;/dt&gt;
-                                    &lt;dd&gt;Simple name of a class or interface in package &lt;a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/package-summary.html#"&gt;&lt;code&gt;net.sourceforge.pmd.lang.java.ast&lt;/code&gt;&lt;/a&gt;, without the 'AST' prefix&lt;/dd&gt;
-                                    
-                                &lt;/dl&gt;
-                            &lt;/dd&gt;
-
-                            
-
-                            
-
-                            &lt;dt&gt;Examples&lt;/dt&gt;
-
-                            &lt;dd&gt;
-                                &lt;dl class="code-examples"&gt;
-                                    
-                                    &lt;dt&gt;&lt;code&gt;//*[pmd-java:nodeIs("Expression")]&lt;/code&gt;&lt;/dt&gt;
-                                    &lt;dd&gt;Matches all nodes that implement &lt;a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#"&gt;&lt;code&gt;ASTExpression&lt;/code&gt;&lt;/a&gt;&lt;/dd&gt;
-                                    
-                                    &lt;dt&gt;&lt;code&gt;//*[pmd-java:nodeIs("TypeDeclaration")]&lt;/code&gt;&lt;/dt&gt;
-                                    &lt;dd&gt;Matches all nodes that implement &lt;a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypeDeclaration.html#"&gt;&lt;code&gt;ASTTypeDeclaration&lt;/code&gt;&lt;/a&gt;&lt;/dd&gt;
-                                    
-                                    &lt;dt&gt;&lt;code&gt;//*[pmd-java:nodeIs("Foo")]&lt;/code&gt;&lt;/dt&gt;
-                                    &lt;dd&gt;Runtime error, there's no class ASTFoo in the package&lt;/dd&gt;
-                                    
-                                &lt;/dl&gt;
-                            &lt;/dd&gt;
-                            
-                        &lt;/dl&gt;
-                    &lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-
-    
-
-    
-
-    &lt;tr data-toggle="collapse" id="pmd-java-typeIs" data-target="#pmd-java-typeIs-expand" class="accordion-toggle"&gt;
-
-        &lt;td&gt;typeIs&lt;/td&gt;
-        &lt;td&gt;Tests a node's static type&lt;/td&gt;
-        &lt;td&gt;
-            &lt;button type="button" class="btn btn-link"&gt;&lt;i
-                    class="fas fa-ellipsis-h"&gt;&lt;/i&gt;&lt;/button&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr&gt;
-        &lt;td colspan="4" class="hiddenRow"&gt;
-            &lt;div class="accordion-body collapse" id="pmd-java-typeIs-expand"&gt;
-
-                &lt;div style="margin-left: 15px" class="xpath-fun-doc"&gt;
-
-                    &lt;!-- Yeah the ID is duplicated but it's ok on my browser and makes --&gt;
-                    &lt;!--links somehow work when details are collapsed --&gt;
-                    &lt;h4 class="fun-details-header" id="pmd-java-typeIs"&gt;
-                        &lt;span class="fun-ns"&gt;pmd-java:&lt;/span&gt;&lt;span
-                            class="fun-name"&gt;typeIs&lt;/span&gt;&lt;span
-                            class="fun-ns"&gt;(xs:string) as xs:boolean&lt;/span&gt;
-                    &lt;/h4&gt;
-
-                    &lt;div style="margin-left: 30px"&gt;
-
-                        &lt;dl&gt;
-                            &lt;dd&gt;Returns true if the context node's static Java type is a subtype of the given type. This tests for the resolved type of the Java construct, not the type of the AST node. For example, the AST node for a literal (e.g. &lt;code&gt;5d&lt;/code&gt;) has type ASTNumericLiteral, however this function will compare the type of the literal (eg here, &lt;code&gt;double&lt;/code&gt;) against the argument.&lt;/dd&gt;
-                            
-                            &lt;dt&gt;Remarks&lt;/dt&gt;
-                            &lt;dd&gt;The context node must be a &lt;a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"&gt;&lt;code&gt;TypeNode&lt;/code&gt;&lt;/a&gt;&lt;/dd&gt;
-
-                            
-
-                            &lt;dt&gt;Parameters&lt;/dt&gt;
-
-                            &lt;dd&gt;
-                                &lt;dl&gt;
-                                    
-                                    &lt;dt&gt;
-                                        &lt;span class="param-name"&gt;javaQualifiedName&lt;/span&gt;
-                                        &lt;span class="param-type"&gt; as xs:string&lt;/span&gt;
-                                    &lt;/dt&gt;
-                                    &lt;dd&gt;The qualified name of a Java class, possibly with pairs of brackets to indicate an array type. Can also be a primitive type name.&lt;/dd&gt;
-                                    
-                                &lt;/dl&gt;
-                            &lt;/dd&gt;
-
-                            
-
-                            
-
-                            &lt;dt&gt;Examples&lt;/dt&gt;
-
-                            &lt;dd&gt;
-                                &lt;dl class="code-examples"&gt;
-                                    
-                                    &lt;dt&gt;&lt;code&gt;//FormalParameter[pmd-java:typeIs("java.lang.String[]")]&lt;/code&gt;&lt;/dt&gt;
-                                    &lt;dd&gt;Matches formal parameters of type &lt;code&gt;String[]&lt;/code&gt; (including vararg parameters)&lt;/dd&gt;
-                                    
-                                    &lt;dt&gt;&lt;code&gt;//VariableId[pmd-java:typeIs("java.lang.List")]&lt;/code&gt;&lt;/dt&gt;
-                                    &lt;dd&gt;Matches variable declarators of type &lt;code&gt;List&lt;/code&gt; or any of its subtypes (including e.g. &lt;code&gt;ArrayList&lt;/code&gt;)&lt;/dd&gt;
-                                    
-                                &lt;/dl&gt;
-                            &lt;/dd&gt;
-                            
-                        &lt;/dl&gt;
-                    &lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-
-    
-
-    
-
-    &lt;tr data-toggle="collapse" id="pmd-java-typeIsExactly" data-target="#pmd-java-typeIsExactly-expand" class="accordion-toggle"&gt;
-
-        &lt;td&gt;typeIsExactly&lt;/td&gt;
-        &lt;td&gt;Tests a node's static type, ignoring subtypes&lt;/td&gt;
-        &lt;td&gt;
-            &lt;button type="button" class="btn btn-link"&gt;&lt;i
-                    class="fas fa-ellipsis-h"&gt;&lt;/i&gt;&lt;/button&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr&gt;
-        &lt;td colspan="4" class="hiddenRow"&gt;
-            &lt;div class="accordion-body collapse" id="pmd-java-typeIsExactly-expand"&gt;
-
-                &lt;div style="margin-left: 15px" class="xpath-fun-doc"&gt;
-
-                    &lt;!-- Yeah the ID is duplicated but it's ok on my browser and makes --&gt;
-                    &lt;!--links somehow work when details are collapsed --&gt;
-                    &lt;h4 class="fun-details-header" id="pmd-java-typeIsExactly"&gt;
-                        &lt;span class="fun-ns"&gt;pmd-java:&lt;/span&gt;&lt;span
-                            class="fun-name"&gt;typeIsExactly&lt;/span&gt;&lt;span
-                            class="fun-ns"&gt;(xs:string) as xs:boolean&lt;/span&gt;
-                    &lt;/h4&gt;
-
-                    &lt;div style="margin-left: 30px"&gt;
-
-                        &lt;dl&gt;
-                            &lt;dd&gt;Returns true if the context node's static type is exactly the given type. In particular, returns false if the context node's type is a subtype of the given type.&lt;/dd&gt;
-                            
-                            &lt;dt&gt;Remarks&lt;/dt&gt;
-                            &lt;dd&gt;The context node must be a &lt;a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"&gt;&lt;code&gt;TypeNode&lt;/code&gt;&lt;/a&gt;&lt;/dd&gt;
-
-                            
-
-                            &lt;dt&gt;Parameters&lt;/dt&gt;
-
-                            &lt;dd&gt;
-                                &lt;dl&gt;
-                                    
-                                    &lt;dt&gt;
-                                        &lt;span class="param-name"&gt;javaQualifiedName&lt;/span&gt;
-                                        &lt;span class="param-type"&gt; as xs:string&lt;/span&gt;
-                                    &lt;/dt&gt;
-                                    &lt;dd&gt;The qualified name of a Java class, possibly with pairs of brackets to indicate an array type. Can also be a primitive type name.&lt;/dd&gt;
-                                    
-                                &lt;/dl&gt;
-                            &lt;/dd&gt;
-
-                            
-
-                            
-
-                            &lt;dt&gt;Examples&lt;/dt&gt;
-
-                            &lt;dd&gt;
-                                &lt;dl class="code-examples"&gt;
-                                    
-                                    &lt;dt&gt;&lt;code&gt;//VariableId[pmd-java:typeIsExactly("java.lang.List")]&lt;/code&gt;&lt;/dt&gt;
-                                    &lt;dd&gt;Matches variable declarators of type &lt;code&gt;List&lt;/code&gt; (but not e.g. &lt;code&gt;ArrayList&lt;/code&gt;)&lt;/dd&gt;
-                                    
-                                &lt;/dl&gt;
-                            &lt;/dd&gt;
-                            
-                        &lt;/dl&gt;
-                    &lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-
-    
-
-    
-
-    &lt;tr data-toggle="collapse" id="pmd-java-metric" data-target="#pmd-java-metric-expand" class="accordion-toggle"&gt;
-
-        &lt;td&gt;metric&lt;/td&gt;
-        &lt;td&gt;Computes and returns the value of a metric&lt;/td&gt;
-        &lt;td&gt;
-            &lt;button type="button" class="btn btn-link"&gt;&lt;i
-                    class="fas fa-ellipsis-h"&gt;&lt;/i&gt;&lt;/button&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr&gt;
-        &lt;td colspan="4" class="hiddenRow"&gt;
-            &lt;div class="accordion-body collapse" id="pmd-java-metric-expand"&gt;
-
-                &lt;div style="margin-left: 15px" class="xpath-fun-doc"&gt;
-
-                    &lt;!-- Yeah the ID is duplicated but it's ok on my browser and makes --&gt;
-                    &lt;!--links somehow work when details are collapsed --&gt;
-                    &lt;h4 class="fun-details-header" id="pmd-java-metric"&gt;
-                        &lt;span class="fun-ns"&gt;pmd-java:&lt;/span&gt;&lt;span
-                            class="fun-name"&gt;metric&lt;/span&gt;&lt;span
-                            class="fun-ns"&gt;(xs:string) as xs:decimal?&lt;/span&gt;
-                    &lt;/h4&gt;
-
-                    &lt;div style="margin-left: 30px"&gt;
-
-                        &lt;dl&gt;
-                            &lt;dd&gt;Returns the value of the metric as evaluated on the context node. If the metric cannot be computed on that node, returns an empty sequence (which is falsy).&lt;/dd&gt;
-                            
-                            &lt;dt&gt;Remarks&lt;/dt&gt;
-                            &lt;dd&gt;&lt;/dd&gt;
-
-                            
-
-                            &lt;dt&gt;Parameters&lt;/dt&gt;
-
-                            &lt;dd&gt;
-                                &lt;dl&gt;
-                                    
-                                    &lt;dt&gt;
-                                        &lt;span class="param-name"&gt;metricKey&lt;/span&gt;
-                                        &lt;span class="param-type"&gt; as xs:string&lt;/span&gt;
-                                    &lt;/dt&gt;
-                                    &lt;dd&gt;The name of a metric in &lt;a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.html#"&gt;&lt;code&gt;JavaMetrics&lt;/code&gt;&lt;/a&gt; (or an alias thereof).&lt;/dd&gt;
-                                    
-                                &lt;/dl&gt;
-                            &lt;/dd&gt;
-
-                            
-
-                            
-
-                            &lt;dt&gt;Examples&lt;/dt&gt;
-
-                            &lt;dd&gt;
-                                &lt;dl class="code-examples"&gt;
-                                    
-                                    &lt;dt&gt;&lt;code&gt;//ClassDeclaration[metric('NCSS') &gt; 200]&lt;/code&gt;&lt;/dt&gt;
-                                    &lt;dd&gt;&lt;/dd&gt;
-                                    
-                                    &lt;dt&gt;&lt;code&gt;//MethodDeclaration[metric('CYCLO') &gt; 10 and metric('NCSS') &gt; 20]&lt;/code&gt;&lt;/dt&gt;
-                                    &lt;dd&gt;&lt;/dd&gt;
-                                    
-                                    &lt;dt&gt;&lt;code&gt;//TypeParameter[metric('idontexist') &gt; 50]&lt;/code&gt;&lt;/dt&gt;
-                                    &lt;dd&gt;Error: no such metric&lt;/dd&gt;
-                                    
-                                &lt;/dl&gt;
-                            &lt;/dd&gt;
-                            
-                        &lt;/dl&gt;
-                    &lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-
-    
-
-    
-
-    &lt;tr data-toggle="collapse" id="pmd-java-hasAnnotation" data-target="#pmd-java-hasAnnotation-expand" class="accordion-toggle"&gt;
-
-        &lt;td&gt;hasAnnotation&lt;/td&gt;
-        &lt;td&gt;Tests whether an annotation is present on the node&lt;/td&gt;
-        &lt;td&gt;
-            &lt;button type="button" class="btn btn-link"&gt;&lt;i
-                    class="fas fa-ellipsis-h"&gt;&lt;/i&gt;&lt;/button&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr&gt;
-        &lt;td colspan="4" class="hiddenRow"&gt;
-            &lt;div class="accordion-body collapse" id="pmd-java-hasAnnotation-expand"&gt;
-
-                &lt;div style="margin-left: 15px" class="xpath-fun-doc"&gt;
-
-                    &lt;!-- Yeah the ID is duplicated but it's ok on my browser and makes --&gt;
-                    &lt;!--links somehow work when details are collapsed --&gt;
-                    &lt;h4 class="fun-details-header" id="pmd-java-hasAnnotation"&gt;
-                        &lt;span class="fun-ns"&gt;pmd-java:&lt;/span&gt;&lt;span
-                            class="fun-name"&gt;hasAnnotation&lt;/span&gt;&lt;span
-                            class="fun-ns"&gt;(xs:string) as xs:boolean&lt;/span&gt;
-                    &lt;/h4&gt;
-
-                    &lt;div style="margin-left: 30px"&gt;
-
-                        &lt;dl&gt;
-                            &lt;dd&gt;Returns true if the node has an annotation with the given qualified name&lt;/dd&gt;
-                            
-                            &lt;dt&gt;Remarks&lt;/dt&gt;
-                            &lt;dd&gt;The context node must be an &lt;a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/Annotatable.html#"&gt;&lt;code&gt;Annotatable&lt;/code&gt;&lt;/a&gt;, otherwise this returns false&lt;/dd&gt;
-
-                            
-
-                            &lt;dt&gt;Parameters&lt;/dt&gt;
-
-                            &lt;dd&gt;
-                                &lt;dl&gt;
-                                    
-                                    &lt;dt&gt;
-                                        &lt;span class="param-name"&gt;annotationClassName&lt;/span&gt;
-                                        &lt;span class="param-type"&gt; as xs:string&lt;/span&gt;
-                                    &lt;/dt&gt;
-                                    &lt;dd&gt;Canonical name of an annotation type&lt;/dd&gt;
-                                    
-                                &lt;/dl&gt;
-                            &lt;/dd&gt;
-
-                            
-
-                            
-
-                            &lt;dt&gt;Examples&lt;/dt&gt;
-
-                            &lt;dd&gt;
-                                &lt;dl class="code-examples"&gt;
-                                    
-                                    &lt;dt&gt;&lt;code&gt;//MethodDeclaration[pmd-java:hasAnnotation("java.lang.Override")]&lt;/code&gt;&lt;/dt&gt;
-                                    &lt;dd&gt;Matches all method declarations that are annotated with @Override&lt;/dd&gt;
-                                    
-                                &lt;/dl&gt;
-                            &lt;/dd&gt;
-                            
-                        &lt;/dl&gt;
-                    &lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-
-    
-
-    
-
-    &lt;tr data-toggle="collapse" id="pmd-java-modifiers" data-target="#pmd-java-modifiers-expand" class="accordion-toggle"&gt;
-
-        &lt;td&gt;modifiers&lt;/td&gt;
-        &lt;td&gt;Produce the effective modifiers of a node&lt;/td&gt;
-        &lt;td&gt;
-            &lt;button type="button" class="btn btn-link"&gt;&lt;i
-                    class="fas fa-ellipsis-h"&gt;&lt;/i&gt;&lt;/button&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr&gt;
-        &lt;td colspan="4" class="hiddenRow"&gt;
-            &lt;div class="accordion-body collapse" id="pmd-java-modifiers-expand"&gt;
-
-                &lt;div style="margin-left: 15px" class="xpath-fun-doc"&gt;
-
-                    &lt;!-- Yeah the ID is duplicated but it's ok on my browser and makes --&gt;
-                    &lt;!--links somehow work when details are collapsed --&gt;
-                    &lt;h4 class="fun-details-header" id="pmd-java-modifiers"&gt;
-                        &lt;span class="fun-ns"&gt;pmd-java:&lt;/span&gt;&lt;span
-                            class="fun-name"&gt;modifiers&lt;/span&gt;&lt;span
-                            class="fun-ns"&gt;() as xs:string*&lt;/span&gt;
-                    &lt;/h4&gt;
-
-                    &lt;div style="margin-left: 30px"&gt;
-
-                        &lt;dl&gt;
-                            &lt;dd&gt;Returns a sequence of the effective modifiers of a node as strings. This is documented on &lt;a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTModifierList.html#getEffectiveModifiers()"&gt;&lt;code&gt;getEffectiveModifiers&lt;/code&gt;&lt;/a&gt;.&lt;/dd&gt;
-                            
-                            &lt;dt&gt;Remarks&lt;/dt&gt;
-                            &lt;dd&gt;The context node must be an &lt;a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#"&gt;&lt;code&gt;ModifierOwner&lt;/code&gt;&lt;/a&gt;, otherwise this returns an empty sequence&lt;/dd&gt;
-
-                            
-
-                            
-
-                            &lt;dt&gt;Examples&lt;/dt&gt;
-
-                            &lt;dd&gt;
-                                &lt;dl class="code-examples"&gt;
-                                    
-                                    &lt;dt&gt;&lt;code&gt;//MethodDeclaration[pmd-java:modifiers() = "native"]&lt;/code&gt;&lt;/dt&gt;
-                                    &lt;dd&gt;Matches native method declarations&lt;/dd&gt;
-                                    
-                                    &lt;dt&gt;&lt;code&gt;//MethodDeclaration[pmd-java:modifiers() = ("native", "static")]&lt;/code&gt;&lt;/dt&gt;
-                                    &lt;dd&gt;Matches method declarations that have a 'native' OR a 'static' modifier. This may be counter-intuitive.&lt;/dd&gt;
-                                    
-                                    &lt;dt&gt;&lt;code&gt;//MethodDeclaration[pmd-java:modifiers() = "public"]&lt;/code&gt;&lt;/dt&gt;
-                                    &lt;dd&gt;Matches method declarations that have a 'public' modifier, explicit or implicit. For example, this would match methods in interfaces, which implicitly have the modifier. Use the &lt;code&gt;explicitModifiers&lt;/code&gt; function if you don't want the implicit part. Also note that &lt;code&gt;@Visibility = 'public'&lt;/code&gt; is a better use of the API, in this particular instance.&lt;/dd&gt;
-                                    
-                                &lt;/dl&gt;
-                            &lt;/dd&gt;
-                            
-                        &lt;/dl&gt;
-                    &lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-
-    
-
-    
-
-    &lt;tr data-toggle="collapse" id="pmd-java-explicitModifiers" data-target="#pmd-java-explicitModifiers-expand" class="accordion-toggle"&gt;
-
-        &lt;td&gt;explicitModifiers&lt;/td&gt;
-        &lt;td&gt;Produce the explicit modifiers of a node&lt;/td&gt;
-        &lt;td&gt;
-            &lt;button type="button" class="btn btn-link"&gt;&lt;i
-                    class="fas fa-ellipsis-h"&gt;&lt;/i&gt;&lt;/button&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr&gt;
-        &lt;td colspan="4" class="hiddenRow"&gt;
-            &lt;div class="accordion-body collapse" id="pmd-java-explicitModifiers-expand"&gt;
-
-                &lt;div style="margin-left: 15px" class="xpath-fun-doc"&gt;
-
-                    &lt;!-- Yeah the ID is duplicated but it's ok on my browser and makes --&gt;
-                    &lt;!--links somehow work when details are collapsed --&gt;
-                    &lt;h4 class="fun-details-header" id="pmd-java-explicitModifiers"&gt;
-                        &lt;span class="fun-ns"&gt;pmd-java:&lt;/span&gt;&lt;span
-                            class="fun-name"&gt;explicitModifiers&lt;/span&gt;&lt;span
-                            class="fun-ns"&gt;() as xs:string*&lt;/span&gt;
-                    &lt;/h4&gt;
-
-                    &lt;div style="margin-left: 30px"&gt;
-
-                        &lt;dl&gt;
-                            &lt;dd&gt;Returns a sequence of the explicit modifiers of a node as strings. This is documented on &lt;a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTModifierList.html#getExplicitModifiers()"&gt;&lt;code&gt;getExplicitModifiers&lt;/code&gt;&lt;/a&gt;.&lt;/dd&gt;
-                            
-                            &lt;dt&gt;Remarks&lt;/dt&gt;
-                            &lt;dd&gt;The context node must be an &lt;a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#"&gt;&lt;code&gt;ModifierOwner&lt;/code&gt;&lt;/a&gt;, otherwise this returns an empty sequence&lt;/dd&gt;
-
-                            
-
-                            
-
-                            &lt;dt&gt;Examples&lt;/dt&gt;
-
-                            &lt;dd&gt;
-                                &lt;dl class="code-examples"&gt;
-                                    
-                                    &lt;dt&gt;&lt;code&gt;//MethodDeclaration[pmd-java:explicitModifiers() = "public"]&lt;/code&gt;&lt;/dt&gt;
-                                    &lt;dd&gt;Matches method declarations that have an explicit 'public' modifier.&lt;/dd&gt;
-                                    
-                                &lt;/dl&gt;
-                            &lt;/dd&gt;
-                            
-                        &lt;/dl&gt;
-                    &lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-
-    
-
-    
-
-    &lt;tr data-toggle="collapse" id="pmd-java-matchesSig" data-target="#pmd-java-matchesSig-expand" class="accordion-toggle"&gt;
-
-        &lt;td&gt;matchesSig&lt;/td&gt;
-        &lt;td&gt;Matches the signature called by a method or constructor call&lt;/td&gt;
-        &lt;td&gt;
-            &lt;button type="button" class="btn btn-link"&gt;&lt;i
-                    class="fas fa-ellipsis-h"&gt;&lt;/i&gt;&lt;/button&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr&gt;
-        &lt;td colspan="4" class="hiddenRow"&gt;
-            &lt;div class="accordion-body collapse" id="pmd-java-matchesSig-expand"&gt;
-
-                &lt;div style="margin-left: 15px" class="xpath-fun-doc"&gt;
-
-                    &lt;!-- Yeah the ID is duplicated but it's ok on my browser and makes --&gt;
-                    &lt;!--links somehow work when details are collapsed --&gt;
-                    &lt;h4 class="fun-details-header" id="pmd-java-matchesSig"&gt;
-                        &lt;span class="fun-ns"&gt;pmd-java:&lt;/span&gt;&lt;span
-                            class="fun-name"&gt;matchesSig&lt;/span&gt;&lt;span
-                            class="fun-ns"&gt;(xs:string) as xs:boolean&lt;/span&gt;
-                    &lt;/h4&gt;
-
-                    &lt;div style="margin-left: 30px"&gt;
-
-                        &lt;dl&gt;
-                            &lt;dd&gt;Uses an &lt;a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeTestUtil.InvocationMatcher.html#"&gt;&lt;code&gt;TypeTestUtil.InvocationMatcher&lt;/code&gt;&lt;/a&gt; to test the method signature called by the context node. The format of the parameter is described on that class.&lt;/dd&gt;
-                            
-                            &lt;dt&gt;Remarks&lt;/dt&gt;
-                            &lt;dd&gt;The context node must be an &lt;a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/InvocationNode.html#"&gt;&lt;code&gt;InvocationNode&lt;/code&gt;&lt;/a&gt;, otherwise this returns false&lt;/dd&gt;
-
-                            
-
-                            &lt;dt&gt;Parameters&lt;/dt&gt;
-
-                            &lt;dd&gt;
-                                &lt;dl&gt;
-                                    
-                                    &lt;dt&gt;
-                                        &lt;span class="param-name"&gt;sig&lt;/span&gt;
-                                        &lt;span class="param-type"&gt; as xs:string&lt;/span&gt;
-                                    &lt;/dt&gt;
-                                    &lt;dd&gt;A signature, in the format described on &lt;a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeTestUtil.InvocationMatcher.html#"&gt;&lt;code&gt;TypeTestUtil.InvocationMatcher&lt;/code&gt;&lt;/a&gt;&lt;/dd&gt;
-                                    
-                                &lt;/dl&gt;
-                            &lt;/dd&gt;
-
-                            
-
-                            
-
-                            &lt;dt&gt;Examples&lt;/dt&gt;
-
-                            &lt;dd&gt;
-                                &lt;dl class="code-examples"&gt;
-                                    
-                                    &lt;dt&gt;&lt;code&gt;//MethodCall[pmd-java:matchesSig("_#equals(java.lang.Object)")]&lt;/code&gt;&lt;/dt&gt;
-                                    &lt;dd&gt;Matches calls to the method &lt;code&gt;equals&lt;/code&gt; on any receiver type&lt;/dd&gt;
-                                    
-                                    &lt;dt&gt;&lt;code&gt;//MethodCall[pmd-java:matchesSig("java.lang.Enum#equals(java.lang.Object)")]&lt;/code&gt;&lt;/dt&gt;
-                                    &lt;dd&gt;Matches calls to the method &lt;code&gt;equals&lt;/code&gt; on receiver that is a subtype of Enum&lt;/dd&gt;
-                                    
-                                    &lt;dt&gt;&lt;code&gt;//MethodCall[pmd-java:matchesSig("java.lang.String#toString()")]&lt;/code&gt;&lt;/dt&gt;
-                                    &lt;dd&gt;Matches calls to the method &lt;code&gt;toString&lt;/code&gt; on String receivers&lt;/dd&gt;
-                                    
-                                    &lt;dt&gt;&lt;code&gt;//MethodCall[pmd-java:matchesSig("_#_(int,int)")]&lt;/code&gt;&lt;/dt&gt;
-                                    &lt;dd&gt;Matches calls to any method with 2 &lt;code&gt;int&lt;/code&gt; parameters (!= argument)&lt;/dd&gt;
-                                    
-                                    &lt;dt&gt;&lt;code&gt;//ConstructorCall[pmd-java:matchesSig("java.util.ArrayList#new(int)")]&lt;/code&gt;&lt;/dt&gt;
-                                    &lt;dd&gt;Matches constructors calls of ArrayList with a single int parameter&lt;/dd&gt;
-                                    
-                                &lt;/dl&gt;
-                            &lt;/dd&gt;
-                            
-                        &lt;/dl&gt;
-                    &lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-
-    
-
-&lt;/table&gt;
-</code></pre></div>  </div>
+    <table width="100%">
+
+        <thead>
+        <tr>
+            <th>Function name</th>
+            <th>Description (click for details)</th>
+            <th></th>
+        </tr>
+        </thead>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-java-nodeIs" data-target="#pmd-java-nodeIs-expand" class="accordion-toggle">
+
+            <td>nodeIs</td>
+            <td>Tests the runtime type of the node instance</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-java-nodeIs-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-java-nodeIs">
+                            <span class="fun-ns">pmd-java:</span><span class="fun-name">nodeIs</span><span class="fun-ns">(xs:string) as xs:boolean</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns true if the runtime type of the AST node is a subtype of the given class. Contrary to typeIs, this tests the type of the AST node. For example, the AST node for a literal (e.g. <code>5d</code>) has type ASTNumericLiteral, and this function will ignore the static type of the expression (double)</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd></dd>
+
+                                
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <dl>
+                                        
+                                        <dt>
+                                            <span class="param-name">nodeClassName</span>
+                                            <span class="param-type"> as xs:string</span>
+                                        </dt>
+                                        <dd>Simple name of a class or interface in package <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.java.ast</code></a>, without the 'AST' prefix</dd>
+                                        
+                                    </dl>
+                                </dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//*[pmd-java:nodeIs("Expression")]</code></dt>
+                                        <dd>Matches all nodes that implement <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#"><code>ASTExpression</code></a></dd>
+                                        
+                                        <dt><code>//*[pmd-java:nodeIs("TypeDeclaration")]</code></dt>
+                                        <dd>Matches all nodes that implement <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypeDeclaration.html#"><code>ASTTypeDeclaration</code></a></dd>
+                                        
+                                        <dt><code>//*[pmd-java:nodeIs("Foo")]</code></dt>
+                                        <dd>Runtime error, there's no class ASTFoo in the package</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-java-typeIs" data-target="#pmd-java-typeIs-expand" class="accordion-toggle">
+
+            <td>typeIs</td>
+            <td>Tests a node's static type</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-java-typeIs-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-java-typeIs">
+                            <span class="fun-ns">pmd-java:</span><span class="fun-name">typeIs</span><span class="fun-ns">(xs:string) as xs:boolean</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns true if the context node's static Java type is a subtype of the given type. This tests for the resolved type of the Java construct, not the type of the AST node. For example, the AST node for a literal (e.g. <code>5d</code>) has type ASTNumericLiteral, however this function will compare the type of the literal (eg here, <code>double</code>) against the argument.</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd>The context node must be a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a></dd>
+
+                                
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <dl>
+                                        
+                                        <dt>
+                                            <span class="param-name">javaQualifiedName</span>
+                                            <span class="param-type"> as xs:string</span>
+                                        </dt>
+                                        <dd>The qualified name of a Java class, possibly with pairs of brackets to indicate an array type. Can also be a primitive type name.</dd>
+                                        
+                                    </dl>
+                                </dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//FormalParameter[pmd-java:typeIs("java.lang.String[]")]</code></dt>
+                                        <dd>Matches formal parameters of type <code>String[]</code> (including vararg parameters)</dd>
+                                        
+                                        <dt><code>//VariableId[pmd-java:typeIs("java.lang.List")]</code></dt>
+                                        <dd>Matches variable declarators of type <code>List</code> or any of its subtypes (including e.g. <code>ArrayList</code>)</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-java-typeIsExactly" data-target="#pmd-java-typeIsExactly-expand" class="accordion-toggle">
+
+            <td>typeIsExactly</td>
+            <td>Tests a node's static type, ignoring subtypes</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-java-typeIsExactly-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-java-typeIsExactly">
+                            <span class="fun-ns">pmd-java:</span><span class="fun-name">typeIsExactly</span><span class="fun-ns">(xs:string) as xs:boolean</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns true if the context node's static type is exactly the given type. In particular, returns false if the context node's type is a subtype of the given type.</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd>The context node must be a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a></dd>
+
+                                
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <dl>
+                                        
+                                        <dt>
+                                            <span class="param-name">javaQualifiedName</span>
+                                            <span class="param-type"> as xs:string</span>
+                                        </dt>
+                                        <dd>The qualified name of a Java class, possibly with pairs of brackets to indicate an array type. Can also be a primitive type name.</dd>
+                                        
+                                    </dl>
+                                </dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//VariableId[pmd-java:typeIsExactly("java.lang.List")]</code></dt>
+                                        <dd>Matches variable declarators of type <code>List</code> (but not e.g. <code>ArrayList</code>)</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-java-metric" data-target="#pmd-java-metric-expand" class="accordion-toggle">
+
+            <td>metric</td>
+            <td>Computes and returns the value of a metric</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-java-metric-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-java-metric">
+                            <span class="fun-ns">pmd-java:</span><span class="fun-name">metric</span><span class="fun-ns">(xs:string) as xs:decimal?</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns the value of the metric as evaluated on the context node. If the metric cannot be computed on that node, returns an empty sequence (which is falsy).</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd></dd>
+
+                                
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <dl>
+                                        
+                                        <dt>
+                                            <span class="param-name">metricKey</span>
+                                            <span class="param-type"> as xs:string</span>
+                                        </dt>
+                                        <dd>The name of a metric in <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.html#"><code>JavaMetrics</code></a> (or an alias thereof).</dd>
+                                        
+                                    </dl>
+                                </dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//ClassDeclaration[metric('NCSS') &gt; 200]</code></dt>
+                                        <dd></dd>
+                                        
+                                        <dt><code>//MethodDeclaration[metric('CYCLO') &gt; 10 and metric('NCSS') &gt; 20]</code></dt>
+                                        <dd></dd>
+                                        
+                                        <dt><code>//TypeParameter[metric('idontexist') &gt; 50]</code></dt>
+                                        <dd>Error: no such metric</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-java-hasAnnotation" data-target="#pmd-java-hasAnnotation-expand" class="accordion-toggle">
+
+            <td>hasAnnotation</td>
+            <td>Tests whether an annotation is present on the node</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-java-hasAnnotation-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-java-hasAnnotation">
+                            <span class="fun-ns">pmd-java:</span><span class="fun-name">hasAnnotation</span><span class="fun-ns">(xs:string) as xs:boolean</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns true if the node has an annotation with the given qualified name</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd>The context node must be an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/Annotatable.html#"><code>Annotatable</code></a>, otherwise this returns false</dd>
+
+                                
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <dl>
+                                        
+                                        <dt>
+                                            <span class="param-name">annotationClassName</span>
+                                            <span class="param-type"> as xs:string</span>
+                                        </dt>
+                                        <dd>Canonical name of an annotation type</dd>
+                                        
+                                    </dl>
+                                </dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//MethodDeclaration[pmd-java:hasAnnotation("java.lang.Override")]</code></dt>
+                                        <dd>Matches all method declarations that are annotated with @Override</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-java-modifiers" data-target="#pmd-java-modifiers-expand" class="accordion-toggle">
+
+            <td>modifiers</td>
+            <td>Produce the effective modifiers of a node</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-java-modifiers-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-java-modifiers">
+                            <span class="fun-ns">pmd-java:</span><span class="fun-name">modifiers</span><span class="fun-ns">() as xs:string*</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns a sequence of the effective modifiers of a node as strings. This is documented on <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTModifierList.html#getEffectiveModifiers()"><code>getEffectiveModifiers</code></a>.</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd>The context node must be an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#"><code>ModifierOwner</code></a>, otherwise this returns an empty sequence</dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//MethodDeclaration[pmd-java:modifiers() = "native"]</code></dt>
+                                        <dd>Matches native method declarations</dd>
+                                        
+                                        <dt><code>//MethodDeclaration[pmd-java:modifiers() = ("native", "static")]</code></dt>
+                                        <dd>Matches method declarations that have a 'native' OR a 'static' modifier. This may be counter-intuitive.</dd>
+                                        
+                                        <dt><code>//MethodDeclaration[pmd-java:modifiers() = "public"]</code></dt>
+                                        <dd>Matches method declarations that have a 'public' modifier, explicit or implicit. For example, this would match methods in interfaces, which implicitly have the modifier. Use the <code>explicitModifiers</code> function if you don't want the implicit part. Also note that <code>@Visibility = 'public'</code> is a better use of the API, in this particular instance.</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-java-explicitModifiers" data-target="#pmd-java-explicitModifiers-expand" class="accordion-toggle">
+
+            <td>explicitModifiers</td>
+            <td>Produce the explicit modifiers of a node</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-java-explicitModifiers-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-java-explicitModifiers">
+                            <span class="fun-ns">pmd-java:</span><span class="fun-name">explicitModifiers</span><span class="fun-ns">() as xs:string*</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns a sequence of the explicit modifiers of a node as strings. This is documented on <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTModifierList.html#getExplicitModifiers()"><code>getExplicitModifiers</code></a>.</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd>The context node must be an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#"><code>ModifierOwner</code></a>, otherwise this returns an empty sequence</dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//MethodDeclaration[pmd-java:explicitModifiers() = "public"]</code></dt>
+                                        <dd>Matches method declarations that have an explicit 'public' modifier.</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-java-matchesSig" data-target="#pmd-java-matchesSig-expand" class="accordion-toggle">
+
+            <td>matchesSig</td>
+            <td>Matches the signature called by a method or constructor call</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-java-matchesSig-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-java-matchesSig">
+                            <span class="fun-ns">pmd-java:</span><span class="fun-name">matchesSig</span><span class="fun-ns">(xs:string) as xs:boolean</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Uses an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeTestUtil.InvocationMatcher.html#"><code>TypeTestUtil.InvocationMatcher</code></a> to test the method signature called by the context node. The format of the parameter is described on that class.</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd>The context node must be an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/InvocationNode.html#"><code>InvocationNode</code></a>, otherwise this returns false</dd>
+
+                                
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <dl>
+                                        
+                                        <dt>
+                                            <span class="param-name">sig</span>
+                                            <span class="param-type"> as xs:string</span>
+                                        </dt>
+                                        <dd>A signature, in the format described on <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeTestUtil.InvocationMatcher.html#"><code>TypeTestUtil.InvocationMatcher</code></a></dd>
+                                        
+                                    </dl>
+                                </dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//MethodCall[pmd-java:matchesSig("_#equals(java.lang.Object)")]</code></dt>
+                                        <dd>Matches calls to the method <code>equals</code> on any receiver type</dd>
+                                        
+                                        <dt><code>//MethodCall[pmd-java:matchesSig("java.lang.Enum#equals(java.lang.Object)")]</code></dt>
+                                        <dd>Matches calls to the method <code>equals</code> on receiver that is a subtype of Enum</dd>
+                                        
+                                        <dt><code>//MethodCall[pmd-java:matchesSig("java.lang.String#toString()")]</code></dt>
+                                        <dd>Matches calls to the method <code>toString</code> on String receivers</dd>
+                                        
+                                        <dt><code>//MethodCall[pmd-java:matchesSig("_#_(int,int)")]</code></dt>
+                                        <dd>Matches calls to any method with 2 <code>int</code> parameters (!= argument)</dd>
+                                        
+                                        <dt><code>//ConstructorCall[pmd-java:matchesSig("java.util.ArrayList#new(int)")]</code></dt>
+                                        <dd>Matches constructors calls of ArrayList with a single int parameter</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+    </table>
 
 </div>
 
@@ -3055,7 +3018,7 @@ information from the AST.</p>
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            December 2023 (7.0.0)<br /> Site last generated: Mar 19, 2024 <br />
+            December 2023 (7.0.0)<br /> Site last generated: Mar 21, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
