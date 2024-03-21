@@ -5,7 +5,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import org.junit.jupiter.api.Test;
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class TestFrameworksUtilTest {
@@ -19,10 +18,4 @@ class TestFrameworksUtilTest {
         assertThat(TestFrameworksUtil.isProbableAssertCall(m)).isTrue();
     }
 
-    @Test
-    void testIsProbableAssertCallWithExtraMethodNames() {
-        ASTCompilationUnit root = java.parse("class A { { expectTrue(1); } }");
-        ASTMethodCall m = root.descendants(ASTMethodCall.class).toList().get(0);
-        assertThat(TestFrameworksUtil.isProbableAssertCall(m, listOf("expectTrue"))).isTrue();
-    }
 }
