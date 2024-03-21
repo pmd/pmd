@@ -914,10 +914,6 @@ Customize the maximum number of assertions used by this Rule to suit your needs.
 This rule checks for JUnit4, JUnit5 and TestNG Tests, as well as methods starting with "test".
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="extraAssertMethodNames" type="List[String]"
-                      description="Extra valid assertion methods names"/>
-        </properties>
         <example>
 <![CDATA[
 public class MyTestCase extends TestCase {
@@ -949,10 +945,6 @@ JUnit tests should include at least one assertion.  This makes the tests more ro
 with messages provide the developer a clearer idea of what the test does.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="extraAssertMethodNames" type="List[String]"
-                      description="Extra valid assertion methods names"/>
-        </properties>
         <example>
 <![CDATA[
 public class Foo extends TestCase {
