@@ -16,6 +16,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -116,7 +117,8 @@ final class AnnotationSuppressionUtil {
             // also works for ASTResource when Resource uses LocalVariableDeclaration
             || node instanceof ASTLocalVariableDeclaration
             || node instanceof ASTFieldDeclaration
-            || node instanceof ASTFormalParameter) {
+            || node instanceof ASTFormalParameter
+            || node instanceof ASTCatchParameter) {
             return (Annotatable) node;
         } else {
             return null;
