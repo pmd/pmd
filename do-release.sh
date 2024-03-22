@@ -177,7 +177,7 @@ git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
     changes=$(git status --porcelain 2>/dev/null| grep -c -E "^[AMDRC]")
     if [ "$changes" -gt 0 ]; then
         echo "Committing current changes (pmd.github.io)"
-        git commit -a -m "Prepare pmd release ${RELEASE_VERSION}" && git push
+        git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
     fi
 )
 
@@ -322,6 +322,16 @@ tweet="${tweet//$'\n'/%0A}"
 echo "*   Tweet about this release on https://twitter.com/pmd_analyzer:"
 echo "        <https://twitter.com/intent/tweet?text=$tweet>"
 echo
+echo
+echo "Now waiting for the release to be finished..."
+echo "Press enter, to continue to push pmd.github.io changes"
+read -r
+
+(
+    cd ../pmd.github.io
+    git push
+)
+
 echo "------------------------------------------"
 echo "Done."
 echo "------------------------------------------"
