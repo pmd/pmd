@@ -763,14 +763,13 @@ See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#
 full list of PRs.
 
 ### 📈 Stats
-* 5662 commits
-* 796 closed tickets & PRs
-* Days since last release (6.55.0): 377
-* Days since last release (7.0.0-rc4): 160
+* 5741 commits
+* 849 closed tickets & PRs
+* Days since last release (6.55.0): 390
+* Days since last release (7.0.0-rc4): 173
 
 {% endtocmaker %}
 
 {% if is_release_notes_processor %}
 </details>
 {% endif %}
-
