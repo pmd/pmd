@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.internal;
 
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
-import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
