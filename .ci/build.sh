@@ -82,10 +82,10 @@ function build() {
             # There are two possible (release) builds:
             if [ "${BUILD_CLI_DIST_ONLY}" = "false" ]; then
                 # a) everything without pmd-cli and pmd-dist
-                ./mvnw clean verify -P"${mvn_profiles}" -Dskip-cli-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
+                ./mvnw clean verify -Dskip-cli-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
             else
                 # b) only pmd-cli and pmd-dist
-                ./mvnw clean verify -P"${mvn_profiles}" -pl pmd-cli,pmd-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
+                ./mvnw clean verify -pl pmd-cli,pmd-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
             fi
         else
             # snapshot build - just verify on the different OS
