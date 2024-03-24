@@ -63,7 +63,7 @@ public class Foo {
 
     <test-code>
         <description>failure case with multi-catch</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
     void bar() {
@@ -77,7 +77,7 @@ class FooException extends Exception {}
     </test-code>
 
     <test-code>
-        <description>[java] Can no longer suppress AvoidCatchingGenericException on the exception itself #4873</description>
+        <description>[java] AvoidCatchingGenericException: Can no longer suppress on the exception itself #4873</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Example {

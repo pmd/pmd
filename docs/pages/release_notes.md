@@ -16,7 +16,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🐛 Fixed Issues
 * java-design
-  * [#4873](https://github.com/pmd/pmd/issues/4873): \[java] Can no longer suppress AvoidCatchingGenericException on the exception itself
+  * [#4873](https://github.com/pmd/pmd/issues/4873): \[java] AvoidCatchingGenericException: Can no longer suppress on the exception itself
 
 ### 🚨 API Changes
 
