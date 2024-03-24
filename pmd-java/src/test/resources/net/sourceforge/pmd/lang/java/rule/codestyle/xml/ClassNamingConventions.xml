@@ -436,4 +436,15 @@ import junit.framework.TestCase;
 public class ExampleTestCase extends TestCase { }
 ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>[java] ClassNamingConventions: interfaces are identified as abstract classes (regression in 7.0.0) #4881</description>
+        <rule-property name="abstractClassPattern">Abstract[A-Z][a-zA-Z0-9]*</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface TestInterface {
+  void test();
+}
+]]></code>
+    </test-code>
 </test-data>
