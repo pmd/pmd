@@ -44,7 +44,6 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
  */
 public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulechainRule {
 
-
     private static final int DEFAULT_BUFFER_SIZE = 16;
 
     public InsufficientStringBufferDeclarationRule() {
@@ -269,6 +268,10 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
 
                     case DIV:
                         data.setValue(data.getValue() / temp.getValue());
+                        break;
+
+                    default:
+                        data.setValue(0);
                         break;
                 }
 
