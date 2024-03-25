@@ -16,15 +16,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTCatchParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
-import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.rule.errorprone.ImplicitSwitchFallThroughRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -112,13 +106,7 @@ final class AnnotationSuppressionUtil {
 
     @Nullable
     private static Annotatable getSuppressor(Node node) {
-        if (node instanceof ASTTypeDeclaration
-            || node instanceof ASTExecutableDeclaration
-            // also works for ASTResource when Resource uses LocalVariableDeclaration
-            || node instanceof ASTLocalVariableDeclaration
-            || node instanceof ASTFieldDeclaration
-            || node instanceof ASTFormalParameter
-            || node instanceof ASTCatchParameter) {
+        if (node instanceof Annotatable) {
             return (Annotatable) node;
         } else {
             return null;
