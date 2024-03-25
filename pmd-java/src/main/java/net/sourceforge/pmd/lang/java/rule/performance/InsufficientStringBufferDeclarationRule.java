@@ -250,17 +250,26 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
             public Void visit(ASTInfixExpression node, MutableInt data) {
                 MutableInt temp = new MutableInt(-1);
 
-                if (BinaryOp.ADD.equals(node.getOperator())) {
-                    data.setValue(0);
-                    node.getLeftOperand().acceptVisitor(this, temp);
-                    data.add(temp.getValue());
-                    node.getRightOperand().acceptVisitor(this, temp);
-                    data.add(temp.getValue());
-                } else if (BinaryOp.MUL.equals(node.getOperator())) {
-                    node.getLeftOperand().acceptVisitor(this, temp);
-                    data.setValue(temp.getValue());
-                    node.getRightOperand().acceptVisitor(this, temp);
-                    data.setValue(data.getValue() * temp.getValue());
+                node.getLeftOperand().acceptVisitor(this, temp);
+                data.setValue(temp.getValue());
+                node.getRightOperand().acceptVisitor(this, temp);
+
+                switch (node.getOperator()) {
+                    case ADD:
+                        data.add(temp.getValue());
+                        break;
+
+                    case SUB:
+                        data.subtract(temp.getValue());
+                        break;
+
+                    case MUL:
+                        data.setValue(data.getValue() * temp.getValue());
+                        break;
+
+                    case DIV:
+                        data.setValue(data.getValue() / temp.getValue());
+                        break;
                 }
 
                 return null;
