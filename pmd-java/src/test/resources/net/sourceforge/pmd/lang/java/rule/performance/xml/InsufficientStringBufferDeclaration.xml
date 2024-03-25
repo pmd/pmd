@@ -1360,4 +1360,19 @@ public class InsufficientStringBufferDeclarationNPE {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] InsufficientStringBufferDeclaration should consider literal expression #3845</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class LiteralExpression {
+    public void bar() {
+        StringBuffer sb = new StringBuffer(1 + 2 - 1);  // Should report a warning at this line
+        sb.append('a');
+        sb.append('a');
+        sb.append('a');
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
