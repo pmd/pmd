@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.lang.document.Chars;
-
 import com.google.summit.ast.expression.LiteralExpression;
 import com.google.summit.ast.expression.VariableExpression;
 
@@ -40,19 +38,11 @@ public final class ASTLiteralExpression extends AbstractApexNode.Single<LiteralE
         } else if (node instanceof LiteralExpression.IntegerVal) {
             return LiteralType.INTEGER;
         } else if (node instanceof LiteralExpression.DoubleVal) {
-            // TODO Replace this workaround with LiteralExpression.DecimalVal, see below and https://github.com/google/summit-ast/pull/47
-            Chars source = getTextDocument().getText().slice(getTextRegion());
-            if (source.indexOf('d') > -1 || source.indexOf('D') > -1) {
-                return LiteralType.DOUBLE;
-            } else {
-                return LiteralType.DECIMAL;
-            }
+            return LiteralType.DOUBLE;
         } else if (node instanceof LiteralExpression.LongVal) {
             return LiteralType.LONG;
-        /* TODO(b/239648780): the parser must distinguish decimal vs. double
         } else if (node instanceof LiteralExpression.DecimalVal) {
             return LiteralType.DECIMAL;
-        */
         } else if (node instanceof LiteralExpression.NullVal) {
             return LiteralType.NULL;
         } else {

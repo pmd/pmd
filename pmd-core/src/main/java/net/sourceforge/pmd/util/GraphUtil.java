@@ -43,7 +43,9 @@ public final class GraphUtil {
         StringBuilder sb = new StringBuilder("strict digraph {\n");
         Map<V, String> ids = new HashMap<>();
         int i = 0;
-        for (V node : vertices) {
+        List<V> vertexList = new ArrayList<>(vertices);
+        vertexList.sort(Comparator.comparing(Object::toString)); // for reproducibility in tests
+        for (V node : vertexList) {
             String id = "n" + i++;
             ids.put(node, id);
             sb.append(id)
@@ -56,7 +58,7 @@ public final class GraphUtil {
 
         List<String> edges = new ArrayList<>();
 
-        for (V node : vertices) {
+        for (V node : vertexList) {
             // edges
             String id = ids.get(node);
             for (V succ : successorFun.apply(node)) {

@@ -8,11 +8,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 class CodeClimateRendererTest extends AbstractRendererTest {
+    private static final String VERSION_PART = PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-doc-" + PMDVersion.VERSION;
 
     @Override
     Renderer getRenderer() {
@@ -26,7 +28,7 @@ class CodeClimateRendererTest extends AbstractRendererTest {
                 + "[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): Style\\n\\n"
                 + "[Remediation Points](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#remediation-points): 50000\\n\\n"
                 + "Description with Unicode Character U+2013: – .\\n\\n"
-                + "### [PMD properties](https://docs.pmd-code.org/latest/pmd_userdocs_configuring_rules.html#rule-properties)\\n\\n"
+                + "### [PMD properties](https://docs.pmd-code.org/" + VERSION_PART + "/pmd_userdocs_configuring_rules.html#rule-properties)\\n\\n"
                 + "Name | Value | Description\\n" + "--- | --- | ---\\n"
                 + "violationSuppressRegex | | Suppress violations with messages matching a regular expression\\n"
                 + "violationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\\n"
@@ -41,7 +43,7 @@ class CodeClimateRendererTest extends AbstractRendererTest {
                 + "[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): Style\\n\\n"
                 + "[Remediation Points](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#remediation-points): 50000\\n\\n"
                 + "Description with Unicode Character U+2013: – .\\n\\n"
-                + "### [PMD properties](https://docs.pmd-code.org/latest/pmd_userdocs_configuring_rules.html#rule-properties)\\n\\n"
+                + "### [PMD properties](https://docs.pmd-code.org/" + VERSION_PART + "/pmd_userdocs_configuring_rules.html#rule-properties)\\n\\n"
                 + "Name | Value | Description\\n" + "--- | --- | ---\\n"
                 + "violationSuppressRegex | | Suppress violations with messages matching a regular expression\\n"
                 + "violationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\\n"
@@ -63,7 +65,7 @@ class CodeClimateRendererTest extends AbstractRendererTest {
                 + "[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): Style\\n\\n"
                 + "[Remediation Points](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#remediation-points): 50000\\n\\n"
                 + "Description with Unicode Character U+2013: – .\\n\\n"
-                + "### [PMD properties](https://docs.pmd-code.org/latest/pmd_userdocs_configuring_rules.html#rule-properties)\\n\\n"
+                + "### [PMD properties](https://docs.pmd-code.org/" + VERSION_PART + "/pmd_userdocs_configuring_rules.html#rule-properties)\\n\\n"
                 + "Name | Value | Description\\n" + "--- | --- | ---\\n"
                 + "violationSuppressRegex | | Suppress violations with messages matching a regular expression\\n"
                 + "violationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\\n"
@@ -73,7 +75,7 @@ class CodeClimateRendererTest extends AbstractRendererTest {
                 + "[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): Style\\n\\n"
                 + "[Remediation Points](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#remediation-points): 50000\\n\\n"
                 + "desc\\n\\n"
-                + "### [PMD properties](https://docs.pmd-code.org/latest/pmd_userdocs_configuring_rules.html#rule-properties)\\n\\n"
+                + "### [PMD properties](https://docs.pmd-code.org/" + VERSION_PART + "/pmd_userdocs_configuring_rules.html#rule-properties)\\n\\n"
                 + "Name | Value | Description\\n" + "--- | --- | ---\\n"
                 + "violationSuppressRegex | | Suppress violations with messages matching a regular expression\\n"
                 + "violationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\\n"

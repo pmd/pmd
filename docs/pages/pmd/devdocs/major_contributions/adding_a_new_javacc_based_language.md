@@ -83,7 +83,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
 *   For a minimal implementation, it just needs to return a parser *(see step #5)*.
 *   It can be used to provide other features for your language like
     *   violation suppression logic
-    *   {% jdoc core::reporting::ViolationDecorator %}s, to add additional language specific information to the
+    *   {% jdoc core::reporting.ViolationDecorator %}s, to add additional language specific information to the
         created violations. The [Java language module](pmd_languages_java.html#violation-decorators) uses this to
         provide the method name or class name, where the violation occurred.
     *   metrics (see below "Optional features")

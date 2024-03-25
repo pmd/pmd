@@ -73,7 +73,7 @@ You can think of the cache as a Map where the filepath is used as the key
 and the violations found in previous runs are the value.
 
 The cache is in the end just a file with serialized data (binary). The implementation is
-{% jdoc core::cache.FileAnalysisCache %}.
+internal: `net.sourceforge.pmd.cache.internal.FileAnalysisCache`.
 
 #### How does PMD detect whether a file has been changed?
 

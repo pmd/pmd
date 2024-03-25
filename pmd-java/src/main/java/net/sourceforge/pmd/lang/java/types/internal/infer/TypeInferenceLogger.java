@@ -61,6 +61,8 @@ public interface TypeInferenceLogger {
 
     default void ctxInitialization(InferenceContext ctx, JMethodSig sig) { }
 
+    default void applicabilityTest(InferenceContext ctx, JMethodSig sig) { }
+
     default void startArgsChecks() { }
 
     default void startArg(int i, ExprMirror expr, JTypeMirror formal) { }
@@ -364,6 +366,11 @@ public interface TypeInferenceLogger {
         @Override
         public void ctxInitialization(InferenceContext ctx, JMethodSig sig) {
             println(String.format("Context %-11d%s", ctx.getId(), ppHighlight(ctx.mapToIVars(sig))));
+        }
+
+        @Override
+        public void applicabilityTest(InferenceContext ctx, JMethodSig sig) {
+            println(String.format("Applicability testing with Context %-11d%s", ctx.getId(), ppHighlight(ctx.mapToIVars(sig))));
         }
 
         @Override

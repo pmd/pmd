@@ -31,6 +31,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.RunnableFuture;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -66,20 +69,22 @@ public class DeadLinksChecker {
     // the link is actually pointing to a file in the pmd project
     private static final String LOCAL_FILE_PREFIX = "https://github.com/pmd/pmd/blob/master/";
 
-    // don't check links to PMD bugs/issues/pull-requests  (performance optimization)
+    // don't check links to PMD bugs/issues/pull-requests and some other sites (performance optimization)
     private static final List<String> IGNORED_URL_PREFIXES = Collections.unmodifiableList(Arrays.asList(
         "https://github.com/pmd/pmd/issues/",
         "https://github.com/pmd/pmd/pull/",
-        "https://sourceforge.net/p/pmd/bugs/"
+        "https://sourceforge.net/p/pmd/bugs/",
+        "https://pmd.github.io/",
+        "https://openjdk.org/jeps" // very slow...
     ));
 
     // prevent checking the same link multiple times
-    private final Map<String, CompletableFuture<Integer>> urlResponseCache = new ConcurrentHashMap<>();
+    private final Map<String, CompletableFuture<String>> urlResponseCache = new ConcurrentHashMap<>();
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();
 
 
-    public void checkDeadLinks(Path rootDirectory) {
+    public void checkDeadLinks(Path rootDirectory) throws InterruptedException {
         final Path pagesDirectory = rootDirectory.resolve("docs/pages");
         final Path docsDirectory = rootDirectory.resolve("docs");
 
@@ -156,10 +161,7 @@ public class DeadLinksChecker {
 
                         Future<String> futureMessage =
                             getCachedFutureResponse(linkTarget)
-                                .thenApply(c -> c >= 400)
-                                // It's important not to use the matcher in this mapper!
-                                // It may be exhausted at the time of execution
-                                .thenApply(dead -> dead ? String.format("%8d: %s", lineNo, linkText) : null);
+                                .thenApply(errorMessage -> errorMessage != null ? String.format("%8d: %s (%s)", lineNo, linkText, errorMessage) : null);
 
                         addDeadLink(fileToDeadLinks, mdFile, futureMessage);
 
@@ -200,6 +202,8 @@ public class DeadLinksChecker {
         }
 
         executorService.shutdown();
+        LOG.info("Checking {} external links now...", checkedExternalLinks);
+        Map<Path, List<String>> joined = joinFutures(fileToDeadLinks);
 
         LOG.info("Scanned {} files for dead links.", scannedFiles);
         LOG.info("  Found {} external links, {} of those where checked.", foundExternalLinks, checkedExternalLinks);
@@ -208,15 +212,13 @@ public class DeadLinksChecker {
             LOG.info("External links weren't checked, set -D" + CHECK_EXTERNAL_LINKS_PROPERTY + "=true to enable it.");
         }
 
-        Map<Path, List<String>> joined = joinFutures(fileToDeadLinks);
-
         if (joined.isEmpty()) {
             LOG.info("No errors found!");
         } else {
             LOG.warn("Found dead link(s):");
             for (Path file : joined.keySet()) {
-                System.err.println(rootDirectory.relativize(file).toString());
-                joined.get(file).forEach(LOG::warn);
+                System.err.println(rootDirectory.relativize(file));
+                joined.get(file).forEach(System.err::println);
             }
             throw new AssertionError("Dead links detected");
         }
@@ -276,9 +278,8 @@ public class DeadLinksChecker {
             while (captionMatcher.find()) {
                 final String anchor = captionMatcher.group(1)
                                                     .toLowerCase(Locale.ROOT)
-                                                    .replaceAll("'", "") // remove all apostrophes
-                                                    .replaceAll("[^a-z0-9_]+", "-") // replace all non-alphanumeric characters with dashes
-                                                    .replaceAll("^-+|-+$", ""); // trim leading or trailing dashes
+                                                    .replaceAll("'|\\.", "") // remove all apostrophes and dots
+                                                    .replaceAll("[^a-z0-9_]+", "-"); // replace all non-alphanumeric characters with dashes
 
                 htmlPages.add(pageUrl + "#" + anchor);
             }
@@ -308,46 +309,70 @@ public class DeadLinksChecker {
     }
 
 
-    private CompletableFuture<Integer> getCachedFutureResponse(String url) {
+    private CompletableFuture<String> getCachedFutureResponse(String url) {
         if (urlResponseCache.containsKey(url)) {
-            LOG.info("response: HTTP {} (CACHED) on {}", urlResponseCache.get(url), url);
-            return urlResponseCache.get(url);
+            CompletableFuture<String> cachedFuture = urlResponseCache.get(url);
+            if (cachedFuture.isDone()) {
+                try {
+                    LOG.debug("response: HTTP {} (CACHED) on {}", cachedFuture.get(100, TimeUnit.MILLISECONDS), url);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                } catch (ExecutionException e) {
+                    LOG.info("response failed: (CACHED) on {}", url);
+                } catch (TimeoutException e) {
+                    // actually, this shouldn't happen, as we checked with isDone() before
+                    LOG.info("response future timeout: (CACHED) on {}", url);
+                }
+            }
+            return cachedFuture;
         } else {
             // process asynchronously
-            CompletableFuture<Integer> futureResponse = CompletableFuture.supplyAsync(() -> computeHttpResponse(url), executorService);
+            CompletableFuture<String> futureResponse = CompletableFuture.supplyAsync(() -> computeHttpResponse(url), executorService);
             urlResponseCache.put(url, futureResponse);
             return futureResponse;
         }
     }
 
+    // limit parallel requests to avoid 429 Too Many Requests
+    private Semaphore semaphore = new Semaphore(3);
 
-    private int computeHttpResponse(String url) {
+    private String computeHttpResponse(String url) {
         try {
-            final HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(url).openConnection();
-            httpURLConnection.setRequestMethod("HEAD");
-            httpURLConnection.setConnectTimeout(5000);
-            httpURLConnection.setReadTimeout(15000);
-            httpURLConnection.connect();
-            final int responseCode = httpURLConnection.getResponseCode();
+            semaphore.acquire();
+            // logging to see something is going on...
+            LOG.info("Checking {} now...", url);
+
+            final HttpURLConnection httpUrlConnection = (HttpURLConnection) new URL(url).openConnection();
+            httpUrlConnection.setRequestMethod("HEAD");
+            httpUrlConnection.setConnectTimeout((int) TimeUnit.SECONDS.toMillis(60));
+            httpUrlConnection.setReadTimeout((int) TimeUnit.SECONDS.toMillis(60));
+            httpUrlConnection.connect();
+            int responseCode = httpUrlConnection.getResponseCode();
 
             String response = "HTTP " + responseCode;
-            if (httpURLConnection.getHeaderField("Location") != null) {
-                response += ", Location: " + httpURLConnection.getHeaderField("Location");
+            if (httpUrlConnection.getHeaderField("Location") != null) {
+                response += ", Location: " + httpUrlConnection.getHeaderField("Location");
             }
-
             LOG.debug("response: {} on {}", response, url);
 
-            // success (HTTP 2xx) or redirection (HTTP 3xx)
-            return responseCode;
+            // everything above 400 is an error
+            if (responseCode >= 400) {
+                LOG.debug("response failure: {} on {}", responseCode, url);
+                return "HTTP " + responseCode + " " + httpUrlConnection.getResponseMessage();
+            }
 
-        } catch (IOException ex) {
+            // success (HTTP 2xx) or redirection (HTTP 3xx) is ok
+            return null; // no error
+        } catch (IOException | InterruptedException ex) {
             LOG.debug("response: {} on {} : {}", ex.getClass().getName(), url, ex.getMessage());
-            return 599;
+            return ex.getClass().getName() + ": " + ex.getMessage();
+        } finally {
+            semaphore.release();
         }
     }
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         if (args.length != 1) {
             System.err.println("Wrong arguments!");
             System.err.println();

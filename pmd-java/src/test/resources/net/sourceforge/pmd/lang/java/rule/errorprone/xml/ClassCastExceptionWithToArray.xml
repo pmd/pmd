@@ -94,4 +94,19 @@ public class Test<E> {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#2534 FN with toArray() called on a method call chain</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Map;
+
+public class Test {
+    public String[] extractKey(Map<String, String> data) {
+        return (String[]) data.keySet().toArray();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

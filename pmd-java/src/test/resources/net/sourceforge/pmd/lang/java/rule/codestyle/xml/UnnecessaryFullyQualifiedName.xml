@@ -1100,4 +1100,29 @@ public final class ObjectID {
 */
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1316 FP for local method shadowing static import</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static java.lang.Thread.setUncaughtExceptionHandler;
+
+public class Foo {
+    static {
+        setUncaughtExceptionHandler(null); // using static import, ok
+    }
+
+    public interface ExceptionHandler {
+        void setUncaughtExceptionHandler(Object o);
+    }
+
+    private final ExceptionHandler noopHandler = new ExceptionHandler() {
+        @Override
+        public void setUncaughtExceptionHandler(Object o) {
+            Thread.setUncaughtExceptionHandler(null); // need to fully qualify, should be ok
+        }
+    };
+}
+]]></code>
+    </test-code>
 </test-data>

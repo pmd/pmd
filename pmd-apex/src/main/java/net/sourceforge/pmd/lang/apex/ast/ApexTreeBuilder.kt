@@ -325,7 +325,8 @@ class ApexTreeBuilder(private val task: ParserTask, private val proc: ApexLangua
             BinaryExpression.Operator.RIGHT_SHIFT_UNSIGNED,
             BinaryExpression.Operator.BITWISE_AND,
             BinaryExpression.Operator.BITWISE_OR,
-            BinaryExpression.Operator.BITWISE_XOR -> ASTBinaryExpression(node)
+            BinaryExpression.Operator.BITWISE_XOR,
+            BinaryExpression.Operator.NULL_COALESCING -> ASTBinaryExpression(node)
         }.apply { buildChildren(node, parent = this) }
 
     /**

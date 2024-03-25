@@ -14,7 +14,18 @@
             <useDefaultExcludes>false</useDefaultExcludes>
             <directory>${project.basedir}/..</directory>
             <outputDirectory></outputDirectory>
+            <includes>
+                <include>mvnw</include>
+            </includes>
+            <fileMode>0755</fileMode>
+        </fileSet>
+
+        <fileSet>
+            <useDefaultExcludes>false</useDefaultExcludes>
+            <directory>${project.basedir}/..</directory>
+            <outputDirectory></outputDirectory>
             <excludes>
+                <exclude>mvnw</exclude> <!-- added already above -->
                 <exclude>.git/**</exclude>
                 <exclude>**/target/**</exclude>
                 <exclude>**/bin/**</exclude>
@@ -40,6 +51,7 @@
                 <exclude>docs/.bundle/**</exclude>
                 <exclude>docs/vendor/**</exclude>
                 <exclude>docs/_site/**</exclude>
+                <exclude>node_modules/**</exclude>
 
                 <exclude>pmd-core/dependency-reduced-pom.xml</exclude>
             </excludes>

@@ -38,6 +38,10 @@ details {
     margin-left: 10px;
 }
 
+details.no-background {
+    background: white;
+}
+
 details p {
     padding: 5px 10px 5px;
     background: white;

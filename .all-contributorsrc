@@ -7156,7 +7156,8 @@
       "profile": "https://github.com/nwcm",
       "contributions": [
         "doc",
-        "bug"
+        "bug",
+        "code"
       ]
     },
     {
@@ -7376,6 +7377,60 @@
       "name": "liqingjun123",
       "avatar_url": "https://avatars.githubusercontent.com/u/12873992?v=4",
       "profile": "https://github.com/liqingjun123",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "vctqs1",
+      "name": "Thu Vo",
+      "avatar_url": "https://avatars.githubusercontent.com/u/30227910?v=4",
+      "profile": "https://www.linkedin.com/in/thu-vo-cat-79143b181/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "oleksandr-shvets",
+      "name": "Sashko",
+      "avatar_url": "https://avatars.githubusercontent.com/u/908526?v=4",
+      "profile": "https://github.com/oleksandr-shvets",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "screamingfrog",
+      "name": "screamingfrog",
+      "avatar_url": "https://avatars.githubusercontent.com/u/845549?v=4",
+      "profile": "https://github.com/screamingfrog",
+      "contributions": [
+        "financial"
+      ]
+    },
+    {
+      "login": "flxbl-io",
+      "name": "flxbl-io",
+      "avatar_url": "https://avatars.githubusercontent.com/u/142315319?v=4",
+      "profile": "https://github.com/flxbl-io",
+      "contributions": [
+        "financial"
+      ]
+    },
+    {
+      "login": "wangzitom12306",
+      "name": "wangzitom12306",
+      "avatar_url": "https://avatars.githubusercontent.com/u/125560621?v=4",
+      "profile": "https://github.com/wangzitom12306",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "sdavids",
+      "name": "Sebastian Davids",
+      "avatar_url": "https://avatars.githubusercontent.com/u/201931?v=4",
+      "profile": "https://github.com/sdavids",
       "contributions": [
         "bug"
       ]
