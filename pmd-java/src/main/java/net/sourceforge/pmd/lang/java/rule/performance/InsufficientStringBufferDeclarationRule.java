@@ -7,10 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.performance;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.OptionalInt;
 import java.util.Set;
-
-import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
@@ -20,7 +17,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTCharLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
@@ -28,9 +24,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
-import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -241,63 +235,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
         return new State(variable, constructorCall, DEFAULT_BUFFER_SIZE, state.anticipatedLength);
     }
 
-    private final static class MutableOptionalInt {
-        @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-        OptionalInt val = OptionalInt.empty();
-    }
-
     private int calculateExpression(ASTExpression expression) {
-
-        class ExpressionVisitor extends JavaVisitorBase<MutableOptionalInt, Void> {
-
-            @Override
-            public Void visit(ASTInfixExpression node, MutableOptionalInt data) {
-                MutableOptionalInt left = new MutableOptionalInt();
-                MutableOptionalInt right = new MutableOptionalInt();
-
-                node.getLeftOperand().acceptVisitor(this, left);
-                node.getRightOperand().acceptVisitor(this, right);
-
-                if (!left.val.isPresent() || !right.val.isPresent()) {
-                    data.val = OptionalInt.empty();
-                    return null;
-                }
-
-                switch (node.getOperator()) {
-                    case ADD:
-                        data.val = OptionalInt.of(left.val.getAsInt() + right.val.getAsInt());
-                        break;
-
-                    case SUB:
-                        data.val = OptionalInt.of(left.val.getAsInt() - right.val.getAsInt());
-                        break;
-
-                    case MUL:
-                        data.val = OptionalInt.of(left.val.getAsInt() * right.val.getAsInt());
-                        break;
-
-                    case DIV:
-                        data.val = OptionalInt.of(left.val.getAsInt() / right.val.getAsInt());
-                        break;
-
-                    default:
-                        data.val = OptionalInt.empty();
-                        break;
-                }
-
-                return null;
-            }
-
-            @Override
-            public Void visit(ASTNumericLiteral node, MutableOptionalInt data) {
-                data.val = OptionalInt.of(node.getValueAsInt());
-                return null;
-            }
-        }
-
-        // TODO : use expression.getConstValue() ? it would fail on conditionals, we need to somehow say "get me the min / max"…
-        MutableOptionalInt size = new MutableOptionalInt();
-        expression.acceptVisitor(new ExpressionVisitor(), size);
-        return size.val.isPresent() ? size.val.getAsInt() : State.UNKNOWN_CAPACITY;
+        Object value = expression.getConstValue();
+        return value == null ? State.UNKNOWN_CAPACITY : (Integer) value;
     }
 }
