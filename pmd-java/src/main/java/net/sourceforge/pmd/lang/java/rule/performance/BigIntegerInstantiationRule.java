@@ -13,7 +13,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
-import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
@@ -24,8 +23,9 @@ import net.sourceforge.pmd.util.CollectionUtil;
  */
 public class BigIntegerInstantiationRule extends AbstractJavaRulechainRule {
 
+    // BigDecimal.ZERO, ONE, TEN: since 1.5
+    private static final Set<String> BIGDECIMAL_CONSTANTS = CollectionUtil.setOf("0", "0.", "1", "10");
 
-    private static final Set<String> CONSTANTS = CollectionUtil.setOf("0", "0.", "1");
 
     public BigIntegerInstantiationRule() {
         super(ASTConstructorCall.class);
@@ -34,25 +34,42 @@ public class BigIntegerInstantiationRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTConstructorCall node, Object data) {
         LanguageVersion languageVersion = node.getTextDocument().getLanguageVersion();
-        boolean jdk15 = languageVersion.compareToVersion("1.5") >= 0;
-        boolean jdk9 = languageVersion.compareToVersion("9") >= 0;
 
-        if (TypeTestUtil.isA(BigInteger.class, node) || jdk15 && TypeTestUtil.isA(BigDecimal.class, node)) {
+        @NonNull
+        ASTArgumentList arguments = node.getArguments();
+        if (arguments.size() != 1) {
+            // only consider the single argument constructors
+            return data;
+        }
 
-            @NonNull
-            ASTArgumentList arguments = node.getArguments();
-            if (arguments.size() == 1) {
-                ASTExpression firstArg = arguments.get(0);
+        // might be a String, an Integer, a Long, a Double, or a BigInteger
+        Object constValue = arguments.get(0).getConstValue();
 
-                Object constValue = firstArg.getConstValue();
-                if (CONSTANTS.contains(constValue)
-                        || jdk15 && "10".equals(constValue)
-                        || jdk9 && "2".equals(constValue)
-                        || Integer.valueOf(0).equals(constValue)
-                        || Integer.valueOf(1).equals(constValue)
-                        || jdk15 && Integer.valueOf(10).equals(constValue)) {
-                    asCtx(data).addViolation(node);
-                }
+        boolean java5 = languageVersion.compareToVersion("1.5") >= 0;
+        boolean java9 = languageVersion.compareToVersion("9") >= 0;
+        boolean java19 = languageVersion.compareToVersion("19") >= 0;
+
+        if (TypeTestUtil.isA(BigInteger.class, node)) {
+            // BigInteger.ZERO, ONE: since 1.2
+            if ("0".equals(constValue) || "1".equals(constValue)) {
+                asCtx(data).addViolation(node);
+            }
+            // BigInteger.TEN: since 1.5
+            if (java5 && "10".equals(constValue)) {
+                asCtx(data).addViolation(node);
+            }
+            // BigInteger.TWO: since 9
+            if (java9 && "2".equals(constValue)) {
+                asCtx(data).addViolation(node);
+            }
+        } else if (TypeTestUtil.isA(BigDecimal.class, node)) {
+            // BigDecimal.ZERO, ONE, TEN: since 1.5
+            if (java5 && BIGDECIMAL_CONSTANTS.contains(String.valueOf(constValue))) {
+                asCtx(data).addViolation(node);
+            }
+            // BigDecimal.TWO: since 19
+            if (java19 && "2".equals(String.valueOf(constValue))) {
+                asCtx(data).addViolation(node);
             }
         }
         return data;
