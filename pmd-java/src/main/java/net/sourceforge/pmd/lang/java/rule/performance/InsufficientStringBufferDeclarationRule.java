@@ -241,7 +241,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
         return new State(variable, constructorCall, DEFAULT_BUFFER_SIZE, state.anticipatedLength);
     }
 
-    private static class MutableOptionalInt {
+    private final static class MutableOptionalInt {
         @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
         OptionalInt val = OptionalInt.empty();
     }
@@ -263,7 +263,6 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
                     return null;
                 }
 
-                OptionalInt ret;
                 switch (node.getOperator()) {
                     case ADD:
                         data.val = OptionalInt.of(left.val.getAsInt() + right.val.getAsInt());
