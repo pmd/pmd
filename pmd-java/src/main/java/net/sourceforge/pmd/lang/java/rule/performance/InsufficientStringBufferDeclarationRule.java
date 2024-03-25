@@ -225,8 +225,11 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
         ASTConstructorCall constructorCall = (ASTConstructorCall) possibleConstructorCall;
         if (constructorCall.getArguments().size() == 1) {
             ASTExpression argument = constructorCall.getArguments().get(0);
-            if (argument instanceof ASTStringLiteral) {
-                int stringLength = ((ASTStringLiteral) argument).length();
+            if (TypeTestUtil.isA(String.class, argument)) {
+                if (argument.getConstValue() == null) {
+                    return state;
+                }
+                int stringLength = ((String) argument.getConstValue()).length();
                 return new State(variable, constructorCall, DEFAULT_BUFFER_SIZE + stringLength, stringLength + state.anticipatedLength);
             } else {
                 return new State(variable, constructorCall, calculateExpression(argument), state.anticipatedLength);
