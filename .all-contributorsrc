@@ -7434,6 +7434,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "Akromangel",
+      "name": "Mikhail Kuchma",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13533738?v=4",
+      "profile": "https://github.com/Akromangel",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
