@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.performance;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.OptionalInt;
 import java.util.Set;
 
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -51,6 +52,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
     }
 
     private static class State {
+        static final int UNKNOWN_CAPACITY = -1;
         ASTVariableId variable;
         TypeNode rootNode;
         int capacity;
@@ -196,7 +198,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
             }
         } else if ("setLength".equals(methodCall.getMethodName())) {
             int newLength = calculateExpression(methodCall.getArguments().get(0));
-            if (state.capacity != -1 && newLength > state.capacity) {
+            if (state.capacity != State.UNKNOWN_CAPACITY && newLength > state.capacity) {
                 state.capacity = newLength; // a bigger setLength increases capacity
                 state.rootNode = methodCall;
             }
@@ -213,7 +215,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
     }
 
     private State getConstructorCapacity(ASTVariableId variable, ASTExpression node) {
-        State state = new State(variable, null, -1, 0);
+        State state = new State(variable, null, State.UNKNOWN_CAPACITY, 0);
 
         JavaNode possibleConstructorCall = node;
 
@@ -239,39 +241,48 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
         return new State(variable, constructorCall, DEFAULT_BUFFER_SIZE, state.anticipatedLength);
     }
 
+    private static class MutableOptionalInt {
+        @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+        OptionalInt val = OptionalInt.empty();
+    }
 
     private int calculateExpression(ASTExpression expression) {
 
-        class ExpressionVisitor extends JavaVisitorBase<MutableInt, Void> {
-
+        class ExpressionVisitor extends JavaVisitorBase<MutableOptionalInt, Void> {
 
             @Override
-            public Void visit(ASTInfixExpression node, MutableInt data) {
-                MutableInt temp = new MutableInt(-1);
+            public Void visit(ASTInfixExpression node, MutableOptionalInt data) {
+                MutableOptionalInt left = new MutableOptionalInt();
+                MutableOptionalInt right = new MutableOptionalInt();
 
-                node.getLeftOperand().acceptVisitor(this, temp);
-                data.setValue(temp.getValue());
-                node.getRightOperand().acceptVisitor(this, temp);
+                node.getLeftOperand().acceptVisitor(this, left);
+                node.getRightOperand().acceptVisitor(this, right);
 
+                if (!left.val.isPresent() || !right.val.isPresent()) {
+                    data.val = OptionalInt.empty();
+                    return null;
+                }
+
+                OptionalInt ret;
                 switch (node.getOperator()) {
                     case ADD:
-                        data.add(temp.getValue());
+                        data.val = OptionalInt.of(left.val.getAsInt() + right.val.getAsInt());
                         break;
 
                     case SUB:
-                        data.subtract(temp.getValue());
+                        data.val = OptionalInt.of(left.val.getAsInt() - right.val.getAsInt());
                         break;
 
                     case MUL:
-                        data.setValue(data.getValue() * temp.getValue());
+                        data.val = OptionalInt.of(left.val.getAsInt() * right.val.getAsInt());
                         break;
 
                     case DIV:
-                        data.setValue(data.getValue() / temp.getValue());
+                        data.val = OptionalInt.of(left.val.getAsInt() / right.val.getAsInt());
                         break;
 
                     default:
-                        data.setValue(-1);
+                        data.val = OptionalInt.empty();
                         break;
                 }
 
@@ -279,14 +290,15 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
             }
 
             @Override
-            public Void visit(ASTNumericLiteral node, MutableInt data) {
-                data.setValue(node.getValueAsInt());
+            public Void visit(ASTNumericLiteral node, MutableOptionalInt data) {
+                data.val = OptionalInt.of(node.getValueAsInt());
                 return null;
             }
         }
 
-        MutableInt result = new MutableInt(-1);
-        expression.acceptVisitor(new ExpressionVisitor(), result);
-        return result.getValue();
+        // TODO : use expression.getConstValue() ? it would fail on conditionals, we need to somehow say "get me the min / max"…
+        MutableOptionalInt size = new MutableOptionalInt();
+        expression.acceptVisitor(new ExpressionVisitor(), size);
+        return size.val.isPresent() ? size.val.getAsInt() : State.UNKNOWN_CAPACITY;
     }
 }
