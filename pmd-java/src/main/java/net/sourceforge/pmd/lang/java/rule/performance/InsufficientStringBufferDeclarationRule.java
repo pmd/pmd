@@ -271,7 +271,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
                         break;
 
                     default:
-                        data.setValue(0);
+                        data.setValue(-1);
                         break;
                 }
 
