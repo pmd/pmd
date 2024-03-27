@@ -1360,4 +1360,63 @@ public class InsufficientStringBufferDeclarationNPE {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] InsufficientStringBufferDeclaration should consider literal expression #3845</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class LiteralExpression {
+    public void bar() {
+        StringBuffer sb = new StringBuffer(1 + 2 - 1);  // Should report a warning at this line
+        sb.append('a');
+        sb.append('a');
+        sb.append('a');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Properly handle constant variable references</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class LiteralExpression {
+    private static final int MIN_LENGTH = 1;
+    public void bar() {
+        StringBuffer sb = new StringBuffer(MIN_LENGTH + 1);  // Should report a warning at this line
+        sb.append('a');
+        sb.append('a');
+        sb.append('a');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Properly handle constant string expressions</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class LiteralExpression {
+    public String bar() {
+        StringBuilder sb = new StringBuilder(
+				"<!doctype html>\n" +
+				"<html><head>\n" +
+				"  <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />\n" +
+				"  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n" +
+				"</head><body><h2>Don't panic!</h2>\n" +
+				"  <script>\n" +
+				"    document.domain = document.domain;\n" +
+				"    var c = parent.%s;\n" +
+				"    c.start();\n" +
+				"    function p(d) {c.message(d);};\n" +
+				"    window.onload = function() {c.stop();};\n" +
+				"  </script>"
+				);
+
+        sb.append("this string is longer than 16 characters");
+		return sb.toString();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
