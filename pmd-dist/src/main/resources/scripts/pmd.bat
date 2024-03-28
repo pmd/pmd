@@ -76,4 +76,4 @@ if defined CLASSPATH (
     set pmd_classpath=%CLASSPATH%;%pmd_classpath%
 )
 
-java %PMD_JAVA_OPTS% %jreopts% -classpath %pmd_classpath% %OPTS% %MAIN_CLASS% %*
+java %PMD_JAVA_OPTS% %jreopts% -classpath "%pmd_classpath%" %OPTS% %MAIN_CLASS% %*
