@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
 import java.util.AbstractList;
@@ -43,7 +42,7 @@ final class ApexCommentBuilder {
         TextRegion nodeRegion = commentContainer.getTextRegion();
 
         // find the first comment after the start of the container node
-        int index = Collections.binarySearch(commentInfo.nonDocTokensByStartIndex, nodeRegion.getStartOffset());
+        int index = Collections.binarySearch(commentInfo.allCommentsByStartIndex, nodeRegion.getStartOffset());
 
         // no exact hit found - this is expected: there is no comment token starting at
         // the very same index as the node
@@ -52,8 +51,8 @@ final class ApexCommentBuilder {
         index = ~index;
 
         // now check whether the next comment after the node is still inside the node
-        if (index >= 0 && index < commentInfo.nonDocTokensByStartIndex.size()) {
-            int commentStartIndex = commentInfo.nonDocTokensByStartIndex.get(index);
+        if (index >= 0 && index < commentInfo.allCommentsByStartIndex.size()) {
+            int commentStartIndex = commentInfo.allCommentsByStartIndex.get(index);
             return nodeRegion.getStartOffset() < commentStartIndex
                     && nodeRegion.getEndOffset() >= commentStartIndex;
         }
@@ -141,19 +140,16 @@ final class ApexCommentBuilder {
     private static class CommentInformation {
 
         final Map<Integer, String> suppressMap;
-        final List<Integer> nonDocTokensByStartIndex;
+        final List<Integer> allCommentsByStartIndex;
         final List<ApexDocToken> docTokens;
 
         CommentInformation(Map<Integer, String> suppressMap, List<Token> allCommentTokens) {
             this.suppressMap = suppressMap;
             this.docTokens = allCommentTokens.stream()
-                .filter((token) -> token.getType() == ApexLexer.DOC_COMMENT)
-                .map((token) -> new ApexDocToken(token))
+                .filter(token -> token.getType() == ApexLexer.DOC_COMMENT)
+                .map(ApexDocToken::new)
                 .collect(toList());
-            this.nonDocTokensByStartIndex = new TokenListByStartIndex(
-                allCommentTokens.stream()
-                    .filter((token) -> token.getType() != ApexLexer.DOC_COMMENT)
-                    .collect(toCollection(ArrayList::new)));
+            this.allCommentsByStartIndex = new TokenListByStartIndex(new ArrayList<>(allCommentTokens));
         }
     }
 
