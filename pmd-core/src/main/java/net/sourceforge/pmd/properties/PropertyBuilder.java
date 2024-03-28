@@ -265,7 +265,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          * PropertyDescriptor<Set<String>> whitelistSet =
          *      PropertyFactory.stringProperty("whitelist")
          *                     .desc(...)
-         *                     .to(Collectors.toSet())
+         *                     .map(Collectors.toSet())
          *                     .emptyDefaultValue()
          *                     .build();
          * }</pre>
