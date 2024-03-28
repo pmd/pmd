@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import net.sourceforge.pmd.lang.java.ast.*;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -26,53 +27,11 @@ import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
-import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
-import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
-import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTBlock;
-import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
-import net.sourceforge.pmd.lang.java.ast.ASTClassType;
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
-import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
-import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
-import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTList;
-import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
-import net.sourceforge.pmd.lang.java.ast.Annotatable;
-import net.sourceforge.pmd.lang.java.ast.BinaryOp;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
-import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
-import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
+import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.ast.AstLocalVarSym;
@@ -598,16 +557,28 @@ public final class JavaAstUtils {
         return false;
     }
 
-    public static boolean isCallOnThisInstance(ASTMethodCall call) {
+    /**
+     * Return whether the method call is a call whose receiver is the
+     * {@code this} object. This is the case also if the method is called
+     * with a {@code super} qualifier, or if it is not syntactically
+     * qualified but refers to a non-static method of the enclosing class.
+     */
+    public static OptionalBool isCallOnThisInstance(ASTMethodCall call) {
         // syntactic approach.
         if (call.getQualifier() != null) {
-            return isUnqualifiedThisOrSuper(call.getQualifier());
+            return OptionalBool.definitely(isUnqualifiedThisOrSuper(call.getQualifier()));
         }
 
         // unqualified call
         JMethodSig mtype = call.getMethodType();
-        return !mtype.getSymbol().isUnresolved()
-            && mtype.getSymbol().getEnclosingClass().equals(call.getEnclosingType().getSymbol());
+        JExecutableSymbol methodSym = mtype.getSymbol();
+        if (methodSym.isUnresolved()) {
+            return OptionalBool.UNKNOWN;
+        }
+        return OptionalBool.definitely(
+            !methodSym.isStatic()
+                && methodSym.getEnclosingClass().equals(call.getEnclosingType().getSymbol())
+        );
     }
 
     public static ASTClassType getThisOrSuperQualifier(ASTExpression expr) {
@@ -765,5 +736,13 @@ public final class JavaAstUtils {
                                     clause.getParameter().getVarId().getSymbol());
         }
         return false;
+    }
+
+    public static boolean isInStaticCtx(JavaNode node) {
+        return node.ancestors()
+                   .any(it -> it instanceof ASTExecutableDeclaration && ((ASTExecutableDeclaration) it).isStatic()
+                       || it instanceof ASTInitializer && ((ASTInitializer) it).isStatic()
+                       || it instanceof ASTExplicitConstructorInvocation
+                   );
     }
 }

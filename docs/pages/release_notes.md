@@ -15,6 +15,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀 New and noteworthy
 
 ### 🐛 Fixed Issues
+* java-bestpractices
+  * [#4435](https://github.com/pmd/pmd/issues/4435): \[java] \[7.0-rc1] UnusedAssignment for used field
 * java-codestyle
   * [#4881](https://github.com/pmd/pmd/issues/4881): \[java] ClassNamingConventions: interfaces are identified as abstract classes (regression in 7.0.0)
 * java-design

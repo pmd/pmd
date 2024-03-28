@@ -829,4 +829,99 @@ class Foo {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>FN with instance method call in ctor</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,3</expected-linenumbers>
+        <code><![CDATA[
+            class BitSieve {
+                private long bits[];
+                private int length;
+
+                private BitSieve() {
+                    length = 150 * 64;
+                    bits = new long[(unitIndex(length - 1) + 1)];
+
+                    // This instance method call will cause the fields to be "reassigned"
+                    // to some unknown (unbound) value, to be conservative.
+                    set(0);
+                }
+
+                private static int unitIndex(int bitIndex) {
+                    return bitIndex >>> 6;
+                }
+
+                private static long bit(int bitIndex) {
+                    return 1L << (bitIndex & ((1<<6) - 1));
+                }
+
+                private boolean get(int bitIndex) {
+                    int unitIndex = unitIndex(bitIndex);
+                    return ((bits[unitIndex] & bit(bitIndex)) != 0);
+                }
+
+                private void set(int bitIndex) {
+                    int unitIndex = unitIndex(bitIndex);
+                    bits[unitIndex] |= bit(bitIndex);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <!-- https://github.com/openjdk/jdk/blob/jdk-11%2B28/src/java.base/share/classes/java/util/stream/AbstractPipeline.java#L205 -->
+        <description>Instance field assigned by ctor of other instance</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class BitSieve {
+                private BitSieve prev;
+
+                BitSieve(BitSieve other) {
+                    other.prev = this;
+                }
+
+                BitSieve getPrev() {
+                    return prev;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <!-- https://github.com/openjdk/jdk/blob/da75f3c4ad5bdf25167a3ed80e51f567ab3dbd01/src/java.base/share/classes/java/util/stream/AbstractPipeline.java#L212 -->
+        <description>Instance field where default value is visible</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class BitSieve {
+                private boolean foo;
+
+                BitSieve(BitSieve other) {
+                    if (other.foo)
+                        this.foo = true;
+                }
+
+                boolean getPrev() {
+                    return foo;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <!-- https://github.com/openjdk/jdk/blob/da75f3c4ad5bdf25167a3ed80e51f567ab3dbd01/src/java.base/share/classes/sun/security/provider/KeyProtector.java#L117 -->
+        <description>Instance field set after throw</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class BitSieve {
+                private boolean foo;
+
+                BitSieve() {
+                    if (System.nanoTime() < 10)
+                        throw new IllegalArgumentException();
+                    this.foo = true;
+                }
+
+                boolean getPrev() {
+                    return foo;
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

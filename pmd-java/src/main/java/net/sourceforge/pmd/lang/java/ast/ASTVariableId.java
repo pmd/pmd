@@ -94,8 +94,20 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
         return getModifierOwnerParent().getModifiers();
     }
 
+    /**
+     * Return true if the declared variable is static.
+     * There may not be an explicit final modifier, e.g. for enum constants.
+     */
     public boolean isFinal() {
         return hasModifiers(JModifier.FINAL);
+    }
+
+    /**
+     * Return true if the declared variable is static.
+     * There may not be an explicit static modifier, e.g. for enum constants.
+     */
+    public boolean isStatic() {
+        return hasModifiers(JModifier.STATIC);
     }
 
     @Override
