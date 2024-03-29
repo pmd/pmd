@@ -1,7 +1,7 @@
 @echo off
 rem make all variables local to not add new global environment variables to the current cmd session
 setlocal
-set TOPDIR="%~dp0.."
+set TOPDIR=%~dp0..
 set OPTS=
 set COMMAND=%1
 set MAIN_CLASS=net.sourceforge.pmd.cli.PmdCli
