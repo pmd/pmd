@@ -109,7 +109,7 @@ public final class JavaExprMirrors {
         } else if (e instanceof ASTEnumConstant) {
             return new EnumCtorInvocMirror(this, (ASTEnumConstant) e, parent, subexprMaker);
         }
-        throw AssertionUtil.shouldNotReachHere("" + e);
+        throw AssertionUtil.shouldNotReachHere("Unhandled InvocationNode:" + e);
     }
 
 
@@ -124,7 +124,7 @@ public final class JavaExprMirrors {
         } else if (e instanceof ASTSwitchExpression) {
             return new SwitchMirror(this, (ASTSwitchExpression) e, true, null, defaultMirrorMaker());
         }
-        throw AssertionUtil.shouldNotReachHere("" + e);
+        throw AssertionUtil.shouldNotReachHere("Unhandled expression: " + e);
     }
 
     /**
@@ -136,7 +136,7 @@ public final class JavaExprMirrors {
         } else if (e instanceof ASTSwitchExpression) {
             return new SwitchMirror(this, (ASTSwitchExpression) e, false, null, defaultMirrorMaker());
         }
-        throw AssertionUtil.shouldNotReachHere("" + e);
+        throw AssertionUtil.shouldNotReachHere("Unhandled expression: " + e);
     }
 
     public FunctionalExprMirror getTopLevelFunctionalMirror(ASTExpression e) {
@@ -149,7 +149,7 @@ public final class JavaExprMirrors {
         } else if (e instanceof ASTMethodReference) {
             return new MethodRefMirrorImpl(this, (ASTMethodReference) e, parent, subexprMaker);
         }
-        throw AssertionUtil.shouldNotReachHere("" + e);
+        throw AssertionUtil.shouldNotReachHere("Unhandled expression: " + e);
     }
 
 

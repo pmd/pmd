@@ -132,7 +132,7 @@ public final class InternalApiBridge {
         } else if (node instanceof ASTLambdaExpression) {
             ((ASTLambdaExpression) node).setFunctionalMethod(methodType);
         } else {
-            throw AssertionUtil.shouldNotReachHere("" + node);
+            throw AssertionUtil.shouldNotReachHere("FunctionalExpression is not handled: " + node);
         }
     }
 
