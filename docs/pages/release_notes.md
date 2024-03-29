@@ -15,6 +15,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀 New and noteworthy
 
 ### 🐛 Fixed Issues
+* cli
+  * [#4791](https://github.com/pmd/pmd/issues/4791): \[cli] Could not find or load main class
 * java-codestyle
   * [#4881](https://github.com/pmd/pmd/issues/4881): \[java] ClassNamingConventions: interfaces are identified as abstract classes (regression in 7.0.0)
 * java-design
@@ -27,6 +29,7 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚨 API Changes
 
 ### ✨ External Contributions
+* [#4894](https://github.com/pmd/pmd/pull/4894): Fix #4791 Error caused by space in JDK path - [Scrates1](https://github.com/Scrates1) (@Scrates1)
 
 {% endtocmaker %}
 
