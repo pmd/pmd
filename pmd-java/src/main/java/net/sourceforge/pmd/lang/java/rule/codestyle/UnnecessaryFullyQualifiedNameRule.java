@@ -249,7 +249,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
         case ENCLOSING_TYPE:
             return "declared in an enclosing type";
         default:
-            throw AssertionUtil.shouldNotReachHere("unknown constant" + scopeInfo);
+            throw AssertionUtil.shouldNotReachHere("unknown constant ScopeInfo: " + scopeInfo);
         }
     }
 }

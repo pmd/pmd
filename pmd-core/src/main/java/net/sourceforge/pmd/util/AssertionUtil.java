@@ -213,10 +213,14 @@ public final class AssertionUtil {
     }
 
     public static @NonNull AssertionError shouldNotReachHere(String message) {
+        return shouldNotReachHere(message, null);
+    }
+
+    public static @NonNull AssertionError shouldNotReachHere(String message, Throwable cause) {
         String prefix = "This should be unreachable";
         message = StringUtils.isBlank(message) ? prefix
                                                : prefix + ": " + message;
-        return new AssertionError(message);
+        return new AssertionError(message, cause);
     }
 
     public static @NonNull ContextedAssertionError contexted(AssertionError e) {

@@ -444,8 +444,8 @@ public final class JavaResolvers {
         case 0:
             return sym.getPackageName().equals(packageName);
         default:
-            // fixme this is reachable for invalid declarations, like a private field of an interface
-            throw AssertionUtil.shouldNotReachHere(Modifier.toString(sym.getModifiers()));
+            // TODO this is reachable for invalid declarations, like a private field of an interface
+            throw AssertionUtil.shouldNotReachHere("private field of an interface? " + sym + ", modifiers: " + Modifier.toString(sym.getModifiers()));
         }
     }
 
