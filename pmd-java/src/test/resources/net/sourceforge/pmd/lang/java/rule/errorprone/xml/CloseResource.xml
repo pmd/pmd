@@ -2029,4 +2029,22 @@ public class LocalVariableTypeInference {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Parameters don't need to be closed even if casted #2056</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.net.URLClassLoader;
+
+public class CastedParameter {
+
+    public void checkValidity(ClassLoader auxclassPathClassLoader) {
+        if (auxclassPathClassLoader instanceof URLClassLoader) {
+            final URLClassLoader urlClassLoader = (URLClassLoader) auxclassPathClassLoader;
+            // doesn't need to be closed, it's still a paramter…
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
