@@ -153,4 +153,24 @@ public class Foo {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] JUnit4TestShouldUseBeforeAnnotation false positive when overriding setUp #1592</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.bestpractices.JUnit4TestShouldUseBeforeAnnotationTest.BaseTest;
+
+public class AReallyCoolFeatureTest extends BaseTest {
+    @Override
+    public void setUp() {
+        super.setUp();
+    }
+
+    @Override
+    public void tearDown() {
+        super.tearDown();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
