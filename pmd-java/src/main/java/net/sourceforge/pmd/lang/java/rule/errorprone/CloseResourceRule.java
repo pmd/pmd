@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
@@ -340,8 +341,13 @@ public class CloseResourceRule extends AbstractJavaRule {
         if (wrappedVarName != null) {
             ASTFormalParameters methodParams = method.getFormalParameters();
             for (ASTFormalParameter param : methodParams) {
-                if ((isResourceTypeOrSubtype(param) || wrappedVarName.getParent() instanceof ASTVariableDeclarator
-                        || wrappedVarName.getParent() instanceof ASTAssignmentExpression)
+                // get the parent node where it's used (no casts)
+                Node parentUse = wrappedVarName.getParent();
+                if (parentUse instanceof ASTCastExpression) {
+                    parentUse = parentUse.getParent();
+                }
+                if ((isResourceTypeOrSubtype(param) || parentUse instanceof ASTVariableDeclarator
+                        || parentUse instanceof ASTAssignmentExpression)
                     && JavaAstUtils.isReferenceToVar(wrappedVarName, param.getVarId().getSymbol())) {
                     return true;
                 }
