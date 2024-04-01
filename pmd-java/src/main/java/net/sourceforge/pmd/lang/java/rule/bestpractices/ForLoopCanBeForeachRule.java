@@ -120,9 +120,9 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRulechainRule {
                          .filter(it -> it.getNumChildren() == 1)
                          .map(it -> it.getFirstChild())
                          .map(it -> {
-                             if (it instanceof ASTUnaryExpression)
+                             if (it instanceof ASTUnaryExpression) {
                                  return asIPlusPlus(it);
-                             else if (JavaAstUtils.isAssignmentExprWithOperator(it, AssignmentOp.ADD_ASSIGN)
+                             } else if (JavaAstUtils.isAssignmentExprWithOperator(it, AssignmentOp.ADD_ASSIGN)
                                  && JavaAstUtils.isLiteralInt(((ASTAssignmentExpression) it).getRightOperand(), 1)) {
                                  // x += 1
                                  ASTAssignableExpr lhs = ((ASTAssignmentExpression) it).getLeftOperand();
