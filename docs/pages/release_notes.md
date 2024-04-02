@@ -14,6 +14,10 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+#### New rules
+
+- The new Java rule {% rule "java/codestyle/LambdaCanBeMethodReference" %} reports lambda expressions that can be replaced with a method reference. Please read the documentation of the rule for more info. 
+
 ### 🐛 Fixed Issues
 * java-codestyle
   * [#4881](https://github.com/pmd/pmd/issues/4881): \[java] ClassNamingConventions: interfaces are identified as abstract classes (regression in 7.0.0)
@@ -25,6 +29,10 @@ This is a {{ site.pmd.release_type }} release.
   * [#4886](https://github.com/pmd/pmd/issues/4886): \[java] BigIntegerInstantiation: False Positive with Java 17 and BigDecimal.TWO
 
 ### 🚨 API Changes
+
+#### Deprecated API
+
+- {% jdoc java::lang.java.ast.ASTLambdaExpression#getBlockBody() %} and {% jdoc java::lang.java.ast.ASTLambdaExpression#getExpressionBody() %}
 
 ### ✨ External Contributions
 
