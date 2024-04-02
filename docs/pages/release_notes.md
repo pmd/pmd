@@ -17,6 +17,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🐛 Fixed Issues
 * cli
   * [#4791](https://github.com/pmd/pmd/issues/4791): \[cli] Could not find or load main class
+* java-bestpractices
+  * [#4569](https://github.com/pmd/pmd/issues/4569): \[java] ForLoopCanBeForeach reports on loop `for (int i = 0; i < list.size(); i += 2)`
 * java-codestyle
   * [#4881](https://github.com/pmd/pmd/issues/4881): \[java] ClassNamingConventions: interfaces are identified as abstract classes (regression in 7.0.0)
 * java-design

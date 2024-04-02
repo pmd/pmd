@@ -65,6 +65,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
+import net.sourceforge.pmd.lang.java.ast.AssignmentOp;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
@@ -733,6 +734,18 @@ public final class JavaAstUtils {
     public static boolean isInfixExprWithOperator(@Nullable JavaNode e, BinaryOp operator) {
         if (e instanceof ASTInfixExpression) {
             ASTInfixExpression infix = (ASTInfixExpression) e;
+            return operator == infix.getOperator();
+        }
+        return false;
+    }
+
+
+    /**
+     * Tests if the node is an {@link ASTAssignmentExpression} with the given operator.
+     */
+    public static boolean isAssignmentExprWithOperator(@Nullable JavaNode e, AssignmentOp operator) {
+        if (e instanceof ASTAssignmentExpression) {
+            ASTAssignmentExpression infix = (ASTAssignmentExpression) e;
             return operator == infix.getOperator();
         }
         return false;
