@@ -153,5 +153,35 @@
             ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Test when method ref is on receiver</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+            public final class Foo {
+
+                public static void iTakeLambda(ALambda l) {}
+                public static void iTakeLambda(ALambda2 l) {}
+                static {
+                    // parseInt(int) does not exist
+                    iTakeLambda(x -> x.isEmpty());
+                    iTakeLambda((x,c) -> x.contains(c));
+                }
+                public boolean correct(int a) {
+                    return false;
+                }
+            }
+
+            interface ALambda {
+                boolean doSomething(String a, CharSequence c);
+            }
+            interface ALambda2 {
+                boolean doSomething(String a);
+            }
+            ]]></code>
+    </test-code>
+
+
+
+
 
 </test-data>

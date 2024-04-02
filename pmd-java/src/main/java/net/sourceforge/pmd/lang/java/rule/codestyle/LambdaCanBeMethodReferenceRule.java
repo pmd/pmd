@@ -19,12 +19,18 @@ import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
 
 public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
+    // Note that this whole thing is mostly syntactic and does not take care of the details
+    // like (boxing) conversions, or when the method ref is ambiguous and the lambda is not.
+    // Maybe in a second pass we can check that the overload resolution would succeed
+    // with the method reference, similar to what UnnecessaryCastRule is doing.
+
 
     private static final PropertyDescriptor<Boolean> REPORT_IF_MAY_NPE =
         PropertyFactory.booleanProperty("reportEvenIfMayNPE")
@@ -85,12 +91,23 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
 
     private boolean argumentsListMatches(ASTMethodCall call, ASTLambdaParameterList params) {
         ASTArgumentList args = call.getArguments();
-        if (args.size() != params.size()) {
+        int start;
+        if (args.size() == params.size() - 1) {
+            // first parameter for the method call may be its receiver
+            start = 1;
+            JVariableSymbol firstParam = params.get(0).getVarId().getSymbol();
+            if (!JavaAstUtils.isReferenceToVar(call.getQualifier(), firstParam)) {
+                return false;
+            }
+        } else if (args.size() == params.size()) {
+            start = 0;
+        } else {
             return false;
         }
+
         for (int i = 0; i < args.size(); i++) {
             ASTExpression arg = args.get(i);
-            ASTLambdaParameter parm = params.get(i);
+            ASTLambdaParameter parm = params.get(i + start);
             if (!JavaAstUtils.isReferenceToVar(arg, parm.getVarId().getSymbol())) {
                 return false;
             }
