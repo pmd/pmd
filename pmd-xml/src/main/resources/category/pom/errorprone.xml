@@ -26,7 +26,7 @@ The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear,
             <property name="xpath">
                 <value>
 <![CDATA[
-//dependencyManagement/dependency/type/text[not(@Text = $validTypes)]
+//dependencyManagement/dependencies/dependency/type/text[not(@Text = $validTypes)]
 ]]>
                 </value>
             </property>

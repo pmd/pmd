@@ -5,13 +5,15 @@
     <version>1.0.0-SNAPSHOT</version>
 
   <dependencyManagement>
-    <dependency>
-      <groupId>org.jboss.arquillian</groupId>
-      <artifactId>arquillian-bom</artifactId>
-      <version>${arquillian.version}</version>
-      <type>bom</type>
-      <scope>import</scope>
-    </dependency>
+      <dependencies>
+          <dependency>
+              <groupId>org.jboss.arquillian</groupId>
+              <artifactId>arquillian-bom</artifactId>
+              <version>${arquillian.version}</version>
+              <type>bom</type>
+              <scope>import</scope>
+          </dependency>
+      </dependencies>
   </dependencyManagement>
 
 </project>
