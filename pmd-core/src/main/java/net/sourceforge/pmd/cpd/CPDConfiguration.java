@@ -20,11 +20,12 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.cpd.internal.CpdLanguagePropertiesDefaults;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.PmdCapableLanguage;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 /**
- *
  * @author Brian Remedios
  * @author Romain Pelisse - &lt;belaran@gmail.com&gt;
  */
@@ -267,5 +268,14 @@ public class CPDConfiguration extends AbstractConfiguration {
     public void setFailOnViolation(boolean failOnViolation) {
         this.failOnViolation = failOnViolation;
     }
+
+    @Override
+    protected void checkLanguageIsAcceptable(Language lang) {
+        if (!(lang instanceof CpdCapableLanguage)) {
+            throw new UnsupportedOperationException("Language " + lang.getId() + " does not support analysis with CPD and cannot be used in a CPDConfiguration. " +
+                "You may be able to use it with PMD though.");
+        }
+    }
+
 
 }

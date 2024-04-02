@@ -35,7 +35,8 @@ public final class LanguageRegistry implements Iterable<Language> {
 
     private static final Logger LOG = LoggerFactory.getLogger(LanguageRegistry.class);
 
-    private static final LanguageRegistry ALL_LANGUAGES =
+    // test only
+    static final LanguageRegistry ALL_LANGUAGES =
         loadLanguages(LanguageRegistry.class.getClassLoader());
 
     /**
