@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>Static referee, return type adapted int to void</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Lambda expression could be written as a method reference: `Foo::correct`</message>
+        </expected-messages>
+        <code><![CDATA[
+            public final class Foo {
+
+                public static void iTakeLambda(ALambda l) {}
+                static {
+                    iTakeLambda(x -> correct(x)); // flag
+                    int foo = 0;
+                    iTakeLambda(x -> correct(foo)); // ok
+                }
+                public static int correct(int a) {
+                    return 0;
+                }
+            }
+
+            interface ALambda {
+                void doSomething(int a);
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>self referee, return type adapted int to void</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Lambda expression could be written as a method reference: `this::correct`</message>
+        </expected-messages>
+        <code><![CDATA[
+            public final class Foo {
+
+                public static void iTakeLambda(ALambda l) {}
+                static {
+                    iTakeLambda(x -> correct(x)); // flag
+                    int foo = 0;
+                    iTakeLambda(x -> correct(foo)); // ok
+                }
+                public int correct(int a) {
+                    return 0;
+                }
+            }
+
+            interface ALambda {
+                void doSomething(int a);
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>cannot rewrite if qualifier is ctor call</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public final class Foo {
+
+                public static void iTakeLambda(ALambda l) {}
+                static {
+                    iTakeLambda(x -> new Foo().correct(x));
+                }
+                public int correct(int a) {
+                    return 0;
+                }
+            }
+
+            interface ALambda {
+                void doSomething(int a);
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>can rewrite many different qualifier types without NPE risk</description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+            public final class Foo {
+
+                public static void iTakeLambda(ALambda l) {}
+                public static void iTakeClass(Consumer<Class<?>> l) {}
+                static {
+                    iTakeLambda(x -> "abc".indexOf(x));
+                    iTakeLambda(x -> this.correct(x));
+                    iTakeLambda(x -> Integer.valueOf(x));
+                    iTakeClass(x -> String.class.isAssignableFrom(x));
+                }
+                public boolean correct(int a) {
+                    return false;
+                }
+            }
+
+            interface ALambda {
+                boolean doSomething(int a);
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>test when method call is invalid</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public final class Foo {
+
+                public static void iTakeLambda(ALambda l) {}
+                static {
+                    // parseInt(int) does not exist
+                    iTakeLambda(x -> Integer.parseInt(x));
+                }
+                public boolean correct(int a) {
+                    return false;
+                }
+            }
+
+            interface ALambda {
+                boolean doSomething(int a);
+            }
+            ]]></code>
+    </test-code>
+
+
+</test-data>

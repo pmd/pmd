@@ -774,6 +774,26 @@ try {
         </example>
     </rule>
 
+
+    <rule name="LambdaCanBeMethodReference"
+          language="java"
+          since="7.1.0"
+          message="Lambda expression could be written as a method reference: `{0}`"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.LambdaCanBeMethodReferenceRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#lambdacanbemethodreference">
+        <description>
+            todo
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class LambdaCanBeMethodReference {
+    // todo
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="LinguisticNaming"
           language="java"
           since="6.7.0"
