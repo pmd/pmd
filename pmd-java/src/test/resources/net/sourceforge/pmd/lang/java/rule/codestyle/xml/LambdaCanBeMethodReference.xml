@@ -56,6 +56,36 @@
             ]]></code>
     </test-code>
     <test-code>
+        <description>Block lambda</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Lambda expression could be written as a method reference: `this::correct`</message>
+        </expected-messages>
+        <code><![CDATA[
+            public final class Foo {
+
+                public static void iTakeLambda(ALambda l) {}
+                static {
+                    iTakeLambda(x ->{ return correct(x); }); // flag
+                    iTakeLambda(x ->{ if(x == 1) return correct(x); else return correct(x); }); // do not flag
+                    iTakeLambda(x ->{
+                        foo();
+                        return correct(x);
+                    }); // do not flag
+                    iTakeLambda(x -> {});
+                }
+                public int correct(int a) {
+                    return 0;
+                }
+            }
+
+            interface ALambda {
+                void doSomething(int a);
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
         <description>cannot rewrite if qualifier is ctor call</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

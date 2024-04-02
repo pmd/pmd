@@ -7,8 +7,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameterList;
+import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
@@ -19,6 +22,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
 
@@ -37,18 +41,24 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTLambdaExpression node, Object data) {
         if (node.isExpressionBody()) {
-            // Note: we on purpose do not even try on block-bodied lambdas.
-            // Single-expression block bodies should be reported by another
-            // rule for transformation to an expression-body.
             ASTExpression expression = node.getExpression();
-            if (expression instanceof ASTMethodCall) {
-                ASTMethodCall call = (ASTMethodCall) expression;
-                if (canBeTransformed(call) && argumentsListMatches(call, node.getParameters())) {
-                    asCtx(data).addViolation(node, buildMethodRefString(call));
-                }
+            processLambdaWithBody(node, asCtx(data), expression);
+        } else {
+            ASTStatement onlyStmt = ASTList.singleOrNull(node.getBlock());
+            if (onlyStmt instanceof ASTReturnStatement) {
+                processLambdaWithBody(node, asCtx(data), ((ASTReturnStatement) onlyStmt).getExpr());
             }
         }
         return null;
+    }
+
+    private void processLambdaWithBody(ASTLambdaExpression node, RuleContext data, ASTExpression expression) {
+        if (expression instanceof ASTMethodCall) {
+            ASTMethodCall call = (ASTMethodCall) expression;
+            if (canBeTransformed(call) && argumentsListMatches(call, node.getParameters())) {
+                data.addViolation(node, buildMethodRefString(call));
+            }
+        }
     }
 
     private String buildMethodRefString(ASTMethodCall call) {
