@@ -521,7 +521,7 @@ fun TreeNodeWrapper<Node, *>.blockLambda(assertions: ValuedNodeSpec<ASTLambdaExp
             it::isExpressionBody shouldBe false
             val block = assertions()
             if (block == null) unspecifiedChildren(2)
-            else it::getBlockBody shouldBe block
+            else it::getBlock shouldBe block
         }
 
 
@@ -536,7 +536,7 @@ fun TreeNodeWrapper<Node, *>.exprLambda(assertions: ValuedNodeSpec<ASTLambdaExpr
             it::isExpressionBody shouldBe true
             val block = assertions()
             if (block == null) unspecifiedChildren(2)
-            else it::getExpressionBody shouldBe block
+            else it::getExpression shouldBe block
         }
 
 

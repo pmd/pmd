@@ -76,30 +76,32 @@ public final class ASTLambdaExpression extends AbstractJavaExpr implements Funct
     }
 
     /** Returns the body of this expression, if it is a block. */
-    @Nullable
-    public ASTBlock getBlock() {
+    public @Nullable ASTBlock getBlock() {
         return AstImplUtil.getChildAs(this, 1, ASTBlock.class);
     }
 
     /** Returns the body of this expression, if it is an expression. */
-    @Nullable
-    public ASTExpression getExpression() {
+    public @Nullable ASTExpression getExpression() {
         return AstImplUtil.getChildAs(this, 1, ASTExpression.class);
     }
 
 
     /**
      * Returns the body of this lambda if it is a block.
+     * @deprecated Use {@link #getBlock()}
      */
     @Nullable
+    @Deprecated
     public ASTBlock getBlockBody() {
         return NodeStream.of(getLastChild()).filterIs(ASTBlock.class).first();
     }
 
     /**
      * Returns the body of this lambda if it is an expression.
+     * @deprecated Use {@link #getExpression()}
      */
     @Nullable
+    @Deprecated
     public ASTExpression getExpressionBody() {
         return NodeStream.of(getLastChild()).filterIs(ASTExpression.class).first();
     }
