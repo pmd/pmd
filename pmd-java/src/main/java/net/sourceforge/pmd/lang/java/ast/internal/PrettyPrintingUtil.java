@@ -11,12 +11,14 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
@@ -341,13 +343,28 @@ public final class PrettyPrintingUtil {
             addQualifier(node, sb);
             ppTypeArgs(sb, node.getExplicitTypeArguments());
             sb.append(node.getMethodName());
-            if (node.getArguments().isEmpty()) {
+            ppArguments(sb, node.getArguments());
+            return null;
+        }
+
+        @Override
+        public Void visit(ASTConstructorCall node, StringBuilder sb) {
+            addQualifier(node, sb);
+            sb.append("new ");
+            ppTypeArgs(sb, node.getExplicitTypeArguments());
+            prettyPrintTypeNode(sb, node.getTypeNode());
+            ppArguments(sb, node.getArguments());
+            return null;
+        }
+
+        private void ppArguments(StringBuilder sb, ASTArgumentList arguments) {
+            if (arguments.isEmpty()) {
                 sb.append("()");
             } else {
                 final int argStart = sb.length();
                 sb.append('(');
                 boolean first = true;
-                for (ASTExpression arg : node.getArguments()) {
+                for (ASTExpression arg : arguments) {
                     if (sb.length() - argStart >= MAX_ARG_LENGTH) {
                         sb.append("...");
                         break;
@@ -359,7 +376,6 @@ public final class PrettyPrintingUtil {
                 }
                 sb.append(')');
             }
-            return null;
         }
 
         @Override

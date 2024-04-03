@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
@@ -66,6 +67,14 @@ class PrettyPrintingUtilTest extends BaseParserTest {
         @NonNull ASTMethodReference m = root.descendants(ASTMethodReference.class).firstOrThrow();
 
         assertThat(prettyPrint(m), contentEquals("ASTW::meth"));
+    }
+
+    @Test
+    void ppCtorCall() {
+        ASTCompilationUnit root = java.parse("class A { { new Foo(1); } }");
+        @NonNull ASTConstructorCall m = root.descendants(ASTConstructorCall.class).firstOrThrow();
+
+        assertThat(prettyPrint(m), contentEquals("new Foo(1)"));
     }
 
     @Test
