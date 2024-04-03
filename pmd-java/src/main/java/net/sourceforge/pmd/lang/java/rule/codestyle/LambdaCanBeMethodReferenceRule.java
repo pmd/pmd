@@ -32,16 +32,25 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
     // with the method reference, similar to what UnnecessaryCastRule is doing.
 
 
-    private static final PropertyDescriptor<Boolean> REPORT_IF_MAY_NPE =
-        PropertyFactory.booleanProperty("reportEvenIfMayNPE")
-                       .desc("Also report those expressions that may throw a null pointer exception (NPE) when converted to a method reference. "
+    private static final PropertyDescriptor<Boolean> IGNORE_IF_MAY_NPE =
+        PropertyFactory.booleanProperty("ignoreIfMayNPE")
+                       .desc("Ignore lambdas that may throw a null pointer exception (NPE) when converted to a method reference. "
                            + "Those expressions will NPE at mref creation time, while the equivalent lambda would NPE only when invoked (which may be never).")
+                       .defaultValue(false)
+                       .build();
+
+
+    private static final PropertyDescriptor<Boolean> IGNORE_IF_RECEIVER_IS_METHOD =
+        PropertyFactory.booleanProperty("ignoreIfReceiverIsMethod")
+                       .desc("Ignore if the receiver of the method reference is a method call. " +
+                           "These may cause side effects that often should prevent the conversion to a method reference.")
                        .defaultValue(true)
                        .build();
 
     public LambdaCanBeMethodReferenceRule() {
         super(ASTLambdaExpression.class);
-        definePropertyDescriptor(REPORT_IF_MAY_NPE);
+        definePropertyDescriptor(IGNORE_IF_MAY_NPE);
+        definePropertyDescriptor(IGNORE_IF_RECEIVER_IS_METHOD);
     }
 
     @Override
@@ -138,8 +147,13 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
             return true;
         }
 
-        return lambda.getParameters().size() == call.getArguments().size() + 1
-            || getProperty(REPORT_IF_MAY_NPE);
+        boolean isIgnoredBecauseOfMethodCall =
+            qualifier instanceof ASTMethodCall && getProperty(IGNORE_IF_RECEIVER_IS_METHOD);
+
+        // if call uses first lambda parm as receiver, then the mref may not npe at creation time 
+        boolean mayNPE = lambda.getParameters().size() == call.getArguments().size();
+        boolean isIgnoredBecauseOfNPE = mayNPE && getProperty(IGNORE_IF_MAY_NPE);
+        return !isIgnoredBecauseOfNPE && !isIgnoredBecauseOfMethodCall;
 
     }
 

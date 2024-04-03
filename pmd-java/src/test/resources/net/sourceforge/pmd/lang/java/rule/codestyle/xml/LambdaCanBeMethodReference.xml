@@ -106,10 +106,45 @@
             ]]></code>
     </test-code>
 
+    <code-fragment id="methodReceiver">
+        <![CDATA[
+            public final class Foo {
+
+                public static void iTakeLambda(ALambda l) {}
+                static {
+                    iTakeLambda(x -> foo().correct(x));
+                }
+                public int correct(int a) {
+                    return 0;
+                }
+                static Foo foo() { return new Foo(); }
+            }
+
+            interface ALambda {
+                void doSomething(int a);
+            }
+            ]]>
+    </code-fragment>
+    
+    <test-code>
+        <description>Ignore methods by default</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="methodReceiver"/>
+    </test-code>
+    <test-code>
+        <description>Property to consider methods</description>
+        <rule-property name="ignoreIfReceiverIsMethod">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Lambda expression could be written as a method reference: `foo()::correct`</message>
+        </expected-messages>
+        <code-ref id="methodReceiver"/>
+    </test-code>
+
 
     <test-code>
         <description>can rewrite many different qualifier types without NPE risk</description>
-        <rule-property name="reportEvenIfMayNPE">false</rule-property>
+        <rule-property name="ignoreIfMayNPE">true</rule-property>
         <expected-problems>4</expected-problems>
         <expected-messages>
             <message>Lambda expression could be written as a method reference: `"abc"::indexOf`</message>
@@ -223,8 +258,9 @@
 
 
     <test-code>
-        <description>Risk of NPE (report == false)</description>
-        <rule-property name="reportEvenIfMayNPE">false</rule-property>
+        <description>Risk of NPE, ignore = true</description>
+        <rule-property name="ignoreIfMayNPE">true</rule-property>
+        <rule-property name="ignoreIfReceiverIsMethod">true</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>Lambda expression could be written as a method reference: `String::contains`</message>
@@ -233,8 +269,31 @@
     </test-code>
 
     <test-code>
-        <description>Risk of NPE (report == true)</description>
-        <rule-property name="reportEvenIfMayNPE">true</rule-property>
+        <description>Risk of NPE, ignore = false</description>
+        <rule-property name="ignoreIfMayNPE">false</rule-property>
+        <rule-property name="ignoreIfReceiverIsMethod">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>Lambda expression could be written as a method reference: `fooField::bar`</message>
+            <message>Lambda expression could be written as a method reference: `String::contains`</message>
+        </expected-messages>
+        <code-ref id="riskOfNPE"/>
+    </test-code>
+    <test-code>
+        <description>Risk of NPE, ignore = true, ignore method = false</description>
+        <rule-property name="ignoreIfMayNPE">true</rule-property>
+        <rule-property name="ignoreIfReceiverIsMethod">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Lambda expression could be written as a method reference: `String::contains`</message>
+        </expected-messages>
+        <code-ref id="riskOfNPE"/>
+    </test-code>
+
+    <test-code>
+        <description>Risk of NPE, ignore npe = false, dont ignore methods</description>
+        <rule-property name="ignoreIfMayNPE">false</rule-property>
+        <rule-property name="ignoreIfReceiverIsMethod">false</rule-property>
         <expected-problems>3</expected-problems>
         <expected-messages>
             <message>Lambda expression could be written as a method reference: `foo()::bar`</message>
@@ -243,7 +302,6 @@
         </expected-messages>
         <code-ref id="riskOfNPE"/>
     </test-code>
-
 
 
 

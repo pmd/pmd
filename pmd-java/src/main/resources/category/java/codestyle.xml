@@ -791,7 +791,9 @@ try {
                 x -> x.foo()    // can be XType::foo (where XType is the type of x)
             ```
 
-            In some cases rewriting a lambda to a method reference can change the semantics of the code. For instance in `(x) -> someVar.call(x)`, the invocation of the lambda may produce a NullPointerException (NPE) if `someVar` is null. The method reference `someVar::call` will also NPE if `someVar` is null, but it will do so at the point the method reference is created, while the lambda is created without error and its NPE is only thrown if the lambda is invoked (which may be never). Code should probably not rely on this subtle semantic difference, therefore these potentially problematic lambdas are also reported by default. This behavior can be disabled by setting the property `reportEvenIfMayNPE` to `false`.
+            In some cases rewriting a lambda to a method reference can change the semantics of the code. For instance in `(x) -> someVar.call(x)`, the invocation of the lambda may produce a NullPointerException (NPE) if `someVar` is null. The method reference `someVar::call` will also NPE if `someVar` is null, but it will do so at the point the method reference is created, while the lambda is created without error and its NPE is only thrown if the lambda is invoked (which may be never). Code should probably not rely on this subtle semantic difference, therefore these potentially problematic lambdas are also reported by default. This behavior can be disabled by setting the property `ignoreIfMayNPE` to `true`.
+
+            The property `ignoreIfMayNPE` is true by default. By default, calls whose receiver is itself a method call are ignored, because they could cause side effects. This may be changed by setting the property `ignoreIfReceiverIsMethod` to `false`.
 
             Scope limitations:
             - This rule will not report lambdas of the form `x -> new CtorCall().something(x)`, because the semantics of the method reference would be to create a single new object, while the lambda creates one object per invocation.
