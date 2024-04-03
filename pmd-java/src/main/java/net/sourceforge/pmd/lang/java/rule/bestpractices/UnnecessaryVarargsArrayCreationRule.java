@@ -9,8 +9,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.types.JArrayType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 
 public class UnnecessaryVarargsArrayCreationRule extends AbstractJavaRulechainRule {
 
@@ -33,7 +35,23 @@ public class UnnecessaryVarargsArrayCreationRule extends AbstractJavaRulechainRu
                 return null;
             }
 
-            asCtx(data).addViolation(array);
+            List<JTypeMirror> formals = info.getMethodType().getFormalParameters();
+            JTypeMirror lastFormal = formals.get(formals.size() - 1);
+            JTypeMirror expectedComponent = ((JArrayType) lastFormal).getComponentType();
+
+            if (array.getTypeMirror().isSubtypeOf(expectedComponent)
+                && !array.getTypeMirror().equals(lastFormal)) {
+                // confusing
+                asCtx(data)
+                    .addViolationWithMessage(
+                        array,
+                        "Unclear if a varargs or non-varargs call is intended. Cast to {0} or {0}[], or pass varargs parameters separately to clarify intent.",
+                        TypePrettyPrint.prettyPrintWithSimpleNames(expectedComponent)
+                    );
+            } else {
+                // just regular unnecessary
+                asCtx(data).addViolation(array);
+            }
         }
 
         return null;
