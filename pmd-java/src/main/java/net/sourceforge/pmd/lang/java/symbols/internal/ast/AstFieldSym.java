@@ -19,17 +19,19 @@ import net.sourceforge.pmd.lang.java.types.TypeOps;
 final class AstFieldSym extends AbstractAstVariableSym implements JFieldSymbol {
 
     private final JClassSymbol owner;
+    private final int modifiers;
 
     AstFieldSym(ASTVariableId node,
                 AstSymFactory factory,
                 JClassSymbol owner) {
         super(node, factory);
         this.owner = owner;
+        this.modifiers = JModifier.toReflect(node.getModifiers().getEffectiveModifiers());
     }
 
     @Override
     public int getModifiers() {
-        return JModifier.toReflect(node.getModifiers().getEffectiveModifiers());
+        return modifiers;
     }
 
     @Override

@@ -28,8 +28,8 @@ public class Foo {
 public class Foo {
     private int x;
     int bar(int y) {
-        if (y = 5)
-        x = y + 5;
+        if (y == 5)
+            x = y + 5;
         return x;
     }
 }
@@ -83,8 +83,8 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>skip statics</description>
-        <expected-problems>0</expected-problems>
+        <description>#3694 dont skip statics</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     private static int x;
@@ -274,7 +274,7 @@ public class Foo {
 
     <test-code>
         <description>initialized in static initialization block</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     private static Foo FOO = new Foo();
@@ -856,7 +856,7 @@ public class Foo {
             }
             ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#174 [java] SingularField false positive with switch in method that both assigns and reads field</description>
         <expected-problems>1</expected-problems>
@@ -934,4 +934,160 @@ interface Listener {
             }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#3694 singularfield ignores static variables</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>Perhaps 'var2' could be replaced by a local variable.</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Impl {
+                static private int var2 = 10;
+                public int foo(int y) {
+                    var2 = y + 5;
+                    return var2;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#3694 singularfield should ignore static final vars</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Impl {
+                private static final int var2 = 10;
+                public int foo(int y) {
+                    return var2;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Should not report when definition reaches usage</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Impl {
+                private int var2 = 10;
+                public int foo(int y) {
+                    dosomething();
+                    return var2;
+                }
+                void dosomething() {}
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Should not ignore when definition reaches usage (2)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Impl {
+                private int var2 = 10;
+                public int foo(int y) {
+                    dosomething();
+                    if (var2 < 0)
+                        var2 = 0;
+                    return var2;
+                }
+                void dosomething() {}
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Static field incremented in ctor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class PrintStream {
+                private static int gid;
+                private final int id;
+                public PrintStream() {
+                    this.id = gid++;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Static field used in field initializers</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class PrintStream {
+                private static Object[] EMPTY = {};
+                private Object[] field = EMPTY;
+                public PrintStream() {
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code disabled="true">
+        <!-- This is disabled because it looks legit to the rule, we can't know that doLoop is used concurrently. -->
+        <description>#4616 SingularField false-positive with field used concurrently</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+// AFTIPCTopologyWatcher.java
+public class AFTIPCTopologyWatcher {
+
+    private Channel channel;
+    private Selector selector;
+    private boolean doLoop;
+    private final AtomicBoolean running = new AtomicBoolean(false);
+
+
+    public final void runLoop() throws IOException {
+        if (!running.compareAndSet(false, true)) {
+            throw new IllegalStateException("Already running");
+        }
+
+        ByteBuffer buf = ByteBuffer.allocate(64);
+
+        try {
+            doLoop = true;
+            while (!Thread.interrupted() && doLoop) {
+                int n = selector.select();
+                if (!doLoop) {
+                    break;
+                }
+                if (n > 0) {
+                    channel.receive(buf);
+                    Event event = readFromBuffer((ByteBuffer) buf.flip());
+                    onEvent(event);
+                    buf.clear();
+                }
+            }
+        } finally {
+            running.set(false);
+        }
+    }
+
+    static Event readFromBuffer(ByteBuffer b) { }
+
+    protected void onEvent(Event event) throws IOException {
+    }
+
+
+    public final void stopLoop() {
+        doLoop = false;
+        selector.wakeup();
+    }
+
+    interface Event { }
+
+    interface Channel {
+
+        void receive(ByteBuffer buf);
+    }
+    interface Selector {
+        int select();
+        void wakeup();
+    }
+}
+            ]]></code>
+    </test-code>
+
 </test-data>
