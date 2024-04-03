@@ -1435,6 +1435,24 @@ class Foo{
 ]]>
         </example>
     </rule>
+    <rule name="UnnecessaryVarargsArrayCreation"
+          language="java"
+          since="7.1.0"
+          message="Unnecessary explicit varargs array creation"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnnecessaryVarargsArrayCreationRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unnecessaryvarargsarraycreation">
+        <description>
+            todo
+        </description>
+        <priority>3</priority>
+        <example><![CDATA[
+            class C {
+                // todo
+            }
+            ]]>
+        </example>
+    </rule>
+
 
     <rule name="UnusedAssignment"
           language="java"

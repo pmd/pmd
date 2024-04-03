@@ -1,0 +1,4 @@
+<ruleset xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" name="foo">
+    <description>foo</description>
+    <rule ref="category/java/bestpractices.xml/UnnecessaryVarargsArrayCreation"/>
+</ruleset>
