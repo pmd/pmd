@@ -1195,4 +1195,46 @@ public class Example {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>FP with unknown symbols</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static something.Foo.*;
+
+public class Example {
+    public Set<String> sample() {
+        foo();
+    }
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with unknown symbols 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import static something.Foo.foo;
+
+            public class Example {
+                public Set<String> sample() {
+                    foo(x);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with unknown symbols 3</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+            import static something.Foo.bar;
+            import static something.Bar.*; // this is marked as not unnecessary
+            import static something.Other.*; // this is marked as not unnecessary
+
+            public class Example {
+                public Set<String> sample() {
+                    foo(x);
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

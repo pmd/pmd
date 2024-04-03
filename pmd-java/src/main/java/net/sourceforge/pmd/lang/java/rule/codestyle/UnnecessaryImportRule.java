@@ -12,7 +12,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
@@ -21,6 +24,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.JavaComment;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavadocComment;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -57,6 +61,9 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
     private static final String DUPLICATE_IMPORT_MESSAGE = "Duplicate import ''{0}''";
     private static final String IMPORT_FROM_SAME_PACKAGE_MESSAGE = "Unnecessary import from the current package ''{0}''";
     private static final String IMPORT_FROM_JAVA_LANG_MESSAGE = "Unnecessary import from the java.lang package ''{0}''";
+
+
+    private static final Logger LOG = LoggerFactory.getLogger(UnnecessaryImportRule.class);
 
     private final Set<ImportWrapper> allSingleNameImports = new HashSet<>();
     private final Set<ImportWrapper> allImportsOnDemand = new HashSet<>();
@@ -231,11 +238,35 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
     }
 
     @Override
+    public Object visit(ASTAmbiguousName node, Object data) {
+        // ambiguous name means the symbol table could not resolve the first name
+
+        // only consider static imports
+        boolean onlyStatic = !(node.getParent() instanceof ASTClassType);
+        recordFailedTypeResWithName(node, node.getFirstToken().getImage(), onlyStatic);
+        return null;
+    }
+
+    private void recordFailedTypeResWithName(JavaNode location, String name, boolean onlyStatics) {
+        String target = onlyStatics ? "static " : "";
+        LOG.debug("UnnecessaryImport: Failed type res for {} will cause all {}imports named {} to be marked as used", location, target, name);
+        boolean foundNamedImport = allSingleNameImports.removeIf(
+            decl -> (!onlyStatics || decl.isStatic())
+                && name.equals(decl.node.getImportedSimpleName()));
+        if (!foundNamedImport) {
+            LOG.debug("+ Since no such named import can be found, all {}on-demand-imports will be marked as used", target);
+
+            allImportsOnDemand.removeIf(it -> !onlyStatics || it.isStatic());
+        }
+    }
+
+    @Override
     public Object visit(ASTMethodCall node, Object data) {
         if (node.getQualifier() == null) {
             OverloadSelectionResult overload = node.getOverloadSelectionInfo();
             if (overload.isFailed()) {
                 // don't try further, but still visit all ASTClassType nodes in the AST.
+                recordFailedTypeResWithName(node, node.getMethodName(), true);
                 return super.visit(node, data); // todo we're erring towards FPs
             }
 
@@ -268,6 +299,9 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
             ShadowChainIterator<JVariableSig, ScopeInfo> scopeIter = node.getSymbolTable().variables().iterateResults(node.getName());
             checkScopeChain(false, (JFieldSymbol) sym, scopeIter, ts -> true, true);
+        }
+        if (sym == null) {
+            recordFailedTypeResWithName(node, node.getName(), true);
         }
         return null;
     }
