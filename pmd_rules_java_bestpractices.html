@@ -3562,8 +3562,8 @@ or goes out of scope. Unused assignments are those for which</p>
 the variable.</li>
 </ol>
 
-<p>The rule doesn’t consider assignments to fields except for those of <code class="language-plaintext highlighter-rouge">this</code> in a constructor,
-or static fields of the current class in static initializers.</p>
+<p>The rule tracks assignements to fields of <code class="language-plaintext highlighter-rouge">this</code>, and static fields of the current class.
+This may cause some false positives in timing-sensitive concurrent code, which the rule cannot detect.</p>
 
 <p>The rule may be suppressed with the standard <code class="language-plaintext highlighter-rouge">@SuppressWarnings("unused")</code> tag.</p>
 
@@ -4185,7 +4185,7 @@ a block <code class="language-plaintext highlighter-rouge">{}</code> is sufficie
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 2, 2024 <br />
+             Site last generated: Apr 3, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
