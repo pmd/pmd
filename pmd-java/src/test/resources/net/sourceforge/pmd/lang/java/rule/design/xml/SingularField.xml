@@ -83,7 +83,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>#3364 dont skip statics</description>
+        <description>#3694 dont skip statics</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {

@@ -3678,7 +3678,7 @@ public class UnusedAssignmentUnusedVariableFP {
         ]]></code>
     </test-code>
     <test-code>
-        <description>Problem with assignment to field</description>
+        <description>Problem with assignment to field #4618</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Foo {
