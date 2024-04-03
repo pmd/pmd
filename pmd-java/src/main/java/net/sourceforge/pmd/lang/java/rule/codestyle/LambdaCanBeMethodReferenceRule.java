@@ -138,11 +138,9 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
             return true;
         }
 
-        if (lambda.getParameters().size() == call.getArguments().size() + 1) {
-            return true;
-        }
+        return lambda.getParameters().size() == call.getArguments().size() + 1
+            || getProperty(REPORT_IF_MAY_NPE);
 
-        return getProperty(REPORT_IF_MAY_NPE);
     }
 
 }
