@@ -48,7 +48,7 @@ public class UnnecessaryVarargsArrayCreationRule extends AbstractJavaRulechainRu
                         "Unclear if a varargs or non-varargs call is intended. Cast to {0} or {0}[], or pass varargs parameters separately to clarify intent.",
                         TypePrettyPrint.prettyPrintWithSimpleNames(expectedComponent)
                     );
-            } else {
+            } else if (array.getArrayInitializer() != null) {
                 // just regular unnecessary
                 asCtx(data).addViolation(array);
             }
