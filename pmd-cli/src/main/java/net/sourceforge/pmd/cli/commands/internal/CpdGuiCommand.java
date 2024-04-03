@@ -15,6 +15,13 @@ public class CpdGuiCommand implements Runnable {
     @Override
     public void run() {
         new GUI();
+
+        // wait for the process to be killed by the GUI
+        try {
+            Thread.currentThread().join();
+        } catch (InterruptedException ignored) {
+            // noop
+        }
     }
 
 }
