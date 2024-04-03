@@ -233,8 +233,8 @@
                 public static void iTakeLambda(ALambda l) {}
                 public static void iTakeLambda(ALambda2 l) {}
                 static {
-                    // parseInt(int) does not exist
                     iTakeLambda(x -> foo().bar(x));
+                    iTakeLambda(x -> ((Foo) foo()).bar(x));
                     iTakeLambda(x -> fooField.bar(x));
                     // this also may not NPE because it will be converted to String::contains
                     iTakeLambda((x,c) -> x.contains(c));
@@ -294,9 +294,10 @@
         <description>Risk of NPE, ignore npe = false, dont ignore methods</description>
         <rule-property name="ignoreIfMayNPE">false</rule-property>
         <rule-property name="ignoreIfReceiverIsMethod">false</rule-property>
-        <expected-problems>3</expected-problems>
+        <expected-problems>4</expected-problems>
         <expected-messages>
             <message>Lambda expression could be written as a method reference: `foo()::bar`</message>
+            <message>Lambda expression could be written as a method reference: `((Foo) foo())::bar`</message>
             <message>Lambda expression could be written as a method reference: `fooField::bar`</message>
             <message>Lambda expression could be written as a method reference: `String::contains`</message>
         </expected-messages>

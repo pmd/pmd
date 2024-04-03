@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.util.StringUtil;
 
 class PrettyPrintingUtilTest extends BaseParserTest {
@@ -57,6 +58,22 @@ class PrettyPrintingUtilTest extends BaseParserTest {
         @NonNull ASTMethodCall m = root.descendants(ASTMethodCall.class).firstOrThrow();
 
         assertThat(prettyPrint(m), contentEquals("((Object) this).foo(12)"));
+    }
+
+    @Test
+    void ppMethodRef() {
+        ASTCompilationUnit root = java.parse("class A { { foo(ASTW::meth); } }");
+        @NonNull ASTMethodReference m = root.descendants(ASTMethodReference.class).firstOrThrow();
+
+        assertThat(prettyPrint(m), contentEquals("ASTW::meth"));
+    }
+
+    @Test
+    void ppMethodRefWithTyArgs() {
+        ASTCompilationUnit root = java.parse("class A { { foo(ASTW::<String>meth); } }");
+        @NonNull ASTMethodReference m = root.descendants(ASTMethodReference.class).firstOrThrow();
+
+        assertThat(prettyPrint(m), contentEquals("ASTW::<String>meth"));
     }
 
     private static Matcher<CharSequence> contentEquals(String str) {

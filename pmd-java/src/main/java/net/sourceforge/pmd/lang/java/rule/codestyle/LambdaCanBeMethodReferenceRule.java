@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameterList;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
@@ -94,7 +95,14 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
         } else if (qualifier == null) {
             sb.append("this");
         } else {
+            boolean needsParentheses = !(qualifier instanceof ASTPrimaryExpression);
+            if (needsParentheses) {
+                sb.append('(');
+            }
             sb.append(PrettyPrintingUtil.prettyPrint(qualifier));
+            if (needsParentheses) {
+                sb.append(')');
+            }
         }
         sb.append("::").append(call.getMethodName());
         return sb.toString();
@@ -128,7 +136,7 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
 
     // coarse check to filter out some stuff before checking call arguments
     private boolean canBeTransformed(ASTLambdaExpression lambda, ASTMethodCall call) {
-        ASTExpression qualifier = call.getQualifier();
+        ASTExpression qualifier = JavaAstUtils.peelCasts(call.getQualifier());
         if (call.getOverloadSelectionInfo().isFailed()) {
             // err on the side of FNs
             return false;
