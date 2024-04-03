@@ -58,30 +58,32 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    private void processLambdaWithBody(ASTLambdaExpression node, RuleContext data, ASTExpression expression) {
+    private void processLambdaWithBody(ASTLambdaExpression lambda, RuleContext data, ASTExpression expression) {
         if (expression instanceof ASTMethodCall) {
             ASTMethodCall call = (ASTMethodCall) expression;
-            if (canBeTransformed(call) && argumentsListMatches(call, node.getParameters())) {
-                data.addViolation(node, buildMethodRefString(call));
+            if (canBeTransformed(lambda, call) && argumentsListMatches(call, lambda.getParameters())) {
+                data.addViolation(lambda, buildMethodRefString(lambda, call));
             }
         }
     }
 
-    private String buildMethodRefString(ASTMethodCall call) {
+    private String buildMethodRefString(ASTLambdaExpression lambda, ASTMethodCall call) {
         StringBuilder sb = new StringBuilder();
         ASTExpression qualifier = call.getQualifier();
-        if (qualifier == null) {
-            OverloadSelectionResult info = call.getOverloadSelectionInfo();
-            assert !info.isFailed() : "should not be failed: " + call;
-            boolean isStatic = info.getMethodType().isStatic();
-            if (isStatic) {
-                JTypeDeclSymbol symbol = info.getMethodType().getDeclaringType().getSymbol();
-                assert symbol != null
-                    : "null symbol for " + info.getMethodType().getDeclaringType() + ", method " + info.getMethodType();
-                sb.append(symbol.getSimpleName());
-            } else {
-                sb.append("this");
-            }
+        OverloadSelectionResult info = call.getOverloadSelectionInfo();
+        assert !info.isFailed() : "should not be failed: " + call;
+
+        if (qualifier == null && info.getMethodType().isStatic()
+            || lambda.getParameters().size() != call.getArguments().size()) {
+            // this second condition corresponds to the case the first lambda
+            // param is the receiver of the method call
+
+            JTypeDeclSymbol symbol = info.getMethodType().getDeclaringType().getSymbol();
+            assert symbol != null
+                : "null symbol for " + info.getMethodType().getDeclaringType() + ", method " + info.getMethodType();
+            sb.append(symbol.getSimpleName());
+        } else if (qualifier == null) {
+            sb.append("this");
         } else {
             sb.append(PrettyPrintingUtil.prettyPrint(qualifier));
         }
@@ -92,7 +94,7 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
     private boolean argumentsListMatches(ASTMethodCall call, ASTLambdaParameterList params) {
         ASTArgumentList args = call.getArguments();
         int start;
-        if (args.size() == params.size() - 1) {
+        if (params.size() == args.size() + 1) {
             // first parameter for the method call may be its receiver
             start = 1;
             JVariableSymbol firstParam = params.get(0).getVarId().getSymbol();
@@ -115,7 +117,8 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
         return true;
     }
 
-    private boolean canBeTransformed(ASTMethodCall call) {
+    // coarse check to filter out some stuff before checking call arguments
+    private boolean canBeTransformed(ASTLambdaExpression lambda, ASTMethodCall call) {
         ASTExpression qualifier = call.getQualifier();
         if (call.getOverloadSelectionInfo().isFailed()) {
             // err on the side of FNs
@@ -132,6 +135,10 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
             || qualifier instanceof ASTLiteral
             || qualifier == null) {
             // these are always transformable
+            return true;
+        }
+
+        if (lambda.getParameters().size() == call.getArguments().size() + 1) {
             return true;
         }
 

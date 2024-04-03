@@ -109,7 +109,14 @@
 
     <test-code>
         <description>can rewrite many different qualifier types without NPE risk</description>
+        <rule-property name="reportEvenIfMayNPE">false</rule-property>
         <expected-problems>4</expected-problems>
+        <expected-messages>
+            <message>Lambda expression could be written as a method reference: `"abc"::indexOf`</message>
+            <message>Lambda expression could be written as a method reference: `this::correct`</message>
+            <message>Lambda expression could be written as a method reference: `Integer::valueOf`</message>
+            <message>Lambda expression could be written as a method reference: `String.class::isAssignableFrom`</message>
+        </expected-messages>
         <code><![CDATA[
             public final class Foo {
 
@@ -156,6 +163,10 @@
     <test-code>
         <description>Test when method ref is on receiver</description>
         <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>Lambda expression could be written as a method reference: `String::isEmpty`</message>
+            <message>Lambda expression could be written as a method reference: `String::contains`</message>
+        </expected-messages>
         <code><![CDATA[
             public final class Foo {
 
@@ -178,6 +189,59 @@
                 boolean doSomething(String a);
             }
             ]]></code>
+    </test-code>
+
+    <code-fragment id="riskOfNPE">
+        <![CDATA[
+            public final class Foo {
+
+                public static void iTakeLambda(ALambda l) {}
+                public static void iTakeLambda(ALambda2 l) {}
+                static {
+                    // parseInt(int) does not exist
+                    iTakeLambda(x -> foo().bar(x));
+                    iTakeLambda(x -> fooField.bar(x));
+                    // this also may not NPE because it will be converted to String::contains
+                    iTakeLambda((x,c) -> x.contains(c));
+                }
+                public boolean correct(int a) {
+                    return false;
+                }
+                static Foo foo() { return new Foo(); }
+                boolean bar(String x) { return true; }
+                static Foo fooField;
+            }
+
+            interface ALambda {
+                boolean doSomething(String a, CharSequence c);
+            }
+            interface ALambda2 {
+                boolean doSomething(String a);
+            }
+            ]]>
+    </code-fragment>
+
+
+    <test-code>
+        <description>Risk of NPE (report == false)</description>
+        <rule-property name="reportEvenIfMayNPE">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Lambda expression could be written as a method reference: `String::contains`</message>
+        </expected-messages>
+        <code-ref id="riskOfNPE"/>
+    </test-code>
+
+    <test-code>
+        <description>Risk of NPE (report == true)</description>
+        <rule-property name="reportEvenIfMayNPE">true</rule-property>
+        <expected-problems>3</expected-problems>
+        <expected-messages>
+            <message>Lambda expression could be written as a method reference: `foo()::bar`</message>
+            <message>Lambda expression could be written as a method reference: `fooField::bar`</message>
+            <message>Lambda expression could be written as a method reference: `String::contains`</message>
+        </expected-messages>
+        <code-ref id="riskOfNPE"/>
     </test-code>
 
 
