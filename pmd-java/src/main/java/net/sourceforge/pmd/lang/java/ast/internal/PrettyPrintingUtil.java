@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast.internal;
 
+import static net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRule.*;
 import static net.sourceforge.pmd.util.AssertionUtil.shouldNotReachHere;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -20,8 +21,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumBody;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -32,6 +35,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTGuard;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIntersectionType;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameter;
@@ -60,6 +64,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTWildcardType;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
+import net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRule;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
@@ -344,6 +349,33 @@ public final class PrettyPrintingUtil {
             return null;
         }
 
+        @Override
+        public Void visit(ASTInfixExpression node, StringBuilder sb) {
+            printWithParensIfNecessary(node, sb, node.getLeftOperand());
+            sb.append(' ');
+            sb.append(node.getOperator());
+            sb.append(' ');
+            printWithParensIfNecessary(node, sb, node.getRightOperand());
+            return null;
+        }
+
+        private void printWithParensIfNecessary(ASTInfixExpression parent, StringBuilder sb, ASTExpression operand) {
+            if (operand.isParenthesized() && needsParentheses(operand, parent) != Necessity.NEVER) {
+                ppInParens(sb, operand);
+            } else {
+                operand.acceptVisitor(this, sb);
+            }
+        }
+
+        @Override
+        public Void visit(ASTConditionalExpression node, StringBuilder sb) {
+            node.getCondition().acceptVisitor(this, sb);
+            sb.append(" ? ");
+            node.getThenBranch().acceptVisitor(this, sb);
+            sb.append(" : ");
+            node.getElseBranch().acceptVisitor(this, sb);
+            return null;
+        }
 
         @Override
         public Void visit(ASTLambdaExpression node, StringBuilder sb) {

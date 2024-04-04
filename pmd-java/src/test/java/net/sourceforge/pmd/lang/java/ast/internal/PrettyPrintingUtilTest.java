@@ -19,8 +19,10 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -65,15 +67,29 @@ class PrettyPrintingUtilTest extends BaseParserTest {
     }
 
     @Test
-    void ppCtorCall() {
-        testPrettyPrintIdentity("new Foo(1)", ASTConstructorCall.class);
-    }
-
-    @Test
     void ppMethodRefWithTyArgs() {
         testPrettyPrint("foo(ASTW::<String>meth)", ASTMethodReference.class,
             "ASTW::<String>meth");
     }
+
+    @Test
+    void ppCtorCall() {
+        testPrettyPrintIdentity("new Foo(1)", ASTConstructorCall.class);
+    }
+
+
+    @Test
+    void ppConditional() {
+        testPrettyPrintIdentity("true ? false : 1", ASTConditionalExpression.class);
+    }
+
+    @Test
+    void ppInfix() {
+        testPrettyPrint("(1+2)+2", ASTInfixExpression.class, "1 + 2 + 2");
+        testPrettyPrint("(1+2)*2", ASTInfixExpression.class, "(1 + 2) * 2");
+    }
+
+
 
     @Test
     void ppLambdaExpr() {
