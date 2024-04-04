@@ -5,8 +5,8 @@
 package net.sourceforge.pmd.lang.modelica;
 
 
-import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.lang.modelica.ast.ASTStoredDefinition;
+import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 
 public class ModelicaParsingHelper extends BaseParsingHelper<ModelicaParsingHelper, ASTStoredDefinition> {
 

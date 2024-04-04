@@ -17,6 +17,7 @@ class JUnit4TestShouldUseAfterAnnotationTest extends PmdRuleTst {
         public void setUp() {
             // A setup code
         }
+
         @After
         public void tearDown() {
             // A tear down code
