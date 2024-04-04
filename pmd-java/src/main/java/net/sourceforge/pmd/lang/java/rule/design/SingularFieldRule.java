@@ -79,7 +79,7 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
 
         DataflowResult dataflow = null;
         for (ASTFieldDeclaration fieldDecl : enclosingType.getDeclarations(ASTFieldDeclaration.class)) {
-            if (!mayBeSingular(fieldDecl)
+            if (!isPrivateNotFinal(fieldDecl)
                 || JavaAstUtils.hasAnyAnnotation(fieldDecl, getProperty(IGNORED_FIELD_ANNOTATIONS))) {
                 continue;
             }
@@ -95,13 +95,23 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    private static boolean mayBeSingular(ModifierOwner varId) {
+    /**
+     * This method is only relevant for this rule. It will be removed in the future.
+     *
+     * @deprecated This method will be removed. Don't use it.
+     */
+    @Deprecated //(since = "7.1.0", forRemoval = true)
+    public static boolean mayBeSingular(ModifierOwner varId) {
+        return isPrivateNotFinal(varId);
+    }
+
+    private static boolean isPrivateNotFinal(ModifierOwner varId) {
         return varId.getEffectiveVisibility().isAtMost(Visibility.V_PRIVATE)
-            // We ignore final variables for a reason:
-            // - if they're static they are there to share a value and that is not a mistake
-            // - if they're not static then if this rule matches, then so does FinalFieldCouldBeStatic,
-            // and that rule has the better fix.
-            && !varId.hasModifiers(JModifier.FINAL);
+                // We ignore final variables for a reason:
+                // - if they're static they are there to share a value and that is not a mistake
+                // - if they're not static then if this rule matches, then so does FinalFieldCouldBeStatic,
+                // and that rule has the better fix.
+                && !varId.hasModifiers(JModifier.FINAL);
     }
 
     private boolean isSingularField(ASTTypeDeclaration fieldOwner, ASTVariableId varId, DataflowResult dataflow) {

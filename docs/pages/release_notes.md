@@ -42,6 +42,11 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚨 API Changes
 
+#### Deprecated methods
+
+* {%jdoc java::lang.java.rule.design.SingularFieldRule#mayBeSingular(java::lang.java.ast.ModifierOwner) %} has been deprecated for
+  removal. The method is only useful for the rule itself and shouldn't be used otherwise.
+
 ### ✨ External Contributions
 * [#4864](https://github.com/pmd/pmd/pull/4864): Fix #1084 \[Java] add extra assert method names to Junit rules - [Erwan Moutymbo](https://github.com/emouty) (@emouty)
 * [#4894](https://github.com/pmd/pmd/pull/4894): Fix #4791 Error caused by space in JDK path - [Scrates1](https://github.com/Scrates1) (@Scrates1)
