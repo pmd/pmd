@@ -121,7 +121,11 @@ public final class Infer {
     }
 
     InferenceContext newContextFor(List<JTypeVar> tvars) {
-        return new InferenceContext(ts, supertypeCheckCache, tvars, LOG);
+        return newContextFor(tvars, true);
+    }
+
+    InferenceContext newContextFor(List<JTypeVar> tvars, boolean addPrimaryBound) {
+        return new InferenceContext(ts, supertypeCheckCache, tvars, LOG, addPrimaryBound);
     }
 
     /**

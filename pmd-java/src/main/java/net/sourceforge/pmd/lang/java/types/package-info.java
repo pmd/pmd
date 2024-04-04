@@ -74,8 +74,4 @@ class O {
  */
 
 
-/* TODO test explicitly typed lambda (in ExplicitTypesTest)
-     wildcard parameterization inference is not implemented yet.
- */
-
 
