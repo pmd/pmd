@@ -7241,7 +7241,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/49557842?v=4",
       "profile": "https://github.com/Scrates1",
       "contributions": [
-        "bug"
+        "bug",
+        "code"
       ]
     },
     {
@@ -7422,6 +7423,24 @@
       "name": "wangzitom12306",
       "avatar_url": "https://avatars.githubusercontent.com/u/125560621?v=4",
       "profile": "https://github.com/wangzitom12306",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "sdavids",
+      "name": "Sebastian Davids",
+      "avatar_url": "https://avatars.githubusercontent.com/u/201931?v=4",
+      "profile": "https://github.com/sdavids",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "Akromangel",
+      "name": "Mikhail Kuchma",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13533738?v=4",
+      "profile": "https://github.com/Akromangel",
       "contributions": [
         "bug"
       ]

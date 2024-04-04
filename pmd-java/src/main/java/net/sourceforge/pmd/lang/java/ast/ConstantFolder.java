@@ -365,7 +365,7 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, Object> {
             return null;
         }
         default:
-            throw AssertionUtil.shouldNotReachHere("Unknown operator in " + node);
+            throw AssertionUtil.shouldNotReachHere("Unknown operator '" + node.getOperator() + "' in " + node);
         }
     }
 
@@ -502,7 +502,7 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, Object> {
             case DOUBLE:
                 return doubleValue(v);
             default:
-                throw AssertionUtil.shouldNotReachHere("exhaustive enum");
+                throw AssertionUtil.shouldNotReachHere("exhaustive enum: " + target);
             }
         }
         return null;

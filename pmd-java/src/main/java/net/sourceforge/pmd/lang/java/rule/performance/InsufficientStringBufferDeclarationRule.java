@@ -9,8 +9,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.mutable.MutableInt;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
@@ -19,7 +17,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTCharLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
@@ -27,9 +24,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
-import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -44,7 +39,6 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
  */
 public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulechainRule {
 
-
     private static final int DEFAULT_BUFFER_SIZE = 16;
 
     public InsufficientStringBufferDeclarationRule() {
@@ -52,6 +46,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
     }
 
     private static class State {
+        static final int UNKNOWN_CAPACITY = -1;
         ASTVariableId variable;
         TypeNode rootNode;
         int capacity;
@@ -197,7 +192,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
             }
         } else if ("setLength".equals(methodCall.getMethodName())) {
             int newLength = calculateExpression(methodCall.getArguments().get(0));
-            if (state.capacity != -1 && newLength > state.capacity) {
+            if (state.capacity != State.UNKNOWN_CAPACITY && newLength > state.capacity) {
                 state.capacity = newLength; // a bigger setLength increases capacity
                 state.rootNode = methodCall;
             }
@@ -214,7 +209,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
     }
 
     private State getConstructorCapacity(ASTVariableId variable, ASTExpression node) {
-        State state = new State(variable, null, -1, 0);
+        State state = new State(variable, null, State.UNKNOWN_CAPACITY, 0);
 
         JavaNode possibleConstructorCall = node;
 
@@ -230,8 +225,11 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
         ASTConstructorCall constructorCall = (ASTConstructorCall) possibleConstructorCall;
         if (constructorCall.getArguments().size() == 1) {
             ASTExpression argument = constructorCall.getArguments().get(0);
-            if (argument instanceof ASTStringLiteral) {
-                int stringLength = ((ASTStringLiteral) argument).length();
+            if (TypeTestUtil.isA(String.class, argument)) {
+                if (argument.getConstValue() == null) {
+                    return state;
+                }
+                int stringLength = ((String) argument.getConstValue()).length();
                 return new State(variable, constructorCall, DEFAULT_BUFFER_SIZE + stringLength, stringLength + state.anticipatedLength);
             } else {
                 return new State(variable, constructorCall, calculateExpression(argument), state.anticipatedLength);
@@ -240,41 +238,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
         return new State(variable, constructorCall, DEFAULT_BUFFER_SIZE, state.anticipatedLength);
     }
 
-
     private int calculateExpression(ASTExpression expression) {
-
-        class ExpressionVisitor extends JavaVisitorBase<MutableInt, Void> {
-
-
-            @Override
-            public Void visit(ASTInfixExpression node, MutableInt data) {
-                MutableInt temp = new MutableInt(-1);
-
-                if (BinaryOp.ADD.equals(node.getOperator())) {
-                    data.setValue(0);
-                    node.getLeftOperand().acceptVisitor(this, temp);
-                    data.add(temp.getValue());
-                    node.getRightOperand().acceptVisitor(this, temp);
-                    data.add(temp.getValue());
-                } else if (BinaryOp.MUL.equals(node.getOperator())) {
-                    node.getLeftOperand().acceptVisitor(this, temp);
-                    data.setValue(temp.getValue());
-                    node.getRightOperand().acceptVisitor(this, temp);
-                    data.setValue(data.getValue() * temp.getValue());
-                }
-
-                return null;
-            }
-
-            @Override
-            public Void visit(ASTNumericLiteral node, MutableInt data) {
-                data.setValue(node.getValueAsInt());
-                return null;
-            }
-        }
-
-        MutableInt result = new MutableInt(-1);
-        expression.acceptVisitor(new ExpressionVisitor(), result);
-        return result.getValue();
+        Object value = expression.getConstValue();
+        return value == null ? State.UNKNOWN_CAPACITY : (Integer) value;
     }
 }

@@ -3543,6 +3543,176 @@ public class UnusedAssignmentUnusedVariableFP {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] [7.0-rc1] UnusedAssignment for used field #4435</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        class FP {
+            long nanos;
+            static final long[] SHIFT = {};
+            public void advance(long currentTimeNanos) {
+                long previousTimeNanos = nanos;
+                nanos = currentTimeNanos;
+
+                try {
+                    // ...
+                    for (int i = 0; i < SHIFT.length; i++) {
+                        expire(i, i * 2L, i * 4L);
+                    }
+                } catch (Throwable t) {
+                    nanos = previousTimeNanos;
+                    throw t;
+                }
+            }
+            void expire(int index, long previousTicks, long delta) {}
+        }
+
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Consider method calls in ctors as leaking this</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        class FP {
+            long nanos;
+            FP() {
+                nanos = 2;
+                unknownMethod(4);
+                nanos = 6;
+            }
+            FP(int i) {
+                nanos = 2;
+                advance(4);
+                nanos = 6;
+            }
+            void advance(int i) {}
+        }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Don't consider fields that are not of this </description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+        class Foo {
+            long nanos;
+            void method() {
+                nanos = 2; // warn here
+                nanos = 4;
+            }
+            void method(Foo other) {
+                nanos = 2; // do not warn here
+                other.nanos = 4;
+            }
+        }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with synchronized</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        class Foo {
+            private static boolean someField;
+            private static final Object lock = new Object();
+            static void method() {
+                synchronized (lock) {
+                    processPendingActive = true;
+                }
+                doSomething();
+                synchronized (lock) {
+                    processPendingActive = false;
+                }
+            }
+            static void doSomething() {
+
+            }
+        }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with synchronized 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        class Foo {
+            private static native void waitForReferencePendingList();
+
+            private static final Object processPendingLock = new Object();
+            private static boolean processPendingActive = false;
+
+            private static void processPendingReferences() {
+                // Only the singleton reference processing thread calls
+                // waitForReferencePendingList() and getAndClearReferencePendingList().
+                // These are separate operations to avoid a race with other threads
+                // that are calling waitForReferenceProcessing().
+                waitForReferencePendingList();
+                Reference<Object> pendingList;
+                synchronized (processPendingLock) {
+                    pendingList = getAndClearReferencePendingList();
+                    processPendingActive = true;
+                }
+                while (pendingList != null) {
+                    Reference<Object> ref = pendingList;
+                    pendingList = ref.discovered;
+                    ref.discovered = null;
+
+                    if (ref instanceof Cleaner) {
+                        ((Cleaner)ref).clean();
+                        // Notify any waiters that progress has been made.
+                        // This improves latency for nio.Bits waiters, which
+                        // are the only important ones.
+                        synchronized (processPendingLock) {
+                            processPendingLock.notifyAll();
+                        }
+                    } else {
+                        ReferenceQueue<? super Object> q = ref.queue;
+                        if (q != ReferenceQueue.NULL) q.enqueue(ref);
+                    }
+                }
+                // Notify any waiters of completion of current round.
+                synchronized (processPendingLock) {
+                    processPendingActive = false;
+                    processPendingLock.notifyAll();
+                }
+            }
+        }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Problem with assignment to field #4618</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+
+    private boolean withIssues = false;
+
+    interface SkipMode {
+
+        boolean isDeclared();
+    }
+
+    SkipMode getSkipModeForModule(String mod) {
+
+    }
+    static boolean something() {}
+
+    void foo() {
+        if (!getSkipModeForModule("junixsocket-rmi").isDeclared()) {
+            try {
+                Class.forName("java.rmi.Remote");
+            } catch (ClassNotFoundException e) {
+                System.setProperty("selftest.skip.junixsocket-rmi", "force_auto");
+                withIssues = true;
+            }
+
+            if (!something()) {
+                System.setProperty("selftest.skip.junixsocket-rmi", "force_auto");
+                withIssues = true;
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 
     <test-code>
         <description>[java] UnusedAssignment false positive in record compact constructor #4603</description>

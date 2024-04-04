@@ -808,4 +808,41 @@ class Scratch {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Unnecessary cast to detect invocation part 1 - #3219</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+class MyClass {
+     void m(int i) {}
+     void m(Integer i) {}
+     void m(Object o) {}
+
+     {
+         m(1); // select m(int)
+         m((int) 1); // select m(int), unnecessary
+         m((Integer) 1); // select m(Integer), cast is necessary
+         m((Object) Integer.valueOf(2)); // select m(Object) cast is necessary
+     }
+}
+            ]]></code>
+    </test-code>
+
+    <test-code disabled="true">
+        <!-- currently disabled, the rule fails to detect the violation on line 7 -->
+        <description>Unnecessary cast to detect invocation part 2 - #3219</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,7</expected-linenumbers>
+        <code><![CDATA[
+class MyClass {
+     void m(int i) {}
+
+     {
+         m(1);   // select m(int)
+         m((int) 1); // unnecessary
+         m((Integer) 1); // unnecessary as the selected overload is anyway `int`
+     }
+}
+            ]]></code>
+    </test-code>
 </test-data>

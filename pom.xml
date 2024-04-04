@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>7.0.0-SNAPSHOT</version>
+    <version>7.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
@@ -81,7 +81,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2023-09-30T15:15:59Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2024-03-22T07:17:27Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -113,9 +113,9 @@
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding} ${extraArgLine}</argLine>
         <extraArgLine /> <!-- empty by default, profiles set it as needed -->
 
-        <pmd.build-tools.version>23</pmd.build-tools.version>
+        <pmd.build-tools.version>24-SNAPSHOT</pmd.build-tools.version>
 
-        <pmd-designer.version>7.0.0-SNAPSHOT</pmd-designer.version>
+        <pmd-designer.version>7.0.0</pmd-designer.version>
         <javacc.jar>${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar</javacc.jar>
         <javacc.outputDirectory>${project.build.directory}/generated-sources/javacc</javacc.outputDirectory>
         <javacc.ant.wrapper>${project.basedir}/../javacc-wrapper.xml</javacc.ant.wrapper>
@@ -540,27 +540,27 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-compat6</artifactId>
-                            <version>7.0.0-rc4</version> <!-- pmd.dogfood.version -->
+                            <version>7.0.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>7.0.0-rc4</version> <!-- pmd.dogfood.version -->
+                            <version>7.0.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>7.0.0-rc4</version> <!-- pmd.dogfood.version -->
+                            <version>7.0.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-jsp</artifactId>
-                            <version>7.0.0-rc4</version> <!-- pmd.dogfood.version -->
+                            <version>7.0.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-javascript</artifactId>
-                            <version>7.0.0-rc4</version> <!-- pmd.dogfood.version -->
+                            <version>7.0.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
