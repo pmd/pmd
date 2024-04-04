@@ -85,7 +85,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.0.1-SNAPSHOT</li>
+    <li class="sidebarTitle">PMD 7.1.0-SNAPSHOT</li>
     <div class="sidebarTitleDate">Release date: 26-April-2024</div>
     
     
@@ -1880,7 +1880,7 @@
 <div class="card">
 <ul class="list-group list-group-flush">
 <li class="list-group-item">Since PMD 1.0.0</li>
-<li class="list-group-item">Implementation: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.1-SNAPSHOT/net/sourceforge/pmd/lang/java/JavaLanguageModule.html#"><code>JavaLanguageModule</code></a></li>
+<li class="list-group-item">Implementation: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.1.0-SNAPSHOT/net/sourceforge/pmd/lang/java/JavaLanguageModule.html#"><code>JavaLanguageModule</code></a></li>
 <li class="list-group-item">Id: java</li>
 <li class="list-group-item">PMD: ✔️</li>
 <li class="list-group-item">CPD: ✔️</li>
@@ -2102,42 +2102,42 @@ Java 11 (or later) for the auxClasspath allows PMD to correctly identify the mis
 
 <h2 id="symbol-table-apis">Symbol table APIs</h2>
 
-<p>Symbol table API related classes are in the package <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.1-SNAPSHOT/net/sourceforge/pmd/lang/java/symbols/package-summary.html#"><code>net.sourceforge.pmd.lang.java.symbols</code></a>.
-The root interface for symbols is <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.1-SNAPSHOT/net/sourceforge/pmd/lang/java/symbols/JElementSymbol.html#"><code>JElementSymbol</code></a>.</p>
+<p>Symbol table API related classes are in the package <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.1.0-SNAPSHOT/net/sourceforge/pmd/lang/java/symbols/package-summary.html#"><code>net.sourceforge.pmd.lang.java.symbols</code></a>.
+The root interface for symbols is <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.1.0-SNAPSHOT/net/sourceforge/pmd/lang/java/symbols/JElementSymbol.html#"><code>JElementSymbol</code></a>.</p>
 
-<p>The symbol table can be requested on any node with the method <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.1-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/AbstractJavaNode.html#getSymbolTable()"><code>getSymbolTable</code></a>.
-This returns a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.1-SNAPSHOT/net/sourceforge/pmd/lang/java/symbols/table/JSymbolTable.html#"><code>JSymbolTable</code></a> which gives you access to variables, methods and types that are
+<p>The symbol table can be requested on any node with the method <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.1.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/AbstractJavaNode.html#getSymbolTable()"><code>getSymbolTable</code></a>.
+This returns a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.1.0-SNAPSHOT/net/sourceforge/pmd/lang/java/symbols/table/JSymbolTable.html#"><code>JSymbolTable</code></a> which gives you access to variables, methods and types that are
 within scope.</p>
 
-<p>A <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.1-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#"><code>ASTExpression</code></a> might represent a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.1-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAssignableExpr.ASTNamedReferenceExpr.html#"><code>ASTAssignableExpr.ASTNamedReferenceExpr</code></a>
+<p>A <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.1.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#"><code>ASTExpression</code></a> might represent a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.1.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAssignableExpr.ASTNamedReferenceExpr.html#"><code>ASTAssignableExpr.ASTNamedReferenceExpr</code></a>
 if it e.g. references a variable name. In that case, you can access the referenced variable symbol
-with the method <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.1-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAssignableExpr.ASTNamedReferenceExpr.html#getReferencedSym()"><code>getReferencedSym</code></a>.</p>
+with the method <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.1.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAssignableExpr.ASTNamedReferenceExpr.html#getReferencedSym()"><code>getReferencedSym</code></a>.</p>
 
-<p>Declaration nodes, such as <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.1-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a> implement the interface
-<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.1-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/SymbolDeclaratorNode.html#"><code>SymbolDeclaratorNode</code></a>. Through the method
-<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.1-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/SymbolDeclaratorNode.html#getSymbol()"><code>getSymbol</code></a> you can also access the symbol.</p>
+<p>Declaration nodes, such as <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.1.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a> implement the interface
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.1.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/SymbolDeclaratorNode.html#"><code>SymbolDeclaratorNode</code></a>. Through the method
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.1.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/SymbolDeclaratorNode.html#getSymbol()"><code>getSymbol</code></a> you can also access the symbol.</p>
 
-<p>To find usages, you can call <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.1-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#getLocalUsages()"><code>getLocalUsages</code></a>.</p>
+<p>To find usages, you can call <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.1.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#getLocalUsages()"><code>getLocalUsages</code></a>.</p>
 
 <h2 id="type-resolution-apis">Type resolution APIs</h2>
 
-<p>Type resolution API related classes are in the package <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.1-SNAPSHOT/net/sourceforge/pmd/lang/java/types/package-summary.html#"><code>net.sourceforge.pmd.lang.java.types</code></a>.</p>
+<p>Type resolution API related classes are in the package <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.1.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/package-summary.html#"><code>net.sourceforge.pmd.lang.java.types</code></a>.</p>
 
 <p>The core of the framework is a set of interfaces to represent types. The root interface is
-<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.1-SNAPSHOT/net/sourceforge/pmd/lang/java/types/JTypeMirror.html#"><code>JTypeMirror</code></a>. Type mirrors are created by a
-<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.1-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeSystem.html#"><code>TypeSystem</code></a> object. This object is analysis-global.</p>
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.1.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/JTypeMirror.html#"><code>JTypeMirror</code></a>. Type mirrors are created by a
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.1.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeSystem.html#"><code>TypeSystem</code></a> object. This object is analysis-global.</p>
 
-<p>The utility class <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.1-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeTestUtil.html#"><code>TypeTestUtil</code></a> provides simple methods to check types,
+<p>The utility class <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.1.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeTestUtil.html#"><code>TypeTestUtil</code></a> provides simple methods to check types,
 e.g. <code class="language-plaintext highlighter-rouge">TypeTestUtil.isA(String.class, variableDeclaratorIdNode)</code> tests, whether the given
 variableDeclaratorId is of type “String”.</p>
 
-<p>Any <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.1-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a> provides access to the type with the method <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.1-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#getTypeMirror()"><code>getTypeMirror</code></a>.
-E.g. this can be called on <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.1-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodCall.html#"><code>ASTMethodCall</code></a> to retrieve the return type of the called method.</p>
+<p>Any <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.1.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a> provides access to the type with the method <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.1.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#getTypeMirror()"><code>getTypeMirror</code></a>.
+E.g. this can be called on <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.1.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodCall.html#"><code>ASTMethodCall</code></a> to retrieve the return type of the called method.</p>
 
 <h2 id="metrics-framework">Metrics framework</h2>
 
-<p>In order to use code metrics in Java, use the metrics constants in <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.1-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.html#"><code>JavaMetrics</code></a>,
-together with <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.1-SNAPSHOT/net/sourceforge/pmd/lang/metrics/MetricsUtil.html#"><code>MetricsUtil</code></a>. For instance:</p>
+<p>In order to use code metrics in Java, use the metrics constants in <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.1.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.html#"><code>JavaMetrics</code></a>,
+together with <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.1.0-SNAPSHOT/net/sourceforge/pmd/lang/metrics/MetricsUtil.html#"><code>MetricsUtil</code></a>. For instance:</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Override</span>
 <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="nc">ASTMethodDeclaration</span> <span class="n">node</span><span class="o">,</span> <span class="nc">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
@@ -2159,13 +2159,13 @@ together with <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.1-SNAPSHOT
 Java does this by adding the following additional information for each reported violation:</p>
 
 <ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.1-SNAPSHOT/net/sourceforge/pmd/reporting/RuleViolation.html#VARIABLE_NAME"><code>VARIABLE_NAME</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.1-SNAPSHOT/net/sourceforge/pmd/reporting/RuleViolation.html#METHOD_NAME"><code>METHOD_NAME</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.1-SNAPSHOT/net/sourceforge/pmd/reporting/RuleViolation.html#CLASS_NAME"><code>CLASS_NAME</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.1-SNAPSHOT/net/sourceforge/pmd/reporting/RuleViolation.html#PACKAGE_NAME"><code>PACKAGE_NAME</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.1.0-SNAPSHOT/net/sourceforge/pmd/reporting/RuleViolation.html#VARIABLE_NAME"><code>VARIABLE_NAME</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.1.0-SNAPSHOT/net/sourceforge/pmd/reporting/RuleViolation.html#METHOD_NAME"><code>METHOD_NAME</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.1.0-SNAPSHOT/net/sourceforge/pmd/reporting/RuleViolation.html#CLASS_NAME"><code>CLASS_NAME</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.1.0-SNAPSHOT/net/sourceforge/pmd/reporting/RuleViolation.html#PACKAGE_NAME"><code>PACKAGE_NAME</code></a></li>
 </ul>
 
-<p>You can access these via <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.1-SNAPSHOT/net/sourceforge/pmd/reporting/RuleViolation.html#getAdditionalInfo()"><code>getAdditionalInfo</code></a></p>
+<p>You can access these via <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.1.0-SNAPSHOT/net/sourceforge/pmd/reporting/RuleViolation.html#getAdditionalInfo()"><code>getAdditionalInfo</code></a></p>
 
 <h2 id="dataflow">Dataflow</h2>
 
