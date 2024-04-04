@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
@@ -43,8 +47,8 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<Boolean> IGNORE_IF_RECEIVER_IS_METHOD =
         PropertyFactory.booleanProperty("ignoreIfReceiverIsMethod")
-                       .desc("Ignore if the receiver of the method reference is a method call. " +
-                           "These may cause side effects that often should prevent the conversion to a method reference.")
+                       .desc("Ignore if the receiver of the method reference is a method call. "
+                           + "These may cause side effects that often should prevent the conversion to a method reference.")
                        .defaultValue(true)
                        .build();
 
