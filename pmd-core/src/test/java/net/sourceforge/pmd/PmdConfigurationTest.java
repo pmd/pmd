@@ -32,7 +32,6 @@ import net.sourceforge.pmd.cache.internal.FileAnalysisCache;
 import net.sourceforge.pmd.cache.internal.NoopAnalysisCache;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.lang.CpdOnlyDummyLanguage;
-import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.RulePriority;
 import net.sourceforge.pmd.renderers.CSVRenderer;
@@ -241,7 +240,7 @@ class PmdConfigurationTest {
 
         assertThrows(UnsupportedOperationException.class,
             () -> configuration.setOnlyRecognizeLanguage(CpdOnlyDummyLanguage.getInstance()));
-       assertThrows(UnsupportedOperationException.class,
+        assertThrows(UnsupportedOperationException.class,
             () -> configuration.setDefaultLanguageVersion(CpdOnlyDummyLanguage.getInstance().getDefaultVersion()));
     }
 }

@@ -6,10 +6,6 @@ package net.sourceforge.pmd.lang;
 
 import java.util.Objects;
 
-import net.sourceforge.pmd.cpd.AnyCpdLexer;
-import net.sourceforge.pmd.cpd.CpdLexer;
-import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
-
 /**
  * Dummy language used for testing PMD.
  */

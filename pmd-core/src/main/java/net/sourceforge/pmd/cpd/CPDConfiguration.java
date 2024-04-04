@@ -22,7 +22,6 @@ import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.cpd.internal.CpdLanguagePropertiesDefaults;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.PmdCapableLanguage;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 /**
@@ -272,8 +271,8 @@ public class CPDConfiguration extends AbstractConfiguration {
     @Override
     protected void checkLanguageIsAcceptable(Language lang) throws UnsupportedOperationException {
         if (!(lang instanceof CpdCapableLanguage)) {
-            throw new UnsupportedOperationException("Language " + lang.getId() + " does not support analysis with CPD and cannot be used in a CPDConfiguration. " +
-                "You may be able to use it with PMD though.");
+            throw new UnsupportedOperationException("Language " + lang.getId() + " does not support analysis with CPD and cannot be used in a CPDConfiguration. "
+                + "You may be able to use it with PMD though.");
         }
     }
 
