@@ -56,6 +56,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTUnionType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
@@ -351,15 +352,23 @@ public final class PrettyPrintingUtil {
 
         @Override
         public Void visit(ASTInfixExpression node, StringBuilder sb) {
-            printWithParensIfNecessary(node, sb, node.getLeftOperand());
+            printWithParensIfNecessary(node.getLeftOperand(), sb, node);
             sb.append(' ');
             sb.append(node.getOperator());
             sb.append(' ');
-            printWithParensIfNecessary(node, sb, node.getRightOperand());
+            printWithParensIfNecessary(node.getRightOperand(), sb, node);
             return null;
         }
 
-        private void printWithParensIfNecessary(ASTInfixExpression parent, StringBuilder sb, ASTExpression operand) {
+
+        @Override
+        public Void visit(ASTUnaryExpression node, StringBuilder sb) {
+            sb.append(node.getOperator());
+            printWithParensIfNecessary(node.getOperand(), sb, node);
+            return null;
+        }
+
+        private void printWithParensIfNecessary(ASTExpression operand, StringBuilder sb, ASTExpression parent) {
             if (operand.isParenthesized() && needsParentheses(operand, parent) != Necessity.NEVER) {
                 ppInParens(sb, operand);
             } else {
@@ -369,11 +378,11 @@ public final class PrettyPrintingUtil {
 
         @Override
         public Void visit(ASTConditionalExpression node, StringBuilder sb) {
-            node.getCondition().acceptVisitor(this, sb);
+            printWithParensIfNecessary(node.getCondition(), sb, node);
             sb.append(" ? ");
-            node.getThenBranch().acceptVisitor(this, sb);
+            printWithParensIfNecessary(node.getThenBranch(), sb, node);
             sb.append(" : ");
-            node.getElseBranch().acceptVisitor(this, sb);
+            printWithParensIfNecessary(node.getElseBranch(), sb, node);
             return null;
         }
 
@@ -453,26 +462,17 @@ public final class PrettyPrintingUtil {
 
         @Override
         public Void visit(ASTMethodReference node, StringBuilder sb) {
-            ppMaybeInParens(sb, node.getQualifier());
+            printWithParensIfNecessary(node.getQualifier(), sb, node);
             sb.append("::");
             ppTypeArgs(sb, node.getExplicitTypeArguments());
             sb.append(node.getMethodName());
             return null;
         }
 
-        private void ppMaybeInParens(StringBuilder sb, ASTExpression qualifier) {
-            if (!(qualifier instanceof ASTPrimaryExpression)) {
-                ppInParens(sb, qualifier);
-            } else {
-                qualifier.acceptVisitor(this, sb);
-            }
-        }
-
-
         private void addQualifier(QualifiableExpression node, StringBuilder data) {
             ASTExpression qualifier = node.getQualifier();
             if (qualifier != null) {
-                ppMaybeInParens(data, qualifier);
+                printWithParensIfNecessary(qualifier, data, node);
                 data.append('.');
             }
 

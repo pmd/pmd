@@ -27,6 +27,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
+import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ExpressionParsingCtx;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -77,6 +78,11 @@ class PrettyPrintingUtilTest extends BaseParserTest {
         testPrettyPrintIdentity("new Foo(1)", ASTConstructorCall.class);
     }
 
+    @Test
+    void ppUnary() {
+        testPrettyPrintIdentity("-+4", ASTUnaryExpression.class);
+    }
+
 
     @Test
     void ppConditional() {
@@ -85,6 +91,7 @@ class PrettyPrintingUtilTest extends BaseParserTest {
 
     @Test
     void ppInfix() {
+        // note: removes unnecessary parens
         testPrettyPrint("(1+2)+2", ASTInfixExpression.class, "1 + 2 + 2");
         testPrettyPrint("(1+2)*2", ASTInfixExpression.class, "(1 + 2) * 2");
     }
