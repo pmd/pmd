@@ -270,7 +270,7 @@ public class CPDConfiguration extends AbstractConfiguration {
     }
 
     @Override
-    protected void checkLanguageIsAcceptable(Language lang) {
+    protected void checkLanguageIsAcceptable(Language lang) throws UnsupportedOperationException {
         if (!(lang instanceof CpdCapableLanguage)) {
             throw new UnsupportedOperationException("Language " + lang.getId() + " does not support analysis with CPD and cannot be used in a CPDConfiguration. " +
                 "You may be able to use it with PMD though.");

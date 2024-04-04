@@ -201,9 +201,10 @@ public abstract class AbstractConfiguration {
 
     /**
      * Check that it is correct to use the given language with this configuration.
-     * Throw if not.
+     *
+     * @throws UnsupportedOperationException if the language isn't supported.
      */
-    protected void checkLanguageIsAcceptable(Language lang) {
+    protected void checkLanguageIsAcceptable(Language lang) throws UnsupportedOperationException {
         // do nothing
     }
 
