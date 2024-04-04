@@ -2986,6 +2986,11 @@ Customize the maximum number of assertions used by this Rule to suit your needs.
       <td>1</td>
       <td>Maximum number of assert calls in a test method</td>
     </tr>
+    <tr>
+      <td>extraAssertMethodNames</td>
+      <td> </td>
+      <td>Extra valid assertion methods names</td>
+    </tr>
   </tbody>
 </table>
 
@@ -2997,6 +3002,7 @@ Customize the maximum number of assertions used by this Rule to suit your needs.
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/JUnitTestContainsTooManyAsserts"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;properties&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"maximumAsserts"</span> <span class="na">value=</span><span class="s">"1"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"extraAssertMethodNames"</span> <span class="na">value=</span><span class="s">""</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
@@ -3024,8 +3030,35 @@ with messages provide the developer a clearer idea of what the test does.</p>
 <span class="o">}</span>
 </code></pre></div></div>
 
-<p><strong>Use this rule by referencing it:</strong></p>
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>extraAssertMethodNames</td>
+      <td> </td>
+      <td>Extra valid assertion methods names</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/JUnitTestsShouldIncludeAssert"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/JUnitTestsShouldIncludeAssert"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"extraAssertMethodNames"</span> <span class="na">value=</span><span class="s">""</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="junituseexpected">JUnitUseExpected</h2>
@@ -4185,7 +4218,7 @@ a block <code class="language-plaintext highlighter-rouge">{}</code> is sufficie
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 3, 2024 <br />
+             Site last generated: Apr 4, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

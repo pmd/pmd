@@ -1879,6 +1879,14 @@
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
+<h3 id="-rule-changes">🌟 Rule Changes</h3>
+
+<ul>
+  <li><a href="pmd_rules_java_bestpractices.html#junittestsshouldincludeassert"><code class="language-plaintext highlighter-rouge">JUnitTestsShouldIncludeAssert</code></a> and <a href="pmd_rules_java_bestpractices.html#junittestcontainstoomanyasserts"><code class="language-plaintext highlighter-rouge">JUnitTestContainsTooManyAsserts</code></a>
+have a new property named <code class="language-plaintext highlighter-rouge">extraAssertMethodNames</code>. With this property, you can configure which additional static
+methods should be considered as valid verification methods. This allows to use custom mocking or assertion libraries.</li>
+</ul>
+
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
 <ul>
   <li>cli
@@ -1888,6 +1896,7 @@
   </li>
   <li>java-bestpractices
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1084">#1084</a>: [java] Allow JUnitTestsShouldIncludeAssert to configure verification methods</li>
       <li><a href="https://github.com/pmd/pmd/issues/4435">#4435</a>: [java] [7.0-rc1] UnusedAssignment for used field</li>
       <li><a href="https://github.com/pmd/pmd/issues/4569">#4569</a>: [java] ForLoopCanBeForeach reports on loop <code class="language-plaintext highlighter-rouge">for (int i = 0; i &lt; list.size(); i += 2)</code></li>
       <li><a href="https://github.com/pmd/pmd/issues/4618">#4618</a>: [java] UnusedAssignment false positive with conditional assignments of fields</li>
@@ -1922,6 +1931,7 @@
 
 <h3 id="-external-contributions">✨ External Contributions</h3>
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/4864">#4864</a>: Fix #1084 [Java] add extra assert method names to Junit rules - <a href="https://github.com/emouty">Erwan Moutymbo</a> (@emouty)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4894">#4894</a>: Fix #4791 Error caused by space in JDK path - <a href="https://github.com/Scrates1">Scrates1</a> (@Scrates1)</li>
 </ul>
 
@@ -1954,7 +1964,7 @@
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 3, 2024 <br />
+             Site last generated: Apr 4, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
