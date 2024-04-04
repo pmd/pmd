@@ -20,9 +20,12 @@ import org.junit.jupiter.api.Test;
 import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
+import net.sourceforge.pmd.lang.java.ast.ExpressionParsingCtx;
 import net.sourceforge.pmd.util.StringUtil;
 
 class PrettyPrintingUtilTest extends BaseParserTest {
@@ -47,42 +50,53 @@ class PrettyPrintingUtilTest extends BaseParserTest {
 
     @Test
     void ppMethodCallArgsTooBig() {
-        ASTCompilationUnit root = java.parse("class A { { this.foo(\"a long string\", 12, 12, 12, 12, 12); } }");
-        @NonNull ASTMethodCall m = root.descendants(ASTMethodCall.class).firstOrThrow();
-
-        assertThat(prettyPrint(m), contentEquals("this.foo(\"a long string\", 12...)"));
+        testPrettyPrint("this.foo(\"a long string\", 12, 12, 12, 12, 12)",
+            ASTMethodCall.class, "this.foo(\"a long string\", 12...)");
     }
 
     @Test
     void ppMethodCallOnCast() {
-        ASTCompilationUnit root = java.parse("class A { { ((Object) this).foo(12); } }");
-        @NonNull ASTMethodCall m = root.descendants(ASTMethodCall.class).firstOrThrow();
-
-        assertThat(prettyPrint(m), contentEquals("((Object) this).foo(12)"));
+        testPrettyPrintIdentity("((Object) this).foo(12)", ASTMethodCall.class);
     }
 
     @Test
     void ppMethodRef() {
-        ASTCompilationUnit root = java.parse("class A { { foo(ASTW::meth); } }");
-        @NonNull ASTMethodReference m = root.descendants(ASTMethodReference.class).firstOrThrow();
-
-        assertThat(prettyPrint(m), contentEquals("ASTW::meth"));
+        testPrettyPrintIdentity("ASTW::meth", ASTMethodReference.class);
     }
 
     @Test
     void ppCtorCall() {
-        ASTCompilationUnit root = java.parse("class A { { new Foo(1); } }");
-        @NonNull ASTConstructorCall m = root.descendants(ASTConstructorCall.class).firstOrThrow();
-
-        assertThat(prettyPrint(m), contentEquals("new Foo(1)"));
+        testPrettyPrintIdentity("new Foo(1)", ASTConstructorCall.class);
     }
 
     @Test
     void ppMethodRefWithTyArgs() {
-        ASTCompilationUnit root = java.parse("class A { { foo(ASTW::<String>meth); } }");
-        @NonNull ASTMethodReference m = root.descendants(ASTMethodReference.class).firstOrThrow();
+        testPrettyPrint("foo(ASTW::<String>meth)", ASTMethodReference.class,
+            "ASTW::<String>meth");
+    }
 
-        assertThat(prettyPrint(m), contentEquals("ASTW::<String>meth"));
+    @Test
+    void ppLambdaExpr() {
+        testPrettyPrintIdentity("(a, b) -> new Foo()", ASTLambdaExpression.class);
+        testPrettyPrintIdentity("() -> new Foo()", ASTLambdaExpression.class);
+        testPrettyPrintIdentity("x -> new Foo()", ASTLambdaExpression.class);
+        testPrettyPrint("(x) -> new Foo()", ASTLambdaExpression.class, "x -> new Foo()");
+    }
+
+    @Test
+    void ppLambdaBlock() {
+        testPrettyPrint("(a, b) -> {return new Foo(); }", ASTLambdaExpression.class,
+            "(a, b) -> { ... }");
+    }
+
+    private <T extends ASTExpression> void testPrettyPrint(String expr, Class<T> nodeTy, String expected) {
+        ASTCompilationUnit root = java.parse("class A { { Object x = " + expr + "; } }");
+        @NonNull T node = root.descendants(nodeTy).firstOrThrow();
+        assertThat(prettyPrint(node), contentEquals(expected));
+    }
+
+    private <T extends ASTExpression> void testPrettyPrintIdentity(String expr, Class<T> nodeTy) {
+        testPrettyPrint(expr, nodeTy, expr);
     }
 
     private static Matcher<CharSequence> contentEquals(String str) {

@@ -9,11 +9,13 @@ import static net.sourceforge.pmd.util.AssertionUtil.shouldNotReachHere;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
@@ -28,8 +30,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForInit;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
+import net.sourceforge.pmd.lang.java.ast.ASTGuard;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTIntersectionType;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameterList;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
@@ -335,6 +341,41 @@ public final class PrettyPrintingUtil {
         @Override
         public Void visit(ASTAmbiguousName node, StringBuilder data) {
             data.append(node.getName());
+            return null;
+        }
+
+
+        @Override
+        public Void visit(ASTLambdaExpression node, StringBuilder sb) {
+            node.getParameters().acceptVisitor(this, sb);
+            sb.append(" -> ");
+            ASTExpression exprBody = node.getExpression();
+            if (exprBody != null) {
+                exprBody.acceptVisitor(this, sb);
+            } else {
+                sb.append("{ ... }");
+            }
+            return null;
+        }
+
+        @Override
+        public Void visit(ASTLambdaParameterList node, StringBuilder sb) {
+            if (node.size() == 1) {
+                sb.append(node.get(0).getVarId().getName());
+                return null;
+            } else if (node.isEmpty()) {
+                sb.append("()");
+                return null;
+            }
+
+            sb.append('(');
+            sb.append(node.get(0).getVarId().getName());
+            node.toStream().drop(1).forEach(it -> {
+                sb.append(", ");
+                sb.append(it.getVarId().getName());
+            });
+            sb.append(')');
+
             return null;
         }
 
