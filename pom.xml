@@ -624,6 +624,30 @@
                         </lifecycleMappingMetadata>
                     </configuration>
                 </plugin>
+
+                <plugin>
+                    <groupId>com.github.siom79.japicmp</groupId>
+                    <artifactId>japicmp-maven-plugin</artifactId>
+                    <version>0.20.0</version>
+                    <configuration>
+                        <parameter>
+                            <breakBuildBasedOnSemanticVersioning>true</breakBuildBasedOnSemanticVersioning>
+                            <onlyModified>true</onlyModified>
+                            <excludes>
+                                <exclude>@net.sourceforge.pmd.annotation.InternalApi</exclude>
+                            </excludes>
+                        </parameter>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>japicmp</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>cmp</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -727,6 +751,11 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <!-- Enable japicmp for all modules by default -->
+            <plugin>
+                <groupId>com.github.siom79.japicmp</groupId>
+                <artifactId>japicmp-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
@@ -1183,6 +1212,7 @@
                 <cpd.skip>true</cpd.skip>
                 <cyclonedx.skip>true</cyclonedx.skip>
                 <dokka.skip>true</dokka.skip>
+                <japicmp.skip>true</japicmp.skip>
             </properties>
         </profile>
 
