@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.html.ast;
 
-import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.lang.html.HtmlLanguageModule;
+import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 
 public final class HtmlParsingHelper extends BaseParsingHelper<HtmlParsingHelper, ASTHtmlDocument> {
 

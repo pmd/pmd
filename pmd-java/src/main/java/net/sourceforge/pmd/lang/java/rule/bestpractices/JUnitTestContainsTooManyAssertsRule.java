@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -12,10 +15,6 @@ import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.properties.NumericConstraints;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
-
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class JUnitTestContainsTooManyAssertsRule extends AbstractJavaRulechainRule {
 
