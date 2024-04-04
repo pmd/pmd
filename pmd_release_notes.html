@@ -1889,6 +1889,11 @@ methods should be considered as valid verification methods. This allows to use c
 
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
 <ul>
+  <li>core
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/494">#494</a>: [core] Adopt JApiCmp to enforce control over API changes</li>
+    </ul>
+  </li>
   <li>cli
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4791">#4791</a>: [cli] Could not find or load main class</li>
@@ -1938,6 +1943,13 @@ methods should be considered as valid verification methods. This allows to use c
 </ul>
 
 <h3 id="-api-changes">🚨 API Changes</h3>
+
+<h4 id="deprecated-methods">Deprecated methods</h4>
+
+<ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.1.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/design/SingularFieldRule.html#mayBeSingular(net.sourceforge.pmd.lang.java.ast.ModifierOwner)"><code>mayBeSingular</code></a> has been deprecated for
+removal. The method is only useful for the rule itself and shouldn’t be used otherwise.</li>
+</ul>
 
 <h3 id="-external-contributions">✨ External Contributions</h3>
 <ul>
