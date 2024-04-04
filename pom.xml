@@ -634,6 +634,7 @@
                             <breakBuildBasedOnSemanticVersioning>true</breakBuildBasedOnSemanticVersioning>
                             <onlyModified>true</onlyModified>
                             <excludes>
+                                <exclude>@net.sourceforge.pmd.annotation.Experimental</exclude>
                                 <exclude>@net.sourceforge.pmd.annotation.InternalApi</exclude>
                             </excludes>
                         </parameter>
