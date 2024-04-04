@@ -56,6 +56,7 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
+import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * This rule can detect possible violations of the Law of Demeter. The Law of
@@ -228,7 +229,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
     private int methodCallDegree(ASTMethodCall call) {
         if (call.getOverloadSelectionInfo().isFailed() // be conservative
             || call.getMethodType().isStatic() // static methods are taken to be construction methods.
-            || isCallOnThisInstance(call)
+            || isCallOnThisInstance(call) != OptionalBool.NO
             || call.getQualifier() == null // either static or call on this. Prevents NPE when unresolved
             || isFactoryMethod(call)
             || isBuilderPattern(call.getQualifier())

@@ -66,8 +66,6 @@ function build() {
     # was green before. This is usually checked via a local build, see ./do-release.sh
     if pmd_ci_maven_isReleaseBuild; then
         PMD_MAVEN_EXTRA_OPTS+=(-DskipTests=true)
-        # note: skipping pmd in order to avoid failures due to #4757
-        PMD_MAVEN_EXTRA_OPTS+=(-Dpmd.skip=true -Dcpd.skip=true)
     fi
 
     # make sure, BUILD_CLI_DIST_ONLY is set to false by default
@@ -82,10 +80,10 @@ function build() {
             # There are two possible (release) builds:
             if [ "${BUILD_CLI_DIST_ONLY}" = "false" ]; then
                 # a) everything without pmd-cli and pmd-dist
-                ./mvnw clean verify -P"${mvn_profiles}" -Dskip-cli-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
+                ./mvnw clean verify -Dskip-cli-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
             else
                 # b) only pmd-cli and pmd-dist
-                ./mvnw clean verify -P"${mvn_profiles}" -pl pmd-cli,pmd-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
+                ./mvnw clean verify -pl pmd-cli,pmd-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
             fi
         else
             # snapshot build - just verify on the different OS
@@ -119,6 +117,16 @@ function build() {
     pmd_ci_log_group_start "Publishing Release"
         pmd_ci_gh_releases_publishRelease "$GH_RELEASE"
         pmd_ci_sourceforge_selectDefault "${PMD_CI_MAVEN_PROJECT_VERSION}"
+        # reconstruct the SF_BLOG_URL - the news entry has been created as draft when running the
+        # first release stage
+        local news_title
+        news_title="PMD ${PMD_CI_MAVEN_PROJECT_VERSION} ($(date -u +%d-%B-%Y)) released"
+        news_title="${news_title// /-}"
+        news_title="${news_title//\./}"
+        news_title="${news_title//\(/}"
+        news_title="${news_title//\)/}"
+        news_title="${news_title,,}" # convert to lowercase
+        SF_BLOG_URL="https://sourceforge.net/rest/p/pmd/news/$(date -u +%Y)/$(date -u +%m)/${news_title// /_}"
         pmd_ci_sourceforge_publishBlogPost "$SF_BLOG_URL"
     pmd_ci_log_group_end
     fi

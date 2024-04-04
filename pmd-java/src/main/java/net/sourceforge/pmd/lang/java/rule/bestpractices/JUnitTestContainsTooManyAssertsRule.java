@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -22,18 +25,28 @@ public class JUnitTestContainsTooManyAssertsRule extends AbstractJavaRulechainRu
                        .defaultValue(1)
                        .build();
 
+    private static final PropertyDescriptor<Set<String>> EXTRA_ASSERT_METHOD_NAMES =
+            PropertyFactory.stringProperty("extraAssertMethodNames")
+                           .desc("Extra valid assertion methods names")
+                           .map(Collectors.toSet())
+                           .emptyDefaultValue()
+                           .build();
+
 
     public JUnitTestContainsTooManyAssertsRule() {
         super(ASTMethodDeclaration.class);
         definePropertyDescriptor(MAX_ASSERTS);
+        definePropertyDescriptor(EXTRA_ASSERT_METHOD_NAMES);
     }
 
     @Override
     public Object visit(ASTMethodDeclaration method, Object data) {
         ASTBlock body = method.getBody();
         if (body != null && TestFrameworksUtil.isTestMethod(method)) {
+            Set<String> extraAsserts = getProperty(EXTRA_ASSERT_METHOD_NAMES);
             int assertCount = body.descendants(ASTMethodCall.class)
-                                  .filter(TestFrameworksUtil::isProbableAssertCall)
+                                  .filter(call -> TestFrameworksUtil.isProbableAssertCall(call)
+                                  || extraAsserts.contains(call.getMethodName()))
                                   .count();
             if (assertCount > getProperty(MAX_ASSERTS)) {
                 asCtx(data).addViolation(method);

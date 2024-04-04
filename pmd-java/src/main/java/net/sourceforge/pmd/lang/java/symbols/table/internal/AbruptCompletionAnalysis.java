@@ -105,7 +105,7 @@ final class AbruptCompletionAnalysis {
 
         @Override
         public Boolean visitJavaNode(JavaNode node, SubtreeState data) {
-            throw AssertionUtil.shouldNotReachHere("Cannot visit non-statements");
+            throw AssertionUtil.shouldNotReachHere("Cannot visit non-statements: " + node);
         }
 
         @Override
@@ -214,7 +214,7 @@ final class AbruptCompletionAnalysis {
                     branchCompletesNormally = blockCanCompleteNormally(statements, branchState)
                         || branchState.containsBreak(node);
                 } else {
-                    throw AssertionUtil.shouldNotReachHere("Not a branch type :" + branch);
+                    throw AssertionUtil.shouldNotReachHere("Not a branch type: " + branch);
                 }
 
                 if (isExhaustive && first) {

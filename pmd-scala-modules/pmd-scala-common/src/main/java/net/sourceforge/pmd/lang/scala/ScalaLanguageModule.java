@@ -5,10 +5,10 @@
 package net.sourceforge.pmd.lang.scala;
 
 import net.sourceforge.pmd.cpd.CpdLexer;
-import net.sourceforge.pmd.lang.scala.cpd.ScalaCpdLexer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
+import net.sourceforge.pmd.lang.scala.cpd.ScalaCpdLexer;
 
 /**
  * Language Module for Scala.

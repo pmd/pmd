@@ -55,16 +55,19 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
     @Override
     public Object visit(ASTClassDeclaration node, Object data) {
 
-        if (node.isAbstract()) {
-            checkMatches(node, abstractClassRegex, data);
-        } else if (isTestClass(node)) {
+        if (isTestClass(node)) {
             checkMatches(node, testClassRegex, data);
         } else if (JavaRuleUtil.isUtilityClass(node)) {
             checkMatches(node, utilityClassRegex, data);
         } else if (node.isInterface()) {
             checkMatches(node, interfaceRegex, data);
         } else {
-            checkMatches(node, classRegex, data);
+            // at this point, node must be a class and cannot be an interface anymore
+            if (node.isAbstract()) {
+                checkMatches(node, abstractClassRegex, data);
+            } else {
+                checkMatches(node, classRegex, data);
+            }
         }
 
         return data;

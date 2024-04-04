@@ -10,9 +10,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
+import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 
 class Java17TreeDumpTest extends BaseJavaTreeDumpTest {
     private final JavaParsingHelper java17 =

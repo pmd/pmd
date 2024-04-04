@@ -176,7 +176,7 @@ public final class PolyResolution {
                         List<JTypeMirror> branches = ((ASTSwitchExpression) e).getYieldExpressions().toList(TypeNode::getTypeMirror);
                         return computeStandaloneConditionalType(ts, branches);
                     } else {
-                        throw AssertionUtil.shouldNotReachHere("ConditionalMirrorImpl returns non-null for conditionals");
+                        throw AssertionUtil.shouldNotReachHere("ConditionalMirrorImpl returns non-null for conditionals: " + e);
                     }
                 }
                 return ts.ERROR;

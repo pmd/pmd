@@ -4,7 +4,7 @@
 set -e
 
 # Make sure, everything is English...
-export LANG=C.UTF-8
+export LANG=en_US.UTF-8
 
 # verify the current directory
 if [ ! -f pom.xml ] || [ ! -d ../pmd.github.io ]; then
@@ -136,7 +136,7 @@ echo "* Days since last release: $(( ( $(date +%s) - $(git log --max-count=1 --f
 )
 
 TEMP_RELEASE_NOTES=$(cat docs/pages/release_notes.md)
-TEMP_RELEASE_NOTES=${TEMP_RELEASE_NOTES/\{\% endtocmaker \%\}/${STATS//\&/\\\&}$'\n'$'\n'\{\% endtocmaker \%\}$'\n'}
+TEMP_RELEASE_NOTES=${TEMP_RELEASE_NOTES/\{\% endtocmaker \%\}/${STATS//\&/\\\&}$'\n'$'\n'\{\% endtocmaker \%\}}
 echo "${TEMP_RELEASE_NOTES}" > docs/pages/release_notes.md
 
 echo
@@ -165,9 +165,6 @@ title: PMD ${RELEASE_VERSION} released
 ${NEW_RELEASE_NOTES}
 EOF
 
-echo "Prerendering release notes pmd 7..."
-RELEASE_NOTES_PMD7=$(bundle exec docs/render_release_notes.rb docs/pages/release_notes_pmd7.md)
-
 echo "Committing current changes (pmd)"
 
 git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
@@ -177,7 +174,7 @@ git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
     changes=$(git status --porcelain 2>/dev/null| grep -c -E "^[AMDRC]")
     if [ "$changes" -gt 0 ]; then
         echo "Committing current changes (pmd.github.io)"
-        git commit -a -m "Prepare pmd release ${RELEASE_VERSION}" && git push
+        git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
     fi
 )
 
@@ -199,22 +196,30 @@ echo "Run the project tests against the changed POMs to confirm everything is in
 echo "Commit and create tag"
 git commit -a -m "[release] prepare release pmd_releases/${RELEASE_VERSION}"
 git tag -m "[release] copy for tag pmd_releases/${RELEASE_VERSION}" "pmd_releases/${RELEASE_VERSION}"
-echo "Update POMs to set the new development version ${DEVELOPMENT_VERSION}"
-./mvnw --quiet versions:set -DnewVersion="${DEVELOPMENT_VERSION}" -DgenerateBackupPoms=false -DupdateBuildOutputTimestampPolicy=never
-sed -i "s|<tag>pmd_releases/${RELEASE_VERSION}</tag>|<tag>HEAD</tag>|" pom.xml
-echo "Commit"
-git commit -a -m "[release] prepare for next development iteration"
-echo "Push branch and tag pmd_releases/${RELEASE_VERSION}"
-git push origin "${CURRENT_BRANCH}"
+echo "Push tag pmd_releases/${RELEASE_VERSION}"
 git push origin tag "pmd_releases/${RELEASE_VERSION}"
 
 
 echo
 echo "Tag has been pushed.... now check github actions: <https://github.com/pmd/pmd/actions>"
 echo
+echo "Now wait, until first stage of the release is finished successfully..."
+echo
+echo "If it is failing, you can fix the code/scripts and force push the tag via"
+echo
+echo "    git tag -d \"pmd_releases/${RELEASE_VERSION}\""
+echo "    git tag -m \"[release] copy for tag pmd_releases/${RELEASE_VERSION}\" \"pmd_releases/${RELEASE_VERSION}\""
+echo "    git push origin tag \"pmd_releases/${RELEASE_VERSION}\" --force"
+echo
+echo "However: This is only possible, if the artefacts have not been pushed to maven central yet..."
 echo
 echo "Press enter to continue..."
 read -r
+
+echo
+echo "Update POMs to set the new development version ${DEVELOPMENT_VERSION}"
+./mvnw --quiet versions:set -DnewVersion="${DEVELOPMENT_VERSION}" -DgenerateBackupPoms=false -DupdateBuildOutputTimestampPolicy=never
+sed -i "s|<tag>pmd_releases/${RELEASE_VERSION}</tag>|<tag>HEAD</tag>|" pom.xml
 
 echo
 echo "Check the milestone on github:"
@@ -271,7 +276,11 @@ This is a {{ site.pmd.release_type }} release.
 
 EOF
 
+echo "Committing current changes on branch ${CURRENT_BRANCH}"
+# note: using [skip ci] as only the first stage is done and the full build
+# requires pmd-designer to be present, which might not be the case yet...
 git commit -a -m "[release] Prepare next development version [skip ci]"
+echo "Push branch ${CURRENT_BRANCH}"
 git push origin "${CURRENT_BRANCH}"
 
 echo
@@ -292,6 +301,9 @@ read -r
 
 echo
 echo "Continuing with release of pmd-cli and pmd-dist..."
+echo "Before proceeding however, wait another 10 minutes, so that the freshly released artefacts"
+echo "are indeed available from maven central. The GitHub runners might not yet see them..."
+echo "If that happens, the build job needs to be started again, maybe the runner cache needs to be cleared as well."
 echo
 echo "Go to <https://github.com/pmd/pmd/actions/workflows/build.yml> and manually trigger a new build"
 echo "from tag 'pmd_releases/${RELEASE_VERSION}' and with option 'Build only modules cli and dist' checked."
@@ -301,8 +313,23 @@ echo
 echo "Now check github actions: <https://github.com/pmd/pmd/actions>"
 echo
 echo
-echo "Verify the new release on github: <https://github.com/pmd/pmd/releases/tag/pmd_releases/${RELEASE_VERSION}>"
-echo "and the news entry at <https://sourceforge.net/p/pmd/news/>"
+echo "Verification: (see also <https://docs.pmd-code.org/latest/pmd_projectdocs_committers_releasing.html>)"
+echo "* Release on GitHub: <https://github.com/pmd/pmd/releases/tag/pmd_releases/${RELEASE_VERSION}>"
+echo "  * should contain release notes"
+echo "  * should be published"
+echo "  * should contain release assets (bin, src, doc, cyclondx.json, cyclondx.xml)"
+echo "* Release Assets on sourceforge: <https://sourceforge.net/projects/pmd/files/pmd/${RELEASE_VERSION}/>"
+echo "  * Default download should be new version"
+echo "  * All assets are there (bin, src, doc, cyclondx.json, cyclondx.xml, ReadMe.md)"
+echo "* News entry on sourceforge: <https://sourceforge.net/p/pmd/news/>"
+echo "* Latest documentation points to new release: <https://docs.pmd-code.org/latest/>"
+echo "* JavaDoc API Doc is available: <https://docs.pmd-code.org/apidocs/pmd-core/${RELEASE_VERSION}/>"
+echo "* All artefacts are on maven central, especially pmd-cli"
+echo "  * <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-cli/${RELEASE_VERSION}/>"
+echo "  * <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-core/${RELEASE_VERSION}/>"
+echo "  * <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-java/${RELEASE_VERSION}/>"
+echo "  * <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-designer/${RELEASE_VERSION}/>"
+echo "* Regression Tester baseline has been created: <https://pmd-code.org/pmd-regression-tester/>"
 echo
 echo "*   Send out an announcement mail to the mailing list:"
 echo
@@ -322,6 +349,17 @@ tweet="${tweet//$'\n'/%0A}"
 echo "*   Tweet about this release on https://twitter.com/pmd_analyzer:"
 echo "        <https://twitter.com/intent/tweet?text=$tweet>"
 echo
+echo
+echo "Now waiting for the release to be finished..."
+echo "Press enter, to continue to push pmd.github.io changes"
+read -r
+
+echo "Pushing changes to <https://pmd.github.io>..."
+(
+    cd ../pmd.github.io
+    git push
+)
+
 echo "------------------------------------------"
 echo "Done."
 echo "------------------------------------------"

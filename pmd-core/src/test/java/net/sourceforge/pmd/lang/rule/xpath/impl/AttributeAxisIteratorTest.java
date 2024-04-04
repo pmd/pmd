@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.rule.xpath.impl;
 
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.impl.dummyast.ConcreteNode;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 
@@ -61,6 +63,20 @@ class AttributeAxisIteratorTest {
         AttributeAxisIterator it = new AttributeAxisIterator(dummyNode);
 
         assertEquals(DEFAULT_ATTRS, toMap(it).keySet());
+    }
+
+    /**
+     * Exercises the case described in
+     * <a href="https://github.com/pmd/pmd/issues/4885">[java] AssertionError: Method should be accessible #4885</a>.
+     */
+    @Test
+    void accessPublicMethodWithAPackagePrivateImplementationInSuperclass() {
+        final String ATTRIBUTE_NAME = "Value";
+        ConcreteNode node = new ConcreteNode();
+        AttributeAxisIterator it = new AttributeAxisIterator(node);
+        Map<String, Attribute> attributes = toMap(it);
+        assertTrue(attributes.containsKey(ATTRIBUTE_NAME));
+        assertEquals("actual_value", attributes.get(ATTRIBUTE_NAME).getValue().toString());
     }
 
     private Map<String, Attribute> toMap(AttributeAxisIterator it) {

@@ -75,4 +75,20 @@ public class Foo {
 class FooException extends Exception {}
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] AvoidCatchingGenericException: Can no longer suppress on the exception itself #4873</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Example {
+    public void example() {
+        try {
+            someMethod();
+        } catch(@SuppressWarnings("PMD.AvoidCatchingGenericException") Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

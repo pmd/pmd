@@ -174,4 +174,34 @@ class Foo {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>[java] BigIntegerInstantiation: False Positive with Java 17 and BigDecimal.TWO #4886</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.math.BigDecimal;
+
+class Foo {
+    static {
+        new BigDecimal("2");
+    }
+}
+]]></code>
+        <source-type>java 17</source-type>
+    </test-code>
+
+    <test-code>
+        <description>[java] BigIntegerInstantiation: BigDecimal.TWO with Java 19 #4886</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.math.BigDecimal;
+
+class Foo {
+    static {
+        new BigDecimal("2");
+    }
+}
+]]></code>
+        <source-type>java 19</source-type>
+    </test-code>
 </test-data>
