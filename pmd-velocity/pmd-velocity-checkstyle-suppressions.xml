@@ -6,5 +6,5 @@
     <suppress files="[\\/]generated-sources[\\/]" checks="[a-zA-Z0-9]*"/>
 
     <!-- The velocity language is under the Apache License. -->
-    <suppress checks="RegexpHeader" files="ast[\\/](ASTDirective|AbstractVmNode|ASTDivNode|ASTSubtractNode|NodeUtils|ASTMulNode|ASTMethod|ASTStringLiteral|ASTModNode|ASTEscape|ASTReference|ASTAddNode|ASTMathNode)\.java"/>
+    <suppress checks="RegexpHeader" files="ast[\\/](ASTDirective|AbstractVtlNode|ASTDivNode|ASTSubtractNode|NodeUtils|ASTMulNode|ASTMethod|ASTStringLiteral|ASTModNode|ASTEscape|ASTReference|ASTAddNode|ASTMathNode)\.java"/>
 </suppressions>

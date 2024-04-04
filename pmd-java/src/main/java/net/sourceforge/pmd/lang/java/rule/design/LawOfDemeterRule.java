@@ -55,8 +55,8 @@ import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
-import net.sourceforge.pmd.util.OptionalBool;
 import net.sourceforge.pmd.reporting.RuleContext;
+import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * This rule can detect possible violations of the Law of Demeter. The Law of

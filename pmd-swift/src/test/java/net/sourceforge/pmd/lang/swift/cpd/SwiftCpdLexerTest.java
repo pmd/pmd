@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.swift.cpd;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 import net.sourceforge.pmd.lang.swift.SwiftLanguageModule;
+import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 
 class SwiftCpdLexerTest extends CpdTextComparisonTest {
 

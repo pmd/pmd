@@ -10,9 +10,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.CpdLanguageProperties;
+import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 import net.sourceforge.pmd.lang.test.cpd.LanguagePropertyConfig;
-import net.sourceforge.pmd.lang.ast.LexException;
 
 class CsCpdLexerTest extends CpdTextComparisonTest {
 
