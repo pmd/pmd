@@ -21,6 +21,8 @@ This is a {{ site.pmd.release_type }} release.
   methods should be considered as valid verification methods. This allows to use custom mocking or assertion libraries.
 
 ### 🐛 Fixed Issues
+* core
+  * [#494](https://github.com/pmd/pmd/issues/494): \[core] Adopt JApiCmp to enforce control over API changes
 * cli
   * [#4791](https://github.com/pmd/pmd/issues/4791): \[cli] Could not find or load main class
 * apex-errorprone
@@ -45,6 +47,11 @@ This is a {{ site.pmd.release_type }} release.
   * [#4388](https://github.com/pmd/pmd/issues/4388): \[pom] InvalidDependencyTypes doesn't consider dependencies at all
 
 ### 🚨 API Changes
+
+#### Deprecated methods
+
+* {%jdoc java::lang.java.rule.design.SingularFieldRule#mayBeSingular(java::lang.java.ast.ModifierOwner) %} has been deprecated for
+  removal. The method is only useful for the rule itself and shouldn't be used otherwise.
 
 ### ✨ External Contributions
 * [#4864](https://github.com/pmd/pmd/pull/4864): Fix #1084 \[Java] add extra assert method names to Junit rules - [Erwan Moutymbo](https://github.com/emouty) (@emouty)
