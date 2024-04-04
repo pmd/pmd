@@ -79,6 +79,18 @@
                     <suppressionsLocation>pmd-plsql-checkstyle-suppressions.xml</suppressionsLocation>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>com.github.siom79.japicmp</groupId>
+                <artifactId>japicmp-maven-plugin</artifactId>
+                <configuration>
+                    <parameter>
+                        <excludes combine.children="append">
+                            <exclude>net.sourceforge.pmd.lang.plsql.ast.internal</exclude>
+                        </excludes>
+                    </parameter>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <dependencies>

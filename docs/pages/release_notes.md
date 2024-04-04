@@ -21,6 +21,8 @@ This is a {{ site.pmd.release_type }} release.
   methods should be considered as valid verification methods. This allows to use custom mocking or assertion libraries.
 
 ### 🐛 Fixed Issues
+* core
+  * [#494](https://github.com/pmd/pmd/issues/494): \[core] Adopt JApiCmp to enforce control over API changes
 * cli
   * [#4791](https://github.com/pmd/pmd/issues/4791): \[cli] Could not find or load main class
 * apex-errorprone
@@ -36,6 +38,7 @@ This is a {{ site.pmd.release_type }} release.
   * [#3694](https://github.com/pmd/pmd/issues/3694): \[java] SingularField ignores static variables
   * [#4873](https://github.com/pmd/pmd/issues/4873): \[java] AvoidCatchingGenericException: Can no longer suppress on the exception itself
 * java-errorprone
+  * [#2056](https://github.com/pmd/pmd/issues/2056): \[java] CloseResource false-positive with URLClassLoader in cast expression
   * [#4928](https://github.com/pmd/pmd/issues/4928): \[java] EmptyCatchBlock false negative when allowCommentedBlocks=true
 * java-performance
   * [#3845](https://github.com/pmd/pmd/issues/3845): \[java] InsufficientStringBufferDeclaration should consider literal expression
@@ -45,6 +48,11 @@ This is a {{ site.pmd.release_type }} release.
   * [#4388](https://github.com/pmd/pmd/issues/4388): \[pom] InvalidDependencyTypes doesn't consider dependencies at all
 
 ### 🚨 API Changes
+
+#### Deprecated methods
+
+* {%jdoc java::lang.java.rule.design.SingularFieldRule#mayBeSingular(java::lang.java.ast.ModifierOwner) %} has been deprecated for
+  removal. The method is only useful for the rule itself and shouldn't be used otherwise.
 
 ### ✨ External Contributions
 * [#4864](https://github.com/pmd/pmd/pull/4864): Fix #1084 \[Java] add extra assert method names to Junit rules - [Erwan Moutymbo](https://github.com/emouty) (@emouty)
