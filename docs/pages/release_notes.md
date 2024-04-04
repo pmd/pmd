@@ -21,6 +21,8 @@ This is a {{ site.pmd.release_type }} release.
   methods should be considered as valid verification methods. This allows to use custom mocking or assertion libraries.
 
 ### 🐛 Fixed Issues
+* core
+  * [#494](https://github.com/pmd/pmd/issues/494): \[core] Adopt JApiCmp to enforce control over API changes
 * cli
   * [#4791](https://github.com/pmd/pmd/issues/4791): \[cli] Could not find or load main class
 * java-bestpractices
