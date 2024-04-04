@@ -10,9 +10,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
-import net.sourceforge.pmd.lang.test.ast.BaseTreeDumpTest;
-import net.sourceforge.pmd.lang.test.ast.RelevantAttributePrinter;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -20,6 +17,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
+import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
+import net.sourceforge.pmd.lang.test.ast.BaseTreeDumpTest;
+import net.sourceforge.pmd.lang.test.ast.RelevantAttributePrinter;
 
 /**
  *

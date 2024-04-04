@@ -475,7 +475,7 @@
                         <suppressionsLocation>/net/sourceforge/pmd/pmd-checkstyle-suppressions.xml</suppressionsLocation>
                         <includeTestSourceDirectory>true</includeTestSourceDirectory>
                         <excludeGeneratedSources>true</excludeGeneratedSources>
-                        <includes>**/.java,**/*.kt</includes>
+                        <includes>**/*.java,**/*.kt</includes>
                         <resourceIncludes>**/*.properties,**/*.less</resourceIncludes>
                     </configuration>
                 </plugin>
