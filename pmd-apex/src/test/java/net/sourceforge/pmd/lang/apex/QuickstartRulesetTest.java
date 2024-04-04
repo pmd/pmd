@@ -9,9 +9,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.test.lang.rule.AbstractRuleSetFactoryTest;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.lang.rule.RuleSetLoader;
+import net.sourceforge.pmd.test.lang.rule.AbstractRuleSetFactoryTest;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 

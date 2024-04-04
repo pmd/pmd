@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>7.0.1-SNAPSHOT</version>
+    <version>7.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
@@ -475,7 +475,7 @@
                         <suppressionsLocation>/net/sourceforge/pmd/pmd-checkstyle-suppressions.xml</suppressionsLocation>
                         <includeTestSourceDirectory>true</includeTestSourceDirectory>
                         <excludeGeneratedSources>true</excludeGeneratedSources>
-                        <includes>**/.java,**/*.kt</includes>
+                        <includes>**/*.java,**/*.kt</includes>
                         <resourceIncludes>**/*.properties,**/*.less</resourceIncludes>
                     </configuration>
                 </plugin>

@@ -10,8 +10,8 @@ import static net.sourceforge.pmd.test.AbstractLanguageVersionTest.TestDescripto
 import java.util.Arrays;
 import java.util.Collection;
 
-import net.sourceforge.pmd.test.AbstractLanguageVersionTest;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.test.AbstractLanguageVersionTest;
 
 class LanguageVersionTest extends AbstractLanguageVersionTest {
 

@@ -81,7 +81,7 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
         } else if (node instanceof ASTExecutableDeclaration) {
             visitMethod((ASTExecutableDeclaration) node, methodReportLevel, ncssOptions, (RuleContext) data);
         } else {
-            throw AssertionUtil.shouldNotReachHere("unreachable");
+            throw AssertionUtil.shouldNotReachHere("node is not handled: " + node);
         }
         return data;
     }

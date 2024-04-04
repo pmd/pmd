@@ -6,9 +6,9 @@ package net.sourceforge.pmd.lang.swift.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.lang.swift.SwiftLanguageModule;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwTopLevel;
+import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 
 public class SwiftParsingHelper extends BaseParsingHelper<SwiftParsingHelper, SwTopLevel> {
 

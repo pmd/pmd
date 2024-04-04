@@ -7241,7 +7241,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/49557842?v=4",
       "profile": "https://github.com/Scrates1",
       "contributions": [
-        "bug"
+        "bug",
+        "code"
       ]
     },
     {
@@ -7442,6 +7443,15 @@
       "profile": "https://github.com/Akromangel",
       "contributions": [
         "bug"
+      ]
+    },
+    {
+      "login": "emouty",
+      "name": "emouty",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16755668?v=4",
+      "profile": "https://github.com/emouty",
+      "contributions": [
+        "code"
       ]
     }
   ],
