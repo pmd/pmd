@@ -28,7 +28,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ExpressionParsingCtx;
 import net.sourceforge.pmd.util.StringUtil;
 
 class PrettyPrintingUtilTest extends BaseParserTest {
