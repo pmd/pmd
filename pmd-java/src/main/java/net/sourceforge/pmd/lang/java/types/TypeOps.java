@@ -1733,8 +1733,15 @@ public final class TypeOps {
         vLoop:
         for (JTypeMirror v : set) {
             for (JTypeMirror w : set) {
-                if (!w.equals(v) && !hasUnresolvedSymbol(w) && isSubtypePure(w, v).bySubtyping()) {
-                    continue vLoop;
+                if (!w.equals(v) && !hasUnresolvedSymbol(w)) {
+                    Convertibility isConvertible = isSubtypePure(w, v);
+                    if (isConvertible.bySubtyping()
+                        // This last case covers unchecked conversion. It is made antisymmetric by the
+                        // test for a symbol. eg |G| <~> G<?> so it would fail.
+                        // However, |G| ~> S if |G| <: |S|, so we should consider |G| more specific than S.
+                        || isConvertible.somehow() && !Objects.equals(w.getSymbol(), v.getSymbol())) {
+                        continue vLoop;
+                    }
                 }
             }
             result.add(v);

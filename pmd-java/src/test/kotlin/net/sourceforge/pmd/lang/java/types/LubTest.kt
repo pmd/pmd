@@ -8,6 +8,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
+import net.sourceforge.pmd.lang.java.types.testdata.LubTestData
 import net.sourceforge.pmd.lang.java.types.testdata.LubTestData.*
 
 /**
@@ -138,6 +139,22 @@ class LubTest : FunSpec({
                 val result = List::class[`?` extends (I1::class.decl * t_Comparable[`?`])]
 
                 lub(t_List[Sub1::class.decl], t_List[Sub2::class.decl]) shouldBe result
+
+            }
+
+            test("Test lub of related arrays") {
+
+                // the component type
+                lub(
+                    Enum1::class.decl,
+                    Enum2::class.decl,
+                ) shouldBe t_Enum[`?` extends t_Enum[`?`] * EnumSuperItf::class.decl] * EnumSuperItf::class.decl
+
+                // let's try arrays
+                lub(
+                    Enum1::class.decl.toArray(),
+                    Enum2::class.decl.toArray(),
+                ) shouldBe t_Enum[`?` extends t_Enum[`?`] * EnumSuperItf::class.decl] * EnumSuperItf::class.decl
 
             }
         }

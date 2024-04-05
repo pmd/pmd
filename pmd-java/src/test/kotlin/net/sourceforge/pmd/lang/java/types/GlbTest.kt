@@ -10,6 +10,7 @@ import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
+import io.mockk.InternalPlatformDsl.toArray
 import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.createUnresolvedAsmSymbol
 
@@ -68,6 +69,14 @@ class GlbTest : FunSpec({
                 glb(ts.SERIALIZABLE, t_ArrayList) shouldBe t_ArrayList
                 glb(t_ArrayList, ts.SERIALIZABLE) shouldBe t_ArrayList
                 glb(t_List, `t_List{?}`) shouldBe `t_List{?}`
+
+            }
+
+            test("Test GLB of arrays") {
+
+                glb(ts.SERIALIZABLE.toArray(), t_ArrayList.toArray()) shouldBe t_ArrayList.toArray()
+                glb(t_ArrayList.toArray(), ts.SERIALIZABLE.toArray()) shouldBe t_ArrayList.toArray()
+                glb(t_List.toArray(), `t_List{?}`.toArray()) shouldBe `t_List{?}`.toArray()
 
             }
 
