@@ -108,7 +108,19 @@ public class Foo {
         ]]></code>
     </test-code>
 
-    <!-- Commented blocks -->
+    <!-- Catch blocks - with/without allowCommentedBlocks -->
+    <test-code>
+        <description>empty block is not OK with allowCommentedBlocks</description>
+        <rule-property name="allowCommentedBlocks">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        try {} catch (Exception e) {}
+    }
+}
+]]></code>
+    </test-code>
     <code-fragment id="single-line-comment"><![CDATA[
 public class Foo {
     void bar() {
@@ -126,7 +138,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>single-line comment is OK</description>
+        <description>single-line comment is OK with allowCommentedBlocks</description>
         <rule-property name="allowCommentedBlocks">true</rule-property>
         <expected-problems>0</expected-problems>
         <code-ref id="single-line-comment"/>
@@ -149,7 +161,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>multiple-line comment is OK</description>
+        <description>multiple-line comment is OK with allowCommentedBlocks</description>
         <rule-property name="allowCommentedBlocks">true</rule-property>
         <expected-problems>0</expected-problems>
         <code-ref id="multiple-line-comment"/>
@@ -168,6 +180,13 @@ public class Foo {
     <test-code>
         <description>Javadoc comment is not OK</description>
         <expected-problems>1</expected-problems>
+        <code-ref id="javadoc-comment"/>
+    </test-code>
+
+    <test-code>
+        <description>Javadoc comment is OK with allowCommentedBlocks</description>
+        <rule-property name="allowCommentedBlocks">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code-ref id="javadoc-comment"/>
     </test-code>
 

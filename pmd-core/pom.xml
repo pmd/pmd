@@ -7,7 +7,7 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>7.0.1-SNAPSHOT</version>
+        <version>7.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -74,6 +74,26 @@
                 <configuration>
                     <!-- overrides the configuration from parent pom: we have here no offline links yet -->
                     <offlineLinks combine.self="override"></offlineLinks>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.github.siom79.japicmp</groupId>
+                <artifactId>japicmp-maven-plugin</artifactId>
+                <configuration>
+                    <parameter>
+                        <excludes combine.children="append">
+                            <exclude>net.sourceforge.pmd.internal</exclude>
+                            <exclude>net.sourceforge.pmd.cache.internal</exclude>
+                            <exclude>net.sourceforge.pmd.cpd.internal</exclude>
+                            <exclude>net.sourceforge.pmd.lang.ast.internal</exclude>
+                            <exclude>net.sourceforge.pmd.lang.rule.internal</exclude>
+                            <exclude>net.sourceforge.pmd.lang.rule.xpath.internal</exclude>
+                            <exclude>net.sourceforge.pmd.properties.internal</exclude>
+                            <exclude>net.sourceforge.pmd.renderers.internal</exclude>
+                            <exclude>net.sourceforge.pmd.util.internal</exclude>
+                        </excludes>
+                    </parameter>
                 </configuration>
             </plugin>
         </plugins>

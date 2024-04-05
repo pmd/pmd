@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.ecmascript.cpd;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptLanguageModule;
+import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 
 /**
  *

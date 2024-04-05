@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.lang.jsp.JspLanguageModule;
+import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 
 public final class JspParsingHelper extends BaseParsingHelper<JspParsingHelper, ASTCompilationUnit> {
 

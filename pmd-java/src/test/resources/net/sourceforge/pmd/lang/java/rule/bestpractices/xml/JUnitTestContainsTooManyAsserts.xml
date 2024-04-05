@@ -272,4 +272,23 @@ public class MyTestCase {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Extra properties</description>
+        <rule-property name="extraAssertMethodNames">customAssertion</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import org.junit.jupiter.api.Test;
+            public class A {
+                @Test
+                void test() {
+                    customAssertion("aueoau");
+                    customAssertion("aueoau");
+                    customAssertion("aueoau");
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
 </test-data>

@@ -12,9 +12,9 @@ import org.junit.jupiter.api.Test;
 import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.cpd.Tokens;
+import net.sourceforge.pmd.lang.cpp.CppLanguageModule;
 import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 import net.sourceforge.pmd.lang.test.cpd.LanguagePropertyConfig;
-import net.sourceforge.pmd.lang.cpp.CppLanguageModule;
 
 class CppCpdLexerTest extends CpdTextComparisonTest {
 
