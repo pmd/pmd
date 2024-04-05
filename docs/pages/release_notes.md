@@ -33,6 +33,8 @@ This is a {{ site.pmd.release_type }} release.
   * [#4569](https://github.com/pmd/pmd/issues/4569): \[java] ForLoopCanBeForeach reports on loop `for (int i = 0; i < list.size(); i += 2)`
   * [#4618](https://github.com/pmd/pmd/issues/4618): \[java] UnusedAssignment false positive with conditional assignments of fields
 * java-codestyle
+  * [#4602](https://github.com/pmd/pmd/issues/4602): \[java] UnnecessaryImport: false positives with static imports
+  * [#4785](https://github.com/pmd/pmd/issues/4785): \[java] False Positive: PMD Incorrectly report violation for UnnecessaryImport
   * [#4881](https://github.com/pmd/pmd/issues/4881): \[java] ClassNamingConventions: interfaces are identified as abstract classes (regression in 7.0.0)
 * java-design
   * [#3694](https://github.com/pmd/pmd/issues/3694): \[java] SingularField ignores static variables
