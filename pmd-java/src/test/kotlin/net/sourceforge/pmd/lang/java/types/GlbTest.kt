@@ -10,9 +10,9 @@ import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
-import io.mockk.InternalPlatformDsl.toArray
-import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.createUnresolvedAsmSymbol
+import net.sourceforge.pmd.lang.java.types.testdata.LubTestData
+import net.sourceforge.pmd.lang.test.ast.shouldBeA
 
 /**
  * Tests "the greatest lower bound" (glb).
@@ -81,6 +81,23 @@ class GlbTest : FunSpec({
             }
 
 
+            test("Test GLB of arrays of unrelated type") {
+
+                // C1 & C2 does not exist as they are both unrelated classes
+                shouldThrow<IllegalArgumentException> {
+                    glb(LubTestData.C1::class.decl, LubTestData.C2::class.decl)
+                }
+
+                // C1[] & C2[] = (C1 & C2)[] equally does not exist
+                shouldThrow<IllegalArgumentException> {
+                    glb(LubTestData.C1::class.decl.toArray(), LubTestData.C2::class.decl.toArray())
+                }
+
+                // but C1[] & I1[] = (C1 & I1)[] exists because I1 is an interface.
+                glb(LubTestData.C1::class.decl.toArray(), LubTestData.I1::class.decl.toArray())
+            }
+
+
             test("Test lub of zero types") {
                 shouldThrow<IllegalArgumentException> {
                     ts.glb(emptyList())
@@ -118,8 +135,17 @@ class GlbTest : FunSpec({
                 }
                 glb(`t_List{? extends Number}`, `t_Collection{Integer}`, `t_ArrayList{Integer}`) shouldBe `t_ArrayList{Integer}`
                 glb(`t_List{? extends Number}`, `t_List{String}`, `t_Enum{JPrimitiveType}`).shouldBeA<JIntersectionType> {
-                    it.components.shouldContainExactly(`t_Enum{JPrimitiveType}`, `t_List{String}`, `t_List{? extends Number}`)
+                    it.components.shouldContainExactly(`t_Enum{JPrimitiveType}`, `t_List{? extends Number}`, `t_List{String}`)
                 }
+
+
+                glb(t_Collection[`?` extends t_Number],
+                    `t_List{?}`,
+                    t_List) shouldBe `t_List{?}` // todo check that
+
+                glb(t_List, `t_List{?}`) shouldBe `t_List{?}`
+                glb(t_Collection[`?` extends t_Number], `t_List{?}`) shouldBe `t_List{?}`
+
             }
 
             test("Test GLB with unresolved things") {

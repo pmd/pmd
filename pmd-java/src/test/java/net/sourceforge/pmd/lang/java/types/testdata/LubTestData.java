@@ -50,4 +50,7 @@ public class LubTestData {
     public enum Enum1 implements EnumSuperItf {}
     public enum Enum2 implements EnumSuperItf {}
 
+    // unrelated
+    public static class C1 {}
+    public static class C2 {}
 }

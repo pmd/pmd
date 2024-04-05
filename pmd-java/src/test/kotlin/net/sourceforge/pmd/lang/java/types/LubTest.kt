@@ -8,7 +8,6 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
-import net.sourceforge.pmd.lang.java.types.testdata.LubTestData
 import net.sourceforge.pmd.lang.java.types.testdata.LubTestData.*
 
 /**
@@ -154,7 +153,7 @@ class LubTest : FunSpec({
                 lub(
                     Enum1::class.decl.toArray(),
                     Enum2::class.decl.toArray(),
-                ) shouldBe t_Enum[`?` extends t_Enum[`?`] * EnumSuperItf::class.decl] * EnumSuperItf::class.decl
+                ) shouldBe (t_Enum * EnumSuperItf::class.decl).toArray()
 
             }
         }
