@@ -70,8 +70,7 @@ final class Lub {
      *
      * @return null if G is not a generic type, otherwise Relevant(G)
      */
-    @SuppressWarnings("PMD.ReturnEmptyCollectionRatherThanNull")
-    // null is explicit mentioned as a possible return value
+    @SuppressWarnings("PMD.ReturnEmptyCollectionRatherThanNull") // null is explicit mentioned as a possible return value
     static @Nullable List<JClassType> relevant(JClassType g, Set<JTypeMirror> stunion) {
         if (!g.isRaw()) {
             return null;
@@ -261,9 +260,7 @@ final class Lub {
         }
     }
 
-    /**
-     * Simple record type for a pair of types.
-     */
+    /** Simple record type for a pair of types. */
     private static final class TypePair {
 
         public final JTypeMirror left;
