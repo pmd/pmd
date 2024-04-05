@@ -28,6 +28,8 @@ This is a {{ site.pmd.release_type }} release.
   * [#4913](https://github.com/pmd/pmd/issues/4913): \[cli] cpd-gui closes immediately
 * apex-errorprone
   * [#3953](https://github.com/pmd/pmd/issues/3953): \[apex] EmptyCatchBlock false positive with formal (doc) comments
+* java
+  * [#4912](https://github.com/pmd/pmd/issues/4912): \[java] Unable to parse some Java9+ resource references 
 * java-bestpractices
   * [#1084](https://github.com/pmd/pmd/issues/1084): \[java] Allow JUnitTestsShouldIncludeAssert to configure verification methods
   * [#4435](https://github.com/pmd/pmd/issues/4435): \[java] \[7.0-rc1] UnusedAssignment for used field
