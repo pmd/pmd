@@ -241,6 +241,7 @@ public final class PrettyPrintingUtil {
     }
 
 
+    /** Pretty print an expression or any other kind of node. */
     public static CharSequence prettyPrint(JavaNode node) {
         StringBuilder sb = new StringBuilder();
         node.acceptVisitor(new ExprPrinter(), sb);

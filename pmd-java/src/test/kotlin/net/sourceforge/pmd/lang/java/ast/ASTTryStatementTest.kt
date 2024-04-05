@@ -132,8 +132,16 @@ class ASTTryStatementTest : ParserTestSpec({
                 }
             }
 
+            // the expr must be a field access or var access
             "try ( a.foo() ){}" shouldNot parse()
             "try (new Foo()){}" shouldNot parse()
+            "try(arr[0]) {}" shouldNot parse()
+
+            "try ( a.foo().b ){}" should parse()
+            "try (new Foo().x){}" should parse()
+            // this is also allowed by javac
+            "try(this) {}" should parse()
+            "try(Foo.this) {}" should parse()
         }
     }
 
