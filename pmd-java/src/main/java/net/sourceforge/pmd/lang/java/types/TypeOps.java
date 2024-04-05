@@ -580,6 +580,11 @@ public final class TypeOps {
             return this == UNCHECKED_WARNING;
         }
 
+        /** True if this is {@link #SUBTYPING} or {@link #UNCHECKED_NO_WARNING}. */
+        public boolean withoutWarnings() {
+            return this == SUBTYPING || this == UNCHECKED_NO_WARNING;
+        }
+
         // package:
 
 
@@ -1739,7 +1744,7 @@ public final class TypeOps {
                         // This last case covers unchecked conversion. It is made antisymmetric by the
                         // test for a symbol. eg |G| <~> G<?> so it would fail.
                         // However, |G| ~> S if |G| <: |S|, so we should consider |G| more specific than S.
-                        || isConvertible.somehow() && !Objects.equals(w.getSymbol(), v.getSymbol())) {
+                        || isConvertible.withoutWarnings() && !Objects.equals(w.getSymbol(), v.getSymbol())) {
                         continue vLoop;
                     }
                 }

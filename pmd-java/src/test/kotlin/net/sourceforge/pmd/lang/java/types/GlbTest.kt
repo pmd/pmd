@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.types
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
@@ -115,7 +116,22 @@ class GlbTest : FunSpec({
                 }
             }
 
+            test("test corner case") {
+
+                TypeOps.mostSpecific(
+                    setOf(
+                        t_Collection[`?` extends t_Number],
+                        `t_List{?}`,
+                        t_List
+                    )
+                ) shouldBe setOf(t_Collection[`?` extends t_Number], `t_List{?}`)
+            }
+
             test("Test GLB corner cases") {
+
+                // note: intersections are not minimized, or reduced to the null type if they are unsatisfiable.
+                // note also that in this test we test the components explicitly instead of using the DSL,
+                // because the DSL operator to create intersections actually calls GLB.
 
                 glb(t_Iterable[`?` extends t_Number], t_Iterable[t_String]).shouldBeA<JIntersectionType> {
                     it.components.shouldContainExactly(t_Iterable[`?` extends t_Number], t_Iterable[t_String])
@@ -138,13 +154,21 @@ class GlbTest : FunSpec({
                     it.components.shouldContainExactly(`t_Enum{JPrimitiveType}`, `t_List{? extends Number}`, `t_List{String}`)
                 }
 
-
-                glb(t_Collection[`?` extends t_Number],
+                glb(
+                    t_Collection[`?` extends t_Number],
                     `t_List{?}`,
-                    t_List) shouldBe `t_List{?}` // todo check that
+                    t_List
+                ).shouldBeA<JIntersectionType> {
+                    it.components.shouldContainExactlyInAnyOrder(t_Collection[`?` extends t_Number], `t_List{?}`)
+                }
 
                 glb(t_List, `t_List{?}`) shouldBe `t_List{?}`
-                glb(t_Collection[`?` extends t_Number], `t_List{?}`) shouldBe `t_List{?}`
+                glb(
+                    t_Collection[`?` extends t_Number],
+                    `t_List{?}`
+                ).shouldBeA<JIntersectionType> {
+                    it.components.shouldContainExactlyInAnyOrder(t_Collection[`?` extends t_Number], `t_List{?}`)
+                }
 
             }
 
