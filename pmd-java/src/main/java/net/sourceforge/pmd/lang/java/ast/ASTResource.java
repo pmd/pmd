@@ -50,10 +50,9 @@ public final class ASTResource extends AbstractJavaNode {
      * If this has a local variable declaration, then returns the name
      * of the variable.
      *
-     * <p>Note that this might be null if the expression is too complex.
-     *
      * @deprecated Since 7.1.0. This method is not very useful because the expression
-     *          might be complex and not have a real "name".
+     *          might be complex and not have a real "name". In this case we return the
+     *          expression pretty printed.
      */
     @Deprecated
     public String getStableName() {
