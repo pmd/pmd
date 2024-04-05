@@ -16,6 +16,7 @@ import static net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.Bo
 import static net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind.LOWER;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind.UPPER;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -25,6 +26,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.JWildcardType;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
@@ -583,12 +585,70 @@ final class ExprCheckHelper {
         }
 
         if (lambda.isExplicitlyTyped() && lambda.getParamCount() > 0) {
-            // TODO infer, normally also for lambdas with no param, i'm just lazy
-            //  https://docs.oracle.com/javase/specs/jls/se9/html/jls-18.html#jls-18.5.3
-            return null;
+            return inferGroundTargetTypeForExplicitlyTypedLambda(type, lambda);
         } else {
             return nonWildcardParameterization(type);
         }
+    }
+
+    private @Nullable JClassType inferGroundTargetTypeForExplicitlyTypedLambda(JClassType targetType, LambdaExprMirror lambda) {
+        List<JTypeMirror> explicitParamTypes = lambda.getExplicitParameterTypes();
+        assert explicitParamTypes != null : "Expecting explicitly typed lambda";
+        // https://docs.oracle.com/javase/specs/jls/se22/html/jls-18.html#jls-18.5.3
+        // > For example:
+        // >     Predicate<? super Integer> p = (Number n) -> n.equals(23);
+        // > The lambda expression is a Predicate<Number>, which is a subtype of Predicate<? super Integer> but not
+        // > Predicate<Integer>. The analysis in this section is used to infer that Number is an appropriate choice
+        // > for the type argument to Predicate.
+
+        // Let `targetType = F<A1, ..., Am>`
+        // Let `'a1, ..., 'am` be fresh inference variables.
+        JClassType targetGTD = targetType.getGenericTypeDeclaration();
+        List<JTypeVar> formalTypeParams = targetGTD.getFormalTypeParams();
+        InferenceContext ctx = infer.newContextFor(formalTypeParams, false);
+
+        // let `inferenceTarget = F<'a1, ..., 'am>`
+        JClassType inferenceTarget = (JClassType) ctx.mapToIVars(targetGTD);
+
+        JMethodSig msig = findFunctionalInterfaceMethod(inferenceTarget);
+        if (msig == null) {
+            return null;
+        }
+
+        List<JTypeMirror> formals = msig.getFormalParameters();
+
+        // Now match formal params of the lambda with those of the signature (which contains ivars)
+        // this adds constraints
+        if (!TypeOps.areSameTypesInInference(formals, explicitParamTypes)) {
+            return null;
+        }
+
+        ctx.solve(true); // may throw ResolutionFailedException
+
+        // If we are here then solving succeeded.
+        // Build type arguments with instantiated vars. Vars that were not bound (meaning,
+        // they don't depend on the parameter types of the lambda) are just taken from the
+        // provided type args.
+
+        int numTyArgs = formalTypeParams.size();
+        List<JTypeMirror> typeArgs = targetType.getTypeArgs();
+        List<JTypeMirror> newTyArgs = new ArrayList<>(numTyArgs);
+        for (int i = 0; i < numTyArgs; i++) {
+            InferenceVar ivarI = (InferenceVar) ctx.mapToIVars(formalTypeParams.get(i));
+            if (ivarI.getInst() != null) {
+                newTyArgs.add(ivarI.getInst());
+            } else {
+                newTyArgs.add(typeArgs.get(i));
+            }
+        }
+
+        // Now check that the primary bounds are valid.
+        ctx.addPrimaryBounds();
+        ctx.solve(); // may throw ResolutionFailedException
+
+        // This is our type
+        JClassType inferredTy = targetGTD.withTypeArguments(newTyArgs);
+        return nonWildcardParameterization(inferredTy);
     }
 
 

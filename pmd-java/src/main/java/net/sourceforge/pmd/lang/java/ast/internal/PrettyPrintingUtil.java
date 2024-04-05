@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast.internal;
 
+import static net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRule.Necessity;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRule.needsParentheses;
 import static net.sourceforge.pmd.util.AssertionUtil.shouldNotReachHere;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -18,6 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
@@ -28,13 +31,15 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIntersectionType;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameterList;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
@@ -45,6 +50,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTUnionType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
@@ -339,6 +345,76 @@ public final class PrettyPrintingUtil {
         }
 
         @Override
+        public Void visit(ASTInfixExpression node, StringBuilder sb) {
+            printWithParensIfNecessary(node.getLeftOperand(), sb, node);
+            sb.append(' ');
+            sb.append(node.getOperator());
+            sb.append(' ');
+            printWithParensIfNecessary(node.getRightOperand(), sb, node);
+            return null;
+        }
+
+
+        @Override
+        public Void visit(ASTUnaryExpression node, StringBuilder sb) {
+            sb.append(node.getOperator());
+            printWithParensIfNecessary(node.getOperand(), sb, node);
+            return null;
+        }
+
+        private void printWithParensIfNecessary(ASTExpression operand, StringBuilder sb, ASTExpression parent) {
+            if (operand.isParenthesized() && needsParentheses(operand, parent) != Necessity.NEVER) {
+                ppInParens(sb, operand);
+            } else {
+                operand.acceptVisitor(this, sb);
+            }
+        }
+
+        @Override
+        public Void visit(ASTConditionalExpression node, StringBuilder sb) {
+            printWithParensIfNecessary(node.getCondition(), sb, node);
+            sb.append(" ? ");
+            printWithParensIfNecessary(node.getThenBranch(), sb, node);
+            sb.append(" : ");
+            printWithParensIfNecessary(node.getElseBranch(), sb, node);
+            return null;
+        }
+
+        @Override
+        public Void visit(ASTLambdaExpression node, StringBuilder sb) {
+            node.getParameters().acceptVisitor(this, sb);
+            sb.append(" -> ");
+            ASTExpression exprBody = node.getExpression();
+            if (exprBody != null) {
+                exprBody.acceptVisitor(this, sb);
+            } else {
+                sb.append("{ ... }");
+            }
+            return null;
+        }
+
+        @Override
+        public Void visit(ASTLambdaParameterList node, StringBuilder sb) {
+            if (node.size() == 1) {
+                sb.append(node.get(0).getVarId().getName());
+                return null;
+            } else if (node.isEmpty()) {
+                sb.append("()");
+                return null;
+            }
+
+            sb.append('(');
+            sb.append(node.get(0).getVarId().getName());
+            node.toStream().drop(1).forEach(it -> {
+                sb.append(", ");
+                sb.append(it.getVarId().getName());
+            });
+            sb.append(')');
+
+            return null;
+        }
+
+        @Override
         public Void visit(ASTMethodCall node, StringBuilder sb) {
             addQualifier(node, sb);
             ppTypeArgs(sb, node.getExplicitTypeArguments());
@@ -380,26 +456,17 @@ public final class PrettyPrintingUtil {
 
         @Override
         public Void visit(ASTMethodReference node, StringBuilder sb) {
-            ppMaybeInParens(sb, node.getQualifier());
+            printWithParensIfNecessary(node.getQualifier(), sb, node);
             sb.append("::");
             ppTypeArgs(sb, node.getExplicitTypeArguments());
             sb.append(node.getMethodName());
             return null;
         }
 
-        private void ppMaybeInParens(StringBuilder sb, ASTExpression qualifier) {
-            if (!(qualifier instanceof ASTPrimaryExpression)) {
-                ppInParens(sb, qualifier);
-            } else {
-                qualifier.acceptVisitor(this, sb);
-            }
-        }
-
-
         private void addQualifier(QualifiableExpression node, StringBuilder data) {
             ASTExpression qualifier = node.getQualifier();
             if (qualifier != null) {
-                ppMaybeInParens(data, qualifier);
+                printWithParensIfNecessary(qualifier, data, node);
                 data.append('.');
             }
 

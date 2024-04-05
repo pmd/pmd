@@ -1453,7 +1453,7 @@ or reported.
 //CatchClause[
   Block[
       count(*) = 0
-      and ($allowCommentedBlocks = false() or Block/@containsComment = false())
+      and ($allowCommentedBlocks = false() or @containsComment = false())
   ]
   and CatchParameter/VariableId[not(matches(@Name, $allowExceptionNameRegex))]
 ]
