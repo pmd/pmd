@@ -2,6 +2,8 @@ package net.sourceforge.pmd.lang.document;
 
 import java.util.Optional;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -17,8 +19,7 @@ public class NodeFindingUtil {
      * that contains the given offset.
      */
     public static Optional<Node> findNodeAt(Node root, int offset) {
-        return Optional.ofNullable(findNodeRec(root, offset))
-                       .filter(it -> it.getTextRegion().contains(offset));
+        return Optional.ofNullable(findNodeImpl(root, offset));
     }
 
 
@@ -29,9 +30,20 @@ public class NodeFindingUtil {
      * hit the bottom (average depth of a Java AST ~20-25, with 6.x.x grammar).
      * - At each level, the next node to explore is chosen via binary search.
      */
-    private static Node findNodeRec(Node subject, int offset) {
-        Node child = binarySearchInChildren(subject, offset);
-        return child == null ? subject : findNodeRec(child, offset);
+    private static @Nullable Node findNodeImpl(Node subject, int offset) {
+        // deepest node containing the target offset
+        Node deepestNode = subject;
+        if (!deepestNode.getTextRegion().contains(offset)) {
+            return null;
+        }
+        while (true) {
+            Node child = binarySearchInChildren(deepestNode, offset);
+            if (child == null) {
+                // no more specific child contains the node
+                return deepestNode;
+            }
+            deepestNode = child;
+        }
     }
 
     // returns the child of the [parent] that contains the target
@@ -50,7 +62,7 @@ public class NodeFindingUtil {
             if (cmp < 0) {
                 // node start is before target
                 low = mid + 1;
-                if (childRegion.getEndOffset() >= offset) {
+                if (childRegion.getEndOffset() > offset) {
                     // node end is after target
                     return child;
                 }
