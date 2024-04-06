@@ -1036,7 +1036,7 @@ public class MissingTheProperSuffix implements SessionBean {}   // non-standard 
         <description>
             Reports method and constructor parameters that can be made final because they are never reassigned within the body of the method.
 
-            This rule ignores unused parameters so as not to overlap with the rule {% rule 'java/bestpractices/UnusedVariable' %}.
+            This rule ignores unused parameters so as not to overlap with the rule {% rule 'java/bestpractices/UnusedFormalParameter' %}.
             It will also ignore the parameters of abstract methods.
         </description>
         <priority>3</priority>
