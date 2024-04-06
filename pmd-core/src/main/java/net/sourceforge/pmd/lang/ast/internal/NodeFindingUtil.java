@@ -1,17 +1,24 @@
-package net.sourceforge.pmd.lang.document;
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+package net.sourceforge.pmd.lang.ast.internal;
 
 import java.util.Optional;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 /**
- * Utilities to find a node at specific text coordinates.
+ * Utilities to find a node at specific text coordinates in a tree.
  */
-@Experimental
-public class NodeFindingUtil {
+public final class NodeFindingUtil {
+
+    private NodeFindingUtil() {
+        // utility class
+    }
 
 
     /**
