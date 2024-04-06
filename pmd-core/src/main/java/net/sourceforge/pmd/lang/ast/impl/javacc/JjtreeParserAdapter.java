@@ -33,7 +33,11 @@ public abstract class JjtreeParserAdapter<R extends RootNode> implements Parser 
             // Escapes are processed by CharStream#create
             task = task.withTextDocument(charStream.getTokenDocument().getTextDocument());
             // Finally, do the parsing
-            return parseImpl(charStream, task);
+            R result = parseImpl(charStream, task);
+            // Make tokens have access to the parsed tree
+            charStream.getTokenDocument().setAstInfo(result.getAstInfo());
+            // and return
+            return result;
         } catch (FileAnalysisException tme) {
             throw tme.setFileId(task.getTextDocument().getFileId());
         }
