@@ -357,4 +357,9 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
     void testGitHubBug3642() {
         doTest("GitHubBug3642");
     }
+
+    @Test
+    void testGitHubBug1780() {
+        doTest("GitHubBug1780OuterClass");
+    }
 }
