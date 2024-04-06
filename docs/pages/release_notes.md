@@ -26,6 +26,8 @@ This is a {{ site.pmd.release_type }} release.
 * cli
   * [#4791](https://github.com/pmd/pmd/issues/4791): \[cli] Could not find or load main class
   * [#4913](https://github.com/pmd/pmd/issues/4913): \[cli] cpd-gui closes immediately
+* apex
+  * [#4418](https://github.com/pmd/pmd/issues/4418): \[apex] ASTAnnotation.getImage() does not return value as written in the class
 * apex-errorprone
   * [#3953](https://github.com/pmd/pmd/issues/3953): \[apex] EmptyCatchBlock false positive with formal (doc) comments
 * java-bestpractices
