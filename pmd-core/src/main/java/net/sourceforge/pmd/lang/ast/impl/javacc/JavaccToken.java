@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
-import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileLocation;
@@ -174,11 +173,6 @@ public class JavaccToken implements GenericToken<JavaccToken> {
     @Override
     public String toString() {
         return document.describeKind(kind) + ": " + getImage();
-    }
-
-    /** Return the AST info object. Will fail if parsing is not finished. */
-    public AstInfo<?> getAstInfo() {
-        return document.getAstInfo();
     }
 
     /**

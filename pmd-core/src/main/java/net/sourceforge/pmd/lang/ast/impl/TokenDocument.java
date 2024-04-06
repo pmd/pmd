@@ -4,11 +4,6 @@
 
 package net.sourceforge.pmd.lang.ast.impl;
 
-import java.util.Objects;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.TextDocument;
@@ -24,26 +19,9 @@ import net.sourceforge.pmd.lang.document.TextDocument;
 public abstract class TokenDocument<T extends GenericToken<T>> {
 
     private final TextDocument textDocument;
-    private AstInfo<?> astInfo;
 
     public TokenDocument(TextDocument textDocument) {
         this.textDocument = textDocument;
-    }
-
-    /**
-     * Returns the object holding information about the
-     * parse tree. Filled-in after parsing.
-     */
-    public @NonNull AstInfo<?> getAstInfo() {
-        return Objects.requireNonNull(astInfo);
-    }
-
-    /**
-     * Set the ast info after parsing. Only meant to be used by a {@link Parser}
-     * implementation.
-     */
-    protected void setAstInfo(AstInfo<?> astInfo) {
-        this.astInfo = Objects.requireNonNull(astInfo);
     }
 
     /** Returns the original text of the file (without escaping). */
