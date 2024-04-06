@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.documentation;
 import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaComment;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -22,9 +23,9 @@ import net.sourceforge.pmd.reporting.RuleContext;
 public class CommentSizeRule extends AbstractJavaRulechainRule {
 
     public static final PropertyDescriptor<Integer> MAX_LINES
-            = PropertyFactory.intProperty("maxLines")
-                             .desc("Maximum lines")
-                             .require(positive()).defaultValue(6).build();
+        = PropertyFactory.intProperty("maxLines")
+                         .desc("Maximum lines")
+                         .require(positive()).defaultValue(6).build();
 
     public static final PropertyDescriptor<Integer> MAX_LINE_LENGTH
         = PropertyFactory.intProperty("maxLineLength")
@@ -43,9 +44,11 @@ public class CommentSizeRule extends AbstractJavaRulechainRule {
 
         for (JavaComment comment : cUnit.getComments()) {
             if (hasTooManyLines(comment)) {
-                asCtx(data).addViolationWithPosition(cUnit,
-                        comment.getReportLocation().getStartLine(), comment.getReportLocation().getEndLine(),
-                        getMessage() + ": Too many lines");
+                asCtx(data).addViolationWithPosition(
+                    comment.getToken(),
+                    cUnit.getAstInfo(),
+                    comment.getReportLocation(),
+                    getMessage() + ": Too many lines");
             }
 
             reportLinesTooLong(cUnit, asCtx(data), comment);
@@ -86,9 +89,10 @@ public class CommentSizeRule extends AbstractJavaRulechainRule {
         int lineNumber = comment.getReportLocation().getStartLine();
         for (Chars line : comment.getFilteredLines(true)) {
             if (line.length() > maxLength) {
-                ctx.addViolationWithPosition(acu,
-                                             lineNumber,
-                                             lineNumber,
+                FileLocation location = FileLocation.caret(acu.getTextDocument().getFileId(), lineNumber, 1);
+                ctx.addViolationWithPosition(comment.getToken(),
+                                             acu.getAstInfo(),
+                                             location,
                                              getMessage() + ": Line too long");
             }
             lineNumber++;

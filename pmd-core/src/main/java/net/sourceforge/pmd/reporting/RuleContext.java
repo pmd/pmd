@@ -134,11 +134,18 @@ public final class RuleContext {
      * @param formatArgs Format arguments for the message
      */
     public void addViolationWithPosition(Node node, int beginLine, int endLine, String message, Object... formatArgs) {
-        addViolationWithPosition(node, node.getAstInfo(), beginLine, endLine, message, formatArgs);
+        FileLocation location;
+        if (beginLine != -1 && endLine != -1) {
+            location = FileLocation.range(node.getTextDocument().getFileId(),
+                                          TextRange2d.range2d(beginLine, 1, endLine, 1));
+        } else {
+            location = node.getReportLocation();
+        }
+        addViolationWithPosition(node, node.getAstInfo(), location, message, formatArgs);
     }
 
     /**
-     * Record a new violation of the contextual rule, at the given node.
+     * Record a new violation of the contextual rule, at the given location (node or token).
      * The position is refined using the given begin and end line numbers.
      * The given violation message ({@link Rule#getMessage()}) is treated
      * as a format string for a {@link MessageFormat} and should hence use
@@ -149,18 +156,15 @@ public final class RuleContext {
      * @param message    Violation message
      * @param formatArgs Format arguments for the message
      */
-    public void addViolationWithPosition(Reportable reportable, AstInfo<?> astInfo, int beginLine, int endLine, String message, Object... formatArgs) {
+    public void addViolationWithPosition(Reportable reportable, AstInfo<?> astInfo, FileLocation location,
+                                         String message, Object... formatArgs) {
         Objects.requireNonNull(reportable, "Node was null");
         Objects.requireNonNull(message, "Message was null");
         Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
 
         LanguageVersionHandler handler = astInfo.getLanguageProcessor().services();
 
-        FileLocation location = reportable.getReportLocation();
-        if (beginLine != -1 && endLine != -1) {
-            location = FileLocation.range(location.getFileId(), TextRange2d.range2d(beginLine, 1, endLine, 1));
-        }
-        Node suppressionNode = getNearestNode(reportable);
+        Node suppressionNode = getNearestNode(reportable, astInfo);
 
         Map<String, String> extraVariables = ViolationDecorator.apply(handler.getViolationDecorator(), suppressionNode);
         String description = makeMessage(message, formatArgs, extraVariables);
@@ -175,16 +179,22 @@ public final class RuleContext {
         }
     }
 
-    // todo add this method on Reportable directly
-    private Node getNearestNode(Reportable reportable) {
+    private Node getNearestNode(Reportable reportable, AstInfo<?> astInfo) {
         if (reportable instanceof Node) {
             return (Node) reportable;
-        } else if (reportable instanceof JavaccToken) {
-            AstInfo<?> astInfo = ((JavaccToken) reportable).getAstInfo();
-            Optional<Node> foundNode = NodeFindingUtil.findNodeAt(astInfo.getRootNode(), ((JavaccToken) reportable).getRegion().getStartOffset());
-            return foundNode.orElse(astInfo.getRootNode());
         }
-        throw new IllegalArgumentException("Unsupported Reportable type: " + reportable);
+        int startOffset = getStartOffset(reportable, astInfo);
+        Optional<Node> foundNode = NodeFindingUtil.findNodeAt(astInfo.getRootNode(), startOffset);
+        // default to the root node
+        return foundNode.orElse(astInfo.getRootNode());
+    }
+
+    private static int getStartOffset(Reportable reportable, AstInfo<?> astInfo) {
+        if (reportable instanceof JavaccToken) {
+            return ((JavaccToken) reportable).getRegion().getStartOffset();
+        }
+        FileLocation loc = reportable.getReportLocation();
+        return astInfo.getTextDocument().offsetAtLineColumn(loc.getStartPos());
     }
 
     private static @Nullable SuppressedViolation suppressOrNull(Node location, RuleViolation rv, LanguageVersionHandler handler) {
