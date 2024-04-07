@@ -7,13 +7,13 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
+import net.sourceforge.pmd.lang.java.ast.*
+import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
+import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.test.ast.NodeSpec
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import net.sourceforge.pmd.lang.test.ast.shouldMatchN
-import net.sourceforge.pmd.lang.java.ast.*
-import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
-import net.sourceforge.pmd.lang.java.types.*
 import java.util.*
 
 /**
@@ -380,6 +380,39 @@ class Foo {
 
         spy.shouldBeOk {
             acu.firstMethodCall() shouldHaveType void
+        }
+    }
+
+
+    parserTest("#4902 bad intersection") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class BadIntersection {
+
+  interface Animal { }
+  enum Bird implements Animal { PARROT, CHICKEN }
+  enum Fish implements Animal { GOLDFISH, MACKEREL }
+
+  private static List<Animal> combineAnimals() {
+    return Stream.of(
+            Bird.values(),
+            Fish.values()
+        )
+        .flatMap(Arrays::stream)
+        .collect(Collectors.toList());
+  }
+}
+        """.trimIndent())
+
+        val (_, t_Animal) = acu.declaredTypeSignatures()
+
+        spy.shouldBeOk {
+            acu.firstMethodCall() shouldHaveType java.util.List::class[t_Animal]
         }
     }
 
