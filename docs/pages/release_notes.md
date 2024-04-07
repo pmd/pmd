@@ -43,6 +43,7 @@ This is a {{ site.pmd.release_type }} release.
   * [#4779](https://github.com/pmd/pmd/issues/4779): \[java] Examples in documentation of MethodArgumentCanBeFinal do not trigger the rule
   * [#4881](https://github.com/pmd/pmd/issues/4881): \[java] ClassNamingConventions: interfaces are identified as abstract classes (regression in 7.0.0)
 * java-design
+  * [#2440](https://github.com/pmd/pmd/issues/2440): \[java] FinalFieldCouldBeStatic FN when the right side of the assignment is a constant expression
   * [#3694](https://github.com/pmd/pmd/issues/3694): \[java] SingularField ignores static variables
   * [#4873](https://github.com/pmd/pmd/issues/4873): \[java] AvoidCatchingGenericException: Can no longer suppress on the exception itself
 * java-errorprone
