@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.plsql.cpd;
 
+import java.util.Locale;
+
 import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.impl.JavaccCpdLexer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
@@ -37,16 +39,21 @@ public class PLSQLCpdLexer extends JavaccCpdLexer {
         String image = plsqlToken.getImage();
 
         if (ignoreIdentifiers && plsqlToken.kind == PLSQLTokenKinds.IDENTIFIER) {
-            image = String.valueOf(plsqlToken.kind);
-        }
-
-        if (ignoreLiterals && (plsqlToken.kind == PLSQLTokenKinds.UNSIGNED_NUMERIC_LITERAL
+            image = "<identifier>";
+        } else if (ignoreLiterals && (plsqlToken.kind == PLSQLTokenKinds.UNSIGNED_NUMERIC_LITERAL
             || plsqlToken.kind == PLSQLTokenKinds.FLOAT_LITERAL
             || plsqlToken.kind == PLSQLTokenKinds.INTEGER_LITERAL
             || plsqlToken.kind == PLSQLTokenKinds.CHARACTER_LITERAL
             || plsqlToken.kind == PLSQLTokenKinds.STRING_LITERAL
             || plsqlToken.kind == PLSQLTokenKinds.QUOTED_LITERAL)) {
-            image = String.valueOf(plsqlToken.kind);
+            // note that all tokens kinds are mapped to the same type.
+            image = "<literal>";
+        } else if (plsqlToken.kind != PLSQLTokenKinds.CHARACTER_LITERAL
+            && plsqlToken.kind != PLSQLTokenKinds.STRING_LITERAL
+            && plsqlToken.kind != PLSQLTokenKinds.QUOTED_LITERAL) {
+            // PLSQL is case-insensitive, but of course the contents of
+            // string literals and the like are case-sensitive
+            image = image.toLowerCase(Locale.ROOT);
         }
         return image;
     }
