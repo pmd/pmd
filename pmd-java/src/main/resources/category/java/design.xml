@@ -734,6 +734,7 @@ in each object at runtime.
     [not(./ancestor::ClassDeclaration[1][pmd-java:hasAnnotation('lombok.experimental.UtilityClass')])]
     [not(.//Annotation[pmd-java:typeIs('lombok.Builder.Default')])]
     /VariableDeclarator[*[last()][@CompileTimeConstant = true()
+         or self::NullLiteral
          or self::VariableAccess[@Name = //FieldDeclaration[pmd-java:modifiers() = 'static']/VariableDeclarator/VariableId/@Name]
          or self::FieldAccess
          or self::ArrayAllocation/ArrayType/ArrayDimensions/ArrayDimExpr/NumericLiteral[@IntLiteral = true()][@Image = "0"]]]
