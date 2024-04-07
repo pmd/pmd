@@ -287,4 +287,14 @@ public class Test {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>null literals should be flagged</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    private final Object HALF_PI = null; // false-negative
+}
+]]></code>
+    </test-code>
 </test-data>
