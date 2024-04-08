@@ -51,9 +51,13 @@ public class PLSQLCpdLexer extends JavaccCpdLexer {
         } else if (plsqlToken.kind != PLSQLTokenKinds.CHARACTER_LITERAL
             && plsqlToken.kind != PLSQLTokenKinds.STRING_LITERAL
             && plsqlToken.kind != PLSQLTokenKinds.QUOTED_LITERAL) {
-            // PLSQL is case-insensitive, but of course the contents of
-            // string literals and the like are case-sensitive
-            image = image.toLowerCase(Locale.ROOT);
+            // PLSQL is case-insensitive, but the contents of
+            // string literals and the like are case-sensitive.
+            // Note: tokens are normalized to uppercase make CPD case-insensitive.
+            // We use uppercase and not lowercase because that way, PLSQL keywords
+            // will not be changed (they are already uppercase, see PLSQLParser),
+            // therefore creating less strings in memory.
+            image = image.toUpperCase(Locale.ROOT);
         }
         return image;
     }
