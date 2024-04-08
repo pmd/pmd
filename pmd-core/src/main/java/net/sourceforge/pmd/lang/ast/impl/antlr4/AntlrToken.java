@@ -17,9 +17,13 @@ import net.sourceforge.pmd.lang.document.TextRegion;
  */
 public class AntlrToken implements GenericToken<AntlrToken> {
 
-    private final Token token;
     private final AntlrToken previousComment;
     private final TextDocument textDoc;
+    private final String image;
+    private final int endOffset;
+    private final int startOffset;
+    private final int channel;
+    private final int kind;
     AntlrToken next;
 
 
@@ -30,10 +34,14 @@ public class AntlrToken implements GenericToken<AntlrToken> {
      * @param previousComment The previous comment
      * @param textDoc         The text document
      */
-    public AntlrToken(final Token token, final AntlrToken previousComment, TextDocument textDoc) {
-        this.token = token;
+    AntlrToken(final Token token, final AntlrToken previousComment, TextDocument textDoc, AntlrLexerBehavior behavior) {
         this.previousComment = previousComment;
         this.textDoc = textDoc;
+        this.image = behavior.getTokenImage(token);
+        this.startOffset = token.getStartIndex();
+        this.endOffset = token.getStopIndex();
+        this.channel = token.getChannel();
+        this.kind = token.getType();
     }
 
     @Override
@@ -48,13 +56,13 @@ public class AntlrToken implements GenericToken<AntlrToken> {
 
     @Override
     public CharSequence getImageCs() {
-        return token.getText();
+        return image;
     }
 
     /** Returns a text region with the coordinates of this token. */
     @Override
     public TextRegion getRegion() {
-        return TextRegion.fromBothOffsets(token.getStartIndex(), token.getStopIndex() + 1);
+        return TextRegion.fromBothOffsets(startOffset, endOffset);
     }
 
     @Override
@@ -74,7 +82,7 @@ public class AntlrToken implements GenericToken<AntlrToken> {
 
     @Override
     public int getKind() {
-        return token.getType();
+        return kind;
     }
 
     public boolean isHidden() {
@@ -82,6 +90,6 @@ public class AntlrToken implements GenericToken<AntlrToken> {
     }
 
     public boolean isDefault() {
-        return token.getChannel() == Lexer.DEFAULT_TOKEN_CHANNEL;
+        return channel == Lexer.DEFAULT_TOKEN_CHANNEL;
     }
 }

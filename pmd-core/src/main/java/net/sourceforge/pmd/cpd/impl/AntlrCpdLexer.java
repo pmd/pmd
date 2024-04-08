@@ -12,6 +12,7 @@ import org.antlr.v4.runtime.Lexer;
 
 import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.TokenManager;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrLexerBehavior;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrTokenManager;
 import net.sourceforge.pmd.lang.document.TextDocument;
@@ -23,7 +24,15 @@ public abstract class AntlrCpdLexer extends CpdLexerBase<AntlrToken> {
     @Override
     protected final TokenManager<AntlrToken> makeLexerImpl(TextDocument doc) throws IOException {
         CharStream charStream = CharStreams.fromReader(doc.newReader(), doc.getFileId().getAbsolutePath());
-        return new AntlrTokenManager(getLexerForSource(charStream), doc);
+        return new AntlrTokenManager(getLexerForSource(charStream), doc, getLexerBehavior());
+    }
+
+    /**
+     * Override this method to customize some aspects of the
+     * lexer.
+     */
+    protected AntlrLexerBehavior getLexerBehavior() {
+        return new AntlrLexerBehavior();
     }
 
     protected abstract Lexer getLexerForSource(CharStream charStream);
