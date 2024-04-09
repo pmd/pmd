@@ -111,7 +111,7 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
         + " This only affects language assignment for the files that are mentioned with other options like --dir, it will not search for "
         + " new files outside of these. These patterns take precedence over the default language assignment. If several patterns match,"
         + " only the latest pattern to be mentioned on the CLI will be considered.", parameterConsumer = LanguageFilePatternConverter.class)
-    protected List<LanguageFilePattern> languageFilePatterns;
+    protected List<LanguageFilePattern> languageFilePatterns = new ArrayList<>();
 
 
     @Override
@@ -140,14 +140,12 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
         if (relativizeRootPaths != null) {
             configuration.addRelativizeRoots(relativizeRootPaths);
         }
-        if (languageFilePatterns != null) {
-            for (LanguageFilePattern pat : languageFilePatterns) {
-                Language lang = configuration.getLanguageRegistry().getLanguageById(pat.languageId);
-                if (lang == null) {
-                    configuration.getReporter().warn("Language {0} mentioned in --assign-language option is not found.", pat.languageId);
-                }
-                configuration.addLanguageFilePattern(pat.pattern, pat.languageId);
+        for (LanguageFilePattern pat : languageFilePatterns) {
+            Language lang = configuration.getLanguageRegistry().getLanguageById(pat.languageId);
+            if (lang == null) {
+                configuration.getReporter().warn("Language {0} mentioned in --assign-language option is not found.", pat.languageId);
             }
+            configuration.addLanguageFilePattern(pat.pattern, pat.languageId);
         }
     }
 
@@ -181,7 +179,7 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
             } catch (PatternSyntaxException pse) {
                 throw new ParameterException(commandSpec.commandLine(), "Invalid language file pattern: " + pse.getMessage());
             }
-            argSpec.setValue(new LanguageFilePattern(pat, langId));
+            ((List<LanguageFilePattern>) argSpec.getValue()).add(new LanguageFilePattern(pat, langId));
         }
     }
 
@@ -192,6 +190,14 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
         LanguageFilePattern(Pattern pattern, String languageId) {
             this.pattern = pattern;
             this.languageId = languageId;
+        }
+
+        @Override
+        public String toString() {
+            return "LanguageFilePattern{" +
+                "pattern=" + pattern +
+                ", languageId='" + languageId + '\'' +
+                '}';
         }
     }
 }
