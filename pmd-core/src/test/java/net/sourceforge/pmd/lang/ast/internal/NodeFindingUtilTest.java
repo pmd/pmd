@@ -23,10 +23,10 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
-public class NodeFindingUtilTest {
+class NodeFindingUtilTest {
 
     @Test
-    public void testFindNode() {
+    void testFindNode() {
         DummyNode.DummyRootNode root = parseLispish("(a(b)x(c))");
 
         assertFinds("a", 1, root);
