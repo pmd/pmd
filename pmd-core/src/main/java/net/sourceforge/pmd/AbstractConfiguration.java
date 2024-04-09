@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -209,6 +210,20 @@ public abstract class AbstractConfiguration {
     }
 
     /**
+     * Add a pattern that will be matched to a language. If the language is unknown,
+     * return false. File patterns are matched in the reverse order they were added.
+     * This behavior allows later patterns to take precedence over already added patterns.
+     * The first match stops the search. If the language is unknown (not loaded), the
+     * search is stopped anyway.
+     *
+     * @param pattern    A pattern
+     * @param languageId A language ID
+     */
+    public void addLanguageFilePattern(Pattern pattern, String languageId) {
+        languageVersionDiscoverer.addLanguageFilePattern(pattern, languageId);
+    }
+
+    /**
      * Get the LanguageVersion of the source file with given name. This depends
      * on the fileName extension, and the java version.
      * <p>
@@ -220,9 +235,7 @@ public abstract class AbstractConfiguration {
      *            Name of the file, can be absolute, or simple.
      * @return the LanguageVersion
      */
-    // FUTURE Delete this? I can't think of a good reason to keep it around.
-    // Failure to determine the LanguageVersion for a file should be a hard
-    // error, or simply cause the file to be skipped?
+    // TODO Delete this, only used in tests, duplicates logic from FileCollector.
     public @Nullable LanguageVersion getLanguageVersionOfFile(String fileName) {
         LanguageVersion forcedVersion = getForceLanguageVersion();
         if (forcedVersion != null) {

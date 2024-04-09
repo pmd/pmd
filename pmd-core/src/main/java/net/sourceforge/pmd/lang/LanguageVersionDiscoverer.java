@@ -5,16 +5,20 @@
 package net.sourceforge.pmd.lang;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.util.AssertionUtil;
+import net.sourceforge.pmd.util.IteratorUtil;
 
 /**
  * This class can discover the LanguageVersion of a source file. Further, every
@@ -25,6 +29,7 @@ public class LanguageVersionDiscoverer {
 
     private LanguageRegistry languageRegistry;
     private final Map<Language, LanguageVersion> languageToLanguageVersion = new HashMap<>();
+    private final List<LanguageFilePattern> languageFilePatterns = new ArrayList<>();
     private LanguageVersion forcedVersion;
 
 
@@ -45,6 +50,24 @@ public class LanguageVersionDiscoverer {
      */
     public LanguageVersionDiscoverer(LanguageRegistry registry) {
         this(registry, null);
+    }
+
+
+    /**
+     * Add a pattern that will be matched to a language. If the language is unknown,
+     * return false. File patterns are matched in the reverse order they were added.
+     * This behavior allows later patterns to take precedence over already added patterns.
+     * The first match stops the search. If the language is unknown (not loaded), the
+     * search is stopped anyway.
+     *
+     * @param pattern    A pattern
+     * @param languageId A language ID
+     *
+     * @return True if the language is known, false otherwise.
+     */
+    public boolean addLanguageFilePattern(Pattern pattern, String languageId) {
+        languageFilePatterns.add(new LanguageFilePattern(pattern, languageId));
+        return languageRegistry.getLanguageById(languageId) != null;
     }
 
     /**
@@ -130,9 +153,32 @@ public class LanguageVersionDiscoverer {
      */
     public List<Language> getLanguagesForFile(String fileName) {
         String extension = getExtension(fileName);
+
+        String langId = matchLanguageFilePatterns(fileName);
+        if (langId != null) {
+            // matched one of the patterns
+            Language lang = languageRegistry.getLanguageById(langId);
+            if (lang != null) {
+                return Collections.singletonList(lang);
+            } else {
+                // language was not loaded, file is ignored.
+                return Collections.emptyList();
+            }
+        }
+
         return languageRegistry.getLanguages().stream()
                                .filter(it -> it.hasExtension(extension))
                                .collect(Collectors.toList());
+    }
+
+    private @Nullable String matchLanguageFilePatterns(String fileName) {
+        // match patterns from most recent to most ancient
+        for (LanguageFilePattern pat : IteratorUtil.asReversed(languageFilePatterns)) {
+            if (pat.matches(fileName)) {
+                return pat.languageId;
+            }
+        }
+        return null;
     }
 
     // Get the extensions from a file
@@ -158,5 +204,19 @@ public class LanguageVersionDiscoverer {
         return "LanguageVersionDiscoverer(" + languageRegistry
                 + (forcedVersion != null ? ",forcedVersion=" + forcedVersion : "")
                 + ")";
+    }
+
+    static final class LanguageFilePattern {
+        private final Pattern pat;
+        private final String languageId;
+
+        LanguageFilePattern(Pattern pat, String languageId) {
+            this.pat = pat;
+            this.languageId = languageId;
+        }
+
+        public boolean matches(String filename) {
+            return pat.matcher(filename).matches();
+        }
     }
 }

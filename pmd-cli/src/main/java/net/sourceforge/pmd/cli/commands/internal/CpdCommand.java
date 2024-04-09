@@ -81,6 +81,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
             defaultValue = CpdLanguagePropertiesDefaults.DEFAULT_SKIP_BLOCKS_PATTERN)
     private String skipBlocksPattern;
 
+    // todo move this option up to the base class
     @Option(names = "--exclude", arity = "1..*", description = "Files to be excluded from the analysis")
     private List<Path> excludes = new ArrayList<>();
 
@@ -98,15 +99,9 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
     @Override
     protected CPDConfiguration toConfiguration() {
         final CPDConfiguration configuration = new CPDConfiguration();
+        configureCommonOptions(configuration);
         configuration.setExcludes(excludes);
-        if (relativizeRootPaths != null) {
-            configuration.addRelativizeRoots(relativizeRootPaths);
-        }
         configuration.setFailOnViolation(failOnViolation);
-        configuration.setInputFilePath(fileListPath);
-        if (inputPaths != null) {
-            configuration.setInputPathList(new ArrayList<>(inputPaths));
-        }
         configuration.setIgnoreAnnotations(ignoreAnnotations);
         configuration.setIgnoreIdentifiers(ignoreIdentifiers);
         configuration.setIgnoreLiterals(ignoreLiterals);
@@ -120,8 +115,6 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
         configuration.setSkipBlocksPattern(skipBlocksPattern);
         configuration.setSkipDuplicates(skipDuplicates);
         configuration.setSkipLexicalErrors(skipLexicalErrors);
-        configuration.setSourceEncoding(encoding.getEncoding());
-        configuration.setInputUri(uri);
 
         return configuration;
     }

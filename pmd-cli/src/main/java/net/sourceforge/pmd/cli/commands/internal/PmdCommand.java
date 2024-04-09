@@ -39,7 +39,6 @@ import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.log.PmdReporter;
-import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -78,8 +77,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
 
     private List<String> rulesets;
     
-    private Path ignoreListPath;
-
     private String format;
 
     private int threads;
@@ -115,13 +112,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
                required = true, split = ",", arity = "1..*")
     public void setRulesets(final List<String> rulesets) {
         this.rulesets = rulesets;
-    }
-
-    @Option(names = "--ignore-list",
-            description = "Path to a file containing a list of files to exclude from the analysis, one path per line. "
-                          + "This option can be combined with --dir, --file-list and --uri.")
-    public void setIgnoreListPath(final Path ignoreListPath) {
-        this.ignoreListPath = ignoreListPath;
     }
 
     @Option(names = { "--format", "-f" },
@@ -251,20 +241,11 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
     @Override
     protected PMDConfiguration toConfiguration() {
         final PMDConfiguration configuration = new PMDConfiguration();
-        if (inputPaths != null) {
-            configuration.setInputPathList(new ArrayList<>(inputPaths));
-        }
-        configuration.setInputFilePath(fileListPath);
-        configuration.setIgnoreFilePath(ignoreListPath);
-        configuration.setInputUri(uri);
+        configureCommonOptions(configuration);
         configuration.setReportFormat(format);
-        configuration.setSourceEncoding(encoding.getEncoding());
         configuration.setMinimumPriority(minimumPriority);
         configuration.setReportFile(reportFile);
         configuration.setReportProperties(properties);
-        if (relativizeRootPaths != null) {
-            configuration.addRelativizeRoots(relativizeRootPaths);
-        }
         configuration.setRuleSets(rulesets);
         configuration.setShowSuppressedViolations(showSuppressed);
         configuration.setSuppressMarker(suppressMarker);
@@ -283,9 +264,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
                     .getDefaultLanguageVersion(forceLanguage);
             configuration.setForceLanguageVersion(forcedLangVer);
         }
-
-        // Setup CLI message reporter
-        configuration.setReporter(new SimpleMessageReporter(LoggerFactory.getLogger(PmdCommand.class)));
 
         try {
             configuration.prependAuxClasspath(auxClasspath);
