@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,6 +45,9 @@ public class LanguageVersionDiscoverer {
     public LanguageVersionDiscoverer(LanguageRegistry registry, LanguageVersion forcedVersion) {
         this.languageRegistry = registry;
         this.forcedVersion = forcedVersion;
+
+        // Add pattern to recognize POM. This can be overridden by patterns added later. POM defaults to XML if not loaded.
+        addLanguageFilePattern(Pattern.compile("pom\\.xml"), "pom", listOf("xml"));
     }
 
     /**
@@ -60,14 +65,15 @@ public class LanguageVersionDiscoverer {
      * The first match stops the search. If the language is unknown (not loaded), the
      * search is stopped anyway.
      *
-     * @param pattern    A pattern
-     * @param languageId A language ID
-     *
-     * @return True if the language is known, false otherwise.
+     * @param pattern            A pattern
+     * @param languageId         A language ID
+     * @param defaultLanguageIds List of language ids to try to load if the language languageid is not loaded.
      */
-    public boolean addLanguageFilePattern(Pattern pattern, String languageId) {
-        languageFilePatterns.add(new LanguageFilePattern(pattern, languageId));
-        return languageRegistry.getLanguageById(languageId) != null;
+    public void addLanguageFilePattern(Pattern pattern, String languageId, List<String> defaultLanguageIds) {
+        AssertionUtil.requireParamNotNull("pattern", pattern);
+        AssertionUtil.requireParamNotNull("languageId", languageId);
+        AssertionUtil.requireParamNotNull("defaultLanguageIds", defaultLanguageIds);
+        languageFilePatterns.add(new LanguageFilePattern(pattern, listOf(languageId, defaultLanguageIds.toArray(new String[0]))));
     }
 
     /**
@@ -154,16 +160,17 @@ public class LanguageVersionDiscoverer {
     public List<Language> getLanguagesForFile(String fileName) {
         String extension = getExtension(fileName);
 
-        String langId = matchLanguageFilePatterns(fileName);
-        if (langId != null) {
+        LanguageFilePattern pat = matchLanguageFilePatterns(fileName);
+        if (pat != null) {
             // matched one of the patterns
-            Language lang = languageRegistry.getLanguageById(langId);
-            if (lang != null) {
-                return Collections.singletonList(lang);
-            } else {
-                // language was not loaded, file is ignored.
-                return Collections.emptyList();
+            for (String langId : pat.languageIds) {
+                Language lang = languageRegistry.getLanguageById(langId);
+                if (lang != null) {
+                    return Collections.singletonList(lang);
+                }
             }
+            // language was not loaded, file is ignored.
+            return Collections.emptyList();
         }
 
         return languageRegistry.getLanguages().stream()
@@ -171,11 +178,11 @@ public class LanguageVersionDiscoverer {
                                .collect(Collectors.toList());
     }
 
-    private @Nullable String matchLanguageFilePatterns(String fileName) {
+    private @Nullable LanguageFilePattern matchLanguageFilePatterns(String fileName) {
         // match patterns from most recent to most ancient
         for (LanguageFilePattern pat : IteratorUtil.asReversed(languageFilePatterns)) {
             if (pat.matches(fileName)) {
-                return pat.languageId;
+                return pat;
             }
         }
         return null;
@@ -208,11 +215,11 @@ public class LanguageVersionDiscoverer {
 
     static final class LanguageFilePattern {
         private final Pattern pat;
-        private final String languageId;
+        private final List<String> languageIds;
 
-        LanguageFilePattern(Pattern pat, String languageId) {
-            this.pat = pat;
-            this.languageId = languageId;
+        LanguageFilePattern(Pattern pat, List<String> languageIds) {
+            this.pat = Objects.requireNonNull(pat);
+            this.languageIds = Objects.requireNonNull(languageIds);
         }
 
         public boolean matches(String filename) {

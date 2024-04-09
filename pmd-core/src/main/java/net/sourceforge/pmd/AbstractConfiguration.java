@@ -220,7 +220,7 @@ public abstract class AbstractConfiguration {
      * @param languageId A language ID
      */
     public void addLanguageFilePattern(Pattern pattern, String languageId) {
-        languageVersionDiscoverer.addLanguageFilePattern(pattern, languageId);
+        languageVersionDiscoverer.addLanguageFilePattern(pattern, languageId, Collections.emptyList());
     }
 
     /**
