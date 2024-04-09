@@ -12,7 +12,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
-import java.util.regex.PatternSyntaxException;
+import java.util.function.Predicate;
 
 import org.slf4j.LoggerFactory;
 
@@ -177,7 +177,7 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
             PathMatcher matcher;
             try {
                 matcher = PathMatcher.compileGlob(globString);
-            } catch (PatternSyntaxException pse) {
+            } catch (IllegalArgumentException pse) {
                 throw new ParameterException(commandSpec.commandLine(), "Invalid glob specification for language " + langId + ": " + pse.getMessage());
             }
             ((List<LanguageFilePattern>) argSpec.getValue()).add(new LanguageFilePattern(matcher, langId));
@@ -185,15 +185,15 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
     }
 
     protected static class LanguageFilePattern {
-        private final PathMatcher matcher;
+        private final Predicate<String> matcher;
         private final String languageId;
 
-        LanguageFilePattern(PathMatcher matcher, String languageId) {
+        LanguageFilePattern(Predicate<String> matcher, String languageId) {
             this.matcher = matcher;
             this.languageId = languageId;
         }
 
-        private <C extends AbstractConfiguration> void addToConfiguration(C configuration) {
+        private void addToConfiguration(AbstractConfiguration configuration) {
             configuration.addLanguageFilePattern(this.matcher, this.languageId);
         }
 

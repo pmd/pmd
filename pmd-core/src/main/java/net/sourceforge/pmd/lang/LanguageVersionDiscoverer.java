@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -72,7 +70,7 @@ public class LanguageVersionDiscoverer {
      * @param languageId         A language ID
      * @param defaultLanguageIds List of language ids to try to load if the language languageid is not loaded.
      */
-    public void addLanguageFilePattern(Predicate<? super Path> matcher, String languageId, List<String> defaultLanguageIds) {
+    public void addLanguageFilePattern(Predicate<? super String> matcher, String languageId, List<String> defaultLanguageIds) {
         AssertionUtil.requireParamNotNull("pattern", matcher);
         AssertionUtil.requireParamNotNull("languageId", languageId);
         AssertionUtil.requireParamNotNull("defaultLanguageIds", defaultLanguageIds);
@@ -153,10 +151,17 @@ public class LanguageVersionDiscoverer {
         this.forcedVersion = forceLanguageVersion;
     }
 
-    public List<Language> getLanguagesForFile(Path path) {
-        String extension = getExtension(path.getFileName().toString());
+    /**
+     * Get the Languages of a given source file.
+     *
+     * @param fileName
+     *            The file name.
+     * @return The Languages for the source file, may be empty.
+     */
+    public List<Language> getLanguagesForFile(String fileName) {
+        String extension = getExtension(fileName);
 
-        LanguageFilePattern pat = matchLanguageFilePatterns(path);
+        LanguageFilePattern pat = matchLanguageFilePatterns(fileName);
         if (pat != null) {
             // matched one of the patterns
             for (String langId : pat.languageIds) {
@@ -175,18 +180,7 @@ public class LanguageVersionDiscoverer {
 
     }
 
-    /**
-     * Get the Languages of a given source file.
-     *
-     * @param fileName
-     *            The file name.
-     * @return The Languages for the source file, may be empty.
-     */
-    public List<Language> getLanguagesForFile(String fileName) {
-        return getLanguagesForFile(Paths.get(fileName));
-    }
-
-    private @Nullable LanguageFilePattern matchLanguageFilePatterns(Path fileName) {
+    private @Nullable LanguageFilePattern matchLanguageFilePatterns(String fileName) {
         // match patterns from most recent to most ancient
         for (LanguageFilePattern pat : IteratorUtil.asReversed(languageFilePatterns)) {
             if (pat.matches(fileName)) {
@@ -222,15 +216,15 @@ public class LanguageVersionDiscoverer {
     }
 
     static final class LanguageFilePattern {
-        private final Predicate<? super Path> matcher;
+        private final Predicate<? super String> matcher;
         private final List<String> languageIds;
 
-        LanguageFilePattern(Predicate<? super Path> matcher, List<String> languageIds) {
+        LanguageFilePattern(Predicate<? super String> matcher, List<String> languageIds) {
             this.matcher = Objects.requireNonNull(matcher);
             this.languageIds = Objects.requireNonNull(languageIds);
         }
 
-        public boolean matches(Path path) {
+        public boolean matches(String path) {
             return matcher.test(path);
         }
     }

@@ -4,11 +4,10 @@
 
 package net.sourceforge.pmd.internal.util;
 
-import java.nio.file.Path;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-public final class PathMatcher implements Predicate<Path> {
+public final class PathMatcher implements Predicate<String> {
 
     private final Pattern pattern;
     private final String glob;
@@ -24,11 +23,10 @@ public final class PathMatcher implements Predicate<Path> {
     }
 
     @Override
-    public boolean test(Path path) {
-        String string = path.toAbsolutePath().toString();
+    public boolean test(String path) {
         // make platform independent
-        string = string.replace('\\', '/');
-        return pattern.matcher(string).matches();
+        path = path.replace('\\', '/');
+        return pattern.matcher(path).matches();
     }
 
     public static PathMatcher compileGlob(String globPattern) {

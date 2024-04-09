@@ -219,7 +219,7 @@ public abstract class AbstractConfiguration {
      * @param matcher    A path matcher
      * @param languageId A language ID
      */
-    public void addLanguageFilePattern(Predicate<? super Path> matcher, String languageId) {
+    public void addLanguageFilePattern(Predicate<? super String> matcher, String languageId) {
         languageVersionDiscoverer.addLanguageFilePattern(matcher, languageId, Collections.emptyList());
     }
 
