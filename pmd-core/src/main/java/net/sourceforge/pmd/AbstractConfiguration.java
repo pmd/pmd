@@ -8,13 +8,13 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -216,11 +216,11 @@ public abstract class AbstractConfiguration {
      * The first match stops the search. If the language is unknown (not loaded), the
      * search is stopped anyway.
      *
-     * @param pattern    A pattern
+     * @param matcher    A path matcher
      * @param languageId A language ID
      */
-    public void addLanguageFilePattern(Pattern pattern, String languageId) {
-        languageVersionDiscoverer.addLanguageFilePattern(pattern, languageId, Collections.emptyList());
+    public void addLanguageFilePattern(PathMatcher matcher, String languageId) {
+        languageVersionDiscoverer.addLanguageFilePattern(matcher, languageId, Collections.emptyList());
     }
 
     /**

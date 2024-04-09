@@ -5,14 +5,15 @@
 package net.sourceforge.pmd.cli.commands.internal;
 
 import java.net.URI;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
-import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.slf4j.LoggerFactory;
@@ -146,7 +147,7 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
             if (lang == null) {
                 configuration.getReporter().warn("Language {0} mentioned in --assign-language option is not found.", pat.languageId);
             }
-            configuration.addLanguageFilePattern(pat.pattern, pat.languageId);
+            configuration.addLanguageFilePattern(pat.matcher, pat.languageId);
         }
     }
 
@@ -170,33 +171,36 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
         public void consumeParameters(Stack<String> args, CommandLine.Model.ArgSpec argSpec, CommandLine.Model.CommandSpec commandSpec) {
             if (args.size() < 2) {
                 throw new ParameterException(commandSpec.commandLine(),
-                                             "Expected two arguments for the language file pattern: one language ID and one pattern, got " + args);
+                                             "Expected two arguments for the language file pattern: one language ID and one pattern.");
             }
             String langId = args.pop();
-            String patString = args.pop();
-            Pattern pat;
+            String globString = args.pop();
+            PathMatcher matcher;
             try {
-                pat = Pattern.compile(patString);
+                if (!globString.startsWith("regex:") && !globString.startsWith("glob:")) {
+                    globString = "glob:" + globString;
+                }
+                matcher = FileSystems.getDefault().getPathMatcher(globString);
             } catch (PatternSyntaxException pse) {
-                throw new ParameterException(commandSpec.commandLine(), "Invalid language file pattern: " + pse.getMessage());
+                throw new ParameterException(commandSpec.commandLine(), "Invalid glob specification for language " + langId + ": " + pse.getMessage());
             }
-            ((List<LanguageFilePattern>) argSpec.getValue()).add(new LanguageFilePattern(pat, langId));
+            ((List<LanguageFilePattern>) argSpec.getValue()).add(new LanguageFilePattern(matcher, langId));
         }
     }
 
     protected static class LanguageFilePattern {
-        private final Pattern pattern;
+        private final PathMatcher matcher;
         private final String languageId;
 
-        LanguageFilePattern(Pattern pattern, String languageId) {
-            this.pattern = pattern;
+        LanguageFilePattern(PathMatcher matcher, String languageId) {
+            this.matcher = matcher;
             this.languageId = languageId;
         }
 
         @Override
         public String toString() {
             return "LanguageFilePattern{" +
-                "pattern=" + pattern +
+                "pattern=" + matcher +
                 ", languageId='" + languageId + '\'' +
                 '}';
         }

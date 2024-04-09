@@ -7,13 +7,16 @@ package net.sourceforge.pmd.lang;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.io.File;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -47,7 +50,7 @@ public class LanguageVersionDiscoverer {
         this.forcedVersion = forcedVersion;
 
         // Add pattern to recognize POM. This can be overridden by patterns added later. POM defaults to XML if not loaded.
-        addLanguageFilePattern(Pattern.compile("pom\\.xml"), "pom", listOf("xml"));
+        addLanguageFilePattern(FileSystems.getDefault().getPathMatcher("glob:pom\\.xml"), "pom", listOf("xml"));
     }
 
     /**
@@ -65,15 +68,15 @@ public class LanguageVersionDiscoverer {
      * The first match stops the search. If the language is unknown (not loaded), the
      * search is stopped anyway.
      *
-     * @param pattern            A pattern
+     * @param matcher            A pattern
      * @param languageId         A language ID
      * @param defaultLanguageIds List of language ids to try to load if the language languageid is not loaded.
      */
-    public void addLanguageFilePattern(Pattern pattern, String languageId, List<String> defaultLanguageIds) {
-        AssertionUtil.requireParamNotNull("pattern", pattern);
+    public void addLanguageFilePattern(PathMatcher matcher, String languageId, List<String> defaultLanguageIds) {
+        AssertionUtil.requireParamNotNull("pattern", matcher);
         AssertionUtil.requireParamNotNull("languageId", languageId);
         AssertionUtil.requireParamNotNull("defaultLanguageIds", defaultLanguageIds);
-        languageFilePatterns.add(new LanguageFilePattern(pattern, listOf(languageId, defaultLanguageIds.toArray(new String[0]))));
+        languageFilePatterns.add(new LanguageFilePattern(matcher, listOf(languageId, defaultLanguageIds.toArray(new String[0]))));
     }
 
     /**
@@ -150,17 +153,10 @@ public class LanguageVersionDiscoverer {
         this.forcedVersion = forceLanguageVersion;
     }
 
-    /**
-     * Get the Languages of a given source file.
-     *
-     * @param fileName
-     *            The file name.
-     * @return The Languages for the source file, may be empty.
-     */
-    public List<Language> getLanguagesForFile(String fileName) {
-        String extension = getExtension(fileName);
+    public List<Language> getLanguagesForFile(Path path) {
+        String extension = getExtension(path.getFileName().toString());
 
-        LanguageFilePattern pat = matchLanguageFilePatterns(fileName);
+        LanguageFilePattern pat = matchLanguageFilePatterns(path);
         if (pat != null) {
             // matched one of the patterns
             for (String langId : pat.languageIds) {
@@ -176,9 +172,21 @@ public class LanguageVersionDiscoverer {
         return languageRegistry.getLanguages().stream()
                                .filter(it -> it.hasExtension(extension))
                                .collect(Collectors.toList());
+
     }
 
-    private @Nullable LanguageFilePattern matchLanguageFilePatterns(String fileName) {
+    /**
+     * Get the Languages of a given source file.
+     *
+     * @param fileName
+     *            The file name.
+     * @return The Languages for the source file, may be empty.
+     */
+    public List<Language> getLanguagesForFile(String fileName) {
+        return getLanguagesForFile(Paths.get(fileName));
+    }
+
+    private @Nullable LanguageFilePattern matchLanguageFilePatterns(Path fileName) {
         // match patterns from most recent to most ancient
         for (LanguageFilePattern pat : IteratorUtil.asReversed(languageFilePatterns)) {
             if (pat.matches(fileName)) {
@@ -214,16 +222,16 @@ public class LanguageVersionDiscoverer {
     }
 
     static final class LanguageFilePattern {
-        private final Pattern pat;
+        private final PathMatcher matcher;
         private final List<String> languageIds;
 
-        LanguageFilePattern(Pattern pat, List<String> languageIds) {
-            this.pat = Objects.requireNonNull(pat);
+        LanguageFilePattern(PathMatcher matcher, List<String> languageIds) {
+            this.matcher = Objects.requireNonNull(matcher);
             this.languageIds = Objects.requireNonNull(languageIds);
         }
 
-        public boolean matches(String filename) {
-            return pat.matcher(filename).matches();
+        public boolean matches(Path path) {
+            return matcher.matches(path);
         }
     }
 }
