@@ -47,7 +47,7 @@ public class PLSQLCpdLexer extends JavaccCpdLexer {
             || plsqlToken.kind == PLSQLTokenKinds.STRING_LITERAL
             || plsqlToken.kind == PLSQLTokenKinds.QUOTED_LITERAL)) {
             // the token kind is preserved
-            image = String.valueOf(plsqlToken.kind);
+            image = PLSQLTokenKinds.describe(plsqlToken.kind);
         } else if (plsqlToken.kind != PLSQLTokenKinds.CHARACTER_LITERAL
             && plsqlToken.kind != PLSQLTokenKinds.STRING_LITERAL
             && plsqlToken.kind != PLSQLTokenKinds.QUOTED_LITERAL) {
