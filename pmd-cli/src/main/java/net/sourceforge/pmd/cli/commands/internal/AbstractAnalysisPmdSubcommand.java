@@ -107,7 +107,7 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
         this.ignoreListPath = ignoreListPath;
     }
 
-    @Option(names="--assign-language", description = "Use a regex pattern to assign filenames to a language."
+    @Option(names = "--assign-language", description = "Use a regex pattern to assign filenames to a language."
         + " Eg `--assign-language html '.*\\.twig'` will recognize files with extension \\.twig and assign them the language HTML."
         + " This only affects language assignment for the files that are mentioned with other options like --dir, it will not search for "
         + " new files outside of these. These patterns take precedence over the default language assignment. If several patterns match,"
