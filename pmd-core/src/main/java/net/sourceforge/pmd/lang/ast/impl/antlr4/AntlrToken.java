@@ -44,6 +44,20 @@ public class AntlrToken implements GenericToken<AntlrToken> {
         this.kind = token.getType();
     }
 
+    /**
+     * @deprecated Don't create antlr tokens directly, use an {@link AntlrTokenManager}
+     */
+    @Deprecated
+    public AntlrToken(final Token token, final AntlrToken previousComment, TextDocument textDoc) {
+        this.previousComment = previousComment;
+        this.textDoc = textDoc;
+        this.image = token.getText();
+        this.startOffset = token.getStartIndex();
+        this.endOffset = token.getStopIndex() + 1; // exclusive
+        this.channel = token.getChannel();
+        this.kind = token.getType();
+    }
+
     @Override
     public AntlrToken getNext() {
         return next;
