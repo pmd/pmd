@@ -106,11 +106,12 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
         this.ignoreListPath = ignoreListPath;
     }
 
-    @Option(arity = "2", names="--assign-language", description = "Use a regex pattern to assign filenames to a language."
+    @Option(names="--assign-language", description = "Use a regex pattern to assign filenames to a language."
         + " Eg `--assign-language html '.*\\.twig'` will recognize files with extension \\.twig and assign them the language HTML."
         + " This only affects language assignment for the files that are mentioned with other options like --dir, it will not search for "
         + " new files outside of these. These patterns take precedence over the default language assignment. If several patterns match,"
-        + " only the latest pattern to be mentioned on the CLI will be considered.", parameterConsumer = LanguageFilePatternConverter.class)
+        + " only the latest pattern to be mentioned on the CLI will be considered. Note that the regex will be applied on the absolute path"
+        + " of the file, with file separators normalized to '/'.", parameterConsumer = LanguageFilePatternConverter.class)
     protected List<LanguageFilePattern> languageFilePatterns = new ArrayList<>();
 
 
@@ -167,9 +168,9 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
 
         @Override
         public void consumeParameters(Stack<String> args, CommandLine.Model.ArgSpec argSpec, CommandLine.Model.CommandSpec commandSpec) {
-            if (args.size() != 2) {
+            if (args.size() < 2) {
                 throw new ParameterException(commandSpec.commandLine(),
-                                             "Expected two arguments for the language file pattern: one language ID and one pattern.");
+                                             "Expected two arguments for the language file pattern: one language ID and one pattern, got " + args);
             }
             String langId = args.pop();
             String patString = args.pop();

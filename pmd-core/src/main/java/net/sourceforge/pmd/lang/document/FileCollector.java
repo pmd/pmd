@@ -214,6 +214,9 @@ public final class FileCollector implements AutoCloseable {
     }
 
     private LanguageVersion discoverLanguage(String file) {
+        // normalize Win separators for the patterns to apply
+        file = file.replace('\\', '/');
+
         if (discoverer.getForcedVersion() != null) {
             return discoverer.getForcedVersion();
         }

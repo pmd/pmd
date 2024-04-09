@@ -332,6 +332,19 @@ class PmdCliTest extends BaseCliTest {
             .verify(r -> r.checkStdOut(containsString("someSource.DUMMY_2_CUSTOM_EXT:1:\tReportAllRootNodes")));
     }
 
+
+    @Test
+    void testRepeatAssignLanguageOption() throws Exception {
+
+        runCli(VIOLATIONS_FOUND, "-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION_FOR_DUMMY2_LANG,
+               "--assign-language", "dummy2", ".*\\.DUMMY_2_CUSTOM_EXT",
+               "--assign-language", "dummy2", ".*/someSource.dummy")
+            .verify(r -> {
+                r.checkStdOut(containsString("someSource.DUMMY_2_CUSTOM_EXT"));
+                r.checkStdOut(containsString("someSource.dummy"));
+            });
+    }
+
     @Test
     void testZipFileAsSource() throws Exception {
         Path zipArchive = createTemporaryZipArchive("sources.zip");
