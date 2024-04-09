@@ -39,7 +39,7 @@ public class AntlrToken implements GenericToken<AntlrToken> {
         this.textDoc = textDoc;
         this.image = behavior.getTokenImage(token);
         this.startOffset = token.getStartIndex();
-        this.endOffset = token.getStopIndex();
+        this.endOffset = token.getStopIndex() + 1; // exclusive
         this.channel = token.getChannel();
         this.kind = token.getType();
     }
