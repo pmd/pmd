@@ -7,9 +7,7 @@ package net.sourceforge.pmd.lang;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.io.File;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,11 +15,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.internal.util.PathMatcher;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.IteratorUtil;
 
@@ -50,7 +50,7 @@ public class LanguageVersionDiscoverer {
         this.forcedVersion = forcedVersion;
 
         // Add pattern to recognize POM. This can be overridden by patterns added later. POM defaults to XML if not loaded.
-        addLanguageFilePattern(FileSystems.getDefault().getPathMatcher("glob:pom\\.xml"), "pom", listOf("xml"));
+        addLanguageFilePattern(PathMatcher.compileGlob("pom\\.xml"), "pom", listOf("xml"));
     }
 
     /**
@@ -72,7 +72,7 @@ public class LanguageVersionDiscoverer {
      * @param languageId         A language ID
      * @param defaultLanguageIds List of language ids to try to load if the language languageid is not loaded.
      */
-    public void addLanguageFilePattern(PathMatcher matcher, String languageId, List<String> defaultLanguageIds) {
+    public void addLanguageFilePattern(Predicate<? super Path> matcher, String languageId, List<String> defaultLanguageIds) {
         AssertionUtil.requireParamNotNull("pattern", matcher);
         AssertionUtil.requireParamNotNull("languageId", languageId);
         AssertionUtil.requireParamNotNull("defaultLanguageIds", defaultLanguageIds);
@@ -222,16 +222,16 @@ public class LanguageVersionDiscoverer {
     }
 
     static final class LanguageFilePattern {
-        private final PathMatcher matcher;
+        private final Predicate<? super Path> matcher;
         private final List<String> languageIds;
 
-        LanguageFilePattern(PathMatcher matcher, List<String> languageIds) {
+        LanguageFilePattern(Predicate<? super Path> matcher, List<String> languageIds) {
             this.matcher = Objects.requireNonNull(matcher);
             this.languageIds = Objects.requireNonNull(languageIds);
         }
 
         public boolean matches(Path path) {
-            return matcher.matches(path);
+            return matcher.test(path);
         }
     }
 }

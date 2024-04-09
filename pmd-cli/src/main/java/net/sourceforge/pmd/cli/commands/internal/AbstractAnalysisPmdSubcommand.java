@@ -5,10 +5,8 @@
 package net.sourceforge.pmd.cli.commands.internal;
 
 import java.net.URI;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.PathMatcher;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -22,6 +20,7 @@ import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.cli.commands.mixins.internal.EncodingMixin;
 import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.cli.internal.PmdRootLogger;
+import net.sourceforge.pmd.internal.util.PathMatcher;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
@@ -147,7 +146,7 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
             if (lang == null) {
                 configuration.getReporter().warn("Language {0} mentioned in --assign-language option is not found.", pat.languageId);
             }
-            configuration.addLanguageFilePattern(pat.matcher, pat.languageId);
+            pat.addToConfiguration(configuration);
         }
     }
 
@@ -177,10 +176,7 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
             String globString = args.pop();
             PathMatcher matcher;
             try {
-                if (!globString.startsWith("regex:") && !globString.startsWith("glob:")) {
-                    globString = "glob:" + globString;
-                }
-                matcher = FileSystems.getDefault().getPathMatcher(globString);
+                matcher = PathMatcher.compileGlob(globString);
             } catch (PatternSyntaxException pse) {
                 throw new ParameterException(commandSpec.commandLine(), "Invalid glob specification for language " + langId + ": " + pse.getMessage());
             }
@@ -195,6 +191,10 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
         LanguageFilePattern(PathMatcher matcher, String languageId) {
             this.matcher = matcher;
             this.languageId = languageId;
+        }
+
+        private <C extends AbstractConfiguration> void addToConfiguration(C configuration) {
+            configuration.addLanguageFilePattern(this.matcher, this.languageId);
         }
 
         @Override

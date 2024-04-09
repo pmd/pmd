@@ -338,7 +338,7 @@ class PmdCliTest extends BaseCliTest {
 
         runCli(VIOLATIONS_FOUND, "-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION_FOR_DUMMY2_LANG,
                "--assign-language", "dummy2", "*\\.DUMMY_2_CUSTOM_EXT",
-               "--assign-language", "dummy2", "someSource.dummy")
+               "--assign-language", "dummy2", "*/someSource.dummy")
             .verify(r -> {
                 r.checkStdOut(containsString("someSource.DUMMY_2_CUSTOM_EXT"));
                 r.checkStdOut(containsString("someSource.dummy"));

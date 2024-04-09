@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -219,7 +220,7 @@ public abstract class AbstractConfiguration {
      * @param matcher    A path matcher
      * @param languageId A language ID
      */
-    public void addLanguageFilePattern(PathMatcher matcher, String languageId) {
+    public void addLanguageFilePattern(Predicate<? super Path> matcher, String languageId) {
         languageVersionDiscoverer.addLanguageFilePattern(matcher, languageId, Collections.emptyList());
     }
 
