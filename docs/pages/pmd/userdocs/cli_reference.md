@@ -59,6 +59,18 @@ The tool comes with a rather extensive help text, simply running with `--help`!
                <p>See also [Providing the auxiliary classpath](pmd_languages_java.html#providing-the-auxiliary-classpath).</p>"
                languages="Java"
     %}
+    {% include custom/cli_option_row.html options="--assign-language"
+               option_arg="langId regex"
+               description="Specify that files whose name match the regex should be assigned the given language.
+               This option is useful when the default extension-based matching does not match some file names in
+               your project. In particular, languages like XML have a variety of extensions, but by default only the `.xml`
+               extension will be recognized.
+
+               This option may be repeated to make several assignments. If several regexes match the same file, only
+               the last occurrence of the option is taken into account. If the language is not loaded, the assignment
+               is still valid and no further regexes/extension matching will occur, but the file will be ignored. A warning
+               will be logged once on the CLI before the execution.
+    %}
     {% include custom/cli_option_row.html options="--benchmark,-b"
                description="Enables benchmark mode, which outputs a benchmark report upon completion.
                             The report is sent to standard error."
@@ -279,7 +291,19 @@ All formats are described at [PMD Report formats](pmd_userdocs_report_formats.ht
 
 ### Analyze other xml formats
 
-If your xml language doesn't use `xml` as file extension, you can still use PMD with `--force-language`:
+If your XML language doesn't use `xml` as file extension, you can match these files with the option `--assign-language`:
+
+{% include cli_example.html
+   id="force"
+   linux="pmd check -d src/xml-file.ext -f text -R ruleset.xml --assign-language xml '.*\.ext'"
+   windows="pmd.bat check -d src\xml-file.ext -f text -R ruleset.xml --assign-language xml '.*\.ext'" %}
+
+You can repeat the `--assign-language` option several time to match different patterns. The first argument
+is a language ID, the second is a Java regular expression. You can therefore write eg `--assign-language xml '.*\.(ext|ext2)|foo.myxmlformat'`.
+
+
+Another, less flexible way to do this is to use `--force-language`, but this will assign all files to the same language and 
+will not allow analyzing several languages in one go:
 
 {% include cli_example.html
    id="force"
