@@ -14,12 +14,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.internal.util.PathMatcher;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.IteratorUtil;
 
@@ -48,7 +48,7 @@ public class LanguageVersionDiscoverer {
         this.forcedVersion = forcedVersion;
 
         // Add pattern to recognize POM. This can be overridden by patterns added later. POM defaults to XML if not loaded.
-        addLanguageFilePattern(PathMatcher.compileGlob("pom\\.xml"), "pom", listOf("xml"));
+        addLanguageFilePattern(LanguageFilePattern.ofRegex(Pattern.compile("(.*/)?pom\\.xml$"), "pom", "xml"));
     }
 
     /**
@@ -66,15 +66,11 @@ public class LanguageVersionDiscoverer {
      * The first match stops the search. If the language is unknown (not loaded), the
      * search is stopped anyway.
      *
-     * @param matcher            A pattern
-     * @param languageId         A language ID
-     * @param defaultLanguageIds List of language ids to try to load if the language languageid is not loaded.
+     * @param pattern            A pattern
      */
-    public void addLanguageFilePattern(Predicate<? super String> matcher, String languageId, List<String> defaultLanguageIds) {
-        AssertionUtil.requireParamNotNull("pattern", matcher);
-        AssertionUtil.requireParamNotNull("languageId", languageId);
-        AssertionUtil.requireParamNotNull("defaultLanguageIds", defaultLanguageIds);
-        languageFilePatterns.add(new LanguageFilePattern(matcher, listOf(languageId, defaultLanguageIds.toArray(new String[0]))));
+    public void addLanguageFilePattern(LanguageFilePattern pattern) {
+        AssertionUtil.requireParamNotNull("pattern", pattern);
+        languageFilePatterns.add(pattern);
     }
 
     /**
@@ -215,17 +211,46 @@ public class LanguageVersionDiscoverer {
                 + ")";
     }
 
-    static final class LanguageFilePattern {
+    /**
+     * A pattern that matches file names to assign them a language.
+     *
+     * @see net.sourceforge.pmd.AbstractConfiguration#addLanguageFilePattern(LanguageFilePattern)
+     * @see #addLanguageFilePattern(LanguageFilePattern)
+     */
+    public static final class LanguageFilePattern {
         private final Predicate<? super String> matcher;
         private final List<String> languageIds;
 
-        LanguageFilePattern(Predicate<? super String> matcher, List<String> languageIds) {
+        private LanguageFilePattern(Predicate<? super String> matcher, List<String> languageIds) {
             this.matcher = Objects.requireNonNull(matcher);
             this.languageIds = Objects.requireNonNull(languageIds);
         }
 
-        public boolean matches(String path) {
+        boolean matches(String path) {
             return matcher.test(path);
+        }
+
+        /** Language ID of the first language to be loaded if this pattern matches. */
+        public String getLanguageid() {
+            return languageIds.get(0);
+        }
+
+        /**
+         * Make a pattern from language IDs that will be assigned to the file if its name matches the regex.
+         *
+         * @param pattern      Regex
+         * @param firstLang    First language
+         * @param defaultLangs Other language that will be tried if the first language cannot be loaded
+         *
+         * @return A new pattern
+         */
+        public static LanguageFilePattern ofRegex(Pattern pattern, String firstLang, String... defaultLangs) {
+            Predicate<String> pred = path -> {
+                // make platform independent
+                path = path.replace('\\', '/');
+                return pattern.matcher(path).matches();
+            };
+            return new LanguageFilePattern(pred, listOf(firstLang, defaultLangs));
         }
     }
 }

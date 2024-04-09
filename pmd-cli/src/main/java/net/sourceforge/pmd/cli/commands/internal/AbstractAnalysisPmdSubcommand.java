@@ -12,7 +12,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
-import java.util.function.Predicate;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.slf4j.LoggerFactory;
 
@@ -20,8 +21,8 @@ import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.cli.commands.mixins.internal.EncodingMixin;
 import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.cli.internal.PmdRootLogger;
-import net.sourceforge.pmd.internal.util.PathMatcher;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersionDiscoverer.LanguageFilePattern;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 import picocli.CommandLine;
@@ -142,11 +143,11 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
             configuration.addRelativizeRoots(relativizeRootPaths);
         }
         for (LanguageFilePattern pat : languageFilePatterns) {
-            Language lang = configuration.getLanguageRegistry().getLanguageById(pat.languageId);
+            Language lang = configuration.getLanguageRegistry().getLanguageById(pat.getLanguageid());
             if (lang == null) {
-                configuration.getReporter().warn("Language {0} mentioned in --assign-language option is not found.", pat.languageId);
+                configuration.getReporter().warn("Language {0} mentioned in --assign-language option is not loaded.", pat.getLanguageid());
             }
-            pat.addToConfiguration(configuration);
+            configuration.addLanguageFilePattern(pat);
         }
     }
 
@@ -174,35 +175,13 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
             }
             String langId = args.pop();
             String globString = args.pop();
-            PathMatcher matcher;
+            Pattern pattern;
             try {
-                matcher = PathMatcher.compileGlob(globString);
-            } catch (IllegalArgumentException pse) {
-                throw new ParameterException(commandSpec.commandLine(), "Invalid glob specification for language " + langId + ": " + pse.getMessage());
+                pattern = Pattern.compile(globString);
+            } catch (PatternSyntaxException pse) {
+                throw new ParameterException(commandSpec.commandLine(), "Invalid regex specification for language " + langId + ": " + pse.getMessage());
             }
-            ((List<LanguageFilePattern>) argSpec.getValue()).add(new LanguageFilePattern(matcher, langId));
-        }
-    }
-
-    protected static class LanguageFilePattern {
-        private final Predicate<String> matcher;
-        private final String languageId;
-
-        LanguageFilePattern(Predicate<String> matcher, String languageId) {
-            this.matcher = matcher;
-            this.languageId = languageId;
-        }
-
-        private void addToConfiguration(AbstractConfiguration configuration) {
-            configuration.addLanguageFilePattern(this.matcher, this.languageId);
-        }
-
-        @Override
-        public String toString() {
-            return "LanguageFilePattern{" +
-                "pattern=" + matcher +
-                ", languageId='" + languageId + '\'' +
-                '}';
+            ((List<LanguageFilePattern>) argSpec.getValue()).add(LanguageFilePattern.ofRegex(pattern, langId));
         }
     }
 }

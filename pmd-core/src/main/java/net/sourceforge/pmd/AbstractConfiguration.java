@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Predicate;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -216,11 +215,10 @@ public abstract class AbstractConfiguration {
      * The first match stops the search. If the language is unknown (not loaded), the
      * search is stopped anyway.
      *
-     * @param matcher    A path matcher
-     * @param languageId A language ID
+     * @param pattern            A pattern
      */
-    public void addLanguageFilePattern(Predicate<? super String> matcher, String languageId) {
-        languageVersionDiscoverer.addLanguageFilePattern(matcher, languageId, Collections.emptyList());
+    public void addLanguageFilePattern(LanguageVersionDiscoverer.LanguageFilePattern pattern) {
+        languageVersionDiscoverer.addLanguageFilePattern(pattern);
     }
 
     /**
