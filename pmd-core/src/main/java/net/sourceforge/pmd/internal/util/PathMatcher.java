@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.internal.util;
 
 import java.nio.file.Path;
@@ -43,6 +47,7 @@ public final class PathMatcher implements Predicate<Path> {
      * <p> Courtesy of Neil Traft (<a href="https://stackoverflow.com/a/17369948/6245827">...</a>)
      *
      * @param pattern A glob pattern.
+     *
      * @return A regex pattern to recognize the given glob pattern.
      */
     private static String convertGlobToRegex(String pattern) {
@@ -54,81 +59,89 @@ public final class PathMatcher implements Predicate<Path> {
         for (int i = 0; i < arr.length; i++) {
             char ch = arr[i];
             switch (ch) {
-                case '\\':
-                    if (++i >= arr.length) {
+            case '\\':
+                i++; // SUPPRESS CHECKSTYLE ModifiedControlVariable
+                if (i >= arr.length) {
+                    sb.append('\\');
+                } else {
+                    char next = arr[i];
+                    switch (next) {
+                    case ',':
+                        // escape not needed
+                        break;
+                    case 'Q':
+                    case 'E':
+                        // extra escape needed
                         sb.append('\\');
-                    } else {
-                        char next = arr[i];
-                        switch (next) {
-                            case ',':
-                                // escape not needed
-                                break;
-                            case 'Q':
-                            case 'E':
-                                // extra escape needed
-                                sb.append('\\');
-                            default:
-                                sb.append('\\');
-                        }
-                        sb.append(next);
+                        // fallthrough
+                    default:
+                        sb.append('\\');
+                        // fallthrough
                     }
-                    break;
-                case '*':
-                    if (inClass == 0)
-                        sb.append(".*");
-                    else
-                        sb.append('*');
-                    break;
-                case '?':
-                    if (inClass == 0)
-                        sb.append('.');
-                    else
-                        sb.append('?');
-                    break;
-                case '[':
-                    inClass++;
-                    firstIndexInClass = i+1;
-                    sb.append('[');
-                    break;
-                case ']':
-                    inClass--;
-                    sb.append(']');
-                    break;
-                case '.':
-                case '(':
-                case ')':
-                case '+':
-                case '|':
-                case '^':
-                case '$':
-                case '@':
-                case '%':
-                    if (inClass == 0 || firstIndexInClass == i && ch == '^')
-                        sb.append('\\');
-                    sb.append(ch);
-                    break;
-                case '!':
-                    if (firstIndexInClass == i)
-                        sb.append('^');
-                    else
-                        sb.append('!');
-                    break;
-                case '{':
-                    inGroup++;
-                    sb.append('(');
-                    break;
-                case '}':
-                    inGroup--;
-                    sb.append(')');
-                    break;
-                case ',':
-                    if (inGroup > 0)
-                        sb.append('|');
-                    else
-                        sb.append(',');
-                    break;
-                default:
-                    sb.append(ch);
+                    sb.append(next);
+                }
+                break;
+            case '*':
+                if (inClass == 0) {
+                    sb.append(".*");
+                } else {
+                    sb.append('*');
+                }
+                break;
+            case '?':
+                if (inClass == 0) {
+                    sb.append('.');
+                } else {
+                    sb.append('?');
+                }
+                break;
+            case '[':
+                inClass++;
+                firstIndexInClass = i + 1;
+                sb.append('[');
+                break;
+            case ']':
+                inClass--;
+                sb.append(']');
+                break;
+            case '.':
+            case '(':
+            case ')':
+            case '+':
+            case '|':
+            case '^':
+            case '$':
+            case '@':
+            case '%':
+                if (inClass == 0 || firstIndexInClass == i && ch == '^') {
+                    sb.append('\\');
+                }
+                sb.append(ch);
+                break;
+            case '!':
+                if (firstIndexInClass == i) {
+                    sb.append('^');
+                } else {
+                    sb.append('!');
+                }
+                break;
+            case '{':
+                inGroup++;
+                sb.append('(');
+                break;
+            case '}':
+                inGroup--;
+                sb.append(')');
+                break;
+            case ',':
+                if (inGroup > 0) {
+                    sb.append('|');
+                } else {
+                    sb.append(',');
+                }
+                break;
+            default:
+                sb.append(ch);
             }
         }
         return sb.toString();
