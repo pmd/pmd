@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTPermitsList;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponentList;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
@@ -54,6 +55,7 @@ final class AstClassSym
     private final List<JConstructorSymbol> declaredCtors;
     private final List<JFieldSymbol> declaredFields;
     private final List<JFieldSymbol> enumConstants; // subset of declaredFields
+    private final List<JClassSymbol> permittedSubclasses;
     private final PSet<String> annotAttributes;
 
     AstClassSym(ASTTypeDeclaration node,
@@ -96,6 +98,19 @@ final class AstClassSym
                 });
         } else {
             enumConstants = null;
+        }
+
+
+        ASTPermitsList permits = node.getPermitsClause();
+        if (permits != null) {
+            this.permittedSubclasses = permits.toList().stream().map(it -> {
+                JTypeDeclSymbol symbol = it.getTypeMirror().getSymbol();
+                if (symbol instanceof JClassSymbol)
+                    return (JClassSymbol) symbol;
+                else return null;
+            }).filter(Objects::nonNull).collect(CollectionUtil.toUnmodifiableList());
+        } else {
+            this.permittedSubclasses = Collections.emptyList();
         }
 
 
@@ -216,7 +231,12 @@ final class AstClassSym
     public @NonNull List<JFieldSymbol> getEnumConstants() {
         return enumConstants;
     }
-    
+
+    @Override
+    public List<JClassSymbol> getPermittedSubclasses() {
+        return permittedSubclasses;
+    }
+
     @Override
     public @Nullable JClassType getSuperclassType(Substitution substitution) {
         TypeSystem ts = getTypeSystem();

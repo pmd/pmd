@@ -279,4 +279,9 @@ public interface ASTTypeDeclaration
         return ASTList.orEmptyStream(isInterface() ? firstChild(ASTExtendsList.class)
                                                    : firstChild(ASTImplementsList.class));
     }
+
+    /** Return the permits list if this is a sealed type, null otherwise. */
+    default @Nullable ASTPermitsList getPermitsClause() {
+        return firstChild(ASTPermitsList.class);
+    }
 }
