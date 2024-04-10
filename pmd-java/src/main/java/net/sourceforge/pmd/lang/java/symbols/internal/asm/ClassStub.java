@@ -62,6 +62,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     private List<JMethodSymbol> methods = new ArrayList<>();
     private List<JConstructorSymbol> ctors = new ArrayList<>();
     private List<JFieldSymbol> enumConstants = null;
+    private List<JClassSymbol> permittedSubclasses = null;
 
     private PSet<SymAnnot> annotations = HashTreePSet.empty();
 
@@ -117,6 +118,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
                 fields = Collections.unmodifiableList(fields);
                 memberClasses = Collections.unmodifiableList(memberClasses);
                 enumConstants = CollectionUtil.makeUnmodifiableAndNonNull(enumConstants);
+                permittedSubclasses = CollectionUtil.makeUnmodifiableAndNonNull(permittedSubclasses);
 
                 if (EnclosingInfo.NO_ENCLOSING.equals(enclosingInfo)) {
                     if (names.canonicalName == null || names.simpleName == null) {
@@ -259,6 +261,13 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         ctors.add(methodStub);
     }
 
+    void addPermittedSubclass(ClassStub permittedSubclass) {
+        if (this.permittedSubclasses == null) {
+            this.permittedSubclasses = new ArrayList<>(2);
+        }
+        this.permittedSubclasses.add(permittedSubclass);
+    }
+
     @Override
     public void addAnnotation(SymAnnot annot) {
         annotations = annotations.plus(annot);
@@ -374,6 +383,12 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     public @NonNull List<JFieldSymbol> getEnumConstants() {
         parseLock.ensureParsed();
         return enumConstants;
+    }
+
+    @Override
+    public List<JClassSymbol> getPermittedSubclasses() {
+        parseLock.ensureParsed();
+        return permittedSubclasses;
     }
 
     @Override

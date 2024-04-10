@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forExactly
 import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldBeNull
@@ -20,9 +21,11 @@ import javasymbols.testdata.deep.AClassWithLocals
 import javasymbols.testdata.deep.`Another$ClassWith$Dollar`
 import javasymbols.testdata.deep.OuterWithoutDollar
 import javasymbols.testdata.impls.GenericClass
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
+import net.sourceforge.pmd.lang.java.types.testTypeSystem
 import net.sourceforge.pmd.lang.test.ast.IntelliMarker
 import net.sourceforge.pmd.lang.test.ast.shouldBe
-import net.sourceforge.pmd.lang.java.types.testTypeSystem
+import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import org.objectweb.asm.Opcodes
 import kotlin.test.assertSame
 
@@ -233,5 +236,47 @@ class AsmLoaderTest : IntelliMarker, FunSpec({
 
         val notAnEnum = symLoader().resolveClassFromBinaryName(outerName)!!
         notAnEnum::getEnumConstants shouldBe emptyList()
+    }
+
+    test("Permitted subclasses") {
+
+        val outerName = "net.sourceforge.pmd.lang.java.symbols.testdata.sealed.SealedTypesTestData"
+
+        // Note here we are loading a .class file that is in the test/resources directory.
+        val sealedInterface = symLoader().resolveClassFromBinaryName(outerName)!!
+        // sealed interface SealedTypesTestData permits A, B, C
+        sealedInterface::getSimpleName shouldBe "SealedTypesTestData"
+        sealedInterface::isSealed shouldBe true
+        sealedInterface.permittedSubclasses.let {
+            it.shouldHaveSize(3)
+            it[0].shouldBeA<JClassSymbol> {
+                // sealed interface A extends SealedTypesTestData permits X
+                it::getSimpleName shouldBe "A"
+                it::isSealed shouldBe true
+                it::isInterface shouldBe true
+                it::isFinal shouldBe false
+                it.permittedSubclasses.shouldBeSingleton {
+                    // final class X implements A {}
+                    it::getSimpleName shouldBe "X"
+                    it::isFinal shouldBe true
+                }
+            }
+            it[1].shouldBeA<JClassSymbol> {
+                // non-sealed interface B extends SealedTypesTestData
+                it::getSimpleName shouldBe "B"
+                it::isInterface shouldBe true
+                it::isSealed shouldBe false
+                it::isFinal shouldBe false
+                it::getPermittedSubclasses shouldBe emptyList()
+            }
+            it[2].shouldBeA<JClassSymbol> {
+                // final class C implements SealedTypesTestData
+                it::getSimpleName shouldBe "C"
+                it::isInterface shouldBe false
+                it::isSealed shouldBe false
+                it::isFinal shouldBe true
+                it::getPermittedSubclasses shouldBe emptyList()
+            }
+        }
     }
 })

@@ -228,6 +228,36 @@ public interface JClassSymbol extends JTypeDeclSymbol,
     boolean isAnonymousClass();
 
     /**
+     * Return the list of permitted subclasses, as defined in the {@code permits}
+     * clause of a sealed class or interface.
+     *
+     * @see #isSealed()
+     */
+    default List<JClassSymbol> getPermittedSubclasses() {
+        return Collections.emptyList();
+    }
+
+    /**
+     * Return true if this type is sealed. Then it has a non-empty list of permitted
+     * subclasses. Note that there is no trace of the non-sealed modifier in class files.
+     * A class must have the {@code non-sealed} modifier if it is not sealed, not final,
+     * and has a sealed supertype.
+     *
+     * @see #getPermittedSubclasses()
+     */
+    default boolean isSealed() {
+        return !getPermittedSubclasses().isEmpty();
+    }
+
+    /**
+     * Return true if this type is final, that is, does not admit subtypes. Note that
+     * array types have both modifiers final and abstract.
+     */
+    default boolean isFinal() {
+        return Modifier.isFinal(getModifiers());
+    }
+
+    /**
      * Return the simple names of all annotation attributes. If this
      * is not an annotation type, return an empty set.
      */
