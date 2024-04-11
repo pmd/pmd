@@ -3433,18 +3433,28 @@ properties.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>A method argument that is never re-assigned within the method can be declared final.</p>
+<p>Reports method and constructor parameters that can be made final because they are never reassigned within the body of the method.</p>
+
+<p>This rule ignores unused parameters so as not to overlap with the rule <a href="pmd_rules_java_bestpractices.html#unusedformalparameter"><code class="language-plaintext highlighter-rouge">UnusedFormalParameter</code></a>.
+It will also ignore the parameters of abstract methods.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/MethodArgumentCouldBeFinalRule.java">net.sourceforge.pmd.lang.java.rule.codestyle.MethodArgumentCouldBeFinalRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo1</span> <span class="o">(</span><span class="nc">String</span> <span class="n">param</span><span class="o">)</span> <span class="o">{</span>       <span class="c1">// do stuff with param never assigning it</span>
-
-<span class="o">}</span>
-
-<span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo2</span> <span class="o">(</span><span class="kd">final</span> <span class="nc">String</span> <span class="n">param</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// better, do stuff with param never assigning it</span>
-
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="c1">// reported, parameter can be declared final</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">foo1</span><span class="o">(</span><span class="nc">String</span> <span class="n">param</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">param</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="c1">// not reported, parameter is declared final</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">foo2</span><span class="o">(</span><span class="kd">final</span> <span class="nc">String</span> <span class="n">param</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">param</span><span class="o">.</span><span class="na">trim</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="c1">// not reported because param is unused</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">unusedParam</span><span class="o">(</span><span class="nc">String</span> <span class="n">param</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"abc"</span><span class="o">;</span>
+    <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -4797,7 +4807,7 @@ that are misplaced (not making groups of 3 digits) are reported.</p>
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 7, 2024 <br />
+             Site last generated: Apr 11, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
