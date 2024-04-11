@@ -7453,6 +7453,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "mkolesnikov",
+      "name": "Michael Kolesnikov",
+      "avatar_url": "https://avatars.githubusercontent.com/u/754163?v=4",
+      "profile": "https://github.com/mkolesnikov",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,

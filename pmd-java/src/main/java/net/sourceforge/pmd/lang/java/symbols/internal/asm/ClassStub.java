@@ -99,6 +99,9 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
                     } else {
                         return false;
                     }
+                } catch (IOException e) {
+                    // add a bit more info to the exception
+                    throw new IOException("While loading class from " + loader, e);
                 }
             }
 
