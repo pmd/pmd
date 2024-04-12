@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import net.sf.saxon.om.NamePool;
+import net.sf.saxon.om.NamespaceUri;
 import net.sf.saxon.om.NodeInfo;
 import net.sf.saxon.pattern.AnyNodeTest;
 import net.sf.saxon.pattern.NodeTest;
@@ -34,7 +35,7 @@ abstract class BaseNodeInfo extends AbstractNodeWrapper implements SiblingCounti
     BaseNodeInfo(int nodeKind, NamePool namePool, String localName, BaseNodeInfo parent) {
         this.nodeKind = nodeKind;
         this.namePool = namePool;
-        this.fingerprint = namePool.allocateFingerprint("", localName) & NamePool.FP_MASK;
+        this.fingerprint = namePool.allocateFingerprint(NamespaceUri.NULL, localName) & NamePool.FP_MASK;
         this.parent = parent;
     }
 
@@ -88,6 +89,11 @@ abstract class BaseNodeInfo extends AbstractNodeWrapper implements SiblingCounti
     @Override
     public UnicodeString getUnicodeStringValue() {
         return StringView.of(getStringValue());
+    }
+
+    @Override
+    public NamespaceUri getNamespaceUri() {
+        return NamespaceUri.NULL;
     }
 
     protected static AxisIterator filter(NodeTest nodeTest, AxisIterator iter) {
