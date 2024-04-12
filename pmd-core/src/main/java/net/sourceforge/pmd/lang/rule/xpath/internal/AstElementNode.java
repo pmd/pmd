@@ -24,6 +24,7 @@ import net.sourceforge.pmd.lang.rule.xpath.TextNode;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 import net.sf.saxon.Configuration;
+import net.sf.saxon.om.NamespaceUri;
 import net.sf.saxon.om.NodeInfo;
 import net.sf.saxon.pattern.NameTest;
 import net.sf.saxon.pattern.NodeTest;
@@ -175,7 +176,7 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
     }
 
     @Override
-    public String getAttributeValue(String uri, String local) {
+    public String getAttributeValue(NamespaceUri uri, String local) {
         Attribute attribute = getLightAttributes().get(local);
         if (attribute != null) {
             getTreeInfo().getLogger().recordUsageOf(attribute);
