@@ -14,6 +14,7 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -119,7 +120,8 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
 
     private boolean isConsideredReturnType(Method method) {
         Class<?> klass = method.getReturnType();
-        return CONSIDERED_RETURN_TYPES.contains(klass) || klass.isEnum();
+        return CONSIDERED_RETURN_TYPES.contains(klass) || klass.isEnum()
+                || Collection.class.isAssignableFrom(klass);
     }
 
     private boolean isIgnored(Class<?> nodeClass, Method method) {

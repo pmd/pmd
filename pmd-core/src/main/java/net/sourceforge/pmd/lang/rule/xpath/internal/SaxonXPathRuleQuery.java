@@ -258,13 +258,13 @@ public class SaxonXPathRuleQuery {
         return NAME_POOL;
     }
 
-
     final class StaticContextWithProperties extends IndependentContext {
 
         private final Map<StructuredQName, PropertyDescriptor<?>> propertiesByName = new HashMap<>();
 
         StaticContextWithProperties(Configuration config) {
             super(config);
+            getPackageData().setSchemaAware(true);
         }
 
         public void declareProperty(PropertyDescriptor<?> prop) {
