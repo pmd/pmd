@@ -41,6 +41,7 @@ import net.sf.saxon.sxpath.XPathDynamicContext;
 import net.sf.saxon.sxpath.XPathEvaluator;
 import net.sf.saxon.sxpath.XPathExpression;
 import net.sf.saxon.sxpath.XPathVariable;
+import net.sf.saxon.trans.UncheckedXPathException;
 import net.sf.saxon.trans.XPathException;
 
 
@@ -140,6 +141,8 @@ public class SaxonXPathRuleQuery {
             return sortedRes;
         } catch (final XPathException e) {
             throw wrapException(e, Phase.EVALUATION);
+        } catch (final UncheckedXPathException e) {
+            throw wrapException(e.getXPathException(), Phase.EVALUATION);
         } finally {
             documentNode.setAttrCtx(DeprecatedAttrLogger.noop());
         }
