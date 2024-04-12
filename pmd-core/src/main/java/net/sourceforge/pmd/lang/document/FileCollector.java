@@ -16,6 +16,7 @@ import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.ProviderNotFoundException;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -29,6 +30,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +62,7 @@ public final class FileCollector implements AutoCloseable {
     private final FileId outerFsPath;
     private boolean closed;
     private boolean recursive = true;
+    private Predicate<Path> addFileFilter = file -> true;
 
     // construction
 
@@ -206,6 +209,12 @@ public final class FileCollector implements AutoCloseable {
 
     private boolean addFileImpl(TextFile textFile) {
         LOG.trace("Adding file {} (lang: {}) ", textFile.getFileId().getAbsolutePath(), textFile.getLanguageVersion().getTerseName());
+
+        if (!addFileFilter.test(Paths.get(textFile.getFileId().getAbsolutePath()))) {
+            LOG.trace("File was skipped due to addFileFilter...");
+            return false;
+        }
+
         if (allFilesToProcess.add(textFile)) {
             return true;
         }
@@ -377,6 +386,17 @@ public final class FileCollector implements AutoCloseable {
         this.charset = Objects.requireNonNull(charset);
     }
 
+    /**
+     * Sets an additional filter that is being called before adding the
+     * file to the list.
+     *
+     * @param addFileFilter the filter should return {@code true} if the file
+     *                      should be collected and analyzed.
+     * @throws NullPointerException if {@code addFileFilter} is {@code null}.
+     */
+    public void setAddFileFilter(Predicate<Path> addFileFilter) {
+        this.addFileFilter = Objects.requireNonNull(addFileFilter);
+    }
 
     // filtering
 
