@@ -187,10 +187,8 @@ public class SaxonXPathRuleQuery {
     }
 
     private void initialize() throws XPathException {
-
         this.configuration = Configuration.newConfiguration();
         this.configuration.setNamePool(getNamePool());
-        //this.configuration.setConfigurationProperty(Feature.OPTIMIZATION_LEVEL, (Integer) 0);
 
         StaticContextWithProperties staticCtx = new StaticContextWithProperties(this.configuration);
         staticCtx.setXPathLanguageLevel(version == XPathVersion.XPATH_3_1 ? 31 : 20);
