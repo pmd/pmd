@@ -127,6 +127,15 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
         return (ModifierOwner) parent;
     }
 
+    /**
+     * Return true if this variable has no name. The name is then equal to {@code "_"}.
+     * A variable declaration with this name does not actually declare a variable in
+     * the current scope.
+     */
+    public boolean isUnnamed() {
+        return "_".equals(name);
+    }
+
     /** Returns the name of the variable. */
     public String getName() {
         return name;
