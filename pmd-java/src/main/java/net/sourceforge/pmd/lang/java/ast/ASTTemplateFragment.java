@@ -21,7 +21,6 @@ import net.sourceforge.pmd.annotation.Experimental;
  */
 @Experimental("String templates is a Java 21/22 Preview feature")
 public final class ASTTemplateFragment extends AbstractJavaNode {
-    private String content;
 
     ASTTemplateFragment(int i) {
         super(i);
@@ -33,11 +32,7 @@ public final class ASTTemplateFragment extends AbstractJavaNode {
     }
 
     public String getContent() {
-        return content;
-    }
-
-    void setContent(String content) {
-        this.content = content;
+        return getText().toString();
     }
 
 }
