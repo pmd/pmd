@@ -116,7 +116,7 @@ abstract class BaseNodeInfo extends AbstractNodeWrapper implements SiblingCounti
 
         RevListAxisIterator(List<NodeInfo> list) {
             super(list);
-            iter = list.listIterator();
+            iter = list.listIterator(list.size());
         }
 
         public NodeInfo next() {
