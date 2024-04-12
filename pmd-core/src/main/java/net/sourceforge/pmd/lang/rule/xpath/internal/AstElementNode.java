@@ -5,12 +5,10 @@
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -28,7 +26,6 @@ import net.sf.saxon.om.NamespaceUri;
 import net.sf.saxon.om.NodeInfo;
 import net.sf.saxon.pattern.NameTest;
 import net.sf.saxon.pattern.NodeTest;
-import net.sf.saxon.str.UnicodeString;
 import net.sf.saxon.tree.iter.AxisIterator;
 import net.sf.saxon.tree.iter.EmptyIterator;
 import net.sf.saxon.tree.iter.LookaheadIterator;
