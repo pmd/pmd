@@ -26,11 +26,12 @@ import net.sourceforge.pmd.util.CollectionUtil;
 import net.sf.saxon.Configuration;
 import net.sf.saxon.om.NodeInfo;
 import net.sf.saxon.pattern.NameTest;
+import net.sf.saxon.pattern.NodeTest;
+import net.sf.saxon.str.UnicodeString;
 import net.sf.saxon.tree.iter.AxisIterator;
 import net.sf.saxon.tree.iter.EmptyIterator;
 import net.sf.saxon.tree.iter.LookaheadIterator;
 import net.sf.saxon.tree.iter.SingleNodeIterator;
-import net.sf.saxon.tree.util.FastStringBuffer;
 import net.sf.saxon.tree.util.Navigator;
 import net.sf.saxon.tree.wrapper.SiblingCountingNode;
 import net.sf.saxon.type.Type;
@@ -146,7 +147,7 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
     }
 
     @Override
-    protected AxisIterator iterateAttributes(Predicate<? super NodeInfo> predicate) {
+    protected AxisIterator iterateAttributes(NodeTest predicate) {
         if (predicate instanceof NameTest) {
             String local = ((NameTest) predicate).getLocalPart();
             return SingleNodeIterator.makeIterator(getAttributes().get(local));
@@ -156,12 +157,12 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
     }
 
     @Override
-    protected AxisIterator iterateChildren(Predicate<? super NodeInfo> nodeTest) {
+    protected AxisIterator iterateChildren(NodeTest nodeTest) {
         return filter(nodeTest, iterateList(children));
     }
 
     @Override // this excludes self
-    protected AxisIterator iterateSiblings(Predicate<? super NodeInfo> nodeTest, boolean forwards) {
+    protected AxisIterator iterateSiblings(NodeTest nodeTest, boolean forwards) {
         if (parent == null) {
             return EmptyIterator.ofNodes();
         }
@@ -197,8 +198,8 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
 
 
     @Override
-    public void generateId(FastStringBuffer buffer) {
-        buffer.append(Integer.toString(id));
+    public void generateId(StringBuilder buffer) {
+        buffer.append(id);
     }
 
     @Override
@@ -206,9 +207,13 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
         return wrappedNode.getXPathNodeName();
     }
 
+    @Override
+    public UnicodeString getUnicodeStringValue() {
+        return null;
+    }
 
     @Override
-    public CharSequence getStringValueCS() {
+    public String getStringValue() {
         Node node = getUnderlyingNode();
         if (node instanceof TextNode) {
             return ((TextNode) node).getText();
@@ -240,8 +245,6 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
 
     private static class IteratorAdapter implements AxisIterator, LookaheadIterator {
 
-        @SuppressWarnings("PMD.LooseCoupling") // getProperties() below has to return EnumSet
-        private static final EnumSet<Property> PROPERTIES = EnumSet.of(Property.LOOKAHEAD);
         private final Iterator<? extends NodeInfo> it;
 
         IteratorAdapter(Iterator<? extends NodeInfo> it) {
@@ -263,10 +266,9 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
             // nothing to do
         }
 
-
         @Override
-        public EnumSet<Property> getProperties() {
-            return PROPERTIES;
+        public boolean supportsHasNext() {
+            return true;
         }
     }
 }

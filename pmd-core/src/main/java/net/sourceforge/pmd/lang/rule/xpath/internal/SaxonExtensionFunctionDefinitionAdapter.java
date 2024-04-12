@@ -96,7 +96,7 @@ public class SaxonExtensionFunctionDefinitionAdapter extends ExtensionFunctionDe
                 Object[] convertedArguments = new Object[definition.getArgumentTypes().length];
                 for (int i = 0; i < convertedArguments.length; i++) {
                     if (arguments[i] instanceof StringLiteral) {
-                        convertedArguments[i] = ((StringLiteral) arguments[i]).getStringValue();
+                        convertedArguments[i] = ((StringLiteral) arguments[i]).getString();
                     }
                 }
                 try {
@@ -150,11 +150,11 @@ public class SaxonExtensionFunctionDefinitionAdapter extends ExtensionFunctionDe
                     case OPTIONAL_STRING:
                         convertedResult = result instanceof Optional && ((Optional<String>) result).isPresent()
                                 ? new StringValue(((Optional<String>) result).get())
-                                : EmptyAtomicSequence.INSTANCE;
+                                : EmptyAtomicSequence.getInstance();
                         break;
                     case STRING_SEQUENCE:
                         convertedResult = result instanceof List
-                                ? new SequenceExtent(((List<String>) result).stream().map(StringValue::new).collect(Collectors.toList()))
+                                ? new SequenceExtent.Of<>(((List<String>) result).stream().map(StringValue::new).collect(Collectors.toList()))
                                 : EmptySequence.getInstance();
                         break;
                     case OPTIONAL_DECIMAL:
