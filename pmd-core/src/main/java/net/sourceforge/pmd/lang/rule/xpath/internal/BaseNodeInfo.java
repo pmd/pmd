@@ -8,9 +8,11 @@ package net.sourceforge.pmd.lang.rule.xpath.internal;
 import java.util.List;
 import java.util.ListIterator;
 
+import net.sf.saxon.expr.LastPositionFinder;
 import net.sf.saxon.om.NamePool;
 import net.sf.saxon.om.NamespaceUri;
 import net.sf.saxon.om.NodeInfo;
+import net.sf.saxon.om.SequenceIterator;
 import net.sf.saxon.pattern.AnyNodeTest;
 import net.sf.saxon.pattern.NodeTest;
 import net.sf.saxon.str.StringView;
@@ -111,11 +113,10 @@ abstract class BaseNodeInfo extends AbstractNodeWrapper implements SiblingCounti
                         : new RevListAxisIterator((List<NodeInfo>) nodes);
     }
 
-    private static class RevListAxisIterator extends NodeListIterator implements AxisIterator {
+    private static class RevListAxisIterator implements AxisIterator {
         private final ListIterator<NodeInfo> iter;
 
         RevListAxisIterator(List<NodeInfo> list) {
-            super(list);
             iter = list.listIterator(list.size());
         }
 
