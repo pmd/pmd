@@ -29,14 +29,11 @@ import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 import net.sf.saxon.Configuration;
 import net.sf.saxon.expr.Expression;
 import net.sf.saxon.expr.LocalVariableReference;
-import net.sf.saxon.expr.parser.OptimizerOptions;
 import net.sf.saxon.lib.ExtensionFunctionDefinition;
-import net.sf.saxon.lib.Feature;
 import net.sf.saxon.lib.NamespaceConstant;
 import net.sf.saxon.om.AtomicSequence;
 import net.sf.saxon.om.Item;
 import net.sf.saxon.om.NamePool;
-import net.sf.saxon.om.NamespaceUri;
 import net.sf.saxon.om.SequenceIterator;
 import net.sf.saxon.om.StructuredQName;
 import net.sf.saxon.sxpath.IndependentContext;
@@ -190,11 +187,10 @@ public class SaxonXPathRuleQuery {
 
         this.configuration = Configuration.newConfiguration();
         this.configuration.setNamePool(getNamePool());
-        //this.configuration.setConfigurationProperty(Feature.OPTIMIZATION_LEVEL, (Integer) 0);
 
         StaticContextWithProperties staticCtx = new StaticContextWithProperties(this.configuration);
         staticCtx.setXPathLanguageLevel(version == XPathVersion.XPATH_3_1 ? 31 : 20);
-        staticCtx.declareNamespace("fn", NamespaceUri.FN);
+        staticCtx.declareNamespace("fn", NamespaceConstant.FN);
 
         for (final PropertyDescriptor<?> propertyDescriptor : properties.keySet()) {
             final String name = propertyDescriptor.name();
