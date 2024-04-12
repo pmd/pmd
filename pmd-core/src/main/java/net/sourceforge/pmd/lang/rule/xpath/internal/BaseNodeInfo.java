@@ -8,11 +8,9 @@ package net.sourceforge.pmd.lang.rule.xpath.internal;
 import java.util.List;
 import java.util.ListIterator;
 
-import net.sf.saxon.expr.LastPositionFinder;
 import net.sf.saxon.om.NamePool;
 import net.sf.saxon.om.NamespaceUri;
 import net.sf.saxon.om.NodeInfo;
-import net.sf.saxon.om.SequenceIterator;
 import net.sf.saxon.pattern.AnyNodeTest;
 import net.sf.saxon.pattern.NodeTest;
 import net.sf.saxon.str.StringView;
