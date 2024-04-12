@@ -120,6 +120,7 @@ abstract class BaseNodeInfo extends AbstractNodeWrapper implements SiblingCounti
             iter = list.listIterator(list.size());
         }
 
+        @Override
         public NodeInfo next() {
             return this.iter.hasPrevious() ? this.iter.previous() : null;
         }
