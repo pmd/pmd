@@ -96,7 +96,7 @@ public class SaxonExtensionFunctionDefinitionAdapter extends ExtensionFunctionDe
                 Object[] convertedArguments = new Object[definition.getArgumentTypes().length];
                 for (int i = 0; i < convertedArguments.length; i++) {
                     if (arguments[i] instanceof StringLiteral) {
-                        convertedArguments[i] = ((StringLiteral) arguments[i]).getString();
+                        convertedArguments[i] = ((StringLiteral) arguments[i]).getString().toString();
                     }
                 }
                 try {
