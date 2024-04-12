@@ -208,11 +208,6 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
     }
 
     @Override
-    public UnicodeString getUnicodeStringValue() {
-        return null;
-    }
-
-    @Override
     public String getStringValue() {
         Node node = getUnderlyingNode();
         if (node instanceof TextNode) {
