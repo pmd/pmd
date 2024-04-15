@@ -213,6 +213,13 @@ Another example, to suppress violations occurring in classes whose name contains
 <property name="violationSuppressXPath" value="./ancestor-or-self::ClassDeclaration[contains(@SimpleName, 'Bean')]"/>
 ```
 
+And an example to suppress violations occurring in `equals` or `hashCode` methods:
+```xml
+<property name="violationSuppressXPath" value="./ancestor-or-self::MethodDeclaration[@Name = ('equals', 'hashCode')]"/>
+```
+Note the use of a sequence comparison, which tests for true if any member of one sequence matches any other member of the other.
+Here this test is true if the `@Name` attribute is any of the given names.
+
 You can also use regex for string comparison. The next example suppresses violations in classes ending with `Bean`:
 ```xml
 <property name="violationSuppressXPath" value="./ancestor-or-self::ClassDeclaration[matches(@SimpleName, '^.*Bean$')]"/>
