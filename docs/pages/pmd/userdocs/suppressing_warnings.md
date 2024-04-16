@@ -210,18 +210,33 @@ more violations than expected.
 
 Another example, to suppress violations occurring in classes whose name contains `Bean`:
 ```xml
-<property name="violationSuppressXPath" value="./ancestor::ClassDeclaration[contains(@Image, 'Bean')]"/>
+<property name="violationSuppressXPath" value="./ancestor-or-self::ClassDeclaration[contains(@SimpleName, 'Bean')]"/>
 ```
+
+And an example to suppress violations occurring in `equals` or `hashCode` methods:
+```xml
+<property name="violationSuppressXPath" value="./ancestor-or-self::MethodDeclaration[@Name = ('equals', 'hashCode')]"/>
+```
+Note the use of a sequence comparison, which tests for true if any member of one sequence matches any other member of the other.
+Here this test is true if the `@Name` attribute is any of the given names.
 
 You can also use regex for string comparison. The next example suppresses violations in classes ending with `Bean`:
 ```xml
-<property name="violationSuppressXPath" value="./ancestor::ClassDeclaration[matches(@Image, '^.*Bean$')]"/>
+<property name="violationSuppressXPath" value="./ancestor-or-self::ClassDeclaration[matches(@SimpleName, '^.*Bean$')]"/>
 ```
 
 
-Note here the usage of the `./ancestor::` axis instead of `//`. The latter would match
+Note here the usage of the `./ancestor-or-self::` axis instead of `//`. The latter would match
 any ClassDeclaration in the file, while the former matches only class
 declaration nodes that *enclose the violation node*, which is usually what you'd want.
+
+Note the context node in this expression is the node the violation was reported on. Different
+rules report on different nodes, for instance, {% rule java/bestpractices/UnusedFormalParameter %} reports
+on the `ASTVariableId` for the parameter, and {% rule java/bestpractices/MissingOverride %} reports on
+the `ASTMethodDeclaration` node. You have to take this into account when using the context node directly,
+although many `violationSuppressXPath` expressions will check for some ancestor node like an enclosing class or method,
+instead of testing the context node directly.
+The nodes which a rule reports on can only be determined by looking at the implementation of the rule.
 
 Note for XPath based suppression to work, you must know how to write
 an XPath query that matches the AST structure of the nodes of the
