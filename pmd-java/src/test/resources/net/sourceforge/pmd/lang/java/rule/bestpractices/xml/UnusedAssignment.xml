@@ -2780,6 +2780,7 @@ public class Test {
         <description>Catch in loop (reportUnusedVariables)</description>
         <rule-property name="reportUnusedVariables">true</rule-property>
         <expected-problems>6</expected-problems>
+        <expected-linenumbers>9,11,18,19,25,34</expected-linenumbers>
         <code><![CDATA[
 
             class Foo {

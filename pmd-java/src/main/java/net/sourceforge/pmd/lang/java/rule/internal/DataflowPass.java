@@ -354,7 +354,7 @@ public final class DataflowPass {
             // next iteration
 
             SpanInfo state = data;
-            Set<ASTVariableId> localsToKill = new LinkedHashSet<>();
+            List<ASTVariableId> localsToKill = new ArrayList<>(0);
 
             for (JavaNode child : node.children()) {
                 // each output is passed as input to the next (most relevant for blocks)
@@ -609,16 +609,23 @@ public final class DataflowPass {
             SpanInfo finalState;
             finalState = bodyState.absorb(exceptionalState);
             if (finallyClause != null) {
-                // this represents the finally clause when it was entered
-                // because of abrupt completion
-                // since we don't know when it terminated we must join it with before
-                SpanInfo abruptFinally = before.myFinally.absorb(before);
-                acceptOpt(finallyClause, abruptFinally);
-                before.myFinally = null;
-                abruptFinally.abruptCompletionByThrow(false); // propagate to enclosing catch/finallies
+                if (finalState.abruptCompletionTargets.contains(finalState.global.abruptCompletionTarget)) {
+                    // this represents the finally clause when it was entered
+                    // because of abrupt completion
+                    // since we don't know when it terminated we must join it with before
+                    SpanInfo abruptFinally = before.myFinally.absorb(before);
+                    acceptOpt(finallyClause, abruptFinally);
+                    before.myFinally = null;
+                    // fixme this should be handled another way. Not all try blocks may throw.
+                    abruptFinally.abruptCompletionByThrow(false); // propagate to enclosing catch/finallies
+                }
 
                 // this is the normal finally
                 finalState = acceptOpt(finallyClause, finalState);
+                // then all break targets are successors of the finally
+                for (SpanInfo target : finalState.abruptCompletionTargets) {
+                    target.absorb(finalState);
+                }
             }
 
             // In the 7.0 grammar, the resources should be explicitly
@@ -1406,22 +1413,19 @@ public final class DataflowPass {
 
         /** Abrupt completion for return, continue, break. */
         SpanInfo abruptCompletion(@NonNull SpanInfo target) {
-            // if target == null then this will unwind all the parents
             hasCompletedAbruptly = OptionalBool.YES;
+            abruptCompletionTargets = abruptCompletionTargets.plus(target);
 
             SpanInfo parent = this;
             while (parent != target && parent != null) { // NOPMD CompareObjectsWithEqual this is what we want
                 if (parent.myFinally != null) {
                     parent.myFinally.absorb(this);
-                    abruptCompletionTargets = abruptCompletionTargets.plus(parent);
                     // stop on the first finally, its own end state will
                     // be merged into the nearest enclosing finally
                     return this;
                 }
                 parent = parent.parent;
             }
-
-            abruptCompletionTargets = abruptCompletionTargets.plus(target);
 
             this.symtable.clear();
             return this;
@@ -1446,6 +1450,7 @@ public final class DataflowPass {
             if (!byMethodCall) {
                 hasCompletedAbruptly = OptionalBool.YES;
             }
+            abruptCompletionTargets = abruptCompletionTargets.plus(global.abruptCompletionTarget);
 
             SpanInfo parent = this;
             while (parent != null) {
@@ -1453,7 +1458,6 @@ public final class DataflowPass {
                 if (!parent.myCatches.isEmpty()) {
                     for (SpanInfo c : parent.myCatches) {
                         c.absorb(this);
-                        abruptCompletionTargets = abruptCompletionTargets.plus(c);
                     }
                 }
 
@@ -1461,13 +1465,11 @@ public final class DataflowPass {
                     // stop on the first finally, its own end state will
                     // be merged into the nearest enclosing finally
                     parent.myFinally.absorb(this);
-                    abruptCompletionTargets = abruptCompletionTargets.plus(parent);
                     return this;
                 }
                 parent = parent.parent;
             }
 
-            abruptCompletionTargets = abruptCompletionTargets.plus(global.abruptCompletionTarget);
 
             if (!byMethodCall) {
                 this.symtable.clear(); // following is dead code
