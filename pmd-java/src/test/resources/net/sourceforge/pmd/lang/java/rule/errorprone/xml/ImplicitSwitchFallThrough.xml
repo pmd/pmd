@@ -422,4 +422,59 @@ record MyRecord(boolean b) {
 
             ]]></code>
     </test-code>
+    <test-code>
+        <description>#4948 FP with nested switch stmt</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Test {
+                boolean foo(String a, String b) {
+
+                    switch (a) {
+                    case "a1":
+                        return true;
+                    case "a2":
+                        switch (b) {
+                        case "b1":
+                            return true;
+                        default:
+                            return false;
+                        }
+                    default:
+                        return false;
+                    }
+                }
+
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Switch with loop with break</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>11,14,18</expected-linenumbers>
+        <code><![CDATA[
+            public class Test {
+                boolean foo(String a, String b) {
+
+                    switch (a) {
+                    case "a1":
+                        switch (b) {
+                        case "b1":
+                            for (int i = 0; i < 4; i++) {
+                                break;
+                            } // this loop completes normally
+                        default: // warn
+                            return false;
+                        }
+                    case "a2": // warn
+                        for (int i = 0; i < 4; i++) {
+                            break;
+                        } // this loop completes normally
+                    default: // warn
+                        return false;
+                    }
+                }
+
+            }
+            ]]></code>
+    </test-code>
 </test-data>

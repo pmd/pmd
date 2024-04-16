@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.internal;
 
+import static net.sourceforge.pmd.util.CollectionUtil.asSingle;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +19,8 @@ import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -383,8 +387,17 @@ public final class DataflowPass {
             GlobalAlgoState global = data.global;
             SpanInfo before = acceptOpt(switchLike.getTestedExpression(), data);
 
-            global.breakTargets.push(before.fork());
+            SpanInfo breakTarget = before.fork();
+            global.breakTargets.push(breakTarget);
 
+            // If switch non-total then there is a path where the switch completes normally
+            // (value not matched).
+            boolean isTotal = switchLike.hasDefaultCase()
+                || !switchLike.isFallthroughSwitch()
+                || switchLike.isExhaustiveEnumSwitch();
+
+            PSet<SpanInfo> successors = HashTreePSet.empty();
+            boolean allBranchesCompleteAbruptly = true;
             SpanInfo current = before;
             for (ASTSwitchBranch branch : switchLike.getBranches()) {
                 if (branch instanceof ASTSwitchArrowBranch) {
@@ -393,15 +406,37 @@ public final class DataflowPass {
                 } else {
                     // fallthrough branch
                     current = acceptOpt(branch, before.fork().absorb(current));
-                    branch.getUserMap().set(SWITCH_BRANCH_FALLS_THROUGH, current.hasCompletedAbruptly.complement());
+                    OptionalBool isFallingThrough = current.hasCompletedAbruptly.complement();
+                    branch.getUserMap().set(SWITCH_BRANCH_FALLS_THROUGH, isFallingThrough);
+                    successors = CollectionUtil.union(successors, current.abruptCompletionTargets);
+                    allBranchesCompleteAbruptly &= current.hasCompletedAbruptly.isTrue();
+
+                    if (isFallingThrough == OptionalBool.NO) {
+                        current = before.fork();
+                    }
                 }
             }
 
             before = global.breakTargets.pop();
 
+            PSet<@Nullable SpanInfo> externalTargets = successors.minus(before);
+            OptionalBool switchCompletesAbruptly;
+            if (isTotal && allBranchesCompleteAbruptly && externalTargets.equals(successors)) {
+                // then all branches complete abruptly, and none of them because of a break to this switch
+                switchCompletesAbruptly = OptionalBool.YES;
+            } else if (successors.isEmpty() || asSingle(successors) == before) {
+                // then the branches complete normally, or they just break the switch
+                switchCompletesAbruptly = OptionalBool.NO;
+            } else {
+                switchCompletesAbruptly = OptionalBool.UNKNOWN;
+            }
+
             // join with the last state, which is the exit point of the
             // switch, if it's not closed by a break;
-            return before.absorb(current);
+            SpanInfo result = before.absorb(current);
+            result.hasCompletedAbruptly = switchCompletesAbruptly;
+            result.abruptCompletionTargets = externalTargets;
+            return result;
         }
 
         @Override
@@ -707,18 +742,21 @@ public final class DataflowPass {
             }
 
             SpanInfo result = popTargets(loop, breakTarget, continueTarget);
-            result = result.absorb(iter);
+            result.absorb(iter);
             if (checkFirstIter) {
                 // if the first iteration is checked,
                 // then it could be false on the first try, meaning
                 // the definitions before the loop reach after too
-                result = result.absorb(before);
+                result.absorb(before);
             }
 
             if (foreachVar != null) {
                 result.deleteVar(foreachVar.getSymbol());
             }
 
+            // These targets are now obsolete
+            result.abruptCompletionTargets = result.abruptCompletionTargets.minus(breakTarget);
+            result.abruptCompletionTargets = result.abruptCompletionTargets.minus(continueTarget);
             return result;
         }
 
@@ -787,7 +825,7 @@ public final class DataflowPass {
         @Override
         public SpanInfo visit(ASTReturnStatement node, SpanInfo data) {
             super.visit(node, data);
-            return data.abruptCompletion(null);
+            return data.abruptCompletion(data.global.abruptCompletionTarget);
         }
 
         // following deals with assignment
@@ -1092,6 +1130,9 @@ public final class DataflowPass {
         // continue jumps to the condition check, while break jumps to after the loop
         final TargetStack continueTargets = new TargetStack();
 
+        /** Sentinel to represent the target of a throw or return statement. */
+        final SpanInfo abruptCompletionTarget = new SpanInfo(this);
+
         private GlobalAlgoState(Set<AssignmentEntry> allAssignments,
                                 Set<AssignmentEntry> usedAssignments,
                                 Map<AssignmentEntry, Set<AssignmentEntry>> killRecord) {
@@ -1162,7 +1203,31 @@ public final class DataflowPass {
         final GlobalAlgoState global;
 
         final Map<JVariableSymbol, VarLocalInfo> symtable;
+
+        /**
+         * Whether the current span completed abruptly. Abrupt
+         * completion occurs with break, continue, return or throw
+         * statements. A loop whose body completes abruptly may or
+         * may not complete abruptly itself. For instance in
+         * <pre>{@code
+         * for (int i = 0; i < 5; i++) {
+         *     break;
+         * }
+         * }</pre>
+         * the loop body completes abruptly on all paths, but the loop
+         * itself completes normally. This is also the case in a switch
+         * statement where all cases are followed by a break.
+         */
         private OptionalBool hasCompletedAbruptly = OptionalBool.NO;
+
+        /**
+         * Collects the abrupt completion targets of the current span.
+         * The value {@link GlobalAlgoState#abruptCompletionTarget}
+         * represents a return statement or a throw that
+         * is not followed by an enclosing finally block.
+         */
+        private PSet<SpanInfo> abruptCompletionTargets = HashTreePSet.empty();
+
 
         private SpanInfo(GlobalAlgoState global) {
             this(null, global, new LinkedHashMap<>());
@@ -1340,19 +1405,23 @@ public final class DataflowPass {
         }
 
         /** Abrupt completion for return, continue, break. */
-        SpanInfo abruptCompletion(SpanInfo target) {
+        SpanInfo abruptCompletion(@NonNull SpanInfo target) {
             // if target == null then this will unwind all the parents
             hasCompletedAbruptly = OptionalBool.YES;
+
             SpanInfo parent = this;
             while (parent != target && parent != null) { // NOPMD CompareObjectsWithEqual this is what we want
                 if (parent.myFinally != null) {
                     parent.myFinally.absorb(this);
+                    abruptCompletionTargets = abruptCompletionTargets.plus(parent);
                     // stop on the first finally, its own end state will
                     // be merged into the nearest enclosing finally
                     return this;
                 }
                 parent = parent.parent;
             }
+
+            abruptCompletionTargets = abruptCompletionTargets.plus(target);
 
             this.symtable.clear();
             return this;
@@ -1384,6 +1453,7 @@ public final class DataflowPass {
                 if (!parent.myCatches.isEmpty()) {
                     for (SpanInfo c : parent.myCatches) {
                         c.absorb(this);
+                        abruptCompletionTargets = abruptCompletionTargets.plus(c);
                     }
                 }
 
@@ -1391,10 +1461,13 @@ public final class DataflowPass {
                     // stop on the first finally, its own end state will
                     // be merged into the nearest enclosing finally
                     parent.myFinally.absorb(this);
+                    abruptCompletionTargets = abruptCompletionTargets.plus(parent);
                     return this;
                 }
                 parent = parent.parent;
             }
+
+            abruptCompletionTargets = abruptCompletionTargets.plus(global.abruptCompletionTarget);
 
             if (!byMethodCall) {
                 this.symtable.clear(); // following is dead code
@@ -1420,10 +1493,11 @@ public final class DataflowPass {
 
             CollectionUtil.mergeMaps(this.symtable, other.symtable, VarLocalInfo::merge);
             this.hasCompletedAbruptly = mergeCertitude(this.hasCompletedAbruptly, other.hasCompletedAbruptly);
+            this.abruptCompletionTargets = CollectionUtil.union(this.abruptCompletionTargets, other.abruptCompletionTargets);
             return this;
         }
 
-        private OptionalBool mergeCertitude(OptionalBool first, OptionalBool other) {
+        static OptionalBool mergeCertitude(OptionalBool first, OptionalBool other) {
             if (first.isKnown() && other.isKnown()) {
                 return first == other ? first : OptionalBool.UNKNOWN;
             }
