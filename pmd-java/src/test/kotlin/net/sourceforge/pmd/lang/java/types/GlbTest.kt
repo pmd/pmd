@@ -7,11 +7,13 @@ package net.sourceforge.pmd.lang.java.types
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
-import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.createUnresolvedAsmSymbol
+import net.sourceforge.pmd.lang.java.types.testdata.LubTestData
+import net.sourceforge.pmd.lang.test.ast.shouldBeA
 
 /**
  * Tests "the greatest lower bound" (glb).
@@ -71,6 +73,32 @@ class GlbTest : FunSpec({
 
             }
 
+            test("Test GLB of arrays") {
+
+                glb(ts.SERIALIZABLE.toArray(), t_ArrayList.toArray()) shouldBe t_ArrayList.toArray()
+                glb(t_ArrayList.toArray(), ts.SERIALIZABLE.toArray()) shouldBe t_ArrayList.toArray()
+                glb(t_List.toArray(), `t_List{?}`.toArray()) shouldBe `t_List{?}`.toArray()
+
+            }
+
+
+            test("Test GLB of arrays of unrelated type") {
+
+                // C1 & C2 does not exist as they are both unrelated classes
+                shouldThrow<IllegalArgumentException> {
+                    glb(LubTestData.C1::class.decl, LubTestData.C2::class.decl)
+                }
+
+                // C1[] & C2[] = (C1 & C2)[] equally does not exist
+                shouldThrow<IllegalArgumentException> {
+                    glb(LubTestData.C1::class.decl.toArray(), LubTestData.C2::class.decl.toArray())
+                }
+
+                // but C1[] & I1[] = (C1 & I1)[] exists because I1 is an interface.
+                glb(LubTestData.C1::class.decl.toArray(), LubTestData.I1::class.decl.toArray())
+                    .shouldBe((LubTestData.C1::class.decl * LubTestData.I1::class.decl).toArray())
+            }
+
 
             test("Test lub of zero types") {
                 shouldThrow<IllegalArgumentException> {
@@ -89,28 +117,60 @@ class GlbTest : FunSpec({
                 }
             }
 
+            test("test corner case") {
+
+                TypeOps.mostSpecific(
+                    setOf(
+                        t_Collection[`?` extends t_Number],
+                        `t_List{?}`,
+                        t_List
+                    )
+                ) shouldBe setOf(t_Collection[`?` extends t_Number], `t_List{?}`)
+            }
+
             test("Test GLB corner cases") {
+
+                // note: intersections are not minimized, or reduced to the null type if they are unsatisfiable.
+                // note also that in this test we test the components explicitly instead of using the DSL,
+                // because the DSL operator to create intersections actually calls GLB.
 
                 glb(t_Iterable[`?` extends t_Number], t_Iterable[t_String]).shouldBeA<JIntersectionType> {
                     it.components.shouldContainExactly(t_Iterable[`?` extends t_Number], t_Iterable[t_String])
                 }
                 glb(`t_ArrayList{Integer}`, ts.NULL_TYPE) shouldBe ts.NULL_TYPE
                 glb(`t_ArrayList{Integer}`, t_Iterable[`?` extends t_Number], t_Iterable[t_String]).shouldBeA<JIntersectionType> {
-                    it.components.shouldContainExactly(`t_ArrayList{Integer}`, t_Iterable[t_String])
+                    it.components.shouldContainExactlyInAnyOrder(`t_ArrayList{Integer}`, t_Iterable[t_String])
                 }
 
                 glb(`t_List{? extends Number}`, `t_Collection{Integer}`).shouldBeA<JIntersectionType> {
-                    it.components.shouldContainExactly(`t_List{? extends Number}`, `t_Collection{Integer}`)
+                    it.components.shouldContainExactlyInAnyOrder(`t_List{? extends Number}`, `t_Collection{Integer}`)
                 }
 
                 glb(t_List.toArray(), t_Iterable).shouldBeA<JIntersectionType> {
-                    it.components.shouldContainExactly(t_List.toArray(), t_Iterable)
+                    it.components.shouldContainExactlyInAnyOrder(t_List.toArray(), t_Iterable)
                     it.inducedClassType.shouldBeNull()
                 }
                 glb(`t_List{? extends Number}`, `t_Collection{Integer}`, `t_ArrayList{Integer}`) shouldBe `t_ArrayList{Integer}`
                 glb(`t_List{? extends Number}`, `t_List{String}`, `t_Enum{JPrimitiveType}`).shouldBeA<JIntersectionType> {
-                    it.components.shouldContainExactly(`t_Enum{JPrimitiveType}`, `t_List{String}`, `t_List{? extends Number}`)
+                    it.components.shouldContainExactlyInAnyOrder(`t_Enum{JPrimitiveType}`, `t_List{String}`, `t_List{? extends Number}`)
                 }
+
+                glb(
+                    t_Collection[`?` extends t_Number],
+                    `t_List{?}`,
+                    t_List
+                ).shouldBeA<JIntersectionType> {
+                    it.components.shouldContainExactlyInAnyOrder(t_Collection[`?` extends t_Number], `t_List{?}`)
+                }
+
+                glb(t_List, `t_List{?}`) shouldBe `t_List{?}`
+                glb(
+                    t_Collection[`?` extends t_Number],
+                    `t_List{?}`
+                ).shouldBeA<JIntersectionType> {
+                    it.components.shouldContainExactlyInAnyOrder(t_Collection[`?` extends t_Number], `t_List{?}`)
+                }
+
             }
 
             test("Test GLB with unresolved things") {

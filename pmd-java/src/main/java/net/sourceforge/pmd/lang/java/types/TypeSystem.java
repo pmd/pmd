@@ -697,12 +697,20 @@ public final class TypeSystem {
      * <li>The intersection has a single component that is a
      * class, array, or type variable. If all components are interfaces,
      * then that component is {@link #OBJECT}.
+     * <li>If several components are arrays, then their components
+     * are intersected: {@code A[] & B[] = (A & B)[]}
      * </ul>
      *
      * <p>If after these transformations, only a single component remains,
      * then that is the returned type. Otherwise a {@link JIntersectionType}
      * is created. Note that the intersection may be unsatisfiable (eg {@code A[] & Runnable}),
-     * but we don't attempt to minimize this to {@link #NULL_TYPE}.
+     * but we don't attempt to minimize this to {@link #NULL_TYPE}. Similarly,
+     * we do not attempt to minimize valid intersections. For instance {@code List<?> & Collection<Number>}
+     * can technically be minimized to {@code List<Number>}, but doing this
+     * requires inference of a fitting parameterization in general, which is
+     * complex, and not necessary in the internal tasks where intersection types are
+     * useful. In fact intersection types are precisely useful because they are
+     * simple to build.
      *
      * <p>See also JLS§4.9 (Intersection types).
      *

@@ -4,10 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -319,33 +320,47 @@ final class Lub {
             return mostSpecific.iterator().next();
         }
 
-        List<JTypeMirror> bounds = new ArrayList<>(mostSpecific);
+        List<JTypeMirror> bounds = new ArrayList<>(mostSpecific.size());
+        bounds.add(null); // first element will be replaced with primary bound
 
         JTypeMirror primaryBound = null;
 
-        for (int i = 0; i < bounds.size(); i++) {
-            JTypeMirror ci = bounds.get(i);
-
+        for (JTypeMirror ci : mostSpecific) {
             if (isExclusiveIntersectionBound(ci)) {
                 // either Ci is an array, or Ci is a class, or Ci is a type var (possibly captured)
                 // Ci is not unresolved
                 if (primaryBound == null) {
                     primaryBound = ci;
-                    // move primary bound first
-                    Collections.swap(bounds, 0, i);
+                } else if (ci.isArray() && primaryBound.isArray()) {
+                    // A[] & B[] = (A & B)[]
+                    // Note that since we're after mostSpecific, we already know
+                    // that A is unrelated to B. Therefore if both B and A are classes,
+                    // then A & B cannot exist and so (A & B)[] similarly does not exist.
+
+                    JTypeMirror componentGlb = glb(ts, setOf(((JArrayType) ci).getComponentType(),
+                                                             ((JArrayType) primaryBound).getComponentType()));
+                    primaryBound = ts.arrayType(componentGlb);
                 } else {
                     throw new IllegalArgumentException(
                         "Bad intersection, unrelated class types " + ci + " and " + primaryBound + " in " + types
                     );
                 }
+            } else {
+                bounds.add(ci);
             }
         }
 
+
         if (primaryBound == null) {
-            if (bounds.size() == 1) {
-                return bounds.get(0);
-            }
             primaryBound = ts.OBJECT;
+        }
+        bounds.set(0, primaryBound); // set the primary bound
+        if (primaryBound == ts.OBJECT) {
+            // if primary bound is object, it does not appear in the bounds
+            bounds = bounds.subList(1, bounds.size());
+        }
+        if (bounds.size() == 1) {
+            return bounds.get(0); // not an intersection
         }
 
         return new JIntersectionType(ts, primaryBound, bounds);
