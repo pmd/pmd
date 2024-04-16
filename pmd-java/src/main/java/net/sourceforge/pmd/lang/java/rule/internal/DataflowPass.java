@@ -424,7 +424,7 @@ public final class DataflowPass {
             if (isTotal && allBranchesCompleteAbruptly && externalTargets.equals(successors)) {
                 // then all branches complete abruptly, and none of them because of a break to this switch
                 switchCompletesAbruptly = OptionalBool.YES;
-            } else if (successors.isEmpty() || asSingle(successors) == before) {
+            } else if (successors.isEmpty() || asSingle(successors) == before) { // NOPMD CompareObjectsWithEqual this is what we want
                 // then the branches complete normally, or they just break the switch
                 switchCompletesAbruptly = OptionalBool.NO;
             } else {
