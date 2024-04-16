@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.reporting;
 
+import java.util.function.Predicate;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.document.FileId;
 
@@ -44,5 +46,21 @@ public class Report extends net.sourceforge.pmd.Report {
     }
 
     public static final class ReportBuilderListener extends net.sourceforge.pmd.Report.ReportBuilderListener {
+    }
+
+    @Override
+    public Report filterViolations(Predicate<net.sourceforge.pmd.RuleViolation> filter) {
+        Report copy = new Report();
+
+        for (net.sourceforge.pmd.RuleViolation violation : violations) {
+            if (filter.test(violation)) {
+                copy.addRuleViolation(violation);
+            }
+        }
+
+        copy.suppressedRuleViolations.addAll(suppressedRuleViolations);
+        copy.errors.addAll(errors);
+        copy.configErrors.addAll(configErrors);
+        return copy;
     }
 }
