@@ -885,20 +885,25 @@ class MyTest { // not public, that's fine
         </example>
     </rule>
 
-    <rule name="JUnitAssertionsShouldIncludeMessage"
+    <rule name="JUnitAssertionsShouldIncludeMessage" deprecated="true" ref="UnitTestAssertionsShouldIncludeMessage" />
+
+    <rule name="UnitTestAssertionsShouldIncludeMessage"
           language="java"
           since="1.04"
-          message="JUnit assertions should include a message"
-          class="net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitAssertionsShouldIncludeMessageRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junitassertionsshouldincludemessage">
+          message="Unit test assertions should include a message"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestAssertionsShouldIncludeMessageRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestassertionsshouldincludemessage">
         <description>
-JUnit assertions should include an informative message - i.e., use the three-argument version of
+Unit assertions should include an informative message - i.e., use the three-argument version of
 assertEquals(), not the two-argument version.
+
+This rule supports tests using JUnit (3, 4 and 5) and TestNg.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
-public class Foo extends TestCase {
+public class Foo {
+    @Test
     public void testSomething() {
         assertEquals("foo", "bar");
         // Use the form:

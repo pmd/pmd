@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher.CompoundInvocationMatcher;
 
-public class JUnitAssertionsShouldIncludeMessageRule extends AbstractJavaRulechainRule {
+public class UnitTestAssertionsShouldIncludeMessageRule extends AbstractJavaRulechainRule {
 
     private final CompoundInvocationMatcher checks =
         InvocationMatcher.parseAll(
@@ -28,7 +28,7 @@ public class JUnitAssertionsShouldIncludeMessageRule extends AbstractJavaRulecha
             "_#assertEquals(double,double,double)"
         );
 
-    public JUnitAssertionsShouldIncludeMessageRule() {
+    public UnitTestAssertionsShouldIncludeMessageRule() {
         super(ASTMethodCall.class);
     }
 
