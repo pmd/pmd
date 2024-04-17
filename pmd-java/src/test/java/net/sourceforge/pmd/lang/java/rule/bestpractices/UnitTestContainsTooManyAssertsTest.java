@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-class JUnitTestContainsTooManyAssertsTest extends PmdRuleTst {
+class UnitTestContainsTooManyAssertsTest extends PmdRuleTst {
     // no additional unit tests
 }

@@ -16,7 +16,7 @@ import net.sourceforge.pmd.properties.NumericConstraints;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
-public class JUnitTestContainsTooManyAssertsRule extends AbstractJavaRulechainRule {
+public class UnitTestContainsTooManyAssertsRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<Integer> MAX_ASSERTS =
         PropertyFactory.intProperty("maximumAsserts")
@@ -33,7 +33,7 @@ public class JUnitTestContainsTooManyAssertsRule extends AbstractJavaRulechainRu
                            .build();
 
 
-    public JUnitTestContainsTooManyAssertsRule() {
+    public UnitTestContainsTooManyAssertsRule() {
         super(ASTMethodDeclaration.class);
         definePropertyDescriptor(MAX_ASSERTS);
         definePropertyDescriptor(EXTRA_ASSERT_METHOD_NAMES);

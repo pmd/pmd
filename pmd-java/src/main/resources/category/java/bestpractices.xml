@@ -915,18 +915,20 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="JUnitTestContainsTooManyAsserts"
+    <rule name="JUnitTestContainsTooManyAsserts" deprecated="true" ref="UnitTestContainsTooManyAsserts"/>
+
+    <rule name="UnitTestContainsTooManyAsserts"
           language="java"
           since="5.0"
           message="Unit tests should not contain more than ${maximumAsserts} assert(s)."
-          class="net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitTestContainsTooManyAssertsRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junittestcontainstoomanyasserts">
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestContainsTooManyAssertsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestcontainstoomanyasserts">
         <description>
 Unit tests should not contain too many asserts. Many asserts are indicative of a complex test, for which
 it is harder to verify correctness.  Consider breaking the test scenario into multiple, shorter test scenarios.
 Customize the maximum number of assertions used by this Rule to suit your needs.
 
-This rule checks for JUnit4, JUnit5 and TestNG Tests, as well as methods starting with "test".
+This rule checks for JUnit (3, 4 and 5) and TestNG Tests.
         </description>
         <priority>3</priority>
         <example>
