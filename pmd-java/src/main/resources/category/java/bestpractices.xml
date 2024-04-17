@@ -765,14 +765,17 @@ public class MyTest2 {
         </example>
     </rule>
 
-    <rule name="JUnit4TestShouldUseTestAnnotation"
+    <rule name="JUnit4TestShouldUseTestAnnotation" deprecated="true" ref="UnitTestShouldUseTestAnnotation" />
+
+    <rule name="UnitTestShouldUseTestAnnotation"
           language="java"
           since="4.0"
-          message="Unit tests that execute tests should use the @Test annotation. In case of JUnit 5, test methods might use @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest annotations instead."
+          message="Unit tests should use the @Test annotation or won't be run. In case of JUnit 5, test methods might use @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest annotations instead."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4testshouldusetestannotation">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestshouldusetestannotation">
         <description>
-In JUnit 3, the framework executed all methods which started with the word test as a unit test.
+The rule will detect any test method starting with "test" that is not properly annotated, and will therefore not be run.
+
 In JUnit 4, only methods annotated with the @Test annotation are executed.
 In JUnit 5, one of the following annotations should be used for tests: @Test, @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest.
 In TestNG, only methods annotated with the @Test annotation are executed.
