@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
-public class JUnitTestsShouldIncludeAssertRule extends AbstractJavaRulechainRule {
+public class UnitTestsShouldIncludeAssertRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<Set<String>> EXTRA_ASSERT_METHOD_NAMES =
             PropertyFactory.stringProperty("extraAssertMethodNames")
@@ -24,7 +24,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJavaRulechainRule
                            .emptyDefaultValue()
                            .build();
 
-    public JUnitTestsShouldIncludeAssertRule() {
+    public UnitTestsShouldIncludeAssertRule() {
         super(ASTMethodDeclaration.class);
         definePropertyDescriptor(EXTRA_ASSERT_METHOD_NAMES);
     }

@@ -933,14 +933,16 @@ This rule checks for JUnit (3, 4 and 5) and TestNG Tests.
         <priority>3</priority>
         <example>
 <![CDATA[
-public class MyTestCase extends TestCase {
+public class MyTestCase {
     // Ok
+    @Test
     public void testMyCaseWithOneAssert() {
         boolean myVar = false;
         assertFalse("should be false", myVar);
     }
 
     // Bad, too many asserts (assuming max=1)
+    @Test
     public void testMyCaseWithMoreAsserts() {
         boolean myVar = false;
         assertFalse("myVar should be false", myVar);
@@ -951,25 +953,30 @@ public class MyTestCase extends TestCase {
         </example>
     </rule>
 
-    <rule name="JUnitTestsShouldIncludeAssert"
+    <rule name="JUnitTestsShouldIncludeAssert" deprecated="true" ref="UnitTestsShouldIncludeAssert" />
+
+    <rule name="UnitTestsShouldIncludeAssert"
           language="java"
           since="2.0"
-          message="JUnit tests should include assert() or fail()"
-          class="net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitTestsShouldIncludeAssertRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junittestsshouldincludeassert">
+          message="Unit tests should include assert() or fail()"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestsShouldIncludeAssertRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestsshouldincludeassert">
         <description>
-JUnit tests should include at least one assertion.  This makes the tests more robust, and using assert
+Unit tests should include at least one assertion. This makes the tests more robust, and using assert
 with messages provide the developer a clearer idea of what the test does.
+
+This rule checks for JUnit (3, 4 and 5) and TestNG Tests.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
-public class Foo extends TestCase {
+public class Foo {
+   @Test
    public void testSomething() {
       Bar b = findBar();
-   // This is better than having a NullPointerException
-   // assertNotNull("bar not found", b);
-   b.work();
+      // This is better than having a NullPointerException
+      // assertNotNull("bar not found", b);
+      b.work();
    }
 }
 ]]>
