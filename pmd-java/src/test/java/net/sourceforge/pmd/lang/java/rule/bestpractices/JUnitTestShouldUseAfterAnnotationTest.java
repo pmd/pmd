@@ -9,7 +9,7 @@ import org.junit.Before;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-class JUnit4TestShouldUseAfterAnnotationTest extends PmdRuleTst {
+class JUnitTestShouldUseAfterAnnotationTest extends PmdRuleTst {
     // no additional unit tests
 
     public static class BaseTest {
