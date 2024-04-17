@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -12,7 +14,7 @@ import java.util.TreeMap;
 class MatchCollector {
 
     private final List<Match> matchList = new ArrayList<>();
-    private final Map<Integer, Map<Integer, Match>> matchTree = new TreeMap<>();
+    private final Map<Integer, List<Match>> matchTree = new HashMap<>();
     private final MatchAlgorithm ma;
 
     MatchCollector(MatchAlgorithm ma) {
@@ -38,7 +40,7 @@ class MatchCollector {
                 if (dupes < ma.getMinimumTileSize()) {
                     continue;
                 }
-                // is it still too close together
+                // both blocks overlap
                 if (diff + dupes >= 1) {
                     continue;
                 }
@@ -48,32 +50,37 @@ class MatchCollector {
     }
 
     private void reportMatch(TokenEntry mark1, TokenEntry mark2, int dupes) {
-        matchTree.compute(dupes, (dupCount, matches) -> {
+        matchTree.compute(mark1.getIndex(), (m1Index, matches) -> {
             if (matches == null) {
-                matches = new TreeMap<>();
-                addNewMatch(mark1, mark2, dupCount, matches);
+                matches = new ArrayList<>();
+                addNewMatch(mark1, mark2, dupes, matches);
             } else {
-                Match matchA = matches.get(mark1.getIndex());
-                Match matchB = matches.get(mark2.getIndex());
+                Iterator<Match> matchIterator = matches.iterator();
+                while (matchIterator.hasNext()) {
+                    Match m = matchIterator.next();
+                    TokenEntry otherEnd = m.getSecondMark().getToken();
 
-                if (matchA == null && matchB == null) {
-                    addNewMatch(mark1, mark2, dupes, matches);
-                } else if (matchA == null) {
-                    matchB.addMark(mark1);
-                    matches.put(mark1.getIndex(), matchB);
-                } else if (matchB == null) {
-                    matchA.addMark(mark2);
-                    matches.put(mark2.getIndex(), matchA);
+                    // does the new match supersedes this one?
+                    if (otherEnd.getIndex() < mark2.getIndex() && otherEnd.getIndex() + m.getTokenCount() >= mark2.getIndex() + dupes) {
+                        // this match is embedded in the previous one… ignore it.
+                        return matches;
+                    } else if (mark2.getIndex() < otherEnd.getIndex() && mark2.getIndex() + dupes >= otherEnd.getIndex() + m.getTokenCount()) {
+                        // the new match is longer and overlaps with the old one - replace it
+                        matchIterator.remove();
+                        matchList.remove(m);
+                        break;
+                    }
                 }
+
+                addNewMatch(mark1, mark2, dupes, matches);
             }
             return matches;
         });
     }
 
-    private void addNewMatch(TokenEntry mark1, TokenEntry mark2, int dupes, Map<Integer, Match> matches) {
+    private void addNewMatch(TokenEntry mark1, TokenEntry mark2, int dupes, List<Match> matches) {
         Match match = new Match(dupes, mark1, mark2);
-        matches.put(mark1.getIndex(), match);
-        matches.put(mark2.getIndex(), match);
+        matches.add(match);
         matchList.add(match);
     }
 
