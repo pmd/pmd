@@ -46,5 +46,19 @@ public class LubTestData {
     public static class GenericSub2<T> extends GenericSuper<T> implements I2<I3>, I4 {
     }
 
+    public interface EnumSuperItf {
+    }
 
+    public enum Enum1 implements EnumSuperItf {
+    }
+
+    public enum Enum2 implements EnumSuperItf {
+    }
+
+    // unrelated
+    public static class C1 {
+    }
+
+    public static class C2 {
+    }
 }

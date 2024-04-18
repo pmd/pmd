@@ -8,12 +8,11 @@ import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 
 /**
- * This is a Java 21/22 Preview feature.
+ * A string template expression. This is a Java 21/22 Preview feature.
  *
  * <pre class="grammar">
  *
- * TemplateExpression ::= ({@link ASTVariableAccess VariableAccess} | {@link ASTFieldAccess FieldAccess})
- *                        ({@link ASTTemplate Template} | {@link ASTStringLiteral StringLiteral})
+ * TemplateExpression ::= ({@link ASTVariableAccess VariableAccess} | {@link ASTFieldAccess FieldAccess}) {@link ASTTemplate Template}
  *
  * </pre>
  *

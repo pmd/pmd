@@ -775,6 +775,21 @@ public class CustomAssertTests {
     </test-code>
 
     <test-code>
+        <description>Extra properties</description>
+        <rule-property name="extraAssertMethodNames">customAssertion</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import org.junit.jupiter.api.Test;
+            public class A {
+                @Test
+                void test() {
+                    customAssertion("aueoau");
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
         <description>#4114 FN @ParameterizedTest are tests too</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[

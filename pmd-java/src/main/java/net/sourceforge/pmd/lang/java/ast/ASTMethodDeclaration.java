@@ -124,15 +124,6 @@ public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JM
         return getResultTypeNode().isVoid();
     }
 
-    /** Returns true if this method is static. */
-    public boolean isStatic() {
-        return hasModifiers(JModifier.STATIC);
-    }
-
-    public boolean isFinal() {
-        return hasModifiers(JModifier.FINAL);
-    }
-
     /**
      * Returns the default clause, if this is an annotation method declaration
      * that features one. Otherwise returns null.

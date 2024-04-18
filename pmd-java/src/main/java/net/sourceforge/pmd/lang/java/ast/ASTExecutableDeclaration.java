@@ -113,4 +113,26 @@ public interface ASTExecutableDeclaration
         return lastFormal instanceof ASTFormalParameter && ((ASTFormalParameter) lastFormal).isVarargs();
     }
 
+
+    /**
+     * Returns true if this is a static method.
+     * If this is a constructor, return false.
+     *
+     * @since 7.1.0
+     */
+    default boolean isStatic() {
+        return hasModifiers(JModifier.STATIC);
+    }
+
+
+    /**
+     * Returns true if this is a final method.
+     * If this is a constructor, return false.
+     *
+     * @since 7.1.0
+     */
+    default boolean isFinal() {
+        return hasModifiers(JModifier.FINAL);
+    }
+
 }

@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.apex.cpd;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
+import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 
 class ApexCpdLexerTest extends CpdTextComparisonTest {
 

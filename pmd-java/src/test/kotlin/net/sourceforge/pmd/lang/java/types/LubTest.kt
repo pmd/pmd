@@ -140,6 +140,22 @@ class LubTest : FunSpec({
                 lub(t_List[Sub1::class.decl], t_List[Sub2::class.decl]) shouldBe result
 
             }
+
+            test("Test lub of related arrays") {
+
+                // the component type
+                lub(
+                    Enum1::class.decl,
+                    Enum2::class.decl,
+                ) shouldBe t_Enum[`?` extends t_Enum[`?`] * EnumSuperItf::class.decl] * EnumSuperItf::class.decl
+
+                // let's try arrays
+                lub(
+                    Enum1::class.decl.toArray(),
+                    Enum2::class.decl.toArray(),
+                ) shouldBe (t_Enum * EnumSuperItf::class.decl).toArray()
+
+            }
         }
     }
 

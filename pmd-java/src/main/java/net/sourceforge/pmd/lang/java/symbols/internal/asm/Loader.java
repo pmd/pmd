@@ -50,7 +50,7 @@ abstract class Loader {
 
         @Override
         public String toString() {
-            return "(StreamLoader for " + name + ")";
+            return "StreamLoader(for " + name + ")";
         }
     }
 }

@@ -7241,7 +7241,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/49557842?v=4",
       "profile": "https://github.com/Scrates1",
       "contributions": [
-        "bug"
+        "bug",
+        "code"
       ]
     },
     {
@@ -7440,6 +7441,24 @@
       "name": "Mikhail Kuchma",
       "avatar_url": "https://avatars.githubusercontent.com/u/13533738?v=4",
       "profile": "https://github.com/Akromangel",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "emouty",
+      "name": "emouty",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16755668?v=4",
+      "profile": "https://github.com/emouty",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "mkolesnikov",
+      "name": "Michael Kolesnikov",
+      "avatar_url": "https://avatars.githubusercontent.com/u/754163?v=4",
+      "profile": "https://github.com/mkolesnikov",
       "contributions": [
         "bug"
       ]

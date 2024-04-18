@@ -20,12 +20,12 @@ import org.junit.jupiter.api.Timeout;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
-import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.types.AstTestUtil;
+import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 
 class ParserCornersTest extends BaseJavaTreeDumpTest {
     private final JavaParsingHelper java = JavaParsingHelper.DEFAULT.withResourceContext(getClass());
@@ -356,5 +356,15 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
     @Test
     void testGitHubBug3642() {
         doTest("GitHubBug3642");
+    }
+
+    @Test
+    void testGitHubBug1780() {
+        doTest("GitHubBug1780OuterClass");
+    }
+
+    @Test
+    void testGithubBug4947() {
+        java15.parseResource("testdata/Issue4947TextBlock.java");
     }
 }

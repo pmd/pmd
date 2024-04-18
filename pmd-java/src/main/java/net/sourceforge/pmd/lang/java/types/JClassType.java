@@ -292,7 +292,7 @@ public interface JClassType extends JTypeMirror {
 
     /**
      * Returns another class type which has the same erasure, but new
-     * type arguments.
+     * type arguments. Note that the bounds on the type arguments are not checked.
      *
      * @param args Type arguments of the returned type. If empty, and
      *             this type is generic, returns a raw type.
