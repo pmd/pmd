@@ -23,6 +23,7 @@ This is a {{ site.pmd.release_type }} release.
 ### 🐛 Fixed Issues
 * core
   * [#494](https://github.com/pmd/pmd/issues/494): \[core] Adopt JApiCmp to enforce control over API changes
+  * [#4959](https://github.com/pmd/pmd/pull/4959): \[core] Upgrade saxon to 12.4
 * cli
   * [#4791](https://github.com/pmd/pmd/issues/4791): \[cli] Could not find or load main class
   * [#4913](https://github.com/pmd/pmd/issues/4913): \[cli] cpd-gui closes immediately
