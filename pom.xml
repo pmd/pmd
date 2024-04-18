@@ -756,6 +756,18 @@
                         <goals>
                             <goal>makeAggregateBom</goal>
                         </goals>
+                        <configuration>
+                            <!-- PMD is released in two phases: first everything without pmd-cli/pmd-dist
+                                 (profile cli-dist-modules disabled), and then only pmd-cli/pmd-dist.
+                                 The BOM for the main artifact net.sourceforge.pmd:pmd is created and published
+                                 in the first phase and doesn't contain pmd-cli/pmd-dist. In order to be able
+                                 to reproduce the BOM, we exclude this two modules always.
+                            -->
+                            <excludeArtifactId>
+                                <artifactId>pmd-cli</artifactId>
+                                <artifactId>pmd-dist</artifactId>
+                            </excludeArtifactId>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
