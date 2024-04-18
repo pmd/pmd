@@ -39,4 +39,21 @@ public class CppCpdTest {
             });
         }
     }
+
+    @Test
+    void testMultipleExactMatches() throws Exception {
+        CPDConfiguration configuration = new CPDConfiguration();
+        configuration.setMinimumTileSize(40);
+        configuration.setOnlyRecognizeLanguage(CppLanguageModule.getInstance());
+        try (CpdAnalysis cpd = CpdAnalysis.create(configuration)) {
+            cpd.files().addFile(testdir.resolve("multipleExactMatches.c"));
+
+            cpd.performAnalysis(matches -> {
+                // There should only be 1 duplication, and it should be maximal
+                assertEquals(1, matches.getMatches().size());
+                assertEquals(3, matches.getMatches().get(0).getMarkCount());
+                assertEquals(41, matches.getMatches().get(0).getTokenCount());
+            });
+        }
+    }
 }
