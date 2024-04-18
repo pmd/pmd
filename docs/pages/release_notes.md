@@ -14,6 +14,11 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+### ✨ New rules
+
+- The new Java rule {%rule java/bestpractices/UnnecessaryVarargsArrayCreation %} reports explicit array creation
+  when a varargs is expected. This is more heavy to read and could be simplified.
+
 ### 🌟 Rule Changes
 
 * {%rule java/bestpractices/JUnitTestsShouldIncludeAssert %} and {% rule java/bestpractices/JUnitTestContainsTooManyAsserts %}
@@ -38,6 +43,7 @@ This is a {{ site.pmd.release_type }} release.
   * [#4947](https://github.com/pmd/pmd/issues/4947): \[java] Broken TextBlock parser
 * java-bestpractices
   * [#1084](https://github.com/pmd/pmd/issues/1084): \[java] Allow JUnitTestsShouldIncludeAssert to configure verification methods
+  * [#3216](https://github.com/pmd/pmd/issues/3216): \[java] New rule: UnnecessaryVarargsArrayCreation
   * [#4435](https://github.com/pmd/pmd/issues/4435): \[java] \[7.0-rc1] UnusedAssignment for used field
   * [#4569](https://github.com/pmd/pmd/issues/4569): \[java] ForLoopCanBeForeach reports on loop `for (int i = 0; i < list.size(); i += 2)`
   * [#4618](https://github.com/pmd/pmd/issues/4618): \[java] UnusedAssignment false positive with conditional assignments of fields
