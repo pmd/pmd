@@ -16,7 +16,6 @@ import net.sf.saxon.pattern.NodeTest;
 import net.sf.saxon.str.StringView;
 import net.sf.saxon.str.UnicodeString;
 import net.sf.saxon.tree.iter.AxisIterator;
-import net.sf.saxon.tree.iter.NodeListIterator;
 import net.sf.saxon.tree.util.Navigator.AxisFilter;
 import net.sf.saxon.tree.wrapper.AbstractNodeWrapper;
 import net.sf.saxon.tree.wrapper.SiblingCountingNode;
@@ -105,16 +104,28 @@ abstract class BaseNodeInfo extends AbstractNodeWrapper implements SiblingCounti
         return iterateList(nodes, true);
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    static AxisIterator iterateList(List<? extends NodeInfo> nodes, boolean forwards) {
-        return forwards ? new NodeListIterator((List<NodeInfo>) nodes)
-                        : new RevListAxisIterator((List<NodeInfo>) nodes);
+    static <N extends NodeInfo> AxisIterator iterateList(List<N> nodes, boolean forwards) {
+        return forwards ? new NodeListIterator<>(nodes)
+                        : new RevListAxisIterator<>(nodes);
     }
 
-    private static class RevListAxisIterator implements AxisIterator {
-        private final ListIterator<NodeInfo> iter;
+    private static class NodeListIterator<N extends NodeInfo> implements AxisIterator {
+        private final ListIterator<N> iter;
 
-        RevListAxisIterator(List<NodeInfo> list) {
+        NodeListIterator(List<N> list) {
+            iter = list.listIterator();
+        }
+
+        @Override
+        public NodeInfo next() {
+            return this.iter.hasNext() ? this.iter.next() : null;
+        }
+    }
+
+    private static class RevListAxisIterator<N extends NodeInfo> implements AxisIterator {
+        private final ListIterator<N> iter;
+
+        RevListAxisIterator(List<N> list) {
             iter = list.listIterator(list.size());
         }
 
