@@ -29,6 +29,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +61,7 @@ public final class FileCollector implements AutoCloseable {
     private final FileId outerFsPath;
     private boolean closed;
     private boolean recursive = true;
+    private Predicate<FileId> fileFilter = file -> true;
 
     // construction
 
@@ -206,6 +208,12 @@ public final class FileCollector implements AutoCloseable {
 
     private boolean addFileImpl(TextFile textFile) {
         LOG.trace("Adding file {} (lang: {}) ", textFile.getFileId().getAbsolutePath(), textFile.getLanguageVersion().getTerseName());
+
+        if (!fileFilter.test(textFile.getFileId())) {
+            LOG.trace("File was skipped due to fileFilter...");
+            return false;
+        }
+
         if (allFilesToProcess.add(textFile)) {
             return true;
         }
@@ -377,6 +385,17 @@ public final class FileCollector implements AutoCloseable {
         this.charset = Objects.requireNonNull(charset);
     }
 
+    /**
+     * Sets an additional filter that is being called before adding the
+     * file to the list.
+     *
+     * @param fileFilter the filter should return {@code true} if the file
+     *                      should be collected and analyzed.
+     * @throws NullPointerException if {@code fileFilter} is {@code null}.
+     */
+    public void setFileFilter(Predicate<FileId> fileFilter) {
+        this.fileFilter = Objects.requireNonNull(fileFilter);
+    }
 
     // filtering
 
