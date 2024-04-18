@@ -27,8 +27,9 @@ class MatchCollector {
 
     public void collect(List<TokenEntry> marks) {
         // first get a pairwise collection of all maximal matches
-        for (int i = 0; i < marks.size() - 1; i++) {
-            int skipped = 0;
+        int skipped;
+        for (int i = 0; i < marks.size() - 1; i += skipped + 1) {
+            skipped = 0;
             TokenEntry mark1 = marks.get(i);
             for (int j = i + 1; j < marks.size(); j++) {
                 TokenEntry mark2 = marks.get(j);
@@ -55,8 +56,6 @@ class MatchCollector {
                 }
                 reportMatch(mark1, mark2, dupes);
             }
-
-            i += skipped;
         }
     }
 

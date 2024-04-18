@@ -1,7 +1,10 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang.cpp.cpd;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -11,7 +14,6 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.CPDConfiguration;
 import net.sourceforge.pmd.cpd.CpdAnalysis;
-import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.cpp.CppLanguageModule;
 
