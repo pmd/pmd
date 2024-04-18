@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce generally accepted best practices.">
-<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, OneDeclarationPerLine, PreserveStackTrace, PrimitiveWrapperInstantiation, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SimplifiableTestAssertion, SwitchStmtsShouldHaveDefault, SystemPrintln, UnusedAssignment, UnusedFormalParameter, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseCollectionIsEmpty, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
+<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, OneDeclarationPerLine, PreserveStackTrace, PrimitiveWrapperInstantiation, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SimplifiableTestAssertion, SwitchStmtsShouldHaveDefault, SystemPrintln, UnnecessaryVarargsArrayCreation, UnusedAssignment, UnusedFormalParameter, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseCollectionIsEmpty, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
 <title>Best Practices | PMD Source Code Analyzer</title>
 
 
@@ -3581,6 +3581,60 @@ will (and by priority) and avoid clogging the Standard out log.</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/SystemPrintln"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="unnecessaryvarargsarraycreation">UnnecessaryVarargsArrayCreation</h2>
+
+<p><strong>Since:</strong> PMD 7.1.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Reports explicit array creation when a varargs is expected.
+For instance:</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="k">new</span> <span class="nc">String</span><span class="o">[]</span> <span class="o">{</span> <span class="s">"foo"</span><span class="o">,</span> <span class="s">"bar"</span><span class="o">,</span> <span class="o">});</span>
+</code></pre></div></div>
+<p>can be replaced by:</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="s">"foo"</span><span class="o">,</span> <span class="s">"bar"</span><span class="o">);</span>
+</code></pre></div></div>
+
+<p>This rule also reports such array creations when they are confusing, because the array is a subtype of the component type of the expected array type.
+For instance if you have</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">varargs</span><span class="o">(</span><span class="nc">Object</span><span class="o">...</span> <span class="n">parm</span><span class="o">);</span>
+</code></pre></div></div>
+<p>and call it like so</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">varargs</span><span class="o">(</span><span class="k">new</span> <span class="nc">String</span><span class="o">[]{</span><span class="s">"a"</span><span class="o">});</span>
+</code></pre></div></div>
+<p>it is not clear whether you intended the method to receive the value <code class="language-plaintext highlighter-rouge">new Object[]{ new String[] {"a"} }</code> or just <code class="language-plaintext highlighter-rouge">new String[] {"a"}</code> (the latter happens). This confusion occurs because <code class="language-plaintext highlighter-rouge">String[]</code> is both a subtype of <code class="language-plaintext highlighter-rouge">Object[]</code> and of <code class="language-plaintext highlighter-rouge">Object</code>. To clarify your intent in this case, use a cast or pass individual elements like so:</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// varargs call</span>
+<span class="c1">// parm will be `new Object[] { "a" }`</span>
+<span class="n">varargs</span><span class="o">(</span><span class="s">"a"</span><span class="o">);</span>
+
+<span class="c1">// non-varargs call</span>
+<span class="c1">// parm will be `new String[] { "a" }`</span>
+<span class="n">varargs</span><span class="o">((</span><span class="nc">Object</span><span class="o">[])</span> <span class="k">new</span> <span class="nc">String</span><span class="o">[]{</span><span class="s">"a"</span><span class="o">});</span>
+
+<span class="c1">// varargs call</span>
+<span class="c1">// parm will be `new Object[] { new String[] { "a" } }`</span>
+<span class="n">varargs</span><span class="o">((</span><span class="nc">Object</span><span class="o">)</span> <span class="k">new</span> <span class="nc">String</span><span class="o">[]{</span><span class="s">"a"</span><span class="o">});</span>
+</code></pre></div></div>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnnecessaryVarargsArrayCreationRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnnecessaryVarargsArrayCreationRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.Arrays</span><span class="o">;</span>
+
+<span class="kd">class</span> <span class="nc">C</span> <span class="o">{</span>
+    <span class="kd">static</span> <span class="o">{</span>
+        <span class="nc">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="k">new</span> <span class="nc">String</span><span class="o">[]{</span><span class="s">"foo"</span><span class="o">,</span> <span class="s">"bar"</span><span class="o">,});</span>
+        <span class="c1">// should be</span>
+        <span class="nc">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="s">"foo"</span><span class="o">,</span> <span class="s">"bar"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/UnnecessaryVarargsArrayCreation"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="unusedassignment">UnusedAssignment</h2>
 
 <p><strong>Since:</strong> PMD 6.26.0</p>
@@ -4218,7 +4272,7 @@ a block <code class="language-plaintext highlighter-rouge">{}</code> is sufficie
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 16, 2024 <br />
+             Site last generated: Apr 18, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
