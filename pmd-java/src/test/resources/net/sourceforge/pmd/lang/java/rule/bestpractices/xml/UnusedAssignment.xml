@@ -2834,6 +2834,101 @@ public class Test {
     </test-code>
 
 
+    <test-code>
+        <description>Custom label causes NPE</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+            class Foo {
+                boolean method(int i) {
+                    int k = 0;
+                    parse: try {
+                        i++; // used
+                        if (method(2)) break parse;
+                        k = 2; // unused
+                        return false;
+                    } catch (RuntimeException e) {
+                        i = 2;
+                        break parse;
+                    }
+                    print(i + k);
+                    return true;
+                }
+            }
+
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Labeled statements (1)</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,13</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    boolean method() {
+        int i,j,k;
+        a:
+        if (foo()) {
+            return true;
+        } else {
+            i = 2; // warn
+            j = 2;
+            k = 2;
+            if (foo()) {
+                i = 3;
+                j++; // warn
+                k = 0;
+                break a;
+            }
+            i = 3;
+        }
+        System.out.println(i);
+        System.out.println(k);
+    }
+
+    boolean foo() {
+        return false;
+    }
+}
+
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Labeled break statement (2)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    boolean method() {
+        int i = 0;
+        a: break a;
+        System.out.println(i);
+    }
+}
+
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Labeled synchronized statement (3)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    boolean method() {
+        int i = 0;
+        x:
+        synchronized (this) {
+            if(foo()) break x;
+            i = 2;
+        }
+        System.out.println(i);
+    }
+    boolean foo() {}
+}
+
+        ]]></code>
+    </test-code>
+
+
 
     <test-code>
         <description>Unused formal value</description>

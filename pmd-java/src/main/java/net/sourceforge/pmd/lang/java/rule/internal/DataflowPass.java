@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -441,7 +442,7 @@ public final class DataflowPass {
 
         @Override
         public SpanInfo visit(ASTIfStatement node, SpanInfo data) {
-            return makeConditional(data, node.getCondition(), node.getThenBranch(), node.getElseBranch());
+            return processBreakableStmt(node, data, () -> makeConditional(data, node.getCondition(), node.getThenBranch(), node.getElseBranch()));
         }
 
         @Override
@@ -545,12 +546,14 @@ public final class DataflowPass {
 
         @Override
         public SpanInfo visit(ASTSynchronizedStatement node, SpanInfo data) {
-            // visit lock expr and child block
-            SpanInfo body = super.visit(node, data);
-            // We should assume that all assignments may be observed by other threads
-            // at the end of the critical section.
-            useAllSelfFields(body, JavaAstUtils.isInStaticCtx(node), enclosingClassScope);
-            return body;
+            return processBreakableStmt(node, data, () -> {
+                // visit lock expr and child block
+                SpanInfo body = super.visit(node, data);
+                // We should assume that all assignments may be observed by other threads
+                // at the end of the critical section.
+                useAllSelfFields(body, JavaAstUtils.isInStaticCtx(node), enclosingClassScope);
+                return body;
+            });
         }
 
         @Override
@@ -577,37 +580,39 @@ public final class DataflowPass {
              */
             ASTFinallyClause finallyClause = node.getFinallyClause();
 
-            if (finallyClause != null) {
-                before.myFinally = before.forkEmpty();
-            }
+            SpanInfo finalState = processBreakableStmt(node, before, () -> {
 
-            final List<ASTCatchClause> catchClauses = node.getCatchClauses().toList();
-            final List<SpanInfo> catchSpans = catchClauses.isEmpty() ? Collections.emptyList()
-                                                                     : new ArrayList<>();
+                if (finallyClause != null) {
+                    before.myFinally = before.forkEmpty();
+                }
 
-            // pre-fill catch spans
-            for (int i = 0; i < catchClauses.size(); i++) {
-                catchSpans.add(before.forkEmpty());
-            }
+                final List<ASTCatchClause> catchClauses = node.getCatchClauses().toList();
+                final List<SpanInfo> catchSpans = catchClauses.isEmpty() ? Collections.emptyList()
+                                                                         : new ArrayList<>();
 
-            @Nullable ASTResourceList resources = node.getResources();
+                // pre-fill catch spans
+                for (int i = 0; i < catchClauses.size(); i++) {
+                    catchSpans.add(before.forkEmpty());
+                }
 
-            SpanInfo bodyState = before.fork();
-            bodyState = bodyState.withCatchBlocks(catchSpans);
-            bodyState = acceptOpt(resources, bodyState);
-            bodyState = acceptOpt(node.getBody(), bodyState);
-            bodyState = bodyState.withCatchBlocks(Collections.emptyList());
+                @Nullable ASTResourceList resources = node.getResources();
 
-            SpanInfo exceptionalState = null;
-            int i = 0;
-            for (ASTCatchClause catchClause : node.getCatchClauses()) {
-                SpanInfo current = acceptOpt(catchClause, catchSpans.get(i));
-                exceptionalState = current.absorb(exceptionalState);
-                i++;
-            }
+                SpanInfo bodyState = before.fork();
+                bodyState = bodyState.withCatchBlocks(catchSpans);
+                bodyState = acceptOpt(resources, bodyState);
+                bodyState = acceptOpt(node.getBody(), bodyState);
+                bodyState = bodyState.withCatchBlocks(Collections.emptyList());
 
-            SpanInfo finalState;
-            finalState = bodyState.absorb(exceptionalState);
+                SpanInfo exceptionalState = null;
+                int i = 0;
+                for (ASTCatchClause catchClause : node.getCatchClauses()) {
+                    SpanInfo current = acceptOpt(catchClause, catchSpans.get(i));
+                    exceptionalState = current.absorb(exceptionalState);
+                    i++;
+                }
+                return bodyState.absorb(exceptionalState);
+            });
+
             if (finallyClause != null) {
                 if (finalState.abruptCompletionTargets.contains(finalState.global.abruptCompletionTarget)) {
                     // this represents the finally clause when it was entered
@@ -767,6 +772,40 @@ public final class DataflowPass {
             return result;
         }
 
+        /**
+         * Process a statement that may be broken out of if it is annotated with a label.
+         * This is theoretically all statements, as all of them may be annotated. However,
+         * some statements may not contain a break. Eg if a return statement has a label,
+         * the label can never be used. The weirdest example is probably an annotated break
+         * statement, which may break out of itself.
+         *
+         * <p>Try statements are handled specially because of the finally.
+         */
+        private SpanInfo processBreakableStmt(ASTStatement statement, SpanInfo input, Supplier<SpanInfo> processFun) {
+            GlobalAlgoState globalState = input.global;
+            Node parent = statement.getParent();
+            // in most cases this will remain empty
+            PSet<String> labels = HashTreePSet.empty();
+            // this will be filled with the reaching defs of the break statements, then merged with the actual exit state
+            SpanInfo placeholderForExitState = input.forkEmpty();
+
+            // collect labels and give a name to the exit state.
+            while (parent instanceof ASTLabeledStatement) {
+                String label = ((ASTLabeledStatement) parent).getLabel();
+                labels = labels.plus(label);
+                globalState.breakTargets.namedTargets.put(label, placeholderForExitState);
+                parent = parent.getParent();
+            }
+            SpanInfo endState = processFun.get();
+
+            // remove the labels
+            globalState.breakTargets.namedTargets.keySet().removeAll(labels);
+
+            // todo edit the break targets
+
+            return endState.absorb(placeholderForExitState);
+        }
+
         private void pushTargets(ASTLoopStatement loop, SpanInfo breakTarget, SpanInfo continueTarget) {
             GlobalAlgoState globalState = breakTarget.global;
             globalState.breakTargets.unnamedTargets.push(breakTarget);
@@ -809,7 +848,7 @@ public final class DataflowPass {
 
         @Override
         public SpanInfo visit(ASTBreakStatement node, SpanInfo data) {
-            return data.global.breakTargets.doBreak(data, node.getImage());
+            return processBreakableStmt(node, data, () -> data.global.breakTargets.doBreak(data, node.getImage()));
         }
 
         @Override
@@ -1543,8 +1582,9 @@ public final class DataflowPass {
 
             if (target != null) { // otherwise CT error
                 target.absorb(data);
+                return data.abruptCompletion(target);
             }
-            return data.abruptCompletion(target);
+            return data;
         }
     }
 
