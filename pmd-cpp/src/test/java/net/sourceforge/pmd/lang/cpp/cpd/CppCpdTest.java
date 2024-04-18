@@ -17,7 +17,7 @@ import net.sourceforge.pmd.cpd.CpdAnalysis;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.cpp.CppLanguageModule;
 
-public class CppCpdTest {
+class CppCpdTest {
     private Path testdir;
 
     @BeforeEach
