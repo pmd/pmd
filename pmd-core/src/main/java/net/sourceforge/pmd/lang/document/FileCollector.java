@@ -16,7 +16,6 @@ import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.ProviderNotFoundException;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -62,7 +61,7 @@ public final class FileCollector implements AutoCloseable {
     private final FileId outerFsPath;
     private boolean closed;
     private boolean recursive = true;
-    private Predicate<Path> addFileFilter = file -> true;
+    private Predicate<FileId> fileFilter = file -> true;
 
     // construction
 
@@ -210,8 +209,8 @@ public final class FileCollector implements AutoCloseable {
     private boolean addFileImpl(TextFile textFile) {
         LOG.trace("Adding file {} (lang: {}) ", textFile.getFileId().getAbsolutePath(), textFile.getLanguageVersion().getTerseName());
 
-        if (!addFileFilter.test(Paths.get(textFile.getFileId().getAbsolutePath()))) {
-            LOG.trace("File was skipped due to addFileFilter...");
+        if (!fileFilter.test(textFile.getFileId())) {
+            LOG.trace("File was skipped due to fileFilter...");
             return false;
         }
 
@@ -390,12 +389,12 @@ public final class FileCollector implements AutoCloseable {
      * Sets an additional filter that is being called before adding the
      * file to the list.
      *
-     * @param addFileFilter the filter should return {@code true} if the file
+     * @param fileFilter the filter should return {@code true} if the file
      *                      should be collected and analyzed.
-     * @throws NullPointerException if {@code addFileFilter} is {@code null}.
+     * @throws NullPointerException if {@code fileFilter} is {@code null}.
      */
-    public void setAddFileFilter(Predicate<Path> addFileFilter) {
-        this.addFileFilter = Objects.requireNonNull(addFileFilter);
+    public void setFileFilter(Predicate<FileId> fileFilter) {
+        this.fileFilter = Objects.requireNonNull(fileFilter);
     }
 
     // filtering
