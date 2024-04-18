@@ -30,10 +30,10 @@ import net.sf.saxon.Configuration;
 import net.sf.saxon.expr.Expression;
 import net.sf.saxon.expr.LocalVariableReference;
 import net.sf.saxon.lib.ExtensionFunctionDefinition;
-import net.sf.saxon.lib.NamespaceConstant;
 import net.sf.saxon.om.AtomicSequence;
 import net.sf.saxon.om.Item;
 import net.sf.saxon.om.NamePool;
+import net.sf.saxon.om.NamespaceUri;
 import net.sf.saxon.om.SequenceIterator;
 import net.sf.saxon.om.StructuredQName;
 import net.sf.saxon.sxpath.IndependentContext;
@@ -41,6 +41,7 @@ import net.sf.saxon.sxpath.XPathDynamicContext;
 import net.sf.saxon.sxpath.XPathEvaluator;
 import net.sf.saxon.sxpath.XPathExpression;
 import net.sf.saxon.sxpath.XPathVariable;
+import net.sf.saxon.trans.UncheckedXPathException;
 import net.sf.saxon.trans.XPathException;
 
 
@@ -140,6 +141,8 @@ public class SaxonXPathRuleQuery {
             return sortedRes;
         } catch (final XPathException e) {
             throw wrapException(e, Phase.EVALUATION);
+        } catch (final UncheckedXPathException e) {
+            throw wrapException(e.getXPathException(), Phase.EVALUATION);
         } finally {
             documentNode.setAttrCtx(DeprecatedAttrLogger.noop());
         }
@@ -184,13 +187,12 @@ public class SaxonXPathRuleQuery {
     }
 
     private void initialize() throws XPathException {
-
         this.configuration = Configuration.newConfiguration();
         this.configuration.setNamePool(getNamePool());
 
         StaticContextWithProperties staticCtx = new StaticContextWithProperties(this.configuration);
         staticCtx.setXPathLanguageLevel(version == XPathVersion.XPATH_3_1 ? 31 : 20);
-        staticCtx.declareNamespace("fn", NamespaceConstant.FN);
+        staticCtx.declareNamespace("fn", NamespaceUri.FN);
 
         for (final PropertyDescriptor<?> propertyDescriptor : properties.keySet()) {
             final String name = propertyDescriptor.name();
@@ -202,7 +204,7 @@ public class SaxonXPathRuleQuery {
         for (XPathFunctionDefinition xpathFun : xPathHandler.getRegisteredExtensionFunctions()) {
             ExtensionFunctionDefinition fun = new SaxonExtensionFunctionDefinitionAdapter(xpathFun);
             StructuredQName qname = fun.getFunctionQName();
-            staticCtx.declareNamespace(qname.getPrefix(), qname.getURI());
+            staticCtx.declareNamespace(qname.getPrefix(), qname.getNamespaceUri());
             this.configuration.registerExtensionFunction(fun);
         }
 
