@@ -159,6 +159,12 @@
                             <artifactId>javacc</artifactId>
                             <version>${javacc.version}</version>
                         </dependency>
+                        <!-- Use the latest ant version to preserve file permissions when doing replaceregexp -->
+                        <dependency>
+                            <groupId>org.apache.ant</groupId>
+                            <artifactId>ant</artifactId>
+                            <version>${ant.version}</version>
+                        </dependency>
                     </dependencies>
                 </plugin>
                 <plugin>
