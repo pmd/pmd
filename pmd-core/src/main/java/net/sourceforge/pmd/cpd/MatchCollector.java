@@ -28,11 +28,16 @@ class MatchCollector {
     public void collect(List<TokenEntry> marks) {
         // first get a pairwise collection of all maximal matches
         for (int i = 0; i < marks.size() - 1; i++) {
+            int skipped = 0;
             TokenEntry mark1 = marks.get(i);
             for (int j = i + 1; j < marks.size(); j++) {
                 TokenEntry mark2 = marks.get(j);
                 int diff = mark1.getIndex() - mark2.getIndex();
                 if (-diff < ma.getMinimumTileSize()) {
+                    // self-repeating sequence such as ABBABBABB with min 6,
+                    // will match 2 against any other occurrence of ABBABB
+                    // avoid duplicate overlapping reports by skipping it on the next outer loop
+                    skipped++;
                     continue;
                 }
                 if (hasPreviousDupe(mark1, mark2)) {
@@ -50,6 +55,8 @@ class MatchCollector {
                 }
                 reportMatch(mark1, mark2, dupes);
             }
+
+            i += skipped;
         }
     }
 
@@ -66,28 +73,39 @@ class MatchCollector {
             return;
         }
 
-        List<Match> matches = matchTree.computeIfAbsent(mark1.getIndex(), ArrayList::new);
+        // This may not be a "new match", but actually a sub-match of a larger one.
+        // always rely on the lowest mark index, as that's the order in which process them
+        final int lowestKey = tokenMatchSets.get(mark1.getIndex()).stream().reduce(mark1.getIndex(), Math::min);
+
+        List<Match> matches = matchTree.computeIfAbsent(lowestKey, ArrayList::new);
         Iterator<Match> matchIterator = matches.iterator();
         while (matchIterator.hasNext()) {
             Match m = matchIterator.next();
-            TokenEntry otherEnd = m.getSecondMark().getToken(); // TODO : this only works for mark1 being the key
 
-            // does the new match supersedes this one?
-            if (otherEnd.getIndex() < mark2.getIndex() && otherEnd.getIndex() + m.getTokenCount() >= mark2.getIndex() + dupes) {
-                // this match is embedded in the previous one… ignore it.
-                return;
-            } else if (mark2.getIndex() < otherEnd.getIndex() && mark2.getIndex() + dupes >= otherEnd.getIndex() + m.getTokenCount()) {
-                // the new match is longer and overlaps with the old one - replace it
-                matchIterator.remove();
-                break;
-            } else if (dupes == m.getTokenCount()) {
-                // we found yet another exact match of the same snippet. Roll it together
+            // Check all other marks
+            for (Mark otherMark : m.getMarkSet()) {
+                TokenEntry otherEnd = otherMark.getToken();
+                if (otherEnd.getIndex() == mark1.getIndex()) {
+                    continue;
+                }
 
-                // Add this adjacency to all combinations
-                m.iterator().forEachRemaining(other -> registerTokenMatch(other.getToken(), mark2));
+                // does the new match supersedes this one?
+                if (otherEnd.getIndex() < mark2.getIndex() && otherEnd.getIndex() + m.getTokenCount() >= mark2.getIndex() + dupes) {
+                    // this match is embedded in the previous one… ignore it.
+                    return;
+                } else if (mark2.getIndex() < otherEnd.getIndex() && mark2.getIndex() + dupes >= otherEnd.getIndex() + m.getTokenCount()) {
+                    // the new match is longer and overlaps with the old one - replace it
+                    matchIterator.remove();
+                    break;
+                } else if (dupes == m.getTokenCount()) {
+                    // we found yet another exact match of the same snippet. Roll it together
 
-                m.addMark(mark2);
-                return;
+                    // Add this adjacency to all combinations
+                    m.iterator().forEachRemaining(other -> registerTokenMatch(other.getToken(), mark2));
+
+                    m.addMark(mark2);
+                    return;
+                }
             }
         }
 
