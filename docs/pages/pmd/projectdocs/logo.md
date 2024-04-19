@@ -24,7 +24,13 @@ The following PMD Logos and Icons are licensed under [CC BY 4.0](https://creativ
 *   [Logo (600px, white)](images/logo/pmd-logo-white-600px.png)
 *   [Logo (600px, white, suqare shape)](images/logo/pmd-logo-white-600px-squared.png)
 
-*   [Favicon (16x16)](images/logo/favicon.ico)
+Small variants, square shaped:
+*   [PMD_small.svg](images/logo/PMD_small.svg)
+*   [Small Logo (64px, transparent)](images/logo/pmd-logo-small-64px.png)
+*   [Small Logo (64px, white)](images/logo/pmd-logo-small-white-64px.png)
+*   [Small Logo (300px, transparent)](images/logo/pmd-logo-small-300px.png)
+*   [Small Logo (300px, white)](images/logo/pmd-logo-small-white-300px.png)
+*   [Favicon (32x32)](images/logo/favicon.ico)
 
 This new greenish logo was introduced with PMD 7.
 
