@@ -135,6 +135,15 @@ class SaxonXPathRuleQueryTest {
     }
 
     @Test
+    void testListAttributes() {
+        DummyRootNode dummy = helper.parse("(a(b))");
+        List<Node> result = assertQuery(1,
+                "//dummyNode[count(distinct-values(@Lines)) > 0 and not(empty(index-of(@Lines, 'a')))]", dummy);
+
+        assertEquals(dummy.getChild(0), result.get(0));
+    }
+
+    @Test
     void ruleChainVisits() {
         SaxonXPathRuleQuery query = createQuery("//dummyNode[@Image='baz']/foo | //bar[@Public = 'true'] | //dummyNode[@Public = false()] | //dummyNode");
         List<String> ruleChainVisits = query.getRuleChainVisits();
