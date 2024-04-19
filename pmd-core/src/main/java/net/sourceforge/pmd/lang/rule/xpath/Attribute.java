@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.rule.xpath;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.List;
 import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
