@@ -13,6 +13,8 @@ import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -120,8 +122,23 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
 
     private boolean isConsideredReturnType(Method method) {
         Class<?> klass = method.getReturnType();
-        return CONSIDERED_RETURN_TYPES.contains(klass) || klass.isEnum()
-                || Collection.class.isAssignableFrom(klass);
+        if (CONSIDERED_RETURN_TYPES.contains(klass) || klass.isEnum()) {
+            return true;
+        }
+
+        if (Collection.class.isAssignableFrom(klass)) {
+            Type t = method.getGenericReturnType();
+            if (t instanceof ParameterizedType) {
+                try {
+                    Class<?> elementKlass = Class.forName(((ParameterizedType) t).getActualTypeArguments()[0].getTypeName());
+                    return CONSIDERED_RETURN_TYPES.contains(elementKlass) || elementKlass.isEnum();
+                } catch (ClassNotFoundException ignored) {
+                    // should never happen
+                }
+            }
+        }
+
+        return false;
     }
 
     private boolean isIgnored(Class<?> nodeClass, Method method) {
