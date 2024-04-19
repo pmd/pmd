@@ -68,8 +68,8 @@ class AstAttributeNode extends BaseNodeInfo implements SiblingCountingNode {
 
     @Override
     public AtomicSequence atomize() {
+        getTreeInfo().getLogger().recordUsageOf(attribute);
         if (value == null) {
-            getTreeInfo().getLogger().recordUsageOf(attribute);
             value = DomainConversion.convert(attribute.getValue());
         }
         return value;
