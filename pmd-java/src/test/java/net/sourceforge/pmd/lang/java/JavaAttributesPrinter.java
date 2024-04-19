@@ -28,15 +28,6 @@ import net.sourceforge.pmd.lang.test.ast.RelevantAttributePrinter;
 public class JavaAttributesPrinter extends RelevantAttributePrinter {
 
     @Override
-    protected void fillAttributes(@NonNull Node node, @NonNull List<AttributeInfo> result) {
-        super.fillAttributes(node, result);
-        if (node instanceof ASTModifierList) {
-            result.add(getModifierAttr("EffectiveModifiers", ((ASTModifierList) node).getEffectiveModifiers()));
-            result.add(getModifierAttr("ExplicitModifiers", ((ASTModifierList) node).getExplicitModifiers()));
-        }
-    }
-
-    @Override
     protected boolean ignoreAttribute(@NonNull Node node, @NonNull Attribute attribute) {
         return super.ignoreAttribute(node, attribute)
             // Deprecated attributes are removed from the output
@@ -52,9 +43,5 @@ public class JavaAttributesPrinter extends RelevantAttributePrinter {
     private boolean isBooleanTrue(Object o) {
         // for some reason Boolean::new is called somewhere in the reflection layer
         return o instanceof Boolean && (Boolean) o;
-    }
-
-    private AttributeInfo getModifierAttr(String name, Set<JModifier> mods) {
-        return new AttributeInfo(name, mods.stream().map(JModifier::getToken).collect(Collectors.joining(", ", "{", "}")));
     }
 }
