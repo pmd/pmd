@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.annotation.Experimental;
 
 /**
- * This is a Java 21/22 Preview feature.
+ * The template of a {@link ASTTemplateExpression}. This is a Java 21/22 Preview feature.
  *
  * <pre class="grammar">
  *

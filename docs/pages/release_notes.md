@@ -14,6 +14,11 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+### ✨ New rules
+
+- The new Java rule {%rule java/bestpractices/UnnecessaryVarargsArrayCreation %} reports explicit array creation
+  when a varargs is expected. This is more heavy to read and could be simplified.
+
 ### 🌟 Rule Changes
 
 * {%rule java/bestpractices/JUnitTestsShouldIncludeAssert %} and {% rule java/bestpractices/JUnitTestContainsTooManyAsserts %}
@@ -23,9 +28,13 @@ This is a {{ site.pmd.release_type }} release.
 ### 🐛 Fixed Issues
 * core
   * [#494](https://github.com/pmd/pmd/issues/494): \[core] Adopt JApiCmp to enforce control over API changes
+  * [#4942](https://github.com/pmd/pmd/issues/4942): \[core] CPD: `--skip-duplicate-files` has no effect (7.0.0 regression)
+  * [#4959](https://github.com/pmd/pmd/pull/4959): \[core] Upgrade saxon to 12.4
 * cli
   * [#4791](https://github.com/pmd/pmd/issues/4791): \[cli] Could not find or load main class
   * [#4913](https://github.com/pmd/pmd/issues/4913): \[cli] cpd-gui closes immediately
+* doc
+  * [#4901](https://github.com/pmd/pmd/issues/4901): \[doc] Improve documentation on usage of violationSuppressXPath
 * apex
   * [#4418](https://github.com/pmd/pmd/issues/4418): \[apex] ASTAnnotation.getImage() does not return value as written in the class
 * apex-errorprone
@@ -33,8 +42,10 @@ This is a {{ site.pmd.release_type }} release.
 * java
   * [#4899](https://github.com/pmd/pmd/issues/4899): \[java] Parsing failed in ParseLock#doParse() java.io.IOException: Stream closed
   * [#4902](https://github.com/pmd/pmd/issues/4902): \[java] "Bad intersection, unrelated class types" for Constable\[] and Enum\[]
+  * [#4947](https://github.com/pmd/pmd/issues/4947): \[java] Broken TextBlock parser
 * java-bestpractices
   * [#1084](https://github.com/pmd/pmd/issues/1084): \[java] Allow JUnitTestsShouldIncludeAssert to configure verification methods
+  * [#3216](https://github.com/pmd/pmd/issues/3216): \[java] New rule: UnnecessaryVarargsArrayCreation
   * [#4435](https://github.com/pmd/pmd/issues/4435): \[java] \[7.0-rc1] UnusedAssignment for used field
   * [#4569](https://github.com/pmd/pmd/issues/4569): \[java] ForLoopCanBeForeach reports on loop `for (int i = 0; i < list.size(); i += 2)`
   * [#4618](https://github.com/pmd/pmd/issues/4618): \[java] UnusedAssignment false positive with conditional assignments of fields
@@ -44,10 +55,12 @@ This is a {{ site.pmd.release_type }} release.
   * [#4779](https://github.com/pmd/pmd/issues/4779): \[java] Examples in documentation of MethodArgumentCanBeFinal do not trigger the rule
   * [#4881](https://github.com/pmd/pmd/issues/4881): \[java] ClassNamingConventions: interfaces are identified as abstract classes (regression in 7.0.0)
 * java-design
+  * [#2440](https://github.com/pmd/pmd/issues/2440): \[java] FinalFieldCouldBeStatic FN when the right side of the assignment is a constant expression
   * [#3694](https://github.com/pmd/pmd/issues/3694): \[java] SingularField ignores static variables
   * [#4873](https://github.com/pmd/pmd/issues/4873): \[java] AvoidCatchingGenericException: Can no longer suppress on the exception itself
 * java-errorprone
   * [#2056](https://github.com/pmd/pmd/issues/2056): \[java] CloseResource false-positive with URLClassLoader in cast expression
+  * [#4751](https://github.com/pmd/pmd/issues/4751): \[java] PMD crashes when analyzing CloseResource Rule
   * [#4928](https://github.com/pmd/pmd/issues/4928): \[java] EmptyCatchBlock false negative when allowCommentedBlocks=true
 * java-performance
   * [#3845](https://github.com/pmd/pmd/issues/3845): \[java] InsufficientStringBufferDeclaration should consider literal expression

@@ -49,10 +49,10 @@ import net.sourceforge.pmd.util.BaseResultProducingCloseable;
 public class Report {
     // todo move to package reporting
 
-    private final List<RuleViolation> violations = synchronizedList(new ArrayList<>());
-    private final List<SuppressedViolation> suppressedRuleViolations = synchronizedList(new ArrayList<>());
-    private final List<ProcessingError> errors = synchronizedList(new ArrayList<>());
-    private final List<ConfigurationError> configErrors = synchronizedList(new ArrayList<>());
+    protected final List<RuleViolation> violations = synchronizedList(new ArrayList<>());
+    protected final List<SuppressedViolation> suppressedRuleViolations = synchronizedList(new ArrayList<>());
+    protected final List<ProcessingError> errors = synchronizedList(new ArrayList<>());
+    protected final List<ConfigurationError> configErrors = synchronizedList(new ArrayList<>());
 
     @DeprecatedUntil700
     @InternalApi
