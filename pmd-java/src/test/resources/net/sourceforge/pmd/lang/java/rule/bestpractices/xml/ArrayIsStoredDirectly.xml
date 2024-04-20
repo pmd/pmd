@@ -330,4 +330,21 @@ class TestArrayIsStoredDirectly {
 ]]></code>
     </test-code>
 
+    <test-code>
+        <description>[java] ArrayIsStoredDirectly at enum constructor #1413</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum DemoEnum {
+
+    VAL1("str1", "str2"),
+    VAL2("str3");
+
+    private final String[] values;
+
+    DemoEnum(String... values) {
+        this.values = values;
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

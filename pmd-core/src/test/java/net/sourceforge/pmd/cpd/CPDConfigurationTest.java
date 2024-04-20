@@ -9,12 +9,16 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+
+import net.sourceforge.pmd.lang.DummyLanguageNoCapabilities;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 
 class CPDConfigurationTest {
 
@@ -57,6 +61,18 @@ class CPDConfigurationTest {
         assertNotNull(renderer);
         assertThat(renderer, instanceOf(XMLRenderer.class));
         assertEquals(StandardCharsets.UTF_16.name(), ((XMLRenderer) renderer).getEncoding());
+    }
+
+
+    @Test
+    void testCpdNotSupported() {
+        DummyLanguageNoCapabilities lang = DummyLanguageNoCapabilities.getInstance();
+        final CPDConfiguration configuration = new CPDConfiguration(LanguageRegistry.singleton(lang));
+
+        assertThrows(UnsupportedOperationException.class,
+            () -> configuration.setOnlyRecognizeLanguage(lang));
+        assertThrows(UnsupportedOperationException.class,
+            () -> configuration.setDefaultLanguageVersion(lang.getDefaultVersion()));
     }
 
 }

@@ -14,7 +14,10 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
-#### New rules
+### ✨ New rules
+
+- The new Java rule {%rule java/bestpractices/UnnecessaryVarargsArrayCreation %} reports explicit array creation
+  when a varargs is expected. This is more heavy to read and could be simplified.
 
 - The new Java rule {% rule "java/codestyle/LambdaCanBeMethodReference" %} reports lambda expressions that can be replaced
   with a method reference. Please read the documentation of the rule for more info.
@@ -26,19 +29,42 @@ This is a {{ site.pmd.release_type }} release.
   methods should be considered as valid verification methods. This allows to use custom mocking or assertion libraries.
 
 ### 🐛 Fixed Issues
-
+* core
+  * [#494](https://github.com/pmd/pmd/issues/494): \[core] Adopt JApiCmp to enforce control over API changes
+  * [#4942](https://github.com/pmd/pmd/issues/4942): \[core] CPD: `--skip-duplicate-files` has no effect (7.0.0 regression)
+  * [#4959](https://github.com/pmd/pmd/pull/4959): \[core] Upgrade saxon to 12.4
 * cli
   * [#4791](https://github.com/pmd/pmd/issues/4791): \[cli] Could not find or load main class
+  * [#4913](https://github.com/pmd/pmd/issues/4913): \[cli] cpd-gui closes immediately
+* doc
+  * [#4901](https://github.com/pmd/pmd/issues/4901): \[doc] Improve documentation on usage of violationSuppressXPath
+* apex
+  * [#4418](https://github.com/pmd/pmd/issues/4418): \[apex] ASTAnnotation.getImage() does not return value as written in the class
+* apex-errorprone
+  * [#3953](https://github.com/pmd/pmd/issues/3953): \[apex] EmptyCatchBlock false positive with formal (doc) comments
+* java
+  * [#4899](https://github.com/pmd/pmd/issues/4899): \[java] Parsing failed in ParseLock#doParse() java.io.IOException: Stream closed
+  * [#4902](https://github.com/pmd/pmd/issues/4902): \[java] "Bad intersection, unrelated class types" for Constable\[] and Enum\[]
+  * [#4947](https://github.com/pmd/pmd/issues/4947): \[java] Broken TextBlock parser
 * java-bestpractices
   * [#1084](https://github.com/pmd/pmd/issues/1084): \[java] Allow JUnitTestsShouldIncludeAssert to configure verification methods
+  * [#3216](https://github.com/pmd/pmd/issues/3216): \[java] New rule: UnnecessaryVarargsArrayCreation
   * [#4435](https://github.com/pmd/pmd/issues/4435): \[java] \[7.0-rc1] UnusedAssignment for used field
   * [#4569](https://github.com/pmd/pmd/issues/4569): \[java] ForLoopCanBeForeach reports on loop `for (int i = 0; i < list.size(); i += 2)`
   * [#4618](https://github.com/pmd/pmd/issues/4618): \[java] UnusedAssignment false positive with conditional assignments of fields
 * java-codestyle
+  * [#4602](https://github.com/pmd/pmd/issues/4602): \[java] UnnecessaryImport: false positives with static imports
+  * [#4785](https://github.com/pmd/pmd/issues/4785): \[java] False Positive: PMD Incorrectly report violation for UnnecessaryImport
+  * [#4779](https://github.com/pmd/pmd/issues/4779): \[java] Examples in documentation of MethodArgumentCanBeFinal do not trigger the rule
   * [#4881](https://github.com/pmd/pmd/issues/4881): \[java] ClassNamingConventions: interfaces are identified as abstract classes (regression in 7.0.0)
 * java-design
+  * [#2440](https://github.com/pmd/pmd/issues/2440): \[java] FinalFieldCouldBeStatic FN when the right side of the assignment is a constant expression
   * [#3694](https://github.com/pmd/pmd/issues/3694): \[java] SingularField ignores static variables
   * [#4873](https://github.com/pmd/pmd/issues/4873): \[java] AvoidCatchingGenericException: Can no longer suppress on the exception itself
+* java-errorprone
+  * [#2056](https://github.com/pmd/pmd/issues/2056): \[java] CloseResource false-positive with URLClassLoader in cast expression
+  * [#4751](https://github.com/pmd/pmd/issues/4751): \[java] PMD crashes when analyzing CloseResource Rule
+  * [#4928](https://github.com/pmd/pmd/issues/4928): \[java] EmptyCatchBlock false negative when allowCommentedBlocks=true
 * java-performance
   * [#3845](https://github.com/pmd/pmd/issues/3845): \[java] InsufficientStringBufferDeclaration should consider literal expression
   * [#4874](https://github.com/pmd/pmd/issues/4874): \[java] StringInstantiation: False-positive when using `new String(charArray)`
@@ -48,9 +74,11 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚨 API Changes
 
-#### Deprecated API
+#### Deprecated methods
 
-- {% jdoc java::lang.java.ast.ASTLambdaExpression#getBlockBody() %} and {% jdoc java::lang.java.ast.ASTLambdaExpression#getExpressionBody() %}
+* {% jdoc java::lang.java.ast.ASTLambdaExpression#getBlock() %} and {% jdoc java::lang.java.ast.ASTLambdaExpression#getExpression() %}
+* {%jdoc java::lang.java.rule.design.SingularFieldRule#mayBeSingular(java::lang.java.ast.ModifierOwner) %} has been deprecated for
+  removal. The method is only useful for the rule itself and shouldn't be used otherwise.
 
 ### ✨ External Contributions
 * [#4864](https://github.com/pmd/pmd/pull/4864): Fix #1084 \[Java] add extra assert method names to Junit rules - [Erwan Moutymbo](https://github.com/emouty) (@emouty)

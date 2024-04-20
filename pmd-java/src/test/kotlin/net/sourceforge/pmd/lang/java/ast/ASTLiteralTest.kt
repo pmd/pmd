@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
@@ -15,6 +14,7 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
 import net.sourceforge.pmd.lang.test.ast.NodeSpec
 import net.sourceforge.pmd.lang.test.ast.ValuedNodeSpec
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.test.ast.shouldHaveText
 
 /**
@@ -133,6 +133,12 @@ $delim
     A text block inside a text block
     \$delim;
     $delim
+            """.testTextBlock()
+
+
+            """
+    $delim
+    x$delim
             """.testTextBlock()
 
         }

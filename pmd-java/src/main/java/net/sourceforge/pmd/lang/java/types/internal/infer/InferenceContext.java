@@ -80,8 +80,29 @@ final class InferenceContext {
      *                            into ivars
      * @param logger              Logger for events related to ivar bounds
      */
-    @SuppressWarnings("PMD.AssignmentToNonFinalStatic") // ctxId
     InferenceContext(TypeSystem ts, SupertypeCheckCache supertypeCheckCache, List<JTypeVar> tvars, TypeInferenceLogger logger) {
+        this(ts, supertypeCheckCache, tvars, logger, true);
+    }
+
+    /**
+     * Create an inference context from a set of type variables to instantiate.
+     * This creates inference vars and may add the initial bounds as described in
+     *
+     * https://docs.oracle.com/javase/specs/jls/se9/html/jls-18.html#jls-18.1.3
+     *
+     * under the purple rectangle.
+     *
+     * @param ts                  The global type system
+     * @param supertypeCheckCache Super type check cache, shared by all
+     *                            inference runs in the same compilation unit
+     *                            (stored in {@link Infer}).
+     * @param tvars               Initial tvars which will be turned
+     *                            into ivars
+     * @param logger              Logger for events related to ivar bounds
+     * @param addPrimaryBound     Whether to add the primary bound of the vars.
+     */
+    @SuppressWarnings("PMD.AssignmentToNonFinalStatic") // ctxId
+    InferenceContext(TypeSystem ts, SupertypeCheckCache supertypeCheckCache, List<JTypeVar> tvars, TypeInferenceLogger logger, boolean addPrimaryBound) {
         this.ts = ts;
         this.supertypeCheckCache = supertypeCheckCache;
         this.logger = logger;
@@ -91,6 +112,16 @@ final class InferenceContext {
             addVarImpl(p);
         }
 
+        if (addPrimaryBound) {
+            addPrimaryBounds();
+        }
+    }
+
+    /**
+     * Add the primary bounds for the ivars of this context. This is usually done upon construction but may be deferred
+     * in some scenarios (inference of ground target type of an explicitly typed lambda).
+     */
+    void addPrimaryBounds() {
         for (InferenceVar ivar : inferenceVars) {
             addPrimaryBound(ivar);
         }
@@ -121,7 +152,9 @@ final class InferenceContext {
         }
     }
 
-    /** Add a variable to this context. */
+    /**
+     * Add a variable to this context.
+     */
     InferenceVar addVar(JTypeVar tvar) {
         InferenceVar ivar = addVarImpl(tvar);
         addPrimaryBound(ivar);
@@ -133,7 +166,9 @@ final class InferenceContext {
         return ivar;
     }
 
-    /** Add a variable to this context. */
+    /**
+     * Add a variable to this context.
+     */
     private InferenceVar addVarImpl(@NonNull JTypeVar tvar) {
         InferenceVar ivar = new InferenceVar(this, tvar, varId++);
         freeVars.add(ivar);

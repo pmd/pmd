@@ -16,6 +16,22 @@
         <java.version>8</java.version>
     </properties>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.github.siom79.japicmp</groupId>
+                <artifactId>japicmp-maven-plugin</artifactId>
+                <configuration>
+                    <parameter>
+                        <excludes combine.children="append">
+                            <exclude>net.sourceforge.pmd.doc.internal</exclude>
+                        </excludes>
+                    </parameter>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <profiles>
         <profile>
             <id>generate-rule-docs</id>

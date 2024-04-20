@@ -346,6 +346,9 @@ public class PMDConfiguration extends AbstractConfiguration {
         this.minimumPriority = minimumPriority;
     }
 
+    public void setMinimumPriority(net.sourceforge.pmd.lang.rule.RulePriority mininumPriority) {
+        this.minimumPriority = RulePriority.valueOf(mininumPriority.name());
+    }
 
     /**
      * Create a Renderer instance based upon the configured reporting options.

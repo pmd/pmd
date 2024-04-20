@@ -24,6 +24,7 @@ import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.PmdCapableLanguage;
 import net.sourceforge.pmd.lang.rule.RulePriority;
 import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -471,5 +472,13 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setReportFile(Path reportFile) {
         this.reportFile = reportFile;
+    }
+
+    @Override
+    protected void checkLanguageIsAcceptable(Language lang) throws UnsupportedOperationException {
+        if (!(lang instanceof PmdCapableLanguage)) {
+            throw new UnsupportedOperationException("Language " + lang.getId() + " does not support analysis with PMD and cannot be used in a PMDConfiguration. "
+                + "You may be able to use it with CPD though.");
+        }
     }
 }

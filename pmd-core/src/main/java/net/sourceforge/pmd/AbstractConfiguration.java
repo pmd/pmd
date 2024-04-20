@@ -89,6 +89,7 @@ public abstract class AbstractConfiguration {
             throw new IllegalArgumentException(
                 "Language '" + language.getId() + "' is not registered in " + getLanguageRegistry());
         }
+        checkLanguageIsAcceptable(language);
     }
 
     public LanguageRegistry getLanguageRegistry() {
@@ -167,6 +168,8 @@ public abstract class AbstractConfiguration {
      * @param lang A language
      */
     public void setOnlyRecognizeLanguage(Language lang) {
+        AssertionUtil.requireParamNotNull("language", lang);
+        checkLanguageIsRegistered(lang);
         this.languageVersionDiscoverer.onlyRecognizeLanguages(LanguageRegistry.singleton(lang));
     }
 
@@ -177,6 +180,8 @@ public abstract class AbstractConfiguration {
      */
     public void setDefaultLanguageVersion(LanguageVersion languageVersion) {
         Objects.requireNonNull(languageVersion);
+        checkLanguageIsRegistered(languageVersion.getLanguage());
+
         languageVersionDiscoverer.setDefaultLanguageVersion(languageVersion);
         getLanguageProperties(languageVersion.getLanguage()).setLanguageVersion(languageVersion.getVersion());
     }
@@ -192,6 +197,15 @@ public abstract class AbstractConfiguration {
         for (LanguageVersion languageVersion : languageVersions) {
             setDefaultLanguageVersion(languageVersion);
         }
+    }
+
+    /**
+     * Check that it is correct to use the given language with this configuration.
+     *
+     * @throws UnsupportedOperationException if the language isn't supported.
+     */
+    protected void checkLanguageIsAcceptable(Language lang) throws UnsupportedOperationException {
+        // do nothing
     }
 
     /**

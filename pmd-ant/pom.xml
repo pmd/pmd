@@ -30,6 +30,18 @@
                     </offlineLinks>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>com.github.siom79.japicmp</groupId>
+                <artifactId>japicmp-maven-plugin</artifactId>
+                <configuration>
+                    <parameter>
+                        <excludes combine.children="append">
+                            <exclude>net.sourceforge.pmd.ant.internal</exclude>
+                        </excludes>
+                    </parameter>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
