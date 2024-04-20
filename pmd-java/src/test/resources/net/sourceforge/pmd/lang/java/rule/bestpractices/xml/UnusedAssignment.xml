@@ -2858,6 +2858,36 @@ public class Test {
 
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Try with nested finally</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                boolean method(int i) {
+                    try {
+                        parse: try {
+                            i = 1;
+                            foo();
+                        } catch (RuntimeException e) {
+                            i = 2;
+                            if (foo()) throw e;
+                            i = 3;
+                        } finally {
+                            System.out.print(i);
+                        }
+                    } catch (RuntimeException e) {
+                        // i = 2;
+                        i = 4;
+                    } finally {
+                        System.out.print(i);
+                    }
+                    return true;
+                }
+                boolean foo(){}
+            }
+
+        ]]></code>
+    </test-code>
 
 
     <test-code>

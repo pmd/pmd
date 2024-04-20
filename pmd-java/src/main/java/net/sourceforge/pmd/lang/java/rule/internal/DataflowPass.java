@@ -25,6 +25,7 @@ import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
@@ -614,14 +615,13 @@ public final class DataflowPass {
             });
 
             if (finallyClause != null) {
-                if (finalState.abruptCompletionTargets.contains(finalState.global.abruptCompletionTarget)) {
+                if (finalState.abruptCompletionTargets.contains(finalState.returnOrThrowTarget)) {
                     // this represents the finally clause when it was entered
                     // because of abrupt completion
                     // since we don't know when it terminated we must join it with before
                     SpanInfo abruptFinally = before.myFinally.absorb(before);
                     acceptOpt(finallyClause, abruptFinally);
                     before.myFinally = null;
-                    // fixme this should be handled another way. Not all try blocks may throw.
                     abruptFinally.abruptCompletionByThrow(false); // propagate to enclosing catch/finallies
                 }
 
@@ -629,6 +629,11 @@ public final class DataflowPass {
                 finalState = acceptOpt(finallyClause, finalState);
                 // then all break targets are successors of the finally
                 for (SpanInfo target : finalState.abruptCompletionTargets) {
+                    // Then there is a return or throw within the try or catch blocks.
+                    // Control first passes to the finally, then tries to get out of the function
+                    // (stopping on finally).
+                    // before.myFinally = null;
+                    //finalState.abruptCompletionByThrow(false); // propagate to enclosing catch/finallies
                     target.absorb(finalState);
                 }
             }
@@ -871,7 +876,7 @@ public final class DataflowPass {
         @Override
         public SpanInfo visit(ASTReturnStatement node, SpanInfo data) {
             super.visit(node, data);
-            return data.abruptCompletion(data.global.abruptCompletionTarget);
+            return data.abruptCompletion(data.returnOrThrowTarget);
         }
 
         // following deals with assignment
@@ -1036,6 +1041,16 @@ public final class DataflowPass {
             return state;
         }
 
+        @Override
+        public SpanInfo visit(ASTArrayAllocation node, SpanInfo state) {
+            state = acceptOpt(node.getArrayInitializer(), state);
+            state = acceptOpt(node.getTypeNode().getDimensions(), state);
+            // May throw OOM error for instance. This abrupt completion routine is
+            // noop if we are outside a try block.
+            state.abruptCompletionByThrow(true);
+            return state;
+        }
+
         private <T extends InvocationNode & QualifiableExpression> SpanInfo visitInvocationExpr(T node, SpanInfo state) {
             state = acceptOpt(node.getQualifier(), state);
             state = acceptOpt(node.getArguments(), state);
@@ -1176,9 +1191,6 @@ public final class DataflowPass {
         // continue jumps to the condition check, while break jumps to after the loop
         final TargetStack continueTargets = new TargetStack();
 
-        /** Sentinel to represent the target of a throw or return statement. */
-        final SpanInfo abruptCompletionTarget = new SpanInfo(this);
-
         private GlobalAlgoState(Set<AssignmentEntry> allAssignments,
                                 Set<AssignmentEntry> usedAssignments,
                                 Map<AssignmentEntry, Set<AssignmentEntry>> killRecord) {
@@ -1268,21 +1280,27 @@ public final class DataflowPass {
 
         /**
          * Collects the abrupt completion targets of the current span.
-         * The value {@link GlobalAlgoState#abruptCompletionTarget}
+         * The value {@link #returnOrThrowTarget}
          * represents a return statement or a throw that
          * is not followed by an enclosing finally block.
          */
         private PSet<SpanInfo> abruptCompletionTargets = HashTreePSet.empty();
+
+        /**
+         * Sentinel to represent the target of a throw or return statement.
+         */
+        private final SpanInfo returnOrThrowTarget;
 
 
         private SpanInfo(GlobalAlgoState global) {
             this(null, global, new LinkedHashMap<>());
         }
 
-        private SpanInfo(SpanInfo parent,
+        private SpanInfo(@Nullable SpanInfo parent,
                          GlobalAlgoState global,
                          Map<JVariableSymbol, VarLocalInfo> symtable) {
             this.parent = parent;
+            this.returnOrThrowTarget = parent == null ? this : parent.returnOrThrowTarget;
             this.global = global;
             this.symtable = symtable;
             this.myCatches = Collections.emptyList();
@@ -1456,16 +1474,21 @@ public final class DataflowPass {
             abruptCompletionTargets = abruptCompletionTargets.plus(target);
 
             SpanInfo parent = this;
-            while (parent != target && parent != null) { // NOPMD CompareObjectsWithEqual this is what we want
+            while (parent != null) {
                 if (parent.myFinally != null) {
                     parent.myFinally.absorb(this);
                     // stop on the first finally, its own end state will
                     // be merged into the nearest enclosing finally
-                    return this;
+                    break;
+                }
+                if (parent == target) { // NOPMD CompareObjectsWithEqual this is what we want
+                    break;
                 }
                 parent = parent.parent;
+
             }
 
+            // rest of this block is dead code so we don't track declarations
             this.symtable.clear();
             return this;
         }
@@ -1489,7 +1512,7 @@ public final class DataflowPass {
             if (!byMethodCall) {
                 hasCompletedAbruptly = OptionalBool.YES;
             }
-            abruptCompletionTargets = abruptCompletionTargets.plus(global.abruptCompletionTarget);
+            abruptCompletionTargets = abruptCompletionTargets.plus(returnOrThrowTarget);
 
             SpanInfo parent = this;
             while (parent != null) {
