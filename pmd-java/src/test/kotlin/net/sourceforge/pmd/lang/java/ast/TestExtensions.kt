@@ -13,12 +13,12 @@ import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken
-import net.sourceforge.pmd.lang.test.ast.NodeSpec
-import net.sourceforge.pmd.lang.test.ast.ValuedNodeSpec
-import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
+import net.sourceforge.pmd.lang.test.ast.NodeSpec
+import net.sourceforge.pmd.lang.test.ast.ValuedNodeSpec
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 
 fun <T, C : Collection<T>> C?.shouldContainAtMostOneOf(vararg expected: T) {
     this shouldNotBe null
@@ -521,7 +521,7 @@ fun TreeNodeWrapper<Node, *>.blockLambda(assertions: ValuedNodeSpec<ASTLambdaExp
             it::isExpressionBody shouldBe false
             val block = assertions()
             if (block == null) unspecifiedChildren(2)
-            else it::getBlock shouldBe block
+            else it::getBlockBody shouldBe block
         }
 
 
@@ -536,7 +536,7 @@ fun TreeNodeWrapper<Node, *>.exprLambda(assertions: ValuedNodeSpec<ASTLambdaExpr
             it::isExpressionBody shouldBe true
             val block = assertions()
             if (block == null) unspecifiedChildren(2)
-            else it::getExpression shouldBe block
+            else it::getExpressionBody shouldBe block
         }
 
 

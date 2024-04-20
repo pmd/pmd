@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
@@ -75,35 +74,39 @@ public final class ASTLambdaExpression extends AbstractJavaExpr implements Funct
         return !isBlockBody();
     }
 
-    /** Returns the body of this expression, if it is a block. */
+    /**
+     * Returns the body of this expression, if it is a block.
+     *
+     * @deprecated Use {@link #getBlockBody()}
+     */
+    @Deprecated
     public @Nullable ASTBlock getBlock() {
-        return AstImplUtil.getChildAs(this, 1, ASTBlock.class);
+        return getBlockBody();
     }
 
-    /** Returns the body of this expression, if it is an expression. */
+    /**
+     * Returns the body of this expression, if it is an expression.
+     *
+     * @deprecated Use {@link #getExpressionBody()}
+     */
+    @Deprecated
     public @Nullable ASTExpression getExpression() {
-        return AstImplUtil.getChildAs(this, 1, ASTExpression.class);
+        return getExpressionBody();
     }
 
 
     /**
      * Returns the body of this lambda if it is a block.
-     * @deprecated Use {@link #getBlock()}
      */
-    @Nullable
-    @Deprecated
-    public ASTBlock getBlockBody() {
-        return NodeStream.of(getLastChild()).filterIs(ASTBlock.class).first();
+    public @Nullable ASTBlock getBlockBody() {
+        return AstImplUtil.getChildAs(this, 1, ASTBlock.class);
     }
 
     /**
      * Returns the body of this lambda if it is an expression.
-     * @deprecated Use {@link #getExpression()}
      */
-    @Nullable
-    @Deprecated
-    public ASTExpression getExpressionBody() {
-        return NodeStream.of(getLastChild()).filterIs(ASTExpression.class).first();
+    public @Nullable ASTExpression getExpressionBody() {
+        return AstImplUtil.getChildAs(this, 1, ASTExpression.class);
     }
 
     @Override
