@@ -395,7 +395,7 @@ public final class DataflowPass {
             // If switch non-total then there is a path where the switch completes normally
             // (value not matched).
             boolean isTotal = switchLike.hasDefaultCase()
-                || !switchLike.isFallthroughSwitch()
+                || !switchLike.isFallthroughSwitch() && switchLike.getBranches().nonEmpty()
                 || switchLike.isExhaustiveEnumSwitch();
 
             PSet<SpanInfo> successors = HashTreePSet.empty();

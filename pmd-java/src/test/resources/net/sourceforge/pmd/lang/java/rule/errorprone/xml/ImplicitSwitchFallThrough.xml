@@ -477,4 +477,23 @@ record MyRecord(boolean b) {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Switch with loop with break</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+            public class Test {
+                boolean foo(int a) {
+                    switch (a) {
+                    case 1:
+                        switch(hashCode()){}
+                    case 2: // violation
+                        System.lineSeparator();
+                    break;
+                    }
+                }
+
+            }
+            ]]></code>
+    </test-code>
 </test-data>
