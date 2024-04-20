@@ -20,7 +20,8 @@ This is a {{ site.pmd.release_type }} release.
   when a varargs is expected. This is more heavy to read and could be simplified.
 
 - The new Java rule {% rule "java/codestyle/LambdaCanBeMethodReference" %} reports lambda expressions that can be replaced
-  with a method reference. Please read the documentation of the rule for more info.
+  with a method reference. Please read the documentation of the rule for more info. This rule is now part of the Quickstart
+  ruleset.
 
 ### 🌟 Rule Changes
 
