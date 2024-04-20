@@ -352,27 +352,29 @@ public final class DataflowPass {
 
         @Override
         public SpanInfo visit(ASTBlock node, final SpanInfo data) {
-            // variables local to a loop iteration must be killed before the
-            // next iteration
+            return processBreakableStmt(node, data, () -> {
+                // variables local to a loop iteration must be killed before the
+                // next iteration
 
-            SpanInfo state = data;
-            List<ASTVariableId> localsToKill = new ArrayList<>(0);
+                SpanInfo state = data;
+                List<ASTVariableId> localsToKill = new ArrayList<>(0);
 
-            for (JavaNode child : node.children()) {
-                // each output is passed as input to the next (most relevant for blocks)
-                state = acceptOpt(child, state);
-                if (child instanceof ASTLocalVariableDeclaration) {
-                    for (ASTVariableId id : (ASTLocalVariableDeclaration) child) {
-                        localsToKill.add(id);
+                for (JavaNode child : node.children()) {
+                    // each output is passed as input to the next (most relevant for blocks)
+                    state = acceptOpt(child, state);
+                    if (child instanceof ASTLocalVariableDeclaration) {
+                        for (ASTVariableId id : (ASTLocalVariableDeclaration) child) {
+                            localsToKill.add(id);
+                        }
                     }
                 }
-            }
 
-            for (ASTVariableId var : localsToKill) {
-                state.deleteVar(var.getSymbol());
-            }
+                for (ASTVariableId var : localsToKill) {
+                    state.deleteVar(var.getSymbol());
+                }
 
-            return state;
+                return state;
+            });
         }
 
         @Override

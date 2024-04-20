@@ -2958,6 +2958,25 @@ class Foo {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Labeled block</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    boolean method() {
+        int i = 0;
+        x: {
+            if(foo()) break x;
+            i = 2;
+        }
+        System.out.println(i);
+    }
+    boolean foo() {}
+}
+
+        ]]></code>
+    </test-code>
+
 
 
     <test-code>
