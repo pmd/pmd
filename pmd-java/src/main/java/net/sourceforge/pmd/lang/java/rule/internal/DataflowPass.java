@@ -393,11 +393,13 @@ public final class DataflowPass {
 
             SpanInfo breakTarget = before.fork();
             global.breakTargets.push(breakTarget);
+            accLabels(switchLike, global, breakTarget, null);
 
             // If switch non-total then there is a path where the switch completes normally
             // (value not matched).
+            // Todo make that an attribute of ASTSwitchLike, check for totality when pattern matching is involved
             boolean isTotal = switchLike.hasDefaultCase()
-                || !switchLike.isFallthroughSwitch() && switchLike.getBranches().nonEmpty()
+                || switchLike instanceof ASTSwitchExpression
                 || switchLike.isExhaustiveEnumSwitch();
 
             PSet<SpanInfo> successors = HashTreePSet.empty();
@@ -428,7 +430,7 @@ public final class DataflowPass {
             if (isTotal && allBranchesCompleteAbruptly && externalTargets.equals(successors)) {
                 // then all branches complete abruptly, and none of them because of a break to this switch
                 switchCompletesAbruptly = OptionalBool.YES;
-            } else if (successors.isEmpty() || asSingle(successors) == before) { // NOPMD CompareObjectsWithEqual this is what we want
+            } else if (successors.isEmpty() || asSingle(successors) == breakTarget) { // NOPMD CompareObjectsWithEqual this is what we want
                 // then the branches complete normally, or they just break the switch
                 switchCompletesAbruptly = OptionalBool.NO;
             } else {
@@ -774,8 +776,8 @@ public final class DataflowPass {
             }
 
             // These targets are now obsolete
-            result.abruptCompletionTargets = result.abruptCompletionTargets.minus(breakTarget);
-            result.abruptCompletionTargets = result.abruptCompletionTargets.minus(continueTarget);
+            result.abruptCompletionTargets =
+                result.abruptCompletionTargets.minus(breakTarget).minus(continueTarget);
             return result;
         }
 
@@ -790,41 +792,41 @@ public final class DataflowPass {
          */
         private SpanInfo processBreakableStmt(ASTStatement statement, SpanInfo input, Supplier<SpanInfo> processFun) {
             GlobalAlgoState globalState = input.global;
-            Node parent = statement.getParent();
-            // in most cases this will remain empty
-            PSet<String> labels = HashTreePSet.empty();
             // this will be filled with the reaching defs of the break statements, then merged with the actual exit state
             SpanInfo placeholderForExitState = input.forkEmpty();
 
-            // collect labels and give a name to the exit state.
-            while (parent instanceof ASTLabeledStatement) {
-                String label = ((ASTLabeledStatement) parent).getLabel();
-                labels = labels.plus(label);
-                globalState.breakTargets.namedTargets.put(label, placeholderForExitState);
-                parent = parent.getParent();
-            }
+            PSet<String> labels = accLabels(statement, globalState, placeholderForExitState, null);
             SpanInfo endState = processFun.get();
 
             // remove the labels
             globalState.breakTargets.namedTargets.keySet().removeAll(labels);
+            SpanInfo result = endState.absorb(placeholderForExitState);
+            result.abruptCompletionTargets = result.abruptCompletionTargets.minus(placeholderForExitState);
+            return result;
+        }
 
-            // todo edit the break targets
-
-            return endState.absorb(placeholderForExitState);
+        private static PSet<String> accLabels(JavaNode statement, GlobalAlgoState globalState, SpanInfo breakTarget, @Nullable SpanInfo continueTarget) {
+            Node parent = statement.getParent();
+            // in most cases this will remain empty
+            PSet<String> labels = HashTreePSet.empty();
+            // collect labels and give a name to the exit state.
+            while (parent instanceof ASTLabeledStatement) {
+                String label = ((ASTLabeledStatement) parent).getLabel();
+                labels = labels.plus(label);
+                globalState.breakTargets.namedTargets.put(label, breakTarget);
+                if (continueTarget != null) {
+                    globalState.continueTargets.namedTargets.put(label, continueTarget);
+                }
+                parent = parent.getParent();
+            }
+            return labels;
         }
 
         private void pushTargets(ASTLoopStatement loop, SpanInfo breakTarget, SpanInfo continueTarget) {
             GlobalAlgoState globalState = breakTarget.global;
+            accLabels(loop, globalState, breakTarget, continueTarget);
             globalState.breakTargets.unnamedTargets.push(breakTarget);
             globalState.continueTargets.unnamedTargets.push(continueTarget);
-
-            Node parent = loop.getParent();
-            while (parent instanceof ASTLabeledStatement) {
-                String label = ((ASTLabeledStatement) parent).getLabel();
-                globalState.breakTargets.namedTargets.put(label, breakTarget);
-                globalState.continueTargets.namedTargets.put(label, continueTarget);
-                parent = parent.getParent();
-            }
         }
 
         private SpanInfo popTargets(ASTLoopStatement loop, SpanInfo breakTarget, SpanInfo continueTarget) {

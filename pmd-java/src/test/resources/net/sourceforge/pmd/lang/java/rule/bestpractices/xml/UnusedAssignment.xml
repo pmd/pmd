@@ -3897,4 +3897,34 @@ record TestRecord(int foo) {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>Label on switch</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Main {
+    public static String main(int i, int k) {
+        String r;
+        OUTER: switch (j) {
+        case 0:
+            String res;
+            INNER: switch (k) {
+            case 0: res = "0-0-0"; break;
+            case 1: res = "0-0-1"; break;
+            case 2: res = "0-0-2"; break INNER;
+            default: r = "0-0-X"; break OUTER;
+            }
+            r = res;
+            break;
+        case 1:
+            r = "0-1";
+            break;
+        default:
+            r = "0-X";
+            break;
+        }
+        return r;
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
