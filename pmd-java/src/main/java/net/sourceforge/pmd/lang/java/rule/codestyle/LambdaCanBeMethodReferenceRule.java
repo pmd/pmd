@@ -73,6 +73,9 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
     }
 
     private void processLambdaWithBody(ASTLambdaExpression lambda, RuleContext data, ASTExpression expression) {
+        if (lambda.getParameters().toStream().any(it -> it.getDeclaredAnnotations().nonEmpty())) {
+            return;
+        }
         if (expression instanceof ASTMethodCall) {
             ASTMethodCall call = (ASTMethodCall) expression;
             if (canBeTransformed(lambda, call) && argumentsListMatches(call, lambda.getParameters())) {
