@@ -18,6 +18,9 @@ This is a {{ site.pmd.release_type }} release.
 
 - The new Java rule {%rule java/bestpractices/UnnecessaryVarargsArrayCreation %} reports explicit array creation
   when a varargs is expected. This is more heavy to read and could be simplified.
+- The new Java rule {%rule java/errorprone/ConfusingArgumentToVarargsMethod %} reports some confusing situations
+  where a varargs method is called with an inexact argument type. These may end up in a mismatch between the expected
+  parameter type and the actual value.
 
 ### 🌟 Rule Changes
 

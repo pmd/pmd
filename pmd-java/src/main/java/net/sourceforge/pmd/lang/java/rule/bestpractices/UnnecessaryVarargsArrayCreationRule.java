@@ -11,10 +11,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.types.JArrayType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
-import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 
 public class UnnecessaryVarargsArrayCreationRule extends AbstractJavaRulechainRule {
 
@@ -26,6 +24,7 @@ public class UnnecessaryVarargsArrayCreationRule extends AbstractJavaRulechainRu
 
     @Override
     public Object visit(ASTArrayAllocation array, Object data) {
+        if (array.getArrayInitializer() == null)return null;
 
         JavaNode parent = array.getParent();
         if (parent instanceof ASTArgumentList && array.getIndexInParent() == parent.getNumChildren() - 1) {
@@ -39,19 +38,10 @@ public class UnnecessaryVarargsArrayCreationRule extends AbstractJavaRulechainRu
 
             List<JTypeMirror> formals = info.getMethodType().getFormalParameters();
             JTypeMirror lastFormal = formals.get(formals.size() - 1);
-            JTypeMirror expectedComponent = ((JArrayType) lastFormal).getComponentType();
 
-            if (array.getTypeMirror().isSubtypeOf(expectedComponent)
-                && !array.getTypeMirror().equals(lastFormal)) {
-                // confusing
-                asCtx(data)
-                    .addViolationWithMessage(
-                        array,
-                        "Unclear if a varargs or non-varargs call is intended. Cast to {0} or {0}[], or pass varargs parameters separately to clarify intent.",
-                        TypePrettyPrint.prettyPrintWithSimpleNames(expectedComponent)
-                    );
-            } else if (array.getArrayInitializer() != null) {
-                // just regular unnecessary
+            if (array.getTypeMirror().equals(lastFormal)) {
+                // If type not equal, then it would not actually be equivalent to remove the array creation.
+                // That case may be caught by ConfusingArgumentToVarargsMethod
                 asCtx(data).addViolation(array);
             }
         }

@@ -6,8 +6,7 @@
 
     <test-code>
         <description>Unnecessary in asList</description>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>6,7</expected-linenumbers>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
             import java.util.Arrays;
 
@@ -40,16 +39,52 @@
         <description>Confusing argument</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Unnecessary explicit array creation for varargs method call</message>
+            <message>Unclear if a varargs or non-varargs call is intended. Cast to Object or Object[], or pass varargs parameters separately to clarify intent.</message>
         </expected-messages>
         <code><![CDATA[
             import java.util.Arrays;
 
             public class Foo {
                 static {
-                    foo(new Object[]{ "a" }); // regular unnecessary
-                    foo(new String[]{ "a" }); // confusing bc String[] <: Object (ConfusingArgumentToVarargsArray)
+                    foo(new Object[]{ "a" });
+                    foo(new String[]{ "a" }); // confusing bc String[] <: Object
                 }
+                static void foo(Object... args) {}
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Confusing null argument</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unclear if a varargs or non-varargs call is intended. Cast to Object or Object[] to clarify intent.</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.Arrays;
+
+            public class Foo {
+                static {
+                    foo(null); // confusing bc String[] <: Object
+                }
+                static void foo(Object... args) {}
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Confusing argument, not an array allocation</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unclear if a varargs or non-varargs call is intended. Cast to Object or Object[] to clarify intent.</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.Arrays;
+
+            public class Foo {
+                static {
+                    String[] parms = getParms();
+                    foo(parms); // confusing bc String[] <: Object
+                }
+                static String[] getParms(){ }
                 static void foo(Object... args) {}
             }
             ]]></code>

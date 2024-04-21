@@ -1103,6 +1103,60 @@ boolean x = (y == Double.NaN);
         </example>
     </rule>
 
+    <rule name="ConfusingArgumentToVarargsMethod"
+          language="java"
+          since="7.1.0"
+          message="Unclear if a varargs or non-varargs call is intended. Cast to {0} or {0}[], or pass varargs parameters separately to clarify intent."
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.ConfusingArgumentToVarargsMethodRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#confusingargumenttovarargsmethod">
+        <description>
+            Reports a confusing argument passed to a varargs method.
+
+            This can occur when an array is passed as a single varargs argument, when the array type is not exactly the
+            type of array that the varargs method expects. If, that array is a subtype of the component type of the expected
+            array type, then it might not be clear what value the called varargs method will receive.
+            For instance if you have:
+            ```java
+            void varargs(Object... parm);
+            ```
+            and call it like so:
+            ```java
+            varargs(new String[]{"a"});
+            ```
+            it is not clear whether you intended the method to receive the value `new Object[]{ new String[] {"a"} }` or
+            just `new String[] {"a"}` (the latter happens). This confusion occurs because `String[]` is both a subtype
+            of `Object[]` and of `Object`. To clarify your intent in this case, use a cast or pass individual elements like so:
+            ```java
+            // varargs call
+            // parm will be `new Object[] { "a" }`
+            varargs("a");
+
+            // non-varargs call
+            // parm will be `new String[] { "a" }`
+            varargs((Object[]) new String[]{"a"});
+
+            // varargs call
+            // parm will be `new Object[] { new String[] { "a" } }`
+            varargs((Object) new String[]{"a"});
+            ```
+
+            Another confusing case is when you pass `null` as the varargs argument. Here it is not clear whether you intended
+            to pass an array with a single null element, or a null array (the latter happens). This can similarly be clarified
+            with a cast.
+        </description>
+        <priority>3</priority>
+        <example><![CDATA[
+            import java.util.Arrays;
+
+            abstract class C {
+                abstract void varargs(Object... args);
+                static {
+                    varargs(new String[] { "a" });
+                    varargs(null);
+                }
+            }
+            ]]></example>
+    </rule>
 
     <rule name="ConstructorCallsOverridableMethod"
           language="java"
