@@ -1775,6 +1775,15 @@
 ,
 
 {
+"title": "LambdaCanBeMethodReference (Java, Code Style)",
+"tags": "",
+"keywords": "LambdaCanBeMethodReference",
+"url": "pmd_rules_java_codestyle.html#lambdacanbemethodreference",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
 "title": "LinguisticNaming (Java, Code Style)",
 "tags": "",
 "keywords": "LinguisticNaming",

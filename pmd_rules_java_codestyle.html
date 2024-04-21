@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce a specific coding style.">
-<meta name="keywords" content=" Code Style, AtLeastOneConstructor, AvoidDollarSigns, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, EmptyMethodInAbstractClassShouldBeAbstract, EmptyControlStatement, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, FinalParameterInAbstractMethod, ForLoopShouldBeWhileLoop, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, NoPackage, UseUnderscoresInNumericLiterals, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryBoxing, UnnecessaryCast, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryImport, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UnnecessarySemicolon, UseDiamondOperator, UseExplicitTypes, UselessParentheses, UselessQualifiedThis, UseShortArrayInitializer">
+<meta name="keywords" content=" Code Style, AtLeastOneConstructor, AvoidDollarSigns, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, EmptyMethodInAbstractClassShouldBeAbstract, EmptyControlStatement, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, FinalParameterInAbstractMethod, ForLoopShouldBeWhileLoop, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, LambdaCanBeMethodReference, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, NoPackage, UseUnderscoresInNumericLiterals, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryBoxing, UnnecessaryCast, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryImport, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UnnecessarySemicolon, UseDiamondOperator, UseExplicitTypes, UselessParentheses, UselessQualifiedThis, UseShortArrayInitializer">
 <title>Code Style | PMD Source Code Analyzer</title>
 
 
@@ -3009,6 +3009,83 @@ branch.</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/IdenticalCatchBranches"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="lambdacanbemethodreference">LambdaCanBeMethodReference</h2>
+
+<p><strong>Since:</strong> PMD 7.1.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>This rule reports lambda expressions that can be written more succinctly as a method reference. This is the case if the lambda is an expression lambda that only calls one method, passing the entire lambda parameter list in order to the method. For instance:</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">x</span> <span class="o">-&gt;</span> <span class="nc">Foo</span><span class="o">.</span><span class="na">call</span><span class="o">(</span><span class="n">x</span><span class="o">)</span> <span class="c1">// can be Foo::call</span>
+    <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">call</span><span class="o">(</span><span class="n">x</span><span class="o">)</span>     <span class="c1">// can be this::call, if call is an instance method</span>
+    <span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">,</span> <span class="n">z</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">call</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">,</span> <span class="n">z</span><span class="o">)</span> <span class="c1">// can be this::call</span>
+    <span class="o">()</span> <span class="o">-&gt;</span> <span class="n">foo</span><span class="o">.</span><span class="na">get</span><span class="o">()</span> <span class="c1">// can be foo::get</span>
+    <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span><span class="o">.</span><span class="na">foo</span><span class="o">()</span>    <span class="c1">// can be XType::foo (where XType is the type of x)</span>
+</code></pre></div></div>
+
+<p>In some cases rewriting a lambda to a method reference can change the semantics of the code. For instance in <code class="language-plaintext highlighter-rouge">(x) -&gt; someVar.call(x)</code>, the invocation of the lambda may produce a NullPointerException (NPE) if <code class="language-plaintext highlighter-rouge">someVar</code> is null. The method reference <code class="language-plaintext highlighter-rouge">someVar::call</code> will also NPE if <code class="language-plaintext highlighter-rouge">someVar</code> is null, but it will do so at the point the method reference is created, while the lambda is created without error and its NPE is only thrown if the lambda is invoked (which may be never). Code should probably not rely on this subtle semantic difference, therefore these potentially problematic lambdas are also reported by default. This behavior can be disabled by setting the property <code class="language-plaintext highlighter-rouge">ignoreIfMayNPE</code> to <code class="language-plaintext highlighter-rouge">true</code>.</p>
+
+<p>The property <code class="language-plaintext highlighter-rouge">ignoreIfMayNPE</code> is true by default. By default, calls whose receiver is itself a method call are ignored, because they could cause side effects. This may be changed by setting the property <code class="language-plaintext highlighter-rouge">ignoreIfReceiverIsMethod</code> to <code class="language-plaintext highlighter-rouge">false</code>.</p>
+
+<p>Scope limitations:</p>
+<ul>
+  <li>This rule will not report lambdas of the form <code class="language-plaintext highlighter-rouge">x -&gt; new CtorCall().something(x)</code>, because the semantics of the method reference would be to create a single new object, while the lambda creates one object per invocation.</li>
+  <li>The rule cannot know if the qualifier of a method call performs side effects. This means <code class="language-plaintext highlighter-rouge">(x) -&gt; sideEffectingMethod().foo(x)</code> will be reported. Suppress the warning in this case.</li>
+</ul>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/LambdaCanBeMethodReferenceRule.java">net.sourceforge.pmd.lang.java.rule.codestyle.LambdaCanBeMethodReferenceRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.stream.Stream</span><span class="o">;</span>
+
+            <span class="kd">public</span> <span class="kd">class</span> <span class="nc">LambdaCanBeMethodReference</span> <span class="o">{</span>
+                <span class="kd">static</span> <span class="o">{</span>
+                    <span class="nc">Stream</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">"abc"</span><span class="o">,</span> <span class="s">"d"</span><span class="o">)</span>
+                            <span class="o">.</span><span class="na">mapToInt</span><span class="o">(</span><span class="n">s</span> <span class="o">-&gt;</span> <span class="n">s</span><span class="o">.</span><span class="na">length</span><span class="o">())</span> <span class="c1">// could be String::length</span>
+                            <span class="o">.</span><span class="na">reduce</span><span class="o">((</span><span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">sum</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">))</span> <span class="c1">// could be Integer::sum</span>
+                            <span class="o">.</span><span class="na">getAsInt</span><span class="o">();</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ignoreIfMayNPE</td>
+      <td>false</td>
+      <td>Ignore lambdas that may throw a null pointer exception (NPE) when converted to a method reference. Those expressions will NPE at mref creation time, while the equivalent lambda would NPE only when invoked (which may be never).</td>
+    </tr>
+    <tr>
+      <td>ignoreIfReceiverIsMethod</td>
+      <td>true</td>
+      <td>Ignore if the receiver of the method reference is a method call. These may cause side effects that often should prevent the conversion to a method reference.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/LambdaCanBeMethodReference"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/LambdaCanBeMethodReference"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"ignoreIfMayNPE"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"ignoreIfReceiverIsMethod"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
 <h2 id="linguisticnaming">LinguisticNaming</h2>
 
 <p><strong>Since:</strong> PMD 6.7.0</p>
@@ -4807,7 +4884,7 @@ that are misplaced (not making groups of 3 digits) are reported.</p>
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 19, 2024 <br />
+             Site last generated: Apr 21, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
