@@ -115,9 +115,8 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
         if (JavaMetrics.NCSS.supports(node)) {
             int methodSize = MetricsUtil.computeMetric(JavaMetrics.NCSS, node, ncssOptions);
             if (methodSize >= level) {
-                asCtx(data).addViolation(node, new String[] {
-                    node instanceof ASTMethodDeclaration ? "method" : "constructor",
-                    PrettyPrintingUtil.displaySignature(node), "" + methodSize, });
+                asCtx(data).addViolation(node, node instanceof ASTMethodDeclaration ? "method" : "constructor",
+                                         PrettyPrintingUtil.displaySignature(node), "" + methodSize);
             }
         }
     }
