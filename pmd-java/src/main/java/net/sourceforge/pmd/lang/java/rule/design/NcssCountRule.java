@@ -101,7 +101,7 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
                                           node.getSimpleName(),
                                           classSize + " (Highest = " + classHighest + ")", };
 
-                asCtx(data).addViolation(node, messageParams);
+                asCtx(data).addViolation(node, (Object[]) messageParams);
             }
         }
     }

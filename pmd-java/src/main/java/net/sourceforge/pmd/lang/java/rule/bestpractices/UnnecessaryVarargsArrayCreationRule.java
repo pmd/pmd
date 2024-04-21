@@ -24,7 +24,9 @@ public class UnnecessaryVarargsArrayCreationRule extends AbstractJavaRulechainRu
 
     @Override
     public Object visit(ASTArrayAllocation array, Object data) {
-        if (array.getArrayInitializer() == null)return null;
+        if (array.getArrayInitializer() == null) {
+            return null;
+        }
 
         JavaNode parent = array.getParent();
         if (parent instanceof ASTArgumentList && array.getIndexInParent() == parent.getNumChildren() - 1) {
