@@ -49,13 +49,7 @@ public class AntlrToken implements GenericToken<AntlrToken> {
      */
     @Deprecated
     public AntlrToken(final Token token, final AntlrToken previousComment, TextDocument textDoc) {
-        this.previousComment = previousComment;
-        this.textDoc = textDoc;
-        this.image = token.getText();
-        this.startOffset = token.getStartIndex();
-        this.endOffset = token.getStopIndex() + 1; // exclusive
-        this.channel = token.getChannel();
-        this.kind = token.getType();
+        this(token, previousComment, textDoc, new AntlrLexerBehavior());
     }
 
     @Override
