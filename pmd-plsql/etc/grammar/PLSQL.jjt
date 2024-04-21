@@ -5289,8 +5289,8 @@ TOKEN :
      | (["q","Q"]) "'<" (~[">"] | ">" ~["'"] )* ">"
      | (["q","Q"]) "'(" (~[")"] | ")" ~["'"] )* ")"
    >
- | <(["n","N"])? "'" (<_WHATEVER_CHARACTER_WO_APOSTROPHE> | <SPECIAL_CHARACTERS> | "''")*> : IN_STRING_LITERAL_TOKENIZE
- | <(["n","N"])? <_ALTERNATIVE_QUOTING_STRING_LITERAL>> : IN_STRING_LITERAL_TOKENIZE
+ | <(["n","N"])? "'" (<_WHATEVER_CHARACTER_WO_APOSTROPHE> | <SPECIAL_CHARACTERS> | "''")*> { input_stream.backup(1); } : IN_STRING_LITERAL_TOKENIZE
+ | <(["n","N"])? <_ALTERNATIVE_QUOTING_STRING_LITERAL>> { input_stream.backup(1); } : IN_STRING_LITERAL_TOKENIZE
 
  // special handling for custom quote delimiters
  | <(["n","N"])? (["q","Q"]) "'" (~[" ", "\t", "\r", "\n", "[", "{", "<", "("])> : IN_STRING_LITERAL
@@ -5305,12 +5305,14 @@ TOKEN :
      }
      int beforeQuote = image.charAt(image.length() - 2);
      if (quoteDelimiter == beforeQuote) {
-         input_stream.backup(1);
+         input_stream.backup(2);
          SwitchTo(IN_STRING_LITERAL_TOKENIZE);
      }
   }
 }
-<IN_STRING_LITERAL_TOKENIZE> TOKEN : { <STRING_LITERAL: "'"> : DEFAULT }
+<IN_STRING_LITERAL_TOKENIZE> TOKEN : {
+  <STRING_LITERAL: ~[] "'"> : DEFAULT
+}
 
 
 /**
