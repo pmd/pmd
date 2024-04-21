@@ -1108,7 +1108,7 @@ boolean x = (y == Double.NaN);
           since="7.1.0"
           message="Unclear if a varargs or non-varargs call is intended. Cast to {0} or {0}[], or pass varargs parameters separately to clarify intent."
           class="net.sourceforge.pmd.lang.java.rule.errorprone.ConfusingArgumentToVarargsMethodRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#confusingargumenttovarargsmethod">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#confusingargumenttovarargsmethod">
         <description>
             Reports a confusing argument passed to a varargs method.
 
