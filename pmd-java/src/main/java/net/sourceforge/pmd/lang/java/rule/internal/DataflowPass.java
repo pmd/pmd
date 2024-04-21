@@ -791,6 +791,10 @@ public final class DataflowPass {
          * <p>Try statements are handled specially because of the finally.
          */
         private SpanInfo processBreakableStmt(ASTStatement statement, SpanInfo input, Supplier<SpanInfo> processFun) {
+            if (!(statement.getParent() instanceof ASTLabeledStatement)) {
+                // happy path, no labels
+                return processFun.get();
+            }
             GlobalAlgoState globalState = input.global;
             // this will be filled with the reaching defs of the break statements, then merged with the actual exit state
             SpanInfo placeholderForExitState = input.forkEmpty();
@@ -807,7 +811,6 @@ public final class DataflowPass {
 
         private static PSet<String> accLabels(JavaNode statement, GlobalAlgoState globalState, SpanInfo breakTarget, @Nullable SpanInfo continueTarget) {
             Node parent = statement.getParent();
-            // in most cases this will remain empty
             PSet<String> labels = HashTreePSet.empty();
             // collect labels and give a name to the exit state.
             while (parent instanceof ASTLabeledStatement) {
