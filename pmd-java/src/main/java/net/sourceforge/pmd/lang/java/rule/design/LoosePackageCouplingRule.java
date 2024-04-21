@@ -86,11 +86,11 @@ public class LoosePackageCouplingRule extends AbstractJavaRule {
                     // On demand imports automatically fail because they include
                     // everything
                     if (node.isImportOnDemand()) {
-                        asCtx(data).addViolation(node, new Object[] { node.getImportedName(), pkg });
+                        asCtx(data).addViolation(node, node.getImportedName(), pkg);
                         break;
                     } else {
                         if (!isAllowedClass(node)) {
-                            asCtx(data).addViolation(node, new Object[] { node.getImportedName(), pkg });
+                            asCtx(data).addViolation(node, node.getImportedName(), pkg);
                             break;
                         }
                     }
