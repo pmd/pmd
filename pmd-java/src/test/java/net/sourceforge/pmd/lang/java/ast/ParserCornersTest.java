@@ -362,4 +362,9 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
     void testGitHubBug1780() {
         doTest("GitHubBug1780OuterClass");
     }
+
+    @Test
+    void testGithubBug4947() {
+        java15.parseResource("testdata/Issue4947TextBlock.java");
+    }
 }

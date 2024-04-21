@@ -51,6 +51,7 @@ import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -287,12 +288,15 @@ public class CloseResourceRule extends AbstractJavaRule {
     private boolean isWrappingResourceSpecifiedInTry(ASTVariableId var) {
         ASTVariableAccess wrappedVarName = getWrappedVariableName(var);
         if (wrappedVarName != null) {
-            ASTVariableId referencedVar = wrappedVarName.getReferencedSym().tryGetNode();
-            if (referencedVar != null) {
-                List<ASTTryStatement> tryContainers = referencedVar.ancestors(ASTTryStatement.class).toList();
-                for (ASTTryStatement tryContainer : tryContainers) {
-                    if (isTryWithResourceSpecifyingVariable(tryContainer, referencedVar)) {
-                        return true;
+            JVariableSymbol referencedSym = wrappedVarName.getReferencedSym();
+            if (referencedSym != null) {
+                ASTVariableId referencedVar = referencedSym.tryGetNode();
+                if (referencedVar != null) {
+                    List<ASTTryStatement> tryContainers = referencedVar.ancestors(ASTTryStatement.class).toList();
+                    for (ASTTryStatement tryContainer : tryContainers) {
+                        if (isTryWithResourceSpecifyingVariable(tryContainer, referencedVar)) {
+                            return true;
+                        }
                     }
                 }
             }
