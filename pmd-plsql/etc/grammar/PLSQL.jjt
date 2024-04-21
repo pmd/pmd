@@ -5222,21 +5222,14 @@ TOKEN :
   "\\"
 >
 |
+< #ID_SIMPLE: ("$" | ":" | <LETTER>) ( <LETTER> | <DIGIT> | "$" | "_" | "#" )* >
+|
 < IDENTIFIER:
-	( ("$" | ":" | <LETTER>) ( <LETTER> | <DIGIT> | "$" | "_" | "#" )* ) // 2006-05-17 - Matthias Hendler - Bind variablen werden nun als Identifier akzeptiert.
-	//SRT Does NOT seem to like identifiers 2 or fewer characters( <LETTER> ( <LETTER> )  )
-	//( <LETTER> ( <DIGIT>  ) )
-	//( <LETTER> ( "$" ) )
-	//( <LETTER> ( "_" ) )
-	//( <LETTER> ( "#" ) )
+  <ID_SIMPLE>
   |
-  (
-    <LEXICAL_PARAMETER> ( <LETTER> | <DIGIT> | "$" | "_" | "#" )*
-  )
-	|
-	( (<LETTER> | "$" ) ( <LETTER> | <DIGIT> | "$" | "_" | "#" )* )
-	|
-	( "\""  <LETTER> ( <LETTER> | <DIGIT> | "$" | "_" | "#" )* "\"" )
+  ( <LEXICAL_PARAMETER> ( <LETTER> | <DIGIT> | "$" | "_" | "#" )* )
+  |
+  ( "\""  <ID_SIMPLE> "\"" )
 >
 |
 < #LEXICAL_PARAMETER:

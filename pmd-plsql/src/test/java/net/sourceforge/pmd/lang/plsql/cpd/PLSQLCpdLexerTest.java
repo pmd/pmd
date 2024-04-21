@@ -33,6 +33,11 @@ class PLSQLCpdLexerTest extends CpdTextComparisonTest {
     }
 
     @Test
+    void testIdentifiers() {
+        doTest("identifiers");
+    }
+
+    @Test
     void anonymizeLiterals() {
         doTest("sample-plsql", "_ignore-literals", ignoreLiterals());
     }
