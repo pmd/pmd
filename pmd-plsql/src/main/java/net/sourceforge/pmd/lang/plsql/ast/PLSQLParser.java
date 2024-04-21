@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
+import java.util.Locale;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.benchmark.TimeTracker;
@@ -13,6 +15,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
+import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.plsql.symboltable.SymbolFacade;
 
 public class PLSQLParser extends JjtreeParserAdapter<ASTInput> {
@@ -46,6 +49,29 @@ public class PLSQLParser extends JjtreeParserAdapter<ASTInput> {
                 // fetch another constant image if possible.
                 image = STRING_LITERAL_IMAGES_EXTRA[kind];
             }
+
+            if (image == null) {
+                Chars imageCs = cs.getTokenImageCs();
+                if (kind == PLSQLTokenKinds.IDENTIFIER && imageCs.charAt(0) == '"') {
+                    // remove quotes to make identical to bare ID
+                    image = imageCs.substring(1, imageCs.length() - 1);
+                } else {
+                    image = imageCs.toString();
+                }
+
+                // PLSQL is case-insensitive, but the contents of
+                // string literals and the like are case-sensitive.
+                // Note: tokens are normalized to uppercase make CPD case-insensitive.
+                // We use uppercase and not lowercase because that way, PLSQL keywords
+                // will be returned unchanged (they are already uppercase, see PLSQLParser),
+                // therefore creating fewer strings in memory.
+                if (kind != PLSQLTokenKinds.CHARACTER_LITERAL
+                    && kind != PLSQLTokenKinds.STRING_LITERAL
+                    && kind != PLSQLTokenKinds.QUOTED_LITERAL) {
+                    image = image.toUpperCase(Locale.ROOT);
+                }
+            }
+
             return super.createToken(self, kind, cs, image);
         }
     };
