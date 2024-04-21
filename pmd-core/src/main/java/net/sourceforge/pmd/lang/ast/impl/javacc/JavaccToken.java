@@ -147,6 +147,11 @@ public class JavaccToken implements GenericToken<JavaccToken> {
         return image.toString();
     }
 
+    /** Returns the original text of the token. The image may be normalized. */
+    public Chars getText() {
+        return document.getTextDocument().sliceOriginalText(getRegion());
+    }
+
     @Override
     public final TextRegion getRegion() {
         return TextRegion.fromBothOffsets(startOffset, endOffset);

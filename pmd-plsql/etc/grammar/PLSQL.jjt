@@ -216,7 +216,10 @@ public class PLSQLParserImpl {
    * Usage: <code>LOOKAHEAD({isKeyword("WAIT")}) KEYWORD("WAIT")</code>
    */
   private boolean isKeyword(String keyword) {
-    return getToken(1).kind == IDENTIFIER && getToken(1).getImage().equalsIgnoreCase(keyword);
+    return getToken(1).kind == IDENTIFIER
+        && getToken(1).getImage().equalsIgnoreCase(keyword)
+        // quoted identifiers are excluded
+        && getToken(1).getText().charAt(0) != '"';
   }
 
 }
@@ -1686,18 +1689,18 @@ ASTSimpleExpression SimpleExpression() :
     LOOKAHEAD(4) ID() "." ( <CURRVAL> | <NEXTVAL> )
  |
     LOOKAHEAD(6)
-        SchemaName() { sb.append(token.getImage()); } "." { sb.append(token.getImage()); }
-        TableName() { sb.append(token.getImage()); } "." { sb.append(token.getImage()); }
-        ( "*" | Column() ) { sb.append(token.getImage()); }
+        SchemaName() { sb.append(token.getText()); } "." { sb.append(token.getImage()); }
+        TableName() { sb.append(token.getText()); } "." { sb.append(token.getImage()); }
+        ( "*" | Column() ) { sb.append(token.getText()); }
  |
     LOOKAHEAD(4)
-        TableName() { sb.append(token.getImage()); } "." { sb.append(token.getImage()); }
-        ( "*" | Column() ) { sb.append(token.getImage()); }
+        TableName() { sb.append(token.getText()); } "." { sb.append(token.getImage()); }
+        ( "*" | Column() ) { sb.append(token.getText()); }
  |
     // Named Cursor: https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/named-cursor-attribute.html#GUID-CD8D8415-FF19-4D81-99BA-7825FD40CC96
     // Implicit Cursor: https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/implicit-cursor-attribute.html#GUID-5A938EE7-E8D2-468C-B60F-81898F110BE1
     LOOKAHEAD(3)
-        Column() { sb.append(token.getImage()); } "%" ( LOOKAHEAD({isKeyword("isopen")}) KEYWORD("ISOPEN")
+        Column() { sb.append(token.getText()); } "%" ( LOOKAHEAD({isKeyword("isopen")}) KEYWORD("ISOPEN")
                      | LOOKAHEAD({isKeyword("found")}) KEYWORD("FOUND")
                      | LOOKAHEAD({isKeyword("notfound")}) KEYWORD("NOTFOUND")
                      | LOOKAHEAD({isKeyword("rowcount")}) KEYWORD("ROWCOUNT")
@@ -1706,7 +1709,7 @@ ASTSimpleExpression SimpleExpression() :
                      ) { sb.append('%').append(token.getImage()); }
  |
     LOOKAHEAD(2)
-        ( "*" | Column() ) { sb.append(token.getImage()); }
+        ( "*" | Column() ) { sb.append(token.getText()); }
  )
  {
     jjtThis.setImage(sb.toString());
@@ -1715,11 +1718,11 @@ ASTSimpleExpression SimpleExpression() :
 }
 
 ASTOuterJoinExpression OuterJoinExpression() :
-{ StringBuilder sb = new StringBuilder(); }
+{ StringBuilder sb = new StringBuilder(); PLSQLNode node; }
 {
-    [ LOOKAHEAD(6) SchemaName() { sb.append(token.getImage()); } "." { sb.append(token.getImage()); } ]
-    [ LOOKAHEAD(4) TableName() { sb.append(token.getImage()); } "." { sb.append(token.getImage()); } ]
-    Column() { sb.append(token.getImage()); }
+    [ LOOKAHEAD(6) node=SchemaName() { sb.append(node.getImage()); } "." { sb.append(token.getImage()); } ]
+    [ LOOKAHEAD(4) node=TableName() { sb.append(node.getImage()); } "." { sb.append(token.getImage()); } ]
+    node=Column() { sb.append(node.getImage()); }
     "(" "+" ")"
 
     {
@@ -5229,6 +5232,7 @@ TOKEN :
   |
   ( <LEXICAL_PARAMETER> ( <LETTER> | <DIGIT> | "$" | "_" | "#" )* )
   |
+  // todo separate quoted identifier into other token
   ( "\""  <ID_SIMPLE> "\"" )
 >
 |
@@ -5425,10 +5429,13 @@ void KEYWORD(String id) #void:
     }
 }
 
-ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
+// This is only used to generate a node class
+// @Deprecated
+void KEYWORD_UNRESERVED (): {}{KEYWORD_NOT_RESERVED()}
+
+void KEYWORD_NOT_RESERVED () #void: {}
 {
 // PL/SQL UNRESERVED KEYWORDS - V$RESERVED.RESERVED='N'
-(
 "REF" | "LAST" | "TRIM" | "OVER" | "UNBOUNDED" | "PRECEDING" | "FOLLOWING" | "WITHIN" |
 "OVERFLOW" | "ERROR" | "WITHOUT" | "COUNT" | "SUBPARTITION" | "LOG" | "ERRORS" | "REJECT" | "UNLIMITED" |
 <FALSE>
@@ -6489,9 +6496,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <RENAME> //Although RENAME is an Oracle reserved word, it may be used as a PL/SQL name.
 | <RELEASE> //Although RELEASE is an Oracle reserved word, it may be used as a PL/SQL name.
 | <INLINE> // PRAGMA INLINE is not a PLSQL reserved word
-)
-
-{ jjtThis.setImage(token.getImage()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
 //SRT 2011-04-17 - END  */
@@ -6502,7 +6506,7 @@ ASTID ID(): {}
 {
 	(<IDENTIFIER>
 		| <QUOTED_LITERAL>
-	        | KEYWORD_UNRESERVED()  //SRT 2011-04-17
+	        | KEYWORD_NOT_RESERVED()  //SRT 2011-04-17
 		/*KEYWORDS_UNRESERVED
 		|<EXTRACT> | <FALSE> | <TRUE>  | <SECOND> | <MINUTE> | <HOUR> | <DAY> | <MONTH> | <YEAR>
 		 | <NO> |<ROW> | <CURSOR>
@@ -6676,7 +6680,7 @@ ASTID ID(): {}
 		//20120427 | <MODIFY>
 		//SRT 20110524 | <SELF>
 	)
-	{ jjtThis.setImage(token.getImage()) ; jjtThis.value = token ; return jjtThis ; }
+	{ jjtThis.setImage(token.getText().toString()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
 /**
@@ -6687,7 +6691,7 @@ ASTUnqualifiedID UnqualifiedID(): {}
 	(
 		<IDENTIFIER>
 		| <QUOTED_LITERAL>
-	        | KEYWORD_UNRESERVED()  //SRT 2011-04-17
+	        | KEYWORD_NOT_RESERVED()  //SRT 2011-04-17
 		| <BODY>
 		//20120501 | <INTERVAL>
 		| <MOD>
@@ -6706,9 +6710,9 @@ ASTUnqualifiedID UnqualifiedID(): {}
 		| <INT>
 		| <ARRAY>
 		//| <RESULT>
-	        //| KEYWORD_UNRESERVED()  //SRT 2011-04-17
+	        //| KEYWORD_NOT_RESERVED()  //SRT 2011-04-17
 	)
-	{ jjtThis.setImage(token.getImage()) ; jjtThis.value = token ; return jjtThis ; }
+	{ jjtThis.setImage(token.getText().toString()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
 /**
@@ -6719,7 +6723,7 @@ ASTQualifiedID QualifiedID(): {}
 	(
 		<IDENTIFIER>
 		| <QUOTED_LITERAL>
-	        | KEYWORD_UNRESERVED()  //SRT 2011-04-17
+	        | KEYWORD_NOT_RESERVED()  //SRT 2011-04-17
 		/*
 		| <EXTRACT> --Unreserved Key Word
 		| <FALSE> --Unreserved Key Word
@@ -6921,9 +6925,9 @@ ASTQualifiedID QualifiedID(): {}
 		// | <ZONE>
 		//| <CHARACTER>
 		//| <LIMIT>
-	        //| KEYWORD_UNRESERVED()  //SRT 2011-04-17
+	        //| KEYWORD_NOT_RESERVED()  //SRT 2011-04-17
 	)
-	{ jjtThis.setImage(token.getImage()) ; jjtThis.value = token ; return jjtThis ; }
+	{ jjtThis.setImage(token.getText().toString()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
 ASTTypeKeyword TypeKeyword(): {}

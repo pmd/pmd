@@ -8,9 +8,9 @@ import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.impl.JavaccCpdLexer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLParser;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLTokenKinds;
 
 /**
@@ -54,6 +54,6 @@ public class PLSQLCpdLexer extends JavaccCpdLexer {
 
     @Override
     protected TokenManager<JavaccToken> makeLexerImpl(TextDocument doc) {
-        return PLSQLTokenKinds.newTokenManager(CharStream.create(doc));
+        return PLSQLParser.newTokenManager(doc);
     }
 }

@@ -9,6 +9,7 @@ import java.util.Locale;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.benchmark.TimeTracker;
+import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
@@ -16,6 +17,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
 import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.plsql.symboltable.SymbolFacade;
 
 public class PLSQLParser extends JjtreeParserAdapter<ASTInput> {
@@ -86,6 +88,10 @@ public class PLSQLParser extends JjtreeParserAdapter<ASTInput> {
         ASTInput root = new PLSQLParserImpl(cs).Input().addTaskInfo(task);
         TimeTracker.bench("PLSQL symbols", () -> SymbolFacade.process(root));
         return root;
+    }
+
+    public static TokenManager<JavaccToken> newTokenManager(TextDocument doc) {
+        return PLSQLTokenKinds.newTokenManager(CharStream.create(doc, TOKEN_BEHAVIOR));
     }
 
 }
