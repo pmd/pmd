@@ -26,18 +26,16 @@ public class PLSQLParser extends JjtreeParserAdapter<ASTInput> {
     // The original casing can be found by looking at the TextDocument for the file.
 
     // NOTE: the size of this array should be greater than the number of tokens in the file.
-    private static final String[] STRING_LITERAL_IMAGES_EXTRA = new String[512];
+    private static final String[] STRING_LITERAL_IMAGES_EXTRA = new String[PLSQLTokenKinds.TOKEN_NAMES.size()];
 
     static {
-        int i = 0;
-        String image = PLSQLTokenKinds.describe(i);
-        while (image != null && i < STRING_LITERAL_IMAGES_EXTRA.length) {
+        for (int i = 0; i < PLSQLTokenKinds.TOKEN_NAMES.size(); i++) {
+            String image = PLSQLTokenKinds.TOKEN_NAMES.get(i);
             if (image.startsWith("\"") && image.endsWith("\"")) {
                 // a string literal image, remove the quotes
                 image = image.substring(1, image.length() - 1);
                 STRING_LITERAL_IMAGES_EXTRA[i] = image;
             }
-            i++;
         }
     }
 
