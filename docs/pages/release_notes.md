@@ -19,6 +19,10 @@ This is a {{ site.pmd.release_type }} release.
 - The new Java rule {%rule java/bestpractices/UnnecessaryVarargsArrayCreation %} reports explicit array creation
   when a varargs is expected. This is more heavy to read and could be simplified.
 
+- The new Java rule {% rule "java/codestyle/LambdaCanBeMethodReference" %} reports lambda expressions that can be replaced
+  with a method reference. Please read the documentation of the rule for more info. This rule is now part of the Quickstart
+  ruleset.
+
 ### 🌟 Rule Changes
 
 * {%rule java/bestpractices/JUnitTestsShouldIncludeAssert %} and {% rule java/bestpractices/JUnitTestContainsTooManyAsserts %}
@@ -73,6 +77,7 @@ This is a {{ site.pmd.release_type }} release.
 
 #### Deprecated methods
 
+* {% jdoc java::lang.java.ast.ASTLambdaExpression#getBlock() %} and {% jdoc java::lang.java.ast.ASTLambdaExpression#getExpression() %}
 * {%jdoc java::lang.java.rule.design.SingularFieldRule#mayBeSingular(java::lang.java.ast.ModifierOwner) %} has been deprecated for
   removal. The method is only useful for the rule itself and shouldn't be used otherwise.
 

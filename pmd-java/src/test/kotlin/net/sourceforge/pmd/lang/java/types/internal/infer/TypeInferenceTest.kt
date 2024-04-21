@@ -137,7 +137,7 @@ class TypeInferenceTest : ProcessorTestSpec({
                             variableId("it")
                         }
                     }
-                    it::getExpression shouldBe child<ASTMethodCall> {
+                    it::getExpressionBody shouldBe child<ASTMethodCall> {
                         it shouldHaveType it.typeSystem.BOOLEAN
                         it::getQualifier shouldBe variableAccess("it") {
                             it shouldHaveType it.typeSystem.STRING
