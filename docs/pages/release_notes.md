@@ -72,6 +72,8 @@ This is a {{ site.pmd.release_type }} release.
   * [#4886](https://github.com/pmd/pmd/issues/4886): \[java] BigIntegerInstantiation: False Positive with Java 17 and BigDecimal.TWO
 * pom-errorprone
   * [#4388](https://github.com/pmd/pmd/issues/4388): \[pom] InvalidDependencyTypes doesn't consider dependencies at all
+* misc
+  * [#4967](https://github.com/pmd/pmd/pull/4967): Fix reproducible build issues with 7.0.0
 
 ### 🚨 API Changes
 
