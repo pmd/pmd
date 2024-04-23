@@ -15,6 +15,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
     private final int beginColumn;
     private final int endColumn;
     private final int endLine;
+    private final int fileIdInternal;
     private int index;
     private int identifier;
     private int hashCode;
@@ -28,9 +29,10 @@ public class TokenEntry implements Comparable<TokenEntry> {
         this.beginColumn = column;
         this.endLine = line;
         this.endColumn = column;
+        this.fileIdInternal = 0;
     }
 
-    TokenEntry(int imageId, FileId fileId, int beginLine, int beginColumn, int endLine, int endColumn, int index) {
+    TokenEntry(int imageId, FileId fileId, int beginLine, int beginColumn, int endLine, int endColumn, int index, int fileIdInternal) {
         assert isOk(beginLine) && isOk(beginColumn) && isOk(endLine) && isOk(endColumn) : "Coordinates are 1-based";
         assert imageId != EOF;
         this.fileId = fileId;
@@ -40,6 +42,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
         this.endColumn = endColumn;
         this.identifier = imageId;
         this.index = index;
+        this.fileIdInternal = fileIdInternal;
     }
 
     public boolean isEof() {
@@ -50,6 +53,9 @@ public class TokenEntry implements Comparable<TokenEntry> {
         return coord >= 1;
     }
 
+    int getFileIdInternal() {
+        return fileIdInternal;
+    }
 
     FileId getFileId() {
         return fileId;

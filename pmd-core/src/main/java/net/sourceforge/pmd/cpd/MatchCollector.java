@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import net.sourceforge.pmd.cpd.MatchAlgorithm.SmallTokenEntry;
+
 class MatchCollector {
 
     private final Map<Integer, List<Match>> matchTree = new TreeMap<>();
@@ -25,16 +27,17 @@ class MatchCollector {
         this.ma = ma;
     }
 
-    public void collect(List<TokenEntry> marks) {
+    public void collect(List<SmallTokenEntry> marks) {
         // first get a pairwise collection of all maximal matches
         int skipped;
         for (int i = 0; i < marks.size() - 1; i += skipped + 1) {
             skipped = 0;
-            TokenEntry mark1 = marks.get(i);
+            SmallTokenEntry mark1 = marks.get(i);
             for (int j = i + 1; j < marks.size(); j++) {
-                TokenEntry mark2 = marks.get(j);
-                int diff = mark1.getIndex() - mark2.getIndex();
-                if (-diff < ma.getMinimumTileSize()) {
+                SmallTokenEntry mark2 = marks.get(j);
+                boolean sameFile = mark1.fileId == mark2.fileId;
+                int diff = mark1.indexInFile - mark2.indexInFile;
+                if (sameFile && -diff < ma.getMinimumTileSize()) {
                     // self-repeating sequence such as ABBABBABB with min 6,
                     // will match 2 against any other occurrence of ABBABB
                     // avoid duplicate overlapping reports by skipping it on the next outer loop
@@ -51,10 +54,11 @@ class MatchCollector {
                     continue;
                 }
                 // both blocks overlap
-                if (diff + dupes >= 1) {
+                if (sameFile && diff + dupes >= 1) {
                     continue;
                 }
-                reportMatch(mark1, mark2, dupes);
+
+                reportMatch(ma.toTokenEntry(mark1), ma.toTokenEntry(mark2), dupes);
             }
         }
     }
@@ -127,21 +131,12 @@ class MatchCollector {
         });
     }
 
-    private boolean hasPreviousDupe(TokenEntry mark1, TokenEntry mark2) {
-        return mark1.getIndex() != 0 && !matchEnded(ma.tokenAt(-1, mark1), ma.tokenAt(-1, mark2));
+    private boolean hasPreviousDupe(SmallTokenEntry mark1, SmallTokenEntry mark2) {
+        return ma.tokensMatch(mark1, mark2, -1);
     }
 
-    private int countDuplicateTokens(TokenEntry mark1, TokenEntry mark2) {
-        int index = 0;
-        while (!matchEnded(ma.tokenAt(index, mark1), ma.tokenAt(index, mark2))) {
-            index++;
-        }
-        return index;
+    private int countDuplicateTokens(SmallTokenEntry mark1, SmallTokenEntry mark2) {
+        return ma.countDupTokens(mark1, mark2);
     }
 
-    private boolean matchEnded(TokenEntry token1, TokenEntry token2) {
-        return token1.getIdentifier() != token2.getIdentifier()
-                || token1.isEof()
-                || token2.isEof();
-    }
 }
