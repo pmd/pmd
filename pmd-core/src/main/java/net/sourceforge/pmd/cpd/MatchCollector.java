@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import net.sourceforge.pmd.cpd.MatchAlgorithm.SmallTokenEntry;
+import net.sourceforge.pmd.cpd.TokenFileSet.SmallTokenEntry;
 
 class MatchCollector {
 
@@ -49,7 +49,7 @@ class MatchCollector {
                 }
 
                 // "match too small" check
-                int dupes = countDuplicateTokens(mark1, mark2);
+                int dupes = ma.countDupTokens(mark1, mark2);
                 if (dupes < ma.getMinimumTileSize()) {
                     continue;
                 }
@@ -125,18 +125,13 @@ class MatchCollector {
     }
 
     List<Match> getMatches() {
-        return matchTree.values().stream().reduce(new ArrayList<>(), (acc, matches) -> {
-            acc.addAll(matches);
-            return acc;
-        });
+        List<Match> matches = new ArrayList<>();
+        matchTree.values().forEach(matches::addAll);
+        return matches;
     }
 
     private boolean hasPreviousDupe(SmallTokenEntry mark1, SmallTokenEntry mark2) {
         return ma.tokensMatch(mark1, mark2, -1);
-    }
-
-    private int countDuplicateTokens(SmallTokenEntry mark1, SmallTokenEntry mark2) {
-        return ma.countDupTokens(mark1, mark2);
     }
 
 }

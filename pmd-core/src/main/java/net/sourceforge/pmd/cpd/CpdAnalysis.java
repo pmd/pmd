@@ -18,6 +18,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.cpd.TokenFileSet.TokenFile;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
@@ -138,11 +139,10 @@ public final class CpdAnalysis implements AutoCloseable {
         this.listener = cpdListener;
     }
 
-    private int doTokenize(TextDocument document, CpdLexer cpdLexer, Tokens tokens) throws IOException, LexException {
+    private int doTokenize(TextDocument document, CpdLexer cpdLexer, TokenFileSet tokens) throws IOException, LexException {
         LOGGER.trace("Tokenizing {}", document.getFileId().getAbsolutePath());
-        int lastTokenSize = tokens.size();
-        CpdLexer.tokenize(cpdLexer, document, tokens);
-        return tokens.size() - lastTokenSize - 1; /* EOF */
+        TokenFile tokenFile = tokens.tokenize(cpdLexer, document);
+        return tokenFile.size();
     }
 
     public void performAnalysis() {
@@ -163,10 +163,9 @@ public final class CpdAnalysis implements AutoCloseable {
             Map<FileId, Integer> numberOfTokensPerFile = new HashMap<>();
 
             boolean hasErrors = false;
-            Tokens tokens = new Tokens();
+            TokenFileSet tokens = new TokenFileSet();
             for (TextFile textFile : sourceManager.getTextFiles()) {
                 TextDocument textDocument = sourceManager.get(textFile);
-                Tokens.State savedState = tokens.savePoint();
                 try {
                     int newTokens = doTokenize(textDocument, tokenizers.get(textFile.getLanguageVersion().getLanguage()), tokens);
                     numberOfTokensPerFile.put(textDocument.getFileId(), newTokens);
@@ -178,7 +177,6 @@ public final class CpdAnalysis implements AutoCloseable {
                     String message = configuration.isSkipLexicalErrors() ? "Skipping file" : "Error while tokenizing";
                     reporter.errorEx(message, e);
                     hasErrors = true;
-                    savedState.restore(tokens);
                 }
             }
             if (hasErrors && !configuration.isSkipLexicalErrors()) {
