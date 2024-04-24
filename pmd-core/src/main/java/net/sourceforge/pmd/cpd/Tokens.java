@@ -25,9 +25,7 @@ public class Tokens {
 
     // This stores all the token entries recorded during the run.
     private final List<TokenEntry> tokens = new ArrayList<>();
-    final MatchAlgorithm.TokenFileSet tokenFileSet = new MatchAlgorithm.TokenFileSet();
     private final Map<String, Integer> images = new HashMap<>();
-
     // the first ID is 1, 0 is the ID of the EOF token.
     private int curImageId = 1;
 
@@ -48,6 +46,11 @@ public class Tokens {
         add(new TokenEntry(filePathId, line, column));
     }
 
+    private void setImage(TokenEntry entry, String newImage) {
+        int i = getImageId(newImage);
+        entry.setImageIdentifier(i);
+    }
+
     private int getImageId(String newImage) {
         return images.computeIfAbsent(newImage, k -> curImageId++);
     }
@@ -56,6 +59,9 @@ public class Tokens {
         return images.entrySet().stream().filter(it -> it.getValue() == i).findFirst().map(Entry::getKey).orElse(null);
     }
 
+    private TokenEntry peekLastToken() {
+        return tokens.isEmpty() ? null : getToken(size() - 1);
+    }
 
     private TokenEntry getToken(int index) {
         return tokens.get(index);
@@ -74,7 +80,7 @@ public class Tokens {
     }
 
     TokenEntry addToken(String image, FileId fileName, int startLine, int startCol, int endLine, int endCol) {
-        TokenEntry newToken = new TokenEntry(getImageId(image), fileName, startLine, startCol, endLine, endCol, tokens.size(), 0);
+        TokenEntry newToken = new TokenEntry(getImageId(image), fileName, startLine, startCol, endLine, endCol, tokens.size());
         add(newToken);
         return newToken;
     }
@@ -82,7 +88,6 @@ public class Tokens {
     State savePoint() {
         return new State(this);
     }
-
 
     /**
      * Creates a token factory to process the given file with
@@ -97,20 +102,16 @@ public class Tokens {
     static TokenFactory factoryForFile(TextDocument file, Tokens tokens) {
         return new TokenFactory() {
             final FileId fileId = file.getFileId();
-            final MatchAlgorithm.TokenFile tokenFile = tokens.tokenFileSet.openFile(fileId);
+            final int firstToken = tokens.size();
 
             @Override
             public void recordToken(@NonNull String image, int startLine, int startCol, int endLine, int endCol) {
-                tokenFile.addToken(tokens.getImageId(image), startLine, startCol, endLine, endCol);
+                tokens.addToken(image, fileId, startLine, startCol, endLine, endCol);
             }
 
             @Override
             public void setImage(TokenEntry entry, @NonNull String newImage) {
-                if (!entry.getFileId().equals(fileId)) {
-                    throw new IllegalArgumentException("Cannot operate on token for different file");
-                }
-                int indexInFile = entry.getIndex();
-                tokenFile.setImage(indexInFile, tokens.getImageId(newImage));
+                tokens.setImage(entry, newImage);
             }
 
             @Override
@@ -120,22 +121,20 @@ public class Tokens {
 
             @Override
             public @Nullable TokenEntry peekLastToken() {
-                if (tokenFile.isEmpty()) {
+                if (tokens.size() <= firstToken) {
                     return null; // no token has been added yet in this file
                 }
-                return tokenFile.getTokenEntry(tokenFile.size - 1);
+                return tokens.peekLastToken();
             }
 
             @Override
             public void close() {
-                // todo we probably don't need that anymore
-                if (false){
                 TokenEntry tok = peekLastToken();
                 if (tok == null) {
                     tokens.addEof(fileId, 1, 1);
                 } else {
                     tokens.addEof(fileId, tok.getEndLine(), tok.getEndColumn());
-                }}
+                }
             }
         };
     }
@@ -145,7 +144,6 @@ public class Tokens {
      * entries.
      */
     static final class State {
-        // fixme restoration doesn't work anymore
 
         private final int tokenCount;
         private final int curImageId;
