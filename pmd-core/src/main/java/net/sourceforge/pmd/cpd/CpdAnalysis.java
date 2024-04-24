@@ -163,31 +163,33 @@ public final class CpdAnalysis implements AutoCloseable {
             Map<FileId, Integer> numberOfTokensPerFile = new HashMap<>();
 
             boolean hasErrors = false;
-            TokenFileSet tokens = new TokenFileSet();
-            for (TextFile textFile : sourceManager.getTextFiles()) {
-                TextDocument textDocument = sourceManager.get(textFile);
-                try {
-                    int newTokens = doTokenize(textDocument, tokenizers.get(textFile.getLanguageVersion().getLanguage()), tokens);
-                    numberOfTokensPerFile.put(textDocument.getFileId(), newTokens);
-                    listener.addedFile(1);
-                } catch (IOException | FileAnalysisException e) {
-                    if (e instanceof FileAnalysisException) { // NOPMD
-                        ((FileAnalysisException) e).setFileId(textFile.getFileId());
+            final List<Match> matches;
+            {
+                TokenFileSet tokens = new TokenFileSet();
+                for (TextFile textFile : sourceManager.getTextFiles()) {
+                    TextDocument textDocument = sourceManager.load(textFile);
+                    try {
+                        int newTokens = doTokenize(textDocument, tokenizers.get(textFile.getLanguageVersion().getLanguage()), tokens);
+                        numberOfTokensPerFile.put(textDocument.getFileId(), newTokens);
+                        listener.addedFile(1);
+                    } catch (IOException | FileAnalysisException e) {
+                        if (e instanceof FileAnalysisException) { // NOPMD
+                            ((FileAnalysisException) e).setFileId(textFile.getFileId());
+                        }
+                        String message = configuration.isSkipLexicalErrors() ? "Skipping file" : "Error while tokenizing";
+                        reporter.errorEx(message, e);
+                        hasErrors = true;
                     }
-                    String message = configuration.isSkipLexicalErrors() ? "Skipping file" : "Error while tokenizing";
-                    reporter.errorEx(message, e);
-                    hasErrors = true;
                 }
-            }
-            if (hasErrors && !configuration.isSkipLexicalErrors()) {
-                // will be caught by CPD command
-                throw new IllegalStateException("Errors were detected while lexing source, exiting because --skip-lexical-errors is unset.");
-            }
+                if (hasErrors && !configuration.isSkipLexicalErrors()) {
+                    // will be caught by CPD command
+                    throw new IllegalStateException("Errors were detected while lexing source, exiting because --skip-lexical-errors is unset.");
+                }
 
-            LOGGER.debug("Running match algorithm on {} files...", sourceManager.size());
-            MatchAlgorithm matchAlgorithm = new MatchAlgorithm(tokens, configuration.getMinimumTileSize());
-            List<Match> matches = matchAlgorithm.findMatches(listener, sourceManager);
-            tokens = null; // NOPMD null it out before rendering
+                LOGGER.debug("Running match algorithm on {} files...", sourceManager.size());
+                MatchAlgorithm matchAlgorithm = new MatchAlgorithm(tokens, configuration.getMinimumTileSize());
+                matches = matchAlgorithm.findMatches(listener, sourceManager);
+            }
             LOGGER.debug("Finished: {} duplicates found", matches.size());
 
             CPDReport cpdReport = new CPDReport(sourceManager, matches, numberOfTokensPerFile);

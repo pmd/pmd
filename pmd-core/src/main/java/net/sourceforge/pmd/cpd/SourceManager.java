@@ -28,7 +28,7 @@ import net.sourceforge.pmd.reporting.FileNameRenderer;
  */
 class SourceManager implements AutoCloseable {
 
-    private final Map<TextFile, SoftReference<TextDocument>> files = new ConcurrentHashMap<>();
+    private final Map<FileId, SoftReference<TextDocument>> files = new ConcurrentHashMap<>();
     private final Map<FileId, TextFile> fileByPathId = new HashMap<>();
     private final List<TextFile> textFiles;
     private FileNameRenderer fileNameRenderer = FileId::getAbsolutePath;
@@ -43,7 +43,7 @@ class SourceManager implements AutoCloseable {
         return textFiles;
     }
 
-    private TextDocument load(TextFile file) {
+    TextDocument load(TextFile file) {
         try {
             return TextDocument.create(file);
         } catch (IOException e) {
@@ -52,11 +52,11 @@ class SourceManager implements AutoCloseable {
     }
 
     TextDocument get(TextFile file) {
-        TextDocument textDocument = files.computeIfAbsent(file, f -> new SoftReference<>(load(f))).get();
+        TextDocument textDocument = files.computeIfAbsent(file.getFileId(), f -> new SoftReference<>(load(fileByPathId.get(f)))).get();
         if (textDocument == null) {
             // SoftReference was freed up already, recreate it
             TextDocument doc = load(file);
-            files.put(file, new SoftReference<>(doc));
+            files.put(file.getFileId(), new SoftReference<>(doc));
             return doc;
         }
         return textDocument;

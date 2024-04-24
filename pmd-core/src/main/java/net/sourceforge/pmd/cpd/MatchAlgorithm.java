@@ -4,10 +4,8 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -23,11 +21,12 @@ class MatchAlgorithm {
         this.minTileSize = minTileSize;
     }
 
-    boolean tokensMatch(TokenFileSet.SmallTokenEntry fst, TokenFileSet.SmallTokenEntry snd, int offset) {
-       return tokens.countDupTokens(fst, snd, offset, 1) == 1;
+    boolean previousTokenEquals(TokenFileSet.SmallTokenEntry fst, TokenFileSet.SmallTokenEntry snd) {
+//       return tokens.isPreviousTokenEqual(fst,snd);
+        return fst.prevToken == snd.prevToken;
     }
     int countDupTokens(TokenFileSet.SmallTokenEntry fst, TokenFileSet.SmallTokenEntry snd) {
-       return tokens.countDupTokens(fst, snd, 0, Integer.MAX_VALUE);
+       return tokens.countDupTokens(fst, snd);
     }
 
     public int getMinimumTileSize() {
@@ -38,18 +37,10 @@ class MatchAlgorithm {
         MatchCollector matchCollector = new MatchCollector(this);
         {
             cpdListener.phaseUpdate(CPDListener.HASH);
-            Map<?, Object> markGroups = tokens.hashAll(minTileSize, MOD);
+            Iterable<List<TokenFileSet.SmallTokenEntry>> markGroups = tokens.hashAll(minTileSize, MOD);
 
             cpdListener.phaseUpdate(CPDListener.MATCH);
-            markGroups.values()
-                      .stream()
-                      .filter(it -> it instanceof List)
-                      .forEach(it -> {
-                          @SuppressWarnings("unchecked")
-                          List<TokenFileSet.SmallTokenEntry> l = (List<TokenFileSet.SmallTokenEntry>) it;
-                          Collections.reverse(l);
-                          matchCollector.collect(l);
-                      });
+            markGroups.forEach(matchCollector::collect);
             // put markGroups out of scope
         }
 

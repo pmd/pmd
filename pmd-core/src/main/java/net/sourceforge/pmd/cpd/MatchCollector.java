@@ -5,21 +5,24 @@
 package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import net.sourceforge.pmd.cpd.TokenFileSet.SmallTokenEntry;
+
+import com.carrotsearch.hppc.IntHashSet;
+import com.carrotsearch.hppc.IntObjectHashMap;
+import com.carrotsearch.hppc.IntObjectMap;
+import com.carrotsearch.hppc.IntSet;
+import com.carrotsearch.hppc.cursors.IntCursor;
 
 class MatchCollector {
 
     private final Map<Integer, List<Match>> matchTree = new TreeMap<>();
 
-    private final Map<Integer, Set<Integer>> tokenMatchSets = new HashMap<>();
+    private final IntObjectMap<IntSet> tokenMatchSets = new IntObjectHashMap<>();
 
     private final MatchAlgorithm ma;
 
@@ -44,7 +47,7 @@ class MatchCollector {
                     skipped++;
                     continue;
                 }
-                if (hasPreviousDupe(mark1, mark2)) {
+                if (ma.previousTokenEquals(mark1, mark2)) {
                     continue;
                 }
 
@@ -72,15 +75,16 @@ class MatchCollector {
          *  - BC
          * It should be reduced to a single match with 3 marks
          */
-        if (tokenMatchSets.computeIfAbsent(mark1.getIndex(), HashSet::new).contains(mark2.getIndex())) {
+        IntSet curMatchSet = computeIfAbsent(mark1.getIndex());
+        if (curMatchSet.contains(mark2.getIndex())) {
             return;
         }
 
         // This may not be a "new match", but actually a sub-match of a larger one.
         // always rely on the lowest mark index, as that's the order in which process them
-        final int lowestKey = tokenMatchSets.get(mark1.getIndex()).stream().reduce(mark1.getIndex(), Math::min);
+        final int lowestKey = min(curMatchSet, mark1.getIndex());
 
-        List<Match> matches = matchTree.computeIfAbsent(lowestKey, ArrayList::new);
+        List<Match> matches = matchTree.computeIfAbsent(lowestKey, k -> new ArrayList<>(1));
         Iterator<Match> matchIterator = matches.iterator();
         while (matchIterator.hasNext()) {
             Match m = matchIterator.next();
@@ -118,20 +122,33 @@ class MatchCollector {
         // add matches in both directions
         registerTokenMatch(mark1, mark2);
     }
+    private int min(IntSet set, int start) {
+        int min = start;
+        for (IntCursor intCursor : set) {
+            if (intCursor.value < min)
+                min = intCursor.value;
+        }
+        return min;
+    }
+
+    private IntSet computeIfAbsent(int key) {
+        int i = tokenMatchSets.indexOf(key);
+        if (tokenMatchSets.indexExists(i))
+            return tokenMatchSets.indexGet(i);
+        IntHashSet value = new IntHashSet();
+        tokenMatchSets.indexInsert(i, key, value);
+        return value;
+    }
 
     private void registerTokenMatch(TokenEntry mark1, TokenEntry mark2) {
-        tokenMatchSets.computeIfAbsent(mark1.getIndex(), HashSet::new).add(mark2.getIndex());
-        tokenMatchSets.computeIfAbsent(mark2.getIndex(), HashSet::new).add(mark1.getIndex());
+        computeIfAbsent(mark1.getIndex()).add(mark2.getIndex());
+        computeIfAbsent(mark2.getIndex()).add(mark1.getIndex());
     }
 
     List<Match> getMatches() {
         List<Match> matches = new ArrayList<>();
         matchTree.values().forEach(matches::addAll);
         return matches;
-    }
-
-    private boolean hasPreviousDupe(SmallTokenEntry mark1, SmallTokenEntry mark2) {
-        return ma.tokensMatch(mark1, mark2, -1);
     }
 
 }
