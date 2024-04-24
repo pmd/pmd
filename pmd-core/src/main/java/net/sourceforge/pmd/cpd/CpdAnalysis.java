@@ -29,7 +29,6 @@ import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.InternalApiBridge;
 import net.sourceforge.pmd.lang.document.TextDocument;
-import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.log.PmdReporter;
 
@@ -162,25 +161,29 @@ public final class CpdAnalysis implements AutoCloseable {
 
             Map<FileId, Integer> numberOfTokensPerFile = new HashMap<>();
 
-            boolean hasErrors = false;
             final List<Match> matches;
             {
                 TokenFileSet tokens = new TokenFileSet();
-                for (TextFile textFile : sourceManager.getTextFiles()) {
+
+                boolean hasErrors = sourceManager.getTextFiles().stream().parallel().reduce(false, (hasErrorSoFar, textFile) -> {
                     TextDocument textDocument = sourceManager.load(textFile);
                     try {
                         int newTokens = doTokenize(textDocument, tokenizers.get(textFile.getLanguageVersion().getLanguage()), tokens);
-                        numberOfTokensPerFile.put(textDocument.getFileId(), newTokens);
-                        listener.addedFile(1);
+                        synchronized (this) {
+                            numberOfTokensPerFile.put(textDocument.getFileId(), newTokens);
+                            listener.addedFile(1);
+                        }
                     } catch (IOException | FileAnalysisException e) {
                         if (e instanceof FileAnalysisException) { // NOPMD
                             ((FileAnalysisException) e).setFileId(textFile.getFileId());
                         }
                         String message = configuration.isSkipLexicalErrors() ? "Skipping file" : "Error while tokenizing";
                         reporter.errorEx(message, e);
-                        hasErrors = true;
+                        hasErrorSoFar = true;
                     }
-                }
+                    return hasErrorSoFar;
+                }, Boolean::logicalOr);
+
                 if (hasErrors && !configuration.isSkipLexicalErrors()) {
                     // will be caught by CPD command
                     throw new IllegalStateException("Errors were detected while lexing source, exiting because --skip-lexical-errors is unset.");

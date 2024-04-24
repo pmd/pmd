@@ -66,7 +66,7 @@ class MatchCollector {
         }
     }
 
-    private void reportMatch(TokenEntry mark1, TokenEntry mark2, int dupes) {
+    private synchronized void reportMatch(TokenEntry mark1, TokenEntry mark2, int dupes) {
         /*
          * Check if the match is previously know. This can happen when a snippet is duplicated more than once.
          * If A, B and C are identical snippets, MatchAlgorithm will find the matching pairs:
@@ -122,6 +122,8 @@ class MatchCollector {
         // add matches in both directions
         registerTokenMatch(mark1, mark2);
     }
+
+
     private int min(IntSet set, int start) {
         int min = start;
         for (IntCursor intCursor : set) {

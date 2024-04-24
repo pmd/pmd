@@ -37,10 +37,10 @@ class MatchAlgorithm {
         MatchCollector matchCollector = new MatchCollector(this);
         {
             cpdListener.phaseUpdate(CPDListener.HASH);
-            Iterable<List<TokenFileSet.SmallTokenEntry>> markGroups = tokens.hashAll(minTileSize, MOD);
+            List<List<TokenFileSet.SmallTokenEntry>> markGroups = tokens.hashAll(minTileSize, MOD);
 
             cpdListener.phaseUpdate(CPDListener.MATCH);
-            markGroups.forEach(matchCollector::collect);
+            markGroups.stream().parallel().forEach(matchCollector::collect);
             // put markGroups out of scope
         }
 

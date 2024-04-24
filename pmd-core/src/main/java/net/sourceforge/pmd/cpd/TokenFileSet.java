@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -16,37 +18,21 @@ import net.sourceforge.pmd.lang.document.TextDocument;
 
 import com.carrotsearch.hppc.IntObjectHashMap;
 import com.carrotsearch.hppc.IntObjectMap;
-import com.carrotsearch.hppc.ObjectIntHashMap;
-import com.carrotsearch.hppc.ObjectIntMap;
-import com.carrotsearch.hppc.cursors.ObjectIntCursor;
 
 final class TokenFileSet {
 
     private final List<TokenFile> files = new ArrayList<>();
-    private final ObjectIntMap<String> images = new ObjectIntHashMap<>();
+    private final ConcurrentMap<String, Integer> images = new ConcurrentHashMap<>();
 
     // the first ID is 1, 0 is the ID of the EOF token.
     private int curImageId = 1;
 
 
     int getImageId(String newImage) {
-        int keyIndex = images.indexOf(newImage);
-        if (images.indexExists(keyIndex)) {
-            return images.indexGet(keyIndex);
-        }
-
-        int id = curImageId;
-        images.indexInsert(keyIndex, newImage, id);
-        curImageId++;
-        return id;
+        return images.computeIfAbsent(newImage, k -> curImageId++);
     }
 
     String imageFromId(int i) {
-        for (ObjectIntCursor<String> entry : images) {
-            if (entry.value == i) {
-                return entry.key;
-            }
-        }
         return null;
     }
 
@@ -81,7 +67,7 @@ final class TokenFileSet {
         return false;
     }
 
-    Iterable<List<SmallTokenEntry>> hashAll(int minTileSize, int mod) {
+    List<List<SmallTokenEntry>> hashAll(int minTileSize, int mod) {
         IntObjectMap<Object> markGroups = new IntObjectHashMap<>();
         int lastMod = 1;
         for (int i = 0; i < minTileSize; i++) {
@@ -95,13 +81,11 @@ final class TokenFileSet {
     }
 
     public TokenFile openFile(FileId fileId) {
-        TokenFile tokenFile = new TokenFile(fileId, files.size());
-        files.add(tokenFile);
-        return tokenFile;
-    }
-
-    void deleteFile(TokenFile tokenFile) {
-        files.remove(tokenFile.internalId);
+        synchronized (files) {
+            TokenFile tokenFile = new TokenFile(fileId, files.size());
+            files.add(tokenFile);
+            return tokenFile;
+        }
     }
 
     public TokenEntry toTokenEntry(SmallTokenEntry fstTok) {
@@ -114,13 +98,14 @@ final class TokenFileSet {
     }
 
     TokenFile tokenize(CpdLexer cpdLexer, TextDocument textDocument) throws IOException {
-        int fileId = this.files.size();
-        try (TokenFactory tf = this.factoryForFile(textDocument)) {
-            cpdLexer.tokenize(textDocument, tf);
-            return this.files.get(fileId);
-        } catch (IOException | LexException e) {
-            this.files.remove(fileId);
-            throw e;
+        try (TokenFileFactory tf = this.factoryForFile(textDocument)) {
+            try {
+                cpdLexer.tokenize(textDocument, tf);
+            } catch (IOException | LexException e) {
+                this.files.remove(tf.tokenFile.internalId);
+                throw e;
+            }
+            return tf.tokenFile;
         }
     }
 
@@ -133,43 +118,51 @@ final class TokenFileSet {
      *
      * @return A new token factory
      */
-    TokenFactory factoryForFile(TextDocument file) {
-        return new TokenFactory() {
-            final FileId fileId = file.getFileId();
-            final TokenFile tokenFile = openFile(fileId);
+    TokenFileFactory factoryForFile(TextDocument file) {
+        return new TokenFileFactory(file);
+    }
 
-            @Override
-            public void recordToken(@NonNull String image, int startLine, int startCol, int endLine, int endCol) {
-                tokenFile.addToken(getImageId(image), startLine, startCol, endLine, endCol);
-            }
+    final class TokenFileFactory implements TokenFactory {
 
-            @Override
-            public void setImage(TokenEntry entry, @NonNull String newImage) {
-                if (!entry.getFileId().equals(fileId)) {
-                    throw new IllegalArgumentException("Cannot operate on token for different file");
-                }
-                int indexInFile = entry.getIndex();
-                tokenFile.setImage(indexInFile, getImageId(newImage));
-            }
+        final FileId fileId;
+        final TokenFile tokenFile;
 
-            @Override
-            public LexException makeLexException(int line, int column, String message, @Nullable Throwable cause) {
-                return new LexException(line, column, fileId, message, cause);
-            }
+        TokenFileFactory(TextDocument file) {
+            this.fileId = file.getFileId();
+            this.tokenFile = openFile(fileId);
+        }
 
-            @Override
-            public @Nullable TokenEntry peekLastToken() {
-                if (tokenFile.isEmpty()) {
-                    return null; // no token has been added yet in this file
-                }
-                return tokenFile.getTokenEntry(tokenFile.size - 1);
-            }
+        @Override
+        public void recordToken(@NonNull String image, int startLine, int startCol, int endLine, int endCol) {
+            tokenFile.addToken(getImageId(image), startLine, startCol, endLine, endCol);
+        }
 
-            @Override
-            public void close() {
-                tokenFile.finish();
+        @Override
+        public void setImage(TokenEntry entry, @NonNull String newImage) {
+            if (!entry.getFileId().equals(fileId)) {
+                throw new IllegalArgumentException("Cannot operate on token for different file");
             }
-        };
+            int indexInFile = entry.getIndex();
+            tokenFile.setImage(indexInFile, getImageId(newImage));
+        }
+
+        @Override
+        public LexException makeLexException(int line, int column, String message, @Nullable Throwable cause) {
+            return new LexException(line, column, fileId, message, cause);
+        }
+
+        @Override
+        public @Nullable TokenEntry peekLastToken() {
+            if (tokenFile.isEmpty()) {
+                return null; // no token has been added yet in this file
+            }
+            return tokenFile.getTokenEntry(tokenFile.size - 1);
+        }
+
+        @Override
+        public void close() {
+            tokenFile.finish();
+        }
     }
 
     static final class TokenFile {
