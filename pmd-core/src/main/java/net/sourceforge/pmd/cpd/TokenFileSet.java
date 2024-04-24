@@ -51,8 +51,8 @@ final class TokenFileSet {
         return i;
     }
 
-    Map<Integer, Object> hashAll(int minTileSize, int mod) {
-        Map<Integer, Object> markGroups = new HashMap<>();
+    Map<?, Object> hashAll(int minTileSize, int mod) {
+        Map<HashedTokenEntry, Object> markGroups = new HashMap<>();
         int lastMod = 1;
         for (int i = 0; i < minTileSize; i++) {
             lastMod *= mod;
@@ -188,7 +188,7 @@ final class TokenFileSet {
             );
         }
 
-        void computeHashes(final int tileSize, final int mod, final int lastMod, Map<Integer, Object> markGroups) {
+        void computeHashes(final int tileSize, final int mod, final int lastMod, Map<HashedTokenEntry, Object> markGroups) {
             if (size < tileSize) {
                 // nothing to do, the file does not contain a full tile
                 return;
@@ -213,8 +213,8 @@ final class TokenFileSet {
 
             for (int i = 0; i < size; i++) {
                 int h = hashCodes[i];
-                SmallTokenEntry thisEntry = new SmallTokenEntry(this.internalId, i);
-                markGroups.merge(h, thisEntry, (old, thisEntry2) -> {
+                HashedTokenEntry thisEntry = new HashedTokenEntry(this.internalId, i, h);
+                markGroups.merge(thisEntry, thisEntry, (old, thisEntry2) -> {
                     List<SmallTokenEntry> arr;
                     if (old instanceof SmallTokenEntry) {
                         arr = new ArrayList<>(2);
@@ -262,7 +262,7 @@ final class TokenFileSet {
         }
     }
 
-    static final class SmallTokenEntry {
+    static class SmallTokenEntry {
         final int fileId;
         final int indexInFile;
 
@@ -270,6 +270,31 @@ final class TokenFileSet {
             this.fileId = fileId;
             this.indexInFile = indexInFile;
         }
+    }
 
+    static class HashedTokenEntry extends SmallTokenEntry {
+        final int hash;
+
+        HashedTokenEntry(int fileId, int indexInFile, int hash) {
+            super(fileId, indexInFile);
+            this.hash = hash;
+        }
+
+        @Override
+        public int hashCode() {
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            HashedTokenEntry that = (HashedTokenEntry) o;
+            return hash == that.hash && indexInFile == that.indexInFile && fileId == that.fileId;
+        }
     }
 }
