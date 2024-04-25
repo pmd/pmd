@@ -33,8 +33,8 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
         this(tokenCount, new Mark(first), new Mark(second));
     }
 
-    void addMark(TokenEntry entry) {
-        markSet.add(new Mark(entry));
+    void addMark(Mark entry) {
+        markSet.add(entry);
     }
 
     public int getMarkCount() {

@@ -80,9 +80,9 @@ final class TokenFileSet {
         return files.get(fstTok.fileId).getTokenEntry(fstTok.indexInFile);
     }
 
-    public TokenEntry getEndToken(TokenEntry token, Match match) {
+    public TokenEntry getEndToken(TokenEntry token, int matchLen) {
         TokenFile tokenFile = files.get(token.getFileIdInternal());
-        return tokenFile.getTokenEntry(token.getIndex() + match.getTokenCount() - 1);
+        return tokenFile.getTokenEntry(token.getIndex() + matchLen - 1);
     }
 
     /** This is called during building. May be called by parallel threads. */
@@ -114,6 +114,10 @@ final class TokenFileSet {
      */
     TokenFileFactory factoryForFile(TextDocument file) {
         return new TokenFileFactory(file);
+    }
+
+    public FileId getFileId(int it) {
+        return files.get(it).fileId;
     }
 
     final class TokenFileFactory implements TokenFactory {

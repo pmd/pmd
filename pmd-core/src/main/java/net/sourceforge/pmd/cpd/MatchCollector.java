@@ -10,8 +10,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.cpd.TokenFileSet.SmallTokenEntry;
+import net.sourceforge.pmd.lang.document.FileId;
 
 import com.carrotsearch.hppc.IntHashSet;
 import com.carrotsearch.hppc.IntObjectHashMap;
@@ -22,11 +26,17 @@ import com.carrotsearch.hppc.cursors.IntCursor;
 class MatchCollector {
 
     private final Map<Integer, List<Match>> matchTree = new ConcurrentHashMap<>();
-
-
+    /**
+     * Determine the matches in the list of token entries, given that all these token entries have the same hash.
+     *
+     * @param marks       List of tokens
+     * @param tokens      Token store
+     * @param minTileSize Tile size used for hashing
+     */
     void collect(List<SmallTokenEntry> marks, TokenFileSet tokens, int minTileSize) {
         final IntObjectMap<IntSet> tokenMatchSets = new IntObjectHashMap<>();
         // first get a pairwise collection of all maximal matches
+        long start = System.currentTimeMillis();
         int skipped;
         for (int i = 0; i < marks.size() - 1; i += skipped + 1) {
             skipped = 0;
@@ -56,12 +66,17 @@ class MatchCollector {
                     continue;
                 }
 
-                reportMatch(tokens.toTokenEntry(mark1), tokens.toTokenEntry(mark2), dupes, tokenMatchSets);
+                reportMatch(tokens.toTokenEntry(mark1), tokens.toTokenEntry(mark2), dupes, tokenMatchSets, tokens);
             }
+        }
+        long totalTimeMilli = System.currentTimeMillis() - start;
+        if (totalTimeMilli > 1000) {
+            String files = marks.stream().mapToInt(it -> it.fileId).distinct().mapToObj(tokens::getFileId).map(FileId::getAbsolutePath).collect(Collectors.joining("\n"));
+            System.out.println("Time: " + totalTimeMilli + " marks " + marks.size() + " tfset:\n" + files);
         }
     }
 
-    private void reportMatch(TokenEntry mark1, TokenEntry mark2, int dupes, IntObjectMap<IntSet> tokenMatchSets) {
+    private void reportMatch(TokenEntry mark1, TokenEntry mark2, int dupes, @Nullable IntObjectMap<IntSet> tokenMatchSets, TokenFileSet tokens) {
         /*
          * Check if the match is previously know. This can happen when a snippet is duplicated more than once.
          * If A, B and C are identical snippets, MatchAlgorithm will find the matching pairs:
@@ -107,18 +122,26 @@ class MatchCollector {
                         // Add this adjacency to all combinations
                         m.iterator().forEachRemaining(other -> registerTokenMatch(other.getToken(), mark2, tokenMatchSets));
 
-                        m.addMark(mark2);
+                        m.addMark(makeMark(mark2, dupes, tokens));
                         return;
                     }
                 }
             }
+            // this is a new match, add it
+            Match match = new Match(dupes, makeMark(mark1, dupes, tokens), makeMark(mark2, dupes, tokens));
+            matches.add(match);
         }
 
-        // this is a new match, add it
-        matches.add(new Match(dupes, mark1, mark2));
 
         // add matches in both directions
         registerTokenMatch(mark1, mark2, tokenMatchSets);
+    }
+
+    private Mark makeMark(TokenEntry token, int matchLen, TokenFileSet tokens) {
+        Mark mark = new Mark(token);
+        TokenEntry endToken = tokens.getEndToken(token, matchLen);
+        mark.setEndToken(endToken);
+        return mark;
     }
 
 
@@ -131,7 +154,12 @@ class MatchCollector {
         return min;
     }
 
-    private IntSet computeIfAbsent(int key, IntObjectMap<IntSet> tokenMatchSets) {
+    static final IntSet EMPTY = new IntHashSet();
+
+    private IntSet computeIfAbsent(int key, @Nullable IntObjectMap<IntSet> tokenMatchSets) {
+        if (tokenMatchSets == null) {
+            return EMPTY;
+        }
         int i = tokenMatchSets.indexOf(key);
         if (tokenMatchSets.indexExists(i))
             return tokenMatchSets.indexGet(i);

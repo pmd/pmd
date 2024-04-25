@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cpd;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.io.Writer;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.Collections;
@@ -42,6 +43,15 @@ public class CPDConfiguration extends AbstractConfiguration {
         RENDERERS.put("csv", CSVRenderer.class);
         RENDERERS.put("csv_with_linecount_per_file", CSVWithLinecountPerFileRenderer.class);
         RENDERERS.put("vs", VSRenderer.class);
+        RENDERERS.put("none", EmptyRenderer.class);
+    }
+
+    static final class EmptyRenderer implements CPDReportRenderer {
+
+        @Override
+        public void render(CPDReport report, Writer writer) {
+            // do nothing
+        }
     }
 
 
