@@ -3835,6 +3835,15 @@
 ,
 
 {
+"title": "ConfusingArgumentToVarargsMethod (Java, Error Prone)",
+"tags": "",
+"keywords": "ConfusingArgumentToVarargsMethod",
+"url": "pmd_rules_java_errorprone.html#confusingargumenttovarargsmethod",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
 "title": "ConstructorCallsOverridableMethod (Java, Error Prone)",
 "tags": "",
 "keywords": "ConstructorCallsOverridableMethod",

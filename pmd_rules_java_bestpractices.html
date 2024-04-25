@@ -3595,27 +3595,6 @@ For instance:</p>
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="s">"foo"</span><span class="o">,</span> <span class="s">"bar"</span><span class="o">);</span>
 </code></pre></div></div>
 
-<p>This rule also reports such array creations when they are confusing, because the array is a subtype of the component type of the expected array type.
-For instance if you have</p>
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">varargs</span><span class="o">(</span><span class="nc">Object</span><span class="o">...</span> <span class="n">parm</span><span class="o">);</span>
-</code></pre></div></div>
-<p>and call it like so</p>
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">varargs</span><span class="o">(</span><span class="k">new</span> <span class="nc">String</span><span class="o">[]{</span><span class="s">"a"</span><span class="o">});</span>
-</code></pre></div></div>
-<p>it is not clear whether you intended the method to receive the value <code class="language-plaintext highlighter-rouge">new Object[]{ new String[] {"a"} }</code> or just <code class="language-plaintext highlighter-rouge">new String[] {"a"}</code> (the latter happens). This confusion occurs because <code class="language-plaintext highlighter-rouge">String[]</code> is both a subtype of <code class="language-plaintext highlighter-rouge">Object[]</code> and of <code class="language-plaintext highlighter-rouge">Object</code>. To clarify your intent in this case, use a cast or pass individual elements like so:</p>
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// varargs call</span>
-<span class="c1">// parm will be `new Object[] { "a" }`</span>
-<span class="n">varargs</span><span class="o">(</span><span class="s">"a"</span><span class="o">);</span>
-
-<span class="c1">// non-varargs call</span>
-<span class="c1">// parm will be `new String[] { "a" }`</span>
-<span class="n">varargs</span><span class="o">((</span><span class="nc">Object</span><span class="o">[])</span> <span class="k">new</span> <span class="nc">String</span><span class="o">[]{</span><span class="s">"a"</span><span class="o">});</span>
-
-<span class="c1">// varargs call</span>
-<span class="c1">// parm will be `new Object[] { new String[] { "a" } }`</span>
-<span class="n">varargs</span><span class="o">((</span><span class="nc">Object</span><span class="o">)</span> <span class="k">new</span> <span class="nc">String</span><span class="o">[]{</span><span class="s">"a"</span><span class="o">});</span>
-</code></pre></div></div>
-
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnnecessaryVarargsArrayCreationRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnnecessaryVarargsArrayCreationRule</a></p>
 
 <p><strong>Example(s):</strong></p>

@@ -1888,15 +1888,16 @@
 <h3 id="-new-rules">✨ New rules</h3>
 
 <ul>
+  <li>The new Java rule <a href="pmd_rules_java_bestpractices.html#unnecessaryvarargsarraycreation"><code class="language-plaintext highlighter-rouge">UnnecessaryVarargsArrayCreation</code></a> reports explicit array creation
+when a varargs is expected. This is more heavy to read and could be simplified.</li>
   <li>
-    <p>The new Java rule <a href="pmd_rules_java_bestpractices.html#unnecessaryvarargsarraycreation"><code class="language-plaintext highlighter-rouge">UnnecessaryVarargsArrayCreation</code></a> reports explicit array creation
-when a varargs is expected. This is more heavy to read and could be simplified.</p>
+    <p>The new Java rule <a href="pmd_rules_java_errorprone.html#confusingargumenttovarargsmethod"><code class="language-plaintext highlighter-rouge">ConfusingArgumentToVarargsMethod</code></a> reports some confusing situations
+where a varargs method is called with an inexact argument type. These may end up in a mismatch between the expected
+parameter type and the actual value.</p>
   </li>
-  <li>
-    <p>The new Java rule <a href="pmd_rules_java_codestyle.html#lambdacanbemethodreference"><code class="language-plaintext highlighter-rouge">LambdaCanBeMethodReference</code></a> reports lambda expressions that can be replaced
+  <li>The new Java rule <a href="pmd_rules_java_codestyle.html#lambdacanbemethodreference"><code class="language-plaintext highlighter-rouge">LambdaCanBeMethodReference</code></a> reports lambda expressions that can be replaced
 with a method reference. Please read the documentation of the rule for more info. This rule is now part of the Quickstart
-ruleset.</p>
-  </li>
+ruleset.</li>
 </ul>
 
 <h3 id="-rule-changes">🌟 Rule Changes</h3>
