@@ -28,7 +28,7 @@ def run_pmdtester
       @base_branch = ENV['PMD_CI_BRANCH']
       @logger.info "\n\n--------------------------------------"
       @logger.info "Run against PR base #{@base_branch}"
-      @summary = PmdTester::Runner.new(get_args(@base_branch, FALSE)).run
+      @summary = PmdTester::Runner.new(get_args(@base_branch, false)).run
 
       unless Dir.exist?('target/reports/diff')
         message("No regression tested rules have been changed.", sticky: true)
