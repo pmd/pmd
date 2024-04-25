@@ -9,19 +9,16 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.cpd.TokenFileSet.SmallTokenEntry;
 import net.sourceforge.pmd.lang.document.FileId;
 
-import com.carrotsearch.hppc.IntHashSet;
 import com.carrotsearch.hppc.IntObjectHashMap;
 import com.carrotsearch.hppc.IntObjectMap;
-import com.carrotsearch.hppc.IntSet;
-import com.carrotsearch.hppc.cursors.IntCursor;
 
 class MatchCollector {
 
@@ -34,7 +31,7 @@ class MatchCollector {
      * @param minTileSize Tile size used for hashing
      */
     void collect(List<SmallTokenEntry> marks, TokenFileSet tokens, int minTileSize) {
-        final IntObjectMap<IntSet> tokenMatchSets = new IntObjectHashMap<>();
+        final IntObjectMap<SortedSet<Integer>> tokenMatchSets = new IntObjectHashMap<>();
         // first get a pairwise collection of all maximal matches
         long start = System.currentTimeMillis();
         int skipped;
@@ -76,7 +73,7 @@ class MatchCollector {
         }
     }
 
-    private void reportMatch(TokenEntry mark1, TokenEntry mark2, int dupes, @Nullable IntObjectMap<IntSet> tokenMatchSets, TokenFileSet tokens) {
+    private void reportMatch(TokenEntry mark1, TokenEntry mark2, int dupes, IntObjectMap<SortedSet<Integer>> tokenMatchSets, TokenFileSet tokens) {
         /*
          * Check if the match is previously know. This can happen when a snippet is duplicated more than once.
          * If A, B and C are identical snippets, MatchAlgorithm will find the matching pairs:
@@ -85,14 +82,14 @@ class MatchCollector {
          *  - BC
          * It should be reduced to a single match with 3 marks
          */
-        IntSet curMatchSet = computeIfAbsent(mark1.getIndex(), tokenMatchSets);
+        SortedSet<Integer> curMatchSet = computeIfAbsent(mark1.getIndex(), tokenMatchSets);
         if (curMatchSet.contains(mark2.getIndex())) {
             return;
         }
 
         // This may not be a "new match", but actually a sub-match of a larger one.
         // always rely on the lowest mark index, as that's the order in which process them
-        final int lowestKey = min(curMatchSet, mark1.getIndex());
+        final int lowestKey = curMatchSet.isEmpty() ? mark1.getIndex() : curMatchSet.first();
 
         List<Match> matches = matchTree.computeIfAbsent(lowestKey, k -> new ArrayList<>(1));
         synchronized (matches) {
@@ -145,30 +142,17 @@ class MatchCollector {
     }
 
 
-    private int min(IntSet set, int start) {
-        int min = start;
-        for (IntCursor intCursor : set) {
-            if (intCursor.value < min)
-                min = intCursor.value;
-        }
-        return min;
-    }
-
-    static final IntSet EMPTY = new IntHashSet();
-
-    private IntSet computeIfAbsent(int key, @Nullable IntObjectMap<IntSet> tokenMatchSets) {
-        if (tokenMatchSets == null) {
-            return EMPTY;
-        }
+    private SortedSet<Integer> computeIfAbsent(int key, IntObjectMap<SortedSet<Integer>> tokenMatchSets) {
         int i = tokenMatchSets.indexOf(key);
-        if (tokenMatchSets.indexExists(i))
+        if (tokenMatchSets.indexExists(i)) {
             return tokenMatchSets.indexGet(i);
-        IntHashSet value = new IntHashSet();
+        }
+        SortedSet<Integer> value = new TreeSet<>(Comparator.naturalOrder());
         tokenMatchSets.indexInsert(i, key, value);
         return value;
     }
 
-    private void registerTokenMatch(TokenEntry mark1, TokenEntry mark2, IntObjectMap<IntSet> tokenMatchSets) {
+    private void registerTokenMatch(TokenEntry mark1, TokenEntry mark2, IntObjectMap<SortedSet<Integer>> tokenMatchSets) {
         computeIfAbsent(mark1.getIndex(), tokenMatchSets).add(mark2.getIndex());
         computeIfAbsent(mark2.getIndex(), tokenMatchSets).add(mark1.getIndex());
     }
