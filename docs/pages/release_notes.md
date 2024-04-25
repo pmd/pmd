@@ -62,6 +62,7 @@ This is a {{ site.pmd.release_type }} release.
   * [#2056](https://github.com/pmd/pmd/issues/2056): \[java] CloseResource false-positive with URLClassLoader in cast expression
   * [#4751](https://github.com/pmd/pmd/issues/4751): \[java] PMD crashes when analyzing CloseResource Rule
   * [#4928](https://github.com/pmd/pmd/issues/4928): \[java] EmptyCatchBlock false negative when allowCommentedBlocks=true
+  * [#4948](https://github.com/pmd/pmd/issues/4948): \[java] ImplicitSwitchFallThrough: False-positive with nested switch statements
 * java-performance
   * [#3845](https://github.com/pmd/pmd/issues/3845): \[java] InsufficientStringBufferDeclaration should consider literal expression
   * [#4874](https://github.com/pmd/pmd/issues/4874): \[java] StringInstantiation: False-positive when using `new String(charArray)`
