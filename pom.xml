@@ -99,7 +99,7 @@
         <surefire.version>3.2.5</surefire.version>
         <checkstyle.version>10.14.0</checkstyle.version>
         <checkstyle.plugin.version>3.3.1</checkstyle.plugin.version>
-        <pmd.plugin.version>3.21.2</pmd.plugin.version>
+        <pmd.plugin.version>3.22.0</pmd.plugin.version>
         <ant.version>1.10.14</ant.version>
         <javadoc.plugin.version>3.6.3</javadoc.plugin.version>
         <antlr.version>4.9.3</antlr.version>
@@ -543,11 +543,6 @@
                     <dependencies>
                         <!-- Note: we can't use a property for the version here due to https://issues.apache.org/jira/browse/MRELEASE-932 -->
                         <!-- We use the comment "pmd.dogfood.version" as a marker and manually change the version - see .ci/build.sh -->
-                        <dependency>
-                            <groupId>net.sourceforge.pmd</groupId>
-                            <artifactId>pmd-compat6</artifactId>
-                            <version>7.0.0</version> <!-- pmd.dogfood.version -->
-                        </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>

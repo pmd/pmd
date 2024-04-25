@@ -14,6 +14,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+#### More robust CPD reports
+
+There were a number of circumstances, specially around (but not limited to) literal sequences, were CPD would report duplicate overlapping or partially overlapping matches. These have now been fixed, and CPD will report only the longest non-overlapping duplicate.
+
+These improvements apply to all supported languages, irrespective of supported flags.
+
 ### ✨ New rules
 
 - The new Java rule {%rule java/bestpractices/UnnecessaryVarargsArrayCreation %} reports explicit array creation
@@ -43,6 +49,8 @@ This is a {{ site.pmd.release_type }} release.
   * [#4418](https://github.com/pmd/pmd/issues/4418): \[apex] ASTAnnotation.getImage() does not return value as written in the class
 * apex-errorprone
   * [#3953](https://github.com/pmd/pmd/issues/3953): \[apex] EmptyCatchBlock false positive with formal (doc) comments
+* cpp
+  * [#2438](https://github.com/pmd/pmd/issues/2438): \[cpp] Repeated Duplication blocks
 * java
   * [#4899](https://github.com/pmd/pmd/issues/4899): \[java] Parsing failed in ParseLock#doParse() java.io.IOException: Stream closed
   * [#4902](https://github.com/pmd/pmd/issues/4902): \[java] "Bad intersection, unrelated class types" for Constable\[] and Enum\[]
@@ -66,6 +74,7 @@ This is a {{ site.pmd.release_type }} release.
   * [#2056](https://github.com/pmd/pmd/issues/2056): \[java] CloseResource false-positive with URLClassLoader in cast expression
   * [#4751](https://github.com/pmd/pmd/issues/4751): \[java] PMD crashes when analyzing CloseResource Rule
   * [#4928](https://github.com/pmd/pmd/issues/4928): \[java] EmptyCatchBlock false negative when allowCommentedBlocks=true
+  * [#4948](https://github.com/pmd/pmd/issues/4948): \[java] ImplicitSwitchFallThrough: False-positive with nested switch statements
 * java-performance
   * [#3845](https://github.com/pmd/pmd/issues/3845): \[java] InsufficientStringBufferDeclaration should consider literal expression
   * [#4874](https://github.com/pmd/pmd/issues/4874): \[java] StringInstantiation: False-positive when using `new String(charArray)`
