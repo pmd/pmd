@@ -5,10 +5,11 @@
 package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.sourceforge.pmd.cpd.TokenFileSet.SmallTokenEntry;
 
@@ -20,11 +21,11 @@ import com.carrotsearch.hppc.cursors.IntCursor;
 
 class MatchCollector {
 
-    private final Map<Integer, List<Match>> matchTree = new TreeMap<>();
+    private final Map<Integer, List<Match>> matchTree = new ConcurrentHashMap<>();
 
-    private final IntObjectMap<IntSet> tokenMatchSets = new IntObjectHashMap<>();
 
     void collect(List<SmallTokenEntry> marks, TokenFileSet tokens, int minTileSize) {
+        final IntObjectMap<IntSet> tokenMatchSets = new IntObjectHashMap<>();
         // first get a pairwise collection of all maximal matches
         int skipped;
         for (int i = 0; i < marks.size() - 1; i += skipped + 1) {
@@ -55,12 +56,12 @@ class MatchCollector {
                     continue;
                 }
 
-                reportMatch(tokens.toTokenEntry(mark1), tokens.toTokenEntry(mark2), dupes);
+                reportMatch(tokens.toTokenEntry(mark1), tokens.toTokenEntry(mark2), dupes, tokenMatchSets);
             }
         }
     }
 
-    private synchronized void reportMatch(TokenEntry mark1, TokenEntry mark2, int dupes) {
+    private void reportMatch(TokenEntry mark1, TokenEntry mark2, int dupes, IntObjectMap<IntSet> tokenMatchSets) {
         /*
          * Check if the match is previously know. This can happen when a snippet is duplicated more than once.
          * If A, B and C are identical snippets, MatchAlgorithm will find the matching pairs:
@@ -69,7 +70,7 @@ class MatchCollector {
          *  - BC
          * It should be reduced to a single match with 3 marks
          */
-        IntSet curMatchSet = computeIfAbsent(mark1.getIndex());
+        IntSet curMatchSet = computeIfAbsent(mark1.getIndex(), tokenMatchSets);
         if (curMatchSet.contains(mark2.getIndex())) {
             return;
         }
@@ -79,33 +80,36 @@ class MatchCollector {
         final int lowestKey = min(curMatchSet, mark1.getIndex());
 
         List<Match> matches = matchTree.computeIfAbsent(lowestKey, k -> new ArrayList<>(1));
-        Iterator<Match> matchIterator = matches.iterator();
-        while (matchIterator.hasNext()) {
-            Match m = matchIterator.next();
+        synchronized (matches) {
 
-            // Check all other marks
-            for (Mark otherMark : m.getMarkSet()) {
-                TokenEntry otherEnd = otherMark.getToken();
-                if (otherEnd.getIndex() == mark1.getIndex()) {
-                    continue;
-                }
+            Iterator<Match> matchIterator = matches.iterator();
+            while (matchIterator.hasNext()) {
+                Match m = matchIterator.next();
 
-                // does the new match supersedes this one?
-                if (otherEnd.getIndex() < mark2.getIndex() && otherEnd.getIndex() + m.getTokenCount() >= mark2.getIndex() + dupes) {
-                    // this match is embedded in the previous one… ignore it.
-                    return;
-                } else if (mark2.getIndex() < otherEnd.getIndex() && mark2.getIndex() + dupes >= otherEnd.getIndex() + m.getTokenCount()) {
-                    // the new match is longer and overlaps with the old one - replace it
-                    matchIterator.remove();
-                    break;
-                } else if (dupes == m.getTokenCount()) {
-                    // we found yet another exact match of the same snippet. Roll it together
+                // Check all other marks
+                for (Mark otherMark : m.getMarkSet()) {
+                    TokenEntry otherEnd = otherMark.getToken();
+                    if (otherEnd.getIndex() == mark1.getIndex()) {
+                        continue;
+                    }
 
-                    // Add this adjacency to all combinations
-                    m.iterator().forEachRemaining(other -> registerTokenMatch(other.getToken(), mark2));
+                    // does the new match supersedes this one?
+                    if (otherEnd.getIndex() < mark2.getIndex() && otherEnd.getIndex() + m.getTokenCount() >= mark2.getIndex() + dupes) {
+                        // this match is embedded in the previous one… ignore it.
+                        return;
+                    } else if (mark2.getIndex() < otherEnd.getIndex() && mark2.getIndex() + dupes >= otherEnd.getIndex() + m.getTokenCount()) {
+                        // the new match is longer and overlaps with the old one - replace it
+                        matchIterator.remove();
+                        break;
+                    } else if (dupes == m.getTokenCount()) {
+                        // we found yet another exact match of the same snippet. Roll it together
 
-                    m.addMark(mark2);
-                    return;
+                        // Add this adjacency to all combinations
+                        m.iterator().forEachRemaining(other -> registerTokenMatch(other.getToken(), mark2, tokenMatchSets));
+
+                        m.addMark(mark2);
+                        return;
+                    }
                 }
             }
         }
@@ -114,7 +118,7 @@ class MatchCollector {
         matches.add(new Match(dupes, mark1, mark2));
 
         // add matches in both directions
-        registerTokenMatch(mark1, mark2);
+        registerTokenMatch(mark1, mark2, tokenMatchSets);
     }
 
 
@@ -127,7 +131,7 @@ class MatchCollector {
         return min;
     }
 
-    private IntSet computeIfAbsent(int key) {
+    private IntSet computeIfAbsent(int key, IntObjectMap<IntSet> tokenMatchSets) {
         int i = tokenMatchSets.indexOf(key);
         if (tokenMatchSets.indexExists(i))
             return tokenMatchSets.indexGet(i);
@@ -136,14 +140,15 @@ class MatchCollector {
         return value;
     }
 
-    private void registerTokenMatch(TokenEntry mark1, TokenEntry mark2) {
-        computeIfAbsent(mark1.getIndex()).add(mark2.getIndex());
-        computeIfAbsent(mark2.getIndex()).add(mark1.getIndex());
+    private void registerTokenMatch(TokenEntry mark1, TokenEntry mark2, IntObjectMap<IntSet> tokenMatchSets) {
+        computeIfAbsent(mark1.getIndex(), tokenMatchSets).add(mark2.getIndex());
+        computeIfAbsent(mark2.getIndex(), tokenMatchSets).add(mark1.getIndex());
     }
 
     List<Match> getMatches() {
         List<Match> matches = new ArrayList<>();
         matchTree.values().forEach(matches::addAll);
+        matches.sort(Comparator.naturalOrder());
         return matches;
     }
 
