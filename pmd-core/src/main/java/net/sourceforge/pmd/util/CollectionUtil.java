@@ -662,6 +662,18 @@ public final class CollectionUtil {
         }
     }
 
+    /**
+     * Union of two PSets, which avoids creating a new pset if possible.
+     */
+    public static <V> PSet<V> union(PSet<V> as, PSet<V> bs) {
+        if (as.isEmpty()) {
+            return bs;
+        } else if (bs.isEmpty()) {
+            return as;
+        }
+        return as.plusAll(bs);
+    }
+
     public static @NonNull <T> List<T> makeUnmodifiableAndNonNull(@Nullable List<? extends T> list) {
         if (list instanceof PSequence) {
             return (List<T>) list;
