@@ -249,17 +249,21 @@ final class TokenFileSet {
         }
 
         private static void addTokenToHashTable(IntObjectMap<Object> markGroups, Consumer<List<SmallTokenEntry>> recordList, int h, SmallTokenEntry thisEntry) {
-            Object curEntry = markGroups.get(h);
-            if (curEntry instanceof SmallTokenEntry) {
-                List<SmallTokenEntry> arr = new ArrayList<>(2);
-                SmallTokenEntry fstTok = (SmallTokenEntry) curEntry;
-                arr.add(fstTok);
-                markGroups.put(h, arr);
-                recordList.accept(arr);
-            } else if (curEntry instanceof List) {
-                ((List<SmallTokenEntry>) curEntry).add(thisEntry);
+            int index = markGroups.indexOf(h);
+            if (markGroups.indexExists(index)) {
+                Object curEntry = markGroups.indexGet(index);
+                if (curEntry instanceof SmallTokenEntry) {
+                    SmallTokenEntry fstTok = (SmallTokenEntry) curEntry;
+                    List<SmallTokenEntry> arr = new ArrayList<>(2);
+                    arr.add(fstTok);
+                    arr.add(thisEntry);
+                    markGroups.indexReplace(index, arr);
+                    recordList.accept(arr);
+                } else if (curEntry instanceof List) {
+                    ((List<SmallTokenEntry>) curEntry).add(thisEntry);
+                }
             } else {
-                markGroups.put(h, thisEntry);
+                markGroups.indexInsert(index, h, thisEntry);
             }
         }
 
