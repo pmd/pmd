@@ -1879,6 +1879,12 @@
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
+<h4 id="more-robust-cpd-reports">More robust CPD reports</h4>
+
+<p>There were a number of circumstances, specially around (but not limited to) literal sequences, were CPD would report duplicate overlapping or partially overlapping matches. These have now been fixed, and CPD will report only the longest non-overlapping duplicate.</p>
+
+<p>These improvements apply to all supported languages, irrespective of supported flags.</p>
+
 <h3 id="-new-rules">✨ New rules</h3>
 
 <ul>
@@ -1931,6 +1937,11 @@ methods should be considered as valid verification methods. This allows to use c
       <li><a href="https://github.com/pmd/pmd/issues/3953">#3953</a>: [apex] EmptyCatchBlock false positive with formal (doc) comments</li>
     </ul>
   </li>
+  <li>cpp
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2438">#2438</a>: [cpp] Repeated Duplication blocks</li>
+    </ul>
+  </li>
   <li>java
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4899">#4899</a>: [java] Parsing failed in ParseLock#doParse() java.io.IOException: Stream closed</li>
@@ -1967,6 +1978,7 @@ methods should be considered as valid verification methods. This allows to use c
       <li><a href="https://github.com/pmd/pmd/issues/2056">#2056</a>: [java] CloseResource false-positive with URLClassLoader in cast expression</li>
       <li><a href="https://github.com/pmd/pmd/issues/4751">#4751</a>: [java] PMD crashes when analyzing CloseResource Rule</li>
       <li><a href="https://github.com/pmd/pmd/issues/4928">#4928</a>: [java] EmptyCatchBlock false negative when allowCommentedBlocks=true</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4948">#4948</a>: [java] ImplicitSwitchFallThrough: False-positive with nested switch statements</li>
     </ul>
   </li>
   <li>java-performance
@@ -2033,7 +2045,7 @@ removal. The method is only useful for the rule itself and shouldn’t be used o
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 23, 2024 <br />
+             Site last generated: Apr 25, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
