@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
@@ -21,7 +22,9 @@ import com.carrotsearch.hppc.IntObjectMap;
 
 final class TokenFileSet {
 
+    /** A list of token files that are valid (tokenizer did not error). */
     private final List<TokenFile> files = new ArrayList<>();
+    /** Global map of string (token images) to an integer identifier. */
     private final ConcurrentMap<String, Integer> images = new ConcurrentHashMap<>();
 
     // the first ID is 1, 0 is the ID of the EOF token.
@@ -33,7 +36,7 @@ final class TokenFileSet {
     }
 
     String imageFromId(int i) {
-        return null;
+        return images.entrySet().stream().filter(it -> it.getValue() == i).findFirst().map(Map.Entry::getKey).orElse(null);
     }
 
 
@@ -57,14 +60,7 @@ final class TokenFileSet {
 
 
     boolean isPreviousTokenEqual(SmallTokenEntry fst, SmallTokenEntry snd) {
-        TokenFile f1 = files.get(fst.fileId);
-        TokenFile f2 = files.get(snd.fileId);
-        final int i1 = fst.indexInFile - 1;
-        final int i2 = snd.indexInFile - 1;
-        if (i1 >= 0 && i2 >= 0) {
-            return f1.identifiers[i1] == f2.identifiers[i2];
-        }
-        return false;
+        return fst.prevToken == snd.prevToken;
     }
 
     List<List<SmallTokenEntry>> hashAll(int minTileSize, int mod) {
@@ -80,14 +76,6 @@ final class TokenFileSet {
         return matches;
     }
 
-    public TokenFile openFile(FileId fileId) {
-        synchronized (files) {
-            TokenFile tokenFile = new TokenFile(fileId, files.size());
-            files.add(tokenFile);
-            return tokenFile;
-        }
-    }
-
     public TokenEntry toTokenEntry(SmallTokenEntry fstTok) {
         return files.get(fstTok.fileId).getTokenEntry(fstTok.indexInFile);
     }
@@ -97,15 +85,21 @@ final class TokenFileSet {
         return tokenFile.getTokenEntry(token.getIndex() + match.getTokenCount() - 1);
     }
 
+    /** This is called during building. May be called by parallel threads. */
     TokenFile tokenize(CpdLexer cpdLexer, TextDocument textDocument) throws IOException {
         try (TokenFileFactory tf = this.factoryForFile(textDocument)) {
-            try {
-                cpdLexer.tokenize(textDocument, tf);
-            } catch (IOException | LexException e) {
-                this.files.remove(tf.tokenFile.internalId);
-                throw e;
-            }
+            // This tokenize method may throw, in which case the file is not added to this tokenfileset
+            cpdLexer.tokenize(textDocument, tf);
+            this.recordFile(tf.tokenFile);
             return tf.tokenFile;
+        }
+    }
+
+    private void recordFile(TokenFile file) {
+        synchronized (files) {
+            int id = files.size();
+            file.setInternalId(id);
+            files.add(file);
         }
     }
 
@@ -129,7 +123,7 @@ final class TokenFileSet {
 
         TokenFileFactory(TextDocument file) {
             this.fileId = file.getFileId();
-            this.tokenFile = openFile(fileId);
+            this.tokenFile = new TokenFile(fileId);
         }
 
         @Override
@@ -166,7 +160,12 @@ final class TokenFileSet {
     }
 
     static final class TokenFile {
-        private final int internalId;
+        /**
+         * This is the index of this file in the containing TokenFileSet's list.
+         * Only set if the tokenization did not error, as only then is the TokenFile
+         * placed in the list.
+         */
+        private int internalId = -1;
         private final FileId fileId;
         private int size = 0;
         private int[] identifiers = new int[256];
@@ -177,8 +176,11 @@ final class TokenFileSet {
          */
         private int[] coordinates = new int[256 * 4];
 
-        TokenFile(FileId fileId, int internalId) {
+        TokenFile(FileId fileId) {
             this.fileId = fileId;
+        }
+
+        void setInternalId(int internalId) {
             this.internalId = internalId;
         }
 
@@ -197,8 +199,11 @@ final class TokenFileSet {
             this.size++;
         }
 
+        /**
+         * Build a token entry for the token at index i.
+         */
         TokenEntry getTokenEntry(int i) {
-            assert i >= 0 && i < size;
+            assert i >= 0 && i < size : "Invalid token index " + i + " for size " + size;
             return new TokenEntry(
                 identifiers[i],
                 fileId,

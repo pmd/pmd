@@ -166,8 +166,8 @@ public final class CpdAnalysis implements AutoCloseable {
                 TokenFileSet tokens = new TokenFileSet();
 
                 boolean hasErrors = sourceManager.getTextFiles().stream().parallel().reduce(false, (hasErrorSoFar, textFile) -> {
-                    TextDocument textDocument = sourceManager.load(textFile);
                     try {
+                        TextDocument textDocument = sourceManager.load(textFile);
                         int newTokens = doTokenize(textDocument, tokenizers.get(textFile.getLanguageVersion().getLanguage()), tokens);
                         synchronized (this) {
                             numberOfTokensPerFile.put(textDocument.getFileId(), newTokens);
@@ -190,8 +190,7 @@ public final class CpdAnalysis implements AutoCloseable {
                 }
 
                 LOGGER.debug("Running match algorithm on {} files...", sourceManager.size());
-                MatchAlgorithm matchAlgorithm = new MatchAlgorithm(tokens, configuration.getMinimumTileSize());
-                matches = matchAlgorithm.findMatches(listener, sourceManager);
+                matches = MatchAlgorithm.findMatches(listener, sourceManager, tokens, configuration.getMinimumTileSize());
             }
             LOGGER.debug("Finished: {} duplicates found", matches.size());
 

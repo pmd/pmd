@@ -24,13 +24,7 @@ class MatchCollector {
 
     private final IntObjectMap<IntSet> tokenMatchSets = new IntObjectHashMap<>();
 
-    private final MatchAlgorithm ma;
-
-    MatchCollector(MatchAlgorithm ma) {
-        this.ma = ma;
-    }
-
-    public void collect(List<SmallTokenEntry> marks) {
+    void collect(List<SmallTokenEntry> marks, TokenFileSet tokens, int minTileSize) {
         // first get a pairwise collection of all maximal matches
         int skipped;
         for (int i = 0; i < marks.size() - 1; i += skipped + 1) {
@@ -40,20 +34,20 @@ class MatchCollector {
                 SmallTokenEntry mark2 = marks.get(j);
                 boolean sameFile = mark1.fileId == mark2.fileId;
                 int diff = mark1.indexInFile - mark2.indexInFile;
-                if (sameFile && -diff < ma.getMinimumTileSize()) {
+                if (sameFile && -diff < minTileSize) {
                     // self-repeating sequence such as ABBABBABB with min 6,
                     // will match 2 against any other occurrence of ABBABB
                     // avoid duplicate overlapping reports by skipping it on the next outer loop
                     skipped++;
                     continue;
                 }
-                if (ma.previousTokenEquals(mark1, mark2)) {
+                if (tokens.isPreviousTokenEqual(mark1, mark2)) {
                     continue;
                 }
 
                 // "match too small" check
-                int dupes = ma.countDupTokens(mark1, mark2);
-                if (dupes < ma.getMinimumTileSize()) {
+                int dupes = tokens.countDupTokens(mark1, mark2);
+                if (dupes < minTileSize) {
                     continue;
                 }
                 // both blocks overlap
@@ -61,7 +55,7 @@ class MatchCollector {
                     continue;
                 }
 
-                reportMatch(ma.toTokenEntry(mark1), ma.toTokenEntry(mark2), dupes);
+                reportMatch(tokens.toTokenEntry(mark1), tokens.toTokenEntry(mark2), dupes);
             }
         }
     }

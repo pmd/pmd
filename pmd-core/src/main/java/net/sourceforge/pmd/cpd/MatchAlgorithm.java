@@ -13,34 +13,19 @@ class MatchAlgorithm {
 
     private static final int MOD = 37;
 
-    private final TokenFileSet tokens;
-    private final int minTileSize;
-
-    MatchAlgorithm(TokenFileSet tokens, int minTileSize) {
-        this.tokens = tokens;
-        this.minTileSize = minTileSize;
+    MatchAlgorithm() {
     }
 
-    boolean previousTokenEquals(TokenFileSet.SmallTokenEntry fst, TokenFileSet.SmallTokenEntry snd) {
-//       return tokens.isPreviousTokenEqual(fst,snd);
-        return fst.prevToken == snd.prevToken;
-    }
-    int countDupTokens(TokenFileSet.SmallTokenEntry fst, TokenFileSet.SmallTokenEntry snd) {
-       return tokens.countDupTokens(fst, snd);
-    }
 
-    public int getMinimumTileSize() {
-        return this.minTileSize;
-    }
-
-    public List<Match> findMatches(@NonNull CPDListener cpdListener, SourceManager sourceManager) {
-        MatchCollector matchCollector = new MatchCollector(this);
+    static List<Match> findMatches(@NonNull CPDListener cpdListener, SourceManager sourceManager, TokenFileSet tokens, int minTileSize) {
+        MatchCollector matchCollector = new MatchCollector();
         {
             cpdListener.phaseUpdate(CPDListener.HASH);
             List<List<TokenFileSet.SmallTokenEntry>> markGroups = tokens.hashAll(minTileSize, MOD);
+            System.gc();
 
             cpdListener.phaseUpdate(CPDListener.MATCH);
-            markGroups.stream().parallel().forEach(matchCollector::collect);
+            markGroups.stream().parallel().forEach(group -> matchCollector.collect(group, tokens, minTileSize));
             // put markGroups out of scope
         }
 
@@ -58,10 +43,6 @@ class MatchAlgorithm {
         }
         cpdListener.phaseUpdate(CPDListener.DONE);
         return matches;
-    }
-
-     TokenEntry toTokenEntry(TokenFileSet.SmallTokenEntry entry) {
-        return tokens.toTokenEntry(entry);
     }
 
 }

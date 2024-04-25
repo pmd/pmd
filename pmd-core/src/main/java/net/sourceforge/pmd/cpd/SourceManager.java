@@ -43,23 +43,29 @@ class SourceManager implements AutoCloseable {
         return textFiles;
     }
 
-    TextDocument load(TextFile file) {
+    /**
+     * Load a textfile without caching it.
+     */
+    TextDocument load(TextFile file) throws IOException {
+        return TextDocument.create(file);
+    }
+
+    TextDocument get(TextFile file) throws IOException {
+        SoftReference<TextDocument> ref = files.get(file.getFileId());
+        TextDocument loaded = ref == null ? null : ref.get();
+        if (loaded == null) {
+            loaded = load(file);
+            files.put(file.getFileId(), new SoftReference<>(loaded));
+        }
+        return loaded;
+    }
+
+    TextDocument getUnchecked(TextFile file) {
         try {
-            return TextDocument.create(file);
+            return get(file);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
-    }
-
-    TextDocument get(TextFile file) {
-        TextDocument textDocument = files.computeIfAbsent(file.getFileId(), f -> new SoftReference<>(load(fileByPathId.get(f)))).get();
-        if (textDocument == null) {
-            // SoftReference was freed up already, recreate it
-            TextDocument doc = load(file);
-            files.put(file.getFileId(), new SoftReference<>(doc));
-            return doc;
-        }
-        return textDocument;
     }
 
     public int size() {
@@ -79,7 +85,7 @@ class SourceManager implements AutoCloseable {
     public Chars getSlice(Mark mark) {
         TextFile textFile = fileByPathId.get(mark.getToken().getFileId());
         assert textFile != null : "No such file " + mark.getToken().getFileId();
-        TextDocument doc = get(textFile);
+        TextDocument doc = getUnchecked(textFile);
         assert doc != null;
         FileLocation loc = mark.getLocation();
         TextRegion lineRange = doc.createLineRange(loc.getStartLine(), loc.getEndLine());

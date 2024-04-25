@@ -60,8 +60,7 @@ class MatchAlgorithmTest {
         TokenFileSet.TokenFile file = tokens.tokenize(cpdLexer, sourceCode);
         assertEquals(44, file.size());
 
-        MatchAlgorithm matchAlgorithm = new MatchAlgorithm(tokens, 5);
-        List<Match> matches = matchAlgorithm.findMatches(new CPDNullListener(), sourceManager);
+        List<Match> matches = MatchAlgorithm.findMatches(new CPDNullListener(), sourceManager, tokens, 5);
         assertEquals(1, matches.size());
         Match match = matches.get(0);
 
@@ -90,8 +89,7 @@ class MatchAlgorithmTest {
         TextDocument sourceCode = sourceManager.get(textFile);
         tokens.tokenize(cpdLexer, sourceCode);
 
-        MatchAlgorithm matchAlgorithm = new MatchAlgorithm(tokens, 15);
-        List<Match> matches = matchAlgorithm.findMatches(new CPDNullListener(), sourceManager);
+        List<Match> matches = MatchAlgorithm.findMatches(new CPDNullListener(), sourceManager, tokens, 15);
         assertEquals(1, matches.size());
         Match match = matches.get(0);
 
