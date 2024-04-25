@@ -24,6 +24,9 @@ These improvements apply to all supported languages, irrespective of supported f
 
 - The new Java rule {%rule java/bestpractices/UnnecessaryVarargsArrayCreation %} reports explicit array creation
   when a varargs is expected. This is more heavy to read and could be simplified.
+- The new Java rule {%rule java/errorprone/ConfusingArgumentToVarargsMethod %} reports some confusing situations
+  where a varargs method is called with an inexact argument type. These may end up in a mismatch between the expected
+  parameter type and the actual value.
 
 - The new Java rule {% rule "java/codestyle/LambdaCanBeMethodReference" %} reports lambda expressions that can be replaced
   with a method reference. Please read the documentation of the rule for more info. This rule is now part of the Quickstart
