@@ -346,6 +346,8 @@ tweet="${tweet//$'\r'/}"
 tweet="${tweet//$'\n'/%0A}"
 echo "*   Tweet about this release on https://twitter.com/pmd_analyzer:"
 echo "        <https://twitter.com/intent/tweet?text=$tweet>"
+echo "*   Post this also into <https://matrix.to/#/#pmd_pmd:gitter.im>:"
+echo "        PMD ${RELEASE_VERSION} released: https://github.com/pmd/pmd/releases/tag/pmd_releases/${RELEASE_VERSION} #PMD"
 echo
 echo
 echo "Now waiting for the release to be finished..."
