@@ -16,6 +16,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🐛 Fixed Issues
 
+* java-bestpractices
+  * [#4975](https://github.com/pmd/pmd/issues/4975): \[java] UnusedPrivateMethod false positive when using @MethodSource on a @Nested test
+
 ### 🚨 API Changes
 
 ### ✨ External Contributions
