@@ -54,6 +54,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         //   first set, ie, not every call in the file.
 
         Set<String> methodsUsedByAnnotations = file.descendants(ASTMethodDeclaration.class)
+            .crossFindBoundaries()
             .children(ASTModifierList.class)
             .children(ASTAnnotation.class)
             .filter(t -> TypeTestUtil.isA("org.junit.jupiter.params.provider.MethodSource", t))
