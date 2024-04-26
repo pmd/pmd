@@ -15,25 +15,23 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀 New and noteworthy
 
 #### More robust CPD reports
-
-There were a number of circumstances, specially around (but not limited to) literal sequences, were CPD would report duplicate overlapping or partially overlapping matches. These have now been fixed, and CPD will report only the longest non-overlapping duplicate.
+There were a number of circumstances, specially around (but not limited to) literal sequences, were CPD would
+report duplicate overlapping or partially overlapping matches. These have now been fixed, and CPD will report
+only the longest non-overlapping duplicate.
 
 These improvements apply to all supported languages, irrespective of supported flags.
 
-### ✨ New rules
-
+#### ✨ New Rules
 - The new Java rule {%rule java/bestpractices/UnnecessaryVarargsArrayCreation %} reports explicit array creation
   when a varargs is expected. This is more heavy to read and could be simplified.
 - The new Java rule {%rule java/errorprone/ConfusingArgumentToVarargsMethod %} reports some confusing situations
   where a varargs method is called with an inexact argument type. These may end up in a mismatch between the expected
   parameter type and the actual value.
-
 - The new Java rule {% rule "java/codestyle/LambdaCanBeMethodReference" %} reports lambda expressions that can be replaced
   with a method reference. Please read the documentation of the rule for more info. This rule is now part of the Quickstart
   ruleset.
 
-### 🌟 Rule Changes
-
+#### 🌟 Rule Changes
 * {%rule java/bestpractices/JUnitTestsShouldIncludeAssert %} and {% rule java/bestpractices/JUnitTestContainsTooManyAsserts %}
   have a new property named `extraAssertMethodNames`. With this property, you can configure which additional static
   methods should be considered as valid verification methods. This allows to use custom mocking or assertion libraries.
@@ -88,16 +86,19 @@ These improvements apply to all supported languages, irrespective of supported f
   * [#4967](https://github.com/pmd/pmd/pull/4967): Fix reproducible build issues with 7.0.0
 
 ### 🚨 API Changes
-
 #### Deprecated methods
-
-* {% jdoc java::lang.java.ast.ASTLambdaExpression#getBlock() %} and {% jdoc java::lang.java.ast.ASTLambdaExpression#getExpression() %}
-* {%jdoc java::lang.java.rule.design.SingularFieldRule#mayBeSingular(java::lang.java.ast.ModifierOwner) %} has been deprecated for
-  removal. The method is only useful for the rule itself and shouldn't be used otherwise.
+* pmd-java
+  * {% jdoc !!java::lang.java.ast.ASTLambdaExpression#getBlock() %} and {% jdoc !!java::lang.java.ast.ASTLambdaExpression#getExpression() %}
+  * {% jdoc !!java::lang.java.rule.design.SingularFieldRule#mayBeSingular(java::lang.java.ast.ModifierOwner) %} has been deprecated for
+    removal. The method is only useful for the rule itself and shouldn't be used otherwise.
 
 ### ✨ External Contributions
 * [#4864](https://github.com/pmd/pmd/pull/4864): Fix #1084 \[Java] add extra assert method names to Junit rules - [Erwan Moutymbo](https://github.com/emouty) (@emouty)
 * [#4894](https://github.com/pmd/pmd/pull/4894): Fix #4791 Error caused by space in JDK path - [Scrates1](https://github.com/Scrates1) (@Scrates1)
 
-{% endtocmaker %}
+### 📈 Stats
+* 205 commits
+* 71 closed tickets & PRs
+* Days since last release: 34
 
+{% endtocmaker %}
