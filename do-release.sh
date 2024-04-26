@@ -245,9 +245,6 @@ ${NEW_RELEASE_NOTES}
 
 ${OLD_RELEASE_NOTES}" > docs/pages/release_notes_old.md
 
-# update release_notes_pmd7 with prerendered version (jdoc tags are replaced with released version)
-echo "$RELEASE_NOTES_PMD7" > docs/pages/release_notes_pmd7.md
-
 # reset release notes template
 cat > docs/pages/release_notes.md <<EOF
 ---
