@@ -85,8 +85,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.1.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 26-April-2024</div>
+    <li class="sidebarTitle">PMD 7.2.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 31-May-2024</div>
     
     
     
@@ -1871,151 +1871,19 @@
         <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
     </details>
 
-  <h2 id="26-april-2024---710-snapshot">26-April-2024 - 7.1.0-SNAPSHOT</h2>
+  <h2 id="31-may-2024---720-snapshot">31-May-2024 - 7.2.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 7.1.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 7.2.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
-<h4 id="more-robust-cpd-reports">More robust CPD reports</h4>
-
-<p>There were a number of circumstances, specially around (but not limited to) literal sequences, were CPD would report duplicate overlapping or partially overlapping matches. These have now been fixed, and CPD will report only the longest non-overlapping duplicate.</p>
-
-<p>These improvements apply to all supported languages, irrespective of supported flags.</p>
-
-<h3 id="-new-rules">✨ New rules</h3>
-
-<ul>
-  <li>The new Java rule <a href="pmd_rules_java_bestpractices.html#unnecessaryvarargsarraycreation"><code class="language-plaintext highlighter-rouge">UnnecessaryVarargsArrayCreation</code></a> reports explicit array creation
-when a varargs is expected. This is more heavy to read and could be simplified.</li>
-  <li>
-    <p>The new Java rule <a href="pmd_rules_java_errorprone.html#confusingargumenttovarargsmethod"><code class="language-plaintext highlighter-rouge">ConfusingArgumentToVarargsMethod</code></a> reports some confusing situations
-where a varargs method is called with an inexact argument type. These may end up in a mismatch between the expected
-parameter type and the actual value.</p>
-  </li>
-  <li>The new Java rule <a href="pmd_rules_java_codestyle.html#lambdacanbemethodreference"><code class="language-plaintext highlighter-rouge">LambdaCanBeMethodReference</code></a> reports lambda expressions that can be replaced
-with a method reference. Please read the documentation of the rule for more info. This rule is now part of the Quickstart
-ruleset.</li>
-</ul>
-
-<h3 id="-rule-changes">🌟 Rule Changes</h3>
-
-<ul>
-  <li><a href="pmd_rules_java_bestpractices.html#junittestsshouldincludeassert"><code class="language-plaintext highlighter-rouge">JUnitTestsShouldIncludeAssert</code></a> and <a href="pmd_rules_java_bestpractices.html#junittestcontainstoomanyasserts"><code class="language-plaintext highlighter-rouge">JUnitTestContainsTooManyAsserts</code></a>
-have a new property named <code class="language-plaintext highlighter-rouge">extraAssertMethodNames</code>. With this property, you can configure which additional static
-methods should be considered as valid verification methods. This allows to use custom mocking or assertion libraries.</li>
-</ul>
-
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
-<ul>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/494">#494</a>: [core] Adopt JApiCmp to enforce control over API changes</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4942">#4942</a>: [core] CPD: <code class="language-plaintext highlighter-rouge">--skip-duplicate-files</code> has no effect (7.0.0 regression)</li>
-      <li><a href="https://github.com/pmd/pmd/pull/4959">#4959</a>: [core] Upgrade saxon to 12.4</li>
-    </ul>
-  </li>
-  <li>cli
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4791">#4791</a>: [cli] Could not find or load main class</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4913">#4913</a>: [cli] cpd-gui closes immediately</li>
-    </ul>
-  </li>
-  <li>doc
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4901">#4901</a>: [doc] Improve documentation on usage of violationSuppressXPath</li>
-    </ul>
-  </li>
-  <li>apex
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4418">#4418</a>: [apex] ASTAnnotation.getImage() does not return value as written in the class</li>
-    </ul>
-  </li>
-  <li>apex-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3953">#3953</a>: [apex] EmptyCatchBlock false positive with formal (doc) comments</li>
-    </ul>
-  </li>
-  <li>cpp
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2438">#2438</a>: [cpp] Repeated Duplication blocks</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4899">#4899</a>: [java] Parsing failed in ParseLock#doParse() java.io.IOException: Stream closed</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4902">#4902</a>: [java] “Bad intersection, unrelated class types” for Constable[] and Enum[]</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4947">#4947</a>: [java] Broken TextBlock parser</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1084">#1084</a>: [java] Allow JUnitTestsShouldIncludeAssert to configure verification methods</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3216">#3216</a>: [java] New rule: UnnecessaryVarargsArrayCreation</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4435">#4435</a>: [java] [7.0-rc1] UnusedAssignment for used field</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4569">#4569</a>: [java] ForLoopCanBeForeach reports on loop <code class="language-plaintext highlighter-rouge">for (int i = 0; i &lt; list.size(); i += 2)</code></li>
-      <li><a href="https://github.com/pmd/pmd/issues/4618">#4618</a>: [java] UnusedAssignment false positive with conditional assignments of fields</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4602">#4602</a>: [java] UnnecessaryImport: false positives with static imports</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4785">#4785</a>: [java] False Positive: PMD Incorrectly report violation for UnnecessaryImport</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4779">#4779</a>: [java] Examples in documentation of MethodArgumentCanBeFinal do not trigger the rule</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4881">#4881</a>: [java] ClassNamingConventions: interfaces are identified as abstract classes (regression in 7.0.0)</li>
-    </ul>
-  </li>
-  <li>java-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2440">#2440</a>: [java] FinalFieldCouldBeStatic FN when the right side of the assignment is a constant expression</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3694">#3694</a>: [java] SingularField ignores static variables</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4873">#4873</a>: [java] AvoidCatchingGenericException: Can no longer suppress on the exception itself</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2056">#2056</a>: [java] CloseResource false-positive with URLClassLoader in cast expression</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4751">#4751</a>: [java] PMD crashes when analyzing CloseResource Rule</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4928">#4928</a>: [java] EmptyCatchBlock false negative when allowCommentedBlocks=true</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4948">#4948</a>: [java] ImplicitSwitchFallThrough: False-positive with nested switch statements</li>
-    </ul>
-  </li>
-  <li>java-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3845">#3845</a>: [java] InsufficientStringBufferDeclaration should consider literal expression</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4874">#4874</a>: [java] StringInstantiation: False-positive when using <code class="language-plaintext highlighter-rouge">new String(charArray)</code></li>
-      <li><a href="https://github.com/pmd/pmd/issues/4886">#4886</a>: [java] BigIntegerInstantiation: False Positive with Java 17 and BigDecimal.TWO</li>
-    </ul>
-  </li>
-  <li>pom-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4388">#4388</a>: [pom] InvalidDependencyTypes doesn’t consider dependencies at all</li>
-    </ul>
-  </li>
-  <li>misc
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/pull/4967">#4967</a>: Fix reproducible build issues with 7.0.0</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="-api-changes">🚨 API Changes</h3>
 
-<h4 id="deprecated-methods">Deprecated methods</h4>
-
-<ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.1.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLambdaExpression.html#getBlock()"><code>getBlock</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.1.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLambdaExpression.html#getExpression()"><code>getExpression</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.1.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/design/SingularFieldRule.html#mayBeSingular(net.sourceforge.pmd.lang.java.ast.ModifierOwner)"><code>mayBeSingular</code></a> has been deprecated for
-removal. The method is only useful for the rule itself and shouldn’t be used otherwise.</li>
-</ul>
-
 <h3 id="-external-contributions">✨ External Contributions</h3>
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/4864">#4864</a>: Fix #1084 [Java] add extra assert method names to Junit rules - <a href="https://github.com/emouty">Erwan Moutymbo</a> (@emouty)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/4894">#4894</a>: Fix #4791 Error caused by space in JDK path - <a href="https://github.com/Scrates1">Scrates1</a> (@Scrates1)</li>
-</ul>
 
 
 
@@ -2046,7 +1914,7 @@ removal. The method is only useful for the rule itself and shouldn’t be used o
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 25, 2024 <br />
+             Site last generated: Apr 26, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
