@@ -15,7 +15,7 @@ import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.cpd.TokenFactory;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
-import com.nawforce.apexparser.ApexLexer;
+import io.github.apexdevtools.apexparser.ApexLexer;
 
 public class ApexCpdLexer implements CpdLexer {
     @Override

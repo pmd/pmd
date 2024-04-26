@@ -15,6 +15,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀 New and noteworthy
 
 ### 🐛 Fixed Issues
+* apex
+  * [#4922](https://github.com/pmd/pmd/issues/4922): \[apex] TYPEOF in sub-query throws error
 
 ### 🚨 API Changes
 

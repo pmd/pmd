@@ -41,4 +41,12 @@ class ApexTreeDumpTest extends BaseTreeDumpTest {
     void nullCoalescingOperator() {
         doTest("NullCoalescingOperator");
     }
+
+    /**
+     * @see <a href="https://github.com/pmd/pmd/issues/4922">[apex] TYPEOF in sub-query throws error #4922</a>
+     */
+    @Test
+    void typeOfSubQuery() {
+        doTest("TypeofTest");
+    }
 }
