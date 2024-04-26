@@ -59,10 +59,6 @@ final class TokenFileSet {
     }
 
 
-    boolean isPreviousTokenEqual(SmallTokenEntry fst, SmallTokenEntry snd) {
-        return fst.prevToken == snd.prevToken;
-    }
-
     List<List<SmallTokenEntry>> hashAll(int minTileSize, int mod) {
         IntObjectMap<Object> markGroups = new IntObjectHashMap<>();
         int lastMod = 1;

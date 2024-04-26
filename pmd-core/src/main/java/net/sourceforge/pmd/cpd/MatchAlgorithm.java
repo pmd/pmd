@@ -23,9 +23,7 @@ class MatchAlgorithm {
         System.gc();
 
         cpdListener.phaseUpdate(CPDListener.MATCH);
-        markGroups.stream().forEach(group -> {
-            matchCollector.collect(group, tokens, minTileSize);
-        });
+        markGroups.forEach(group -> matchCollector.collect(group, tokens, minTileSize));
 
         cpdListener.phaseUpdate(CPDListener.DONE);
         return matchCollector.getMatches();
