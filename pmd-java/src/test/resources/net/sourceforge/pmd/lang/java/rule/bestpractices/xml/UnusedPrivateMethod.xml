@@ -1937,4 +1937,31 @@ class FooTest{
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UnusedPrivateMethod FP with Junit 5 @MethodSource and default factory method name #4278</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.ParameterizedTest;
+
+class FooTest{
+    private static Stream<Arguments> testGetUsername_noMethodSourceValue() {
+        return Stream.of(
+                Arguments.of("foo"),
+                Arguments.of("bar"),
+                Arguments.of("baz")
+        );
+    }
+
+    @MethodSource
+    @ParameterizedTest
+    void testGetUsername_noMethodSourceValue(String username) {
+        User sut = new User(username);
+
+        Assertions.assertEquals(username, sut.getUsername());
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
