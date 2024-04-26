@@ -24,6 +24,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.LexException;
+import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
 import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.InternalApiBridge;
@@ -171,7 +172,7 @@ public final class CpdAnalysis implements AutoCloseable {
                     int newTokens = doTokenize(textDocument, tokenizers.get(textFile.getLanguageVersion().getLanguage()), tokens);
                     numberOfTokensPerFile.put(textDocument.getFileId(), newTokens);
                     listener.addedFile(1);
-                } catch (LexException | IOException e) {
+                } catch (LexException | IOException | MalformedSourceException e) {
                     if (e instanceof FileAnalysisException) { // NOPMD
                         ((FileAnalysisException) e).setFileId(textFile.getFileId());
                     }
