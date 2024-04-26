@@ -86,8 +86,8 @@ public class TokenEntry implements Comparable<TokenEntry> {
         return this.identifier;
     }
 
-    int getIndex() {
-        return this.index;
+    long getIndex() {
+        return (long) this.fileIdInternal << 32 | (long) this.index;
     }
 
     @Override
@@ -118,7 +118,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
 
     @Override
     public int compareTo(TokenEntry other) {
-        return getIndex() - other.getIndex();
+        return Long.compare(this.getIndex(), other.getIndex());
     }
 
     final void setImageIdentifier(int identifier) {
@@ -141,4 +141,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
         return Integer.toString(identifier);
     }
 
+    public int getLocalIndex() {
+        return index;
+    }
 }

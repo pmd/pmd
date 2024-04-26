@@ -82,7 +82,7 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
     }
 
     public int getEndIndex() {
-        return getMark(0).getToken().getIndex() + getTokenCount() - 1;
+        return getMark(0).getToken().getLocalIndex() + getTokenCount() - 1;
     }
 
     private Mark getMark(int index) {

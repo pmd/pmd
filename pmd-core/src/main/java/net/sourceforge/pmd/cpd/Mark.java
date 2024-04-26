@@ -51,11 +51,11 @@ public final class Mark implements Comparable<Mark> {
     }
 
     public int getBeginTokenIndex() {
-        return this.token.getIndex();
+        return this.token.getLocalIndex();
     }
 
     public int getEndTokenIndex() {
-        return getEndToken().getIndex();
+        return getEndToken().getLocalIndex();
     }
 
     void setEndToken(@NonNull TokenEntry endToken) {

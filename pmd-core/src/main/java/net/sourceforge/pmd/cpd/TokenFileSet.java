@@ -3,7 +3,6 @@ package net.sourceforge.pmd.cpd;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -78,7 +77,7 @@ final class TokenFileSet {
 
     public TokenEntry getEndToken(TokenEntry token, int matchLen) {
         TokenFile tokenFile = files.get(token.getFileIdInternal());
-        return tokenFile.getTokenEntry(token.getIndex() + matchLen - 1);
+        return tokenFile.getTokenEntry(token.getLocalIndex() + matchLen - 1);
     }
 
     /** This is called during building. May be called by parallel threads. */
@@ -136,7 +135,7 @@ final class TokenFileSet {
             if (!entry.getFileId().equals(fileId)) {
                 throw new IllegalArgumentException("Cannot operate on token for different file");
             }
-            int indexInFile = entry.getIndex();
+            int indexInFile = entry.getLocalIndex();
             tokenFile.setImage(indexInFile, getImageId(newImage));
         }
 
@@ -254,13 +253,21 @@ final class TokenFileSet {
                 Object curEntry = markGroups.indexGet(index);
                 if (curEntry instanceof SmallTokenEntry) {
                     SmallTokenEntry fstTok = (SmallTokenEntry) curEntry;
+                    if (fstTok.prevToken == thisEntry.prevToken) {
+                        // part of a larger match, yeet them out
+                        markGroups.indexRemove(index);
+                        return;
+                    }
                     List<SmallTokenEntry> arr = new ArrayList<>(2);
                     arr.add(fstTok);
                     arr.add(thisEntry);
                     markGroups.indexReplace(index, arr);
                     recordList.accept(arr);
                 } else if (curEntry instanceof List) {
-                    ((List<SmallTokenEntry>) curEntry).add(thisEntry);
+                    boolean hadMatch = ((List<SmallTokenEntry>) curEntry).removeIf(it -> thisEntry.prevToken == it.prevToken);
+                    if (!hadMatch) {
+                        ((List<SmallTokenEntry>) curEntry).add(thisEntry);
+                    }
                 }
             } else {
                 markGroups.indexInsert(index, h, thisEntry);
@@ -295,10 +302,7 @@ final class TokenFileSet {
         }
     }
 
-    static final class SmallTokenEntry {
-        static final Comparator<SmallTokenEntry> COMP =
-            Comparator.<SmallTokenEntry>comparingInt(it -> it.fileId)
-                      .thenComparingInt(it -> it.indexInFile);
+    static final class SmallTokenEntry implements Comparable<SmallTokenEntry> {
         final int fileId;
         final int indexInFile;
         final int prevToken;
@@ -307,6 +311,13 @@ final class TokenFileSet {
             this.fileId = fileId;
             this.indexInFile = indexInFile;
             this.prevToken = prevToken;
+        }
+
+        @Override
+        public int compareTo(SmallTokenEntry o) {
+            int cmp = Integer.compare(this.fileId, o.fileId);
+            cmp = cmp != 0 ? cmp : Integer.compare(this.indexInFile, o.indexInFile);
+            return cmp;
         }
     }
 

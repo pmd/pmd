@@ -5,25 +5,22 @@
 package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
-import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.sourceforge.pmd.cpd.TokenFileSet.SmallTokenEntry;
 
-import com.carrotsearch.hppc.IntObjectHashMap;
-import com.carrotsearch.hppc.IntObjectMap;
+import com.carrotsearch.hppc.LongObjectHashMap;
+import com.carrotsearch.hppc.LongObjectMap;
 
 class MatchCollector {
 
-    private final Map<Integer, List<Match>> matchTree = new ConcurrentHashMap<>();
+    private final Map<Long, List<Match>> matchTree = new ConcurrentHashMap<>();
 
     /**
      * Determine the matches in the list of token entries, given that all these token entries have the same hash.
@@ -33,10 +30,11 @@ class MatchCollector {
      * @param minTileSize Tile size used for hashing
      */
     void collect(List<SmallTokenEntry> marks, TokenFileSet tokens, int minTileSize) {
-        filterMarks(marks);
-        marks.sort(SmallTokenEntry.COMP);
+        assert marks.stream().mapToInt(it -> it.prevToken).distinct().count() == marks.size()
+            : "By construction the items of a mark list should have distinct previous tokens";
+        marks.sort(Comparator.naturalOrder());
 
-        final IntObjectMap<SortedSet<Integer>> tokenMatchSets = new IntObjectHashMap<>();
+        final LongObjectMap<SortedSet<Long>> tokenMatchSets = new LongObjectHashMap<>();
         // first get a pairwise collection of all maximal matches
         int skipped;
         for (int i = 0; i < marks.size() - 1; i += skipped + 1) {
@@ -70,37 +68,7 @@ class MatchCollector {
         }
     }
 
-    /** Filter out marks which have the same previous token. These must be contained within another mark somewhere. */
-    private static void filterMarks(List<SmallTokenEntry> marks) {
-        BitSet forbiddenPrev = new BitSet();
-        BitSet duplicatedPrev = new BitSet();
-        for (ListIterator<SmallTokenEntry> iterator = marks.listIterator(); iterator.hasNext(); ) {
-            SmallTokenEntry tok = iterator.next();
-            if (tok == null) {
-                continue;
-            }
-            if (forbiddenPrev.get(tok.prevToken)) {
-                duplicatedPrev.set(tok.prevToken);
-                iterator.set(null);
-                continue;
-            }
-            forbiddenPrev.set(tok.prevToken);
-        }
-
-        for (ListIterator<SmallTokenEntry> iterator = marks.listIterator(); iterator.hasNext(); ) {
-            SmallTokenEntry tok = iterator.next();
-            if (tok == null) {
-                continue;
-            }
-            if (duplicatedPrev.get(tok.prevToken)) {
-                iterator.set(null);
-            }
-        }
-
-        marks.removeIf(Objects::isNull);
-    }
-
-    private void reportMatch(TokenEntry mark1, TokenEntry mark2, int dupes, IntObjectMap<SortedSet<Integer>> tokenMatchSets, TokenFileSet tokens) {
+    private void reportMatch(TokenEntry mark1, TokenEntry mark2, int dupes, LongObjectMap<SortedSet<Long>> tokenMatchSets, TokenFileSet tokens) {
         /*
          * Check if the match is previously know. This can happen when a snippet is duplicated more than once.
          * If A, B and C are identical snippets, MatchAlgorithm will find the matching pairs:
@@ -109,14 +77,14 @@ class MatchCollector {
          *  - BC
          * It should be reduced to a single match with 3 marks
          */
-        SortedSet<Integer> curMatchSet = computeIfAbsent(mark1.getIndex(), tokenMatchSets);
+        SortedSet<Long> curMatchSet = computeIfAbsent(mark1.getIndex(), tokenMatchSets);
         if (curMatchSet.contains(mark2.getIndex())) {
             return;
         }
 
         // This may not be a "new match", but actually a sub-match of a larger one.
         // always rely on the lowest mark index, as that's the order in which process them
-        final int lowestKey = curMatchSet.isEmpty() ? mark1.getIndex() : curMatchSet.first();
+        final long lowestKey = curMatchSet.isEmpty() ? mark1.getIndex() : curMatchSet.first();
 
         List<Match> matches = matchTree.computeIfAbsent(lowestKey, k -> new ArrayList<>(1));
         synchronized (matches) {
@@ -133,10 +101,10 @@ class MatchCollector {
                     }
 
                     // does the new match supersedes this one?
-                    if (otherEnd.getIndex() < mark2.getIndex() && otherEnd.getIndex() + m.getTokenCount() >= mark2.getIndex() + dupes) {
+                    if (matchContains(otherEnd, mark2, m.getTokenCount(), dupes)) {
                         // this match is embedded in the previous one… ignore it.
                         return;
-                    } else if (mark2.getIndex() < otherEnd.getIndex() && mark2.getIndex() + dupes >= otherEnd.getIndex() + m.getTokenCount()) {
+                    } else if (matchContains(mark2, otherEnd, dupes, m.getTokenCount())) {
                         // the new match is longer and overlaps with the old one - replace it
                         matchIterator.remove();
                         break;
@@ -160,6 +128,11 @@ class MatchCollector {
         // add matches in both directions
         registerTokenMatch(mark1, mark2, tokenMatchSets);
     }
+    private boolean matchContains(TokenEntry mark1, TokenEntry mark2, int tokenCount1, int tokenCount2) {
+        return mark1.getFileId() == mark2.getFileId()
+            && mark1.getLocalIndex() < mark2.getLocalIndex()
+            && mark1.getLocalIndex() + tokenCount1 >= mark2.getLocalIndex() + tokenCount2;
+    }
 
     private Mark makeMark(TokenEntry token, int matchLen, TokenFileSet tokens) {
         Mark mark = new Mark(token);
@@ -169,17 +142,17 @@ class MatchCollector {
     }
 
 
-    private SortedSet<Integer> computeIfAbsent(int key, IntObjectMap<SortedSet<Integer>> tokenMatchSets) {
+    private SortedSet<Long> computeIfAbsent(long key, LongObjectMap<SortedSet<Long>> tokenMatchSets) {
         int i = tokenMatchSets.indexOf(key);
         if (tokenMatchSets.indexExists(i)) {
             return tokenMatchSets.indexGet(i);
         }
-        SortedSet<Integer> value = new TreeSet<>(Comparator.naturalOrder());
+        SortedSet<Long> value = new TreeSet<>(Comparator.naturalOrder());
         tokenMatchSets.indexInsert(i, key, value);
         return value;
     }
 
-    private void registerTokenMatch(TokenEntry mark1, TokenEntry mark2, IntObjectMap<SortedSet<Integer>> tokenMatchSets) {
+    private void registerTokenMatch(TokenEntry mark1, TokenEntry mark2, LongObjectMap<SortedSet<Long>> tokenMatchSets) {
         computeIfAbsent(mark1.getIndex(), tokenMatchSets).add(mark2.getIndex());
         computeIfAbsent(mark2.getIndex(), tokenMatchSets).add(mark1.getIndex());
     }

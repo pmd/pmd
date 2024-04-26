@@ -71,10 +71,6 @@ public class Tokens {
         return tokens.size();
     }
 
-    TokenEntry getEndToken(TokenEntry mark, Match match) {
-        return getToken(mark.getIndex() + match.getTokenCount() - 1);
-    }
-
     public List<TokenEntry> getTokens() {
         return tokens;
     }
