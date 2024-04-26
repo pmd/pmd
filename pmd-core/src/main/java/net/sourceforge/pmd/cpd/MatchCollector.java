@@ -34,17 +34,23 @@ class MatchCollector {
             : "By construction the items of a mark list should have distinct previous tokens";
         marks.sort(Comparator.naturalOrder());
 
+        StringBuilder sb = new StringBuilder();
         final LongObjectMap<SortedSet<Long>> tokenMatchSets = new LongObjectHashMap<>();
         // first get a pairwise collection of all maximal matches
         int skipped;
         for (int i = 0; i < marks.size() - 1; i += skipped + 1) {
             skipped = 0;
+            for (int j = 0; j <= i; j++) {
+                sb.append("0,");
+            }
             SmallTokenEntry mark1 = marks.get(i);
             for (int j = i + 1; j < marks.size(); j++) {
                 SmallTokenEntry mark2 = marks.get(j);
+                // todo move that down
                 int dupes = tokens.countDupTokens(mark1, mark2);
                 boolean sameFile = mark1.fileId == mark2.fileId;
                 int diff = mark1.indexInFile - mark2.indexInFile;
+                sb.append(dupes).append(',');
                 if (sameFile && -diff < minTileSize) {
                     // self-repeating sequence such as ABBABBABB with min 6,
                     // will match 2 against any other occurrence of ABBABB
@@ -65,6 +71,11 @@ class MatchCollector {
 
                 reportMatch(tokens.toTokenEntry(mark1), tokens.toTokenEntry(mark2), dupes, tokenMatchSets, tokens);
             }
+            sb.append('\n');
+        }
+        if (marks.size() > 2) {
+            System.out.print(sb);
+            System.out.println("-----");
         }
     }
 

@@ -239,7 +239,11 @@ final class TokenFileSet {
                 hashCodes[i] = hash;
             }
 
-            for (int i = 0; i < size; i++) {
+            // Note we don't put the last `tileSize` tokens in the hashmap
+            // because by definition they cannot be followed by at least tileSize tokens
+            // and so will never be a match. Additionally, since their hash is incomplete
+            // they will often collide and form large buckets.
+            for (int i = 0; i < size - tileSize; i++) {
                 int h = hashCodes[i];
                 int prevToken = i == 0 ? 0 : identifiers[i - 1];
                 SmallTokenEntry thisEntry = new SmallTokenEntry(this.internalId, i, prevToken);
