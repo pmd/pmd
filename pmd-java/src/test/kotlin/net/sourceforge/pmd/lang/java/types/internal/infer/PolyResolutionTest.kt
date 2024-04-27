@@ -48,7 +48,7 @@ class PolyResolutionTest : ProcessorTestSpec({
 
                 static <T> T id(T t) { return t; }
 
-                {
+                void foo(int x) {
                     id(x > 0 ? Double.POSITIVE_INFINITY
                              : x < 0 ? Double.NEGATIVE_INFINITY
                                      : Double.NaN);
