@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -16,6 +17,7 @@ import net.sf.saxon.pattern.NodeTest;
 import net.sf.saxon.str.StringView;
 import net.sf.saxon.str.UnicodeString;
 import net.sf.saxon.tree.iter.AxisIterator;
+import net.sf.saxon.tree.iter.NodeListIterator;
 import net.sf.saxon.tree.util.Navigator.AxisFilter;
 import net.sf.saxon.tree.wrapper.AbstractNodeWrapper;
 import net.sf.saxon.tree.wrapper.SiblingCountingNode;
@@ -105,21 +107,8 @@ abstract class BaseNodeInfo extends AbstractNodeWrapper implements SiblingCounti
     }
 
     static <N extends NodeInfo> AxisIterator iterateList(List<N> nodes, boolean forwards) {
-        return forwards ? new NodeListIterator<>(nodes)
+        return forwards ? new NodeListIterator(Collections.unmodifiableList(nodes))
                         : new RevListAxisIterator<>(nodes);
-    }
-
-    private static class NodeListIterator<N extends NodeInfo> implements AxisIterator {
-        private final ListIterator<N> iter;
-
-        NodeListIterator(List<N> list) {
-            iter = list.listIterator();
-        }
-
-        @Override
-        public NodeInfo next() {
-            return this.iter.hasNext() ? this.iter.next() : null;
-        }
     }
 
     private static class RevListAxisIterator<N extends NodeInfo> implements AxisIterator {
