@@ -111,6 +111,19 @@ public final class CpdAnalysis implements AutoCloseable {
         }
     }
 
+    static List<Match> findMatches(@NonNull CPDListener cpdListener, SourceManager sourceManager, TokenFileSet tokens, int minTileSize) {
+        MatchCollector matchCollector = new MatchCollector(sourceManager, tokens, minTileSize);
+        cpdListener.phaseUpdate(CPDListener.HASH);
+        List<List<TokenFileSet.SmallTokenEntry>> markGroups = tokens.hashAll(minTileSize);
+        System.gc();
+
+        cpdListener.phaseUpdate(CPDListener.MATCH);
+        markGroups.forEach(matchCollector::collect);
+
+        cpdListener.phaseUpdate(CPDListener.DONE);
+        return matchCollector.getMatches();
+    }
+
     private void setLanguageProperties(Language language, CPDConfiguration configuration) {
         LanguagePropertyBundle props = configuration.getLanguageProperties(language);
 
@@ -190,7 +203,7 @@ public final class CpdAnalysis implements AutoCloseable {
                 }
 
                 LOGGER.debug("Running match algorithm on {} files...", sourceManager.size());
-                matches = MatchAlgorithm.findMatches(listener, sourceManager, tokens, configuration.getMinimumTileSize());
+                matches = findMatches(listener, sourceManager, tokens, configuration.getMinimumTileSize());
             }
             LOGGER.debug("Finished: {} duplicates found", matches.size());
 

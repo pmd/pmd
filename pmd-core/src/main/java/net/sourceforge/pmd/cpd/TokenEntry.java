@@ -18,7 +18,6 @@ public class TokenEntry implements Comparable<TokenEntry> {
     private final int fileIdInternal;
     private int index;
     private int identifier;
-    private int hashCode;
 
     /** constructor for EOF entries. */
     TokenEntry(FileId fileId, int line, int column) {
@@ -92,11 +91,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
 
     @Override
     public int hashCode() {
-        return hashCode;
-    }
-
-    void setHashCode(int hashCode) {
-        this.hashCode = hashCode;
+        return 31 * this.fileIdInternal + this.index;
     }
 
     @SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -108,17 +103,14 @@ public class TokenEntry implements Comparable<TokenEntry> {
             return false;
         }
         TokenEntry other = (TokenEntry) o;
-        if (other.isEof() != this.isEof()) {
-            return false;
-        } else if (this.isEof()) {
-            return other.getFileId().equals(this.getFileId());
-        }
-        return other.hashCode == hashCode;
+        return other.getIndex() == this.getIndex();
     }
 
     @Override
     public int compareTo(TokenEntry other) {
-        return Long.compare(this.getIndex(), other.getIndex());
+        int cmp = getFileId().compareTo(other.getFileId());
+        cmp = cmp != 0 ? cmp : Integer.compare(getLocalIndex(), other.getLocalIndex());
+        return cmp;
     }
 
     final void setImageIdentifier(int identifier) {
@@ -135,10 +127,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
 
     @Override
     public String toString() {
-        if (this.isEof()) {
-            return "EOF";
-        }
-        return Integer.toString(identifier);
+        return "Token(file=" + fileIdInternal + ", index=" + index + ")";
     }
 
     public int getLocalIndex() {

@@ -21,6 +21,7 @@ import com.carrotsearch.hppc.IntObjectMap;
 
 final class TokenFileSet {
 
+    static final int MOD = 37;
     /** A list of token files that are valid (tokenizer did not error). */
     private final List<TokenFile> files = new ArrayList<>();
     /** Global map of string (token images) to an integer identifier. */
@@ -39,11 +40,11 @@ final class TokenFileSet {
     }
 
 
-    int countDupTokens(SmallTokenEntry fst, SmallTokenEntry snd) {
+    int countDupTokens(SmallTokenEntry fst, SmallTokenEntry snd, int offset) {
         int[] f1 = files.get(fst.fileId).identifiers;
         int[] f2 = files.get(snd.fileId).identifiers;
-        final int i1 = fst.indexInFile;
-        final int i2 = snd.indexInFile;
+        final int i1 = fst.indexInFile + offset;
+        final int i2 = snd.indexInFile + offset;
         if (i1 < 0 || i2 < 0) {
             return 0;
         }
@@ -58,15 +59,15 @@ final class TokenFileSet {
     }
 
 
-    List<List<SmallTokenEntry>> hashAll(int minTileSize, int mod) {
+    List<List<SmallTokenEntry>> hashAll(int minTileSize) {
         IntObjectMap<Object> markGroups = new IntObjectHashMap<>();
         int lastMod = 1;
         for (int i = 0; i < minTileSize; i++) {
-            lastMod *= mod;
+            lastMod *= MOD;
         }
         List<List<SmallTokenEntry>> matches = new ArrayList<>();
         for (TokenFile file : files) {
-            file.computeHashes(minTileSize, mod, lastMod, markGroups, matches::add);
+            file.computeHashes(minTileSize, lastMod, markGroups, matches::add);
         }
         return matches;
     }
@@ -215,7 +216,7 @@ final class TokenFileSet {
             );
         }
 
-        void computeHashes(final int tileSize, final int mod, final int lastMod, IntObjectMap<Object> markGroups, Consumer<List<SmallTokenEntry>> recordList) {
+        void computeHashes(final int tileSize, final int lastMod, IntObjectMap<Object> markGroups, Consumer<List<SmallTokenEntry>> recordList) {
             if (size < tileSize) {
                 // nothing to do, the file does not contain a full tile
                 return;
@@ -228,14 +229,14 @@ final class TokenFileSet {
             int last = size - tileSize;
             for (int i = size - 1; i >= last; i--) {
                 int id = this.identifiers[i];
-                hash = mod * hash + id;
+                hash = MOD * hash + id;
                 hashCodes[i] = hash;
             }
 
             for (int i = last - 1; i >= 0; i--) {
                 int thisId = identifiers[i];
                 int lastId = identifiers[i + tileSize];
-                hash = mod * hash + thisId - lastMod * lastId;
+                hash = MOD * hash + thisId - lastMod * lastId;
                 hashCodes[i] = hash;
             }
 
@@ -319,9 +320,15 @@ final class TokenFileSet {
 
         @Override
         public int compareTo(SmallTokenEntry o) {
-            int cmp = Integer.compare(this.fileId, o.fileId);
-            cmp = cmp != 0 ? cmp : Integer.compare(this.indexInFile, o.indexInFile);
-            return cmp;
+            return Long.compare(getGlobalIndex(), o.getGlobalIndex());
+        }
+
+        long getGlobalIndex() {
+            return (long) fileId << 32 | (long) indexInFile;
+        }
+
+        public String toString() {
+            return "Token(file=" + fileId + ", index=" + indexInFile + ")";
         }
     }
 
