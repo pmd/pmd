@@ -577,7 +577,12 @@ public final class Infer {
                 // we only test it can reduce, we don't commit inferred types at this stage
                 InferenceContext ctxCopy = infCtx.copy();
                 LOG.applicabilityTest(ctxCopy, m);
-                ctxCopy.solve(/*onlyBoundedVars:*/isPreJava8());
+                try {
+                    ctxCopy.solve(/*onlyBoundedVars:*/isPreJava8());
+                } catch (ResolutionFailedException | IllegalArgumentException ignored) {
+                    // applicability test failed for this candidate, but continue with others
+                    return null;
+                }
 
                 // if unchecked conversion was needed, update the site for invocation pass
                 if (ctxCopy.needsUncheckedConversion()) {
