@@ -9,8 +9,13 @@ import java.util.BitSet;
 import java.util.Comparator;
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.cpd.TokenFileSet.SmallTokenEntry;
 
+/**
+ * Collect matches by computing the similarity between different tokens that had the same hash.
+ */
 class MatchCollector {
 
     private final List<Match> matchList = new ArrayList<>();
@@ -25,7 +30,7 @@ class MatchCollector {
     /**
      * Determine the matches in the list of token entries, given that all these token entries have the same hash.
      *
-     * @param marks       List of tokens
+     * @param marks List of tokens
      */
     void collect(List<SmallTokenEntry> marks) {
         assert marks.stream().mapToInt(it -> it.prevToken).distinct().count() == marks.size()
@@ -36,6 +41,7 @@ class MatchCollector {
         }
 
         if (marks.size() == 2) {
+            // common happy path
             SmallTokenEntry fst = marks.get(0);
             SmallTokenEntry snd = marks.get(1);
             int dupes = tokens.countDupTokens(fst, snd, 0);
@@ -48,7 +54,7 @@ class MatchCollector {
         marks.sort(Comparator.naturalOrder());
 
         /*
-            Compute the common prefix length of each token (mark) with all other tokens in the list.
+            Compute the common prefix length of each token (=mark) with all other tokens in the list.
             We have
                 preflen(A, B) = preflen(B, A)
             and
@@ -65,30 +71,31 @@ class MatchCollector {
             C    _  _  _  1
             D    _  _  _  _
 
-            This is what we want to compute. How would you do it?
-
-            The diagonal does not need to be computed, and the lower half neither because of symmetry.
-            Now since we proceed row major we will first compute row A, that is preflen(A, x) for x in {B, C, D}.
+            The diagonal does not need to be computed, and neither does the lower half because of symmetry.
+            Now since we proceed row major (for cache reuse) we will first compute row A, that is preflen(A, x) for x in {B, C, D}.
             Given the second fact above, we know that preflen(B,C) >= min(preflen(A,B), preflen(B,C)) = min(2, 3) = 2.
             This is stored in the table off as a lower bound on preflen(B,C).
-            When computing the second row, which is preflen(B,C), we can avoid checking the
-            first two tokens of B and C as we know they have them in common with A, so they must have
-            them in common together as well.
+            When computing the second row, for preflen(B,C), we can avoid checking the first two tokens of B and C,
+            as we know they have them in common with A, so they must have them in common together as well.
             At each row i, we use the first pair (i, i+1) as a pivot to compute the lower bounds for row i+1.
 
-            In practice this optimization is very advantageous.
-            If we enter this MatchCollector function, then the marks in the list have the same hash. Because of the
-            way hashes are computed (taking tile size into account), it is very likely that tokens having
-            the same hash have a preflen greater than the tile size. Since the tile size is routinely hundreds of tokens,
-            we are saving that many unnecessary comparisons. Eg for perfect matches only one comparison is necessary.
-            Also remember that this algorithm is still quadratic in the number of marks in the list, so speeding up
-            each cell provides a very significant runtime improvement.
-
+            In practice this optimization is very useful.
+            If we enter this MatchCollector function, then the marks in the list have the same hash. Because the hash
+            computation takes tile size into account, it is very likely that tokens having the same hash have a preflen
+            greater than the tile size. Since the tile size is routinely hundreds of tokens, we are saving at least that
+            many unnecessary comparisons _per cell_ (and number of cell is quadratic). In particular for perfect matches
+            only one comparison is necessary.
          */
 
         int[] off = new int[marks.size()];
 
-        Match[] matches = new Match[marks.size()];
+        /*
+            Duplicates create a Match in this array. The same Match object is put in the cell of both indices that matched,
+            but the rightmost one is marked as aliased in the bit set. This is here to merge transitive matches. Eg if you
+            match AB and then BC, then you end up with a match ABC that is in the cells of A, B and C. But only A is set
+            to "not aliased", so only it will be reported in the end, because it is the same object as the others.
+         */
+        @Nullable Match[] matches = new Match[marks.size()];
         BitSet isAliased = new BitSet(marks.size());
 
         for (int i = 0; i < marks.size() - 1; i++) {
@@ -116,6 +123,7 @@ class MatchCollector {
             }
         }
 
+        // report all non-aliased matches
         for (int i = isAliased.nextClearBit(0); i < matches.length; i = isAliased.nextClearBit(i + 1)) {
             Match match = matches[i];
             if (match != null) {
@@ -124,7 +132,7 @@ class MatchCollector {
         }
     }
 
-    private void handleDuplicate(int i, int j, SmallTokenEntry mark1, SmallTokenEntry mark2, int dupes, Match[] matches) {
+    private void handleDuplicate(int i, int j, SmallTokenEntry mark1, SmallTokenEntry mark2, int dupes, @Nullable Match[] matches) {
         Match match = matches[i];
         if (match == null) {
             match = new Match(dupes);
@@ -143,21 +151,21 @@ class MatchCollector {
     }
 
     private boolean isDuplicate(SmallTokenEntry mark1, SmallTokenEntry mark2, int dupes) {
-        boolean sameFile = mark1.fileId == mark2.fileId;
-        int diff = mark1.indexInFile - mark2.indexInFile;
-        if (sameFile && -diff < minTileSize) {
-            // self-repeating sequence such as ABBABBABB with min 6,
-            // will match 2 against any other occurrence of ABBABB
-            return false;
-        }
-
         // "match too small" check
-        //int dupes = tokens.countDupTokens(mark1, mark2);
         if (dupes < minTileSize) {
             return false;
         }
-        // blocks do not overlap
-        return !sameFile || diff + dupes < 1;
+
+        boolean sameFile = mark1.fileId == mark2.fileId;
+        if (!sameFile) {
+            return true;
+        }
+
+        // todo I believe this is always true
+        int distance = mark2.indexInFile - mark1.indexInFile;
+        // check that they do not overlap
+        return distance >= minTileSize
+            || dupes < distance + 1;
     }
 
     private void recordMatch(Match match) {

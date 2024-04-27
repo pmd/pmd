@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
@@ -19,6 +23,13 @@ import net.sourceforge.pmd.lang.document.TextDocument;
 import com.carrotsearch.hppc.IntObjectHashMap;
 import com.carrotsearch.hppc.IntObjectMap;
 
+/**
+ * Stores the lexed tokens by file (one {@link TokenFile} per file). Token files can be lexed in parallel and recorded
+ * into this data structure. Once lexing is done, this data structure implements routines for hashing tokens and for the
+ * {@link MatchCollector} to use.
+ *
+ * <p>This is a more space-efficient replacement for {@link Tokens}, also Tokens never had the ability to lex in parallel.
+ */
 final class TokenFileSet {
 
     static final int MOD = 37;
@@ -39,7 +50,10 @@ final class TokenFileSet {
         return images.entrySet().stream().filter(it -> it.getValue() == i).findFirst().map(Map.Entry::getKey).orElse(null);
     }
 
-
+    /**
+     * Count the maximum common prefix length of the token sequence starting at
+     * each token + the given offset in their respective file.
+     */
     int countDupTokens(SmallTokenEntry fst, SmallTokenEntry snd, int offset) {
         int[] f1 = files.get(fst.fileId).identifiers;
         int[] f2 = files.get(snd.fileId).identifiers;
@@ -59,16 +73,29 @@ final class TokenFileSet {
     }
 
 
+    /**
+     * The top level hash function. Followed by {@link MatchCollector#collect(List)}
+     *
+     * @param minTileSize Minimum size of a duplication
+     *
+     * @return A list of buckets of tokens that have the same hash and should be processed by the matching algorithm.
+     */
     List<List<SmallTokenEntry>> hashAll(int minTileSize) {
-        IntObjectMap<Object> markGroups = new IntObjectHashMap<>();
+        // precompute this
         int lastMod = 1;
         for (int i = 0; i < minTileSize; i++) {
             lastMod *= MOD;
         }
+
+        // This is the hashmap that buckets tokens according to their hash
+        IntObjectMap<Object> markGroups = new IntObjectHashMap<>();
+        // This serves as a sink to receive the matching lists, to avoid iterating the hashmap after we're done.
         List<List<SmallTokenEntry>> matches = new ArrayList<>();
         for (TokenFile file : files) {
             file.computeHashes(minTileSize, lastMod, markGroups, matches::add);
         }
+        // Those lists may be empty or single-element as we remove elements sometimes
+        matches.removeIf(it -> it.size() < 2);
         return matches;
     }
 
@@ -112,8 +139,12 @@ final class TokenFileSet {
         return new TokenFileFactory(file);
     }
 
-    public FileId getFileId(int it) {
-        return files.get(it).fileId;
+
+    /**
+     * Return the file id from an internal id.
+     */
+    FileId getFileId(int internalId) {
+        return files.get(internalId).fileId;
     }
 
     final class TokenFileFactory implements TokenFactory {
@@ -163,7 +194,8 @@ final class TokenFileSet {
         /**
          * This is the index of this file in the containing TokenFileSet's list.
          * Only set if the tokenization did not error, as only then is the TokenFile
-         * placed in the list.
+         * placed in the list. This is not stable from run to run because the files
+         * may be lexed in parallel.
          */
         private int internalId = -1;
         private final FileId fileId;
@@ -216,13 +248,16 @@ final class TokenFileSet {
             );
         }
 
+        /**
+         * Hash the entire file and put the hashed tokens into the hashmap (key is hash, value is token or list of tokens).
+         */
         void computeHashes(final int tileSize, final int lastMod, IntObjectMap<Object> markGroups, Consumer<List<SmallTokenEntry>> recordList) {
+            final int size = this.size;
             if (size < tileSize) {
                 // nothing to do, the file does not contain a full tile
                 return;
             }
 
-            final int size = this.size;
             final int[] hashCodes = new int[size];
             int hash = 0;
 
@@ -252,6 +287,19 @@ final class TokenFileSet {
             }
         }
 
+        /**
+         * This routine adds a token to the hash table. Tokens that have the same hash are placed together into a list.
+         * Those lists are then handed to the match finder to compute the similarity between tokens with the same hash.
+         * Reducing the size of those lists is a crucial time optimization, because the match finder is quadratic
+         * in the length of the input list. One important optimization that we do is therefore to prune tokens from one
+         * of those list if they have the same preceding token. This is because they are then necessarily a suffix of a
+         * larger match, so they are useless.
+         *
+         * @param markGroups Hash map
+         * @param recordList Function to register the creation of a list, that way we don't have to iterate the hashmap to find them afterwards
+         * @param h          Hash of the current token
+         * @param thisEntry  The current token
+         */
         private static void addTokenToHashTable(IntObjectMap<Object> markGroups, Consumer<List<SmallTokenEntry>> recordList, int h, SmallTokenEntry thisEntry) {
             int index = markGroups.indexOf(h);
             if (markGroups.indexExists(index)) {
@@ -269,9 +317,11 @@ final class TokenFileSet {
                     markGroups.indexReplace(index, arr);
                     recordList.accept(arr);
                 } else if (curEntry instanceof List) {
-                    boolean hadMatch = ((List<SmallTokenEntry>) curEntry).removeIf(it -> thisEntry.prevToken == it.prevToken);
+                    @SuppressWarnings("unchecked")
+                    List<SmallTokenEntry> list = (List<SmallTokenEntry>) curEntry;
+                    boolean hadMatch = list.removeIf(it -> thisEntry.prevToken == it.prevToken);
                     if (!hadMatch) {
-                        ((List<SmallTokenEntry>) curEntry).add(thisEntry);
+                        list.add(thisEntry);
                     }
                 }
             } else {
@@ -307,9 +357,14 @@ final class TokenFileSet {
         }
     }
 
+    /**
+     * Small token identifier that is basically only an index to find info
+     * in the containing {@link TokenFileSet}.
+     */
     static final class SmallTokenEntry implements Comparable<SmallTokenEntry> {
         final int fileId;
         final int indexInFile;
+        /** This is here to do quick checks for containment in another match during hashing. */
         final int prevToken;
 
         SmallTokenEntry(int fileId, int indexInFile, int prevToken) {
@@ -318,6 +373,10 @@ final class TokenFileSet {
             this.prevToken = prevToken;
         }
 
+        /**
+         * Note that the compare function depends on the file internal id  which is
+         * not stable from run to run.
+         */
         @Override
         public int compareTo(SmallTokenEntry o) {
             return Long.compare(getGlobalIndex(), o.getGlobalIndex());

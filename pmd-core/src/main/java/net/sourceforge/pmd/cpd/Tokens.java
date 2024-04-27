@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.document.TextDocument;
 
 /**
  * Global token collector for CPD. This is populated by lexing all files,
- * after which the match algorithm proceeds.
+ * after which the match algorithm proceeds. Note that this is not thread-safe.
  */
 public class Tokens {
 

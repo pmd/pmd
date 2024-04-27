@@ -112,11 +112,10 @@ public final class CpdAnalysis implements AutoCloseable {
     }
 
     static List<Match> findMatches(@NonNull CPDListener cpdListener, TokenFileSet tokens, int minTileSize) {
-        MatchCollector matchCollector = new MatchCollector(tokens, minTileSize);
         cpdListener.phaseUpdate(CPDListener.HASH);
         List<List<TokenFileSet.SmallTokenEntry>> markGroups = tokens.hashAll(minTileSize);
-        System.gc();
 
+        MatchCollector matchCollector = new MatchCollector(tokens, minTileSize);
         cpdListener.phaseUpdate(CPDListener.MATCH);
         markGroups.forEach(matchCollector::collect);
 
@@ -178,7 +177,7 @@ public final class CpdAnalysis implements AutoCloseable {
             {
                 TokenFileSet tokens = new TokenFileSet();
 
-                boolean hasErrors = sourceManager.getTextFiles().stream().parallel().reduce(false, (hasErrorSoFar, textFile) -> {
+                boolean hasErrors = sourceManager.getTextFiles().parallelStream().reduce(false, (hasErrorSoFar, textFile) -> {
                     try {
                         TextDocument textDocument = sourceManager.load(textFile);
                         int newTokens = doTokenize(textDocument, tokenizers.get(textFile.getLanguageVersion().getLanguage()), tokens);

@@ -51,7 +51,10 @@ public class SimpleRenderer implements CPDReportRenderer {
 
     private void renderOn(CPDReport report, PrintWriter writer, Match match) throws IOException {
 
-        writer.append("Found a ").append(String.valueOf(match.getLineCount())).append(" line (").append(String.valueOf(match.getTokenCount()))
+        String tokenCount = match.getMinTokenCount() == match.getMaxTokenCount() ? String.valueOf(match.getMinTokenCount())
+                                                                                 : match.getMinTokenCount() + ".." + match.getMaxTokenCount();
+
+        writer.append("Found a ").append(String.valueOf(match.getLineCount())).append(" line (").append(tokenCount)
               .append(" tokens) duplication in the following files: ").println();
 
         for (Mark mark : match) {
