@@ -204,7 +204,7 @@ echo
 echo "Tag has been pushed.... now check github actions: <https://github.com/pmd/pmd/actions>"
 echo
 echo "Now wait, until first stage of the release is finished successfully..."
-echo "You don't need to wait until artefacts are in maven central, just the github action must be successful."
+echo "You don't need to wait until artifacts are in maven central, just the github action must be successful."
 echo
 echo "If it is failing, you can fix the code/scripts and force push the tag via"
 echo
