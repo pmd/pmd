@@ -5,10 +5,10 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
-import net.sourceforge.pmd.lang.test.ast.shouldBe
-import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import java.io.BufferedOutputStream
 import java.io.DataOutputStream
 import java.io.OutputStream
@@ -20,7 +20,6 @@ import java.io.OutputStream
  * but optimisations made them very fast.
  */
 class PolyResolutionTest : ProcessorTestSpec({
-
 
     parserTest("Test context passing overcomes null lower bound") {
 
@@ -371,6 +370,29 @@ class Scratch {
             lambda1 shouldHaveType Runnable::class.decl
             lambda2 shouldHaveType Runnable::class.decl
             lambda3 shouldHaveType Runnable::class.decl
+        }
+    }
+
+    parserTest("Test inference with varargs - bug #4980") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            import java.util.stream.Stream;
+            
+            class Foo {
+                public <T extends Number> T foo() {
+                    return null;
+                }
+                
+                public Stream<Number> bar() {
+                    return Stream.of(foo());
+                }
+            }
+        """)
+
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call shouldHaveType gen.`t_Stream{Number}`
         }
     }
 })
