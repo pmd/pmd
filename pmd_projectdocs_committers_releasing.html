@@ -1944,13 +1944,13 @@ news posts can be changed afterward (although that’s an entirely manual proces
 in order to release version “6.34.0”, the configuration should look like this:</p>
 
 <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">pmd</span><span class="pi">:</span>
-    <span class="na">version</span><span class="pi">:</span> <span class="s">6.34.0</span>
-    <span class="na">previous_version</span><span class="pi">:</span> <span class="s">6.33.0</span>
-    <span class="na">date</span><span class="pi">:</span> <span class="s">24-April-2021</span>
+    <span class="na">version</span><span class="pi">:</span> <span class="s">7.2.0</span>
+    <span class="na">previous_version</span><span class="pi">:</span> <span class="s">7.1.0</span>
+    <span class="na">date</span><span class="pi">:</span> <span class="s">31-May-2024</span>
     <span class="na">release_type</span><span class="pi">:</span> <span class="s">minor</span>
 </code></pre></div></div>
 
-<p>The release type could be one of “bugfix” (e.g. 6.34.x), “minor” (6.x.0), or “major” (x.0.0).</p>
+<p>The release type could be one of “bugfix” (e.g. 7.1.x), “minor” (7.x.0), or “major” (x.0.0).</p>
 
 <p>The release notes usually mention any new rules that have been added since the last release.</p>
 
@@ -1962,7 +1962,7 @@ in order to release version “6.34.0”, the configuration should look like thi
 
 <p>The designer lives at <a href="https://github.com/pmd/pmd-designer">pmd/pmd-designer</a>.
 Update property <code class="language-plaintext highlighter-rouge">pmd-designer.version</code> in <strong>pom.xml</strong> to reference the new version, that will be released
-shortly. Note: This version does at the moment not exist. That means, that a full build of the sources
+shortly. Note: This new version does at the moment not exist. That means, that a full build of the sources
 will currently fail. That’s why the first phase of the release will build only pmd-core and languages but
 not pmd-cli and pmd-dist.</p>
 
@@ -1971,12 +1971,13 @@ Then we can skip the release of pmd-designer and immediately start the second ph
 
 <p>Starting with PMD 6.23.0 we’ll provide small statistics for every release. This needs to be added
 to the release notes as the last section. To count the closed issues and pull requests, the milestone
-on GitHub with the title of the new release is searched. Make sure, there is a milestone
-on <a href="https://github.com/pmd/pmd/milestones">https://github.com/pmd/pmd/milestones</a>. The following snippet will
+on GitHub with the title of the new release is searched. It is important, that the due date of the milestone
+is correctly set, as the returned milestones in the API call are sorted by due date.
+Make sure, there is such a milestone on <a href="https://github.com/pmd/pmd/milestones">https://github.com/pmd/pmd/milestones</a>. The following snippet will
 create the numbers, that can be attached to the release notes as a last section:</p>
 
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">LAST_VERSION</span><span class="o">=</span>6.33.0
-<span class="nv">NEW_VERSION</span><span class="o">=</span>6.34.0
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">LAST_VERSION</span><span class="o">=</span>7.1.0
+<span class="nv">NEW_VERSION</span><span class="o">=</span>7.2.0
 <span class="nv">NEW_VERSION_COMMITISH</span><span class="o">=</span>HEAD
 
 <span class="nb">echo</span> <span class="s2">"### Stats"</span>
@@ -2001,14 +2002,14 @@ All the following tasks are to be done in this repo.</p>
 <p>The new version needs to be entered into <code class="language-plaintext highlighter-rouge">_config.yml</code>, e.g.:</p>
 
 <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">pmd</span><span class="pi">:</span>
-  <span class="na">latestVersion</span><span class="pi">:</span> <span class="s">6.34.0</span>
-  <span class="na">latestVersionDate</span><span class="pi">:</span> <span class="s">24-April-2021</span>
+  <span class="na">latestVersion</span><span class="pi">:</span> <span class="s">7.2.0</span>
+  <span class="na">latestVersionDate</span><span class="pi">:</span> <span class="s">31-May-2024</span>
 </code></pre></div></div>
 
 <p>Also move the previous version down into the “downloads” section. We usually keep only the last 3 versions
 in this list, so remove the oldest version.</p>
 
-<p>Then create a new page for the new release, e.g. <code class="language-plaintext highlighter-rouge">_posts/2021-04-24-PMD-6.34.0.md</code> and copy
+<p>Then create a new page for the new release, e.g. <code class="language-plaintext highlighter-rouge">_posts/2024-05-31-PMD-7.2.0.md</code> and copy
 the release notes into this page. This will appear under the news section.</p>
 
 <p>Note: The release notes typically contain some Jekyll macros for linking to the rule pages. These macros won’t
@@ -2035,7 +2036,7 @@ $ git push
 
 <p>The actual release is done by changing the versions, creating a tag and pushing this tag. Previously this was done
 by calling <em>maven-release-plugin</em>, but these steps are done without the plugin to have more control. And since we
-might reference a not yet released pmd-designer version, the test-build will fail.</p>
+might reference a not yet released pmd-designer version, the test-build would fail.</p>
 
 <p>We first change the version of PMD and all modules by basically removing the “-SNAPSHOT” suffix, building the changed
 project locally with tests (and with skipping pmd-cli and pmd-dist) in order to be sure, everything is in working
@@ -2046,8 +2047,8 @@ the next snapshot. As last step, everything is pushed.</p>
 next snapshot version after the release. Skipping the builds of pmd-cli and pmd-dist is done by setting
 the property <code class="language-plaintext highlighter-rouge">skip-cli-dist</code>.</p>
 
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">RELEASE_VERSION</span><span class="o">=</span>6.34.0
-<span class="nv">DEVELOPMENT_VERSION</span><span class="o">=</span>6.35.0-SNAPSHOT
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">RELEASE_VERSION</span><span class="o">=</span>7.2.0
+<span class="nv">DEVELOPMENT_VERSION</span><span class="o">=</span>7.3.0-SNAPSHOT
 <span class="c"># Change version in the POMs to ${RELEASE_VERSION} and update build timestamp</span>
 ./mvnw <span class="nt">--quiet</span> versions:set <span class="nt">-DnewVersion</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">RELEASE_VERSION</span><span class="k">}</span><span class="s2">"</span> <span class="nt">-DgenerateBackupPoms</span><span class="o">=</span><span class="nb">false</span> <span class="nt">-DupdateBuildOutputTimestampPolicy</span><span class="o">=</span>always
 <span class="c"># Transform the SCM information in the POM</span>
@@ -2089,18 +2090,18 @@ At the end of the process, the release will be published.</li>
   <li>Render the documentation in <code class="language-plaintext highlighter-rouge">docs/</code> with <code class="language-plaintext highlighter-rouge">bundle exec jekyll build</code> and create a zip file from it.</li>
   <li>Upload the doc zip file to the current (draft) GitHub Release under <a href="https://github.com/pmd/pmd/releases">https://github.com/pmd/pmd/releases</a> and
 to <a href="https://sourceforge.net/projects/pmd/files/pmd/">https://sourceforge.net/projects/pmd/files/pmd/</a>.</li>
-  <li>Upload the documentation to <a href="https://docs.pmd-code.org">https://docs.pmd-code.org</a>, e.g. <a href="https://docs.pmd-code.org/pmd-doc-6.34.0/">https://docs.pmd-code.org/pmd-doc-6.34.0/</a> and
+  <li>Upload the documentation to <a href="https://docs.pmd-code.org">https://docs.pmd-code.org</a>, e.g. <a href="https://docs.pmd-code.org/pmd-doc-7.2.0/">https://docs.pmd-code.org/pmd-doc-7.2.0/</a> and
 create a symlink, so that <a href="https://docs.pmd-code.org/latest/">https://docs.pmd-code.org/latest/</a> points to the new version.</li>
-  <li>Remove the old snapshot documentation, e.g. so that <a href="https://docs.pmd-code.org/pmd-doc-6.34.0-SNAPSHOT/">https://docs.pmd-code.org/pmd-doc-6.34.0-SNAPSHOT/</a> is gone.
-Also create a symlink from pmd-doc-6.34.0-SNAPSHOT to pmd-doc-6.34.0, so that old references still work, e.g.
-<a href="https://docs.pmd-code.org/pmd-doc-6.34.0-SNAPSHOT/">https://docs.pmd-code.org/pmd-doc-6.34.0-SNAPSHOT/</a> points to the released version.</li>
+  <li>Remove the old snapshot documentation, e.g. so that <a href="https://docs.pmd-code.org/pmd-doc-7.2.0-SNAPSHOT/">https://docs.pmd-code.org/pmd-doc-7.2.0-SNAPSHOT/</a> is gone.
+Also create a symlink from pmd-doc-7.2.0-SNAPSHOT to pmd-doc-7.2.0, so that old references still work, e.g.
+<a href="https://docs.pmd-code.org/pmd-doc-7.2.0-SNAPSHOT/">https://docs.pmd-code.org/pmd-doc-7.2.0-SNAPSHOT/</a> points to the released version.</li>
   <li>Deploy javadoc to “https://docs.pmd-code.org/apidocs/*/RELEASE_VERSION/”, e.g.
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.34.0/">https://docs.pmd-code.org/apidocs/pmd-core/6.34.0/</a>. This is done for all modules.</li>
-  <li>Remove old javadoc for the SNAPSHOT version, e.g. delete <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.34.0-SNAPSHOT/">https://docs.pmd-code.org/apidocs/pmd-core/6.34.0-SNAPSHOT/</a>.</li>
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.2.0/">https://docs.pmd-code.org/apidocs/pmd-core/7.2.0/</a>. This is done for all modules.</li>
+  <li>Remove old javadoc for the SNAPSHOT version, e.g. delete <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.2.0-SNAPSHOT/">https://docs.pmd-code.org/apidocs/pmd-core/7.2.0-SNAPSHOT/</a>.</li>
   <li>Create a draft news post on <a href="https://sourceforge.net/p/pmd/news/">https://sourceforge.net/p/pmd/news/</a> for the new release. This contains the
 rendered release notes.</li>
   <li>Copy the documentation to sourceforge’s web space, so that it is available as
-<a href="https://pmd.sourceforge.io/pmd-6.34.0/">https://pmd.sourceforge.io/pmd-6.34.0/</a>. All previously copied versions are listed
+<a href="https://pmd.sourceforge.io/pmd-7.2.0/">https://pmd.sourceforge.io/pmd-7.2.0/</a>. All previously copied versions are listed
 under <a href="https://pmd.sourceforge.io/archive.phtml">https://pmd.sourceforge.io/archive.phtml</a>.</li>
 </ul>
 
@@ -2151,6 +2152,10 @@ is created and uploaded to <a href="https://pmd-code.org/pmd-regression-tester">
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PMD 6.34.0 released: https://github.com/pmd/pmd/releases/tag/pmd_releases/6.34.0 #PMD
 </code></pre></div></div>
+
+<ul>
+  <li>Post the same twitter message into the gitter chat at <a href="https://matrix.to/#/#pmd_pmd:gitter.im">https://matrix.to/#/#pmd_pmd:gitter.im</a></li>
+</ul>
 
 <h3 id="checklist">Checklist</h3>
 
@@ -2242,6 +2247,12 @@ is created and uploaded to <a href="https://pmd-code.org/pmd-regression-tester">
       <td><a href="https://twitter.com/pmd_analyzer">https://twitter.com/pmd_analyzer</a></td>
       <td><input type="checkbox" /></td>
     </tr>
+    <tr>
+      <td>gitter</td>
+      <td>message about the new release</td>
+      <td><a href="https://matrix.to/#/#pmd_pmd:gitter.im">https://matrix.to/#/#pmd_pmd:gitter.im</a></td>
+      <td><input type="checkbox" /></td>
+    </tr>
   </tbody>
 </table>
 
@@ -2258,9 +2269,9 @@ version (if one doesn’t exist already).</li>
 in it otherwise the javadoc links won’t work during development.</p>
 
     <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">pmd</span><span class="pi">:</span>
-    <span class="na">version</span><span class="pi">:</span> <span class="s">6.35.0-SNAPSHOT</span>
-    <span class="na">previous_version</span><span class="pi">:</span> <span class="s">6.34.0</span>
-    <span class="na">date</span><span class="pi">:</span> <span class="s">??-??-2021</span>
+    <span class="na">version</span><span class="pi">:</span> <span class="s">7.3.0-SNAPSHOT</span>
+    <span class="na">previous_version</span><span class="pi">:</span> <span class="s">7.2.0</span>
+    <span class="na">date</span><span class="pi">:</span> <span class="s">??-??-2024</span>
     <span class="na">release_type</span><span class="pi">:</span> <span class="s">minor</span>
 </code></pre></div>    </div>
   </li>
@@ -2286,13 +2297,13 @@ This is a {{ site.pmd.release_type }} release.
 
 {% tocmaker %}
 
-### New and noteworthy
+### 🚀 New and noteworthy
 
-### Fixed Issues
+### 🐛 Fixed Issues
 
-### API Changes
+### 🚨 API Changes
 
-### External Contributions
+### ✨ External Contributions
 
 {% endtocmaker %}
 
@@ -2321,20 +2332,16 @@ e.g. <code class="language-plaintext highlighter-rouge">pmd/5.4.x</code>, releas
 from there. Then merge into the <code class="language-plaintext highlighter-rouge">master</code> branch and release from there. This way, the last release done, becomes
 automatically the latest release on <a href="https://docs.pmd-code.org/latest/">https://docs.pmd-code.org/latest/</a> and on sourceforge.</p>
 
-<h3 id="optional-create-a-new-release-branch">(Optional) Create a new release branch</h3>
+<h3 id="optional-create-a-new-maintenance-branch">(Optional) Create a new maintenance branch</h3>
 
 <p>At some point, it might be time for a new maintenance branch. Such a branch is usually created from
-the <code class="language-plaintext highlighter-rouge">master</code> branch. Here are the steps:</p>
+the tag. Here are the steps:</p>
 
 <ul>
-  <li>Create a new branch: <code class="language-plaintext highlighter-rouge">git branch pmd/5.6.x master</code></li>
-  <li>Update the version in both the new branch and master, e.g. <code class="language-plaintext highlighter-rouge">mvn versions:set -DnewVersion=5.6.1-SNAPSHOT</code>
-and <code class="language-plaintext highlighter-rouge">mvn versions:set -DnewVersion=5.7.0-SNAPSHOT</code>.</li>
-  <li>Update the release notes on both the new branch and master</li>
+  <li>Create a new branch: <code class="language-plaintext highlighter-rouge">git branch pmd/7.1.x pmd_releases/7.1.0</code></li>
+  <li>Update the version in both the new branch, e.g. <code class="language-plaintext highlighter-rouge">mvn versions:set -DnewVersion=7.1.1-SNAPSHOT</code>.</li>
+  <li>Update the release notes on both the new branch</li>
 </ul>
-
-<p>The maintenance or bugfix branch could also be created later when needed from the actual tag. Then only the version on
-the maintenance branch needs to be set.</p>
 
 
     <div class="tags">
@@ -2365,7 +2372,7 @@ the maintenance branch needs to be set.</p>
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            April 2021<br /> Site last generated: Apr 27, 2024 <br />
+            April 2024<br /> Site last generated: Apr 27, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
