@@ -27,12 +27,22 @@ public final class Mark implements Comparable<Mark> {
         this.token = token;
     }
 
+    Mark(@NonNull TokenEntry token, @NonNull TokenEntry endToken) {
+        this.token = token;
+        this.endToken = endToken;
+    }
+
     @NonNull TokenEntry getToken() {
         return this.token;
     }
 
     @NonNull TokenEntry getEndToken() {
         return endToken == null ? token : endToken;
+    }
+
+    /** Length in tokens. */
+    public int getLength() {
+        return getEndToken().getLocalIndex() - getToken().getLocalIndex() + 1;
     }
 
     /**
@@ -64,6 +74,10 @@ public final class Mark implements Comparable<Mark> {
         this.endToken = endToken;
     }
 
+    @Override
+    public String toString() {
+        return "Mark [token=" + token + ", endToken=" + endToken + "]";
+    }
 
     @Override
     public int hashCode() {

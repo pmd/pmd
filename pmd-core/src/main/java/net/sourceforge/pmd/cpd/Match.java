@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.cpd;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -15,18 +18,23 @@ import net.sourceforge.pmd.util.IteratorUtil;
 
 public class Match implements Comparable<Match>, Iterable<Mark> {
 
-    private final int tokenCount;
+    private int minTokenCount;
+    private int maxTokenCount;
     private final Set<Mark> markSet = new TreeSet<>();
 
     public static final Comparator<Match> MATCHES_COMPARATOR = (ma, mb) -> mb.getMarkCount() - ma.getMarkCount();
 
     public static final Comparator<Match> LINES_COMPARATOR = (ma, mb) -> mb.getLineCount() - ma.getLineCount();
 
+    Match(int tokenCount) {
+        this.minTokenCount = tokenCount;
+        this.maxTokenCount = tokenCount;
+    }
 
     Match(int tokenCount, Mark first, Mark second) {
+        this(tokenCount);
         markSet.add(first);
         markSet.add(second);
-        this.tokenCount = tokenCount;
     }
 
     Match(int tokenCount, TokenEntry first, TokenEntry second) {
@@ -35,6 +43,7 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
 
     void addMark(Mark entry) {
         markSet.add(entry);
+        registerMatchWithCount(entry.getLength());
     }
 
     public int getMarkCount() {
@@ -46,9 +55,21 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
     }
 
     public int getTokenCount() {
-        return this.tokenCount;
+        return minTokenCount;
     }
 
+    public int getMaxTokenCount() {
+        return maxTokenCount;
+    }
+
+    public int getMinTokenCount() {
+        return minTokenCount;
+    }
+
+    private void registerMatchWithCount(int tokenCount) {
+        this.maxTokenCount = max(this.maxTokenCount, tokenCount);
+        this.minTokenCount = min(this.minTokenCount, tokenCount);
+    }
 
     public Set<Mark> getMarkSet() {
         return Collections.unmodifiableSet(markSet);
@@ -78,7 +99,7 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
 
     @Override
     public String toString() {
-        return "Match: \ntokenCount = " + tokenCount + "\nmarks = " + markSet.size();
+        return "Match: \ntokenCount >= " + minTokenCount + " <= " + maxTokenCount + "\nmarks = " + markSet.size();
     }
 
     public int getEndIndex() {
