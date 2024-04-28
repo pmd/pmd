@@ -264,6 +264,7 @@ public class SaxonXPathRuleQuery {
 
         StaticContextWithProperties(Configuration config) {
             super(config);
+			// This statement is necessary for Saxon to support sequence-valued attributes
             getPackageData().setSchemaAware(true);
         }
 
