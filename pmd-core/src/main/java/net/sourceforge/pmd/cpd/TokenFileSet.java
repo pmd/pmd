@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cpd;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,6 @@ import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
-import com.carrotsearch.hppc.IntObjectHashMap;
 import com.carrotsearch.hppc.IntObjectMap;
 
 /**
@@ -191,11 +191,11 @@ final class TokenFileSet {
     }
 
     static class TokenHashMap {
-        private final IntObjectMap<Object> markGroups;
+        private final HashMap<Integer, Object> markGroups;
         private final List<List<SmallTokenEntry>> listSink;
 
         TokenHashMap(int size) {
-            markGroups = new IntObjectHashMap<>(size);
+            markGroups = new HashMap<>(size);
             listSink = new ArrayList<>();
         }
 
@@ -218,32 +218,28 @@ final class TokenFileSet {
          * @param thisEntry  The current token
          */
         private void addTokenToHashTable(int hash, SmallTokenEntry thisEntry) {
-            int index = markGroups.indexOf(hash);
-            if (markGroups.indexExists(index)) {
-                Object curEntry = markGroups.indexGet(index);
+            markGroups.merge(hash, thisEntry, (curEntry, newEntry) -> {
                 if (curEntry instanceof SmallTokenEntry) {
                     SmallTokenEntry fstTok = (SmallTokenEntry) curEntry;
                     if (fstTok.prevToken == thisEntry.prevToken) {
                         // part of a larger match, yeet them out
-                        markGroups.indexRemove(index);
-                        return;
+                        return null;
                     }
                     List<SmallTokenEntry> arr = new ArrayList<>(2);
                     arr.add(fstTok);
                     arr.add(thisEntry);
-                    markGroups.indexReplace(index, arr);
                     listSink.add(arr);
-                } else if (curEntry instanceof List) {
+                    return arr;
+                } else {
                     @SuppressWarnings("unchecked")
                     List<SmallTokenEntry> list = (List<SmallTokenEntry>) curEntry;
                     boolean hadMatch = list.removeIf(it -> thisEntry.prevToken == it.prevToken);
                     if (!hadMatch) {
                         list.add(thisEntry);
                     }
+                    return list;
                 }
-            } else {
-                markGroups.indexInsert(index, hash, thisEntry);
-            }
+            });
         }
 
     }
