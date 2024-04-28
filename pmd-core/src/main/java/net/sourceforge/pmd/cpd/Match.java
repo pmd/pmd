@@ -4,73 +4,51 @@
 
 package net.sourceforge.pmd.cpd;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.IntSummaryStatistics;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
-import net.sourceforge.pmd.util.IteratorUtil;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class Match implements Comparable<Match>, Iterable<Mark> {
 
-    private int minTokenCount;
-    private int maxTokenCount;
-    private final List<Mark> markSet = new ArrayList<>();
+    private final int minTokenCount;
+    private final int maxTokenCount;
+    private final List<Mark> marks;
 
     public static final Comparator<Match> MATCHES_COMPARATOR = (ma, mb) -> mb.getMarkCount() - ma.getMarkCount();
 
     public static final Comparator<Match> LINES_COMPARATOR = (ma, mb) -> mb.getLineCount() - ma.getLineCount();
 
-    Match(int tokenCount) {
+    private Match(int min, int max, List<Mark> marks) {
+        assert min >= 0 && min <= max && marks.size() >= 2;
+        this.minTokenCount = min;
+        this.maxTokenCount = max;
+        this.marks = marks;
+    }
+
+    @Deprecated
+    Match(int tokenCount, Mark first, Mark second) {
+        this.marks = new ArrayList<>(2);
+        this.marks.add(first);
+        this.marks.add(second);
         this.minTokenCount = tokenCount;
         this.maxTokenCount = tokenCount;
     }
 
-    Match(int tokenCount, Mark first, Mark second) {
-        this(tokenCount);
-        markSet.add(first);
-        markSet.add(second);
-    }
-
+    @Deprecated
     Match(int tokenCount, TokenEntry first, TokenEntry second) {
         this(tokenCount, new Mark(first), new Mark(second));
     }
 
-    void addMark(Mark newMark) {
-        boolean added = false;
-        for (ListIterator<Mark> iterator = markSet.listIterator(); iterator.hasNext();) {
-            Mark mark = iterator.next();
-            int cmp = mark.contains(newMark);
-            if (cmp > 0) {
-                // new mark contains other
-                if (added) {
-                    iterator.remove();
-                } else {
-                    iterator.set(newMark);
-                    registerMatchWithCount(newMark.getLength());
-                    added = true;
-                }
-            } else if (cmp < 0) {
-                // there is a mark containing the current one
-                return;
-            }
-        }
-        if (!added) {
-            markSet.add(newMark);
-            registerMatchWithCount(newMark.getLength());
-        }
-    }
-
     public int getMarkCount() {
-        return markSet.size();
+        return marks.size();
     }
 
     public int getLineCount() {
@@ -89,18 +67,24 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
         return minTokenCount;
     }
 
-    private void registerMatchWithCount(int tokenCount) {
-        this.maxTokenCount = max(this.maxTokenCount, tokenCount);
-        this.minTokenCount = min(this.minTokenCount, tokenCount);
+    /**
+     * @deprecated Use {@link #getMarks()}
+     */
+    @Deprecated
+    public Set<Mark> getMarkSet() {
+        return Collections.unmodifiableSet(new HashSet<>(marks));
     }
 
-    public Set<Mark> getMarkSet() {
-        return Collections.unmodifiableSet(new HashSet<>(markSet));
+    /**
+     * Return a sorted list of marks. The list is non-empty.
+     */
+    public List<Mark> getMarks() {
+        return Collections.unmodifiableList(marks);
     }
 
     @Override
     public Iterator<Mark> iterator() {
-        return markSet.iterator();
+        return marks.iterator();
     }
 
     @Override
@@ -122,7 +106,7 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
 
     @Override
     public String toString() {
-        return "Match: \ntokenCount >= " + minTokenCount + " <= " + maxTokenCount + "\nmarks = " + markSet.size();
+        return "Match: \ntokenCount >= " + minTokenCount + " <= " + maxTokenCount + "\nmarks = " + marks.size();
     }
 
     public int getEndIndex() {
@@ -130,11 +114,48 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
     }
 
     private Mark getMark(int index) {
-        if (index >= markSet.size()) {
-            throw new NoSuchElementException();
-        }
-        return IteratorUtil.getNth(markSet.iterator(), index);
+        return marks.get(index);
     }
 
+    static final class MatchBuilder {
+
+        private final List<Mark> marks = new ArrayList<>();
+
+        MatchBuilder addMark(Mark newMark) {
+            boolean added = false;
+            for (ListIterator<Mark> iterator = marks.listIterator(); iterator.hasNext(); ) {
+                Mark mark = iterator.next();
+                int cmp = mark.contains(newMark);
+                if (cmp > 0) {
+                    // new mark contains other
+                    if (added) {
+                        iterator.remove();
+                    } else {
+                        iterator.set(newMark);
+                        added = true;
+                    }
+                } else if (cmp < 0) {
+                    // there is a mark containing the current one
+                    return this;
+                }
+            }
+            if (!added) {
+                marks.add(newMark);
+            }
+            return this;
+        }
+
+        @Nullable
+        Match build() {
+            if (marks.size() < 2) {
+                return null;
+            }
+
+            IntSummaryStatistics stats = marks.stream().mapToInt(Mark::getLength).summaryStatistics();
+            marks.sort(Comparator.naturalOrder());
+            return new Match(stats.getMin(), stats.getMax(), marks);
+        }
+
+    }
 
 }

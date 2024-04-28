@@ -101,7 +101,7 @@ class MatchCollector {
             match AB and then BC, then you end up with a match ABC that is in the cells of A, B and C. But only A is set
             to "not aliased", so only it will be reported in the end, because it is the same object as the others.
          */
-        @Nullable Match[] matches = new Match[marks.size()];
+        @Nullable Match.MatchBuilder[] matches = new Match.MatchBuilder[marks.size()];
         BitSet isAliased = new BitSet(marks.size());
 
         for (int i = 0; i < marks.size() - 1; i++) {
@@ -131,23 +131,28 @@ class MatchCollector {
 
         // report all non-aliased matches
         for (int i = isAliased.nextClearBit(0); i < matches.length; i = isAliased.nextClearBit(i + 1)) {
-            Match match = matches[i];
-            if (match != null) {
-                recordMatch(match);
+            Match.MatchBuilder builder = matches[i];
+            if (builder == null) {
+                continue;
             }
+            Match match = builder.build();
+            if (match == null) {
+                continue;
+            }
+            recordMatch(match);
         }
     }
 
-    private void handleDuplicate(int i, int j, SmallTokenEntry mark1, SmallTokenEntry mark2, int dupes, @Nullable Match[] matches) {
-        Match match = matches[i];
-        if (match == null) {
-            match = new Match(dupes);
-            matches[i] = match;
+    private void handleDuplicate(int i, int j, SmallTokenEntry mark1, SmallTokenEntry mark2, int dupes, @Nullable Match.MatchBuilder[] matches) {
+        Match.MatchBuilder builder = matches[i];
+        if (builder == null) {
+            builder = new Match.MatchBuilder();
+            matches[i] = builder;
         }
-        matches[j] = match;
+        matches[j] = builder;
 
-        match.addMark(makeMark(mark1, dupes));
-        match.addMark(makeMark(mark2, dupes));
+        builder.addMark(makeMark(mark1, dupes));
+        builder.addMark(makeMark(mark2, dupes));
     }
 
     private Mark makeMark(SmallTokenEntry smallTok, int matchLen) {

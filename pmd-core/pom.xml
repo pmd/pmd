@@ -143,6 +143,7 @@
             <artifactId>nice-xml-messages</artifactId>
         </dependency>
         <dependency>
+            <!-- IntObjectHashMap for CPD -->
             <groupId>com.carrotsearch</groupId>
             <artifactId>hppc</artifactId>
             <version>0.9.1</version>

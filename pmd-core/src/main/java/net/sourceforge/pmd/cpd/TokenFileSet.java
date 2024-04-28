@@ -199,10 +199,7 @@ final class TokenFileSet {
         }
 
         public List<List<SmallTokenEntry>> getFinalMatches() {
-            List<List<SmallTokenEntry>> list = listSink;
-            // Those lists may be empty or single-element as we remove elements sometimes
-            list.removeIf(it -> it.size() < 2);
-            return list;
+            return listSink;
         }
 
         /**

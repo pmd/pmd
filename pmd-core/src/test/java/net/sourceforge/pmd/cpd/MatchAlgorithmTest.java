@@ -8,12 +8,9 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -66,10 +63,10 @@ class MatchAlgorithmTest {
         assertEquals(1, matches.size());
         Match match = matches.get(0);
 
-        Iterator<Mark> marks = match.iterator();
-        Mark mark1 = marks.next();
-        Mark mark2 = marks.next();
-        assertFalse(marks.hasNext());
+        List<Mark> marks = match.getMarks();
+        assertThat(marks, hasSize(2));
+        Mark mark1 = marks.get(0);
+        Mark mark2 = marks.get(1);
 
         assertEquals(3, mark1.getLocation().getStartLine());
         assertEquals(fileName, mark1.getLocation().getFileId());
@@ -94,13 +91,14 @@ class MatchAlgorithmTest {
         List<Match> matches = CpdAnalysis.findMatches(sourceManager, new CPDNullListener(), tokens, 15);
         assertEquals(1, matches.size());
         Match match = matches.get(0);
+        assertEquals(match.getMinTokenCount(), 17);
+        assertEquals(match.getMaxTokenCount(), 17);
 
-        Set<Mark> marks = match.getMarkSet();
+        List<Mark> marks = match.getMarks();
         assertThat(marks, hasSize(3));
-        Iterator<Mark> iter = marks.iterator();
-        Mark mark1 = iter.next();
-        Mark mark2 = iter.next();
-        Mark mark3 = iter.next();
+        Mark mark1 = marks.get(0);
+        Mark mark2 = marks.get(1);
+        Mark mark3 = marks.get(2);
 
         assertEquals(2, mark1.getLocation().getStartLine());
         assertEquals(mark1.getLength(), 17);

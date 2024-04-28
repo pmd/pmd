@@ -89,6 +89,10 @@ final class CpdTestUtils {
             return this;
         }
 
+        CpdReportBuilder addMatch(Mark mark1, Mark mark2) {
+            return addMatch(new Match.MatchBuilder().addMark(mark1).addMark(mark2).build());
+        }
+
         Mark createMark(String image, FileId fileId, int beginLine, int lineCount, int beginColumn, int endColumn) {
             fileContents.putIfAbsent(fileId, DUMMY_FILE_CONTENT);
             final TokenEntry beginToken = tokens.addToken(image, fileId, beginLine, beginColumn, beginLine,
@@ -96,10 +100,8 @@ final class CpdTestUtils {
             final TokenEntry endToken = tokens.addToken(image, fileId,
                                                         beginLine + lineCount - 1, beginColumn,
                                                         beginLine + lineCount - 1, endColumn);
-            final Mark result = new Mark(beginToken);
 
-            result.setEndToken(endToken);
-            return result;
+            return new Mark(beginToken, endToken);
         }
 
     }

@@ -7,7 +7,6 @@ package net.sourceforge.pmd.cpd;
 import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
@@ -21,13 +20,15 @@ import net.sourceforge.pmd.lang.document.TextRange2d;
 public final class Mark implements Comparable<Mark> {
 
     private final @NonNull TokenEntry token;
-    private @Nullable TokenEntry endToken;
+    private final @NonNull TokenEntry endToken;
 
     Mark(@NonNull TokenEntry token) {
-        this.token = token;
+        this(token, token);
     }
 
     Mark(@NonNull TokenEntry token, @NonNull TokenEntry endToken) {
+        assert endToken.getFileId().equals(token.getFileId())
+            : "Tokens are not from the same file";
         this.token = token;
         this.endToken = endToken;
     }
@@ -37,7 +38,7 @@ public final class Mark implements Comparable<Mark> {
     }
 
     @NonNull TokenEntry getEndToken() {
-        return endToken == null ? token : endToken;
+        return endToken;
     }
 
     /** Length in tokens. */
@@ -66,12 +67,6 @@ public final class Mark implements Comparable<Mark> {
 
     public int getEndTokenIndex() {
         return getEndToken().getLocalIndex();
-    }
-
-    void setEndToken(@NonNull TokenEntry endToken) {
-        assert endToken.getFileId().equals(token.getFileId())
-            : "Tokens are not from the same file";
-        this.endToken = endToken;
     }
 
     @Override
@@ -124,8 +119,6 @@ public final class Mark implements Comparable<Mark> {
     @Override
     public int compareTo(Mark other) {
         return getToken().compareTo(other.getToken());
-        // cmp = cmp != 0 ? cmp : getEndToken().compareTo(other.getEndToken());
-        // return cmp;
     }
 
 }

@@ -22,13 +22,13 @@ class CSVRendererTest {
         CpdReportBuilder builder = new CpdReportBuilder();
         Mark mark1 = builder.createMark("public", CpdTestUtils.FOO_FILE_ID, 48, 10);
         Mark mark2 = builder.createMark("stuff", CpdTestUtils.BAR_FILE_ID, 73, 20);
-        builder.addMatch(new Match(75, mark1, mark2));
+        builder.addMatch(mark1, mark2);
 
         StringWriter sw = new StringWriter();
         renderer.render(builder.build(), sw);
         String report = sw.toString();
         String expectedReport = "tokens,occurrences" + System.lineSeparator()
-            + "75,2,73,20," + CpdTestUtils.BAR_FILE_ID.getAbsolutePath() + ",48,10,"
+            + "1,2,73,20," + CpdTestUtils.BAR_FILE_ID.getAbsolutePath() + ",48,10,"
             + CpdTestUtils.FOO_FILE_ID.getAbsolutePath() + System.lineSeparator();
 
         assertEquals(expectedReport, report);
@@ -42,13 +42,13 @@ class CSVRendererTest {
         FileId bar = FileId.fromPathLikeString("/var,with,commas/Bar.java");
         Mark mark1 = builder.createMark("public", foo, 48, 10);
         Mark mark2 = builder.createMark("stuff", bar, 73, 20);
-        builder.addMatch(new Match(75, mark1, mark2));
+        builder.addMatch(mark1, mark2);
 
         StringWriter sw = new StringWriter();
         renderer.render(builder.build(), sw);
         String report = sw.toString();
         String expectedReport = "lines,tokens,occurrences" + System.lineSeparator()
-            + "20,75,2,73,\"" + bar.getAbsolutePath() + "\",48,\"" + foo.getAbsolutePath() + "\""
+            + "20,1,2,73,\"" + bar.getAbsolutePath() + "\",48,\"" + foo.getAbsolutePath() + "\""
             + System.lineSeparator();
         assertEquals(expectedReport, report);
     }
