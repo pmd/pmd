@@ -112,11 +112,11 @@ public final class CpdAnalysis implements AutoCloseable {
         }
     }
 
-    static List<Match> findMatches(@NonNull CPDListener cpdListener, TokenFileSet tokens, int minTileSize) {
+    static List<Match> findMatches(SourceManager sourceManager, @NonNull CPDListener cpdListener, TokenFileSet tokens, int minTileSize) {
         cpdListener.phaseUpdate(CPDListener.HASH);
         Iterator<List<TokenFileSet.SmallTokenEntry>> markGroups = tokens.hashAll(minTileSize);
 
-        MatchCollector matchCollector = new MatchCollector(tokens, minTileSize);
+        MatchCollector matchCollector = new MatchCollector(sourceManager, tokens, minTileSize);
         cpdListener.phaseUpdate(CPDListener.MATCH);
         markGroups.forEachRemaining(matchCollector::collect);
 
@@ -203,7 +203,7 @@ public final class CpdAnalysis implements AutoCloseable {
                 }
 
                 LOGGER.debug("Running match algorithm on {} files...", sourceManager.size());
-                matches = findMatches(listener, tokens, configuration.getMinimumTileSize());
+                matches = findMatches(sourceManager, listener, tokens, configuration.getMinimumTileSize());
             }
             LOGGER.debug("Finished: {} duplicates found", matches.size());
 

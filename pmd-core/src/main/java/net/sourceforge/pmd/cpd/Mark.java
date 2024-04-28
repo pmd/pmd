@@ -79,12 +79,31 @@ public final class Mark implements Comparable<Mark> {
         return "Mark [token=" + token + ", endToken=" + endToken + "]";
     }
 
+    /***
+     * Return -1 if this mark contains the given other mark, 1 if the other contains this one,
+     * zero otherwise.
+     */
+    int contains(Mark that) {
+        int thisFile = this.token.getFileIdInternal();
+        int thatFile = that.token.getFileIdInternal();
+        if (thisFile != thatFile) {
+            return 0;
+        }
+        int thisStart = this.token.getLocalIndex();
+        int thatStart = that.token.getLocalIndex();
+        if (thisStart <= thatStart && thatStart + that.getLength() <= thisStart + this.getLength()) {
+            // this contains that
+            return -1;
+        } else if (thatStart <= thisStart && thisStart + this.getLength() <= thatStart + that.getLength()) {
+            // that contains this
+            return 1;
+        }
+        return 0;
+    }
+
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + token.hashCode();
-        return result;
+        return token.hashCode();
     }
 
     @Override
@@ -99,13 +118,14 @@ public final class Mark implements Comparable<Mark> {
             return false;
         }
         Mark other = (Mark) obj;
-        return Objects.equals(token, other.token)
-            && Objects.equals(endToken, other.endToken);
+        return Objects.equals(token, other.token);
     }
 
     @Override
     public int compareTo(Mark other) {
         return getToken().compareTo(other.getToken());
+        // cmp = cmp != 0 ? cmp : getEndToken().compareTo(other.getEndToken());
+        // return cmp;
     }
 
 }

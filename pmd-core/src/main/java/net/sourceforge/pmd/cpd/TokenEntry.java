@@ -108,6 +108,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
 
     @Override
     public int compareTo(TokenEntry other) {
+        /* Note that here we compare the file id, not the internal ID, so that this ordering is stable across runs. */
         int cmp = getFileId().compareTo(other.getFileId());
         cmp = cmp != 0 ? cmp : Integer.compare(getLocalIndex(), other.getLocalIndex());
         return cmp;

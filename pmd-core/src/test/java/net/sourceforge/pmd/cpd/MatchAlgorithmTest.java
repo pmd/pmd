@@ -5,13 +5,15 @@
 package net.sourceforge.pmd.cpd;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -58,9 +60,9 @@ class MatchAlgorithmTest {
         TokenFileSet tokens = new TokenFileSet();
         TextDocument sourceCode = sourceManager.get(textFile);
         TokenFileSet.TokenFile file = tokens.tokenize(cpdLexer, sourceCode);
-        assertEquals(44, file.size());
+        assertEquals(43, file.size());
 
-        List<Match> matches = CpdAnalysis.findMatches(new CPDNullListener(), tokens, 5);
+        List<Match> matches = CpdAnalysis.findMatches(sourceManager, new CPDNullListener(), tokens, 5);
         assertEquals(1, matches.size());
         Match match = matches.get(0);
 
@@ -89,23 +91,24 @@ class MatchAlgorithmTest {
         TextDocument sourceCode = sourceManager.get(textFile);
         tokens.tokenize(cpdLexer, sourceCode);
 
-        List<Match> matches = CpdAnalysis.findMatches(new CPDNullListener(), tokens, 15);
+        List<Match> matches = CpdAnalysis.findMatches(sourceManager, new CPDNullListener(), tokens, 15);
         assertEquals(1, matches.size());
         Match match = matches.get(0);
 
-        Iterator<Mark> marks = match.iterator();
-        Mark mark1 = marks.next();
-        Mark mark2 = marks.next();
-        assertTrue(marks.hasNext());
-        Mark mark3 = marks.next();
+        Set<Mark> marks = match.getMarkSet();
+        assertThat(marks, hasSize(3));
+        Iterator<Mark> iter = marks.iterator();
+        Mark mark1 = iter.next();
+        Mark mark2 = iter.next();
+        Mark mark3 = iter.next();
 
         assertEquals(2, mark1.getLocation().getStartLine());
-        assertEquals(fileName, mark1.getLocation().getFileId());
+        assertEquals(mark1.getLength(), 17);
 
         assertEquals(4, mark2.getLocation().getStartLine());
-        assertEquals(fileName, mark2.getLocation().getFileId());
+        assertEquals(mark2.getLength(), 17);
 
         assertEquals(6, mark3.getLocation().getStartLine());
-        assertEquals(fileName, mark3.getLocation().getFileId());
+        assertEquals(mark3.getLength(), 17);
     }
 }

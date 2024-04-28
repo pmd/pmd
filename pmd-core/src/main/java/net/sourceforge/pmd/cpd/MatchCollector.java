@@ -19,12 +19,18 @@ import net.sourceforge.pmd.cpd.TokenFileSet.SmallTokenEntry;
 class MatchCollector {
 
     private final List<Match> matchList = new ArrayList<>();
+    private final SourceManager sourceManager;
     private final TokenFileSet tokens;
     private final int minTileSize;
 
-    MatchCollector(TokenFileSet tokens, int minTileSize) {
+    MatchCollector(SourceManager sourceManager, TokenFileSet tokens, int minTileSize) {
+        this.sourceManager = sourceManager;
         this.tokens = tokens;
         this.minTileSize = minTileSize;
+    }
+
+    String debugMark(SmallTokenEntry mark) {
+        return sourceManager.getSlice(new Mark(tokens.toTokenEntry(mark))).toString();
     }
 
     /**
@@ -165,7 +171,7 @@ class MatchCollector {
         int distance = mark2.indexInFile - mark1.indexInFile;
         // check that they do not overlap
         return distance >= minTileSize
-            || dupes < distance + 1;
+            && dupes < distance + 1;
     }
 
     private void recordMatch(Match match) {
