@@ -38,10 +38,9 @@
 
     <test-code>
         <description>Confusing argument</description>
-        <expected-problems>2</expected-problems>
+        <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Unnecessary explicit varargs array creation</message>
-            <message>Unclear if a varargs or non-varargs call is intended. Cast to Object or Object[], or pass varargs parameters separately to clarify intent.</message>
+            <message>Unnecessary explicit array creation for varargs method call</message>
         </expected-messages>
         <code><![CDATA[
             import java.util.Arrays;
@@ -49,7 +48,7 @@
             public class Foo {
                 static {
                     foo(new Object[]{ "a" }); // regular unnecessary
-                    foo(new String[]{ "a" }); // confusing bc String[] <: Object
+                    foo(new String[]{ "a" }); // confusing bc String[] <: Object (ConfusingArgumentToVarargsArray)
                 }
                 static void foo(Object... args) {}
             }
