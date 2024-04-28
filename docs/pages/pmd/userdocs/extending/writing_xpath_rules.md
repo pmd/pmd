@@ -49,23 +49,21 @@ To represent attributes, we must map Java values to [XPath Data Model (XDM)](htt
 values. In the following table we refer to the type conversion function as `conv`, a function from Java types
 to XDM types.
 
-| Java type `T` | XSD type `conv(T)`                    |
-|---------------|---------------------------------------|
-| `int`         | `xs:integer`                          |
-| `long`        | `xs:integer`                          |
-| `double`      | `xs:decimal`                          |
-| `float`       | `xs:decimal`                          |
-| `boolean`     | `xs:boolean`                          |
-| `String`      | `xs:string`                           |
-| `Character`   | `xs:string`                           |
-| `Enum<E>`     | `xs:string` (uses `Object::toString`) |
-| `List<E>`     | `conv(E)*` (a sequence type)          |
+| Java type `T`     | XSD type `conv(T)`                    |
+|-------------------|---------------------------------------|
+| `int`             | `xs:integer`                          |
+| `long`            | `xs:integer`                          |
+| `double`          | `xs:decimal`                          |
+| `float`           | `xs:decimal`                          |
+| `boolean`         | `xs:boolean`                          |
+| `String`          | `xs:string`                           |
+| `Character`       | `xs:string`                           |
+| `Enum<E>`         | `xs:string` (uses `Object::toString`) |
+| `Collection<E>`   | `conv(E)*` (a sequence type)          |
 
 The same `conv` function is used to translate rule property values to XDM values.
 
-{% include warning.html content="Lists are only supported for rule properties, not attributes." %}
-
-
+Additionaly, PMD's own `net.sourceforge.pmd.lang.document.Chars` is also translated to a `xs:string`
 
 
 ## Rule properties
