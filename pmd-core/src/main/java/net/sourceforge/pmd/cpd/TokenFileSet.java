@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.function.Consumer;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -345,48 +344,6 @@ final class TokenFileSet {
             }
         }
 
-        /**
-         * This routine adds a token to the hash table. Tokens that have the same hash are placed together into a list.
-         * Those lists are then handed to the match finder to compute the similarity between tokens with the same hash.
-         * Reducing the size of those lists is a crucial time optimization, because the match finder is quadratic
-         * in the length of the input list. One important optimization that we do is therefore to prune tokens from one
-         * of those list if they have the same preceding token. This is because they are then necessarily a suffix of a
-         * larger match, so they are useless.
-         *
-         * @param markGroups Hash map
-         * @param recordList Function to register the creation of a list, that way we don't have to iterate the hashmap to find them afterwards
-         * @param h          Hash of the current token
-         * @param thisEntry  The current token
-         */
-        private static void addTokenToHashTable(IntObjectMap<Object> markGroups, Consumer<List<SmallTokenEntry>> recordList, int h, SmallTokenEntry thisEntry) {
-            int index = markGroups.indexOf(h);
-            if (markGroups.indexExists(index)) {
-                Object curEntry = markGroups.indexGet(index);
-                if (curEntry instanceof SmallTokenEntry) {
-                    SmallTokenEntry fstTok = (SmallTokenEntry) curEntry;
-                    if (fstTok.prevToken == thisEntry.prevToken) {
-                        // part of a larger match, yeet them out
-                        markGroups.indexRemove(index);
-                        return;
-                    }
-                    List<SmallTokenEntry> arr = new ArrayList<>(2);
-                    arr.add(fstTok);
-                    arr.add(thisEntry);
-                    markGroups.indexReplace(index, arr);
-                    recordList.accept(arr);
-                } else if (curEntry instanceof List) {
-                    @SuppressWarnings("unchecked")
-                    List<SmallTokenEntry> list = (List<SmallTokenEntry>) curEntry;
-                    boolean hadMatch = list.removeIf(it -> thisEntry.prevToken == it.prevToken);
-                    if (!hadMatch) {
-                        list.add(thisEntry);
-                    }
-                }
-            } else {
-                markGroups.indexInsert(index, h, thisEntry);
-            }
-        }
-
         private void grow() {
             int newLength = identifiers.length * 2;
             this.identifiers = Arrays.copyOf(identifiers, newLength);
@@ -444,6 +401,7 @@ final class TokenFileSet {
             return (long) fileId << 32 | (long) indexInFile;
         }
 
+        @Override
         public String toString() {
             return "Token(file=" + fileId + ", index=" + indexInFile + ")";
         }

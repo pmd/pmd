@@ -46,7 +46,7 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
 
     void addMark(Mark newMark) {
         boolean added = false;
-        for (ListIterator<Mark> iterator = markSet.listIterator(); iterator.hasNext(); ) {
+        for (ListIterator<Mark> iterator = markSet.listIterator(); iterator.hasNext();) {
             Mark mark = iterator.next();
             int cmp = mark.contains(newMark);
             if (cmp > 0) {
@@ -137,15 +137,4 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
     }
 
 
-    private static class MarkSet {
-
-
-        static class MarkNode {
-            private final Mark mark;
-
-            MarkNode(Mark mark) {
-                this.mark = mark;
-            }
-        }
-    }
 }
