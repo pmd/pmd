@@ -4,9 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties;
 
 /**
  * Creates a tokenizer, that uses the syntactic grammar to provide context
@@ -22,6 +29,32 @@ public final class SyntacticJavaTokenizerFactory {
 
     @Deprecated
     public static TokenManager<JavaccToken> createTokenizer(CharStream cs) {
-        return JavaTokenKinds.newTokenManager(cs);
+        final List<JavaccToken> tokenList = new ArrayList<>();
+        JavaParserImplTokenManager tokenManager = new JavaParserImplTokenManager(null, cs) {
+            @Override
+            public JavaccToken getNextToken() {
+                JavaccToken token = super.getNextToken();
+                tokenList.add(token);
+                return token;
+            }
+        };
+
+        LanguageVersion latestVersion = JavaLanguageModule.getInstance().getLatestVersion();
+        JavaParserImpl parser = new JavaParserImpl(tokenManager);
+        tokenManager.parser = parser;
+        parser.setJdkVersion(JavaLanguageProperties.getInternalJdkVersion(latestVersion));
+        parser.setPreview(JavaLanguageProperties.isPreviewEnabled(latestVersion));
+
+        ASTCompilationUnit compilationUnit = parser.CompilationUnit();
+        assert compilationUnit != null;
+
+        return new TokenManager<JavaccToken>() {
+            Iterator<JavaccToken> iterator = tokenList.iterator();
+
+            @Override
+            public JavaccToken getNextToken() {
+                return iterator.next();
+            }
+        };
     }
 }
