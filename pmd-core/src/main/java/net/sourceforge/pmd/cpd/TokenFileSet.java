@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cpd;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -80,23 +81,22 @@ final class TokenFileSet {
      *
      * @return A list of buckets of tokens that have the same hash and should be processed by the matching algorithm.
      */
-    List<List<SmallTokenEntry>> hashAll(int minTileSize) {
+    Iterator<List<SmallTokenEntry>> hashAll(int minTileSize) {
         // precompute this
         int lastMod = 1;
         for (int i = 0; i < minTileSize; i++) {
             lastMod *= MOD;
         }
 
-        // This is the hashmap that buckets tokens according to their hash
-        IntObjectMap<Object> markGroups = new IntObjectHashMap<>();
-        // This serves as a sink to receive the matching lists, to avoid iterating the hashmap after we're done.
-        List<List<SmallTokenEntry>> matches = new ArrayList<>();
+        int totalNumTokens = files.parallelStream().mapToInt(TokenFile::size).sum();
+
+        // note that we let the map go out of scope to be able to reclaim the hashmap
+        TokenHashMap map = new TokenHashMap(totalNumTokens);
         for (TokenFile file : files) {
-            file.computeHashes(minTileSize, lastMod, markGroups, matches::add);
+            file.computeHashes(minTileSize, lastMod, map);
         }
-        // Those lists may be empty or single-element as we remove elements sometimes
-        matches.removeIf(it -> it.size() < 2);
-        return matches;
+
+        return map.getFinalMatches().iterator();
     }
 
     public TokenEntry toTokenEntry(SmallTokenEntry fstTok) {
@@ -190,6 +190,64 @@ final class TokenFileSet {
         }
     }
 
+    static class TokenHashMap {
+        private final IntObjectMap<Object> markGroups;
+        private final List<List<SmallTokenEntry>> listSink;
+
+        TokenHashMap(int size) {
+            markGroups = new IntObjectHashMap<>(size);
+            listSink = new ArrayList<>();
+        }
+
+        public List<List<SmallTokenEntry>> getFinalMatches() {
+            List<List<SmallTokenEntry>> list = listSink;
+            // Those lists may be empty or single-element as we remove elements sometimes
+            list.removeIf(it -> it.size() < 2);
+            return list;
+        }
+
+        /**
+         * This routine adds a token to the hash table. Tokens that have the same hash are placed together into a list.
+         * Those lists are then handed to the match finder to compute the similarity between tokens with the same hash.
+         * Reducing the size of those lists is a crucial time optimization, because the match finder is quadratic
+         * in the length of the input list. One important optimization that we do is therefore to prune tokens from one
+         * of those list if they have the same preceding token. This is because they are then necessarily a suffix of a
+         * larger match, so they are useless.
+         *
+         * @param hash          Hash of the current token
+         * @param thisEntry  The current token
+         */
+        private void addTokenToHashTable(int hash, SmallTokenEntry thisEntry) {
+            int index = markGroups.indexOf(hash);
+            if (markGroups.indexExists(index)) {
+                Object curEntry = markGroups.indexGet(index);
+                if (curEntry instanceof SmallTokenEntry) {
+                    SmallTokenEntry fstTok = (SmallTokenEntry) curEntry;
+                    if (fstTok.prevToken == thisEntry.prevToken) {
+                        // part of a larger match, yeet them out
+                        markGroups.indexRemove(index);
+                        return;
+                    }
+                    List<SmallTokenEntry> arr = new ArrayList<>(2);
+                    arr.add(fstTok);
+                    arr.add(thisEntry);
+                    markGroups.indexReplace(index, arr);
+                    listSink.add(arr);
+                } else if (curEntry instanceof List) {
+                    @SuppressWarnings("unchecked")
+                    List<SmallTokenEntry> list = (List<SmallTokenEntry>) curEntry;
+                    boolean hadMatch = list.removeIf(it -> thisEntry.prevToken == it.prevToken);
+                    if (!hadMatch) {
+                        list.add(thisEntry);
+                    }
+                }
+            } else {
+                markGroups.indexInsert(index, hash, thisEntry);
+            }
+        }
+
+    }
+
     static final class TokenFile {
         /**
          * This is the index of this file in the containing TokenFileSet's list.
@@ -251,7 +309,7 @@ final class TokenFileSet {
         /**
          * Hash the entire file and put the hashed tokens into the hashmap (key is hash, value is token or list of tokens).
          */
-        void computeHashes(final int tileSize, final int lastMod, IntObjectMap<Object> markGroups, Consumer<List<SmallTokenEntry>> recordList) {
+        void computeHashes(final int tileSize, final int lastMod, TokenHashMap map) {
             final int size = this.size;
             if (size < tileSize) {
                 // nothing to do, the file does not contain a full tile
@@ -283,7 +341,7 @@ final class TokenFileSet {
                 int h = hashCodes[i];
                 int prevToken = i == 0 ? 0 : identifiers[i - 1];
                 SmallTokenEntry thisEntry = new SmallTokenEntry(this.internalId, i, prevToken);
-                addTokenToHashTable(markGroups, recordList, h, thisEntry);
+                map.addTokenToHashTable(h, thisEntry);
             }
         }
 

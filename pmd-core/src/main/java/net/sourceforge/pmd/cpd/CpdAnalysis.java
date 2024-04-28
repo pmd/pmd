@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -113,11 +114,11 @@ public final class CpdAnalysis implements AutoCloseable {
 
     static List<Match> findMatches(@NonNull CPDListener cpdListener, TokenFileSet tokens, int minTileSize) {
         cpdListener.phaseUpdate(CPDListener.HASH);
-        List<List<TokenFileSet.SmallTokenEntry>> markGroups = tokens.hashAll(minTileSize);
+        Iterator<List<TokenFileSet.SmallTokenEntry>> markGroups = tokens.hashAll(minTileSize);
 
         MatchCollector matchCollector = new MatchCollector(tokens, minTileSize);
         cpdListener.phaseUpdate(CPDListener.MATCH);
-        markGroups.forEach(matchCollector::collect);
+        markGroups.forEachRemaining(matchCollector::collect);
 
         cpdListener.phaseUpdate(CPDListener.DONE);
         return matchCollector.getMatches();
