@@ -30,7 +30,7 @@ public final class SyntacticJavaTokenizerFactory {
     @Deprecated
     public static TokenManager<JavaccToken> createTokenizer(CharStream cs) {
         final List<JavaccToken> tokenList = new ArrayList<>();
-        JavaParserImplTokenManager tokenManager = new JavaParserImplTokenManager(null, cs) {
+        JavaParserImplTokenManager tokenManager = new JavaParserImplTokenManager(cs) {
             @Override
             public JavaccToken getNextToken() {
                 JavaccToken token = super.getNextToken();
@@ -41,7 +41,6 @@ public final class SyntacticJavaTokenizerFactory {
 
         LanguageVersion latestVersion = JavaLanguageModule.getInstance().getLatestVersion();
         JavaParserImpl parser = new JavaParserImpl(tokenManager);
-        tokenManager.parser = parser;
         parser.setJdkVersion(JavaLanguageProperties.getInternalJdkVersion(latestVersion));
         parser.setPreview(JavaLanguageProperties.isPreviewEnabled(latestVersion));
 

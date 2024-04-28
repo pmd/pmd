@@ -113,7 +113,7 @@
         <mkdir dir="${target-package-dir}" />
 
         <condition property="option-token-manager-uses-parser">
-            <resourcecontains resource="${grammar-file}" substring="TOKEN_MANAGER_USES_PARSER"/>
+            <resourcecontains resource="${grammar-file}" substring="TOKEN_MANAGER_USES_PARSER = true"/>
         </condition>
     </target>
 
@@ -471,8 +471,10 @@ public final class ${token-constants-name} \{${line.separator}
 
     <target name="constants-files-token-manager-uses-parser" if="option-token-manager-uses-parser">
         <echo level="info">Option TOKEN_MANAGER_USES_PARSER is enabled</echo>
+
         <replaceregexp flags="g">
             <regexp pattern="return new ${tokenmgr-name}\(cs\);" />
+            <!-- TODO this implementation does not work as the first token is skipped, since it is fetched by the parser itself. -->
             <substitution expression="return new ${parser-name}(cs).token_source;" />
             <file name="${token-constants-file}" />
         </replaceregexp>
