@@ -6,15 +6,14 @@ package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
 
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 
 import net.sf.saxon.om.AtomicSequence;
 import net.sf.saxon.om.NodeInfo;
+import net.sf.saxon.pattern.NodeTest;
 import net.sf.saxon.tree.iter.AxisIterator;
 import net.sf.saxon.tree.iter.EmptyIterator;
-import net.sf.saxon.tree.util.FastStringBuffer;
 import net.sf.saxon.tree.util.Navigator;
 import net.sf.saxon.tree.wrapper.SiblingCountingNode;
 import net.sf.saxon.type.SchemaType;
@@ -53,17 +52,17 @@ class AstAttributeNode extends BaseNodeInfo implements SiblingCountingNode {
 
 
     @Override
-    protected AxisIterator iterateAttributes(Predicate<? super NodeInfo> nodeTest) {
+    protected AxisIterator iterateAttributes(NodeTest nodeTest) {
         return EmptyIterator.ofNodes();
     }
 
     @Override
-    protected AxisIterator iterateChildren(Predicate<? super NodeInfo> nodeTest) {
+    protected AxisIterator iterateChildren(NodeTest nodeTest) {
         return EmptyIterator.ofNodes();
     }
 
     @Override
-    protected AxisIterator iterateSiblings(Predicate<? super NodeInfo> nodeTest, boolean forwards) {
+    protected AxisIterator iterateSiblings(NodeTest nodeTest, boolean forwards) {
         return EmptyIterator.ofNodes();
     }
 
@@ -102,13 +101,13 @@ class AstAttributeNode extends BaseNodeInfo implements SiblingCountingNode {
 
 
     @Override
-    public void generateId(FastStringBuffer buffer) {
-        buffer.append(Integer.toString(hashCode()));
+    public void generateId(StringBuilder buffer) {
+        buffer.append(hashCode());
     }
 
 
     @Override
-    public CharSequence getStringValueCS() {
+    public String getStringValue() {
         getTreeInfo().getLogger().recordUsageOf(attribute);
         return attribute.getStringValue();
     }

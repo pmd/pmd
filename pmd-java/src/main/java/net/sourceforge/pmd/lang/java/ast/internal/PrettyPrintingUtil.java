@@ -383,7 +383,7 @@ public final class PrettyPrintingUtil {
         public Void visit(ASTLambdaExpression node, StringBuilder sb) {
             node.getParameters().acceptVisitor(this, sb);
             sb.append(" -> ");
-            ASTExpression exprBody = node.getExpression();
+            ASTExpression exprBody = node.getExpressionBody();
             if (exprBody != null) {
                 exprBody.acceptVisitor(this, sb);
             } else {

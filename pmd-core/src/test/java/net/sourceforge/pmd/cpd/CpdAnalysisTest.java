@@ -8,18 +8,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.document.TextFile;
 
 /**
  * Unit test for {@link CpdAnalysis}
@@ -29,14 +36,13 @@ class CpdAnalysisTest {
     private static final String BASE_TEST_RESOURCE_PATH = "src/test/resources/net/sourceforge/pmd/cpd/files/";
     private static final String TARGET_TEST_RESOURCE_PATH = "target/classes/net/sourceforge/pmd/cpd/files/";
 
+    @TempDir
+    private Path tempDir;
 
-    // Symlinks are not well supported under Windows - so the tests are
-    // simply executed only on linux.
-    private boolean canTestSymLinks = SystemUtils.IS_OS_UNIX;
-    CPDConfiguration config = new CPDConfiguration();
+    private CPDConfiguration config = new CPDConfiguration();
 
     @BeforeEach
-    void setup() throws Exception {
+    void setup() {
         config.setOnlyRecognizeLanguage(DummyLanguageModule.getInstance());
         config.setMinimumTileSize(10);
     }
@@ -49,8 +55,6 @@ class CpdAnalysisTest {
      *             any error
      */
     private void prepareSymLinks() throws Exception {
-        assumeTrue(canTestSymLinks, "Skipping unit tests with symlinks.");
-
         Runtime runtime = Runtime.getRuntime();
         if (!new File(TARGET_TEST_RESOURCE_PATH, "symlink-for-real-file.txt").exists()) {
             runtime.exec(new String[] { "ln", "-s", BASE_TEST_RESOURCE_PATH + "real-file.txt",
@@ -70,6 +74,7 @@ class CpdAnalysisTest {
      *             any error
      */
     @Test
+    @EnabledOnOs(OS.LINUX) // Symlinks are not well supported under Windows
     void testFileSectionWithBrokenSymlinks() throws Exception {
         prepareSymLinks();
 
@@ -91,6 +96,7 @@ class CpdAnalysisTest {
      *             any error
      */
     @Test
+    @EnabledOnOs(OS.LINUX) // Symlinks are not well supported under Windows
     void testFileAddedAsSymlinkAndReal() throws Exception {
         prepareSymLinks();
 
@@ -109,6 +115,7 @@ class CpdAnalysisTest {
      * A file should be not be added via a sym link.
      */
     @Test
+    @EnabledOnOs(OS.LINUX) // Symlinks are not well supported under Windows
     void testNoFileAddedAsSymlink() throws Exception {
         prepareSymLinks();
 
@@ -177,6 +184,29 @@ class CpdAnalysisTest {
                     assertEquals("dup2.txt", match.getSecondMark().getFileId().getFileName());
                 }
             });
+        }
+    }
+
+    @Test
+    void duplicatedFilesShouldBeSkipped() throws IOException {
+        String filename = "file1.dummy";
+        Path aFile1 = Files.createDirectory(tempDir.resolve("a")).resolve(filename).toAbsolutePath();
+        Path bFile1 = Files.createDirectory(tempDir.resolve("b")).resolve(filename).toAbsolutePath();
+
+        Files.write(aFile1, "Same content".getBytes(StandardCharsets.UTF_8));
+        Files.write(bFile1, "Same content".getBytes(StandardCharsets.UTF_8));
+
+        config.setSkipDuplicates(true);
+        config.setInputPathList(Arrays.asList(tempDir));
+        try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
+            List<TextFile> collectedFiles = cpd.files().getCollectedFiles();
+            collectedFiles.stream().map(TextFile::getFileId).map(FileId::getAbsolutePath).forEach(System.out::println);
+            assertEquals(1, collectedFiles.size());
+
+            // the order of directory traversal is most likely not defined, so either one
+            // of the two files might be added, but not both
+            String collectedFile = collectedFiles.get(0).getFileId().getAbsolutePath();
+            assertTrue(collectedFile.equals(aFile1.toString()) || collectedFile.equals(bFile1.toString()));
         }
     }
 

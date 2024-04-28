@@ -204,6 +204,7 @@ echo
 echo "Tag has been pushed.... now check github actions: <https://github.com/pmd/pmd/actions>"
 echo
 echo "Now wait, until first stage of the release is finished successfully..."
+echo "You don't need to wait until artifacts are in maven central, just the github action must be successful."
 echo
 echo "If it is failing, you can fix the code/scripts and force push the tag via"
 echo
@@ -244,9 +245,6 @@ echo "${OLD_RELEASE_NOTES_HEADER}
 ${NEW_RELEASE_NOTES}
 
 ${OLD_RELEASE_NOTES}" > docs/pages/release_notes_old.md
-
-# update release_notes_pmd7 with prerendered version (jdoc tags are replaced with released version)
-echo "$RELEASE_NOTES_PMD7" > docs/pages/release_notes_pmd7.md
 
 # reset release notes template
 cat > docs/pages/release_notes.md <<EOF
@@ -348,6 +346,8 @@ tweet="${tweet//$'\r'/}"
 tweet="${tweet//$'\n'/%0A}"
 echo "*   Tweet about this release on https://twitter.com/pmd_analyzer:"
 echo "        <https://twitter.com/intent/tweet?text=$tweet>"
+echo "*   Post this also into <https://matrix.to/#/#pmd_pmd:gitter.im>:"
+echo "        PMD ${RELEASE_VERSION} released: https://github.com/pmd/pmd/releases/tag/pmd_releases/${RELEASE_VERSION} #PMD"
 echo
 echo
 echo "Now waiting for the release to be finished..."
