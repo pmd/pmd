@@ -115,7 +115,6 @@ public final class CpdAnalysis implements AutoCloseable {
     static List<Match> findMatches(@NonNull CPDListener cpdListener, TokenFileSet tokens, int minTileSize) {
         cpdListener.phaseUpdate(CPDListener.HASH);
         Iterator<List<TokenFileSet.SmallTokenEntry>> markGroups = tokens.hashAll(minTileSize);
-        System.gc();
 
         MatchCollector matchCollector = new MatchCollector(tokens, minTileSize);
         cpdListener.phaseUpdate(CPDListener.MATCH);

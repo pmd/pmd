@@ -142,6 +142,11 @@
             <groupId>com.github.oowekyala.ooxml</groupId>
             <artifactId>nice-xml-messages</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.carrotsearch</groupId>
+            <artifactId>hppc</artifactId>
+            <version>0.9.1</version>
+        </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
