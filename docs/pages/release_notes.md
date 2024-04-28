@@ -21,7 +21,7 @@ Up to now, all AST node getters would be exposed to XPath, as long as the return
 Since this release, PMD will also expose any getter returning a collection of any supported type as a sequence through an XPath attribute. They would require to use apropriate XQuery functions to manipulate the sequence. So for instance, to detect any given `ASTUserClass` that implements `Queueable`, it is now possible to write:
 
 ```xml
-/UserClass[not(empty(index-of(@InterfaceNames, 'Queueable')))]
+/UserClass[@InterfaceNames = 'Queueable']
 ```
 
 ### ✨ New rules
