@@ -132,8 +132,8 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
                 try {
                     Class<?> elementKlass = Class.forName(((ParameterizedType) t).getActualTypeArguments()[0].getTypeName());
                     return CONSIDERED_RETURN_TYPES.contains(elementKlass) || elementKlass.isEnum();
-                } catch (ClassNotFoundException ignored) {
-                    // should never happen
+                } catch (ClassNotFoundException e) {
+                    throw AssertionUtil.shouldNotReachHere("Method '" + method + "' should return a known type, but: " + e, e);
                 }
             }
         }
