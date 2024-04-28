@@ -579,9 +579,9 @@ public final class Infer {
                 LOG.applicabilityTest(ctxCopy, m);
                 try {
                     ctxCopy.solve(/*onlyBoundedVars:*/isPreJava8());
-                } catch (Throwable e) {
+                } catch (Exception e) {
                     // applicability test failed for this candidate, but continue with others
-                    throw ResolutionFailedException.fromThrowable(LOG, e);
+                    throw ResolutionFailedException.fromException(LOG, e);
                 }
 
                 // if unchecked conversion was needed, update the site for invocation pass

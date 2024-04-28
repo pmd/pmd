@@ -55,14 +55,14 @@ final class ResolutionFailedException extends RuntimeException {
     // If the logger is noop we don't even create the failure.
     // These failures are extremely frequent (and normal), and type pretty-printing is expensive
 
-    static ResolutionFailedException fromThrowable(TypeInferenceLogger logger, Throwable t) {
-        if (t instanceof ResolutionFailedException) {
-            return (ResolutionFailedException) t;
+    static ResolutionFailedException fromException(TypeInferenceLogger logger, Exception e) {
+        if (e instanceof ResolutionFailedException) {
+            return (ResolutionFailedException) e;
         }
 
         return getShared(logger.isNoop() ? UNKNOWN : new ResolutionFailure(
                 null,
-                t.getMessage()
+                e.getMessage()
         ));
     }
 
