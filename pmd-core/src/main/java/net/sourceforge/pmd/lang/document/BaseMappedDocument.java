@@ -69,7 +69,7 @@ abstract class BaseMappedDocument implements TextDocument {
      */
     protected @NonNull TextRegion inputRegion(TextRegion outputRegion) {
         if (outputRegion.isEmpty()) {
-            return TextRegion.caretAt(inputOffset(outputRegion.getStartOffset(), false));
+            return TextRegion.caretAt(inputOffset(outputRegion.getStartOffset(), true));
         }
         return TextRegion.fromBothOffsets(inputOffset(outputRegion.getStartOffset(), true),
                                           inputOffset(outputRegion.getEndOffset(), false));
