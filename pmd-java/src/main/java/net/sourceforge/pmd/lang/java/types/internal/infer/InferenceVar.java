@@ -304,7 +304,7 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
         // These sets are shared because otherwise *literal millions* of enumsets are created, with the same constants
         static final Set<BoundKind> ALL = EnumSet.allOf(BoundKind.class);
         static final Set<BoundKind> EQ_LOWER = EnumSet.of(EQ, LOWER);
-        private static final Set<BoundKind> EQ_UPPER = EnumSet.of(EQ, UPPER);
+        static final Set<BoundKind> EQ_UPPER = EnumSet.of(EQ, UPPER);
         private static final Set<BoundKind> JUST_EQ = Collections.singleton(EQ);
 
         private final String sym;

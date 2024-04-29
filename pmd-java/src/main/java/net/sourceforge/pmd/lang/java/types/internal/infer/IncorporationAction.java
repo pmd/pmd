@@ -9,6 +9,8 @@ import static net.sourceforge.pmd.lang.java.types.TypeOps.isConvertible;
 import java.util.ArrayList;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
@@ -35,6 +37,66 @@ abstract class IncorporationAction {
     }
 
     abstract void apply(InferenceContext ctx);
+
+    /**
+     * Check that an upper bound with a class (not interface) or array
+     * is compatible with other upper bounds of class or array type.
+     * This is necessary to guarantee the existence of a glb for these,
+     * for {@link ReductionStep#UPPER}.
+     *
+     * <p>If the bound is {@code alpha <: T}, then we must check
+     * that {@code S <: T} or {@code T <: S} holds for all bounds
+     * {@code alpha <: S}, where S is a class or array type. Otherwise,
+     * the GLB does not exist.
+     */
+    static class CheckClassUpperBound extends IncorporationAction {
+
+        private final JTypeMirror myBound;
+
+        CheckClassUpperBound(InferenceVar ivar, JTypeMirror bound) {
+            super(ivar);
+            this.myBound = bound;
+        }
+
+        public static boolean needsCheck(BoundKind kind, JTypeMirror bound) {
+            if (kind == BoundKind.UPPER) {
+                JTypeDeclSymbol symbol = bound.getSymbol();
+                return symbol instanceof JClassSymbol && !symbol.isInterface();
+            }
+            return false;
+        }
+
+
+        @Override
+        public void apply(InferenceContext ctx) {
+            for (BoundKind k : BoundKind.EQ_UPPER) {
+                for (JTypeMirror b : ivar.getBounds(k)) {
+                    if (!checkBound(b, ctx)) {
+                        throw ResolutionFailedException.incompatibleBound(ctx.logger, ivar, BoundKind.UPPER, myBound, k, b);
+                    }
+                }
+            }
+        }
+
+        private boolean checkBound(JTypeMirror otherBound, InferenceContext ctx) {
+
+            JTypeDeclSymbol sym = otherBound.getSymbol();
+            // either the bound is not a concrete class or array type
+            return !(sym instanceof JClassSymbol) || sym.isInterface()
+                // or both bounds are related in some way
+                || CheckBound.checkBound(false, otherBound, myBound, ctx)
+                || CheckBound.checkBound(false, myBound, otherBound, ctx);
+
+        }
+
+
+        @Override
+        public String toString() {
+            return "Check class bound " + BoundKind.UPPER.format(ivar, myBound);
+        }
+
+
+    }
 
     /**
      * Check that a bound is compatible with the other current bounds
@@ -97,13 +159,13 @@ abstract class IncorporationAction {
         /**
          * If 'eq', checks that {@code T = S}, else checks that {@code T <: S}.
          */
-        boolean checkBound(boolean eq, JTypeMirror t, JTypeMirror s, InferenceContext ctx) {
+        static boolean checkBound(boolean eq, JTypeMirror t, JTypeMirror s, InferenceContext ctx) {
             // eq bounds are so rare we shouldn't care if they're cached
             return eq ? InternalApiBridge.isSameTypeInInference(t, s)
                       : checkSubtype(t, s, ctx);
         }
 
-        private boolean checkSubtype(JTypeMirror t, JTypeMirror s, InferenceContext ctx) {
+        private static boolean checkSubtype(JTypeMirror t, JTypeMirror s, InferenceContext ctx) {
             if (ctx.getSupertypeCheckCache().isCertainlyASubtype(t, s)) {
                 return true; // supertype was already cached
             }

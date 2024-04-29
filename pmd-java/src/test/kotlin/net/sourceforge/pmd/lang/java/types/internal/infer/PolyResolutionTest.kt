@@ -15,9 +15,6 @@ import java.io.OutputStream
 
 /**
  * Expensive test cases for the overload resolution phase.
- *
- * Edit: So those used to be very expensive (think minutes of execution),
- * but optimisations made them very fast.
  */
 class PolyResolutionTest : ProcessorTestSpec({
 
