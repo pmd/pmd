@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
-import org.mockito.Mockito;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.LexException;
@@ -197,9 +196,7 @@ class CpdAnalysisTest {
     }
 
     @Test
-    void testSkipLexicalErrors() throws IOException {
-
-
+    void testNoSkipLexicalErrors() throws IOException {
         PmdReporter reporter = mock(PmdReporter.class);
         config.setReporter(reporter);
 
@@ -213,8 +210,13 @@ class CpdAnalysisTest {
         verify(reporter).errorEx(eq("Error while tokenizing"), any(MalformedSourceException.class));
         verify(reporter).errorEx(eq("Exception while running CPD"), any(IllegalStateException.class));
         verifyNoMoreInteractions(reporter);
+    }
 
-        Mockito.reset(reporter);
+    @Test
+    void testSkipLexicalErrors() throws IOException {
+        PmdReporter reporter = mock(PmdReporter.class);
+        config.setReporter(reporter);
+
         config.setSkipLexicalErrors(true);
         try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
             assertTrue(cpd.files().addSourceFile(FileId.fromPathLikeString("foo.dummy"), DummyLanguageModule.CPD_THROW_LEX_EXCEPTION));
