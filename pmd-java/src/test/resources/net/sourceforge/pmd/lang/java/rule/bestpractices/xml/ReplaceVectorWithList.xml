@@ -42,4 +42,23 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Not about vector</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package pmd.false_positive;
+
+            import java.util.Map;
+            import java.util.function.Predicate;
+
+            public class AAntiFraudPolicy<C extends IAntiFraudCriterion> {
+
+                public static <E extends Enum<E> & IAntiFraudCriterion> AAntiFraudPolicy<E> of(Class<E> enumClass,
+                                                                                               Map<E, Predicate<AntiFraudCheckResult>> criterionChecks) {
+                    return new AAntiFraudPolicy<E>();
+                }
+
+            }
+        ]]></code>
+    </test-code>
 </test-data>
