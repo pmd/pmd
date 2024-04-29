@@ -33,11 +33,18 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
         this.marks = marks;
     }
 
-    @Deprecated
     Match(int tokenCount, Mark first, Mark second) {
-        this.marks = new ArrayList<>(2);
-        this.marks.add(first);
-        this.marks.add(second);
+        List<Mark> marks = new ArrayList<>(2);
+        int cmp = first.compareTo(second);
+        // mark list should be sorted
+        if (cmp > 0) {
+            marks.add(second);
+            marks.add(first);
+        } else {
+            marks.add(first);
+            marks.add(second);
+        }
+        this.marks = Collections.unmodifiableList(marks);
         this.minTokenCount = tokenCount;
         this.maxTokenCount = tokenCount;
     }
@@ -79,7 +86,7 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
      * Return a sorted list of marks. The list is non-empty.
      */
     public List<Mark> getMarks() {
-        return Collections.unmodifiableList(marks);
+        return marks;
     }
 
     @Override
@@ -89,11 +96,9 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
 
     @Override
     public int compareTo(Match other) {
-        int diff = other.getTokenCount() - getTokenCount();
-        if (diff != 0) {
-            return diff;
-        }
-        return getFirstMark().compareTo(other.getFirstMark());
+        int cmp = getFirstMark().compareTo(other.getFirstMark());
+        cmp = cmp != 0 ? cmp : getSecondMark().compareTo(other.getSecondMark());
+        return cmp;
     }
 
     public Mark getFirstMark() {
@@ -153,7 +158,7 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
 
             IntSummaryStatistics stats = marks.stream().mapToInt(Mark::getLength).summaryStatistics();
             marks.sort(Comparator.naturalOrder());
-            return new Match(stats.getMin(), stats.getMax(), marks);
+            return new Match(stats.getMin(), stats.getMax(), Collections.unmodifiableList(marks));
         }
 
     }
