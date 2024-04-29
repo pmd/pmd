@@ -55,17 +55,6 @@ final class ResolutionFailedException extends RuntimeException {
     // If the logger is noop we don't even create the failure.
     // These failures are extremely frequent (and normal), and type pretty-printing is expensive
 
-    static ResolutionFailedException fromException(TypeInferenceLogger logger, Exception e) {
-        if (e instanceof ResolutionFailedException) {
-            return (ResolutionFailedException) e;
-        }
-
-        return getShared(logger.isNoop() ? UNKNOWN : new ResolutionFailure(
-                null,
-                e.getMessage()
-        ));
-    }
-
     static ResolutionFailedException incompatibleBound(TypeInferenceLogger logger, InferenceVar ivar, BoundKind k1, JTypeMirror b1, BoundKind k2, JTypeMirror b2) {
         // in javac it's "no instance of type variables exist ..."
         return getShared(logger.isNoop() ? UNKNOWN : new ResolutionFailure(
