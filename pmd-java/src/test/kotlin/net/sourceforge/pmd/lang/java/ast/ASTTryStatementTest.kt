@@ -33,7 +33,9 @@ class ASTTryStatementTest : ParserTestSpec({
 
                                 classType("Foo")
                                 fromChild<ASTVariableDeclarator, ASTExpression> {
-                                    variableId("a")
+                                    variableId("a") {
+                                        it::isResourceDeclaration shouldBe true
+                                    }
                                     int(2)
                                 }
                             }
@@ -59,7 +61,9 @@ class ASTTryStatementTest : ParserTestSpec({
                                 }
                                 classType("Foo")
                                 fromChild<ASTVariableDeclarator, ASTExpression> {
-                                    variableId("a")
+                                    variableId("a") {
+                                        it::isResourceDeclaration shouldBe true
+                                    }
                                     int(2)
                                 }
                             }
