@@ -25,6 +25,10 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚨 API Changes
 
+#### Deprecated API
+
+* {% jdoc java::lang.java.ast.ASTResource#getStableName() %} and the corresponding attribute `@StableName`
+
 ### ✨ External Contributions
 
 {% endtocmaker %}

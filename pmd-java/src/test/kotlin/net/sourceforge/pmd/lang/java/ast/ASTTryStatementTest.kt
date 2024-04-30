@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_7
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J9
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 
 /**
  * @author Clément Fournier
@@ -23,7 +23,6 @@ class ASTTryStatementTest : ParserTestSpec({
                     child<ASTResourceList> {
                         child<ASTResource> {
                             it::isConciseResource shouldBe false
-                            it::getStableName shouldBe "a"
 
                             it::getInitializer shouldBe fromChild<ASTLocalVariableDeclaration, ASTExpression> {
                                 it::getModifiers shouldBe localVarModifiers {
@@ -50,7 +49,6 @@ class ASTTryStatementTest : ParserTestSpec({
                     child<ASTResourceList> {
                         child<ASTResource> {
                             it::isConciseResource shouldBe false
-                            it::getStableName shouldBe "a"
 
                             it::getInitializer shouldBe fromChild<ASTLocalVariableDeclaration, ASTExpression> {
                                 it::getModifiers shouldBe localVarModifiers {
@@ -83,7 +81,6 @@ class ASTTryStatementTest : ParserTestSpec({
                     child<ASTResourceList> {
                         child<ASTResource> {
                             it::isConciseResource shouldBe true
-                            it::getStableName shouldBe "a"
 
                             it::getInitializer shouldBe variableAccess("a")
                         }
@@ -101,7 +98,6 @@ class ASTTryStatementTest : ParserTestSpec({
                     child<ASTResourceList> {
                         child<ASTResource> {
                             it::isConciseResource shouldBe true
-                            it::getStableName shouldBe "a"
 
                             it::getInitializer shouldBe variableAccess("a")
                         }
@@ -119,7 +115,6 @@ class ASTTryStatementTest : ParserTestSpec({
                     child<ASTResourceList> {
                         child<ASTResource> {
                             it::isConciseResource shouldBe true
-                            it::getStableName shouldBe "a.b"
 
                             it::getInitializer shouldBe fieldAccess("b") {
                                 ambiguousName("a")
