@@ -174,6 +174,24 @@ class TypeTestUtilTest extends BaseParserTest {
     }
 
     @Test
+    void testIsATypeVarWithUnresolvedIntersectionBound() {
+        // a type var with an unresolved bound should not be considered
+        // a subtype of everything
+        // #4852
+
+        ASTType field =
+            java.parse("class Foo<T extends Number & Unresolved> {\n"
+                           + "\tT field;\n"
+                           + "}")
+                .descendants(ASTFieldDeclaration.class)
+                .firstOrThrow().getTypeNode();
+
+        assertIsA(field, Object.class);
+        assertIsA(field, Number.class);
+        assertIsNot(field, String.class);
+    }
+
+    @Test
     void testIsAStringWithTypeArguments() {
 
         ASTTypeDeclaration klass =

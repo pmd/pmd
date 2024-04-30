@@ -85,7 +85,7 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
             JavaNode reportNode = targs == null ? newTypeNode : targs;
             String message = targs == null ? RAW_TYPE_MESSAGE : REPLACE_TYPE_ARGS_MESSAGE;
             String replaceWith = produceSuggestedExprImage(ctorCall);
-            asCtx(data).addViolationWithMessage(reportNode, message, new String[] { replaceWith });
+            asCtx(data).addViolationWithMessage(reportNode, message, replaceWith);
         }
         return null;
     }

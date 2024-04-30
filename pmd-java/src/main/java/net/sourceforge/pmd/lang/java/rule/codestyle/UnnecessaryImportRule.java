@@ -220,7 +220,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
     }
 
     private void reportWithMessage(ASTImportDeclaration node, Object data, String message) {
-        asCtx(data).addViolationWithMessage(node, message, new String[] { PrettyPrintingUtil.prettyImport(node) });
+        asCtx(data).addViolationWithMessage(node, message, PrettyPrintingUtil.prettyImport(node));
     }
 
     @Override

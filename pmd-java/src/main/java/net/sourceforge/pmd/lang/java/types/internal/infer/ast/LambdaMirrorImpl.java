@@ -91,9 +91,9 @@ class LambdaMirrorImpl extends BaseFunctionalMirror<ASTLambdaExpression> impleme
 
     @Override
     public List<ExprMirror> getResultExpressions() {
-        ASTBlock block = myNode.getBlock();
+        ASTBlock block = myNode.getBlockBody();
         if (block == null) {
-            return Collections.singletonList(createSubexpression(myNode.getExpression()));
+            return Collections.singletonList(createSubexpression(myNode.getExpressionBody()));
         } else {
             return block.descendants(ASTReturnStatement.class)
                         .map(ASTReturnStatement::getExpr)
@@ -111,15 +111,15 @@ class LambdaMirrorImpl extends BaseFunctionalMirror<ASTLambdaExpression> impleme
 
     @Override
     public boolean isValueCompatible() {
-        ASTBlock block = myNode.getBlock();
+        ASTBlock block = myNode.getBlockBody();
         return block == null || isLambdaBodyCompatible(block, false);
     }
 
     @Override
     public boolean isVoidCompatible() {
-        ASTBlock block = myNode.getBlock();
+        ASTBlock block = myNode.getBlockBody();
         if (block == null) {
-            return isExpressionStatement(myNode.getExpression());
+            return isExpressionStatement(myNode.getExpressionBody());
         } else {
             return isLambdaBodyCompatible(block, true);
         }

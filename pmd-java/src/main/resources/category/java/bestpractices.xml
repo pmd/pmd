@@ -1312,12 +1312,13 @@ Consider replacing Vector usages with the newer java.util.ArrayList if expensive
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-                //ClassType[pmd-java:typeIs('java.util.Vector')]
+                //ClassType[pmd-java:typeIsExactly('java.util.Vector')]
                 ]]></value>
             </property>
         </properties>
         <example>
 <![CDATA[
+import java.util.Vector;
 public class Foo {
     void bar() {
         Vector v = new Vector();
@@ -1435,6 +1436,37 @@ class Foo{
 ]]>
         </example>
     </rule>
+    <rule name="UnnecessaryVarargsArrayCreation"
+          language="java"
+          since="7.1.0"
+          message="Unnecessary explicit array creation for varargs method call"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnnecessaryVarargsArrayCreationRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unnecessaryvarargsarraycreation">
+        <description>
+            Reports explicit array creation when a varargs is expected.
+            For instance:
+            ```java
+            Arrays.asList(new String[] { "foo", "bar", });
+            ```
+            can be replaced by:
+            ```java
+            Arrays.asList("foo", "bar");
+            ```
+        </description>
+        <priority>3</priority>
+        <example><![CDATA[
+import java.util.Arrays;
+
+class C {
+    static {
+        Arrays.asList(new String[]{"foo", "bar",});
+        // should be
+        Arrays.asList("foo", "bar");
+    }
+}
+            ]]></example>
+    </rule>
+
 
     <rule name="UnusedAssignment"
           language="java"

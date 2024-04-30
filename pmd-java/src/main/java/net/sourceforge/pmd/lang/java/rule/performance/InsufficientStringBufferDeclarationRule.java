@@ -72,7 +72,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
         }
 
 
-        public String[] getParamsForViolation() {
+        public Object[] getParamsForViolation() {
             return new String[] { getTypeName(variable), String.valueOf(capacity), String.valueOf(anticipatedLength) };
         }
 

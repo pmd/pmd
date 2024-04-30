@@ -132,11 +132,9 @@ public class LawOfDemeterRule extends AbstractJavaRule {
             asCtx(data).addViolationWithMessage(
                 node,
                 FIELD_ACCESS_ON_FOREIGN_VALUE,
-                new Object[] {
-                    node.getName(),
-                    PrettyPrintingUtil.prettyPrint(node.getQualifier()),
-                    foreignDegree(node.getQualifier()),
-                });
+                node.getName(),
+                PrettyPrintingUtil.prettyPrint(node.getQualifier()),
+                foreignDegree(node.getQualifier()));
         }
         return null;
     }
@@ -147,11 +145,9 @@ public class LawOfDemeterRule extends AbstractJavaRule {
             asCtx(data).addViolationWithMessage(
                 node,
                 METHOD_CALL_ON_FOREIGN_VALUE,
-                new Object[] {
-                    node.getMethodName(),
-                    PrettyPrintingUtil.prettyPrint(node.getQualifier()),
-                    foreignDegree(node.getQualifier()),
-                });
+                node.getMethodName(),
+                PrettyPrintingUtil.prettyPrint(node.getQualifier()),
+                foreignDegree(node.getQualifier()));
         }
         return null;
     }
