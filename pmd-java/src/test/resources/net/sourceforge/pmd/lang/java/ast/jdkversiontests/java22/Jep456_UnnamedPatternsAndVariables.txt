@@ -519,7 +519,7 @@
             +- Block[@Empty = false, @Size = 4, @containsComment = false]
                +- TryStatement[@TryWithResources = true]
                |  +- ResourceList[@Empty = false, @Size = 1, @TrailingSemiColon = false]
-               |  |  +- Resource[@ConciseResource = false, @StableName = "_"]
+               |  |  +- Resource[@ConciseResource = false]
                |  |     +- LocalVariableDeclaration[@EffectiveVisibility = Visibility.V_LOCAL, @Final = true, @TypeInferred = true, @Visibility = Visibility.V_LOCAL]
                |  |        +- ModifierList[@EffectiveModifiers = "{final}", @ExplicitModifiers = "{}"]
                |  |        +- VariableDeclarator[@Initializer = true, @Name = "_"]
