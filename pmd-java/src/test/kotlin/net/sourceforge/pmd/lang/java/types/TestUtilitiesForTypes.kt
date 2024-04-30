@@ -168,7 +168,7 @@ fun assertSubtypeOrdering(vararg ts: JTypeMirror) {
 fun JClassType.parameterize(m1: JTypeMirror, vararg mirror: JTypeMirror): JClassType = withTypeArguments(listOf(m1, *mirror))
 
 fun assertSubtype(t: JTypeMirror, s: JTypeMirror, capture: Boolean = true, passes: Convertibility.() -> Boolean) {
-    val res = isConvertible(t, s, capture)
+    val res = isConvertible(t, s, capture, true)
     assertTrue("$t \n\t\t<: $s") {
         res.passes()
     }

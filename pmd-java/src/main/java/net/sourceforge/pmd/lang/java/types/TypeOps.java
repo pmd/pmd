@@ -398,11 +398,17 @@ public final class TypeOps {
 
 
     public static Convertibility isConvertible(@NonNull JTypeMirror t, @NonNull JTypeMirror s) {
-        return isConvertible(t, s, true);
+        return isConvertible(t, s, true, false);
     }
 
+    @Deprecated // unused
     public static Convertibility isConvertibleNoCapture(@NonNull JTypeMirror t, @NonNull JTypeMirror s) {
-        return isConvertible(t, s, false);
+        return isConvertible(t, s, false, false);
+    }
+
+    // does not perform side effects on inference vars
+    public static Convertibility isConvertiblePure(JTypeMirror t, JTypeMirror s) {
+        return isConvertible(t, s, true, true);
     }
 
     /**
@@ -414,7 +420,7 @@ public final class TypeOps {
      * @param t A type T
      * @param s A type S
      */
-    public static Convertibility isConvertible(@NonNull JTypeMirror t, @NonNull JTypeMirror s, boolean capture) {
+    public static Convertibility isConvertible(@NonNull JTypeMirror t, @NonNull JTypeMirror s, boolean capture, boolean pure) {
         // This is commented out as it makes JTypeMirror#isSubtypeOf partial,
         // which is not nice for the API... But this assert caught a bug and
         // should probably be enabled.
@@ -428,15 +434,17 @@ public final class TypeOps {
         } else if (s.isVoid() || t.isVoid()) { // t != s
             return Convertibility.NEVER;
         } else if (s instanceof InferenceVar) {
-            // it's possible to add a bound to UNKNOWN or ERROR
-            ((InferenceVar) s).addBound(BoundKind.LOWER, t);
+            if (!pure) {
+                // it's possible to add a bound to UNKNOWN or ERROR
+                ((InferenceVar) s).addBound(BoundKind.LOWER, t);
+            }
             return Convertibility.SUBTYPING;
         } else if (isTypeRange(s)) {
             // If s is a type range L..U,
             // then showing t <: s is the same thing as t <: L
             JTypeMirror lower = lowerBoundRec(s);
             if (!lower.isBottom()) {
-                return isConvertible(t, lower, capture);
+                return isConvertible(t, lower, capture, pure);
             }
             // otherwise fallthrough
         } else if (isSpecialUnresolved(t)) {
@@ -447,7 +455,7 @@ public final class TypeOps {
             // subtypes of (nearly) anything. This allows them to
             // pass bound checks on type variables.
             if (Objects.equals(t.getSymbol(), s.getSymbol())) {
-                return typeArgsAreContained((JClassType) t, (JClassType) s);
+                return typeArgsAreContained((JClassType) t, (JClassType) s, pure);
             } else {
                 return Convertibility.subtypeIf(s instanceof JClassType); // excludes array or so
             }
@@ -455,24 +463,14 @@ public final class TypeOps {
             // If S is an intersection, then T must conform to *all* bounds of S
             // Symmetrically, if T is an intersection, T <: S requires only that
             // at least one bound of T is a subtype of S.
-            return Convertibility.subtypesAll(t, asList(s));
+            return Convertibility.subtypesAll(t, asList(s), pure);
         }
 
         if (capture) {
             t = capture(t);
         }
-        return t.acceptVisitor(SubtypeVisitor.INSTANCE, s);
-    }
-
-    // does not perform side effects on inference vars
-    private static Convertibility isSubtypePure(JTypeMirror t, JTypeMirror s) {
-        if (t instanceof InferenceVar) {
-            return Convertibility.subtypeIf(((InferenceVar) t).isSubtypeNoSideEffect(s));
-        } else if (s instanceof InferenceVar) {
-            return Convertibility.subtypeIf(((InferenceVar) s).isSupertypeNoSideEffect(t));
-        }
-
-        return isConvertible(t, s);
+        SubtypeVisitor visitor = pure ? SubtypeVisitor.PURE : SubtypeVisitor.INSTANCE;
+        return t.acceptVisitor(visitor, s);
     }
 
     public static boolean allArgsAreUnboundedWildcards(List<JTypeMirror> sargs) {
@@ -601,10 +599,10 @@ public final class TypeOps {
             return b ? SUBTYPING : NEVER;
         }
 
-        static Convertibility subtypesAll(JTypeMirror t, Iterable<? extends JTypeMirror> supers) {
+        static Convertibility subtypesAll(JTypeMirror t, Iterable<? extends JTypeMirror> supers, boolean pure) {
             Convertibility result = SUBTYPING;
             for (JTypeMirror ui : supers) {
-                Convertibility sub = isConvertible(t, ui);
+                Convertibility sub = isConvertible(t, ui, true, pure);
                 if (sub == NEVER) {
                     return NEVER;
                 }
@@ -613,10 +611,10 @@ public final class TypeOps {
             return result;
         }
 
-        static Convertibility anySubTypesAny(Iterable<? extends JTypeMirror> us, Iterable<? extends JTypeMirror> vs) {
+        static Convertibility anySubTypesAny(Iterable<? extends JTypeMirror> us, Iterable<? extends JTypeMirror> vs, boolean pure) {
             for (JTypeMirror ui : us) {
                 for (JTypeMirror vi : vs) {
-                    Convertibility sub = isConvertible(ui, vi);
+                    Convertibility sub = isConvertible(ui, vi, true, pure);
                     if (sub != NEVER) {
                         return sub.and(SUBTYPING); // never return identity here
                     }
@@ -680,7 +678,7 @@ public final class TypeOps {
      *
      * <p>Defined in JLS§4.5.1 (Type Arguments of Parameterized Types)
      */
-    static Convertibility typeArgContains(JTypeMirror s, JTypeMirror t) {
+    static Convertibility typeArgContains(JTypeMirror s, JTypeMirror t, boolean pure) {
         // the contains relation can be understood intuitively if we
         // represent types as ranges on a line:
 
@@ -698,7 +696,7 @@ public final class TypeOps {
         //      ⊥ -------U(T)-----U(S)------> Object   (L(T) = L(S) = ⊥)
         //      ⊥ -------L(S)-----L(T)------> Object   (U(T) = U(S) = Object)
 
-        if (isSameTypeInInference(s, t)) {
+        if (isSameType(s, t, !pure, false)) {
             // S <= S
             return Convertibility.SUBTYPING;
         }
@@ -714,10 +712,10 @@ public final class TypeOps {
 
             if (sw.isUpperBound()) {
                 // Test U(T) <: U(S),  we already know L(S) <: L(T), because L(S) is bottom
-                return isConvertible(wildUpperBound(t), sw.asUpperBound());
+                return isConvertible(wildUpperBound(t), sw.asUpperBound(), pure, false);
             } else {
                 // Test L(S) <: L(T), we already know U(T) <: U(S), because U(S) is top
-                return isConvertible(sw.asLowerBound(), wildLowerBound(t));
+                return isConvertible(sw.asLowerBound(), wildLowerBound(t), pure, false);
             }
         }
 
@@ -728,7 +726,7 @@ public final class TypeOps {
     /**
      * Generalises containment to check if for each i, {@code Ti <= Si}.
      */
-    static Convertibility typeArgsAreContained(JClassType t, JClassType s) {
+    static Convertibility typeArgsAreContained(JClassType t, JClassType s, boolean pure) {
         List<JTypeMirror> targs = t.getTypeArgs();
         List<JTypeMirror> sargs = s.getTypeArgs();
 
@@ -763,7 +761,7 @@ public final class TypeOps {
 
         Convertibility result = Convertibility.SUBTYPING;
         for (int i = 0; i < targs.size(); i++) {
-            Convertibility sub = typeArgContains(sargs.get(i), targs.get(i));
+            Convertibility sub = typeArgContains(sargs.get(i), targs.get(i), pure);
             if (sub == Convertibility.NEVER) {
                 return Convertibility.NEVER;
             }
@@ -775,7 +773,13 @@ public final class TypeOps {
 
     private static final class SubtypeVisitor implements JTypeVisitor<Convertibility, JTypeMirror> {
 
-        static final SubtypeVisitor INSTANCE = new SubtypeVisitor();
+        static final SubtypeVisitor INSTANCE = new SubtypeVisitor(false);
+        static final SubtypeVisitor PURE = new SubtypeVisitor(true);
+        private final boolean pure;
+
+        private SubtypeVisitor(boolean pure) {
+            this.pure = pure;
+        }
 
         @Override
         public Convertibility visit(JTypeMirror t, JTypeMirror s) {
@@ -788,9 +792,9 @@ public final class TypeOps {
                 return Convertibility.SUBTYPING;
             }
             if (isTypeRange(s)) {
-                return isConvertible(t, lowerBoundRec(s));
+                return isConvertible(t, lowerBoundRec(s), true, pure);
             }
-            return isConvertible(t.getUpperBound(), s);
+            return isConvertible(t.getUpperBound(), s, true, pure);
         }
 
         @Override
@@ -810,8 +814,10 @@ public final class TypeOps {
             if (s == t.getTypeSystem().NULL_TYPE || s instanceof JPrimitiveType) {
                 return Convertibility.NEVER;
             }
-            // here we add a constraint on the variable
-            t.addBound(BoundKind.UPPER, s);
+            if (!pure) {
+                // here we add a constraint on the variable
+                t.addBound(BoundKind.UPPER, s);
+            }
             return Convertibility.SUBTYPING;
         }
 
@@ -840,7 +846,7 @@ public final class TypeOps {
                 // a raw type C is a supertype for all the family of parameterized type generated by C<F1, .., Fn>
                 return Convertibility.SUBTYPING;
             } else {
-                return typeArgsAreContained(superDecl, cs);
+                return typeArgsAreContained(superDecl, cs, pure);
             }
         }
 
@@ -864,7 +870,7 @@ public final class TypeOps {
             // what we mean is, if S is an intersection, then
             // "any component of T subtypes any component of S"
 
-            return Convertibility.anySubTypesAny(t.getComponents(), asList(s));
+            return Convertibility.anySubTypesAny(t.getComponents(), asList(s), pure);
         }
 
         @Override
@@ -885,7 +891,7 @@ public final class TypeOps {
                 // arrays of primitive types have no sub-/ supertype
                 return Convertibility.subtypeIf(cs.getComponentType() == t.getComponentType());
             } else {
-                return isConvertible(t.getComponentType(), cs.getComponentType());
+                return isConvertible(t.getComponentType(), cs.getComponentType(), true, pure);
             }
         }
 
@@ -1739,7 +1745,7 @@ public final class TypeOps {
         for (JTypeMirror v : set) {
             for (JTypeMirror w : set) {
                 if (!w.equals(v) && !hasUnresolvedSymbol(w)) {
-                    Convertibility isConvertible = isSubtypePure(w, v);
+                    Convertibility isConvertible = isConvertiblePure(w, v);
                     if (isConvertible.bySubtyping()
                         // This last case covers unchecked conversion. It is made antisymmetric by the
                         // test for a symbol. eg |G| <~> G<?> so it would fail.

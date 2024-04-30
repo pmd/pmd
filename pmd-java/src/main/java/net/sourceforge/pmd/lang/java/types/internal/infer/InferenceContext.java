@@ -33,7 +33,6 @@ import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.lang.java.types.internal.infer.IncorporationAction.CheckBound;
-import net.sourceforge.pmd.lang.java.types.internal.infer.IncorporationAction.CheckClassUpperBound;
 import net.sourceforge.pmd.lang.java.types.internal.infer.IncorporationAction.PropagateAllBounds;
 import net.sourceforge.pmd.lang.java.types.internal.infer.IncorporationAction.PropagateBounds;
 import net.sourceforge.pmd.lang.java.types.internal.infer.IncorporationAction.SubstituteInst;
@@ -389,9 +388,6 @@ final class InferenceContext {
 
             incorporationActions.add(new CheckBound(ivar, kind, bound));
             incorporationActions.add(new PropagateBounds(ivar, kind, bound));
-            if (CheckClassUpperBound.needsCheck(kind, bound)) {
-                incorporationActions.add(new CheckClassUpperBound(ivar, bound));
-            }
         }
     }
 

@@ -392,4 +392,25 @@ class Scratch {
             call shouldHaveType gen.`t_Stream{Number}`
         }
     }
+
+    parserTest("Test bound checks does not throw concurrent mod exception") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            import java.util.stream.Stream;
+            class Enum<T extends Enum<T>> {}
+            class EnumSet<E extends Enum<E>> {
+                    public static <X extends Enum<X>> EnumSet<X> noneOf(Class<X> elementType) {
+                       Enum<?>[] universe = getUniverse(elementType);
+                    }
+                    private static <U extends Enum<U>> U[] getUniverse(Class<U> elementType) {}
+           }
+        """)
+
+        val call = acu.firstMethodCall()
+        val xVar = acu.typeVar("X")
+
+        spy.shouldBeOk {
+            call shouldHaveType xVar.toArray()
+        }
+    }
 })

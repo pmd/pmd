@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 
@@ -39,66 +40,6 @@ abstract class IncorporationAction {
     abstract void apply(InferenceContext ctx);
 
     /**
-     * Check that an upper bound with a class (not interface) or array
-     * is compatible with other upper bounds of class or array type.
-     * This is necessary to guarantee the existence of a glb for these,
-     * for {@link ReductionStep#UPPER}.
-     *
-     * <p>If the bound is {@code alpha <: T}, then we must check
-     * that {@code S <: T} or {@code T <: S} holds for all bounds
-     * {@code alpha <: S}, where S is a class or array type. Otherwise,
-     * the GLB does not exist.
-     */
-    static class CheckClassUpperBound extends IncorporationAction {
-
-        private final JTypeMirror myBound;
-
-        CheckClassUpperBound(InferenceVar ivar, JTypeMirror bound) {
-            super(ivar);
-            this.myBound = bound;
-        }
-
-        public static boolean needsCheck(BoundKind kind, JTypeMirror bound) {
-            if (kind == BoundKind.UPPER) {
-                JTypeDeclSymbol symbol = bound.getSymbol();
-                return symbol instanceof JClassSymbol && !symbol.isInterface();
-            }
-            return false;
-        }
-
-
-        @Override
-        public void apply(InferenceContext ctx) {
-            for (BoundKind k : BoundKind.EQ_UPPER) {
-                for (JTypeMirror b : ivar.getBounds(k)) {
-                    if (!checkBound(b, ctx)) {
-                        throw ResolutionFailedException.incompatibleBound(ctx.logger, ivar, BoundKind.UPPER, myBound, k, b);
-                    }
-                }
-            }
-        }
-
-        private boolean checkBound(JTypeMirror otherBound, InferenceContext ctx) {
-
-            JTypeDeclSymbol sym = otherBound.getSymbol();
-            // either the bound is not a concrete class or array type
-            return !(sym instanceof JClassSymbol) || sym.isInterface()
-                // or both bounds are related in some way
-                || CheckBound.checkBound(false, otherBound, myBound, ctx)
-                || CheckBound.checkBound(false, myBound, otherBound, ctx);
-
-        }
-
-
-        @Override
-        public String toString() {
-            return "Check class bound " + BoundKind.UPPER.format(ivar, myBound);
-        }
-
-
-    }
-
-    /**
      * Check that a bound is compatible with the other current bounds
      * of an ivar.
      */
@@ -111,6 +52,11 @@ abstract class IncorporationAction {
             super(ivar);
             myKind = kind;
             this.myBound = bound;
+        }
+
+        public static boolean isClassType(JTypeMirror bound) {
+            JTypeDeclSymbol symbol = bound.getSymbol();
+            return symbol instanceof JClassSymbol && !symbol.isInterface();
         }
 
         /**
@@ -132,7 +78,25 @@ abstract class IncorporationAction {
                     }
                 }
             }
+
+            if (myKind == BoundKind.UPPER && isClassType(myBound)) {
+                // Check that other upper bounds that are class types are related to this bound.
+                // Otherwise, GLB does not exist and its construction would fail during ReductionStep#UPPER.
+                for (JTypeMirror otherBound : ivar.getBounds(BoundKind.UPPER)) {
+                    if (otherBound != myBound && isClassType(otherBound)) {
+                        // Since we are testing both directions we cannot let those tests add bounds on the ivars,
+                        // because they could be contradictory.
+                        boolean areRelated = TypeOps.isConvertiblePure(myBound, otherBound).somehow()
+                            || TypeOps.isConvertiblePure(otherBound, myBound).somehow();
+
+                        if (!areRelated) {
+                            throw ResolutionFailedException.incompatibleBound(ctx.logger, ivar, myKind, myBound, BoundKind.UPPER, otherBound);
+                        }
+                    }
+                }
+            }
         }
+
 
         /**
          * Check compatibility between this bound and another.
