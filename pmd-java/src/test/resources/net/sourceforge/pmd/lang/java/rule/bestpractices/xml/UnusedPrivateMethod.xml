@@ -1964,4 +1964,42 @@ class FooTest{
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] UnusedPrivateMethod false-positive / method reference in combination with custom object #4985</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.List;
+
+            public class Main {
+
+                public static void main(String[] args) {
+                    System.out.println("list");
+
+                    // usage of method reference in combination with a custom object leads to a false positive of PMD.UnusedPrivateMethod
+                    List.of(new StringWrapper().getString())
+                        .stream()
+
+                        .map(Main::foo)
+                        .filter(Objects::nonNull)
+                        .toList();
+
+                    // no false positive .. :/
+                    List.of("s")
+                        .stream()
+                        .map(Main::foo2)
+                        .filter(Objects::nonNull)
+                        .toList();
+                }
+
+                private static int foo(String s) {
+                    return s.length();
+                }
+
+                private static int foo2(String s) {
+                    return s.length();
+                }
+
+            }
+            ]]></code>
+    </test-code>
 </test-data>
