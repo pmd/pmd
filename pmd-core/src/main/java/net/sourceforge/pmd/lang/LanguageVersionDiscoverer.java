@@ -9,12 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.util.AssertionUtil;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * This class can discover the LanguageVersion of a source file. Further, every
@@ -130,9 +130,16 @@ public class LanguageVersionDiscoverer {
      */
     public List<Language> getLanguagesForFile(String fileName) {
         String extension = getExtension(fileName);
-        return languageRegistry.getLanguages().stream()
-                               .filter(it -> it.hasExtension(extension))
-                               .collect(Collectors.toList());
+        List<Language> matching = languageRegistry.getLanguages().stream()
+                                                  .filter(it -> it.hasExtension(extension))
+                                                  .collect(CollectionUtil.toMutableList());
+
+        if (matching.size() > 1) {
+            // Remove all languages that have a more specific dialect that matched.
+            matching.removeIf(l -> CollectionUtil.any(matching, it -> it.isDialectOf(l)));
+        }
+
+        return matching;
     }
 
     // Get the extensions from a file

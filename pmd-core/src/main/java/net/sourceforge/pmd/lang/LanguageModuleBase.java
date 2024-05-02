@@ -40,6 +40,7 @@ public abstract class LanguageModuleBase implements Language {
     private final Map<String, LanguageVersion> byName;
     private final LanguageVersion defaultVersion;
     private final Set<String> dependencies;
+    private final @Nullable String baseLanguageId;
 
 
     /**
@@ -52,6 +53,8 @@ public abstract class LanguageModuleBase implements Language {
         this.meta = metadata;
         metadata.validate();
         this.dependencies = Collections.unmodifiableSet(metadata.dependencies);
+        this.baseLanguageId = meta.baseLanguageId;
+
         List<LanguageVersion> versions = new ArrayList<>();
         Map<String, LanguageVersion> byName = new HashMap<>();
         LanguageVersion defaultVersion = null;
@@ -100,6 +103,11 @@ public abstract class LanguageModuleBase implements Language {
         if (map.containsKey(alias)) {
             throw new IllegalArgumentException("Version key '" + alias + "' is duplicated");
         }
+    }
+
+    @Override
+    public @Nullable String getBaseLanguageId() {
+        return baseLanguageId;
     }
 
     @Override
@@ -199,15 +207,13 @@ public abstract class LanguageModuleBase implements Language {
         private String name;
         private @Nullable String shortName;
         private final @NonNull String id;
+        private @Nullable String baseLanguageId;
         private List<String> extensions;
         private final List<LangVersionMetadata> versionMetadata = new ArrayList<>();
 
         private LanguageMetadata(@NonNull String id) {
             this.id = id;
-            if (!VALID_LANG_ID.matcher(id).matches()) {
-                throw new IllegalArgumentException(
-                    "ID '" + id + "' is not a valid language ID (should match " + VALID_LANG_ID + ").");
-            }
+            checkValidLangId(id);
         }
 
         void validate() {
@@ -355,6 +361,19 @@ public abstract class LanguageModuleBase implements Language {
             return this;
         }
 
+        public LanguageMetadata dialectOf(String id) {
+            checkValidLangId(id);
+            this.baseLanguageId = id;
+            return this;
+        }
+
+        private static void checkValidLangId(String id) {
+            if (!VALID_LANG_ID.matcher(id).matches()) {
+                throw new IllegalArgumentException(
+                    "ID '" + id + "' is not a valid language ID (should match " + VALID_LANG_ID + ").");
+            }
+        }
+
         /**
          * Record that this language depends on another language, identified
          * by its id. This means any {@link LanguageProcessorRegistry} that
@@ -368,10 +387,7 @@ public abstract class LanguageModuleBase implements Language {
          */
 
         public LanguageMetadata dependsOnLanguage(String id) {
-            if (!VALID_LANG_ID.matcher(id).matches()) {
-                throw new IllegalArgumentException(
-                    "ID '" + id + "' is not a valid language ID (should match " + VALID_LANG_ID + ").");
-            }
+            checkValidLangId(id);
             dependencies.add(id);
             return this;
         }

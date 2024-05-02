@@ -24,6 +24,11 @@ public class XmlLanguageModule extends SimpleLanguageModuleBase {
                 new XmlHandler());
     }
 
+    /** Constructor for dialects. */
+    protected XmlLanguageModule(LanguageMetadata meta, XmlHandler xmlHandler) {
+        super(meta, xmlHandler);
+    }
+
     public static XmlLanguageModule getInstance() {
         return (XmlLanguageModule) LanguageRegistry.PMD.getLanguageById(ID);
     }

@@ -12,6 +12,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.cpd.CpdCapableLanguage;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * Represents a language module, and provides access to language-specific
@@ -61,6 +62,31 @@ public interface Language extends Comparable<Language> {
      * @return The ID of this language.
      */
     String getId();
+
+    /**
+     * If this is a dialect of another language, returns the base language.
+     * Dialects are for example different flavors of XML.
+     */
+    default @Nullable String getBaseLanguageId() {
+        return null;
+    }
+
+    /**
+     * Return true if this language is the given language, or a dialect thereof.
+     *
+     * @param language A language (not null)
+     */
+    default boolean isDialectOf(Language language) {
+        AssertionUtil.requireParamNotNull("language", language);
+        if (this.equals(language)) {
+            return true;
+        }
+        String base = getBaseLanguageId();
+        if (base == null) {
+            return false;
+        }
+        return base.equals(language.getId());
+    }
 
     /**
      * Returns the list of file extensions associated with this language.
