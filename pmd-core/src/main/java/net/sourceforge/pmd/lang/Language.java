@@ -65,7 +65,9 @@ public interface Language extends Comparable<Language> {
 
     /**
      * If this is a dialect of another language, returns the base language.
-     * Dialects are for example different flavors of XML.
+     * Dialects are for example different flavors of XML. Dialects must share
+     * the same AST as their base language. This makes it so that rules written
+     * for the base language can be applied files of all dialects uniformly.
      */
     default @Nullable String getBaseLanguageId() {
         return null;

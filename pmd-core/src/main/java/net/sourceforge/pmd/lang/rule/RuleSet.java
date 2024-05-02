@@ -631,7 +631,9 @@ public class RuleSet implements ChecksumAware {
         final LanguageVersion min = rule.getMinimumLanguageVersion();
         final LanguageVersion max = rule.getMaximumLanguageVersion();
         assert rule.getLanguage() != null : "Rule has no language " + rule;
-        return rule.getLanguage().equals(languageVersion.getLanguage())
+        // All rules from base languages also apply to dialects. They
+        // have to share a parser for that to work.
+        return languageVersion.getLanguage().isDialectOf(rule.getLanguage())
                 && (min == null || min.compareTo(languageVersion) <= 0)
                 && (max == null || max.compareTo(languageVersion) >= 0);
     }
