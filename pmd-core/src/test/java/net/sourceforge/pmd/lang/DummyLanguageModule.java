@@ -6,15 +6,20 @@ package net.sourceforge.pmd.lang;
 
 import java.util.Objects;
 
+import net.sourceforge.pmd.cpd.AnyCpdLexer;
 import net.sourceforge.pmd.cpd.CpdCapableLanguage;
 import net.sourceforge.pmd.cpd.CpdLanguageProperties;
+import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
+import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
 import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextPos2d;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 import net.sourceforge.pmd.reporting.RuleViolation;
@@ -28,6 +33,10 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase implements Cpd
     public static final String NAME = "Dummy";
     public static final String TERSE_NAME = "dummy";
     private static final String PARSER_THROWS = "parserThrows";
+
+    public static final String CPD_THROW_MALFORMED_SOURCE_EXCEPTION = ":throw_malformed_source_exception:";
+    public static final String CPD_THROW_LEX_EXCEPTION = ":throw_lex_source_exception:";
+    public static final String CPD_THROW_OTHER_EXCEPTION = ":throw_other_exception:";
 
     public DummyLanguageModule() {
         super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("dummy", "txt")
@@ -53,6 +62,29 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase implements Cpd
         bundle.definePropertyDescriptor(CpdLanguageProperties.CPD_ANONYMIZE_LITERALS);
         bundle.definePropertyDescriptor(CpdLanguageProperties.CPD_ANONYMIZE_IDENTIFIERS);
         return bundle;
+    }
+
+    @Override
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        CpdLexer base = new AnyCpdLexer();
+        return (doc, tokens) -> {
+            Chars text = doc.getText();
+            int offset = text.indexOf(CPD_THROW_LEX_EXCEPTION, 0);
+            if (offset != -1) {
+                TextPos2d lc = doc.lineColumnAtOffset(offset);
+                throw tokens.makeLexException(lc.getLine(), lc.getColumn(), "test exception", null);
+            }
+            offset = text.indexOf(CPD_THROW_MALFORMED_SOURCE_EXCEPTION, 0);
+            if (offset != -1) {
+                FileLocation lc = doc.toLocation(TextRegion.caretAt(offset));
+                throw new MalformedSourceException("test exception", null, lc);
+            }
+            offset = text.indexOf(CPD_THROW_OTHER_EXCEPTION, 0);
+            if (offset != -1) {
+                throw new IllegalArgumentException("test exception");
+            }
+            base.tokenize(doc, tokens);
+        };
     }
 
     public LanguageVersion getVersionWhereParserThrows() {

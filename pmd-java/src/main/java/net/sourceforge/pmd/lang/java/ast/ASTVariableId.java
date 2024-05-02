@@ -232,7 +232,8 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
      * Returns true if this declarator id declares a resource in a try-with-resources statement.
      */
     public boolean isResourceDeclaration() {
-        return getParent() instanceof ASTResource;
+        // Resource/LocalVariableDeclaration/VariableDeclarator
+        return getParent().getParent().getParent() instanceof ASTResource;
     }
 
 

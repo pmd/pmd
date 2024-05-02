@@ -37,6 +37,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameterList;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
@@ -186,7 +187,12 @@ public final class PrettyPrintingUtil {
         } else if (node instanceof ASTFieldDeclaration) {
             return ((ASTFieldDeclaration) node).getVarIds().firstOrThrow().getName();
         } else if (node instanceof ASTResource) {
-            return ((ASTResource) node).getStableName();
+            ASTLocalVariableDeclaration var = ((ASTResource) node).asLocalVariableDeclaration();
+            if (var != null) {
+                return var.getVarIds().firstOrThrow().getName();
+            } else {
+                return PrettyPrintingUtil.prettyPrint(((ASTResource) node).getInitializer()).toString();
+            }
         } else if (node instanceof ASTTypeDeclaration) {
             return ((ASTTypeDeclaration) node).getSimpleName();
         } else if (node instanceof ASTVariableId) {
@@ -247,6 +253,7 @@ public final class PrettyPrintingUtil {
     }
 
 
+    /** Pretty print an expression or any other kind of node. */
     public static CharSequence prettyPrint(JavaNode node) {
         StringBuilder sb = new StringBuilder();
         node.acceptVisitor(new ExprPrinter(), sb);

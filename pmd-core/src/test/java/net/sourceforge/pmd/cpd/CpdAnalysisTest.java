@@ -8,6 +8,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,8 +30,11 @@ import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.ast.LexException;
+import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
  * Unit test for {@link CpdAnalysis}
@@ -185,6 +193,39 @@ class CpdAnalysisTest {
                 }
             });
         }
+    }
+
+    @Test
+    void testNoSkipLexicalErrors() throws IOException {
+        PmdReporter reporter = mock(PmdReporter.class);
+        config.setReporter(reporter);
+
+        config.setSkipLexicalErrors(false);
+        try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
+            assertTrue(cpd.files().addSourceFile(FileId.fromPathLikeString("foo.dummy"), DummyLanguageModule.CPD_THROW_LEX_EXCEPTION));
+            assertTrue(cpd.files().addSourceFile(FileId.fromPathLikeString("foo2.dummy"), DummyLanguageModule.CPD_THROW_MALFORMED_SOURCE_EXCEPTION));
+            cpd.performAnalysis();
+        }
+        verify(reporter).errorEx(eq("Error while tokenizing"), any(LexException.class));
+        verify(reporter).errorEx(eq("Error while tokenizing"), any(MalformedSourceException.class));
+        verify(reporter).errorEx(eq("Exception while running CPD"), any(IllegalStateException.class));
+        verifyNoMoreInteractions(reporter);
+    }
+
+    @Test
+    void testSkipLexicalErrors() throws IOException {
+        PmdReporter reporter = mock(PmdReporter.class);
+        config.setReporter(reporter);
+
+        config.setSkipLexicalErrors(true);
+        try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
+            assertTrue(cpd.files().addSourceFile(FileId.fromPathLikeString("foo.dummy"), DummyLanguageModule.CPD_THROW_LEX_EXCEPTION));
+            assertTrue(cpd.files().addSourceFile(FileId.fromPathLikeString("foo2.dummy"), DummyLanguageModule.CPD_THROW_MALFORMED_SOURCE_EXCEPTION));
+            cpd.performAnalysis();
+        }
+        verify(reporter).errorEx(eq("Skipping file"), any(LexException.class));
+        verify(reporter).errorEx(eq("Skipping file"), any(MalformedSourceException.class));
+        verifyNoMoreInteractions(reporter);
     }
 
     @Test

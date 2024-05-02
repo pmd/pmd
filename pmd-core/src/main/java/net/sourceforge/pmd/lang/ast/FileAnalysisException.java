@@ -10,12 +10,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 
 /**
  * An exception that occurs while processing a file. Subtypes include
  * <ul>
+ * <li>{@link MalformedSourceException}: error in source format, eg invalid character escapes (in case that happens before lexing)
  * <li>{@link LexException}: lexical syntax errors
  * <li>{@link ParseException}: syntax errors
  * <li>{@link SemanticException}: exceptions occurring after the parsing

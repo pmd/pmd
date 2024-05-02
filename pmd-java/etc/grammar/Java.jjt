@@ -300,7 +300,6 @@ options {
   MULTI = true;
   VISITOR = true;
   NODE_PACKAGE="net.sourceforge.pmd.lang.java.ast";
-  TOKEN_MANAGER_USES_PARSER = true;
 
   // disable the calculation of expected tokens when a parse error occurs
   // depending on the possible allowed next tokens, this
@@ -2801,8 +2800,8 @@ void Resource() :
    PrimaryExpression()
    {
     Node top = jjtree.peekNode();
-    if (!(top instanceof ASTVariableAccess || top instanceof ASTFieldAccess))
-      throwParseException("Expected a variable access, but was a " + top.getXPathNodeName());
+    if (!(top instanceof ASTVariableAccess || top instanceof ASTFieldAccess || top instanceof ASTThisExpression))
+      throwParseException("Expected a variable or field access, but was a " + top.getXPathNodeName());
    }
    {}
 }

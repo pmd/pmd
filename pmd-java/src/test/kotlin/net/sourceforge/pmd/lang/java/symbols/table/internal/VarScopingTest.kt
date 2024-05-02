@@ -132,14 +132,18 @@ class VarScopingTest : ProcessorTestSpec({
                     try (Reader f = r;                      // reader3
                          BufferedReader r = f.buffered()) { // br2
                     }
+                    
+                    try (Reader f4 = r;                      // reader4
+                         f4.buffered().field) {              // inConciseResource
+                    }
                 }
             }
         """.trimIndent())
 
-        val (outerField, exception1, reader1, exception2, reader2, bufferedReader, reader3, br2) =
+        val (outerField, exception1, reader1, exception2, reader2, bufferedReader, reader3, br2, reader4) =
                 acu.descendants(ASTVariableId::class.java).toList()
 
-        val (inCatch1, inTry, inCatch2, inFinally, inResource) =
+        val (inCatch1, inTry, inCatch2, inFinally, inResource, _, inConciseResource) =
                 acu.descendants(ASTMethodCall::class.java).toList()
 
         doTest("Inside catch clause: catch param is in scope") {
@@ -168,6 +172,10 @@ class VarScopingTest : ProcessorTestSpec({
 
         doTest("Inside resource declaration 2: r is the resource, after its declaration") {
             br2.initializer!! shouldResolveToLocal reader3
+        }
+
+        doTest("Inside concise resource declaration") {
+            inConciseResource.qualifier!! shouldResolveToLocal reader4
         }
 
         doTest("Resources are in scope, even if the try body is empty") {
