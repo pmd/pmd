@@ -5,8 +5,14 @@
 package net.sourceforge.pmd.cpd;
 
 import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRange2d;
 
+/**
+ * A token of a lexed source file (for CPD usage only).
+ */
 public class TokenEntry implements Comparable<TokenEntry> {
+    // note: in CPD, these are only built for tokens that will be reported, otherwise we use SmallTokenEntry
 
     private static final int EOF = 0;
 
@@ -60,6 +66,9 @@ public class TokenEntry implements Comparable<TokenEntry> {
         return fileId;
     }
 
+    public FileLocation getLocation() {
+        return FileLocation.range(fileId, TextRange2d.range2d(beginLine, beginColumn, endLine, endColumn));
+    }
 
     /** The line number where this token starts. */
     public int getBeginLine() {
@@ -81,14 +90,6 @@ public class TokenEntry implements Comparable<TokenEntry> {
         return endColumn;
     }
 
-    int getIdentifier() {
-        return this.identifier;
-    }
-
-    long getIndex() {
-        return (long) this.fileIdInternal << 32 | (long) this.index;
-    }
-
     @Override
     public int hashCode() {
         return 31 * this.fileIdInternal + this.index;
@@ -103,7 +104,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
             return false;
         }
         TokenEntry other = (TokenEntry) o;
-        return other.getIndex() == this.getIndex();
+        return other.fileIdInternal == this.fileIdInternal && other.index == this.index;
     }
 
     @Override

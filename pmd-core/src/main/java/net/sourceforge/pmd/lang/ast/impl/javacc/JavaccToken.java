@@ -47,7 +47,7 @@ public class JavaccToken implements GenericToken<JavaccToken> {
     public final int kind;
 
     private final JavaccTokenDocument document;
-    private final CharSequence image;
+    private CharSequence image;
     private final int startOffset;
     private final int endOffset;
 

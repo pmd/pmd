@@ -258,6 +258,12 @@ public final class Chars implements CharSequence {
         return str.startsWith(prefix, idx(fromIndex));
     }
 
+    /** Return true if this contains the given substring. */
+    public boolean contains(String s) {
+        return indexOf(s, 0) != -1;
+    }
+
+
     /**
      * See {@link String#startsWith(String)}.
      */

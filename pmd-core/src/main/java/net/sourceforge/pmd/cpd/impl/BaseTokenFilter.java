@@ -12,6 +12,7 @@ import java.util.LinkedList;
 
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.document.Chars;
 
 /**
  * A generic filter for PMD token managers that allows to use comments
@@ -70,11 +71,12 @@ public class BaseTokenFilter<T extends GenericToken<T>> implements TokenManager<
         // Check if a comment is altering the suppression state
         T comment = currentToken.getPreviousComment();
         while (comment != null) {
-            if (comment.getImage().contains("CPD-OFF")) {
+            Chars image = Chars.wrap(comment.getImageCs());
+            if (image.contains("CPD-OFF")) {
                 discardingSuppressing = true;
                 break;
             }
-            if (comment.getImage().contains("CPD-ON")) {
+            if (image.contains("CPD-ON")) {
                 discardingSuppressing = false;
                 break;
             }

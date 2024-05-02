@@ -47,7 +47,7 @@ public final class TextFileContent {
     /** The normalized line ending as a char. */
     public static final char NORMALIZED_LINE_TERM_CHAR = '\n';
 
-    private static final int DEFAULT_BUFSIZE = 16384;
+    private static final int DEFAULT_BUFSIZE = 8192;
 
     private static final Pattern NEWLINE_PATTERN = Pattern.compile("\r\n?|\n");
     private static final String FALLBACK_LINESEP = System.lineSeparator();
