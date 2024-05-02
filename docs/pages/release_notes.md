@@ -22,12 +22,15 @@ This is a {{ site.pmd.release_type }} release.
   * [#4278](https://github.com/pmd/pmd/issues/4278): \[java] UnusedPrivateMethod FP with Junit 5 @MethodSource and default factory method name
   * [#4852](https://github.com/pmd/pmd/issues/4852): \[java] ReplaceVectorWithList false-positive (neither Vector nor List usage) 
   * [#4975](https://github.com/pmd/pmd/issues/4975): \[java] UnusedPrivateMethod false positive when using @MethodSource on a @Nested test
+* java-codestyle
+  * [#4930](https://github.com/pmd/pmd/issues/4930): \[java] EmptyControlStatement should not allow empty try with concise resources
 
 ### 🚨 API Changes
 
 #### Deprecated API
 
-* {% jdoc java::lang.java.ast.ASTResource#getStableName() %} and the corresponding attribute `@StableName`
+* pmd-java
+  * {% jdoc !!java::lang.java.ast.ASTResource#getStableName() %} and the corresponding attribute `@StableName`
 
 ### ✨ External Contributions
 
