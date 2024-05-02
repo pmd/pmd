@@ -1890,6 +1890,7 @@
   </li>
   <li>java
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4912">#4912</a>: [java] Unable to parse some Java9+ resource references</li>
       <li><a href="https://github.com/pmd/pmd/pull/4973">#4973</a>: [java] Stop parsing Java for CPD</li>
     </ul>
   </li>
@@ -1901,9 +1902,24 @@
       <li><a href="https://github.com/pmd/pmd/issues/4985">#4985</a>: [java] UnusedPrivateMethod false-positive / method reference in combination with custom object</li>
     </ul>
   </li>
+  <li>java-codestyle
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4930">#4930</a>: [java] EmptyControlStatement should not allow empty try with concise resources</li>
+    </ul>
+  </li>
 </ul>
 
 <h3 id="-api-changes">🚨 API Changes</h3>
+
+<h4 id="deprecated-api">Deprecated API</h4>
+
+<ul>
+  <li>pmd-java
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.2.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTResource.html#getStableName()"><code>ASTResource#getStableName</code></a> and the corresponding attribute <code class="language-plaintext highlighter-rouge">@StableName</code></li>
+    </ul>
+  </li>
+</ul>
 
 <h3 id="-external-contributions">✨ External Contributions</h3>
 
