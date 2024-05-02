@@ -448,7 +448,12 @@ public final class TypeOps {
             }
             // otherwise fallthrough
         } else if (isSpecialUnresolved(t)) {
-            // error type or unresolved type
+            // error type or unresolved type is subtype of everything
+            if (s instanceof JArrayType) {
+                // In case the array has an ivar 'a as element type, a bound will be added 'a >: (*unknown*)
+                // This helps inference recover in call chains and propagate the (*unknown*) types gracefully.
+                return isConvertible(t, ((JArrayType) s).getElementType());
+            }
             return Convertibility.SUBTYPING;
         } else if (hasUnresolvedSymbol(t) && t instanceof JClassType) {
             // This also considers types with an unresolved symbol

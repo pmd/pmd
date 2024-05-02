@@ -1312,12 +1312,13 @@ Consider replacing Vector usages with the newer java.util.ArrayList if expensive
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-                //ClassType[pmd-java:typeIs('java.util.Vector')]
+                //ClassType[pmd-java:typeIsExactly('java.util.Vector')]
                 ]]></value>
             </property>
         </properties>
         <example>
 <![CDATA[
+import java.util.Vector;
 public class Foo {
     void bar() {
         Vector v = new Vector();

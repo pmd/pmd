@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_7
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J9
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 
 /**
  * @author Clément Fournier
@@ -23,7 +23,6 @@ class ASTTryStatementTest : ParserTestSpec({
                     child<ASTResourceList> {
                         child<ASTResource> {
                             it::isConciseResource shouldBe false
-                            it::getStableName shouldBe "a"
 
                             it::getInitializer shouldBe fromChild<ASTLocalVariableDeclaration, ASTExpression> {
                                 it::getModifiers shouldBe localVarModifiers {
@@ -33,7 +32,9 @@ class ASTTryStatementTest : ParserTestSpec({
 
                                 classType("Foo")
                                 fromChild<ASTVariableDeclarator, ASTExpression> {
-                                    variableId("a")
+                                    variableId("a") {
+                                        it::isResourceDeclaration shouldBe true
+                                    }
                                     int(2)
                                 }
                             }
@@ -50,7 +51,6 @@ class ASTTryStatementTest : ParserTestSpec({
                     child<ASTResourceList> {
                         child<ASTResource> {
                             it::isConciseResource shouldBe false
-                            it::getStableName shouldBe "a"
 
                             it::getInitializer shouldBe fromChild<ASTLocalVariableDeclaration, ASTExpression> {
                                 it::getModifiers shouldBe localVarModifiers {
@@ -59,7 +59,9 @@ class ASTTryStatementTest : ParserTestSpec({
                                 }
                                 classType("Foo")
                                 fromChild<ASTVariableDeclarator, ASTExpression> {
-                                    variableId("a")
+                                    variableId("a") {
+                                        it::isResourceDeclaration shouldBe true
+                                    }
                                     int(2)
                                 }
                             }
@@ -83,7 +85,6 @@ class ASTTryStatementTest : ParserTestSpec({
                     child<ASTResourceList> {
                         child<ASTResource> {
                             it::isConciseResource shouldBe true
-                            it::getStableName shouldBe "a"
 
                             it::getInitializer shouldBe variableAccess("a")
                         }
@@ -101,7 +102,6 @@ class ASTTryStatementTest : ParserTestSpec({
                     child<ASTResourceList> {
                         child<ASTResource> {
                             it::isConciseResource shouldBe true
-                            it::getStableName shouldBe "a"
 
                             it::getInitializer shouldBe variableAccess("a")
                         }
@@ -119,7 +119,6 @@ class ASTTryStatementTest : ParserTestSpec({
                     child<ASTResourceList> {
                         child<ASTResource> {
                             it::isConciseResource shouldBe true
-                            it::getStableName shouldBe "a.b"
 
                             it::getInitializer shouldBe fieldAccess("b") {
                                 ambiguousName("a")
@@ -132,8 +131,16 @@ class ASTTryStatementTest : ParserTestSpec({
                 }
             }
 
+            // the expr must be a field access or var access
             "try ( a.foo() ){}" shouldNot parse()
             "try (new Foo()){}" shouldNot parse()
+            "try(arr[0]) {}" shouldNot parse()
+
+            "try ( a.foo().b ){}" should parse()
+            "try (new Foo().x){}" should parse()
+            // this is also allowed by javac
+            "try(this) {}" should parse()
+            "try(Foo.this) {}" should parse()
         }
     }
 

@@ -171,7 +171,7 @@ public final class CpdAnalysis implements AutoCloseable {
                     int newTokens = doTokenize(textDocument, tokenizers.get(textFile.getLanguageVersion().getLanguage()), tokens);
                     numberOfTokensPerFile.put(textDocument.getFileId(), newTokens);
                     listener.addedFile(1);
-                } catch (LexException | IOException e) {
+                } catch (IOException | FileAnalysisException e) {
                     if (e instanceof FileAnalysisException) { // NOPMD
                         ((FileAnalysisException) e).setFileId(textFile.getFileId());
                     }
