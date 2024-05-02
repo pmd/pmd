@@ -133,6 +133,11 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
             MutableBoolean hasViolations = new MutableBoolean();
             cpd.performAnalysis(report -> hasViolations.setValue(!report.getMatches().isEmpty()));
 
+            boolean hasProcessingErrors = configuration.getReporter().numErrors() > 0;
+            if (hasProcessingErrors) {
+                return CliExitCode.VIOLATIONS_OR_PROCESSING_ERRORS;
+            }
+
             if (hasViolations.booleanValue() && configuration.isFailOnViolation()) {
                 return CliExitCode.VIOLATIONS_FOUND;
             }

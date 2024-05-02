@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cli;
 
 import static net.sourceforge.pmd.cli.internal.CliExitCode.OK;
 import static net.sourceforge.pmd.cli.internal.CliExitCode.VIOLATIONS_FOUND;
+import static net.sourceforge.pmd.cli.internal.CliExitCode.VIOLATIONS_OR_PROCESSING_ERRORS;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.Matchers.containsString;
@@ -128,14 +129,14 @@ class CpdCliTest extends BaseCliTest {
     @Test
     void testWrongCliOptionResultsInErrorLoggingAfterDir() throws Exception {
         // --ignore-identifiers doesn't take an argument anymore - it is interpreted as a file for inputPaths
-        final CliExecutionResult result = runCli(VIOLATIONS_FOUND, "--minimum-tokens", "34", "--dir", SRC_DIR, "--ignore-identifiers", "false");
+        final CliExecutionResult result = runCli(VIOLATIONS_OR_PROCESSING_ERRORS, "--minimum-tokens", "34", "--dir", SRC_DIR, "--ignore-identifiers", "false");
         result.checkStdErr(containsString("No such file false"));
     }
 
     @Test
     void testWrongCliOptionResultsInErrorLoggingBeforeDir() throws Exception {
         // --ignore-identifiers doesn't take an argument anymore - it is interpreted as a file for inputPaths
-        final CliExecutionResult result = runCli(VIOLATIONS_FOUND, "--minimum-tokens", "34", "--ignore-identifiers", "false", "--dir", SRC_DIR);
+        final CliExecutionResult result = runCli(VIOLATIONS_OR_PROCESSING_ERRORS, "--minimum-tokens", "34", "--ignore-identifiers", "false", "--dir", SRC_DIR);
         result.checkStdErr(containsString("No such file false"));
     }
 
@@ -152,7 +153,7 @@ class CpdCliTest extends BaseCliTest {
      */
     @Test
     void testIgnoreIdentifiers() throws Exception {
-        runCli(VIOLATIONS_FOUND, "--minimum-tokens", "34", "--dir", SRC_DIR, "--ignore-identifiers", "false", "--debug")
+        runCli(VIOLATIONS_FOUND, "--minimum-tokens", "34", "--dir", SRC_DIR, "--ignore-identifiers", "--debug")
             .verify(result -> result.checkStdOut(containsString(
                     "Found a 14 line (89 tokens) duplication"
         )));
@@ -220,7 +221,7 @@ class CpdCliTest extends BaseCliTest {
      */
     @Test
     void testSkipLexicalErrors() throws Exception {
-        runCli(VIOLATIONS_FOUND,
+        runCli(VIOLATIONS_OR_PROCESSING_ERRORS,
                "--minimum-tokens", "10",
                "-d", BASE_RES_PATH + "badandgood/",
                "--format", "text",
@@ -231,6 +232,30 @@ class CpdCliTest extends BaseCliTest {
             });
     }
 
+    @Test
+    void testExitCodeWithLexicalErrors() throws Exception {
+        runCli(VIOLATIONS_OR_PROCESSING_ERRORS,
+                "--minimum-tokens", "10",
+                "-d", Paths.get(BASE_RES_PATH, "badandgood", "BadFile.java").toString(),
+                "--format", "text")
+                .verify(r -> {
+                    r.checkStdErr(containsPattern("Error while tokenizing: Lexical error in file '.*?BadFile\\.java'"));
+                    r.checkStdOut(emptyString());
+                });
+    }
+
+    @Test
+    void testExitCodeWithLexicalErrorsAndSkipLexical() throws Exception {
+        runCli(VIOLATIONS_OR_PROCESSING_ERRORS,
+                "--minimum-tokens", "10",
+                "-d", Paths.get(BASE_RES_PATH, "badandgood", "BadFile.java").toString(),
+                "--format", "text",
+                "--skip-lexical-errors")
+                .verify(r -> {
+                    r.checkStdErr(containsPattern("Skipping file: Lexical error in file .*?BadFile\\.java"));
+                    r.checkStdOut(emptyString());
+                });
+    }
 
     @Test
     void jsShouldFindDuplicatesWithDifferentFileExtensions() throws Exception {
