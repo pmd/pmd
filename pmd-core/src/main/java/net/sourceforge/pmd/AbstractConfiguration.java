@@ -46,6 +46,7 @@ public abstract class AbstractConfiguration {
     private Path ignoreFilePath;
     private List<Path> excludes = new ArrayList<>();
     private boolean collectRecursive = true;
+    private int threads = Runtime.getRuntime().availableProcessors();
 
 
     protected AbstractConfiguration(LanguageRegistry languageRegistry, PmdReporter messageReporter) {
@@ -197,6 +198,25 @@ public abstract class AbstractConfiguration {
         for (LanguageVersion languageVersion : languageVersions) {
             setDefaultLanguageVersion(languageVersion);
         }
+    }
+
+    /**
+     * Get the number of threads to use when processing files.
+     *
+     * @return The number of threads.
+     */
+    public int getThreads() {
+        return threads;
+    }
+
+    /**
+     * Set the number of threads to use when processing files.
+     *
+     * @param threads
+     *            The number of threads.
+     */
+    public void setThreads(int threads) {
+        this.threads = threads;
     }
 
     /**

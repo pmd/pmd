@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ForkJoinPool;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -178,28 +179,33 @@ public final class CpdAnalysis implements AutoCloseable {
             {
                 TokenFileSet tokens = new TokenFileSet();
 
-                boolean hasErrors = sourceManager.getTextFiles().parallelStream().reduce(false, (hasErrorSoFar, textFile) -> {
-                    try {
-                        TextDocument textDocument = sourceManager.load(textFile);
-                        int newTokens = doTokenize(textDocument, tokenizers.get(textFile.getLanguageVersion().getLanguage()), tokens);
-                        synchronized (this) {
-                            numberOfTokensPerFile.put(textDocument.getFileId(), newTokens);
-                            listener.addedFile(1);
+                ForkJoinPool forkJoinPool = new ForkJoinPool(configuration.getThreads());
+                try {
+                    boolean hasErrors = forkJoinPool.submit(() -> sourceManager.getTextFiles().parallelStream().reduce(false, (hasErrorSoFar, textFile) -> {
+                        try {
+                            TextDocument textDocument = sourceManager.load(textFile);
+                            int newTokens = doTokenize(textDocument, tokenizers.get(textFile.getLanguageVersion().getLanguage()), tokens);
+                            synchronized (this) {
+                                numberOfTokensPerFile.put(textDocument.getFileId(), newTokens);
+                                listener.addedFile(1);
+                            }
+                        } catch (IOException | FileAnalysisException e) {
+                            if (e instanceof FileAnalysisException) { // NOPMD
+                                ((FileAnalysisException) e).setFileId(textFile.getFileId());
+                            }
+                            String message = configuration.isSkipLexicalErrors() ? "Skipping file" : "Error while tokenizing";
+                            reporter.errorEx(message, e);
+                            hasErrorSoFar = true;
                         }
-                    } catch (IOException | FileAnalysisException e) {
-                        if (e instanceof FileAnalysisException) { // NOPMD
-                            ((FileAnalysisException) e).setFileId(textFile.getFileId());
-                        }
-                        String message = configuration.isSkipLexicalErrors() ? "Skipping file" : "Error while tokenizing";
-                        reporter.errorEx(message, e);
-                        hasErrorSoFar = true;
-                    }
-                    return hasErrorSoFar;
-                }, Boolean::logicalOr);
+                        return hasErrorSoFar;
+                    }, Boolean::logicalOr)).get();
 
-                if (hasErrors && !configuration.isSkipLexicalErrors()) {
-                    // will be caught by CPD command
-                    throw new IllegalStateException("Errors were detected while lexing source, exiting because --skip-lexical-errors is unset.");
+                    if (hasErrors && !configuration.isSkipLexicalErrors()) {
+                        // will be caught by CPD command
+                        throw new IllegalStateException("Errors were detected while lexing source, exiting because --skip-lexical-errors is unset.");
+                    }
+                } finally {
+                    forkJoinPool.shutdown();
                 }
 
                 LOGGER.debug("Running match algorithm on {} files...", sourceManager.size());

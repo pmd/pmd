@@ -122,6 +122,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
         configuration.setSkipLexicalErrors(skipLexicalErrors);
         configuration.setSourceEncoding(encoding.getEncoding());
         configuration.setInputUri(uri);
+        configuration.setThreads(threads);
 
         return configuration;
     }

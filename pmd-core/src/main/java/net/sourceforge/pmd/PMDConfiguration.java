@@ -97,7 +97,6 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     // General behavior options
     private String suppressMarker = DEFAULT_SUPPRESS_MARKER;
-    private int threads = Runtime.getRuntime().availableProcessors();
     private ClassLoader classLoader = getClass().getClassLoader();
 
     // Rule and source file options
@@ -140,25 +139,6 @@ public class PMDConfiguration extends AbstractConfiguration {
     public void setSuppressMarker(String suppressMarker) {
         Objects.requireNonNull(suppressMarker, "Suppress marker was null");
         this.suppressMarker = suppressMarker;
-    }
-
-    /**
-     * Get the number of threads to use when processing Rules.
-     *
-     * @return The number of threads.
-     */
-    public int getThreads() {
-        return threads;
-    }
-
-    /**
-     * Set the number of threads to use when processing Rules.
-     *
-     * @param threads
-     *            The number of threads.
-     */
-    public void setThreads(int threads) {
-        this.threads = threads;
     }
 
     /**

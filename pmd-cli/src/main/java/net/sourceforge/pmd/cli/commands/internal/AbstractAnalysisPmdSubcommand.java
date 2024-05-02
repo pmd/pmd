@@ -26,6 +26,8 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
     @Mixin
     protected EncodingMixin encoding;
 
+    protected int threads;
+
     // see the setters #setInputPaths and setPositionalInputPaths for @Option and @Parameters annotations
     // Note: can't use annotations on the fields here, as otherwise the complete list would be replaced
     // rather than accumulated.
@@ -99,6 +101,15 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
         }
     }
 
+    @Option(names = { "--threads", "-t" }, description = "Sets the number of threads used by PMD.",
+        defaultValue = "1")
+    public void setThreads(final int threads) {
+        if (threads < 0) {
+            throw new ParameterException(spec.commandLine(), "Thread count should be a positive number or zero, found " + threads + " instead.");
+        }
+
+        this.threads = threads;
+    }
 
     protected abstract C toConfiguration();
 

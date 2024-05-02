@@ -82,8 +82,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
 
     private String format;
 
-    private int threads;
-
     private boolean benchmark;
 
     private boolean showSuppressed;
@@ -223,16 +221,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
     @Option(names = "--no-cache", description = "Explicitly disable incremental analysis. The '-cache' option is ignored if this switch is present in the command line.")
     public void setNoCache(final boolean noCache) {
         this.noCache = noCache;
-    }
-
-    @Option(names = { "--threads", "-t" }, description = "Sets the number of threads used by PMD.",
-            defaultValue = "1")
-    public void setThreads(final int threads) {
-        if (threads < 0) {
-            throw new ParameterException(spec.commandLine(), "Thread count should be a positive number or zero, found " + threads + " instead.");
-        }
-        
-        this.threads = threads;
     }
 
     @Option(names = "--no-progress", negatable = true, defaultValue = "true",
