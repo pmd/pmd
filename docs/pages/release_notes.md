@@ -25,7 +25,8 @@ Since this release, PMD will also expose any getter returning a collection of an
 ```
 
 ### 🐛 Fixed Issues
-
+* core
+  * [#4467](https://github.com/pmd/pmd/issues/4467): \[core] Expose collections from getters as XPath sequence attributes
 * java-bestpractices
   * [#4278](https://github.com/pmd/pmd/issues/4278): \[java] UnusedPrivateMethod FP with Junit 5 @MethodSource and default factory method name
   * [#4975](https://github.com/pmd/pmd/issues/4975): \[java] UnusedPrivateMethod false positive when using @MethodSource on a @Nested test
