@@ -2800,8 +2800,8 @@ void Resource() :
    PrimaryExpression()
    {
     Node top = jjtree.peekNode();
-    if (!(top instanceof ASTVariableAccess || top instanceof ASTFieldAccess))
-      throwParseException("Expected a variable access, but was a " + top.getXPathNodeName());
+    if (!(top instanceof ASTVariableAccess || top instanceof ASTFieldAccess || top instanceof ASTThisExpression))
+      throwParseException("Expected a variable or field access, but was a " + top.getXPathNodeName());
    }
    {}
 }
