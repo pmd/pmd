@@ -5,14 +5,15 @@
 package net.sourceforge.pmd.cpd;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Iterator;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.cpd.CpdTestUtils.CpdReportBuilder;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileId;
@@ -22,46 +23,41 @@ class MatchTest {
 
     @Test
     void testSimple() {
-        String codeFragment1 = "1234567890";
+        String codeFragment1 = "1234567890\n1234567890";
         FileId fileName = CpdTestUtils.FOO_FILE_ID;
+        CpdReportBuilder test = new CpdReportBuilder();
         TextFile tf = TextFile.forCharSeq(codeFragment1, fileName, DummyLanguageModule.getInstance().getDefaultVersion());
         SourceManager sourceManager = new SourceManager(listOf(tf));
-        Tokens tokens = new Tokens();
-        Mark mark1 = new Mark(tokens.addToken("public", fileName, 1, 1, 1, 1 + "public".length()));
 
-        Mark mark2 = new Mark(tokens.addToken("public", fileName, 1, 1, 1, 1 + "public".length()));
-        Match match = new Match(1, mark1, mark2);
+        Mark mark1 = test.createMark("public", fileName, 1, 1);
+        Mark mark2 = test.createMark("public", fileName, 2, 1);
+        Match match = Match.of(mark1, mark2);
 
-        assertEquals(1, match.getTokenCount());
+        assertEquals(1, match.getMinTokenCount());
         // Returns the line count of the first mark
         assertEquals(1, match.getLineCount());
         // Returns the source code of the first mark (the entire line)
-        assertEquals(Chars.wrap("1234567890"), sourceManager.getSlice(match.getFirstMark()));
-        Iterator<Mark> i = match.iterator();
-        Mark occurrence1 = i.next();
-        Mark occurrence2 = i.next();
+        assertEquals(Chars.wrap("1234567890\n"), sourceManager.getSlice(match.getFirstMark()));
+        assertThat(match.getMarks(), hasSize(2));
+        assertSame(mark1, match.getMarks().get(0));
+        assertSame(mark2, match.getMarks().get(1));
 
-        assertFalse(i.hasNext());
+        assertEquals(1, mark1.getLocation().getLineCount());
+        assertEquals(Chars.wrap("1234567890\n"), sourceManager.getSlice(mark1));
 
-        assertEquals(mark1, occurrence1);
-        assertEquals(1, occurrence1.getLocation().getLineCount());
-        assertEquals(Chars.wrap("1234567890"), sourceManager.getSlice(mark1));
-
-        assertEquals(mark2, occurrence2);
-        assertEquals(1, occurrence2.getLocation().getLineCount());
+        assertEquals(1, mark2.getLocation().getLineCount());
         assertEquals(Chars.wrap("1234567890"), sourceManager.getSlice(mark2));
     }
 
     @Test
     void testCompareTo() {
-        Tokens tokens = new Tokens();
-
         FileId fileName = CpdTestUtils.FOO_FILE_ID;
-        Match m1 = new Match(1,
-                             tokens.addToken("public", fileName, 1, 2, 3, 4),
-                             tokens.addToken("class", fileName, 1, 2, 3, 4));
-        Match m2 = new Match(2, tokens.addToken("Foo", fileName, 1, 2, 3, 4),
-                             tokens.addToken("{", fileName, 1, 2, 3, 4));
-        assertTrue(m2.compareTo(m1) < 0);
+        CpdReportBuilder test = new CpdReportBuilder();
+
+        Match m1 = Match.of(test.createMark("public", fileName, 1, 1),
+                            test.createMark("public", fileName, 4, 1));
+        Match m2 = Match.of(test.createMark("Foo", fileName, 1, 2),
+                            test.createMark("Foo", fileName, 1, 2));
+        assertThat(m1, lessThan(m2));
     }
 }

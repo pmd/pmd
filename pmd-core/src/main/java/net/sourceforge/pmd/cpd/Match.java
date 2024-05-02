@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -16,15 +17,21 @@ import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+/**
+ * A source code match between two or more {@link Mark}s. The match may not be exact
+ * between all marks of the same match, but all of them share a prefix at least as
+ * long as the minimum tile size.
+ */
+@SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal") // would be binary incompatible, todo for PMD 8
 public class Match implements Comparable<Match>, Iterable<Mark> {
 
     private final int minTokenCount;
     private final int maxTokenCount;
     private final List<Mark> marks;
 
-    public static final Comparator<Match> MATCHES_COMPARATOR = (ma, mb) -> mb.getMarkCount() - ma.getMarkCount();
+    public static final Comparator<Match> MATCHES_COMPARATOR = Comparator.comparingInt(it -> it.getMarks().size());
 
-    public static final Comparator<Match> LINES_COMPARATOR = (ma, mb) -> mb.getLineCount() - ma.getLineCount();
+    public static final Comparator<Match> LINES_COMPARATOR = Comparator.comparingInt(Match::getLineCount);
 
     private Match(int min, int max, List<Mark> marks) {
         assert min >= 0 && min <= max && marks.size() >= 2;
@@ -33,43 +40,57 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
         this.marks = marks;
     }
 
-    Match(int tokenCount, Mark first, Mark second) {
-        List<Mark> marks = new ArrayList<>(2);
+    /**
+     * Build a match for 2 marks.
+     */
+    static Match of(Mark first, Mark second) {
+        List<Mark> marks;
         int cmp = first.compareTo(second);
         // mark list should be sorted
         if (cmp > 0) {
-            marks.add(second);
-            marks.add(first);
+            marks = Arrays.asList(second, first);
         } else {
-            marks.add(first);
-            marks.add(second);
+            marks = Arrays.asList(first, second);
         }
-        this.marks = Collections.unmodifiableList(marks);
-        this.minTokenCount = tokenCount;
-        this.maxTokenCount = tokenCount;
+
+        int min = Math.min(first.getLength(), second.getLength());
+        int max = Math.max(first.getLength(), second.getLength());
+
+        return new Match(min, max, Collections.unmodifiableList(marks));
     }
 
-    @Deprecated
-    Match(int tokenCount, TokenEntry first, TokenEntry second) {
-        this(tokenCount, new Mark(first), new Mark(second));
-    }
-
+    /**
+     * Return the number of marks in this match.
+     */
     public int getMarkCount() {
         return marks.size();
     }
 
+    /**
+     * Return the number of lines spanned by the first mark. The number of lines may differ between
+     */
     public int getLineCount() {
-        return getMark(0).getLocation().getLineCount();
+        return marks.get(0).getLineCount();
     }
 
+    /**
+     * @deprecated This returns {@link #getMinTokenCount()}
+     */
+    @Deprecated
     public int getTokenCount() {
-        return minTokenCount;
+        return getMinTokenCount();
     }
 
+    /**
+     * The maximum token count of any mark within this match.
+     */
     public int getMaxTokenCount() {
         return maxTokenCount;
     }
 
+    /**
+     * The minimum token count of any mark within this match.
+     */
     public int getMinTokenCount() {
         return minTokenCount;
     }
@@ -102,11 +123,11 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
     }
 
     public Mark getFirstMark() {
-        return getMark(0);
+        return marks.get(0);
     }
 
     public Mark getSecondMark() {
-        return getMark(1);
+        return marks.get(1);
     }
 
     @Override
@@ -114,21 +135,22 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
         return "Match: \ntokenCount >= " + minTokenCount + " <= " + maxTokenCount + "\nmarks = " + marks.size();
     }
 
+    /**
+     * @deprecated Use methods on individual Marks.
+     * */
+    @Deprecated
     public int getEndIndex() {
-        return getMark(0).getToken().getLocalIndex() + getTokenCount() - 1;
-    }
-
-    private Mark getMark(int index) {
-        return marks.get(index);
+        return getFirstMark().getEndTokenIndex();
     }
 
     static final class MatchBuilder {
 
         private final List<Mark> marks = new ArrayList<>();
 
+        /** Add a mark to the match. Checks for overlap with already present marks and prunes the smaller marks. */
         MatchBuilder addMark(Mark newMark) {
             boolean added = false;
-            for (ListIterator<Mark> iterator = marks.listIterator(); iterator.hasNext(); ) {
+            for (ListIterator<Mark> iterator = marks.listIterator(); iterator.hasNext();) {
                 Mark mark = iterator.next();
                 int cmp = mark.contains(newMark);
                 if (cmp > 0) {

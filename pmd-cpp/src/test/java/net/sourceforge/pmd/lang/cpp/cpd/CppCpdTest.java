@@ -37,7 +37,7 @@ class CppCpdTest {
             cpd.performAnalysis(matches -> {
                 // There should only be 1 duplication, and it should be maximal
                 assertEquals(1, matches.getMatches().size());
-                assertEquals(128, matches.getMatches().get(0).getTokenCount());
+                assertEquals(128, matches.getMatches().get(0).getMinTokenCount());
             });
         }
     }

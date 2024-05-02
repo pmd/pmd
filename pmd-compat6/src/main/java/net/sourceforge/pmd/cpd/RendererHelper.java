@@ -30,7 +30,7 @@ final class RendererHelper {
         List<TextFile> textFiles = new ArrayList<>();
         Set<String> paths = new HashSet<>();
         for (Match match : matchesList) {
-            for (Mark mark : match.getMarkSet()) {
+            for (Mark mark : match.getMarks()) {
                 paths.add(mark.getFilename());
             }
         }

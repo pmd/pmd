@@ -52,7 +52,7 @@ class MatchCollector {
             SmallTokenEntry snd = marks.get(1);
             int dupes = tokens.countDupTokens(fst, snd, 0);
             if (isDuplicate(fst, snd, dupes)) {
-                recordMatch(new Match(dupes, makeMark(fst, dupes), makeMark(snd, dupes)));
+                recordMatch(Match.of(makeMark(fst, dupes), makeMark(snd, dupes)));
             }
             return;
         }

@@ -153,7 +153,7 @@ public final class XMLRenderer implements CPDReportRenderer, CPDRenderer {
     private Element createDuplicationElement(Document doc, Match match) {
         Element duplication = doc.createElement("duplication");
         duplication.setAttribute("lines", String.valueOf(match.getLineCount()));
-        duplication.setAttribute("tokens", String.valueOf(match.getTokenCount()));
+        duplication.setAttribute("tokens", String.valueOf(match.getMinTokenCount()));
         return duplication;
     }
 

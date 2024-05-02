@@ -91,7 +91,7 @@ public class CSVRenderer implements CPDReportRenderer {
             if (!lineCountPerFile) {
                 writer.append(String.valueOf(match.getLineCount())).append(separator);
             }
-            writer.append(String.valueOf(match.getTokenCount())).append(separator)
+            writer.append(String.valueOf(match.getMinTokenCount())).append(separator)
                   .append(String.valueOf(match.getMarkCount())).append(separator);
             for (Iterator<Mark> marks = match.iterator(); marks.hasNext();) {
                 Mark mark = marks.next();

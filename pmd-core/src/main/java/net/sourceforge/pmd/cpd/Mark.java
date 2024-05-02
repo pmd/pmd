@@ -57,14 +57,21 @@ public final class Mark implements Comparable<Mark> {
                                 endToken.getEndLine(), endToken.getEndColumn()));
     }
 
+    /** The number of lines spanned by this mark. At least 1. */
+    public int getLineCount() {
+        return endToken.getEndLine() - token.getBeginLine() + 1;
+    }
+
     FileId getFileId() {
         return token.getFileId();
     }
 
+    /** Return the index in the file of the first token in this mark. */
     public int getBeginTokenIndex() {
         return this.token.getLocalIndex();
     }
 
+    /** Return the index in the file of the last token in this mark. */
     public int getEndTokenIndex() {
         return getEndToken().getLocalIndex();
     }
@@ -113,12 +120,15 @@ public final class Mark implements Comparable<Mark> {
             return false;
         }
         Mark other = (Mark) obj;
-        return Objects.equals(token, other.token);
+        return Objects.equals(token, other.token)
+            && Objects.equals(endToken, other.endToken);
     }
 
     @Override
     public int compareTo(Mark other) {
-        return getToken().compareTo(other.getToken());
+        int cmp = token.compareTo(other.token);
+        cmp = cmp != 0 ? cmp : endToken.compareTo(other.endToken);
+        return cmp;
     }
 
 }

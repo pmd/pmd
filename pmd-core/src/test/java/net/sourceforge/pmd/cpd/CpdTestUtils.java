@@ -80,7 +80,7 @@ final class CpdTestUtils {
 
         Mark createMark(String image, FileId fileName, int beginLine, int lineCount) {
             fileContents.putIfAbsent(fileName, DUMMY_FILE_CONTENT);
-            return new Mark(tokens.addToken(image, fileName, beginLine, 1, beginLine + lineCount - 1, 1));
+            return new Mark(tokens.addToken(image, fileName, beginLine, 1, beginLine + lineCount - 1, 2));
         }
 
         CpdReportBuilder addMatch(Match match) {
