@@ -53,9 +53,9 @@ public class DataClassRule extends AbstractJavaRulechainRule {
             int noam = MetricsUtil.computeMetric(NUMBER_OF_ACCESSORS, node);
             int wmc = MetricsUtil.computeMetric(WEIGHED_METHOD_COUNT, node);
 
-            asCtx(data).addViolation(node, new Object[] {node.getSimpleName(),
-                                                         StringUtil.percentageString(woc, 3),
-                                                         nopa, noam, wmc, });
+            asCtx(data).addViolation(node, node.getSimpleName(),
+                                     StringUtil.percentageString(woc, 3),
+                                     nopa, noam, wmc);
         }
     }
 

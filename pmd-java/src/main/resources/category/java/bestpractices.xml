@@ -1312,12 +1312,13 @@ Consider replacing Vector usages with the newer java.util.ArrayList if expensive
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-                //ClassType[pmd-java:typeIs('java.util.Vector')]
+                //ClassType[pmd-java:typeIsExactly('java.util.Vector')]
                 ]]></value>
             </property>
         </properties>
         <example>
 <![CDATA[
+import java.util.Vector;
 public class Foo {
     void bar() {
         Vector v = new Vector();
@@ -1438,7 +1439,7 @@ class Foo{
     <rule name="UnnecessaryVarargsArrayCreation"
           language="java"
           since="7.1.0"
-          message="Unnecessary explicit varargs array creation"
+          message="Unnecessary explicit array creation for varargs method call"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnnecessaryVarargsArrayCreationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unnecessaryvarargsarraycreation">
         <description>
@@ -1450,30 +1451,6 @@ class Foo{
             can be replaced by:
             ```java
             Arrays.asList("foo", "bar");
-            ```
-
-            This rule also reports such array creations when they are confusing, because the array is a subtype of the component type of the expected array type.
-            For instance if you have
-            ```java
-            void varargs(Object... parm);
-            ```
-            and call it like so
-            ```java
-            varargs(new String[]{"a"});
-            ```
-            it is not clear whether you intended the method to receive the value `new Object[]{ new String[] {"a"} }` or just `new String[] {"a"}` (the latter happens). This confusion occurs because `String[]` is both a subtype of `Object[]` and of `Object`. To clarify your intent in this case, use a cast or pass individual elements like so:
-            ```java
-            // varargs call
-            // parm will be `new Object[] { "a" }`
-            varargs("a");
-
-            // non-varargs call
-            // parm will be `new String[] { "a" }`
-            varargs((Object[]) new String[]{"a"});
-
-            // varargs call
-            // parm will be `new Object[] { new String[] { "a" } }`
-            varargs((Object) new String[]{"a"});
             ```
         </description>
         <priority>3</priority>

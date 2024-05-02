@@ -176,7 +176,7 @@ public class CloseResourceRule extends AbstractJavaRule {
             if (isWrappingResourceSpecifiedInTry(resVar)) {
                 reportedVarNames.add(resVar.getName());
                 asCtx(data).addViolationWithMessage(resVar, WRAPPING_TRY_WITH_RES_VAR_MESSAGE,
-                        new Object[] { resVar.getName() });
+                                                    resVar.getName());
             } else if (shouldVarOfTypeBeClosedInMethod(resVar, resVarType, methodOrConstructor)) {
                 reportedVarNames.add(resVar.getName());
                 addCloseResourceViolation(resVar, runtimeType, data);
@@ -185,7 +185,7 @@ public class CloseResourceRule extends AbstractJavaRule {
                 if (reassigningStatement != null) {
                     reportedVarNames.add(resVar.getName());
                     asCtx(data).addViolationWithMessage(reassigningStatement, REASSIGN_BEFORE_CLOSED_MESSAGE,
-                            new Object[] { resVar.getName() });
+                                                        resVar.getName());
                 }
             }
         }
@@ -696,7 +696,7 @@ public class CloseResourceRule extends AbstractJavaRule {
             ASTVariableAccess closedVar = (ASTVariableAccess) node.getQualifier();
             if (isNotInFinallyBlock(closedVar) && !reportedVarNames.contains(closedVar.getName())) {
                 asCtx(data).addViolationWithMessage(closedVar, CLOSE_IN_FINALLY_BLOCK_MESSAGE,
-                        new Object[] { closedVar.getName() });
+                                                    closedVar.getName());
             }
         }
 

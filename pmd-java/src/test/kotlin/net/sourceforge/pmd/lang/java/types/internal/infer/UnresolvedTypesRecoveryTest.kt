@@ -7,11 +7,11 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.test.ast.shouldBeA
-import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.types.*
+import net.sourceforge.pmd.lang.test.ast.shouldBeA
+import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 
 /**
  */
@@ -648,6 +648,49 @@ class C {
             ok shouldHaveType t_Lambda
             wrong shouldHaveType t_Lambda
             wrong.parameters[0] shouldHaveType ts.UNKNOWN
+        }
+    }
+
+    parserTest("Method ref in unresolved call chain") {
+        /*
+            In this test we have Stream.of(/*some expr with unresolved type*/)
+
+            The difficult thing is that Stream.of has two overloads: of(U) and of(U...),
+            and the argument is unknown. This makes both methods match. Whichever method is matched,
+            we want the U to be inferred to (*unknown*) and not Object.
+         */
+
+        val (acu, _) = parser.parseWithTypeInferenceSpy("""
+                interface Function<T, R> {
+                    R call(T parm);
+                }
+                interface Stream<T> {
+                    <U> Stream<U> map(Function<? super T, ? extends U> fun);
+                    
+                    // the point of this test is there is an ambiguity between both of these overloads
+                    static <U> Stream<U> of(U u) {}
+                    static <U> Stream<U> of(U... u) {}
+                }
+                class Foo {
+                    {
+                        // var i = Stream.of("").map(Foo::toInt);
+                        var x = Stream.of(new Unresolved().getString())
+                                      .map(Foo::toInt);
+                    }
+                   private static Integer toInt(String s) {}
+                }
+        """)
+
+        val (fooToInt) = acu.descendants(ASTMethodReference::class.java).toList()
+        val (map, streamOf, getString) = acu.methodCalls().toList()
+        val (t_Function, t_Stream, t_Foo) = acu.declaredTypeSignatures()
+        val (_, _, _, _, toIntFun) = acu.methodDeclarations().toList { it.symbol }
+
+        acu.withTypeDsl {
+            streamOf shouldHaveType t_Stream[ts.UNKNOWN]
+            map shouldHaveType t_Stream[ts.INT.box()]
+            fooToInt shouldHaveType t_Function[ts.UNKNOWN, ts.INT.box()]
+            fooToInt.referencedMethod.symbol shouldBe toIntFun
         }
     }
 

@@ -115,8 +115,8 @@ public class RulesetFactoryTestBase {
         }
     }
 
-    protected void assertCannotParse(String xmlContent) {
-        assertThrows(RuleSetLoadException.class, () -> loadFirstRule(xmlContent));
+    protected RuleSetLoadException assertCannotParse(String xmlContent) {
+        return assertThrows(RuleSetLoadException.class, () -> loadFirstRule(xmlContent));
     }
     /*
         DSL to build a ruleset XML file with method calls.

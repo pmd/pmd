@@ -76,7 +76,7 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
             JavaNode node = sym.tryGetNode();
             assert node != null : "Node should be in the same compilation unit";
             if (reportedNodes.add(node)) {
-                ruleContext.addViolation(node, new String[] {stripPackageName(refExpr.getEnclosingType().getSymbol())});
+                ruleContext.addViolation(node, stripPackageName(refExpr.getEnclosingType().getSymbol()));
             }
         }
     }

@@ -492,13 +492,13 @@ If you import rules, you also need to adjust the paths, e.g.
   new property `forbiddenRegex` can be used now to define the disallowed terms with a single regular
   expression.
 * [`CommentRequired`](https://docs.pmd-code.org/pmd-doc-7.0.0/pmd_rules_java_documentation.html#commentrequired):
-  * Overridden methods are now detected even without the `@Override`
-    annotation. This is relevant for the property `methodWithOverrideCommentRequirement`.
-    See also [pull request #3757](https://github.com/pmd/pmd/pull/3757).
-  * Elements in annotation types are now detected as well. This might lead to an increased number of violations
-    for missing public method comments.
-  * The deprecated property `headerCommentRequirement` has been removed. Use the property `classCommentRequirement`
-    instead.
+    * Overridden methods are now detected even without the `@Override`
+      annotation. This is relevant for the property `methodWithOverrideCommentRequirement`.
+      See also [pull request #3757](https://github.com/pmd/pmd/pull/3757).
+    * Elements in annotation types are now detected as well. This might lead to an increased number of violations
+      for missing public method comments.
+    * The deprecated property `headerCommentRequirement` has been removed. Use the property `classCommentRequirement`
+      instead.
 * [`CommentSize`](https://docs.pmd-code.org/pmd-doc-7.0.0/pmd_rules_java_documentation.html#commentsize): When determining the line-length of a comment, the leading comment
   prefix markers (e.g. `*` or `//`) are ignored and don't add up to the line-length.
   See also [pull request #4369](https://github.com/pmd/pmd/pull/4369).
@@ -738,13 +738,13 @@ See [ADR 3 - API evolution principles](pmd_projectdocs_decisions_adr_3.html) and
   This includes ClasspathClassLoader, FileFinder, FileUtil, and IOUtil.
 
 * The following utility classes in <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/package-summary.html#"><code>net.sourceforge.pmd.util</code></a> are now considered public API:
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/AssertionUtil.html#"><code>AssertionUtil</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/CollectionUtil.html#"><code>CollectionUtil</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/ContextedAssertionError.html#"><code>ContextedAssertionError</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/ContextedStackOverflowError.html#"><code>ContextedStackOverflowError</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/GraphUtil.html#"><code>GraphUtil</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/IteratorUtil.html#"><code>IteratorUtil</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/StringUtil.html#"><code>StringUtil</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/AssertionUtil.html#"><code>AssertionUtil</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/CollectionUtil.html#"><code>CollectionUtil</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/ContextedAssertionError.html#"><code>ContextedAssertionError</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/ContextedStackOverflowError.html#"><code>ContextedStackOverflowError</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/GraphUtil.html#"><code>GraphUtil</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/IteratorUtil.html#"><code>IteratorUtil</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/StringUtil.html#"><code>StringUtil</code></a>
 
 * Moved the two classes <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/impl/AntlrCpdLexer.html#"><code>AntlrCpdLexer</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/impl/JavaccCpdLexer.html#"><code>JavaccCpdLexer</code></a> from
   `internal` package into package <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/impl/package-summary.html#"><code>net.sourceforge.pmd.cpd.impl</code></a>. These two classes are part of the API and
@@ -829,9 +829,9 @@ The metrics framework has been made simpler and more general.
 ### Testing framework
 
 * PMD 7 has been upgraded to use JUnit 5 only. That means, that JUnit4 related classes have been removed, namely
-  * `net.sourceforge.pmd.testframework.PMDTestRunner`
-  * `net.sourceforge.pmd.testframework.RuleTestRunner`
-  * `net.sourceforge.pmd.testframework.TestDescriptor`
+    * `net.sourceforge.pmd.testframework.PMDTestRunner`
+    * `net.sourceforge.pmd.testframework.RuleTestRunner`
+    * `net.sourceforge.pmd.testframework.TestDescriptor`
 * Rule tests, that use <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0/net/sourceforge/pmd/test/SimpleAggregatorTst.html#"><code>SimpleAggregatorTst</code></a> or
   <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0/net/sourceforge/pmd/test/PmdRuleTst.html#"><code>PmdRuleTst</code></a> work as before without change, but use
   now JUnit5 under the hood. If you added additional JUnit4 tests to your rule test classes, then you'll
@@ -904,7 +904,7 @@ These are the changes between 7.0.0-rc4 and final 7.0.0.
 * Support for Java 20 preview language features have been removed. The version "20-preview" is no longer available.
 * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTPattern.html#"><code>ASTPattern</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTRecordPattern.html#"><code>ASTRecordPattern</code></a>,
   <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTTypePattern.html#"><code>ASTTypePattern</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTUnnamedPattern.html#"><code>ASTUnnamedPattern</code></a>
-  - method `getParenthesisDepth()` has been removed.
+    - method `getParenthesisDepth()` has been removed.
 * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTTemplateFragment.html#"><code>ASTTemplateFragment</code></a>: To get the content of the template, use now
   <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTTemplateFragment.html#getContent()"><code>getContent</code></a> or `@Content` instead of `getImage()`/`@Image`.
 * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTUnnamedPattern.html#"><code>ASTUnnamedPattern</code></a> is not experimental anymore. The language feature
@@ -930,56 +930,56 @@ in the migration guide for details.
 **Moved classes/consolidated packages**
 
 * pmd-core
-  * Many types have been moved from the base package `net.sourceforge.pmd` into subpackage <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/package-summary.html#"><code>net.sourceforge.pmd.lang.rule</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/Rule.html#"><code>Rule</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RulePriority.html#"><code>RulePriority</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleSet.html#"><code>RuleSet</code></a>
-    * `RuleSetFactory`
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleSetLoader.html#"><code>RuleSetLoader</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleSetLoadException.html#"><code>RuleSetLoadException</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleSetWriter.html#"><code>RuleSetWriter</code></a>
-  * Many types have been moved from the base package `net.sourceforge.pmd` into subpackage <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/package-summary.html#"><code>net.sourceforge.pmd.reporting</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/Report.html#"><code>Report</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleContext.html#"><code>RuleContext</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleViolation.html#"><code>RuleViolation</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/ViolationSuppressor.html#"><code>ViolationSuppressor</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/xpath/XPathRule.html#"><code>XPathRule</code></a> has been moved into subpackage <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/xpath/package-summary.html#"><code>net.sourceforge.pmd.lang.rule.xpath</code></a>.
+    * Many types have been moved from the base package `net.sourceforge.pmd` into subpackage <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/package-summary.html#"><code>net.sourceforge.pmd.lang.rule</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/Rule.html#"><code>Rule</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RulePriority.html#"><code>RulePriority</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleSet.html#"><code>RuleSet</code></a>
+        * `RuleSetFactory`
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleSetLoader.html#"><code>RuleSetLoader</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleSetLoadException.html#"><code>RuleSetLoadException</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleSetWriter.html#"><code>RuleSetWriter</code></a>
+    * Many types have been moved from the base package `net.sourceforge.pmd` into subpackage <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/package-summary.html#"><code>net.sourceforge.pmd.reporting</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/Report.html#"><code>Report</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleContext.html#"><code>RuleContext</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleViolation.html#"><code>RuleViolation</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/ViolationSuppressor.html#"><code>ViolationSuppressor</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/xpath/XPathRule.html#"><code>XPathRule</code></a> has been moved into subpackage <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/xpath/package-summary.html#"><code>net.sourceforge.pmd.lang.rule.xpath</code></a>.
 * pmd-html
-  * `net.sourceforge.pmd.lang.html.ast.HtmlCpdLexer` moved into package `cpd`: <a href="https://docs.pmd-code.org/apidocs/pmd-html/7.0.0/net/sourceforge/pmd/lang/html/cpd/HtmlCpdLexer.html#"><code>HtmlCpdLexer</code></a>.
+    * `net.sourceforge.pmd.lang.html.ast.HtmlCpdLexer` moved into package `cpd`: <a href="https://docs.pmd-code.org/apidocs/pmd-html/7.0.0/net/sourceforge/pmd/lang/html/cpd/HtmlCpdLexer.html#"><code>HtmlCpdLexer</code></a>.
 * pmd-lang-test: All types have been moved under the new base package <a href="https://docs.pmd-code.org/apidocs/pmd-lang-test/7.0.0/net/sourceforge/pmd/lang/test/package-summary.html#"><code>net.sourceforge.pmd.lang.test</code></a>:
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-lang-test/7.0.0/net/sourceforge/pmd/lang/test/AbstractMetricTestRule.html#"><code>AbstractMetricTestRule</code></a> (moved from `net.sourceforge.pmd.test.AbstractMetricTestRule`)
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-lang-test/7.0.0/net/sourceforge/pmd/lang/test/BaseTextComparisonTest.html#"><code>BaseTextComparisonTest</code></a> (moved from `net.sourceforge.pmd.test.BaseTextComparisonTest`)
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-lang-test/7.0.0/net/sourceforge/pmd/lang/test/cpd/CpdTextComparisonTest.html#"><code>CpdTextComparisonTest</code></a> (moved from `net.sourceforge.pmd.cpd.test.CpdTextComparisonTest`)
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-lang-test/7.0.0/net/sourceforge/pmd/lang/test/ast/BaseTreeDumpTest.html#"><code>BaseTreeDumpTest</code></a> (moved from `net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest`)
-  * And many other types have been moved from `net.sourceforge.pmd.lang.ast.test` to `net.sourceforge.pmd.lang.test`.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-lang-test/7.0.0/net/sourceforge/pmd/lang/test/AbstractMetricTestRule.html#"><code>AbstractMetricTestRule</code></a> (moved from `net.sourceforge.pmd.test.AbstractMetricTestRule`)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-lang-test/7.0.0/net/sourceforge/pmd/lang/test/BaseTextComparisonTest.html#"><code>BaseTextComparisonTest</code></a> (moved from `net.sourceforge.pmd.test.BaseTextComparisonTest`)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-lang-test/7.0.0/net/sourceforge/pmd/lang/test/cpd/CpdTextComparisonTest.html#"><code>CpdTextComparisonTest</code></a> (moved from `net.sourceforge.pmd.cpd.test.CpdTextComparisonTest`)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-lang-test/7.0.0/net/sourceforge/pmd/lang/test/ast/BaseTreeDumpTest.html#"><code>BaseTreeDumpTest</code></a> (moved from `net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest`)
+    * And many other types have been moved from `net.sourceforge.pmd.lang.ast.test` to `net.sourceforge.pmd.lang.test`.
 * pmd-scala
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0/net/sourceforge/pmd/lang/scala/cpd/ScalaCpdLexer.html#"><code>ScalaCpdLexer</code></a> (moved from `net.sourceforge.pmd.lang.scala.cpd.ScalaCpdLexer`)
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0/net/sourceforge/pmd/lang/scala/cpd/ScalaTokenAdapter.html#"><code>ScalaTokenAdapter</code></a> (moved from `net.sourceforge.pmd.lang.scala.cpd.ScalaTokenAdapter`)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0/net/sourceforge/pmd/lang/scala/cpd/ScalaCpdLexer.html#"><code>ScalaCpdLexer</code></a> (moved from `net.sourceforge.pmd.lang.scala.cpd.ScalaCpdLexer`)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0/net/sourceforge/pmd/lang/scala/cpd/ScalaTokenAdapter.html#"><code>ScalaTokenAdapter</code></a> (moved from `net.sourceforge.pmd.lang.scala.cpd.ScalaTokenAdapter`)
 * pmd-test
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0/net/sourceforge/pmd/test/lang/rule/AbstractRuleSetFactoryTest.html#"><code>AbstractRuleSetFactoryTest</code></a> (moved from `net.sourceforge.pmd.lang.rule.AbstractRuleSetFactoryTest`)
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0/net/sourceforge/pmd/test/AbstractAntTestHelper.html#"><code>AbstractAntTestHelper</code></a> (moved from `net.sourceforge.pmd.ant.AbstractAntTestHelper`)
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0/net/sourceforge/pmd/test/AbstractLanguageVersionTest.html#"><code>AbstractLanguageVersionTest</code></a> (moved from `net.sourceforge.pmd.AbstractLanguageVersionTest`)
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0/net/sourceforge/pmd/test/PmdRuleTst.html#"><code>PmdRuleTst</code></a> (moved from `net.sourceforge.pmd.testframework.PmdRuleTst`)
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0/net/sourceforge/pmd/test/RuleTst.html#"><code>RuleTst</code></a> (moved from `net.sourceforge.pmd.testframework.RuleTst`)
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0/net/sourceforge/pmd/test/SimpleAggregatorTst.html#"><code>SimpleAggregatorTst</code></a> (moved from `net.sourceforge.pmd.testframework.SimpleAggregatorTst`)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0/net/sourceforge/pmd/test/lang/rule/AbstractRuleSetFactoryTest.html#"><code>AbstractRuleSetFactoryTest</code></a> (moved from `net.sourceforge.pmd.lang.rule.AbstractRuleSetFactoryTest`)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0/net/sourceforge/pmd/test/AbstractAntTestHelper.html#"><code>AbstractAntTestHelper</code></a> (moved from `net.sourceforge.pmd.ant.AbstractAntTestHelper`)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0/net/sourceforge/pmd/test/AbstractLanguageVersionTest.html#"><code>AbstractLanguageVersionTest</code></a> (moved from `net.sourceforge.pmd.AbstractLanguageVersionTest`)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0/net/sourceforge/pmd/test/PmdRuleTst.html#"><code>PmdRuleTst</code></a> (moved from `net.sourceforge.pmd.testframework.PmdRuleTst`)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0/net/sourceforge/pmd/test/RuleTst.html#"><code>RuleTst</code></a> (moved from `net.sourceforge.pmd.testframework.RuleTst`)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0/net/sourceforge/pmd/test/SimpleAggregatorTst.html#"><code>SimpleAggregatorTst</code></a> (moved from `net.sourceforge.pmd.testframework.SimpleAggregatorTst`)
 * pmd-xml
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.0.0/net/sourceforge/pmd/lang/xml/pom/PomLanguageModule.html#"><code>PomLanguageModule</code></a> (moved from `net.sourceforge.pmd.lang.pom.PomLanguageModule`)
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.0.0/net/sourceforge/pmd/lang/xml/wsdl/WsdlLanguageModule.html#"><code>WsdlLanguageModule</code></a> (moved from `net.sourceforge.pmd.lang.wsdl.WsdlLanguageModule`)
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.0.0/net/sourceforge/pmd/lang/xml/xsl/XslLanguageModule.html#"><code>XslLanguageModule</code></a> (moved from `net.sourceforge.pmd.lang.xsl.XslLanguageModule`)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.0.0/net/sourceforge/pmd/lang/xml/pom/PomLanguageModule.html#"><code>PomLanguageModule</code></a> (moved from `net.sourceforge.pmd.lang.pom.PomLanguageModule`)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.0.0/net/sourceforge/pmd/lang/xml/wsdl/WsdlLanguageModule.html#"><code>WsdlLanguageModule</code></a> (moved from `net.sourceforge.pmd.lang.wsdl.WsdlLanguageModule`)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.0.0/net/sourceforge/pmd/lang/xml/xsl/XslLanguageModule.html#"><code>XslLanguageModule</code></a> (moved from `net.sourceforge.pmd.lang.xsl.XslLanguageModule`)
 * pmd-visualforce
-  * The package `net.sourceforge.pmd.lang.vf` has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0/net/sourceforge/pmd/lang/visualforce/package-summary.html#"><code>net.sourceforge.pmd.lang.visualforce</code></a>.
-  * The language id of visualforce has been changed to `visualforce` (it was previously just "vf")
-  * The ruleset changed: `category/vf/security.xml` ➡️ `category/visualforce/security.xml`
+    * The package `net.sourceforge.pmd.lang.vf` has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0/net/sourceforge/pmd/lang/visualforce/package-summary.html#"><code>net.sourceforge.pmd.lang.visualforce</code></a>.
+    * The language id of visualforce has been changed to `visualforce` (it was previously just "vf")
+    * The ruleset changed: `category/vf/security.xml` ➡️ `category/visualforce/security.xml`
 * pmd-velocity (renamed from pmd-vm)
-  * The package `net.sourceforge.pmd.lang.vm` has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0/net/sourceforge/pmd/lang/velocity/package-summary.html#"><code>net.sourceforge.pmd.lang.velocity</code></a>.
-  * The language id of the Velocity module has been changed to `velocity` (it was previously just "vm")
-  * The rulesets changed: `category/vm/...` ➡️ `category/velocity/...`
-  * Many classes used the prefix `Vm`, e.g. `VmLanguageModule`. This has been changed to be `Vtl`:
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0/net/sourceforge/pmd/lang/velocity/VtlLanguageModule.html#"><code>VtlLanguageModule</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0/net/sourceforge/pmd/lang/velocity/ast/VtlNode.html#"><code>VtlNode</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0/net/sourceforge/pmd/lang/velocity/ast/VtlParser.html#"><code>VtlParser</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0/net/sourceforge/pmd/lang/velocity/cpd/VtlCpdLexer.html#"><code>VtlCpdLexer</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0/net/sourceforge/pmd/lang/velocity/rule/AbstractVtlRule.html#"><code>AbstractVtlRule</code></a>
+    * The package `net.sourceforge.pmd.lang.vm` has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0/net/sourceforge/pmd/lang/velocity/package-summary.html#"><code>net.sourceforge.pmd.lang.velocity</code></a>.
+    * The language id of the Velocity module has been changed to `velocity` (it was previously just "vm")
+    * The rulesets changed: `category/vm/...` ➡️ `category/velocity/...`
+    * Many classes used the prefix `Vm`, e.g. `VmLanguageModule`. This has been changed to be `Vtl`:
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0/net/sourceforge/pmd/lang/velocity/VtlLanguageModule.html#"><code>VtlLanguageModule</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0/net/sourceforge/pmd/lang/velocity/ast/VtlNode.html#"><code>VtlNode</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0/net/sourceforge/pmd/lang/velocity/ast/VtlParser.html#"><code>VtlParser</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0/net/sourceforge/pmd/lang/velocity/cpd/VtlCpdLexer.html#"><code>VtlCpdLexer</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0/net/sourceforge/pmd/lang/velocity/rule/AbstractVtlRule.html#"><code>AbstractVtlRule</code></a>
 
 **Internalized classes and interfaces and methods**
 
@@ -987,465 +987,465 @@ The following classes/methods have been marked as @<!-- -->InternalApi before an
 package or made (package) private and are _not accessible_ anymore.
 
 * pmd-core
-  * `net.sourceforge.pmd.cache.AbstractAnalysisCache` (moved to internal, now package private)
-  * `net.sourceforge.pmd.cache.AnalysisCache` (moved to internal)
-  * `net.sourceforge.pmd.cache.AnalysisCacheListener` (moved to internal)
-  * `net.sourceforge.pmd.cache.AnalysisResult` (moved to internal)
-  * `net.sourceforge.pmd.cache.CachedRuleMapper` (moved to internal, now package private)
-  * `net.sourceforge.pmd.cache.CachedRuleViolation` (moved to internal, now package private)
-  * `net.sourceforge.pmd.cache.ChecksumAware` (moved to internal)
-  * `net.sourceforge.pmd.cache.FileAnalysisCache` (moved to internal)
-  * `net.sourceforge.pmd.cache.NoopAnalysisCache` (moved to internal)
-  * `net.sourceforge.pmd.util.ResourceLoader` (moved to internal)
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/Tokens.html#"><code>net.sourceforge.pmd.cpd.Tokens</code></a>
-    * Constructor is now package private.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageProcessor.AnalysisTask.html#"><code>net.sourceforge.pmd.lang.LanguageProcessor.AnalysisTask</code></a>
-    * Constructor is now package private.
-    * Method `withFiles(java.util.List)` is now package private. Note: it was not previously marked with @<!-- -->InternalApi.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleTargetSelector.html#"><code>net.sourceforge.pmd.lang.rule.RuleTargetSelector</code></a>
-    * Method `isRuleChain()` has been removed.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/renderers/AbstractAccumulatingRenderer.html#"><code>net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/renderers/AbstractAccumulatingRenderer.html#renderFileReport(net.sourceforge.pmd.reporting.Report)"><code>renderFileReport</code></a> - this method is now final
-      and can't be overridden anymore.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/Report.html#"><code>net.sourceforge.pmd.reporting.Report</code></a>
-    * Constructor as well as the methods `addRuleViolation`, `addConfigError`, `addError` are now private.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleContext.html#"><code>net.sourceforge.pmd.reporting.RuleContext</code></a>
-    * Method `getRule()` is now package private.
-    * Method `create(FileAnalysisListener listener, Rule rule)` has been removed.
-  * `net.sourceforge.pmd.rules.RuleFactory`: moved into subpackage `lang.rule` and made package private.
-    It has now been hidden completely from public API.
-  * Many types have been moved from into subpackage `lang.rule.internal`.
-    * `net.sourceforge.pmd.RuleSetReference`
-    * `net.sourceforge.pmd.RuleSetReferenceId`
-    * `net.sourceforge.pmd.RuleSets`
-  * `net.sourceforge.pmd.lang.rule.ParametricRuleViolation` is now package private and moved to `net.sourceforge.pmd.reporting.ParametricRuleViolation`.
-    The only public API is <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleViolation.html#"><code>RuleViolation</code></a>.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleSet.html#"><code>net.sourceforge.pmd.lang.rule.RuleSet</code></a>
-    * Method `applies(Rule,LanguageVersion)` is now package private.
-    * Method `applies(TextFile)` has been removed.
-    * Method `applies(FileId)` is now package private.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleSetLoader.html#"><code>net.sourceforge.pmd.lang.rule.RuleSetLoader</code></a>
-    * Method `loadRuleSetsWithoutException(java.util.List)` is now package private.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleSetLoadException.html#"><code>net.sourceforge.pmd.lang.rule.RuleSetLoadException</code></a>
-    * All constructors are package private now.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/LexException.html#"><code>net.sourceforge.pmd.lang.ast.LexException</code></a> - the constructor `LexException(boolean, String, int, int, String, char)` is now package private.
-    It is only used by JavaCC-generated token managers.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#"><code>net.sourceforge.pmd.PMDConfiguration</code></a>
-    * Method `setAnalysisCache(AnalysisCache)` is now package private. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#setAnalysisCacheLocation(java.lang.String)"><code>setAnalysisCacheLocation</code></a> instead.
-    * Method `getAnalysisCache()` is now package private.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/document/FileCollector.html#"><code>net.sourceforge.pmd.lang.document.FileCollector</code></a>
-    * Method `newCollector(LanguageVersionDiscoverer, PmdReporter)` is now package private.
-    * Method `newCollector(PmdReporter)` is now package private.
-    * In order to create a FileCollector, use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PmdAnalysis.html#files()"><code>files</code></a> instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/xpath/Attribute.html#"><code>net.sourceforge.pmd.lang.rule.xpath.Attribute</code></a>
-    * Method `replacementIfDeprecated()` is now package private.
-  * `net.sourceforge.pmd.properties.PropertyTypeId` - moved in subpackage `internal`.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#"><code>net.sourceforge.pmd.properties.PropertyDescriptor</code></a> - method `getTypeId()` is now package private.
+    * `net.sourceforge.pmd.cache.AbstractAnalysisCache` (moved to internal, now package private)
+    * `net.sourceforge.pmd.cache.AnalysisCache` (moved to internal)
+    * `net.sourceforge.pmd.cache.AnalysisCacheListener` (moved to internal)
+    * `net.sourceforge.pmd.cache.AnalysisResult` (moved to internal)
+    * `net.sourceforge.pmd.cache.CachedRuleMapper` (moved to internal, now package private)
+    * `net.sourceforge.pmd.cache.CachedRuleViolation` (moved to internal, now package private)
+    * `net.sourceforge.pmd.cache.ChecksumAware` (moved to internal)
+    * `net.sourceforge.pmd.cache.FileAnalysisCache` (moved to internal)
+    * `net.sourceforge.pmd.cache.NoopAnalysisCache` (moved to internal)
+    * `net.sourceforge.pmd.util.ResourceLoader` (moved to internal)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/Tokens.html#"><code>net.sourceforge.pmd.cpd.Tokens</code></a>
+        * Constructor is now package private.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageProcessor.AnalysisTask.html#"><code>net.sourceforge.pmd.lang.LanguageProcessor.AnalysisTask</code></a>
+        * Constructor is now package private.
+        * Method `withFiles(java.util.List)` is now package private. Note: it was not previously marked with @<!-- -->InternalApi.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleTargetSelector.html#"><code>net.sourceforge.pmd.lang.rule.RuleTargetSelector</code></a>
+        * Method `isRuleChain()` has been removed.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/renderers/AbstractAccumulatingRenderer.html#"><code>net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/renderers/AbstractAccumulatingRenderer.html#renderFileReport(net.sourceforge.pmd.reporting.Report)"><code>renderFileReport</code></a> - this method is now final
+          and can't be overridden anymore.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/Report.html#"><code>net.sourceforge.pmd.reporting.Report</code></a>
+        * Constructor as well as the methods `addRuleViolation`, `addConfigError`, `addError` are now private.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleContext.html#"><code>net.sourceforge.pmd.reporting.RuleContext</code></a>
+        * Method `getRule()` is now package private.
+        * Method `create(FileAnalysisListener listener, Rule rule)` has been removed.
+    * `net.sourceforge.pmd.rules.RuleFactory`: moved into subpackage `lang.rule` and made package private.
+      It has now been hidden completely from public API.
+    * Many types have been moved from into subpackage `lang.rule.internal`.
+        * `net.sourceforge.pmd.RuleSetReference`
+        * `net.sourceforge.pmd.RuleSetReferenceId`
+        * `net.sourceforge.pmd.RuleSets`
+    * `net.sourceforge.pmd.lang.rule.ParametricRuleViolation` is now package private and moved to `net.sourceforge.pmd.reporting.ParametricRuleViolation`.
+      The only public API is <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleViolation.html#"><code>RuleViolation</code></a>.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleSet.html#"><code>net.sourceforge.pmd.lang.rule.RuleSet</code></a>
+        * Method `applies(Rule,LanguageVersion)` is now package private.
+        * Method `applies(TextFile)` has been removed.
+        * Method `applies(FileId)` is now package private.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleSetLoader.html#"><code>net.sourceforge.pmd.lang.rule.RuleSetLoader</code></a>
+        * Method `loadRuleSetsWithoutException(java.util.List)` is now package private.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleSetLoadException.html#"><code>net.sourceforge.pmd.lang.rule.RuleSetLoadException</code></a>
+        * All constructors are package private now.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/LexException.html#"><code>net.sourceforge.pmd.lang.ast.LexException</code></a> - the constructor `LexException(boolean, String, int, int, String, char)` is now package private.
+      It is only used by JavaCC-generated token managers.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#"><code>net.sourceforge.pmd.PMDConfiguration</code></a>
+        * Method `setAnalysisCache(AnalysisCache)` is now package private. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#setAnalysisCacheLocation(java.lang.String)"><code>setAnalysisCacheLocation</code></a> instead.
+        * Method `getAnalysisCache()` is now package private.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/document/FileCollector.html#"><code>net.sourceforge.pmd.lang.document.FileCollector</code></a>
+        * Method `newCollector(LanguageVersionDiscoverer, PmdReporter)` is now package private.
+        * Method `newCollector(PmdReporter)` is now package private.
+        * In order to create a FileCollector, use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PmdAnalysis.html#files()"><code>files</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/xpath/Attribute.html#"><code>net.sourceforge.pmd.lang.rule.xpath.Attribute</code></a>
+        * Method `replacementIfDeprecated()` is now package private.
+    * `net.sourceforge.pmd.properties.PropertyTypeId` - moved in subpackage `internal`.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#"><code>net.sourceforge.pmd.properties.PropertyDescriptor</code></a> - method `getTypeId()` is now package private.
 * pmd-doc
-  * The whole maven module `pmd-doc` is now considered internal API even though it was not declared so before.
-    It's used to generate the rule documentation for the built-in rules.
-  * All the classes have been moved into package `net.sourceforge.pmd.doc.internal`.
+    * The whole maven module `pmd-doc` is now considered internal API even though it was not declared so before.
+      It's used to generate the rule documentation for the built-in rules.
+    * All the classes have been moved into package `net.sourceforge.pmd.doc.internal`.
 * pmd-ant
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-ant/7.0.0/net/sourceforge/pmd/ant/Formatter.html#"><code>net.sourceforge.pmd.ant.Formatter</code></a>
-    * Method `getRenderer()` has been removed.
-    * Method `start(String)` is private now.
-    * Method `end(Report)` has been removed.
-    * Method `isNoOutputSupplied()` is now package private.
-    * Method `newListener(Project)` is now package private.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-ant/7.0.0/net/sourceforge/pmd/ant/PMDTask.html#"><code>net.sourceforge.pmd.ant.PMDTask</code></a>
-    * Method `getRelativizeRoots()` has been removed.
-  * `net.sourceforge.pmd.ant.ReportException` is now package private. Note: It was not marked with @<!-- -->InternalApi before.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-ant/7.0.0/net/sourceforge/pmd/ant/Formatter.html#"><code>net.sourceforge.pmd.ant.Formatter</code></a>
+        * Method `getRenderer()` has been removed.
+        * Method `start(String)` is private now.
+        * Method `end(Report)` has been removed.
+        * Method `isNoOutputSupplied()` is now package private.
+        * Method `newListener(Project)` is now package private.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-ant/7.0.0/net/sourceforge/pmd/ant/PMDTask.html#"><code>net.sourceforge.pmd.ant.PMDTask</code></a>
+        * Method `getRelativizeRoots()` has been removed.
+    * `net.sourceforge.pmd.ant.ReportException` is now package private. Note: It was not marked with @<!-- -->InternalApi before.
 * pmd-apex
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ApexNode.html#"><code>net.sourceforge.pmd.lang.apex.ast.ApexNode</code></a>
-    * Method `getNode()` has been removed. It was only deprecated before and not marked with @<!-- -->InternalApi.
-      However, it gave access to the wrapped Jorje node and was thus internal API.
-  * `net.sourceforge.pmd.lang.apex.ast.AbstractApexNode`
-    * Method `getNode()` is now package private.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/multifile/ApexMultifileAnalysis.html#"><code>net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis</code></a>
-    * Constructor is now package private.
-  * `net.sourceforge.pmd.lang.apex.rule.design.AbstractNcssCountRule` (now package private)
-  * `net.sourceforge.pmd.lang.apex.rule.AbstractApexUnitTestRule` (moved to package `net.sourceforge.pmd.apex.rule.bestpractices`, now package private)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ApexNode.html#"><code>net.sourceforge.pmd.lang.apex.ast.ApexNode</code></a>
+        * Method `getNode()` has been removed. It was only deprecated before and not marked with @<!-- -->InternalApi.
+          However, it gave access to the wrapped Jorje node and was thus internal API.
+    * `net.sourceforge.pmd.lang.apex.ast.AbstractApexNode`
+        * Method `getNode()` is now package private.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/multifile/ApexMultifileAnalysis.html#"><code>net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis</code></a>
+        * Constructor is now package private.
+    * `net.sourceforge.pmd.lang.apex.rule.design.AbstractNcssCountRule` (now package private)
+    * `net.sourceforge.pmd.lang.apex.rule.AbstractApexUnitTestRule` (moved to package `net.sourceforge.pmd.apex.rule.bestpractices`, now package private)
 * pmd-java
-  * `net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule` (moved to internal)
-  * `net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver` (moved to internal)
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/types/JMethodSig.html#"><code>net.sourceforge.pmd.lang.java.types.JMethodSig</code></a>
-    * Method `internalApi()` has been removed.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/types/TypeOps.html#"><code>net.sourceforge.pmd.lang.java.types.TypeOps</code></a>
-    * Method `isSameTypeInInference(JTypeMirror,JTypeMirror)` is now package private.
+    * `net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule` (moved to internal)
+    * `net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver` (moved to internal)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/types/JMethodSig.html#"><code>net.sourceforge.pmd.lang.java.types.JMethodSig</code></a>
+        * Method `internalApi()` has been removed.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/types/TypeOps.html#"><code>net.sourceforge.pmd.lang.java.types.TypeOps</code></a>
+        * Method `isSameTypeInInference(JTypeMirror,JTypeMirror)` is now package private.
 * pmd-jsp
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0/net/sourceforge/pmd/lang/jsp/ast/JspParser.html#"><code>net.sourceforge.pmd.lang.jsp.ast.JspParser</code></a>
-    * Method `getTokenBehavior()` has been removed.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0/net/sourceforge/pmd/lang/jsp/ast/JspParser.html#"><code>net.sourceforge.pmd.lang.jsp.ast.JspParser</code></a>
+        * Method `getTokenBehavior()` has been removed.
 * pmd-modelica
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0/net/sourceforge/pmd/lang/modelica/ast/InternalApiBridge.html#"><code>net.sourceforge.pmd.lang.modelica.ast.InternalApiBridge</code></a> renamed from `InternalModelicaNodeApi`.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0/net/sourceforge/pmd/lang/modelica/resolver/InternalApiBridge.html#"><code>net.sourceforge.pmd.lang.modelica.resolver.InternalApiBridge</code></a> renamed from `InternalModelicaResolverApi`.
-  * `net.sourceforge.pmd.lang.modelica.resolver.ModelicaSymbolFacade` has been removed.
-  * `net.sourceforge.pmd.lang.modelica.resolver.ResolutionContext` (moved to internal)
-  * `net.sourceforge.pmd.lang.modelica.resolver.ResolutionState` (moved to internal). Note: it was not previously marked with @<!-- -->InternalApi.
-  * `net.sourceforge.pmd.lang.modelica.resolver.Watchdog` (moved to internal). Note: it was not previously marked with @<!-- -->InternalApi.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0/net/sourceforge/pmd/lang/modelica/ast/InternalApiBridge.html#"><code>net.sourceforge.pmd.lang.modelica.ast.InternalApiBridge</code></a> renamed from `InternalModelicaNodeApi`.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0/net/sourceforge/pmd/lang/modelica/resolver/InternalApiBridge.html#"><code>net.sourceforge.pmd.lang.modelica.resolver.InternalApiBridge</code></a> renamed from `InternalModelicaResolverApi`.
+    * `net.sourceforge.pmd.lang.modelica.resolver.ModelicaSymbolFacade` has been removed.
+    * `net.sourceforge.pmd.lang.modelica.resolver.ResolutionContext` (moved to internal)
+    * `net.sourceforge.pmd.lang.modelica.resolver.ResolutionState` (moved to internal). Note: it was not previously marked with @<!-- -->InternalApi.
+    * `net.sourceforge.pmd.lang.modelica.resolver.Watchdog` (moved to internal). Note: it was not previously marked with @<!-- -->InternalApi.
 * pmd-plsql
-  * `net.sourceforge.pmd.lang.plsql.rule.design.AbstractNcssCountRule` is now package private.
+    * `net.sourceforge.pmd.lang.plsql.rule.design.AbstractNcssCountRule` is now package private.
 * pmd-scala
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0/net/sourceforge/pmd/lang/scala/ScalaLanguageModule.html#"><code>net.sourceforge.pmd.lang.scala.ScalaLanguageModule</code></a>
-    * Method `dialectOf(LanguageVersion)` has been removed.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0/net/sourceforge/pmd/lang/scala/ScalaLanguageModule.html#"><code>net.sourceforge.pmd.lang.scala.ScalaLanguageModule</code></a>
+        * Method `dialectOf(LanguageVersion)` has been removed.
 
 **Removed classes and members (previously deprecated)**
 
 The annotation `@DeprecatedUntil700` has been removed.
 
 * pmd-core
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CpdLanguageProperties.html#"><code>CpdLanguageProperties</code></a>. The field `DEFAULT_SKIP_BLOCKS_PATTERN` has been removed.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/impl/antlr4/BaseAntlrNode.html#"><code>BaseAntlrNode</code></a> - method `joinTokenText()` has been removed.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a> - many methods have been removed:
-    * `getNthParent(int)` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#ancestors()"><code>ancestors</code></a> instead, e.g. `node.ancestors().get(n-1)`
-    * `getFirstParentOfType(Class)` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#ancestors(java.lang.Class)"><code>ancestors</code></a> instead, e.g. `node.ancestors(parentType).first()`
-    * `getParentsOfType(Class)` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#ancestors(java.lang.Class)"><code>ancestors</code></a> instead, e.g. `node.ancestors(parentType).toList()`
-    * `findChildrenOfType(Class)` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#children(java.lang.Class)"><code>children</code></a> instead, e.g. `node.children(childType).toList()`
-    * `findDescendantsOfType(Class)` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#descendants(java.lang.Class)"><code>descendants</code></a> instead, e.g. `node.descendants(targetType).toList()`
-    * `findDescendantsOfType(Class,boolean)` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#descendants(java.lang.Class)"><code>descendants</code></a> instead, e.g. `node.descendants(targetType).crossFindBoundaries(b).toList()`
-    * `getFirstChildOfType(Class)` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#firstChild(java.lang.Class)"><code>firstChild</code></a> instead
-    * `getFirstDescendantOfType(Class)` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#descendants(java.lang.Class)"><code>descendants</code></a> instead, e.g. `node.descendants(targetType).first()`
-    * `hasDescendantOfType(Class)` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#descendants(java.lang.Class)"><code>descendants</code></a> instead, e.g. `node.descendants(targetType).nonEmpty()`
-    * `findChildNodesWithXPath(String)` - Use the <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/NodeStream.html#"><code>NodeStream</code></a> API instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/impl/GenericNode.html#"><code>GenericNode</code></a> - method `getNthParent(int)` has been removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#ancestors()"><code>ancestors</code></a> instead, e.g. `node.ancestors().get(n-1)`
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/document/FileCollector.html#"><code>FileCollector</code></a> - method `addZipFile(java.nio.file.Path)` has been removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/document/FileCollector.html#addZipFileWithContent(java.nio.file.Path)"><code>addZipFileWithContent</code></a> instead
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/document/TextDocument.html#"><code>TextDocument</code></a> - method `readOnlyString(CharSequence,String,LanguageVersion)` has been removed.
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/document/TextDocument.html#readOnlyString(java.lang.CharSequence,net.sourceforge.pmd.lang.document.FileId,net.sourceforge.pmd.lang.LanguageVersion)"><code>readOnlyString</code></a> instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/document/TextFile.html#"><code>TextFile</code></a> - method `dataSourceCompat(DataSource,PMDConfiguration)` has been removed.
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/document/TextFile.html#"><code>TextFile</code></a> directly, e.g. <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/document/TextFile.html#forPath(java.nio.file.Path,java.nio.charset.Charset,net.sourceforge.pmd.lang.LanguageVersion)"><code>forPath</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/xpath/XPathVersion.html#"><code>XPathVersion</code></a>
-    * `XPATH_1_0`
-    * `XPATH_1_0_COMPATIBILITY`
-    * `XPATH_2_0`
-    * Only XPath version 3.1 is now supported.  This version of the XPath language is mostly identical to
-      XPath 2.0. XPath rules by default use now <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/xpath/XPathVersion.html#XPATH_3_1"><code>XPATH_3_1</code></a>.
-  * `net.sourceforge.pmd.lang.rule.AbstractDelegateRule` removed. It has been merged with <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleReference.html#"><code>RuleReference</code></a>.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/AbstractRule.html#"><code>AbstractRule</code></a> - the following methods have been removed:
-    * `deepCopyValuesTo(AbstractRule)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/AbstractRule.html#deepCopy()"><code>deepCopy</code></a> instead.
-    * `addRuleChainVisit(Class)` - override <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/AbstractRule.html#buildTargetSelector()"><code>buildTargetSelector</code></a> in order to register nodes for rule chain visits.
-    * `addViolation(...)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleContext.html#addViolation(net.sourceforge.pmd.lang.ast.Node)"><code>addViolation</code></a> instead, e.g. via `asCtx(data).addViolation(...)`.
-      Note: These methods were only marked as deprecated in javadoc.
-    * `addViolationWithMessage(...)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleContext.html#addViolationWithMessage(net.sourceforge.pmd.lang.ast.Node,java.lang.String)"><code>addViolationWithMessage</code></a> instead, e.g. via
-      `asCtx(data).addViolationWithMessage(...)`. Note: These methods were only marked as deprecated in javadoc.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleReference.html#"><code>RuleReference</code></a> - the following methods have been removed:
-    * `setRuleSetReference(RuleSetReference)` - without replacement. Just construct new <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleReference.html#"><code>RuleReference</code></a> instead.
-    * `hasOverriddenProperty(PropertyDescriptor)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleReference.html#isPropertyOverridden(net.sourceforge.pmd.properties.PropertyDescriptor)"><code>isPropertyOverridden</code></a> instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/xpath/XPathRule.html#"><code>XPathRule</code></a>
-    * The constant `XPATH_DESCRIPTOR` has been made private and is not accessible anymore.
-    * The default constructor has been made package-private and is not accessible anymore.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/Language.html#"><code>Language</code></a> - method `getTerseName()` removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/Language.html#getId()"><code>getId</code></a> instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageModuleBase.html#"><code>LanguageModuleBase</code></a> - method `getTerseName()` removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageModuleBase.html#getId()"><code>getId</code></a> instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageRegistry.html#"><code>LanguageRegistry</code></a> - the following methods have been removed:
-    * `getLanguage(String)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageRegistry.html#getLanguageByFullName(java.lang.String)"><code>getLanguageByFullName</code></a>
-      via <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageRegistry.html#PMD"><code>PMD</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageRegistry.html#CPD"><code>CPD</code></a> instead.
-    * `findLanguageByTerseName(String)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageRegistry.html#getLanguageById(java.lang.String)"><code>getLanguageById</code></a>
-      via <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageRegistry.html#PMD"><code>PMD</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageRegistry.html#CPD"><code>CPD</code></a> instead.
-    * `findByExtension(String)` - removed without replacement.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageVersionDiscoverer.html#"><code>LanguageVersionDiscoverer</code></a> - method `getLanguagesForFile(java.io.File)` removed.
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageVersionDiscoverer.html#getLanguagesForFile(java.lang.String)"><code>getLanguagesForFile</code></a> instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/AbstractPropertySource.html#"><code>AbstractPropertySource</code></a>
-    * field `propertyDescriptors` has been made private and is not accessible anymore.
-      Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/AbstractPropertySource.html#getPropertyDescriptors()"><code>getPropertyDescriptors</code></a> instead.
-    * field `propertyValuesByDescriptor` has been made private and is not accessible anymore.
-      Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/AbstractPropertySource.html#getPropertiesByPropertyDescriptor()"><code>getPropertiesByPropertyDescriptor</code></a>
-      or <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/AbstractPropertySource.html#getOverriddenPropertiesByPropertyDescriptor()"><code>getOverriddenPropertiesByPropertyDescriptor</code></a> instead.
-    * method `copyPropertyDescriptors()` has been removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/AbstractPropertySource.html#getPropertyDescriptors()"><code>getPropertyDescriptors</code></a> instead.
-    * method `copyPropertyValues()` has been removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/AbstractPropertySource.html#getPropertiesByPropertyDescriptor()"><code>getPropertiesByPropertyDescriptor</code></a>
-      or <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/AbstractPropertySource.html#getOverriddenPropertiesByPropertyDescriptor()"><code>getOverriddenPropertiesByPropertyDescriptor</code></a> instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/Reportable.html#"><code>Reportable</code></a> - the following methods have been removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/Reportable.html#getReportLocation()"><code>getReportLocation</code></a> instead
-    * `getBeginLine()`
-    * `getBeginColumn()`
-    * `getEndLine()`
-    * `getEndColumn()`
-  * `net.sourceforge.pmd.util.datasource.DataSource` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/document/TextFile.html#"><code>TextFile</code></a> instead.
-  * `net.sourceforge.pmd.util.datasource.FileDataSource`
-  * `net.sourceforge.pmd.util.datasource.ReaderDataSource`
-  * `net.sourceforge.pmd.util.datasource.ZipDataSource`
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/CollectionUtil.html#"><code>CollectionUtil</code></a>
-    * method `invertedMapFrom(...)` has been removed.
-    * method `mapFrom(...)` has been removed.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/AbstractConfiguration.html#"><code>AbstractConfiguration</code></a> - the following methods have been removed:
-    * `setIgnoreFilePath(String)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/AbstractConfiguration.html#setIgnoreFilePath(java.nio.file.Path)"><code>setIgnoreFilePath</code></a> instead.
-    * `setInputFilePath(String)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/AbstractConfiguration.html#setInputFilePath(java.nio.file.Path)"><code>setInputFilePath</code></a> instead.
-    * `setInputPaths(String)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/AbstractConfiguration.html#setInputPathList(java.util.List)"><code>setInputPathList</code></a> or
-      <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/AbstractConfiguration.html#addInputPath(java.nio.file.Path)"><code>addInputPath</code></a> instead.
-    * `setInputUri(String)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/AbstractConfiguration.html#setInputUri(java.net.URI)"><code>setInputUri</code></a> instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#"><code>PMDConfiguration</code></a> - the following methods have been removed
-    * `prependClasspath(String)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#prependAuxClasspath(java.lang.String)"><code>prependAuxClasspath</code></a> instead.
-    * `getRuleSets()` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#getRuleSetPaths()"><code>getRuleSetPaths</code></a> instead.
-    * `setRuleSets(String)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#setRuleSets(java.util.List)"><code>setRuleSets</code></a> or
-      <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#addRuleSet(java.lang.String)"><code>addRuleSet</code></a> instead.
-    * `setReportFile(String)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#setReportFile(java.nio.file.Path)"><code>setReportFile</code></a> instead.
-    * `getReportFile()` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#getReportFilePath()"><code>getReportFilePath</code></a> instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/Report.html#"><code>Report</code></a> - method `merge(Report)` has been removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/Report.html#union(net.sourceforge.pmd.reporting.Report)"><code>union</code></a> instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleSetLoader.html#"><code>RuleSetLoader</code></a> - method `toFactory()` has been made package private and is not accessible anymore.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleViolation.html#"><code>RuleViolation</code></a> - the following methods have been removed:
-    * `getPackageName()` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleViolation.html#getAdditionalInfo()"><code>getAdditionalInfo</code></a> with <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleViolation.html#PACKAGE_NAME"><code>PACKAGE_NAME</code></a> instead, e.g. `getAdditionalInfo().get(PACKAGE_NAME)`.
-    * `getClassName()` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleViolation.html#getAdditionalInfo()"><code>getAdditionalInfo</code></a> with <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleViolation.html#CLASS_NAME"><code>CLASS_NAME</code></a> instead, e.g. `getAdditionalInfo().get(CLASS_NAME)`.
-    * `getMethodName()` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleViolation.html#getAdditionalInfo()"><code>getAdditionalInfo</code></a> with <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleViolation.html#METHOD_NAME"><code>METHOD_NAME</code></a> instead, e.g. `getAdditionalInfo().get(METHOD_NAME)`.
-    * `getVariableName()` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleViolation.html#getAdditionalInfo()"><code>getAdditionalInfo</code></a> with <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleViolation.html#VARIABLE_NAME"><code>VARIABLE_NAME</code></a> instead, e.g. `getAdditionalInfo().get(VARIABLE_NAME)`.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CpdLanguageProperties.html#"><code>CpdLanguageProperties</code></a>. The field `DEFAULT_SKIP_BLOCKS_PATTERN` has been removed.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/impl/antlr4/BaseAntlrNode.html#"><code>BaseAntlrNode</code></a> - method `joinTokenText()` has been removed.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a> - many methods have been removed:
+        * `getNthParent(int)` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#ancestors()"><code>ancestors</code></a> instead, e.g. `node.ancestors().get(n-1)`
+        * `getFirstParentOfType(Class)` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#ancestors(java.lang.Class)"><code>ancestors</code></a> instead, e.g. `node.ancestors(parentType).first()`
+        * `getParentsOfType(Class)` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#ancestors(java.lang.Class)"><code>ancestors</code></a> instead, e.g. `node.ancestors(parentType).toList()`
+        * `findChildrenOfType(Class)` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#children(java.lang.Class)"><code>children</code></a> instead, e.g. `node.children(childType).toList()`
+        * `findDescendantsOfType(Class)` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#descendants(java.lang.Class)"><code>descendants</code></a> instead, e.g. `node.descendants(targetType).toList()`
+        * `findDescendantsOfType(Class,boolean)` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#descendants(java.lang.Class)"><code>descendants</code></a> instead, e.g. `node.descendants(targetType).crossFindBoundaries(b).toList()`
+        * `getFirstChildOfType(Class)` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#firstChild(java.lang.Class)"><code>firstChild</code></a> instead
+        * `getFirstDescendantOfType(Class)` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#descendants(java.lang.Class)"><code>descendants</code></a> instead, e.g. `node.descendants(targetType).first()`
+        * `hasDescendantOfType(Class)` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#descendants(java.lang.Class)"><code>descendants</code></a> instead, e.g. `node.descendants(targetType).nonEmpty()`
+        * `findChildNodesWithXPath(String)` - Use the <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/NodeStream.html#"><code>NodeStream</code></a> API instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/impl/GenericNode.html#"><code>GenericNode</code></a> - method `getNthParent(int)` has been removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#ancestors()"><code>ancestors</code></a> instead, e.g. `node.ancestors().get(n-1)`
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/document/FileCollector.html#"><code>FileCollector</code></a> - method `addZipFile(java.nio.file.Path)` has been removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/document/FileCollector.html#addZipFileWithContent(java.nio.file.Path)"><code>addZipFileWithContent</code></a> instead
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/document/TextDocument.html#"><code>TextDocument</code></a> - method `readOnlyString(CharSequence,String,LanguageVersion)` has been removed.
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/document/TextDocument.html#readOnlyString(java.lang.CharSequence,net.sourceforge.pmd.lang.document.FileId,net.sourceforge.pmd.lang.LanguageVersion)"><code>readOnlyString</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/document/TextFile.html#"><code>TextFile</code></a> - method `dataSourceCompat(DataSource,PMDConfiguration)` has been removed.
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/document/TextFile.html#"><code>TextFile</code></a> directly, e.g. <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/document/TextFile.html#forPath(java.nio.file.Path,java.nio.charset.Charset,net.sourceforge.pmd.lang.LanguageVersion)"><code>forPath</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/xpath/XPathVersion.html#"><code>XPathVersion</code></a>
+        * `XPATH_1_0`
+        * `XPATH_1_0_COMPATIBILITY`
+        * `XPATH_2_0`
+        * Only XPath version 3.1 is now supported.  This version of the XPath language is mostly identical to
+          XPath 2.0. XPath rules by default use now <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/xpath/XPathVersion.html#XPATH_3_1"><code>XPATH_3_1</code></a>.
+    * `net.sourceforge.pmd.lang.rule.AbstractDelegateRule` removed. It has been merged with <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleReference.html#"><code>RuleReference</code></a>.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/AbstractRule.html#"><code>AbstractRule</code></a> - the following methods have been removed:
+        * `deepCopyValuesTo(AbstractRule)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/AbstractRule.html#deepCopy()"><code>deepCopy</code></a> instead.
+        * `addRuleChainVisit(Class)` - override <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/AbstractRule.html#buildTargetSelector()"><code>buildTargetSelector</code></a> in order to register nodes for rule chain visits.
+        * `addViolation(...)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleContext.html#addViolation(net.sourceforge.pmd.lang.ast.Node)"><code>addViolation</code></a> instead, e.g. via `asCtx(data).addViolation(...)`.
+          Note: These methods were only marked as deprecated in javadoc.
+        * `addViolationWithMessage(...)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleContext.html#addViolationWithMessage(net.sourceforge.pmd.lang.ast.Node,java.lang.String)"><code>addViolationWithMessage</code></a> instead, e.g. via
+          `asCtx(data).addViolationWithMessage(...)`. Note: These methods were only marked as deprecated in javadoc.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleReference.html#"><code>RuleReference</code></a> - the following methods have been removed:
+        * `setRuleSetReference(RuleSetReference)` - without replacement. Just construct new <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleReference.html#"><code>RuleReference</code></a> instead.
+        * `hasOverriddenProperty(PropertyDescriptor)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleReference.html#isPropertyOverridden(net.sourceforge.pmd.properties.PropertyDescriptor)"><code>isPropertyOverridden</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/xpath/XPathRule.html#"><code>XPathRule</code></a>
+        * The constant `XPATH_DESCRIPTOR` has been made private and is not accessible anymore.
+        * The default constructor has been made package-private and is not accessible anymore.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/Language.html#"><code>Language</code></a> - method `getTerseName()` removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/Language.html#getId()"><code>getId</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageModuleBase.html#"><code>LanguageModuleBase</code></a> - method `getTerseName()` removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageModuleBase.html#getId()"><code>getId</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageRegistry.html#"><code>LanguageRegistry</code></a> - the following methods have been removed:
+        * `getLanguage(String)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageRegistry.html#getLanguageByFullName(java.lang.String)"><code>getLanguageByFullName</code></a>
+          via <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageRegistry.html#PMD"><code>PMD</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageRegistry.html#CPD"><code>CPD</code></a> instead.
+        * `findLanguageByTerseName(String)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageRegistry.html#getLanguageById(java.lang.String)"><code>getLanguageById</code></a>
+          via <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageRegistry.html#PMD"><code>PMD</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageRegistry.html#CPD"><code>CPD</code></a> instead.
+        * `findByExtension(String)` - removed without replacement.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageVersionDiscoverer.html#"><code>LanguageVersionDiscoverer</code></a> - method `getLanguagesForFile(java.io.File)` removed.
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageVersionDiscoverer.html#getLanguagesForFile(java.lang.String)"><code>getLanguagesForFile</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/AbstractPropertySource.html#"><code>AbstractPropertySource</code></a>
+        * field `propertyDescriptors` has been made private and is not accessible anymore.
+          Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/AbstractPropertySource.html#getPropertyDescriptors()"><code>getPropertyDescriptors</code></a> instead.
+        * field `propertyValuesByDescriptor` has been made private and is not accessible anymore.
+          Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/AbstractPropertySource.html#getPropertiesByPropertyDescriptor()"><code>getPropertiesByPropertyDescriptor</code></a>
+          or <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/AbstractPropertySource.html#getOverriddenPropertiesByPropertyDescriptor()"><code>getOverriddenPropertiesByPropertyDescriptor</code></a> instead.
+        * method `copyPropertyDescriptors()` has been removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/AbstractPropertySource.html#getPropertyDescriptors()"><code>getPropertyDescriptors</code></a> instead.
+        * method `copyPropertyValues()` has been removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/AbstractPropertySource.html#getPropertiesByPropertyDescriptor()"><code>getPropertiesByPropertyDescriptor</code></a>
+          or <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/AbstractPropertySource.html#getOverriddenPropertiesByPropertyDescriptor()"><code>getOverriddenPropertiesByPropertyDescriptor</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/Reportable.html#"><code>Reportable</code></a> - the following methods have been removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/Reportable.html#getReportLocation()"><code>getReportLocation</code></a> instead
+        * `getBeginLine()`
+        * `getBeginColumn()`
+        * `getEndLine()`
+        * `getEndColumn()`
+    * `net.sourceforge.pmd.util.datasource.DataSource` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/document/TextFile.html#"><code>TextFile</code></a> instead.
+    * `net.sourceforge.pmd.util.datasource.FileDataSource`
+    * `net.sourceforge.pmd.util.datasource.ReaderDataSource`
+    * `net.sourceforge.pmd.util.datasource.ZipDataSource`
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/CollectionUtil.html#"><code>CollectionUtil</code></a>
+        * method `invertedMapFrom(...)` has been removed.
+        * method `mapFrom(...)` has been removed.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/AbstractConfiguration.html#"><code>AbstractConfiguration</code></a> - the following methods have been removed:
+        * `setIgnoreFilePath(String)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/AbstractConfiguration.html#setIgnoreFilePath(java.nio.file.Path)"><code>setIgnoreFilePath</code></a> instead.
+        * `setInputFilePath(String)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/AbstractConfiguration.html#setInputFilePath(java.nio.file.Path)"><code>setInputFilePath</code></a> instead.
+        * `setInputPaths(String)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/AbstractConfiguration.html#setInputPathList(java.util.List)"><code>setInputPathList</code></a> or
+          <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/AbstractConfiguration.html#addInputPath(java.nio.file.Path)"><code>addInputPath</code></a> instead.
+        * `setInputUri(String)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/AbstractConfiguration.html#setInputUri(java.net.URI)"><code>setInputUri</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#"><code>PMDConfiguration</code></a> - the following methods have been removed
+        * `prependClasspath(String)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#prependAuxClasspath(java.lang.String)"><code>prependAuxClasspath</code></a> instead.
+        * `getRuleSets()` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#getRuleSetPaths()"><code>getRuleSetPaths</code></a> instead.
+        * `setRuleSets(String)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#setRuleSets(java.util.List)"><code>setRuleSets</code></a> or
+          <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#addRuleSet(java.lang.String)"><code>addRuleSet</code></a> instead.
+        * `setReportFile(String)` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#setReportFile(java.nio.file.Path)"><code>setReportFile</code></a> instead.
+        * `getReportFile()` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#getReportFilePath()"><code>getReportFilePath</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/Report.html#"><code>Report</code></a> - method `merge(Report)` has been removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/Report.html#union(net.sourceforge.pmd.reporting.Report)"><code>union</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/rule/RuleSetLoader.html#"><code>RuleSetLoader</code></a> - method `toFactory()` has been made package private and is not accessible anymore.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleViolation.html#"><code>RuleViolation</code></a> - the following methods have been removed:
+        * `getPackageName()` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleViolation.html#getAdditionalInfo()"><code>getAdditionalInfo</code></a> with <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleViolation.html#PACKAGE_NAME"><code>PACKAGE_NAME</code></a> instead, e.g. `getAdditionalInfo().get(PACKAGE_NAME)`.
+        * `getClassName()` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleViolation.html#getAdditionalInfo()"><code>getAdditionalInfo</code></a> with <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleViolation.html#CLASS_NAME"><code>CLASS_NAME</code></a> instead, e.g. `getAdditionalInfo().get(CLASS_NAME)`.
+        * `getMethodName()` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleViolation.html#getAdditionalInfo()"><code>getAdditionalInfo</code></a> with <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleViolation.html#METHOD_NAME"><code>METHOD_NAME</code></a> instead, e.g. `getAdditionalInfo().get(METHOD_NAME)`.
+        * `getVariableName()` - use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleViolation.html#getAdditionalInfo()"><code>getAdditionalInfo</code></a> with <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/RuleViolation.html#VARIABLE_NAME"><code>VARIABLE_NAME</code></a> instead, e.g. `getAdditionalInfo().get(VARIABLE_NAME)`.
 * pmd-apex
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ApexNode.html#"><code>ApexNode</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTApexFile.html#"><code>ASTApexFile</code></a>
-    * `#getApexVersion()`: In PMD 6, this method has been deprecated but was defined in the class `ApexRootNode`.
-      The version returned is always "Version.CURRENT", as the apex compiler integration
-      doesn't use additional information which Apex version actually is used. Therefore, this method can't be
-      used to determine the Apex version of the project that is being analyzed.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ApexNode.html#"><code>ApexNode</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTApexFile.html#"><code>ASTApexFile</code></a>
+        * `#getApexVersion()`: In PMD 6, this method has been deprecated but was defined in the class `ApexRootNode`.
+          The version returned is always "Version.CURRENT", as the apex compiler integration
+          doesn't use additional information which Apex version actually is used. Therefore, this method can't be
+          used to determine the Apex version of the project that is being analyzed.
 
-      If the current version is needed, then `Node.getTextDocument().getLanguageVersion()` can be used. This
-      is the version that has been selected via CLI `--use-version` parameter.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ApexNode.html#"><code>ApexNode</code></a>
-    * method `jjtAccept()` has been removed.
-      Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#acceptVisitor(net.sourceforge.pmd.lang.ast.AstVisitor,P)"><code>acceptVisitor</code></a> instead.
-    * method `getNode()` has been removed. The underlying node is only available in AST nodes, but not in rule implementations.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/AbstractApexNode.html#"><code>AbstractApexNode</code></a> - method `getNode()` is now package private.
-    AST nodes still have access to the underlying Jorje node via the protected property `node`.
-  * `net.sourceforge.pmd.lang.apex.ast.ApexParserVisitor`
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ApexVisitor.html#"><code>ApexVisitor</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ApexVisitorBase.html#"><code>ApexVisitorBase</code></a> instead.
-  * `net.sourceforge.pmd.lang.apex.ast.ApexParserVisitorAdapter`
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTAssignmentExpression.html#"><code>ASTAssignmentExpression</code></a> - method `getOperator()` removed.
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTAssignmentExpression.html#getOp()"><code>getOp</code></a> instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTBinaryExpression.html#"><code>ASTBinaryExpression</code></a> - method `getOperator()` removed.
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTBinaryExpression.html#getOp()"><code>getOp</code></a> instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTBooleanExpression.html#"><code>ASTBooleanExpression</code></a> - method `getOperator()` removed.
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTBooleanExpression.html#getOp()"><code>getOp</code></a> instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTPostfixExpression.html#"><code>ASTPostfixExpression</code></a> - method `getOperator()` removed.
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTPostfixExpression.html#getOp()"><code>getOp</code></a> instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTPrefixExpression.html#"><code>ASTPrefixExpression</code></a> - method `getOperator()` removed.
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTPrefixExpression.html#getOp()"><code>getOp</code></a> instead.
-  * `net.sourceforge.pmd.lang.apex.rule.security.Helper` removed. This was actually internal API.
+          If the current version is needed, then `Node.getTextDocument().getLanguageVersion()` can be used. This
+          is the version that has been selected via CLI `--use-version` parameter.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ApexNode.html#"><code>ApexNode</code></a>
+        * method `jjtAccept()` has been removed.
+          Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#acceptVisitor(net.sourceforge.pmd.lang.ast.AstVisitor,P)"><code>acceptVisitor</code></a> instead.
+        * method `getNode()` has been removed. The underlying node is only available in AST nodes, but not in rule implementations.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/AbstractApexNode.html#"><code>AbstractApexNode</code></a> - method `getNode()` is now package private.
+      AST nodes still have access to the underlying Jorje node via the protected property `node`.
+    * `net.sourceforge.pmd.lang.apex.ast.ApexParserVisitor`
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ApexVisitor.html#"><code>ApexVisitor</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ApexVisitorBase.html#"><code>ApexVisitorBase</code></a> instead.
+    * `net.sourceforge.pmd.lang.apex.ast.ApexParserVisitorAdapter`
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTAssignmentExpression.html#"><code>ASTAssignmentExpression</code></a> - method `getOperator()` removed.
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTAssignmentExpression.html#getOp()"><code>getOp</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTBinaryExpression.html#"><code>ASTBinaryExpression</code></a> - method `getOperator()` removed.
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTBinaryExpression.html#getOp()"><code>getOp</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTBooleanExpression.html#"><code>ASTBooleanExpression</code></a> - method `getOperator()` removed.
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTBooleanExpression.html#getOp()"><code>getOp</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTPostfixExpression.html#"><code>ASTPostfixExpression</code></a> - method `getOperator()` removed.
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTPostfixExpression.html#getOp()"><code>getOp</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTPrefixExpression.html#"><code>ASTPrefixExpression</code></a> - method `getOperator()` removed.
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTPrefixExpression.html#getOp()"><code>getOp</code></a> instead.
+    * `net.sourceforge.pmd.lang.apex.rule.security.Helper` removed. This was actually internal API.
 * pmd-java
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/AbstractPackageNameModuleDirective.html#"><code>AbstractPackageNameModuleDirective</code></a> - method `getImage()` has been removed.
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/AbstractPackageNameModuleDirective.html#getPackageName()"><code>getPackageName</code></a> instead.
-  * `AbstractTypeDeclaration` - method `getImage()` has been removed.
-    Use `getSimpleName()` instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTAnnotation.html#"><code>ASTAnnotation</code></a> - method `getAnnotationName()` has been removed.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a>
-    * constructor `ASTClassType(java.lang.String)` has been removed.
-    * method `getImage()` has been removed.
-    * method `isReferenceToClassSameCompilationUnit()` has been removed.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#"><code>ASTFieldDeclaration</code></a> - method `getVariableName()` has been removed.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTLiteral.html#"><code>ASTLiteral</code></a> - the following methods have been removed:
-    * `isStringLiteral()` - use `node instanceof ASTStringLiteral` instead.
-    * `isCharLiteral()` - use `node instanceof ASTCharLiteral` instead.
-    * `isNullLiteral()` - use `node instanceof ASTNullLiteral` instead.
-    * `isBooleanLiteral()` - use `node instanceof ASTBooleanLiteral` instead.
-    * `isNumericLiteral()` - use `node instanceof ASTNumericLiteral` instead.
-    * `isIntLiteral()` - use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTNumericLiteral.html#isIntLiteral()"><code>isIntLiteral</code></a> instead.
-    * `isLongLiteral()` - use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTNumericLiteral.html#isLongLiteral()"><code>isLongLiteral</code></a> instead.
-    * `isFloatLiteral()` - use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTNumericLiteral.html#isFloatLiteral()"><code>isFloatLiteral</code></a> instead.
-    * `isDoubleLiteral()` - use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTNumericLiteral.html#isDoubleLiteral()"><code>isDoubleLiteral</code></a> instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#"><code>ASTMethodDeclaration</code></a> - methods `getImage()` and `getMethodName()` have been removed.
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#getName()"><code>getName</code></a> instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTMethodReference.html#"><code>ASTMethodReference</code></a> - method `getImage()` has been removed.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTModuleName.html#"><code>ASTModuleName</code></a> - method `getImage()` has been removed.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTPrimitiveType.html#"><code>ASTPrimitiveType</code></a> - method `getImage()` has been removed.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTType.html#"><code>ASTType</code></a>
-    * `getTypeImage()` has been removed.
-    * `getArrayDepth()` has been removed. It's only available for arrays: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTArrayType.html#getArrayDepth()"><code>getArrayDepth</code></a>.
-    * `isPrimitiveType()` - use `node instanceof ASTPrimitiveType` instead.
-    * `isArrayType()` - use `node instanceof ASTArrayType` instead.
-    * `isClassOrInterfaceType()` - use `node instanceof ASTClassType` instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTTypeDeclaration.html#"><code>ASTTypeDeclaration</code></a> - method `getImage()` has been removed.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTUnaryExpression.html#"><code>ASTUnaryExpression</code></a> - method `isPrefix()` has been removed.
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTUnaryExpression.html#getOperator()"><code>getOperator</code></a>`.isPrefix()` instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a> - methods `getImage()` and `getVariableName()` have been removed.
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#getName()"><code>getName</code></a> instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/JavaComment.html#"><code>JavaComment</code></a> - method `getImage()` has been removed.
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/JavaComment.html#getText()"><code>getText</code></a> instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/JavaNode.html#"><code>JavaNode</code></a> - method `jjtAccept()` has been removed.
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#acceptVisitor(net.sourceforge.pmd.lang.ast.AstVisitor,P)"><code>acceptVisitor</code></a> instead.
-  * `net.sourceforge.pmd.lang.java.ast.JavaParserVisitor`
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/JavaVisitor.html#"><code>JavaVisitor</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/JavaVisitorBase.html#"><code>JavaVisitorBase</code></a> instead.
-  * `net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter`
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#"><code>ModifierOwner</code></a>
-    * `isFinal()` - This is still available in various subtypes, where it makes sense, e.g. <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTLocalVariableDeclaration.html#isFinal()"><code>isFinal</code></a>.
-    * `isAbstract()` - This is still available in subtypes, e.g. <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTTypeDeclaration.html#isAbstract()"><code>isAbstract</code></a>.
-    * `isStrictfp()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#hasModifiers(net.sourceforge.pmd.lang.java.ast.JModifier,net.sourceforge.pmd.lang.java.ast.JModifier...)"><code>hasModifiers</code></a> instead, e.g. `hasModifiers(STRICTFP)`.
-    * `isSynchronized()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#hasModifiers(net.sourceforge.pmd.lang.java.ast.JModifier,net.sourceforge.pmd.lang.java.ast.JModifier...)"><code>hasModifiers</code></a> instead, e.g. `hasModifiers(SYNCHRONIZED)`.
-    * `isNative()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#hasModifiers(net.sourceforge.pmd.lang.java.ast.JModifier,net.sourceforge.pmd.lang.java.ast.JModifier...)"><code>hasModifiers</code></a> instead, e.g. `hasModifiers(NATIVE)`.
-    * `isStatic()` - This is still available in subtypes, e.g. <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#isStatic()"><code>isStatic</code></a>.
-    * `isVolatile()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#hasModifiers(net.sourceforge.pmd.lang.java.ast.JModifier,net.sourceforge.pmd.lang.java.ast.JModifier...)"><code>hasModifiers</code></a> instead, e.g. `hasModifiers(VOLATILE)`.
-    * `isTransient()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#hasModifiers(net.sourceforge.pmd.lang.java.ast.JModifier,net.sourceforge.pmd.lang.java.ast.JModifier...)"><code>hasModifiers</code></a> instead, e.g. `hasModifiers(TRANSIENT)`.
-    * `isPrivate()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#getVisibility()"><code>getVisibility</code></a> instead, e.g. `getVisibility() == Visibility.V_PRIVATE`.
-    * `isPublic()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#getVisibility()"><code>getVisibility</code></a> instead, e.g. `getVisibility() == Visibility.V_PUBLIC`.
-    * `isProtected()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#getVisibility()"><code>getVisibility</code></a> instead, e.g. `getVisibility() == Visibility.V_PROTECTED`.
-    * `isPackagePrivate()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#getVisibility()"><code>getVisibility</code></a> instead, e.g. `getVisibility() == Visibility.V_PACKAGE`.
-    * `isSyntacticallyAbstract()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#hasExplicitModifiers(net.sourceforge.pmd.lang.java.ast.JModifier,net.sourceforge.pmd.lang.java.ast.JModifier...)"><code>hasExplicitModifiers</code></a> instead, e.g. `hasExplicitModifiers(ABSTRACT)`.
-    * `isSyntacticallyPublic()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#hasExplicitModifiers(net.sourceforge.pmd.lang.java.ast.JModifier,net.sourceforge.pmd.lang.java.ast.JModifier...)"><code>hasExplicitModifiers</code></a> instead, e.g. `hasExplicitModifiers(PUBLIC)`.
-    * `isSyntacticallyStatic()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#hasExplicitModifiers(net.sourceforge.pmd.lang.java.ast.JModifier,net.sourceforge.pmd.lang.java.ast.JModifier...)"><code>hasExplicitModifiers</code></a> instead, e.g. `hasExplicitModifiers(STATIC)`.
-    * `isSyntacticallyFinal()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#hasExplicitModifiers(net.sourceforge.pmd.lang.java.ast.JModifier,net.sourceforge.pmd.lang.java.ast.JModifier...)"><code>hasExplicitModifiers</code></a> instead, e.g. `hasExplicitModifiers(FINAL)`.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a> - method `getType()` has been removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/TypeNode.html#getTypeMirror()"><code>getTypeMirror</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/AbstractPackageNameModuleDirective.html#"><code>AbstractPackageNameModuleDirective</code></a> - method `getImage()` has been removed.
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/AbstractPackageNameModuleDirective.html#getPackageName()"><code>getPackageName</code></a> instead.
+    * `AbstractTypeDeclaration` - method `getImage()` has been removed.
+      Use `getSimpleName()` instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTAnnotation.html#"><code>ASTAnnotation</code></a> - method `getAnnotationName()` has been removed.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a>
+        * constructor `ASTClassType(java.lang.String)` has been removed.
+        * method `getImage()` has been removed.
+        * method `isReferenceToClassSameCompilationUnit()` has been removed.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#"><code>ASTFieldDeclaration</code></a> - method `getVariableName()` has been removed.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTLiteral.html#"><code>ASTLiteral</code></a> - the following methods have been removed:
+        * `isStringLiteral()` - use `node instanceof ASTStringLiteral` instead.
+        * `isCharLiteral()` - use `node instanceof ASTCharLiteral` instead.
+        * `isNullLiteral()` - use `node instanceof ASTNullLiteral` instead.
+        * `isBooleanLiteral()` - use `node instanceof ASTBooleanLiteral` instead.
+        * `isNumericLiteral()` - use `node instanceof ASTNumericLiteral` instead.
+        * `isIntLiteral()` - use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTNumericLiteral.html#isIntLiteral()"><code>isIntLiteral</code></a> instead.
+        * `isLongLiteral()` - use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTNumericLiteral.html#isLongLiteral()"><code>isLongLiteral</code></a> instead.
+        * `isFloatLiteral()` - use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTNumericLiteral.html#isFloatLiteral()"><code>isFloatLiteral</code></a> instead.
+        * `isDoubleLiteral()` - use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTNumericLiteral.html#isDoubleLiteral()"><code>isDoubleLiteral</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#"><code>ASTMethodDeclaration</code></a> - methods `getImage()` and `getMethodName()` have been removed.
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#getName()"><code>getName</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTMethodReference.html#"><code>ASTMethodReference</code></a> - method `getImage()` has been removed.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTModuleName.html#"><code>ASTModuleName</code></a> - method `getImage()` has been removed.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTPrimitiveType.html#"><code>ASTPrimitiveType</code></a> - method `getImage()` has been removed.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTType.html#"><code>ASTType</code></a>
+        * `getTypeImage()` has been removed.
+        * `getArrayDepth()` has been removed. It's only available for arrays: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTArrayType.html#getArrayDepth()"><code>getArrayDepth</code></a>.
+        * `isPrimitiveType()` - use `node instanceof ASTPrimitiveType` instead.
+        * `isArrayType()` - use `node instanceof ASTArrayType` instead.
+        * `isClassOrInterfaceType()` - use `node instanceof ASTClassType` instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTTypeDeclaration.html#"><code>ASTTypeDeclaration</code></a> - method `getImage()` has been removed.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTUnaryExpression.html#"><code>ASTUnaryExpression</code></a> - method `isPrefix()` has been removed.
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTUnaryExpression.html#getOperator()"><code>getOperator</code></a>`.isPrefix()` instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a> - methods `getImage()` and `getVariableName()` have been removed.
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#getName()"><code>getName</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/JavaComment.html#"><code>JavaComment</code></a> - method `getImage()` has been removed.
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/JavaComment.html#getText()"><code>getText</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/JavaNode.html#"><code>JavaNode</code></a> - method `jjtAccept()` has been removed.
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#acceptVisitor(net.sourceforge.pmd.lang.ast.AstVisitor,P)"><code>acceptVisitor</code></a> instead.
+    * `net.sourceforge.pmd.lang.java.ast.JavaParserVisitor`
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/JavaVisitor.html#"><code>JavaVisitor</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/JavaVisitorBase.html#"><code>JavaVisitorBase</code></a> instead.
+    * `net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter`
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#"><code>ModifierOwner</code></a>
+        * `isFinal()` - This is still available in various subtypes, where it makes sense, e.g. <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTLocalVariableDeclaration.html#isFinal()"><code>isFinal</code></a>.
+        * `isAbstract()` - This is still available in subtypes, e.g. <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTTypeDeclaration.html#isAbstract()"><code>isAbstract</code></a>.
+        * `isStrictfp()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#hasModifiers(net.sourceforge.pmd.lang.java.ast.JModifier,net.sourceforge.pmd.lang.java.ast.JModifier...)"><code>hasModifiers</code></a> instead, e.g. `hasModifiers(STRICTFP)`.
+        * `isSynchronized()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#hasModifiers(net.sourceforge.pmd.lang.java.ast.JModifier,net.sourceforge.pmd.lang.java.ast.JModifier...)"><code>hasModifiers</code></a> instead, e.g. `hasModifiers(SYNCHRONIZED)`.
+        * `isNative()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#hasModifiers(net.sourceforge.pmd.lang.java.ast.JModifier,net.sourceforge.pmd.lang.java.ast.JModifier...)"><code>hasModifiers</code></a> instead, e.g. `hasModifiers(NATIVE)`.
+        * `isStatic()` - This is still available in subtypes, e.g. <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#isStatic()"><code>isStatic</code></a>.
+        * `isVolatile()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#hasModifiers(net.sourceforge.pmd.lang.java.ast.JModifier,net.sourceforge.pmd.lang.java.ast.JModifier...)"><code>hasModifiers</code></a> instead, e.g. `hasModifiers(VOLATILE)`.
+        * `isTransient()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#hasModifiers(net.sourceforge.pmd.lang.java.ast.JModifier,net.sourceforge.pmd.lang.java.ast.JModifier...)"><code>hasModifiers</code></a> instead, e.g. `hasModifiers(TRANSIENT)`.
+        * `isPrivate()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#getVisibility()"><code>getVisibility</code></a> instead, e.g. `getVisibility() == Visibility.V_PRIVATE`.
+        * `isPublic()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#getVisibility()"><code>getVisibility</code></a> instead, e.g. `getVisibility() == Visibility.V_PUBLIC`.
+        * `isProtected()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#getVisibility()"><code>getVisibility</code></a> instead, e.g. `getVisibility() == Visibility.V_PROTECTED`.
+        * `isPackagePrivate()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#getVisibility()"><code>getVisibility</code></a> instead, e.g. `getVisibility() == Visibility.V_PACKAGE`.
+        * `isSyntacticallyAbstract()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#hasExplicitModifiers(net.sourceforge.pmd.lang.java.ast.JModifier,net.sourceforge.pmd.lang.java.ast.JModifier...)"><code>hasExplicitModifiers</code></a> instead, e.g. `hasExplicitModifiers(ABSTRACT)`.
+        * `isSyntacticallyPublic()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#hasExplicitModifiers(net.sourceforge.pmd.lang.java.ast.JModifier,net.sourceforge.pmd.lang.java.ast.JModifier...)"><code>hasExplicitModifiers</code></a> instead, e.g. `hasExplicitModifiers(PUBLIC)`.
+        * `isSyntacticallyStatic()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#hasExplicitModifiers(net.sourceforge.pmd.lang.java.ast.JModifier,net.sourceforge.pmd.lang.java.ast.JModifier...)"><code>hasExplicitModifiers</code></a> instead, e.g. `hasExplicitModifiers(STATIC)`.
+        * `isSyntacticallyFinal()` - Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#hasExplicitModifiers(net.sourceforge.pmd.lang.java.ast.JModifier,net.sourceforge.pmd.lang.java.ast.JModifier...)"><code>hasExplicitModifiers</code></a> instead, e.g. `hasExplicitModifiers(FINAL)`.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a> - method `getType()` has been removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/TypeNode.html#getTypeMirror()"><code>getTypeMirror</code></a> instead.
 * pmd-javascript
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0/net/sourceforge/pmd/lang/ecmascript/ast/AbstractEcmascriptNode.html#"><code>AbstractEcmascriptNode</code></a> - method `getNode()` has been removed.
-    AST nodes still have access to the underlying Rhino node via the protected property `node`.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0/net/sourceforge/pmd/lang/ecmascript/ast/ASTFunctionNode.html#"><code>ASTFunctionNode</code></a> - method `getBody(int)` removed.
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0/net/sourceforge/pmd/lang/ecmascript/ast/ASTFunctionNode.html#getBody()"><code>getBody</code></a> instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0/net/sourceforge/pmd/lang/ecmascript/ast/ASTTryStatement.html#"><code>ASTTryStatement</code></a>
-    * method `isCatch()` has been removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0/net/sourceforge/pmd/lang/ecmascript/ast/ASTTryStatement.html#hasCatch()"><code>hasCatch</code></a> instead.
-    * method `isFinally()` has been removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0/net/sourceforge/pmd/lang/ecmascript/ast/ASTTryStatement.html#hasFinally()"><code>hasFinally</code></a> instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0/net/sourceforge/pmd/lang/ecmascript/ast/EcmascriptNode.html#"><code>EcmascriptNode</code></a>
-    * method `jjtAccept()` has been removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#acceptVisitor(net.sourceforge.pmd.lang.ast.AstVisitor,P)"><code>acceptVisitor</code></a> instead.
-    * method `getNode()` has been removed.  The underlying node is only available in AST nodes, but not in rule implementations.
-  * `net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParserVisitor`
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0/net/sourceforge/pmd/lang/ecmascript/ast/EcmascriptVisitor.html#"><code>EcmascriptVisitor</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0/net/sourceforge/pmd/lang/ecmascript/ast/EcmascriptVisitorBase.html#"><code>EcmascriptVisitorBase</code></a> instead.
-  * `net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParserVisitorAdapter`
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0/net/sourceforge/pmd/lang/ecmascript/ast/AbstractEcmascriptNode.html#"><code>AbstractEcmascriptNode</code></a> - method `getNode()` has been removed.
+      AST nodes still have access to the underlying Rhino node via the protected property `node`.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0/net/sourceforge/pmd/lang/ecmascript/ast/ASTFunctionNode.html#"><code>ASTFunctionNode</code></a> - method `getBody(int)` removed.
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0/net/sourceforge/pmd/lang/ecmascript/ast/ASTFunctionNode.html#getBody()"><code>getBody</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0/net/sourceforge/pmd/lang/ecmascript/ast/ASTTryStatement.html#"><code>ASTTryStatement</code></a>
+        * method `isCatch()` has been removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0/net/sourceforge/pmd/lang/ecmascript/ast/ASTTryStatement.html#hasCatch()"><code>hasCatch</code></a> instead.
+        * method `isFinally()` has been removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0/net/sourceforge/pmd/lang/ecmascript/ast/ASTTryStatement.html#hasFinally()"><code>hasFinally</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0/net/sourceforge/pmd/lang/ecmascript/ast/EcmascriptNode.html#"><code>EcmascriptNode</code></a>
+        * method `jjtAccept()` has been removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#acceptVisitor(net.sourceforge.pmd.lang.ast.AstVisitor,P)"><code>acceptVisitor</code></a> instead.
+        * method `getNode()` has been removed.  The underlying node is only available in AST nodes, but not in rule implementations.
+    * `net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParserVisitor`
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0/net/sourceforge/pmd/lang/ecmascript/ast/EcmascriptVisitor.html#"><code>EcmascriptVisitor</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0/net/sourceforge/pmd/lang/ecmascript/ast/EcmascriptVisitorBase.html#"><code>EcmascriptVisitorBase</code></a> instead.
+    * `net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParserVisitorAdapter`
 * pmd-jsp
-  * `net.sourceforge.pmd.lang.jsp.ast.JspParserVisitor`
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0/net/sourceforge/pmd/lang/jsp/ast/JspVisitor.html#"><code>JspVisitor</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0/net/sourceforge/pmd/lang/jsp/ast/JspVisitorBase.html#"><code>JspVisitorBase</code></a> instead.
-  * `net.sourceforge.pmd.lang.jsp.ast.JspParserVisitorAdapter`
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0/net/sourceforge/pmd/lang/jsp/ast/JspNode.html#"><code>JspNode</code></a> - method `jjtAccept()` has been removed.
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#acceptVisitor(net.sourceforge.pmd.lang.ast.AstVisitor,P)"><code>acceptVisitor</code></a> instead.
+    * `net.sourceforge.pmd.lang.jsp.ast.JspParserVisitor`
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0/net/sourceforge/pmd/lang/jsp/ast/JspVisitor.html#"><code>JspVisitor</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0/net/sourceforge/pmd/lang/jsp/ast/JspVisitorBase.html#"><code>JspVisitorBase</code></a> instead.
+    * `net.sourceforge.pmd.lang.jsp.ast.JspParserVisitorAdapter`
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0/net/sourceforge/pmd/lang/jsp/ast/JspNode.html#"><code>JspNode</code></a> - method `jjtAccept()` has been removed.
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#acceptVisitor(net.sourceforge.pmd.lang.ast.AstVisitor,P)"><code>acceptVisitor</code></a> instead.
 * pmd-modelica
-  * `net.sourceforge.pmd.lang.modelica.ast.ModelicaParserVisitor`
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0/net/sourceforge/pmd/lang/modelica/ast/ModelicaVisitor.html#"><code>ModelicaVisitor</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0/net/sourceforge/pmd/lang/modelica/ast/ModelicaVisitorBase.html#"><code>ModelicaVisitorBase</code></a> instead.
-  * `net.sourceforge.pmd.lang.modelica.ast.ModelicaParserVisitorAdapter`
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0/net/sourceforge/pmd/lang/modelica/ast/ModelicaNode.html#"><code>ModelicaNode</code></a> - method `jjtAccept()` has been removed.
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#acceptVisitor(net.sourceforge.pmd.lang.ast.AstVisitor,P)"><code>acceptVisitor</code></a> instead.
-  * `net.sourceforge.pmd.lang.modelica.rule.AmbiguousResolutionRule`
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0/net/sourceforge/pmd/lang/modelica/rule/bestpractices/AmbiguousResolutionRule.html#"><code>AmbiguousResolutionRule</code></a> instead.
-  * `net.sourceforge.pmd.lang.modelica.rule.ConnectUsingNonConnector`
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0/net/sourceforge/pmd/lang/modelica/rule/bestpractices/ConnectUsingNonConnectorRule.html#"><code>ConnectUsingNonConnectorRule</code></a>
+    * `net.sourceforge.pmd.lang.modelica.ast.ModelicaParserVisitor`
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0/net/sourceforge/pmd/lang/modelica/ast/ModelicaVisitor.html#"><code>ModelicaVisitor</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0/net/sourceforge/pmd/lang/modelica/ast/ModelicaVisitorBase.html#"><code>ModelicaVisitorBase</code></a> instead.
+    * `net.sourceforge.pmd.lang.modelica.ast.ModelicaParserVisitorAdapter`
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0/net/sourceforge/pmd/lang/modelica/ast/ModelicaNode.html#"><code>ModelicaNode</code></a> - method `jjtAccept()` has been removed.
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#acceptVisitor(net.sourceforge.pmd.lang.ast.AstVisitor,P)"><code>acceptVisitor</code></a> instead.
+    * `net.sourceforge.pmd.lang.modelica.rule.AmbiguousResolutionRule`
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0/net/sourceforge/pmd/lang/modelica/rule/bestpractices/AmbiguousResolutionRule.html#"><code>AmbiguousResolutionRule</code></a> instead.
+    * `net.sourceforge.pmd.lang.modelica.rule.ConnectUsingNonConnector`
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0/net/sourceforge/pmd/lang/modelica/rule/bestpractices/ConnectUsingNonConnectorRule.html#"><code>ConnectUsingNonConnectorRule</code></a>
 * pmd-plsql
-  * `net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitor`
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.0.0/net/sourceforge/pmd/lang/plsql/ast/PlsqlVisitor.html#"><code>PlsqlVisitor</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.0.0/net/sourceforge/pmd/lang/plsql/ast/PlsqlVisitorBase.html#"><code>PlsqlVisitorBase</code></a> instead.
-  * `net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter`
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.0.0/net/sourceforge/pmd/lang/plsql/ast/PLSQLNode.html#"><code>PLSQLNode</code></a> - method `jjtAccept()` has been removed.
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#acceptVisitor(net.sourceforge.pmd.lang.ast.AstVisitor,P)"><code>acceptVisitor</code></a> instead.
+    * `net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitor`
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.0.0/net/sourceforge/pmd/lang/plsql/ast/PlsqlVisitor.html#"><code>PlsqlVisitor</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.0.0/net/sourceforge/pmd/lang/plsql/ast/PlsqlVisitorBase.html#"><code>PlsqlVisitorBase</code></a> instead.
+    * `net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter`
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.0.0/net/sourceforge/pmd/lang/plsql/ast/PLSQLNode.html#"><code>PLSQLNode</code></a> - method `jjtAccept()` has been removed.
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#acceptVisitor(net.sourceforge.pmd.lang.ast.AstVisitor,P)"><code>acceptVisitor</code></a> instead.
 * pmd-scala
-  * The maven module `pmd-scala` has been removed. Use `pmd-scala_2.13` or `pmd-scala_2.12` instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0/net/sourceforge/pmd/lang/scala/ast/ScalaNode.html#"><code>ScalaNode</code></a>
-    * Method `accept()` has been removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#acceptVisitor(net.sourceforge.pmd.lang.ast.AstVisitor,P)"><code>acceptVisitor</code></a> instead.
-    * Method `getNode()` has been removed. The underlying node is only available in AST nodes, but not in rule implementations.
-  * `AbstractScalaNode` - method `getNode()` has been removed. AST nodes still have access
-    to the underlying Scala node via the protected property `node`.
+    * The maven module `pmd-scala` has been removed. Use `pmd-scala_2.13` or `pmd-scala_2.12` instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0/net/sourceforge/pmd/lang/scala/ast/ScalaNode.html#"><code>ScalaNode</code></a>
+        * Method `accept()` has been removed. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#acceptVisitor(net.sourceforge.pmd.lang.ast.AstVisitor,P)"><code>acceptVisitor</code></a> instead.
+        * Method `getNode()` has been removed. The underlying node is only available in AST nodes, but not in rule implementations.
+    * `AbstractScalaNode` - method `getNode()` has been removed. AST nodes still have access
+      to the underlying Scala node via the protected property `node`.
 * pmd-visualforce
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0/net/sourceforge/pmd/lang/visualforce/ast/VfNode.html#"><code>VfNode</code></a> - method `jjtAccept()` has been removed.
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#acceptVisitor(net.sourceforge.pmd.lang.ast.AstVisitor,P)"><code>acceptVisitor</code></a> instead.
-  * `net.sourceforge.pmd.lang.vf.ast.VfParserVisitor`
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0/net/sourceforge/pmd/lang/visualforce/ast/VfVisitor.html#"><code>VfVisitor</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0/net/sourceforge/pmd/lang/visualforce/ast/VfVisitorBase.html#"><code>VfVisitorBase</code></a> instead.
-  * `net.sourceforge.pmd.lang.vf.ast.VfParserVisitorAdapter`
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0/net/sourceforge/pmd/lang/visualforce/DataType.html#"><code>DataType</code></a> - method `fromBasicType(BasicType)` has been removed.
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0/net/sourceforge/pmd/lang/visualforce/DataType.html#fromTypeName(java.lang.String)"><code>fromTypeName</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0/net/sourceforge/pmd/lang/visualforce/ast/VfNode.html#"><code>VfNode</code></a> - method `jjtAccept()` has been removed.
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#acceptVisitor(net.sourceforge.pmd.lang.ast.AstVisitor,P)"><code>acceptVisitor</code></a> instead.
+    * `net.sourceforge.pmd.lang.vf.ast.VfParserVisitor`
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0/net/sourceforge/pmd/lang/visualforce/ast/VfVisitor.html#"><code>VfVisitor</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0/net/sourceforge/pmd/lang/visualforce/ast/VfVisitorBase.html#"><code>VfVisitorBase</code></a> instead.
+    * `net.sourceforge.pmd.lang.vf.ast.VfParserVisitorAdapter`
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0/net/sourceforge/pmd/lang/visualforce/DataType.html#"><code>DataType</code></a> - method `fromBasicType(BasicType)` has been removed.
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0/net/sourceforge/pmd/lang/visualforce/DataType.html#fromTypeName(java.lang.String)"><code>fromTypeName</code></a> instead.
 * pmd-velocity (previously pmd-vm)
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0/net/sourceforge/pmd/lang/velocity/ast/VtlNode.html#"><code>VtlNode</code></a> - method `jjtAccept()` has been removed.
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#acceptVisitor(net.sourceforge.pmd.lang.ast.AstVisitor,P)"><code>acceptVisitor</code></a> instead.
-  * `net.sourceforge.pmd.lang.vm.ast.VmParserVisitor`
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0/net/sourceforge/pmd/lang/velocity/ast/VtlVisitor.html#"><code>VtlVisitor</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0/net/sourceforge/pmd/lang/velocity/ast/VtlVisitorBase.html#"><code>VtlVisitorBase</code></a> instead.
-  * `net.sourceforge.pmd.lang.vm.ast.VmParserVisitorAdapter`
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0/net/sourceforge/pmd/lang/velocity/ast/VtlNode.html#"><code>VtlNode</code></a> - method `jjtAccept()` has been removed.
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#acceptVisitor(net.sourceforge.pmd.lang.ast.AstVisitor,P)"><code>acceptVisitor</code></a> instead.
+    * `net.sourceforge.pmd.lang.vm.ast.VmParserVisitor`
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0/net/sourceforge/pmd/lang/velocity/ast/VtlVisitor.html#"><code>VtlVisitor</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0/net/sourceforge/pmd/lang/velocity/ast/VtlVisitorBase.html#"><code>VtlVisitorBase</code></a> instead.
+    * `net.sourceforge.pmd.lang.vm.ast.VmParserVisitorAdapter`
 
 **Removed classes, interfaces and methods (not previously deprecated)**
 
 * pmd-apex
-  * The method `isSynthetic()` in <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTMethod.html#"><code>ASTMethod</code></a> has been removed.
-    With the switch from Jorje to Summit AST as underlying parser, no synthetic methods are generated by the
-    parser anymore. This also means, that there is no XPath attribute `@Synthetic` anymore.
-  * The constant `STATIC_INITIALIZER_METHOD_NAME` in <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/rule/codestyle/FieldDeclarationsShouldBeAtStartRule.html#"><code>FieldDeclarationsShouldBeAtStartRule</code></a>
-    has been removed. It was used to filter out synthetic methods, but these are not generated anymore with the
-    new parser.
-  * The method `getContext()` in <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTReferenceExpression.html#"><code>ASTReferenceExpression</code></a> has been removed.
-    It was not used and always returned `null`.
-  * The method `getNamespace()` in all AST nodes (defined in <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ApexNode.html#"><code>ApexNode</code></a>) has
-    been removed, as it was never fully implemented. It always returned an empty string.
-  * The method `getNameSpace()` in <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ApexQualifiedName.html#"><code>ApexQualifiedName</code></a> has been removed.
-  * The class `net.sourceforge.pmd.lang.apex.ast.ASTBridgeMethodCreator` has been removed. This was a node that has
-    been generated by the old Jorje parser only.
+    * The method `isSynthetic()` in <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTMethod.html#"><code>ASTMethod</code></a> has been removed.
+      With the switch from Jorje to Summit AST as underlying parser, no synthetic methods are generated by the
+      parser anymore. This also means, that there is no XPath attribute `@Synthetic` anymore.
+    * The constant `STATIC_INITIALIZER_METHOD_NAME` in <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/rule/codestyle/FieldDeclarationsShouldBeAtStartRule.html#"><code>FieldDeclarationsShouldBeAtStartRule</code></a>
+      has been removed. It was used to filter out synthetic methods, but these are not generated anymore with the
+      new parser.
+    * The method `getContext()` in <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTReferenceExpression.html#"><code>ASTReferenceExpression</code></a> has been removed.
+      It was not used and always returned `null`.
+    * The method `getNamespace()` in all AST nodes (defined in <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ApexNode.html#"><code>ApexNode</code></a>) has
+      been removed, as it was never fully implemented. It always returned an empty string.
+    * The method `getNameSpace()` in <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ApexQualifiedName.html#"><code>ApexQualifiedName</code></a> has been removed.
+    * The class `net.sourceforge.pmd.lang.apex.ast.ASTBridgeMethodCreator` has been removed. This was a node that has
+      been generated by the old Jorje parser only.
 * pmd-apex-jorje
-  * With the switch from Jorje to Summit AST, this maven module is no longer needed and has been removed.
+    * With the switch from Jorje to Summit AST, this maven module is no longer needed and has been removed.
 * pmd-core
-  * `net.sourceforge.pmd.util.Predicate` has been removed. It was marked as Experimental before. Use
-    `java.util.function.Predicate` instead.
+    * `net.sourceforge.pmd.util.Predicate` has been removed. It was marked as Experimental before. Use
+      `java.util.function.Predicate` instead.
 * pmd-java
-  * The interface `FinalizableNode` (introduced in 7.0.0-rc1) has been removed.
-    Its method `isFinal()` has been moved down to the
-    nodes where needed, e.g. <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTLocalVariableDeclaration.html#isFinal()"><code>ASTLocalVariableDeclaration#isFinal</code></a>.
-  * The method `isPackagePrivate()` in <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTClassDeclaration.html#"><code>ASTClassDeclaration</code></a> (formerly ASTClassOrInterfaceDeclaration)
-    has been removed.
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#hasVisibility(net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility)"><code>hasVisibility</code></a> instead,
-    which can correctly differentiate between local and package private classes.
+    * The interface `FinalizableNode` (introduced in 7.0.0-rc1) has been removed.
+      Its method `isFinal()` has been moved down to the
+      nodes where needed, e.g. <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTLocalVariableDeclaration.html#isFinal()"><code>ASTLocalVariableDeclaration#isFinal</code></a>.
+    * The method `isPackagePrivate()` in <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTClassDeclaration.html#"><code>ASTClassDeclaration</code></a> (formerly ASTClassOrInterfaceDeclaration)
+      has been removed.
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#hasVisibility(net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility)"><code>hasVisibility</code></a> instead,
+      which can correctly differentiate between local and package private classes.
 
 **Renamed classes, interfaces, methods**
 
 * pmd-core
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/util/log/MessageReporter.html#"><code>MessageReporter</code></a> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/log/PmdReporter.html#"><code>PmdReporter</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/ast/TokenMgrError.html#"><code>TokenMgrError</code></a> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/LexException.html#"><code>LexException</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/cpd/Tokenizer.html#"><code>Tokenizer</code></a> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CpdLexer.html#"><code>CpdLexer</code></a>. Along with this rename,
-    all the implementations have been renamed as well (`Tokenizer` -> `CpdLexer`), e.g. "CppCpdLexer", "JavaCpdLexer".
-    This affects all language modules.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/cpd/AnyTokenizer.html#"><code>AnyTokenizer</code></a> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/AnyCpdLexer.html#"><code>AnyCpdLexer</code></a>.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/util/log/MessageReporter.html#"><code>MessageReporter</code></a> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/log/PmdReporter.html#"><code>PmdReporter</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/ast/TokenMgrError.html#"><code>TokenMgrError</code></a> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/LexException.html#"><code>LexException</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/cpd/Tokenizer.html#"><code>Tokenizer</code></a> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CpdLexer.html#"><code>CpdLexer</code></a>. Along with this rename,
+      all the implementations have been renamed as well (`Tokenizer` -> `CpdLexer`), e.g. "CppCpdLexer", "JavaCpdLexer".
+      This affects all language modules.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/cpd/AnyTokenizer.html#"><code>AnyTokenizer</code></a> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/AnyCpdLexer.html#"><code>AnyCpdLexer</code></a>.
 
 * pmd-java
-  * The interface `AccessNode` has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#"><code>ModifierOwner</code></a>. This is only relevant
-    for Java rules, which use that type directly e.g. through downcasting.
-    Or when using the XPath function `pmd-java:nodeIs()`.
-  * The node `ASTClassOrInterfaceType` has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a>. XPath rules
-    need to be adjusted.
-  * The node `ASTClassOrInterfaceDeclaration` has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTClassDeclaration.html#"><code>ASTClassDeclaration</code></a>.
-    XPath rules need to be adjusted.
-  * The interface `ASTAnyTypeDeclaration` has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTTypeDeclaration.html#"><code>ASTTypeDeclaration</code></a>.
-    This is only relevant for Java rules, which use that type directly, e.g. through downcasting.
-    Or when using the XPath function `pmd-java:nodeIs()`.
-  * The interface `ASTMethodOrConstructorDeclaration` has been renamed to
-    <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTExecutableDeclaration.html#"><code>ASTExecutableDeclaration</code></a>. This is only relevant for Java rules, which use that type
-    directly, e.g. through downcasting. Or when using the XPath function `pmd-java:nodeIs()`.
-  * The node `ASTVariableDeclaratorId` has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a>. XPath rules
-    need to be adjusted.
-  * The node `ASTClassOrInterfaceBody` has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTClassBody.html#"><code>ASTClassBody</code></a>. XPath rules
-    need to be adjusted.
+    * The interface `AccessNode` has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#"><code>ModifierOwner</code></a>. This is only relevant
+      for Java rules, which use that type directly e.g. through downcasting.
+      Or when using the XPath function `pmd-java:nodeIs()`.
+    * The node `ASTClassOrInterfaceType` has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a>. XPath rules
+      need to be adjusted.
+    * The node `ASTClassOrInterfaceDeclaration` has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTClassDeclaration.html#"><code>ASTClassDeclaration</code></a>.
+      XPath rules need to be adjusted.
+    * The interface `ASTAnyTypeDeclaration` has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTTypeDeclaration.html#"><code>ASTTypeDeclaration</code></a>.
+      This is only relevant for Java rules, which use that type directly, e.g. through downcasting.
+      Or when using the XPath function `pmd-java:nodeIs()`.
+    * The interface `ASTMethodOrConstructorDeclaration` has been renamed to
+      <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTExecutableDeclaration.html#"><code>ASTExecutableDeclaration</code></a>. This is only relevant for Java rules, which use that type
+      directly, e.g. through downcasting. Or when using the XPath function `pmd-java:nodeIs()`.
+    * The node `ASTVariableDeclaratorId` has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a>. XPath rules
+      need to be adjusted.
+    * The node `ASTClassOrInterfaceBody` has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTClassBody.html#"><code>ASTClassBody</code></a>. XPath rules
+      need to be adjusted.
 * pmd-scala
-  * The interface `ScalaParserVisitor` has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0/net/sourceforge/pmd/lang/scala/ast/ScalaVisitor.html#"><code>ScalaVisitor</code></a> in order
-    to align the naming scheme for the different language modules.
-  * The class `ScalaParserVisitorAdapter` has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0/net/sourceforge/pmd/lang/scala/ast/ScalaVisitorBase.html#"><code>ScalaVisitorBase</code></a> in order
-    to align the naming scheme for the different language modules.
+    * The interface `ScalaParserVisitor` has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0/net/sourceforge/pmd/lang/scala/ast/ScalaVisitor.html#"><code>ScalaVisitor</code></a> in order
+      to align the naming scheme for the different language modules.
+    * The class `ScalaParserVisitorAdapter` has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0/net/sourceforge/pmd/lang/scala/ast/ScalaVisitorBase.html#"><code>ScalaVisitorBase</code></a> in order
+      to align the naming scheme for the different language modules.
 
 **New API**
 
 These were annotated with `@Experimental`, but can now be considered stable.
 
 * pmd-apex
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTCommentContainer.html#"><code>ASTCommentContainer</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/multifile/ApexMultifileAnalysis.html#"><code>ApexMultifileAnalysis</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/ASTCommentContainer.html#"><code>ASTCommentContainer</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/multifile/ApexMultifileAnalysis.html#"><code>ApexMultifileAnalysis</code></a>
 * pmd-core
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CPDReport.html#filterMatches(java.util.function.Predicate)"><code>CPDReport#filterMatches</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrToken.html#getKind()"><code>AntlrToken#getKind</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/impl/javacc/AbstractJjtreeNode.html#"><code>AbstractJjtreeNode</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/impl/TokenDocument.html#"><code>TokenDocument</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/AstInfo.html#getSuppressionComments()"><code>AstInfo#getSuppressionComments</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/AstInfo.html#withSuppressMap(java.util.Map)"><code>AstInfo#withSuppressMap</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/GenericToken.html#getKind()"><code>GenericToken#getKind</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/document/FileCollector.html#addZipFileWithContent(java.nio.file.Path)"><code>FileCollector#addZipFileWithContent</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/document/package-summary.html#"><code>net.sourceforge.pmd.lang.document</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getLanguageMetricsProvider()"><code>LanguageVersionHandler#getLanguageMetricsProvider</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getDesignerBindings()"><code>LanguageVersionHandler#getDesignerBindings</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/PlainTextLanguage.html#"><code>PlainTextLanguage</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyConstraint.html#getXmlConstraint()"><code>PropertyConstraint#getXmlConstraint</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyConstraint.html#toOptionalConstraint()"><code>PropertyConstraint#toOptionalConstraint</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyConstraint.html#fromPredicate(java.util.function.Predicate,java.lang.String)"><code>PropertyConstraint#fromPredicate</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyConstraint.html#fromPredicate(java.util.function.Predicate,java.lang.String,java.util.Map)"><code>PropertyConstraint#fromPredicate</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/renderers/AbstractRenderer.html#setReportFile(java.lang.String)"><code>AbstractRenderer#setReportFile</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/renderers/Renderer.html#setReportFile(java.lang.String)"><code>Renderer#setReportFile</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/designerbindings/DesignerBindings.html#"><code>DesignerBindings</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/designerbindings/DesignerBindings.TreeIconId.html#"><code>DesignerBindings.TreeIconId</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/designerbindings/RelatedNodesSelector.html#"><code>RelatedNodesSelector</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/Report.html#filterViolations(java.util.function.Predicate)"><code>Report#filterViolations</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/Report.html#union(net.sourceforge.pmd.Report)"><code>Report#union</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CPDReport.html#filterMatches(java.util.function.Predicate)"><code>CPDReport#filterMatches</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrToken.html#getKind()"><code>AntlrToken#getKind</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/impl/javacc/AbstractJjtreeNode.html#"><code>AbstractJjtreeNode</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/impl/TokenDocument.html#"><code>TokenDocument</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/AstInfo.html#getSuppressionComments()"><code>AstInfo#getSuppressionComments</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/AstInfo.html#withSuppressMap(java.util.Map)"><code>AstInfo#withSuppressMap</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/GenericToken.html#getKind()"><code>GenericToken#getKind</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/document/FileCollector.html#addZipFileWithContent(java.nio.file.Path)"><code>FileCollector#addZipFileWithContent</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/document/package-summary.html#"><code>net.sourceforge.pmd.lang.document</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getLanguageMetricsProvider()"><code>LanguageVersionHandler#getLanguageMetricsProvider</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getDesignerBindings()"><code>LanguageVersionHandler#getDesignerBindings</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/PlainTextLanguage.html#"><code>PlainTextLanguage</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyConstraint.html#getXmlConstraint()"><code>PropertyConstraint#getXmlConstraint</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyConstraint.html#toOptionalConstraint()"><code>PropertyConstraint#toOptionalConstraint</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyConstraint.html#fromPredicate(java.util.function.Predicate,java.lang.String)"><code>PropertyConstraint#fromPredicate</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyConstraint.html#fromPredicate(java.util.function.Predicate,java.lang.String,java.util.Map)"><code>PropertyConstraint#fromPredicate</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/renderers/AbstractRenderer.html#setReportFile(java.lang.String)"><code>AbstractRenderer#setReportFile</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/renderers/Renderer.html#setReportFile(java.lang.String)"><code>Renderer#setReportFile</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/designerbindings/DesignerBindings.html#"><code>DesignerBindings</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/designerbindings/DesignerBindings.TreeIconId.html#"><code>DesignerBindings.TreeIconId</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/designerbindings/RelatedNodesSelector.html#"><code>RelatedNodesSelector</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/Report.html#filterViolations(java.util.function.Predicate)"><code>Report#filterViolations</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/Report.html#union(net.sourceforge.pmd.Report)"><code>Report#union</code></a>
 * pmd-groovy
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-groovy/7.0.0/net/sourceforge/pmd/lang/groovy/ast/impl/antlr4/GroovyToken.html#getKind()"><code>GroovyToken#getKind</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-groovy/7.0.0/net/sourceforge/pmd/lang/groovy/ast/impl/antlr4/GroovyToken.html#getKind()"><code>GroovyToken#getKind</code></a>
 * pmd-html
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-html/7.0.0/net/sourceforge/pmd/lang/html/package-summary.html#"><code>net.sourceforge.pmd.lang.html</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-html/7.0.0/net/sourceforge/pmd/lang/html/package-summary.html#"><code>net.sourceforge.pmd.lang.html</code></a>
 * pmd-java
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#getConversionContext()"><code>ASTExpression#getConversionContext</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/rule/AbstractJavaRulechainRule.html#<init>(java.lang.Class,java.lang.Class...)"><code>AbstractJavaRulechainRule#&lt;init&gt;</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/symbols/table/JSymbolTable.html#"><code>JSymbolTable</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/symbols/JElementSymbol.html#"><code>JElementSymbol</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/symbols/package-summary.html#"><code>net.sourceforge.pmd.lang.java.symbols</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/types/ast/ExprContext.html#"><code>ExprContext</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/types/JIntersectionType.html#getInducedClassType()"><code>JIntersectionType#getInducedClassType</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/types/JTypeMirror.html#streamMethods(java.util.function.Predicate)"><code>JTypeMirror#streamMethods</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/types/JTypeMirror.html#streamDeclaredMethods(java.util.function.Predicate)"><code>JTypeMirror#streamDeclaredMethods</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/types/JTypeMirror.html#getConstructors()"><code>JTypeMirror#getConstructors</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#getConversionContext()"><code>ASTExpression#getConversionContext</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/rule/AbstractJavaRulechainRule.html#<init>(java.lang.Class,java.lang.Class...)"><code>AbstractJavaRulechainRule#&lt;init&gt;</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/symbols/table/JSymbolTable.html#"><code>JSymbolTable</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/symbols/JElementSymbol.html#"><code>JElementSymbol</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/symbols/package-summary.html#"><code>net.sourceforge.pmd.lang.java.symbols</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/types/ast/ExprContext.html#"><code>ExprContext</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/types/JIntersectionType.html#getInducedClassType()"><code>JIntersectionType#getInducedClassType</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/types/JTypeMirror.html#streamMethods(java.util.function.Predicate)"><code>JTypeMirror#streamMethods</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/types/JTypeMirror.html#streamDeclaredMethods(java.util.function.Predicate)"><code>JTypeMirror#streamDeclaredMethods</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/types/JTypeMirror.html#getConstructors()"><code>JTypeMirror#getConstructors</code></a>
 * pmd-kotlin
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.0.0/net/sourceforge/pmd/lang/kotlin/KotlinLanguageModule.html#"><code>KotlinLanguageModule</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.0.0/net/sourceforge/pmd/lang/kotlin/KotlinLanguageModule.html#"><code>KotlinLanguageModule</code></a>
 * pmd-test-schema
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-test-schema/7.0.0/net/sourceforge/pmd/test/schema/TestSchemaParser.html#"><code>TestSchemaParser</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-test-schema/7.0.0/net/sourceforge/pmd/test/schema/TestSchemaParser.html#"><code>TestSchemaParser</code></a>
 
 **Removed functionality**
 
@@ -1485,135 +1485,135 @@ and [PR #4397](https://github.com/pmd/pmd/pull/4397) for details.
 The following previously deprecated classes have been removed:
 
 * pmd-core
-  * `net.sourceforge.pmd.cpd.AbstractTokenizer` ➡️ use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/AnyCpdLexer.html#"><code>AnyCpdLexer</code></a> instead (previously known as AnyTokenizer)
-  * `net.sourceforge.pmd.cpd.CPD` ➡️ use <a href="https://docs.pmd-code.org/apidocs/pmd-cli/7.0.0/net/sourceforge/pmd/cli/PmdCli.html#"><code>PmdCli</code></a> from `pmd-cli` module for CLI support or use
-    <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CpdAnalysis.html#"><code>CpdAnalysis</code></a> for programmatic API
-  * `net.sourceforge.pmd.cpd.GridBagHelper` (now package private)
-  * `net.sourceforge.pmd.cpd.TokenEntry.State`
-  * `net.sourceforge.pmd.lang.document.CpdCompat`
-  * `net.sourceforge.pmd.properties.BooleanMultiProperty`
-  * `net.sourceforge.pmd.properties.BooleanProperty`
-  * `net.sourceforge.pmd.properties.CharacterMultiProperty`
-  * `net.sourceforge.pmd.properties.CharacterProperty`
-  * `net.sourceforge.pmd.properties.DoubleMultiProperty`
-  * `net.sourceforge.pmd.properties.DoubleProperty`
-  * `net.sourceforge.pmd.properties.EnumeratedMultiProperty`
-  * `net.sourceforge.pmd.properties.EnumeratedProperty`
-  * `net.sourceforge.pmd.properties.EnumeratedPropertyDescriptor`
-  * `net.sourceforge.pmd.properties.FileProperty` (note: without replacement)
-  * `net.sourceforge.pmd.properties.FloatMultiProperty`
-  * `net.sourceforge.pmd.properties.FloatProperty`
-  * `net.sourceforge.pmd.properties.IntegerMultiProperty`
-  * `net.sourceforge.pmd.properties.IntegerProperty`
-  * `net.sourceforge.pmd.properties.LongMultiProperty`
-  * `net.sourceforge.pmd.properties.LongProperty`
-  * `net.sourceforge.pmd.properties.MultiValuePropertyDescriptor`
-  * `net.sourceforge.pmd.properties.NumericPropertyDescriptor`
-  * `net.sourceforge.pmd.properties.PropertyDescriptorField`
-  * `net.sourceforge.pmd.properties.RegexProperty`
-  * `net.sourceforge.pmd.properties.SingleValuePropertyDescriptor`
-  * `net.sourceforge.pmd.properties.StringMultiProperty`
-  * `net.sourceforge.pmd.properties.StringProperty`
-  * `net.sourceforge.pmd.properties.ValueParser`
-  * `net.sourceforge.pmd.properties.ValueParserConstants`
-  * `net.sourceforge.pmd.properties.builders.MultiNumericPropertyBuilder`
-  * `net.sourceforge.pmd.properties.builders.MultiPackagedPropertyBuilder`
-  * `net.sourceforge.pmd.properties.builders.MultiValuePropertyBuilder`
-  * `net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilder`
-  * `net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper`
-  * `net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder`
-  * `net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder`
-  * `net.sourceforge.pmd.properties.builders.SinglePackagedPropertyBuilder`
-  * `net.sourceforge.pmd.properties.builders.SingleValuePropertyBuilder`
-  * `net.sourceforge.pmd.properties.modules.EnumeratedPropertyModule`
-  * `net.sourceforge.pmd.properties.modules.NumericPropertyModule`
+    * `net.sourceforge.pmd.cpd.AbstractTokenizer` ➡️ use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/AnyCpdLexer.html#"><code>AnyCpdLexer</code></a> instead (previously known as AnyTokenizer)
+    * `net.sourceforge.pmd.cpd.CPD` ➡️ use <a href="https://docs.pmd-code.org/apidocs/pmd-cli/7.0.0/net/sourceforge/pmd/cli/PmdCli.html#"><code>PmdCli</code></a> from `pmd-cli` module for CLI support or use
+      <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CpdAnalysis.html#"><code>CpdAnalysis</code></a> for programmatic API
+    * `net.sourceforge.pmd.cpd.GridBagHelper` (now package private)
+    * `net.sourceforge.pmd.cpd.TokenEntry.State`
+    * `net.sourceforge.pmd.lang.document.CpdCompat`
+    * `net.sourceforge.pmd.properties.BooleanMultiProperty`
+    * `net.sourceforge.pmd.properties.BooleanProperty`
+    * `net.sourceforge.pmd.properties.CharacterMultiProperty`
+    * `net.sourceforge.pmd.properties.CharacterProperty`
+    * `net.sourceforge.pmd.properties.DoubleMultiProperty`
+    * `net.sourceforge.pmd.properties.DoubleProperty`
+    * `net.sourceforge.pmd.properties.EnumeratedMultiProperty`
+    * `net.sourceforge.pmd.properties.EnumeratedProperty`
+    * `net.sourceforge.pmd.properties.EnumeratedPropertyDescriptor`
+    * `net.sourceforge.pmd.properties.FileProperty` (note: without replacement)
+    * `net.sourceforge.pmd.properties.FloatMultiProperty`
+    * `net.sourceforge.pmd.properties.FloatProperty`
+    * `net.sourceforge.pmd.properties.IntegerMultiProperty`
+    * `net.sourceforge.pmd.properties.IntegerProperty`
+    * `net.sourceforge.pmd.properties.LongMultiProperty`
+    * `net.sourceforge.pmd.properties.LongProperty`
+    * `net.sourceforge.pmd.properties.MultiValuePropertyDescriptor`
+    * `net.sourceforge.pmd.properties.NumericPropertyDescriptor`
+    * `net.sourceforge.pmd.properties.PropertyDescriptorField`
+    * `net.sourceforge.pmd.properties.RegexProperty`
+    * `net.sourceforge.pmd.properties.SingleValuePropertyDescriptor`
+    * `net.sourceforge.pmd.properties.StringMultiProperty`
+    * `net.sourceforge.pmd.properties.StringProperty`
+    * `net.sourceforge.pmd.properties.ValueParser`
+    * `net.sourceforge.pmd.properties.ValueParserConstants`
+    * `net.sourceforge.pmd.properties.builders.MultiNumericPropertyBuilder`
+    * `net.sourceforge.pmd.properties.builders.MultiPackagedPropertyBuilder`
+    * `net.sourceforge.pmd.properties.builders.MultiValuePropertyBuilder`
+    * `net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilder`
+    * `net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper`
+    * `net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder`
+    * `net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder`
+    * `net.sourceforge.pmd.properties.builders.SinglePackagedPropertyBuilder`
+    * `net.sourceforge.pmd.properties.builders.SingleValuePropertyBuilder`
+    * `net.sourceforge.pmd.properties.modules.EnumeratedPropertyModule`
+    * `net.sourceforge.pmd.properties.modules.NumericPropertyModule`
 
 The following previously deprecated methods have been removed:
 
 * pmd-core
-  * `net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder#delim(char)`
-  * `net.sourceforge.pmd.properties.PropertySource#setProperty(...)`
-  * `net.sourceforge.pmd.properties.internal.PropertyTypeId#factoryFor(...)`
-  * `net.sourceforge.pmd.properties.internal.PropertyTypeId#typeIdFor(...)`
-  * `net.sourceforge.pmd.properties.PropertyDescriptor`: removed methods errorFor, type, isMultiValue,
-    uiOrder, compareTo, isDefinedExternally, valueFrom, asDelimitedString
+    * `net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder#delim(char)`
+    * `net.sourceforge.pmd.properties.PropertySource#setProperty(...)`
+    * `net.sourceforge.pmd.properties.internal.PropertyTypeId#factoryFor(...)`
+    * `net.sourceforge.pmd.properties.internal.PropertyTypeId#typeIdFor(...)`
+    * `net.sourceforge.pmd.properties.PropertyDescriptor`: removed methods errorFor, type, isMultiValue,
+      uiOrder, compareTo, isDefinedExternally, valueFrom, asDelimitedString
 
 The following methods have been removed:
 
 * pmd-core
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CPDConfiguration.html#"><code>CPDConfiguration</code></a>
-    * `#sourceCodeFor(File)`, `#postConstruct()`, `#tokenizer()`, `#filenameFilter()` removed
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/Mark.html#"><code>Mark</code></a>
-    * `#getSourceSlice()`, `#setLineCount(int)`, `#getLineCount()`, `#setSourceCode(SourceCode)` removed
-    * `#getBeginColumn()`, `#getBeginLine()`, `#getEndLine()`, `#getEndColumn()` removed
-      ➡️ use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/Mark.html#getLocation()"><code>getLocation</code></a> instead
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/Match.html#"><code>Match</code></a>
-    * `#LABEL_COMPARATOR` removed
-    * `#setMarkSet(...)`, `#setLabel(...)`, `#getLabel()`, `#addTokenEntry(...)` removed
-    * `#getSourceCodeSlice()` removed
-      ➡️ use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CPDReport.html#getSourceCodeSlice(net.sourceforge.pmd.cpd.Mark)"><code>CPDReport#getSourceCodeSlice</code></a> instead
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/TokenEntry.html#"><code>TokenEntry</code></a>
-    * `#getEOF()`, `#clearImages()`, `#getIdentifier()`, `#getIndex()`, `#setHashCode(int)` removed
-    * `#EOF` removed ➡️ use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/TokenEntry.html#isEof()"><code>isEof</code></a> instead
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Parser.ParserTask.html#"><code>Parser.ParserTask</code></a>
-    * `#getFileDisplayName()` removed ➡️ use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Parser.ParserTask.html#getFileId()"><code>getFileId</code></a> instead
-      (`getFileId().getAbsolutePath()`)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CPDConfiguration.html#"><code>CPDConfiguration</code></a>
+        * `#sourceCodeFor(File)`, `#postConstruct()`, `#tokenizer()`, `#filenameFilter()` removed
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/Mark.html#"><code>Mark</code></a>
+        * `#getSourceSlice()`, `#setLineCount(int)`, `#getLineCount()`, `#setSourceCode(SourceCode)` removed
+        * `#getBeginColumn()`, `#getBeginLine()`, `#getEndLine()`, `#getEndColumn()` removed
+          ➡️ use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/Mark.html#getLocation()"><code>getLocation</code></a> instead
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/Match.html#"><code>Match</code></a>
+        * `#LABEL_COMPARATOR` removed
+        * `#setMarkSet(...)`, `#setLabel(...)`, `#getLabel()`, `#addTokenEntry(...)` removed
+        * `#getSourceCodeSlice()` removed
+          ➡️ use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CPDReport.html#getSourceCodeSlice(net.sourceforge.pmd.cpd.Mark)"><code>CPDReport#getSourceCodeSlice</code></a> instead
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/TokenEntry.html#"><code>TokenEntry</code></a>
+        * `#getEOF()`, `#clearImages()`, `#getIdentifier()`, `#getIndex()`, `#setHashCode(int)` removed
+        * `#EOF` removed ➡️ use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/TokenEntry.html#isEof()"><code>isEof</code></a> instead
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Parser.ParserTask.html#"><code>Parser.ParserTask</code></a>
+        * `#getFileDisplayName()` removed ➡️ use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Parser.ParserTask.html#getFileId()"><code>getFileId</code></a> instead
+          (`getFileId().getAbsolutePath()`)
 
 The following classes have been removed:
 
 * pmd-core
-  * `net.sourceforge.pmd.cpd.AbstractLanguage`
-  * `net.sourceforge.pmd.cpd.AnyLanguage`
-  * `net.sourceforge.pmd.cpd.Language`
-  * `net.sourceforge.pmd.cpd.LanguageFactory`
-  * `net.sourceforge.pmd.cpd.MatchAlgorithm` (now package private)
-  * `net.sourceforge.pmd.cpd.MatchCollector` (now package private)
-  * `net.sourceforge.pmd.cpd.SourceCode` (and all inner classes like `FileCodeLoader`, ...)
-  * `net.sourceforge.pmd.cpd.token.TokenFilter`
+    * `net.sourceforge.pmd.cpd.AbstractLanguage`
+    * `net.sourceforge.pmd.cpd.AnyLanguage`
+    * `net.sourceforge.pmd.cpd.Language`
+    * `net.sourceforge.pmd.cpd.LanguageFactory`
+    * `net.sourceforge.pmd.cpd.MatchAlgorithm` (now package private)
+    * `net.sourceforge.pmd.cpd.MatchCollector` (now package private)
+    * `net.sourceforge.pmd.cpd.SourceCode` (and all inner classes like `FileCodeLoader`, ...)
+    * `net.sourceforge.pmd.cpd.token.TokenFilter`
 
 **Moved packages**
 
 * pmd-core
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/NumericConstraints.html#"><code>NumericConstraints</code></a> (old package: `net.sourceforge.pmd.properties.constraints.NumericConstraints`)
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyConstraint.html#"><code>PropertyConstraint</code></a> (old package: `net.sourceforge.pmd.properties.constraints.PropertyConstraint`)
-    * not experimental anymore
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-ant/7.0.0/net/sourceforge/pmd/ant/ReportException.html#"><code>ReportException</code></a> (old package: `net.sourceforge.pmd.cpd`, moved to module `pmd-ant`)
-    * it is now a RuntimeException
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CPDReportRenderer.html#"><code>CPDReportRenderer</code></a> (old package: `net.sourceforge.pmd.cpd.renderer`)
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/impl/AntlrTokenFilter.html#"><code>AntlrTokenFilter</code></a> (old package: `net.sourceforge.pmd.cpd.token`)
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/impl/BaseTokenFilter.html#"><code>BaseTokenFilter</code></a> (old package: `net.sourceforge.pmd.cpd.token.internal`)
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/impl/JavaCCTokenFilter.html#"><code>JavaCCTokenFilter</code></a> (old package: `net.sourceforge.pmd.cpd.token`)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/NumericConstraints.html#"><code>NumericConstraints</code></a> (old package: `net.sourceforge.pmd.properties.constraints.NumericConstraints`)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyConstraint.html#"><code>PropertyConstraint</code></a> (old package: `net.sourceforge.pmd.properties.constraints.PropertyConstraint`)
+        * not experimental anymore
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-ant/7.0.0/net/sourceforge/pmd/ant/ReportException.html#"><code>ReportException</code></a> (old package: `net.sourceforge.pmd.cpd`, moved to module `pmd-ant`)
+        * it is now a RuntimeException
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CPDReportRenderer.html#"><code>CPDReportRenderer</code></a> (old package: `net.sourceforge.pmd.cpd.renderer`)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/impl/AntlrTokenFilter.html#"><code>AntlrTokenFilter</code></a> (old package: `net.sourceforge.pmd.cpd.token`)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/impl/BaseTokenFilter.html#"><code>BaseTokenFilter</code></a> (old package: `net.sourceforge.pmd.cpd.token.internal`)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/impl/JavaCCTokenFilter.html#"><code>JavaCCTokenFilter</code></a> (old package: `net.sourceforge.pmd.cpd.token`)
 
 **Changed types and other changes**
 
 * pmd-core
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#"><code>PropertyDescriptor</code></a> is now a class (was an interface)
-    and it is not comparable anymore.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/AbstractConfiguration.html#setSourceEncoding(java.nio.charset.Charset)"><code>AbstractConfiguration#setSourceEncoding</code></a>
-    * previously this method took a simple String for the encoding.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#"><code>PMDConfiguration</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CPDConfiguration.html#"><code>CPDConfiguration</code></a>
-    * many getters and setters have been moved to the parent class <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/AbstractConfiguration.html#"><code>AbstractConfiguration</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CPDListener.html#addedFile(int)"><code>CPDListener#addedFile</code></a>
-    * no `File` parameter anymore
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CPDReport.html#getNumberOfTokensPerFile()"><code>CPDReport#getNumberOfTokensPerFile</code></a> returns a `Map` of `FileId,Integer` instead of `String`
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CPDReport.html#filterMatches(java.util.function.Predicate)"><code>CPDReport#filterMatches</code></a> now takes a `java.util.function.Predicate`
-    as parameter
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CpdLexer.html#"><code>CpdLexer</code></a>
-    * Note: CpdLexer was previously named Tokenizer.
-    * constants are now <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#"><code>PropertyDescriptor</code></a> instead of `String`,
-      to be used as language properties
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CpdLexer.html#tokenize(net.sourceforge.pmd.lang.document.TextDocument,net.sourceforge.pmd.cpd.TokenFactory)"><code>tokenize</code></a>
-      changed parameters. Now takes a <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/document/TextDocument.html#"><code>TextDocument</code></a> and a <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/TokenFactory.html#"><code>TokenFactory</code></a>
-      (instead of `SourceCode` and `Tokens`).
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/Language.html#"><code>Language</code></a>
-    * method `#createProcessor(LanguagePropertyBundle)` moved to <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/PmdCapableLanguage.html#"><code>PmdCapableLanguage</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/StringUtil.html#linesWithTrimIndent(net.sourceforge.pmd.lang.document.Chars)"><code>StringUtil#linesWithTrimIndent</code></a> now takes a `Chars`
-    instead of a `String`.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#"><code>PropertyDescriptor</code></a> is now a class (was an interface)
+      and it is not comparable anymore.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/AbstractConfiguration.html#setSourceEncoding(java.nio.charset.Charset)"><code>AbstractConfiguration#setSourceEncoding</code></a>
+        * previously this method took a simple String for the encoding.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#"><code>PMDConfiguration</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CPDConfiguration.html#"><code>CPDConfiguration</code></a>
+        * many getters and setters have been moved to the parent class <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/AbstractConfiguration.html#"><code>AbstractConfiguration</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CPDListener.html#addedFile(int)"><code>CPDListener#addedFile</code></a>
+        * no `File` parameter anymore
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CPDReport.html#getNumberOfTokensPerFile()"><code>CPDReport#getNumberOfTokensPerFile</code></a> returns a `Map` of `FileId,Integer` instead of `String`
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CPDReport.html#filterMatches(java.util.function.Predicate)"><code>CPDReport#filterMatches</code></a> now takes a `java.util.function.Predicate`
+      as parameter
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CpdLexer.html#"><code>CpdLexer</code></a>
+        * Note: CpdLexer was previously named Tokenizer.
+        * constants are now <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#"><code>PropertyDescriptor</code></a> instead of `String`,
+          to be used as language properties
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CpdLexer.html#tokenize(net.sourceforge.pmd.lang.document.TextDocument,net.sourceforge.pmd.cpd.TokenFactory)"><code>tokenize</code></a>
+          changed parameters. Now takes a <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/document/TextDocument.html#"><code>TextDocument</code></a> and a <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/TokenFactory.html#"><code>TokenFactory</code></a>
+          (instead of `SourceCode` and `Tokens`).
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/Language.html#"><code>Language</code></a>
+        * method `#createProcessor(LanguagePropertyBundle)` moved to <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/PmdCapableLanguage.html#"><code>PmdCapableLanguage</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/util/StringUtil.html#linesWithTrimIndent(net.sourceforge.pmd.lang.document.Chars)"><code>StringUtil#linesWithTrimIndent</code></a> now takes a `Chars`
+      instead of a `String`.
 * All language modules (like pmd-apex, pmd-cpp, ...)
-  * consistent package naming: `net.sourceforge.pmd.lang.<langId>.cpd`
-  * adapted to use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CpdCapableLanguage.html#"><code>CpdCapableLanguage</code></a>
-  * consistent static method `#getInstance()`
-  * removed constants like `ID`, `TERSE_NAME` or `NAME`. Use `getInstance().getName()` etc. instead
+    * consistent package naming: `net.sourceforge.pmd.lang.<langId>.cpd`
+    * adapted to use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/cpd/CpdCapableLanguage.html#"><code>CpdCapableLanguage</code></a>
+    * consistent static method `#getInstance()`
+    * removed constants like `ID`, `TERSE_NAME` or `NAME`. Use `getInstance().getName()` etc. instead
 
 **Internal APIs**
 
@@ -1631,14 +1631,14 @@ The following classes have been removed:
 
 * To support the Java preview language features "String Templates" and "Unnamed Patterns and Variables", the following
   AST nodes have been introduced as experimental:
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTTemplateExpression.html#"><code>ASTTemplateExpression</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTTemplate.html#"><code>ASTTemplate</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTTemplateFragment.html#"><code>ASTTemplateFragment</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTUnnamedPattern.html#"><code>ASTUnnamedPattern</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTTemplateExpression.html#"><code>ASTTemplateExpression</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTTemplate.html#"><code>ASTTemplate</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTTemplateFragment.html#"><code>ASTTemplateFragment</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTUnnamedPattern.html#"><code>ASTUnnamedPattern</code></a>
 * The AST nodes for supporting "Record Patterns" and "Pattern Matching for switch" are not experimental anymore:
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTRecordPattern.html#"><code>ASTRecordPattern</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTPatternList.html#"><code>ASTPatternList</code></a> (Note: it was renamed from `ASTComponentPatternList`)
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTGuard.html#"><code>ASTGuard</code></a> (Note: it was renamed from `ASTSwitchGuard`)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTRecordPattern.html#"><code>ASTRecordPattern</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTPatternList.html#"><code>ASTPatternList</code></a> (Note: it was renamed from `ASTComponentPatternList`)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTGuard.html#"><code>ASTGuard</code></a> (Note: it was renamed from `ASTSwitchGuard`)
 
 #### 7.0.0-rc3
 
@@ -1676,11 +1676,11 @@ The following classes have been removed:
 
 The following previously deprecated classes have been removed:
 
-* pmd-core 
-  * `net.sourceforge.pmd.PMD`
-  * `net.sourceforge.pmd.cli.PMDCommandLineInterface`
-  * `net.sourceforge.pmd.cli.PMDParameters`
-  * `net.sourceforge.pmd.cli.PmdParametersParseResult`
+* pmd-core
+    * `net.sourceforge.pmd.PMD`
+    * `net.sourceforge.pmd.cli.PMDCommandLineInterface`
+    * `net.sourceforge.pmd.cli.PMDParameters`
+    * `net.sourceforge.pmd.cli.PmdParametersParseResult`
 
 **CLI**
 
@@ -1703,7 +1703,7 @@ The following previously deprecated classes have been removed:
 * The LanguageModule of Go, that only supports CPD execution, has been deprecated. This language
   is not fully supported by PMD, so having a language module does not make sense. The functionality of CPD is
   not affected by this change. The following class has been deprecated and will be removed with PMD 7.0.0:
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-go/6.55.0/net/sourceforge/pmd/lang/go/GoLanguageModule.html#"><code>GoLanguageModule</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-go/6.55.0/net/sourceforge/pmd/lang/go/GoLanguageModule.html#"><code>GoLanguageModule</code></a>
 
 **Java**
 * Support for Java 18 preview language features have been removed. The version "18-preview" is no longer available.
@@ -1753,8 +1753,8 @@ The following previously deprecated classes have been removed:
 **Experimental APIs**
 
 * CPDReport has a new method which limited mutation of a given report:
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/cpd/CPDReport.html#filterMatches(net.sourceforge.pmd.util.Predicate)"><code>filterMatches</code></a> creates a new CPD report
-    with some matches removed with a given predicate based filter.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/cpd/CPDReport.html#filterMatches(net.sourceforge.pmd.util.Predicate)"><code>filterMatches</code></a> creates a new CPD report
+      with some matches removed with a given predicate based filter.
 
 #### 6.53.0
 
@@ -1795,21 +1795,21 @@ These classes / APIs have been deprecated and will be removed with PMD 7.0.0.
 **Deprecated API**
 
 * The following core APIs have been marked as deprecated for removal in PMD 7:
-  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMD.html#"><code>PMD</code></a> and `PMD.StatusCode` - PMD 7 will ship with a revamped CLI split from pmd-core. To programmatically launch analysis you can use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PmdAnalysis.html#"><code>PmdAnalysis</code></a>.
-  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#getAllInputPaths()"><code>PMDConfiguration#getAllInputPaths</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#getInputPathList()"><code>PMDConfiguration#getInputPathList</code></a>
-  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#setInputPaths(java.util.List)"><code>PMDConfiguration#setInputPaths</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#setInputPathList(java.util.List)"><code>PMDConfiguration#setInputPathList</code></a>
-  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#addInputPath(java.lang.String)"><code>PMDConfiguration#addInputPath</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#addInputPath(java.nio.file.Path)"><code>PMDConfiguration#addInputPath</code></a>
-  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#getInputFilePath()"><code>PMDConfiguration#getInputFilePath</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#getInputFile()"><code>PMDConfiguration#getInputFile</code></a>
-  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#getIgnoreFilePath()"><code>PMDConfiguration#getIgnoreFilePath</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#getIgnoreFile()"><code>PMDConfiguration#getIgnoreFile</code></a>
-  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#setInputFilePath(java.lang.String)"><code>PMDConfiguration#setInputFilePath</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#setInputFilePath(java.nio.file.Path)"><code>PMDConfiguration#setInputFilePath</code></a>
-  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#setIgnoreFilePath(java.lang.String)"><code>PMDConfiguration#setIgnoreFilePath</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#setIgnoreFilePath(java.nio.file.Path)"><code>PMDConfiguration#setIgnoreFilePath</code></a>
-  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#getInputUri()"><code>PMDConfiguration#getInputUri</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#getUri()"><code>PMDConfiguration#getUri</code></a>
-  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#setInputUri(java.lang.String)"><code>PMDConfiguration#setInputUri</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#setInputUri(java.net.URI)"><code>PMDConfiguration#setInputUri</code></a>
-  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#getReportFile()"><code>PMDConfiguration#getReportFile</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#getReportFilePath()"><code>PMDConfiguration#getReportFilePath</code></a>
-  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#setReportFile(java.lang.String)"><code>PMDConfiguration#setReportFile</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#setReportFile(java.nio.file.Path)"><code>PMDConfiguration#setReportFile</code></a>
-  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#isStressTest()"><code>PMDConfiguration#isStressTest</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#setStressTest(boolean)"><code>PMDConfiguration#setStressTest</code></a> - Will be removed with no replacement.
-  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#isBenchmark()"><code>PMDConfiguration#isBenchmark</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#setBenchmark(boolean)"><code>PMDConfiguration#setBenchmark</code></a> - Will be removed with no replacement, the CLI will still support it.
-  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/cpd/CPD.html#"><code>CPD</code></a> and `CPD.StatusCode` - PMD 7 will ship with a revamped CLI split from pmd-core. An alternative to programmatically launch CPD analysis will be added in due time.
+    - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMD.html#"><code>PMD</code></a> and `PMD.StatusCode` - PMD 7 will ship with a revamped CLI split from pmd-core. To programmatically launch analysis you can use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PmdAnalysis.html#"><code>PmdAnalysis</code></a>.
+    - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#getAllInputPaths()"><code>PMDConfiguration#getAllInputPaths</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#getInputPathList()"><code>PMDConfiguration#getInputPathList</code></a>
+    - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#setInputPaths(java.util.List)"><code>PMDConfiguration#setInputPaths</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#setInputPathList(java.util.List)"><code>PMDConfiguration#setInputPathList</code></a>
+    - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#addInputPath(java.lang.String)"><code>PMDConfiguration#addInputPath</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#addInputPath(java.nio.file.Path)"><code>PMDConfiguration#addInputPath</code></a>
+    - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#getInputFilePath()"><code>PMDConfiguration#getInputFilePath</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#getInputFile()"><code>PMDConfiguration#getInputFile</code></a>
+    - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#getIgnoreFilePath()"><code>PMDConfiguration#getIgnoreFilePath</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#getIgnoreFile()"><code>PMDConfiguration#getIgnoreFile</code></a>
+    - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#setInputFilePath(java.lang.String)"><code>PMDConfiguration#setInputFilePath</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#setInputFilePath(java.nio.file.Path)"><code>PMDConfiguration#setInputFilePath</code></a>
+    - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#setIgnoreFilePath(java.lang.String)"><code>PMDConfiguration#setIgnoreFilePath</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#setIgnoreFilePath(java.nio.file.Path)"><code>PMDConfiguration#setIgnoreFilePath</code></a>
+    - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#getInputUri()"><code>PMDConfiguration#getInputUri</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#getUri()"><code>PMDConfiguration#getUri</code></a>
+    - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#setInputUri(java.lang.String)"><code>PMDConfiguration#setInputUri</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#setInputUri(java.net.URI)"><code>PMDConfiguration#setInputUri</code></a>
+    - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#getReportFile()"><code>PMDConfiguration#getReportFile</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#getReportFilePath()"><code>PMDConfiguration#getReportFilePath</code></a>
+    - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#setReportFile(java.lang.String)"><code>PMDConfiguration#setReportFile</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#setReportFile(java.nio.file.Path)"><code>PMDConfiguration#setReportFile</code></a>
+    - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#isStressTest()"><code>PMDConfiguration#isStressTest</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#setStressTest(boolean)"><code>PMDConfiguration#setStressTest</code></a> - Will be removed with no replacement.
+    - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#isBenchmark()"><code>PMDConfiguration#isBenchmark</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#setBenchmark(boolean)"><code>PMDConfiguration#setBenchmark</code></a> - Will be removed with no replacement, the CLI will still support it.
+    - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/cpd/CPD.html#"><code>CPD</code></a> and `CPD.StatusCode` - PMD 7 will ship with a revamped CLI split from pmd-core. An alternative to programmatically launch CPD analysis will be added in due time.
 
 * In order to reduce the dependency on Apex Jorje classes, the method <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/6.55.0/net/sourceforge/pmd/lang/vf/DataType.html#fromBasicType(apex.jorje.semantic.symbol.type.BasicType)"><code>DataType#fromBasicType</code></a>
   has been deprecated. The equivalent method <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/6.55.0/net/sourceforge/pmd/lang/vf/DataType.html#fromTypeName(java.lang.String)"><code>fromTypeName</code></a> should be used instead.
@@ -1831,11 +1831,11 @@ No changes.
 * In order to reduce the dependency on Apex Jorje classes, the following methods have been deprecated.
   These methods all leaked internal Jorje enums. These enums have been replaced now by enums the
   PMD's AST package.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.55.0/net/sourceforge/pmd/lang/apex/ast/ASTAssignmentExpression.html#getOperator()"><code>ASTAssignmentExpression#getOperator</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.55.0/net/sourceforge/pmd/lang/apex/ast/ASTBinaryExpression.html#getOperator()"><code>ASTBinaryExpression#getOperator</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.55.0/net/sourceforge/pmd/lang/apex/ast/ASTBooleanExpression.html#getOperator()"><code>ASTBooleanExpression#getOperator</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.55.0/net/sourceforge/pmd/lang/apex/ast/ASTPostfixExpression.html#getOperator()"><code>ASTPostfixExpression#getOperator</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.55.0/net/sourceforge/pmd/lang/apex/ast/ASTPrefixExpression.html#getOperator()"><code>ASTPrefixExpression#getOperator</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.55.0/net/sourceforge/pmd/lang/apex/ast/ASTAssignmentExpression.html#getOperator()"><code>ASTAssignmentExpression#getOperator</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.55.0/net/sourceforge/pmd/lang/apex/ast/ASTBinaryExpression.html#getOperator()"><code>ASTBinaryExpression#getOperator</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.55.0/net/sourceforge/pmd/lang/apex/ast/ASTBooleanExpression.html#getOperator()"><code>ASTBooleanExpression#getOperator</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.55.0/net/sourceforge/pmd/lang/apex/ast/ASTPostfixExpression.html#getOperator()"><code>ASTPostfixExpression#getOperator</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.55.0/net/sourceforge/pmd/lang/apex/ast/ASTPrefixExpression.html#getOperator()"><code>ASTPrefixExpression#getOperator</code></a>
 
   All these classes have now a new `getOp()` method. Existing code should be refactored to use this method instead.
   It returns the new enums, like <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0/net/sourceforge/pmd/lang/apex/ast/AssignmentOperator.html#"><code>AssignmentOperator</code></a>, and avoids
@@ -1855,11 +1855,11 @@ No changes.
 * The new module "pmd-test-schema" contains now the XSD schema and the code to parse the rule test XML files. The
   schema has been extracted in order to easily share it with other tools like the Rule Designer or IDE plugins.
 * Test schema changes:
-  * The attribute `isRegressionTest` of `test-code` is deprecated. The new
-    attribute `disabled` should be used instead for defining whether a rule test should be skipped or not.
-  * The attributes `reinitializeRule` and `useAuxClasspath` of `test-code` are deprecated and assumed true.
-    They will not be replaced.
-  * The new attribute `focused` of `test-code` allows disabling all tests except the focused one temporarily.
+    * The attribute `isRegressionTest` of `test-code` is deprecated. The new
+      attribute `disabled` should be used instead for defining whether a rule test should be skipped or not.
+    * The attributes `reinitializeRule` and `useAuxClasspath` of `test-code` are deprecated and assumed true.
+      They will not be replaced.
+    * The new attribute `focused` of `test-code` allows disabling all tests except the focused one temporarily.
 * More information about the rule test framework can be found in the documentation:
   [Testing your rules](pmd_userdocs_extending_testing.html)
 
@@ -1877,9 +1877,9 @@ No changes.
 
 * To support the Java preview language features "Pattern Matching for Switch" and "Record Patterns", the following
   AST nodes have been introduced as experimental:
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTSwitchGuard.html#"><code>ASTSwitchGuard</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTRecordPattern.html#"><code>ASTRecordPattern</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTComponentPatternList.html#"><code>ASTComponentPatternList</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTSwitchGuard.html#"><code>ASTSwitchGuard</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTRecordPattern.html#"><code>ASTRecordPattern</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTComponentPatternList.html#"><code>ASTComponentPatternList</code></a>
 
 **Internal API**
 
@@ -1936,9 +1936,9 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 **Experimental APIs**
 
 * Report has two new methods which allow limited mutations of a given report:
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/Report.html#filterViolations(java.util.function.Predicate)"><code>Report#filterViolations</code></a> creates a new report with
-    some violations removed with a given predicate based filter.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/Report.html#union(net.sourceforge.pmd.reporting.Report)"><code>Report#union</code></a> can combine two reports into a single new Report.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/Report.html#filterViolations(java.util.function.Predicate)"><code>Report#filterViolations</code></a> creates a new report with
+      some violations removed with a given predicate based filter.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/reporting/Report.html#union(net.sourceforge.pmd.reporting.Report)"><code>Report#union</code></a> can combine two reports into a single new Report.
 * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/util/Predicate.html#"><code>net.sourceforge.pmd.util.Predicate</code></a> will be replaced in PMD7 with the standard Predicate interface from java8.
 * The module `pmd-html` is entirely experimental right now. Anything in the package
   `net.sourceforge.pmd.lang.html` should be used cautiously.
@@ -1948,10 +1948,10 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 **Deprecated API**
 
 * Several members of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMD.html#"><code>PMD</code></a> have been newly deprecated, including:
-  - `PMD#EOL`: use `System#lineSeparator()`
-  - `PMD#SUPPRESS_MARKER`: use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#DEFAULT_SUPPRESS_MARKER"><code>DEFAULT_SUPPRESS_MARKER</code></a>
-  - `PMD#processFiles`: use the new programmatic API
-  - `PMD#getApplicableFiles`: is internal
+    - `PMD#EOL`: use `System#lineSeparator()`
+    - `PMD#SUPPRESS_MARKER`: use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#DEFAULT_SUPPRESS_MARKER"><code>DEFAULT_SUPPRESS_MARKER</code></a>
+    - `PMD#processFiles`: use the new programmatic API
+    - `PMD#getApplicableFiles`: is internal
 * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#prependClasspath(java.lang.String)"><code>PMDConfiguration#prependClasspath</code></a> is deprecated
   in favour of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/PMDConfiguration.html#prependAuxClasspath(java.lang.String)"><code>prependAuxClasspath</code></a>.
 * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/PMDConfiguration.html#setRuleSets(java.lang.String)"><code>PMDConfiguration#setRuleSets</code></a> and
@@ -2104,10 +2104,10 @@ No changes.
 **Experimental APIs**
 
 *   The AST types and APIs around Sealed Classes are not experimental anymore:
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#isSealed()"><code>ASTClassOrInterfaceDeclaration#isSealed</code></a>,
-      <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#isNonSealed()"><code>ASTClassOrInterfaceDeclaration#isNonSealed</code></a>,
-      <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#getPermittedSubclasses()"><code>ASTClassOrInterfaceDeclaration#getPermittedSubclasses</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTPermitsList.html#"><code>ASTPermitsList</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#isSealed()"><code>ASTClassOrInterfaceDeclaration#isSealed</code></a>,
+    <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#isNonSealed()"><code>ASTClassOrInterfaceDeclaration#isNonSealed</code></a>,
+    <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#getPermittedSubclasses()"><code>ASTClassOrInterfaceDeclaration#getPermittedSubclasses</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTPermitsList.html#"><code>ASTPermitsList</code></a>
 
 **Internal API**
 
@@ -2151,14 +2151,14 @@ No changes.
 *   The experimental class `ASTRecordConstructorDeclaration` has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTCompactConstructorDeclaration.html#"><code>ASTCompactConstructorDeclaration</code></a>
     in order to align the naming to the JLS.
 *   The AST types and APIs around Pattern Matching and Records are not experimental anymore:
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#isPatternBinding()"><code>ASTVariableId#isPatternBinding</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTPattern.html#"><code>ASTPattern</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTTypePattern.html#"><code>ASTTypePattern</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTRecordDeclaration.html#"><code>ASTRecordDeclaration</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTRecordComponentList.html#"><code>ASTRecordComponentList</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTRecordComponent.html#"><code>ASTRecordComponent</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTRecordBody.html#"><code>ASTRecordBody</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTCompactConstructorDeclaration.html#"><code>ASTCompactConstructorDeclaration</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#isPatternBinding()"><code>ASTVariableId#isPatternBinding</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTPattern.html#"><code>ASTPattern</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTTypePattern.html#"><code>ASTTypePattern</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTRecordDeclaration.html#"><code>ASTRecordDeclaration</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTRecordComponentList.html#"><code>ASTRecordComponentList</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTRecordComponent.html#"><code>ASTRecordComponent</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTRecordBody.html#"><code>ASTRecordBody</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTCompactConstructorDeclaration.html#"><code>ASTCompactConstructorDeclaration</code></a>
 
 **Internal API**
 
@@ -2243,15 +2243,15 @@ No changes.
 * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/rule/RuleReference.html#getOverriddenLanguage()"><code>RuleReference#getOverriddenLanguage</code></a> and
   <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/rule/RuleReference.html#setLanguage(net.sourceforge.pmd.lang.Language)"><code>RuleReference#setLanguage</code></a>
 * Antlr4 generated lexers:
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-cs/6.55.0/net/sourceforge/pmd/lang/cs/antlr4/CSharpLexer.html#"><code>net.sourceforge.pmd.lang.cs.antlr4.CSharpLexer</code></a> will be moved to package `net.sourceforge.pmd.lang.cs.ast` with PMD 7.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-dart/6.55.0/net/sourceforge/pmd/lang/dart/antlr4/Dart2Lexer.html#"><code>net.sourceforge.pmd.lang.dart.antlr4.Dart2Lexer</code></a> will be renamed to `DartLexer` and moved to package
-    `net.sourceforge.pmd.lang.dart.ast` with PMD 7. All other classes in the old package will be removed.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-go/6.55.0/net/sourceforge/pmd/lang/go/antlr4/GolangLexer.html#"><code>net.sourceforge.pmd.lang.go.antlr4.GolangLexer</code></a> will be moved to package
-    `net.sourceforge.pmd.lang.go.ast` with PMD 7. All other classes in the old package will be removed.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/6.55.0/net/sourceforge/pmd/lang/kotlin/antlr4/Kotlin.html#"><code>net.sourceforge.pmd.lang.kotlin.antlr4.Kotlin</code></a> will be renamed to `KotlinLexer` and moved to package
-    `net.sourceforge.pmd.lang.kotlin.ast` with PMD 7.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-lua/6.55.0/net/sourceforge/pmd/lang/lua/antlr4/LuaLexer.html#"><code>net.sourceforge.pmd.lang.lua.antlr4.LuaLexer</code></a> will be moved to package
-    `net.sourceforge.pmd.lang.lua.ast` with PMD 7. All other classes in the old package will be removed.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-cs/6.55.0/net/sourceforge/pmd/lang/cs/antlr4/CSharpLexer.html#"><code>net.sourceforge.pmd.lang.cs.antlr4.CSharpLexer</code></a> will be moved to package `net.sourceforge.pmd.lang.cs.ast` with PMD 7.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-dart/6.55.0/net/sourceforge/pmd/lang/dart/antlr4/Dart2Lexer.html#"><code>net.sourceforge.pmd.lang.dart.antlr4.Dart2Lexer</code></a> will be renamed to `DartLexer` and moved to package
+      `net.sourceforge.pmd.lang.dart.ast` with PMD 7. All other classes in the old package will be removed.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-go/6.55.0/net/sourceforge/pmd/lang/go/antlr4/GolangLexer.html#"><code>net.sourceforge.pmd.lang.go.antlr4.GolangLexer</code></a> will be moved to package
+      `net.sourceforge.pmd.lang.go.ast` with PMD 7. All other classes in the old package will be removed.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/6.55.0/net/sourceforge/pmd/lang/kotlin/antlr4/Kotlin.html#"><code>net.sourceforge.pmd.lang.kotlin.antlr4.Kotlin</code></a> will be renamed to `KotlinLexer` and moved to package
+      `net.sourceforge.pmd.lang.kotlin.ast` with PMD 7.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-lua/6.55.0/net/sourceforge/pmd/lang/lua/antlr4/LuaLexer.html#"><code>net.sourceforge.pmd.lang.lua.antlr4.LuaLexer</code></a> will be moved to package
+      `net.sourceforge.pmd.lang.lua.ast` with PMD 7. All other classes in the old package will be removed.
 
 #### 6.27.0
 
@@ -2412,10 +2412,10 @@ The following usages are now deprecated in the **Apex**, **Javascript**, **PL/SQ
     Those constructors will be made package private with 7.0.0.
 *   **Subclassing of abstract node classes, or usage of their type**. The base classes are internal API
     and will be hidden in version 7.0.0. You should not couple your code to them.
-  *   In the meantime you should use interfaces like <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0/net/sourceforge/pmd/lang/visualforce/ast/VfNode.html#"><code>VfNode</code></a> or
-      <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a>, or the other published interfaces in this package,
-      to refer to nodes generically.
-  *   Concrete node classes will **be made final** with 7.0.0.
+*   In the meantime you should use interfaces like <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0/net/sourceforge/pmd/lang/visualforce/ast/VfNode.html#"><code>VfNode</code></a> or
+    <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a>, or the other published interfaces in this package,
+    to refer to nodes generically.
+*   Concrete node classes will **be made final** with 7.0.0.
 *   Setters found in any node class or interface. **Rules should consider the AST immutable**.
     We will make those setters package private with 7.0.0.
 *   The implementation classes of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Parser.html#"><code>Parser</code></a> (eg <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/6.55.0/net/sourceforge/pmd/lang/vf/VfParser.html#"><code>VfParser</code></a>) are deprecated and should not be used directly.
@@ -2506,49 +2506,49 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 **For removal**
 
 * pmd-core
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/dfa/DFAGraphRule.html#"><code>DFAGraphRule</code></a> and its implementations
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/dfa/DFAGraphMethod.html#"><code>DFAGraphMethod</code></a>
-  * Many methods on the <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a> interface
-    and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/ast/AbstractNode.html#"><code>AbstractNode</code></a> base class. See their javadoc for details.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/ast/Node.html#isFindBoundary()"><code>Node#isFindBoundary</code></a> is deprecated for XPath queries.
-  * Many APIs of `net.sourceforge.pmd.lang.metrics`, though most of them were internal and
-    probably not used directly outside of PMD. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/metrics/MetricsUtil.html#"><code>MetricsUtil</code></a> as
-    a replacement for the language-specific façades too.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/ast/QualifiableNode.html#"><code>QualifiableNode</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/ast/QualifiedName.html#"><code>QualifiedName</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/dfa/DFAGraphRule.html#"><code>DFAGraphRule</code></a> and its implementations
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/dfa/DFAGraphMethod.html#"><code>DFAGraphMethod</code></a>
+    * Many methods on the <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a> interface
+      and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/ast/AbstractNode.html#"><code>AbstractNode</code></a> base class. See their javadoc for details.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/ast/Node.html#isFindBoundary()"><code>Node#isFindBoundary</code></a> is deprecated for XPath queries.
+    * Many APIs of `net.sourceforge.pmd.lang.metrics`, though most of them were internal and
+      probably not used directly outside of PMD. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/metrics/MetricsUtil.html#"><code>MetricsUtil</code></a> as
+      a replacement for the language-specific façades too.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/ast/QualifiableNode.html#"><code>QualifiableNode</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/ast/QualifiedName.html#"><code>QualifiedName</code></a>
 * pmd-java
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/AbstractJavaParser.html#"><code>AbstractJavaParser</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/AbstractJavaHandler.html#"><code>AbstractJavaHandler</code></a>
-  * [`ASTAnyTypeDeclaration.TypeKind`](https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.TypeKind.html)
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getTypeKind()"><code>ASTAnyTypeDeclaration#getTypeKind</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/JavaQualifiedName.html#"><code>JavaQualifiedName</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTCatchStatement.html#getBlock()"><code>ASTCatchStatement#getBlock</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTCompilationUnit.html#declarationsAreInDefaultPackage()"><code>ASTCompilationUnit#declarationsAreInDefaultPackage</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/JavaQualifiableNode.html#"><code>JavaQualifiableNode</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getQualifiedName()"><code>ASTAnyTypeDeclaration#getQualifiedName</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTMethodOrConstructorDeclaration.html#getQualifiedName()"><code>ASTMethodOrConstructorDeclaration#getQualifiedName</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTLambdaExpression.html#getQualifiedName()"><code>ASTLambdaExpression#getQualifiedName</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/qname/package-summary.html#"><code>net.sourceforge.pmd.lang.java.qname</code></a> and its contents
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/MethodLikeNode.html#"><code>MethodLikeNode</code></a>
-    * Its methods will also be removed from its implementations,
-      <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTMethodOrConstructorDeclaration.html#"><code>ASTMethodOrConstructorDeclaration</code></a>,
-      <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTLambdaExpression.html#"><code>ASTLambdaExpression</code></a>.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getImage()"><code>ASTAnyTypeDeclaration#getImage</code></a> will be removed. Please use `getSimpleName()`
-    instead. This affects <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTAnnotationTypeDeclaration.html#getImage()"><code>ASTAnnotationTypeDeclaration#getImage</code></a>,
-    <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#getImage()"><code>ASTClassOrInterfaceDeclaration#getImage</code></a>, and
-    <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTEnumDeclaration.html#getImage()"><code>ASTEnumDeclaration#getImage</code></a>.
-  * Several methods of <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTTryStatement.html#"><code>ASTTryStatement</code></a>, replacements with other names
-    have been added. This includes the XPath attribute `@Finally`, replace it with a test for `child::FinallyStatement`.
-  * Several methods named `getGuardExpressionNode` are replaced with `getCondition`. This affects the
-    following nodes: WhileStatement, DoStatement, ForStatement, IfStatement, AssertStatement, ConditionalExpression.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTYieldStatement.html#"><code>ASTYieldStatement</code></a> will not implement <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a>
-    anymore come 7.0.0. Test the type of the expression nested within it.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.html#"><code>JavaMetrics</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/metrics/JavaMetricsComputer.html#"><code>JavaMetricsComputer</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTArguments.html#getArgumentCount()"><code>ASTArguments#getArgumentCount</code></a>.
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTArguments.html#size()"><code>size</code></a> instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTFormalParameters.html#getParameterCount()"><code>ASTFormalParameters#getParameterCount</code></a>.
-    Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTFormalParameters.html#size()"><code>size</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/AbstractJavaParser.html#"><code>AbstractJavaParser</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/AbstractJavaHandler.html#"><code>AbstractJavaHandler</code></a>
+    * [`ASTAnyTypeDeclaration.TypeKind`](https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.TypeKind.html)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getTypeKind()"><code>ASTAnyTypeDeclaration#getTypeKind</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/JavaQualifiedName.html#"><code>JavaQualifiedName</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTCatchStatement.html#getBlock()"><code>ASTCatchStatement#getBlock</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTCompilationUnit.html#declarationsAreInDefaultPackage()"><code>ASTCompilationUnit#declarationsAreInDefaultPackage</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/JavaQualifiableNode.html#"><code>JavaQualifiableNode</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getQualifiedName()"><code>ASTAnyTypeDeclaration#getQualifiedName</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTMethodOrConstructorDeclaration.html#getQualifiedName()"><code>ASTMethodOrConstructorDeclaration#getQualifiedName</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTLambdaExpression.html#getQualifiedName()"><code>ASTLambdaExpression#getQualifiedName</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/qname/package-summary.html#"><code>net.sourceforge.pmd.lang.java.qname</code></a> and its contents
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/MethodLikeNode.html#"><code>MethodLikeNode</code></a>
+        * Its methods will also be removed from its implementations,
+          <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTMethodOrConstructorDeclaration.html#"><code>ASTMethodOrConstructorDeclaration</code></a>,
+          <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTLambdaExpression.html#"><code>ASTLambdaExpression</code></a>.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getImage()"><code>ASTAnyTypeDeclaration#getImage</code></a> will be removed. Please use `getSimpleName()`
+      instead. This affects <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTAnnotationTypeDeclaration.html#getImage()"><code>ASTAnnotationTypeDeclaration#getImage</code></a>,
+      <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#getImage()"><code>ASTClassOrInterfaceDeclaration#getImage</code></a>, and
+      <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTEnumDeclaration.html#getImage()"><code>ASTEnumDeclaration#getImage</code></a>.
+    * Several methods of <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTTryStatement.html#"><code>ASTTryStatement</code></a>, replacements with other names
+      have been added. This includes the XPath attribute `@Finally`, replace it with a test for `child::FinallyStatement`.
+    * Several methods named `getGuardExpressionNode` are replaced with `getCondition`. This affects the
+      following nodes: WhileStatement, DoStatement, ForStatement, IfStatement, AssertStatement, ConditionalExpression.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTYieldStatement.html#"><code>ASTYieldStatement</code></a> will not implement <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a>
+      anymore come 7.0.0. Test the type of the expression nested within it.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.html#"><code>JavaMetrics</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/metrics/JavaMetricsComputer.html#"><code>JavaMetricsComputer</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTArguments.html#getArgumentCount()"><code>ASTArguments#getArgumentCount</code></a>.
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTArguments.html#size()"><code>size</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTFormalParameters.html#getParameterCount()"><code>ASTFormalParameters#getParameterCount</code></a>.
+      Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTFormalParameters.html#size()"><code>size</code></a> instead.
 * pmd-apex
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.55.0/net/sourceforge/pmd/lang/apex/metrics/ApexMetrics.html#"><code>ApexMetrics</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.55.0/net/sourceforge/pmd/lang/apex/metrics/ApexMetricsComputer.html#"><code>ApexMetricsComputer</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.55.0/net/sourceforge/pmd/lang/apex/metrics/ApexMetrics.html#"><code>ApexMetrics</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.55.0/net/sourceforge/pmd/lang/apex/metrics/ApexMetricsComputer.html#"><code>ApexMetricsComputer</code></a>
 
 **In ASTs (JSP)**
 
@@ -2562,10 +2562,10 @@ The following usages are now deprecated **in the JSP AST** (with other languages
     Those constructors will be made package private with 7.0.0.
 *   **Subclassing of abstract node classes, or usage of their type**. The base classes are internal API
     and will be hidden in version 7.0.0. You should not couple your code to them.
-  *   In the meantime you should use interfaces like <a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0/net/sourceforge/pmd/lang/jsp/ast/JspNode.html#"><code>JspNode</code></a> or
-      <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a>, or the other published interfaces in this package,
-      to refer to nodes generically.
-  *   Concrete node classes will **be made final** with 7.0.0.
+*   In the meantime you should use interfaces like <a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0/net/sourceforge/pmd/lang/jsp/ast/JspNode.html#"><code>JspNode</code></a> or
+    <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a>, or the other published interfaces in this package,
+    to refer to nodes generically.
+*   Concrete node classes will **be made final** with 7.0.0.
 *   Setters found in any node class or interface. **Rules should consider the AST immutable**.
     We will make those setters package private with 7.0.0.
 *   The class <a href="https://docs.pmd-code.org/apidocs/pmd-jsp/6.55.0/net/sourceforge/pmd/lang/jsp/JspParser.html#"><code>JspParser</code></a> is deprecated and should not be used directly.
@@ -2585,10 +2585,10 @@ The following usages are now deprecated **in the VM AST** (with other languages 
     Those constructors will be made package private with 7.0.0.
 *   **Subclassing of abstract node classes, or usage of their type**. The base classes are internal API
     and will be hidden in version 7.0.0. You should not couple your code to them.
-  *   In the meantime you should use interfaces like <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0/net/sourceforge/pmd/lang/velocity/ast/VtlNode.html#"><code>VtlNode</code></a> or
-      <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a>, or the other published interfaces in this package,
-      to refer to nodes generically.
-  *   Concrete node classes will **be made final** with 7.0.0.
+*   In the meantime you should use interfaces like <a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.0.0/net/sourceforge/pmd/lang/velocity/ast/VtlNode.html#"><code>VtlNode</code></a> or
+    <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a>, or the other published interfaces in this package,
+    to refer to nodes generically.
+*   Concrete node classes will **be made final** with 7.0.0.
 *   Setters found in any node class or interface. **Rules should consider the AST immutable**.
     We will make those setters package private with 7.0.0.
 *   The package <a href="https://docs.pmd-code.org/apidocs/pmd-vm/6.55.0/net/sourceforge/pmd/lang/vm/directive/package-summary.html#"><code>net.sourceforge.pmd.lang.vm.directive</code></a> as well as the classes
@@ -2645,36 +2645,36 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 **For removal**
 
 * pmd-core
-  * Many methods on the <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a> interface
-    and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/ast/AbstractNode.html#"><code>AbstractNode</code></a> base class. See their javadoc for details.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/ast/Node.html#isFindBoundary()"><code>Node#isFindBoundary</code></a> is deprecated for XPath queries.
+    * Many methods on the <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a> interface
+      and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/ast/AbstractNode.html#"><code>AbstractNode</code></a> base class. See their javadoc for details.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/ast/Node.html#isFindBoundary()"><code>Node#isFindBoundary</code></a> is deprecated for XPath queries.
 * pmd-java
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/AbstractJavaParser.html#"><code>AbstractJavaParser</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/AbstractJavaHandler.html#"><code>AbstractJavaHandler</code></a>
-  * [`ASTAnyTypeDeclaration.TypeKind`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.TypeKind.html)
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getTypeKind()"><code>ASTAnyTypeDeclaration#getTypeKind</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/JavaQualifiedName.html#"><code>JavaQualifiedName</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTCatchStatement.html#getBlock()"><code>ASTCatchStatement#getBlock</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTCompilationUnit.html#declarationsAreInDefaultPackage()"><code>ASTCompilationUnit#declarationsAreInDefaultPackage</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/JavaQualifiableNode.html#"><code>JavaQualifiableNode</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getQualifiedName()"><code>ASTAnyTypeDeclaration#getQualifiedName</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTMethodOrConstructorDeclaration.html#getQualifiedName()"><code>ASTMethodOrConstructorDeclaration#getQualifiedName</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTLambdaExpression.html#getQualifiedName()"><code>ASTLambdaExpression#getQualifiedName</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/qname/package-summary.html#"><code>net.sourceforge.pmd.lang.java.qname</code></a> and its contents
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/MethodLikeNode.html#"><code>MethodLikeNode</code></a>
-    * Its methods will also be removed from its implementations,
-      <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTMethodOrConstructorDeclaration.html#"><code>ASTMethodOrConstructorDeclaration</code></a>,
-      <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTLambdaExpression.html#"><code>ASTLambdaExpression</code></a>.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getImage()"><code>ASTAnyTypeDeclaration#getImage</code></a> will be removed. Please use `getSimpleName()`
-    instead. This affects <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTAnnotationTypeDeclaration.html#getImage()"><code>ASTAnnotationTypeDeclaration#getImage</code></a>,
-    <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#getImage()"><code>ASTClassOrInterfaceDeclaration#getImage</code></a>, and
-    <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTEnumDeclaration.html#getImage()"><code>ASTEnumDeclaration#getImage</code></a>.
-  * Several methods of <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTTryStatement.html#"><code>ASTTryStatement</code></a>, replacements with other names
-    have been added. This includes the XPath attribute `@Finally`, replace it with a test for `child::FinallyStatement`.
-  * Several methods named `getGuardExpressionNode` are replaced with `getCondition`. This affects the
-    following nodes: WhileStatement, DoStatement, ForStatement, IfStatement, AssertStatement, ConditionalExpression.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTYieldStatement.html#"><code>ASTYieldStatement</code></a> will not implement <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a>
-    anymore come 7.0.0. Test the type of the expression nested within it.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/AbstractJavaParser.html#"><code>AbstractJavaParser</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/AbstractJavaHandler.html#"><code>AbstractJavaHandler</code></a>
+    * [`ASTAnyTypeDeclaration.TypeKind`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.TypeKind.html)
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getTypeKind()"><code>ASTAnyTypeDeclaration#getTypeKind</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/JavaQualifiedName.html#"><code>JavaQualifiedName</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTCatchStatement.html#getBlock()"><code>ASTCatchStatement#getBlock</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTCompilationUnit.html#declarationsAreInDefaultPackage()"><code>ASTCompilationUnit#declarationsAreInDefaultPackage</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/JavaQualifiableNode.html#"><code>JavaQualifiableNode</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getQualifiedName()"><code>ASTAnyTypeDeclaration#getQualifiedName</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTMethodOrConstructorDeclaration.html#getQualifiedName()"><code>ASTMethodOrConstructorDeclaration#getQualifiedName</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTLambdaExpression.html#getQualifiedName()"><code>ASTLambdaExpression#getQualifiedName</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/qname/package-summary.html#"><code>net.sourceforge.pmd.lang.java.qname</code></a> and its contents
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/MethodLikeNode.html#"><code>MethodLikeNode</code></a>
+        * Its methods will also be removed from its implementations,
+          <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTMethodOrConstructorDeclaration.html#"><code>ASTMethodOrConstructorDeclaration</code></a>,
+          <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTLambdaExpression.html#"><code>ASTLambdaExpression</code></a>.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getImage()"><code>ASTAnyTypeDeclaration#getImage</code></a> will be removed. Please use `getSimpleName()`
+      instead. This affects <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTAnnotationTypeDeclaration.html#getImage()"><code>ASTAnnotationTypeDeclaration#getImage</code></a>,
+      <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#getImage()"><code>ASTClassOrInterfaceDeclaration#getImage</code></a>, and
+      <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTEnumDeclaration.html#getImage()"><code>ASTEnumDeclaration#getImage</code></a>.
+    * Several methods of <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTTryStatement.html#"><code>ASTTryStatement</code></a>, replacements with other names
+      have been added. This includes the XPath attribute `@Finally`, replace it with a test for `child::FinallyStatement`.
+    * Several methods named `getGuardExpressionNode` are replaced with `getCondition`. This affects the
+      following nodes: WhileStatement, DoStatement, ForStatement, IfStatement, AssertStatement, ConditionalExpression.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTYieldStatement.html#"><code>ASTYieldStatement</code></a> will not implement <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a>
+      anymore come 7.0.0. Test the type of the expression nested within it.
 
 #### 6.20.0
 
@@ -2687,39 +2687,39 @@ No changes.
 **For removal**
 
 * pmd-core
-  * All the package <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/dcd/package-summary.html#"><code>net.sourceforge.pmd.dcd</code></a> and its subpackages. See <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/dcd/DCD.html#"><code>DCD</code></a>.
-  * In <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageRegistry.html#"><code>LanguageRegistry</code></a>:
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageRegistry.html#commaSeparatedTerseNamesForLanguageVersion(java.util.List)"><code>commaSeparatedTerseNamesForLanguageVersion</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageRegistry.html#commaSeparatedTerseNamesForLanguage(java.util.List)"><code>commaSeparatedTerseNamesForLanguage</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageRegistry.html#findAllVersions()"><code>findAllVersions</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageRegistry.html#findLanguageVersionByTerseName(java.lang.String)"><code>findLanguageVersionByTerseName</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageRegistry.html#getInstance()"><code>getInstance</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSet.html#getExcludePatterns()"><code>RuleSet#getExcludePatterns</code></a>. Use the new method <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSet.html#getFileExclusions()"><code>getFileExclusions</code></a> instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSet.html#getIncludePatterns()"><code>RuleSet#getIncludePatterns</code></a>. Use the new method <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSet.html#getFileInclusions()"><code>getFileInclusions</code></a> instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/Parser.html#canParse()"><code>Parser#canParse</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/Parser.html#getSuppressMap()"><code>Parser#getSuppressMap</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/rules/RuleBuilder.html#<init>(java.lang.String,java.lang.String,java.lang.String)"><code>RuleBuilder#RuleBuilder</code></a>. Use the new constructor with the correct ResourceLoader instead.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/rules/RuleFactory.html#<init>()"><code>RuleFactory#RuleFactory</code></a>. Use the new constructor with the correct ResourceLoader instead.
+    * All the package <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/dcd/package-summary.html#"><code>net.sourceforge.pmd.dcd</code></a> and its subpackages. See <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/dcd/DCD.html#"><code>DCD</code></a>.
+    * In <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageRegistry.html#"><code>LanguageRegistry</code></a>:
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageRegistry.html#commaSeparatedTerseNamesForLanguageVersion(java.util.List)"><code>commaSeparatedTerseNamesForLanguageVersion</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageRegistry.html#commaSeparatedTerseNamesForLanguage(java.util.List)"><code>commaSeparatedTerseNamesForLanguage</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageRegistry.html#findAllVersions()"><code>findAllVersions</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageRegistry.html#findLanguageVersionByTerseName(java.lang.String)"><code>findLanguageVersionByTerseName</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageRegistry.html#getInstance()"><code>getInstance</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSet.html#getExcludePatterns()"><code>RuleSet#getExcludePatterns</code></a>. Use the new method <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSet.html#getFileExclusions()"><code>getFileExclusions</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSet.html#getIncludePatterns()"><code>RuleSet#getIncludePatterns</code></a>. Use the new method <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSet.html#getFileInclusions()"><code>getFileInclusions</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/Parser.html#canParse()"><code>Parser#canParse</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/Parser.html#getSuppressMap()"><code>Parser#getSuppressMap</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/rules/RuleBuilder.html#<init>(java.lang.String,java.lang.String,java.lang.String)"><code>RuleBuilder#RuleBuilder</code></a>. Use the new constructor with the correct ResourceLoader instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/rules/RuleFactory.html#<init>()"><code>RuleFactory#RuleFactory</code></a>. Use the new constructor with the correct ResourceLoader instead.
 * pmd-java
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/CanSuppressWarnings.html#"><code>CanSuppressWarnings</code></a> and its implementations
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/rule/AbstractJavaRule.html#isSuppressed(net.sourceforge.pmd.lang.ast.Node)"><code>isSuppressed</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/rule/AbstractJavaRule.html#getDeclaringType(net.sourceforge.pmd.lang.ast.Node)"><code>getDeclaringType</code></a>.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/rule/JavaRuleViolation.html#isSupressed(net.sourceforge.pmd.lang.ast.Node,net.sourceforge.pmd.Rule)"><code>isSupressed</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclarator.html#"><code>ASTMethodDeclarator</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#getMethodName()"><code>getMethodName</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#getBlock()"><code>getBlock</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTConstructorDeclaration.html#getParameterCount()"><code>getParameterCount</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/CanSuppressWarnings.html#"><code>CanSuppressWarnings</code></a> and its implementations
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/rule/AbstractJavaRule.html#isSuppressed(net.sourceforge.pmd.lang.ast.Node)"><code>isSuppressed</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/rule/AbstractJavaRule.html#getDeclaringType(net.sourceforge.pmd.lang.ast.Node)"><code>getDeclaringType</code></a>.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/rule/JavaRuleViolation.html#isSupressed(net.sourceforge.pmd.lang.ast.Node,net.sourceforge.pmd.Rule)"><code>isSupressed</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclarator.html#"><code>ASTMethodDeclarator</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#getMethodName()"><code>getMethodName</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#getBlock()"><code>getBlock</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTConstructorDeclaration.html#getParameterCount()"><code>getParameterCount</code></a>
 * pmd-apex
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.55.0/net/sourceforge/pmd/lang/apex/ast/CanSuppressWarnings.html#"><code>CanSuppressWarnings</code></a> and its implementations
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.55.0/net/sourceforge/pmd/lang/apex/rule/ApexRuleViolation.html#isSupressed(net.sourceforge.pmd.lang.ast.Node,net.sourceforge.pmd.Rule)"><code>isSupressed</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.55.0/net/sourceforge/pmd/lang/apex/ast/CanSuppressWarnings.html#"><code>CanSuppressWarnings</code></a> and its implementations
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.55.0/net/sourceforge/pmd/lang/apex/rule/ApexRuleViolation.html#isSupressed(net.sourceforge.pmd.lang.ast.Node,net.sourceforge.pmd.Rule)"><code>isSupressed</code></a>
 
 **Internal APIs**
 
 * pmd-core
-  * All the package <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/util/package-summary.html#"><code>net.sourceforge.pmd.util</code></a> and its subpackages,
-    except <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/util/datasource/package-summary.html#"><code>net.sourceforge.pmd.util.datasource</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/util/database/package-summary.html#"><code>net.sourceforge.pmd.util.database</code></a>.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/cpd/GridBagHelper.html#"><code>GridBagHelper</code></a>
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/renderers/ColumnDescriptor.html#"><code>ColumnDescriptor</code></a>
+    * All the package <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/util/package-summary.html#"><code>net.sourceforge.pmd.util</code></a> and its subpackages,
+      except <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/util/datasource/package-summary.html#"><code>net.sourceforge.pmd.util.datasource</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/util/database/package-summary.html#"><code>net.sourceforge.pmd.util.database</code></a>.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/cpd/GridBagHelper.html#"><code>GridBagHelper</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/renderers/ColumnDescriptor.html#"><code>ColumnDescriptor</code></a>
 
 
 #### 6.18.0
@@ -2758,12 +2758,12 @@ No changes.
 Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0. You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
 
 * pmd-core
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/cache/package-summary.html#"><code>net.sourceforge.pmd.cache</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/cache/package-summary.html#"><code>net.sourceforge.pmd.cache</code></a>
 * pmd-java
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/typeresolution/package-summary.html#"><code>net.sourceforge.pmd.lang.java.typeresolution</code></a>: Everything, including
-    subpackages, except <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/typeresolution/TypeHelper.html#"><code>TypeHelper</code></a> and
-    <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/typeresolution/typedefinition/JavaTypeDefinition.html#"><code>JavaTypeDefinition</code></a>.
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTCompilationUnit.html#getClassTypeResolver()"><code>ASTCompilationUnit#getClassTypeResolver</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/typeresolution/package-summary.html#"><code>net.sourceforge.pmd.lang.java.typeresolution</code></a>: Everything, including
+      subpackages, except <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/typeresolution/TypeHelper.html#"><code>TypeHelper</code></a> and
+      <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/typeresolution/typedefinition/JavaTypeDefinition.html#"><code>JavaTypeDefinition</code></a>.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTCompilationUnit.html#getClassTypeResolver()"><code>ASTCompilationUnit#getClassTypeResolver</code></a>
 
 
 #### 6.17.0
@@ -2789,9 +2789,9 @@ The following usages are now deprecated **in the Java AST** (with other language
   that never need to instantiate node themselves. Those constructors will be made package private with 7.0.0.
 * **Subclassing of abstract node classes, or usage of their type**. Version 7.0.0 will bring a new set of abstractions
   that will be public API, but the base classes are and will stay internal. You should not couple your code to them.
-  * In the meantime you should use interfaces like <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/JavaNode.html#"><code>JavaNode</code></a> or
-    <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a>, or the other published interfaces in this package, to refer to nodes generically.
-  * Concrete node classes will **be made final** with 7.0.0.
+    * In the meantime you should use interfaces like <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/JavaNode.html#"><code>JavaNode</code></a> or
+      <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a>, or the other published interfaces in this package, to refer to nodes generically.
+    * Concrete node classes will **be made final** with 7.0.0.
 * Setters found in any node class or interface. **Rules should consider the AST immutable**. We will make those
   setters package private with 7.0.0.
 
@@ -2807,14 +2807,14 @@ of deprecations.
 
 *   The `DumpFacades` in all languages, that could be used to transform a AST into a textual representation,
     will be removed with PMD 7. The rule designer is a better way to inspect nodes.
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.55.0/net/sourceforge/pmd/lang/apex/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.apex.ast.DumpFacade</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.java.ast.DumpFacade</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-javascript/6.55.0/net/sourceforge/pmd/lang/ecmascript/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.ecmascript.ast.DumpFacade</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-jsp/6.55.0/net/sourceforge/pmd/lang/jsp/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.jsp.ast.DumpFacade</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-plsql/6.55.0/net/sourceforge/pmd/lang/plsql/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.plsql.ast.DumpFacade</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/6.55.0/net/sourceforge/pmd/lang/vf/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.vf.ast.DumpFacade</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-vm/6.55.0/net/sourceforge/pmd/lang/vm/ast/AbstractVmNode.html#dump(java.lang.String,boolean,java.io.Writer)"><code>net.sourceforge.pmd.lang.vm.ast.AbstractVmNode#dump</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.55.0/net/sourceforge/pmd/lang/xml/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.xml.ast.DumpFacade</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.55.0/net/sourceforge/pmd/lang/apex/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.apex.ast.DumpFacade</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.java.ast.DumpFacade</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-javascript/6.55.0/net/sourceforge/pmd/lang/ecmascript/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.ecmascript.ast.DumpFacade</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-jsp/6.55.0/net/sourceforge/pmd/lang/jsp/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.jsp.ast.DumpFacade</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-plsql/6.55.0/net/sourceforge/pmd/lang/plsql/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.plsql.ast.DumpFacade</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/6.55.0/net/sourceforge/pmd/lang/vf/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.vf.ast.DumpFacade</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-vm/6.55.0/net/sourceforge/pmd/lang/vm/ast/AbstractVmNode.html#dump(java.lang.String,boolean,java.io.Writer)"><code>net.sourceforge.pmd.lang.vm.ast.AbstractVmNode#dump</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.55.0/net/sourceforge/pmd/lang/xml/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.xml.ast.DumpFacade</code></a>
 *   The method <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getDumpFacade(java.io.Writer,java.lang.String,boolean)"><code>LanguageVersionHandler#getDumpFacade</code></a> will be
     removed as well. It is deprecated, along with all its implementations in the subclasses of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#"><code>LanguageVersionHandler</code></a>.
 
@@ -2880,32 +2880,32 @@ to remove them in 7.0.0. The proposed changes to the API are described [on the w
 * Instead of spreading properties across countless classes, the utility class <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#"><code>PropertyFactory</code></a> will become
   from 7.0.0 on the only provider for property descriptor builders. Each current property type will be replaced
   by a corresponding method on `PropertyFactory`:
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/IntegerProperty.html#"><code>IntegerProperty</code></a> is replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#intProperty(java.lang.String)"><code>PropertyFactory#intProperty</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/IntegerMultiProperty.html#"><code>IntegerMultiProperty</code></a> is replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#intListProperty(java.lang.String)"><code>PropertyFactory#intListProperty</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/IntegerProperty.html#"><code>IntegerProperty</code></a> is replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#intProperty(java.lang.String)"><code>PropertyFactory#intProperty</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/IntegerMultiProperty.html#"><code>IntegerMultiProperty</code></a> is replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#intListProperty(java.lang.String)"><code>PropertyFactory#intListProperty</code></a>
 
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/FloatProperty.html#"><code>FloatProperty</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/DoubleProperty.html#"><code>DoubleProperty</code></a> are both replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#doubleProperty(java.lang.String)"><code>PropertyFactory#doubleProperty</code></a>.
-    Having a separate property for floats wasn't that useful.
-    * Similarly, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/FloatMultiProperty.html#"><code>FloatMultiProperty</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/DoubleMultiProperty.html#"><code>DoubleMultiProperty</code></a> are replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#doubleListProperty(java.lang.String)"><code>PropertyFactory#doubleListProperty</code></a>.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/FloatProperty.html#"><code>FloatProperty</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/DoubleProperty.html#"><code>DoubleProperty</code></a> are both replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#doubleProperty(java.lang.String)"><code>PropertyFactory#doubleProperty</code></a>.
+      Having a separate property for floats wasn't that useful.
+        * Similarly, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/FloatMultiProperty.html#"><code>FloatMultiProperty</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/DoubleMultiProperty.html#"><code>DoubleMultiProperty</code></a> are replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#doubleListProperty(java.lang.String)"><code>PropertyFactory#doubleListProperty</code></a>.
 
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/StringProperty.html#"><code>StringProperty</code></a> is replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#stringProperty(java.lang.String)"><code>PropertyFactory#stringProperty</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/StringMultiProperty.html#"><code>StringMultiProperty</code></a> is replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#stringListProperty(java.lang.String)"><code>PropertyFactory#stringListProperty</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/StringProperty.html#"><code>StringProperty</code></a> is replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#stringProperty(java.lang.String)"><code>PropertyFactory#stringProperty</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/StringMultiProperty.html#"><code>StringMultiProperty</code></a> is replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#stringListProperty(java.lang.String)"><code>PropertyFactory#stringListProperty</code></a>
 
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/RegexProperty.html#"><code>RegexProperty</code></a> is replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#regexProperty(java.lang.String)"><code>PropertyFactory#regexProperty</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/RegexProperty.html#"><code>RegexProperty</code></a> is replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#regexProperty(java.lang.String)"><code>PropertyFactory#regexProperty</code></a>
 
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/EnumeratedProperty.html#"><code>EnumeratedProperty</code></a> is replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#enumProperty(java.lang.String,java.util.Map)"><code>PropertyFactory#enumProperty</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/EnumeratedProperty.html#"><code>EnumeratedProperty</code></a> is replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#enumListProperty(java.lang.String,java.util.Map)"><code>PropertyFactory#enumListProperty</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/EnumeratedProperty.html#"><code>EnumeratedProperty</code></a> is replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#enumProperty(java.lang.String,java.util.Map)"><code>PropertyFactory#enumProperty</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/EnumeratedProperty.html#"><code>EnumeratedProperty</code></a> is replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#enumListProperty(java.lang.String,java.util.Map)"><code>PropertyFactory#enumListProperty</code></a>
 
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/BooleanProperty.html#"><code>BooleanProperty</code></a> is replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#booleanProperty(java.lang.String)"><code>PropertyFactory#booleanProperty</code></a>
-    * Its multi-valued counterpart, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/BooleanMultiProperty.html#"><code>BooleanMultiProperty</code></a>, is not replaced, because it doesn't have a use case.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/BooleanProperty.html#"><code>BooleanProperty</code></a> is replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#booleanProperty(java.lang.String)"><code>PropertyFactory#booleanProperty</code></a>
+        * Its multi-valued counterpart, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/BooleanMultiProperty.html#"><code>BooleanMultiProperty</code></a>, is not replaced, because it doesn't have a use case.
 
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/CharacterProperty.html#"><code>CharacterProperty</code></a> is replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#charProperty(java.lang.String)"><code>PropertyFactory#charProperty</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/CharacterMultiProperty.html#"><code>CharacterMultiProperty</code></a> is replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#charListProperty(java.lang.String)"><code>PropertyFactory#charListProperty</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/CharacterProperty.html#"><code>CharacterProperty</code></a> is replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#charProperty(java.lang.String)"><code>PropertyFactory#charProperty</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/CharacterMultiProperty.html#"><code>CharacterMultiProperty</code></a> is replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#charListProperty(java.lang.String)"><code>PropertyFactory#charListProperty</code></a>
 
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/LongProperty.html#"><code>LongProperty</code></a> is replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#longIntProperty(java.lang.String)"><code>PropertyFactory#longIntProperty</code></a>
-    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/LongMultiProperty.html#"><code>LongMultiProperty</code></a> is replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#longIntListProperty(java.lang.String)"><code>PropertyFactory#longIntListProperty</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/LongProperty.html#"><code>LongProperty</code></a> is replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#longIntProperty(java.lang.String)"><code>PropertyFactory#longIntProperty</code></a>
+        * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/LongMultiProperty.html#"><code>LongMultiProperty</code></a> is replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/properties/PropertyFactory.html#longIntListProperty(java.lang.String)"><code>PropertyFactory#longIntListProperty</code></a>
 
-  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/MethodProperty.html#"><code>MethodProperty</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/FileProperty.html#"><code>FileProperty</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/TypeProperty.html#"><code>TypeProperty</code></a> and their multi-valued counterparts
-    are discontinued for lack of a use-case, and have no planned replacement in 7.0.0 for now.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/MethodProperty.html#"><code>MethodProperty</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/FileProperty.html#"><code>FileProperty</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/properties/TypeProperty.html#"><code>TypeProperty</code></a> and their multi-valued counterparts
+      are discontinued for lack of a use-case, and have no planned replacement in 7.0.0 for now.
 
 
 Here's an example:
@@ -2994,56 +2994,56 @@ You're highly encouraged to migrate to using this new API as soon as possible, t
 *   Several methods from <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTLocalVariableDeclaration.html#"><code>ASTLocalVariableDeclaration</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#"><code>ASTFieldDeclaration</code></a> have
     also been deprecated:
 
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#"><code>ASTFieldDeclaration</code></a> won't be a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a> come 7.0.0, so
-      <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#getType()"><code>getType</code></a> and
-      <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#getTypeDefinition()"><code>getTypeDefinition</code></a> are deprecated.
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#"><code>ASTFieldDeclaration</code></a> won't be a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a> come 7.0.0, so
+    <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#getType()"><code>getType</code></a> and
+    <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#getTypeDefinition()"><code>getTypeDefinition</code></a> are deprecated.
 
-  *   The method `getVariableName` on those two nodes will be removed, too.
+*   The method `getVariableName` on those two nodes will be removed, too.
 
-  *   All these are deprecated because those nodes may declare several variables at once, possibly
-      with different types (and obviously with different names). They both implement `Iterator<`<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a>`>`
-      though, so you should iterate on each declared variable. See [#910](https://github.com/pmd/pmd/issues/910).
+*   All these are deprecated because those nodes may declare several variables at once, possibly
+    with different types (and obviously with different names). They both implement `Iterator<`<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a>`>`
+    though, so you should iterate on each declared variable. See [#910](https://github.com/pmd/pmd/issues/910).
 
 *   Visitor decorators are now deprecated and will be removed in PMD 7.0.0. They were originally a way to write
     composable visitors, used in the metrics framework, but they didn't prove cost-effective.
 
-  *   In <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.java.ast</code></a>: <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/JavaParserDecoratedVisitor.html#"><code>JavaParserDecoratedVisitor</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/JavaParserControllessVisitor.html#"><code>JavaParserControllessVisitor</code></a>,
-      <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/JavaParserControllessVisitorAdapter.html#"><code>JavaParserControllessVisitorAdapter</code></a>, and <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/JavaParserVisitorDecorator.html#"><code>JavaParserVisitorDecorator</code></a> are deprecated with no intended replacement.
+*   In <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.java.ast</code></a>: <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/JavaParserDecoratedVisitor.html#"><code>JavaParserDecoratedVisitor</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/JavaParserControllessVisitor.html#"><code>JavaParserControllessVisitor</code></a>,
+    <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/JavaParserControllessVisitorAdapter.html#"><code>JavaParserControllessVisitorAdapter</code></a>, and <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/JavaParserVisitorDecorator.html#"><code>JavaParserVisitorDecorator</code></a> are deprecated with no intended replacement.
 
 
 *   The LanguageModules of several languages, that only support CPD execution, have been deprecated. These languages
     are not fully supported by PMD, so having a language module does not make sense. The functionality of CPD is
     not affected by this change. The following classes have been deprecated and will be removed with PMD 7.0.0:
 
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-cpp/6.55.0/net/sourceforge/pmd/lang/cpp/CppHandler.html#"><code>CppHandler</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-cpp/6.55.0/net/sourceforge/pmd/lang/cpp/CppLanguageModule.html#"><code>CppLanguageModule</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-cpp/6.55.0/net/sourceforge/pmd/lang/cpp/CppParser.html#"><code>CppParser</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-cs/6.55.0/net/sourceforge/pmd/lang/cs/CsLanguageModule.html#"><code>CsLanguageModule</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-fortran/6.55.0/net/sourceforge/pmd/lang/fortran/FortranLanguageModule.html#"><code>FortranLanguageModule</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-groovy/6.55.0/net/sourceforge/pmd/lang/groovy/GroovyLanguageModule.html#"><code>GroovyLanguageModule</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-matlab/6.55.0/net/sourceforge/pmd/lang/matlab/MatlabHandler.html#"><code>MatlabHandler</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-matlab/6.55.0/net/sourceforge/pmd/lang/matlab/MatlabLanguageModule.html#"><code>MatlabLanguageModule</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-matlab/6.55.0/net/sourceforge/pmd/lang/matlab/MatlabParser.html#"><code>MatlabParser</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-objectivec/6.55.0/net/sourceforge/pmd/lang/objectivec/ObjectiveCHandler.html#"><code>ObjectiveCHandler</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-objectivec/6.55.0/net/sourceforge/pmd/lang/objectivec/ObjectiveCLanguageModule.html#"><code>ObjectiveCLanguageModule</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-objectivec/6.55.0/net/sourceforge/pmd/lang/objectivec/ObjectiveCParser.html#"><code>ObjectiveCParser</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-php/6.55.0/net/sourceforge/pmd/lang/php/PhpLanguageModule.html#"><code>PhpLanguageModule</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-python/6.55.0/net/sourceforge/pmd/lang/python/PythonHandler.html#"><code>PythonHandler</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-python/6.55.0/net/sourceforge/pmd/lang/python/PythonLanguageModule.html#"><code>PythonLanguageModule</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-python/6.55.0/net/sourceforge/pmd/lang/python/PythonParser.html#"><code>PythonParser</code></a>
-  *   <a href="https://docs.pmd-code.org/apidocs/pmd-ruby/6.55.0/net/sourceforge/pmd/lang/ruby/RubyLanguageModule.html#"><code>RubyLanguageModule</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-cpp/6.55.0/net/sourceforge/pmd/lang/cpp/CppHandler.html#"><code>CppHandler</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-cpp/6.55.0/net/sourceforge/pmd/lang/cpp/CppLanguageModule.html#"><code>CppLanguageModule</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-cpp/6.55.0/net/sourceforge/pmd/lang/cpp/CppParser.html#"><code>CppParser</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-cs/6.55.0/net/sourceforge/pmd/lang/cs/CsLanguageModule.html#"><code>CsLanguageModule</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-fortran/6.55.0/net/sourceforge/pmd/lang/fortran/FortranLanguageModule.html#"><code>FortranLanguageModule</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-groovy/6.55.0/net/sourceforge/pmd/lang/groovy/GroovyLanguageModule.html#"><code>GroovyLanguageModule</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-matlab/6.55.0/net/sourceforge/pmd/lang/matlab/MatlabHandler.html#"><code>MatlabHandler</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-matlab/6.55.0/net/sourceforge/pmd/lang/matlab/MatlabLanguageModule.html#"><code>MatlabLanguageModule</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-matlab/6.55.0/net/sourceforge/pmd/lang/matlab/MatlabParser.html#"><code>MatlabParser</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-objectivec/6.55.0/net/sourceforge/pmd/lang/objectivec/ObjectiveCHandler.html#"><code>ObjectiveCHandler</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-objectivec/6.55.0/net/sourceforge/pmd/lang/objectivec/ObjectiveCLanguageModule.html#"><code>ObjectiveCLanguageModule</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-objectivec/6.55.0/net/sourceforge/pmd/lang/objectivec/ObjectiveCParser.html#"><code>ObjectiveCParser</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-php/6.55.0/net/sourceforge/pmd/lang/php/PhpLanguageModule.html#"><code>PhpLanguageModule</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-python/6.55.0/net/sourceforge/pmd/lang/python/PythonHandler.html#"><code>PythonHandler</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-python/6.55.0/net/sourceforge/pmd/lang/python/PythonLanguageModule.html#"><code>PythonLanguageModule</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-python/6.55.0/net/sourceforge/pmd/lang/python/PythonParser.html#"><code>PythonParser</code></a>
+*   <a href="https://docs.pmd-code.org/apidocs/pmd-ruby/6.55.0/net/sourceforge/pmd/lang/ruby/RubyLanguageModule.html#"><code>RubyLanguageModule</code></a>
 
 
 * Optional AST processing stages like symbol table, type resolution or data-flow analysis will be reified
   in 7.0.0 to factorise common logic and make them extensible. Further explanations about this change can be
   found on [#1426](https://github.com/pmd/pmd/pull/1426). Consequently, the following APIs are deprecated for
   removal:
-  * In <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/Rule.html#"><code>Rule</code></a>: <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/Rule.html#isDfa()"><code>isDfa()</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/Rule.html#isTypeResolution()"><code>isTypeResolution()</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/Rule.html#isMultifile()"><code>isMultifile()</code></a> and their
-    respective setters.
-  * In <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSet.html#"><code>RuleSet</code></a>: <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSet.html#usesDFA(net.sourceforge.pmd.lang.Language)"><code>usesDFA(Language)</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSet.html#usesTypeResolution(net.sourceforge.pmd.lang.Language)"><code>usesTypeResolution(Language)</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSet.html#usesMultifile(net.sourceforge.pmd.lang.Language)"><code>usesMultifile(Language)</code></a>
-  * In <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSets.html#"><code>RuleSets</code></a>: <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSets.html#usesDFA(net.sourceforge.pmd.lang.Language)"><code>usesDFA(Language)</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSets.html#usesTypeResolution(net.sourceforge.pmd.lang.Language)"><code>usesTypeResolution(Language)</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSets.html#usesMultifile(net.sourceforge.pmd.lang.Language)"><code>usesMultifile(Language)</code></a>
-  * In <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#"><code>LanguageVersionHandler</code></a>: <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getDataFlowFacade()"><code>getDataFlowFacade()</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getSymbolFacade()"><code>getSymbolFacade()</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getSymbolFacade(java.lang.ClassLoader)"><code>getSymbolFacade(ClassLoader)</code></a>,
-    <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getTypeResolutionFacade(java.lang.ClassLoader)"><code>getTypeResolutionFacade(ClassLoader)</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getQualifiedNameResolutionFacade(java.lang.ClassLoader)"><code>getQualifiedNameResolutionFacade(ClassLoader)</code></a>
+    * In <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/Rule.html#"><code>Rule</code></a>: <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/Rule.html#isDfa()"><code>isDfa()</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/Rule.html#isTypeResolution()"><code>isTypeResolution()</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/Rule.html#isMultifile()"><code>isMultifile()</code></a> and their
+      respective setters.
+    * In <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSet.html#"><code>RuleSet</code></a>: <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSet.html#usesDFA(net.sourceforge.pmd.lang.Language)"><code>usesDFA(Language)</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSet.html#usesTypeResolution(net.sourceforge.pmd.lang.Language)"><code>usesTypeResolution(Language)</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSet.html#usesMultifile(net.sourceforge.pmd.lang.Language)"><code>usesMultifile(Language)</code></a>
+    * In <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSets.html#"><code>RuleSets</code></a>: <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSets.html#usesDFA(net.sourceforge.pmd.lang.Language)"><code>usesDFA(Language)</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSets.html#usesTypeResolution(net.sourceforge.pmd.lang.Language)"><code>usesTypeResolution(Language)</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSets.html#usesMultifile(net.sourceforge.pmd.lang.Language)"><code>usesMultifile(Language)</code></a>
+    * In <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#"><code>LanguageVersionHandler</code></a>: <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getDataFlowFacade()"><code>getDataFlowFacade()</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getSymbolFacade()"><code>getSymbolFacade()</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getSymbolFacade(java.lang.ClassLoader)"><code>getSymbolFacade(ClassLoader)</code></a>,
+      <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getTypeResolutionFacade(java.lang.ClassLoader)"><code>getTypeResolutionFacade(ClassLoader)</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getQualifiedNameResolutionFacade(java.lang.ClassLoader)"><code>getQualifiedNameResolutionFacade(ClassLoader)</code></a>
 
 #### 6.9.0
 
@@ -3120,9 +3120,9 @@ No changes.
 
 * The method <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#getXPathNodeName()"><code>getXPathNodeName</code></a> is added to the <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a> interface, which removes the
   use of `toString` of a node to get its XPath element name (see [#569](https://github.com/pmd/pmd/issues/569)).
-  * The default implementation provided in <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/ast/AbstractNode.html#"><code>AbstractNode</code></a>, will be removed with 7.0.0
-  * With 7.0.0, the `Node.toString` method will not necessarily provide its XPath node
-    name anymore.
+    * The default implementation provided in <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/ast/AbstractNode.html#"><code>AbstractNode</code></a>, will be removed with 7.0.0
+    * With 7.0.0, the `Node.toString` method will not necessarily provide its XPath node
+      name anymore.
 
 * The interface <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/cpd/Renderer.html#"><code>net.sourceforge.pmd.cpd.Renderer</code></a> has been deprecated. A new interface
   <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/cpd/renderer/CPDRenderer.html#"><code>CPDRenderer</code></a> has been introduced to replace it. The main
@@ -3141,343 +3141,343 @@ No changes.
 ## 🐛 Fixed Issues
 
 * miscellaneous
-  * [#881](https://github.com/pmd/pmd/issues/881):   \[all] Breaking API changes for 7.0.0
-  * [#896](https://github.com/pmd/pmd/issues/896):   \[all] Use slf4j
-  * [#1431](https://github.com/pmd/pmd/pull/1431):   \[ui] Remove old GUI applications (designerold, bgastviewer)
-  * [#1451](https://github.com/pmd/pmd/issues/1451): \[core] RulesetFactoryCompatibility stores the whole ruleset file in memory as a string
-  * [#2496](https://github.com/pmd/pmd/issues/2496): Update PMD 7 Logo on landing page
-  * [#2497](https://github.com/pmd/pmd/issues/2497): PMD 7 Logo page
-  * [#2498](https://github.com/pmd/pmd/issues/2498): Update PMD 7 Logo in documentation
-  * [#3797](https://github.com/pmd/pmd/issues/3797): \[all] Use JUnit5
-  * [#4462](https://github.com/pmd/pmd/issues/4462): Provide Software Bill of Materials (SBOM)
-  * [#4460](https://github.com/pmd/pmd/pull/4460):   Fix assembly-plugin warnings
-  * [#4582](https://github.com/pmd/pmd/issues/4582): \[dist] Download link broken
-  * [#4586](https://github.com/pmd/pmd/pull/4586):   Use explicit encoding in ruleset xml files
-  * [#4642](https://github.com/pmd/pmd/issues/4642): Update regression tests with Java 21 language features
-  * [#4691](https://github.com/pmd/pmd/issues/4691): \[CVEs] Critical and High CEVs reported on PMD and PMD dependencies
-  * [#4699](https://github.com/pmd/pmd/pull/4699):   Make PMD buildable with java 21
-  * [#4736](https://github.com/pmd/pmd/issues/4736): \[ci] Improve build procedure
-  * [#4741](https://github.com/pmd/pmd/pull/4741):   Add pmd-compat6 module for maven-pmd-plugin
-  * [#4749](https://github.com/pmd/pmd/pull/4749):   Fixes NoSuchMethodError on processing errors in pmd-compat6
-  * [#4776](https://github.com/pmd/pmd/issues/4776): \[ci] Upgrade to ruby 3
-  * [#4796](https://github.com/pmd/pmd/pull/4796):   Remove deprecated and release rulesets
-  * [#4823](https://github.com/pmd/pmd/pull/4823):   Update to use renamed pmd-designer
-  * [#4827](https://github.com/pmd/pmd/pull/4827):   \[compat6] Support config errors and cpd for csharp
-  * [#4830](https://github.com/pmd/pmd/issues/4830): Consolidate packages in each maven module
-  * [#4867](https://github.com/pmd/pmd/issues/4867): \[dist] ./mvnw command not found in dist-src
+    * [#881](https://github.com/pmd/pmd/issues/881):   \[all] Breaking API changes for 7.0.0
+    * [#896](https://github.com/pmd/pmd/issues/896):   \[all] Use slf4j
+    * [#1431](https://github.com/pmd/pmd/pull/1431):   \[ui] Remove old GUI applications (designerold, bgastviewer)
+    * [#1451](https://github.com/pmd/pmd/issues/1451): \[core] RulesetFactoryCompatibility stores the whole ruleset file in memory as a string
+    * [#2496](https://github.com/pmd/pmd/issues/2496): Update PMD 7 Logo on landing page
+    * [#2497](https://github.com/pmd/pmd/issues/2497): PMD 7 Logo page
+    * [#2498](https://github.com/pmd/pmd/issues/2498): Update PMD 7 Logo in documentation
+    * [#3797](https://github.com/pmd/pmd/issues/3797): \[all] Use JUnit5
+    * [#4462](https://github.com/pmd/pmd/issues/4462): Provide Software Bill of Materials (SBOM)
+    * [#4460](https://github.com/pmd/pmd/pull/4460):   Fix assembly-plugin warnings
+    * [#4582](https://github.com/pmd/pmd/issues/4582): \[dist] Download link broken
+    * [#4586](https://github.com/pmd/pmd/pull/4586):   Use explicit encoding in ruleset xml files
+    * [#4642](https://github.com/pmd/pmd/issues/4642): Update regression tests with Java 21 language features
+    * [#4691](https://github.com/pmd/pmd/issues/4691): \[CVEs] Critical and High CEVs reported on PMD and PMD dependencies
+    * [#4699](https://github.com/pmd/pmd/pull/4699):   Make PMD buildable with java 21
+    * [#4736](https://github.com/pmd/pmd/issues/4736): \[ci] Improve build procedure
+    * [#4741](https://github.com/pmd/pmd/pull/4741):   Add pmd-compat6 module for maven-pmd-plugin
+    * [#4749](https://github.com/pmd/pmd/pull/4749):   Fixes NoSuchMethodError on processing errors in pmd-compat6
+    * [#4776](https://github.com/pmd/pmd/issues/4776): \[ci] Upgrade to ruby 3
+    * [#4796](https://github.com/pmd/pmd/pull/4796):   Remove deprecated and release rulesets
+    * [#4823](https://github.com/pmd/pmd/pull/4823):   Update to use renamed pmd-designer
+    * [#4827](https://github.com/pmd/pmd/pull/4827):   \[compat6] Support config errors and cpd for csharp
+    * [#4830](https://github.com/pmd/pmd/issues/4830): Consolidate packages in each maven module
+    * [#4867](https://github.com/pmd/pmd/issues/4867): \[dist] ./mvnw command not found in dist-src
 * ant
-  * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule
+    * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule
 * core
-  * [#880](https://github.com/pmd/pmd/issues/880):   \[core] Make visitors generic
-  * [#1027](https://github.com/pmd/pmd/issues/1027): \[core] Apply the new PropertyDescriptor&lt;Pattern&gt; type where applicable
-  * [#1204](https://github.com/pmd/pmd/issues/1204): \[core] Allow numeric properties in XML to be within an unbounded range
-  * [#1622](https://github.com/pmd/pmd/pull/1622):   \[core] NodeStream API
-  * [#1687](https://github.com/pmd/pmd/issues/1687): \[core] Deprecate and Remove XPath 1.0 support
-  * [#1785](https://github.com/pmd/pmd/issues/1785): \[core] Allow abstract node types to be valid rulechain visits
-  * [#1825](https://github.com/pmd/pmd/pull/1825):   \[core] Support NoAttribute for XPath
-  * [#2038](https://github.com/pmd/pmd/issues/2038): \[core] Remove DCD
-  * [#2218](https://github.com/pmd/pmd/issues/2218): \[core] `isFindBoundary` should not be an attribute
-  * [#2234](https://github.com/pmd/pmd/issues/2234): \[core] Consolidate PMD CLI into a single command
-  * [#2239](https://github.com/pmd/pmd/issues/2239): \[core] Merging Javacc build scripts
-  * [#2500](https://github.com/pmd/pmd/issues/2500): \[core] Clarify API for ANTLR based languages
-  * [#2518](https://github.com/pmd/pmd/issues/2518): \[core] Language properties
-  * [#2602](https://github.com/pmd/pmd/issues/2602): \[core] Remove ParserOptions
-  * [#2614](https://github.com/pmd/pmd/pull/2614):   \[core] Upgrade Saxon, add XPath 3.1, remove Jaxen
-  * [#2696](https://github.com/pmd/pmd/pull/2696):   \[core] Remove DFA
-  * [#2821](https://github.com/pmd/pmd/issues/2821): \[core] Rule processing error filenames are missing paths
-  * [#2873](https://github.com/pmd/pmd/issues/2873): \[core] Utility classes in pmd 7
-  * [#2885](https://github.com/pmd/pmd/issues/2885): \[core] Error recovery mode
-  * [#3203](https://github.com/pmd/pmd/issues/3203): \[core] Replace RuleViolationFactory implementations with ViolationDecorator
-  * [#3692](https://github.com/pmd/pmd/pull/3692):   \[core] Analysis listeners
-  * [#3782](https://github.com/pmd/pmd/issues/3782): \[core] Language lifecycle
-  * [#3815](https://github.com/pmd/pmd/issues/3815): \[core] Update Saxon HE to 10.7
-  * [#3893](https://github.com/pmd/pmd/pull/3893):   \[core] Text documents
-  * [#3902](https://github.com/pmd/pmd/issues/3902): \[core] Violation decorators
-  * [#3903](https://github.com/pmd/pmd/issues/3903): \[core] Consolidate `n.s.pmd.reporting` package
-  * [#3905](https://github.com/pmd/pmd/issues/3905): \[core] Stabilize tree export API
-  * [#3917](https://github.com/pmd/pmd/issues/3917): \[core] Consolidate `n.s.pmd.lang.rule` package
-  * [#3918](https://github.com/pmd/pmd/issues/3918): \[core] Make LanguageRegistry non static
-  * [#3919](https://github.com/pmd/pmd/issues/3919): \[core] Merge CPD and PMD language
-  * [#3922](https://github.com/pmd/pmd/pull/3922):   \[core] Better error reporting for the ruleset parser
-  * [#4035](https://github.com/pmd/pmd/issues/4035): \[core] ConcurrentModificationException in DefaultRuleViolationFactory
-  * [#4065](https://github.com/pmd/pmd/issues/4065): \[core] Rename TokenMgrError to LexException, Tokenizer to CpdLexer
-  * [#4120](https://github.com/pmd/pmd/issues/4120): \[core] Explicitly name all language versions
-  * [#4204](https://github.com/pmd/pmd/issues/4204): \[core] Provide a CpdAnalysis class as a programmatic entry point into CPD
-  * [#4301](https://github.com/pmd/pmd/issues/4301): \[core] Remove deprecated property concrete classes
-  * [#4302](https://github.com/pmd/pmd/issues/4302): \[core] Migrate Property Framework API to Java 8
-  * [#4309](https://github.com/pmd/pmd/issues/4309): \[core] Cleanups in XPath area
-  * [#4312](https://github.com/pmd/pmd/issues/4312): \[core] Remove unnecessary property `color` and system property `pmd.color` in `TextColorRenderer`
-  * [#4313](https://github.com/pmd/pmd/issues/4313): \[core] Remove support for &lt;lang&gt;-&lt;ruleset&gt; hyphen notation for ruleset references
-  * [#4314](https://github.com/pmd/pmd/issues/4314): \[core] Remove ruleset compatibility filter (RuleSetFactoryCompatibility) and CLI option `--no-ruleset-compatibility`
-  * [#4323](https://github.com/pmd/pmd/issues/4323): \[core] Refactor CPD integration
-  * [#4348](https://github.com/pmd/pmd/issues/4348): \[core] Consolidate @<!-- -->InternalApi classes
-  * [#4349](https://github.com/pmd/pmd/issues/4349): \[core] Cleanup remaining experimental and deprecated API
-  * [#4353](https://github.com/pmd/pmd/pull/4353):   \[core] Micro optimizations for Node API
-  * [#4365](https://github.com/pmd/pmd/pull/4365):   \[core] Improve benchmarking
-  * [#4397](https://github.com/pmd/pmd/pull/4397):   \[core] Refactor CPD
-  * [#4378](https://github.com/pmd/pmd/issues/4378): \[core] Ruleset loading processes commented rules
-  * [#4420](https://github.com/pmd/pmd/pull/4420):   \[core] Remove PMD.EOL
-  * [#4425](https://github.com/pmd/pmd/pull/4425):   \[core] Replace TextFile::pathId
-  * [#4454](https://github.com/pmd/pmd/issues/4454): \[core] "Unknown option: '-min'" but is referenced in documentation
-  * [#4611](https://github.com/pmd/pmd/pull/4611):   \[core] Fix loading language properties from env vars
-  * [#4621](https://github.com/pmd/pmd/issues/4621): \[core] Make `ClasspathClassLoader::getResource` child first
-  * [#4674](https://github.com/pmd/pmd/issues/4674): \[core] WARNING: Illegal reflective access by org.codehaus.groovy.reflection.CachedClass
-  * [#4694](https://github.com/pmd/pmd/pull/4694):   \[core] Fix line/col numbers in TokenMgrError
-  * [#4717](https://github.com/pmd/pmd/issues/4717): \[core] XSLTRenderer doesn't close report file
-  * [#4750](https://github.com/pmd/pmd/pull/4750):   \[core] Fix flaky SummaryHTMLRenderer
-  * [#4782](https://github.com/pmd/pmd/pull/4782):   \[core] Avoid using getImage/@<!-- -->Image
+    * [#880](https://github.com/pmd/pmd/issues/880):   \[core] Make visitors generic
+    * [#1027](https://github.com/pmd/pmd/issues/1027): \[core] Apply the new PropertyDescriptor&lt;Pattern&gt; type where applicable
+    * [#1204](https://github.com/pmd/pmd/issues/1204): \[core] Allow numeric properties in XML to be within an unbounded range
+    * [#1622](https://github.com/pmd/pmd/pull/1622):   \[core] NodeStream API
+    * [#1687](https://github.com/pmd/pmd/issues/1687): \[core] Deprecate and Remove XPath 1.0 support
+    * [#1785](https://github.com/pmd/pmd/issues/1785): \[core] Allow abstract node types to be valid rulechain visits
+    * [#1825](https://github.com/pmd/pmd/pull/1825):   \[core] Support NoAttribute for XPath
+    * [#2038](https://github.com/pmd/pmd/issues/2038): \[core] Remove DCD
+    * [#2218](https://github.com/pmd/pmd/issues/2218): \[core] `isFindBoundary` should not be an attribute
+    * [#2234](https://github.com/pmd/pmd/issues/2234): \[core] Consolidate PMD CLI into a single command
+    * [#2239](https://github.com/pmd/pmd/issues/2239): \[core] Merging Javacc build scripts
+    * [#2500](https://github.com/pmd/pmd/issues/2500): \[core] Clarify API for ANTLR based languages
+    * [#2518](https://github.com/pmd/pmd/issues/2518): \[core] Language properties
+    * [#2602](https://github.com/pmd/pmd/issues/2602): \[core] Remove ParserOptions
+    * [#2614](https://github.com/pmd/pmd/pull/2614):   \[core] Upgrade Saxon, add XPath 3.1, remove Jaxen
+    * [#2696](https://github.com/pmd/pmd/pull/2696):   \[core] Remove DFA
+    * [#2821](https://github.com/pmd/pmd/issues/2821): \[core] Rule processing error filenames are missing paths
+    * [#2873](https://github.com/pmd/pmd/issues/2873): \[core] Utility classes in pmd 7
+    * [#2885](https://github.com/pmd/pmd/issues/2885): \[core] Error recovery mode
+    * [#3203](https://github.com/pmd/pmd/issues/3203): \[core] Replace RuleViolationFactory implementations with ViolationDecorator
+    * [#3692](https://github.com/pmd/pmd/pull/3692):   \[core] Analysis listeners
+    * [#3782](https://github.com/pmd/pmd/issues/3782): \[core] Language lifecycle
+    * [#3815](https://github.com/pmd/pmd/issues/3815): \[core] Update Saxon HE to 10.7
+    * [#3893](https://github.com/pmd/pmd/pull/3893):   \[core] Text documents
+    * [#3902](https://github.com/pmd/pmd/issues/3902): \[core] Violation decorators
+    * [#3903](https://github.com/pmd/pmd/issues/3903): \[core] Consolidate `n.s.pmd.reporting` package
+    * [#3905](https://github.com/pmd/pmd/issues/3905): \[core] Stabilize tree export API
+    * [#3917](https://github.com/pmd/pmd/issues/3917): \[core] Consolidate `n.s.pmd.lang.rule` package
+    * [#3918](https://github.com/pmd/pmd/issues/3918): \[core] Make LanguageRegistry non static
+    * [#3919](https://github.com/pmd/pmd/issues/3919): \[core] Merge CPD and PMD language
+    * [#3922](https://github.com/pmd/pmd/pull/3922):   \[core] Better error reporting for the ruleset parser
+    * [#4035](https://github.com/pmd/pmd/issues/4035): \[core] ConcurrentModificationException in DefaultRuleViolationFactory
+    * [#4065](https://github.com/pmd/pmd/issues/4065): \[core] Rename TokenMgrError to LexException, Tokenizer to CpdLexer
+    * [#4120](https://github.com/pmd/pmd/issues/4120): \[core] Explicitly name all language versions
+    * [#4204](https://github.com/pmd/pmd/issues/4204): \[core] Provide a CpdAnalysis class as a programmatic entry point into CPD
+    * [#4301](https://github.com/pmd/pmd/issues/4301): \[core] Remove deprecated property concrete classes
+    * [#4302](https://github.com/pmd/pmd/issues/4302): \[core] Migrate Property Framework API to Java 8
+    * [#4309](https://github.com/pmd/pmd/issues/4309): \[core] Cleanups in XPath area
+    * [#4312](https://github.com/pmd/pmd/issues/4312): \[core] Remove unnecessary property `color` and system property `pmd.color` in `TextColorRenderer`
+    * [#4313](https://github.com/pmd/pmd/issues/4313): \[core] Remove support for &lt;lang&gt;-&lt;ruleset&gt; hyphen notation for ruleset references
+    * [#4314](https://github.com/pmd/pmd/issues/4314): \[core] Remove ruleset compatibility filter (RuleSetFactoryCompatibility) and CLI option `--no-ruleset-compatibility`
+    * [#4323](https://github.com/pmd/pmd/issues/4323): \[core] Refactor CPD integration
+    * [#4348](https://github.com/pmd/pmd/issues/4348): \[core] Consolidate @<!-- -->InternalApi classes
+    * [#4349](https://github.com/pmd/pmd/issues/4349): \[core] Cleanup remaining experimental and deprecated API
+    * [#4353](https://github.com/pmd/pmd/pull/4353):   \[core] Micro optimizations for Node API
+    * [#4365](https://github.com/pmd/pmd/pull/4365):   \[core] Improve benchmarking
+    * [#4397](https://github.com/pmd/pmd/pull/4397):   \[core] Refactor CPD
+    * [#4378](https://github.com/pmd/pmd/issues/4378): \[core] Ruleset loading processes commented rules
+    * [#4420](https://github.com/pmd/pmd/pull/4420):   \[core] Remove PMD.EOL
+    * [#4425](https://github.com/pmd/pmd/pull/4425):   \[core] Replace TextFile::pathId
+    * [#4454](https://github.com/pmd/pmd/issues/4454): \[core] "Unknown option: '-min'" but is referenced in documentation
+    * [#4611](https://github.com/pmd/pmd/pull/4611):   \[core] Fix loading language properties from env vars
+    * [#4621](https://github.com/pmd/pmd/issues/4621): \[core] Make `ClasspathClassLoader::getResource` child first
+    * [#4674](https://github.com/pmd/pmd/issues/4674): \[core] WARNING: Illegal reflective access by org.codehaus.groovy.reflection.CachedClass
+    * [#4694](https://github.com/pmd/pmd/pull/4694):   \[core] Fix line/col numbers in TokenMgrError
+    * [#4717](https://github.com/pmd/pmd/issues/4717): \[core] XSLTRenderer doesn't close report file
+    * [#4750](https://github.com/pmd/pmd/pull/4750):   \[core] Fix flaky SummaryHTMLRenderer
+    * [#4782](https://github.com/pmd/pmd/pull/4782):   \[core] Avoid using getImage/@<!-- -->Image
 * cli
-  * [#2234](https://github.com/pmd/pmd/issues/2234): \[core] Consolidate PMD CLI into a single command
-  * [#3828](https://github.com/pmd/pmd/issues/3828): \[core] Progress reporting
-  * [#4079](https://github.com/pmd/pmd/issues/4079): \[cli] Split off CLI implementation into a pmd-cli submodule
-  * [#4423](https://github.com/pmd/pmd/pull/4423):   \[cli] Fix NPE when only `--file-list` is specified
-  * [#4482](https://github.com/pmd/pmd/issues/4482): \[cli] pmd.bat can only be executed once
-  * [#4484](https://github.com/pmd/pmd/issues/4484): \[cli] ast-dump with no properties produce an NPE
-  * [#4594](https://github.com/pmd/pmd/pull/4594):   \[cli] Change completion generation to runtime
-  * [#4685](https://github.com/pmd/pmd/pull/4685):   \[cli] Clarify CPD documentation, fix positional parameter handling
-  * [#4723](https://github.com/pmd/pmd/issues/4723): \[cli] Launch fails for "bash pmd"
+    * [#2234](https://github.com/pmd/pmd/issues/2234): \[core] Consolidate PMD CLI into a single command
+    * [#3828](https://github.com/pmd/pmd/issues/3828): \[core] Progress reporting
+    * [#4079](https://github.com/pmd/pmd/issues/4079): \[cli] Split off CLI implementation into a pmd-cli submodule
+    * [#4423](https://github.com/pmd/pmd/pull/4423):   \[cli] Fix NPE when only `--file-list` is specified
+    * [#4482](https://github.com/pmd/pmd/issues/4482): \[cli] pmd.bat can only be executed once
+    * [#4484](https://github.com/pmd/pmd/issues/4484): \[cli] ast-dump with no properties produce an NPE
+    * [#4594](https://github.com/pmd/pmd/pull/4594):   \[cli] Change completion generation to runtime
+    * [#4685](https://github.com/pmd/pmd/pull/4685):   \[cli] Clarify CPD documentation, fix positional parameter handling
+    * [#4723](https://github.com/pmd/pmd/issues/4723): \[cli] Launch fails for "bash pmd"
 * doc
-  * [#995](https://github.com/pmd/pmd/issues/995):   \[doc] Document API evolution principles as ADR
-  * [#2501](https://github.com/pmd/pmd/issues/2501): \[doc] Verify ANTLR Documentation
-  * [#2511](https://github.com/pmd/pmd/issues/2511): \[doc] Review guides for writing java/xpath rules for correctness with PMD 7
-  * [#3175](https://github.com/pmd/pmd/issues/3175): \[doc] Document language module features
-  * [#4294](https://github.com/pmd/pmd/issues/4294): \[doc] Migration Guide for upgrading PMD 6 ➡️ 7
-  * [#4303](https://github.com/pmd/pmd/issues/4303): \[doc] Document new property framework
-  * [#4308](https://github.com/pmd/pmd/issues/4308): \[doc] Document XPath API @<!-- ->NoAttribute and @<!-- -->DeprecatedAttribute
-  * [#4319](https://github.com/pmd/pmd/issues/4319): \[doc] Document TypeRes API and Symbols API
-  * [#4438](https://github.com/pmd/pmd/issues/4438): \[doc] Documentation links in VS Code are outdated
-  * [#4521](https://github.com/pmd/pmd/issues/4521): \[doc] Website is not mobile friendly
-  * [#4676](https://github.com/pmd/pmd/issues/4676): \[doc] Clarify how CPD `--ignore-literals` and `--ignore-identifiers` work
-  * [#4659](https://github.com/pmd/pmd/pull/4659):   \[doc] Improve ant documentation
-  * [#4669](https://github.com/pmd/pmd/pull/4669):   \[doc] Add bld PMD Extension to Tools / Integrations
-  * [#4704](https://github.com/pmd/pmd/issues/4704): \[doc] Multivalued properties do not accept \| as a separator
+    * [#995](https://github.com/pmd/pmd/issues/995):   \[doc] Document API evolution principles as ADR
+    * [#2501](https://github.com/pmd/pmd/issues/2501): \[doc] Verify ANTLR Documentation
+    * [#2511](https://github.com/pmd/pmd/issues/2511): \[doc] Review guides for writing java/xpath rules for correctness with PMD 7
+    * [#3175](https://github.com/pmd/pmd/issues/3175): \[doc] Document language module features
+    * [#4294](https://github.com/pmd/pmd/issues/4294): \[doc] Migration Guide for upgrading PMD 6 ➡️ 7
+    * [#4303](https://github.com/pmd/pmd/issues/4303): \[doc] Document new property framework
+    * [#4308](https://github.com/pmd/pmd/issues/4308): \[doc] Document XPath API @<!-- ->NoAttribute and @<!-- -->DeprecatedAttribute
+    * [#4319](https://github.com/pmd/pmd/issues/4319): \[doc] Document TypeRes API and Symbols API
+    * [#4438](https://github.com/pmd/pmd/issues/4438): \[doc] Documentation links in VS Code are outdated
+    * [#4521](https://github.com/pmd/pmd/issues/4521): \[doc] Website is not mobile friendly
+    * [#4676](https://github.com/pmd/pmd/issues/4676): \[doc] Clarify how CPD `--ignore-literals` and `--ignore-identifiers` work
+    * [#4659](https://github.com/pmd/pmd/pull/4659):   \[doc] Improve ant documentation
+    * [#4669](https://github.com/pmd/pmd/pull/4669):   \[doc] Add bld PMD Extension to Tools / Integrations
+    * [#4704](https://github.com/pmd/pmd/issues/4704): \[doc] Multivalued properties do not accept \| as a separator
 * testing
-  * [#2435](https://github.com/pmd/pmd/issues/2435): \[test] Remove duplicated Dummy language module
-  * [#4234](https://github.com/pmd/pmd/issues/4234): \[test] Tests that change the logging level do not work
+    * [#2435](https://github.com/pmd/pmd/issues/2435): \[test] Remove duplicated Dummy language module
+    * [#4234](https://github.com/pmd/pmd/issues/4234): \[test] Tests that change the logging level do not work
 
 Language specific fixes:
 
 * apex
-  * [#1937](https://github.com/pmd/pmd/issues/1937): \[apex] Apex should only have a single RootNode
-  * [#1648](https://github.com/pmd/pmd/issues/1648): \[apex,vf] Remove CodeClimate dependency
-  * [#1750](https://github.com/pmd/pmd/pull/1750):   \[apex] Remove apex statistical rules
-  * [#2836](https://github.com/pmd/pmd/pull/2836):   \[apex] Remove Apex ProjectMirror
-  * [#3766](https://github.com/pmd/pmd/issues/3766): \[apex] Replace Jorje with fully open source front-end
-  * [#3973](https://github.com/pmd/pmd/issues/3973): \[apex] Update parser to support new 'as user' keywords (User Mode for Database Operations)
-  * [#4427](https://github.com/pmd/pmd/issues/4427): \[apex] ApexBadCrypto test failing to detect inline code
-  * [#4453](https://github.com/pmd/pmd/issues/4453): \[apex] \[7.0-rc1] Exception while initializing Apexlink (Index 34812 out of bounds for length 34812)
-  * [#4828](https://github.com/pmd/pmd/issues/4828): \[apex] Support null coalescing operator ?? (apex 60)
-  * [#4845](https://github.com/pmd/pmd/issues/4845): \[apex] Use same ANLTR version for apex-parser
+    * [#1937](https://github.com/pmd/pmd/issues/1937): \[apex] Apex should only have a single RootNode
+    * [#1648](https://github.com/pmd/pmd/issues/1648): \[apex,vf] Remove CodeClimate dependency
+    * [#1750](https://github.com/pmd/pmd/pull/1750):   \[apex] Remove apex statistical rules
+    * [#2836](https://github.com/pmd/pmd/pull/2836):   \[apex] Remove Apex ProjectMirror
+    * [#3766](https://github.com/pmd/pmd/issues/3766): \[apex] Replace Jorje with fully open source front-end
+    * [#3973](https://github.com/pmd/pmd/issues/3973): \[apex] Update parser to support new 'as user' keywords (User Mode for Database Operations)
+    * [#4427](https://github.com/pmd/pmd/issues/4427): \[apex] ApexBadCrypto test failing to detect inline code
+    * [#4453](https://github.com/pmd/pmd/issues/4453): \[apex] \[7.0-rc1] Exception while initializing Apexlink (Index 34812 out of bounds for length 34812)
+    * [#4828](https://github.com/pmd/pmd/issues/4828): \[apex] Support null coalescing operator ?? (apex 60)
+    * [#4845](https://github.com/pmd/pmd/issues/4845): \[apex] Use same ANLTR version for apex-parser
 * apex-design
-  * [#2667](https://github.com/pmd/pmd/issues/2667): \[apex] Integrate nawforce/ApexLink to build robust Unused rule
-  * [#4509](https://github.com/pmd/pmd/issues/4509): \[apex] ExcessivePublicCount doesn't consider inner classes correctly
-  * [#4596](https://github.com/pmd/pmd/issues/4596): \[apex] ExcessivePublicCount ignores properties
+    * [#2667](https://github.com/pmd/pmd/issues/2667): \[apex] Integrate nawforce/ApexLink to build robust Unused rule
+    * [#4509](https://github.com/pmd/pmd/issues/4509): \[apex] ExcessivePublicCount doesn't consider inner classes correctly
+    * [#4596](https://github.com/pmd/pmd/issues/4596): \[apex] ExcessivePublicCount ignores properties
 * apex-documentation
-  * [#4774](https://github.com/pmd/pmd/issues/4774): \[apex] ApexDoc false-positive for the first method of an annotated Apex class
+    * [#4774](https://github.com/pmd/pmd/issues/4774): \[apex] ApexDoc false-positive for the first method of an annotated Apex class
 * apex-performance
-  * [#4675](https://github.com/pmd/pmd/issues/4675): \[apex] New Rule: OperationWithHighCostInLoop
+    * [#4675](https://github.com/pmd/pmd/issues/4675): \[apex] New Rule: OperationWithHighCostInLoop
 * apex-security
-  * [#4646](https://github.com/pmd/pmd/issues/4646): \[apex] ApexSOQLInjection does not recognise SObjectType or SObjectField as safe variable types
+    * [#4646](https://github.com/pmd/pmd/issues/4646): \[apex] ApexSOQLInjection does not recognise SObjectType or SObjectField as safe variable types
 * groovy
-  * [#4726](https://github.com/pmd/pmd/pull/4726):   \[groovy] Support Groovy to 3 and 4 and CPD suppressions
+    * [#4726](https://github.com/pmd/pmd/pull/4726):   \[groovy] Support Groovy to 3 and 4 and CPD suppressions
 * java
-  * [#520](https://github.com/pmd/pmd/issues/520):   \[java] Allow `@SuppressWarnings` with constants instead of literals
-  * [#864](https://github.com/pmd/pmd/issues/864):   \[java] Similar/duplicated implementations for determining FQCN
-  * [#905](https://github.com/pmd/pmd/issues/905):   \[java] Add new node for anonymous class declaration
-  * [#910](https://github.com/pmd/pmd/issues/910):   \[java] AST inconsistency between primitive and reference type arrays
-  * [#997](https://github.com/pmd/pmd/issues/997):   \[java] Java8 parsing corner case with annotated array types
-  * [#998](https://github.com/pmd/pmd/issues/998):   \[java] AST inconsistencies around FormalParameter
-  * [#1019](https://github.com/pmd/pmd/issues/1019): \[java] Breaking Java Grammar changes for PMD 7.0.0
-  * [#1124](https://github.com/pmd/pmd/issues/1124): \[java] ImmutableList implementation in the qname codebase
-  * [#1128](https://github.com/pmd/pmd/issues/1128): \[java] Improve ASTLocalVariableDeclaration
-  * [#1150](https://github.com/pmd/pmd/issues/1150): \[java] ClassOrInterfaceType AST improvements
-  * [#1207](https://github.com/pmd/pmd/issues/1207): \[java] Resolve explicit types using FQCNs, without hitting the classloader
-  * [#1307](https://github.com/pmd/pmd/issues/1307): \[java] AccessNode API changes
-  * [#1367](https://github.com/pmd/pmd/issues/1367): \[java] Parsing error on annotated inner class
-  * [#1661](https://github.com/pmd/pmd/issues/1661): \[java] About operator nodes
-  * [#2366](https://github.com/pmd/pmd/pull/2366):   \[java] Remove qualified names
-  * [#2819](https://github.com/pmd/pmd/issues/2819): \[java] GLB bugs in pmd 7
-  * [#3642](https://github.com/pmd/pmd/issues/3642): \[java] Parse error on rare extra dimensions on method return type on annotation methods
-  * [#3763](https://github.com/pmd/pmd/issues/3763): \[java] Ambiguous reference error in valid code
-  * [#3749](https://github.com/pmd/pmd/issues/3749): \[java] Improve `isOverridden` in ASTMethodDeclaration
-  * [#3750](https://github.com/pmd/pmd/issues/3750): \[java] Make symbol table support instanceof pattern bindings
-  * [#3751](https://github.com/pmd/pmd/issues/3751): \[java] Rename some node types
-  * [#3752](https://github.com/pmd/pmd/issues/3752): \[java] Expose annotations in symbol API
-  * [#4237](https://github.com/pmd/pmd/pull/4237):   \[java] Cleanup handling of Java comments
-  * [#4317](https://github.com/pmd/pmd/issues/4317): \[java] Some AST nodes should not be TypeNodes
-  * [#4359](https://github.com/pmd/pmd/issues/4359): \[java] Type resolution fails with NPE when the scope is not a type declaration
-  * [#4367](https://github.com/pmd/pmd/issues/4367): \[java] Move testrule TypeResTest into internal
-  * [#4383](https://github.com/pmd/pmd/issues/4383): \[java] IllegalStateException: Object is not an array type!
-  * [#4401](https://github.com/pmd/pmd/issues/4401): \[java] PMD 7 fails to build under Java 19
-  * [#4405](https://github.com/pmd/pmd/issues/4405): \[java] Processing error with ArrayIndexOutOfBoundsException
-  * [#4583](https://github.com/pmd/pmd/issues/4583): \[java] Support JDK 21 (LTS)
-  * [#4628](https://github.com/pmd/pmd/pull/4628):   \[java] Support loading classes from java runtime images
-  * [#4753](https://github.com/pmd/pmd/issues/4753): \[java] PMD crashes while using generics and wildcards
-  * [#4757](https://github.com/pmd/pmd/issues/4757): \[java] Intermittent NPEs while analyzing Java code
-  * [#4794](https://github.com/pmd/pmd/issues/4794): \[java] Support JDK 22
+    * [#520](https://github.com/pmd/pmd/issues/520):   \[java] Allow `@SuppressWarnings` with constants instead of literals
+    * [#864](https://github.com/pmd/pmd/issues/864):   \[java] Similar/duplicated implementations for determining FQCN
+    * [#905](https://github.com/pmd/pmd/issues/905):   \[java] Add new node for anonymous class declaration
+    * [#910](https://github.com/pmd/pmd/issues/910):   \[java] AST inconsistency between primitive and reference type arrays
+    * [#997](https://github.com/pmd/pmd/issues/997):   \[java] Java8 parsing corner case with annotated array types
+    * [#998](https://github.com/pmd/pmd/issues/998):   \[java] AST inconsistencies around FormalParameter
+    * [#1019](https://github.com/pmd/pmd/issues/1019): \[java] Breaking Java Grammar changes for PMD 7.0.0
+    * [#1124](https://github.com/pmd/pmd/issues/1124): \[java] ImmutableList implementation in the qname codebase
+    * [#1128](https://github.com/pmd/pmd/issues/1128): \[java] Improve ASTLocalVariableDeclaration
+    * [#1150](https://github.com/pmd/pmd/issues/1150): \[java] ClassOrInterfaceType AST improvements
+    * [#1207](https://github.com/pmd/pmd/issues/1207): \[java] Resolve explicit types using FQCNs, without hitting the classloader
+    * [#1307](https://github.com/pmd/pmd/issues/1307): \[java] AccessNode API changes
+    * [#1367](https://github.com/pmd/pmd/issues/1367): \[java] Parsing error on annotated inner class
+    * [#1661](https://github.com/pmd/pmd/issues/1661): \[java] About operator nodes
+    * [#2366](https://github.com/pmd/pmd/pull/2366):   \[java] Remove qualified names
+    * [#2819](https://github.com/pmd/pmd/issues/2819): \[java] GLB bugs in pmd 7
+    * [#3642](https://github.com/pmd/pmd/issues/3642): \[java] Parse error on rare extra dimensions on method return type on annotation methods
+    * [#3763](https://github.com/pmd/pmd/issues/3763): \[java] Ambiguous reference error in valid code
+    * [#3749](https://github.com/pmd/pmd/issues/3749): \[java] Improve `isOverridden` in ASTMethodDeclaration
+    * [#3750](https://github.com/pmd/pmd/issues/3750): \[java] Make symbol table support instanceof pattern bindings
+    * [#3751](https://github.com/pmd/pmd/issues/3751): \[java] Rename some node types
+    * [#3752](https://github.com/pmd/pmd/issues/3752): \[java] Expose annotations in symbol API
+    * [#4237](https://github.com/pmd/pmd/pull/4237):   \[java] Cleanup handling of Java comments
+    * [#4317](https://github.com/pmd/pmd/issues/4317): \[java] Some AST nodes should not be TypeNodes
+    * [#4359](https://github.com/pmd/pmd/issues/4359): \[java] Type resolution fails with NPE when the scope is not a type declaration
+    * [#4367](https://github.com/pmd/pmd/issues/4367): \[java] Move testrule TypeResTest into internal
+    * [#4383](https://github.com/pmd/pmd/issues/4383): \[java] IllegalStateException: Object is not an array type!
+    * [#4401](https://github.com/pmd/pmd/issues/4401): \[java] PMD 7 fails to build under Java 19
+    * [#4405](https://github.com/pmd/pmd/issues/4405): \[java] Processing error with ArrayIndexOutOfBoundsException
+    * [#4583](https://github.com/pmd/pmd/issues/4583): \[java] Support JDK 21 (LTS)
+    * [#4628](https://github.com/pmd/pmd/pull/4628):   \[java] Support loading classes from java runtime images
+    * [#4753](https://github.com/pmd/pmd/issues/4753): \[java] PMD crashes while using generics and wildcards
+    * [#4757](https://github.com/pmd/pmd/issues/4757): \[java] Intermittent NPEs while analyzing Java code
+    * [#4794](https://github.com/pmd/pmd/issues/4794): \[java] Support JDK 22
 * java-bestpractices
-  * [#342](https://github.com/pmd/pmd/issues/342):   \[java] AccessorMethodGeneration: Name clash with another public field not properly handled
-  * [#755](https://github.com/pmd/pmd/issues/755):   \[java] AccessorClassGeneration false positive for private constructors
-  * [#770](https://github.com/pmd/pmd/issues/770):   \[java] UnusedPrivateMethod yields false positive for counter-variant arguments
-  * [#807](https://github.com/pmd/pmd/issues/807):   \[java] AccessorMethodGeneration false positive with overloads
-  * [#833](https://github.com/pmd/pmd/issues/833):   \[java] ForLoopCanBeForeach should consider iterating on this
-  * [#1189](https://github.com/pmd/pmd/issues/1189): \[java] UnusedPrivateMethod false positive from inner class via external class
-  * [#1205](https://github.com/pmd/pmd/issues/1205): \[java] Improve ConstantsInInterface message to mention alternatives
-  * [#1212](https://github.com/pmd/pmd/issues/1212): \[java] Don't raise JUnitTestContainsTooManyAsserts on JUnit 5's assertAll
-  * [#1422](https://github.com/pmd/pmd/issues/1422): \[java] JUnitTestsShouldIncludeAssert false positive with inherited @<!-- -->Rule field
-  * [#1455](https://github.com/pmd/pmd/issues/1455): \[java] JUnitTestsShouldIncludeAssert: False positives for assert methods named "check" and "verify"
-  * [#1563](https://github.com/pmd/pmd/issues/1563): \[java] ForLoopCanBeForeach false positive with method call using index variable
-  * [#1565](https://github.com/pmd/pmd/issues/1565): \[java] JUnitAssertionsShouldIncludeMessage false positive with AssertJ
-  * [#1747](https://github.com/pmd/pmd/issues/1747): \[java] PreserveStackTrace false-positive
-  * [#1969](https://github.com/pmd/pmd/issues/1969): \[java] MissingOverride false-positive triggered by package-private method overwritten in another package by extending class
-  * [#1998](https://github.com/pmd/pmd/issues/1998): \[java] AccessorClassGeneration false-negative: subclass calls private constructor
-  * [#2130](https://github.com/pmd/pmd/issues/2130): \[java] UnusedLocalVariable: false-negative with array
-  * [#2147](https://github.com/pmd/pmd/issues/2147): \[java] JUnitTestsShouldIncludeAssert - false positives with lambdas and static methods
-  * [#2464](https://github.com/pmd/pmd/issues/2464): \[java] LooseCoupling must ignore class literals: ArrayList.class
-  * [#2542](https://github.com/pmd/pmd/issues/2542): \[java] UseCollectionIsEmpty can not detect the case `foo.bar().size()`
-  * [#2650](https://github.com/pmd/pmd/issues/2650): \[java] UseTryWithResources false positive when AutoCloseable helper used
-  * [#2796](https://github.com/pmd/pmd/issues/2796): \[java] UnusedAssignment false positive with call chains
-  * [#2797](https://github.com/pmd/pmd/issues/2797): \[java] MissingOverride long-standing issues
-  * [#2806](https://github.com/pmd/pmd/issues/2806): \[java] SwitchStmtsShouldHaveDefault false-positive with Java 14 switch non-fallthrough branches
-  * [#2822](https://github.com/pmd/pmd/issues/2822): \[java] LooseCoupling rule: Extend to cover user defined implementations and interfaces
-  * [#2843](https://github.com/pmd/pmd/pull/2843):   \[java] Fix UnusedAssignment FP with field accesses
-  * [#2882](https://github.com/pmd/pmd/issues/2882): \[java] UseTryWithResources - false negative for explicit close
-  * [#2883](https://github.com/pmd/pmd/issues/2883): \[java] JUnitAssertionsShouldIncludeMessage false positive with method call
-  * [#2890](https://github.com/pmd/pmd/issues/2890): \[java] UnusedPrivateMethod false positive with generics
-  * [#2946](https://github.com/pmd/pmd/issues/2946): \[java] SwitchStmtsShouldHaveDefault false positive on enum inside enums
-  * [#3672](https://github.com/pmd/pmd/pull/3672):   \[java] LooseCoupling - fix false positive with generics
-  * [#3675](https://github.com/pmd/pmd/pull/3675):   \[java] MissingOverride - fix false positive with mixing type vars
-  * [#3858](https://github.com/pmd/pmd/issues/3858): \[java] UseCollectionIsEmpty should infer local variable type from method invocation
-  * [#4433](https://github.com/pmd/pmd/issues/4433): \[java] \[7.0-rc1] ReplaceHashtableWithMap on java.util.Properties
-  * [#4492](https://github.com/pmd/pmd/issues/4492): \[java] GuardLogStatement gives false positive when argument is a Java method reference
-  * [#4503](https://github.com/pmd/pmd/issues/4503): \[java] JUnitTestsShouldIncludeAssert: false negative with TestNG
-  * [#4516](https://github.com/pmd/pmd/issues/4516): \[java] UnusedLocalVariable: false-negative with try-with-resources
-  * [#4517](https://github.com/pmd/pmd/issues/4517): \[java] UnusedLocalVariable: false-negative with compound assignments
-  * [#4518](https://github.com/pmd/pmd/issues/4518): \[java] UnusedLocalVariable: false-positive with multiple for-loop indices
-  * [#4603](https://github.com/pmd/pmd/issues/4603): \[java] UnusedAssignment false positive in record compact constructor
-  * [#4625](https://github.com/pmd/pmd/issues/4625): \[java] UnusedPrivateMethod false positive: Autoboxing into Number
-  * [#4634](https://github.com/pmd/pmd/issues/4634): \[java] JUnit4TestShouldUseTestAnnotation false positive with TestNG
-  * [#4817](https://github.com/pmd/pmd/issues/4817): \[java] UnusedPrivateMethod false-positive used in lambda
+    * [#342](https://github.com/pmd/pmd/issues/342):   \[java] AccessorMethodGeneration: Name clash with another public field not properly handled
+    * [#755](https://github.com/pmd/pmd/issues/755):   \[java] AccessorClassGeneration false positive for private constructors
+    * [#770](https://github.com/pmd/pmd/issues/770):   \[java] UnusedPrivateMethod yields false positive for counter-variant arguments
+    * [#807](https://github.com/pmd/pmd/issues/807):   \[java] AccessorMethodGeneration false positive with overloads
+    * [#833](https://github.com/pmd/pmd/issues/833):   \[java] ForLoopCanBeForeach should consider iterating on this
+    * [#1189](https://github.com/pmd/pmd/issues/1189): \[java] UnusedPrivateMethod false positive from inner class via external class
+    * [#1205](https://github.com/pmd/pmd/issues/1205): \[java] Improve ConstantsInInterface message to mention alternatives
+    * [#1212](https://github.com/pmd/pmd/issues/1212): \[java] Don't raise JUnitTestContainsTooManyAsserts on JUnit 5's assertAll
+    * [#1422](https://github.com/pmd/pmd/issues/1422): \[java] JUnitTestsShouldIncludeAssert false positive with inherited @<!-- -->Rule field
+    * [#1455](https://github.com/pmd/pmd/issues/1455): \[java] JUnitTestsShouldIncludeAssert: False positives for assert methods named "check" and "verify"
+    * [#1563](https://github.com/pmd/pmd/issues/1563): \[java] ForLoopCanBeForeach false positive with method call using index variable
+    * [#1565](https://github.com/pmd/pmd/issues/1565): \[java] JUnitAssertionsShouldIncludeMessage false positive with AssertJ
+    * [#1747](https://github.com/pmd/pmd/issues/1747): \[java] PreserveStackTrace false-positive
+    * [#1969](https://github.com/pmd/pmd/issues/1969): \[java] MissingOverride false-positive triggered by package-private method overwritten in another package by extending class
+    * [#1998](https://github.com/pmd/pmd/issues/1998): \[java] AccessorClassGeneration false-negative: subclass calls private constructor
+    * [#2130](https://github.com/pmd/pmd/issues/2130): \[java] UnusedLocalVariable: false-negative with array
+    * [#2147](https://github.com/pmd/pmd/issues/2147): \[java] JUnitTestsShouldIncludeAssert - false positives with lambdas and static methods
+    * [#2464](https://github.com/pmd/pmd/issues/2464): \[java] LooseCoupling must ignore class literals: ArrayList.class
+    * [#2542](https://github.com/pmd/pmd/issues/2542): \[java] UseCollectionIsEmpty can not detect the case `foo.bar().size()`
+    * [#2650](https://github.com/pmd/pmd/issues/2650): \[java] UseTryWithResources false positive when AutoCloseable helper used
+    * [#2796](https://github.com/pmd/pmd/issues/2796): \[java] UnusedAssignment false positive with call chains
+    * [#2797](https://github.com/pmd/pmd/issues/2797): \[java] MissingOverride long-standing issues
+    * [#2806](https://github.com/pmd/pmd/issues/2806): \[java] SwitchStmtsShouldHaveDefault false-positive with Java 14 switch non-fallthrough branches
+    * [#2822](https://github.com/pmd/pmd/issues/2822): \[java] LooseCoupling rule: Extend to cover user defined implementations and interfaces
+    * [#2843](https://github.com/pmd/pmd/pull/2843):   \[java] Fix UnusedAssignment FP with field accesses
+    * [#2882](https://github.com/pmd/pmd/issues/2882): \[java] UseTryWithResources - false negative for explicit close
+    * [#2883](https://github.com/pmd/pmd/issues/2883): \[java] JUnitAssertionsShouldIncludeMessage false positive with method call
+    * [#2890](https://github.com/pmd/pmd/issues/2890): \[java] UnusedPrivateMethod false positive with generics
+    * [#2946](https://github.com/pmd/pmd/issues/2946): \[java] SwitchStmtsShouldHaveDefault false positive on enum inside enums
+    * [#3672](https://github.com/pmd/pmd/pull/3672):   \[java] LooseCoupling - fix false positive with generics
+    * [#3675](https://github.com/pmd/pmd/pull/3675):   \[java] MissingOverride - fix false positive with mixing type vars
+    * [#3858](https://github.com/pmd/pmd/issues/3858): \[java] UseCollectionIsEmpty should infer local variable type from method invocation
+    * [#4433](https://github.com/pmd/pmd/issues/4433): \[java] \[7.0-rc1] ReplaceHashtableWithMap on java.util.Properties
+    * [#4492](https://github.com/pmd/pmd/issues/4492): \[java] GuardLogStatement gives false positive when argument is a Java method reference
+    * [#4503](https://github.com/pmd/pmd/issues/4503): \[java] JUnitTestsShouldIncludeAssert: false negative with TestNG
+    * [#4516](https://github.com/pmd/pmd/issues/4516): \[java] UnusedLocalVariable: false-negative with try-with-resources
+    * [#4517](https://github.com/pmd/pmd/issues/4517): \[java] UnusedLocalVariable: false-negative with compound assignments
+    * [#4518](https://github.com/pmd/pmd/issues/4518): \[java] UnusedLocalVariable: false-positive with multiple for-loop indices
+    * [#4603](https://github.com/pmd/pmd/issues/4603): \[java] UnusedAssignment false positive in record compact constructor
+    * [#4625](https://github.com/pmd/pmd/issues/4625): \[java] UnusedPrivateMethod false positive: Autoboxing into Number
+    * [#4634](https://github.com/pmd/pmd/issues/4634): \[java] JUnit4TestShouldUseTestAnnotation false positive with TestNG
+    * [#4817](https://github.com/pmd/pmd/issues/4817): \[java] UnusedPrivateMethod false-positive used in lambda
 * java-codestyle
-  * [#1208](https://github.com/pmd/pmd/issues/1208): \[java] PrematureDeclaration rule false-positive on variable declared to measure time
-  * [#1429](https://github.com/pmd/pmd/issues/1429): \[java] PrematureDeclaration as result of method call (false positive)
-  * [#1480](https://github.com/pmd/pmd/issues/1480): \[java] IdenticalCatchBranches false positive with return expressions
-  * [#1673](https://github.com/pmd/pmd/issues/1673): \[java] UselessParentheses false positive with conditional operator
-  * [#1790](https://github.com/pmd/pmd/issues/1790): \[java] UnnecessaryFullyQualifiedName false positive with enum constant
-  * [#1918](https://github.com/pmd/pmd/issues/1918): \[java] UselessParentheses false positive with boolean operators
-  * [#2134](https://github.com/pmd/pmd/issues/2134): \[java] PreserveStackTrace not handling `Throwable.addSuppressed(...)`
-  * [#2299](https://github.com/pmd/pmd/issues/2299): \[java] UnnecessaryFullyQualifiedName false positive with similar package name
-  * [#2391](https://github.com/pmd/pmd/issues/2391): \[java] UseDiamondOperator FP when expected type and constructed type have a different parameterization
-  * [#2528](https://github.com/pmd/pmd/issues/2528): \[java] MethodNamingConventions - JUnit 5 method naming not support ParameterizedTest
-  * [#2739](https://github.com/pmd/pmd/issues/2739): \[java] UselessParentheses false positive for string concatenation
-  * [#2748](https://github.com/pmd/pmd/issues/2748): \[java] UnnecessaryCast false positive with unchecked cast
-  * [#2847](https://github.com/pmd/pmd/issues/2847): \[java] New Rule: Use Explicit Types
-  * [#2973](https://github.com/pmd/pmd/issues/2973): \[java] New rule: UnnecessaryBoxing
-  * [#3195](https://github.com/pmd/pmd/pull/3195):   \[java] Improve rule UnnecessaryReturn to detect more cases
-  * [#3218](https://github.com/pmd/pmd/pull/3218):   \[java] Generalize UnnecessaryCast to flag all unnecessary casts
-  * [#3221](https://github.com/pmd/pmd/issues/3221): \[java] PrematureDeclaration false positive for unused variables
-  * [#3238](https://github.com/pmd/pmd/issues/3238): \[java] Improve ExprContext, fix FNs of UnnecessaryCast
-  * [#3500](https://github.com/pmd/pmd/pull/3500):   \[java] UnnecessaryBoxing - check for Integer.valueOf(String) calls
-  * [#4239](https://github.com/pmd/pmd/issues/4239): \[java] UnnecessaryLocalBeforeReturn - false positive with catch clause
-  * [#4268](https://github.com/pmd/pmd/issues/4268): \[java] CommentDefaultAccessModifier: false positive with TestNG annotations
-  * [#4273](https://github.com/pmd/pmd/issues/4273): \[java] CommentDefaultAccessModifier ignoredAnnotations should include "org.junit.jupiter.api.extension.RegisterExtension" by default
-  * [#4357](https://github.com/pmd/pmd/pull/4357):   \[java] Fix IllegalStateException in UseDiamondOperator rule
-  * [#4432](https://github.com/pmd/pmd/issues/4432): \[java] \[7.0-rc1] UnnecessaryImport - Unused static import is being used
-  * [#4455](https://github.com/pmd/pmd/issues/4455): \[java] FieldNamingConventions: false positive with lombok's @<!-- -->UtilityClass
-  * [#4487](https://github.com/pmd/pmd/issues/4487): \[java] UnnecessaryConstructor: false-positive with @<!-- -->Inject and @<!-- -->Autowired
-  * [#4511](https://github.com/pmd/pmd/issues/4511): \[java] LocalVariableCouldBeFinal shouldn't report unused variables
-  * [#4512](https://github.com/pmd/pmd/issues/4512): \[java] MethodArgumentCouldBeFinal shouldn't report unused parameters
-  * [#4557](https://github.com/pmd/pmd/issues/4557): \[java] UnnecessaryImport FP with static imports of overloaded methods
-  * [#4578](https://github.com/pmd/pmd/issues/4578): \[java] CommentDefaultAccessModifier comment needs to be before annotation if present
-  * [#4631](https://github.com/pmd/pmd/issues/4631): \[java] UnnecessaryFullyQualifiedName fails to recognize illegal self reference in enums
-  * [#4645](https://github.com/pmd/pmd/issues/4645): \[java] CommentDefaultAccessModifier - False Positive with JUnit5's ParameterizedTest
-  * [#4754](https://github.com/pmd/pmd/pull/4754):   \[java] EmptyControlStatementRule: Add allowCommentedBlocks property
-  * [#4816](https://github.com/pmd/pmd/issues/4816): \[java] UnnecessaryImport false-positive on generic method call with on lambda
+    * [#1208](https://github.com/pmd/pmd/issues/1208): \[java] PrematureDeclaration rule false-positive on variable declared to measure time
+    * [#1429](https://github.com/pmd/pmd/issues/1429): \[java] PrematureDeclaration as result of method call (false positive)
+    * [#1480](https://github.com/pmd/pmd/issues/1480): \[java] IdenticalCatchBranches false positive with return expressions
+    * [#1673](https://github.com/pmd/pmd/issues/1673): \[java] UselessParentheses false positive with conditional operator
+    * [#1790](https://github.com/pmd/pmd/issues/1790): \[java] UnnecessaryFullyQualifiedName false positive with enum constant
+    * [#1918](https://github.com/pmd/pmd/issues/1918): \[java] UselessParentheses false positive with boolean operators
+    * [#2134](https://github.com/pmd/pmd/issues/2134): \[java] PreserveStackTrace not handling `Throwable.addSuppressed(...)`
+    * [#2299](https://github.com/pmd/pmd/issues/2299): \[java] UnnecessaryFullyQualifiedName false positive with similar package name
+    * [#2391](https://github.com/pmd/pmd/issues/2391): \[java] UseDiamondOperator FP when expected type and constructed type have a different parameterization
+    * [#2528](https://github.com/pmd/pmd/issues/2528): \[java] MethodNamingConventions - JUnit 5 method naming not support ParameterizedTest
+    * [#2739](https://github.com/pmd/pmd/issues/2739): \[java] UselessParentheses false positive for string concatenation
+    * [#2748](https://github.com/pmd/pmd/issues/2748): \[java] UnnecessaryCast false positive with unchecked cast
+    * [#2847](https://github.com/pmd/pmd/issues/2847): \[java] New Rule: Use Explicit Types
+    * [#2973](https://github.com/pmd/pmd/issues/2973): \[java] New rule: UnnecessaryBoxing
+    * [#3195](https://github.com/pmd/pmd/pull/3195):   \[java] Improve rule UnnecessaryReturn to detect more cases
+    * [#3218](https://github.com/pmd/pmd/pull/3218):   \[java] Generalize UnnecessaryCast to flag all unnecessary casts
+    * [#3221](https://github.com/pmd/pmd/issues/3221): \[java] PrematureDeclaration false positive for unused variables
+    * [#3238](https://github.com/pmd/pmd/issues/3238): \[java] Improve ExprContext, fix FNs of UnnecessaryCast
+    * [#3500](https://github.com/pmd/pmd/pull/3500):   \[java] UnnecessaryBoxing - check for Integer.valueOf(String) calls
+    * [#4239](https://github.com/pmd/pmd/issues/4239): \[java] UnnecessaryLocalBeforeReturn - false positive with catch clause
+    * [#4268](https://github.com/pmd/pmd/issues/4268): \[java] CommentDefaultAccessModifier: false positive with TestNG annotations
+    * [#4273](https://github.com/pmd/pmd/issues/4273): \[java] CommentDefaultAccessModifier ignoredAnnotations should include "org.junit.jupiter.api.extension.RegisterExtension" by default
+    * [#4357](https://github.com/pmd/pmd/pull/4357):   \[java] Fix IllegalStateException in UseDiamondOperator rule
+    * [#4432](https://github.com/pmd/pmd/issues/4432): \[java] \[7.0-rc1] UnnecessaryImport - Unused static import is being used
+    * [#4455](https://github.com/pmd/pmd/issues/4455): \[java] FieldNamingConventions: false positive with lombok's @<!-- -->UtilityClass
+    * [#4487](https://github.com/pmd/pmd/issues/4487): \[java] UnnecessaryConstructor: false-positive with @<!-- -->Inject and @<!-- -->Autowired
+    * [#4511](https://github.com/pmd/pmd/issues/4511): \[java] LocalVariableCouldBeFinal shouldn't report unused variables
+    * [#4512](https://github.com/pmd/pmd/issues/4512): \[java] MethodArgumentCouldBeFinal shouldn't report unused parameters
+    * [#4557](https://github.com/pmd/pmd/issues/4557): \[java] UnnecessaryImport FP with static imports of overloaded methods
+    * [#4578](https://github.com/pmd/pmd/issues/4578): \[java] CommentDefaultAccessModifier comment needs to be before annotation if present
+    * [#4631](https://github.com/pmd/pmd/issues/4631): \[java] UnnecessaryFullyQualifiedName fails to recognize illegal self reference in enums
+    * [#4645](https://github.com/pmd/pmd/issues/4645): \[java] CommentDefaultAccessModifier - False Positive with JUnit5's ParameterizedTest
+    * [#4754](https://github.com/pmd/pmd/pull/4754):   \[java] EmptyControlStatementRule: Add allowCommentedBlocks property
+    * [#4816](https://github.com/pmd/pmd/issues/4816): \[java] UnnecessaryImport false-positive on generic method call with on lambda
 * java-design
-  * [#174](https://github.com/pmd/pmd/issues/174):   \[java] SingularField false positive with switch in method that both assigns and reads field
-  * [#1014](https://github.com/pmd/pmd/issues/1014): \[java] LawOfDemeter: False positive with lambda expression
-  * [#1605](https://github.com/pmd/pmd/issues/1605): \[java] LawOfDemeter: False positive for standard UTF-8 charset name
-  * [#2160](https://github.com/pmd/pmd/issues/2160): \[java] Issues with Law of Demeter
-  * [#2175](https://github.com/pmd/pmd/issues/2175): \[java] LawOfDemeter: False positive for chained methods with generic method call
-  * [#2179](https://github.com/pmd/pmd/issues/2179): \[java] LawOfDemeter: False positive with static property access - should treat class-level property as global object, not dot-accessed property
-  * [#2180](https://github.com/pmd/pmd/issues/2180): \[java] LawOfDemeter: False positive with Thread and ThreadLocalRandom
-  * [#2182](https://github.com/pmd/pmd/issues/2182): \[java] LawOfDemeter: False positive with package-private access
-  * [#2188](https://github.com/pmd/pmd/issues/2188): \[java] LawOfDemeter: False positive with fields assigned to local vars
-  * [#2536](https://github.com/pmd/pmd/issues/2536): \[java] ClassWithOnlyPrivateConstructorsShouldBeFinal can't detect inner class
-  * [#3668](https://github.com/pmd/pmd/pull/3668):   \[java] ClassWithOnlyPrivateConstructorsShouldBeFinal - fix FP with inner private classes
-  * [#3754](https://github.com/pmd/pmd/issues/3754): \[java] SingularField false positive with read in while condition
-  * [#3786](https://github.com/pmd/pmd/issues/3786): \[java] SimplifyBooleanReturns should consider operator precedence
-  * [#3840](https://github.com/pmd/pmd/issues/3840): \[java] LawOfDemeter disallows method call on locally created object
-  * [#4238](https://github.com/pmd/pmd/pull/4238):   \[java] Make LawOfDemeter not use the rulechain
-  * [#4254](https://github.com/pmd/pmd/issues/4254): \[java] ImmutableField - false positive with Lombok @<!-- -->Setter
-  * [#4434](https://github.com/pmd/pmd/issues/4434): \[java] \[7.0-rc1] ExceptionAsFlowControl when simply propagating
-  * [#4456](https://github.com/pmd/pmd/issues/4456): \[java] FinalFieldCouldBeStatic: false positive with lombok's @<!-- -->UtilityClass
-  * [#4477](https://github.com/pmd/pmd/issues/4477): \[java] SignatureDeclareThrowsException: false-positive with TestNG annotations
-  * [#4490](https://github.com/pmd/pmd/issues/4490): \[java] ImmutableField - false negative with Lombok @<!-- -->Getter
-  * [#4549](https://github.com/pmd/pmd/pull/4549):   \[java] Make LawOfDemeter results deterministic
+    * [#174](https://github.com/pmd/pmd/issues/174):   \[java] SingularField false positive with switch in method that both assigns and reads field
+    * [#1014](https://github.com/pmd/pmd/issues/1014): \[java] LawOfDemeter: False positive with lambda expression
+    * [#1605](https://github.com/pmd/pmd/issues/1605): \[java] LawOfDemeter: False positive for standard UTF-8 charset name
+    * [#2160](https://github.com/pmd/pmd/issues/2160): \[java] Issues with Law of Demeter
+    * [#2175](https://github.com/pmd/pmd/issues/2175): \[java] LawOfDemeter: False positive for chained methods with generic method call
+    * [#2179](https://github.com/pmd/pmd/issues/2179): \[java] LawOfDemeter: False positive with static property access - should treat class-level property as global object, not dot-accessed property
+    * [#2180](https://github.com/pmd/pmd/issues/2180): \[java] LawOfDemeter: False positive with Thread and ThreadLocalRandom
+    * [#2182](https://github.com/pmd/pmd/issues/2182): \[java] LawOfDemeter: False positive with package-private access
+    * [#2188](https://github.com/pmd/pmd/issues/2188): \[java] LawOfDemeter: False positive with fields assigned to local vars
+    * [#2536](https://github.com/pmd/pmd/issues/2536): \[java] ClassWithOnlyPrivateConstructorsShouldBeFinal can't detect inner class
+    * [#3668](https://github.com/pmd/pmd/pull/3668):   \[java] ClassWithOnlyPrivateConstructorsShouldBeFinal - fix FP with inner private classes
+    * [#3754](https://github.com/pmd/pmd/issues/3754): \[java] SingularField false positive with read in while condition
+    * [#3786](https://github.com/pmd/pmd/issues/3786): \[java] SimplifyBooleanReturns should consider operator precedence
+    * [#3840](https://github.com/pmd/pmd/issues/3840): \[java] LawOfDemeter disallows method call on locally created object
+    * [#4238](https://github.com/pmd/pmd/pull/4238):   \[java] Make LawOfDemeter not use the rulechain
+    * [#4254](https://github.com/pmd/pmd/issues/4254): \[java] ImmutableField - false positive with Lombok @<!-- -->Setter
+    * [#4434](https://github.com/pmd/pmd/issues/4434): \[java] \[7.0-rc1] ExceptionAsFlowControl when simply propagating
+    * [#4456](https://github.com/pmd/pmd/issues/4456): \[java] FinalFieldCouldBeStatic: false positive with lombok's @<!-- -->UtilityClass
+    * [#4477](https://github.com/pmd/pmd/issues/4477): \[java] SignatureDeclareThrowsException: false-positive with TestNG annotations
+    * [#4490](https://github.com/pmd/pmd/issues/4490): \[java] ImmutableField - false negative with Lombok @<!-- -->Getter
+    * [#4549](https://github.com/pmd/pmd/pull/4549):   \[java] Make LawOfDemeter results deterministic
 * java-documentation
-  * [#4369](https://github.com/pmd/pmd/pull/4369):   \[java] Improve CommentSize
-  * [#4416](https://github.com/pmd/pmd/pull/4416):   \[java] Fix reported line number in CommentContentRule
+    * [#4369](https://github.com/pmd/pmd/pull/4369):   \[java] Improve CommentSize
+    * [#4416](https://github.com/pmd/pmd/pull/4416):   \[java] Fix reported line number in CommentContentRule
 * java-errorprone
-  * [#659](https://github.com/pmd/pmd/issues/659):   \[java] MissingBreakInSwitch - last default case does not contain a break
-  * [#718](https://github.com/pmd/pmd/issues/718):   \[java] BrokenNullCheck false positive with parameter/field confusion
-  * [#932](https://github.com/pmd/pmd/issues/932):   \[java] SingletonClassReturningNewInstance false positive with double assignment
-  * [#1005](https://github.com/pmd/pmd/issues/1005): \[java] CloneMethodMustImplementCloneable triggers for interfaces
-  * [#1669](https://github.com/pmd/pmd/issues/1669): \[java] NullAssignment - FP with ternay and null as constructor argument
-  * [#1831](https://github.com/pmd/pmd/issues/1831): \[java] DetachedTestCase reports abstract methods
-  * [#1899](https://github.com/pmd/pmd/issues/1899): \[java] Recognize @<!-- -->SuppressWanings("fallthrough") for MissingBreakInSwitch
-  * [#2320](https://github.com/pmd/pmd/issues/2320): \[java] NullAssignment - FP with ternary and null as method argument
-  * [#2532](https://github.com/pmd/pmd/issues/2532): \[java] AvoidDecimalLiteralsInBigDecimalConstructor can not detect the case `new BigDecimal(Expression)`
-  * [#2579](https://github.com/pmd/pmd/issues/2579): \[java] MissingBreakInSwitch detects the lack of break in the last case
-  * [#2880](https://github.com/pmd/pmd/issues/2880): \[java] CompareObjectsWithEquals - false negative with type res
-  * [#2893](https://github.com/pmd/pmd/issues/2893): \[java] Remove special cases from rule EmptyCatchBlock
-  * [#2894](https://github.com/pmd/pmd/issues/2894): \[java] Improve MissingBreakInSwitch
-  * [#3071](https://github.com/pmd/pmd/issues/3071): \[java] BrokenNullCheck FP with PMD 6.30.0
-  * [#3087](https://github.com/pmd/pmd/issues/3087): \[java] UnnecessaryBooleanAssertion overlaps with SimplifiableTestAssertion
-  * [#3100](https://github.com/pmd/pmd/issues/3100): \[java] UseCorrectExceptionLogging FP in 6.31.0
-  * [#3173](https://github.com/pmd/pmd/issues/3173): \[java] UseProperClassLoader false positive
-  * [#3351](https://github.com/pmd/pmd/issues/3351): \[java] ConstructorCallsOverridableMethod ignores abstract methods
-  * [#3400](https://github.com/pmd/pmd/issues/3400): \[java] AvoidUsingOctalValues FN with underscores
-  * [#3843](https://github.com/pmd/pmd/issues/3843): \[java] UseEqualsToCompareStrings should consider return type
-  * [#4063](https://github.com/pmd/pmd/issues/4063): \[java] AvoidBranchingStatementAsLastInLoop: False-negative about try/finally block
-  * [#4356](https://github.com/pmd/pmd/pull/4356):   \[java] Fix NPE in CloseResourceRule
-  * [#4449](https://github.com/pmd/pmd/issues/4449): \[java] AvoidAccessibilityAlteration: Possible false positive in AvoidAccessibilityAlteration rule when using Lambda expression
-  * [#4457](https://github.com/pmd/pmd/issues/4457): \[java] OverrideBothEqualsAndHashcode: false negative with anonymous classes
-  * [#4493](https://github.com/pmd/pmd/issues/4493): \[java] MissingStaticMethodInNonInstantiatableClass: false-positive about @<!-- -->Inject
-  * [#4505](https://github.com/pmd/pmd/issues/4505): \[java] ImplicitSwitchFallThrough NPE in PMD 7.0.0-rc1
-  * [#4510](https://github.com/pmd/pmd/issues/4510): \[java] ConstructorCallsOverridableMethod: false positive with lombok's @<!-- -->Value
-  * [#4513](https://github.com/pmd/pmd/issues/4513): \[java] UselessOperationOnImmutable various false negatives with String
-  * [#4514](https://github.com/pmd/pmd/issues/4514): \[java] AvoidLiteralsInIfCondition false positive and negative for String literals when ignoreExpressions=true
-  * [#4546](https://github.com/pmd/pmd/issues/4546): \[java] OverrideBothEqualsAndHashCode ignores records
-  * [#4719](https://github.com/pmd/pmd/pull/4719):   \[java] UnnecessaryCaseChange: example doc toUpperCase() should compare to a capitalized string
+    * [#659](https://github.com/pmd/pmd/issues/659):   \[java] MissingBreakInSwitch - last default case does not contain a break
+    * [#718](https://github.com/pmd/pmd/issues/718):   \[java] BrokenNullCheck false positive with parameter/field confusion
+    * [#932](https://github.com/pmd/pmd/issues/932):   \[java] SingletonClassReturningNewInstance false positive with double assignment
+    * [#1005](https://github.com/pmd/pmd/issues/1005): \[java] CloneMethodMustImplementCloneable triggers for interfaces
+    * [#1669](https://github.com/pmd/pmd/issues/1669): \[java] NullAssignment - FP with ternay and null as constructor argument
+    * [#1831](https://github.com/pmd/pmd/issues/1831): \[java] DetachedTestCase reports abstract methods
+    * [#1899](https://github.com/pmd/pmd/issues/1899): \[java] Recognize @<!-- -->SuppressWanings("fallthrough") for MissingBreakInSwitch
+    * [#2320](https://github.com/pmd/pmd/issues/2320): \[java] NullAssignment - FP with ternary and null as method argument
+    * [#2532](https://github.com/pmd/pmd/issues/2532): \[java] AvoidDecimalLiteralsInBigDecimalConstructor can not detect the case `new BigDecimal(Expression)`
+    * [#2579](https://github.com/pmd/pmd/issues/2579): \[java] MissingBreakInSwitch detects the lack of break in the last case
+    * [#2880](https://github.com/pmd/pmd/issues/2880): \[java] CompareObjectsWithEquals - false negative with type res
+    * [#2893](https://github.com/pmd/pmd/issues/2893): \[java] Remove special cases from rule EmptyCatchBlock
+    * [#2894](https://github.com/pmd/pmd/issues/2894): \[java] Improve MissingBreakInSwitch
+    * [#3071](https://github.com/pmd/pmd/issues/3071): \[java] BrokenNullCheck FP with PMD 6.30.0
+    * [#3087](https://github.com/pmd/pmd/issues/3087): \[java] UnnecessaryBooleanAssertion overlaps with SimplifiableTestAssertion
+    * [#3100](https://github.com/pmd/pmd/issues/3100): \[java] UseCorrectExceptionLogging FP in 6.31.0
+    * [#3173](https://github.com/pmd/pmd/issues/3173): \[java] UseProperClassLoader false positive
+    * [#3351](https://github.com/pmd/pmd/issues/3351): \[java] ConstructorCallsOverridableMethod ignores abstract methods
+    * [#3400](https://github.com/pmd/pmd/issues/3400): \[java] AvoidUsingOctalValues FN with underscores
+    * [#3843](https://github.com/pmd/pmd/issues/3843): \[java] UseEqualsToCompareStrings should consider return type
+    * [#4063](https://github.com/pmd/pmd/issues/4063): \[java] AvoidBranchingStatementAsLastInLoop: False-negative about try/finally block
+    * [#4356](https://github.com/pmd/pmd/pull/4356):   \[java] Fix NPE in CloseResourceRule
+    * [#4449](https://github.com/pmd/pmd/issues/4449): \[java] AvoidAccessibilityAlteration: Possible false positive in AvoidAccessibilityAlteration rule when using Lambda expression
+    * [#4457](https://github.com/pmd/pmd/issues/4457): \[java] OverrideBothEqualsAndHashcode: false negative with anonymous classes
+    * [#4493](https://github.com/pmd/pmd/issues/4493): \[java] MissingStaticMethodInNonInstantiatableClass: false-positive about @<!-- -->Inject
+    * [#4505](https://github.com/pmd/pmd/issues/4505): \[java] ImplicitSwitchFallThrough NPE in PMD 7.0.0-rc1
+    * [#4510](https://github.com/pmd/pmd/issues/4510): \[java] ConstructorCallsOverridableMethod: false positive with lombok's @<!-- -->Value
+    * [#4513](https://github.com/pmd/pmd/issues/4513): \[java] UselessOperationOnImmutable various false negatives with String
+    * [#4514](https://github.com/pmd/pmd/issues/4514): \[java] AvoidLiteralsInIfCondition false positive and negative for String literals when ignoreExpressions=true
+    * [#4546](https://github.com/pmd/pmd/issues/4546): \[java] OverrideBothEqualsAndHashCode ignores records
+    * [#4719](https://github.com/pmd/pmd/pull/4719):   \[java] UnnecessaryCaseChange: example doc toUpperCase() should compare to a capitalized string
 * java-multithreading
-  * [#2537](https://github.com/pmd/pmd/issues/2537): \[java] DontCallThreadRun can't detect the case that call run() in `this.run()`
-  * [#2538](https://github.com/pmd/pmd/issues/2538): \[java] DontCallThreadRun can't detect the case that call run() in `foo.bar.run()`
-  * [#2577](https://github.com/pmd/pmd/issues/2577): \[java] UseNotifyAllInsteadOfNotify falsely detect a special case with argument: `foo.notify(bar)`
-  * [#4483](https://github.com/pmd/pmd/issues/4483): \[java] NonThreadSafeSingleton false positive with double-checked locking
+    * [#2537](https://github.com/pmd/pmd/issues/2537): \[java] DontCallThreadRun can't detect the case that call run() in `this.run()`
+    * [#2538](https://github.com/pmd/pmd/issues/2538): \[java] DontCallThreadRun can't detect the case that call run() in `foo.bar.run()`
+    * [#2577](https://github.com/pmd/pmd/issues/2577): \[java] UseNotifyAllInsteadOfNotify falsely detect a special case with argument: `foo.notify(bar)`
+    * [#4483](https://github.com/pmd/pmd/issues/4483): \[java] NonThreadSafeSingleton false positive with double-checked locking
 * java-performance
-  * [#1224](https://github.com/pmd/pmd/issues/1224): \[java] InefficientEmptyStringCheck false negative in anonymous class
-  * [#2587](https://github.com/pmd/pmd/issues/2587): \[java] AvoidArrayLoops could also check for list copy through iterated List.add()
-  * [#2712](https://github.com/pmd/pmd/issues/2712): \[java] SimplifyStartsWith false-positive with AssertJ
-  * [#3486](https://github.com/pmd/pmd/pull/3486):   \[java] InsufficientStringBufferDeclaration: Fix NPE
-  * [#3848](https://github.com/pmd/pmd/issues/3848): \[java] StringInstantiation: false negative when using method result
-  * [#4070](https://github.com/pmd/pmd/issues/4070): \[java] A false positive about the rule RedundantFieldInitializer
-  * [#4458](https://github.com/pmd/pmd/issues/4458): \[java] RedundantFieldInitializer: false positive with lombok's @<!-- -->Value
+    * [#1224](https://github.com/pmd/pmd/issues/1224): \[java] InefficientEmptyStringCheck false negative in anonymous class
+    * [#2587](https://github.com/pmd/pmd/issues/2587): \[java] AvoidArrayLoops could also check for list copy through iterated List.add()
+    * [#2712](https://github.com/pmd/pmd/issues/2712): \[java] SimplifyStartsWith false-positive with AssertJ
+    * [#3486](https://github.com/pmd/pmd/pull/3486):   \[java] InsufficientStringBufferDeclaration: Fix NPE
+    * [#3848](https://github.com/pmd/pmd/issues/3848): \[java] StringInstantiation: false negative when using method result
+    * [#4070](https://github.com/pmd/pmd/issues/4070): \[java] A false positive about the rule RedundantFieldInitializer
+    * [#4458](https://github.com/pmd/pmd/issues/4458): \[java] RedundantFieldInitializer: false positive with lombok's @<!-- -->Value
 * javascript
-  * [#4673](https://github.com/pmd/pmd/pull/4673):   \[javascript] CPD: Added support for decorator notation
+    * [#4673](https://github.com/pmd/pmd/pull/4673):   \[javascript] CPD: Added support for decorator notation
 * kotlin
-  * [#419](https://github.com/pmd/pmd/issues/419):   \[kotlin] Add support for Kotlin
-  * [#4389](https://github.com/pmd/pmd/pull/4389):   \[kotlin] Update grammar to version 1.8
+    * [#419](https://github.com/pmd/pmd/issues/419):   \[kotlin] Add support for Kotlin
+    * [#4389](https://github.com/pmd/pmd/pull/4389):   \[kotlin] Update grammar to version 1.8
 * plsql
-  * [#4820](https://github.com/pmd/pmd/issues/4820): \[plsql] WITH clause is ignored for SELECT INTO statements
+    * [#4820](https://github.com/pmd/pmd/issues/4820): \[plsql] WITH clause is ignored for SELECT INTO statements
 * swift
-  * [#1877](https://github.com/pmd/pmd/pull/1877):   \[swift] Feature/swift rules
-  * [#1882](https://github.com/pmd/pmd/pull/1882):   \[swift] UnavailableFunction Swift rule
-  * [#4697](https://github.com/pmd/pmd/issues/4697): \[swift] Support Swift 5.9 features (mainly macros expansion expressions)
+    * [#1877](https://github.com/pmd/pmd/pull/1877):   \[swift] Feature/swift rules
+    * [#1882](https://github.com/pmd/pmd/pull/1882):   \[swift] UnavailableFunction Swift rule
+    * [#4697](https://github.com/pmd/pmd/issues/4697): \[swift] Support Swift 5.9 features (mainly macros expansion expressions)
 * xml
-  * [#1800](https://github.com/pmd/pmd/pull/1800):   \[xml] Unimplement org.w3c.dom.Node from the XmlNodeWrapper
+    * [#1800](https://github.com/pmd/pmd/pull/1800):   \[xml] Unimplement org.w3c.dom.Node from the XmlNodeWrapper
 * xml-bestpractices
-  * [#4592](https://github.com/pmd/pmd/pull/4592):   \[xml] Add MissingEncoding rule
+    * [#4592](https://github.com/pmd/pmd/pull/4592):   \[xml] Add MissingEncoding rule
 
 ## ✨ External Contributions
 
