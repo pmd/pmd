@@ -275,10 +275,12 @@ public class CPDConfiguration extends AbstractConfiguration {
         this.skipBlocksPattern = skipBlocksPattern;
     }
 
+    @Override
     public boolean isFailOnViolation() {
         return failOnViolation;
     }
 
+    @Override
     public void setFailOnViolation(boolean failOnViolation) {
         this.failOnViolation = failOnViolation;
     }

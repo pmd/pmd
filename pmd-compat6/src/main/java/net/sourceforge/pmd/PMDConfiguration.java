@@ -445,6 +445,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @return failOnViolation
      */
+    @Override
     public boolean isFailOnViolation() {
         return failOnViolation;
     }
@@ -456,6 +457,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @param failOnViolation
      *            failOnViolation
      */
+    @Override
     public void setFailOnViolation(boolean failOnViolation) {
         this.failOnViolation = failOnViolation;
     }
