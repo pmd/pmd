@@ -1879,10 +1879,20 @@
 <!--  You can link to an individual panel, the id is determined from the title of the panel -->
 <!--  See custom/shuffle_panel.html for the details -->
 
-<p><strong>PMD</strong> is a static source code analyzer. It finds common programming flaws like
-unused variables, empty catch blocks, unnecessary object creation, and
-so forth. It’s mainly concerned with <strong>Java and Apex</strong>, but <strong>supports 16 other
-languages</strong>.</p>
+<p><strong>PMD</strong> is an extensible multilanguage static code analyzer. It finds common programming flaws like unused variables,
+empty catch blocks, unnecessary object creation, and so forth. It’s mainly concerned with <strong>Java and
+Apex</strong>, but <strong>supports 16 other languages</strong>. It comes with <strong>400+ built-in rules</strong>. It can be
+extended with custom rules. It uses JavaCC and Antlr to parse source files into abstract syntax trees
+(AST) and runs rules against them to find violations. Rules can be written in Java or using a XPath query.</p>
+
+<p>Currently, PMD supports Java, JavaScript, Salesforce.com Apex and Visualforce,
+Kotlin, Swift, Modelica, PLSQL, Apache Velocity, JSP, WSDL, Maven POM, HTML, XML and XSL.
+Scala is supported, but there are currently no Scala rules available.</p>
+
+<p>Additionally, it includes <strong>CPD</strong>, the copy-paste-detector. CPD finds duplicated code in
+Coco, C/C++, C#, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Julia, Kotlin,
+Lua, Matlab, Modelica, Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex and
+Visualforce, Scala, Swift, T-SQL, Typescript, Apache Velocity, WSDL, XML and XSL.</p>
 
 <p>PMD features many <strong>built-in checks</strong> (in PMD lingo, <em>rules</em>), which are documented
 for each language in our <a href="#shuffle-panel-rule-references">Rule references</a>. We
@@ -1900,7 +1910,7 @@ things, PMD can be run:</p>
   <li>From <a href="pmd_userdocs_installation.html#running-pmd-via-command-line">command-line</a></li>
 </ul>
 
-<p><strong>CPD</strong>, the <strong>copy-paste detector</strong>, is also distributed with PMD. You can also use it
+<p><strong>CPD</strong>, the <strong>copy-paste detector</strong>, is also distributed with PMD. You can use it
 in a variety of ways, which are <a href="pmd_userdocs_cpd.html">documented here</a>.</p>
 
 <h2 id="-download">💾 Download</h2>
@@ -8300,7 +8310,7 @@ Contributions of any kind welcome!</p>
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            October 2022<br /> Site last generated: May 2, 2024 <br />
+            October 2022<br /> Site last generated: May 3, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
