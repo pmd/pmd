@@ -506,9 +506,22 @@
                             <id>pmd-main</id>
                             <phase>verify</phase>
                             <goals>
+                                <goal>pmd</goal>
                                 <goal>check</goal>
+                                <goal>cpd</goal>
                                 <goal>cpd-check</goal>
                             </goals>
+                            <configuration>
+                                <skip>${pmd.skip}</skip>
+                                <minimumTokens>100</minimumTokens>
+                                <rulesets>
+                                    <ruleset>/net/sourceforge/pmd/pmd-dogfood-config.xml</ruleset>
+                                </rulesets>
+                                <excludeRoots>
+                                    <excludeRoot>target/generated-sources/javacc</excludeRoot>
+                                    <excludeRoot>target/generated-sources/antlr4</excludeRoot>
+                                </excludeRoots>
+                            </configuration>
                         </execution>
                         <execution>
                             <id>pmd-test</id>
@@ -518,6 +531,7 @@
                                 <goal>check</goal>
                             </goals>
                             <configuration>
+                                <skip>${pmd.skip}</skip>
                                 <targetDirectory>${project.build.directory}/pmdTest/</targetDirectory>
                                 <includeTests>true</includeTests>
                                 <rulesets>
@@ -528,19 +542,15 @@
                     </executions>
                     <configuration>
                         <linkXRef>false</linkXRef>
-                        <minimumTokens>100</minimumTokens>
                         <targetJdk>1.${java.version}</targetJdk>
-                        <rulesets>
-                            <ruleset>/net/sourceforge/pmd/pmd-dogfood-config.xml</ruleset>
-                        </rulesets>
-                        <excludeRoots>
-                            <excludeRoot>target/generated-sources/javacc</excludeRoot>
-                            <excludeRoot>target/generated-sources/antlr4</excludeRoot>
-                        </excludeRoots>
                         <skipPmdError>false</skipPmdError>
                         <failurePriority>2</failurePriority>
                         <failOnViolation>true</failOnViolation>
                         <printFailingErrors>true</printFailingErrors>
+                        <!-- Skip the default pmd executions, which is triggered by pmd:check and avoid
+                             unnecessary pmd analysis of the main code.
+                             We use executions pmd-main and pmd-test instead and explicitly run pmd:pmd. -->
+                        <skip>true</skip>
                     </configuration>
                     <dependencies>
                         <!-- Note: we can't use a property for the version here due to https://issues.apache.org/jira/browse/MRELEASE-932 -->
