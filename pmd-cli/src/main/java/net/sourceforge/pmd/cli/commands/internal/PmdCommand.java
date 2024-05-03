@@ -332,7 +332,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
                     // processing errors are ignored
                     return CliExitCode.ERROR;
                 } else if (stats.getNumErrors() > 0 && configuration.isFailOnProcessingError()) {
-                    return CliExitCode.VIOLATIONS_OR_PROCESSING_ERRORS;
+                    return CliExitCode.PROCESSING_ERRORS_OR_VIOLATIONS;
                 } else if (stats.getNumViolations() > 0 && configuration.isFailOnViolation()) {
                     return CliExitCode.VIOLATIONS_FOUND;
                 } else {

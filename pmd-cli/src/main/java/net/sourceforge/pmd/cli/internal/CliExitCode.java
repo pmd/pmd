@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.cli.internal;
 
-import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.AbstractConfiguration;
 
 /**
  * The execution result of any given command.
@@ -26,20 +26,18 @@ public enum CliExitCode {
      * No errors, but PMD found either duplications/violations or couldn't analyze all
      * files due to parsing/lexing problems. This is exit code {@code 4}.
      *
-     * <p>This is only returned if {@link PMDConfiguration#isFailOnViolation()}
+     * <p>This is only returned if {@link AbstractConfiguration#isFailOnViolation()}
      * is set. It can be disabled by using CLI flag {@code --no-fail-on-violation}.
      */
     VIOLATIONS_FOUND(4),
     /**
-     * PMD did run, but there were either duplications/violations
-     * or processing errors or both.
+     * PMD did run, but there was at least one processing error. There
+     * might be additionally duplications or violations. This is exit code {@code 5}.
      *
-     * <p>In case you find processing errors: Please report them</p>
-     *
-     * <p>If cli flag --no-fail-on-processing-errors is used, then this
-     * exit code is not used. In such case, either 0 or 4 is returned.</p>
+     * <p>This is only returned if {@link AbstractConfiguration#isFailOnProcessingError()}
+     * is set. It can be disabled by using CLI flag {@code --no-fail-on-processing-error}.
      */
-    VIOLATIONS_OR_PROCESSING_ERRORS(5);
+    PROCESSING_ERRORS_OR_VIOLATIONS(5);
 
     private final int exitCode;
 
@@ -57,7 +55,7 @@ public enum CliExitCode {
         case 1: return ERROR;
         case 2: return USAGE_ERROR;
         case 4: return VIOLATIONS_FOUND;
-        case 5: return VIOLATIONS_OR_PROCESSING_ERRORS;
+        case 5: return PROCESSING_ERRORS_OR_VIOLATIONS;
         default:
             throw new IllegalArgumentException("Not a known exit code: " + i);
         }

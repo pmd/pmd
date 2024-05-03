@@ -150,6 +150,11 @@ exactly identical.
                     If the root path is mentioned (e.g. \"/\" or \"C:\\\"), then the paths will be rendered
                     as absolute."
     %}
+    {% include custom/cli_option_row.html options="--[no-]fail-on-processing-error"
+               description="Specifies whether CPD exits with non-zero status if processing errors occurred.
+                            By default CPD exits with status 5 if processing errors or violations are found.
+                            Disable this option with `--no-fail-on-processing-error` to exit with 0 instead and just write the report."
+    %}
     {% include custom/cli_option_row.html options="--[no-]fail-on-violation"
                description="Specifies whether CPD exits with non-zero status if violations are found.
                             By default CPD exits with status 4 if violations are found.
@@ -279,15 +284,21 @@ If you specify a source directory but don't want to scan the sub-directories, yo
 
 ### Exit status
 
-Please note that if CPD detects duplicated source code, it will exit with status 4 (since 5.0).
+Please note that if CPD detects duplicated source code, it will exit with status 4 (since 5.0) or 5 (since 7.2.0).
 This behavior has been introduced to ease CPD integration into scripts or hooks, such as SVN hooks.
 
 <table>
-<tr><td>0</td><td>Everything is fine, no code duplications found.</td></tr>
+<tr><td>0</td><td>Everything is fine, no code duplications found and no processing errors occurred.</td></tr>
 <tr><td>1</td><td>CPD exited with an exception.</td></tr>
 <tr><td>2</td><td>Usage error. Command-line parameters are invalid or missing.</td></tr>
-<tr><td>4</td><td>At least one code duplication has been detected unless <code>--no-fail-on-violation</code> is set.</td></tr>
+<tr><td>4</td><td>At least one code duplication has been detected unless <code>--no-fail-on-violation</code> is set.<p>Since PMD 5.0.</p></td></tr>
+<tr><td>5</td><td>At least one processing error has occurred. There might be additionally zero or more duplications detected.
+    To ignore processing errors, use <code>--no-fail-on-processing-error</code>.<p>Since PMD 7.2.0.</p></td></tr>
 </table>
+
+{%include note.html content="If PMD exits with 5, then PMD had trouble lexing one or more files.
+That means, that no duplications for the entire file are reported. This can be considered as false-negative.
+In any case, the root cause should be investigated. If it's a problem in PMD itself, please create a bug report." %}
 
 ## Logging
 

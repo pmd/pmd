@@ -16,6 +16,8 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🐛 Fixed Issues
 
+* cli
+  * [#2827](https://github.com/pmd/pmd/issues/2827): \[cli] Consider processing errors in exit status
 * core
   * [#4978](https://github.com/pmd/pmd/issues/4978): \[core] Referenced Rulesets do not emit details on validation errors
   * [#4983](https://github.com/pmd/pmd/pull/4983): \[cpd] Fix CPD crashes about unicode escapes
@@ -32,6 +34,18 @@ This is a {{ site.pmd.release_type }} release.
   * [#4930](https://github.com/pmd/pmd/issues/4930): \[java] EmptyControlStatement should not allow empty try with concise resources
 
 ### 🚨 API Changes
+
+#### CLI
+
+* New exit code 5 introduced. PMD and CPD will exit now by default with exit code 5, if any processing error
+  (e.g. parsing exception, lexing exception or rule exception) occurred. Such processing errors mean, that
+  either no violations or duplication for the entire file or for that rule are reported. These cases can be
+  considered as false-negatives.
+
+  In any case, the root cause should be investigated. If it's a problem in PMD itself, please create a bug report.
+
+* New CLI parameter `--no-fail-on-processing-error` to ignore processing errors and not exit with code 5. By default,
+  a build with processing errors will now fail and with that parameter, the previous behavior can be restored.
 
 #### Deprecated API
 

@@ -63,8 +63,8 @@ The examples below won't repeat this taskdef element, as this is always required
     <td>Yes, unless the ruleset nested element is used</td>
   </tr>
   <tr>
-    <td>failonerror</td>
-    <td>Whether or not to fail the build if any errors occur while processing the files</td>
+    <td>failOnError</td>
+    <td>Whether or not to fail the build if any processing errors occur while analyzing files.</td>
     <td>No</td>
   </tr>
     <tr>

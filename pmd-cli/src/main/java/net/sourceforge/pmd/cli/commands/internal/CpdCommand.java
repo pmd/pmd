@@ -136,7 +136,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
 
             boolean hasProcessingErrors = configuration.getReporter().numErrors() > 0;
             if (hasProcessingErrors && configuration.isFailOnProcessingError()) {
-                return CliExitCode.VIOLATIONS_OR_PROCESSING_ERRORS;
+                return CliExitCode.PROCESSING_ERRORS_OR_VIOLATIONS;
             }
 
             if (hasViolations.booleanValue() && configuration.isFailOnViolation()) {

@@ -384,7 +384,12 @@ public abstract class AbstractConfiguration {
      * Whether PMD should exit with status 4 (the default behavior, true) if
      * violations are found or just with 0 (to not break the build, e.g.).
      *
+     * <p>Note: If additionally processing errors occurred, the exit status is 5. See
+     * {@link #isFailOnProcessingError()}.
+     *
      * @return failOnViolation
+     *
+     * @see #isFailOnProcessingError()
      */
     public boolean isFailOnViolation() {
         return failOnViolation;
@@ -394,17 +399,43 @@ public abstract class AbstractConfiguration {
      * Sets whether PMD should exit with status 4 (the default behavior, true)
      * if violations are found or just with 0 (to not break the build, e.g.).
      *
-     * @param failOnViolation
-     *            failOnViolation
+     * <p>Note: If additionally processing errors occurred, the exit status is 5. See
+     * {@link #isFailOnProcessingError()}.
+     *
+     * @param failOnViolation whether to exit with 4 and fail the build if violations are found.
+     *
+     * @see #isFailOnProcessingError()
      */
     public void setFailOnViolation(boolean failOnViolation) {
         this.failOnViolation = failOnViolation;
     }
 
+    /**
+     * Whether PMD should exit with status 5 (the default behavior, true) if
+     * processing errors occurred or just with 0 (to not break the build, e.g.).
+     *
+     * <p>Note: If additionally violations are found, the exist status is 4. See
+     * {@link #isFailOnViolation()}.
+     *
+     * @return failOnProcessingError
+     *
+     * @see #isFailOnViolation()
+     */
     public boolean isFailOnProcessingError() {
         return failOnProcessingError;
     }
 
+    /**
+     * Sets whether PMD should exit with status 5 (the default behavior, true)
+     * if processing errors occurred or just with 0 (to not break the build, e.g.).
+     *
+     * <p>Note: If additionally violations are found, the exist status is 4. See
+     * {@link #isFailOnViolation()}.
+     *
+     * @param failOnProcessingError whether to exit with 5 and fail the build if processing errors occurred.
+     *
+     * @see #isFailOnViolation()
+     */
     public void setFailOnProcessingError(boolean failOnProcessingError) {
         this.failOnProcessingError = failOnProcessingError;
     }

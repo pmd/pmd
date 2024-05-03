@@ -80,6 +80,11 @@ The tool comes with a rather extensive help text, simply running with `--help`!
                             The valid values are the standard character sets of `java.nio.charset.Charset`."
                default="UTF-8"
     %}
+    {% include custom/cli_option_row.html options="--[no-]fail-on-processing-error"
+               description="Specifies whether PMD exits with non-zero status if processing errors occurred.
+                            By default PMD exits with status 5 if processing errors or violations are found.
+                            Disable this option with `--no-fail-on-processing-error` to exit with 0 instead and just write the report."
+    %}
     {% include custom/cli_option_row.html options="--[no-]fail-on-violation"
                description="Specifies whether PMD exits with non-zero status if violations are found.
                             By default PMD exits with status 4 if violations are found.
@@ -208,15 +213,22 @@ Or you can set the environment variable `CLASSPATH` before starting PMD, e.g.
 
 ## Exit Status
 
-Please note that if PMD detects any violations, it will exit with status 4 (since 5.3).
+Please note that if PMD detects any violations, it will exit with status 4 (since 5.3) or 5 (since 7.2.0).
 This behavior has been introduced to ease PMD integration into scripts or hooks, such as SVN hooks.
 
 <table>
-<tr><td>0</td><td>Everything is fine, no violations found.</td></tr>
+<tr><td>0</td><td>Everything is fine, no violations found and no processing error occurred.</td></tr>
 <tr><td>1</td><td>PMD exited with an exception.</td></tr>
 <tr><td>2</td><td>Usage error. Command-line parameters are invalid or missing.</td></tr>
-<tr><td>4</td><td>At least one violation has been detected, unless <code>--no-fail-on-violation</code> is set.</td></tr>
+<tr><td>4</td><td>At least one violation has been detected, unless <code>--no-fail-on-violation</code> is set.<p>Since PMD 5.3.</p></td></tr>
+<tr><td>5</td><td>At least one processing error has occurred. There might be additionally zero or more violations detected.
+    To ignore processing errors, use <code>--no-fail-on-processing-error</code>.<p>Since PMD 7.2.0.</p></td></tr>
 </table>
+
+{%include note.html content="If PMD exits with 5, then PMD had either trouble parsing one or more files or a rule failed with an exception.
+That means, that either no violations for the entire file or for that rule are reported. These cases can be considered as false-negatives.
+In any case, the root cause should be investigated. If it's a problem in PMD itself, please create a bug report. Processing errors
+are usually part of the generated PMD report." %}
 
 ## Logging
 
