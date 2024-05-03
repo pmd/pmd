@@ -6,9 +6,9 @@ package net.sourceforge.pmd.cli;
 
 import static net.sourceforge.pmd.cli.internal.CliExitCode.ERROR;
 import static net.sourceforge.pmd.cli.internal.CliExitCode.OK;
+import static net.sourceforge.pmd.cli.internal.CliExitCode.PROCESSING_ERRORS_OR_VIOLATIONS;
 import static net.sourceforge.pmd.cli.internal.CliExitCode.USAGE_ERROR;
 import static net.sourceforge.pmd.cli.internal.CliExitCode.VIOLATIONS_FOUND;
-import static net.sourceforge.pmd.cli.internal.CliExitCode.PROCESSING_ERRORS_OR_VIOLATIONS;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
