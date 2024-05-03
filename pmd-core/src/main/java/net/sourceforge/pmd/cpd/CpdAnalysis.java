@@ -179,7 +179,7 @@ public final class CpdAnalysis implements AutoCloseable {
             {
                 TokenFileSet tokens = new TokenFileSet();
 
-                ForkJoinPool forkJoinPool = new ForkJoinPool();
+                ForkJoinPool forkJoinPool = new ForkJoinPool(configuration.getThreads());
                 try {
                     boolean hasErrors = forkJoinPool.submit(() -> sourceManager.getTextFiles().parallelStream().reduce(false, (hasErrorSoFar, textFile) -> {
                         try {

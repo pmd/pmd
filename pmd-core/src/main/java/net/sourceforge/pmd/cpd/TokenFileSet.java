@@ -196,13 +196,14 @@ final class TokenFileSet {
         private int internalId = -1;
         private final FileId fileId;
         private int size = 0;
-        private int[] identifiers = new int[256];
+        private static final int BASE_SIZE = 1024;
+        private int[] identifiers = new int[BASE_SIZE];
 
         /**
          * Token coordinates are stored contiguously in this array to place
          * them off the hot path and optimize cache loads.
          */
-        private int[] coordinates = new int[256 * 4];
+        private int[] coordinates = new int[BASE_SIZE * 4];
 
         TokenFile(FileId fileId) {
             this.fileId = fileId;
