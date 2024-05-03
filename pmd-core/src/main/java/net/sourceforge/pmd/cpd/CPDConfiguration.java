@@ -73,8 +73,6 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private boolean help;
 
-    private boolean failOnViolation = true;
-
 
     public CPDConfiguration() {
         this(LanguageRegistry.CPD);
@@ -258,14 +256,6 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     public void setSkipBlocksPattern(String skipBlocksPattern) {
         this.skipBlocksPattern = skipBlocksPattern;
-    }
-
-    public boolean isFailOnViolation() {
-        return failOnViolation;
-    }
-
-    public void setFailOnViolation(boolean failOnViolation) {
-        this.failOnViolation = failOnViolation;
     }
 
     @Override

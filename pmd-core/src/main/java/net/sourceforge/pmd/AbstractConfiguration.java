@@ -46,6 +46,7 @@ public abstract class AbstractConfiguration {
     private Path ignoreFilePath;
     private List<Path> excludes = new ArrayList<>();
     private boolean collectRecursive = true;
+    private boolean failOnViolation = true;
     private boolean failOnProcessingError = true;
 
 
@@ -377,6 +378,27 @@ public abstract class AbstractConfiguration {
 
     public void collectFilesRecursively(boolean collectRecursive) {
         this.collectRecursive = collectRecursive;
+    }
+
+    /**
+     * Whether PMD should exit with status 4 (the default behavior, true) if
+     * violations are found or just with 0 (to not break the build, e.g.).
+     *
+     * @return failOnViolation
+     */
+    public boolean isFailOnViolation() {
+        return failOnViolation;
+    }
+
+    /**
+     * Sets whether PMD should exit with status 4 (the default behavior, true)
+     * if violations are found or just with 0 (to not break the build, e.g.).
+     *
+     * @param failOnViolation
+     *            failOnViolation
+     */
+    public void setFailOnViolation(boolean failOnViolation) {
+        this.failOnViolation = failOnViolation;
     }
 
     public boolean isFailOnProcessingError() {
