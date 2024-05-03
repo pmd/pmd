@@ -6,6 +6,7 @@ author: >
     David Dixon-Peugh <dpeugh@users.sourceforge.net>,
     Tom Copeland <tom@infoether.com>,
     Xavier Le Vourch <xlv@users.sourceforge.net>
+last_updated: May 2024 (7.2.0)
 ---
 
 ## PMD
