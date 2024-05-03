@@ -330,6 +330,8 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
                 if (pmdReporter.numErrors() > 0) {
                     // processing errors are ignored
                     return CliExitCode.ERROR;
+                } else if (stats.getNumErrors() > 0) {
+                    return CliExitCode.VIOLATIONS_OR_PROCESSING_ERRORS;
                 } else if (stats.getNumViolations() > 0 && configuration.isFailOnViolation()) {
                     return CliExitCode.VIOLATIONS_FOUND;
                 } else {

@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.cli.internal.CliExitCode.ERROR;
 import static net.sourceforge.pmd.cli.internal.CliExitCode.OK;
 import static net.sourceforge.pmd.cli.internal.CliExitCode.USAGE_ERROR;
 import static net.sourceforge.pmd.cli.internal.CliExitCode.VIOLATIONS_FOUND;
+import static net.sourceforge.pmd.cli.internal.CliExitCode.VIOLATIONS_OR_PROCESSING_ERRORS;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -316,6 +317,16 @@ class PmdCliTest extends BaseCliTest {
             .verify(r -> r.checkStdOut(
                 containsString("Violation from ReportAllRootNodes")
             ));
+    }
+
+    @Test
+    void exitStatusWithProcessingErrors() throws Exception {
+        runCli(VIOLATIONS_OR_PROCESSING_ERRORS, "--use-version", "dummy-parserThrows",
+                "-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION)
+            .verify(r -> {
+                r.checkStdOut(containsString("someSource.dummy\t-\tParseException: Parse exception: ohio"));
+                r.checkStdErr(containsString("An error occurred while executing PMD."));
+            });
     }
 
     @Test
