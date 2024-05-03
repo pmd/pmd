@@ -143,10 +143,9 @@
             <artifactId>nice-xml-messages</artifactId>
         </dependency>
         <dependency>
-            <!-- IntObjectHashMap for CPD -->
-            <groupId>com.carrotsearch</groupId>
-            <artifactId>hppc</artifactId>
-            <version>0.9.1</version>
+            <groupId>it.unimi.dsi</groupId>
+            <artifactId>fastutil-core</artifactId>
+            <version>8.5.13</version>
         </dependency>
 
         <dependency>

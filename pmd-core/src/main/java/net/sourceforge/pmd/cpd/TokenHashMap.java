@@ -8,20 +8,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.cpd.TokenFileSet.SmallTokenEntry;
+import net.sourceforge.pmd.util.AssertionUtil;
 
-import com.carrotsearch.hppc.IntObjectHashMap;
-import com.carrotsearch.hppc.IntObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 /**
  * @author Clément Fournier
  */
 class TokenHashMap {
 
-    private final IntObjectMap<Object> markGroups;
+    private final Int2ObjectMap<Object> markGroups;
     private final List<List<SmallTokenEntry>> listSink;
 
     TokenHashMap(int size) {
-        markGroups = new IntObjectHashMap<>(size);
+        markGroups = new Int2ObjectOpenHashMap<>(size);
         listSink = new ArrayList<>();
     }
 
@@ -41,21 +42,18 @@ class TokenHashMap {
      * @param thisEntry The current token
      */
     void addTokenToHashTable(int hash, SmallTokenEntry thisEntry) {
-        int index = markGroups.indexOf(hash);
-        if (markGroups.indexExists(index)) {
-            Object curEntry = markGroups.indexGet(index);
+        markGroups.merge(hash, thisEntry, (curEntry, thisEntry2) -> {
             if (curEntry instanceof SmallTokenEntry) {
                 SmallTokenEntry fstTok = (SmallTokenEntry) curEntry;
                 if (fstTok.hasSamePrevToken(thisEntry)) {
                     // part of a larger match, yeet them out
-                    markGroups.indexRemove(index);
-                    return;
+                    return null;
                 }
                 List<SmallTokenEntry> arr = new ArrayList<>(2);
                 arr.add(fstTok);
                 arr.add(thisEntry);
-                markGroups.indexReplace(index, arr);
                 listSink.add(arr);
+                return arr;
             } else if (curEntry instanceof List) {
                 @SuppressWarnings("unchecked")
                 List<SmallTokenEntry> list = (List<SmallTokenEntry>) curEntry;
@@ -63,10 +61,10 @@ class TokenHashMap {
                 if (!hadMatch) {
                     list.add(thisEntry);
                 }
+                return list;
             }
-        } else {
-            markGroups.indexInsert(index, hash, thisEntry);
-        }
+            throw AssertionUtil.shouldNotReachHere("Unexpected token entry type: " + curEntry.getClass());
+        });
     }
 
 }
