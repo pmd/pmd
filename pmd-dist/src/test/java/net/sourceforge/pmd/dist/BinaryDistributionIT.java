@@ -191,7 +191,7 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
 
         ExecutionResult result = PMDExecutor.runPMDRules(createTemporaryReportFile(), tempDir, srcDir, "src/test/resources/rulesets/sample-ruleset.xml");
 
-        result.assertExitCode(0).assertStdErr(containsString("Run in verbose mode to see a stack-trace."));
+        result.assertExitCode(5).assertStdErr(containsString("Run in verbose mode to see a stack-trace."));
     }
 
     @Test
