@@ -267,7 +267,7 @@ public class GUI implements CPDListener {
             }
 
             if (!f.canWrite()) {
-                final CPDReport report = new CPDReport(sourceManager, matches, numberOfTokensPerFile);
+                final CPDReport report = new CPDReport(sourceManager, matches, numberOfTokensPerFile, Collections.emptyList());
                 try (PrintWriter pw = new PrintWriter(Files.newOutputStream(f.toPath()))) {
                     renderer.render(report, pw);
                     pw.flush();
@@ -549,7 +549,7 @@ public class GUI implements CPDListener {
         for (int selectionIndex : selectionIndices) {
             selections.add((Match) model.getValueAt(selectionIndex, 99));
         }
-        CPDReport toRender = new CPDReport(sourceManager, selections, Collections.emptyMap());
+        CPDReport toRender = new CPDReport(sourceManager, selections, Collections.emptyMap(), Collections.emptyList());
         String report = new SimpleRenderer(trimLeadingWhitespace).renderToString(toRender);
         resultsTextArea.setText(report);
         resultsTextArea.setCaretPosition(0); // move to the top

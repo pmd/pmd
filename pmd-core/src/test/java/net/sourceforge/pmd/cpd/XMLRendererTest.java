@@ -24,7 +24,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import net.sourceforge.pmd.cpd.CpdTestUtils.CpdReportBuilder;
+import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.reporting.Report;
 
 /**
  * @author Philippe T'Seyen
@@ -256,5 +258,32 @@ class XMLRendererTest {
         assertThat(report, containsString("no & escaping necessary in CDATA"));
         assertThat(report, containsString("x=\"]]]]><![CDATA[>\";"));
         assertThat(report, not(containsString("x=\"]]>\";"))); // must be escaped
+    }
+
+    @Test
+    void reportContainsProcessingError() throws IOException, ParserConfigurationException, SAXException {
+        FileId fileId = FileId.fromPathLikeString("file1.txt");
+        Report.ProcessingError processingError = new Report.ProcessingError(
+                new LexException(2, 1, fileId, "test exception", new RuntimeException("cause exception")),
+                fileId);
+        CPDReportRenderer renderer = new XMLRenderer();
+        StringWriter sw = new StringWriter();
+        renderer.render(CpdTestUtils.makeReport(Collections.emptyList(), Collections.emptyMap(), Collections.singletonList(processingError)), sw);
+        String report = sw.toString();
+        System.out.println("report = " + report);
+
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
+        NodeList nodes = doc.getChildNodes();
+        Node n = nodes.item(0);
+        assertEquals("pmd-cpd", n.getNodeName());
+        assertEquals(1, doc.getElementsByTagName("error").getLength());
+        Node error = doc.getElementsByTagName("error").item(0);
+        String filename = error.getAttributes().getNamedItem("filename").getNodeValue();
+        assertEquals(processingError.getFileId().getAbsolutePath(), filename);
+        String msg = error.getAttributes().getNamedItem("msg").getNodeValue();
+        assertEquals(processingError.getMsg(), msg);
+        String textContent = error.getTextContent();
+        assertEquals(processingError.getDetail(), textContent);
     }
 }

@@ -5,6 +5,7 @@ keywords: [formats, renderers]
 summary: "Overview of the built-in report formats for CPD"
 permalink: pmd_userdocs_cpd_report_formats.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
+last_updated: May 2024 (7.2.0)
 ---
 
 ## Overview
@@ -97,6 +98,8 @@ Starting at line 110 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/
 This format uses XML to output the duplications in a more structured format.
 The XML format can then further be processed using XSLT transformations. See [section xslt](#xslt) for examples.
 
+Since PMD 7.2.0 any processing errors are also reported (if `--skip-lexical-errors` is used) as additional elements `error`.
+
 Example:
 
 ```xml
@@ -167,6 +170,32 @@ Example:
         Assert.assertEquals(2, query.nodeNameToXPaths.size());
         Assert.assertEquals("self::node()[(attribute::Test1 = \"false\")][(attribute::Test2 = \"true\")]", query.nodeNameToXPaths.get("dummyNode").get(0).toString());]]></codefragment>
    </duplication>
+   <error filename="/home/pmd/source/pmd-cli/src/test/resources/net/sourceforge/pmd/cli/cpd/badandgood/BadFile.java"
+          msg="LexException: Lexical error in file '/home/pmd/source/pmd-cli/src/test/resources/net/sourceforge/pmd/cli/cpd/badandgood/BadFile.java' at line 4, column 14: &#34;\ufffd&#34; (65533), after : &#34;&#34; (in lexical state DEFAULT)">net.sourceforge.pmd.lang.ast.LexException: Lexical error in file '/home/pmd/source/pmd-cli/src/test/resources/net/sourceforge/pmd/cli/cpd/badandgood/BadFile.java' at line 4, column 14: "\ufffd" (65533), after : "" (in lexical state DEFAULT)
+        at net.sourceforge.pmd.lang.ast.InternalApiBridge.newLexException(InternalApiBridge.java:25)
+        at net.sourceforge.pmd.lang.java.ast.JavaParserImplTokenManager.getNextToken(JavaParserImplTokenManager.java:2698)
+        at net.sourceforge.pmd.lang.java.ast.JavaParserImplTokenManager.getNextToken(JavaParserImplTokenManager.java:18)
+        at net.sourceforge.pmd.cpd.impl.BaseTokenFilter.getNextToken(BaseTokenFilter.java:44)
+        at net.sourceforge.pmd.cpd.impl.CpdLexerBase.tokenize(CpdLexerBase.java:40)
+        at net.sourceforge.pmd.cpd.CpdLexer.tokenize(CpdLexer.java:29)
+        at net.sourceforge.pmd.cpd.CpdAnalysis.doTokenize(CpdAnalysis.java:146)
+        at net.sourceforge.pmd.cpd.CpdAnalysis.performAnalysis(CpdAnalysis.java:173)
+        at net.sourceforge.pmd.cli.commands.internal.CpdCommand.doExecute(CpdCommand.java:134)
+        at net.sourceforge.pmd.cli.commands.internal.CpdCommand.doExecute(CpdCommand.java:29)
+        at net.sourceforge.pmd.cli.internal.PmdRootLogger.executeInLoggingContext(PmdRootLogger.java:55)
+        at net.sourceforge.pmd.cli.commands.internal.AbstractAnalysisPmdSubcommand.execute(AbstractAnalysisPmdSubcommand.java:111)
+        at net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand.call(AbstractPmdSubcommand.java:30)
+        at net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand.call(AbstractPmdSubcommand.java:16)
+        at picocli.CommandLine.executeUserObject(CommandLine.java:2041)
+        at picocli.CommandLine.access$1500(CommandLine.java:148)
+        at picocli.CommandLine$RunLast.executeUserObjectOfLastSubcommandWithSameParent(CommandLine.java:2461)
+        at picocli.CommandLine$RunLast.handle(CommandLine.java:2453)
+        at picocli.CommandLine$RunLast.handle(CommandLine.java:2415)
+        at picocli.CommandLine$AbstractParseResultHandler.execute(CommandLine.java:2273)
+        at picocli.CommandLine$RunLast.execute(CommandLine.java:2417)
+        at picocli.CommandLine.execute(CommandLine.java:2170)
+        at net.sourceforge.pmd.cli.PmdCli.main(PmdCli.java:24)
+   </error>
 </pmd-cpd>
 ```
 

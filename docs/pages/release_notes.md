@@ -33,6 +33,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚨 API Changes
 
+#### CPD Report Format XML
+
+The CPD XML report will now also contain processing errors (if CPD is called with `--skip-lexical-errors`).
+
+See [Report formats for CPD](pmd_userdocs_cpd_report_formats.html#xml) for an example.
+
 #### Deprecated API
 
 * pmd-java

@@ -23,6 +23,7 @@ import org.w3c.dom.Element;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -110,6 +111,15 @@ public final class XMLRenderer implements CPDReportRenderer {
             addCodeSnippet(doc, dupElt, match, report);
             root.appendChild(dupElt);
         }
+
+        for (Report.ProcessingError error : report.getProcessingErrors()) {
+            Element errorElt = doc.createElement("error");
+            errorElt.setAttribute("filename", report.getDisplayName(error.getFileId()));
+            errorElt.setAttribute("msg", error.getMsg());
+            errorElt.setTextContent(error.getDetail());
+            root.appendChild(errorElt);
+        }
+
         dumpDocToWriter(doc, writer);
         writer.flush();
     }
