@@ -39,8 +39,6 @@ class MatchCollector {
      * @param marks List of tokens
      */
     void collect(List<SmallTokenEntry> marks) {
-        assert marks.stream().mapToInt(it -> it.prevToken).distinct().count() == marks.size()
-            : "By construction the items of a mark list should have distinct previous tokens";
 
         if (marks.size() < 2) {
             return;

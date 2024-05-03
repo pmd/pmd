@@ -219,7 +219,7 @@ final class TokenFileSet {
                 Object curEntry = markGroups.indexGet(index);
                 if (curEntry instanceof SmallTokenEntry) {
                     SmallTokenEntry fstTok = (SmallTokenEntry) curEntry;
-                    if (fstTok.prevToken == thisEntry.prevToken) {
+                    if (fstTok.hasSamePrevToken(thisEntry)) {
                         // part of a larger match, yeet them out
                         markGroups.indexRemove(index);
                         return;
@@ -232,7 +232,7 @@ final class TokenFileSet {
                 } else if (curEntry instanceof List) {
                     @SuppressWarnings("unchecked")
                     List<SmallTokenEntry> list = (List<SmallTokenEntry>) curEntry;
-                    boolean hadMatch = list.removeIf(it -> thisEntry.prevToken == it.prevToken);
+                    boolean hadMatch = list.removeIf(thisEntry::hasSamePrevToken);
                     if (!hadMatch) {
                         list.add(thisEntry);
                     }
@@ -401,6 +401,14 @@ final class TokenFileSet {
         @Override
         public String toString() {
             return "Token(file=" + fileId + ", index=" + indexInFile + ")";
+        }
+
+        boolean hasSamePrevToken(SmallTokenEntry other) {
+            // If this is the first token in the file, then prevToken
+            // does not have a useful value
+            return this.indexInFile > 0
+                && other.indexInFile > 0
+                && this.prevToken == other.prevToken;
         }
     }
 
