@@ -11,22 +11,20 @@
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](code_of_conduct.md) 
 [![Documentation (latest)](https://img.shields.io/badge/docs-latest-green)](https://docs.pmd-code.org/latest/)
 
-**PMD** is a source code analyzer. It finds common programming flaws like unused variables, empty catch blocks,
-unnecessary object creation, and so forth. It supports many languages. It can be extended with custom rules.
-It uses JavaCC and Antlr to parse source files into abstract syntax trees (AST) and runs rules against them to find violations.
-Rules can be written in Java or using a XPath query.
+**PMD** is an extensible multilanguage static code analyzer. It finds common programming flaws like unused variables,
+empty catch blocks, unnecessary object creation, and so forth. It's mainly concerned with **Java and
+Apex**, but **supports 16 other languages**. It comes with **400+ built-in rules**. It can be
+extended with custom rules. It uses JavaCC and Antlr to parse source files into abstract syntax trees
+(AST) and runs rules against them to find violations. Rules can be written in Java or using a XPath query.
 
-It supports Java, JavaScript, Salesforce.com Apex and Visualforce,
-Modelica, PLSQL, Apache Velocity, HTML, XML and XSL.
+Currently, PMD supports Java, JavaScript, Salesforce.com Apex and Visualforce,
+Kotlin, Swift, Modelica, PLSQL, Apache Velocity, JSP, WSDL, Maven POM, HTML, XML and XSL.
 Scala is supported, but there are currently no Scala rules available.
 
 Additionally, it includes **CPD**, the copy-paste-detector. CPD finds duplicated code in
-C/C++, C#, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Kotlin, Lua, Matlab, Modelica,
-Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex and Visualforce, Scala, Swift, T-SQL,
-Apache Velocity, and XML.
-
-In the future we hope to add support for data/control flow analysis and automatic (quick) fixes where
-it makes sense.
+Coco, C/C++, C#, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Julia, Kotlin,
+Lua, Matlab, Modelica, Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex and
+Visualforce, Scala, Swift, T-SQL, Typescript, Apache Velocity, WSDL, XML and XSL.
 
 ## 🚀 Installation and Usage
 
