@@ -245,6 +245,19 @@ class CpdCliTest extends BaseCliTest {
     }
 
     @Test
+    void testExitCodeWithLexicalErrorsNoFail() throws Exception {
+        runCli(OK,
+                "--minimum-tokens", "10",
+                "-d", Paths.get(BASE_RES_PATH, "badandgood", "BadFile.java").toString(),
+                "--format", "text",
+                "--no-fail-on-processing-error")
+                .verify(r -> {
+                    r.checkStdErr(containsPattern("Error while tokenizing: Lexical error in file '.*?BadFile\\.java'"));
+                    r.checkStdOut(emptyString());
+                });
+    }
+
+    @Test
     void testExitCodeWithLexicalErrorsAndSkipLexical() throws Exception {
         runCli(VIOLATIONS_OR_PROCESSING_ERRORS,
                 "--minimum-tokens", "10",

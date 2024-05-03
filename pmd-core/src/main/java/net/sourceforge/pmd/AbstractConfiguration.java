@@ -46,6 +46,7 @@ public abstract class AbstractConfiguration {
     private Path ignoreFilePath;
     private List<Path> excludes = new ArrayList<>();
     private boolean collectRecursive = true;
+    private boolean failOnProcessingError = true;
 
 
     protected AbstractConfiguration(LanguageRegistry languageRegistry, PmdReporter messageReporter) {
@@ -376,5 +377,13 @@ public abstract class AbstractConfiguration {
 
     public void collectFilesRecursively(boolean collectRecursive) {
         this.collectRecursive = collectRecursive;
+    }
+
+    public boolean isFailOnProcessingError() {
+        return failOnProcessingError;
+    }
+
+    public void setFailOnProcessingError(boolean failOnProcessingError) {
+        this.failOnProcessingError = failOnProcessingError;
     }
 }

@@ -330,6 +330,17 @@ class PmdCliTest extends BaseCliTest {
     }
 
     @Test
+    void exitStatusWithProcessingErrorsNoFail() throws Exception {
+        runCli(OK, "--use-version", "dummy-parserThrows",
+                "-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION,
+                "--no-fail-on-processing-error")
+            .verify(r -> {
+                r.checkStdOut(containsString("someSource.dummy\t-\tParseException: Parse exception: ohio"));
+                r.checkStdErr(containsString("An error occurred while executing PMD."));
+            });
+    }
+
+    @Test
     void testZipFileAsSource() throws Exception {
         Path zipArchive = createTemporaryZipArchive("sources.zip");
         CliExecutionResult result = runCli(VIOLATIONS_FOUND, "--dir", zipArchive.toString(), "--rulesets", "rulesets/dummy/basic.xml");

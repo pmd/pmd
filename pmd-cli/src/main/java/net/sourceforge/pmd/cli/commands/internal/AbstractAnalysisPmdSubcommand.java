@@ -48,6 +48,12 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
             defaultValue = "true", negatable = true)
     protected boolean failOnViolation;
 
+    @Option(names = "--no-fail-on-processing-error",
+            description = "By default PMD exits with status 5 if processing errors or violations are found. "
+                    + "Disable this option with '--no-fail-on-processing-error' to exit with 0 instead and just write the report.",
+            defaultValue = "true", negatable = true)
+    protected boolean failOnProcessingError;
+
     protected List<Path> relativizeRootPaths;
 
     @Option(names = { "--relativize-paths-with", "-z"}, description = "Path relative to which directories are rendered in the report. "

@@ -103,6 +103,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
             configuration.addRelativizeRoots(relativizeRootPaths);
         }
         configuration.setFailOnViolation(failOnViolation);
+        configuration.setFailOnProcessingError(failOnProcessingError);
         configuration.setInputFilePath(fileListPath);
         if (inputPaths != null) {
             configuration.setInputPathList(new ArrayList<>(inputPaths));
@@ -134,7 +135,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
             cpd.performAnalysis(report -> hasViolations.setValue(!report.getMatches().isEmpty()));
 
             boolean hasProcessingErrors = configuration.getReporter().numErrors() > 0;
-            if (hasProcessingErrors) {
+            if (hasProcessingErrors && configuration.isFailOnProcessingError()) {
                 return CliExitCode.VIOLATIONS_OR_PROCESSING_ERRORS;
             }
 
