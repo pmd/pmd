@@ -32,22 +32,17 @@ public abstract class BackslashEscapeTranslator extends EscapeTranslator {
     @Override
     protected int gobbleMaxWithoutEscape(final int maxOff) throws MalformedSourceException {
         int off = this.bufpos;
-        boolean seenBackslash = true;
         int notEscapeEnd = this.savedNotEscapeSpecialEnd;
-        while (off < maxOff) {
-            seenBackslash = input.charAt(off) == BACKSLASH && notEscapeEnd >= off;
-            if (seenBackslash) {
-                break;
-            }
-            off++;
+
+        int backslashOff = input.indexOf(BACKSLASH, off, min(maxOff, notEscapeEnd));
+        boolean seenBackslash = backslashOff != -1;
+
+        if (!seenBackslash) {
+            this.bufpos = maxOff;
+            return maxOff;
         }
 
-        if (!seenBackslash || off == maxOff) {
-            this.bufpos = off;
-            return off;
-        }
-
-        return handleBackslash(maxOff, off);
+        return handleBackslash(maxOff, backslashOff);
     }
 
     protected abstract int handleBackslash(int maxOff, int firstBackslashOff) throws MalformedSourceException;

@@ -187,13 +187,10 @@ public final class Chars implements CharSequence {
             return 0;
         }
 
-        final char fst = searched.charAt(0);
-        int strpos = str.indexOf(fst, idx(fromIndex));
-        while (strpos != NOT_FOUND && strpos <= max) {
-            if (str.startsWith(searched, strpos)) {
-                return strpos - start;
+        for (int i = idx(fromIndex); i < max; i++) {
+            if (str.startsWith(searched, i)) {
+                return i - start;
             }
-            strpos = str.indexOf(fst, strpos + 1);
         }
         return NOT_FOUND;
     }
@@ -209,15 +206,21 @@ public final class Chars implements CharSequence {
      * See {@link String#indexOf(int, int)}.
      */
     public int indexOf(int ch, int fromIndex) {
-        if (fromIndex < 0 || fromIndex >= len) {
+        return indexOf(ch, fromIndex, len);
+    }
+
+   public int indexOf(int ch, int fromIndex, int toIndex) {
+        if (fromIndex < 0 || fromIndex >= len || toIndex <= fromIndex) {
             return NOT_FOUND;
+        } else if (isFullString() && toIndex >= len) {
+            return str.indexOf(ch, fromIndex);
         }
         // we want to avoid searching too far in the string
         // so we don't use String#indexOf, as it would be looking
         // in the rest of the file too, which in the worst case is
         // horrible
 
-        int max = start + len;
+        int max = start + toIndex;
         for (int i = start + fromIndex; i < max; i++) {
             char c = str.charAt(i);
             if (c == ch) {
@@ -260,7 +263,7 @@ public final class Chars implements CharSequence {
 
     /** Return true if this contains the given substring. */
     public boolean contains(String s) {
-        return indexOf(s, 0) != -1;
+        return indexOf(s, 0) != NOT_FOUND;
     }
 
 
