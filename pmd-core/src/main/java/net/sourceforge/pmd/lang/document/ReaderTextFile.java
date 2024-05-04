@@ -37,6 +37,11 @@ class ReaderTextFile implements TextFile {
     }
 
     @Override
+    public boolean canReopen() {
+        return false;
+    }
+
+    @Override
     public @NonNull LanguageVersion getLanguageVersion() {
         return languageVersion;
     }

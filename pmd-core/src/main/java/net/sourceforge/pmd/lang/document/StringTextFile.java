@@ -40,6 +40,11 @@ class StringTextFile implements TextFile {
     }
 
     @Override
+    public boolean canReopen() {
+        return true;
+    }
+
+    @Override
     public TextFileContent readContents() {
         return content;
     }

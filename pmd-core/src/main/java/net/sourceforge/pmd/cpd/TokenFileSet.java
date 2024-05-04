@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.util.OptionalBool;
 
 /**
@@ -153,10 +154,12 @@ final class TokenFileSet {
     final class TokenFileFactory implements TokenFactory {
 
         final FileId fileId;
+        private final TextDocument file;
         final TokenFile tokenFile;
 
         TokenFileFactory(TextDocument file) {
             this.fileId = file.getFileId();
+            this.file = file;
             this.tokenFile = new TokenFile(fileId);
         }
 
@@ -189,7 +192,7 @@ final class TokenFileSet {
             if (tokenFile.isEmpty()) {
                 return null; // no token has been added yet in this file
             }
-            return tokenFile.getTokenEntry(tokenFile.size - 1, sourceManager);
+            return tokenFile.getTokenEntry(tokenFile.size - 1, file, sourceManager);
         }
 
         @Override
@@ -213,9 +216,11 @@ final class TokenFileSet {
 
         /**
          * Token coordinates are stored contiguously in this array to place
-         * them off the hot path and optimize cache loads.
+         * them off the hot path and optimize cache loads. This is populated
+         * as soon as we know whether we'll be storing line/column or offsets
+         * in the table. If we store offsets then we need half the size.
          */
-        private int[] coordinates;
+        private int[] coordinates = new int[0];
         private OptionalBool offsetCoordinates = OptionalBool.UNKNOWN;
 
         TokenFile(FileId fileId) {
@@ -245,6 +250,8 @@ final class TokenFileSet {
 
         void addTokenByOffsets(int identifier, int startOffset, int endOffset) {
             setUseOffsetCoordinates(true);
+            assert startOffset <= endOffset && startOffset >= 0
+                : "startOffset=" + startOffset + ", endOffset=" + endOffset;
 
             final int size = this.size;
             if (size == identifiers.length) {
@@ -259,7 +266,7 @@ final class TokenFileSet {
 
         private void setUseOffsetCoordinates(boolean isOffsetCoordinates) {
             boolean wasKnown = this.offsetCoordinates.isKnown();
-            assert this.offsetCoordinates != OptionalBool.definitely(!isOffsetCoordinates): "Cannot record tokens with line/column and with offset in same file";
+            assert !wasKnown || this.offsetCoordinates.isTrue() == isOffsetCoordinates: "Cannot record tokens with line/column and with offset in same file";
             if (!wasKnown) {
                 this.offsetCoordinates = OptionalBool.definitely(isOffsetCoordinates);
                 this.coordinates = new int[lengthOfCoordinatesArray(this.identifiers.length)];
@@ -270,10 +277,16 @@ final class TokenFileSet {
          * Build a token entry for the token at index i.
          */
         TokenEntry getTokenEntry(int i, SourceManager sourceManager) {
+            return getTokenEntry(i, null, sourceManager);
+        }
+
+        TokenEntry getTokenEntry(int i, @Nullable TextDocument doc, SourceManager sourceManager) {
             assert i >= 0 && i < size : "Invalid token index " + i + " for size " + size;
             assert offsetCoordinates.isKnown();
+
             if (offsetCoordinates.isTrue()) {
-                FileLocation loc = sourceManager.toLocation(fileId, coordinates[i * 2], coordinates[i * 2 + 1]);
+                TextRegion region = TextRegion.fromBothOffsets(coordinates[i * 2], coordinates[i * 2 + 1]);
+                FileLocation loc = doc == null ? sourceManager.toLocation(fileId, region) : doc.toLocation(region);
                 return new TokenEntry(
                     identifiers[i],
                     fileId,

@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Stream;
 
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.Chars;
@@ -29,7 +27,8 @@ import net.sourceforge.pmd.reporting.FileNameRenderer;
  */
 class SourceManager implements AutoCloseable {
 
-    private final Map<FileId, SoftReference<TextDocument>> files = new ConcurrentHashMap<>();
+    private final Map<FileId, SoftReference<TextDocument>> files = new HashMap<>();
+    private final Map<FileId, TextDocument> strongReferences = new HashMap<>();
     private final Map<FileId, TextFile> fileByPathId = new HashMap<>();
     private final List<TextFile> textFiles;
     private FileNameRenderer fileNameRenderer = FileId::getAbsolutePath;
@@ -44,41 +43,62 @@ class SourceManager implements AutoCloseable {
         return textFiles;
     }
 
-    Stream<TextFile> getShieldedTextFiles() {
-        return textFiles.stream().map(TextFile::closeShieldWrapper);
-    }
-
     /**
      * Load a textfile without caching it.
      */
     TextDocument load(TextFile file) throws IOException {
+        if (!file.canReopen()) {
+            // Note we synchronize manually around the map instead of using
+            // a concurrent hashmap because using computeIfAbsent we would
+            // have to throw the IOException as UncheckedIOException and unwrap
+            // it afterward.
+            synchronized (strongReferences) {
+                TextDocument loaded = strongReferences.get(file.getFileId());
+                if (loaded == null) {
+                    loaded = TextDocument.create(file);
+                    strongReferences.put(file.getFileId(), loaded);
+                }
+                return loaded;
+            }
+        }
         return TextDocument.create(file);
     }
 
-    TextDocument get(TextFile file) throws IOException {
-        SoftReference<TextDocument> ref = files.get(file.getFileId());
-        TextDocument loaded = ref == null ? null : ref.get();
-        if (loaded == null) {
-            loaded = load(file);
-            files.put(file.getFileId(), new SoftReference<>(loaded));
-        }
-        return loaded;
-    }
-
-
+    /**
+     * Get a textfile from cache or load it.
+     *
+     * @param fileId A file ID
+     *
+     * @return A text document
+     *
+     * @throws IOException If reading the TextFile throws
+     */
     TextDocument get(FileId fileId) throws IOException {
-        SoftReference<TextDocument> ref = files.get(fileId);
-        TextDocument loaded = ref == null ? null : ref.get();
-        if (loaded == null) {
-            TextFile textFile = fileByPathId.get(fileId);
-            assert textFile != null;
-            loaded = load(textFile);
-            files.put(fileId, new SoftReference<>(loaded));
+        TextFile textFile = fileByPathId.get(fileId);
+        if (textFile == null) {
+            throw new IllegalArgumentException(fileId.toString());
+        } else if (!textFile.canReopen()) {
+            // if the file cannot be reopened later, then we should keep it loaded
+            return load(textFile);
         }
-        return loaded;
+
+        // Here we synchronize manually around the map instead of using
+        // a concurrent map, because we could not guarantee that the SoftReference
+        // has not been cleared between the moment it is loaded within an eg Map::compute
+        // call and the moment it is returned.
+        synchronized (files) {
+            // use soft reference
+            SoftReference<TextDocument> ref = files.get(fileId);
+            TextDocument loaded = ref == null ? null : ref.get();
+            if (loaded == null) {
+                loaded = load(textFile);
+                files.put(fileId, new SoftReference<>(loaded));
+            }
+            return loaded;
+        }
     }
 
-    TextDocument getUnchecked(TextFile file) {
+    private TextDocument getUnchecked(FileId file) {
         try {
             return get(file);
         } catch (IOException e) {
@@ -87,12 +107,14 @@ class SourceManager implements AutoCloseable {
     }
 
     public int size() {
-        return files.size();
+        return textFiles.size();
     }
 
 
     @Override
     public void close() throws Exception {
+        strongReferences.clear();
+        files.clear();
         Exception exception = IOUtil.closeAll(textFiles);
         if (exception != null) {
             throw exception;
@@ -101,9 +123,7 @@ class SourceManager implements AutoCloseable {
 
     @SuppressWarnings("PMD.CloseResource")
     public Chars getSlice(Mark mark) {
-        TextFile textFile = fileByPathId.get(mark.getToken().getFileId());
-        assert textFile != null : "No such file " + mark.getToken().getFileId();
-        TextDocument doc = getUnchecked(textFile);
+        TextDocument doc = getUnchecked(mark.getFileId());
         assert doc != null;
         FileLocation loc = mark.getLocation();
         TextRegion lineRange = doc.createLineRange(loc.getStartLine(), loc.getEndLine());
@@ -114,12 +134,8 @@ class SourceManager implements AutoCloseable {
         return fileNameRenderer.getDisplayName(fileId);
     }
 
-    FileLocation toLocation(FileId fileId, int startOffset, int endOffset) {
-        try {
-            TextDocument doc = get(fileId);
-            return doc.toLocation(TextRegion.fromBothOffsets(startOffset, endOffset));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+    FileLocation toLocation(FileId fileId, TextRegion region) {
+        TextDocument doc = getUnchecked(fileId);
+        return doc.toLocation(region);
     }
 }

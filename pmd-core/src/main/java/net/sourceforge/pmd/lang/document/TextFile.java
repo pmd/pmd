@@ -54,6 +54,15 @@ public interface TextFile extends Closeable {
      */
     FileId getFileId();
 
+    /**
+     * If true, then the contents of this file can be read again once
+     * this file is closed. If false, then this file can be read at most
+     * once.
+     */
+    default boolean canReopen() {
+        return false;
+    }
+
 
     /**
      * Returns true if this file cannot be written to. In that case,
@@ -216,7 +225,16 @@ public interface TextFile extends Closeable {
     }
 
     static TextFile closeShieldWrapper(TextFile textFile) {
+        if (textFile.canReopen()) {
+            return textFile;
+        }
+
         return new TextFile() {
+            @Override
+            public boolean canReopen() {
+                return textFile.canReopen();
+            }
+
             @Override
             public @NonNull LanguageVersion getLanguageVersion() {
                 return textFile.getLanguageVersion();
