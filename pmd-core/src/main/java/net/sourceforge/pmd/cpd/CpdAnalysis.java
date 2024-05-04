@@ -177,13 +177,12 @@ public final class CpdAnalysis implements AutoCloseable {
 
             final List<Match> matches;
             {
-                TokenFileSet tokens = new TokenFileSet();
+                TokenFileSet tokens = new TokenFileSet(sourceManager);
 
                 ForkJoinPool forkJoinPool = new ForkJoinPool(configuration.getThreads());
                 try {
-                    boolean hasErrors = forkJoinPool.submit(() -> sourceManager.getTextFiles().parallelStream().reduce(false, (hasErrorSoFar, textFile) -> {
-                        try {
-                            TextDocument textDocument = sourceManager.load(textFile);
+                    boolean hasErrors = forkJoinPool.submit(() -> sourceManager.getShieldedTextFiles().parallel().reduce(false, (hasErrorSoFar, textFile) -> {
+                        try (TextDocument textDocument = sourceManager.load(textFile)) {
                             int newTokens = doTokenize(textDocument, tokenizers.get(textFile.getLanguageVersion().getLanguage()), tokens);
                             synchronized (this) {
                                 numberOfTokensPerFile.put(textDocument.getFileId(), newTokens);

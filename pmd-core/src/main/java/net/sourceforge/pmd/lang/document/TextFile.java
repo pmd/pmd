@@ -214,4 +214,28 @@ public interface TextFile extends Closeable {
     static TextFileBuilder builderForReader(Reader reader, FileId fileId, LanguageVersion languageVersion) {
         return new ForReader(languageVersion, reader, fileId);
     }
+
+    static TextFile closeShieldWrapper(TextFile textFile) {
+        return new TextFile() {
+            @Override
+            public @NonNull LanguageVersion getLanguageVersion() {
+                return textFile.getLanguageVersion();
+            }
+
+            @Override
+            public FileId getFileId() {
+                return textFile.getFileId();
+            }
+
+            @Override
+            public TextFileContent readContents() throws IOException {
+                return textFile.readContents();
+            }
+
+            @Override
+            public void close() {
+                // do nothing
+            }
+        };
+    }
 }

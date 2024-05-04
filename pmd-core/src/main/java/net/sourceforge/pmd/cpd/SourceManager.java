@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.Chars;
@@ -43,6 +44,10 @@ class SourceManager implements AutoCloseable {
         return textFiles;
     }
 
+    Stream<TextFile> getShieldedTextFiles() {
+        return textFiles.stream().map(TextFile::closeShieldWrapper);
+    }
+
     /**
      * Load a textfile without caching it.
      */
@@ -56,6 +61,19 @@ class SourceManager implements AutoCloseable {
         if (loaded == null) {
             loaded = load(file);
             files.put(file.getFileId(), new SoftReference<>(loaded));
+        }
+        return loaded;
+    }
+
+
+    TextDocument get(FileId fileId) throws IOException {
+        SoftReference<TextDocument> ref = files.get(fileId);
+        TextDocument loaded = ref == null ? null : ref.get();
+        if (loaded == null) {
+            TextFile textFile = fileByPathId.get(fileId);
+            assert textFile != null;
+            loaded = load(textFile);
+            files.put(fileId, new SoftReference<>(loaded));
         }
         return loaded;
     }
@@ -94,5 +112,14 @@ class SourceManager implements AutoCloseable {
 
     public String getFileDisplayName(FileId fileId) {
         return fileNameRenderer.getDisplayName(fileId);
+    }
+
+    FileLocation toLocation(FileId fileId, int startOffset, int endOffset) {
+        try {
+            TextDocument doc = get(fileId);
+            return doc.toLocation(TextRegion.fromBothOffsets(startOffset, endOffset));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 }

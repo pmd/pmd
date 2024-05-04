@@ -10,6 +10,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 /**
  * Proxy to record tokens from within {@link CpdLexer#tokenize(TextDocument, TokenFactory)}.
@@ -29,6 +30,14 @@ public interface TokenFactory extends AutoCloseable {
      * @param endCol    End column of the token
      */
     void recordToken(@NonNull String image, int startLine, int startCol, int endLine, int endCol);
+
+    default void recordToken(@NonNull String image, int startOffset, int endOffset) {
+        throw new UnsupportedOperationException();
+    }
+
+    default void recordToken(@NonNull String image, TextRegion region) {
+        recordToken(image, region.getStartOffset(), region.getEndOffset());
+    }
 
     /**
      * Record a token given its coordinates. Coordinates must match the

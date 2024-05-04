@@ -18,7 +18,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * Stores the lexed tokens by file (one {@link TokenFile} per file). Token files can be lexed in parallel and recorded
@@ -34,9 +36,14 @@ final class TokenFileSet {
     private final List<TokenFile> files = new ArrayList<>();
     /** Global map of string (token images) to an integer identifier. */
     private final ConcurrentMap<String, Integer> images = new ConcurrentHashMap<>();
+    private final SourceManager sourceManager;
 
     // the first ID is 1, 0 is the ID of the EOF token.
     private int curImageId = 1;
+
+    TokenFileSet(SourceManager sourceManager) {
+        this.sourceManager = sourceManager;
+    }
 
 
     int getImageId(String newImage) {
@@ -96,12 +103,12 @@ final class TokenFileSet {
     }
 
     public TokenEntry toTokenEntry(SmallTokenEntry fstTok) {
-        return files.get(fstTok.fileId).getTokenEntry(fstTok.indexInFile);
+        return files.get(fstTok.fileId).getTokenEntry(fstTok.indexInFile, sourceManager);
     }
 
     public TokenEntry getEndToken(TokenEntry token, int matchLen) {
         TokenFile tokenFile = files.get(token.getFileIdInternal());
-        return tokenFile.getTokenEntry(token.getLocalIndex() + matchLen - 1);
+        return tokenFile.getTokenEntry(token.getLocalIndex() + matchLen - 1, sourceManager);
     }
 
     /** This is called during building. May be called by parallel threads. */
@@ -159,6 +166,11 @@ final class TokenFileSet {
         }
 
         @Override
+        public void recordToken(@NonNull String image, int startOffset, int endOffset) {
+            tokenFile.addTokenByOffsets(getImageId(image), startOffset, endOffset);
+        }
+
+        @Override
         public void setImage(TokenEntry entry, @NonNull String newImage) {
             if (!entry.getFileId().equals(fileId)) {
                 throw new IllegalArgumentException("Cannot operate on token for different file");
@@ -177,7 +189,7 @@ final class TokenFileSet {
             if (tokenFile.isEmpty()) {
                 return null; // no token has been added yet in this file
             }
-            return tokenFile.getTokenEntry(tokenFile.size - 1);
+            return tokenFile.getTokenEntry(tokenFile.size - 1, sourceManager);
         }
 
         @Override
@@ -203,7 +215,8 @@ final class TokenFileSet {
          * Token coordinates are stored contiguously in this array to place
          * them off the hot path and optimize cache loads.
          */
-        private int[] coordinates = new int[BASE_SIZE * 4];
+        private int[] coordinates;
+        private OptionalBool offsetCoordinates = OptionalBool.UNKNOWN;
 
         TokenFile(FileId fileId) {
             this.fileId = fileId;
@@ -214,6 +227,8 @@ final class TokenFileSet {
         }
 
         void addToken(int identifier, int beginLine, int beginColumn, int endLine, int endColumn) {
+            setUseOffsetCoordinates(false);
+
             final int size = this.size;
             if (size == identifiers.length) {
                 grow();
@@ -228,11 +243,49 @@ final class TokenFileSet {
             this.size++;
         }
 
+        void addTokenByOffsets(int identifier, int startOffset, int endOffset) {
+            setUseOffsetCoordinates(true);
+
+            final int size = this.size;
+            if (size == identifiers.length) {
+                grow();
+            }
+            identifiers[size] = identifier;
+            // store coordinates
+            coordinates[size * 2] = startOffset;
+            coordinates[size * 2 + 1] = endOffset;
+            this.size++;
+        }
+
+        private void setUseOffsetCoordinates(boolean isOffsetCoordinates) {
+            boolean wasKnown = this.offsetCoordinates.isKnown();
+            assert this.offsetCoordinates != OptionalBool.definitely(!isOffsetCoordinates): "Cannot record tokens with line/column and with offset in same file";
+            if (!wasKnown) {
+                this.offsetCoordinates = OptionalBool.definitely(isOffsetCoordinates);
+                this.coordinates = new int[lengthOfCoordinatesArray(this.identifiers.length)];
+            }
+        }
+
         /**
          * Build a token entry for the token at index i.
          */
-        TokenEntry getTokenEntry(int i) {
+        TokenEntry getTokenEntry(int i, SourceManager sourceManager) {
             assert i >= 0 && i < size : "Invalid token index " + i + " for size " + size;
+            assert offsetCoordinates.isKnown();
+            if (offsetCoordinates.isTrue()) {
+                FileLocation loc = sourceManager.toLocation(fileId, coordinates[i * 2], coordinates[i * 2 + 1]);
+                return new TokenEntry(
+                    identifiers[i],
+                    fileId,
+                    loc.getStartLine(),
+                    loc.getStartColumn(),
+                    loc.getEndLine(),
+                    loc.getEndColumn(),
+                    i,
+                    internalId
+                );
+            }
+
             return new TokenEntry(
                 identifiers[i],
                 fileId,
@@ -284,10 +337,18 @@ final class TokenFileSet {
             }
         }
 
+        private int lengthOfCoordinatesArray(int lengthOfIdentifiers) {
+            assert offsetCoordinates.isKnown();
+            int coordinateFactor = offsetCoordinates.isTrue() ? 2 : 4;
+            return lengthOfIdentifiers * coordinateFactor;
+        }
+
         private void grow() {
+            assert offsetCoordinates.isKnown();
+
             int newLength = identifiers.length * 2;
             this.identifiers = Arrays.copyOf(identifiers, newLength);
-            this.coordinates = Arrays.copyOf(coordinates, newLength * 4);
+            this.coordinates = Arrays.copyOf(coordinates, lengthOfCoordinatesArray(newLength));
         }
 
         void setImage(int tokenIdx, int imageId) {
@@ -307,7 +368,7 @@ final class TokenFileSet {
             if (size < identifiers.length) {
                 // trim to length
                 identifiers = Arrays.copyOf(identifiers, size);
-                coordinates = Arrays.copyOf(coordinates, size * 4);
+                coordinates = Arrays.copyOf(coordinates, lengthOfCoordinatesArray(size));
             }
         }
     }

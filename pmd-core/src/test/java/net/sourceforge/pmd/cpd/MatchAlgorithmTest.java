@@ -54,7 +54,7 @@ class MatchAlgorithmTest {
         FileId fileName = FileId.fromPathLikeString("Foo.dummy");
         TextFile textFile = TextFile.forCharSeq(getSampleCode(), fileName, dummy.getDefaultVersion());
         SourceManager sourceManager = new SourceManager(listOf(textFile));
-        TokenFileSet tokens = new TokenFileSet();
+        TokenFileSet tokens = new TokenFileSet(sourceManager);
         TextDocument sourceCode = sourceManager.get(textFile);
         TokenFileSet.TokenFile file = tokens.tokenize(cpdLexer, sourceCode);
         assertEquals(43, file.size());
@@ -84,7 +84,7 @@ class MatchAlgorithmTest {
         FileId fileName = FileId.fromPathLikeString("Foo.dummy");
         TextFile textFile = TextFile.forCharSeq(getMultipleRepetitionsCode(), fileName, dummy.getDefaultVersion());
         SourceManager sourceManager = new SourceManager(listOf(textFile));
-        TokenFileSet tokens = new TokenFileSet();
+        TokenFileSet tokens = new TokenFileSet(sourceManager);
         TextDocument sourceCode = sourceManager.get(textFile);
         tokens.tokenize(cpdLexer, sourceCode);
 
