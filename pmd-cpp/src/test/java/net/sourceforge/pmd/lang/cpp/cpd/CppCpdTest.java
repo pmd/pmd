@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.CPDConfiguration;
 import net.sourceforge.pmd.cpd.CpdAnalysis;
+import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.cpp.CppLanguageModule;
 
@@ -37,7 +38,11 @@ class CppCpdTest {
             cpd.performAnalysis(matches -> {
                 // There should only be 1 duplication, and it should be maximal
                 assertEquals(1, matches.getMatches().size());
-                assertEquals(128, matches.getMatches().get(0).getMinTokenCount());
+                Match match = matches.getMatches().get(0);
+                assertEquals(254, match.getMinTokenCount());
+                assertEquals(2, match.getMarkCount());
+                assertEquals(20, match.getFirstMark().getLocation().getStartLine());
+                assertEquals(21, match.getSecondMark().getLocation().getStartLine());
             });
         }
     }

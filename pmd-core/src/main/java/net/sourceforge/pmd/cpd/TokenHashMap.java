@@ -44,13 +44,13 @@ class TokenHashMap {
     void addTokenToHashTable(int hash, SmallTokenEntry thisEntry) {
         markGroups.merge(hash, thisEntry, (curEntry, thisEntry2) -> {
             if (curEntry instanceof SmallTokenEntry) {
-                SmallTokenEntry fstTok = (SmallTokenEntry) curEntry;
-                if (fstTok.hasSamePrevToken(thisEntry)) {
+                SmallTokenEntry curTok = (SmallTokenEntry) curEntry;
+                if (curTok.hasSamePrevToken(thisEntry)) {
                     // part of a larger match, yeet them out
                     return null;
                 }
                 List<SmallTokenEntry> arr = new ArrayList<>(2);
-                arr.add(fstTok);
+                arr.add(curTok);
                 arr.add(thisEntry);
                 listSink.add(arr);
                 return arr;

@@ -49,7 +49,7 @@ class MatchCollector {
             SmallTokenEntry fst = marks.get(0);
             SmallTokenEntry snd = marks.get(1);
             int dupes = tokens.countDupTokens(fst, snd, 0);
-            if (isDuplicate(fst, snd, dupes)) {
+            if (isDuplicate(dupes)) {
                 recordMatch(Match.of(makeMark(fst, dupes), makeMark(snd, dupes)));
             }
             return;
@@ -109,7 +109,7 @@ class MatchCollector {
 
             int firstDups = off[j] + tokens.countDupTokens(mark1, mark2, off[j]);
 
-            if (isDuplicate(mark1, mark2, firstDups)) {
+            if (isDuplicate(firstDups)) {
                 handleDuplicate(i, j, mark1, mark2, firstDups, matches);
                 isAliased.set(j);
             }
@@ -120,7 +120,7 @@ class MatchCollector {
                 int dupes = off[j] + tokens.countDupTokens(mark1, mark2, off[j]);
                 off[j] = Math.min(firstDups, dupes);
 
-                if (isDuplicate(mark1, mark2, dupes)) {
+                if (isDuplicate(dupes)) {
                     handleDuplicate(i, j, mark1, mark2, dupes, matches);
                     isAliased.set(j);
                 }
@@ -159,22 +159,9 @@ class MatchCollector {
         return new Mark(token, endToken);
     }
 
-    private boolean isDuplicate(SmallTokenEntry mark1, SmallTokenEntry mark2, int dupes) {
+    private boolean isDuplicate(int dupes) {
         // "match too small" check
-        if (dupes < minTileSize) {
-            return false;
-        }
-
-        boolean sameFile = mark1.fileId == mark2.fileId;
-        if (!sameFile) {
-            return true;
-        }
-
-        // todo I believe this is always true
-        int distance = mark2.indexInFile - mark1.indexInFile;
-        // check that they do not overlap
-        return distance >= minTileSize
-            && dupes < distance + 1;
+        return dupes >= minTileSize;
     }
 
     private void recordMatch(Match match) {
