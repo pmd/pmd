@@ -5,28 +5,26 @@
 [![Join the chat](https://img.shields.io/gitter/room/pmd/pmd)](https://app.gitter.im/#/room/#pmd_pmd:gitter.im?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://github.com/pmd/pmd/workflows/build/badge.svg?branch=master)](https://github.com/pmd/pmd/actions)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.sourceforge.pmd/pmd/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.sourceforge.pmd/pmd)
-[![Reproducible Builds](https://img.shields.io/badge/Reproducible_Builds-ok-green?labelColor=blue)](https://github.com/jvm-repo-rebuild/reproducible-central#net.sourceforge.pmd:pmd)
+[![Reproducible Builds](https://img.shields.io/badge/Reproducible_Builds-ok-green?labelColor=blue)](https://github.com/jvm-repo-rebuild/reproducible-central/tree/master/content/net/sourceforge/pmd#readme)
 [![Coverage Status](https://coveralls.io/repos/github/pmd/pmd/badge.svg)](https://coveralls.io/github/pmd/pmd)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/ea550046a02344ec850553476c4aa2ca)](https://www.codacy.com/gh/pmd/pmd/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pmd/pmd&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/ea550046a02344ec850553476c4aa2ca)](https://app.codacy.com/organizations/gh/pmd/dashboard)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](code_of_conduct.md) 
 [![Documentation (latest)](https://img.shields.io/badge/docs-latest-green)](https://docs.pmd-code.org/latest/)
 
-**PMD** is a source code analyzer. It finds common programming flaws like unused variables, empty catch blocks,
-unnecessary object creation, and so forth. It supports many languages. It can be extended with custom rules.
-It uses JavaCC and Antlr to parse source files into abstract syntax trees (AST) and runs rules against them to find violations.
-Rules can be written in Java or using a XPath query.
+**PMD** is an extensible multilanguage static code analyzer. It finds common programming flaws like unused variables,
+empty catch blocks, unnecessary object creation, and so forth. It's mainly concerned with **Java and
+Apex**, but **supports 16 other languages**. It comes with **400+ built-in rules**. It can be
+extended with custom rules. It uses JavaCC and Antlr to parse source files into abstract syntax trees
+(AST) and runs rules against them to find violations. Rules can be written in Java or using a XPath query.
 
-It supports Java, JavaScript, Salesforce.com Apex and Visualforce,
-Modelica, PLSQL, Apache Velocity, HTML, XML and XSL.
+Currently, PMD supports Java, JavaScript, Salesforce.com Apex and Visualforce,
+Kotlin, Swift, Modelica, PLSQL, Apache Velocity, JSP, WSDL, Maven POM, HTML, XML and XSL.
 Scala is supported, but there are currently no Scala rules available.
 
 Additionally, it includes **CPD**, the copy-paste-detector. CPD finds duplicated code in
-C/C++, C#, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Kotlin, Lua, Matlab, Modelica,
-Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex and Visualforce, Scala, Swift, T-SQL,
-Apache Velocity, and XML.
-
-In the future we hope to add support for data/control flow analysis and automatic (quick) fixes where
-it makes sense.
+Coco, C/C++, C#, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Julia, Kotlin,
+Lua, Matlab, Modelica, Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex and
+Visualforce, Scala, Swift, T-SQL, Typescript, Apache Velocity, WSDL, XML and XSL.
 
 ## 🚀 Installation and Usage
 
