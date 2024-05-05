@@ -178,8 +178,12 @@ public final class Chars implements CharSequence {
      * See {@link String#indexOf(String, int)}.
      */
     public int indexOf(String searched, int fromIndex) {
+        if (isFullString()) {
+            return str.indexOf(searched, fromIndex);
+        }
+
         // max index in the string at which the search string may start
-        final int max = start + len - searched.length();
+        final int max = start + len - searched.length() + 1;
 
         if (fromIndex < 0 || max < start + fromIndex) {
             return NOT_FOUND;
@@ -209,7 +213,7 @@ public final class Chars implements CharSequence {
         return indexOf(ch, fromIndex, len);
     }
 
-   public int indexOf(int ch, int fromIndex, int toIndex) {
+    public int indexOf(int ch, int fromIndex, int toIndex) {
         if (fromIndex < 0 || fromIndex >= len || toIndex <= fromIndex) {
             return NOT_FOUND;
         } else if (isFullString() && toIndex >= len) {

@@ -92,7 +92,7 @@ final class TokenFileSet {
     }
 
     void setState(CpdState state) {
-        assert this.state.compareTo(state) < 0: "Cannot change state of " + this.state + " to " + state;
+        assert this.state.compareTo(state) < 0 : "Cannot change state of " + this.state + " to " + state;
         this.state = state;
     }
 

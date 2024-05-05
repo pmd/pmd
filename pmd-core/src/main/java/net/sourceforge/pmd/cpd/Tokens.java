@@ -29,12 +29,6 @@ public class Tokens {
     // the first ID is 1, 0 is the ID of the EOF token.
     private int curImageId = 1;
 
-    /**
-     * Create a new instance.
-     */
-    public Tokens() {
-        // empty
-    }
 
     private void add(TokenEntry tokenEntry) {
         this.tokens.add(tokenEntry);

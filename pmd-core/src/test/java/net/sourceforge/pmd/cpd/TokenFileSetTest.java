@@ -27,11 +27,11 @@ import net.sourceforge.pmd.lang.document.TextRange2d;
 /**
  * @author Clément Fournier
  */
-public class TokenFileSetTest {
+class TokenFileSetTest {
 
 
     @Test
-    public void testFullWithOffsets() throws Exception {
+    void testFullWithOffsets() throws Exception {
         try (
             SourceManager sources = buildSourceManager().setFileContent(CpdTestUtils.FOO_FILE_ID, "a b c d").build();
             TextFile file = sources.getTextFiles().get(0);
@@ -56,7 +56,7 @@ public class TokenFileSetTest {
 
 
     @Test
-    public void testFullWithLineCol() throws Exception {
+    void testFullWithLineCol() throws Exception {
         try (
             SourceManager sources = buildSourceManager().setFileContent(CpdTestUtils.FOO_FILE_ID, "a b c d").build();
             TextFile file = sources.getTextFiles().get(0);

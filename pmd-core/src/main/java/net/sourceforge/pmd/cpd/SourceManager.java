@@ -135,7 +135,7 @@ class SourceManager implements AutoCloseable {
     }
 
     FileLocation toLocation(FileId fileId, TextRegion region) {
-        TextDocument doc = getUnchecked(fileId);
+        TextDocument doc = getUnchecked(fileId); // NOPMD
         return doc.toLocation(region);
     }
 }
