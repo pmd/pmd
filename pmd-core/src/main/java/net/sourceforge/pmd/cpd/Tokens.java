@@ -15,7 +15,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 /**
  * Global token collector for CPD. This is populated by lexing all files,
@@ -89,6 +91,12 @@ public class Tokens {
             @Override
             public void recordToken(@NonNull String image, int startLine, int startCol, int endLine, int endCol) {
                 addToken(image, fileId, startLine, startCol, endLine, endCol);
+            }
+
+            @Override
+            public void recordToken(@NonNull String image, int startOffset, int endOffset) {
+                FileLocation loc = file.toLocation(TextRegion.fromBothOffsets(startOffset, endOffset));
+                recordToken(image, loc);
             }
 
             @Override
