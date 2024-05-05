@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Iterator;
@@ -31,6 +32,12 @@ public class SimpleRenderer implements CPDReportRenderer {
 
     public SimpleRenderer(String theSeparator) {
         separator = theSeparator;
+    }
+
+    static void printlnReport(PrintStream out, CPDReport report) throws IOException {
+        SimpleRenderer renderer = new SimpleRenderer();
+        PrintWriter pw = new PrintWriter(out);
+        renderer.render(report, pw);
     }
 
     @Override

@@ -23,6 +23,8 @@ class MatchCollector {
     private final TokenFileSet tokens;
     private final int minTileSize;
 
+    // todo add a tree data structure to represent containment of matches
+
     MatchCollector(SourceManager sourceManager, TokenFileSet tokens, int minTileSize) {
         this.sourceManager = sourceManager;
         this.tokens = tokens;
@@ -49,7 +51,7 @@ class MatchCollector {
             SmallTokenEntry fst = marks.get(0);
             SmallTokenEntry snd = marks.get(1);
             int dupes = tokens.countDupTokens(fst, snd, 0);
-            if (isDuplicate(dupes)) {
+            if (isDuplicate(fst, snd, dupes)) {
                 recordMatch(Match.of(makeMark(fst, dupes), makeMark(snd, dupes)));
             }
             return;
@@ -109,9 +111,8 @@ class MatchCollector {
 
             int firstDups = off[j] + tokens.countDupTokens(mark1, mark2, off[j]);
 
-            if (isDuplicate(firstDups)) {
-                handleDuplicate(i, j, mark1, mark2, firstDups, matches);
-                isAliased.set(j);
+            if (isDuplicate(mark1, mark2, firstDups)) {
+                handleDuplicate(i, j, mark1, mark2, firstDups, matches, isAliased);
             }
 
             for (j = i + 2; j < marks.size(); j++) {
@@ -120,9 +121,8 @@ class MatchCollector {
                 int dupes = off[j] + tokens.countDupTokens(mark1, mark2, off[j]);
                 off[j] = Math.min(firstDups, dupes);
 
-                if (isDuplicate(dupes)) {
-                    handleDuplicate(i, j, mark1, mark2, dupes, matches);
-                    isAliased.set(j);
+                if (isDuplicate(mark1, mark2, dupes)) {
+                    handleDuplicate(i, j, mark1, mark2, dupes, matches, isAliased);
                 }
             }
         }
@@ -141,16 +141,25 @@ class MatchCollector {
         }
     }
 
-    private void handleDuplicate(int i, int j, SmallTokenEntry mark1, SmallTokenEntry mark2, int dupes, @Nullable Match.MatchBuilder[] matches) {
+    private void handleDuplicate(int i, int j, SmallTokenEntry mark1, SmallTokenEntry mark2, int dupes, @Nullable Match.MatchBuilder[] matches, BitSet isAliased) {
         Match.MatchBuilder builder = matches[i];
         if (builder == null) {
-            builder = new Match.MatchBuilder();
-            matches[i] = builder;
+            builder = matches[j];
         }
+        if (builder == null) {
+            builder = new Match.MatchBuilder();
+        }
+        matches[i] = builder;
         matches[j] = builder;
 
         builder.addMark(makeMark(mark1, dupes));
         builder.addMark(makeMark(mark2, dupes));
+
+        if (isAliased.get(j)) {
+            isAliased.set(i);
+        } else {
+            isAliased.set(j);
+        }
     }
 
     private Mark makeMark(SmallTokenEntry smallTok, int matchLen) {
@@ -159,9 +168,24 @@ class MatchCollector {
         return new Mark(token, endToken);
     }
 
-    private boolean isDuplicate(int dupes) {
+    private boolean isDuplicate(SmallTokenEntry mark1, SmallTokenEntry mark2, int dupes) {
         // "match too small" check
-        return dupes >= minTileSize;
+        if (dupes < minTileSize) {
+            return false;
+        }
+        return true;
+//
+//        boolean sameFile = mark1.fileId == mark2.fileId;
+//        if (!sameFile) {
+//            return true;
+//        }
+//
+//
+//        // todo I believe this is always true
+//        int distance = mark2.indexInFile - mark1.indexInFile;
+//        // check that they do not overlap
+//        return distance >= minTileSize
+//            && dupes < distance + 1;
     }
 
     private void recordMatch(Match match) {

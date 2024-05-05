@@ -7,7 +7,6 @@ package net.sourceforge.pmd.cpd;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -103,7 +102,7 @@ final class TokenFileSet {
      *
      * @return A list of buckets of tokens that have the same hash and should be processed by the matching algorithm.
      */
-    Iterator<List<SmallTokenEntry>> hashAll(int minTileSize) {
+    List<List<SmallTokenEntry>> hashAll(int minTileSize) {
         checkState(CpdState.HASHING, "hashAll");
 
         int lastMod = computeTrailingModulus(minTileSize);
@@ -113,7 +112,7 @@ final class TokenFileSet {
             file.computeHashes(minTileSize, lastMod, map);
         }
 
-        return map.getFinalMatches().iterator();
+        return map.getFinalMatches();
     }
 
     private static int computeTrailingModulus(int minTileSize) {

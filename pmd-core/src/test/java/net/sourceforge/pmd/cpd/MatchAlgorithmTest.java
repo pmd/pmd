@@ -10,6 +10,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -31,8 +32,7 @@ class MatchAlgorithmTest {
     private static final String LINE_8 = "}";
 
     private static String getSampleCode() {
-        return LINE_1 + "\n" + LINE_2 + "\n" + LINE_3 + "\n" + LINE_4 + "\n" + LINE_5 + "\n" + LINE_6
-                + "\n" + LINE_7 + "\n" + LINE_8;
+        return String.join("\n", LINE_1, LINE_2, LINE_3, LINE_4, LINE_5, LINE_6, LINE_7, LINE_8);
     }
 
     private static String getMultipleRepetitionsCode() {
@@ -89,6 +89,7 @@ class MatchAlgorithmTest {
         tokens.tokenize(sourceCode, cpdLexer);
 
         List<Match> matches = CpdAnalysis.findMatches(sourceManager, new CPDNullListener(), tokens, 15);
+        SimpleRenderer.printlnReport(System.out, new CPDReport(sourceManager, matches, Collections.emptyMap()));
         assertEquals(1, matches.size());
         Match match = matches.get(0);
         assertEquals(match.getMinTokenCount(), 17);
