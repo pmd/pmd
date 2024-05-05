@@ -23,13 +23,19 @@ public interface CpdLexer {
     /**
      * Wraps a call to {@link #tokenize(TextDocument, TokenFactory)} to properly
      * create and close the token factory.
+     * @deprecated {@link Tokens} should be used at most in unit tests. This method is not publicly supported anymore.
      */
+    @Deprecated
     static void tokenize(CpdLexer cpdLexer, TextDocument textDocument, Tokens tokens) throws IOException {
-        try (TokenFactory tf = Tokens.factoryForFile(textDocument, tokens)) {
+        try (TokenFactory tf = tokens.factoryForFile(textDocument)) {
             cpdLexer.tokenize(textDocument, tf);
         }
     }
 
+    /**
+     * @deprecated {@link Tokens} should be used at most in unit tests. This method is not publicly supported anymore.
+     */
+    @Deprecated
     static Tokens tokenize(CpdLexer cpdLexer, TextDocument textDocument) throws IOException {
         Tokens tokens = new Tokens();
         tokenize(cpdLexer, textDocument, tokens);

@@ -20,6 +20,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.cpd.TokenFileSet.CpdState;
 import net.sourceforge.pmd.cpd.TokenFileSet.TokenFile;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.internal.util.IOUtil;
@@ -115,10 +116,12 @@ public final class CpdAnalysis implements AutoCloseable {
 
     static List<Match> findMatches(SourceManager sourceManager, @NonNull CPDListener cpdListener, TokenFileSet tokens, int minTileSize) {
         cpdListener.phaseUpdate(CPDListener.HASH);
+        tokens.setState(CpdState.HASHING);
         Iterator<List<TokenFileSet.SmallTokenEntry>> markGroups = tokens.hashAll(minTileSize);
 
         MatchCollector matchCollector = new MatchCollector(sourceManager, tokens, minTileSize);
         cpdListener.phaseUpdate(CPDListener.MATCH);
+        tokens.setState(CpdState.MATCHING);
         markGroups.forEachRemaining(matchCollector::collect);
 
         cpdListener.phaseUpdate(CPDListener.DONE);
@@ -154,7 +157,7 @@ public final class CpdAnalysis implements AutoCloseable {
 
     private int doTokenize(TextDocument document, CpdLexer cpdLexer, TokenFileSet tokens) throws IOException, LexException {
         LOGGER.trace("Tokenizing {}", document.getFileId().getAbsolutePath());
-        TokenFile tokenFile = tokens.tokenize(cpdLexer, document);
+        TokenFile tokenFile = tokens.tokenize(document, cpdLexer);
         return tokenFile.size();
     }
 

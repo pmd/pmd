@@ -45,15 +45,35 @@ final class CpdTestUtils {
         );
     }
 
-    static class CpdReportBuilder {
+    static class CpdSourceManagerBuilder {
 
         private final Map<FileId, String> fileContents = new HashMap<>();
+
+        CpdSourceManagerBuilder setFileContent(FileId fileName, String content) {
+            fileContents.put(fileName, content);
+            return this;
+        }
+
+        SourceManager build() {
+            List<TextFile> textFiles = new ArrayList<>();
+            fileContents.forEach((fname, contents) -> textFiles.add(TextFile.forCharSeq(contents, fname, DummyLanguageModule.getInstance().getDefaultVersion())));
+            return new SourceManager(textFiles);
+        }
+
+        public void ensureFileExists(FileId fileName) {
+            fileContents.putIfAbsent(fileName, DUMMY_FILE_CONTENT);
+        }
+    }
+
+    static class CpdReportBuilder {
+
         final Tokens tokens = new Tokens();
         private final List<Match> matches = new ArrayList<>();
         private Map<FileId, Integer> numTokensPerFile = new HashMap<>();
+        private final CpdSourceManagerBuilder sources = new CpdSourceManagerBuilder();
 
         CpdReportBuilder setFileContent(FileId fileName, String content) {
-            fileContents.put(fileName, content);
+            sources.setFileContent(fileName, content);
             return this;
         }
 
@@ -68,10 +88,8 @@ final class CpdTestUtils {
         }
 
         CPDReport build() {
-            Set<TextFile> textFiles = new HashSet<>();
-            fileContents.forEach((fname, contents) -> textFiles.add(TextFile.forCharSeq(contents, fname, DummyLanguageModule.getInstance().getDefaultVersion())));
             return new CPDReport(
-                new SourceManager(new ArrayList<>(textFiles)),
+                sources.build(),
                 matches,
                 numTokensPerFile
             );
@@ -79,12 +97,12 @@ final class CpdTestUtils {
         }
 
         Mark createMark(String image, FileId fileName, int beginLine, int lineCount) {
-            fileContents.putIfAbsent(fileName, DUMMY_FILE_CONTENT);
+            sources.ensureFileExists(fileName);
             return new Mark(tokens.addToken(image, fileName, beginLine, 1, beginLine + lineCount - 1, 2));
         }
 
         CpdReportBuilder addMatch(Match match) {
-            fileContents.putIfAbsent(match.getFirstMark().getLocation().getFileId(), DUMMY_FILE_CONTENT);
+            sources.ensureFileExists(match.getFirstMark().getLocation().getFileId());
             matches.add(match);
             return this;
         }
@@ -94,7 +112,7 @@ final class CpdTestUtils {
         }
 
         Mark createMark(String image, FileId fileId, int beginLine, int lineCount, int beginColumn, int endColumn) {
-            fileContents.putIfAbsent(fileId, DUMMY_FILE_CONTENT);
+            sources.ensureFileExists(fileId);
             final TokenEntry beginToken = tokens.addToken(image, fileId, beginLine, beginColumn, beginLine,
                                                           beginColumn + image.length());
             final TokenEntry endToken = tokens.addToken(image, fileId,

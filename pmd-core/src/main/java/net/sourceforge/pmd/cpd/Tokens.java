@@ -31,11 +31,9 @@ public class Tokens {
 
     /**
      * Create a new instance.
-     *
-     * @apiNote  Internal API
      */
-    Tokens() {
-        // constructor is package private
+    public Tokens() {
+        // empty
     }
 
     private void add(TokenEntry tokenEntry) {
@@ -76,13 +74,9 @@ public class Tokens {
     }
 
     TokenEntry addToken(String image, FileId fileName, int startLine, int startCol, int endLine, int endCol) {
-        TokenEntry newToken = new TokenEntry(getImageId(image), fileName, startLine, startCol, endLine, endCol, tokens.size(), 0);
+        TokenEntry newToken = new TokenEntry(getImageId(image), fileName, startLine, startCol, endLine, endCol, tokens.size(), -1);
         add(newToken);
         return newToken;
-    }
-
-    State savePoint() {
-        return new State(this);
     }
 
     /**
@@ -91,23 +85,21 @@ public class Tokens {
      * Tokens are accumulated in the {@link Tokens} parameter.
      *
      * @param file   Document for the file to process
-     * @param tokens Token sink
-     *
      * @return A new token factory
      */
-    static TokenFactory factoryForFile(TextDocument file, Tokens tokens) {
+    public TokenFactory factoryForFile(TextDocument file) {
         return new TokenFactory() {
             final FileId fileId = file.getFileId();
-            final int firstToken = tokens.size();
+            final int firstToken = size();
 
             @Override
             public void recordToken(@NonNull String image, int startLine, int startCol, int endLine, int endCol) {
-                tokens.addToken(image, fileId, startLine, startCol, endLine, endCol);
+                addToken(image, fileId, startLine, startCol, endLine, endCol);
             }
 
             @Override
             public void setImage(TokenEntry entry, @NonNull String newImage) {
-                tokens.setImage(entry, newImage);
+                Tokens.this.setImage(entry, newImage);
             }
 
             @Override
@@ -117,45 +109,21 @@ public class Tokens {
 
             @Override
             public @Nullable TokenEntry peekLastToken() {
-                if (tokens.size() <= firstToken) {
+                if (size() <= firstToken) {
                     return null; // no token has been added yet in this file
                 }
-                return tokens.peekLastToken();
+                return Tokens.this.peekLastToken();
             }
 
             @Override
             public void close() {
                 TokenEntry tok = peekLastToken();
                 if (tok == null) {
-                    tokens.addEof(fileId, 1, 1);
+                    addEof(fileId, 1, 1);
                 } else {
-                    tokens.addEof(fileId, tok.getEndLine(), tok.getEndColumn());
+                    addEof(fileId, tok.getEndLine(), tok.getEndColumn());
                 }
             }
         };
     }
-
-    /**
-     * Helper class to preserve and restore the current state of the token
-     * entries.
-     */
-    static final class State {
-
-        private final int tokenCount;
-        private final int curImageId;
-
-        State(Tokens tokens) {
-            this.tokenCount = tokens.tokens.size();
-            this.curImageId = tokens.curImageId;
-        }
-
-        public void restore(Tokens tokens) {
-            tokens.images.entrySet().removeIf(e -> e.getValue() >= curImageId);
-            tokens.curImageId = this.curImageId;
-
-            final List<TokenEntry> entries = tokens.getTokens();
-            entries.subList(tokenCount, entries.size()).clear();
-        }
-    }
-
 }

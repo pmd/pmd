@@ -56,7 +56,7 @@ class MatchAlgorithmTest {
         SourceManager sourceManager = new SourceManager(listOf(textFile));
         TokenFileSet tokens = new TokenFileSet(sourceManager);
         TextDocument sourceCode = sourceManager.get(textFile.getFileId());
-        TokenFileSet.TokenFile file = tokens.tokenize(cpdLexer, sourceCode);
+        TokenFileSet.TokenFile file = tokens.tokenize(sourceCode, cpdLexer);
         assertEquals(43, file.size());
 
         List<Match> matches = CpdAnalysis.findMatches(sourceManager, new CPDNullListener(), tokens, 5);
@@ -86,7 +86,7 @@ class MatchAlgorithmTest {
         SourceManager sourceManager = new SourceManager(listOf(textFile));
         TokenFileSet tokens = new TokenFileSet(sourceManager);
         TextDocument sourceCode = sourceManager.get(textFile.getFileId());
-        tokens.tokenize(cpdLexer, sourceCode);
+        tokens.tokenize(sourceCode, cpdLexer);
 
         List<Match> matches = CpdAnalysis.findMatches(sourceManager, new CPDNullListener(), tokens, 15);
         assertEquals(1, matches.size());

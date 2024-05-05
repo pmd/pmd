@@ -41,14 +41,26 @@ final class TokenFileSet {
 
     // the first ID is 1, 0 is the ID of the EOF token.
     private int curImageId = 1;
+    private CpdState state = CpdState.BUILDING;
+
+    enum CpdState {
+        BUILDING, HASHING, MATCHING
+    }
 
     TokenFileSet(SourceManager sourceManager) {
         this.sourceManager = sourceManager;
     }
 
+    private void checkState(CpdState state, String mname) {
+        assert state == this.state : "Cannot call " + mname + " in state " + this.state;
+    }
 
     int getImageId(String newImage) {
         return images.computeIfAbsent(newImage, k -> curImageId++);
+    }
+
+    String getImage(TokenEntry entry) {
+        return imageFromId(entry.getIdentifier());
     }
 
     String imageFromId(int i) {
@@ -60,6 +72,8 @@ final class TokenFileSet {
      * each token + the given offset in their respective file.
      */
     int countDupTokens(SmallTokenEntry fst, SmallTokenEntry snd, int offset) {
+        checkState(CpdState.MATCHING, "countDupTokens");
+
         int[] f1 = files.get(fst.fileId).identifiers;
         int[] f2 = files.get(snd.fileId).identifiers;
         final int i1 = fst.indexInFile + offset;
@@ -77,6 +91,10 @@ final class TokenFileSet {
         return i;
     }
 
+    void setState(CpdState state) {
+        assert this.state.compareTo(state) < 0: "Cannot change state of " + this.state + " to " + state;
+        this.state = state;
+    }
 
     /**
      * The top level hash function. Followed by {@link MatchCollector#collect(List)}
@@ -86,15 +104,10 @@ final class TokenFileSet {
      * @return A list of buckets of tokens that have the same hash and should be processed by the matching algorithm.
      */
     Iterator<List<SmallTokenEntry>> hashAll(int minTileSize) {
-        // precompute this
-        int lastMod = 1;
-        for (int i = 0; i < minTileSize; i++) {
-            lastMod *= MOD;
-        }
+        checkState(CpdState.HASHING, "hashAll");
 
+        int lastMod = computeTrailingModulus(minTileSize);
         int totalNumTokens = files.parallelStream().mapToInt(TokenFile::size).sum();
-
-        // note that we let the map go out of scope to be able to reclaim the hashmap
         TokenHashMap map = new TokenHashMap(totalNumTokens);
         for (TokenFile file : files) {
             file.computeHashes(minTileSize, lastMod, map);
@@ -103,18 +116,31 @@ final class TokenFileSet {
         return map.getFinalMatches().iterator();
     }
 
+    private static int computeTrailingModulus(int minTileSize) {
+        int lastMod = 1;
+        for (int i = 0; i < minTileSize; i++) {
+            lastMod *= MOD;
+        }
+        return lastMod;
+    }
+
     public TokenEntry toTokenEntry(SmallTokenEntry fstTok) {
+        checkState(CpdState.MATCHING, "toTokenEntry");
         return files.get(fstTok.fileId).getTokenEntry(fstTok.indexInFile, sourceManager);
     }
 
     public TokenEntry getEndToken(TokenEntry token, int matchLen) {
+        checkState(CpdState.MATCHING, "getEndToken");
+
         TokenFile tokenFile = files.get(token.getFileIdInternal());
         return tokenFile.getTokenEntry(token.getLocalIndex() + matchLen - 1, sourceManager);
     }
 
     /** This is called during building. May be called by parallel threads. */
-    TokenFile tokenize(CpdLexer cpdLexer, TextDocument textDocument) throws IOException {
-        try (TokenFileFactory tf = this.factoryForFile(textDocument)) {
+    TokenFile tokenize(TextDocument textDocument, CpdLexer cpdLexer) throws IOException {
+        checkState(CpdState.BUILDING, "tokenize");
+
+        try (TokenFileFactory tf = new TokenFileFactory(textDocument)) {
             // This tokenize method may throw, in which case the file is not added to this tokenfileset
             cpdLexer.tokenize(textDocument, tf);
             this.recordFile(tf.tokenFile);
@@ -129,20 +155,6 @@ final class TokenFileSet {
             files.add(file);
         }
     }
-
-    /**
-     * Creates a token factory to process the given file with
-     * {@link CpdLexer#tokenize(TextDocument, TokenFactory)}.
-     * Tokens are accumulated in the {@link Tokens} parameter.
-     *
-     * @param file Document for the file to process
-     *
-     * @return A new token factory
-     */
-    TokenFileFactory factoryForFile(TextDocument file) {
-        return new TokenFileFactory(file);
-    }
-
 
     /**
      * Return the file id from an internal id.
@@ -233,13 +245,13 @@ final class TokenFileSet {
 
         void addToken(int identifier, int beginLine, int beginColumn, int endLine, int endColumn) {
             setUseOffsetCoordinates(false);
+            assert beginLine > 0 && beginColumn > 0 && endLine > 0 && endColumn > 0;
 
             final int size = this.size;
-            if (size == identifiers.length) {
+            if (size == capacity()) {
                 grow();
             }
             identifiers[size] = identifier;
-            assert beginLine > 0 && beginColumn > 0 && endLine > 0 && endColumn > 0;
             // store coordinates
             coordinates[size * 4] = beginLine;
             coordinates[size * 4 + 1] = beginColumn;
@@ -254,7 +266,7 @@ final class TokenFileSet {
                 : "startOffset=" + startOffset + ", endOffset=" + endOffset;
 
             final int size = this.size;
-            if (size == identifiers.length) {
+            if (size == capacity()) {
                 grow();
             }
             identifiers[size] = identifier;
@@ -266,7 +278,9 @@ final class TokenFileSet {
 
         private void setUseOffsetCoordinates(boolean isOffsetCoordinates) {
             boolean wasKnown = this.offsetCoordinates.isKnown();
-            assert !wasKnown || this.offsetCoordinates.isTrue() == isOffsetCoordinates: "Cannot record tokens with line/column and with offset in same file";
+            if (wasKnown && this.offsetCoordinates.isTrue() != isOffsetCoordinates) {
+                throw new IllegalStateException("Cannot record tokens with line/column and with offset in same file");
+            }
             if (!wasKnown) {
                 this.offsetCoordinates = OptionalBool.definitely(isOffsetCoordinates);
                 this.coordinates = new int[lengthOfCoordinatesArray(this.identifiers.length)];
@@ -311,10 +325,14 @@ final class TokenFileSet {
             );
         }
 
+        void computeHashesTestOnly(int tileSize, TokenHashMap map) {
+            computeHashes(tileSize, computeTrailingModulus(tileSize), map);
+        }
+
         /**
          * Hash the entire file and put the hashed tokens into the hashmap (key is hash, value is token or list of tokens).
          */
-        void computeHashes(final int tileSize, final int lastMod, TokenHashMap map) {
+        private void computeHashes(final int tileSize, final int lastMod, TokenHashMap map) {
             final int size = this.size;
             if (size < tileSize) {
                 // nothing to do, the file does not contain a full tile
@@ -351,7 +369,7 @@ final class TokenFileSet {
         }
 
         private int lengthOfCoordinatesArray(int lengthOfIdentifiers) {
-            assert offsetCoordinates.isKnown();
+            assert lengthOfIdentifiers == 0 || offsetCoordinates.isKnown();
             int coordinateFactor = offsetCoordinates.isTrue() ? 2 : 4;
             return lengthOfIdentifiers * coordinateFactor;
         }
@@ -364,7 +382,7 @@ final class TokenFileSet {
             this.coordinates = Arrays.copyOf(coordinates, lengthOfCoordinatesArray(newLength));
         }
 
-        void setImage(int tokenIdx, int imageId) {
+        private void setImage(int tokenIdx, int imageId) {
             assert tokenIdx >= 0 && tokenIdx < size;
             this.identifiers[tokenIdx] = imageId;
         }
@@ -377,12 +395,27 @@ final class TokenFileSet {
             return size;
         }
 
-        public void finish() {
-            if (size < identifiers.length) {
+        void finish() {
+            trimToSize();
+        }
+
+        // test only
+        void trimToSize() {
+            if (size < capacity()) {
                 // trim to length
                 identifiers = Arrays.copyOf(identifiers, size);
                 coordinates = Arrays.copyOf(coordinates, lengthOfCoordinatesArray(size));
             }
+        }
+
+        // test only
+        int capacity() {
+            return identifiers.length;
+        }
+
+        // test only
+        int[] coordinates() {
+            return coordinates;
         }
     }
 
@@ -408,11 +441,9 @@ final class TokenFileSet {
          */
         @Override
         public int compareTo(SmallTokenEntry o) {
-            return Long.compare(getGlobalIndex(), o.getGlobalIndex());
-        }
-
-        long getGlobalIndex() {
-            return (long) fileId << 32 | (long) indexInFile;
+            int cmp = Integer.compare(fileId, o.fileId);
+            cmp = cmp != 0 ? cmp : Integer.compare(indexInFile, o.indexInFile);
+            return cmp;
         }
 
         @Override

@@ -119,6 +119,10 @@ public class TokenEntry implements Comparable<TokenEntry> {
         this.identifier = identifier;
     }
 
+    final int getIdentifier() {
+        return identifier;
+    }
+
     public String getImage(Tokens tokens) {
         if (this.isEof()) {
             return "EOF";
