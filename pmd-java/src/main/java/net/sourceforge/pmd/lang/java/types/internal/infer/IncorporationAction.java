@@ -83,7 +83,7 @@ abstract class IncorporationAction {
                 // Check that other upper bounds that are class types are related to this bound.
                 // Otherwise, GLB does not exist and its construction would fail during ReductionStep#UPPER.
                 for (JTypeMirror otherBound : ivar.getBounds(BoundKind.UPPER)) {
-                    if (otherBound != myBound && isClassType(otherBound)) {
+                    if (otherBound != myBound && isClassType(otherBound)) { // NOPMD CompareObjectsWithEquals
                         // Since we are testing both directions we cannot let those tests add bounds on the ivars,
                         // because they could be contradictory.
                         boolean areRelated = TypeOps.isConvertiblePure(myBound, otherBound).somehow()
