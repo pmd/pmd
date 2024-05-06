@@ -14,7 +14,8 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import net.sourceforge.pmd.lang.java.ast.InvocationNode
 import net.sourceforge.pmd.lang.java.ast.TypeNode
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.AsmSymbolResolver
-import net.sourceforge.pmd.lang.java.types.TypeOps.*
+import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility
+import net.sourceforge.pmd.lang.java.types.TypeOps.isSameTypeWithSameAnnotations
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import org.hamcrest.Description
@@ -168,18 +169,18 @@ fun assertSubtypeOrdering(vararg ts: JTypeMirror) {
 fun JClassType.parameterize(m1: JTypeMirror, vararg mirror: JTypeMirror): JClassType = withTypeArguments(listOf(m1, *mirror))
 
 fun assertSubtype(t: JTypeMirror, s: JTypeMirror, capture: Boolean = true, passes: Convertibility.() -> Boolean) {
-    val res = isConvertible(t, s, capture, true)
+    val res = if (capture) TypeOps.isConvertiblePure(t, s) else TypeOps.isConvertibleNoCapture(t, s)
     assertTrue("$t \n\t\t<: $s") {
         res.passes()
     }
 }
 
 infix fun JTypeMirror.shouldSubtypeNoCapture(s: JTypeMirror) {
-    assertSubtype(this, s, false) { bySubtyping() }
+    assertSubtype(this, s, capture = false) { bySubtyping() }
 }
 
 infix fun JTypeMirror.shouldNotSubtypeNoCapture(s: JTypeMirror) {
-    assertSubtype(this, s, false) { never() }
+    assertSubtype(this, s, capture = false) { never() }
 }
 
 infix fun JTypeMirror.shouldBeSubtypeOf(other: JTypeMirror) {
