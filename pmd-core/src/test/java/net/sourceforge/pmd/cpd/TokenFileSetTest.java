@@ -18,6 +18,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mockito;
 
 import net.sourceforge.pmd.cpd.CpdTestUtils.CpdSourceManagerBuilder;
+import net.sourceforge.pmd.cpd.TokenFileSet.CpdState;
 import net.sourceforge.pmd.cpd.TokenFileSet.TokenFile;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
@@ -50,6 +51,10 @@ class TokenFileSetTest {
             TokenEntry fst = tokenFile.getTokenEntry(0, doc, sources);
             assertEquals(set.getImage(fst), "a");
             assertEquals(fst.getLocation(), FileLocation.range(file.getFileId(), TextRange2d.range2d(1, 1, 1, 2)));
+
+            set.setState(CpdState.HASHING);
+
+            Assertions.assertThrows(IllegalStateException.class, () -> set.getImage(fst));
         }
 
     }

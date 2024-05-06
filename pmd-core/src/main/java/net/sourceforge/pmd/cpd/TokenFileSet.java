@@ -35,7 +35,7 @@ final class TokenFileSet {
     /** A list of token files that are valid (tokenizer did not error). */
     private final List<TokenFile> files = new ArrayList<>();
     /** Global map of string (token images) to an integer identifier. */
-    private final ConcurrentMap<String, Integer> images = new ConcurrentHashMap<>();
+    private ConcurrentMap<String, Integer> images = new ConcurrentHashMap<>();
     private final SourceManager sourceManager;
 
     // the first ID is 1, 0 is the ID of the EOF token.
@@ -50,11 +50,14 @@ final class TokenFileSet {
         this.sourceManager = sourceManager;
     }
 
-    private void checkState(CpdState state, String mname) {
-        assert state == this.state : "Cannot call " + mname + " in state " + this.state;
+    private void checkState(CpdState expectedState, String mname) {
+        if (expectedState != this.state) {
+            throw new IllegalStateException("Cannot call " + mname + " in state " + this.state);
+        }
     }
 
     int getImageId(String newImage) {
+        checkState(CpdState.BUILDING, "getImage");
         return images.computeIfAbsent(newImage, k -> curImageId++);
     }
 
@@ -63,6 +66,7 @@ final class TokenFileSet {
     }
 
     String imageFromId(int i) {
+        checkState(CpdState.BUILDING, "getImage");
         return images.entrySet().stream().filter(it -> it.getValue() == i).findFirst().map(Map.Entry::getKey).orElse(null);
     }
 
@@ -90,9 +94,14 @@ final class TokenFileSet {
         return i;
     }
 
-    void setState(CpdState state) {
-        assert this.state.compareTo(state) < 0 : "Cannot change state of " + this.state + " to " + state;
-        this.state = state;
+    void setState(CpdState newState) {
+        assert this.state.compareTo(newState) < 0 : "Cannot change state of " + this.state + " to " + newState;
+        if (newState == CpdState.HASHING) {
+            // At this point we will never use the images anymore so we
+            // null them out to free memory
+            this.images = null;
+        }
+        this.state = newState;
     }
 
     /**
