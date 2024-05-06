@@ -136,27 +136,27 @@ public final class TypeOps {
     }
 
     public static boolean areSameTypes(List<JTypeMirror> ts, List<JTypeMirror> ss) {
-        return areSameTypes(ts, ss, EMPTY, false, false);
-    }
-
-    public static boolean areSameTypesInInference(List<JTypeMirror> ts, List<JTypeMirror> ss) {
         return areSameTypes(ts, ss, EMPTY, true, false);
     }
 
-    private static boolean areSameTypes(List<JTypeMirror> ts, List<JTypeMirror> ss, boolean inInference, boolean considerAnnotations) {
-        return areSameTypes(ts, ss, EMPTY, inInference, considerAnnotations);
+    public static boolean areSameTypesInInference(List<JTypeMirror> ts, List<JTypeMirror> ss) {
+        return areSameTypes(ts, ss, EMPTY, false, false);
+    }
+
+    private static boolean areSameTypes(List<JTypeMirror> ts, List<JTypeMirror> ss, boolean pure, boolean considerAnnotations) {
+        return areSameTypes(ts, ss, EMPTY, pure, considerAnnotations);
     }
 
     private static boolean areSameTypes(List<JTypeMirror> ts, List<JTypeMirror> ss, Substitution subst) {
-        return areSameTypes(ts, ss, subst, false, false);
+        return areSameTypes(ts, ss, subst, true, false);
     }
 
-    private static boolean areSameTypes(List<JTypeMirror> ts, List<JTypeMirror> ss, Substitution subst, boolean inInference, boolean considerAnnotations) {
+    private static boolean areSameTypes(List<JTypeMirror> ts, List<JTypeMirror> ss, Substitution subst, boolean pure, boolean considerAnnotations) {
         if (ts.size() != ss.size()) {
             return false;
         }
         for (int i = 0; i < ts.size(); i++) {
-            if (!isSameType(ts.get(i), ss.get(i).subst(subst), !inInference, considerAnnotations)) {
+            if (!isSameType(ts.get(i), ss.get(i).subst(subst), pure, considerAnnotations)) {
                 return false;
             }
         }
@@ -166,15 +166,15 @@ public final class TypeOps {
     // note that this does not take type annotations into account
     private static final class SameTypeVisitor implements JTypeVisitor<Boolean, JTypeMirror> {
 
-        static final SameTypeVisitor INFERENCE = new SameTypeVisitor(true, false);
-        static final SameTypeVisitor PURE = new SameTypeVisitor(false, false);
-        static final SameTypeVisitor PURE_WITH_ANNOTATIONS = new SameTypeVisitor(false, true);
+        static final SameTypeVisitor INFERENCE = new SameTypeVisitor(false, false);
+        static final SameTypeVisitor PURE = new SameTypeVisitor(true, false);
+        static final SameTypeVisitor PURE_WITH_ANNOTATIONS = new SameTypeVisitor(true, true);
 
-        private final boolean inInference;
+        private final boolean pure;
         private final boolean considerAnnotations;
 
-        private SameTypeVisitor(boolean inInference, boolean considerAnnotations) {
-            this.inInference = inInference;
+        private SameTypeVisitor(boolean pure, boolean considerAnnotations) {
+            this.pure = pure;
             this.considerAnnotations = considerAnnotations;
         }
 
@@ -195,8 +195,8 @@ public final class TypeOps {
                 JClassType s2 = (JClassType) s;
                 return t.getSymbol().equals(s2.getSymbol()) // maybe compare the type system as well.
                     && t.hasErasedSuperTypes() == s2.hasErasedSuperTypes()
-                    && isSameType(t.getEnclosingType(), s2.getEnclosingType(), !inInference, considerAnnotations)
-                    && areSameTypes(t.getTypeArgs(), s2.getTypeArgs(), inInference, considerAnnotations);
+                    && isSameType(t.getEnclosingType(), s2.getEnclosingType(), pure, considerAnnotations)
+                    && areSameTypes(t.getTypeArgs(), s2.getTypeArgs(), pure, considerAnnotations);
             }
             return false;
         }
@@ -212,12 +212,12 @@ public final class TypeOps {
                 return false;
             }
             JWildcardType s2 = (JWildcardType) s;
-            return s2.isUpperBound() == t.isUpperBound() && isSameType(t.getBound(), s2.getBound(), !inInference, considerAnnotations);
+            return s2.isUpperBound() == t.isUpperBound() && isSameType(t.getBound(), s2.getBound(), pure, considerAnnotations);
         }
 
         @Override
         public Boolean visitInferenceVar(InferenceVar t, JTypeMirror s) {
-            if (!inInference) {
+            if (pure) {
                 return t == s;
             }
 
@@ -254,7 +254,7 @@ public final class TypeOps {
                 return false;
             }
 
-            if (!isSameType(t.getPrimaryBound(), s2.getPrimaryBound(), !inInference, considerAnnotations)) {
+            if (!isSameType(t.getPrimaryBound(), s2.getPrimaryBound(), pure, considerAnnotations)) {
                 return false;
             }
 
@@ -263,7 +263,7 @@ public final class TypeOps {
                 boolean found = false;
                 for (JTypeMirror si : sComps) {
                     // todo won't this behaves weirdly during inference? test it
-                    if (isSameType(ti, si, !inInference, considerAnnotations)) {
+                    if (isSameType(ti, si, pure, considerAnnotations)) {
                         found = true;
                         break;
                     }
@@ -278,7 +278,7 @@ public final class TypeOps {
         @Override
         public Boolean visitArray(JArrayType t, JTypeMirror s) {
             return s instanceof JArrayType
-                && isSameType(t.getComponentType(), ((JArrayType) s).getComponentType(), !inInference, considerAnnotations);
+                && isSameType(t.getComponentType(), ((JArrayType) s).getComponentType(), pure, considerAnnotations);
         }
     }
 

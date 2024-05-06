@@ -54,7 +54,7 @@ abstract class IncorporationAction {
             this.myBound = bound;
         }
 
-        public static boolean isClassType(JTypeMirror bound) {
+        private static boolean isClassType(JTypeMirror bound) {
             JTypeDeclSymbol symbol = bound.getSymbol();
             return symbol instanceof JClassSymbol && !symbol.isInterface();
         }
