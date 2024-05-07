@@ -1879,11 +1879,20 @@
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
-<h3 id="-fixed-issues">🐛 Fixed Issues</h3>
+<h4 id="collections-exposed-as-xpath-attributes">Collections exposed as XPath attributes</h4>
 
+<p>Up to now, all AST node getters would be exposed to XPath, as long as the return type was a primitive (boxed or unboxed), String or Enum. That meant that collections, even of these basic types, were not exposed, so for instance accessing Apex’s <code class="language-plaintext highlighter-rouge">ASTUserClass.getInterfaceNames()</code> to list the interfaces implemented by a class was impossible from XPath, and would require writing a Java rule to check it.</p>
+
+<p>Since this release, PMD will also expose any getter returning a collection of any supported type as a sequence through an XPath attribute. They would require to use apropriate XQuery functions to manipulate the sequence. So for instance, to detect any given <code class="language-plaintext highlighter-rouge">ASTUserClass</code> in Apex that implements <code class="language-plaintext highlighter-rouge">Queueable</code>, it is now possible to write:</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/UserClass[@InterfaceNames = 'Queueable']
+</code></pre></div></div>
+
+<h3 id="-fixed-issues">🐛 Fixed Issues</h3>
 <ul>
   <li>core
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4467">#4467</a>: [core] Expose collections from getters as XPath sequence attributes</li>
       <li><a href="https://github.com/pmd/pmd/issues/4978">#4978</a>: [core] Referenced Rulesets do not emit details on validation errors</li>
       <li><a href="https://github.com/pmd/pmd/pull/4983">#4983</a>: [cpd] Fix CPD crashes about unicode escapes</li>
     </ul>
@@ -1953,7 +1962,7 @@
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: May 3, 2024 <br />
+             Site last generated: May 7, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
