@@ -31,9 +31,9 @@ class TreeExportCliTest extends BaseCliTest {
             final CliExecutionResult output = runCliSuccessfully("-i", "-f", "xml", "-PlineSeparator=LF");
 
             output.checkStdOut(equalTo("<?xml version='1.0' encoding='UTF-8' ?>\n"
-                                           + "<dummyRootNode Image=''>\n"
-                                           + "    <dummyNode Image='a'>\n"
-                                           + "        <dummyNode Image='b' />\n"
+                                           + "<dummyRootNode Image='' Lines='[, , ]'>\n"
+                                           + "    <dummyNode Image='a' Lines='[a, a, a]'>\n"
+                                           + "        <dummyNode Image='b' Lines='[b, b, b]' />\n"
                                            + "    </dummyNode>\n"
                                            + "</dummyRootNode>\n"));
         });
@@ -44,9 +44,9 @@ class TreeExportCliTest extends BaseCliTest {
         File file = newFileWithContents("(a(b))");
         final CliExecutionResult result = runCliSuccessfully("--file", file.getAbsolutePath(), "-f", "xml", "-PlineSeparator=LF");
         result.checkStdOut(equalTo("<?xml version='1.0' encoding='UTF-8' ?>\n"
-                                       + "<dummyRootNode Image=''>\n"
-                                       + "    <dummyNode Image='a'>\n"
-                                       + "        <dummyNode Image='b' />\n"
+                                       + "<dummyRootNode Image='' Lines='[, , ]'>\n"
+                                       + "    <dummyNode Image='a' Lines='[a, a, a]'>\n"
+                                       + "        <dummyNode Image='b' Lines='[b, b, b]' />\n"
                                        + "    </dummyNode>\n"
                                        + "</dummyRootNode>\n"));
     }

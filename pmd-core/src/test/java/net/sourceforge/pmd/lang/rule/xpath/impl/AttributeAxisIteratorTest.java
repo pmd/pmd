@@ -41,7 +41,9 @@ class AttributeAxisIteratorTest {
 
         AttributeAxisIterator it = new AttributeAxisIterator(dummyNode);
 
-        assertEquals(DEFAULT_ATTRS, toMap(it).keySet());
+        Set<String> expected = CollectionUtil.setUnion(DEFAULT_ATTRS, "Lines");
+
+        assertEquals(expected, toMap(it).keySet());
     }
 
     @Test
@@ -50,7 +52,7 @@ class AttributeAxisIteratorTest {
 
         AttributeAxisIterator it = new AttributeAxisIterator(dummyNode);
 
-        Set<String> expected = CollectionUtil.setUnion(DEFAULT_ATTRS, "Enum");
+        Set<String> expected = CollectionUtil.setUnion(DEFAULT_ATTRS, "Enum", "Lines");
 
         assertEquals(expected, toMap(it).keySet());
     }
@@ -62,7 +64,9 @@ class AttributeAxisIteratorTest {
 
         AttributeAxisIterator it = new AttributeAxisIterator(dummyNode);
 
-        assertEquals(DEFAULT_ATTRS, toMap(it).keySet());
+        Set<String> expected = CollectionUtil.setUnion(DEFAULT_ATTRS, "List", "Lines");
+
+        assertEquals(expected, toMap(it).keySet());
     }
 
     /**
