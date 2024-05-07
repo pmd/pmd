@@ -24,10 +24,20 @@ additional_js:
 <!--  You can link to an individual panel, the id is determined from the title of the panel -->
 <!--  See custom/shuffle_panel.html for the details -->
 
-**PMD** is a static source code analyzer. It finds common programming flaws like
-unused variables, empty catch blocks, unnecessary object creation, and
-so forth. It's mainly concerned with **Java and Apex**, but **supports 16 other
-languages**.
+**PMD** is an extensible multilanguage static code analyzer. It finds common programming flaws like unused variables,
+empty catch blocks, unnecessary object creation, and so forth. It's mainly concerned with **Java and
+Apex**, but **supports 16 other languages**. It comes with **400+ built-in rules**. It can be
+extended with custom rules. It uses JavaCC and Antlr to parse source files into abstract syntax trees
+(AST) and runs rules against them to find violations. Rules can be written in Java or using a XPath query.
+
+Currently, PMD supports Java, JavaScript, Salesforce.com Apex and Visualforce,
+Kotlin, Swift, Modelica, PLSQL, Apache Velocity, JSP, WSDL, Maven POM, HTML, XML and XSL.
+Scala is supported, but there are currently no Scala rules available.
+
+Additionally, it includes **CPD**, the copy-paste-detector. CPD finds duplicated code in
+Coco, C/C++, C#, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Julia, Kotlin,
+Lua, Matlab, Modelica, Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex and
+Visualforce, Scala, Swift, T-SQL, Typescript, Apache Velocity, WSDL, XML and XSL.
 
 PMD features many **built-in checks** (in PMD lingo, *rules*), which are documented
 for each language in our [Rule references](#shuffle-panel-rule-references). We
@@ -43,7 +53,7 @@ things, PMD can be run:
 * As a [bld operation](pmd_userdocs_tools_bld.html)
 * From [command-line](pmd_userdocs_installation.html#running-pmd-via-command-line)
 
-**CPD**, the **copy-paste detector**, is also distributed with PMD. You can also use it
+**CPD**, the **copy-paste detector**, is also distributed with PMD. You can use it
 in a variety of ways, which are [documented here](pmd_userdocs_cpd.html).
 
 ## 💾 Download
