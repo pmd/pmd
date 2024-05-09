@@ -5,22 +5,18 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
-import net.sourceforge.pmd.lang.test.ast.shouldBe
-import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import java.io.BufferedOutputStream
 import java.io.DataOutputStream
 import java.io.OutputStream
 
 /**
  * Expensive test cases for the overload resolution phase.
- *
- * Edit: So those used to be very expensive (think minutes of execution),
- * but optimisations made them very fast.
  */
 class PolyResolutionTest : ProcessorTestSpec({
-
 
     parserTest("Test context passing overcomes null lower bound") {
 
@@ -49,7 +45,7 @@ class PolyResolutionTest : ProcessorTestSpec({
 
                 static <T> T id(T t) { return t; }
 
-                {
+                void foo(int x) {
                     id(x > 0 ? Double.POSITIVE_INFINITY
                              : x < 0 ? Double.NEGATIVE_INFINITY
                                      : Double.NaN);
@@ -371,6 +367,50 @@ class Scratch {
             lambda1 shouldHaveType Runnable::class.decl
             lambda2 shouldHaveType Runnable::class.decl
             lambda3 shouldHaveType Runnable::class.decl
+        }
+    }
+
+    parserTest("Test inference with varargs - bug #4980") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            import java.util.stream.Stream;
+            
+            class Foo {
+                public <T extends Number> T foo() {
+                    return null;
+                }
+                
+                public Stream<Number> bar() {
+                    return Stream.of(foo());
+                }
+            }
+        """)
+
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call shouldHaveType gen.`t_Stream{Number}`
+        }
+    }
+
+    parserTest("Test bound checks does not throw concurrent mod exception") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            import java.util.stream.Stream;
+            class Enum<T extends Enum<T>> {}
+            class EnumSet<E extends Enum<E>> {
+                    public static <X extends Enum<X>> EnumSet<X> noneOf(Class<X> elementType) {
+                       Enum<?>[] universe = getUniverse(elementType);
+                    }
+                    private static <U extends Enum<U>> U[] getUniverse(Class<U> elementType) {}
+           }
+        """)
+
+        val call = acu.firstMethodCall()
+        val xVar = acu.typeVar("X")
+
+        spy.shouldBeOk {
+            call shouldHaveType xVar.toArray()
         }
     }
 })
