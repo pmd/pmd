@@ -18,14 +18,13 @@ class CachedRuleMapper {
     private final Map<String, Rule> cachedRulesInstances = new HashMap<>();
 
     /**
-     * Finds a rule instance for the given rule class name, name and target language
-     * @param className The name of the rule class that generated the cache entry
-     * @param ruleName The name of the rule that generated the cache entry
-     * @param languageName The terse name of the language for which the rule applies
+     * Finds a rule instance for the given rule key consisting of class name, name and target language
+     * 
+     * @param ruleKey The Rulekey for the rule
      * @return The requested rule
      */
-    public Rule getRuleForClass(final String className, final String ruleName, final String languageName) {
-        return cachedRulesInstances.get(getRuleKey(className, ruleName, languageName));
+    public Rule getRuleForClass(final RuleKey ruleKey) {
+        return cachedRulesInstances.get(ruleKey.toString());
     }
 
     /**
@@ -34,11 +33,37 @@ class CachedRuleMapper {
      */
     public void initialize(final RuleSets rs) {
         for (final Rule r : rs.getAllRules()) {
-            cachedRulesInstances.put(getRuleKey(r.getRuleClass(), r.getName(), r.getLanguage().getId()), r);
+            cachedRulesInstances.put(getRuleKey(r.getRuleClass(), r.getName(), r.getLanguage().getId()).toString(), r);
         }
     }
 
-    private String getRuleKey(final String className, final String ruleName, final String languageName) {
-        return className + "$$" + ruleName + "$$" + languageName;
+    static class RuleKey {
+        /**
+         * The name of the rule class that generated the cache entry
+         */
+        private final String className;
+        /**
+         * The name of the rule that generated the cache entry
+         */
+        private final String ruleName;
+        /**
+         * The terse name of the language for which the rule applies
+         */
+        private final String languageName;
+
+        RuleKey(String className, String ruleName, String languageName) {
+            this.className = className;
+            this.ruleName = ruleName;
+            this.languageName = languageName;
+        }
+
+        @Override
+        public String toString() {
+            return className + "$$" + ruleName + "$$" + languageName;
+        }
+    }
+
+    private RuleKey getRuleKey(final String className, final String ruleName, final String languageName) {
+        return new RuleKey(className, ruleName, languageName);
     }
 }

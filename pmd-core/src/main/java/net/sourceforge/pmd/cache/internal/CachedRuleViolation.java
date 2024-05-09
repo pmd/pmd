@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.cache.internal.CachedRuleMapper.RuleKey;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRange2d;
@@ -53,7 +54,8 @@ final class CachedRuleViolation implements RuleViolation {
     @Override
     public Rule getRule() {
         // The mapper may be initialized after cache is loaded, so use it lazily
-        return mapper.getRuleForClass(ruleClassName, ruleName, ruleTargetLanguage);
+        RuleKey ruleKey = new RuleKey(ruleClassName, ruleName, ruleTargetLanguage);
+        return mapper.getRuleForClass(ruleKey);
     }
 
     @Override
