@@ -236,11 +236,11 @@ public final class DataflowPass {
         }
 
         public static ReachingDefinitionSet unknown() {
-            return UNKNOWN;
+            return new ReachingDefinitionSet();
         }
 
         public static ReachingDefinitionSet blank() {
-            return EMPTY_KNOWN;
+            return new ReachingDefinitionSet(emptySet());
         }
     }
 
@@ -990,23 +990,25 @@ public final class DataflowPass {
 
         }
 
-        private SpanInfo processAssignment(ASTExpression lhs, // LHS or unary operand
+        private SpanInfo processAssignment(ASTExpression lhs0, // LHS or unary operand
                                            ASTExpression rhs,  // RHS or unary
                                            boolean useBeforeAssigning,
                                            SpanInfo result) {
 
-            if (lhs instanceof ASTNamedReferenceExpr) {
-                JVariableSymbol lhsVar = ((ASTNamedReferenceExpr) lhs).getReferencedSym();
+            if (lhs0 instanceof ASTNamedReferenceExpr) {
+                ASTNamedReferenceExpr lhs = (ASTNamedReferenceExpr) lhs0;
+                JVariableSymbol lhsVar = lhs.getReferencedSym();
                 if (lhsVar != null
                     && (lhsVar instanceof JLocalVariableSymbol
                     || isRelevantField(lhs))) {
 
                     if (useBeforeAssigning) {
                         // compound assignment, to use BEFORE assigning
-                        result.use(lhsVar, (ASTNamedReferenceExpr) lhs);
+                        result.use(lhsVar, lhs);
                     }
 
-                    result.assign(lhsVar, rhs);
+                    VarLocalInfo oldVar = result.assign(lhsVar, rhs);
+                    SpanInfo.updateReachingDefs(lhs, lhsVar, oldVar);
                 }
             }
             return result;
@@ -1346,11 +1348,12 @@ public final class DataflowPass {
             assign(id.getSymbol(), id);
         }
 
-        void assign(JVariableSymbol var, JavaNode rhs) {
-            assign(var, rhs, SpecialAssignmentKind.NOT_SPECIAL);
+        VarLocalInfo assign(JVariableSymbol var, JavaNode rhs) {
+            return assign(var, rhs, SpecialAssignmentKind.NOT_SPECIAL);
         }
 
-        @Nullable AssignmentEntry assign(JVariableSymbol var, JavaNode rhs, SpecialAssignmentKind kind) {
+        @Nullable
+        VarLocalInfo assign(JVariableSymbol var, JavaNode rhs, SpecialAssignmentKind kind) {
             ASTVariableId node = var.tryGetNode();
             if (node == null) {
                 return null; // we don't care about non-local declarations
@@ -1380,7 +1383,7 @@ public final class DataflowPass {
                 }
             }
             global.allAssignments.add(entry);
-            return entry;
+            return previous;
         }
 
         void declareSpecialFieldValues(JClassSymbol sym, boolean onlyStatic) {
@@ -1424,18 +1427,23 @@ public final class DataflowPass {
             if (info != null) {
                 global.usedAssignments.addAll(info.reachingDefs);
                 if (reachingDefSink != null) {
-                    ReachingDefinitionSet reaching = new ReachingDefinitionSet(new LinkedHashSet<>(info.reachingDefs));
-                    // need to merge into previous to account for cyclic control flow
-                    reachingDefSink.getUserMap().compute(REACHING_DEFS, current -> {
-                        if (current != null) {
-                            current.absorb(reaching);
-                            return current;
-                        } else {
-                            return reaching;
-                        }
-                    });
+                    updateReachingDefs(reachingDefSink, var, info);
                 }
             }
+        }
+
+        private static void updateReachingDefs(@NonNull ASTNamedReferenceExpr reachingDefSink, JVariableSymbol var, VarLocalInfo info) {
+            ReachingDefinitionSet reaching;
+            if (info == null || var.isField() && var.isFinal()) {
+                return;
+            } else {
+                reaching = new ReachingDefinitionSet(new LinkedHashSet<>(info.reachingDefs));
+            }
+            // need to merge into previous to account for cyclic control flow
+            reachingDefSink.getUserMap().merge(REACHING_DEFS, reaching, (current, newer) -> {
+                current.absorb(newer);
+                return current;
+            });
         }
 
         void deleteVar(JVariableSymbol var) {

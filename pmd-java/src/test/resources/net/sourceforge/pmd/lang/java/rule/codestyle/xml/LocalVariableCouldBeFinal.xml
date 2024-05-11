@@ -325,15 +325,20 @@ public class ClassWithLambda {
     <test-code>
         <description>#3122 should consider blank variables</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>7,19</expected-linenumbers>
+        <expected-linenumbers>12,24</expected-linenumbers>
         <code><![CDATA[
 public class ClassWithLambda {
     void method() {
-        int b; // warn
-        b = 1 + 2;
-        // b is unused
+        int a = 2; // nowarn
+        a = 4;
+        System.out.println(a);
 
-        int c;
+        int b; // nowarn
+        b = 1 + 2;
+        b = 4;
+        System.out.println(b);
+
+        int c; // warn
         c = 1 + 2;
         System.out.println(c);
 
@@ -352,6 +357,34 @@ public class ClassWithLambda {
             y = 4;
         }
         System.out.println(y);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#3122 should consider blank variables</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class ClassWithLambda {
+
+    void expandKey(byte key[]) {
+        int octet;
+        byte ek[] = new byte[128];
+
+        octet = key[0];
+        if ((octet & 0x80) != 0) {
+            ek[104] |=  4; ek[122] |= 32;
+        }
+
+        octet = key[1];
+        if ((octet & 0x80) != 0) {
+            ek[  1] |=  8; ek[  8] |= 32; ek[ 17] |=  1;
+            ek[ 24] |= 16; ek[ 35] |=  4; ek[ 50] |=  1;
+            ek[ 57] |= 16; ek[ 67] |=  8; ek[ 83] |=  1;
+            ek[ 88] |=  1; ek[ 98] |=  4; ek[105] |= 32;
+            ek[114] |= 32; ek[123] |=  2;
+        }
     }
 }
         ]]></code>
