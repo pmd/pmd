@@ -125,6 +125,22 @@ public final class ASTClassType extends AbstractJavaTypeNode implements ASTRefer
     }
 
 
+    /**
+     * Return the package qualifier, if this is a fully qualified name.
+     * Note that this will only be the case if we could resolve the
+     * qualifier to a package name during disambiguation. In other words,
+     * if the auxclasspath is not complete, and the qualifier could not
+     * be disambiguated, this method will return null (and an AmbiguousName
+     * will stay in the tree).
+     */
+    public @Nullable String getPackageQualifier() {
+        if (isFullyQualified()) {
+            assert symbol != null: "Symbol should be non-null if isFullyQualified returns true";
+            return symbol.getPackageName();
+        }
+        return null;
+    }
+
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
