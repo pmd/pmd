@@ -35,7 +35,7 @@ public class LocalVariableCouldBeFinalRule extends AbstractJavaRulechainRule {
             // All variables declared in this ASTLocalVariableDeclaration need to be
             // effectively final, otherwise we cannot just add a final modifier.
             for (ASTVariableId vid : node.getVarIds()) {
-                if (!vid.getLocalUsages().isEmpty()) {
+                if (!JavaAstUtils.isNeverUsed(vid)) {
                     // filter out unused variables
                     asCtx(data).addViolation(vid, vid.getName());
                 }

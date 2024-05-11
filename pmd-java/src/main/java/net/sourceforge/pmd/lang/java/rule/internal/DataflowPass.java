@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.internal;
 
+import static java.util.Collections.emptySet;
 import static net.sourceforge.pmd.util.CollectionUtil.asSingle;
 
 import java.util.ArrayDeque;
@@ -177,12 +178,21 @@ public final class DataflowPass {
      */
     public static final class ReachingDefinitionSet {
 
+        static final ReachingDefinitionSet UNKNOWN = new ReachingDefinitionSet();
+        static final ReachingDefinitionSet EMPTY_KNOWN = new ReachingDefinitionSet(emptySet());
+
         private Set<AssignmentEntry> reaching;
         private boolean isNotFullyKnown;
         private boolean containsInitialFieldValue;
 
+
+        static {
+            assert !EMPTY_KNOWN.isNotFullyKnown();
+            assert UNKNOWN.isNotFullyKnown();
+        }
+
         private ReachingDefinitionSet() {
-            this.reaching = Collections.emptySet();
+            this.reaching = emptySet();
             this.containsInitialFieldValue = false;
             this.isNotFullyKnown = true;
         }
@@ -226,7 +236,11 @@ public final class DataflowPass {
         }
 
         public static ReachingDefinitionSet unknown() {
-            return new ReachingDefinitionSet();
+            return UNKNOWN;
+        }
+
+        public static ReachingDefinitionSet blank() {
+            return EMPTY_KNOWN;
         }
     }
 
@@ -256,7 +270,7 @@ public final class DataflowPass {
          * May be useful to check for reassignment.
          */
         public @NonNull Set<AssignmentEntry> getKillers(AssignmentEntry assignment) {
-            return killRecord.getOrDefault(assignment, Collections.emptySet());
+            return killRecord.getOrDefault(assignment, emptySet());
         }
 
         // These methods are only valid to be called if the dataflow pass has run.
@@ -278,14 +292,25 @@ public final class DataflowPass {
             return expr.getUserMap().computeIfAbsent(REACHING_DEFS, () -> reachingFallback(expr));
         }
 
-        // Fallback, to compute reaching definitions for some fields
+        // Fallback, to compute reaching definitions for some nodes
         // that are not tracked by the tree exploration. Final fields
         // indeed have a fully known set of reaching definitions.
-        // TODO maybe they should actually be tracked?
         private @NonNull ReachingDefinitionSet reachingFallback(ASTNamedReferenceExpr expr) {
             JVariableSymbol sym = expr.getReferencedSym();
-            if (sym == null || !sym.isField() || !sym.isFinal()) {
+            if (sym == null || sym.isField() && !sym.isFinal()) {
                 return ReachingDefinitionSet.unknown();
+            } else if (!sym.isField()) {
+                ASTVariableId node = sym.tryGetNode();
+                assert node != null
+                    : "Not a field, and symbol is known, so should be a local which has a node";
+                if (node.isLocalVariable()) {
+                    assert node.getInitializer() == null : "Should be a blank local variable";
+                    return ReachingDefinitionSet.blank();
+                } else {
+                    // Formal parameter or other kind of def which has
+                    // an implicit initializer.
+                    return ReachingDefinitionSet.unknown();
+                }
             }
 
             ASTVariableId node = sym.tryGetNode();

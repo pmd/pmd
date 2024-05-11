@@ -36,7 +36,9 @@ public class MethodArgumentCouldBeFinalRule extends AbstractJavaRulechainRule {
     private void lookForViolation(ASTExecutableDeclaration node, Object data) {
         for (ASTFormalParameter param : node.getFormalParameters()) {
             ASTVariableId varId = param.getVarId();
-            if (!param.isFinal() && !varId.getLocalUsages().isEmpty() && JavaAstUtils.isEffectivelyFinal(varId)) {
+            if (!param.isFinal()
+                && !JavaAstUtils.isNeverUsed(varId)
+                && JavaAstUtils.isEffectivelyFinal(varId)) {
                 asCtx(data).addViolation(varId, varId.getName());
             }
         }

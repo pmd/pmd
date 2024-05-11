@@ -322,4 +322,38 @@ public class ClassWithLambda {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#3122 should consider blank variables</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,19</expected-linenumbers>
+        <code><![CDATA[
+public class ClassWithLambda {
+    void method() {
+        int b; // warn
+        b = 1 + 2;
+        // b is unused
+
+        int c;
+        c = 1 + 2;
+        System.out.println(c);
+
+        int x;
+        if (getClass().isAnonymousClass()) {
+            x = 2;
+        } else {
+            x = 4;
+        }
+        // x is unused
+
+        int y; // warn
+        if (getClass().isAnonymousClass()) {
+            y = 2;
+        } else {
+            y = 4;
+        }
+        System.out.println(y);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
