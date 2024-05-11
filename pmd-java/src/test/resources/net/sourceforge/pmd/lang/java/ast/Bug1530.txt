@@ -11,7 +11,7 @@
                   +- UnaryExpression[@CompileTimeConstant = false, @Operator = UnaryOp.POST_INCREMENT, @ParenthesisDepth = 0, @Parenthesized = false]
                      +- FieldAccess[@AccessType = AccessType.WRITE, @CompileTimeConstant = false, @Image = "currentChild", @Name = "currentChild", @ParenthesisDepth = 0, @Parenthesized = false]
                         +- CastExpression[@CompileTimeConstant = false, @ParenthesisDepth = 1, @Parenthesized = true]
-                           +- ClassType[@FullyQualified = false, @SimpleName = "PathElement"]
+                           +- ClassType[@FullyQualified = false, @PackageQualifier = null, @SimpleName = "PathElement"]
                            +- MethodCall[@CompileTimeConstant = false, @Image = "getUserObject", @MethodName = "getUserObject", @ParenthesisDepth = 0, @Parenthesized = false]
                               +- MethodCall[@CompileTimeConstant = false, @Image = "getLastLeaf", @MethodName = "getLastLeaf", @ParenthesisDepth = 0, @Parenthesized = false]
                               |  +- AmbiguousName[@CompileTimeConstant = false, @Image = "stack", @Name = "stack", @ParenthesisDepth = 0, @Parenthesized = false]

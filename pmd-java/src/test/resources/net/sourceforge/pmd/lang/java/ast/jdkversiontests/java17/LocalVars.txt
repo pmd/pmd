@@ -9,7 +9,7 @@
             +- Block[@Empty = false, @Size = 2, @containsComment = true]
                +- LocalVariableDeclaration[@EffectiveVisibility = Visibility.V_LOCAL, @Final = false, @TypeInferred = false, @Visibility = Visibility.V_LOCAL]
                |  +- ModifierList[@EffectiveModifiers = (), @ExplicitModifiers = ()]
-               |  +- ClassType[@FullyQualified = false, @SimpleName = "String"]
+               |  +- ClassType[@FullyQualified = false, @PackageQualifier = null, @SimpleName = "String"]
                |  +- VariableDeclarator[@Initializer = true, @Name = "sealed"]
                |     +- VariableId[@ArrayType = false, @EffectiveVisibility = Visibility.V_LOCAL, @EnumConstant = false, @ExceptionBlockParameter = false, @Field = false, @Final = false, @ForLoopVariable = false, @ForeachVariable = false, @FormalParameter = false, @LambdaParameter = false, @LocalVariable = true, @Name = "sealed", @PatternBinding = false, @RecordComponent = false, @ResourceDeclaration = false, @Static = false, @TypeInferred = false, @Visibility = Visibility.V_LOCAL]
                |     +- NullLiteral[@CompileTimeConstant = false, @LiteralText = "null", @ParenthesisDepth = 0, @Parenthesized = false]
