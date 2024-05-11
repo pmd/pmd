@@ -163,6 +163,7 @@ import net.sourceforge.pmd.lang.plsql.ast.internal.ParsingExclusion;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class PLSQLParserImpl {
 
   /**
@@ -5431,9 +5432,9 @@ void KEYWORD(String id) #void:
 
 // This is only used to generate a node class
 // @Deprecated
-void KEYWORD_UNRESERVED (): {}{KEYWORD_NOT_RESERVED()}
+ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}{KEYWORD_NOT_RESERVED() {return jjtThis;}}
 
-void KEYWORD_NOT_RESERVED () #void: {}
+private void KEYWORD_NOT_RESERVED () #void: {}
 {
 // PL/SQL UNRESERVED KEYWORDS - V$RESERVED.RESERVED='N'
 "REF" | "LAST" | "TRIM" | "OVER" | "UNBOUNDED" | "PRECEDING" | "FOLLOWING" | "WITHIN" |
