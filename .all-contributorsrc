@@ -7462,6 +7462,78 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "BurovnikovEvgeniy",
+      "name": "BurovnikovEvgeniy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/71849985?v=4",
+      "profile": "https://github.com/BurovnikovEvgeniy",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "kohlschuetter",
+      "name": "Dr. Christian Kohlschütter",
+      "avatar_url": "https://avatars.githubusercontent.com/u/822690?v=4",
+      "profile": "https://kohlschuetter.github.io/blog/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "Luro02",
+      "name": "Lucas",
+      "avatar_url": "https://avatars.githubusercontent.com/u/24826124?v=4",
+      "profile": "https://github.com/Luro02",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "rs23",
+      "name": "Reinhard Schiedermeier",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12321337?v=4",
+      "profile": "http://sol.cs.hm.edu/rs",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "andygoossens",
+      "name": "Andy Goossens",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2099087?v=4",
+      "profile": "https://github.com/andygoossens",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "mitchspano",
+      "name": "Mitch Spano",
+      "avatar_url": "https://avatars.githubusercontent.com/u/18402464?v=4",
+      "profile": "https://github.com/mitchspano",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "mfvanek",
+      "name": "Ivan Vakhrushev",
+      "avatar_url": "https://avatars.githubusercontent.com/u/37612014?v=4",
+      "profile": "https://www.linkedin.com/in/mfvanek/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "VishV-Android",
+      "name": "Vishv_Android",
+      "avatar_url": "https://avatars.githubusercontent.com/u/126696109?v=4",
+      "profile": "https://github.com/VishV-Android",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,

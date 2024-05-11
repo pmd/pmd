@@ -116,7 +116,7 @@ public class LinguisticNamingRule extends AbstractJavaRulechainRule {
                 && prefixes.contains(splitMethodName[0].toLowerCase(Locale.ROOT))) {
             // "To" or any other configured prefix found
             asCtx(data).addViolationWithMessage(node, "Linguistics Antipattern - The transform method ''{0}'' should not return void linguistically",
-                    new Object[] { nameOfMethod });
+                                                nameOfMethod);
         }
     }
 
@@ -125,7 +125,7 @@ public class LinguisticNamingRule extends AbstractJavaRulechainRule {
             if (node.isVoid() && containsCamelCaseWord(nameOfMethod, StringUtils.capitalize(infix))) {
                 // "To" or any other configured infix in the middle somewhere
                 asCtx(data).addViolationWithMessage(node, "Linguistics Antipattern - The transform method ''{0}'' should not return void linguistically",
-                        new Object[] { nameOfMethod });
+                                                    nameOfMethod);
                 // the first violation is sufficient - it is still the same method we are analyzing here
                 break;
             }
@@ -135,14 +135,14 @@ public class LinguisticNamingRule extends AbstractJavaRulechainRule {
     private void checkGetters(ASTMethodDeclaration node, Object data, String nameOfMethod) {
         if (startsWithCamelCaseWord(nameOfMethod, "get") && node.isVoid()) {
             asCtx(data).addViolationWithMessage(node, "Linguistics Antipattern - The getter ''{0}'' should not return void linguistically",
-                    new Object[] { nameOfMethod });
+                                                nameOfMethod);
         }
     }
 
     private void checkSetters(ASTMethodDeclaration node, Object data, String nameOfMethod) {
         if (startsWithCamelCaseWord(nameOfMethod, "set") && !node.isVoid()) {
             asCtx(data).addViolationWithMessage(node, "Linguistics Antipattern - The setter ''{0}'' should not return any type except void linguistically",
-                    new Object[] { nameOfMethod });
+                                                nameOfMethod);
         }
     }
 
@@ -158,7 +158,7 @@ public class LinguisticNamingRule extends AbstractJavaRulechainRule {
             for (String prefix : getProperty(BOOLEAN_METHOD_PREFIXES_PROPERTY)) {
                 if (startsWithCamelCaseWord(nameOfMethod, prefix) && !isBooleanType(t)) {
                     asCtx(data).addViolationWithMessage(node, "Linguistics Antipattern - The method ''{0}'' indicates linguistically it returns a boolean, but it returns ''{1}''",
-                            new Object[] {nameOfMethod, PrettyPrintingUtil.prettyPrintType(t) });
+                                                        nameOfMethod, PrettyPrintingUtil.prettyPrintType(t));
                 }
             }
         }
@@ -168,7 +168,7 @@ public class LinguisticNamingRule extends AbstractJavaRulechainRule {
         for (String prefix : getProperty(BOOLEAN_FIELD_PREFIXES_PROPERTY)) {
             if (startsWithCamelCaseWord(node.getName(), prefix) && !isBooleanType(typeNode)) {
                 asCtx(data).addViolationWithMessage(node, "Linguistics Antipattern - The field ''{0}'' indicates linguistically it is a boolean, but it is ''{1}''",
-                        new Object[] { node.getName(), PrettyPrintingUtil.prettyPrintType(typeNode) });
+                                                    node.getName(), PrettyPrintingUtil.prettyPrintType(typeNode));
             }
         }
     }
@@ -177,7 +177,7 @@ public class LinguisticNamingRule extends AbstractJavaRulechainRule {
         for (String prefix : getProperty(BOOLEAN_FIELD_PREFIXES_PROPERTY)) {
             if (startsWithCamelCaseWord(node.getName(), prefix) && !isBooleanType(typeNode)) {
                 asCtx(data).addViolationWithMessage(node, "Linguistics Antipattern - The variable ''{0}'' indicates linguistically it is a boolean, but it is ''{1}''",
-                        new Object[] { node.getName(), PrettyPrintingUtil.prettyPrintType(typeNode) });
+                                                    node.getName(), PrettyPrintingUtil.prettyPrintType(typeNode));
             }
         }
     }

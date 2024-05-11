@@ -1903,4 +1903,103 @@ public class NotUsedPrivateMethodFalsePositive {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UnusedPrivateMethod false positive when using @MethodSource on a @Nested test #4975</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.ParameterizedTest;
+
+class FooTest{
+    @Nested
+    class ExampleTest {
+
+        @ParameterizedTest
+        @MethodSource("getStrings")
+        void exampleTestUsingPrivateMethod(
+                List<String> strings) {
+            // insert code
+        }
+
+        private static Stream<Arguments> getStrings() {
+            Stream<Arguments> tests = Stream.of(
+                    Arguments.of(List.of("TEST", "TEST_1")),
+                    Arguments.of(List.of("TEST_2", "TEST_3"))
+            );
+
+            return Stream.of(tests)
+                    .reduce(Stream::concat)
+                    .orElseGet(Stream::empty);
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedPrivateMethod FP with Junit 5 @MethodSource and default factory method name #4278</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.ParameterizedTest;
+
+class FooTest{
+    private static Stream<Arguments> testGetUsername_noMethodSourceValue() {
+        return Stream.of(
+                Arguments.of("foo"),
+                Arguments.of("bar"),
+                Arguments.of("baz")
+        );
+    }
+
+    @MethodSource
+    @ParameterizedTest
+    void testGetUsername_noMethodSourceValue(String username) {
+        User sut = new User(username);
+
+        Assertions.assertEquals(username, sut.getUsername());
+    }
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] UnusedPrivateMethod false-positive / method reference in combination with custom object #4985</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.List;
+
+            public class Main {
+
+                public static void main(String[] args) {
+                    System.out.println("list");
+
+                    // usage of method reference in combination with a custom object leads to a false positive of PMD.UnusedPrivateMethod
+                    List.of(new StringWrapper().getString())
+                        .stream()
+
+                        .map(Main::foo)
+                        .filter(Objects::nonNull)
+                        .toList();
+
+                    // no false positive .. :/
+                    List.of("s")
+                        .stream()
+                        .map(Main::foo2)
+                        .filter(Objects::nonNull)
+                        .toList();
+                }
+
+                private static int foo(String s) {
+                    return s.length();
+                }
+
+                private static int foo2(String s) {
+                    return s.length();
+                }
+
+            }
+            ]]></code>
+    </test-code>
 </test-data>

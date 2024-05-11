@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
@@ -20,7 +21,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
-import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.MethodUsage;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
@@ -54,12 +54,15 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         //   first set, ie, not every call in the file.
 
         Set<String> methodsUsedByAnnotations = file.descendants(ASTMethodDeclaration.class)
+            .crossFindBoundaries()
             .children(ASTModifierList.class)
             .children(ASTAnnotation.class)
             .filter(t -> TypeTestUtil.isA("org.junit.jupiter.params.provider.MethodSource", t))
-            .descendants(ASTStringLiteral.class)
             .toStream()
-            .map(ASTStringLiteral::getConstValue)
+            // Get the referenced method names… if none, use the test method name instead
+            .flatMap(a -> a.getFlatValue("value").isEmpty()
+                    ? Stream.of(a.ancestors(ASTMethodDeclaration.class).first().getName())
+                    : a.getFlatValue("value").toStream().map(mv -> (String) mv.getConstValue()))
             .collect(Collectors.toSet());
 
         Map<String, Set<ASTMethodDeclaration>> consideredNames =

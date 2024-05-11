@@ -9,8 +9,11 @@ import static net.sourceforge.pmd.lang.java.types.TypeOps.isConvertible;
 import java.util.ArrayList;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 
@@ -51,6 +54,11 @@ abstract class IncorporationAction {
             this.myBound = bound;
         }
 
+        private static boolean isClassType(JTypeMirror bound) {
+            JTypeDeclSymbol symbol = bound.getSymbol();
+            return symbol instanceof JClassSymbol && !symbol.isInterface();
+        }
+
         /**
          * The list of bound kinds to be checked. If the new bound is
          * equality, then all other bounds need to be checked. Otherwise,
@@ -70,7 +78,25 @@ abstract class IncorporationAction {
                     }
                 }
             }
+
+            if (myKind == BoundKind.UPPER && isClassType(myBound)) {
+                // Check that other upper bounds that are class types are related to this bound.
+                // Otherwise, GLB does not exist and its construction would fail during ReductionStep#UPPER.
+                for (JTypeMirror otherBound : ivar.getBounds(BoundKind.UPPER)) {
+                    if (otherBound != myBound && isClassType(otherBound)) { // NOPMD CompareObjectsWithEquals
+                        // Since we are testing both directions we cannot let those tests add bounds on the ivars,
+                        // because they could be contradictory.
+                        boolean areRelated = TypeOps.isConvertiblePure(myBound, otherBound).somehow()
+                            || TypeOps.isConvertiblePure(otherBound, myBound).somehow();
+
+                        if (!areRelated) {
+                            throw ResolutionFailedException.incompatibleBound(ctx.logger, ivar, myKind, myBound, BoundKind.UPPER, otherBound);
+                        }
+                    }
+                }
+            }
         }
+
 
         /**
          * Check compatibility between this bound and another.
@@ -97,13 +123,13 @@ abstract class IncorporationAction {
         /**
          * If 'eq', checks that {@code T = S}, else checks that {@code T <: S}.
          */
-        boolean checkBound(boolean eq, JTypeMirror t, JTypeMirror s, InferenceContext ctx) {
+        static boolean checkBound(boolean eq, JTypeMirror t, JTypeMirror s, InferenceContext ctx) {
             // eq bounds are so rare we shouldn't care if they're cached
             return eq ? InternalApiBridge.isSameTypeInInference(t, s)
                       : checkSubtype(t, s, ctx);
         }
 
-        private boolean checkSubtype(JTypeMirror t, JTypeMirror s, InferenceContext ctx) {
+        private static boolean checkSubtype(JTypeMirror t, JTypeMirror s, InferenceContext ctx) {
             if (ctx.getSupertypeCheckCache().isCertainlyASubtype(t, s)) {
                 return true; // supertype was already cached
             }

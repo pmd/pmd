@@ -258,8 +258,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
     private void checkForViolation(Object data) {
         if (counter.isViolation()) {
             assert counter.getReportNode() != null;
-            String[] param = { String.valueOf(counter.getCounter()) };
-            asCtx(data).addViolation(counter.getReportNode(), param);
+            asCtx(data).addViolation(counter.getReportNode(), String.valueOf(counter.getCounter()));
         }
     }
 

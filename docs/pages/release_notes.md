@@ -14,71 +14,42 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
-### ✨ New rules
+#### Collections exposed as XPath attributes
 
-- The new Java rule {%rule java/bestpractices/UnnecessaryVarargsArrayCreation %} reports explicit array creation
-  when a varargs is expected. This is more heavy to read and could be simplified.
+Up to now, all AST node getters would be exposed to XPath, as long as the return type was a primitive (boxed or unboxed), String or Enum. That meant that collections, even of these basic types, were not exposed, so for instance accessing Apex's `ASTUserClass.getInterfaceNames()` to list the interfaces implemented by a class was impossible from XPath, and would require writing a Java rule to check it.
 
-### 🌟 Rule Changes
+Since this release, PMD will also expose any getter returning a collection of any supported type as a sequence through an XPath attribute. They would require to use apropriate XQuery functions to manipulate the sequence. So for instance, to detect any given `ASTUserClass` in Apex that implements `Queueable`, it is now possible to write:
 
-* {%rule java/bestpractices/JUnitTestsShouldIncludeAssert %} and {% rule java/bestpractices/JUnitTestContainsTooManyAsserts %}
-  have a new property named `extraAssertMethodNames`. With this property, you can configure which additional static
-  methods should be considered as valid verification methods. This allows to use custom mocking or assertion libraries.
+```xml
+/UserClass[@InterfaceNames = 'Queueable']
+```
 
 ### 🐛 Fixed Issues
 * core
-  * [#494](https://github.com/pmd/pmd/issues/494): \[core] Adopt JApiCmp to enforce control over API changes
-  * [#4942](https://github.com/pmd/pmd/issues/4942): \[core] CPD: `--skip-duplicate-files` has no effect (7.0.0 regression)
-  * [#4959](https://github.com/pmd/pmd/pull/4959): \[core] Upgrade saxon to 12.4
-* cli
-  * [#4791](https://github.com/pmd/pmd/issues/4791): \[cli] Could not find or load main class
-  * [#4913](https://github.com/pmd/pmd/issues/4913): \[cli] cpd-gui closes immediately
-* doc
-  * [#4901](https://github.com/pmd/pmd/issues/4901): \[doc] Improve documentation on usage of violationSuppressXPath
-* apex
-  * [#4418](https://github.com/pmd/pmd/issues/4418): \[apex] ASTAnnotation.getImage() does not return value as written in the class
-* apex-errorprone
-  * [#3953](https://github.com/pmd/pmd/issues/3953): \[apex] EmptyCatchBlock false positive with formal (doc) comments
+  * [#4467](https://github.com/pmd/pmd/issues/4467): \[core] Expose collections from getters as XPath sequence attributes
+  * [#4978](https://github.com/pmd/pmd/issues/4978): \[core] Referenced Rulesets do not emit details on validation errors
+  * [#4983](https://github.com/pmd/pmd/pull/4983): \[cpd] Fix CPD crashes about unicode escapes
 * java
-  * [#4899](https://github.com/pmd/pmd/issues/4899): \[java] Parsing failed in ParseLock#doParse() java.io.IOException: Stream closed
-  * [#4902](https://github.com/pmd/pmd/issues/4902): \[java] "Bad intersection, unrelated class types" for Constable\[] and Enum\[]
-  * [#4947](https://github.com/pmd/pmd/issues/4947): \[java] Broken TextBlock parser
+  * [#4912](https://github.com/pmd/pmd/issues/4912): \[java] Unable to parse some Java9+ resource references
+  * [#4973](https://github.com/pmd/pmd/pull/4973): \[java] Stop parsing Java for CPD
+  * [#4980](https://github.com/pmd/pmd/issues/4980): \[java] Bad intersection, unrelated class types java.lang.Object\[] and java.lang.Number
+  * [#4988](https://github.com/pmd/pmd/pull/4988): \[java] Fix impl of ASTVariableId::isResourceDeclaration / VariableId/@<!-- -->ResourceDeclaration
 * java-bestpractices
-  * [#1084](https://github.com/pmd/pmd/issues/1084): \[java] Allow JUnitTestsShouldIncludeAssert to configure verification methods
-  * [#3216](https://github.com/pmd/pmd/issues/3216): \[java] New rule: UnnecessaryVarargsArrayCreation
-  * [#4435](https://github.com/pmd/pmd/issues/4435): \[java] \[7.0-rc1] UnusedAssignment for used field
-  * [#4569](https://github.com/pmd/pmd/issues/4569): \[java] ForLoopCanBeForeach reports on loop `for (int i = 0; i < list.size(); i += 2)`
-  * [#4618](https://github.com/pmd/pmd/issues/4618): \[java] UnusedAssignment false positive with conditional assignments of fields
+  * [#4278](https://github.com/pmd/pmd/issues/4278): \[java] UnusedPrivateMethod FP with Junit 5 @MethodSource and default factory method name
+  * [#4852](https://github.com/pmd/pmd/issues/4852): \[java] ReplaceVectorWithList false-positive (neither Vector nor List usage) 
+  * [#4975](https://github.com/pmd/pmd/issues/4975): \[java] UnusedPrivateMethod false positive when using @MethodSource on a @Nested test
+  * [#4985](https://github.com/pmd/pmd/issues/4985): \[java] UnusedPrivateMethod false-positive / method reference in combination with custom object
 * java-codestyle
-  * [#4602](https://github.com/pmd/pmd/issues/4602): \[java] UnnecessaryImport: false positives with static imports
-  * [#4785](https://github.com/pmd/pmd/issues/4785): \[java] False Positive: PMD Incorrectly report violation for UnnecessaryImport
-  * [#4779](https://github.com/pmd/pmd/issues/4779): \[java] Examples in documentation of MethodArgumentCanBeFinal do not trigger the rule
-  * [#4881](https://github.com/pmd/pmd/issues/4881): \[java] ClassNamingConventions: interfaces are identified as abstract classes (regression in 7.0.0)
-* java-design
-  * [#2440](https://github.com/pmd/pmd/issues/2440): \[java] FinalFieldCouldBeStatic FN when the right side of the assignment is a constant expression
-  * [#3694](https://github.com/pmd/pmd/issues/3694): \[java] SingularField ignores static variables
-  * [#4873](https://github.com/pmd/pmd/issues/4873): \[java] AvoidCatchingGenericException: Can no longer suppress on the exception itself
-* java-errorprone
-  * [#2056](https://github.com/pmd/pmd/issues/2056): \[java] CloseResource false-positive with URLClassLoader in cast expression
-  * [#4751](https://github.com/pmd/pmd/issues/4751): \[java] PMD crashes when analyzing CloseResource Rule
-  * [#4928](https://github.com/pmd/pmd/issues/4928): \[java] EmptyCatchBlock false negative when allowCommentedBlocks=true
-* java-performance
-  * [#3845](https://github.com/pmd/pmd/issues/3845): \[java] InsufficientStringBufferDeclaration should consider literal expression
-  * [#4874](https://github.com/pmd/pmd/issues/4874): \[java] StringInstantiation: False-positive when using `new String(charArray)`
-  * [#4886](https://github.com/pmd/pmd/issues/4886): \[java] BigIntegerInstantiation: False Positive with Java 17 and BigDecimal.TWO
-* pom-errorprone
-  * [#4388](https://github.com/pmd/pmd/issues/4388): \[pom] InvalidDependencyTypes doesn't consider dependencies at all
+  * [#4930](https://github.com/pmd/pmd/issues/4930): \[java] EmptyControlStatement should not allow empty try with concise resources
 
 ### 🚨 API Changes
 
-#### Deprecated methods
+#### Deprecated API
 
-* {%jdoc java::lang.java.rule.design.SingularFieldRule#mayBeSingular(java::lang.java.ast.ModifierOwner) %} has been deprecated for
-  removal. The method is only useful for the rule itself and shouldn't be used otherwise.
+* pmd-java
+  * {% jdoc !!java::lang.java.ast.ASTResource#getStableName() %} and the corresponding attribute `@StableName`
 
 ### ✨ External Contributions
-* [#4864](https://github.com/pmd/pmd/pull/4864): Fix #1084 \[Java] add extra assert method names to Junit rules - [Erwan Moutymbo](https://github.com/emouty) (@emouty)
-* [#4894](https://github.com/pmd/pmd/pull/4894): Fix #4791 Error caused by space in JDK path - [Scrates1](https://github.com/Scrates1) (@Scrates1)
 
 {% endtocmaker %}
 

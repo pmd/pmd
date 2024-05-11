@@ -417,4 +417,16 @@ public class SomeClass {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] Instantiation rules cannot tell apart java.lang primitive wrappers and shadowed classes #1548</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Integer {
+    private static Integer instance = new Integer(42);
+
+    public Integer(int x) {}
+}
+        ]]></code>
+    </test-code>
 </test-data>

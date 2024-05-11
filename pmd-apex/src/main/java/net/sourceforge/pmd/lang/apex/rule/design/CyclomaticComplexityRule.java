@@ -78,7 +78,7 @@ public class CyclomaticComplexityRule extends AbstractApexRule {
                                           " total",
                                           classWmc + " (highest " + classHighest + ")", };
 
-                asCtx(data).addViolation(node, messageParams);
+                asCtx(data).addViolation(node, (Object[]) messageParams);
             }
         }
         return data;
