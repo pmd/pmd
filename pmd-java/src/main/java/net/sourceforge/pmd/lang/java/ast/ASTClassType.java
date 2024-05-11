@@ -135,7 +135,7 @@ public final class ASTClassType extends AbstractJavaTypeNode implements ASTRefer
      */
     public @Nullable String getPackageQualifier() {
         if (isFullyQualified()) {
-            assert symbol != null: "Symbol should be non-null if isFullyQualified returns true";
+            assert symbol != null : "Symbol should be non-null if isFullyQualified returns true";
             return symbol.getPackageName();
         }
         return null;

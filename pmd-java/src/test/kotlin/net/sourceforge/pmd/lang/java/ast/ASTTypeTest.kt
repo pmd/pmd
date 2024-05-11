@@ -22,6 +22,7 @@ class ASTTypeTest : ParserTestSpec({
 
                     it::getTypeArguments shouldBe null
                     it::getQualifier shouldBe null
+                    it::getPackageQualifier shouldBe null
 
                     it::getAmbiguousLhs shouldBe child {
                         it::getName shouldBe "java.util"
@@ -33,6 +34,7 @@ class ASTTypeTest : ParserTestSpec({
                 classType("List") {
 
                     it::getQualifier shouldBe null
+                    it::getPackageQualifier shouldBe null
 
                     it::getAmbiguousLhs shouldBe child {
                         it::getName shouldBe "java.util"
