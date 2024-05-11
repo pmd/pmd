@@ -311,4 +311,15 @@ public class ClassWithLambda {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1619 FP with loop variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class ClassWithLambda {
+    void method() {
+        for (int i = 0, size = loaders.size(); i < size; ++i);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

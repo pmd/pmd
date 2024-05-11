@@ -4,16 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
-import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.reporting.RuleContext;
 
 public class MethodArgumentCouldBeFinalRule extends AbstractJavaRulechainRule {
 
@@ -37,24 +34,10 @@ public class MethodArgumentCouldBeFinalRule extends AbstractJavaRulechainRule {
     }
 
     private void lookForViolation(ASTExecutableDeclaration node, Object data) {
-        checkForFinal((RuleContext) data, node.getFormalParameters().toStream().map(ASTFormalParameter::getVarId));
-    }
-
-    static void checkForFinal(RuleContext ruleContext, NodeStream<ASTVariableId> variables) {
-        outer:
-        for (ASTVariableId var : variables) {
-            if (var.isFinal()) {
-                continue;
-            }
-            boolean used = false;
-            for (ASTNamedReferenceExpr usage : var.getLocalUsages()) {
-                used = true;
-                if (usage.getAccessType() == AccessType.WRITE) {
-                    continue outer;
-                }
-            }
-            if (used) {
-                ruleContext.addViolation(var, var.getName());
+        for (ASTFormalParameter param : node.getFormalParameters()) {
+            ASTVariableId varId = param.getVarId();
+            if (!param.isFinal() && !varId.getLocalUsages().isEmpty() && JavaAstUtils.isEffectivelyFinal(varId)) {
+                asCtx(data).addViolation(varId, varId.getName());
             }
         }
     }

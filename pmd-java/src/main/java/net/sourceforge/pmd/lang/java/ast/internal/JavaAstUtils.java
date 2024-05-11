@@ -802,4 +802,13 @@ public final class JavaAstUtils {
                        || it instanceof ASTExplicitConstructorInvocation
                    );
     }
+
+    public static boolean isEffectivelyFinal(ASTVariableId var) {
+        for (ASTNamedReferenceExpr usage : var.getLocalUsages()) {
+            if (usage.getAccessType() == AccessType.WRITE) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
