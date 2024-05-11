@@ -5,7 +5,7 @@
    |  +- ModifierList[@EffectiveModifiers = (), @ExplicitModifiers = ()]
    |  +- ClassType[@FullyQualified = false, @SimpleName = "String"]
    |  +- VariableDeclarator[@Initializer = true, @Name = "greeting"]
-   |     +- VariableId[@ArrayType = false, @EffectiveVisibility = Visibility.V_PACKAGE, @EnumConstant = false, @ExceptionBlockParameter = false, @Field = true, @Final = false, @ForLoopVariable = false, @ForeachVariable = false, @FormalParameter = false, @LambdaParameter = false, @LocalVariable = false, @Name = "greeting", @PatternBinding = false, @RecordComponent = false, @ResourceDeclaration = false, @Static = false, @TypeInferred = false, @Visibility = Visibility.V_PACKAGE]
+   |     +- VariableId[@ArrayType = false, @EffectiveVisibility = Visibility.V_PACKAGE, @EnumConstant = false, @ExceptionBlockParameter = false, @Field = true, @Final = false, @ForLoopVariable = false, @ForeachVariable = false, @FormalParameter = false, @LambdaParameter = false, @LocalVariable = false, @Name = "greeting", @PatternBinding = false, @RecordComponent = false, @ResourceDeclaration = false, @Static = false, @TypeInferred = false, @Unnamed = false, @Visibility = Visibility.V_PACKAGE]
    |     +- MethodCall[@CompileTimeConstant = false, @Image = "collect", @MethodName = "collect", @ParenthesisDepth = 0, @Parenthesized = false]
    |        +- MethodCall[@CompileTimeConstant = false, @Image = "stream", @MethodName = "stream", @ParenthesisDepth = 0, @Parenthesized = false]
    |        |  +- MethodCall[@CompileTimeConstant = false, @Image = "asList", @MethodName = "asList", @ParenthesisDepth = 0, @Parenthesized = false]
