@@ -8,14 +8,15 @@ import java.text.Format;
 import java.util.Arrays;
 import java.util.List;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
@@ -62,12 +63,13 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRulechainRule
         if (!node.hasModifiers(JModifier.STATIC)) {
             return data;
         }
-        ASTClassType cit = node.descendants(ASTClassType.class).first();
-        if (cit == null || !TypeTestUtil.isA(formatterClassToCheck, cit)) {
+        ASTType cit = node.getTypeNode();
+        if (!(cit instanceof ASTClassType)
+            || !TypeTestUtil.isA(formatterClassToCheck, cit)) {
             return data;
         }
 
-        ASTVariableId var = node.descendants(ASTVariableId.class).first();
+        ASTVariableId var = node.getVarIds().firstOrThrow();
         for (String formatter: THREAD_SAFE_FORMATTER) {
             if (TypeTestUtil.isA(formatter, var)) {
                 return data;
@@ -82,8 +84,6 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRulechainRule
             if (methodCall == null) {
                 continue;
             }
-
-            Node n = ref;
 
             // is there a block-level synch?
             ASTSynchronizedStatement syncStatement = ref.ancestors(ASTSynchronizedStatement.class).first();
@@ -102,7 +102,12 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRulechainRule
                 }
             }
 
-            asCtx(data).addViolation(n);
+            boolean hasStaticInit = ref.ancestors(ASTInitializer.class).any(ASTInitializer::isStatic);
+            if (hasStaticInit) {
+                continue;
+            }
+
+            asCtx(data).addViolation(ref);
         }
         return data;
     }

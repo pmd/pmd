@@ -631,4 +631,23 @@ class Foo1 {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] ConstructorCallsOverridableMethod: false positive with lombok's @Value #4510</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Objects;
+class AbstractClause {
+    Language defaultLanguage;
+    protected AbstractClause(@NotNull final Language defaultLanguage, @NotNull final String defaultTranslation) {
+        add(Objects.requireNonNull(defaultLanguage), Objects.requireNonNull(defaultTranslation));
+        this.defaultLanguage = defaultLanguage;
+    }
+
+    public @NotNull final T add(@NotNull final Language language, @NotNull final String translation) {
+        return getThis();
+    }
+}
+
+]]></code>
+    </test-code>
 </test-data>
