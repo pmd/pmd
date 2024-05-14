@@ -44,6 +44,8 @@ Since this release, PMD will also expose any getter returning a collection of an
   * [#4930](https://github.com/pmd/pmd/issues/4930): \[java] EmptyControlStatement should not allow empty try with concise resources
 * java-errorprone
   * [#4042](https://github.com/pmd/pmd/issues/4042): \[java] A false negative about the rule StringBufferInstantiationWithChar
+* java-multithreading
+  * [#2368](https://github.com/pmd/pmd/issues/2368): \[java] False positive UnsynchronizedStaticFormatter in static initializer
 
 ### 🚨 API Changes
 
