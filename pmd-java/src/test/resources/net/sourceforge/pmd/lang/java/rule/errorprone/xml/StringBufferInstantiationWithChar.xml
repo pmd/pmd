@@ -32,4 +32,16 @@ public class Foo2 {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>failure case (not a literal)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+
+public class Foo2 {
+    public void foo(char ch) {
+        StringBuilder builder = new StringBuilder(ch);  // should report a warning in this line
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
