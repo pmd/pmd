@@ -7,13 +7,16 @@ package net.sourceforge.pmd.lang.java.types.ast
 
 import io.kotest.assertions.withClue
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.test.ast.component6
-import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils
 import net.sourceforge.pmd.lang.java.types.STRING
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil
+import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind.ASSIGNMENT
+import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind.INVOCATION
 import net.sourceforge.pmd.lang.java.types.parseWithTypeInferenceSpy
 import net.sourceforge.pmd.lang.java.types.shouldHaveType
+import net.sourceforge.pmd.lang.test.ast.component6
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 
 class ConversionContextTests : ProcessorTestSpec({
 
@@ -266,6 +269,38 @@ class ConversionContextTests : ProcessorTestSpec({
 
             l1.leftOperand.conversionContext::getTargetType shouldBe long
             l1.rightOperand.conversionContext::getTargetType shouldBe long
+        }
+    }
+
+    parserTest("Lambda ctx") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            class Foo {
+                record Item(int cents) {}
+                Object map(Item item) {
+                    // here the conversion is necessary to determine the context type
+                    return map(item, it -> Long.valueOf(it.cents()));
+                }
+                Object map2(Item item) {
+                    // here it is not necessary
+                    return mapToLong(item, it -> Long.valueOf(it.cents()));
+                }
+                interface Fun<T,R> { R apply(T t); }
+                interface ToLongFun<T> { long apply(T t); }
+                <T,R> R map(T t, Fun<T,R> fun) {}
+                <T> long mapToLong(T t, ToLongFun<T> fun) {}
+            }
+        """)
+
+        val (lambda, lambdaToLong) = acu.descendants(ASTLambdaExpression::class.java).toList()
+
+        spy.shouldBeOk {
+            lambda.expressionBody!!.conversionContext shouldBe ExprContext.getMissingInstance()
+
+            lambdaToLong.expressionBody!!.conversionContext::getTargetType shouldBe long
+            lambdaToLong.expressionBody!!.conversionContext::getKind shouldBe ASSIGNMENT
+
+            lambda.conversionContext::getKind shouldBe INVOCATION
         }
     }
 })

@@ -37,7 +37,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
+import net.sourceforge.pmd.lang.java.ast.ASTCompactConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -49,6 +51,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
@@ -56,6 +59,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
@@ -801,5 +805,22 @@ public final class JavaAstUtils {
                        || it instanceof ASTInitializer && ((ASTInitializer) it).isStatic()
                        || it instanceof ASTExplicitConstructorInvocation
                    );
+    }
+
+
+    /**
+     * Return the target of the return. May be an {@link ASTMethodDeclaration},
+     * {@link ASTLambdaExpression}, {@link ASTInitializer},
+     * {@link ASTConstructorDeclaration} or {@link ASTCompactConstructorDeclaration}.
+     *
+     */
+    public static @Nullable JavaNode getReturnTarget(ASTReturnStatement stmt) {
+        return stmt.ancestors().first(
+            it -> it instanceof ASTMethodDeclaration
+                || it instanceof ASTLambdaExpression
+                || it instanceof ASTConstructorDeclaration
+                || it instanceof ASTInitializer
+                || it instanceof ASTCompactConstructorDeclaration
+        );
     }
 }

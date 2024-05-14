@@ -96,7 +96,7 @@ public class Foo {{
         <expected-messages>
             <message>Unnecessary explicit unboxing</message>
             <message>Unnecessary explicit conversion from Integer to double</message>
-            <message>Unnecessary explicit conversion from Integer to double</message>
+            <message>Unnecessary explicit conversion from Integer to double through long</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -172,10 +172,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description>Patch 2075906: Add toString() to the rule UnnecessaryWrapperObjectCreation</description>
-        <expected-problems>1</expected-problems>
-        <expected-messages>
-            <message>Unnecessary explicit boxing</message>
-        </expected-messages>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
             public class Bar {
                 void foo(boolean value) {
@@ -187,11 +184,7 @@ public class Foo {
 
     <test-code>
         <description>#1057 False positive for UnnecessaryWrapperObjectCreation</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
-        <expected-messages>
-            <message>Unnecessary explicit conversion from int to Float</message>
-        </expected-messages>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
             public class Test {
                 public void test() {
@@ -354,6 +347,34 @@ public class Foo {
                     addLong(Long.valueOf(getValue())); // PMD complains: "Unnecessary explicit conversion from Integer to Long"
                     //addLong(getValue()); // Does not compile: "incompatible types: Integer cannot be converted to Long"
                 }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description> [java] UnnecessaryBoxing FP in lambda</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary explicit conversion from int to long through Long</message>
+        </expected-messages>
+        <code><![CDATA[
+
+            public class Example {
+
+                record Item(int cents) {}
+
+                Object map(Item item) {
+                    // here the conversion is necessary to determine the context type
+                    return map(item, it -> Long.valueOf(it.cents()));
+                }
+                Object map2(Item item) {
+                    // here it is not necessary
+                    return mapToLong(item, it -> Long.valueOf(it.cents()));
+                }
+                interface Fun<T,R> { R apply(T t); }
+                interface ToLongFun<T> { long apply(T t); }
+                <T,R> R map(T t, Fun<T,R> fun) {}
+                <T> long mapToLong(T t, ToLongFun<T> fun) {}
             }
         ]]></code>
     </test-code>

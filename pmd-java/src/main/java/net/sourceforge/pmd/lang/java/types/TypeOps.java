@@ -2075,5 +2075,25 @@ public final class TypeOps {
         return t instanceof JArrayType ? ((JArrayType) t).getComponentType() : null;
     }
 
+
+    /**
+     * Return true if the method is context dependent. That
+     * means its return type is influenced by the surrounding
+     * context during type inference. Generic constructors
+     * are always context dependent.
+     */
+    public static boolean isContextDependent(JMethodSig sig) {
+        JExecutableSymbol symbol = sig.getSymbol();
+        if (symbol.isGeneric() || symbol.getEnclosingClass().isGeneric()) {
+            if (symbol instanceof JMethodSymbol) {
+                JTypeMirror returnType = ((JMethodSymbol) symbol).getReturnType(EMPTY);
+                return mentionsAny(returnType, symbol.getTypeParameters())
+                    || mentionsAny(returnType, symbol.getEnclosingClass().getTypeParameters());
+            }
+            // generic ctors are context dependent
+            return true;
+        }
+        return false;
+    }
     // </editor-fold>
 }

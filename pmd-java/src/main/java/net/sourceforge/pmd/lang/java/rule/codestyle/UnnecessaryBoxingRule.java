@@ -12,9 +12,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
-import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -132,7 +132,7 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
         JTypeMirror conversionOutput = conversionExpr.getTypeMirror();
         ExprContext ctx = conversionExpr.getConversionContext();
         JTypeMirror ctxType = ctx.getTargetType();
-        if (ctxType == null && conversionExpr instanceof InvocationNode) {
+        if (ctxType == null && conversionExpr.getParent() instanceof ASTExpressionStatement) {
             ctxType = conversionOutput;
         }
 
@@ -140,7 +140,7 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
 
             if (isImplicitlyConvertible(sourceType, conversionOutput)) {
 
-                final String reason;
+                String reason;
                 if (sourceType.equals(conversionOutput)) {
                     reason = "boxing of boxed value";
                 } else if (sourceType.unbox().equals(conversionOutput)) {
@@ -153,12 +153,16 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
                     reason = "explicit conversion from "
                         + TypePrettyPrint.prettyPrintWithSimpleNames(sourceType)
                         + " to " + TypePrettyPrint.prettyPrintWithSimpleNames(ctxType);
+                    if (!conversionOutput.equals(ctxType)) {
+                        reason += " through " + TypePrettyPrint.prettyPrintWithSimpleNames(conversionOutput);
+                    }
                 }
 
                 rctx.addViolation(conversionExpr, reason);
             }
         }
     }
+
 
     private void checkUnboxing(
             RuleContext rctx,
@@ -190,16 +194,6 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
         }
         return i.box().isSubtypeOf(o.box())
             || i.unbox().isSubtypeOf(o.unbox());
-    }
-
-    /**
-     * Whether {@code S <: T}, but ignoring primitive widening.
-     * {@code isReferenceSubtype(int, double) == false} even though
-     * {@code int.isSubtypeOf(double)}.
-     */
-    private static boolean isReferenceSubtype(JTypeMirror s, JTypeMirror t) {
-        return s.isPrimitive() ? t.equals(s)
-                               : s.isSubtypeOf(t);
     }
 
 }

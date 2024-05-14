@@ -20,7 +20,6 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayInitializer;
@@ -44,7 +43,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVoidType;
 import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
@@ -361,28 +359,23 @@ public final class PolyResolution {
     }
 
     private static @Nullable JTypeMirror returnTargetType(ASTReturnStatement context) {
-        Node methodDecl =
-            context.ancestors().first(
-                it -> it instanceof ASTMethodDeclaration
-                    || it instanceof ASTLambdaExpression
-                    || it instanceof ASTTypeDeclaration
-            );
+        JavaNode methodDecl = JavaAstUtils.getReturnTarget(context);
 
-        if (methodDecl == null || methodDecl instanceof ASTTypeDeclaration) {
-            // in initializer, or constructor decl, return with expression is forbidden
-            // (this is an error)
-            return null;
-        } else if (methodDecl instanceof ASTLambdaExpression) {
+        if (methodDecl instanceof ASTLambdaExpression) {
             // return within a lambda
             // "assignment context", deferred to lambda inference
             JMethodSig fun = ((ASTLambdaExpression) methodDecl).getFunctionalMethod();
             return fun == null ? null : fun.getReturnType();
-        } else {
+        } else if (methodDecl instanceof ASTMethodDeclaration) {
             @NonNull ASTType resultType = ((ASTMethodDeclaration) methodDecl).getResultTypeNode();
             return resultType instanceof ASTVoidType ? null // (this is an error)
                                                      : resultType.getTypeMirror();
         }
+        // Return within ctor or initializer or the like,
+        // return with value is disallowed. This is an error.
+        return null;
     }
+
 
     /**
      * Returns the node on which the type of the given node depends.
@@ -477,6 +470,7 @@ public final class PolyResolution {
 
             return newAssignmentCtx(returnTargetType((ASTReturnStatement) papa));
 
+
         } else if (papa instanceof ASTVariableDeclarator
             && !((ASTVariableDeclarator) papa).getVarId().isTypeInferred()) {
 
@@ -519,6 +513,19 @@ public final class PolyResolution {
 
             return node.getIndexInParent() == 0 ? booleanCtx // condition
                                                 : stringCtx; // message
+
+        } else if (papa instanceof ASTLambdaExpression && node.getIndexInParent() == 1) {
+            // lambda expression body
+
+
+            JMethodSig fun = ((ASTLambdaExpression) papa).getFunctionalMethod();
+            if (fun == null || TypeOps.isContextDependent(fun)) {
+                // Missing context, because the expression type itself
+                // is used to infer the context type.
+                return ExprContext.getMissingInstance();
+            }
+            return newAssignmentCtx(fun.getReturnType());
+
 
         } else if (papa instanceof ASTIfStatement
             || papa instanceof ASTLoopStatement && !(papa instanceof ASTForeachStatement)) {
@@ -611,8 +618,7 @@ public final class PolyResolution {
         return node instanceof ASTSwitchExpression && child.getIndexInParent() != 0 // not the condition
             || node instanceof ASTSwitchArrowBranch
             || node instanceof ASTConditionalExpression && child.getIndexInParent() != 0 // not the condition
-            // lambdas "forward the context" when you have nested lambdas, eg: `x -> y -> f(x, y)`
-            || node instanceof ASTLambdaExpression && child.getIndexInParent() == 1; // the body expression
+            || internalUse && node instanceof ASTLambdaExpression && child.getIndexInParent() == 1;
     }
 
 
