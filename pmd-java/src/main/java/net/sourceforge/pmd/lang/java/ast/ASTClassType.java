@@ -132,6 +132,11 @@ public final class ASTClassType extends AbstractJavaTypeNode implements ASTRefer
      * if the auxclasspath is not complete, and the qualifier could not
      * be disambiguated, this method will return null (and an AmbiguousName
      * will stay in the tree).
+     * If a nested type is package-qualified, this method will only return a non-null result for
+     * the leftmost (=innermost) ASTClassType node. For instance in {@code java.util.Map.Entry}, 
+     * the node {@code java.util.Map} has package qualifier {@code "java.util"}, while the node for {@code Entry}
+     * has package qualifier {@code null}. Note that the {@linkplain JClassSymbol#getPackageName() package name}
+     * of the symbol and type mirror will reflect that package name anyway, on both nodes.
      */
     public @Nullable String getPackageQualifier() {
         if (isFullyQualified()) {
