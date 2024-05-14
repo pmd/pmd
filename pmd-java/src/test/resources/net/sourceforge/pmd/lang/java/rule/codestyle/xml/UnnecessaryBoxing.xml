@@ -333,4 +333,28 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description> [java] UnnecessaryBoxing, but explicit conversion is necessary #4903 </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public final class UnnecessaryBoxing {
+
+                private UnnecessaryBoxing() {
+                }
+
+                public static void addLong(Long parameter) {
+                    System.out.println("parameter = " + parameter);
+                }
+
+                public static Integer getValue() {
+                    return 42;
+                }
+
+                public static void main(String[] args) {
+                    addLong(Long.valueOf(getValue())); // PMD complains: "Unnecessary explicit conversion from Integer to Long"
+                    //addLong(getValue()); // Does not compile: "incompatible types: Integer cannot be converted to Long"
+                }
+            }
+        ]]></code>
+    </test-code>
 </test-data>

@@ -54,7 +54,7 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
             }
             JTypeMirror argT = arg.getTypeMirror();
             if (argT.isPrimitive()) {
-                checkBox((RuleContext) data, "boxing", node, arg, node.getMethodType().getFormalParameters().get(0));
+                checkBox((RuleContext) data, "boxing", node, arg);
             }
         }
         return null;
@@ -73,11 +73,11 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
             ASTExpression qualifier = node.getQualifier();
 
             if (isValueOf && isWrapperValueOf(m)) {
-                checkBox((RuleContext) data, "boxing", node, node.getArguments().get(0), m.getFormalParameters().get(0));
+                checkBox((RuleContext) data, "boxing", node, node.getArguments().get(0));
             } else if (isValueOf && isStringValueOf(m) && qualifier != null) {
                 checkUnboxing((RuleContext) data, node, qualifier.getTypeMirror());
             } else if (!isValueOf && isUnboxingCall(m) && qualifier != null) {
-                checkBox((RuleContext) data, "unboxing", node, qualifier, qualifier.getTypeMirror());
+                checkBox((RuleContext) data, "unboxing", node, qualifier);
             }
         }
         return null;
@@ -105,8 +105,7 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
         RuleContext rctx,
         String opKind,
         ASTExpression conversionExpr,
-        ASTExpression convertedExpr,
-        JTypeMirror conversionInput
+        ASTExpression convertedExpr
     ) {
         // the conversion looks like
         //  CTX _ = conversion(sourceExpr)
@@ -120,13 +119,14 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
         // we want to report a violation if this is equivalent to
         //      sourceExpr -> ctx
 
-        // which basically means testing that convInput -> convOutput
+        // which basically means testing that sourceExpr -> convOutput
         // may be performed implicitly.
 
         // We cannot just test compatibility of the source to the ctx,
         // because of situations like
         //   int i = integer.byteValue()
-        // where the conversion actually truncates the input value.
+        // where the conversion actually truncates the input value
+        // (here we do sourceExpr=Integer (-> convInput=Integer) -> convOutput=byte -> ctx=int).
 
         JTypeMirror sourceType = convertedExpr.getTypeMirror();
         JTypeMirror conversionOutput = conversionExpr.getTypeMirror();
@@ -138,23 +138,21 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
 
         if (ctxType != null) {
 
-            if (isImplicitlyConvertible(conversionInput, conversionOutput)) {
-
-                boolean simpleConv = isReferenceSubtype(sourceType, conversionInput);
+            if (isImplicitlyConvertible(sourceType, conversionOutput)) {
 
                 final String reason;
-                if (simpleConv && conversionInput.unbox().equals(conversionOutput)) {
-                    reason = "explicit unboxing";
-                } else if (simpleConv && conversionInput.box().equals(conversionOutput)) {
-                    reason = "explicit boxing";
-                } else if (sourceType.equals(conversionOutput)) {
+                if (sourceType.equals(conversionOutput)) {
                     reason = "boxing of boxed value";
+                } else if (sourceType.unbox().equals(conversionOutput)) {
+                    reason = "explicit unboxing";
+                } else if (sourceType.box().equals(conversionOutput)) {
+                    reason = "explicit boxing";
+                } else if (sourceType.equals(ctxType)) {
+                    reason = opKind;
                 } else {
-                    if (sourceType.equals(ctxType)) {
-                        reason = opKind;
-                    } else {
-                        reason = "explicit conversion from " + TypePrettyPrint.prettyPrintWithSimpleNames(sourceType) + " to " + TypePrettyPrint.prettyPrintWithSimpleNames(ctxType);
-                    }
+                    reason = "explicit conversion from "
+                        + TypePrettyPrint.prettyPrintWithSimpleNames(sourceType)
+                        + " to " + TypePrettyPrint.prettyPrintWithSimpleNames(ctxType);
                 }
 
                 rctx.addViolation(conversionExpr, reason);
@@ -185,6 +183,11 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isImplicitlyConvertible(JTypeMirror i, JTypeMirror o) {
+        if (i.isBoxedPrimitive() && o.isBoxedPrimitive()) {
+            // There is no implicit conversions between box types,
+            // only between primitives
+            return i.equals(o);
+        }
         return i.box().isSubtypeOf(o.box())
             || i.unbox().isSubtypeOf(o.unbox());
     }
