@@ -23,7 +23,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
@@ -366,13 +365,13 @@ final class SymTableFactory {
      * of fields by local variables and formals.
      */
     JSymbolTable bodyDeclaration(JSymbolTable parent, JClassType enclosing, @Nullable ASTFormalParameters formals, @Nullable ASTTypeParameters tparams) {
-        NodeStream<ASTVariableId> namedFormals = ASTList.orEmptyStream(formals).map(ASTFormalParameter::getVarId);
-        if (unnamedVariableIsSupported()) {
-            namedFormals = namedFormals.filterNot(ASTVariableId::isUnnamed);
-        }
         return new SymbolTableImpl(
-            VARS.shadow(varNode(parent), ScopeInfo.FORMAL_PARAM, VARS.groupByName(namedFormals, fp -> {
-                JVariableSymbol sym = fp.getSymbol();
+            VARS.shadow(varNode(parent), ScopeInfo.FORMAL_PARAM, VARS.groupByName(ASTList.orEmptyStream(formals), fp -> {
+                ASTVariableId varId = fp.getVarId();
+                if (varId.isUnnamed()) {
+                    return null;
+                }
+                JVariableSymbol sym = varId.getSymbol();
                 return sym.getTypeSystem().sigOf(enclosing, (JFormalParamSymbol) sym);
             })),
             TYPES.shadow(typeNode(parent), ScopeInfo.TYPE_PARAM, TYPES.groupByName(ASTList.orEmptyStream(tparams), ASTTypeParameter::getTypeMirror)),
@@ -391,7 +390,7 @@ final class SymTableFactory {
     JSymbolTable localVarSymTable(JSymbolTable parent, JClassType enclosing, Iterable<ASTVariableId> ids) {
         List<JVariableSig> sigs = new ArrayList<>();
         for (ASTVariableId id : ids) {
-            if (unnamedVariableIsSupported() && id.isUnnamed()) {
+            if (id.isUnnamed()) {
                 continue;
             }
             sigs.add(id.getTypeSystem().sigOf(enclosing, (JLocalVariableSymbol) id.getSymbol()));
@@ -399,16 +398,12 @@ final class SymTableFactory {
         return SymbolTableImpl.withVars(parent, VARS.augment(varNode(parent), false, ScopeInfo.LOCAL, VARS.groupByName(sigs)));
     }
 
-    JSymbolTable localVarSymTable(JSymbolTable parent, JClassType enclosing, JVariableSymbol id) {
-        if (unnamedVariableIsSupported() && "_".equals(id.getSimpleName())) {
-            // unnamed variable
+    JSymbolTable localVarSymTable(JSymbolTable parent, JClassType enclosing, ASTVariableId id) {
+        assert !id.isField();
+        if (id.isUnnamed()) { // checks language version already
             return parent;
         }
-        return SymbolTableImpl.withVars(parent, VARS.augment(varNode(parent), false, ScopeInfo.LOCAL, id.getTypeSystem().sigOf(enclosing, (JLocalVariableSymbol) id)));
-    }
-
-    private boolean unnamedVariableIsSupported() {
-        return processor.getJdkVersion() >= 22;
+        return SymbolTableImpl.withVars(parent, VARS.augment(varNode(parent), false, ScopeInfo.LOCAL, id.getTypeSystem().sigOf(enclosing, (JLocalVariableSymbol) id.getSymbol())));
     }
 
     JSymbolTable localTypeSymTable(JSymbolTable parent, JClassType sym) {
