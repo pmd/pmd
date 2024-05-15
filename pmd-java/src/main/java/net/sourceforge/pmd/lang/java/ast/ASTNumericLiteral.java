@@ -120,10 +120,10 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
      * for the literal {@code 0} (which can really be any base).
      */
     public int getBase() {
-        return getBase(getLiteralText());
+        return getBase(getLiteralText(), isIntegral());
     }
 
-    static int getBase(Chars image) {
+    static int getBase(Chars image, boolean isIntegral) {
         if (image.length() > 1 && image.charAt(0) == '0') {
             switch (image.charAt(1)) {
             case 'x':
@@ -132,10 +132,8 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
             case 'b':
             case 'B':
                 return 2;
-            case '.':
-                return 10;
             default:
-                return 8;
+                return isIntegral ? 8 : 10;
             }
         }
         return 10;
@@ -172,7 +170,7 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
      * <p>Invalid literals or overflows result in {@code 0L}.
      */
     static long parseIntegralValue(Chars image) {
-        final int base = getBase(image);
+        final int base = getBase(image, true);
         if (base == 8) {
             image = image.subSequence(1); // 0
         } else if (base != 10) {
