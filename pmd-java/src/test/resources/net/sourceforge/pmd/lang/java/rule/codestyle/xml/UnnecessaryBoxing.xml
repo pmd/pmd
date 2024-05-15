@@ -62,12 +62,8 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>pos - new Integer(int) with widening</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
-        <expected-messages>
-            <message>Unnecessary explicit conversion from char to Integer</message>
-        </expected-messages>
+        <description>neg - char -> Integer is not possible implicitly</description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {{
     char c = 0;
@@ -351,7 +347,7 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description> [java] UnnecessaryBoxing FP in lambda</description>
+        <description>[java] UnnecessaryBoxing FP in lambda #4924</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>11</expected-linenumbers>
         <expected-messages>
@@ -375,6 +371,72 @@ public class Foo {
                 interface ToLongFun<T> { long apply(T t); }
                 <T,R> R map(T t, Fun<T,R> fun) {}
                 <T> long mapToLong(T t, ToLongFun<T> fun) {}
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>If method is called on result then boxing is necessary</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary boxing of boxed value</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Example {
+                int val;
+                boolean eq(Integer val) {
+                   return Integer.valueOf(this.val).equals(val) // ok
+                           || Integer.valueOf(val).equals(this.val); // warn
+                }
+
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>valueOf something else</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Example {
+                int val;
+                boolean eq(Integer val) {
+ Example x =                   valueOf("abc");
+                    x = Example.valueOf("abc");
+                }
+
+                static Example valueOf(String s) {
+                    return null;
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>imported valueOf</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary explicit boxing</message>
+        </expected-messages>
+        <code><![CDATA[
+            import static java.lang.Integer.valueOf;
+            public class Example {
+                int val;
+                Integer eq(int val) {
+                    return valueOf(val);
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Boxing to another type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import static java.lang.Long.valueOf;
+            public class Example {
+                int val;
+                Object eq(int val) {
+                    // here removing this would box the
+                    // int to an Integer not a Long
+                    return valueOf(val);
+                }
             }
         ]]></code>
     </test-code>

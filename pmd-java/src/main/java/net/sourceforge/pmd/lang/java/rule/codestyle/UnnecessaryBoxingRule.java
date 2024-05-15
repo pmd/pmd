@@ -9,12 +9,14 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -54,7 +56,7 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
             }
             JTypeMirror argT = arg.getTypeMirror();
             if (argT.isPrimitive()) {
-                checkBox((RuleContext) data, "boxing", node, arg);
+                checkBox((RuleContext) data, node, arg);
             }
         }
         return null;
@@ -73,18 +75,19 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
             ASTExpression qualifier = node.getQualifier();
 
             if (isValueOf && isWrapperValueOf(m)) {
-                checkBox((RuleContext) data, "boxing", node, node.getArguments().get(0));
-            } else if (isValueOf && isStringValueOf(m) && qualifier != null) {
-                checkUnboxing((RuleContext) data, node, qualifier.getTypeMirror());
-            } else if (!isValueOf && isUnboxingCall(m) && qualifier != null) {
-                checkBox((RuleContext) data, "unboxing", node, qualifier);
+                checkBox((RuleContext) data, node, node.getArguments().get(0));
+            } else if (isValueOf && isBoxValueOfString(m)) {
+                checkUnboxing((RuleContext) data, node, m.getDeclaringType());
+            } else if (!isValueOf && qualifier != null && isUnboxingCall(m)) {
+                checkBox((RuleContext) data, node, qualifier);
             }
         }
         return null;
     }
 
     private boolean isUnboxingCall(JMethodSig m) {
-        return !m.isStatic() && m.getDeclaringType().isBoxedPrimitive() && m.getArity() == 0;
+        return !m.isStatic() && m.getDeclaringType().isBoxedPrimitive() && m.getArity() == 0
+            && m.getReturnType().isPrimitive();
     }
 
     private boolean isWrapperValueOf(JMethodSig m) {
@@ -94,7 +97,8 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
             && m.getFormalParameters().get(0).isPrimitive();
     }
 
-    private boolean isStringValueOf(JMethodSig m) {
+    private boolean isBoxValueOfString(JMethodSig m) {
+        // eg Integer.valueOf("2")
         return m.isStatic()
                 && (m.getArity() == 1 || m.getArity() == 2)
                 && m.getDeclaringType().isBoxedPrimitive()
@@ -103,7 +107,6 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
 
     private void checkBox(
         RuleContext rctx,
-        String opKind,
         ASTExpression conversionExpr,
         ASTExpression convertedExpr
     ) {
@@ -119,8 +122,10 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
         // we want to report a violation if this is equivalent to
         //      sourceExpr -> ctx
 
-        // which basically means testing that sourceExpr -> convOutput
-        // may be performed implicitly.
+        // which means testing that
+        // 1. the result of the implicit conversion of sourceExpr
+        // with context type ctx is the same type as the result of conversion 3
+        // 2. conversion 2 does not truncate the value
 
         // We cannot just test compatibility of the source to the ctx,
         // because of situations like
@@ -132,35 +137,49 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
         JTypeMirror conversionOutput = conversionExpr.getTypeMirror();
         ExprContext ctx = conversionExpr.getConversionContext();
         JTypeMirror ctxType = ctx.getTargetType();
-        if (ctxType == null && conversionExpr.getParent() instanceof ASTExpressionStatement) {
-            ctxType = conversionOutput;
+
+        if (sourceType.isPrimitive()
+            && !conversionOutput.isPrimitive()
+            && ctxType == null
+            && isObjectConversionNecessary(conversionExpr)) {
+            // eg Integer.valueOf(2).equals(otherInteger)
+            return;
         }
 
-        if (ctxType != null) {
-
-            if (isImplicitlyConvertible(sourceType, conversionOutput)) {
-
-                String reason;
-                if (sourceType.equals(conversionOutput)) {
-                    reason = "boxing of boxed value";
-                } else if (sourceType.unbox().equals(conversionOutput)) {
+        String reason = null;
+        if (sourceType.equals(conversionOutput)) {
+            reason = "boxing of boxed value";
+        } else if (ctxType != null) {
+            JTypeMirror conv = implicitConversionResult(sourceType, ctxType);
+            if (conv != null
+                && conv.equals(implicitConversionResult(conversionOutput, ctxType))
+                && conversionDoesNotChangesValue(sourceType, conversionOutput)) {
+                if (sourceType.unbox().equals(conversionOutput)) {
                     reason = "explicit unboxing";
                 } else if (sourceType.box().equals(conversionOutput)) {
                     reason = "explicit boxing";
-                } else if (sourceType.equals(ctxType)) {
-                    reason = opKind;
                 } else {
-                    reason = "explicit conversion from "
-                        + TypePrettyPrint.prettyPrintWithSimpleNames(sourceType)
+                    reason = "explicit conversion from " + TypePrettyPrint.prettyPrintWithSimpleNames(sourceType)
                         + " to " + TypePrettyPrint.prettyPrintWithSimpleNames(ctxType);
                     if (!conversionOutput.equals(ctxType)) {
                         reason += " through " + TypePrettyPrint.prettyPrintWithSimpleNames(conversionOutput);
                     }
                 }
-
-                rctx.addViolation(conversionExpr, reason);
             }
         }
+
+        if (reason != null) {
+            rctx.addViolation(conversionExpr, reason);
+        }
+    }
+
+
+    private boolean isObjectConversionNecessary(ASTExpression e) {
+        JavaNode parent = e.getParent();
+        if (e.getIndexInParent() == 0) {
+            return parent instanceof QualifiableExpression;
+        }
+        return false;
     }
 
 
@@ -191,9 +210,41 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
             // There is no implicit conversions between box types,
             // only between primitives
             return i.equals(o);
+        } else if (i.isPrimitive() && o.isPrimitive()) {
+            return i.isSubtypeOf(o);
+        } else {
+            return i.unbox().equals(o.unbox());
         }
-        return i.box().isSubtypeOf(o.box())
-            || i.unbox().isSubtypeOf(o.unbox());
+    }
+
+
+    /**
+     * Type of the converted i in context ctx. If no implicit
+     * conversion is possible then return null.
+     */
+    private static @Nullable JTypeMirror implicitConversionResult(JTypeMirror i, JTypeMirror ctx) {
+        if (!ctx.isPrimitive()) {
+            // boxing
+            return i.box().isSubtypeOf(ctx) ? i.box() : null;
+        } else if (i.isBoxedPrimitive() && ctx.isPrimitive()) {
+            //       Integer x = 1;
+            //       long l = x;
+            // unboxing then optional widening
+            return i.unbox().isSubtypeOf(ctx) ? ctx : null;
+        } else if (i.isPrimitive() && ctx.isPrimitive()) {
+            // widening
+            return i.isSubtypeOf(ctx) ? ctx : null;
+        }
+        return null;
+    }
+
+
+    /**
+     * Whether the explicit conversion from i to o changes the value.
+     * This is e.g. truncating an integer.
+     */
+    private static boolean conversionDoesNotChangesValue(JTypeMirror i, JTypeMirror o) {
+        return i.box().isSubtypeOf(o.box()) || i.unbox().isSubtypeOf(o.unbox());
     }
 
 }
