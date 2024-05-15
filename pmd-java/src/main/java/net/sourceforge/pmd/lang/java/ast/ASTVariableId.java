@@ -130,10 +130,12 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
     /**
      * Return true if this variable has no name. The name is then equal to {@code "_"}.
      * A variable declaration with this name does not actually declare a variable in
-     * the current scope.
+     * the current scope, since Java 22. In Java 9 to 21, the identifier {@code _} is
+     * restricted and cannot be used to name a variable. Before Java 9, it is a regular
+     * identifier.
      */
     public boolean isUnnamed() {
-        return "_".equals(name);
+        return "_".equals(name) && getLanguageVersion().compareToVersion("22") >= 0;
     }
 
     /** Returns the name of the variable. */
