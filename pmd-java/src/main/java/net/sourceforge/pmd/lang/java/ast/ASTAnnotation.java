@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.types.JClassType;
  *
  * </pre>
  */
-public final class ASTAnnotation extends AbstractJavaTypeNode implements TypeNode, ASTMemberValue, Iterable<ASTMemberValuePair> {
+public final class ASTAnnotation extends AbstractJavaTypeNode implements ASTMemberValue, Iterable<ASTMemberValuePair> {
 
     ASTAnnotation(int id) {
         super(id);

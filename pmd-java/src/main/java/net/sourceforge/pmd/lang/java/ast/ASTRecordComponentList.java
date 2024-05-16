@@ -6,7 +6,6 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.java.ast.ASTList.ASTMaybeEmptyListOf;
-import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AllChildrenAreOfType;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 
 /**
@@ -18,8 +17,7 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
  *
  * </pre>
  */
-public final class ASTRecordComponentList extends ASTMaybeEmptyListOf<ASTRecordComponent>
-        implements SymbolDeclaratorNode, AllChildrenAreOfType<ASTRecordComponent> {
+public final class ASTRecordComponentList extends ASTMaybeEmptyListOf<ASTRecordComponent> implements SymbolDeclaratorNode {
 
     private JConstructorSymbol symbol;
 

@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 /**
  * A numeric literal of any type (double, int, long, float, etc).
  */
-public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiteral {
+public final class ASTNumericLiteral extends AbstractLiteral {
 
     /**
      * True if this is an integral literal, ie int OR long,
