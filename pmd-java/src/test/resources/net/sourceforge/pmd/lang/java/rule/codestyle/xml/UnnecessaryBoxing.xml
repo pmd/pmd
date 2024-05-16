@@ -440,4 +440,28 @@ public class Foo {
             }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Unboxing of byte in invocation ctx</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>10,11</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary explicit unboxing</message>
+            <message>Unnecessary explicit unboxing</message>
+        </expected-messages>
+        <code><![CDATA[
+            public abstract class Example {
+                Example eatByte(byte b) {
+                }
+
+                int eatObj(Example b) {
+                }
+
+                void eq(Object val) {
+                    Byte b = (Byte) val;
+                    eatByte(b.byteValue());
+                    eatObj(eatByte(b.byteValue()));
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

@@ -10,7 +10,6 @@ import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils
 import net.sourceforge.pmd.lang.java.types.STRING
-import net.sourceforge.pmd.lang.java.types.TypeTestUtil
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind.ASSIGNMENT
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind.INVOCATION
 import net.sourceforge.pmd.lang.java.types.parseWithTypeInferenceSpy
@@ -301,6 +300,32 @@ class ConversionContextTests : ProcessorTestSpec({
             lambdaToLong.expressionBody!!.conversionContext::getKind shouldBe ASSIGNMENT
 
             lambda.conversionContext::getKind shouldBe INVOCATION
+        }
+    }
+
+    parserTest("Ctx of nested invocation") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            class Foo {
+                int eatByte(byte b) {}
+                int eatInt(int b) {}
+
+                void eq(Object val) {
+                    Bar b = (Bar) val;
+                    eatByte(b.x);
+                    eatInt(eatByte(b.x));
+                }
+                class Bar { byte x; }
+            }
+        """)
+
+        val (nonNested, nested) = acu.descendants(ASTFieldAccess::class.java).toList()
+
+        spy.shouldBeOk {
+            nested.conversionContext.targetType shouldBe byte // not int
+            nonNested.conversionContext.targetType shouldBe byte
+            nested.conversionContext.kind shouldBe INVOCATION
+            nonNested.conversionContext.kind shouldBe INVOCATION
         }
     }
 })

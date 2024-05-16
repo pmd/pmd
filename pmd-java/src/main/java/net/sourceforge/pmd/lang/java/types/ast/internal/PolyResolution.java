@@ -434,6 +434,11 @@ public final class PolyResolution {
                     return ExprContext.getMissingInstance();
                 }
 
+                if (!internalUse) {
+                    // Only in type resolution do we need to fetch the outermost context
+                    return newInvocContext(papi, node.getIndexInParent());
+                }
+
                 // Constructor or method call, maybe there's another context around
                 // We want to fetch the outermost invocation node, but not further
                 ExprContext outerCtx = contextOf(papi, /*onlyInvoc:*/true, internalUse);
