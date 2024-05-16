@@ -176,10 +176,7 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
 
     private boolean isObjectConversionNecessary(ASTExpression e) {
         JavaNode parent = e.getParent();
-        if (e.getIndexInParent() == 0) {
-            return parent instanceof QualifiableExpression;
-        }
-        return false;
+        return e.getIndexInParent() == 0 && parent instanceof QualifiableExpression;
     }
 
 
