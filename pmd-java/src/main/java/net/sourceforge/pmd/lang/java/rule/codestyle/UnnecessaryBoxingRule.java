@@ -13,10 +13,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -150,30 +153,50 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
         String reason = null;
         if (sourceType.equals(conversionOutput)) {
             reason = "boxing of boxed value";
-        } else if (ctxType != null) {
-            JTypeMirror conv = implicitConversionResult(sourceType, ctxType, ctx.getKind());
-            if (conv != null
-                && conv.equals(implicitConversionResult(conversionOutput, ctxType, ctx.getKind()))
-                && conversionDoesNotChangesValue(sourceType, conversionOutput)) {
-                if (sourceType.unbox().equals(conversionOutput)) {
-                    reason = "explicit unboxing";
-                } else if (sourceType.box().equals(conversionOutput)) {
-                    reason = "explicit boxing";
-                } else {
-                    reason = "explicit conversion from " + TypePrettyPrint.prettyPrintWithSimpleNames(sourceType)
-                        + " to " + TypePrettyPrint.prettyPrintWithSimpleNames(ctxType);
-                    if (!conversionOutput.equals(ctxType)) {
-                        reason += " through " + TypePrettyPrint.prettyPrintWithSimpleNames(conversionOutput);
-                    }
+        } else if (isImplicitlyTypedLambdaReturnExpr(conversionExpr)
+            || ctxType != null && conversionIsImplicitlyRealisable(sourceType, ctxType, ctx, conversionOutput)) {
+            if (sourceType.unbox().equals(conversionOutput)) {
+                reason = "explicit unboxing";
+            } else if (sourceType.box().equals(conversionOutput)) {
+                reason = "explicit boxing";
+            } else if (ctxType != null) {
+                reason = "explicit conversion from " + TypePrettyPrint.prettyPrintWithSimpleNames(sourceType)
+                    + " to " + TypePrettyPrint.prettyPrintWithSimpleNames(ctxType);
+                if (!conversionOutput.equals(ctxType)) {
+                    reason += " through " + TypePrettyPrint.prettyPrintWithSimpleNames(conversionOutput);
                 }
             }
-        }
 
+        }
         if (reason != null) {
             rctx.addViolation(conversionExpr, reason);
         }
     }
 
+
+    private static boolean conversionIsImplicitlyRealisable(JTypeMirror sourceType, JTypeMirror ctxType, ExprContext ctx, JTypeMirror conversionOutput) {
+        JTypeMirror conv = implicitConversionResult(sourceType, ctxType, ctx.getKind());
+        return conv != null
+            && conv.equals(implicitConversionResult(conversionOutput, ctxType, ctx.getKind()))
+            && conversionDoesNotChangesValue(sourceType, conversionOutput);
+    }
+
+
+    private boolean isImplicitlyTypedLambdaReturnExpr(ASTExpression e) {
+        JavaNode parent = e.getParent();
+        if (isImplicitlyTypedLambda(parent)) {
+            return true;
+        } else if (parent instanceof ASTReturnStatement) {
+            JavaNode target = JavaAstUtils.getReturnTarget((ASTReturnStatement) parent);
+            return isImplicitlyTypedLambda(target);
+        }
+        return false;
+    }
+
+
+    private static boolean isImplicitlyTypedLambda(JavaNode e) {
+        return e instanceof ASTLambdaExpression && !((ASTLambdaExpression) e).isExplicitlyTyped();
+    }
 
     private boolean isObjectConversionNecessary(ASTExpression e) {
         JavaNode parent = e.getParent();

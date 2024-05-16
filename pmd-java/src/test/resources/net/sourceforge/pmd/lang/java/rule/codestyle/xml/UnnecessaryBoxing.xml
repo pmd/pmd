@@ -548,4 +548,46 @@ public class Foo {
             }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Unboxing in lambda return position which returns inferred type</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,3</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary explicit unboxing</message>
+            <message>Unnecessary explicit unboxing</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Example {
+                VoidSpecies<Integer> mismatch = payload -> payload.intValue(); // warn: the interface expects void
+                RefSpecies<Integer, Object> i = t -> t.intValue(); // warn: in this context t->t is equivalent because it will be reboxed
+
+
+                // In this specific situation below, explicit unboxing
+                // is necessary to distinguish overloads. Note that if
+                // the lambda was not explicitly typed it would be an
+                // ambiguity error. Note also that even if the interfaces are
+                // not generic in the parameter type, but rather take an Integer
+                // parameter, implicitly typed lambdas will cause an
+                // ambiguity error.
+                // In our implementation we consider that the return position of a
+                // lambda never needs an explicit boxing or unboxing conversion, and
+                // ignore this corner case, that is unlikely to show up in real code.
+                static <T> void foo(IntSpecies<T> f) {}
+                static <T> void foo(RefSpecies<T, Integer> f) {}
+                static {
+                    foo((Integer i) -> i.intValue());
+                    foo((Integer i) -> i);
+                }
+                interface VoidSpecies<T> {
+                    void doSomething(T t);
+                }
+                interface RefSpecies<T, X> {
+                    X foo(T t);
+                }
+                interface IntSpecies<T> {
+                    int foo(T t);
+                }
+            }
+        ]]></code>
+    </test-code>
 </test-data>
