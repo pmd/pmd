@@ -573,8 +573,13 @@ public final class PolyResolution {
                                                     : newNumericContext(nodeType.unbox());
             case EQ:
             case NE:
-                if (otherType.isPrimitive() != nodeType.isPrimitive()) {
-                    return newNonPolyContext(otherType.unbox());
+                if (otherType.isNumeric() || nodeType.isNumeric()) {
+                    JTypeMirror prom = TypeConversion.binaryNumericPromotion(otherType.unbox(), nodeType.unbox());
+                    if (prom == ts.ERROR) {
+                        // cannot be promoted
+                        return ExprContext.getMissingInstance();
+                    }
+                    return newNumericContext(prom);
                 }
                 return ExprContext.getMissingInstance();
             case ADD:

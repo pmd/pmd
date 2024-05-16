@@ -464,4 +464,22 @@ public class Foo {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Unboxing of byte in numeric ctx</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary explicit unboxing</message>
+        </expected-messages>
+        <code><![CDATA[
+            public abstract class Example {
+                byte value;
+
+                boolean eq(Object obj) {
+                    if (obj instanceof Byte) {
+                        return value == ((Byte)obj).byteValue();
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

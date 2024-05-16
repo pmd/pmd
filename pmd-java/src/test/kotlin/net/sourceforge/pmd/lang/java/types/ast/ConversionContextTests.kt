@@ -10,8 +10,7 @@ import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils
 import net.sourceforge.pmd.lang.java.types.STRING
-import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind.ASSIGNMENT
-import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind.INVOCATION
+import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind.*
 import net.sourceforge.pmd.lang.java.types.parseWithTypeInferenceSpy
 import net.sourceforge.pmd.lang.java.types.shouldHaveType
 import net.sourceforge.pmd.lang.test.ast.component6
@@ -198,20 +197,34 @@ class ConversionContextTests : ProcessorTestSpec({
                     eat(i << j);
                     eat(i & j);
 
+                    eatbool(i == (Integer) j);
+
                     eat(i + e);
                     eat(i * e);
                 }
                 void eat(double d) {}
+                void eatbool(boolean d) {}
             }
         """)
 
-        val (mulint, lshift, and, plusdouble, muldouble) = acu.descendants(ASTInfixExpression::class.java).toList()
+        val (mulint, lshift, and, cmp, plusdouble, muldouble) = acu.descendants(ASTInfixExpression::class.java).toList()
 
         spy.shouldBeOk {
             listOf(mulint, lshift, and).forEach {
                 withClue(it) {
                     it.leftOperand.conversionContext::getTargetType shouldBe ts.INT
                     it.rightOperand.conversionContext::getTargetType shouldBe ts.INT
+                }
+            }
+            withClue(cmp) {
+                cmp.conversionContext::getTargetType shouldBe boolean
+                cmp.conversionContext::getKind shouldBe INVOCATION
+
+                listOf(cmp.leftOperand, cmp.rightOperand).forEach {
+                    withClue(it) {
+                        it.conversionContext::getTargetType shouldBe int
+                        it.conversionContext::getKind shouldBe NUMERIC
+                    }
                 }
             }
             listOf(plusdouble, muldouble).forEach {
