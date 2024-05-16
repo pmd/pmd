@@ -222,22 +222,26 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
      */
     private static @Nullable JTypeMirror implicitConversionResult(JTypeMirror i, JTypeMirror ctx, ExprContextKind kind) {
         if (kind == ExprContextKind.CAST) {
-            // in cast contexts conversions are less restrictive
-            if (!ctx.isPrimitive()) {
-                return i.box();
-            } else {
-                return i.unbox();
+            // In cast contexts conversions are less restrictive.
+            if (i.isPrimitive() != ctx.isPrimitive()) {
+                // Whether an unboxing or boxing conversion may occur depends on whether
+                // the expression has a primitive type or not (not on the cast type).
+                // https://docs.oracle.com/javase/specs/jls/se22/html/jls-5.html#jls-5.5
+                return i.isPrimitive() ? i.box() : i.unbox();
+            } else if (i.isNumeric() && ctx.isNumeric()) {
+                // then narrowing or widening conversions occur to transform i to ctx
+                return ctx;
             }
+            // otherwise no conversion occurs
+            return i;
         }
         if (!ctx.isPrimitive()) {
             // boxing
             return i.box().isSubtypeOf(ctx) ? i.box() : null;
-        } else if (i.isBoxedPrimitive() && ctx.isPrimitive()) {
-            //       Integer x = 1;
-            //       long l = x;
+        } else if (i.isBoxedPrimitive()) {
             // unboxing then optional widening
             return i.unbox().isSubtypeOf(ctx) ? ctx : null;
-        } else if (i.isPrimitive() && ctx.isPrimitive()) {
+        } else if (i.isPrimitive()) {
             // widening
             return i.isSubtypeOf(ctx) ? ctx : null;
         }
