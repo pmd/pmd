@@ -24,6 +24,7 @@ import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
+import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind;
 import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
@@ -150,9 +151,9 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
         if (sourceType.equals(conversionOutput)) {
             reason = "boxing of boxed value";
         } else if (ctxType != null) {
-            JTypeMirror conv = implicitConversionResult(sourceType, ctxType);
+            JTypeMirror conv = implicitConversionResult(sourceType, ctxType, ctx.getKind());
             if (conv != null
-                && conv.equals(implicitConversionResult(conversionOutput, ctxType))
+                && conv.equals(implicitConversionResult(conversionOutput, ctxType, ctx.getKind()))
                 && conversionDoesNotChangesValue(sourceType, conversionOutput)) {
                 if (sourceType.unbox().equals(conversionOutput)) {
                     reason = "explicit unboxing";
@@ -219,7 +220,15 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
      * Type of the converted i in context ctx. If no implicit
      * conversion is possible then return null.
      */
-    private static @Nullable JTypeMirror implicitConversionResult(JTypeMirror i, JTypeMirror ctx) {
+    private static @Nullable JTypeMirror implicitConversionResult(JTypeMirror i, JTypeMirror ctx, ExprContextKind kind) {
+        if (kind == ExprContextKind.CAST) {
+            // in cast contexts conversions are less restrictive
+            if (!ctx.isPrimitive()) {
+                return i.box();
+            } else {
+                return i.unbox();
+            }
+        }
         if (!ctx.isPrimitive()) {
             // boxing
             return i.box().isSubtypeOf(ctx) ? i.box() : null;

@@ -43,6 +43,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVoidType;
 import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
@@ -601,6 +602,23 @@ public final class PolyResolution {
             default:
                 return ExprContext.getMissingInstance();
             }
+        } else if (papa instanceof ASTUnaryExpression) {
+            switch (((ASTUnaryExpression) papa).getOperator()) {
+            case UNARY_PLUS:
+            case UNARY_MINUS:
+            case COMPLEMENT:
+                JTypeMirror parentType = ((ASTUnaryExpression) papa).getTypeMirror();
+                if (parentType == ts.ERROR) {
+                    break;
+                }
+                // this was already unary promoted
+                return newNumericContext(parentType);
+            case NEGATION:
+                return booleanCtx;
+            default:
+                break;
+            }
+            return ExprContext.getMissingInstance();
         } else {
             return ExprContext.getMissingInstance();
         }

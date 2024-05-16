@@ -482,4 +482,34 @@ public class Foo {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Boxing of bool under cast</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary explicit boxing</message>
+        </expected-messages>
+        <code><![CDATA[
+            public abstract class Example {
+
+                <T> T cast(boolean b) {
+                    return (T) Boolean.valueOf(b);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Unboxing of bool under neg</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary explicit unboxing</message>
+        </expected-messages>
+        <code><![CDATA[
+            public abstract class Example {
+
+                boolean cast(Boolean b) {
+                    return !b.booleanValue();
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>
