@@ -18,9 +18,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  *
  * <p>Their syntax is identical though, and described on {@link ASTSwitchLike}.
  */
-public final class ASTSwitchExpression extends AbstractJavaExpr
-    implements ASTExpression,
-               ASTSwitchLike {
+public final class ASTSwitchExpression extends AbstractJavaExpr implements ASTSwitchLike {
 
     ASTSwitchExpression(int id) {
         super(id);

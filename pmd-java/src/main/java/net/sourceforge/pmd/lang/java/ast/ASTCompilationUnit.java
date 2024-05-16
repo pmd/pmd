@@ -13,7 +13,6 @@ import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.ast.internal.LazyTypeResolver;
@@ -49,7 +48,7 @@ import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
  * @see <a href="https://openjdk.org/jeps/445">JEP 445: Unnamed Classes and Instance Main Methods (Preview)</a> (Java 21)
  * @see #isUnnamedClass()
  */
-public final class ASTCompilationUnit extends AbstractJavaNode implements JavaNode, GenericNode<JavaNode>, RootNode {
+public final class ASTCompilationUnit extends AbstractJavaNode implements RootNode {
 
     private LazyTypeResolver lazyTypeResolver;
     private List<JavaComment> comments;
