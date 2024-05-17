@@ -65,11 +65,14 @@ Since this release, PMD will also expose any getter returning a collection of an
   a build with errors will now fail and with that parameter, the previous behavior can be restored.
   This parameter is available for both PMD and CPD.
 
+* The CLI parameter `--skip-lexical-errors` is deprecated. Use the new parameter `--[no-]--fail-on-error` instead.
+
 ##### Ant
 
 * CPDTask has a new parameter `failOnError`. In controls, whether to fail the build if any recoverable errors occurred.
   By default, the build will fail. CPD will still create a report with all detected duplications, but the report might
   be incomplete.
+* The parameter `skipLexicalError` in CPDTask is deprecated. Use the new parameter `failOnError` instead.
 
 #### Deprecated API
 

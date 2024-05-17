@@ -221,7 +221,7 @@ class CpdCliTest extends BaseCliTest {
      */
     @Test
     void testSkipLexicalErrors() throws Exception {
-        runCli(RECOVERED_ERRORS_OR_VIOLATIONS,
+        runCli(VIOLATIONS_FOUND,
                "--minimum-tokens", "10",
                "-d", BASE_RES_PATH + "badandgood/",
                "--format", "text",
@@ -239,7 +239,7 @@ class CpdCliTest extends BaseCliTest {
                 "-d", Paths.get(BASE_RES_PATH, "badandgood", "BadFile.java").toString(),
                 "--format", "text")
                 .verify(r -> {
-                    r.checkStdErr(containsPattern("Error while tokenizing: Lexical error in file '.*?BadFile\\.java'"));
+                    r.checkStdErr(containsPattern("Skipping file: Lexical error in file '.*?BadFile\\.java'"));
                     r.checkStdOut(emptyString());
                 });
     }
@@ -252,14 +252,14 @@ class CpdCliTest extends BaseCliTest {
                 "--format", "text",
                 "--no-fail-on-error")
                 .verify(r -> {
-                    r.checkStdErr(containsPattern("Error while tokenizing: Lexical error in file '.*?BadFile\\.java'"));
+                    r.checkStdErr(containsPattern("Skipping file: Lexical error in file '.*?BadFile\\.java'"));
                     r.checkStdOut(emptyString());
                 });
     }
 
     @Test
     void testExitCodeWithLexicalErrorsAndSkipLexical() throws Exception {
-        runCli(RECOVERED_ERRORS_OR_VIOLATIONS,
+        runCli(OK,
                 "--minimum-tokens", "10",
                 "-d", Paths.get(BASE_RES_PATH, "badandgood", "BadFile.java").toString(),
                 "--format", "text",

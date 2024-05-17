@@ -132,8 +132,8 @@ exactly identical.
                description="Don't scan subdirectories. By default, subdirectories are considered."
     %}
     {% include custom/cli_option_row.html options="--skip-lexical-errors"
-               description="Skip files which can't be tokenized due to invalid characters instead of aborting CPD.
-                            By default, CPD analysis is stopped on the first error."
+               description="<span class='label label-primary'>Deprecated</span> Skip files which can't be tokenized due to invalid characters instead of aborting CPD.
+                            By default, CPD analysis is stopped on the first error. This is deprecated. Use `--fail-on-error` instead."
     %}
     {% include custom/cli_option_row.html options="--format,-f"
                option_arg="format"
@@ -439,8 +439,10 @@ Andy Glover wrote an Ant task for CPD; here's how to use it:
                default="false"
     %}
     {% include custom/cli_option_row.html options="skipLexicalErrors"
-               description="Skip files which can't be tokenized due to invalid characters instead of aborting CPD."
-               default="false"
+               description="<span class='label label-primary'>Deprecated</span> Skip files which can't be tokenized
+                            due to invalid characters instead of aborting CPD. This parameter is deprecated and
+                            ignored since PMD 7.2.0. It is now by default true. Use `failOnError` instead to fail the build."
+               default="true"
     %}
     {% include custom/cli_option_row.html options="skipBlocks"
                description="Enables or disabled skipping of blocks like a pre-processor. See also option skipBlocksPattern."

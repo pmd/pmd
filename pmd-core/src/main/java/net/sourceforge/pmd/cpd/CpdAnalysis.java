@@ -151,6 +151,9 @@ public final class CpdAnalysis implements AutoCloseable {
 
     @SuppressWarnings("PMD.CloseResource")
     public void performAnalysis(Consumer<CPDReport> consumer) {
+        if (configuration.isSkipLexicalErrors()) {
+            LOGGER.warn("The option skipLexicalErrors is deprecated. Use failOnError instead.");
+        }
 
         try (SourceManager sourceManager = new SourceManager(files.getCollectedFiles())) {
             Map<Language, CpdLexer> tokenizers =

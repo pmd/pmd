@@ -75,6 +75,7 @@ public class CPDTask extends Task {
     private boolean ignoreIdentifiers;
     private boolean ignoreAnnotations;
     private boolean ignoreUsings;
+    @Deprecated
     private boolean skipLexicalErrors;
     private boolean skipDuplicateFiles;
     private boolean skipBlocks = true;
@@ -100,7 +101,14 @@ public class CPDTask extends Task {
             config.setOnlyRecognizeLanguage(config.getLanguageRegistry().getLanguageById(language));
             config.setSourceEncoding(Charset.forName(encoding));
             config.setSkipDuplicates(skipDuplicateFiles);
-            config.setSkipLexicalErrors(skipLexicalErrors);
+
+            if (skipLexicalErrors) {
+                log("skipLexicalErrors is deprecated and ignored. Lexical errors are now by default skipped. Use failOnError=\"false\" to not fail the build.", Project.MSG_WARN);
+                failOnError = false;
+            }
+
+            // implicitly enable skipLexicalErrors, so that we can fail the build at the end. A report is created in any case.
+            config.setSkipLexicalErrors(true);
 
             config.setIgnoreAnnotations(ignoreAnnotations);
             config.setIgnoreLiterals(ignoreLiterals);
@@ -132,7 +140,6 @@ public class CPDTask extends Task {
             log(ioe.toString(), Project.MSG_ERR);
             throw new BuildException("IOException during task execution", ioe);
         } catch (ReportException re) {
-            re.printStackTrace();
             log(re.toString(), Project.MSG_ERR);
             throw new BuildException("ReportException during task execution", re);
         } finally {
@@ -229,6 +236,10 @@ public class CPDTask extends Task {
         this.ignoreUsings = value;
     }
 
+    /**
+     * @deprecated Use {@link #setFailOnError(boolean)} instead.
+     */
+    @Deprecated
     public void setSkipLexicalErrors(boolean skipLexicalErrors) {
         this.skipLexicalErrors = skipLexicalErrors;
     }
