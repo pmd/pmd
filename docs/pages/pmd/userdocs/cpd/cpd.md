@@ -150,10 +150,10 @@ exactly identical.
                     If the root path is mentioned (e.g. \"/\" or \"C:\\\"), then the paths will be rendered
                     as absolute."
     %}
-    {% include custom/cli_option_row.html options="--[no-]fail-on-processing-error"
-               description="Specifies whether CPD exits with non-zero status if processing errors occurred.
-                            By default CPD exits with status 5 if processing errors or violations are found.
-                            Disable this option with `--no-fail-on-processing-error` to exit with 0 instead and just write the report."
+    {% include custom/cli_option_row.html options="--[no-]fail-on-error"
+               description="Specifies whether CPD exits with non-zero status if recoverable errors occurred.
+                            By default CPD exits with status 5 if recoverable errors occurred (whether there are duplications or not).
+                            Disable this option with `--no-fail-on-error` to exit with 0 instead. In any case, a report with the found duplications will be written."
     %}
     {% include custom/cli_option_row.html options="--[no-]fail-on-violation"
                description="Specifies whether CPD exits with non-zero status if violations are found.
@@ -288,12 +288,12 @@ Please note that if CPD detects duplicated source code, it will exit with status
 This behavior has been introduced to ease CPD integration into scripts or hooks, such as SVN hooks.
 
 <table>
-<tr><td>0</td><td>Everything is fine, no code duplications found and no processing errors occurred.</td></tr>
+<tr><td>0</td><td>Everything is fine, no code duplications found and no recoverable errors occurred.</td></tr>
 <tr><td>1</td><td>CPD exited with an exception.</td></tr>
 <tr><td>2</td><td>Usage error. Command-line parameters are invalid or missing.</td></tr>
 <tr><td>4</td><td>At least one code duplication has been detected unless <code>--no-fail-on-violation</code> is set.<p>Since PMD 5.0.</p></td></tr>
-<tr><td>5</td><td>At least one processing error has occurred. There might be additionally zero or more duplications detected.
-    To ignore processing errors, use <code>--no-fail-on-processing-error</code>.<p>Since PMD 7.2.0.</p></td></tr>
+<tr><td>5</td><td>At least one recoverable error has occurred. There might be additionally zero or more duplications detected.
+    To ignore recoverable errors, use <code>--no-fail-on-error</code>.<p>Since PMD 7.2.0.</p></td></tr>
 </table>
 
 {%include note.html content="If PMD exits with 5, then PMD had trouble lexing one or more files.

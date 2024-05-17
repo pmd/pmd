@@ -47,7 +47,7 @@ public abstract class AbstractConfiguration {
     private List<Path> excludes = new ArrayList<>();
     private boolean collectRecursive = true;
     private boolean failOnViolation = true;
-    private boolean failOnProcessingError = true;
+    private boolean failOnError = true;
 
 
     protected AbstractConfiguration(LanguageRegistry languageRegistry, PmdReporter messageReporter) {
@@ -384,12 +384,12 @@ public abstract class AbstractConfiguration {
      * Whether PMD should exit with status 4 (the default behavior, true) if
      * violations are found or just with 0 (to not break the build, e.g.).
      *
-     * <p>Note: If additionally processing errors occurred, the exit status is 5. See
-     * {@link #isFailOnProcessingError()}.
+     * <p>Note: If additionally recoverable errors occurred, the exit status is 5. See
+     * {@link #isFailOnError()}.
      *
      * @return failOnViolation
      *
-     * @see #isFailOnProcessingError()
+     * @see #isFailOnError()
      */
     public boolean isFailOnViolation() {
         return failOnViolation;
@@ -399,12 +399,12 @@ public abstract class AbstractConfiguration {
      * Sets whether PMD should exit with status 4 (the default behavior, true)
      * if violations are found or just with 0 (to not break the build, e.g.).
      *
-     * <p>Note: If additionally processing errors occurred, the exit status is 5. See
-     * {@link #isFailOnProcessingError()}.
+     * <p>Note: If additionally recoverable errors occurred, the exit status is 5. See
+     * {@link #isFailOnError()}.
      *
      * @param failOnViolation whether to exit with 4 and fail the build if violations are found.
      *
-     * @see #isFailOnProcessingError()
+     * @see #isFailOnError()
      */
     public void setFailOnViolation(boolean failOnViolation) {
         this.failOnViolation = failOnViolation;
@@ -412,31 +412,31 @@ public abstract class AbstractConfiguration {
 
     /**
      * Whether PMD should exit with status 5 (the default behavior, true) if
-     * processing errors occurred or just with 0 (to not break the build, e.g.).
+     * recoverable errors occurred or just with 0 (to not break the build, e.g.).
      *
-     * <p>Note: If additionally violations are found, the exist status is 4. See
+     * <p>Note: If only violations are found, the exist status is 4. See
      * {@link #isFailOnViolation()}.
      *
-     * @return failOnProcessingError
+     * @return failOnError
      *
      * @see #isFailOnViolation()
      */
-    public boolean isFailOnProcessingError() {
-        return failOnProcessingError;
+    public boolean isFailOnError() {
+        return failOnError;
     }
 
     /**
      * Sets whether PMD should exit with status 5 (the default behavior, true)
-     * if processing errors occurred or just with 0 (to not break the build, e.g.).
+     * if recoverable errors occurred or just with 0 (to not break the build, e.g.).
      *
-     * <p>Note: If additionally violations are found, the exist status is 4. See
+     * <p>Note: If only violations are found, the exist status is 4. See
      * {@link #isFailOnViolation()}.
      *
-     * @param failOnProcessingError whether to exit with 5 and fail the build if processing errors occurred.
+     * @param failOnError whether to exit with 5 and fail the build if recoverable errors occurred.
      *
      * @see #isFailOnViolation()
      */
-    public void setFailOnProcessingError(boolean failOnProcessingError) {
-        this.failOnProcessingError = failOnProcessingError;
+    public void setFailOnError(boolean failOnError) {
+        this.failOnError = failOnError;
     }
 }

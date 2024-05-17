@@ -6,7 +6,7 @@ package net.sourceforge.pmd.cli;
 
 import static net.sourceforge.pmd.cli.internal.CliExitCode.ERROR;
 import static net.sourceforge.pmd.cli.internal.CliExitCode.OK;
-import static net.sourceforge.pmd.cli.internal.CliExitCode.PROCESSING_ERRORS_OR_VIOLATIONS;
+import static net.sourceforge.pmd.cli.internal.CliExitCode.RECOVERED_ERRORS_OR_VIOLATIONS;
 import static net.sourceforge.pmd.cli.internal.CliExitCode.USAGE_ERROR;
 import static net.sourceforge.pmd.cli.internal.CliExitCode.VIOLATIONS_FOUND;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
@@ -320,8 +320,8 @@ class PmdCliTest extends BaseCliTest {
     }
 
     @Test
-    void exitStatusWithProcessingErrors() throws Exception {
-        runCli(PROCESSING_ERRORS_OR_VIOLATIONS, "--use-version", "dummy-parserThrows",
+    void exitStatusWithErrors() throws Exception {
+        runCli(RECOVERED_ERRORS_OR_VIOLATIONS, "--use-version", "dummy-parserThrows",
                 "-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION)
             .verify(r -> {
                 r.checkStdOut(containsString("someSource.dummy\t-\tParseException: Parse exception: ohio"));
@@ -330,10 +330,10 @@ class PmdCliTest extends BaseCliTest {
     }
 
     @Test
-    void exitStatusWithProcessingErrorsNoFail() throws Exception {
+    void exitStatusWithErrorsNoFail() throws Exception {
         runCli(OK, "--use-version", "dummy-parserThrows",
                 "-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION,
-                "--no-fail-on-processing-error")
+                "--no-fail-on-error")
             .verify(r -> {
                 r.checkStdOut(containsString("someSource.dummy\t-\tParseException: Parse exception: ohio"));
                 r.checkStdErr(containsString("An error occurred while executing PMD."));

@@ -270,7 +270,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
         configuration.setSuppressMarker(suppressMarker);
         configuration.setThreads(threads);
         configuration.setFailOnViolation(failOnViolation);
-        configuration.setFailOnProcessingError(failOnProcessingError);
+        configuration.setFailOnError(failOnError);
         configuration.setAnalysisCacheLocation(cacheLocation != null ? cacheLocation.toString() : null);
         configuration.setIgnoreIncrementalAnalysis(noCache);
 
@@ -331,8 +331,8 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
                 if (pmdReporter.numErrors() > 0) {
                     // processing errors are ignored
                     return CliExitCode.ERROR;
-                } else if (stats.getNumErrors() > 0 && configuration.isFailOnProcessingError()) {
-                    return CliExitCode.PROCESSING_ERRORS_OR_VIOLATIONS;
+                } else if (stats.getNumErrors() > 0 && configuration.isFailOnError()) {
+                    return CliExitCode.RECOVERED_ERRORS_OR_VIOLATIONS;
                 } else if (stats.getNumViolations() > 0 && configuration.isFailOnViolation()) {
                     return CliExitCode.VIOLATIONS_FOUND;
                 } else {

@@ -53,15 +53,17 @@ Since this release, PMD will also expose any getter returning a collection of an
 
 #### CLI
 
-* New exit code 5 introduced. PMD and CPD will exit now by default with exit code 5, if any processing error
-  (e.g. parsing exception, lexing exception or rule exception) occurred. Such processing errors mean, that
-  either no violations or duplication for the entire file or for that rule are reported. These cases can be
-  considered as false-negatives.
+* New exit code 5 introduced. PMD and CPD will exit now by default with exit code 5, if any recoverable error
+  (e.g. parsing exception, lexing exception or rule exception) occurred. PMD will still create a report with
+  all detected violations or duplications if recoverable errors occurred. Such errors mean, that the report
+  might be incomplete, as either violations or duplications for an entire file or for a specific rule are missing.
+  These cases can be considered as false-negatives.
 
   In any case, the root cause should be investigated. If it's a problem in PMD itself, please create a bug report.
 
-* New CLI parameter `--no-fail-on-processing-error` to ignore processing errors and not exit with code 5. By default,
-  a build with processing errors will now fail and with that parameter, the previous behavior can be restored.
+* New CLI parameter `--no-fail-on-error` to ignore such errors and not exit with code 5. By default,
+  a build with errors will now fail and with that parameter, the previous behavior can be restored.
+  This parameter is available for both PMD and CPD.
 
 #### Deprecated API
 
