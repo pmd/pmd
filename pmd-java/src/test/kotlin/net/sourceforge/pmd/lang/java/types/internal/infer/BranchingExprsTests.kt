@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 
 
-class BranchingExprsTestCases : ProcessorTestSpec({
+class BranchingExprsTests : ProcessorTestSpec({
 
     fun TypeSystem.stringSupplier() : JTypeMirror = with (TypeDslOf(this)) {
         java.util.function.Supplier::class[gen.t_String]
@@ -276,7 +276,8 @@ class Scratch {
 
                 Collection<String> fun(boolean messageSelector) {
                     Collection<String> textFromMessage =
-                            // compile error: a cast doesn't contribute a target type,
+                            // compile error: Inconvertible types; cannot cast 'java.util.Collection<java.lang.Object>' to 'java.util.Collection<java.lang.String>'
+                            // a cast doesn't contribute a target type,
                             // the ternary is inferred to Collection<Object>
                             (Collection<String>) (messageSelector ? emptyList() : emptySet());
 
@@ -293,8 +294,8 @@ class Scratch {
         val (ternary1, ternary2) = acu.descendants(ASTConditionalExpression::class.java).toList()
 
         spy.shouldBeOk {
-            ternary1 shouldHaveType java.util.Collection::class[ts.OBJECT]
-            ternary2 shouldHaveType java.util.Collection::class[ts.STRING]
+            ternary1 shouldHaveType gen.t_Collection[captureMatcher(`?`)] // java.util.Collection<capture#534 of ?>
+            ternary2 shouldHaveType gen.`t_Collection{String}` // java.util.Collection<java.lang.String>
         }
     }
 
