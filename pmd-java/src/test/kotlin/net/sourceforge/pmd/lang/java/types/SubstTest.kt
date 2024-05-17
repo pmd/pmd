@@ -18,10 +18,11 @@ class SubstTest : ProcessorTestSpec({
 
 
     parserTest("Test full test case") {
+        doTest {
 
-
-        val typeDecl =
-                parser.parse("""
+            val typeDecl =
+                parser.parse(
+                    """
                     package java.util;
 
                     class Foo<K extends F,
@@ -31,37 +32,39 @@ class SubstTest : ProcessorTestSpec({
                         Map<Map<K, F>, Map<F, C>> field;
 
                     }
-                """).descendants(ASTClassDeclaration::class.java).firstOrThrow()
+                """
+                ).descendants(ASTClassDeclaration::class.java).firstOrThrow()
 
-        val typeDsl = typeDecl.typeDsl
+            val typeDsl = typeDecl.typeDsl
 
-        val (k, f, c) = typeDecl.typeMirror.formalTypeParams
+            val (k, f, c) = typeDecl.typeMirror.formalTypeParams
 
 
-        val fieldT = typeDecl.descendants(ASTClassType::class.java).drop(2).firstOrThrow()
-        
-        val map = Map::class
+            val fieldT = typeDecl.descendants(ASTClassType::class.java).drop(2).firstOrThrow()
 
-        // assert the form of the type
-        fieldT shouldHaveType with (typeDsl) {
-            map[map[k, f], map[f, c]]
-        }
+            val map = Map::class
 
-        val `List{F}` = with (typeDsl) { List::class[f] }
+            // assert the form of the type
+            fieldT shouldHaveType with(typeDsl) {
+                map[map[k, f], map[f, c]]
+            }
 
-        val subst =
-            Substitution.mapping(
+            val `List{F}` = with(typeDsl) { List::class[f] }
+
+            val subst =
+                Substitution.mapping(
                     listOf(k, f),
                     listOf(`List{F}`, k)
-            )
+                )
 
-        subst.apply(f) shouldBe k
-        subst.apply(k) shouldBe `List{F}`
+            subst.apply(f) shouldBe k
+            subst.apply(k) shouldBe `List{F}`
 
-        val subbed = TypeOps.subst(fieldT.typeMirror, subst)
+            val subbed = TypeOps.subst(fieldT.typeMirror, subst)
 
-        subbed shouldBe with (typeDsl) {
-            map[map[`List{F}`, k], map[k, c]]
+            subbed shouldBe with(typeDsl) {
+                map[map[`List{F}`, k], map[k, c]]
+            }
         }
     }
 
@@ -75,58 +78,60 @@ class SubstTest : ProcessorTestSpec({
 
 
     parserTest("Test simple subst") {
+        doTest {
+
+            val (a, b, c) = makeDummyTVars("A", "B", "C")
+
+            with(TypeDslOf(a.typeSystem)) {
+                val `t_List{A}` = List::class[a]
+                val `t_Iter{B}` = Iterable::class[b]
+                val `t_Coll{C}` = Collection::class[c]
 
 
-        val (a, b, c) = makeDummyTVars("A", "B", "C")
+                val sub1 = subOf(a to `t_Iter{B}`)
+                val sub2 = subOf(b to `t_Coll{C}`)
 
-        with(TypeDslOf(a.typeSystem)) {
-            val `t_List{A}` = List::class[a]
-            val `t_Iter{B}` = Iterable::class[b]
-            val `t_Coll{C}` = Collection::class[c]
+                val `t_List{Iter{B}}` = sub1(`t_List{A}`)
 
+                `t_List{Iter{B}}` shouldBe List::class[Iterable::class[b]]
 
-            val sub1 = subOf(a to `t_Iter{B}`)
-            val sub2 = subOf(b to `t_Coll{C}`)
+                val `t_List{Iter{t_Coll{C}}}` = sub2(`t_List{Iter{B}}`)
 
-            val `t_List{Iter{B}}` = sub1(`t_List{A}`)
-
-            `t_List{Iter{B}}` shouldBe List::class[Iterable::class[b]]
-
-            val `t_List{Iter{t_Coll{C}}}` = sub2(`t_List{Iter{B}}`)
-
-            `t_List{Iter{t_Coll{C}}}` shouldBe List::class[Iterable::class[Collection::class[c]]]
+                `t_List{Iter{t_Coll{C}}}` shouldBe List::class[Iterable::class[Collection::class[c]]]
 
 
-            val composed = sub1.andThen(sub2)
+                val composed = sub1.andThen(sub2)
 
-            composed.map should contain<SubstVar, JTypeMirror>(a, Iterable::class[Collection::class[c]])
+                composed.map should contain<SubstVar, JTypeMirror>(a, Iterable::class[Collection::class[c]])
 
-            composed.map.shouldContainExactly(mapOf<SubstVar, JTypeMirror>(
-                    a to Iterable::class[Collection::class[c]],
-                    b to `t_Coll{C}`
-            ))
+                composed.map.shouldContainExactly(
+                    mapOf<SubstVar, JTypeMirror>(
+                        a to Iterable::class[Collection::class[c]],
+                        b to `t_Coll{C}`
+                    )
+                )
 
-            composed(`t_List{A}`) shouldBe `t_List{Iter{t_Coll{C}}}`
+                composed(`t_List{A}`) shouldBe `t_List{Iter{t_Coll{C}}}`
+            }
         }
-
 
     }
 
     parserTest("Test subst toString") {
+        doTest {
+
+            val (a, b, c) = makeDummyTVars("A", "B", "C")
+
+            with(TypeDslOf(a.typeSystem)) {
+                val `t_Iter{B}` = Iterable::class[b]
+                val `t_Coll{C}` = Collection::class[c]
 
 
-        val (a, b, c) = makeDummyTVars("A", "B", "C")
+                val sub1 = subOf(a to `t_Iter{B}`, b to `t_Coll{C}`)
 
-        with(TypeDslOf(a.typeSystem)) {
-            val `t_Iter{B}` = Iterable::class[b]
-            val `t_Coll{C}` = Collection::class[c]
-
-
-            val sub1 = subOf(a to `t_Iter{B}`, b to `t_Coll{C}`)
-
-            sub1.toString() shouldBe "Substitution[A => java.lang.Iterable<B>; B => java.util.Collection<C>]"
+                sub1.toString() shouldBe "Substitution[A => java.lang.Iterable<B>; B => java.util.Collection<C>]"
+            }
         }
-
 
     }
 

@@ -379,8 +379,9 @@ class VarScopingTest : ProcessorTestSpec({
 
 
     parserTest("Foreach with no braces") {
-
-        val acu = parser.parse("""
+        doTest {
+            val acu = parser.parse(
+                """
             import java.util.*;
             import java.io.*;
             class Outer {
@@ -395,21 +396,23 @@ class VarScopingTest : ProcessorTestSpec({
                     return files.toArray(new File[files.size()]);
                 }
             }
-        """.trimIndent())
+        """.trimIndent()
+            )
 
-        val foreachVar =
+            val foreachVar =
                 acu.descendants(ASTVariableId::class.java).first { it.name == "s" }!!
 
-        val foreachBody =
+            val foreachBody =
                 acu.descendants(ASTForeachStatement::class.java).firstOrThrow().body
 
-        foreachBody shouldResolveToLocal foreachVar
-
+            foreachBody shouldResolveToLocal foreachVar
+        }
     }
 
     parserTest("Switch on enum has field names in scope") {
-
-        val acu = parser.parse("""
+        doTest {
+            val acu = parser.parse(
+                """
 
         class Scratch {
 
@@ -432,45 +435,46 @@ class VarScopingTest : ProcessorTestSpec({
             }
         }
 
-        """.trimIndent())
+        """.trimIndent()
+            )
 
-        val (_, typeSomeEnum) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+            val (_, typeSomeEnum) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
-        val (enumA, enumB) =
+            val (enumA, enumB) =
                 acu.descendants(ASTEnumDeclaration::class.java)
-                   .descendants(ASTVariableId::class.java).toList()
+                    .descendants(ASTVariableId::class.java).toList()
 
-        val (e, caseA, caseB) =
+            val (e, caseA, caseB) =
                 acu.descendants(ASTVariableAccess::class.java).toList()
 
-        val (qualifiedA) =
+            val (qualifiedA) =
                 acu.descendants(ASTFieldAccess::class.java).toList()
 
-        val (fooCall) =
+            val (fooCall) =
                 acu.descendants(ASTMethodCall::class.java).toList()
 
-        qualifiedA.referencedSym shouldBe enumA.symbol
-        qualifiedA.referencedSym!!.tryGetNode() shouldBe enumA
-        qualifiedA shouldHaveType typeSomeEnum
+            qualifiedA.referencedSym shouldBe enumA.symbol
+            qualifiedA.referencedSym!!.tryGetNode() shouldBe enumA
+            qualifiedA shouldHaveType typeSomeEnum
 
-        caseA.referencedSym shouldBe enumA.symbol
-        caseA.referencedSym!!.tryGetNode() shouldBe enumA
-        caseA shouldHaveType typeSomeEnum
+            caseA.referencedSym shouldBe enumA.symbol
+            caseA.referencedSym!!.tryGetNode() shouldBe enumA
+            caseA shouldHaveType typeSomeEnum
 
-        caseB.referencedSym shouldBe enumB.symbol
-        caseB.referencedSym!!.tryGetNode() shouldBe enumB
-        caseB shouldHaveType typeSomeEnum
+            caseB.referencedSym shouldBe enumB.symbol
+            caseB.referencedSym!!.tryGetNode() shouldBe enumB
+            caseB shouldHaveType typeSomeEnum
 
-        e shouldHaveType typeSomeEnum
+            e shouldHaveType typeSomeEnum
 
-        // symbol tables don't carry that info, this is documented on JSymbolTable#variables()
-        caseB.symbolTable.variables().resolve("A").shouldBeEmpty()
-        caseB.symbolTable.variables().resolve("B").shouldBeEmpty()
+            // symbol tables don't carry that info, this is documented on JSymbolTable#variables()
+            caseB.symbolTable.variables().resolve("A").shouldBeEmpty()
+            caseB.symbolTable.variables().resolve("B").shouldBeEmpty()
 
-        fooCall.qualifier!!.shouldMatchN {
-            ambiguousName("A")
+            fooCall.qualifier!!.shouldMatchN {
+                ambiguousName("A")
+            }
         }
-
     }
 
 

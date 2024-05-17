@@ -240,8 +240,9 @@ class BranchingExprsTests : ProcessorTestSpec({
 
 
     parserTest("Cast context doesn't influence standalone ternary") {
-
-        val acu = parser.parse("""
+        doTest {
+            val acu = parser.parse(
+                """
 class Scratch {
 
     static void putBoolean(byte[] b, int off, boolean val) {
@@ -249,16 +250,18 @@ class Scratch {
     }
 }
 
-        """.trimIndent())
+        """.trimIndent()
+            )
 
-        val ternary = acu.descendants(ASTConditionalExpression::class.java).firstOrThrow()
+            val ternary = acu.descendants(ASTConditionalExpression::class.java).firstOrThrow()
 
-        ternary.shouldMatchN {
-            ternaryExpr {
-                it.typeMirror.shouldBePrimitive(INT)
-                variableAccess("val")
-                int(1)
-                int(0)
+            ternary.shouldMatchN {
+                ternaryExpr {
+                    it.typeMirror.shouldBePrimitive(INT)
+                    variableAccess("val")
+                    int(1)
+                    int(0)
+                }
             }
         }
     }
@@ -266,8 +269,9 @@ class Scratch {
 
 
     parserTest("Cast context doesn't provide target type (only for lambdas)") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
             import java.util.Collection;
             import java.util.List;
             import java.util.Set;
@@ -289,19 +293,22 @@ class Scratch {
                 <T> List<T> emptyList() {return null;}
                 <T> Set<T> emptySet() {return null;}
             }
-        """.trimIndent())
+        """.trimIndent()
+            )
 
-        val (ternary1, ternary2) = acu.descendants(ASTConditionalExpression::class.java).toList()
+            val (ternary1, ternary2) = acu.descendants(ASTConditionalExpression::class.java).toList()
 
-        spy.shouldBeOk {
-            ternary1 shouldHaveType gen.t_Collection[captureMatcher(`?`)] // java.util.Collection<capture#534 of ?>
-            ternary2 shouldHaveType gen.`t_Collection{String}` // java.util.Collection<java.lang.String>
+            spy.shouldBeOk {
+                ternary1 shouldHaveType gen.t_Collection[captureMatcher(`?`)] // java.util.Collection<capture#534 of ?>
+                ternary2 shouldHaveType gen.`t_Collection{String}` // java.util.Collection<java.lang.String>
+            }
         }
     }
 
     parserTest("Null branches produce null type") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
             import java.util.Collection;
             class Test {
                 Collection<String> fun(boolean messageSelector) {
@@ -311,13 +318,15 @@ class Scratch {
                     return (Collection<String>) (messageSelector ? null : null);
                 }
             }
-        """.trimIndent())
+        """.trimIndent()
+            )
 
-        val (ternary1, ternary2) = acu.descendants(ASTConditionalExpression::class.java).toList()
+            val (ternary1, ternary2) = acu.descendants(ASTConditionalExpression::class.java).toList()
 
-        spy.shouldBeOk {
-            ternary1 shouldHaveType java.util.Collection::class[ts.STRING]
-            ternary2 shouldHaveType ts.NULL_TYPE
+            spy.shouldBeOk {
+                ternary1 shouldHaveType java.util.Collection::class[ts.STRING]
+                ternary2 shouldHaveType ts.NULL_TYPE
+            }
         }
     }
 

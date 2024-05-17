@@ -21,11 +21,13 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 class ASTModuleDeclarationTest : ParserTestSpec({
 
     parserTest("Test annotations on module", javaVersions = since(J9)) {
-        val root: ASTCompilationUnit = parser.withProcessing(true).parse("@A @a.B module foo { } ")
-        root.moduleDeclaration.shouldMatchNode<ASTModuleDeclaration> {
-            it.getAnnotation("A") shouldBe annotation("A")
-            it.getAnnotation("a.B") shouldBe annotation("B")
-            modName("foo")
+        doTest {
+            val root: ASTCompilationUnit = parser.withProcessing(true).parse("@A @a.B module foo { } ")
+            root.moduleDeclaration.shouldMatchNode<ASTModuleDeclaration> {
+                it.getAnnotation("A") shouldBe annotation("A")
+                it.getAnnotation("a.B") shouldBe annotation("B")
+                modName("foo")
+            }
         }
     }
 

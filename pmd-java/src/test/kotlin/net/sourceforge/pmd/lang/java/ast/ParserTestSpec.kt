@@ -101,7 +101,8 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
      * Defines a group of tests that should be named similarly,
      * executed on several java versions. Calls to "should" in
      * the block are intercepted to create a new test, with the
-     * given [name] as a common prefix.
+     * given [name] as a common prefix. Alternatively you can use
+     * "doTest" to define a new test case.
      *
      * This is useful to make a batch of grammar specs for grammar
      * regression tests without bothering to find a name.
@@ -109,8 +110,9 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
      * @param name Name of the container test
      * @param javaVersions Language versions for which to generate tests
      * @param spec Assertions. Each call to [io.kotest.matchers.should] on a string
-     *             receiver is replaced by a [GroupTestCtx.should], which creates a
-     *             new parser test.
+     *             receiver is replaced by a [GroupTestCtx.VersionedTestCtx.should], which creates a
+     *             new parser test case. Alternatively use [GroupTestCtx.VersionedTestCtx.doTest] to create
+     *             a new parser test case.
      */
     fun parserTest(name: String,
                    javaVersions: List<JavaVersion>,
@@ -118,6 +120,10 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
             parserTestGroup(name) {
                 onVersions(javaVersions) {
                     spec()
+
+                    if (!this@onVersions.hasChildren()) {
+                        throw IllegalStateException("versioned parser test '$name' without a test case. Use 'should' or 'doTest'.")
+                    }
                 }
             }
 
@@ -165,7 +171,7 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
 
         inner class VersionedTestCtx(testScope: TestScope, javaVersion: JavaVersion) : ParserTestCtx(testScope, javaVersion) {
 
-            suspend fun doTest(name: String, assertions: suspend VersionedTestCtx.() -> Unit) {
+            suspend fun doTest(name : String = "[unnamed test case]", assertions: suspend VersionedTestCtx.() -> Unit) {
                 containedParserTestImpl(this@VersionedTestCtx, name, javaVersion = javaVersion) {
                     this@VersionedTestCtx.assertions()
                 }

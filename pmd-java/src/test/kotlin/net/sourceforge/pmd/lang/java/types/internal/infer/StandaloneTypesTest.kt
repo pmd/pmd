@@ -97,27 +97,29 @@ class StandaloneTypesTest : ProcessorTestSpec({
 
 
     parserTest("Test array initializer") {
+        doTest {
+            val block = StatementParsingCtx.parseNode("{ int[] is = { a }; int[][] iis = { { } }; }", ctx = this)
+            val (oneDim, twoDim, nested) = block.descendants(ASTArrayInitializer::class.java).toList()
+            with(block.typeDsl) {
+                oneDim shouldHaveType int.toArray()
 
-        val block = StatementParsingCtx.parseNode("{ int[] is = { a }; int[][] iis = { { } }; }", ctx = this)
-        val (oneDim, twoDim, nested) = block.descendants(ASTArrayInitializer::class.java).toList()
-        with(block.typeDsl) {
-            oneDim shouldHaveType int.toArray()
-
-            withClue("Multi dim array") {
-                twoDim shouldHaveType int.toArray(2)
-                nested shouldHaveType int.toArray()
+                withClue("Multi dim array") {
+                    twoDim shouldHaveType int.toArray(2)
+                    nested shouldHaveType int.toArray()
+                }
             }
         }
     }
 
     parserTest("Test array allocation") {
-
+        doTest {
         val block = StatementParsingCtx.parseNode("{ Object is = new int[0]; is = new String[0][]; }", ctx = this)
         val (intArray, stringArray) = block.descendants(ASTArrayAllocation::class.java).toList()
         with(block.typeDsl) {
             intArray shouldHaveType int.toArray()
             stringArray shouldHaveType ts.STRING.toArray(2)
         }
+            }
     }
 
 
@@ -127,9 +129,7 @@ class StandaloneTypesTest : ProcessorTestSpec({
 
             listOf(CHAR, BYTE, SHORT, INT, LONG).forEach { kind ->
 
-                val block = doParse("{ $kind v; v++; v--; --v; ++v; }")
-
-                block.shouldMatchN {
+                "{ $kind v; v++; v--; --v; ++v; }" should parseAs {
                     block {
                         localVarDecl()
 
@@ -254,20 +254,21 @@ class StandaloneTypesTest : ProcessorTestSpec({
     }
 
     parserTest("Test field access on type variable") {
+        doTest {
+            val method = TypeBodyParsingCtx.parseNode("<T extends int[]> void foo(T t) { t.length++; }", ctx = this)
 
-        val method = TypeBodyParsingCtx.parseNode("<T extends int[]> void foo(T t) { t.length++; }", ctx = this)
+            val tvar = method.descendants(ASTTypeParameter::class.java).firstOrThrow().typeMirror
+            val fieldAccess = method.descendants(ASTFieldAccess::class.java).firstOrThrow()
 
-        val tvar = method.descendants(ASTTypeParameter::class.java).firstOrThrow().typeMirror
-        val fieldAccess = method.descendants(ASTFieldAccess::class.java).firstOrThrow()
-
-        fieldAccess.shouldMatchN {
-            fieldAccess("length") {
-                variableAccess("t") {
-                    it shouldHaveType tvar
+            fieldAccess.shouldMatchN {
+                fieldAccess("length") {
+                    variableAccess("t") {
+                        it shouldHaveType tvar
+                    }
+                    it shouldHaveType it.typeSystem.INT
+                    it.referencedSym shouldNotBe null
+                    it.referencedSym!!.enclosingClass shouldBe it.typeSystem.getClassSymbol(IntArray::class.java)
                 }
-                it shouldHaveType it.typeSystem.INT
-                it.referencedSym shouldNotBe null
-                it.referencedSym!!.enclosingClass shouldBe it.typeSystem.getClassSymbol(IntArray::class.java)
             }
         }
     }
@@ -289,9 +290,9 @@ class StandaloneTypesTest : ProcessorTestSpec({
     }
 
     parserTest("Test annotations in package-info") {
-
-        val acu = parser.parse(
-            """
+        doTest {
+            val acu = parser.parse(
+                """
             // in a package-info.java
         @net.sourceforge.pmd.lang.java.types.testdata.AnnotationWithEnum(
             value = net.sourceforge.pmd.lang.java.types.testdata.AnnotationWithEnum.Foo.A
@@ -299,23 +300,24 @@ class StandaloneTypesTest : ProcessorTestSpec({
         package foo;
 
         """.trimIndent()
-        )
+            )
 
-        val annot = acu.descendants(ASTAnnotation::class.java).firstOrThrow()
+            val annot = acu.descendants(ASTAnnotation::class.java).firstOrThrow()
 
-        annot.withTypeDsl {
-            annot shouldHaveType AnnotationWithEnum::class.decl
-            val value = annot.members.firstOrThrow()
-            value.value.shouldMatchN {
-                fieldAccess("A") {
-                    typeExpr {
-                        classType("Foo") {
-                            classType("AnnotationWithEnum") {
-                                it::isFullyQualified shouldBe true
+            annot.withTypeDsl {
+                annot shouldHaveType AnnotationWithEnum::class.decl
+                val value = annot.members.firstOrThrow()
+                value.value.shouldMatchN {
+                    fieldAccess("A") {
+                        typeExpr {
+                            classType("Foo") {
+                                classType("AnnotationWithEnum") {
+                                    it::isFullyQualified shouldBe true
+                                }
                             }
                         }
+                        it shouldHaveType AnnotationWithEnum.Foo::class.decl
                     }
-                    it shouldHaveType AnnotationWithEnum.Foo::class.decl
                 }
             }
         }

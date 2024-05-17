@@ -113,9 +113,11 @@ class StressTest : ProcessorTestSpec({
     }
 
     parserTest("OpenJDK bug 8055984: type inference exponential compilation performance") {
-        // https://bugs.openjdk.java.net/browse/JDK-8055984
+        doTest {
+            // https://bugs.openjdk.java.net/browse/JDK-8055984
 
-        val acu = parser.parse("""
+            val acu = parser.parse(
+                """
             class C<U> {
                 U fu;
                 C() {}
@@ -137,9 +139,10 @@ class StressTest : ProcessorTestSpec({
                     C<String> c10 = m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>()))))))))))))))))))); // 3600
                 }
             }
-        """)
+        """
+            )
 
-        acu.descendants(ASTLocalVariableDeclaration::class.java)
+            acu.descendants(ASTLocalVariableDeclaration::class.java)
                 .map { it.varIds[0]!!.initializer!! }
                 .forEachIndexed { i, expr ->
                     val t = measureTimeMillis {
@@ -147,12 +150,15 @@ class StressTest : ProcessorTestSpec({
                     }
                     myLog("c${i + 2}: $t ms")
                 }
+        }
     }
 
     parserTest("OpenJDK bug 8225508: Compiler OOM Error with Type Inference Hierarchy") {
-        // https://bugs.openjdk.java.net/browse/JDK-8225508
+        doTest {
+            // https://bugs.openjdk.java.net/browse/JDK-8225508
 
-        val acu = parser.parse("""
+            val acu = parser.parse(
+                """
         import java.util.Arrays;
         import java.util.List;
 
@@ -229,20 +235,23 @@ class StressTest : ProcessorTestSpec({
                         Arrays.asList(baz1, baz2, baz3);
             }
         }
-        """.trimIndent())
+        """.trimIndent()
+            )
 
-        acu.descendants(ASTLocalVariableDeclaration::class.java)
+            acu.descendants(ASTLocalVariableDeclaration::class.java)
                 .map { it.varIds[0]!! }
                 .filter { it.name.startsWith("asList") }
                 .map { it.initializer!! }
                 .forEachIndexed { i, expr ->
-                    val t = measureTimeMillis { // todo these measurements are not accurate because typeres is done strictly now
-                        assertFalse {
-                            expr.typeMirror == expr.typeSystem.UNKNOWN
+                    val t =
+                        measureTimeMillis { // todo these measurements are not accurate because typeres is done strictly now
+                            assertFalse {
+                                expr.typeMirror == expr.typeSystem.UNKNOWN
+                            }
                         }
-                    }
                     myLog("asList$i: $t ms")
                 }
+        }
     }
 
 

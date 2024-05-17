@@ -93,69 +93,73 @@ class SpecialMethodsTest : ProcessorTestSpec({
     }
 
     parserTest("Test enum methods") {
+        doTest {
 
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
+                import java.util.Arrays;
 
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
-            """
-            import java.util.Arrays;
-
-            enum Foo {
-                ;
-
-                {
-                    Arrays.stream(values());
+                enum Foo {
+                    ;
+    
+                    {
+                        Arrays.stream(values());
+                    }
                 }
+
+                """.trimIndent()
+            )
+
+            val t_Foo = acu.descendants(ASTTypeDeclaration::class.java).firstOrThrow().typeMirror
+
+            val streamCall = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+            spy.shouldBeOk {
+                streamCall shouldHaveType gen.t_Stream[t_Foo]
+                streamCall.arguments[0] shouldHaveType t_Foo.toArray()
             }
-
-        """.trimIndent()
-        )
-
-        val t_Foo = acu.descendants(ASTTypeDeclaration::class.java).firstOrThrow().typeMirror
-
-        val streamCall = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
-
-        spy.shouldBeOk {
-            streamCall shouldHaveType gen.t_Stream[t_Foo]
-            streamCall.arguments[0] shouldHaveType t_Foo.toArray()
         }
     }
 
     parserTest("getClass in invocation ctx, unchecked conversion") {
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
 
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+                class Scratch {
+                    public static <T,U> T[] copyOf(U[] original, Class<? extends T[]> newType) {
+                        return null;
+                    }
 
-            class Scratch {
-                public static <T,U> T[] copyOf(U[] original, Class<? extends T[]> newType) {
-                    return null;
+
+                    public static <T, E> T[] doCopy(T[] a) {
+                        E[] elements = null;
+                        return (T[]) copyOf(elements, a.getClass());
+                    }
                 }
 
+                """.trimIndent()
+            )
 
-                public static <T, E> T[] doCopy(T[] a) {
-                    E[] elements = null;
-                    return (T[]) copyOf(elements, a.getClass());
-                }
-            }
+            acu.descendants(ASTTypeDeclaration::class.java).firstOrThrow().typeMirror shouldNotBe null
 
-        """.trimIndent())
+            val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-        acu.descendants(ASTTypeDeclaration::class.java).firstOrThrow().typeMirror shouldNotBe null
+            spy.shouldBeOk {
+                call.shouldMatchN {
+                    methodCall("copyOf") {
+                        it shouldHaveType ts.OBJECT.toArray()
 
-        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+                        argList {
+                            variableAccess("elements")
 
-        spy.shouldBeOk {
-            call.shouldMatchN {
-                methodCall("copyOf") {
-                    it shouldHaveType ts.OBJECT.toArray()
+                            methodCall("getClass") {
+                                it shouldHaveType Class::class[`?` extends ts.OBJECT.toArray()]
 
-                    argList {
-                        variableAccess("elements")
+                                variableAccess("a")
 
-                        methodCall("getClass") {
-                            it shouldHaveType Class::class[`?` extends ts.OBJECT.toArray()]
-
-                            variableAccess("a")
-
-                            argList(0)
+                                argList(0)
+                            }
                         }
                     }
                 }
@@ -165,30 +169,33 @@ class SpecialMethodsTest : ProcessorTestSpec({
 
 
     parserTest("Record ctor formal param reference") {
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
 
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
-
-           record Foo(int comp) {
-                Foo {
-                    comp = comp - 1;
+                record Foo(int comp) {
+                    Foo {
+                        comp = comp - 1;
+                    }
                 }
-           }
 
-        """.trimIndent())
+                """.trimIndent()
+            )
 
-        val (compLhs, compRhs) = acu.descendants(ASTVariableAccess::class.java).toList()
-        val id = acu.varId("comp")
+            val (compLhs, compRhs) = acu.descendants(ASTVariableAccess::class.java).toList()
+            val id = acu.varId("comp")
 
-        spy.shouldBeOk {
-            compLhs.referencedSym.shouldBeA<JFormalParamSymbol> {
-                it.tryGetNode() shouldBe id
-                it.declaringSymbol.shouldBeA<JConstructorSymbol>()
-            }
+            spy.shouldBeOk {
+                compLhs.referencedSym.shouldBeA<JFormalParamSymbol> {
+                    it.tryGetNode() shouldBe id
+                    it.declaringSymbol.shouldBeA<JConstructorSymbol>()
+                }
 
-            // same spec
-            compRhs.referencedSym.shouldBeA<JFormalParamSymbol> {
-                it.tryGetNode() shouldBe id
-                it.declaringSymbol.shouldBeA<JConstructorSymbol>()
+                // same spec
+                compRhs.referencedSym.shouldBeA<JFormalParamSymbol> {
+                    it.tryGetNode() shouldBe id
+                    it.declaringSymbol.shouldBeA<JConstructorSymbol>()
+                }
             }
         }
     }

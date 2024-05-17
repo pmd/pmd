@@ -21,8 +21,9 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
 
     parserTest("Test inexact method ref of generic type") {
-
-        val acu = parser.parse("""
+        doTest {
+            val acu = parser.parse(
+                """
             import java.util.Optional;
             import java.util.List;
             import java.util.stream.Stream;
@@ -35,30 +36,34 @@ class MethodRefInferenceTest : ProcessorTestSpec({
                 }
 
             }
-        """.trimIndent())
+        """.trimIndent()
+            )
 
 
-        val t_Archive = acu.descendants(ASTClassDeclaration::class.java).firstOrThrow().typeMirror
-        val anyMatch = acu.descendants(ASTMethodCall::class.java).first()!!
+            val t_Archive = acu.descendants(ASTClassDeclaration::class.java).firstOrThrow().typeMirror
+            val anyMatch = acu.descendants(ASTMethodCall::class.java).first()!!
 
-        anyMatch.shouldMatchN {
-            methodCall("anyMatch") {
-                it shouldHaveType it.typeSystem.BOOLEAN
+            anyMatch.shouldMatchN {
+                methodCall("anyMatch") {
+                    it shouldHaveType it.typeSystem.BOOLEAN
 
-                methodCall("filter") {
-
-                    it shouldHaveType with(it.typeDsl) { gen.t_Stream[t_Archive] }
-
-                    methodCall("flatMap") {
+                    methodCall("filter") {
 
                         it shouldHaveType with(it.typeDsl) { gen.t_Stream[t_Archive] }
 
-                        methodCall("of") {
-                            skipQualifier()
+                        methodCall("flatMap") {
 
-                            it shouldHaveType with(it.typeDsl) { gen.t_Stream[gen.t_List[t_Archive]] }
+                            it shouldHaveType with(it.typeDsl) { gen.t_Stream[t_Archive] }
 
-                            argList(3)
+                            methodCall("of") {
+                                skipQualifier()
+
+                                it shouldHaveType with(it.typeDsl) { gen.t_Stream[gen.t_List[t_Archive]] }
+
+                                argList(3)
+                            }
+
+                            argList(1)
                         }
 
                         argList(1)
@@ -66,8 +71,6 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
                     argList(1)
                 }
-
-                argList(1)
             }
         }
     }
@@ -335,8 +338,9 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
 
     parserTest("Test failing method ref with this as LHS") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
 
             package scratch;
 
@@ -351,28 +355,31 @@ class MethodRefInferenceTest : ProcessorTestSpec({
                 }
 
             }
-        """.trimIndent())
+        """.trimIndent()
+            )
 
-        val t_Archive = acu.firstTypeSignature()
-        val mref = acu.descendants(ASTMethodReference::class.java).firstOrThrow()
-        val call = acu.firstMethodCall()
+            val t_Archive = acu.firstTypeSignature()
+            val mref = acu.descendants(ASTMethodReference::class.java).firstOrThrow()
+            val call = acu.firstMethodCall()
 
-        spy.shouldHaveMissingCtDecl(call)
+            spy.shouldHaveMissingCtDecl(call)
 
-        acu.withTypeDsl {
-            mref.referencedMethod shouldBe ts.UNRESOLVED_METHOD
-            mref shouldHaveType ts.UNKNOWN
-            call.methodType shouldBe ts.UNRESOLVED_METHOD
-            call.overloadSelectionInfo.apply {
-                isFailed shouldBe true
+            acu.withTypeDsl {
+                mref.referencedMethod shouldBe ts.UNRESOLVED_METHOD
+                mref shouldHaveType ts.UNKNOWN
+                call.methodType shouldBe ts.UNRESOLVED_METHOD
+                call.overloadSelectionInfo.apply {
+                    isFailed shouldBe true
+                }
             }
         }
     }
 
     parserTest("Test method ref with void return type") {
+        doTest {
 
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
             import java.util.Optional;
             class Archive {
 
@@ -381,30 +388,32 @@ class MethodRefInferenceTest : ProcessorTestSpec({
                     return "foo";
                 }
             }
-        """.trimIndent())
+        """.trimIndent()
+            )
 
 
-        val t_Archive = acu.firstTypeSignature()
-        val getName = acu.methodDeclarations().firstOrThrow()
-        val ifPresentCall = acu.firstMethodCall()
+            val t_Archive = acu.firstTypeSignature()
+            val getName = acu.methodDeclarations().firstOrThrow()
+            val ifPresentCall = acu.firstMethodCall()
 
-        spy.shouldBeOk {
-            ifPresentCall.shouldMatchN {
-                methodCall("ifPresent") {
-                    unspecifiedChild()
-                    argList {
-                        methodRef("getName") {
-                            it.functionalMethod.shouldMatchMethod(
+            spy.shouldBeOk {
+                ifPresentCall.shouldMatchN {
+                    methodCall("ifPresent") {
+                        unspecifiedChild()
+                        argList {
+                            methodRef("getName") {
+                                it.functionalMethod.shouldMatchMethod(
                                     named = "accept",
                                     declaredIn = Consumer::class[t_Archive],
                                     withFormals = listOf(t_Archive),
                                     returning = ts.NO_TYPE
-                            )
+                                )
 
-                            it.referencedMethod.symbol shouldBe getName.symbol
+                                it.referencedMethod.symbol shouldBe getName.symbol
 
-                            typeExpr {
-                                classType("Archive")
+                                typeExpr {
+                                    classType("Archive")
+                                }
                             }
                         }
                     }
@@ -416,8 +425,9 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
     // disabled for now
     parserTest("Test inference var inst substitution in enclosing ctx") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.function.Function;
@@ -438,36 +448,39 @@ abstract class NodeStream<T> implements Iterable<T> {
     protected abstract <Q> NodeStream<Q> mapIter(Function<Iterator<T>, Iterator<Q>> fun);
 }
 
-        """.trimIndent())
+        """.trimIndent()
+            )
 
-        val (t_NodeStream) = acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
-        val (tvar, rvar, kvar) = acu.descendants(ASTTypeParameter::class.java).toList { it.typeMirror }
+            val (t_NodeStream) = acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
+            val (tvar, rvar, kvar) = acu.descendants(ASTTypeParameter::class.java).toList { it.typeMirror }
 
-        val call = acu.firstMethodCall()
+            val call = acu.firstMethodCall()
 
-        spy.shouldBeOk {
-            call shouldHaveType gen.t_Function[captureMatcher(`?` `super` tvar), gen.t_Iterator[`?` extends rvar]]
-            call.arguments[0].shouldMatchN {
-                methodRef("safeMap") {
-                    with(it.typeDsl) {
-                        // safeMap#K must have been instantiated to some variation of R
-                        it.referencedMethod.shouldMatchMethod(
+            spy.shouldBeOk {
+                call shouldHaveType gen.t_Function[captureMatcher(`?` `super` tvar), gen.t_Iterator[`?` extends rvar]]
+                call.arguments[0].shouldMatchN {
+                    methodRef("safeMap") {
+                        with(it.typeDsl) {
+                            // safeMap#K must have been instantiated to some variation of R
+                            it.referencedMethod.shouldMatchMethod(
                                 named = "safeMap",
                                 declaredIn = t_NodeStream.erasure,
                                 withFormals = listOf(t_NodeStream[`?` extends rvar]),
                                 returning = gen.t_Iterator[captureMatcher(`?` extends rvar)]
-                        )
-                    }
+                            )
+                        }
 
-                    skipQualifier()
+                        skipQualifier()
+                    }
                 }
             }
         }
     }
 
     parserTest("Fix method ref non-wildcard parameterization not being ground in listener") {
-
-        val acu = parser.parse("""
+        doTest {
+            val acu = parser.parse(
+                """
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 
@@ -484,37 +497,40 @@ class Scratch {
                      .collect(collectingAndThen(toList(), Collections::unmodifiableList));
     }
 }
-        """.trimIndent())
+        """.trimIndent()
+            )
 
-        val collectCall = acu.descendants(ASTMethodCall::class.java).first()!!
+            val collectCall = acu.descendants(ASTMethodCall::class.java).first()!!
 
-        collectCall.shouldMatchN {
-            methodCall("collect") {
-                with(it.typeDsl) {
-                    it shouldHaveType gen.`t_List{String}`
-                }
-
-                methodCall("distinct") {
+            collectCall.shouldMatchN {
+                methodCall("collect") {
                     with(it.typeDsl) {
-                        it shouldHaveType gen.t_Stream[gen.t_String]
+                        it shouldHaveType gen.`t_List{String}`
                     }
 
-                    unspecifiedChildren(2)
-                }
-
-                argList {
-                    methodCall("collectingAndThen") {
+                    methodCall("distinct") {
                         with(it.typeDsl) {
-                            it shouldHaveType Collector::class[gen.t_String, ts.OBJECT, gen.`t_List{String}`]
+                            it shouldHaveType gen.t_Stream[gen.t_String]
                         }
 
-                        argList {
-                            methodCall("toList")
-                            methodRef("unmodifiableList") {
-                                unspecifiedChild()
-                                with(it.typeDsl) {
-                                    it shouldHaveType gen.t_Function[gen.`t_List{String}`, gen.`t_List{String}`]
-                                    it.functionalMethod shouldBe it.typeMirror.streamMethods { it.simpleName == "apply" }.findFirst().get()
+                        unspecifiedChildren(2)
+                    }
+
+                    argList {
+                        methodCall("collectingAndThen") {
+                            with(it.typeDsl) {
+                                it shouldHaveType Collector::class[gen.t_String, ts.OBJECT, gen.`t_List{String}`]
+                            }
+
+                            argList {
+                                methodCall("toList")
+                                methodRef("unmodifiableList") {
+                                    unspecifiedChild()
+                                    with(it.typeDsl) {
+                                        it shouldHaveType gen.t_Function[gen.`t_List{String}`, gen.`t_List{String}`]
+                                        it.functionalMethod shouldBe it.typeMirror.streamMethods { it.simpleName == "apply" }
+                                            .findFirst().get()
+                                    }
                                 }
                             }
                         }
@@ -598,8 +614,9 @@ class Scratch {
     }
 
     parserTest("Method refs disambiguation between static methods") {
-
-        val acu = parser.parse("""
+        doTest {
+            val acu = parser.parse(
+                """
 import java.util.function.IntConsumer;
 
 class Scratch {
@@ -620,44 +637,48 @@ class Scratch {
         ic = Scratch::baz;
     }
 }
-        """.trimIndent())
+        """.trimIndent()
+            )
 
-        val (fooRef, barRef, bazRef) = acu.descendants(ASTMethodReference::class.java).toList()
+            val (fooRef, barRef, bazRef) = acu.descendants(ASTMethodReference::class.java).toList()
 
-        val t_IntConsumer = with(acu.typeDsl) { IntConsumer::class.decl }
+            val t_IntConsumer = with(acu.typeDsl) { IntConsumer::class.decl }
 
-        fooRef.shouldMatchN {
-            methodRef("foo") {
-                it shouldHaveType t_IntConsumer
-                it.referencedMethod.arity shouldBe 1
+            fooRef.shouldMatchN {
+                methodRef("foo") {
+                    it shouldHaveType t_IntConsumer
+                    it.referencedMethod.arity shouldBe 1
 
-                unspecifiedChild()
+                    unspecifiedChild()
+                }
             }
-        }
 
-        barRef.shouldMatchN {
-            methodRef("bar") {
-                it shouldHaveType t_IntConsumer
-                it.referencedMethod.arity shouldBe 1
+            barRef.shouldMatchN {
+                methodRef("bar") {
+                    it shouldHaveType t_IntConsumer
+                    it.referencedMethod.arity shouldBe 1
 
-                unspecifiedChild()
+                    unspecifiedChild()
+                }
             }
-        }
 
-        bazRef.shouldMatchN {
-            methodRef("baz") {
-                it shouldHaveType t_IntConsumer
-                it.referencedMethod.arity shouldBe 1
+            bazRef.shouldMatchN {
+                methodRef("baz") {
+                    it shouldHaveType t_IntConsumer
+                    it.referencedMethod.arity shouldBe 1
 
-                unspecifiedChild()
+                    unspecifiedChild()
+                }
             }
         }
     }
 
     parserTest("Test inexact method ref conflict between static and non-static for primitive type") {
-        // this is related to the test below, but this works for inexact methods
+        doTest {
+            // this is related to the test below, but this works for inexact methods
 
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
             import java.util.stream.*;
             class Archive {
 
@@ -669,23 +690,25 @@ class Scratch {
                             .collect(Collectors.joining(", "));
                 }
             }
-        """.trimIndent())
+        """.trimIndent()
+            )
 
-        val collectCall = acu.descendants(ASTMethodCall::class.java).first()!!
+            val collectCall = acu.descendants(ASTMethodCall::class.java).first()!!
 
 
-        spy.shouldBeOk {
-            collectCall.shouldMatchN {
-                methodCall("collect") {
-                    it shouldHaveType gen.t_String
+            spy.shouldBeOk {
+                collectCall.shouldMatchN {
+                    methodCall("collect") {
+                        it shouldHaveType gen.t_String
 
-                    methodCall("mapToObj") {
-                        it shouldHaveType gen.t_Stream[gen.t_String]
+                        methodCall("mapToObj") {
+                            it shouldHaveType gen.t_Stream[gen.t_String]
 
-                        unspecifiedChildren(2)
+                            unspecifiedChildren(2)
+                        }
+
+                        argList(1)
                     }
-
-                    argList(1)
                 }
             }
         }
@@ -693,7 +716,7 @@ class Scratch {
 
 
     parserTest("Exact method ref with primitive receiver cannot select instance methods of wrapper type") {
-
+        doTest {
         val acu = parser.parse("""
             import java.util.stream.IntStream;
 
@@ -716,12 +739,14 @@ class Scratch {
                 unspecifiedChildren(2)
             }
         }
+            }
     }
 
 
     parserTest("Missing compile-time decl") {
-
-        val acu = parser.parse("""
+        doTest {
+            val acu = parser.parse(
+                """
 interface IntConsumer { void accept(int i); }
 
 class Scratch {
@@ -730,17 +755,19 @@ class Scratch {
         IntConsumer ic = Scratch::foo;
     }
 }
-        """.trimIndent())
+        """.trimIndent()
+            )
 
-        val (t_IntConsumer) = acu.declaredTypeSignatures()
-        val (fooRef) = acu.descendants(ASTMethodReference::class.java).toList()
+            val (t_IntConsumer) = acu.declaredTypeSignatures()
+            val (fooRef) = acu.descendants(ASTMethodReference::class.java).toList()
 
-        fooRef.shouldMatchN {
-            methodRef("foo") {
-                it shouldHaveType t_IntConsumer
-                it.referencedMethod shouldBe it.typeSystem.UNRESOLVED_METHOD
+            fooRef.shouldMatchN {
+                methodRef("foo") {
+                    it shouldHaveType t_IntConsumer
+                    it.referencedMethod shouldBe it.typeSystem.UNRESOLVED_METHOD
 
-                unspecifiedChild()
+                    unspecifiedChild()
+                }
             }
         }
     }
@@ -748,8 +775,9 @@ class Scratch {
 
 
     parserTest("Method ref inside poly conditional, conditional type is fetched first") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
 import java.util.Objects;
 
 interface Predicate<Q> {
@@ -761,26 +789,29 @@ interface Predicate<Q> {
                 : object -> targetRef.equals(object);
     }
 }
-        """.trimIndent())
+        """.trimIndent()
+            )
 
 
-        val t_Predicate = acu.firstTypeSignature()
-        val testMethod = acu.methodDeclarations().get(0)!!
-        val tvar = acu.typeVar("T")
-        val (ternary) = acu.descendants(ASTConditionalExpression::class.java).toList()
-        val (fooRef) = acu.descendants(ASTMethodReference::class.java).toList()
+            val t_Predicate = acu.firstTypeSignature()
+            val testMethod = acu.methodDeclarations().get(0)!!
+            val tvar = acu.typeVar("T")
+            val (ternary) = acu.descendants(ASTConditionalExpression::class.java).toList()
+            val (fooRef) = acu.descendants(ASTMethodReference::class.java).toList()
 
-        spy.shouldBeOk {
-            ternary shouldHaveType t_Predicate[tvar]
-            fooRef.functionalMethod.shouldBeSomeInstantiationOf(testMethod.genericSignature)
-            fooRef shouldHaveType t_Predicate[tvar]
+            spy.shouldBeOk {
+                ternary shouldHaveType t_Predicate[tvar]
+                fooRef.functionalMethod.shouldBeSomeInstantiationOf(testMethod.genericSignature)
+                fooRef shouldHaveType t_Predicate[tvar]
+            }
         }
     }
 
 
     parserTest("Method ref on static class") {
-
-        val acu = parser.parse("""
+        doTest {
+            val acu = parser.parse(
+                """
             import java.util.Arrays;
             import java.util.Objects;
             import java.util.stream.Stream;
@@ -793,36 +824,38 @@ interface Predicate<Q> {
                 }
             }
 
-        """.trimIndent())
+        """.trimIndent()
+            )
 
-        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+            val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-        call.shouldMatchN {
-            methodCall("map") {
-                it shouldHaveType with(it.typeDsl) {
-                    gen.t_Stream[gen.t_String]
-                }
-
-                it::getQualifier shouldBe methodCall("stream") {
+            call.shouldMatchN {
+                methodCall("map") {
                     it shouldHaveType with(it.typeDsl) {
-                        gen.t_Stream[ts.OBJECT]
+                        gen.t_Stream[gen.t_String]
                     }
 
-                    unspecifiedChildren(2)
-                }
+                    it::getQualifier shouldBe methodCall("stream") {
+                        it shouldHaveType with(it.typeDsl) {
+                            gen.t_Stream[ts.OBJECT]
+                        }
 
-                argList {
+                        unspecifiedChildren(2)
+                    }
 
-                    methodRef("toString") {
-                        with(it.typeDsl) {
-                            it.referencedMethod.shouldMatchMethod(
+                    argList {
+
+                        methodRef("toString") {
+                            with(it.typeDsl) {
+                                it.referencedMethod.shouldMatchMethod(
                                     named = "toString",
                                     declaredIn = java.util.Objects::class.raw,
                                     withFormals = listOf(ts.OBJECT),
                                     returning = ts.STRING
-                            )
+                                )
+                            }
+                            unspecifiedChild()
                         }
-                        unspecifiedChild()
                     }
                 }
             }
@@ -832,8 +865,9 @@ interface Predicate<Q> {
 
 
     parserTest("Method ref where target type is fully unknown (is an ivar)") {
-
-        val acu = parser.parse("""
+        doTest {
+            val acu = parser.parse(
+                """
             import java.util.Map;
             import java.util.Map.Entry;
             import java.util.function.Function;
@@ -857,55 +891,57 @@ interface Predicate<Q> {
                     return args;
                 }
             }
-        """.trimIndent())
+        """.trimIndent()
+            )
 
-        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+            val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-        call.shouldMatchN {
-            methodCall("ofEntries") {
-                with(it.typeDsl) {
-                    it.methodType.shouldMatchMethod(
+            call.shouldMatchN {
+                methodCall("ofEntries") {
+                    with(it.typeDsl) {
+                        it.methodType.shouldMatchMethod(
                             named = "ofEntries",
                             declaredIn = call.enclosingType.typeMirror,
                             withFormals = listOf(gen.t_MapEntry[`?` extends gen.t_String, `?` extends gen.t_Function[int.box(), int.box()]].toArray()),
                             returning = gen.t_Map[gen.t_String, gen.t_Function[int.box(), int.box()]]
-                    )
-                }
-
-                argList {
-
-                    methodCall("entry") {
-                        argList {
-                            unspecifiedChild()
-
-                            methodRef("add") {
-                                with(it.typeDsl) {
-                                    it.referencedMethod.shouldMatchMethod(
-                                            named = "add",
-                                            declaredIn = call.enclosingType.typeMirror,
-                                            withFormals = listOf(int),
-                                            returning = int
-                                    )
-                                }
-                                unspecifiedChild()
-                            }
-                        }
+                        )
                     }
 
-                    methodCall("entry") {
-                        argList {
-                            unspecifiedChild()
+                    argList {
 
-                            methodRef("add") {
-                                with(it.typeDsl) {
-                                    it.referencedMethod.shouldMatchMethod(
+                        methodCall("entry") {
+                            argList {
+                                unspecifiedChild()
+
+                                methodRef("add") {
+                                    with(it.typeDsl) {
+                                        it.referencedMethod.shouldMatchMethod(
                                             named = "add",
                                             declaredIn = call.enclosingType.typeMirror,
                                             withFormals = listOf(int),
                                             returning = int
-                                    )
+                                        )
+                                    }
+                                    unspecifiedChild()
                                 }
+                            }
+                        }
+
+                        methodCall("entry") {
+                            argList {
                                 unspecifiedChild()
+
+                                methodRef("add") {
+                                    with(it.typeDsl) {
+                                        it.referencedMethod.shouldMatchMethod(
+                                            named = "add",
+                                            declaredIn = call.enclosingType.typeMirror,
+                                            withFormals = listOf(int),
+                                            returning = int
+                                        )
+                                    }
+                                    unspecifiedChild()
+                                }
                             }
                         }
                     }
@@ -916,8 +952,9 @@ interface Predicate<Q> {
 
 
     parserTest("Method ref with explicit type parameters") {
-
-        val acu = parser.parse("""
+        doTest {
+            val acu = parser.parse(
+                """
 import java.util.Optional;
 
 class Scratch {
@@ -937,43 +974,45 @@ class Scratch {
     }
 
 }
-        """.trimIndent())
+        """.trimIndent()
+            )
 
-        val (_, t_NodeStream) = acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
-        val (_, tvar) = acu.descendants(ASTTypeParameter::class.java).crossFindBoundaries().toList { it.typeMirror }
-        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+            val (_, t_NodeStream) = acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
+            val (_, tvar) = acu.descendants(ASTTypeParameter::class.java).crossFindBoundaries().toList { it.typeMirror }
+            val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-        call.shouldMatchN {
-            methodCall("orElseGet") {
-                with(it.typeDsl) {
-                    it.methodType.shouldMatchMethod(
+            call.shouldMatchN {
+                methodCall("orElseGet") {
+                    with(it.typeDsl) {
+                        it.methodType.shouldMatchMethod(
                             named = "orElseGet",
                             declaredIn = Optional::class[t_NodeStream[tvar]],
                             withFormals = listOf(Supplier::class[`?` extends t_NodeStream[tvar]]),
                             returning = t_NodeStream[tvar]
-                    )
-                }
+                        )
+                    }
 
-                methodCall("map") {
-                    with(it.typeDsl) {
-                        val capture = captureMatcher(`?` extends tvar)
-                        it.methodType.shouldMatchMethod(
+                    methodCall("map") {
+                        with(it.typeDsl) {
+                            val capture = captureMatcher(`?` extends tvar)
+                            it.methodType.shouldMatchMethod(
                                 named = "map",
                                 declaredIn = Optional::class[capture],
                                 withFormals = listOf(JavaFunction::class[`?` `super` capture, `?` extends t_NodeStream[tvar]]),
                                 returning = Optional::class[t_NodeStream[tvar]]
-                        )
-                    }
+                            )
+                        }
 
-                    variableAccess("optNode")
+                        variableAccess("optNode")
+
+                        argList {
+                            methodRef("singleton")
+                        }
+                    }
 
                     argList {
-                        methodRef("singleton")
+                        methodRef("empty")
                     }
-                }
-
-                argList {
-                    methodRef("empty")
                 }
             }
         }
@@ -982,8 +1021,9 @@ class Scratch {
 
 
     parserTest("Test incompatibility with formal interface") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
 
             package scratch;
 
@@ -1020,27 +1060,30 @@ class Scratch {
                 }
 
             }
-        """.trimIndent())
+        """.trimIndent()
+            )
 
-        val t_Archive = acu.firstTypeSignature()
+            val t_Archive = acu.firstTypeSignature()
 
-        val mref = acu.descendants(ASTMethodReference::class.java)[1]!!
+            val mref = acu.descendants(ASTMethodReference::class.java)[1]!!
 
-        spy.shouldBeOk {
-            mref.functionalMethod.shouldMatchMethod(
+            spy.shouldBeOk {
+                mref.functionalMethod.shouldMatchMethod(
                     named = "apply",
                     declaredIn = gen.t_Function[gen.t_List[t_Archive], gen.t_String],
                     withFormals = listOf(gen.t_List[t_Archive]),
                     returning = gen.t_String
-            )
+                )
+            }
         }
     }
 
 
 
     parserTest("Exact mref with this as lhs, referencing generic instance method, with type params mentioned in the return type") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
 
             class Scratch {
 
@@ -1058,23 +1101,26 @@ class Scratch {
                     <R> Map<K, R> copy(Map<K, R> m);
                 }
             }
-        """.trimIndent())
+        """.trimIndent()
+            )
 
-        val (t_Scratch, t_Map, t_MapMaker) = acu.declaredTypeSignatures()
-        val (copyToMutable, copy) = acu.declaredMethodSignatures()
+            val (t_Scratch, t_Map, t_MapMaker) = acu.declaredTypeSignatures()
+            val (copyToMutable, copy) = acu.declaredMethodSignatures()
 
-        val mref = acu.descendants(ASTMethodReference::class.java).firstOrThrow()
+            val mref = acu.descendants(ASTMethodReference::class.java).firstOrThrow()
 
-        spy.shouldBeOk {
-            mref.functionalMethod shouldBe t_MapMaker[gen.t_String].getDeclaredMethod(copy.symbol)
-            mref.referencedMethod shouldBe copyToMutable // exactly, ie V was not substituted
+            spy.shouldBeOk {
+                mref.functionalMethod shouldBe t_MapMaker[gen.t_String].getDeclaredMethod(copy.symbol)
+                mref.referencedMethod shouldBe copyToMutable // exactly, ie V was not substituted
+            }
         }
     }
 
 
     parserTest("Inexact mref which must differentiate two overridden overloads") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
 // reproduces what's in java.util, to not depend on JDK version
 
 interface Collection<E> {
@@ -1111,18 +1157,20 @@ class Scratch {
 }
 
 
-        """.trimIndent())
+        """.trimIndent()
+            )
 
-        val (_, _, abstractColl, _, _, _, t_Additioner) = acu.declaredTypeSignatures()
-        val (_, _, inAbstractColl, plus) = acu.declaredMethodSignatures()
+            val (_, _, abstractColl, _, _, _, t_Additioner) = acu.declaredTypeSignatures()
+            val (_, _, inAbstractColl, plus) = acu.declaredMethodSignatures()
 
-        val mref = acu.descendants(ASTMethodReference::class.java).firstOrThrow()
+            val mref = acu.descendants(ASTMethodReference::class.java).firstOrThrow()
 
-        spy.shouldBeOk {
-            mref.functionalMethod shouldBe plus
-            val rvar = plus.typeParameters[0]!!
-            mref.referencedMethod shouldBe abstractColl[rvar].getDeclaredMethod(inAbstractColl.symbol)
-            mref shouldHaveType t_Additioner
+            spy.shouldBeOk {
+                mref.functionalMethod shouldBe plus
+                val rvar = plus.typeParameters[0]!!
+                mref.referencedMethod shouldBe abstractColl[rvar].getDeclaredMethod(inAbstractColl.symbol)
+                mref shouldHaveType t_Additioner
+            }
         }
     }
 

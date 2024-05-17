@@ -184,9 +184,9 @@ class PatternVarScopingTests : ProcessorTestSpec({
 
 
     parserTest("Bindings within labeled stmt", javaVersion = JavaVersion.J17) {
-
-        checkVars(firstIsPattern = false, secondIsPattern = true) {
-            """
+        doTest {
+            checkVars(firstIsPattern = false, secondIsPattern = true) {
+                """
                 a -> {
                     label:
                         if (!(a instanceof String var)) {
@@ -196,13 +196,14 @@ class PatternVarScopingTests : ProcessorTestSpec({
                     var.toString(); // the binding
                 }
                 """
+            }
         }
     }
 
     parserTest("Bindings within switch expr with yield", javaVersion = JavaVersion.J17) {
-
-        checkVars(firstIsPattern = false, secondIsPattern = true) {
-            """
+        doTest {
+            checkVars(firstIsPattern = false, secondIsPattern = true) {
+                """
                 a -> switch (1) {
                     case 1 -> {
                         if (!(a instanceof String var)) {
@@ -214,6 +215,7 @@ class PatternVarScopingTests : ProcessorTestSpec({
                    }
                 }
                 """
+            }
         }
     }
 

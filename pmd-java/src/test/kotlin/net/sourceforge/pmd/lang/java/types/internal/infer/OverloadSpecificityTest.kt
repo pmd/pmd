@@ -127,8 +127,8 @@ class Other {
 
 
     parserTest("Test override from outside class") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 class Sup { 
     void m() {}
@@ -147,18 +147,19 @@ class F {
 }
 
                 """.trimIndent()
-        )
+            )
 
-        val (_, subM) = acu.methodDeclarations().toList { it.genericSignature }
+            val (_, subM) = acu.methodDeclarations().toList { it.genericSignature }
 
-        spy.shouldBeOk {
-            acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(subM)
+            spy.shouldBeOk {
+                acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(subM)
+            }
         }
     }
 
     parserTest("Test hidden method from outside class") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
 
                 """
 class Sup { 
@@ -176,18 +177,19 @@ class F {
 }
 
                 """.trimIndent()
-        )
+            )
 
-        val (_, subM) = acu.methodDeclarations().toList { it.genericSignature }
+            val (_, subM) = acu.methodDeclarations().toList { it.genericSignature }
 
-        spy.shouldBeOk {
-            acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(subM)
+            spy.shouldBeOk {
+                acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(subM)
+            }
         }
     }
 
     parserTest("Test hidden method from outside class, when generic") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
 
                 """
 interface Collection<E> {}
@@ -206,18 +208,19 @@ class F {
 }
 
                 """.trimIndent()
-        )
+            )
 
-        val (_, subM) = acu.methodDeclarations().toList { it.genericSignature }
+            val (_, subM) = acu.methodDeclarations().toList { it.genericSignature }
 
-        spy.shouldBeOk {
-            acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(subM)
+            spy.shouldBeOk {
+                acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(subM)
+            }
         }
     }
 
     parserTest("Test hidden method inside class") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 
 class Sup {
@@ -232,18 +235,19 @@ class Sub extends Sup {
 }
 
                 """.trimIndent()
-        )
+            )
 
-        val (_, subM) = acu.methodDeclarations().toList { it.genericSignature }
+            val (_, subM) = acu.methodDeclarations().toList { it.genericSignature }
 
-        spy.shouldBeOk {
-            acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(subM)
+            spy.shouldBeOk {
+                acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(subM)
+            }
         }
     }
 
     parserTest("Test hidden method inside hiding method") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 
 class Sup {
@@ -257,18 +261,19 @@ class Sub extends Sup {
 }
 
                 """.trimIndent()
-        )
+            )
 
-        val (supM, _) = acu.methodDeclarations().toList { it.genericSignature }
+            val (supM, _) = acu.methodDeclarations().toList { it.genericSignature }
 
-        spy.shouldBeOk {
-            acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(supM)
+            spy.shouldBeOk {
+                acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(supM)
+            }
         }
     }
 
     parserTest("Test distinct primitive overloads from import") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 import static java.lang.Integer.reverseBytes; // (int) -> int
 import static java.lang.Long.reverseBytes; // (long) -> long
@@ -280,23 +285,24 @@ class Scratch {
 }
 
                 """.trimIndent()
-        )
+            )
 
-        val call = acu.firstMethodCall()
+            val call = acu.firstMethodCall()
 
-        spy.shouldBeOk {
-            call.methodType.shouldMatchMethod(
+            spy.shouldBeOk {
+                call.methodType.shouldMatchMethod(
                     named = "reverseBytes",
                     declaredIn = long.box(),
                     withFormals = listOf(long),
                     returning = long
-            )
+                )
+            }
         }
     }
 
     parserTest("Test specificity between generic ctors") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 
 class C<U> {
@@ -311,18 +317,19 @@ class C<U> {
 }
 
                 """.trimIndent()
-        )
-        val genericCtor = acu.ctorDeclarations().get(1)!!.genericSignature // new(C<U>)
+            )
+            val genericCtor = acu.ctorDeclarations().get(1)!!.genericSignature // new(C<U>)
 
-        spy.shouldBeOk {
-            acu.firstCtorCall().methodType.shouldBeSomeInstantiationOf(genericCtor)
+            spy.shouldBeOk {
+                acu.firstCtorCall().methodType.shouldBeSomeInstantiationOf(genericCtor)
+            }
         }
     }
 
 
     parserTest("Test specificity between generic and non-generic method") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 
 class Scratch<N extends Number> {
@@ -338,18 +345,19 @@ class Scratch<N extends Number> {
 }
 
                 """.trimIndent()
-        )
+            )
 
-        val (_, specific) = acu.methodDeclarations().toList { it.genericSignature }
+            val (_, specific) = acu.methodDeclarations().toList { it.genericSignature }
 
-        spy.shouldBeOk {
-            acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(specific)
+            spy.shouldBeOk {
+                acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(specific)
+            }
         }
     }
 
     parserTest("Test specificity between lamdbas") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
 class Scratch {
 
@@ -372,24 +380,25 @@ class Scratch {
 }
 
                 """.trimIndent()
-        )
+            )
 
-        val (_, _, withRunnable, withSupplier) = acu.declaredMethodSignatures()
+            val (_, _, withRunnable, withSupplier) = acu.declaredMethodSignatures()
 
-        val (ctor, voidM, stdM, polyM) = acu.methodCalls().toList()
+            val (ctor, voidM, stdM, polyM) = acu.methodCalls().toList()
 
-        spy.shouldBeOk {
-            ctor.methodType.shouldBeSomeInstantiationOf(withSupplier)
-            voidM.methodType.shouldBeSomeInstantiationOf(withRunnable)
-            stdM.methodType.shouldBeSomeInstantiationOf(withSupplier)
-            polyM.methodType.shouldBeSomeInstantiationOf(withSupplier)
+            spy.shouldBeOk {
+                ctor.methodType.shouldBeSomeInstantiationOf(withSupplier)
+                voidM.methodType.shouldBeSomeInstantiationOf(withRunnable)
+                stdM.methodType.shouldBeSomeInstantiationOf(withSupplier)
+                polyM.methodType.shouldBeSomeInstantiationOf(withSupplier)
+            }
         }
     }
 
     parserTest("Test specificity between exact mrefs") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
-            """
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
 class Scratch {
 
     interface Runnable { void run(); }
@@ -412,24 +421,25 @@ class Scratch {
 }
 
                 """.trimIndent()
-        )
+            )
 
-        val (_, _, withRunnable, withSupplier) = acu.declaredMethodSignatures()
+            val (_, _, withRunnable, withSupplier) = acu.declaredMethodSignatures()
 
-        val (ctor, voidM, stdM, polyM, ambigM) = acu.methodCalls().toList()
+            val (ctor, voidM, stdM, polyM, ambigM) = acu.methodCalls().toList()
 
-        spy.shouldBeAmbiguous(ambigM)
+            spy.shouldBeAmbiguous(ambigM)
 
-        ctor.methodType.shouldBeSomeInstantiationOf(withSupplier)
-        voidM.methodType.shouldBeSomeInstantiationOf(withRunnable)
-        stdM.methodType.shouldBeSomeInstantiationOf(withSupplier)
-        polyM.methodType.shouldBeSomeInstantiationOf(withSupplier)
+            ctor.methodType.shouldBeSomeInstantiationOf(withSupplier)
+            voidM.methodType.shouldBeSomeInstantiationOf(withRunnable)
+            stdM.methodType.shouldBeSomeInstantiationOf(withSupplier)
+            polyM.methodType.shouldBeSomeInstantiationOf(withSupplier)
+        }
     }
 
     parserTest("Test specificity between implicitly typed lamdbas (ambiguous)") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
-            """
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
 class Scratch {
 
     interface Runnable { void run(Object o); }
@@ -451,13 +461,14 @@ class Scratch {
 }
 
                 """.trimIndent()
-        )
+            )
 
-        val (ctor, voidM, stdM, polyM) = acu.methodCalls().toList()
-        spy.shouldBeAmbiguous(ctor)
-        spy.shouldBeAmbiguous(voidM)
-        spy.shouldBeAmbiguous(stdM)
-        spy.shouldBeAmbiguous(polyM)
+            val (ctor, voidM, stdM, polyM) = acu.methodCalls().toList()
+            spy.shouldBeAmbiguous(ctor)
+            spy.shouldBeAmbiguous(voidM)
+            spy.shouldBeAmbiguous(stdM)
+            spy.shouldBeAmbiguous(polyM)
+        }
     }
 
 })

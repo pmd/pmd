@@ -67,165 +67,193 @@ class HeaderScopesTest : ProcessorTestSpec({
     }
 
     parserTest("Test same-package scope") {
+        doTest {
+            val acu = parser.parseClass(javasymbols.testdata.TestCase1::class.java)
 
-        val acu = parser.parseClass(javasymbols.testdata.TestCase1::class.java)
-
-        acu.symbolTable.types().shouldResolveToClass("SomeClassA", "javasymbols.testdata.SomeClassA")
+            acu.symbolTable.types().shouldResolveToClass("SomeClassA", "javasymbols.testdata.SomeClassA")
+        }
     }
 
 
     parserTest("$javalangTypes should be shadowed by $typesInTheSamePackage") {
+        doTest {
+            val acu = parser.parseClass(javasymbols.testdata.TestCase1::class.java)
 
-        val acu = parser.parseClass(javasymbols.testdata.TestCase1::class.java)
 
-
-        acu.symbolTable.types().typeShadowSequence("Thread") shouldBe
-                // from same package
-                listOf(SAME_PACKAGE to "javasymbols.testdata.Thread",
-                        JAVA_LANG to "java.lang.Thread")
+            acu.symbolTable.types().typeShadowSequence("Thread") shouldBe
+                    // from same package
+                    listOf(
+                        SAME_PACKAGE to "javasymbols.testdata.Thread",
+                        JAVA_LANG to "java.lang.Thread"
+                    )
+        }
     }
 
 
 
     parserTest("$typesInTheSamePackage should be shadowed by $singleTypeImports") {
+        doTest {
+            val acu = parser.parseClass(javasymbols.testdata.deep.SomewhereElse::class.java)
 
-        val acu = parser.parseClass(javasymbols.testdata.deep.SomewhereElse::class.java)
-
-        acu.symbolTable.types().typeShadowSequence("SomeClassA") shouldBe
-                // from same package
-                listOf(SINGLE_IMPORT to "javasymbols.testdata.SomeClassA",
-                        SAME_PACKAGE to "javasymbols.testdata.deep.SomeClassA")
-
+            acu.symbolTable.types().typeShadowSequence("SomeClassA") shouldBe
+                    // from same package
+                    listOf(
+                        SINGLE_IMPORT to "javasymbols.testdata.SomeClassA",
+                        SAME_PACKAGE to "javasymbols.testdata.deep.SomeClassA"
+                    )
+        }
     }
 
     parserTest("$javalangTypes should be shadowed by $singleTypeImports") {
+        doTest {
+            val acu = parser.parseClass(javasymbols.testdata.deep.SomewhereElse::class.java)
 
-        val acu = parser.parseClass(javasymbols.testdata.deep.SomewhereElse::class.java)
-
-        acu.symbolTable.types().typeShadowSequence("Thread") shouldBe
-                listOf(SINGLE_IMPORT to "javasymbols.testdata.Thread",
-                        JAVA_LANG to "java.lang.Thread")
+            acu.symbolTable.types().typeShadowSequence("Thread") shouldBe
+                    listOf(
+                        SINGLE_IMPORT to "javasymbols.testdata.Thread",
+                        JAVA_LANG to "java.lang.Thread"
+                    )
+        }
     }
 
 
     parserTest("$onDemandTypeImports should be shadowed by everything") {
+        doTest {
+            val acu = parser.parseClass(javasymbols.testdata.deep.TypeImportsOnDemand::class.java)
+            // import javasymbols.testdata.*;
 
-        val acu = parser.parseClass(javasymbols.testdata.deep.TypeImportsOnDemand::class.java)
-        // import javasymbols.testdata.*;
+            val group = acu.symbolTable.types()
 
-        val group = acu.symbolTable.types()
+            group.typeShadowSequence("Thread") shouldBe
+                    // from java.lang
+                    listOf(
+                        JAVA_LANG to "java.lang.Thread",
+                        IMPORT_ON_DEMAND to "javasymbols.testdata.Thread"
+                    )
 
-        group.typeShadowSequence("Thread") shouldBe
-                // from java.lang
-                listOf(JAVA_LANG to "java.lang.Thread",
-                        IMPORT_ON_DEMAND to "javasymbols.testdata.Thread")
+            group.typeShadowSequence("SomeClassA") shouldBe
+                    // from same package
+                    listOf(
+                        SAME_PACKAGE to "javasymbols.testdata.deep.SomeClassA",
+                        IMPORT_ON_DEMAND to "javasymbols.testdata.SomeClassA"
+                    )
 
-        group.typeShadowSequence("SomeClassA") shouldBe
-                // from same package
-                listOf(SAME_PACKAGE to "javasymbols.testdata.deep.SomeClassA",
-                        IMPORT_ON_DEMAND to "javasymbols.testdata.SomeClassA")
+            group.typeShadowSequence("Statics") shouldBe
+                    // from the import-on-demand
+                    listOf(IMPORT_ON_DEMAND to "javasymbols.testdata.Statics")
 
-        group.typeShadowSequence("Statics") shouldBe
-                // from the import-on-demand
-                listOf(IMPORT_ON_DEMAND to "javasymbols.testdata.Statics")
-
-        group.typeShadowSequence("TestCase1") shouldBe
-                // from the single type import
-                listOf(SINGLE_IMPORT to "javasymbols.testdata.TestCase1",
-                       IMPORT_ON_DEMAND to "javasymbols.testdata.TestCase1")
+            group.typeShadowSequence("TestCase1") shouldBe
+                    // from the single type import
+                    listOf(
+                        SINGLE_IMPORT to "javasymbols.testdata.TestCase1",
+                        IMPORT_ON_DEMAND to "javasymbols.testdata.TestCase1"
+                    )
+        }
     }
 
 
 
     parserTest("$onDemandStaticImports should import only accessible members") {
+        doTest {
+            val acu = parser.parseClass(javasymbols.testdata.deep.StaticImportOnDemand::class.java)
+            // import javasymbols.testdata.Statics.*;
 
-        val acu = parser.parseClass(javasymbols.testdata.deep.StaticImportOnDemand::class.java)
-        // import javasymbols.testdata.Statics.*;
 
+            acu.symbolTable.let {
 
-        acu.symbolTable.let {
+                it.variables().resolveFirst("PUBLIC_FIELD") shouldNotBe null
+                it.variables().resolveFirst("PACKAGE_FIELD") shouldBe null
+                it.variables().resolveFirst("PRIVATE_FIELD") shouldBe null
+                it.variables().resolveFirst("PROTECTED_FIELD") shouldBe null
 
-            it.variables().resolveFirst("PUBLIC_FIELD") shouldNotBe null
-            it.variables().resolveFirst("PACKAGE_FIELD") shouldBe null
-            it.variables().resolveFirst("PRIVATE_FIELD") shouldBe null
-            it.variables().resolveFirst("PROTECTED_FIELD") shouldBe null
+                it.resolveMethods("packageMethod").shouldHaveSize(0)
+                it.resolveMethods("privateMethod").shouldHaveSize(0)
+                it.resolveMethods("protectedMethod").shouldHaveSize(0)
+                it.resolveMethods("publicMethod").shouldHaveSize(2)
+                it.resolveMethods("publicMethod2").shouldHaveSize(1)
 
-            it.resolveMethods("packageMethod").shouldHaveSize(0)
-            it.resolveMethods("privateMethod").shouldHaveSize(0)
-            it.resolveMethods("protectedMethod").shouldHaveSize(0)
-            it.resolveMethods("publicMethod").shouldHaveSize(2)
-            it.resolveMethods("publicMethod2").shouldHaveSize(1)
+                it.types().resolveFirst("PublicStatic") shouldNotBe null
+                it.types().resolveFirst("PackageStatic") shouldBe null
+                it.types().resolveFirst("ProtectedStatic") shouldBe null
+                it.types().resolveFirst("PrivateStatic") shouldBe null
 
-            it.types().resolveFirst("PublicStatic") shouldNotBe null
-            it.types().resolveFirst("PackageStatic") shouldBe null
-            it.types().resolveFirst("ProtectedStatic") shouldBe null
-            it.types().resolveFirst("PrivateStatic") shouldBe null
-
+            }
         }
     }
 
     parserTest("$onDemandStaticImports should import only static members") {
+        doTest {
+            val acu = parser.parseClass(javasymbols.testdata.deep.StaticImportOnDemand::class.java)
+            // import javasymbols.testdata.Statics.*;
 
-        val acu = parser.parseClass(javasymbols.testdata.deep.StaticImportOnDemand::class.java)
-        // import javasymbols.testdata.Statics.*;
+            acu.symbolTable.apply {
 
-        acu.symbolTable.apply {
+                variables().resolveFirst("PUBLIC_FIELD") shouldNotBe null
+                variables().resolveFirst("publicField") shouldBe null
 
-            variables().resolveFirst("PUBLIC_FIELD") shouldNotBe null
-            variables().resolveFirst("publicField") shouldBe null
+                resolveMethods("publicMethod").shouldHaveSize(2)
+                resolveMethods("publicInstanceMethod").shouldHaveSize(0)
 
-            resolveMethods("publicMethod").shouldHaveSize(2)
-            resolveMethods("publicInstanceMethod").shouldHaveSize(0)
-
-            types().resolveFirst("PublicStatic") shouldNotBe null
-            types().resolveFirst("PublicInner") shouldBe null
+                types().resolveFirst("PublicStatic") shouldNotBe null
+                types().resolveFirst("PublicInner") shouldBe null
+            }
         }
     }
 
     parserTest("Types imported through $onDemandStaticImports should be shadowed by $typesInTheSamePackage") {
+        doTest {
+            val acu = parser.parseClass(javasymbols.testdata.deep.StaticImportOnDemand::class.java)
+            // import javasymbols.testdata.Statics.*;
 
-        val acu = parser.parseClass(javasymbols.testdata.deep.StaticImportOnDemand::class.java)
-        // import javasymbols.testdata.Statics.*;
-
-        acu.symbolTable.types().typeShadowSequence("PublicShadowed") shouldBe
-                // from same package
-                listOf(SAME_PACKAGE to "javasymbols.testdata.deep.PublicShadowed",
-                        IMPORT_ON_DEMAND to "javasymbols.testdata.Statics\$PublicShadowed")
+            acu.symbolTable.types().typeShadowSequence("PublicShadowed") shouldBe
+                    // from same package
+                    listOf(
+                        SAME_PACKAGE to "javasymbols.testdata.deep.PublicShadowed",
+                        IMPORT_ON_DEMAND to "javasymbols.testdata.Statics\$PublicShadowed"
+                    )
+        }
     }
 
     parserTest("Types imported through $onDemandStaticImports should be shadowed by $singleTypeImports") {
+        doTest {
+            val acu = parser.parseClass(javasymbols.testdata.deep.StaticIOD2::class.java)
+            // import javasymbols.testdata.Statics.*;
 
-        val acu = parser.parseClass(javasymbols.testdata.deep.StaticIOD2::class.java)
-        // import javasymbols.testdata.Statics.*;
-
-        acu.symbolTable.types().typeShadowSequence("SomeClassA") shouldBe
-                listOf(SINGLE_IMPORT to "javasymbols.testdata.SomeClassA",
+            acu.symbolTable.types().typeShadowSequence("SomeClassA") shouldBe
+                    listOf(
+                        SINGLE_IMPORT to "javasymbols.testdata.SomeClassA",
                         SAME_PACKAGE to "javasymbols.testdata.deep.SomeClassA",
                         IMPORT_ON_DEMAND to "javasymbols.testdata.Statics\$SomeClassA"
-                )
+                    )
+        }
     }
 
     parserTest("$staticSingleMemberImports should import types, fields and methods with the same name") {
+        doTest {
+            val acu = parser.parseClass(javasymbols.testdata.deep.StaticCollisionImport::class.java)
+            // import javasymbols.testdata.Statics.*;
 
-        val acu = parser.parseClass(javasymbols.testdata.deep.StaticCollisionImport::class.java)
-        // import javasymbols.testdata.Statics.*;
-
-        acu.symbolTable.let {
-            it.resolveField("Ola") shouldBe classSym(StaticNameCollision::class.java)!!.getDeclaredField("Ola")!!
-            it.resolveMethods("Ola").shouldContainExactly(classSym(StaticNameCollision::class.java)!!.getDeclaredMethods("Ola").toList())
-            it.types().shouldResolveToClass("Ola", "javasymbols.testdata.StaticNameCollision\$Ola")
+            acu.symbolTable.let {
+                it.resolveField("Ola") shouldBe classSym(StaticNameCollision::class.java)!!.getDeclaredField("Ola")!!
+                it.resolveMethods("Ola").shouldContainExactly(
+                    classSym(StaticNameCollision::class.java)!!.getDeclaredMethods("Ola").toList()
+                )
+                it.types().shouldResolveToClass("Ola", "javasymbols.testdata.StaticNameCollision\$Ola")
+            }
         }
     }
 
     parserTest("$staticSingleMemberImports should import inherited members") {
+        doTest {
+            val acu = parser.parseClass(javasymbols.testdata.deep.StaticCollisionImport::class.java)
+            // import javasymbols.testdata.Statics.*;
 
-        val acu = parser.parseClass(javasymbols.testdata.deep.StaticCollisionImport::class.java)
-        // import javasymbols.testdata.Statics.*;
-
-        acu.symbolTable.let {
-            it.resolveField("oha") shouldBe classSym(StaticsSuper::class.java)!!.getDeclaredField("oha")!!
-            it.resolveMethods("oha").shouldContainExactly(classSym(StaticsSuper::class.java)!!.getDeclaredMethods("oha").toList())
-            it.types().shouldResolveToClass("oha", "javasymbols.testdata.StaticsSuper\$oha")
+            acu.symbolTable.let {
+                it.resolveField("oha") shouldBe classSym(StaticsSuper::class.java)!!.getDeclaredField("oha")!!
+                it.resolveMethods("oha")
+                    .shouldContainExactly(classSym(StaticsSuper::class.java)!!.getDeclaredMethods("oha").toList())
+                it.types().shouldResolveToClass("oha", "javasymbols.testdata.StaticsSuper\$oha")
+            }
         }
     }
 
@@ -284,10 +312,11 @@ class HeaderScopesTest : ProcessorTestSpec({
 
 
     parserTest("#3768 static imported type shadows java.lang") {
-        assertNoSemanticErrorsOrWarnings()
+        doTest {
+            assertNoSemanticErrorsOrWarnings()
 
-        val acu = parser.parse(
-            """
+            val acu = parser.parse(
+                """
             import static javasymbols.testdata.deep.StaticContainer.Exception;
 
             class Foo {
@@ -296,16 +325,17 @@ class HeaderScopesTest : ProcessorTestSpec({
                 }
             }
             """
-        )
+            )
 
-        acu.symbolTable.types()
-            .shouldResolveToClass("Exception", "javasymbols.testdata.deep.StaticContainer\$Exception")
+            acu.symbolTable.types()
+                .shouldResolveToClass("Exception", "javasymbols.testdata.deep.StaticContainer\$Exception")
+        }
     }
 
     parserTest("#3768 static imported type does not shadow non-static imported type") {
-
-        val acu = parser.parse(
-            """
+        doTest {
+            val acu = parser.parse(
+                """
             import static javasymbols.testdata.deep.StaticContainer.Exception;
             import java.lang.Exception;
 
@@ -315,22 +345,23 @@ class HeaderScopesTest : ProcessorTestSpec({
                 }
             }
             """
-        )
-
-        acu.symbolTable.types().resolve("Exception")
-            .map { (it.symbol as JClassSymbol).binaryName }
-            .shouldContainExactlyInAnyOrder(
-                "javasymbols.testdata.deep.StaticContainer\$Exception",
-                "java.lang.Exception"
             )
+
+            acu.symbolTable.types().resolve("Exception")
+                .map { (it.symbol as JClassSymbol).binaryName }
+                .shouldContainExactlyInAnyOrder(
+                    "javasymbols.testdata.deep.StaticContainer\$Exception",
+                    "java.lang.Exception"
+                )
+        }
     }
 
     parserTest("Import of an unconventional name with dollar") {
+        doTest {
+            assertNoSemanticErrorsOrWarnings()
 
-        assertNoSemanticErrorsOrWarnings()
-
-        val acu = parser.parse(
-            """
+            val acu = parser.parse(
+                """
 
             import javasymbols.testdata.deep.ClassWithDollar${'$'};
 
@@ -340,32 +371,34 @@ class HeaderScopesTest : ProcessorTestSpec({
                 }
             }
             """
-        )
+            )
 
-        val moduleAccess = acu.descendants(ASTFieldAccess::class.java).first().shouldNotBeNull()
-        with(acu.typeDsl) {
-            moduleAccess shouldHaveType ts.OBJECT
-            moduleAccess.qualifier.shouldBeA<ASTTypeExpression> {
-                it shouldHaveType ts.rawType(ts.getClassSymbol("javasymbols.testdata.deep.ClassWithDollar\$"))
+            val moduleAccess = acu.descendants(ASTFieldAccess::class.java).first().shouldNotBeNull()
+            with(acu.typeDsl) {
+                moduleAccess shouldHaveType ts.OBJECT
+                moduleAccess.qualifier.shouldBeA<ASTTypeExpression> {
+                    it shouldHaveType ts.rawType(ts.getClassSymbol("javasymbols.testdata.deep.ClassWithDollar\$"))
+                }
             }
         }
     }
     parserTest("Import static on demand with inner (non-static) class") {
+        doTest {
+            assertNoSemanticErrorsOrWarnings()
 
-        assertNoSemanticErrorsOrWarnings()
-
-        val acu = parser.parse(
-            """
+            val acu = parser.parse(
+                """
             package ${OuterWithoutDollar::class.java.`package`.name};
             import static ${OuterWithoutDollar::class.java.name}.*;
             class Foo {
                 static {}
             }
             """
-        )
+            )
 
-        val block = acu.descendants(ASTBlock::class.java).firstOrThrow()
-        block.symbolTable.types().resolve("Inner").shouldBeEmpty()
+            val block = acu.descendants(ASTBlock::class.java).firstOrThrow()
+            block.symbolTable.types().resolve("Inner").shouldBeEmpty()
+        }
     }
 })
 

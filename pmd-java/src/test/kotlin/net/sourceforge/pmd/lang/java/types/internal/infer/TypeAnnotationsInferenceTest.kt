@@ -14,8 +14,9 @@ import net.sourceforge.pmd.lang.java.types.*
 class TypeAnnotationsInferenceTest : ProcessorTestSpec({
 
     parserTest("Test type annotation propagate even with boxing") {
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
-            """
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
 import java.lang.annotation.*;
 class Foo {
     @Target(ElementType.TYPE_USE)
@@ -35,24 +36,26 @@ class Foo {
 }
 
         """.trimIndent()
-        )
+            )
 
-        val (_, A) = acu.typeDeclarations().toList { it.symbol }
+            val (_, A) = acu.typeDeclarations().toList { it.symbol }
 
 
-        spy.shouldBeOk {
-            val `@A Integer` = `@`(A) on int.box()
-            acu.firstMethodCall() shouldHaveType `@A Integer`
-            acu.varId("i2") shouldHaveType `@A Integer`
+            spy.shouldBeOk {
+                val `@A Integer` = `@`(A) on int.box()
+                acu.firstMethodCall() shouldHaveType `@A Integer`
+                acu.varId("i2") shouldHaveType `@A Integer`
 
-            acu.methodCalls().get(1)!! shouldHaveType (`@`(A) on ts.STRING)
-            acu.varId("s2") shouldHaveType ts.STRING
+                acu.methodCalls().get(1)!! shouldHaveType (`@`(A) on ts.STRING)
+                acu.varId("s2") shouldHaveType ts.STRING
+            }
         }
     }
 
     parserTest("Test type annotations do not break wildcard capture") {
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
-            """
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
 import java.lang.annotation.*;
 class Foo {
     @Target(ElementType.TYPE_USE)
@@ -66,18 +69,19 @@ class Foo {
 }
 
         """.trimIndent()
-        )
-
-        val (_, A, t_Predicate) = acu.typeDeclarations().toList { it.symbol }
-
-
-        spy.shouldBeOk {
-            val `@A` = `@`(A)
-            acu.firstMethodCall() shouldHaveType boolean
-            acu.firstMethodCall().methodType.shouldMatchMethod(
-                named = "test",
-                declaredIn = t_Predicate[captureMatcher( `?` `super` (`@A` on acu.typeVar("T")))]
             )
+
+            val (_, A, t_Predicate) = acu.typeDeclarations().toList { it.symbol }
+
+
+            spy.shouldBeOk {
+                val `@A` = `@`(A)
+                acu.firstMethodCall() shouldHaveType boolean
+                acu.firstMethodCall().methodType.shouldMatchMethod(
+                    named = "test",
+                    declaredIn = t_Predicate[captureMatcher(`?` `super` (`@A` on acu.typeVar("T")))]
+                )
+            }
         }
     }
 

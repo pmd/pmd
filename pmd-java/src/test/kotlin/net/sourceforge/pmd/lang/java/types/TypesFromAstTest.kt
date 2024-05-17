@@ -18,9 +18,10 @@ class TypesFromAstTest : ProcessorTestSpec({
 
 
     parserTest("Test primitive types are reused") {
-
-        val (tf1, tf2) =
-                parser.parse("""
+        doTest {
+            val (tf1, tf2) =
+                parser.parse(
+                    """
                     package java.util;
 
                     class Foo<K> {
@@ -32,41 +33,43 @@ class TypesFromAstTest : ProcessorTestSpec({
                       }
 
                     }
-                """)
-                        .descendants(ASTFieldDeclaration::class.java)
-                        .crossFindBoundaries()
-                        .map { it.typeNode }
-                        .toList()
+                """
+                )
+                    .descendants(ASTFieldDeclaration::class.java)
+                    .crossFindBoundaries()
+                    .map { it.typeNode }
+                    .toList()
 
-        tf1.shouldMatchN {
+            tf1.shouldMatchN {
 
-            classType("Inner") {
+                classType("Inner") {
 
-                it.typeMirror.toString() shouldBe "java.util.Foo<K>#Inner<T>"
+                    it.typeMirror.toString() shouldBe "java.util.Foo<K>#Inner<T>"
 
-                classType("Foo") {
+                    classType("Foo") {
 
-                    it.typeMirror.toString() shouldBe "java.util.Foo<K>"
+                        it.typeMirror.toString() shouldBe "java.util.Foo<K>"
+
+                        typeArgList {
+                            classType("K")
+                        }
+                    }
 
                     typeArgList {
-                        classType("K")
+                        classType("T")
                     }
                 }
-
-                typeArgList {
-                    classType("T")
-                }
             }
-        }
 
-        tf2.shouldMatchN {
+            tf2.shouldMatchN {
 
-            classType("Inner") {
+                classType("Inner") {
 
-                it.typeMirror.toString() shouldBe "java.util.Foo<K>#Inner<T>"
+                    it.typeMirror.toString() shouldBe "java.util.Foo<K>#Inner<T>"
 
-                typeArgList {
-                    classType("T")
+                    typeArgList {
+                        classType("T")
+                    }
                 }
             }
         }

@@ -116,7 +116,9 @@ class Scratch {
 
 
     parserTest("Primitive signatures do not merge") {
-        val acu = parser.parse("""
+        doTest {
+            val acu = parser.parse(
+                """
 class Scratch {
    void m(long t) { }
 
@@ -125,18 +127,21 @@ class Scratch {
    }
 }
     """.trimIndent()
-        )
+            )
 
-        val (scratchM, otherM) = acu.methodDeclarations().toList { it.genericSignature }
+            val (scratchM, otherM) = acu.methodDeclarations().toList { it.genericSignature }
 
 
-        assertFalse("Methods are not override-equivalent") {
-            TypeOps.areOverrideEquivalent(scratchM, otherM)
+            assertFalse("Methods are not override-equivalent") {
+                TypeOps.areOverrideEquivalent(scratchM, otherM)
+            }
         }
     }
 
     parserTest("Primitive signatures do not merge 2") {
-        val acu = parser.parse("""
+        doTest {
+            val acu = parser.parse(
+                """
 class Scratch {
    void m(int t) { }
 
@@ -145,20 +150,22 @@ class Scratch {
    }
 }
     """.trimIndent()
-        )
+            )
 
-        val (scratchM, otherM) = acu.methodDeclarations().toList { it.genericSignature }
+            val (scratchM, otherM) = acu.methodDeclarations().toList { it.genericSignature }
 
 
-        assertFalse("Methods are not override-equivalent") {
-            TypeOps.areOverrideEquivalent(scratchM, otherM)
+            assertFalse("Methods are not override-equivalent") {
+                TypeOps.areOverrideEquivalent(scratchM, otherM)
+            }
         }
     }
 
 
     parserTest("Static generic method") {
-
-        val acu = parser.parse("""
+        doTest {
+            val acu = parser.parse(
+                """
 class Sup { 
     static <E> E m(F<? extends E> e) { return null; }
 }
@@ -173,19 +180,21 @@ class F<G> {
     }
 }
     """.trimIndent()
-        )
+            )
 
-        val (supE, subE) = acu.declaredMethodSignatures()
+            val (supE, subE) = acu.declaredMethodSignatures()
 
 
-        assertTrue("Methods are override-equivalent") {
-            TypeOps.areOverrideEquivalent(supE, subE)
+            assertTrue("Methods are override-equivalent") {
+                TypeOps.areOverrideEquivalent(supE, subE)
+            }
         }
     }
 
-   parserTest("Static method with different bound") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+    parserTest("Static method with different bound") {
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
 import java.util.List;
 class Sup { 
     static <E, _X> E m(F<? extends E> e) { return null; }
@@ -204,28 +213,30 @@ class F<G> {
     }
 }
     """.trimIndent()
-        )
+            )
 
-        val (supE, subE) = acu.declaredMethodSignatures()
+            val (supE, subE) = acu.declaredMethodSignatures()
 
 
-        // their type parameters have a different bound
-        // technically this is a compile-time error:
-        // both methods have the same erasure but neither hides the other
-        assertFalse("Methods should not override each other\n\t$subE\n\t$supE") {
-            TypeOps.overrides(subE, supE, subE.declaringType)
+            // their type parameters have a different bound
+            // technically this is a compile-time error:
+            // both methods have the same erasure but neither hides the other
+            assertFalse("Methods should not override each other\n\t$subE\n\t$supE") {
+                TypeOps.overrides(subE, supE, subE.declaringType)
+            }
+
+            spy.shouldBeAmbiguous(acu.firstMethodCall())
+            acu.firstMethodCall().methodType shouldBeSomeInstantiationOf subE
         }
-
-        spy.shouldBeAmbiguous(acu.firstMethodCall())
-        acu.firstMethodCall().methodType shouldBeSomeInstantiationOf subE
     }
 
 
 
 
     parserTest("Static method of interface is not inherited!") {
-
-       val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
 interface List<T> {}
 
 interface Sup {
@@ -244,26 +255,28 @@ class F<G> implements List<F<G>> {
     }
 }
     """.trimIndent()
-        )
+            )
 
-        val (supE, subE) = acu.declaredMethodSignatures()
+            val (supE, subE) = acu.declaredMethodSignatures()
 
 
-        // their type parameters have a different bound
-        assertFalse("Methods should not be override-equivalent") {
-            TypeOps.overrides(subE, supE, subE.declaringType)
-        }
+            // their type parameters have a different bound
+            assertFalse("Methods should not be override-equivalent") {
+                TypeOps.overrides(subE, supE, subE.declaringType)
+            }
 
-        spy.shouldBeOk {
-            acu.firstMethodCall().methodType shouldBeSomeInstantiationOf subE
+            spy.shouldBeOk {
+                acu.firstMethodCall().methodType shouldBeSomeInstantiationOf subE
+            }
         }
     }
 
 
 
     parserTest("Static method of interface is not inherited in subinterfaces either") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
 interface List<T> {}
 
 interface Sup {
@@ -282,18 +295,19 @@ class F<G> implements List<F<G>> {
     }
 }
     """.trimIndent()
-        )
+            )
 
-        val (supE, subE) = acu.declaredMethodSignatures()
+            val (supE, subE) = acu.declaredMethodSignatures()
 
 
-        // their type parameters have a different bound
-        assertFalse("Methods should not be override-equivalent") {
-            TypeOps.overrides(subE, supE, subE.declaringType)
-        }
+            // their type parameters have a different bound
+            assertFalse("Methods should not be override-equivalent") {
+                TypeOps.overrides(subE, supE, subE.declaringType)
+            }
 
-        spy.shouldBeOk {
-            acu.firstMethodCall().methodType shouldBeSomeInstantiationOf subE
+            spy.shouldBeOk {
+                acu.firstMethodCall().methodType shouldBeSomeInstantiationOf subE
+            }
         }
     }
 

@@ -243,9 +243,10 @@ class OverloadResolutionTest : ProcessorTestSpec({
     }
 
     parserTest("Test overload resolution with unchecked conversion") {
+        doTest {
 
-
-        val acu = parser.parse("""
+            val acu = parser.parse(
+                """
            class Scratch {
                 int foo(Class<?> k) {} // this is selected
                 void foo(Object o) {}
@@ -255,20 +256,22 @@ class OverloadResolutionTest : ProcessorTestSpec({
                 }
            }
 
-        """.trimIndent())
+        """.trimIndent()
+            )
 
-        val (fooClass) = acu.descendants(ASTMethodDeclaration::class.java).toList()
+            val (fooClass) = acu.descendants(ASTMethodDeclaration::class.java).toList()
 
-        val call = acu.descendants(ASTMethodCall::class.java).first()!!
+            val call = acu.descendants(ASTMethodCall::class.java).first()!!
 
-        call.shouldMatchN {
-            methodCall("foo") {
-                it shouldHaveType it.typeSystem.INT
-                it.methodType.symbol shouldBe fooClass.symbol
+            call.shouldMatchN {
+                methodCall("foo") {
+                    it shouldHaveType it.typeSystem.INT
+                    it.methodType.symbol shouldBe fooClass.symbol
 
-                argList {
-                    variableAccess("k") {
-                        it shouldHaveType with (it.typeDsl) { Class::class.raw }
+                    argList {
+                        variableAccess("k") {
+                            it shouldHaveType with(it.typeDsl) { Class::class.raw }
+                        }
                     }
                 }
             }
@@ -277,9 +280,9 @@ class OverloadResolutionTest : ProcessorTestSpec({
 
     parserTest("Test primitive conversion in loose phase") {
         inContext(ExpressionParsingCtx) {
-
-            val acu = parser.parse(
-            """
+            doTest {
+                val acu = parser.parse(
+                    """
                 class Foo {
                     void foo(long i) {
                         foo('c');
@@ -287,20 +290,22 @@ class OverloadResolutionTest : ProcessorTestSpec({
 
                     void foo(String other) {}
                 }
-            """)
+            """
+                )
 
-            val fooM = acu.descendants(ASTMethodDeclaration::class.java).firstOrThrow()
+                val fooM = acu.descendants(ASTMethodDeclaration::class.java).firstOrThrow()
 
-            val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+                val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-            call.shouldMatchN {
-                methodCall("foo") {
-                    it.methodType.apply {
-                        formalParameters shouldBe listOf(it.typeSystem.LONG)
-                        symbol shouldBe fooM.symbol
-                    }
-                    argList {
-                        charLit("'c'")
+                call.shouldMatchN {
+                    methodCall("foo") {
+                        it.methodType.apply {
+                            formalParameters shouldBe listOf(it.typeSystem.LONG)
+                            symbol shouldBe fooM.symbol
+                        }
+                        argList {
+                            charLit("'c'")
+                        }
                     }
                 }
             }
@@ -309,9 +314,9 @@ class OverloadResolutionTest : ProcessorTestSpec({
     }
 
     parserTest("#4557 two overloads with boxed types") {
-
-        val acu = parser.parse(
-            """
+        doTest {
+            val acu = parser.parse(
+                """
             package p;
 
             import static p.Static.assertThat;
@@ -337,20 +342,21 @@ class OverloadResolutionTest : ProcessorTestSpec({
 
             }
             """.trimIndent()
-        )
+            )
 
-        val fooM = acu.methodDeclarations().firstOrThrow()
-        val call = acu.firstMethodCall()
+            val fooM = acu.methodDeclarations().firstOrThrow()
+            val call = acu.firstMethodCall()
 
-        call.overloadSelectionInfo.should {
-            it.isFailed shouldBe false
-            it.methodType.symbol shouldBe fooM.symbol
+            call.overloadSelectionInfo.should {
+                it.isFailed shouldBe false
+                it.methodType.symbol shouldBe fooM.symbol
+            }
         }
     }
     parserTest("Two overloads with boxed types, widening required, ambiguous") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
-            """
+        doTest {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
             class Static {
                 static {
                     // ambiguous: 1 is int, and neither Double nor Long is more
@@ -368,17 +374,18 @@ class OverloadResolutionTest : ProcessorTestSpec({
 
             }
             """.trimIndent()
-        )
+            )
 
-        val call = acu.firstMethodCall()
-        spy.shouldBeAmbiguous(call)
+            val call = acu.firstMethodCall()
+            spy.shouldBeAmbiguous(call)
+        }
     }
 
 
     parserTest("Overload selection must identify fallbacks if any") {
-
-        val acu = parser.parse(
-            """
+        doTest {
+            val acu = parser.parse(
+                """
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.lang.reflect.Type;
@@ -399,45 +406,47 @@ class Scratch {
                   .collect(Collectors.joining(", ")));
     }
 }
-        """.trimIndent())
+        """.trimIndent()
+            )
 
-        val fooCall = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+            val fooCall = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-        fooCall.shouldMatchN {
-            methodCall("foo") {
-                argList {
-                    methodCall("collect") {
-                        it shouldHaveType with(it.typeDsl) { gen.t_String }
+            fooCall.shouldMatchN {
+                methodCall("foo") {
+                    argList {
+                        methodCall("collect") {
+                            it shouldHaveType with(it.typeDsl) { gen.t_String }
 
-                        methodCall("map") {
+                            methodCall("map") {
 
-                            it shouldHaveType with(it.typeDsl) { gen.t_Stream[gen.t_String] }
+                                it shouldHaveType with(it.typeDsl) { gen.t_Stream[gen.t_String] }
 
-                            it::getQualifier shouldBe methodCall("stream") {
-                                it.overloadSelectionInfo.isVarargsCall shouldBe false
-                                it shouldHaveType with(it.typeDsl) { gen.t_Stream[Class::class[`?`]] }
-                                unspecifiedChild()
+                                it::getQualifier shouldBe methodCall("stream") {
+                                    it.overloadSelectionInfo.isVarargsCall shouldBe false
+                                    it shouldHaveType with(it.typeDsl) { gen.t_Stream[Class::class[`?`]] }
+                                    unspecifiedChild()
+                                    argList {
+                                        variableAccess("genArray") {
+                                            it shouldHaveType with(it.typeDsl) { Class::class[`?`].toArray() }
+                                        }
+                                    }
+                                }
+
+
                                 argList {
-                                    variableAccess("genArray") {
-                                        it shouldHaveType with(it.typeDsl) { Class::class[`?`].toArray() }
+                                    methodRef("getTypeName") {
+                                        with(it.typeDsl) {
+                                            it shouldHaveType gen.t_Function[Class::class[`?`], gen.t_String]
+                                        }
+
+                                        skipQualifier()
                                     }
                                 }
                             }
 
 
-                            argList {
-                                methodRef("getTypeName") {
-                                    with(it.typeDsl) {
-                                        it shouldHaveType gen.t_Function[Class::class[`?`], gen.t_String]
-                                    }
-
-                                    skipQualifier()
-                                }
-                            }
+                            argList(1)
                         }
-
-
-                        argList(1)
                     }
                 }
             }
