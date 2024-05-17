@@ -390,6 +390,7 @@ public abstract class AbstractConfiguration {
      * @return failOnViolation
      *
      * @see #isFailOnError()
+     * @since 7.2.0
      */
     public boolean isFailOnViolation() {
         return failOnViolation;
@@ -405,6 +406,7 @@ public abstract class AbstractConfiguration {
      * @param failOnViolation whether to exit with 4 and fail the build if violations are found.
      *
      * @see #isFailOnError()
+     * @since 6.0.0
      */
     public void setFailOnViolation(boolean failOnViolation) {
         this.failOnViolation = failOnViolation;
@@ -420,6 +422,7 @@ public abstract class AbstractConfiguration {
      * @return failOnError
      *
      * @see #isFailOnViolation()
+     * @since 6.0.0
      */
     public boolean isFailOnError() {
         return failOnError;
@@ -435,6 +438,7 @@ public abstract class AbstractConfiguration {
      * @param failOnError whether to exit with 5 and fail the build if recoverable errors occurred.
      *
      * @see #isFailOnViolation()
+     * @since 7.2.0
      */
     public void setFailOnError(boolean failOnError) {
         this.failOnError = failOnError;

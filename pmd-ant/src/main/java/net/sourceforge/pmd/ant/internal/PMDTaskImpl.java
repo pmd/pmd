@@ -144,7 +144,7 @@ public class PMDTaskImpl {
             pmd.performAnalysis();
             stats = reportStatsListener.getResult();
             if (failOnError && pmd.getReporter().numErrors() > 0) {
-                throw new BuildException("Some processing errors occurred while running PMD");
+                throw new BuildException("Some recoverable errors occurred while running PMD");
             }
         }
 
