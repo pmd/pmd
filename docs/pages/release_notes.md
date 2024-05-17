@@ -29,6 +29,7 @@ Since this release, PMD will also expose any getter returning a collection of an
   * [#4467](https://github.com/pmd/pmd/issues/4467): \[core] Expose collections from getters as XPath sequence attributes
   * [#4978](https://github.com/pmd/pmd/issues/4978): \[core] Referenced Rulesets do not emit details on validation errors
   * [#4983](https://github.com/pmd/pmd/pull/4983): \[cpd] Fix CPD crashes about unicode escapes
+  * [#5009](https://github.com/pmd/pmd/issues/5009): \[core] Kotest tests aren't picked up by surefire
 * java
   * [#4912](https://github.com/pmd/pmd/issues/4912): \[java] Unable to parse some Java9+ resource references
   * [#4973](https://github.com/pmd/pmd/pull/4973): \[java] Stop parsing Java for CPD
