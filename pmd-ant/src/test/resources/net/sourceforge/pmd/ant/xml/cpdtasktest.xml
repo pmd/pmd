@@ -11,7 +11,24 @@
         <cpd minimumTokenCount="20" outputFile="${pmd.home}/target/cpd.ant.tests" language="dummy">
           <fileset dir="${pmd.home}/${src}">
             <include name="**/*.dummy"/>
+            <exclude name="sampleLexError.dummy"/>
           </fileset>
         </cpd>
 	</target>
+
+    <target name="failOnErrorDefault">
+        <cpd minimumTokenCount="20" outputFile="${pmd.home}/target/cpd.ant.tests" language="dummy" skipLexicalErrors="true">
+            <fileset dir="${pmd.home}/${src}">
+                <include name="**/*.dummy"/>
+            </fileset>
+        </cpd>
+    </target>
+
+    <target name="failOnErrorIgnore">
+        <cpd minimumTokenCount="20" outputFile="${pmd.home}/target/cpd.ant.tests" language="dummy" failOnError="false" skipLexicalErrors="true">
+            <fileset dir="${pmd.home}/${src}">
+                <include name="**/*.dummy"/>
+            </fileset>
+        </cpd>
+    </target>
 </project>

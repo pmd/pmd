@@ -16,4 +16,12 @@ Test Rule 2
 Test Rule 3
 </violation>
 </file>
+<file name="sampleLexError.dummy">
+<violation beginline="1" endline="1" begincolumn="1" endcolumn="30" rule="SampleXPathRule" ruleset="Test Ruleset" package="foo" externalInfoUrl="${pmd.website.baseurl}/rules/dummy/basic.xml#SampleXPathRule" priority="3">
+Test Rule 2
+</violation>
+<violation beginline="1" endline="1" begincolumn="1" endcolumn="30" rule="DeprecatedRule" ruleset="Test Ruleset" package="foo" externalInfoUrl="${pmd.website.baseurl}/rules/dummy/basic.xml#deprecatedrule" priority="3">
+Test Rule 3
+</violation>
+</file>
 </pmd>

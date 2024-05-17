@@ -82,6 +82,7 @@ public class CPDTask extends Task {
     private File outputFile;
     private String encoding = System.getProperty("file.encoding");
     private List<FileSet> filesets = new ArrayList<>();
+    private boolean failOnError = true;
 
     @Override
     public void execute() throws BuildException {
@@ -118,6 +119,14 @@ public class CPDTask extends Task {
                 long timeTaken = System.currentTimeMillis() - start;
                 log("Done analyzing code; that took " + timeTaken + " milliseconds");
 
+                int errors = config.getReporter().numErrors();
+                if (errors > 0) {
+                    if (failOnError) {
+                        throw new BuildException("There were " + errors + " recovered errors during analysis. Ignore these with failOnError=\"true\".");
+                    } else {
+                        log("There were " + errors + " recovered errors during analysis. Not failing build, because failOnError=\"false\".", Project.MSG_WARN);
+                    }
+                }
             }
         } catch (IOException ioe) {
             log(ioe.toString(), Project.MSG_ERR);
@@ -250,6 +259,15 @@ public class CPDTask extends Task {
 
     public void setSkipBlocksPattern(String skipBlocksPattern) {
         this.skipBlocksPattern = skipBlocksPattern;
+    }
+
+    /**
+     * Whether to fail the build if any recoverable errors occurred while processing the files.
+     *
+     * @since 7.2.0
+     */
+    public void setFailOnError(boolean failOnError) {
+        this.failOnError = failOnError;
     }
 
     public static class FormatAttribute extends EnumeratedAttribute {
