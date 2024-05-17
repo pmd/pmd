@@ -10,13 +10,12 @@ import java.lang.reflect.Modifier;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.EmptyClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 
-abstract class BasePrimitiveSymbol extends EmptyClassSymbol implements JClassSymbol {
+abstract class BasePrimitiveSymbol extends EmptyClassSymbol {
 
     BasePrimitiveSymbol(TypeSystem ts) {
         super(() -> ts);

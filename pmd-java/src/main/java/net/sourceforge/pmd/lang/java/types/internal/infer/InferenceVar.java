@@ -35,7 +35,7 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
  * type is of no importance outside the implementation of this framework.
  */
 @SuppressWarnings("PMD.CompareObjectsWithEquals")
-public final class InferenceVar implements JTypeMirror, SubstVar {
+public final class InferenceVar implements SubstVar {
 
     // we used to use greek letters (for style), but they're hard to type
     private static final String NAMES = "abcdefghijklmnopqrstuvwxyz"; // + "αβγδεζηθκλμνξπρςυφχψω"
@@ -304,7 +304,7 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
         // These sets are shared because otherwise *literal millions* of enumsets are created, with the same constants
         static final Set<BoundKind> ALL = EnumSet.allOf(BoundKind.class);
         static final Set<BoundKind> EQ_LOWER = EnumSet.of(EQ, LOWER);
-        private static final Set<BoundKind> EQ_UPPER = EnumSet.of(EQ, UPPER);
+        static final Set<BoundKind> EQ_UPPER = EnumSet.of(EQ, UPPER);
         private static final Set<BoundKind> JUST_EQ = Collections.singleton(EQ);
 
         private final String sym;

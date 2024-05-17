@@ -1,6 +1,6 @@
 +- CompilationUnit[@PackageName = ""]
    +- MethodDeclaration[@Abstract = false, @Arity = 0, @EffectiveVisibility = Visibility.V_PACKAGE, @Final = false, @MainMethod = true, @Name = "main", @Overridden = false, @Static = false, @Varargs = false, @Visibility = Visibility.V_PACKAGE, @Void = true]
-      +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
+      +- ModifierList[@EffectiveModifiers = (), @ExplicitModifiers = ()]
       +- VoidType[]
       +- FormalParameters[@Empty = true, @Size = 0]
       +- Block[@Empty = false, @Size = 1, @containsComment = false]

@@ -2642,7 +2642,7 @@ public class SomeEJB extends EJBObject implements EJBLocalHome {
     <rule name="StringBufferInstantiationWithChar"
           language="java"
           since="3.9"
-          message="Do not instantiate a StringBuffer or StringBuilder with a char"
+          message="Argument to `new StringBuilder()` or `new StringBuffer()` is implicitly converted from char to int"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#stringbufferinstantiationwithchar">
         <description>
@@ -2668,8 +2668,9 @@ new StringBuilder("A")   //  1 + 16 = 17
             <property name="xpath">
                 <value>
 <![CDATA[
-//ConstructorCall[ArgumentList/CharLiteral]
-    [pmd-java:typeIs('java.lang.StringBuilder') or pmd-java:typeIs('java.lang.StringBuffer')]
+//ConstructorCall[ArgumentList/*[pmd-java:typeIsExactly('char')]]
+    [pmd-java:matchesSig('java.lang.StringBuilder#new(int)')
+     or pmd-java:matchesSig('java.lang.StringBuffer#new(int)')]
 ]]>
                 </value>
             </property>

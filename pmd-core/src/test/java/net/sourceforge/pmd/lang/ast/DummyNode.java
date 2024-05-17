@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.ast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -123,6 +124,11 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
     @Override
     public Iterator<Attribute> getXPathAttributesIterator() {
         return attributes.iterator();
+    }
+
+    // phony attribute that repeats the image 3 times
+    public List<String> getLines() {
+        return Arrays.asList(getImage(), getImage(), getImage());
     }
 
     public static class DummyRootNode extends DummyNode implements RootNode, GenericNode<DummyNode> {

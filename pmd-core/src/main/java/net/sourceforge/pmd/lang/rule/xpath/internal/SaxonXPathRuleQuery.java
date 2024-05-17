@@ -258,13 +258,14 @@ public class SaxonXPathRuleQuery {
         return NAME_POOL;
     }
 
-
     final class StaticContextWithProperties extends IndependentContext {
 
         private final Map<StructuredQName, PropertyDescriptor<?>> propertiesByName = new HashMap<>();
 
         StaticContextWithProperties(Configuration config) {
             super(config);
+            // This statement is necessary for Saxon to support sequence-valued attributes
+            getPackageData().setSchemaAware(true);
         }
 
         public void declareProperty(PropertyDescriptor<?> prop) {

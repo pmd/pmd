@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.rule.xpath;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.List;
 import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -106,16 +105,11 @@ public final class Attribute {
             return null;
         } else {
             DeprecatedAttribute annot = method.getAnnotation(DeprecatedAttribute.class);
-            String result = annot != null
+            return annot != null
                    ? annot.replaceWith()
                    : method.isAnnotationPresent(Deprecated.class)
                      ? DeprecatedAttribute.NO_REPLACEMENT
                      : null;
-            if (result == null && List.class.isAssignableFrom(method.getReturnType())) {
-                // Lists are generally deprecated, see #2451
-                result = DeprecatedAttribute.NO_REPLACEMENT;
-            }
-            return result;
         }
     }
 
