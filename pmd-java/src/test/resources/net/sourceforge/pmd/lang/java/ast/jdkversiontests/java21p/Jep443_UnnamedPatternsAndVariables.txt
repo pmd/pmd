@@ -600,7 +600,7 @@
                               +- MethodReference[@CompileTimeConstant = false, @ConstructorReference = false, @MethodName = "toUpperCase", @ParenthesisDepth = 0, @Parenthesized = false]
                               |  +- TypeExpression[@CompileTimeConstant = false, @ParenthesisDepth = 0, @Parenthesized = false]
                               |     +- ClassType[@FullyQualified = false, @SimpleName = "String"]
-                              +- LambdaExpression[@Arity = 1, @BlockBody = false, @CompileTimeConstant = false, @ExpressionBody = true, @ParenthesisDepth = 0, @Parenthesized = false]
+                              +- LambdaExpression[@Arity = 1, @BlockBody = false, @CompileTimeConstant = false, @ExplicitlyTyped = false, @ExpressionBody = true, @ParenthesisDepth = 0, @Parenthesized = false]
                                  +- LambdaParameterList[@Empty = false, @Size = 1]
                                  |  +- LambdaParameter[@EffectiveVisibility = Visibility.V_PACKAGE, @Final = false, @TypeInferred = true, @Visibility = Visibility.V_PACKAGE]
                                  |     +- ModifierList[@EffectiveModifiers = (), @ExplicitModifiers = ()]

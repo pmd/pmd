@@ -63,13 +63,14 @@ public final class ASTLambdaExpression extends AbstractJavaExpr implements Funct
         return (ASTLambdaParameterList) getChild(0);
     }
 
-    public boolean isExplicitlyTyped() {
-        ASTLambdaParameterList parameters = getParameters();
-        if (parameters.isEmpty()) {
-            return true;
-        }
 
-        return parameters.toStream().none(ASTLambdaParameter::isTypeInferred);
+    /**
+     * Return true if this lambda is explicitly typed, meaning
+     * all parameters have an explicit type. Note that lambdas
+     * with zero parameters are explicitly typed.
+     */
+    public boolean isExplicitlyTyped() {
+        return getParameters().toStream().none(ASTLambdaParameter::isTypeInferred);
     }
 
     /** Returns true if this lambda has a block for body. */

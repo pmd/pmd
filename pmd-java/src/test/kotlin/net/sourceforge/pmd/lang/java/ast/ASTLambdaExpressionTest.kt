@@ -17,10 +17,22 @@ class ASTLambdaExpressionTest : ParserTestSpec({
         inContext(ExpressionParsingCtx) {
 
 
+            "() -> foo()" should parseAs {
+                exprLambda {
+
+                    it::isExplicitlyTyped shouldBe true
+                    it::getParameters shouldBe lambdaFormals {}
+
+
+                    methodCall("foo")
+                }
+            }
+
             "a -> foo()" should parseAs {
                 exprLambda {
 
 
+                    it::isExplicitlyTyped shouldBe false
                     it::getParameters shouldBe lambdaFormals {
                         simpleLambdaParam("a") {
                             it::isTypeInferred shouldBe true
@@ -38,6 +50,7 @@ class ASTLambdaExpressionTest : ParserTestSpec({
                 exprLambda {
 
 
+                    it::isExplicitlyTyped shouldBe false
                     it::getParameters shouldBe lambdaFormals {
                         simpleLambdaParam("a") {
                             it::isTypeInferred shouldBe true
@@ -58,6 +71,7 @@ class ASTLambdaExpressionTest : ParserTestSpec({
 
             "(a,b) -> { foo(); } " should parseAs {
                 blockLambda {
+                    it::isExplicitlyTyped shouldBe false
 
                     it::getParameters shouldBe lambdaFormals {
                         simpleLambdaParam("a")
@@ -71,6 +85,7 @@ class ASTLambdaExpressionTest : ParserTestSpec({
 
             "(final int a, @F List<String> b) -> foo()" should parseAs {
                 exprLambda {
+                    it::isExplicitlyTyped shouldBe true
 
                     it::getParameters shouldBe lambdaFormals {
                         lambdaParam {
@@ -114,6 +129,7 @@ class ASTLambdaExpressionTest : ParserTestSpec({
             "(final int a[]@B[], @F List<String>@a [] b @A []) -> foo()" should parseAs {
 
                 exprLambda {
+                    it::isExplicitlyTyped shouldBe true
 
                     it::getParameters shouldBe child {
                         lambdaParam {
@@ -179,6 +195,7 @@ class ASTLambdaExpressionTest : ParserTestSpec({
             "(String ... b) -> {}" should parseAs {
 
                 blockLambda {
+                    it::isExplicitlyTyped shouldBe true
 
                     it::getParameters shouldBe child {
                         lambdaParam {
@@ -204,6 +221,7 @@ class ASTLambdaExpressionTest : ParserTestSpec({
             "(String @A [] @B ... b) -> {}" should parseAs {
 
                 blockLambda {
+                    it::isExplicitlyTyped shouldBe true
 
                     it::getParameters shouldBe child {
                         lambdaParam {

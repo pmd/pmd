@@ -144,7 +144,7 @@
          |                 |  +- ClassType[@FullyQualified = false, @SimpleName = "Objects"]
          |                 +- ArgumentList[@Empty = false, @Size = 2]
          |                    +- VariableAccess[@AccessType = AccessType.READ, @CompileTimeConstant = false, @Image = "foo", @Name = "foo", @ParenthesisDepth = 0, @Parenthesized = false]
-         |                    +- LambdaExpression[@Arity = 0, @BlockBody = false, @CompileTimeConstant = false, @ExpressionBody = true, @ParenthesisDepth = 0, @Parenthesized = false]
+         |                    +- LambdaExpression[@Arity = 0, @BlockBody = false, @CompileTimeConstant = false, @ExplicitlyTyped = true, @ExpressionBody = true, @ParenthesisDepth = 0, @Parenthesized = false]
          |                       +- LambdaParameterList[@Empty = true, @Size = 0]
          |                       +- StringLiteral[@CompileTimeConstant = true, @ConstValue = "foo", @Empty = false, @Image = "\"foo\"", @Length = 3, @LiteralText = "\"foo\"", @ParenthesisDepth = 0, @Parenthesized = false, @TextBlock = false]
          +- RecordDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "Records$VarRec", @CanonicalName = "Records.VarRec", @EffectiveVisibility = Visibility.V_PUBLIC, @Enum = false, @Final = true, @Interface = false, @Local = false, @Nested = true, @PackageName = "", @Record = true, @RegularClass = false, @RegularInterface = false, @SimpleName = "VarRec", @Static = true, @TopLevel = false, @Visibility = Visibility.V_PUBLIC]

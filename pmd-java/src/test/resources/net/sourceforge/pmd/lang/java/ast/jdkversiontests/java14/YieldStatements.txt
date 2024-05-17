@@ -73,7 +73,7 @@
                               |              +- YieldStatement[]
                               |                 +- NumericLiteral[@Base = 10, @CompileTimeConstant = true, @DoubleLiteral = false, @FloatLiteral = false, @Image = "5", @IntLiteral = true, @Integral = true, @LiteralText = "5", @LongLiteral = false, @ParenthesisDepth = 1, @Parenthesized = true, @ValueAsDouble = 5.0, @ValueAsFloat = 5.0, @ValueAsInt = 5, @ValueAsLong = 5]
                               +- YieldStatement[]
-                              |  +- LambdaExpression[@Arity = 0, @BlockBody = true, @CompileTimeConstant = false, @ExpressionBody = false, @ParenthesisDepth = 0, @Parenthesized = false]
+                              |  +- LambdaExpression[@Arity = 0, @BlockBody = true, @CompileTimeConstant = false, @ExplicitlyTyped = true, @ExpressionBody = false, @ParenthesisDepth = 0, @Parenthesized = false]
                               |     +- LambdaParameterList[@Empty = true, @Size = 0]
                               |     +- Block[@Empty = true, @Size = 0, @containsComment = false]
                               +- ExpressionStatement[]
