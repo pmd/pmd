@@ -715,8 +715,8 @@ class C {
             )
 
             val (fooToInt) = acu.descendants(ASTMethodReference::class.java).toList()
-            val (map, streamOf, getString) = acu.methodCalls().toList()
-            val (t_Function, t_Stream, t_Foo) = acu.declaredTypeSignatures()
+            val (map, streamOf, _) = acu.methodCalls().toList()
+            val (t_Function, t_Stream, _) = acu.declaredTypeSignatures()
             val (_, _, _, _, toIntFun) = acu.methodDeclarations().toList { it.symbol }
 
             acu.withTypeDsl {
