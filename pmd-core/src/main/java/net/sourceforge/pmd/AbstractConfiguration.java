@@ -390,7 +390,7 @@ public abstract class AbstractConfiguration {
      * @return failOnViolation
      *
      * @see #isFailOnError()
-     * @since 7.2.0
+     * @since 6.0.0
      */
     public boolean isFailOnViolation() {
         return failOnViolation;
@@ -422,7 +422,7 @@ public abstract class AbstractConfiguration {
      * @return failOnError
      *
      * @see #isFailOnViolation()
-     * @since 6.0.0
+     * @since 7.2.0
      */
     public boolean isFailOnError() {
         return failOnError;

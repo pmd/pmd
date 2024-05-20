@@ -65,19 +65,27 @@ Since this release, PMD will also expose any getter returning a collection of an
   a build with errors will now fail and with that parameter, the previous behavior can be restored.
   This parameter is available for both PMD and CPD.
 
-* The CLI parameter `--skip-lexical-errors` is deprecated. Use the new parameter `--[no-]--fail-on-error` instead.
+* The CLI parameter `--skip-lexical-errors` is deprecated. By default, lexical errors are skipped but the
+  build is failed. Use the new parameter `--[no-]fail-on-error` instead to control whether to fail the build or not.
 
 ##### Ant
 
-* CPDTask has a new parameter `failOnError`. In controls, whether to fail the build if any recoverable errors occurred.
+* CPDTask has a new parameter `failOnError`. It controls, whether to fail the build if any recoverable error occurred.
   By default, the build will fail. CPD will still create a report with all detected duplications, but the report might
   be incomplete.
-* The parameter `skipLexicalError` in CPDTask is deprecated. Use the new parameter `failOnError` instead.
+* The parameter `skipLexicalError` in CPDTask is deprecated and ignored. Lexical errors are now always skipped.
+  Use the new parameter `failOnError` instead to control whether to fail the build or not.
 
 #### Deprecated API
 
+* pmd-ant
+  * {% jdoc !!ant::ant.CPDTask#setSkipLexicalErrors(boolean) %}: Use {% jdoc ant::ant.CPDTask#setFailOnError(boolean) %}
+  instead to control, whether to ignore errors or fail the build.
+* pmd-core
+  * {% jdoc !!core::cpd.CPDConfiguration#isSkipLexicalErrors() %} and {% jdoc core::cpd.CPDConfiguration#setSkipLexicalErrors(boolean) %}:
+  Use {%jdoc core::AbstractConfiguration#setFailOnError(boolean) %} to control whether to ignore errors or fail the build.
 * pmd-java
-  * {% jdoc !!java::lang.java.ast.ASTResource#getStableName() %} and the corresponding attribute `@StableName`
+  * {% jdoc !!java::lang.java.ast.ASTResource#getStableName() %} and the corresponding attribute `@StableName`.
 
 ### ✨ External Contributions
 

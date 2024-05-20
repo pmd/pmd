@@ -402,7 +402,7 @@ Andy Glover wrote an Ant task for CPD; here's how to use it:
                             If not specified, CPD uses the system default encoding."
     %}
     {% include custom/cli_option_row.html options="failOnError"
-               description="Whether to fail the build if any errors occur while processing the files. Since PMD 7.2.0."
+               description="Whether to fail the build if any errors occurred while processing the files. Since PMD 7.2.0."
                default="true"
     %}
     {% include custom/cli_option_row.html options="format"

@@ -103,8 +103,9 @@ public class CPDTask extends Task {
             config.setSkipDuplicates(skipDuplicateFiles);
 
             if (skipLexicalErrors) {
-                log("skipLexicalErrors is deprecated and ignored. Lexical errors are now by default skipped. Use failOnError=\"false\" to not fail the build.", Project.MSG_WARN);
-                failOnError = false;
+                log("skipLexicalErrors is deprecated since 7.2.0 and the property is ignored. "
+                        + "Lexical errors are now skipped by default and the build is failed. "
+                        + "Use failOnError=\"false\" to not fail the build.", Project.MSG_WARN);
             }
 
             // implicitly enable skipLexicalErrors, so that we can fail the build at the end. A report is created in any case.
@@ -129,10 +130,11 @@ public class CPDTask extends Task {
 
                 int errors = config.getReporter().numErrors();
                 if (errors > 0) {
+                    String message = String.format("There were %d recovered errors during analysis.", errors);
                     if (failOnError) {
-                        throw new BuildException("There were " + errors + " recovered errors during analysis. Ignore these with failOnError=\"true\".");
+                        throw new BuildException(message + " Ignore these with failOnError=\"true\".");
                     } else {
-                        log("There were " + errors + " recovered errors during analysis. Not failing build, because failOnError=\"false\".", Project.MSG_WARN);
+                        log(message + " Not failing build, because failOnError=\"false\".", Project.MSG_WARN);
                     }
                 }
             }

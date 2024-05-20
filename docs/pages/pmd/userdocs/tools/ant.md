@@ -65,7 +65,7 @@ The examples below won't repeat this taskdef element, as this is always required
   </tr>
   <tr>
     <td>failOnError</td>
-    <td>Whether or not to fail the build if any processing errors occur while analyzing files.</td>
+    <td>Whether or not to fail the build if any recoverable errors occurred while analyzing files.</td>
     <td>No</td>
   </tr>
     <tr>
