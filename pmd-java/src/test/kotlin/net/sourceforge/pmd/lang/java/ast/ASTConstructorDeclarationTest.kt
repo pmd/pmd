@@ -9,11 +9,8 @@ import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
 
 class ASTConstructorDeclarationTest : ParserTestSpec({
-
-    parserTest("Receiver parameters") {
-
+    parserTestContainer("Receiver parameters") {
         inContext(TypeBodyParsingCtx) {
-
             "Foo(@A Foo this){}" should parseAs {
                 constructorDecl {
                     it::getName shouldBe "Foo"
@@ -60,8 +57,6 @@ class ASTConstructorDeclarationTest : ParserTestSpec({
                                     variableId("other")
                                 }
                         )
-
-
                     }
 
                     it::getThrowsList shouldBe null
@@ -71,10 +66,8 @@ class ASTConstructorDeclarationTest : ParserTestSpec({
         }
     }
 
-    parserTest("Annotation placement") {
-
+    parserTestContainer("Annotation placement") {
         inContext(TypeBodyParsingCtx) {
-
             "@OnDecl <T extends K> Foo() { return; }" should parseAs {
                 constructorDecl {
 

@@ -17,11 +17,9 @@ import java.io.OutputStream
  * Expensive test cases for the overload resolution phase.
  */
 class PolyResolutionTest : ProcessorTestSpec({
-
     parserTest("Test context passing overcomes null lower bound") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             class Foo {
 
                 <T> java.util.List<T> asList(T[] arr) { return null; }
@@ -30,21 +28,19 @@ class PolyResolutionTest : ProcessorTestSpec({
                     java.util.List<Integer> c = asList(null);
                 }
             }
-        """
-            )
+            """
+        )
 
-            val call = acu.firstMethodCall()
+        val call = acu.firstMethodCall()
 
-            spy.shouldBeOk {
-                call shouldHaveType gen.`t_List{Integer}`
-            }
+        spy.shouldBeOk {
+            call shouldHaveType gen.`t_List{Integer}`
         }
     }
 
     parserTest("Test nested ternaries in invoc ctx") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             class Foo {
 
                 static <T> T id(T t) { return t; }
@@ -55,38 +51,36 @@ class PolyResolutionTest : ProcessorTestSpec({
                                      : Double.NaN);
                 }
             }
-        """
-            )
+            """
+        )
 
-            val call = acu.firstMethodCall()
+        val call = acu.firstMethodCall()
 
-            spy.shouldBeOk {
-                call.shouldMatchN {
-                    methodCall("id") {
-                        argList {
+        spy.shouldBeOk {
+            call.shouldMatchN {
+                methodCall("id") {
+                    argList {
+                        ternaryExpr {
+                            it shouldHaveType double
+
+                            unspecifiedChildren(2)
                             ternaryExpr {
                                 it shouldHaveType double
 
-                                unspecifiedChildren(2)
-                                ternaryExpr {
-                                    it shouldHaveType double
-
-                                    unspecifiedChildren(3)
-                                }
+                                unspecifiedChildren(3)
                             }
                         }
                     }
                 }
-
-                call shouldHaveType double.box()
             }
+
+            call shouldHaveType double.box()
         }
     }
 
     parserTest("Test standalonable ternary in invoc ctx") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             class Foo {{
                 String packageName = "", className = "";
                 String.format("L%s%s%s;",
@@ -94,31 +88,27 @@ class PolyResolutionTest : ProcessorTestSpec({
                               (packageName.length() > 0 ? "/" : ""),
                               className);
             }}
-        """
-            )
+            """
+        )
 
-            val ternary = acu.descendants(ASTConditionalExpression::class.java).firstOrThrow()
+        val ternary = acu.descendants(ASTConditionalExpression::class.java).firstOrThrow()
 
-            spy.shouldBeOk {
-                // not String (this is not a standalone, just in an invocation ctx)
-                ternary shouldHaveType ts.OBJECT
-            }
+        spy.shouldBeOk {
+            // not String (this is not a standalone, just in an invocation ctx)
+            ternary shouldHaveType ts.OBJECT
         }
     }
 
-    parserTest("Ternary condition does not let context flow") {
+    parserTestContainer("Ternary condition does not let context flow") {
 
         suspend fun doTest(askOuterFirst: Boolean) {
-
             val acu = parser.parse("""
-
 class O {
     public static double copySign(double magnitude, double sign) {
         return Math.copySign(magnitude, (Double.isNaN(sign) ? 1.0d : sign));
     }
 }
         """.trimIndent())
-
 
             val (copySignCall) =
                     acu.descendants(ASTMethodCall::class.java).toList()
@@ -161,14 +151,11 @@ class O {
 
         doTest(askOuterFirst = true)
         doTest(askOuterFirst = false)
-
     }
 
-
     parserTest("Ternaries with an additive expr as context") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             class O {
 
                 public static String toString(Class c) {
@@ -177,23 +164,19 @@ class O {
                 }
             }
             """.trimIndent()
-            )
+        )
 
 
-            val additive = acu.descendants(ASTReturnStatement::class.java).firstOrThrow().expr!!
+        val additive = acu.descendants(ASTReturnStatement::class.java).firstOrThrow().expr!!
 
-            spy.shouldBeOk {
-                additive shouldHaveType ts.STRING
-            }
+        spy.shouldBeOk {
+            additive shouldHaveType ts.STRING
         }
     }
 
-
-
     parserTest("Standalone ctor in invocation ctx") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 import java.io.*;
 
 class O {
@@ -202,28 +185,25 @@ class O {
     }
 }
         """.trimIndent()
-            )
+        )
 
 
-            val (outerCtor, innerCtor) = acu.ctorCalls().toList()
+        val (outerCtor, innerCtor) = acu.ctorCalls().toList()
 
-            spy.shouldBeOk {
-                outerCtor shouldHaveType DataOutputStream::class.raw
-                innerCtor shouldHaveType BufferedOutputStream::class.raw
+        spy.shouldBeOk {
+            outerCtor shouldHaveType DataOutputStream::class.raw
+            innerCtor shouldHaveType BufferedOutputStream::class.raw
 
-                innerCtor.overloadSelectionInfo.let {
-                    it::isFailed shouldBe false
-                    it::needsUncheckedConversion shouldBe false
-                }
+            innerCtor.overloadSelectionInfo.let {
+                it::isFailed shouldBe false
+                it::needsUncheckedConversion shouldBe false
             }
         }
     }
 
-
     parserTest("Method call in invocation ctx of standalone ctor") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 import java.io.*;
 
 class O {
@@ -236,29 +216,25 @@ class O {
 
 }
         """.trimIndent()
-            )
+        )
 
 
-            val (outerCtor, wrapCall) = acu.descendants(InvocationNode::class.java).toList()
+        val (outerCtor, wrapCall) = acu.descendants(InvocationNode::class.java).toList()
 
-            spy.shouldBeOk {
-                outerCtor shouldHaveType DataOutputStream::class.raw
-                wrapCall shouldHaveType OutputStream::class.raw
+        spy.shouldBeOk {
+            outerCtor shouldHaveType DataOutputStream::class.raw
+            wrapCall shouldHaveType OutputStream::class.raw
 
-                wrapCall.overloadSelectionInfo.let {
-                    it::isFailed shouldBe false
-                    it::needsUncheckedConversion shouldBe false
-                }
+            wrapCall.overloadSelectionInfo.let {
+                it::isFailed shouldBe false
+                it::needsUncheckedConversion shouldBe false
             }
         }
     }
 
-
     parserTest("Method call in some ternary bug") {
-        doTest {
-            val acu = parser.parse(
-                """
-
+        val acu = parser.parse(
+            """
 class O {
 
      public static String getConnectPermission(Object url) {
@@ -267,37 +243,31 @@ class O {
         urlString = urlString.substring(4, bangPos > -1 ? bangPos : urlString.length()); // <- HERE the call to length is bugged
         return urlString;
     }
-
 }
-        """.trimIndent()
-            )
+            """.trimIndent()
+        )
 
 
-            val ternary =
-                acu.descendants(ASTConditionalExpression::class.java).firstOrThrow()
+        val ternary =
+            acu.descendants(ASTConditionalExpression::class.java).firstOrThrow()
 
-            ternary.shouldMatchN {
-                ternaryExpr {
+        ternary.shouldMatchN {
+            ternaryExpr {
+                unspecifiedChild()
+                unspecifiedChild()
+                methodCall("length") {
+                    it shouldHaveType it.typeSystem.INT
+
                     unspecifiedChild()
                     unspecifiedChild()
-                    methodCall("length") {
-                        it shouldHaveType it.typeSystem.INT
-
-                        unspecifiedChild()
-                        unspecifiedChild()
-                    }
                 }
             }
         }
-
     }
 
-
-
     parserTest("Cast context doesn't constrain invocation type") {
-        doTest {
-            val acu = parser.parse(
-                """
+        val acu = parser.parse(
+            """
 class Scratch {
 
     static <T> T id(T t) {
@@ -311,35 +281,32 @@ class Scratch {
     }
 }
 
-        """.trimIndent()
-            )
+            """.trimIndent()
+        )
 
-            val (t_Scratch) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Scratch) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
-            val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-            call.shouldMatchN {
-                methodCall("id") {
-                    with(it.typeDsl) {
-                        it.methodType.shouldMatchMethod(
-                            named = "id",
-                            declaredIn = t_Scratch,
-                            withFormals = listOf(gen.t_Comparable),
-                            returning = gen.t_Comparable
-                        )
-                    }
-
-                    argList(1)
+        call.shouldMatchN {
+            methodCall("id") {
+                with(it.typeDsl) {
+                    it.methodType.shouldMatchMethod(
+                        named = "id",
+                        declaredIn = t_Scratch,
+                        withFormals = listOf(gen.t_Comparable),
+                        returning = gen.t_Comparable
+                    )
                 }
+
+                argList(1)
             }
         }
     }
 
-
     parserTest("Test C-style array dimensions as target type") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 import java.util.Iterator;
 import java.util.Map;
 
@@ -352,27 +319,24 @@ class Scratch {
     }
 }
 
-        """.trimIndent()
+            """.trimIndent()
+        )
+
+        val t_Scratch = acu.firstTypeSignature()
+
+        spy.shouldBeOk {
+            acu.firstMethodCall().methodType.shouldMatchMethod(
+                named = "getArr",
+                declaredIn = t_Scratch,
+                withFormals = listOf(ts.STRING.toArray()),
+                returning = ts.STRING.toArray()
             )
-
-            val t_Scratch = acu.firstTypeSignature()
-
-            spy.shouldBeOk {
-                acu.firstMethodCall().methodType.shouldMatchMethod(
-                    named = "getArr",
-                    declaredIn = t_Scratch,
-                    withFormals = listOf(ts.STRING.toArray()),
-                    returning = ts.STRING.toArray()
-                )
-            }
         }
     }
 
     parserTest("Array initializer is an assignment context") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
-
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
     class Scratch {
         {
             Runnable[] r = {
@@ -386,24 +350,21 @@ class Scratch {
             r = new Runnable[] { () -> { } }; // in array alloc
         }
     }
+            """.trimIndent()
+        )
 
-        """.trimIndent()
-            )
+        val (lambda1, lambda2, lambda3) = acu.descendants(ASTLambdaExpression::class.java).toList()
 
-            val (lambda1, lambda2, lambda3) = acu.descendants(ASTLambdaExpression::class.java).toList()
-
-            spy.shouldBeOk {
-                lambda1 shouldHaveType Runnable::class.decl
-                lambda2 shouldHaveType Runnable::class.decl
-                lambda3 shouldHaveType Runnable::class.decl
-            }
+        spy.shouldBeOk {
+            lambda1 shouldHaveType Runnable::class.decl
+            lambda2 shouldHaveType Runnable::class.decl
+            lambda3 shouldHaveType Runnable::class.decl
         }
     }
 
     parserTest("Test inference with varargs - bug #4980") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             import java.util.stream.Stream;
             
             class Foo {
@@ -415,21 +376,19 @@ class Scratch {
                     return Stream.of(foo());
                 }
             }
-        """
-            )
+            """
+        )
 
-            val call = acu.firstMethodCall()
+        val call = acu.firstMethodCall()
 
-            spy.shouldBeOk {
-                call shouldHaveType gen.`t_Stream{Number}`
-            }
+        spy.shouldBeOk {
+            call shouldHaveType gen.`t_Stream{Number}`
         }
     }
 
     parserTest("Test bound checks does not throw concurrent mod exception") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             import java.util.stream.Stream;
             class Enum<T extends Enum<T>> {}
             class EnumSet<E extends Enum<E>> {
@@ -438,15 +397,14 @@ class Scratch {
                     }
                     private static <U extends Enum<U>> U[] getUniverse(Class<U> elementType) {}
            }
-        """
-            )
+            """
+        )
 
-            val call = acu.firstMethodCall()
-            val xVar = acu.typeVar("X")
+        val call = acu.firstMethodCall()
+        val xVar = acu.typeVar("X")
 
-            spy.shouldBeOk {
-                call shouldHaveType xVar.toArray()
-            }
+        spy.shouldBeOk {
+            call shouldHaveType xVar.toArray()
         }
     }
 })

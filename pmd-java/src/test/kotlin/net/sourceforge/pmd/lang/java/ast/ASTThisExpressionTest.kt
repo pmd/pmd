@@ -11,16 +11,13 @@ import net.sourceforge.pmd.lang.test.ast.shouldBe
  * @since 7.0.0
  */
 class ASTThisExpressionTest : ParserTestSpec({
-
-    parserTest("Unqualified this") {
-
+    parserTestContainer("Unqualified this") {
         inContext(ExpressionParsingCtx) {
             "this" should parseAs { thisExpr { null } }
         }
-
     }
 
-    parserTest("Qualified this") {
+    parserTestContainer("Qualified this") {
         inContext(ExpressionParsingCtx) {
             "Type.this" should parseAs {
                 thisExpr {
@@ -43,8 +40,7 @@ class ASTThisExpressionTest : ParserTestSpec({
         }
     }
 
-
-    parserTest("Neg cases") {
+    parserTestContainer("Neg cases") {
         inContext(ExpressionParsingCtx) {
 
             // type arguments and annotations are disallowed on the qualifier
@@ -53,12 +49,8 @@ class ASTThisExpressionTest : ParserTestSpec({
         }
     }
 
-
-
-    parserTest("This/cast lookahead bug in parens") {
-
+    parserTestContainer("This/cast lookahead bug in parens") {
         inContext(ExpressionParsingCtx) {
-
             """
                 (Set<String>) (new Transformer() {
                     public Object transform(final Object obj) {
@@ -77,6 +69,7 @@ class ASTThisExpressionTest : ParserTestSpec({
                     }
                 }
             }
+
             """
                 (Set<String>) (OUTER.this)
             """.trim() should parseAs {
@@ -109,8 +102,5 @@ class ASTThisExpressionTest : ParserTestSpec({
                 }
             }
         }
-
     }
-
-
 })

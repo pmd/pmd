@@ -6,10 +6,8 @@ package net.sourceforge.pmd.lang.java.ast
 import io.kotest.matchers.shouldBe
 
 class OverrideResolutionTest : ProcessorTestSpec({
-
     parserTest("Test override resolution prefers superclass method") {
-        doTest {
-            val acu = parser.parse(
+        val acu = parser.parse(
                 """
             interface Foo { default void foo() {} }
             interface Bar { default void foo() {} }
@@ -21,18 +19,16 @@ class OverrideResolutionTest : ProcessorTestSpec({
                 }
             }
         """
-            )
-            val (fooFoo, barFoo, supFoo, subFoo) = acu.descendants(ASTMethodDeclaration::class.java).toList()
-            subFoo.overriddenMethod shouldBe supFoo.genericSignature
-            barFoo.overriddenMethod shouldBe null
-            fooFoo.overriddenMethod shouldBe null
-            supFoo.overriddenMethod shouldBe null
-        }
+        )
+        val (fooFoo, barFoo, supFoo, subFoo) = acu.descendants(ASTMethodDeclaration::class.java).toList()
+        subFoo.overriddenMethod shouldBe supFoo.genericSignature
+        barFoo.overriddenMethod shouldBe null
+        fooFoo.overriddenMethod shouldBe null
+        supFoo.overriddenMethod shouldBe null
     }
 
     parserTest("Test override resolution without superclass") {
-        doTest {
-            val acu = parser.parse(
+        val acu = parser.parse(
                 """
             interface Foo { default void foo() {} }
             interface Bar { default void foo() {} }
@@ -44,18 +40,16 @@ class OverrideResolutionTest : ProcessorTestSpec({
                 }
             }
         """
-            )
-            val (fooFoo, barFoo, supFoo, subFoo) = acu.descendants(ASTMethodDeclaration::class.java).toList()
-            supFoo.overriddenMethod shouldBe barFoo.genericSignature
-            subFoo.overriddenMethod shouldBe fooFoo.genericSignature
-            barFoo.overriddenMethod shouldBe null
-            fooFoo.overriddenMethod shouldBe null
-        }
+        )
+        val (fooFoo, barFoo, supFoo, subFoo) = acu.descendants(ASTMethodDeclaration::class.java).toList()
+        supFoo.overriddenMethod shouldBe barFoo.genericSignature
+        subFoo.overriddenMethod shouldBe fooFoo.genericSignature
+        barFoo.overriddenMethod shouldBe null
+        fooFoo.overriddenMethod shouldBe null
     }
 
     parserTest("Test override resolution unresolved") {
-        doTest {
-            val acu = parser.parse(
+        val acu = parser.parse(
                 """
             public class Sub implements Unresolved {
                 @Override
@@ -63,10 +57,8 @@ class OverrideResolutionTest : ProcessorTestSpec({
                 }
             }
         """
-            )
-            val (subFoo) = acu.descendants(ASTMethodDeclaration::class.java).toList()
-            subFoo.overriddenMethod shouldBe subFoo.typeSystem.UNRESOLVED_METHOD
-        }
+        )
+        val (subFoo) = acu.descendants(ASTMethodDeclaration::class.java).toList()
+        subFoo.overriddenMethod shouldBe subFoo.typeSystem.UNRESOLVED_METHOD
     }
-
 })

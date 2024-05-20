@@ -19,20 +19,16 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
  * @since 7.0.0
  */
 class ASTModuleDeclarationTest : ParserTestSpec({
-
     parserTest("Test annotations on module", javaVersions = since(J9)) {
-        doTest {
-            val root: ASTCompilationUnit = parser.withProcessing(true).parse("@A @a.B module foo { } ")
-            root.moduleDeclaration.shouldMatchNode<ASTModuleDeclaration> {
-                it.getAnnotation("A") shouldBe annotation("A")
-                it.getAnnotation("a.B") shouldBe annotation("B")
-                modName("foo")
-            }
+        val root: ASTCompilationUnit = parser.withProcessing(true).parse("@A @a.B module foo { } ")
+        root.moduleDeclaration.shouldMatchNode<ASTModuleDeclaration> {
+            it.getAnnotation("A") shouldBe annotation("A")
+            it.getAnnotation("a.B") shouldBe annotation("B")
+            modName("foo")
         }
     }
 
-    parserTest("opens decl") {
-
+    parserTestContainer("opens decl") {
         inContext(ModuleDirectiveParsingContext) {
             "opens a.package_ to a.module_;" should parseAs {
                 child<ASTModuleOpensDirective> {
@@ -58,8 +54,7 @@ class ASTModuleDeclarationTest : ParserTestSpec({
         }
     }
 
-    parserTest("exports decl") {
-
+    parserTestContainer("exports decl") {
         inContext(ModuleDirectiveParsingContext) {
             "exports a.package_ to a.module_;" should parseAs {
                 child<ASTModuleExportsDirective> {
@@ -85,8 +80,7 @@ class ASTModuleDeclarationTest : ParserTestSpec({
         }
     }
 
-    parserTest("Test uses") {
-
+    parserTestContainer("Test uses") {
         inContext(ModuleDirectiveParsingContext) {
             "uses a.clazz.Name;" should parseAs {
                 child<ASTModuleUsesDirective> {
@@ -95,8 +89,8 @@ class ASTModuleDeclarationTest : ParserTestSpec({
             }
         }
     }
-    parserTest("Test provides") {
 
+    parserTestContainer("Test provides") {
         inContext(ModuleDirectiveParsingContext) {
             enableProcessing()
             "provides an.Itf with imp1.Impl;" should parseAs {
@@ -112,7 +106,6 @@ class ASTModuleDeclarationTest : ParserTestSpec({
             }
         }
     }
-
 })
 
 fun TreeNodeWrapper<Node, *>.modName(name: String, assertions: NodeSpec<ASTModuleName> = EmptyAssertions) =

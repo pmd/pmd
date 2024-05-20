@@ -16,11 +16,9 @@ import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 /**
  */
 class UnresolvedTypesRecoveryTest : ProcessorTestSpec({
-
     parserTest("Test failed invoc context lets args be inferred as standalones") {
-        doTest {
-            val acu = parser.parse(
-                """
+        val acu = parser.parse(
+            """
 import java.io.IOException;
 import ooo.Unresolved;
 
@@ -32,43 +30,38 @@ class C {
         }
     }
 }
+            """.trimIndent()
+        )
 
-                """.trimIndent()
-            )
+        val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
 
-
-            val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
-
-            call.shouldMatchN {
-                constructorCall {
-                    classType("Unresolved") {
-                        TypeOps.isUnresolved(it.typeMirror) shouldBe true
-                        it.typeMirror.symbol.shouldBeA<JClassSymbol> {
-                            it.binaryName shouldBe "ooo.Unresolved"
-                        }
+        call.shouldMatchN {
+            constructorCall {
+                classType("Unresolved") {
+                    TypeOps.isUnresolved(it.typeMirror) shouldBe true
+                    it.typeMirror.symbol.shouldBeA<JClassSymbol> {
+                        it.binaryName shouldBe "ooo.Unresolved"
                     }
+                }
 
-                    it.methodType shouldBe it.typeSystem.UNRESOLVED_METHOD
-                    it shouldHaveType it.typeNode.typeMirror
+                it.methodType shouldBe it.typeSystem.UNRESOLVED_METHOD
+                it shouldHaveType it.typeNode.typeMirror
 
-                    argList {
-                        methodCall("getMessage") {
-                            it shouldHaveType it.typeSystem.STRING
-                            variableAccess("ioe")
-                            argList {}
-                        }
+                argList {
+                    methodCall("getMessage") {
+                        it shouldHaveType it.typeSystem.STRING
                         variableAccess("ioe")
+                        argList {}
                     }
+                    variableAccess("ioe")
                 }
             }
         }
     }
 
-
     parserTest("Test constructor call fallback") {
-        doTest {
-            val acu = parser.parse(
-                """
+        val acu = parser.parse(
+            """
 import java.io.IOException;
 import ooo.Unresolved;
 
@@ -79,34 +72,31 @@ class C {
     }
 }
 
-                """.trimIndent()
-            )
+            """.trimIndent()
+        )
 
+        val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
 
-            val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
-
-            call.shouldMatchN {
-                constructorCall {
-                    classType("Unresolved") {
-                        TypeOps.isUnresolved(it.typeMirror) shouldBe true
-                        it.typeMirror.symbol.shouldBeA<JClassSymbol> {
-                            it.binaryName shouldBe "ooo.Unresolved"
-                        }
+        call.shouldMatchN {
+            constructorCall {
+                classType("Unresolved") {
+                    TypeOps.isUnresolved(it.typeMirror) shouldBe true
+                    it.typeMirror.symbol.shouldBeA<JClassSymbol> {
+                        it.binaryName shouldBe "ooo.Unresolved"
                     }
-
-                    it.methodType shouldBe it.typeSystem.UNRESOLVED_METHOD
-                    it shouldHaveType it.typeNode.typeMirror
-
-                    argList {}
                 }
+
+                it.methodType shouldBe it.typeSystem.UNRESOLVED_METHOD
+                it shouldHaveType it.typeNode.typeMirror
+
+                argList {}
             }
         }
     }
 
     parserTest("Test ctor fallback in invoc ctx") {
-        doTest {
-            val acu = parser.parse(
-                """
+        val acu = parser.parse(
+            """
 import java.io.IOException;
 import ooo.Unresolved;
 
@@ -120,32 +110,29 @@ class C {
         id(new Unresolved());
     }
 }
+            """.trimIndent()
+        )
 
-                """.trimIndent()
-            )
+        val t_Unresolved =
+            acu.descendants(ASTConstructorCall::class.java).firstOrThrow().typeNode.typeMirror as JClassType
 
+        TypeOps.isUnresolved(t_Unresolved) shouldBe true
 
-            val t_Unresolved =
-                acu.descendants(ASTConstructorCall::class.java).firstOrThrow().typeNode.typeMirror as JClassType
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-            TypeOps.isUnresolved(t_Unresolved) shouldBe true
+        call.shouldMatchN {
+            methodCall("id") {
 
-            val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+                it.methodType.shouldMatchMethod("id", withFormals = listOf(t_Unresolved), returning = t_Unresolved)
 
-            call.shouldMatchN {
-                methodCall("id") {
+                argList {
+                    constructorCall {
+                        classType("Unresolved")
 
-                    it.methodType.shouldMatchMethod("id", withFormals = listOf(t_Unresolved), returning = t_Unresolved)
+                        it.methodType shouldBe it.typeSystem.UNRESOLVED_METHOD
+                        it shouldHaveType it.typeNode.typeMirror
 
-                    argList {
-                        constructorCall {
-                            classType("Unresolved")
-
-                            it.methodType shouldBe it.typeSystem.UNRESOLVED_METHOD
-                            it shouldHaveType it.typeNode.typeMirror
-
-                            argList {}
-                        }
+                        argList {}
                     }
                 }
             }
@@ -153,9 +140,8 @@ class C {
     }
 
     parserTest("Test diamond ctor for unresolved") {
-        doTest {
-            val acu = parser.parse(
-                """
+        val acu = parser.parse(
+            """
 import java.io.IOException;
 import ooo.Unresolved;
 
@@ -165,43 +151,37 @@ class C {
         Unresolved<String> s = new Unresolved<>();
     }
 }
+            """.trimIndent()
+        )
 
-                """.trimIndent()
-            )
+        val t_UnresolvedOfString = acu.descendants(ASTClassType::class.java)
+            .first { it.simpleName == "Unresolved" }!!.typeMirror.shouldBeA<JClassType> {
+                it.isParameterizedType shouldBe true
+                it.typeArgs shouldBe listOf(it.typeSystem.STRING)
+            }
 
+        TypeOps.isUnresolved(t_UnresolvedOfString) shouldBe true
 
-            val t_UnresolvedOfString = acu.descendants(ASTClassType::class.java)
-                .first { it.simpleName == "Unresolved" }!!.typeMirror.shouldBeA<JClassType> {
-                    it.isParameterizedType shouldBe true
-                    it.typeArgs shouldBe listOf(it.typeSystem.STRING)
-                }
+        val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
 
-            TypeOps.isUnresolved(t_UnresolvedOfString) shouldBe true
+        call.shouldMatchN {
+            constructorCall {
+                classType("Unresolved")
 
+                it.usesDiamondTypeArgs() shouldBe true
 
-            val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
+                it.methodType shouldBe it.typeSystem.UNRESOLVED_METHOD
+                it.overloadSelectionInfo.isFailed shouldBe true
+                it shouldHaveType t_UnresolvedOfString
 
-            call.shouldMatchN {
-                constructorCall {
-                    classType("Unresolved")
-
-                    it.usesDiamondTypeArgs() shouldBe true
-
-                    it.methodType shouldBe it.typeSystem.UNRESOLVED_METHOD
-                    it.overloadSelectionInfo.isFailed shouldBe true
-                    it shouldHaveType t_UnresolvedOfString
-
-                    argList {}
-                }
+                argList {}
             }
         }
     }
 
-
     parserTest("Recovery for primitives in strict invoc") {
-        doTest {
-            val acu = parser.parse(
-                """
+        val acu = parser.parse(
+            """
 import ooo.Unresolved;
 
 class C {
@@ -212,30 +192,26 @@ class C {
         id(Unresolved.SOME_INT);
     }
 }
+            """.trimIndent()
+        )
 
-                """.trimIndent()
-            )
+        val idMethod = acu.descendants(ASTMethodDeclaration::class.java).firstOrThrow().symbol
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
+        call.shouldMatchN {
+            methodCall("id") {
 
-            val idMethod = acu.descendants(ASTMethodDeclaration::class.java).firstOrThrow().symbol
+                with(it.typeDsl) {
+                    it.methodType.shouldMatchMethod("id", withFormals = listOf(int), returning = void)
+                    it.overloadSelectionInfo.isFailed shouldBe false // it succeeded
+                    it.methodType.symbol shouldBe idMethod
+                }
 
-            val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
-
-            call.shouldMatchN {
-                methodCall("id") {
-
-                    with(it.typeDsl) {
-                        it.methodType.shouldMatchMethod("id", withFormals = listOf(int), returning = void)
-                        it.overloadSelectionInfo.isFailed shouldBe false // it succeeded
-                        it.methodType.symbol shouldBe idMethod
-                    }
-
-                    argList {
-                        fieldAccess("SOME_INT") {
-                            it shouldHaveType it.typeSystem.UNKNOWN
-                            typeExpr {
-                                classType("Unresolved")
-                            }
+                argList {
+                    fieldAccess("SOME_INT") {
+                        it shouldHaveType it.typeSystem.UNKNOWN
+                        typeExpr {
+                            classType("Unresolved")
                         }
                     }
                 }
@@ -244,10 +220,8 @@ class C {
     }
 
     parserTest("Unresolved types are compatible in type variable bounds") {
-        doTest {
-            val acu = parser.parse(
-                """
-
+        val acu = parser.parse(
+            """
 class C {
 
     static ooo.Foo foo() { return null; }
@@ -259,37 +233,29 @@ class C {
         id(foo()); 
     }
 }
+            """.trimIndent()
+        )
 
-                """.trimIndent()
-            )
+        val (fooM, idM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.symbol }
+        val t_Foo = fooM.getReturnType(Substitution.EMPTY).shouldBeUnresolvedClass("ooo.Foo")
+        idM.typeParameters[0].upperBound.shouldBeUnresolvedClass("ooo.Bound")
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
+        call.shouldMatchN {
+            methodCall("id") {
 
-            val (fooM, idM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.symbol }
+                it.methodType.shouldMatchMethod("id", withFormals = listOf(t_Foo), returning = t_Foo)
+                it.overloadSelectionInfo.isFailed shouldBe false // it succeeded
+                it.methodType.symbol shouldBe idM
 
-            val t_Foo = fooM.getReturnType(Substitution.EMPTY).shouldBeUnresolvedClass("ooo.Foo")
-            idM.typeParameters[0].upperBound.shouldBeUnresolvedClass("ooo.Bound")
-
-            val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
-
-            call.shouldMatchN {
-                methodCall("id") {
-
-                    it.methodType.shouldMatchMethod("id", withFormals = listOf(t_Foo), returning = t_Foo)
-                    it.overloadSelectionInfo.isFailed shouldBe false // it succeeded
-                    it.methodType.symbol shouldBe idM
-
-
-                    argList(1)
-                }
+                argList(1)
             }
         }
     }
 
     parserTest("Unresolved types are used in overload specificity tests") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
-
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 class C {
 
     static void foo(U1 u) { }
@@ -300,43 +266,38 @@ class C {
         foo(u);
     }
 }
+            """.trimIndent()
+        )
 
-                """.trimIndent()
-            )
+        val (foo1) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.symbol }
+        val (t_U1, t_U2) = acu.descendants(ASTClassType::class.java).toList { it.typeMirror }
 
+        t_U1.shouldBeUnresolvedClass("U1")
+        t_U2.shouldBeUnresolvedClass("U2")
 
-            val (foo1) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.symbol }
-            val (t_U1, t_U2) = acu.descendants(ASTClassType::class.java).toList { it.typeMirror }
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-            t_U1.shouldBeUnresolvedClass("U1")
-            t_U2.shouldBeUnresolvedClass("U2")
+        spy.shouldBeOk {
+            call.shouldMatchN {
+                methodCall("foo") {
 
-            val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+                    it.methodType.shouldMatchMethod(
+                        "foo",
+                        withFormals = listOf(t_U1),
+                        returning = it.typeSystem.NO_TYPE
+                    )
+                    it.overloadSelectionInfo.isFailed shouldBe false // it succeeded
+                    it.methodType.symbol shouldBe foo1
 
-            spy.shouldBeOk {
-                call.shouldMatchN {
-                    methodCall("foo") {
-
-                        it.methodType.shouldMatchMethod(
-                            "foo",
-                            withFormals = listOf(t_U1),
-                            returning = it.typeSystem.NO_TYPE
-                        )
-                        it.overloadSelectionInfo.isFailed shouldBe false // it succeeded
-                        it.methodType.symbol shouldBe foo1
-
-                        argList(1)
-                    }
+                    argList(1)
                 }
             }
         }
     }
 
     parserTest("Superclass type is known in the subclass") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
-
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 class C extends U1 {
 
     static void foo(U1 u) { }
@@ -346,41 +307,37 @@ class C extends U1 {
         foo(this);
     }
 }
+            """.trimIndent()
+        )
 
-                """.trimIndent()
-            )
+        val (foo1) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.symbol }
+        val (t_U1) = acu.descendants(ASTClassType::class.java).toList { it.typeMirror }
 
+        t_U1.shouldBeUnresolvedClass("U1")
 
-            val (foo1) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.symbol }
-            val (t_U1) = acu.descendants(ASTClassType::class.java).toList { it.typeMirror }
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-            t_U1.shouldBeUnresolvedClass("U1")
+        spy.shouldBeOk {
+            call.shouldMatchN {
+                methodCall("foo") {
 
-            val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+                    it.methodType.shouldMatchMethod(
+                        "foo",
+                        withFormals = listOf(t_U1),
+                        returning = it.typeSystem.NO_TYPE
+                    )
+                    it.overloadSelectionInfo.isFailed shouldBe false // it succeeded
+                    it.methodType.symbol shouldBe foo1
 
-            spy.shouldBeOk {
-                call.shouldMatchN {
-                    methodCall("foo") {
-
-                        it.methodType.shouldMatchMethod(
-                            "foo",
-                            withFormals = listOf(t_U1),
-                            returning = it.typeSystem.NO_TYPE
-                        )
-                        it.overloadSelectionInfo.isFailed shouldBe false // it succeeded
-                        it.methodType.symbol shouldBe foo1
-
-                        argList(1)
-                    }
+                    argList(1)
                 }
             }
         }
     }
 
     parserTest("Recovery when there are several applicable overloads") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 import ooo.Unresolved;
 
 class C {
@@ -397,30 +354,28 @@ class C {
         new StringBuilder().append(Unresolved.SOMETHING);
     }
 }
+            """.trimIndent()
+        )
 
-                """.trimIndent()
-            )
+        val call = acu.firstMethodCall()
 
-            val call = acu.firstMethodCall()
+        spy.shouldBeAmbiguous(call)
+        acu.withTypeDsl {
+            call.shouldMatchN {
+                methodCall("append") {
 
-            spy.shouldBeAmbiguous(call)
-            acu.withTypeDsl {
-                call.shouldMatchN {
-                    methodCall("append") {
+                    with(it.typeDsl) {
+                        it.methodType.shouldMatchMethod("append", returning = gen.t_StringBuilder)
+                        it.overloadSelectionInfo.isFailed shouldBe true // ambiguity
+                    }
 
-                        with(it.typeDsl) {
-                            it.methodType.shouldMatchMethod("append", returning = gen.t_StringBuilder)
-                            it.overloadSelectionInfo.isFailed shouldBe true // ambiguity
-                        }
+                    skipQualifier()
 
-                        skipQualifier()
-
-                        argList {
-                            fieldAccess("SOMETHING") {
-                                it shouldHaveType it.typeSystem.UNKNOWN
-                                typeExpr {
-                                    classType("Unresolved")
-                                }
+                    argList {
+                        fieldAccess("SOMETHING") {
+                            it shouldHaveType it.typeSystem.UNKNOWN
+                            typeExpr {
+                                classType("Unresolved")
                             }
                         }
                     }
@@ -430,15 +385,14 @@ class C {
     }
 
     parserTest("Recovery of unknown field using invocation context") {
-        doTest {
-            // This is ignored as doing this kind of thing would be impossible with
-            // laziness. If we want to resolve stuff like that, we have to resolve
-            // context first, then push it down into unresolved slots. But standalone
-            // exprs are used for disambiguation. So we'd probably have to split getTypeMirror
-            // into a top-down only and a user-facing one.
+        // This is ignored as doing this kind of thing would be impossible with
+        // laziness. If we want to resolve stuff like that, we have to resolve
+        // context first, then push it down into unresolved slots. But standalone
+        // exprs are used for disambiguation. So we'd probably have to split getTypeMirror
+        // into a top-down only and a user-facing one.
 
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 import ooo.Unresolved;
 
 class C {
@@ -450,29 +404,28 @@ class C {
     }
 }
 
-                """.trimIndent()
-            )
+            """.trimIndent()
+        )
 
-            val call = acu.firstMethodCall()
+        val call = acu.firstMethodCall()
 
-            spy.shouldBeOk {
-                call.shouldMatchN {
-                    methodCall("foo") {
+        spy.shouldBeOk {
+            call.shouldMatchN {
+                methodCall("foo") {
 
-                        with(it.typeDsl) {
-                            it.methodType.shouldMatchMethod("foo", withFormals = listOf(int), returning = void)
-                            it.overloadSelectionInfo.isFailed shouldBe false
-                        }
+                    with(it.typeDsl) {
+                        it.methodType.shouldMatchMethod("foo", withFormals = listOf(int), returning = void)
+                        it.overloadSelectionInfo.isFailed shouldBe false
+                    }
 
-                        argList {
-                            fieldAccess("SOMETHING") {
-                                with(it.typeDsl) {
-                                    it shouldHaveType ts.UNKNOWN
-                                    it.referencedSym shouldBe null
-                                }
-                                typeExpr {
-                                    classType("Unresolved")
-                                }
+                    argList {
+                        fieldAccess("SOMETHING") {
+                            with(it.typeDsl) {
+                                it shouldHaveType ts.UNKNOWN
+                                it.referencedSym shouldBe null
+                            }
+                            typeExpr {
+                                classType("Unresolved")
                             }
                         }
                     }
@@ -482,9 +435,8 @@ class C {
     }
 
     parserTest("Recovery of unknown field/var using assignment context") {
-        doTest {
-            val acu = parser.parse(
-                """
+        val acu = parser.parse(
+            """
 import ooo.Unresolved;
 
 class C {
@@ -496,38 +448,35 @@ class C {
         String k = SOMETHING;
     }
 }
+            """.trimIndent()
+        )
 
-                """.trimIndent()
-            )
+        val (field, unqual) = acu.descendants(ASTAssignableExpr.ASTNamedReferenceExpr::class.java).toList()
 
-            val (field, unqual) = acu.descendants(ASTAssignableExpr.ASTNamedReferenceExpr::class.java).toList()
-
-            field.shouldMatchN {
-                fieldAccess("SOMETHING") {
-                    with(it.typeDsl) {
-                        it shouldHaveType int
-                        it.referencedSym shouldBe null
-                    }
-                    typeExpr {
-                        classType("Unresolved")
-                    }
+        field.shouldMatchN {
+            fieldAccess("SOMETHING") {
+                with(it.typeDsl) {
+                    it shouldHaveType int
+                    it.referencedSym shouldBe null
+                }
+                typeExpr {
+                    classType("Unresolved")
                 }
             }
-            unqual.shouldMatchN {
-                variableAccess("SOMETHING") {
-                    with(it.typeDsl) {
-                        it shouldHaveType ts.STRING
-                        it.referencedSym shouldBe null
-                    }
+        }
+        unqual.shouldMatchN {
+            variableAccess("SOMETHING") {
+                with(it.typeDsl) {
+                    it shouldHaveType ts.STRING
+                    it.referencedSym shouldBe null
                 }
             }
         }
     }
 
     parserTest("Unresolved type in primitive switch label") {
-        doTest {
-            val acu = parser.parse(
-                """
+        val acu = parser.parse(
+            """
 import ooo.Opcodes.*;
 
 class C {
@@ -538,194 +487,181 @@ class C {
         }
     }
 }
+            """.trimIndent()
+        )
 
-                """.trimIndent()
-            )
+        val (_, a, b) = acu.descendants(ASTVariableAccess::class.java).toList()
 
-            val (_, a, b) = acu.descendants(ASTVariableAccess::class.java).toList()
-
-            a.shouldMatchN {
-                variableAccess("A") {
-                    with(it.typeDsl) {
-                        it shouldHaveType int
-                        it.referencedSym shouldBe null
-                    }
+        a.shouldMatchN {
+            variableAccess("A") {
+                with(it.typeDsl) {
+                    it shouldHaveType int
+                    it.referencedSym shouldBe null
                 }
             }
-            b.shouldMatchN {
-                variableAccess("B") {
-                    with(it.typeDsl) {
-                        it shouldHaveType int
-                        it.referencedSym shouldBe null
-                    }
+        }
+        b.shouldMatchN {
+            variableAccess("B") {
+                with(it.typeDsl) {
+                    it shouldHaveType int
+                    it.referencedSym shouldBe null
                 }
             }
         }
     }
 
     parserTest("Unresolved lambda/mref target type has non-null functional method") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
-                class Foo {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Foo {
 
-                    void foo(UnresolvedLambdaTarget lambda) { }
+                void foo(UnresolvedLambdaTarget lambda) { }
 
-                    void bar() {
-                        foo(() -> null); // the target type is unresolved
-                        foo(this::foo);  // same
-                    }
-
+                void bar() {
+                    foo(() -> null); // the target type is unresolved
+                    foo(this::foo);  // same
                 }
-                """.trimIndent()
-            )
 
-            val (lambda) = acu.descendants(ASTLambdaExpression::class.java).toList()
-            val (mref) = acu.descendants(ASTMethodReference::class.java).toList()
-
-            val (lambdaCall, mrefCall) = acu.descendants(ASTMethodCall::class.java).toList()
-
-            spy.shouldHaveNoApplicableMethods(lambdaCall)
-            spy.shouldHaveNoApplicableMethods(mrefCall)
-
-            acu.withTypeDsl {
-                lambda shouldHaveType ts.UNKNOWN
-                lambda.functionalMethod shouldBe ts.UNRESOLVED_METHOD
-
-                mref shouldHaveType ts.UNKNOWN
-                mref.functionalMethod shouldBe ts.UNRESOLVED_METHOD
-                mref.referencedMethod shouldBe ts.UNRESOLVED_METHOD
             }
+            """.trimIndent()
+        )
+
+        val (lambda) = acu.descendants(ASTLambdaExpression::class.java).toList()
+        val (mref) = acu.descendants(ASTMethodReference::class.java).toList()
+
+        val (lambdaCall, mrefCall) = acu.descendants(ASTMethodCall::class.java).toList()
+
+        spy.shouldHaveNoApplicableMethods(lambdaCall)
+        spy.shouldHaveNoApplicableMethods(mrefCall)
+
+        acu.withTypeDsl {
+            lambda shouldHaveType ts.UNKNOWN
+            lambda.functionalMethod shouldBe ts.UNRESOLVED_METHOD
+
+            mref shouldHaveType ts.UNKNOWN
+            mref.functionalMethod shouldBe ts.UNRESOLVED_METHOD
+            mref.referencedMethod shouldBe ts.UNRESOLVED_METHOD
         }
     }
 
     parserTest("No context for lambda/mref") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
-                class Foo {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Foo {
 
-                    void foo(UnresolvedLambdaTarget lambda) { }
+                void foo(UnresolvedLambdaTarget lambda) { }
 
-                    void bar() {
-                        () -> null;
-                        return this::foo; // return onto void
-                    }
-
+                void bar() {
+                    () -> null;
+                    return this::foo; // return onto void
                 }
-                """.trimIndent()
-            )
 
-            val (lambda) = acu.descendants(ASTLambdaExpression::class.java).toList()
-            val (mref) = acu.descendants(ASTMethodReference::class.java).toList()
-
-            spy.shouldHaveNoLambdaCtx(lambda)
-            spy.shouldHaveNoLambdaCtx(mref)
-
-            acu.withTypeDsl {
-                lambda shouldHaveType ts.UNKNOWN
-                lambda.functionalMethod shouldBe ts.UNRESOLVED_METHOD
-
-                mref shouldHaveType ts.UNKNOWN
-                mref.functionalMethod shouldBe ts.UNRESOLVED_METHOD
-                mref.referencedMethod shouldBe ts.UNRESOLVED_METHOD
             }
+            """.trimIndent()
+        )
+
+        val (lambda) = acu.descendants(ASTLambdaExpression::class.java).toList()
+        val (mref) = acu.descendants(ASTMethodReference::class.java).toList()
+
+        spy.shouldHaveNoLambdaCtx(lambda)
+        spy.shouldHaveNoLambdaCtx(mref)
+
+        acu.withTypeDsl {
+            lambda shouldHaveType ts.UNKNOWN
+            lambda.functionalMethod shouldBe ts.UNRESOLVED_METHOD
+
+            mref shouldHaveType ts.UNKNOWN
+            mref.functionalMethod shouldBe ts.UNRESOLVED_METHOD
+            mref.referencedMethod shouldBe ts.UNRESOLVED_METHOD
         }
     }
 
 
     parserTest("Wrong syntax, return with expr in void method") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
-                class Foo {
-                    void foo() { return foo; }
-                    static { return p1; }
-                    Foo() { return p2; }
-                }
-        """
-            )
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Foo {
+                void foo() { return foo; }
+                static { return p1; }
+                Foo() { return p2; }
+            }
+            """
+        )
 
-            for (vaccess in acu.descendants(ASTVariableAccess::class.java)) {
-                spy.shouldBeOk {
-                    vaccess shouldHaveType ts.UNKNOWN
-                }
+        for (vaccess in acu.descendants(ASTVariableAccess::class.java)) {
+            spy.shouldBeOk {
+                vaccess shouldHaveType ts.UNKNOWN
             }
         }
     }
 
     parserTest("Lambda with wrong form") {
-        doTest {
-            val (acu, _) = parser.parseWithTypeInferenceSpy(
-                """
-                interface Lambda {
-                    void call();
-                }
-                class Foo {
-                    {
-                        Lambda l = () -> {}; // ok
-                        Lambda l = x -> {};  // wrong form!
-                    }
-                }
-        """
-            )
-
-            val (ok, wrong) = acu.descendants(ASTLambdaExpression::class.java).toList()
-            val t_Lambda = acu.typeDeclarations.firstOrThrow().typeMirror
-
-            acu.withTypeDsl {
-                ok shouldHaveType t_Lambda
-                wrong shouldHaveType t_Lambda
-                wrong.parameters[0] shouldHaveType ts.UNKNOWN
+        val (acu, _) = parser.parseWithTypeInferenceSpy(
+            """
+            interface Lambda {
+                void call();
             }
+            class Foo {
+                {
+                    Lambda l = () -> {}; // ok
+                    Lambda l = x -> {};  // wrong form!
+                }
+            }
+            """
+        )
+
+        val (ok, wrong) = acu.descendants(ASTLambdaExpression::class.java).toList()
+        val t_Lambda = acu.typeDeclarations.firstOrThrow().typeMirror
+
+        acu.withTypeDsl {
+            ok shouldHaveType t_Lambda
+            wrong shouldHaveType t_Lambda
+            wrong.parameters[0] shouldHaveType ts.UNKNOWN
         }
     }
 
     parserTest("Method ref in unresolved call chain") {
-        doTest {
-            /*
-            In this test we have Stream.of(/*some expr with unresolved type*/)
+        /*
+        In this test we have Stream.of(/*some expr with unresolved type*/)
 
-            The difficult thing is that Stream.of has two overloads: of(U) and of(U...),
-            and the argument is unknown. This makes both methods match. Whichever method is matched,
-            we want the U to be inferred to (*unknown*) and not Object.
-         */
+        The difficult thing is that Stream.of has two overloads: of(U) and of(U...),
+        and the argument is unknown. This makes both methods match. Whichever method is matched,
+        we want the U to be inferred to (*unknown*) and not Object.
+        */
 
-            val (acu, _) = parser.parseWithTypeInferenceSpy(
-                """
-                interface Function<T, R> {
-                    R call(T parm);
-                }
-                interface Stream<T> {
-                    <U> Stream<U> map(Function<? super T, ? extends U> fun);
-                    
-                    // the point of this test is there is an ambiguity between both of these overloads
-                    static <U> Stream<U> of(U u) {}
-                    static <U> Stream<U> of(U... u) {}
-                }
-                class Foo {
-                    {
-                        // var i = Stream.of("").map(Foo::toInt);
-                        var x = Stream.of(new Unresolved().getString())
-                                      .map(Foo::toInt);
-                    }
-                   private static Integer toInt(String s) {}
-                }
-        """
-            )
-
-            val (fooToInt) = acu.descendants(ASTMethodReference::class.java).toList()
-            val (map, streamOf, _) = acu.methodCalls().toList()
-            val (t_Function, t_Stream, _) = acu.declaredTypeSignatures()
-            val (_, _, _, _, toIntFun) = acu.methodDeclarations().toList { it.symbol }
-
-            acu.withTypeDsl {
-                streamOf shouldHaveType t_Stream[ts.UNKNOWN]
-                map shouldHaveType t_Stream[ts.INT.box()]
-                fooToInt shouldHaveType t_Function[ts.UNKNOWN, ts.INT.box()]
-                fooToInt.referencedMethod.symbol shouldBe toIntFun
+        val (acu, _) = parser.parseWithTypeInferenceSpy(
+            """
+            interface Function<T, R> {
+                R call(T parm);
             }
+            interface Stream<T> {
+                <U> Stream<U> map(Function<? super T, ? extends U> fun);
+                
+                // the point of this test is there is an ambiguity between both of these overloads
+                static <U> Stream<U> of(U u) {}
+                static <U> Stream<U> of(U... u) {}
+            }
+            class Foo {
+                {
+                    // var i = Stream.of("").map(Foo::toInt);
+                    var x = Stream.of(new Unresolved().getString())
+                                  .map(Foo::toInt);
+                }
+               private static Integer toInt(String s) {}
+            }
+            """
+        )
+
+        val (fooToInt) = acu.descendants(ASTMethodReference::class.java).toList()
+        val (map, streamOf, _) = acu.methodCalls().toList()
+        val (t_Function, t_Stream, _) = acu.declaredTypeSignatures()
+        val (_, _, _, _, toIntFun) = acu.methodDeclarations().toList { it.symbol }
+
+        acu.withTypeDsl {
+            streamOf shouldHaveType t_Stream[ts.UNKNOWN]
+            map shouldHaveType t_Stream[ts.INT.box()]
+            fooToInt shouldHaveType t_Function[ts.UNKNOWN, ts.INT.box()]
+            fooToInt.referencedMethod.symbol shouldBe toIntFun
         }
     }
-
 })

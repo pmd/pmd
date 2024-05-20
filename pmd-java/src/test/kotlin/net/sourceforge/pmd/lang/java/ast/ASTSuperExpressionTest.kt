@@ -11,9 +11,7 @@ import net.sourceforge.pmd.lang.test.ast.shouldBe
  * @since 7.0.0
  */
 class ASTSuperExpressionTest : ParserTestSpec({
-
-    parserTest("Unqualified super") {
-
+    parserTestContainer("Unqualified super") {
         inContext(ExpressionParsingCtx) {
             "super.foo()" should parseAs {
                 methodCall("foo") {
@@ -25,7 +23,7 @@ class ASTSuperExpressionTest : ParserTestSpec({
         }
     }
 
-    parserTest("Neg cases") {
+    parserTestContainer("Neg cases") {
         inContext(ExpressionParsingCtx) {
             // single super should be followed by either
             // a method call, field access, or method reference
@@ -36,15 +34,12 @@ class ASTSuperExpressionTest : ParserTestSpec({
             "T.B<C>.super.foo()" shouldNot parse()
             "T.@F B.super.foo()" shouldNot parse()
         }
-
     }
 
-    parserTest("Qualified super") {
+    parserTestContainer("Qualified super") {
         inContext(ExpressionParsingCtx) {
-
             "Type.super.foo()" should parseAs {
                 methodCall("foo") {
-
                     it::getQualifier shouldBe child<ASTSuperExpression> {
                         it::getQualifier shouldBe classType("Type")
                     }
@@ -55,7 +50,6 @@ class ASTSuperExpressionTest : ParserTestSpec({
 
             "net.sourceforge.pmd.lang.java.ast.ASTThisExpression.super.foo()" should parseAs {
                 methodCall("foo") {
-
                     it::getQualifier shouldBe child<ASTSuperExpression> {
                         it::getQualifier shouldBe qualClassType("net.sourceforge.pmd.lang.java.ast.ASTThisExpression") {
                             it::getTypeArguments shouldBe null

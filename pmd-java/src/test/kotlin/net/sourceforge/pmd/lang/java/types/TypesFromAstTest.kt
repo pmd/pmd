@@ -15,64 +15,54 @@ import net.sourceforge.pmd.lang.java.ast.typeArgList
  * @author Clément Fournier
  */
 class TypesFromAstTest : ProcessorTestSpec({
-
-
     parserTest("Test primitive types are reused") {
-        doTest {
-            val (tf1, tf2) =
-                parser.parse(
-                    """
-                    package java.util;
-
-                    class Foo<K> {
-                              
-                      class Inner<T> {
-                      
-                        Foo<K>.Inner<T> f1;
-                        /*Foo<K>.*/Inner<T> f2;
-                      }
-
-                    }
+        val (tf1, tf2) =
+            parser.parse(
                 """
-                )
-                    .descendants(ASTFieldDeclaration::class.java)
-                    .crossFindBoundaries()
-                    .map { it.typeNode }
-                    .toList()
+                package java.util;
 
-            tf1.shouldMatchN {
+                class Foo<K> {
+                          
+                  class Inner<T> {
+                  
+                    Foo<K>.Inner<T> f1;
+                    /*Foo<K>.*/Inner<T> f2;
+                  }
 
-                classType("Inner") {
+                }
+                """
+            )
+                .descendants(ASTFieldDeclaration::class.java)
+                .crossFindBoundaries()
+                .map { it.typeNode }
+                .toList()
 
-                    it.typeMirror.toString() shouldBe "java.util.Foo<K>#Inner<T>"
+        tf1.shouldMatchN {
+            classType("Inner") {
+                it.typeMirror.toString() shouldBe "java.util.Foo<K>#Inner<T>"
 
-                    classType("Foo") {
-
-                        it.typeMirror.toString() shouldBe "java.util.Foo<K>"
-
-                        typeArgList {
-                            classType("K")
-                        }
-                    }
+                classType("Foo") {
+                    it.typeMirror.toString() shouldBe "java.util.Foo<K>"
 
                     typeArgList {
-                        classType("T")
+                        classType("K")
                     }
                 }
+
+                typeArgList {
+                    classType("T")
+                }
             }
+        }
 
-            tf2.shouldMatchN {
+        tf2.shouldMatchN {
+            classType("Inner") {
+                it.typeMirror.toString() shouldBe "java.util.Foo<K>#Inner<T>"
 
-                classType("Inner") {
-
-                    it.typeMirror.toString() shouldBe "java.util.Foo<K>#Inner<T>"
-
-                    typeArgList {
-                        classType("T")
-                    }
+                typeArgList {
+                    classType("T")
                 }
             }
         }
     }
-
 })

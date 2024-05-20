@@ -13,27 +13,25 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType
  *
  */
 class ConstValuesKotlinTest : ProcessorTestSpec({
-
-
     parserTest("Test reference cycle doesn't crash resolution") {
-        doTest {
-            val acu = parser.parse("""
-                class Foo {
-                    static final int I1 = I2;
-                    static final int I2 = I1;
-                    static final int I3 = 0;
-                }
-                """.trimIndent())
-
-            val (i1, i2, i3) = acu.descendants(ASTVariableId::class.java).toList()
-
-            i1.initializer!!.constValue shouldBe null
-            i2.initializer!!.constValue shouldBe null
-            i3.initializer!!.constValue shouldBe 0
-
-            i3.symbol.shouldBeA<JFieldSymbol> {
-                it.constValue shouldBe 0
+        val acu = parser.parse(
+            """
+            class Foo {
+                static final int I1 = I2;
+                static final int I2 = I1;
+                static final int I3 = 0;
             }
+            """.trimIndent()
+        )
+
+        val (i1, i2, i3) = acu.descendants(ASTVariableId::class.java).toList()
+
+        i1.initializer!!.constValue shouldBe null
+        i2.initializer!!.constValue shouldBe null
+        i3.initializer!!.constValue shouldBe 0
+
+        i3.symbol.shouldBeA<JFieldSymbol> {
+            it.constValue shouldBe 0
         }
     }
 })

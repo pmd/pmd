@@ -24,14 +24,11 @@ class TypeInferenceTest : ProcessorTestSpec({
     val juf = "$jutil.function"
     val justream = "$jutil.stream"
 
-    parserTest("Test method invoc resolution") {
-
+    parserTestContainer("Test method invoc resolution") {
         importedTypes += Arrays::class.java
 
         inContext(ExpressionParsingCtx) {
-
             "Arrays.asList(\"a\")" should parseAs {
-
                 methodCall("asList") {
                     val arraysClass = with(it.typeDsl) { java.util.Arrays::class.decl }
                     val asList = arraysClass.getMethodsByName("asList")[0]
@@ -54,36 +51,32 @@ class TypeInferenceTest : ProcessorTestSpec({
     }
 
     parserTest("Test method invoc lub of params") {
-
         importedTypes += Arrays::class.java
 
-        doTest {
-            val call = ExpressionParsingCtx.parseNode("Arrays.asList(1, 2.0)", ctx = this) as ASTMethodCall
+        val call = ExpressionParsingCtx.parseNode("Arrays.asList(1, 2.0)", ctx = this) as ASTMethodCall
 
-            val arraysClass = with(call.typeDsl) { Arrays::class.decl }
-            val asList = arraysClass.getMethodsByName("asList")[0]
+        val arraysClass = with(call.typeDsl) { Arrays::class.decl }
+        val asList = arraysClass.getMethodsByName("asList")[0]
 
+        call.overloadSelectionInfo.isVarargsCall shouldBe true
+        call.methodType.also {
+            it.isVarargs shouldBe true
+            val (formal, ret) = with(TypeDslOf(it.typeSystem)) {
+                // we can't hardcode the lub result because it is JDK specific
+                val `t_lub(Double, Integer)` = ts.lub(double.box(), int.box())
 
-            call.overloadSelectionInfo.isVarargsCall shouldBe true
-            call.methodType.also {
-                it.isVarargs shouldBe true
-                val (formal, ret) = with(TypeDslOf(it.typeSystem)) {
-                    // we can't hardcode the lub result because it is JDK specific
-                    val `t_lub(Double, Integer)` = ts.lub(double.box(), int.box())
-
-                    Pair(
-                        `t_lub(Double, Integer)`,
-                        gen.t_List[`t_lub(Double, Integer)`]
-                    )
-                }
-
-                it.formalParameters[0].shouldBeA<JArrayType> {
-                    it.componentType shouldBe formal
-                }
-
-                it.returnType shouldBe ret
-                it.typeParameters shouldBe asList.typeParameters // not substituted
+                Pair(
+                    `t_lub(Double, Integer)`,
+                    gen.t_List[`t_lub(Double, Integer)`]
+                )
             }
+
+            it.formalParameters[0].shouldBeA<JArrayType> {
+                it.componentType shouldBe formal
+            }
+
+            it.returnType shouldBe ret
+            it.typeParameters shouldBe asList.typeParameters // not substituted
         }
     }
 
@@ -154,9 +147,7 @@ class TypeInferenceTest : ProcessorTestSpec({
         }
     }
 
-
-    parserTest("Test method call chain") {
-
+    parserTestContainer("Test method call chain") {
         otherImports += "java.util.stream.*"
 
         inContext(ExpressionParsingCtx) {
@@ -166,7 +157,7 @@ class TypeInferenceTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("Test method call chain as var initializer") {
+    parserTestContainer("Test method call chain as var initializer") {
         otherImports += "java.util.stream.*"
 
         inContext(StatementParsingCtx) {
@@ -187,13 +178,12 @@ class TypeInferenceTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("Test many dependencies") {
-
+    parserTestContainer("Test many dependencies") {
         inContext(StatementParsingCtx) {
 
             """
              final $jutil.Map<String, String> map = $justream.Stream.of("de", "").collect($justream.Collectors.toMap($juf.Function.identity(), $juf.Function.identity()));
-        """ should parseAs {
+            """ should parseAs {
                 localVarDecl {
                     localVarModifiers { }
                     unspecifiedChild()
@@ -229,11 +219,9 @@ class TypeInferenceTest : ProcessorTestSpec({
         }
     }
 
-
     parserTest("Test type var bound substitution in inherited members") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 interface I<S> {}
 class C<Q> implements I<Q> {}
 
@@ -248,24 +236,21 @@ class Scratch<O> {
         }
     }
 }
-        """.trimIndent()
-            )
+            """.trimIndent()
+        )
 
-            val (_, t_C) = acu.declaredTypeSignatures()
-            val tParam = acu.typeVariables().first { it.name == "T" }
+        val (_, t_C) = acu.declaredTypeSignatures()
+        val tParam = acu.typeVariables().first { it.name == "T" }
 
-            spy.shouldBeOk {
-                // fixme this test could be better
-                acu.firstMethodCall() shouldHaveType t_C[tParam] // of T, not of O
-            }
+        spy.shouldBeOk {
+            // fixme this test could be better
+            acu.firstMethodCall() shouldHaveType t_C[tParam] // of T, not of O
         }
     }
 
-
     parserTest("Test inference var inst substitution in enclosing ctx") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 import java.util.ArrayList;
 import java.util.List;
 
@@ -280,27 +265,24 @@ class Scratch {
         Object res = of(m(t));
     }
 }
-        """.trimIndent()
-            )
+            """.trimIndent()
+        )
 
-            val (ofCall, mCall) = acu.methodCalls().toList()
-            val (m, of) = acu.methodDeclarations().toList { it.genericSignature }
+        val (ofCall, mCall) = acu.methodCalls().toList()
+        val (m, of) = acu.methodDeclarations().toList { it.genericSignature }
 
-            spy.shouldBeOk {
-                ofCall shouldHaveType gen.`t_List{String}`
-                ofCall.methodType shouldBeSomeInstantiationOf of
+        spy.shouldBeOk {
+            ofCall shouldHaveType gen.`t_List{String}`
+            ofCall.methodType shouldBeSomeInstantiationOf of
 
-                mCall shouldHaveType gen.t_String
-                mCall.methodType shouldBeSomeInstantiationOf m
-            }
+            mCall shouldHaveType gen.t_String
+            mCall.methodType shouldBeSomeInstantiationOf m
         }
     }
 
-
     parserTest("Constructor with inner class") {
-        doTest {
-            val acu = parser.parse(
-                """
+        val acu = parser.parse(
+            """
 import java.util.Iterator;
 import java.util.Map;
 
@@ -330,50 +312,47 @@ class MyMap<K, V> {
         public K next() {return null;}
     }
 }
+            """.trimIndent()
+        )
 
-        """.trimIndent()
-            )
+        val (t_MyMap, t_MyMapEntry, t_KeyIter) = acu.descendants(ASTTypeDeclaration::class.java)
+            .toList { it.typeMirror }
+        val (kvar, vvar) = acu.descendants(ASTTypeParameter::class.java).toList { it.typeMirror }
 
-            val (t_MyMap, t_MyMapEntry, t_KeyIter) = acu.descendants(ASTTypeDeclaration::class.java)
-                .toList { it.typeMirror }
-            val (kvar, vvar) = acu.descendants(ASTTypeParameter::class.java).toList { it.typeMirror }
+        val ctorCall = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
 
-            val ctorCall = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
+        ctorCall.shouldMatchN {
+            constructorCall {
+                val `t_MyMap{K,V}KeyIter`: JClassType
+                val `t_MyMap{K,V}Entry`: JClassType
 
-            ctorCall.shouldMatchN {
-                constructorCall {
-                    val `t_MyMap{K,V}KeyIter`: JClassType
-                    val `t_MyMap{K,V}Entry`: JClassType
+                with(it.typeDsl) {
+                    `t_MyMap{K,V}KeyIter` = t_MyMap[kvar, vvar].selectInner(t_KeyIter.symbol, emptyList())
+                    `t_MyMap{K,V}Entry` = t_MyMap[kvar, vvar].selectInner(t_MyMapEntry.symbol, emptyList())
 
-                    with(it.typeDsl) {
-                        `t_MyMap{K,V}KeyIter` = t_MyMap[kvar, vvar].selectInner(t_KeyIter.symbol, emptyList())
-                        `t_MyMap{K,V}Entry` = t_MyMap[kvar, vvar].selectInner(t_MyMapEntry.symbol, emptyList())
-
-                        it.methodType.shouldMatchMethod(
-                            named = JConstructorSymbol.CTOR_NAME,
-                            declaredIn = `t_MyMap{K,V}KeyIter`,
-                            withFormals = listOf(`t_MyMap{K,V}Entry`, `t_MyMap{K,V}Entry`),
-                            returning = `t_MyMap{K,V}KeyIter`
-                        )
-                    }
-
-                    it::getTypeNode shouldBe classType("KeyIter") {
-                        it shouldHaveType `t_MyMap{K,V}KeyIter`
-                    }
-
-                    argList(2)
+                    it.methodType.shouldMatchMethod(
+                        named = JConstructorSymbol.CTOR_NAME,
+                        declaredIn = `t_MyMap{K,V}KeyIter`,
+                        withFormals = listOf(`t_MyMap{K,V}Entry`, `t_MyMap{K,V}Entry`),
+                        returning = `t_MyMap{K,V}KeyIter`
+                    )
                 }
+
+                it::getTypeNode shouldBe classType("KeyIter") {
+                    it shouldHaveType `t_MyMap{K,V}KeyIter`
+                }
+
+                argList(2)
             }
         }
     }
 
     parserTest("Concurrent modification exception when propagating bounds modifies self var") {
-        doTest {
-            // problem is the ivar for E has Enum as upper bound and no Object,
-            // so Object is backpropagated to it during its own propagateAllBounds action
+        // problem is the ivar for E has Enum as upper bound and no Object,
+        // so Object is backpropagated to it during its own propagateAllBounds action
 
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 class Foo {
 
     void descendingKeyIterator() { 
@@ -388,20 +367,17 @@ class Foo {
     enum Tropes { FOO, BAR, baz }
 }
 
-        """.trimIndent()
-            )
+            """.trimIndent()
+        )
 
-            spy.shouldBeOk {
-                acu.firstMethodCall() shouldHaveType void
-            }
+        spy.shouldBeOk {
+            acu.firstMethodCall() shouldHaveType void
         }
     }
 
-
     parserTest("#4902 bad intersection") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -422,16 +398,13 @@ public class BadIntersection {
         .collect(Collectors.toList());
   }
 }
-        """.trimIndent()
-            )
+            """.trimIndent()
+        )
 
-            val (_, t_Animal) = acu.declaredTypeSignatures()
+        val (_, t_Animal) = acu.declaredTypeSignatures()
 
-            spy.shouldBeOk {
-                acu.firstMethodCall() shouldHaveType java.util.List::class[t_Animal]
-            }
+        spy.shouldBeOk {
+            acu.firstMethodCall() shouldHaveType java.util.List::class[t_Animal]
         }
     }
-
-
 })

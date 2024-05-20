@@ -15,10 +15,8 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol
 
 class UsageResolutionTest : ProcessorTestSpec({
-
     parserTest("Test usage resolution") {
-        doTest {
-            val acu = parser.parse(
+        val acu = parser.parse(
                 """
             class Bar {
                 int f1;
@@ -41,21 +39,19 @@ class UsageResolutionTest : ProcessorTestSpec({
                 }
             }
         """
-            )
-            val (barF1, fooF1, fooF2, localF2, localF22) = acu.descendants(ASTVariableId::class.java).toList()
-            barF1.localUsages.map { it.text.toString() }.shouldContainExactly("this.f1", "super.f1")
-            fooF1.localUsages.map { it.text.toString() }.shouldContainExactly("f1", "this.f1")
-            fooF2.localUsages.map { it.text.toString() }.shouldContainExactly("this.f2")
-            localF2.localUsages.shouldBeEmpty()
-            localF22.localUsages.shouldBeSingleton {
-                it.accessType shouldBe WRITE
-            }
+        )
+        val (barF1, fooF1, fooF2, localF2, localF22) = acu.descendants(ASTVariableId::class.java).toList()
+        barF1.localUsages.map { it.text.toString() }.shouldContainExactly("this.f1", "super.f1")
+        fooF1.localUsages.map { it.text.toString() }.shouldContainExactly("f1", "this.f1")
+        fooF2.localUsages.map { it.text.toString() }.shouldContainExactly("this.f2")
+        localF2.localUsages.shouldBeEmpty()
+        localF22.localUsages.shouldBeSingleton {
+            it.accessType shouldBe WRITE
         }
     }
 
     parserTest("Test record components") {
-        doTest {
-            val acu = parser.parse(
+        val acu = parser.parse(
                 """
             record Foo(int p) {
                 Foo {
@@ -65,23 +61,21 @@ class UsageResolutionTest : ProcessorTestSpec({
                 void pPlus1() { return p + 1; }
             }
         """
-            )
+        )
 
-            val (p) = acu.descendants(ASTVariableId::class.java).toList()
+        val (p) = acu.descendants(ASTVariableId::class.java).toList()
 
-            p::isRecordComponent shouldBe true
-            p.localUsages.shouldHaveSize(2)
-            p.localUsages[0].shouldBeA<ASTVariableAccess> {
-                it.referencedSym!!.shouldBeA<JFormalParamSymbol> { symbol ->
-                    symbol.tryGetNode() shouldBe p
-                }
+        p::isRecordComponent shouldBe true
+        p.localUsages.shouldHaveSize(2)
+        p.localUsages[0].shouldBeA<ASTVariableAccess> {
+            it.referencedSym!!.shouldBeA<JFormalParamSymbol> { symbol ->
+                symbol.tryGetNode() shouldBe p
             }
-            p.localUsages[1].shouldBeA<ASTVariableAccess> {
-                it.referencedSym!!.shouldBeA<JFieldSymbol> { symbol ->
-                    symbol.tryGetNode() shouldBe p
-                }
+        }
+        p.localUsages[1].shouldBeA<ASTVariableAccess> {
+            it.referencedSym!!.shouldBeA<JFieldSymbol> { symbol ->
+                symbol.tryGetNode() shouldBe p
             }
         }
     }
-
 })

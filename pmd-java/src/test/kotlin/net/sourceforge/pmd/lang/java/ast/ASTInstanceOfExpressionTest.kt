@@ -9,11 +9,8 @@ import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind
 
 class ASTInstanceOfExpressionTest : ParserTestSpec({
-
-    parserTest("InstanceofExpression can be annotated") {
-
+    parserTestContainer("InstanceofExpression can be annotated") {
         inContext(ExpressionParsingCtx) {
-
             "f instanceof @A K" should parseAs {
                 infixExpr(BinaryOp.INSTANCEOF) {
                     it::getLeftOperand shouldBe variableAccess("f")
@@ -27,10 +24,8 @@ class ASTInstanceOfExpressionTest : ParserTestSpec({
         }
     }
 
-    parserTest("Instanceof with pattern") {
-
+    parserTestContainer("Instanceof with pattern") {
         inContext(ExpressionParsingCtx) {
-
             "o instanceof String s && s.length() > 4" should parseAs {
                 infixExpr(BinaryOp.CONDITIONAL_AND) {
                     infixExpr(BinaryOp.INSTANCEOF) {
@@ -52,8 +47,7 @@ class ASTInstanceOfExpressionTest : ParserTestSpec({
         }
     }
 
-    parserTest("InstanceofExpression cannot test primitive types") {
-
+    parserTestContainer("InstanceofExpression cannot test primitive types") {
         inContext(ExpressionParsingCtx) {
             PrimitiveTypeKind.values().map { it.simpleName }.forEach {
                 "f instanceof $it" shouldNot parse()
@@ -61,5 +55,4 @@ class ASTInstanceOfExpressionTest : ParserTestSpec({
             }
         }
     }
-
 })

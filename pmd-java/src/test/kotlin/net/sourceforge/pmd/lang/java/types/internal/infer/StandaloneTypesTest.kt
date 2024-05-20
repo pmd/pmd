@@ -17,11 +17,8 @@ import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 
 class StandaloneTypesTest : ProcessorTestSpec({
-
-    parserTest("Test array clone") {
-
+    parserTestContainer("Test array clone") {
         inContext(ExpressionParsingCtx) {
-
             fun matchArrayClone(compType: TypeDslMixin.() -> JTypeMirror) =
                     parseAs {
                         methodCall("clone") {
@@ -46,11 +43,8 @@ class StandaloneTypesTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("Test array length") {
-
+    parserTestContainer("Test array length") {
         inContext(ExpressionParsingCtx) {
-
-
             fun matchArrayLength(compType: TypeDslMixin.() -> JTypeMirror) =
                     parseAs {
                         fieldAccess("length") {
@@ -71,13 +65,10 @@ class StandaloneTypesTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("Test binary numeric promotion on infix ops") {
-
+    parserTestContainer("Test binary numeric promotion on infix ops") {
         inContext(ExpressionParsingCtx) {
-
             listOf(ADD, MUL, SUB, MOD, DIV, OR, AND, XOR)
                     .forEach {
-
                         val op = it.token
 
                         "(byte) 1 $op (byte) 2" should haveType { int }
@@ -90,45 +81,36 @@ class StandaloneTypesTest : ProcessorTestSpec({
                         "1f $op 2l" should haveType { float }
                         "1f $op 2" should haveType { float }
                         "1f $op 2d" should haveType { double }
-
                     }
         }
     }
 
-
     parserTest("Test array initializer") {
-        doTest {
-            val block = StatementParsingCtx.parseNode("{ int[] is = { a }; int[][] iis = { { } }; }", ctx = this)
-            val (oneDim, twoDim, nested) = block.descendants(ASTArrayInitializer::class.java).toList()
-            with(block.typeDsl) {
-                oneDim shouldHaveType int.toArray()
+        val block = StatementParsingCtx.parseNode("{ int[] is = { a }; int[][] iis = { { } }; }", ctx = this)
+        val (oneDim, twoDim, nested) = block.descendants(ASTArrayInitializer::class.java).toList()
+        with(block.typeDsl) {
+            oneDim shouldHaveType int.toArray()
 
-                withClue("Multi dim array") {
-                    twoDim shouldHaveType int.toArray(2)
-                    nested shouldHaveType int.toArray()
-                }
+            withClue("Multi dim array") {
+                twoDim shouldHaveType int.toArray(2)
+                nested shouldHaveType int.toArray()
             }
         }
     }
 
     parserTest("Test array allocation") {
-        doTest {
         val block = StatementParsingCtx.parseNode("{ Object is = new int[0]; is = new String[0][]; }", ctx = this)
         val (intArray, stringArray) = block.descendants(ASTArrayAllocation::class.java).toList()
         with(block.typeDsl) {
             intArray shouldHaveType int.toArray()
             stringArray shouldHaveType ts.STRING.toArray(2)
         }
-            }
     }
 
 
-    parserTest("Test unary mutation expressions have the same type as the variable") {
-
+    parserTestContainer("Test unary mutation expressions have the same type as the variable") {
         inContext(StatementParsingCtx) {
-
             listOf(CHAR, BYTE, SHORT, INT, LONG).forEach { kind ->
-
                 "{ $kind v; v++; v--; --v; ++v; }" should parseAs {
                     block {
                         localVarDecl()
@@ -156,13 +138,10 @@ class StandaloneTypesTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("Test unary numeric promotion on shift ops") {
-
+    parserTestContainer("Test unary numeric promotion on shift ops") {
         inContext(ExpressionParsingCtx) {
-
             listOf(LEFT_SHIFT, RIGHT_SHIFT, UNSIGNED_RIGHT_SHIFT)
                     .forEach {
-
                         val op = it.token
 
                         "(byte) 2  $op 2" should haveType { int }
@@ -173,15 +152,12 @@ class StandaloneTypesTest : ProcessorTestSpec({
                         "2L  $op 2" should haveType { long }
                         "2D  $op 2" should haveType { double }
                         "2F  $op 2" should haveType { float }
-
                     }
         }
     }
 
-    parserTest("Test boolean ops") {
-
+    parserTestContainer("Test boolean ops") {
         inContext(ExpressionParsingCtx) {
-
             listOf(
                     CONDITIONAL_OR,
                     CONDITIONAL_AND,
@@ -194,25 +170,21 @@ class StandaloneTypesTest : ProcessorTestSpec({
                     LT
             )
                     .forEach {
-
                         val op = it.token
 
                         "1 $op String" should haveType { boolean }
-
                     }
         }
     }
 
-    parserTest("Test assignment expr") {
-
+    parserTestContainer("Test assignment expr") {
         inContext(StatementParsingCtx) {
-
             """
             {
                 java.util.List<? extends Number> l = java.util.Collections.emptyList();
                 l = l = l;
             }
-        """ should parseAs {
+            """ should parseAs {
                 block {
                     localVarDecl()
                     exprStatement {
@@ -254,29 +226,25 @@ class StandaloneTypesTest : ProcessorTestSpec({
     }
 
     parserTest("Test field access on type variable") {
-        doTest {
-            val method = TypeBodyParsingCtx.parseNode("<T extends int[]> void foo(T t) { t.length++; }", ctx = this)
+        val method = TypeBodyParsingCtx.parseNode("<T extends int[]> void foo(T t) { t.length++; }", ctx = this)
 
-            val tvar = method.descendants(ASTTypeParameter::class.java).firstOrThrow().typeMirror
-            val fieldAccess = method.descendants(ASTFieldAccess::class.java).firstOrThrow()
+        val tvar = method.descendants(ASTTypeParameter::class.java).firstOrThrow().typeMirror
+        val fieldAccess = method.descendants(ASTFieldAccess::class.java).firstOrThrow()
 
-            fieldAccess.shouldMatchN {
-                fieldAccess("length") {
-                    variableAccess("t") {
-                        it shouldHaveType tvar
-                    }
-                    it shouldHaveType it.typeSystem.INT
-                    it.referencedSym shouldNotBe null
-                    it.referencedSym!!.enclosingClass shouldBe it.typeSystem.getClassSymbol(IntArray::class.java)
+        fieldAccess.shouldMatchN {
+            fieldAccess("length") {
+                variableAccess("t") {
+                    it shouldHaveType tvar
                 }
+                it shouldHaveType it.typeSystem.INT
+                it.referencedSym shouldNotBe null
+                it.referencedSym!!.enclosingClass shouldBe it.typeSystem.getClassSymbol(IntArray::class.java)
             }
         }
     }
 
-    parserTest("Test literals") {
-
+    parserTestContainer("Test literals") {
         inContext(ExpressionParsingCtx) {
-
             doTest("Booleans") {
                 "true" should haveType { boolean }
                 "false" should haveType { boolean }
@@ -290,40 +258,37 @@ class StandaloneTypesTest : ProcessorTestSpec({
     }
 
     parserTest("Test annotations in package-info") {
-        doTest {
-            val acu = parser.parse(
-                """
+        val acu = parser.parse(
+            """
             // in a package-info.java
-        @net.sourceforge.pmd.lang.java.types.testdata.AnnotationWithEnum(
-            value = net.sourceforge.pmd.lang.java.types.testdata.AnnotationWithEnum.Foo.A
-        )
-        package foo;
-
-        """.trimIndent()
+            @net.sourceforge.pmd.lang.java.types.testdata.AnnotationWithEnum(
+                value = net.sourceforge.pmd.lang.java.types.testdata.AnnotationWithEnum.Foo.A
             )
+            package foo;
+            """.trimIndent()
+        )
 
-            val annot = acu.descendants(ASTAnnotation::class.java).firstOrThrow()
+        val annot = acu.descendants(ASTAnnotation::class.java).firstOrThrow()
 
-            annot.withTypeDsl {
-                annot shouldHaveType AnnotationWithEnum::class.decl
-                val value = annot.members.firstOrThrow()
-                value.value.shouldMatchN {
-                    fieldAccess("A") {
-                        typeExpr {
-                            classType("Foo") {
-                                classType("AnnotationWithEnum") {
-                                    it::isFullyQualified shouldBe true
-                                }
+        annot.withTypeDsl {
+            annot shouldHaveType AnnotationWithEnum::class.decl
+            val value = annot.members.firstOrThrow()
+            value.value.shouldMatchN {
+                fieldAccess("A") {
+                    typeExpr {
+                        classType("Foo") {
+                            classType("AnnotationWithEnum") {
+                                it::isFullyQualified shouldBe true
                             }
                         }
-                        it shouldHaveType AnnotationWithEnum.Foo::class.decl
                     }
+                    it shouldHaveType AnnotationWithEnum.Foo::class.decl
                 }
             }
         }
     }
 
-    parserTest("Test exception parameter") {
+    parserTestContainer("Test exception parameter") {
         inContext(StatementParsingCtx) {
             """
             try {}
@@ -357,20 +322,18 @@ class StandaloneTypesTest : ProcessorTestSpec({
                         block()
                     }
                 }
-
             }
-
         }
     }
 
-    parserTest("Test unboxed foreach parameter") {
+    parserTestContainer("Test unboxed foreach parameter") {
         inContext(StatementParsingCtx) {
             """
             {
                 java.util.List<Integer> l = java.util.Collections.emptyList();
                 for (int controller : list);
             }
-        """ should parseAs {
+            """ should parseAs {
                 block {
                     localVarDecl()
                     foreachLoop {
@@ -384,5 +347,4 @@ class StandaloneTypesTest : ProcessorTestSpec({
             }
         }
     }
-
 })

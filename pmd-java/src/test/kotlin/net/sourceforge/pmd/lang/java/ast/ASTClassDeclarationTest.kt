@@ -8,11 +8,8 @@ package net.sourceforge.pmd.lang.java.ast
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 
 class ASTClassDeclarationTest : ParserTestSpec({
-
-    parserTest("Local classes") {
-
+    parserTestContainer("Local classes") {
         inContext(StatementParsingCtx) {
-
             """
                @F class Local {
 
@@ -86,6 +83,4 @@ class ASTClassDeclarationTest : ParserTestSpec({
             }
         }
     }
-
-
 })

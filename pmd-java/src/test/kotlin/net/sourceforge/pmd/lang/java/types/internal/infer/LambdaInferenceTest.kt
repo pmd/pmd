@@ -23,8 +23,7 @@ import kotlin.test.assertEquals
 @Suppress("UNUSED_VARIABLE")
 class LambdaInferenceTest : ProcessorTestSpec({
 
-
-    parserTest("Test dangling method parameter - ok") {
+    parserTestContainer("Test dangling method parameter - ok") {
         importedTypes += java.util.List::class.java
         importedTypes += TypeInferenceTestCases::class.java
         genClassHeader = "class TypeInferenceTestCases"
@@ -80,8 +79,7 @@ class LambdaInferenceTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("Test dangling method parameter recovery") {
-
+    parserTestContainer("Test dangling method parameter recovery") {
         importedTypes += java.util.List::class.java
         importedTypes += TypeInferenceTestCases::class.java
         genClassHeader = "class TypeInferenceTestCases"
@@ -97,7 +95,6 @@ class LambdaInferenceTest : ProcessorTestSpec({
                                    .collect(java.util.stream.Collectors.toList())
 
                     """
-
 
         inContext(ExpressionParsingCtx) {
             chain should parseAs {
@@ -140,9 +137,8 @@ class LambdaInferenceTest : ProcessorTestSpec({
     }
 
     parserTest("Test functional interface induced by intersection") {
-        doTest {
-            val acu = parser.parse(
-                """
+        val acu = parser.parse(
+            """
             import java.io.Serializable;
             import java.util.function.Function;
 
@@ -158,49 +154,46 @@ class LambdaInferenceTest : ProcessorTestSpec({
                 }
             }
         """
-            )
+        )
 
-            val (t_Scratch) = acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
-            val (f) = acu.descendants(ASTMethodDeclaration::class.java).toList()
-            val (fCall) = acu.descendants(ASTMethodCall::class.java).toList()
+        val (t_Scratch) = acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
+        val (f) = acu.descendants(ASTMethodDeclaration::class.java).toList()
+        val (fCall) = acu.descendants(ASTMethodCall::class.java).toList()
 
-            fCall.shouldMatchN {
-                methodCall("f") {
-                    it.methodType.symbol shouldBe f.symbol
+        fCall.shouldMatchN {
+            methodCall("f") {
+                it.methodType.symbol shouldBe f.symbol
 
-                    with(it.typeDsl) {
-                        // Function<String, Integer> & java.io.Serializable
-                        val serialFun = gen.t_Function[gen.t_String, int.box()] * ts.SERIALIZABLE
+                with(it.typeDsl) {
+                    // Function<String, Integer> & java.io.Serializable
+                    val serialFun = gen.t_Function[gen.t_String, int.box()] * ts.SERIALIZABLE
 
-                        it.methodType.shouldMatchMethod(
-                            named = "f",
-                            declaredIn = t_Scratch,
-                            withFormals = listOf(serialFun),
-                            returning = serialFun
-                        )
-                    }
+                    it.methodType.shouldMatchMethod(
+                        named = "f",
+                        declaredIn = t_Scratch,
+                        withFormals = listOf(serialFun),
+                        returning = serialFun
+                    )
+                }
 
-                    argList {
-                        exprLambda {
-                            lambdaFormals(1)
-                            methodCall("length") {
-                                variableAccess("s") {
-                                    it shouldHaveType it.typeSystem.STRING
-                                }
-                                argList(0)
+                argList {
+                    exprLambda {
+                        lambdaFormals(1)
+                        methodCall("length") {
+                            variableAccess("s") {
+                                it shouldHaveType it.typeSystem.STRING
                             }
+                            argList(0)
                         }
                     }
                 }
             }
         }
-
     }
 
     parserTest("Test functional interface induced by intersection 2") {
-        doTest {
-            val acu = parser.parse(
-                """
+        val acu = parser.parse(
+            """
             import java.io.Serializable;
             import java.util.function.Function;
 
@@ -217,37 +210,36 @@ class LambdaInferenceTest : ProcessorTestSpec({
                 }
             }
         """
-            )
+        )
 
-            val (t_Scratch) = acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
-            val (f) = acu.descendants(ASTMethodDeclaration::class.java).toList()
-            val (fCall) = acu.descendants(ASTMethodCall::class.java).toList()
+        val (t_Scratch) = acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
+        val (f) = acu.descendants(ASTMethodDeclaration::class.java).toList()
+        val (fCall) = acu.descendants(ASTMethodCall::class.java).toList()
 
-            fCall.shouldMatchN {
-                methodCall("f") {
-                    it.methodType.symbol shouldBe f.symbol
+        fCall.shouldMatchN {
+            methodCall("f") {
+                it.methodType.symbol shouldBe f.symbol
 
-                    with(it.typeDsl) {
-                        // Function<String, Integer> & java.io.Serializable
-                        val serialFun = gen.t_Function[gen.t_String, int.box()] * ts.SERIALIZABLE
+                with(it.typeDsl) {
+                    // Function<String, Integer> & java.io.Serializable
+                    val serialFun = gen.t_Function[gen.t_String, int.box()] * ts.SERIALIZABLE
 
-                        it.methodType.shouldMatchMethod(
-                            named = "f",
-                            declaredIn = t_Scratch,
-                            withFormals = listOf(serialFun),
-                            returning = serialFun
-                        )
-                    }
+                    it.methodType.shouldMatchMethod(
+                        named = "f",
+                        declaredIn = t_Scratch,
+                        withFormals = listOf(serialFun),
+                        returning = serialFun
+                    )
+                }
 
-                    argList {
-                        exprLambda {
-                            lambdaFormals(1)
-                            methodCall("length") {
-                                variableAccess("s") {
-                                    it shouldHaveType it.typeSystem.STRING
-                                }
-                                argList(0)
+                argList {
+                    exprLambda {
+                        lambdaFormals(1)
+                        methodCall("length") {
+                            variableAccess("s") {
+                                it shouldHaveType it.typeSystem.STRING
                             }
+                            argList(0)
                         }
                     }
                 }
@@ -256,9 +248,8 @@ class LambdaInferenceTest : ProcessorTestSpec({
     }
 
     parserTest("Test lambda with field access in return expression (inner ctor call)") {
-        doTest {
-            val acu = parser.parse(
-                """
+        val acu = parser.parse(
+            """
             import java.util.function.Function;
 
             class Scratch {
@@ -278,42 +269,40 @@ class LambdaInferenceTest : ProcessorTestSpec({
                 }
             }
         """
-            )
+        )
 
-            val (t_Scratch, t_WithField) = acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
-            val (foo) = acu.descendants(ASTMethodDeclaration::class.java).toList()
-            val (fooCall) = acu.descendants(ASTMethodCall::class.java).toList()
+        val (t_Scratch, t_WithField) = acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
+        val (foo) = acu.descendants(ASTMethodDeclaration::class.java).toList()
+        val (fooCall) = acu.descendants(ASTMethodCall::class.java).toList()
 
-            fooCall.shouldMatchN {
-                methodCall("foo") {
-                    argList {
-                        exprLambda {
-                            lambdaFormals(1)
+        fooCall.shouldMatchN {
+            methodCall("foo") {
+                argList {
+                    exprLambda {
+                        lambdaFormals(1)
 
-                            fieldAccess("i") {
-                                it shouldHaveType it.typeSystem.INT
-                                constructorCall {
-                                    variableAccess("s") {
-                                        it shouldHaveType t_Scratch
-                                    }
-                                    classType("WithField") {
-                                        it shouldHaveType t_WithField
-                                    }
-                                    argList(0)
+                        fieldAccess("i") {
+                            it shouldHaveType it.typeSystem.INT
+                            constructorCall {
+                                variableAccess("s") {
+                                    it shouldHaveType t_Scratch
                                 }
+                                classType("WithField") {
+                                    it shouldHaveType t_WithField
+                                }
+                                argList(0)
                             }
                         }
                     }
-                    it.methodType.symbol shouldBe foo.symbol // ask after asking for type of inner
                 }
+                it.methodType.symbol shouldBe foo.symbol // ask after asking for type of inner
             }
         }
     }
 
     parserTest("Test lambda with field access in return expression (method call)") {
-        doTest {
-            val acu = parser.parse(
-                """
+        val acu = parser.parse(
+            """
             import java.util.function.Function;
 
             class Scratch {
@@ -335,27 +324,26 @@ class LambdaInferenceTest : ProcessorTestSpec({
                 }
             }
         """
-            )
+        )
 
-            val (t_Scratch, t_WithField) = acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
-            val (fetch, foo) = acu.descendants(ASTMethodDeclaration::class.java).toList()
-            val (fooCall) = acu.descendants(ASTMethodCall::class.java).toList()
+        val (t_Scratch, t_WithField) = acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
+        val (fetch, foo) = acu.descendants(ASTMethodDeclaration::class.java).toList()
+        val (fooCall) = acu.descendants(ASTMethodCall::class.java).toList()
 
-            fooCall.shouldMatchN {
-                methodCall("foo") {
-                    it.methodType.symbol shouldBe foo.symbol
-                    argList {
-                        exprLambda {
-                            lambdaFormals(1)
+        fooCall.shouldMatchN {
+            methodCall("foo") {
+                it.methodType.symbol shouldBe foo.symbol
+                argList {
+                    exprLambda {
+                        lambdaFormals(1)
 
-                            fieldAccess("i") {
-                                it shouldHaveType it.typeSystem.INT
-                                methodCall("fetch") {
-                                    variableAccess("s") {
-                                        it shouldHaveType t_Scratch
-                                    }
-                                    argList(0)
+                        fieldAccess("i") {
+                            it shouldHaveType it.typeSystem.INT
+                            methodCall("fetch") {
+                                variableAccess("s") {
+                                    it shouldHaveType t_Scratch
                                 }
+                                argList(0)
                             }
                         }
                     }
@@ -365,9 +353,8 @@ class LambdaInferenceTest : ProcessorTestSpec({
     }
 
     parserTest("Method invocation selection in lambda return") {
-        doTest {
-            val acu = parser.parse(
-                """
+        val acu = parser.parse(
+            """
 class Scratch {
 
     interface Foo<T, R> {
@@ -388,32 +375,31 @@ class Scratch {
 }
 
         """.trimIndent()
-            )
+        )
 
-            val (_, _, t_G) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+        val (_, _, t_G) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
-            val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-            call.shouldMatchN {
-                methodCall("ctx") {
+        call.shouldMatchN {
+            methodCall("ctx") {
 
-                    argList {
-                        exprLambda {
-                            lambdaFormals(1)
-                            methodCall("fetch") {
-                                variableAccess("g")
+                argList {
+                    exprLambda {
+                        lambdaFormals(1)
+                        methodCall("fetch") {
+                            variableAccess("g")
 
-                                with(it.typeDsl) {
-                                    it.methodType.shouldMatchMethod(
-                                        named = "fetch",
-                                        declaredIn = t_G[gen.t_String],
-                                        withFormals = emptyList(),
-                                        returning = gen.t_String
-                                    )
-                                }
-
-                                argList(0)
+                            with(it.typeDsl) {
+                                it.methodType.shouldMatchMethod(
+                                    named = "fetch",
+                                    declaredIn = t_G[gen.t_String],
+                                    withFormals = emptyList(),
+                                    returning = gen.t_String
+                                )
                             }
+
+                            argList(0)
                         }
                     }
                 }
@@ -421,11 +407,9 @@ class Scratch {
         }
     }
 
-
     parserTest("Block lambda") {
-        doTest {
-            val acu = parser.parse(
-                """
+        val acu = parser.parse(
+            """
 class Scratch {
 
     interface Foo<T, R> {
@@ -446,34 +430,33 @@ class Scratch {
 }
 
         """.trimIndent()
-            )
+        )
 
-            val (_, _, t_G) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+        val (_, _, t_G) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
-            val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-            call.shouldMatchN {
-                methodCall("ctx") {
+        call.shouldMatchN {
+            methodCall("ctx") {
 
-                    argList {
-                        blockLambda {
-                            lambdaFormals(1)
-                            block {
-                                returnStatement {
-                                    methodCall("fetch") {
-                                        variableAccess("g")
+                argList {
+                    blockLambda {
+                        lambdaFormals(1)
+                        block {
+                            returnStatement {
+                                methodCall("fetch") {
+                                    variableAccess("g")
 
-                                        with(it.typeDsl) {
-                                            it.methodType.shouldMatchMethod(
-                                                named = "fetch",
-                                                declaredIn = t_G[gen.t_String],
-                                                withFormals = emptyList(),
-                                                returning = gen.t_String
-                                            )
-                                        }
-
-                                        argList(0)
+                                    with(it.typeDsl) {
+                                        it.methodType.shouldMatchMethod(
+                                            named = "fetch",
+                                            declaredIn = t_G[gen.t_String],
+                                            withFormals = emptyList(),
+                                            returning = gen.t_String
+                                        )
                                     }
+
+                                    argList(0)
                                 }
                             }
                         }
@@ -483,11 +466,9 @@ class Scratch {
         }
     }
 
-
     parserTest("Value compatibility unit tests") {
-        doTest {
-            val acu = parser.parse(
-                """
+        val acu = parser.parse(
+            """
 class Scratch {
 
     static {
@@ -502,77 +483,68 @@ class Scratch {
 }
 
         """.trimIndent()
-            )
+        )
 
-            val infer = Infer(testTypeSystem, 8, TypeInferenceLogger.noop())
-            val mirrors = JavaExprMirrors.forTypeResolution(infer)
-            val (a, b, c, d, e, f, h) = acu.descendants(ASTLambdaExpression::class.java)
-                .toList { mirrors.getTopLevelFunctionalMirror(it) as ExprMirror.LambdaExprMirror }
+        val infer = Infer(testTypeSystem, 8, TypeInferenceLogger.noop())
+        val mirrors = JavaExprMirrors.forTypeResolution(infer)
+        val (a, b, c, d, e, f, h) = acu.descendants(ASTLambdaExpression::class.java)
+            .toList { mirrors.getTopLevelFunctionalMirror(it) as ExprMirror.LambdaExprMirror }
 
-            fun ExprMirror.LambdaExprMirror.shouldBeCompat(void: Boolean = false, value: Boolean = false) {
-                withClue(this) {
-                    assertEquals(void, this.isVoidCompatible, "void compatible")
-                    assertEquals(value, this.isValueCompatible, "value compatible")
-                }
+        fun ExprMirror.LambdaExprMirror.shouldBeCompat(void: Boolean = false, value: Boolean = false) {
+            withClue(this) {
+                assertEquals(void, this.isVoidCompatible, "void compatible")
+                assertEquals(value, this.isValueCompatible, "value compatible")
             }
-
-
-            a.shouldBeCompat(value = true)
-            b.shouldBeCompat(void = true)
-            c.shouldBeCompat(void = true)
-            d.shouldBeCompat(value = true)
-            e.shouldBeCompat(value = true, void = true)
-            f.shouldBeCompat(value = true, void = true)
-            h.shouldBeCompat(value = true, void = true)
         }
+
+
+        a.shouldBeCompat(value = true)
+        b.shouldBeCompat(void = true)
+        c.shouldBeCompat(void = true)
+        d.shouldBeCompat(value = true)
+        e.shouldBeCompat(value = true, void = true)
+        f.shouldBeCompat(value = true, void = true)
+        h.shouldBeCompat(value = true, void = true)
     }
 
-
-
     parserTest("Test void compatible lambda with value compatible body") {
-        doTest {
-
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             class Foo {{
                  final Runnable pr = 0 == null ? null : () -> id(true);
             }}
-        """.trimIndent()
-            )
+            """.trimIndent()
+        )
 
-            val lambda = acu.descendants(ASTLambdaExpression::class.java).firstOrThrow()
+        val lambda = acu.descendants(ASTLambdaExpression::class.java).firstOrThrow()
 
-            spy.shouldBeOk {
-                lambda shouldHaveType java.lang.Runnable::class.raw
-            }
+        spy.shouldBeOk {
+            lambda shouldHaveType java.lang.Runnable::class.raw
         }
     }
 
     parserTest("Test void compatible lambda with void body") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             import java.util.function.DoubleConsumer;
             class Foo {
                 protected DoubleConsumer emptyConsumer() {
                     return e -> {};
                 }
             }
-        """.trimIndent()
-            )
+            """.trimIndent()
+        )
 
-            val lambda = acu.descendants(ASTLambdaExpression::class.java).firstOrThrow()
+        val lambda = acu.descendants(ASTLambdaExpression::class.java).firstOrThrow()
 
-            spy.shouldBeOk {
-                lambda shouldHaveType DoubleConsumer::class.raw
-            }
+        spy.shouldBeOk {
+            lambda shouldHaveType DoubleConsumer::class.raw
         }
     }
 
     parserTest("Test early solved functional interface") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             import java.util.function.DoubleConsumer;
             import java.util.List;
             class Foo {
@@ -584,24 +556,22 @@ class Scratch {
                     ok(singletonList(d -> { }));
                 }
             }
-        """.trimIndent()
-            )
+            """.trimIndent()
+        )
 
-            val lambda = acu.descendants(ASTLambdaExpression::class.java).firstOrThrow()
+        val lambda = acu.descendants(ASTLambdaExpression::class.java).firstOrThrow()
 
-            spy.shouldBeOk {
-                lambda shouldHaveType DoubleConsumer::class.raw
-            }
+        spy.shouldBeOk {
+            lambda shouldHaveType DoubleConsumer::class.raw
         }
     }
 
     parserTest("Test explicitly typed lambda with zero params, ground-target type inference") {
-        doTest {
-            // note that this is not actually implemented, we just special-case the case "zero parameters"
-            // this is todo for future, doesn't appear too useful
+        // note that this is not actually implemented, we just special-case the case "zero parameters"
+        // this is todo for future, doesn't appear too useful
 
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             import java.util.function.Supplier;
             class Foo<S> {
 
@@ -610,21 +580,19 @@ class Scratch {
                 public static final Foo<String> FILENAME = Foo.withInitial(() -> "/*unknown*/");
 
             }
-        """.trimIndent()
-            )
+            """.trimIndent()
+        )
 
-            val lambda = acu.descendants(ASTLambdaExpression::class.java).firstOrThrow()
+        val lambda = acu.descendants(ASTLambdaExpression::class.java).firstOrThrow()
 
-            spy.shouldBeOk {
-                lambda shouldHaveType Supplier::class[gen.t_String]
-            }
+        spy.shouldBeOk {
+            lambda shouldHaveType Supplier::class[gen.t_String]
         }
     }
 
     parserTest("Nested lambda param resolution (in to out)") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 
     interface Foreachable<T> {
     
@@ -641,24 +609,22 @@ class Scratch {
     }
     
             """
-            )
+        )
 
-            val (t_Foreachable, t_Action) = acu.declaredTypeSignatures()
-            val (action, f1, f2) = acu.descendants(ASTLambdaParameter::class.java).crossFindBoundaries().toList()
-            val evar = acu.typeVar("E")
+        val (t_Foreachable, t_Action) = acu.declaredTypeSignatures()
+        val (action, f1, f2) = acu.descendants(ASTLambdaParameter::class.java).crossFindBoundaries().toList()
+        val evar = acu.typeVar("E")
 
-            spy.shouldBeOk {
-                f2 shouldHaveType evar
-                f1 shouldHaveType t_Foreachable[evar]
-                action shouldHaveType t_Action[`?` `super` evar]
-            }
+        spy.shouldBeOk {
+            f2 shouldHaveType evar
+            f1 shouldHaveType t_Foreachable[evar]
+            action shouldHaveType t_Action[`?` `super` evar]
         }
     }
 
     parserTest("Nested lambda param resolution, when there are several overloads to give ctx") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 
 interface Runnable { void run(); }
 interface Supplier<E> { E get(); }
@@ -675,24 +641,22 @@ class Scratch {
     }
 }
             """
-            )
+        )
 
-            val (t_Runnable, t_Supplier, t_Action, t_Foreachable) = acu.declaredTypeSignatures()
-            val (run, action) = acu.descendants(ASTLambdaExpression::class.java).crossFindBoundaries().toList()
-            val (s) = acu.descendants(ASTLambdaParameter::class.java).crossFindBoundaries().toList()
+        val (t_Runnable, t_Supplier, t_Action, t_Foreachable) = acu.declaredTypeSignatures()
+        val (run, action) = acu.descendants(ASTLambdaExpression::class.java).crossFindBoundaries().toList()
+        val (s) = acu.descendants(ASTLambdaParameter::class.java).crossFindBoundaries().toList()
 
-            spy.shouldBeOk {
-                run shouldHaveType t_Runnable
-                action shouldHaveType t_Action[gen.t_String]
-                s shouldHaveType gen.t_String
-            }
+        spy.shouldBeOk {
+            run shouldHaveType t_Runnable
+            action shouldHaveType t_Action[gen.t_String]
+            s shouldHaveType gen.t_String
         }
     }
 
     parserTest("Body expression should be ground") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 
 interface Iterator<Q> {}
 interface Function<U,V> { 
@@ -711,34 +675,31 @@ class NodeStream<T> {
 
 }
             """
-            )
+        )
 
-            val (t_Iterator, t_Function, t_NodeStream) = acu.declaredTypeSignatures()
-            val (lambda) = acu.descendants(ASTLambdaExpression::class.java).crossFindBoundaries().toList()
-            val (iter) = acu.descendants(ASTLambdaParameter::class.java).crossFindBoundaries().toList()
-            val (_, _, _, tvar, rvar) = acu.typeVariables()
+        val (t_Iterator, t_Function, t_NodeStream) = acu.declaredTypeSignatures()
+        val (lambda) = acu.descendants(ASTLambdaExpression::class.java).crossFindBoundaries().toList()
+        val (iter) = acu.descendants(ASTLambdaParameter::class.java).crossFindBoundaries().toList()
+        val (_, _, _, tvar, rvar) = acu.typeVariables()
 
-            spy.shouldBeOk {
-                lambda shouldHaveType t_Function[t_Iterator[tvar], t_Iterator[rvar]]
-                iter shouldHaveType t_Iterator[tvar]
-                lambda.expressionBody!!.shouldBeA<ASTMethodCall> {
-                    it.methodType.shouldMatchMethod(
-                        named = "mapNotNull",
-                        withFormals = listOf(
-                            t_Iterator[`?` extends tvar],
-                            t_Function[`?` `super` tvar, `?` extends rvar]
-                        )
+        spy.shouldBeOk {
+            lambda shouldHaveType t_Function[t_Iterator[tvar], t_Iterator[rvar]]
+            iter shouldHaveType t_Iterator[tvar]
+            lambda.expressionBody!!.shouldBeA<ASTMethodCall> {
+                it.methodType.shouldMatchMethod(
+                    named = "mapNotNull",
+                    withFormals = listOf(
+                        t_Iterator[`?` extends tvar],
+                        t_Function[`?` `super` tvar, `?` extends rvar]
                     )
-                    it shouldHaveType t_Iterator[rvar]
-                }
+                )
+                it shouldHaveType t_Iterator[rvar]
             }
         }
     }
 
-    parserTest("Lambda bug with nested lambdas") {
-
+    parserTestContainer("Lambda bug with nested lambdas") {
         fun makeTest(insideOut: Boolean) {
-
             val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
                         interface Function<U,V> {
@@ -758,7 +719,6 @@ class NodeStream<T> {
             val (lambdaX, lambdaY) = acu.descendants(ASTLambdaExpression::class.java).crossFindBoundaries()
                 .toList()
 
-
             spy.shouldBeOk {
                 val t_lambdaY = t_Function[t_Scratch, ts.STRING]
                 val t_lambdaX = t_Function[ts.OBJECT, t_lambdaY]
@@ -773,7 +733,6 @@ class NodeStream<T> {
             }
         }
 
-
         doTest("Outside in") {
             makeTest(false)
         }
@@ -783,11 +742,9 @@ class NodeStream<T> {
         }
     }
 
-
     parserTest("inference of call within lambda fails") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 
 interface Iterator<Q> {}
 interface Function<U,V> { 
@@ -805,24 +762,21 @@ class NodeStream {
 
 }
             """
-            )
+        )
 
-            val (t_Iterator, t_Function, t_Iterable) = acu.declaredTypeSignatures()
-            val (lambda) = acu.descendants(ASTLambdaExpression::class.java).crossFindBoundaries().toList()
-            val (_, _, _, _, tvar, rvar) = acu.typeVariables()
+        val (t_Iterator, t_Function, t_Iterable) = acu.declaredTypeSignatures()
+        val (lambda) = acu.descendants(ASTLambdaExpression::class.java).crossFindBoundaries().toList()
+        val (_, _, _, _, tvar, rvar) = acu.typeVariables()
 
-            spy.shouldBeOk {
-                lambda shouldHaveType t_Iterable[rvar]
-                lambda.expressionBody!!.shouldBeA<ASTMethodCall> {
-                    it.methodType.shouldMatchMethod(
-                        named = "apply",
-                        withFormals = listOf(captureMatcher(`?` `super` t_Iterator[`?` extends tvar]))
-                    )
-                    it.overloadSelectionInfo::isFailed shouldBe false
-                }
+        spy.shouldBeOk {
+            lambda shouldHaveType t_Iterable[rvar]
+            lambda.expressionBody!!.shouldBeA<ASTMethodCall> {
+                it.methodType.shouldMatchMethod(
+                    named = "apply",
+                    withFormals = listOf(captureMatcher(`?` `super` t_Iterator[`?` extends tvar]))
+                )
+                it.overloadSelectionInfo::isFailed shouldBe false
             }
         }
     }
-
-
 })

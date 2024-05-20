@@ -14,15 +14,10 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
 private val TextAvailableNode.textStr: String get() = text.toString()
 
 class JavaTextAccessTest : ParserTestSpec({
-
-
-    parserTest("Test parens") {
-
+    parserTestContainer("Test parens") {
         inContext(StatementParsingCtx) {
-
             "int a = ((3));" should parseAs {
                 localVarDecl {
-
                     it.textStr shouldBe "int a = ((3));"
 
                     modifiers {
@@ -44,7 +39,6 @@ class JavaTextAccessTest : ParserTestSpec({
 
             "int a = ((a)).f;" should parseAs {
                 localVarDecl {
-
                     it.textStr shouldBe "int a = ((a)).f;"
 
                     modifiers {
@@ -71,7 +65,6 @@ class JavaTextAccessTest : ParserTestSpec({
             // the left parens shouldn't be flattened by AbstractLrBinaryExpr
             "int a = ((1 + 2) + f);" should parseAs {
                 localVarDecl {
-
                     it.textStr shouldBe "int a = ((1 + 2) + f);"
 
                     modifiers {

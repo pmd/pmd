@@ -14,12 +14,10 @@ import net.sourceforge.pmd.lang.test.ast.shouldBe
  * @since 7.0.0
  */
 class ASTTryStatementTest : ParserTestSpec({
-    parserTest("Test try with resources", javaVersions = J1_7..Latest) {
+    parserTestContainer("Test try with resources", javaVersions = J1_7..Latest) {
         inContext(StatementParsingCtx) {
-
             "try (Foo a = 2){}" should parseAs {
                 tryStmt {
-
                     child<ASTResourceList> {
                         child<ASTResource> {
                             it::isConciseResource shouldBe false
@@ -47,7 +45,6 @@ class ASTTryStatementTest : ParserTestSpec({
 
             "try (final Foo a = 2){}" should parseAs {
                 tryStmt {
-
                     child<ASTResourceList> {
                         child<ASTResource> {
                             it::isConciseResource shouldBe false
@@ -70,18 +67,14 @@ class ASTTryStatementTest : ParserTestSpec({
 
                     block()
                 }
-
             }
         }
     }
 
-    parserTest("Test concise try with resources", javaVersions = J9..Latest) {
-
+    parserTestContainer("Test concise try with resources", javaVersions = J9..Latest) {
         inContext(StatementParsingCtx) {
-
             "try (a){}" should parseAs {
                 tryStmt {
-
                     child<ASTResourceList> {
                         child<ASTResource> {
                             it::isConciseResource shouldBe true
@@ -95,10 +88,8 @@ class ASTTryStatementTest : ParserTestSpec({
                 }
             }
 
-
             "try (a;){}" should parseAs {
                 tryStmt {
-
                     child<ASTResourceList> {
                         child<ASTResource> {
                             it::isConciseResource shouldBe true
@@ -112,10 +103,8 @@ class ASTTryStatementTest : ParserTestSpec({
                 }
             }
 
-
             "try (a.b){}" should parseAs {
                 tryStmt {
-
                     child<ASTResourceList> {
                         child<ASTResource> {
                             it::isConciseResource shouldBe true
@@ -124,7 +113,6 @@ class ASTTryStatementTest : ParserTestSpec({
                                 ambiguousName("a")
                             }
                         }
-
                     }
 
                     block()
@@ -143,5 +131,4 @@ class ASTTryStatementTest : ParserTestSpec({
             "try(Foo.this) {}" should parse()
         }
     }
-
 })

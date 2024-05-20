@@ -11,16 +11,10 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
 
 
 class ASTLambdaExpressionTest : ParserTestSpec({
-
-    parserTest("Simple lambda expressions", javaVersions = J1_8..Latest) {
-
+    parserTestContainer("Simple lambda expressions", javaVersions = J1_8..Latest) {
         inContext(ExpressionParsingCtx) {
-
-
             "a -> foo()" should parseAs {
                 exprLambda {
-
-
                     it::getParameters shouldBe lambdaFormals {
                         simpleLambdaParam("a") {
                             it::isTypeInferred shouldBe true
@@ -29,15 +23,12 @@ class ASTLambdaExpressionTest : ParserTestSpec({
 
                     }
 
-
                     methodCall("foo")
                 }
             }
 
             "(a,b) -> foo()" should parseAs {
                 exprLambda {
-
-
                     it::getParameters shouldBe lambdaFormals {
                         simpleLambdaParam("a") {
                             it::isTypeInferred shouldBe true
@@ -50,20 +41,16 @@ class ASTLambdaExpressionTest : ParserTestSpec({
                         }
                     }
 
-
-
                     methodCall("foo")
                 }
             }
 
             "(a,b) -> { foo(); } " should parseAs {
                 blockLambda {
-
                     it::getParameters shouldBe lambdaFormals {
                         simpleLambdaParam("a")
                         simpleLambdaParam("b")
                     }
-
 
                     block()
                 }
@@ -71,7 +58,6 @@ class ASTLambdaExpressionTest : ParserTestSpec({
 
             "(final int a, @F List<String> b) -> foo()" should parseAs {
                 exprLambda {
-
                     it::getParameters shouldBe lambdaFormals {
                         lambdaParam {
                             it::getModifiers shouldBe modifiers {
@@ -101,20 +87,16 @@ class ASTLambdaExpressionTest : ParserTestSpec({
                         }
                     }
 
-
                     methodCall("foo")
                 }
             }
         }
     }
 
-    parserTest("Mixed array notation/varargs", javaVersions = J1_8..Latest) {
-
+    parserTestContainer("Mixed array notation/varargs", javaVersions = J1_8..Latest) {
         inContext(ExpressionParsingCtx) {
             "(final int a[]@B[], @F List<String>@a [] b @A []) -> foo()" should parseAs {
-
                 exprLambda {
-
                     it::getParameters shouldBe child {
                         lambdaParam {
                             it::getModifiers shouldBe modifiers {
@@ -166,20 +148,16 @@ class ASTLambdaExpressionTest : ParserTestSpec({
                         }
                     }
 
-
                     methodCall("foo")
                 }
             }
         }
     }
 
-    parserTest("Varargs parameter", javaVersions = J1_8..Latest) {
-
+    parserTestContainer("Varargs parameter", javaVersions = J1_8..Latest) {
         inContext(ExpressionParsingCtx) {
             "(String ... b) -> {}" should parseAs {
-
                 blockLambda {
-
                     it::getParameters shouldBe child {
                         lambdaParam {
                             it::getModifiers shouldBe modifiers {}
@@ -196,15 +174,12 @@ class ASTLambdaExpressionTest : ParserTestSpec({
                         }
                     }
 
-
                     block { }
                 }
             }
 
             "(String @A [] @B ... b) -> {}" should parseAs {
-
                 blockLambda {
-
                     it::getParameters shouldBe child {
                         lambdaParam {
                             it::getModifiers shouldBe modifiers {}
@@ -227,24 +202,21 @@ class ASTLambdaExpressionTest : ParserTestSpec({
                         }
                     }
 
-
                     block { }
                 }
             }
         }
     }
 
-    parserTest("Negative lambda contexts") {
+    parserTestContainer("Negative lambda contexts") {
         inContext(StatementParsingCtx) {
             "a -> {}" shouldNot parse()
         }
     }
 
-    parserTest("Positive lambda contexts") {
-
+    parserTestContainer("Positive lambda contexts") {
         inContext(ExpressionParsingCtx) {
             "(a -> {})" should parse()
         }
     }
-
 })

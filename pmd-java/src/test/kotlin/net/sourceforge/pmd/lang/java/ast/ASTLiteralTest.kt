@@ -22,11 +22,8 @@ import net.sourceforge.pmd.lang.test.ast.shouldHaveText
  * @since 7.0.0
  */
 class ASTLiteralTest : ParserTestSpec({
-
-    parserTest("String literal") {
-
+    parserTestContainer("String literal") {
         inContext(ExpressionParsingCtx) {
-
             "\"\"" should parseAs {
                 stringLit("\"\"") {
                     it::getConstValue shouldBe ""
@@ -57,17 +54,12 @@ class ASTLiteralTest : ParserTestSpec({
         }
     }
 
-    parserTest("Text block literal", javaVersions = since(J15)) {
-
+    parserTestContainer("Text block literal", javaVersions = since(J15)) {
         val delim = "\"\"\""
 
         inContext(ExpressionParsingCtx) {
-
-
             suspend fun String.testTextBlock(contents: NodeSpec<ASTStringLiteral> = EmptyAssertions) {
-
                 this should parseAs {
-
                     textBlock {
                         it.literalText.toString() shouldBe this@testTextBlock.trim()
                         contents()
@@ -145,13 +137,10 @@ $delim
 
     }
 
-
-    parserTest("Text block literal on non-JDK13 preview", javaVersions = Earliest.rangeTo(J14)) {
-
+    parserTestContainer("Text block literal on non-JDK13 preview", javaVersions = Earliest.rangeTo(J14)) {
         val delim = "\"\"\""
 
         inContext(ExpressionParsingCtx) {
-
             """
 $delim
 <html>
@@ -169,14 +158,10 @@ $delim
             """ shouldNot parse()
 
         }
-
     }
 
-
-
-    parserTest("String literal escapes") {
+    parserTestContainer("String literal escapes") {
         inContext(ExpressionParsingCtx) {
-
             "\"abc\u1234abc\"" should parseAs {
                 stringLit("\"abc\u1234abc\"") {
                     it::getConstValue shouldBe "abc\u1234abc"
@@ -198,7 +183,7 @@ $delim
         }
     }
 
-    parserTest("String literal octal escapes") {
+    parserTestContainer("String literal octal escapes") {
         inContext(ExpressionParsingCtx) {
             // (kotlin doesn't have octal escapes)
             val char = "123".toInt(radix = 8).toChar()
@@ -219,15 +204,11 @@ $delim
                     it::getConstValue shouldBe char.toString() + "\n"
                 }
             }
-
         }
     }
 
-
-
-    parserTest("Char literal") {
+    parserTestContainer("Char literal") {
         inContext(ExpressionParsingCtx) {
-
             "'c'" should parseAs {
                 charLit("'c'") {
                     it::getConstValue shouldBe 'c'
@@ -254,9 +235,8 @@ $delim
         }
     }
 
-    parserTest("Boolean literals") {
+    parserTestContainer("Boolean literals") {
         inContext(ExpressionParsingCtx) {
-
             "true" should parseAs {
                 boolean(true)
             }
@@ -267,7 +247,7 @@ $delim
         }
     }
 
-    parserTest("Null literal") {
+    parserTestContainer("Null literal") {
         inContext(ExpressionParsingCtx) {
             "null" should parseAs {
                 nullLit()
@@ -275,9 +255,8 @@ $delim
         }
     }
 
-    parserTest("Numeric literals") {
+    parserTestContainer("Numeric literals") {
         inContext(ExpressionParsingCtx) {
-
             "12" should parseAs {
                 number(INT) {
                     it::getValueAsInt shouldBe 12
@@ -411,14 +390,12 @@ $delim
         }
     }
 
-    parserTest("Hex floating point literals") {
-
+    parserTestContainer("Hex floating point literals") {
         // the exponent is binary:
         // p1  multiplies by 2
         // p-1 divides by 2
 
         inContext(ExpressionParsingCtx) {
-
             val exp30f: NodeSpec<*> = {
                 number(FLOAT) {
                     it::getValueAsDouble shouldBe 30.0
@@ -426,7 +403,6 @@ $delim
                     it::getValueAsInt shouldBe 30
                 }
             }
-
 
             "0x0fp1f" should parseAs(exp30f)
 
@@ -447,11 +423,8 @@ $delim
         }
     }
 
-    parserTest("Hex integral literals") {
-
-
+    parserTestContainer("Hex integral literals") {
         inContext(ExpressionParsingCtx) {
-
             fun hex15(type: PrimitiveTypeKind): ValuedNodeSpec<*, ASTNumericLiteral> = {
                 number(type) {
                     it::getValueAsDouble shouldBe 15.0
@@ -484,46 +457,40 @@ $delim
         }
     }
 
-    parserTestGroup("Binary numeric literals") {
+    parserTestContainer("Binary numeric literals - pre java1.7", javaVersions = Earliest..J1_6) {
+        // binary literals were introduced in 1.7
 
-        onVersions(Earliest..J1_6) {
-            // binary literals were introduced in 1.7
+        inContext(ExpressionParsingCtx) {
+            "0b011" shouldNot parse()
+            "0B011" shouldNot parse()
+            "0B0_1__1" shouldNot parse()
 
-            inContext(ExpressionParsingCtx) {
-
-                "0b011" shouldNot parse()
-                "0B011" shouldNot parse()
-                "0B0_1__1" shouldNot parse()
-
-                "0B0_1__1l" shouldNot parse()
-                "0b0_11L" shouldNot parse()
-
-            }
-        }
-
-        onVersions(J1_7..Latest) {
-            fun binaryThree(type: PrimitiveTypeKind): NodeSpec<*> = {
-                number(type) {
-                    it::getValueAsDouble shouldBe 3.0
-                    it::getValueAsFloat shouldBe 3f
-                    it::getValueAsInt shouldBe 3
-                    it::getValueAsLong shouldBe 3L
-                }
-            }
-
-            inContext(ExpressionParsingCtx) {
-                "0b011" should parseAs(binaryThree(INT))
-                "0B011" should parseAs(binaryThree(INT))
-                "0B0_1__1" should parseAs(binaryThree(INT))
-
-                "0B0_1__1l" should parseAs(binaryThree(LONG))
-                "0b0_11L" should parseAs(binaryThree(LONG))
-
-                "0b05" shouldNot parse()
-                "0b_1" shouldNot parse()
-                "0b1_" shouldNot parse()
-            }
+            "0B0_1__1l" shouldNot parse()
+            "0b0_11L" shouldNot parse()
         }
     }
 
+    parserTestContainer("Binary numeric literals - java1.7+", javaVersions = J1_7..Latest) {
+        fun binaryThree(type: PrimitiveTypeKind): NodeSpec<*> = {
+            number(type) {
+                it::getValueAsDouble shouldBe 3.0
+                it::getValueAsFloat shouldBe 3f
+                it::getValueAsInt shouldBe 3
+                it::getValueAsLong shouldBe 3L
+            }
+        }
+
+        inContext(ExpressionParsingCtx) {
+            "0b011" should parseAs(binaryThree(INT))
+            "0B011" should parseAs(binaryThree(INT))
+            "0B0_1__1" should parseAs(binaryThree(INT))
+
+            "0B0_1__1l" should parseAs(binaryThree(LONG))
+            "0b0_11L" should parseAs(binaryThree(LONG))
+
+            "0b05" shouldNot parse()
+            "0b_1" shouldNot parse()
+            "0b1_" shouldNot parse()
+        }
+    }
 })

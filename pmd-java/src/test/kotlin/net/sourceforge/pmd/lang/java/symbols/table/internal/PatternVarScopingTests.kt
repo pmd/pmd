@@ -13,8 +13,6 @@ import net.sourceforge.pmd.lang.java.ast.*
  *
  */
 class PatternVarScopingTests : ProcessorTestSpec({
-
-
     fun ParserTestCtx.checkVars(firstIsPattern: Boolean, secondIsPattern: Boolean, code: () -> String) {
         val exprCode = code().trimIndent()
         val sourceCode = """
@@ -40,10 +38,8 @@ class PatternVarScopingTests : ProcessorTestSpec({
         }
     }
 
-    parserTest("Bindings with if/else", javaVersion = JavaVersion.J17) {
-
+    parserTestContainer("Bindings with if/else", javaVersion = JavaVersion.J17) {
         doTest("If with then that falls through") {
-
             checkVars(firstIsPattern = true, secondIsPattern = false) {
                 """
                 a -> {
@@ -57,7 +53,6 @@ class PatternVarScopingTests : ProcessorTestSpec({
         }
 
         doTest("If with then that falls through, negated condition") {
-
             checkVars(firstIsPattern = false, secondIsPattern = false) {
                 """
                 a -> {
@@ -71,7 +66,6 @@ class PatternVarScopingTests : ProcessorTestSpec({
         }
 
         doTest("If with else and negated condition") {
-
             checkVars(firstIsPattern = false, secondIsPattern = true) {
                 """
                 a -> {
@@ -85,7 +79,6 @@ class PatternVarScopingTests : ProcessorTestSpec({
         }
 
         doTest("If with then that completes abruptly") {
-
             checkVars(firstIsPattern = false, secondIsPattern = true) {
                 """
                 a -> {
@@ -98,8 +91,8 @@ class PatternVarScopingTests : ProcessorTestSpec({
                 """
             }
         }
-        doTest("Test while(true) is handled correctly") {
 
+        doTest("Test while(true) is handled correctly") {
             checkVars(firstIsPattern = false, secondIsPattern = true) {
                 """
                 args -> {
@@ -114,11 +107,8 @@ class PatternVarScopingTests : ProcessorTestSpec({
         }
     }
 
-    parserTest("Bindings within condition", javaVersion = JavaVersion.J17) {
-
-
+    parserTestContainer("Bindings within condition", javaVersion = JavaVersion.J17) {
         doTest("Condition with and") {
-
             checkVars(firstIsPattern = true, secondIsPattern = false) {
                 """
                 a -> {
@@ -131,7 +121,6 @@ class PatternVarScopingTests : ProcessorTestSpec({
         }
 
         doTest("Condition with or (negated)") {
-
             checkVars(firstIsPattern = true, secondIsPattern = false) {
                 """
                 a -> {
@@ -142,8 +131,8 @@ class PatternVarScopingTests : ProcessorTestSpec({
                 """
             }
         }
-        doTest("Condition with or") {
 
+        doTest("Condition with or") {
             checkVars(firstIsPattern = false, secondIsPattern = false) {
                 """
                 a -> {
@@ -156,12 +145,8 @@ class PatternVarScopingTests : ProcessorTestSpec({
         }
     }
 
-
-    parserTest("Bindings within ternary", javaVersion = JavaVersion.J17) {
-
-
+    parserTestContainer("Bindings within ternary", javaVersion = JavaVersion.J17) {
         doTest("Positive cond") {
-
             checkVars(firstIsPattern = true, secondIsPattern = false) {
                 """
                 a -> a instanceof String var ? var.isEmpty() // the binding
@@ -169,8 +154,8 @@ class PatternVarScopingTests : ProcessorTestSpec({
                 """
             }
         }
-        doTest("Negative cond") {
 
+        doTest("Negative cond") {
             checkVars(firstIsPattern = false, secondIsPattern = true) {
                 """
                 a -> !(a instanceof String var) ? var.isEmpty() // the field
@@ -178,53 +163,43 @@ class PatternVarScopingTests : ProcessorTestSpec({
                 """
             }
         }
-
     }
 
-
-
     parserTest("Bindings within labeled stmt", javaVersion = JavaVersion.J17) {
-        doTest {
-            checkVars(firstIsPattern = false, secondIsPattern = true) {
-                """
-                a -> {
-                    label:
-                        if (!(a instanceof String var)) {
-                            var.toString(); // the field
-                            return;
-                        }
-                    var.toString(); // the binding
-                }
-                """
+        checkVars(firstIsPattern = false, secondIsPattern = true) {
+            """
+            a -> {
+                label:
+                    if (!(a instanceof String var)) {
+                        var.toString(); // the field
+                        return;
+                    }
+                var.toString(); // the binding
             }
+            """
         }
     }
 
     parserTest("Bindings within switch expr with yield", javaVersion = JavaVersion.J17) {
-        doTest {
-            checkVars(firstIsPattern = false, secondIsPattern = true) {
-                """
-                a -> switch (1) {
-                    case 1 -> {
-                        if (!(a instanceof String var)) {
-                            var.toString(); // the field
-                            yield 12;
-                        }
-                        var.toString(); // the binding
-                        yield 2;
-                   }
-                }
-                """
+        checkVars(firstIsPattern = false, secondIsPattern = true) {
+            """
+            a -> switch (1) {
+                case 1 -> {
+                    if (!(a instanceof String var)) {
+                        var.toString(); // the field
+                        yield 12;
+                    }
+                    var.toString(); // the binding
+                    yield 2;
+               }
             }
+            """
         }
     }
 
 
-    parserTest("Bindings within for loop", javaVersion = JavaVersion.J17) {
-
-
+    parserTestContainer("Bindings within for loop", javaVersion = JavaVersion.J17) {
         doTest("Positive cond") {
-
             checkVars(firstIsPattern = true, secondIsPattern = false) {
                 """
                 a -> {
@@ -236,8 +211,8 @@ class PatternVarScopingTests : ProcessorTestSpec({
                 """
             }
         }
-        doTest("Negated cond, body does nothing") {
 
+        doTest("Negated cond, body does nothing") {
             checkVars(firstIsPattern = false, secondIsPattern = true) {
                 """
                 a -> {
@@ -249,8 +224,8 @@ class PatternVarScopingTests : ProcessorTestSpec({
                 """
             }
         }
-        doTest("Negated cond, body doesn't break") {
 
+        doTest("Negated cond, body doesn't break") {
             checkVars(firstIsPattern = false, secondIsPattern = true) {
                 """
                 a -> {
@@ -264,8 +239,8 @@ class PatternVarScopingTests : ProcessorTestSpec({
                 """
             }
         }
-        doTest("Negated cond, body does break") {
 
+        doTest("Negated cond, body does break") {
             checkVars(firstIsPattern = false, secondIsPattern = false) {
                 """
                 a -> {
@@ -277,6 +252,7 @@ class PatternVarScopingTests : ProcessorTestSpec({
                 """
             }
         }
+
         doTest("Both bindings and init vars are in scope") {
             inContext(StatementParsingCtx) {
                 val loop = doParse(
@@ -295,11 +271,9 @@ class PatternVarScopingTests : ProcessorTestSpec({
             }
         }
     }
-    parserTest("Bindings within while loop", javaVersion = JavaVersion.J17) {
 
-
+    parserTestContainer("Bindings within while loop", javaVersion = JavaVersion.J17) {
         doTest("Positive cond") {
-
             checkVars(firstIsPattern = true, secondIsPattern = false) {
                 """
                 a -> {
@@ -311,8 +285,8 @@ class PatternVarScopingTests : ProcessorTestSpec({
                 """
             }
         }
-        doTest("Negated cond") {
 
+        doTest("Negated cond") {
             checkVars(firstIsPattern = false, secondIsPattern = true) {
                 """
                 a -> {
@@ -324,8 +298,8 @@ class PatternVarScopingTests : ProcessorTestSpec({
                 """
             }
         }
-        doTest("Negated cond, body doesn't break") {
 
+        doTest("Negated cond, body doesn't break") {
             checkVars(firstIsPattern = false, secondIsPattern = true) {
                 """
                 a -> {
@@ -340,8 +314,8 @@ class PatternVarScopingTests : ProcessorTestSpec({
                 """
             }
         }
-        doTest("Negated cond, body does break") {
 
+        doTest("Negated cond, body does break") {
             checkVars(firstIsPattern = false, secondIsPattern = false) {
                 """
                 a -> {
@@ -355,5 +329,4 @@ class PatternVarScopingTests : ProcessorTestSpec({
             }
         }
     }
-
 })

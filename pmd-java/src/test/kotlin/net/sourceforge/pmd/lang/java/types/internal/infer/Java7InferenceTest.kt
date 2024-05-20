@@ -13,12 +13,9 @@ import net.sourceforge.pmd.lang.java.types.*
  * @author Clément Fournier
  */
 class Java7InferenceTest : ProcessorTestSpec({
-
-
     parserTest("Java 7 uses return constraints only if args are not enough", javaVersion = J1_7) {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             class Gen<T> {
                 Gen(T t) {}
                 static {
@@ -27,22 +24,20 @@ class Java7InferenceTest : ProcessorTestSpec({
                 }
             }
             """
-            )
+        )
 
-            val (t_Gen) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
-            val (genCall) = acu.descendants(ASTConstructorCall::class.java).toList()
+        val (t_Gen) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+        val (genCall) = acu.descendants(ASTConstructorCall::class.java).toList()
 
-            spy.shouldBeOk {
-                // inferred to Gen<Class<String>> on java 7
-                ctorInfersTo(genCall, inferredType = t_Gen[Class::class[gen.t_String]])
-            }
+        spy.shouldBeOk {
+            // inferred to Gen<Class<String>> on java 7
+            ctorInfersTo(genCall, inferredType = t_Gen[Class::class[gen.t_String]])
         }
     }
 
     parserTest("Same test in java 8", javaVersion = J1_8) {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             class Gen<T> {
                 Gen(T t) {}
                 static {
@@ -51,23 +46,20 @@ class Java7InferenceTest : ProcessorTestSpec({
                 }
             }
             """
-            )
+        )
 
-            val (t_Gen) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Gen) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
-            val (genCall) = acu.descendants(ASTConstructorCall::class.java).toList()
+        val (genCall) = acu.descendants(ASTConstructorCall::class.java).toList()
 
-            spy.shouldBeOk {
-                ctorInfersTo(genCall, inferredType = t_Gen[Class::class[`?`]])
-            }
+        spy.shouldBeOk {
+            ctorInfersTo(genCall, inferredType = t_Gen[Class::class[`?`]])
         }
     }
 
-
     parserTest("Java 7 uses return constraints if needed", javaVersion = J1_7) {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             class Gen<T> {
                 static {
                     // inferred to Gen<Class<?>>
@@ -75,23 +67,20 @@ class Java7InferenceTest : ProcessorTestSpec({
                 }
             }
             """
-            )
+        )
 
-            val (t_Gen) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Gen) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
-            val (genCall) = acu.descendants(ASTConstructorCall::class.java).toList()
+        val (genCall) = acu.descendants(ASTConstructorCall::class.java).toList()
 
-            spy.shouldBeOk {
-                ctorInfersTo(genCall, inferredType = t_Gen[Class::class[`?`]])
-            }
+        spy.shouldBeOk {
+            ctorInfersTo(genCall, inferredType = t_Gen[Class::class[`?`]])
         }
     }
 
-
     parserTest("Java 7 doesn't let context flow through ternary", javaVersion = J1_7) {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             class Gen<T> extends Sup<T> {
                  public void test() {
                     final Sup<String> l2;
@@ -102,29 +91,27 @@ class Java7InferenceTest : ProcessorTestSpec({
             }
             class Sup<T> {}
             """
-            )
-            val (t_Gen) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+        )
+        val (t_Gen) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
 
-            val (conditional) = acu.descendants(ASTConditionalExpression::class.java).toList()
+        val (conditional) = acu.descendants(ASTConditionalExpression::class.java).toList()
 
-            spy.shouldBeOk {
-                // no context
+        spy.shouldBeOk {
+            // no context
 
-                conditional.thenBranch.conversionContext::isMissing shouldBe true
-                conditional.thenBranch shouldHaveType t_Gen[ts.OBJECT]
-                conditional.elseBranch shouldHaveType t_Gen[ts.OBJECT]
+            conditional.thenBranch.conversionContext::isMissing shouldBe true
+            conditional.thenBranch shouldHaveType t_Gen[ts.OBJECT]
+            conditional.elseBranch shouldHaveType t_Gen[ts.OBJECT]
 
-                // and Gen<String> on java 8
-                conditional shouldHaveType t_Gen[ts.OBJECT]
-            }
+            // and Gen<String> on java 8
+            conditional shouldHaveType t_Gen[ts.OBJECT]
         }
     }
 
     parserTest("Java 7 doesn't use invocation context", javaVersion = J1_7) {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             class Gen<T> extends Sup<T> {
                  Gen(T t) {}
                  Gen() {}
@@ -138,31 +125,30 @@ class Java7InferenceTest : ProcessorTestSpec({
             }
             class Sup<T> {}
             """
-            )
-            val (t_Gen, t_Sup) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+        )
+        val (t_Gen, t_Sup) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
 
-            val (genDiamond, genDiamondString, genString) = acu.ctorCalls().toList()
-            val (genM1, genM2, genM3) = acu.methodCalls().toList()
+        val (genDiamond, genDiamondString, genString) = acu.ctorCalls().toList()
+        val (genM1, genM2, genM3) = acu.methodCalls().toList()
 
-            spy.shouldBeOk {
-                // no context
+        spy.shouldBeOk {
+            // no context
 
-                ctorInfersTo(genDiamond, t_Gen[ts.OBJECT])
-                ctorInfersTo(genDiamondString, t_Gen[ts.STRING])
-                ctorInfersTo(genString, t_Gen[ts.STRING])
+            ctorInfersTo(genDiamond, t_Gen[ts.OBJECT])
+            ctorInfersTo(genDiamondString, t_Gen[ts.STRING])
+            ctorInfersTo(genString, t_Gen[ts.STRING])
 
 
-                methodInfersTo(genM1, t_Sup[ts.OBJECT])
-                methodInfersTo(genM2, t_Sup[ts.STRING])
-                methodInfersTo(genM3, t_Sup[ts.STRING])
-            }
+            methodInfersTo(genM1, t_Sup[ts.OBJECT])
+            methodInfersTo(genM2, t_Sup[ts.STRING])
+            methodInfersTo(genM3, t_Sup[ts.STRING])
         }
     }
+
     parserTest("Java 7 doesn't use invocation context (2)", javaVersion = J1_7) {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             class Gen<T> extends Sup<T> {
                  Gen(T t) {}
                  Gen() {}
@@ -176,27 +162,24 @@ class Java7InferenceTest : ProcessorTestSpec({
             }
             class Sup<T> {}
             """
-            )
-            val (t_Gen, t_Sup) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+        )
+        val (t_Gen, t_Sup) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
 
-            val (genDiamond, genDiamondString, genString) = acu.ctorCalls().toList()
-            val (genM1, genM2, genM3) = acu.methodCalls().toList()
+        val (genDiamond, genDiamondString, genString) = acu.ctorCalls().toList()
+        val (genM1, genM2, genM3) = acu.methodCalls().toList()
 
-            spy.shouldBeOk {
-                // tests methods before ctors
-                methodInfersTo(genM1, t_Sup[ts.OBJECT])
-                methodInfersTo(genM2, t_Sup[ts.STRING])
-                methodInfersTo(genM3, t_Sup[ts.STRING])
+        spy.shouldBeOk {
+            // tests methods before ctors
+            methodInfersTo(genM1, t_Sup[ts.OBJECT])
+            methodInfersTo(genM2, t_Sup[ts.STRING])
+            methodInfersTo(genM3, t_Sup[ts.STRING])
 
-                ctorInfersTo(genDiamond, t_Gen[ts.OBJECT])
-                ctorInfersTo(genDiamondString, t_Gen[ts.STRING])
-                ctorInfersTo(genString, t_Gen[ts.STRING])
-            }
+            ctorInfersTo(genDiamond, t_Gen[ts.OBJECT])
+            ctorInfersTo(genDiamondString, t_Gen[ts.STRING])
+            ctorInfersTo(genString, t_Gen[ts.STRING])
         }
     }
-
-
 })
 
 private fun ctorInfersTo(

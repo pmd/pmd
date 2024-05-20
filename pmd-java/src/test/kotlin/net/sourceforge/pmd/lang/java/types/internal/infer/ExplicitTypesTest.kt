@@ -17,11 +17,9 @@ class ExplicitTypesTest : ProcessorTestSpec({
 
     // todo test explicit type args on ctor call
 
-
     parserTest("Test explicit type arguments") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+           """
 
            import java.util.Collection;
 
@@ -33,32 +31,28 @@ class ExplicitTypesTest : ProcessorTestSpec({
                <T> void foreach(Collection<? super T> action) {}
            }
 
-        """.trimIndent()
-            )
+           """.trimIndent()
+        )
 
 
-            val call = acu.firstMethodCall()
+        val call = acu.firstMethodCall()
 
-            spy.shouldBeOk {
-                call shouldHaveType ts.NO_TYPE
-                call.arguments[0].shouldBeA<ASTMethodCall> {
-                    it.methodType.shouldMatchMethod(
-                        named = "emptyList",
-                        declaredIn = Collections::class.decl,
-                        withFormals = emptyList(),
-                        returning = gen.`t_List{String}`
-                    )
-                }
+        spy.shouldBeOk {
+            call shouldHaveType ts.NO_TYPE
+            call.arguments[0].shouldBeA<ASTMethodCall> {
+                it.methodType.shouldMatchMethod(
+                    named = "emptyList",
+                    declaredIn = Collections::class.decl,
+                    withFormals = emptyList(),
+                    returning = gen.`t_List{String}`
+                )
             }
         }
     }
 
-
-
     parserTest("Explicitly typed lambda") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 
 interface Function<U,V> { 
     V apply(U u);
@@ -76,25 +70,21 @@ class NodeStream {
 
 }
             """
-            )
+        )
 
-            val (t_Function, _, _, t_Foo) = acu.declaredTypeSignatures()
-            val (lambda) = acu.descendants(ASTLambdaExpression::class.java).crossFindBoundaries().toList()
-            val call = acu.firstMethodCall()
+        val (t_Function, _, _, t_Foo) = acu.declaredTypeSignatures()
+        val (lambda) = acu.descendants(ASTLambdaExpression::class.java).crossFindBoundaries().toList()
+        val call = acu.firstMethodCall()
 
-            spy.shouldBeOk {
-                lambda shouldHaveType t_Function[t_Foo, t_Foo]
-                call.overloadSelectionInfo.isFailed shouldBe false
-            }
+        spy.shouldBeOk {
+            lambda shouldHaveType t_Function[t_Foo, t_Foo]
+            call.overloadSelectionInfo.isFailed shouldBe false
         }
     }
 
-
-
     parserTest("Explicitly typed lambda with wildcard") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 
 interface Number {}
 interface Integer extends Number {}
@@ -108,16 +98,13 @@ class NodeStream {
 
 }
             """
-            )
+        )
 
-            val (t_Number, _, t_Predicate) = acu.declaredTypeSignatures()
-            val (lambda) = acu.descendants(ASTLambdaExpression::class.java).crossFindBoundaries().toList()
+        val (t_Number, _, t_Predicate) = acu.declaredTypeSignatures()
+        val (lambda) = acu.descendants(ASTLambdaExpression::class.java).crossFindBoundaries().toList()
 
-            spy.shouldBeOk {
-                lambda shouldHaveType t_Predicate[t_Number]
-            }
+        spy.shouldBeOk {
+            lambda shouldHaveType t_Predicate[t_Number]
         }
     }
-
-
 })

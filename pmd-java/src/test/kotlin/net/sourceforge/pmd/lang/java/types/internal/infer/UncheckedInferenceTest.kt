@@ -12,12 +12,9 @@ import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
 
 class UncheckedInferenceTest : ProcessorTestSpec({
-
     parserTest("Test raw type in argument erases result") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
-
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 class C {
 
     static <T extends Comparable<?>> T valueOf(Class<T> k) { return null; } 
@@ -26,34 +23,30 @@ class C {
         var c = valueOf((Class) Object.class);
     }
 }
+            """.trimIndent()
+        )
 
-                """.trimIndent()
+        val (t_C) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+        val id = acu.descendants(ASTVariableId::class.java).first { it.name == "c" }!!
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "valueOf",
+                declaredIn = t_C,
+                withFormals = listOf(Class::class[gen.t_Comparable[`?`]]),
+                returning = gen.t_Comparable
             )
-
-            val (t_C) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
-
-            val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
-            val id = acu.descendants(ASTVariableId::class.java).first { it.name == "c" }!!
-
-            spy.shouldBeOk {
-                call.methodType.shouldMatchMethod(
-                    named = "valueOf",
-                    declaredIn = t_C,
-                    withFormals = listOf(Class::class[gen.t_Comparable[`?`]]),
-                    returning = gen.t_Comparable
-                )
-                call shouldHaveType gen.t_Comparable
-                id shouldHaveType gen.t_Comparable
-                call.shouldUseUncheckedConversion()
-            }
+            call shouldHaveType gen.t_Comparable
+            id shouldHaveType gen.t_Comparable
+            call.shouldUseUncheckedConversion()
         }
     }
 
     parserTest("Test raw type erases result (return type is Class<T>)") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
-
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 class C {
 
     static <T extends Comparable<?>> Class<T> valueOf(Class<T> k) { return null; } 
@@ -62,33 +55,30 @@ class C {
         Class<?> c = valueOf((Class) Object.class);
     }
 }
+            """.trimIndent()
+        )
 
-                """.trimIndent()
+        val (t_C) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+
+        val call = acu.firstMethodCall()
+        val id = acu.descendants(ASTVariableId::class.java).first { it.name == "c" }!!
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "valueOf",
+                declaredIn = t_C,
+                withFormals = listOf(Class::class[gen.t_Comparable[`?`]]),
+                returning = Class::class.raw
             )
-
-            val (t_C) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
-
-            val call = acu.firstMethodCall()
-            val id = acu.descendants(ASTVariableId::class.java).first { it.name == "c" }!!
-
-            spy.shouldBeOk {
-                call.methodType.shouldMatchMethod(
-                    named = "valueOf",
-                    declaredIn = t_C,
-                    withFormals = listOf(Class::class[gen.t_Comparable[`?`]]),
-                    returning = Class::class.raw
-                )
-                call shouldHaveType Class::class.raw
-                id shouldHaveType Class::class[`?`]
-                call.shouldUseUncheckedConversion()
-            }
+            call shouldHaveType Class::class.raw
+            id shouldHaveType Class::class[`?`]
+            call.shouldUseUncheckedConversion()
         }
     }
 
     parserTest("Test f-bound on raw type, explicit Object bound") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 import java.util.*;
 
 class C {
@@ -104,31 +94,27 @@ class C {
     }
 
 }
+            """.trimIndent()
+        )
 
-                """.trimIndent()
+        val (t_C) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "min",
+                declaredIn = t_C,
+                withFormals = listOf(gen.t_Collection[`?` extends gen.t_Comparable]), // Comparable is raw
+                returning = gen.t_Comparable // not Object
             )
-
-            val (t_C) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
-            val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
-
-            spy.shouldBeOk {
-                call.methodType.shouldMatchMethod(
-                    named = "min",
-                    declaredIn = t_C,
-                    withFormals = listOf(gen.t_Collection[`?` extends gen.t_Comparable]), // Comparable is raw
-                    returning = gen.t_Comparable // not Object
-                )
-                call shouldHaveType gen.t_Comparable
-                call.shouldUseUncheckedConversion()
-            }
+            call shouldHaveType gen.t_Comparable
+            call.shouldUseUncheckedConversion()
         }
     }
 
     parserTest("Test f-bound on raw type") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
-
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 class C {
 
     static <T extends Enum<T>> T valueOf(Class<T> k) { return null; } 
@@ -137,35 +123,31 @@ class C {
         var c = valueOf((Class) Object.class);
     }
 }
+            """.trimIndent()
+        )
 
-                """.trimIndent()
+        val (t_C) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+        val id = acu.descendants(ASTVariableId::class.java).first { it.name == "c" }!!
+
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "valueOf",
+                declaredIn = t_C,
+                withFormals = listOf(Class::class[gen.t_Enum]),
+                returning = gen.t_Enum
             )
-
-            val (t_C) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
-
-            val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
-            val id = acu.descendants(ASTVariableId::class.java).first { it.name == "c" }!!
-
-
-            spy.shouldBeOk {
-                call.methodType.shouldMatchMethod(
-                    named = "valueOf",
-                    declaredIn = t_C,
-                    withFormals = listOf(Class::class[gen.t_Enum]),
-                    returning = gen.t_Enum
-                )
-                call shouldHaveType gen.t_Enum
-                id shouldHaveType gen.t_Enum
-                call.shouldUseUncheckedConversion()
-            }
+            call shouldHaveType gen.t_Enum
+            id shouldHaveType gen.t_Enum
+            call.shouldUseUncheckedConversion()
         }
     }
 
-
     parserTest("TODO unchecked assignment for intersection") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 class Scratch<N extends Number> {
 
     interface I {}
@@ -176,29 +158,27 @@ class Scratch<N extends Number> {
         N n = getN(); // unchecked assignment Scratch.I to N
     }
 }
-        """
+            """
+        )
+
+        val (t_Scratch, t_I) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+        val (nvar) = acu.descendants(ASTTypeParameter::class.java).toList { it.typeMirror }
+
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "getN",
+                declaredIn = t_Scratch,
+                withFormals = emptyList(),
+                returning = nvar * t_I
             )
-
-            val (t_Scratch, t_I) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
-            val (nvar) = acu.descendants(ASTTypeParameter::class.java).toList { it.typeMirror }
-
-            val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
-
-            spy.shouldBeOk {
-                call.methodType.shouldMatchMethod(
-                    named = "getN",
-                    declaredIn = t_Scratch,
-                    withFormals = emptyList(),
-                    returning = nvar * t_I
-                )
-            }
         }
     }
 
     parserTest("Raw type as target type") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 import java.util.List;
 class Scratch {
     static {
@@ -206,28 +186,26 @@ class Scratch {
     }
     static <T> List<T> asList(T... ts) { return null; }
 }
-        """
+            """
+        )
+
+        val (t_Scratch) = acu.typeDeclarations.toList { it.typeMirror }
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.overloadSelectionInfo.isFailed shouldBe false
+            call.methodType.shouldMatchMethod(
+                named = "asList",
+                declaredIn = t_Scratch,
+                withFormals = listOf(gen.t_String.toArray()),
+                returning = gen.`t_List{String}`
             )
-
-            val (t_Scratch) = acu.typeDeclarations.toList { it.typeMirror }
-            val call = acu.firstMethodCall()
-
-            spy.shouldBeOk {
-                call.overloadSelectionInfo.isFailed shouldBe false
-                call.methodType.shouldMatchMethod(
-                    named = "asList",
-                    declaredIn = t_Scratch,
-                    withFormals = listOf(gen.t_String.toArray()),
-                    returning = gen.`t_List{String}`
-                )
-            }
         }
     }
 
     parserTest("Type with raw bound") {
-        doTest {
-            val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 // Note: Enum is raw, not Enum<T>
 class StringToEnum<T extends Enum> implements Converter<String, T> {
 
@@ -249,23 +227,21 @@ class StringToEnum<T extends Enum> implements Converter<String, T> {
 interface Converter<From, To> {
     To convert(From source);
 }
-        """
+            """
+        )
+
+        val call = acu.firstMethodCall()
+        val tparam = acu.typeVar("T")
+
+        spy.shouldBeOk {
+            call.overloadSelectionInfo::isFailed shouldBe false
+            call.overloadSelectionInfo::needsUncheckedConversion shouldBe true
+            call.methodType.shouldMatchMethod(
+                named = "valueOf",
+                declaredIn = Enum::class.raw,
+                withFormals = listOf(Class::class[tparam], gen.t_String),
+                returning = Enum::class.raw
             )
-
-            val call = acu.firstMethodCall()
-            val tparam = acu.typeVar("T")
-
-            spy.shouldBeOk {
-                call.overloadSelectionInfo::isFailed shouldBe false
-                call.overloadSelectionInfo::needsUncheckedConversion shouldBe true
-                call.methodType.shouldMatchMethod(
-                    named = "valueOf",
-                    declaredIn = Enum::class.raw,
-                    withFormals = listOf(Class::class[tparam], gen.t_String),
-                    returning = Enum::class.raw
-                )
-            }
         }
     }
-
 })

@@ -17,39 +17,35 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 class TypeDisambiguationTest : ParserTestSpec({
-
-
     parserTest("Inner class names") {
-        doTest {
-            enableProcessing()
+        enableProcessing()
 
-            val acu = parser.parse(
+        val acu = parser.parse(
                 """
             class Foo {
                Foo.Inner f1;
                class Inner { }
             }
         """
-            )
+        )
 
-            val (foo, inner) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.symbol }
-            val (f1) = acu.descendants(ASTFieldDeclaration::class.java).toList()
+        val (foo, inner) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.symbol }
+        val (f1) = acu.descendants(ASTFieldDeclaration::class.java).toList()
 
-            f1.typeNode.shouldMatchNode<ASTClassType> {
+        f1.typeNode.shouldMatchNode<ASTClassType> {
+            it::isFullyQualified shouldBe false
+            it::getSimpleName shouldBe "Inner"
+            it::getReferencedSym shouldBe inner
+            it::getAmbiguousLhs shouldBe null
+            it::getQualifier shouldBe classType("Foo") {
                 it::isFullyQualified shouldBe false
-                it::getSimpleName shouldBe "Inner"
-                it::getReferencedSym shouldBe inner
-                it::getAmbiguousLhs shouldBe null
-                it::getQualifier shouldBe classType("Foo") {
-                    it::isFullyQualified shouldBe false
-                    it::getReferencedSym shouldBe foo
-                }
+                it::getReferencedSym shouldBe foo
             }
         }
     }
 
 
-    parserTest("Fully qualified names") {
+    parserTestContainer("Fully qualified names") {
         enableProcessing(true)
 
         inContext(TypeParsingCtx) {
@@ -75,8 +71,7 @@ class TypeDisambiguationTest : ParserTestSpec({
         }
     }
 
-    parserTest("Package names in module") {
-
+    parserTestContainer("Package names in module") {
         val code = """
             module java.base {
                opens java.util;
@@ -100,7 +95,7 @@ class TypeDisambiguationTest : ParserTestSpec({
     }
 
 
-    parserTest("Failures") {
+    parserTestContainer("Failures") {
         val logger = enableProcessing()
 
         val acu = parser.parse("""
@@ -137,7 +132,7 @@ class TypeDisambiguationTest : ParserTestSpec({
         }
     }
 
-    parserTest("Ambiguity errors") {
+    parserTestContainer("Ambiguity errors") {
         val logger = enableProcessing()
 
         val acu = parser.parse("""
@@ -176,10 +171,9 @@ class TypeDisambiguationTest : ParserTestSpec({
     }
 
     parserTest("Malformed types") {
-        doTest {
-            val logger = enableProcessing()
+        val logger = enableProcessing()
 
-            val acu = parser.parse(
+        val acu = parser.parse(
                 """
            package p;
            class Scratch<X> {
@@ -206,41 +200,39 @@ class TypeDisambiguationTest : ParserTestSpec({
                // Scratch.Inner             m; // ok, raw type
            }
         """
-            )
+        )
 
-            val (m0, m1, m2, m3, m4, m5, s0, s1, s2) =
-                acu.descendants(ASTFieldDeclaration::class.java).map { it.typeNode as ASTClassType }.toList()
+        val (m0, m1, m2, m3, m4, m5, s0, s1, s2) =
+            acu.descendants(ASTFieldDeclaration::class.java).map { it.typeNode as ASTClassType }.toList()
 
-            fun assertErrored(t: ASTClassType, expected: Int, actual: Int) {
-                val errs = logger.warnings[MALFORMED_GENERIC_TYPE]?.filter { it.first == t }
-                    ?: emptyList()
-                assertEquals(errs.size, 1, "`${t.text}` should have produced a single error")
-                errs.single().second.toList() shouldBe listOf(expected, actual)
-            }
-
-            fun assertNoError(t: ASTClassType) {
-                val err = logger.warnings[MALFORMED_GENERIC_TYPE]?.firstOrNull { it.first == t }
-                assertNull(err, "`${t.text}` should not have produced an error")
-            }
-
-            assertNoError(m0)
-            assertErrored(m1, expected = 0, actual = 1)
-            assertNoError(m2)
-            assertErrored(m3, expected = 2, actual = 1)
-            assertErrored(m4, expected = 2, actual = 3)
-            assertNoError(m5)
-
-            assertNoError(s0)
-            assertErrored(s1, expected = 1, actual = 2)
-            assertNoError(s2)
+        fun assertErrored(t: ASTClassType, expected: Int, actual: Int) {
+            val errs = logger.warnings[MALFORMED_GENERIC_TYPE]?.filter { it.first == t }
+                ?: emptyList()
+            assertEquals(errs.size, 1, "`${t.text}` should have produced a single error")
+            errs.single().second.toList() shouldBe listOf(expected, actual)
         }
+
+        fun assertNoError(t: ASTClassType) {
+            val err = logger.warnings[MALFORMED_GENERIC_TYPE]?.firstOrNull { it.first == t }
+            assertNull(err, "`${t.text}` should not have produced an error")
+        }
+
+        assertNoError(m0)
+        assertErrored(m1, expected = 0, actual = 1)
+        assertNoError(m2)
+        assertErrored(m3, expected = 2, actual = 1)
+        assertErrored(m4, expected = 2, actual = 3)
+        assertNoError(m5)
+
+        assertNoError(s0)
+        assertErrored(s1, expected = 1, actual = 2)
+        assertNoError(s2)
     }
 
     parserTest("Unresolved inner types") {
-        doTest {
-            enableProcessing()
+        enableProcessing()
 
-            val acu = parser.parse(
+        val acu = parser.parse(
                 """
            package p;
 
@@ -250,43 +242,40 @@ class TypeDisambiguationTest : ParserTestSpec({
                OuterUnresolved.InnerUnresolved m0;
            }
         """
-            )
+        )
 
-            val (m0) =
-                acu.descendants(ASTFieldDeclaration::class.java).map { it.typeNode as ASTClassType }.toList()
+        val (m0) =
+            acu.descendants(ASTFieldDeclaration::class.java).map { it.typeNode as ASTClassType }.toList()
 
-            val outerUnresolved = m0.qualifier!!
-            val outerT = outerUnresolved.typeMirror.shouldBeA<JClassType> {
-                it.symbol.shouldBeA<JClassSymbol> { classSymbol ->
-                    classSymbol::isUnresolved shouldBe true
-                    classSymbol::getSimpleName shouldBe "OuterUnresolved"
-                }
+        val outerUnresolved = m0.qualifier!!
+        val outerT = outerUnresolved.typeMirror.shouldBeA<JClassType> {
+            it.symbol.shouldBeA<JClassSymbol> { classSymbol ->
+                classSymbol::isUnresolved shouldBe true
+                classSymbol::getSimpleName shouldBe "OuterUnresolved"
             }
-
-            val innerT = m0.typeMirror.shouldBeA<JClassType> {
-                it::getEnclosingType shouldBe outerT
-                it.symbol.shouldBeA<JClassSymbol> { classSymbol ->
-                    classSymbol::isUnresolved shouldBe true
-                    classSymbol::getSimpleName shouldBe "InnerUnresolved"
-                    classSymbol.enclosingClass.shouldBeSameInstanceAs(outerT.symbol)
-                }
-            }
-
-            outerT.symbol.getDeclaredClass("InnerUnresolved").shouldBeSameInstanceAs(innerT.symbol)
         }
+
+        val innerT = m0.typeMirror.shouldBeA<JClassType> {
+            it::getEnclosingType shouldBe outerT
+            it.symbol.shouldBeA<JClassSymbol> { classSymbol ->
+                classSymbol::isUnresolved shouldBe true
+                classSymbol::getSimpleName shouldBe "InnerUnresolved"
+                classSymbol.enclosingClass.shouldBeSameInstanceAs(outerT.symbol)
+            }
+        }
+
+        outerT.symbol.getDeclaredClass("InnerUnresolved").shouldBeSameInstanceAs(innerT.symbol)
     }
 
     parserTest("Invalid annotations") {
-        doTest {
-            val logger = enableProcessing()
+        val logger = enableProcessing()
 
-            val acu = parser.parse(
+        val acu = parser.parse(
                 """
            package p;
            class C<T> {
                 @interface A { }
                 interface I { }
-
 
                 @T
                 @C
@@ -296,30 +285,29 @@ class TypeDisambiguationTest : ParserTestSpec({
                 int field;
            }
         """
-            )
+        )
 
-            val (aT, aC, aI, aUnresolved, aOk) =
-                acu.descendants(ASTAnnotation::class.java).map { it.typeNode }.toList()
+        val (aT, aC, aI, aUnresolved, aOk) =
+            acu.descendants(ASTAnnotation::class.java).map { it.typeNode }.toList()
 
-            fun assertErrored(t: ASTClassType) {
-                val errs = logger.warnings[EXPECTED_ANNOTATION_TYPE]?.filter { it.first == t }
-                    ?: emptyList()
-                assertEquals(errs.size, 1, "`${t.text}` should have produced a single error")
-                errs.single().second.toList() shouldBe emptyList()
-            }
-
-            fun assertNoError(t: ASTClassType) {
-                val err = logger.warnings[MALFORMED_GENERIC_TYPE]?.firstOrNull { it.first == t }
-                assertNull(err, "`${t.text}` should not have produced an error")
-            }
-
-            assertNoError(aUnresolved)
-            assertNoError(aOk)
-
-            assertErrored(aT)
-            assertErrored(aC)
-            assertErrored(aI)
+        fun assertErrored(t: ASTClassType) {
+            val errs = logger.warnings[EXPECTED_ANNOTATION_TYPE]?.filter { it.first == t }
+                ?: emptyList()
+            assertEquals(errs.size, 1, "`${t.text}` should have produced a single error")
+            errs.single().second.toList() shouldBe emptyList()
         }
+
+        fun assertNoError(t: ASTClassType) {
+            val err = logger.warnings[MALFORMED_GENERIC_TYPE]?.firstOrNull { it.first == t }
+            assertNull(err, "`${t.text}` should not have produced an error")
+        }
+
+        assertNoError(aUnresolved)
+        assertNoError(aOk)
+
+        assertErrored(aT)
+        assertErrored(aC)
+        assertErrored(aI)
     }
 
     parserTest("!TODO Import on demand of class defined in same compilation unit that has an extends clause") {
@@ -343,6 +331,5 @@ class Assert2 extends Assert {
 class Foo2 extends Foo { }
 
         """)
-
     }
 })

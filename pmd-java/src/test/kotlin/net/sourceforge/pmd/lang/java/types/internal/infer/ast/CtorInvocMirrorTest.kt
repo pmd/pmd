@@ -11,46 +11,41 @@ import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
 import net.sourceforge.pmd.lang.java.types.shouldBeUnresolvedClass
 
 class CtorInvocMirrorTest : ProcessorTestSpec({
-
     parserTest("Qualified constructor invocation with unresolved types") {
-        doTest {
-            val acu = parser.parse(
-                """
-                class Foo {
-                    void bar() {
-                        Foo myObject = new Foo();
-                        myObject.new Nested();
-                    }
-                
-                    class Nested {}
+        val acu = parser.parse(
+            """
+            class Foo {
+                void bar() {
+                    Foo myObject = new Foo();
+                    myObject.new Nested();
                 }
-                """
-            )
-            val invocation = acu.descendants(ASTConstructorCall::class.java).get(1)!!
-            invocation.typeMirror shouldNotBe null
-            invocation.typeMirror.shouldBeUnresolvedClass("Foo.Nested")
-        }
+            
+                class Nested {}
+            }
+            """
+        )
+        val invocation = acu.descendants(ASTConstructorCall::class.java).get(1)!!
+        invocation.typeMirror shouldNotBe null
+        invocation.typeMirror.shouldBeUnresolvedClass("Foo.Nested")
     }
 
     parserTest("Qualified constructor invocation with unresolved types uncompilable") {
-        doTest {
-            val acu = parser.parse(
-                """
-                class Foo {
-                    void bar() {
-                        Foo myObject = new Foo();
-                        myObject.new Nested();
-                    }
-                
-                    //the nested type is not declared, so this code actually doesn't compile
-                    //but PMD should not crash
-                    //class Nested {}
+        val acu = parser.parse(
+            """
+            class Foo {
+                void bar() {
+                    Foo myObject = new Foo();
+                    myObject.new Nested();
                 }
-                """
-            )
-            val invocation = acu.descendants(ASTConstructorCall::class.java).get(1)!!
-            invocation.typeMirror shouldNotBe null
-            invocation.typeMirror.shouldBeSameInstanceAs(invocation.typeSystem.UNKNOWN)
-        }
+            
+                //the nested type is not declared, so this code actually doesn't compile
+                //but PMD should not crash
+                //class Nested {}
+            }
+            """
+        )
+        val invocation = acu.descendants(ASTConstructorCall::class.java).get(1)!!
+        invocation.typeMirror shouldNotBe null
+        invocation.typeMirror.shouldBeSameInstanceAs(invocation.typeSystem.UNKNOWN)
     }
 })

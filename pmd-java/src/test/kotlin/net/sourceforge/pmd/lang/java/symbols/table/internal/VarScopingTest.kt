@@ -19,9 +19,7 @@ import java.lang.reflect.Modifier
 
 @Suppress("UNUSED_VARIABLE")
 class VarScopingTest : ProcessorTestSpec({
-
-    parserTest("Shadowing of variables") {
-
+    parserTestContainer("Shadowing of variables") {
         val acu = parser.parse("""
 
             // TODO test with static import, currently there are no "unresolved field" symbols
@@ -99,9 +97,7 @@ class VarScopingTest : ProcessorTestSpec({
         }
     }
 
-
-    parserTest("Try statement") {
-
+    parserTestContainer("Try statement") {
         val acu = parser.withProcessing().parse("""
 
             // TODO test with static import, currently there are no "unresolved field" symbols
@@ -187,8 +183,7 @@ class VarScopingTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("Switch statement") {
-
+    parserTestContainer("Switch statement") {
         val acu = parser.withProcessing().parse("""
 
             // TODO test with static import, currently there are no "unresolved field" symbols
@@ -244,8 +239,7 @@ class VarScopingTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("For init variables") {
-
+    parserTestContainer("For init variables") {
         val acu = parser.withProcessing().parse("""
             class Outer extends Sup {
                 {
@@ -286,8 +280,8 @@ class VarScopingTest : ProcessorTestSpec({
             innerLoopAccess shouldResolveToLocal ivar
         }
     }
-    parserTest("If stmt without a block") {
 
+    parserTestContainer("If stmt without a block") {
         val acu = parser.withProcessing().parse("""
             class Outer extends Sup {
                 {
@@ -310,9 +304,11 @@ class VarScopingTest : ProcessorTestSpec({
         doTest("Usages") {
             ivar.localUsages shouldBe iUsages
         }
+
         doTest("Inside init") {
             initAccess shouldResolveToLocal ivar
         }
+
         doTest("Inside condition") {
             condAccess shouldResolveToLocal ivar
         }
@@ -330,8 +326,7 @@ class VarScopingTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("Record constructors") {
-
+    parserTestContainer("Record constructors") {
         val acu = parser.withProcessing().parse("""
 
             record Cons(int x, int... rest) {
@@ -377,10 +372,8 @@ class VarScopingTest : ProcessorTestSpec({
         }
     }
 
-
     parserTest("Foreach with no braces") {
-        doTest {
-            val acu = parser.parse(
+        val acu = parser.parse(
                 """
             import java.util.*;
             import java.io.*;
@@ -397,23 +390,20 @@ class VarScopingTest : ProcessorTestSpec({
                 }
             }
         """.trimIndent()
-            )
+        )
 
-            val foreachVar =
-                acu.descendants(ASTVariableId::class.java).first { it.name == "s" }!!
+        val foreachVar =
+            acu.descendants(ASTVariableId::class.java).first { it.name == "s" }!!
 
-            val foreachBody =
-                acu.descendants(ASTForeachStatement::class.java).firstOrThrow().body
+        val foreachBody =
+            acu.descendants(ASTForeachStatement::class.java).firstOrThrow().body
 
-            foreachBody shouldResolveToLocal foreachVar
-        }
+        foreachBody shouldResolveToLocal foreachVar
     }
 
     parserTest("Switch on enum has field names in scope") {
-        doTest {
-            val acu = parser.parse(
-                """
-
+        val acu = parser.parse(
+            """
         class Scratch {
 
             enum SomeEnum { A, B }
@@ -431,51 +421,47 @@ class VarScopingTest : ProcessorTestSpec({
 
                 A.foo(); // this is an ambiguous name
 
-
             }
-        }
-
-        """.trimIndent()
-            )
-
-            val (_, typeSomeEnum) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
-
-            val (enumA, enumB) =
-                acu.descendants(ASTEnumDeclaration::class.java)
-                    .descendants(ASTVariableId::class.java).toList()
-
-            val (e, caseA, caseB) =
-                acu.descendants(ASTVariableAccess::class.java).toList()
-
-            val (qualifiedA) =
-                acu.descendants(ASTFieldAccess::class.java).toList()
-
-            val (fooCall) =
-                acu.descendants(ASTMethodCall::class.java).toList()
-
-            qualifiedA.referencedSym shouldBe enumA.symbol
-            qualifiedA.referencedSym!!.tryGetNode() shouldBe enumA
-            qualifiedA shouldHaveType typeSomeEnum
-
-            caseA.referencedSym shouldBe enumA.symbol
-            caseA.referencedSym!!.tryGetNode() shouldBe enumA
-            caseA shouldHaveType typeSomeEnum
-
-            caseB.referencedSym shouldBe enumB.symbol
-            caseB.referencedSym!!.tryGetNode() shouldBe enumB
-            caseB shouldHaveType typeSomeEnum
-
-            e shouldHaveType typeSomeEnum
-
-            // symbol tables don't carry that info, this is documented on JSymbolTable#variables()
-            caseB.symbolTable.variables().resolve("A").shouldBeEmpty()
-            caseB.symbolTable.variables().resolve("B").shouldBeEmpty()
-
-            fooCall.qualifier!!.shouldMatchN {
-                ambiguousName("A")
-            }
-        }
     }
 
+    """.trimIndent()
+        )
 
+        val (_, typeSomeEnum) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+
+        val (enumA, enumB) =
+            acu.descendants(ASTEnumDeclaration::class.java)
+                .descendants(ASTVariableId::class.java).toList()
+
+        val (e, caseA, caseB) =
+            acu.descendants(ASTVariableAccess::class.java).toList()
+
+        val (qualifiedA) =
+            acu.descendants(ASTFieldAccess::class.java).toList()
+
+        val (fooCall) =
+            acu.descendants(ASTMethodCall::class.java).toList()
+
+        qualifiedA.referencedSym shouldBe enumA.symbol
+        qualifiedA.referencedSym!!.tryGetNode() shouldBe enumA
+        qualifiedA shouldHaveType typeSomeEnum
+
+        caseA.referencedSym shouldBe enumA.symbol
+        caseA.referencedSym!!.tryGetNode() shouldBe enumA
+        caseA shouldHaveType typeSomeEnum
+
+        caseB.referencedSym shouldBe enumB.symbol
+        caseB.referencedSym!!.tryGetNode() shouldBe enumB
+        caseB shouldHaveType typeSomeEnum
+
+        e shouldHaveType typeSomeEnum
+
+        // symbol tables don't carry that info, this is documented on JSymbolTable#variables()
+        caseB.symbolTable.variables().resolve("A").shouldBeEmpty()
+        caseB.symbolTable.variables().resolve("B").shouldBeEmpty()
+
+        fooCall.qualifier!!.shouldMatchN {
+            ambiguousName("A")
+        }
+    }
 })

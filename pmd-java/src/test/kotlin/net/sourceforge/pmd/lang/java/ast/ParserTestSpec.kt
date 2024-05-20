@@ -31,7 +31,41 @@ import io.kotest.matchers.should as kotlintestShould
  * Base class for grammar tests that use the DSL. Tests are layered into
  * containers that make it easier to browse in the IDE. Layout is group name,
  * then java version, then test case. Test cases are "should" assertions matching
- * a string against a matcher defined in [ParserTestCtx].
+ * a string against a matcher defined in [ParserTestCtx] or explicitly defined
+ * test cases with "doTest".
+ *
+ * <p>If only one explicit test is written, then use "parserTest" as the grouping
+ * and just put in assertions. A single test case will be defined implicitly then.
+ *
+ * <pre>{@code
+ * class MyTest : ParserTestSpec({
+ *     parserTestContainer("Simple additive expression should be flat") {
+ *         inContext(ExpressionParsingCtx) {
+ *             "1 + 2 + 3" should parseAs {
+ *                 infixExpr(ADD) {
+ *                     infixExpr(ADD) {
+ *                         int(1)
+ *                         int(2)
+ *                     }
+ *                     int(3)
+ *                 }
+ *             }
+ *         }
+ *         doTest("another test case") {
+ *           //...
+ *         }
+ *     }
+ *
+ *    parserTest("Test annotations on module", javaVersions = since(J9)) {
+ *         val root: ASTCompilationUnit = parser.withProcessing(true).parse("@A @a.B module foo { } ")
+ *         root.moduleDeclaration.shouldMatchNode<ASTModuleDeclaration> {
+ *             it.getAnnotation("A") shouldBe annotation("A")
+ *             it.getAnnotation("a.B") shouldBe annotation("B")
+ *             modName("foo")
+ *         }
+ *     }
+ * }
+ * }</pre>
  *
  * @author Clément Fournier
  */
@@ -50,7 +84,6 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
                 test = test
             )
 
-
     /**
      * Defines a group of tests that should be named similarly,
      * with separate tests for separate versions.
@@ -67,7 +100,7 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
      *             new parser test.
      *
      */
-    fun parserTestGroup(name: String,
+    private fun parserTestGroup(name: String,
                         disabled: Boolean = false,
                         spec: suspend GroupTestCtx.() -> Unit) =
             addContainer(
@@ -77,32 +110,47 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
                     config = null
             )
 
-    /**
-     * Defines a group of tests that should be named similarly.
-     * Calls to "should" in the block are intercepted to create
-     * a new test, with the given [name] as a common prefix.
-     *
-     * This is useful to make a batch of grammar specs for grammar
-     * regression tests without bothering to find a name.
-     *
-     * @param name Name of the container test
-     * @param javaVersion Language versions to use when parsing
-     * @param spec Assertions. Each call to [io.kotest.matchers.should] on a string
-     *             receiver is replaced by a [GroupTestCtx.should], which creates a
-     *             new parser test.
-     *
-     */
     fun parserTest(name: String,
                    javaVersion: JavaVersion = JavaVersion.Latest,
                    spec: suspend GroupTestCtx.VersionedTestCtx.() -> Unit) =
-            parserTest(name, listOf(javaVersion), spec)
+        parserTest(name, listOf(javaVersion), spec)
+
+    /**
+     * Defines a single test case, that is executed on several java versions
+     * and grouped by the given [name].
+     *
+     * @param name Name of the container test
+     * @param javaVersions Language versions fo which to generate tests
+     * @param spec Assertions.
+     */
+    fun parserTest(name: String,
+                   javaVersions: List<JavaVersion>,
+                   spec: suspend GroupTestCtx.VersionedTestCtx.() -> Unit) =
+        parserTestGroup(name) {
+            onVersions(javaVersions) {
+                doTest(name) {
+                    spec()
+
+                    if (this@onVersions.hasMoreThanOneChild()) {
+                        throw IllegalStateException("Expected no child test cases, but parserTest '$name' has children. Use 'parserTestContainer' instead.")
+                    }
+                }
+            }
+        }
+
+    fun parserTestContainer(name: String,
+                            javaVersion: JavaVersion = JavaVersion.Latest,
+                            spec: suspend GroupTestCtx.VersionedTestCtx.() -> Unit) =
+        parserTestContainer(name, listOf(javaVersion), spec)
 
     /**
      * Defines a group of tests that should be named similarly,
-     * executed on several java versions. Calls to "should" in
-     * the block are intercepted to create a new test, with the
-     * given [name] as a common prefix. Alternatively you can use
-     * "doTest" to define a new test case.
+     * executed on several java versions.
+     * Calls to "should" in the block are intercepted to create a
+     * new test, with the given [name] as a common prefix.
+     *
+     * Alternatively you can use "doTest" to define a new test case
+     * explicitly.
      *
      * This is useful to make a batch of grammar specs for grammar
      * regression tests without bothering to find a name.
@@ -112,9 +160,9 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
      * @param spec Assertions. Each call to [io.kotest.matchers.should] on a string
      *             receiver is replaced by a [GroupTestCtx.VersionedTestCtx.should], which creates a
      *             new parser test case. Alternatively use [GroupTestCtx.VersionedTestCtx.doTest] to create
-     *             a new parser test case.
+     *             a new parser test case explicitly.
      */
-    fun parserTest(name: String,
+    fun parserTestContainer(name: String,
                    javaVersions: List<JavaVersion>,
                    spec: suspend GroupTestCtx.VersionedTestCtx.() -> Unit) =
             parserTestGroup(name) {
@@ -122,7 +170,7 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
                     spec()
 
                     if (!this@onVersions.hasChildren()) {
-                        throw IllegalStateException("versioned parser test '$name' without a test case. Use 'should' or 'doTest'.")
+                        throw IllegalStateException("Expected at least one child test case, but parserTestContainer '$name' has no children. Use 'parserTest' instead or use 'should'/'doTest'.")
                     }
                 }
             }
