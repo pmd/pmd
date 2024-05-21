@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
@@ -32,7 +31,6 @@ public interface ASTExecutableDeclaration
     extends ModifierOwner,
             ASTBodyDeclaration,
             TypeParamOwnerNode,
-            GenericNode<JavaNode>,
             JavadocCommentOwner {
 
 
