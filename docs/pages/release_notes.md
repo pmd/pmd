@@ -44,6 +44,7 @@ Since this release, PMD will also expose any getter returning a collection of an
   * [#4930](https://github.com/pmd/pmd/issues/4930): \[java] EmptyControlStatement should not allow empty try with concise resources
 * java-errorprone
   * [#4042](https://github.com/pmd/pmd/issues/4042): \[java] A false negative about the rule StringBufferInstantiationWithChar
+  * [#5007](https://github.com/pmd/pmd/issues/5007): \[java] AvoidUsingOctalValues triggers on non-octal double literals with a leading 0
 * java-multithreading
   * [#2368](https://github.com/pmd/pmd/issues/2368): \[java] False positive UnsynchronizedStaticFormatter in static initializer
 
@@ -55,6 +56,8 @@ Since this release, PMD will also expose any getter returning a collection of an
   * {% jdoc !!java::lang.java.ast.ASTResource#getStableName() %} and the corresponding attribute `@StableName`
 
 ### ✨ External Contributions
+
+* [#5020](https://github.com/pmd/pmd/issues/5020): \[java] Fix AvoidUsingOctalValues false-positive - [Gold856](https://github.com/Gold856) (@Gold856)
 
 {% endtocmaker %}
 
