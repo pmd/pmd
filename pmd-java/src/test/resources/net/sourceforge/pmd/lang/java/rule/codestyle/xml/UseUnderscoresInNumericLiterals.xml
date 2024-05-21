@@ -245,6 +245,16 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>ok, float literal in hexadecimal and exponent</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    float f = 0x1.0000_ffff_eeeep+2f;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>ok, Lengthy numeric literal with variable name as serialVersionUID</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

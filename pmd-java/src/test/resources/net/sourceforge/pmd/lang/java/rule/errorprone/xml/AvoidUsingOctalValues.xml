@@ -55,6 +55,48 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>OK, double value</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    double d = 012.0;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>OK, double suffix</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    double d1 = 012d;
+    double d2 = 012D;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>OK, float suffix</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    float f = 012f;
+    float f = 012F;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>OK, double value with exponent</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    double d = 012e0;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>bad, 012L</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
