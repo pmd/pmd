@@ -35,7 +35,7 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
  * type is of no importance outside the implementation of this framework.
  */
 @SuppressWarnings("PMD.CompareObjectsWithEquals")
-public final class InferenceVar implements JTypeMirror, SubstVar {
+public final class InferenceVar implements SubstVar {
 
     // we used to use greek letters (for style), but they're hard to type
     private static final String NAMES = "abcdefghijklmnopqrstuvwxyz"; // + "αβγδεζηθκλμνξπρςυφχψω"
