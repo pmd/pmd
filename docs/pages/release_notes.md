@@ -24,6 +24,11 @@ Since this release, PMD will also expose any getter returning a collection of an
 /UserClass[@InterfaceNames = 'Queueable']
 ```
 
+#### Updated PMD Designer
+
+This PMD release ships a new version of the pmd-designer.
+For the changes, see [PMD Designer Changelog (7.2.0)](https://github.com/pmd/pmd-designer/releases/tag/7.2.0).
+
 ### 🐛 Fixed Issues
 * core
   * [#4467](https://github.com/pmd/pmd/issues/4467): \[core] Expose collections from getters as XPath sequence attributes
