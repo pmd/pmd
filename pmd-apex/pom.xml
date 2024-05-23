@@ -99,11 +99,10 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.nawforce</groupId>
-            <artifactId>apexlink</artifactId>
-            <version>2.3.7</version>
+            <groupId>io.github.apex-dev-tools</groupId>
+            <artifactId>apex-ls_2.13</artifactId>
+            <version>5.2.0</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.apache.commons</groupId>

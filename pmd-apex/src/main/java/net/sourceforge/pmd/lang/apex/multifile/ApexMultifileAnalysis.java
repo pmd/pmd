@@ -20,8 +20,8 @@ import net.sourceforge.pmd.lang.apex.ApexLanguageProcessor;
 import net.sourceforge.pmd.lang.apex.ApexLanguageProperties;
 
 import com.nawforce.apexlink.api.Org;
-import com.nawforce.pkgforce.api.Issue;
 import com.nawforce.pkgforce.diagnostics.LoggerOps;
+import io.github.apexdevtools.api.Issue;
 
 /**
  * Stores multi-file analysis data. The 'Org' here is the primary ApexLink structure for maintaining information
