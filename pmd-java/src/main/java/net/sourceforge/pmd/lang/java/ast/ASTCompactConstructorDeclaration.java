@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 
 /**
@@ -24,10 +26,27 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
  */
 // TODO make implicit formal parameter node and implement ASTExecutableDeclaration.
 // This might help UnusedAssignmentRule / DataflowPass.ReachingDefsVisitor, see also #4603
-public final class ASTCompactConstructorDeclaration extends AbstractJavaNode implements ASTBodyDeclaration, SymbolDeclaratorNode, ModifierOwner {
+public final class ASTCompactConstructorDeclaration extends AbstractJavaNode implements ASTBodyDeclaration, SymbolDeclaratorNode, ModifierOwner, JavadocCommentOwner {
+
+    private JavaccToken identToken;
 
     ASTCompactConstructorDeclaration(int id) {
         super(id);
+    }
+
+
+    @Override
+    public FileLocation getReportLocation() {
+        return identToken.getReportLocation();
+    }
+
+    void setIdentToken(JavaccToken identToken) {
+        this.identToken = identToken;
+    }
+
+    @Override
+    public String getImage() {
+        return identToken.getImage();
     }
 
     @Override

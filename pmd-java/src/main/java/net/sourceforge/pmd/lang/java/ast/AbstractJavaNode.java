@@ -76,6 +76,11 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
     }
 
     @Override
+    protected void enlargeLeft(JavaccToken child) {
+        super.enlargeLeft(child);
+    }
+
+    @Override
     protected void setChild(AbstractJavaNode child, int index) {
         super.setChild(child, index);
     }
