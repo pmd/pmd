@@ -549,6 +549,76 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
+        <description>Long valueOf</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary explicit conversion from int to long through Long</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Example {
+                long uid;
+                Long uid2;
+                public void convert() {
+                    uid = Long.valueOf(0); // unnecessary
+                    uid2 = Long.valueOf(0); // necessary, although it could be written 0L
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Boolean valueof</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary explicit unboxing</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Example {
+                boolean value;
+                public boolean equals(Object obj) {
+                    if (obj instanceof Boolean) {
+                        return value == ((Boolean)obj).booleanValue();
+                    }
+                    return false;
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Long ctor call</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+             class LongCache {
+                private LongCache(){}
+
+                static final Long cache[] = new Long[-(-128) + 127 + 1];
+
+                static {
+                    for(int i = 0; i < cache.length; i++)
+                        cache[i] = new Long(i - 128); // necessary
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Switch scrutinee</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+             class LongCache {
+                private LongCache(){}
+
+                static {
+                    Object o[];
+                    int i;
+                    switch (((Integer) o[i]).intValue()) {
+                    case 0: break;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
         <description>Unboxing in lambda return position which returns inferred type</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>2,3</expected-linenumbers>

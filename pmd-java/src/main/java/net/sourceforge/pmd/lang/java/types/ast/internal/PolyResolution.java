@@ -15,6 +15,7 @@ import static net.sourceforge.pmd.util.AssertionUtil.shouldNotReachHere;
 import static net.sourceforge.pmd.util.CollectionUtil.all;
 import static net.sourceforge.pmd.util.CollectionUtil.map;
 
+import java.util.EnumMap;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -56,6 +57,7 @@ import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
@@ -85,6 +87,7 @@ public final class PolyResolution {
     private final ExprContext booleanCtx;
     private final ExprContext stringCtx;
     private final ExprContext intCtx;
+    private final EnumMap<PrimitiveTypeKind, ExprContext> numericContexts;
 
     PolyResolution(Infer infer) {
         this.infer = infer;
@@ -93,7 +96,13 @@ public final class PolyResolution {
 
         this.stringCtx = newStringCtx(ts);
         this.booleanCtx = newNonPolyContext(ts.BOOLEAN);
-        this.intCtx = newNumericContext(ts.INT);
+        this.numericContexts = new EnumMap<>(PrimitiveTypeKind.class);
+        for (PrimitiveTypeKind kind : PrimitiveTypeKind.values()) {
+            if (kind != PrimitiveTypeKind.BOOLEAN) {
+                this.numericContexts.put(kind, newOtherContext(ts.getPrimitive(kind), ExprContextKind.NUMERIC));
+            }
+        }
+        this.intCtx = numericContexts.get(PrimitiveTypeKind.INT);
     }
 
     private boolean isPreJava8() {
@@ -566,12 +575,12 @@ public final class PolyResolution {
             case OR:
             case XOR:
             case AND:
-                return ctxType == ts.BOOLEAN ? booleanCtx : newNumericContext(ctxType); // NOPMD CompareObjectsWithEquals
+                return ctxType == ts.BOOLEAN ? booleanCtx : getNumericContext(ctxType); // NOPMD CompareObjectsWithEquals
             case LEFT_SHIFT:
             case RIGHT_SHIFT:
             case UNSIGNED_RIGHT_SHIFT:
                 return node.getIndexInParent() == 1 ? intCtx
-                                                    : newNumericContext(nodeType.unbox());
+                                                    : getNumericContext(nodeType.unbox());
             case EQ:
             case NE:
                 if (otherType.isNumeric() || nodeType.isNumeric()) {
@@ -580,8 +589,12 @@ public final class PolyResolution {
                         // cannot be promoted
                         return ExprContext.getMissingInstance();
                     }
-                    return newNumericContext(prom);
+                    return getNumericContext(prom);
+                } else if (otherType.isPrimitive(PrimitiveTypeKind.BOOLEAN)
+                    || nodeType.isPrimitive(PrimitiveTypeKind.BOOLEAN)) {
+                    return booleanCtx;
                 }
+
                 return ExprContext.getMissingInstance();
             case ADD:
                 if (TypeTestUtil.isA(String.class, ctxType)) {
@@ -593,12 +606,12 @@ public final class PolyResolution {
             case MUL:
             case DIV:
             case MOD:
-                return newNumericContext(ctxType); // binary promoted by LazyTypeResolver
+                return getNumericContext(ctxType); // binary promoted by LazyTypeResolver
             case LE:
             case GE:
             case GT:
             case LT:
-                return newNumericContext(TypeConversion.binaryNumericPromotion(nodeType, otherType));
+                return getNumericContext(TypeConversion.binaryNumericPromotion(nodeType, otherType));
             default:
                 return ExprContext.getMissingInstance();
             }
@@ -612,13 +625,15 @@ public final class PolyResolution {
                     break;
                 }
                 // this was already unary promoted
-                return newNumericContext(parentType);
+                return getNumericContext(parentType);
             case NEGATION:
                 return booleanCtx;
             default:
                 break;
             }
             return ExprContext.getMissingInstance();
+        } else if (papa instanceof ASTSwitchLike && node.getIndexInParent() == 0) {
+            return getNumericContext(((ASTExpression) node).getTypeMirror().unbox());
         } else {
             return ExprContext.getMissingInstance();
         }
@@ -716,10 +731,10 @@ public final class PolyResolution {
         return newOtherContext(stringType, ExprContextKind.STRING);
     }
 
-    static ExprContext newNumericContext(JTypeMirror targetType) {
+    ExprContext getNumericContext(JTypeMirror targetType) {
         if (targetType.isPrimitive()) {
             assert targetType.isNumeric() : "Not a numeric type - " + targetType;
-            return newOtherContext(targetType, ExprContextKind.NUMERIC);
+            return numericContexts.get(((JPrimitiveType) targetType).getKind());
         }
         return ExprContext.getMissingInstance(); // error
     }

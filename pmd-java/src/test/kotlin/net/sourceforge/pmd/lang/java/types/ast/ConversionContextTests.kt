@@ -295,6 +295,62 @@ class ConversionContextTests : ProcessorTestSpec({
         }
     }
 
+    parserTest("Boolean contexts") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Scratch {
+                static void m(boolean a, Boolean b) {
+                    eat(a == b);       
+                    eat(a != b);  
+                    eat(a && b);  
+                    eat(a || b);  
+                    eat(a ^ b);  
+                    eat(a & b);  
+                    eat(a | b);  
+                }
+                void eat(Object d) {}
+            }
+        """
+        )
+
+        val exprs = acu.descendants(ASTVariableAccess::class.java).toList()
+
+        spy.shouldBeOk {
+            for (e in exprs) {
+                withClue(e.parent) {
+                    e should haveBooleanContext()
+                }
+            }
+        }
+    }
+
+    parserTest("Switch scrutinee") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Scratch {
+                static void m(boolean a, Boolean b) {
+                  switch (4) { }
+                  switch (Integer.valueOf(4)) { }
+                  
+                }
+                void eat(Object d) {}
+            }
+        """
+        )
+
+        val exprs = acu.descendants(ASTSwitchLike::class.java).toList { it.testedExpression }
+
+        spy.shouldBeOk {
+            for (e in exprs) {
+                withClue(e.parent) {
+                    e should haveContext(NUMERIC, int)
+                }
+            }
+        }
+    }
+
     parserTest("Lambda ctx") {
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy("""

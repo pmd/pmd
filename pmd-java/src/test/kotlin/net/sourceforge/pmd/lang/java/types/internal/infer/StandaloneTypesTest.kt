@@ -96,6 +96,7 @@ class StandaloneTypesTest : ProcessorTestSpec({
     }
 
 
+
     parserTest("Test array initializer") {
 
         val block = StatementParsingCtx.parseNode("{ int[] is = { a }; int[][] iis = { { } }; }", ctx = this)
@@ -175,6 +176,23 @@ class StandaloneTypesTest : ProcessorTestSpec({
                         "2F  $op 2" should haveType { float }
 
                     }
+        }
+    }
+
+    parserTest("Test boolean bitwise ops") {
+
+        inContext(ExpressionParsingCtx) {
+
+            listOf(OR, AND, XOR)
+                .forEach {
+
+                    val op = it.token
+
+                    "true $op (Boolean) true" should haveType { boolean }
+                    "(Boolean) true $op false" should haveType { boolean }
+                    "(Boolean) true $op (Boolean) false" should haveType { boolean }
+                    "true $op false" should haveType { boolean }
+                }
         }
     }
 
