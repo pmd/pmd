@@ -36,6 +36,7 @@ Since this release, PMD will also expose any getter returning a collection of an
   * [#4988](https://github.com/pmd/pmd/pull/4988): \[java] Fix impl of ASTVariableId::isResourceDeclaration / VariableId/@<!-- -->ResourceDeclaration
   * [#4990](https://github.com/pmd/pmd/issues/4990): \[java] Add an attribute @<!-- -->PackageQualifier to ASTClassType
   * [#5006](https://github.com/pmd/pmd/issues/5006): \[java] Bad intersection, unrelated class types Child and Parent<? extends Child>
+  * [#5029](https://github.com/pmd/pmd/issues/5029): \[java] PMD 7.x throws stack overflow in TypeOps$ProjectionVisitor while parsing a Java class
 * java-bestpractices
   * [#4278](https://github.com/pmd/pmd/issues/4278): \[java] UnusedPrivateMethod FP with Junit 5 @MethodSource and default factory method name
   * [#4852](https://github.com/pmd/pmd/issues/4852): \[java] ReplaceVectorWithList false-positive (neither Vector nor List usage) 

@@ -69,6 +69,32 @@ class TypeOpsTest : FunSpec({
                         output = listOf(`t_List{String}`, `t_List{Integer}`))
 
             }
+
+            test("Bug #5029: Recursive type projection") {
+
+                val (acu, spy) = javaParser.parseWithTypeInferenceSpy(
+                    """
+                       class Job<J extends Job<J, R>, R extends Run<J, R>> {
+                            J getLast() { return null; }
+                       }
+                       class Run<J extends Job<J, R>, R extends Run<J, R>> {}
+                       
+                       class Foo {
+                         static Job<?, ?> foo(Job<?,?> job) {
+                            var x = job.getLast();
+                            return x;
+                         }
+                       }
+                    """.trimIndent()
+                )
+                val (jobt, runt) = acu.declaredTypeSignatures()
+                val xVar = acu.varId("x")
+                spy.shouldBeOk {
+                    xVar shouldHaveType jobt[`?` extends jobt[`?`, `?` extends runt[`?`, `?`]], `?`]
+                }
+
+
+            }
         }
     }
 
