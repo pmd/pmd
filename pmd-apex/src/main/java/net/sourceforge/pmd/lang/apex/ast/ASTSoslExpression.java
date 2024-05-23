@@ -17,4 +17,11 @@ public final class ASTSoslExpression extends AbstractApexNode.Single<SoslExpress
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
+
+    /**
+     * Returns the raw query as it appears in the source code.
+     */
+    public String getQuery() {
+        return node.getQuery();
+    }
 }

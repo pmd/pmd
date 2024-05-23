@@ -25,6 +25,8 @@ Since this release, PMD will also expose any getter returning a collection of an
 ```
 
 ### 🐛 Fixed Issues
+* apex-bestpractices
+  * [#5000](https://github.com/pmd/pmd/issues/5000): \[apex] UnusedLocalVariable FP with binds in SOSL / SOQL
 * core
   * [#4467](https://github.com/pmd/pmd/issues/4467): \[core] Expose collections from getters as XPath sequence attributes
   * [#4978](https://github.com/pmd/pmd/issues/4978): \[core] Referenced Rulesets do not emit details on validation errors
