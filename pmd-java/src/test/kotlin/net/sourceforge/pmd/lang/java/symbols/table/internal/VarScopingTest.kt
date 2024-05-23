@@ -4,14 +4,18 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
+import io.kotest.assertions.withClue
 import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.since
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.J22
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol
+import net.sourceforge.pmd.lang.java.types.methodCalls
 import net.sourceforge.pmd.lang.java.types.shouldHaveType
 import net.sourceforge.pmd.lang.test.ast.*
 import net.sourceforge.pmd.lang.test.ast.shouldBe
@@ -470,6 +474,43 @@ class VarScopingTest : ProcessorTestSpec({
         fooCall.qualifier!!.shouldMatchN {
             ambiguousName("A")
         }
+
+    }
+    parserTest("Unnamed variables", javaVersions = since(J22)) {
+
+        val acu = parser.parse("""
+
+        class Scratch {
+            interface Consumer<T> { void accept(T t); }
+
+            public static void main(String[] _) { // formal param
+                foo();
+
+                try (var _ = new StringReader("")) { // resource
+                    foo();
+                } catch (Exception _) { // catchParam
+                    foo();
+                }
+
+                int _ = 2; // local
+                foo();
+
+                if (this instanceof Runnable _) { // in pattern matching
+                    foo();
+                }
+
+                Consumer<Integer> consumer = _ -> { foo(); };
+            }
+        }
+
+        """.trimIndent())
+
+        for (call in acu.methodCalls()) {
+            withClue(call) {
+                call.symbolTable.variables().resolve("_").shouldBeEmpty()
+            }
+        }
+
 
     }
 

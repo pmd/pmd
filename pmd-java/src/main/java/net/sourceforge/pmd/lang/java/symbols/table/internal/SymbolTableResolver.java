@@ -428,7 +428,7 @@ public final class SymbolTableResolver {
             int pushed = 0;
             for (ASTVariableDeclarator declarator : st.children(ASTVariableDeclarator.class)) {
                 ASTVariableId varId = declarator.getVarId();
-                pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), varId.getSymbol()));
+                pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), varId));
                 // visit initializer
                 setTopSymbolTableAndVisit(declarator.getInitializer(), ctx);
             }
@@ -443,7 +443,7 @@ public final class SymbolTableResolver {
             ASTVariableId varId = node.getVarId();
             setTopSymbolTableAndVisit(varId.getTypeNode(), ctx);
 
-            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varId.getSymbol()));
+            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varId));
             ASTStatement body = node.getBody();
             // unless it's a block the body statement may never set a
             // symbol table that would have this table as parent,
@@ -479,7 +479,7 @@ public final class SymbolTableResolver {
 
         @Override
         public Void visit(ASTCatchClause node, @NonNull ReferenceCtx ctx) {
-            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), node.getParameter().getVarId().getSymbol()));
+            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), node.getParameter().getVarId()));
             setTopSymbolTableAndVisitAllChildren(node, ctx);
             popStack(pushed);
             return null;

@@ -43,6 +43,8 @@ Since this release, PMD will also expose any getter returning a collection of an
   * [#4985](https://github.com/pmd/pmd/issues/4985): \[java] UnusedPrivateMethod false-positive / method reference in combination with custom object
 * java-codestyle
   * [#4930](https://github.com/pmd/pmd/issues/4930): \[java] EmptyControlStatement should not allow empty try with concise resources
+  * [#4954](https://github.com/pmd/pmd/issues/4954): \[java] LocalVariableNamingConventions should allow unnamed variables by default
+  * [#5028](https://github.com/pmd/pmd/issues/5028): \[java] FormalParameterNamingConventions should accept unnamed parameters by default
 * java-errorprone
   * [#4042](https://github.com/pmd/pmd/issues/4042): \[java] A false negative about the rule StringBufferInstantiationWithChar
   * [#5007](https://github.com/pmd/pmd/issues/5007): \[java] AvoidUsingOctalValues triggers on non-octal double literals with a leading 0
