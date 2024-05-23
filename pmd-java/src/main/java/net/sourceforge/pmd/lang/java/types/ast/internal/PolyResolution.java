@@ -17,6 +17,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.map;
 
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -87,7 +88,7 @@ public final class PolyResolution {
     private final ExprContext booleanCtx;
     private final ExprContext stringCtx;
     private final ExprContext intCtx;
-    private final EnumMap<PrimitiveTypeKind, ExprContext> numericContexts;
+    private final Map<PrimitiveTypeKind, ExprContext> numericContexts;
 
     PolyResolution(Infer infer) {
         this.infer = infer;
