@@ -88,7 +88,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
                     // we don't actually know where the method came from
                     String simpleName = formatMemberName(next, methodCall.getMethodType().getSymbol());
                     String unnecessary = produceQualifier(deepest, next, true);
-                    asCtx(data).addViolation(next, new Object[] {unnecessary, simpleName, ""});
+                    asCtx(data).addViolation(next, unnecessary, simpleName, "");
                     return null;
                 }
             } else if (getProperty(REPORT_FIELDS) && opa instanceof ASTFieldAccess) {
@@ -98,7 +98,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
                     String simpleName = formatMemberName(next, fieldAccess.getReferencedSym());
                     String reasonToString = unnecessaryReasonWrapper(reasonForFieldInScope);
                     String unnecessary = produceQualifier(deepest, next, true);
-                    asCtx(data).addViolation(next, new Object[] {unnecessary, simpleName, reasonToString});
+                    asCtx(data).addViolation(next, unnecessary, simpleName, reasonToString);
                     return null;
                 }
             }
@@ -108,7 +108,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
             String simpleName = next.getSimpleName();
             String reasonToString = unnecessaryReasonWrapper(bestReason);
             String unnecessary = produceQualifier(deepest, next, false);
-            asCtx(data).addViolation(next, new Object[] {unnecessary, simpleName, reasonToString});
+            asCtx(data).addViolation(next, unnecessary, simpleName, reasonToString);
         }
         return null;
     }

@@ -23,6 +23,7 @@ import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
@@ -386,14 +387,14 @@ public final class SymbolTableResolver {
         /**
          * Note: caller is responsible for popping.
          */
-        private int visitBlockLike(Iterable<? extends ASTStatement> node, @NonNull ReferenceCtx ctx) {
+        private int visitBlockLike(Iterable<? extends JavaNode> node, @NonNull ReferenceCtx ctx) {
             /*
              * Process the statements of a block in a sequence. Each local
              * var/class declaration is only in scope for the following
              * statements (and its own initializer).
              */
             int pushed = 0;
-            for (ASTStatement st : node) {
+            for (JavaNode st : node) {
                 if (st instanceof ASTLocalVariableDeclaration) {
                     pushed += processLocalVarDecl((ASTLocalVariableDeclaration) st, ctx);
                     // note we don't pop here, all those variables will be popped at the end of the block
@@ -403,10 +404,17 @@ public final class SymbolTableResolver {
                     processTypeHeader(local, ctx);
                 }
 
-                setTopSymbolTable(st);
-                // those vars are the one produced by pattern bindings/ local var decls
-                PSet<ASTVariableId> newVars = st.acceptVisitor(this.stmtVisitor, ctx);
-                pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), newVars));
+                if (st instanceof ASTStatement) {
+                    setTopSymbolTable(st);
+                    // those vars are the one produced by pattern bindings/ local var decls
+                    PSet<ASTVariableId> newVars = st.acceptVisitor(this.stmtVisitor, ctx);
+                    pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), newVars));
+                } else {
+                    // concise resource initializer
+                    assert st instanceof ASTExpression && st.getParent() instanceof ASTResource : st;
+                    setTopSymbolTable(st.getParent());
+                    st.acceptVisitor(this, ctx);
+                }
             }
 
             return pushed;
@@ -420,7 +428,7 @@ public final class SymbolTableResolver {
             int pushed = 0;
             for (ASTVariableDeclarator declarator : st.children(ASTVariableDeclarator.class)) {
                 ASTVariableId varId = declarator.getVarId();
-                pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), varId.getSymbol()));
+                pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), varId));
                 // visit initializer
                 setTopSymbolTableAndVisit(declarator.getInitializer(), ctx);
             }
@@ -435,7 +443,7 @@ public final class SymbolTableResolver {
             ASTVariableId varId = node.getVarId();
             setTopSymbolTableAndVisit(varId.getTypeNode(), ctx);
 
-            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varId.getSymbol()));
+            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varId));
             ASTStatement body = node.getBody();
             // unless it's a block the body statement may never set a
             // symbol table that would have this table as parent,
@@ -450,7 +458,7 @@ public final class SymbolTableResolver {
 
             ASTResourceList resources = node.getResources();
             if (resources != null) {
-                NodeStream<ASTStatement> union =
+                NodeStream<JavaNode> union =
                     NodeStream.union(
                         stmtsOfResources(resources),
                         // use the body instead of unwrapping it so
@@ -471,7 +479,7 @@ public final class SymbolTableResolver {
 
         @Override
         public Void visit(ASTCatchClause node, @NonNull ReferenceCtx ctx) {
-            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), node.getParameter().getVarId().getSymbol()));
+            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), node.getParameter().getVarId()));
             setTopSymbolTableAndVisitAllChildren(node, ctx);
             popStack(pushed);
             return null;
@@ -750,8 +758,8 @@ public final class SymbolTableResolver {
         // <editor-fold defaultstate="collapsed" desc="Convenience methods">
 
 
-        static NodeStream<ASTLocalVariableDeclaration> stmtsOfResources(ASTResourceList node) {
-            return node.toStream().map(ASTResource::asLocalVariableDeclaration);
+        static NodeStream<JavaNode> stmtsOfResources(ASTResourceList node) {
+            return node.toStream().map(GenericNode::getFirstChild);
         }
 
 

@@ -13,7 +13,6 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 /**
  * This rule finds code which inefficiently determines empty strings.
  *
- * <p>
  * <pre>
  * str.trim().length()==0
  * </pre>

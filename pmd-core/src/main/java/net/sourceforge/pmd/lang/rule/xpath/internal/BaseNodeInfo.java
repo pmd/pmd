@@ -5,15 +5,19 @@
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 
+import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.ListIterator;
 
 import net.sf.saxon.om.NamePool;
+import net.sf.saxon.om.NamespaceUri;
 import net.sf.saxon.om.NodeInfo;
 import net.sf.saxon.pattern.AnyNodeTest;
+import net.sf.saxon.pattern.NodeTest;
+import net.sf.saxon.str.StringView;
+import net.sf.saxon.str.UnicodeString;
 import net.sf.saxon.tree.iter.AxisIterator;
-import net.sf.saxon.tree.iter.ListIterator;
-import net.sf.saxon.tree.iter.ReverseListIterator;
+import net.sf.saxon.tree.iter.NodeListIterator;
 import net.sf.saxon.tree.util.Navigator.AxisFilter;
 import net.sf.saxon.tree.wrapper.AbstractNodeWrapper;
 import net.sf.saxon.tree.wrapper.SiblingCountingNode;
@@ -32,7 +36,7 @@ abstract class BaseNodeInfo extends AbstractNodeWrapper implements SiblingCounti
     BaseNodeInfo(int nodeKind, NamePool namePool, String localName, BaseNodeInfo parent) {
         this.nodeKind = nodeKind;
         this.namePool = namePool;
-        this.fingerprint = namePool.allocateFingerprint("", localName) & NamePool.FP_MASK;
+        this.fingerprint = namePool.allocateFingerprint(NamespaceUri.NULL, localName) & NamePool.FP_MASK;
         this.parent = parent;
     }
 
@@ -83,7 +87,17 @@ abstract class BaseNodeInfo extends AbstractNodeWrapper implements SiblingCounti
         return nodeKind;
     }
 
-    protected static AxisIterator filter(Predicate<? super NodeInfo> nodeTest, AxisIterator iter) {
+    @Override
+    public UnicodeString getUnicodeStringValue() {
+        return StringView.of(getStringValue());
+    }
+
+    @Override
+    public NamespaceUri getNamespaceUri() {
+        return NamespaceUri.NULL;
+    }
+
+    protected static AxisIterator filter(NodeTest nodeTest, AxisIterator iter) {
         return nodeTest == null || (nodeTest instanceof AnyNodeTest) ? iter : new AxisFilter(iter, nodeTest);
     }
 
@@ -92,15 +106,21 @@ abstract class BaseNodeInfo extends AbstractNodeWrapper implements SiblingCounti
         return iterateList(nodes, true);
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    static AxisIterator iterateList(List<? extends NodeInfo> nodes, boolean forwards) {
-        return forwards ? new ListIterator.OfNodes((List) nodes)
-                        : new RevListAxisIterator((List) nodes);
+    static <N extends NodeInfo> AxisIterator iterateList(List<N> nodes, boolean forwards) {
+        return forwards ? new NodeListIterator(Collections.unmodifiableList(nodes))
+                        : new RevListAxisIterator<>(nodes);
     }
 
-    private static class RevListAxisIterator extends ReverseListIterator<NodeInfo> implements AxisIterator {
-        RevListAxisIterator(List<NodeInfo> list) {
-            super(list);
+    private static class RevListAxisIterator<N extends NodeInfo> implements AxisIterator {
+        private final ListIterator<N> iter;
+
+        RevListAxisIterator(List<N> list) {
+            iter = list.listIterator(list.size());
+        }
+
+        @Override
+        public NodeInfo next() {
+            return this.iter.hasPrevious() ? this.iter.previous() : null;
         }
     }
 }

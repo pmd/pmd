@@ -21,10 +21,9 @@ import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.internal.InternalMethodTypeItf;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
-import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors.MirrorMaker;
 
-class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> implements InvocationMirror {
+class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> {
 
 
     MethodInvocMirror(JavaExprMirrors mirrors, ASTMethodCall call, @Nullable ExprMirror parent, MirrorMaker subexprMaker) {

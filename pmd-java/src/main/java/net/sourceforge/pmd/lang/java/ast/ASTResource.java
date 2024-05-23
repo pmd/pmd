@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 
 /**
  * A resource of a {@linkplain ASTTryStatement try-with-resources}. This contains another
@@ -48,24 +49,15 @@ public final class ASTResource extends AbstractJavaNode {
      * then returns the sequence of names that identifies the expression.
      * If this has a local variable declaration, then returns the name
      * of the variable.
+     *
+     * @deprecated Since 7.1.0. This method is not very useful because the expression
+     *          might be complex and not have a real "name". In this case we return the
+     *          expression pretty printed.
      */
+    @Deprecated
     public String getStableName() {
         if (isConciseResource()) {
-            ASTExpression expr = getInitializer();
-            StringBuilder builder = new StringBuilder();
-            while (expr instanceof ASTFieldAccess) {
-                ASTFieldAccess fa = (ASTFieldAccess) expr;
-                builder.insert(0, "." + fa.getName());
-                expr = fa.getQualifier();
-            }
-            // the last one may be ambiguous, or a variable reference
-            // the only common interface we have to get their name is
-            // unfortunately Node::getImage
-
-            if (expr != null) {
-                builder.insert(0, expr.getImage());
-            }
-            return builder.toString();
+            return PrettyPrintingUtil.prettyPrint(getInitializer()).toString();
         } else {
             return asLocalVariableDeclaration().iterator().next().getName();
         }

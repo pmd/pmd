@@ -36,7 +36,7 @@ function build() {
 
     if pmd_ci_utils_is_fork_or_pull_request; then
         pmd_ci_log_group_start "Build with mvnw"
-            ./mvnw clean install --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
+            ./mvnw clean install --show-version --errors --batch-mode  -Pgenerate-rule-docs "${PMD_MAVEN_EXTRA_OPTS[@]}"
         pmd_ci_log_group_end
 
         # Execute danger and dogfood only for pull requests in our own repository

@@ -656,7 +656,7 @@ public class RuleDocGenerator {
             Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                    String path = file.toString();
+                    String path = RuleSetUtils.normalizeForwardSlashes(file.toString());
 
                     if (path.contains("src")) {
                         String foundRuleClass = null;

@@ -367,7 +367,11 @@ final class SymTableFactory {
     JSymbolTable bodyDeclaration(JSymbolTable parent, JClassType enclosing, @Nullable ASTFormalParameters formals, @Nullable ASTTypeParameters tparams) {
         return new SymbolTableImpl(
             VARS.shadow(varNode(parent), ScopeInfo.FORMAL_PARAM, VARS.groupByName(ASTList.orEmptyStream(formals), fp -> {
-                JVariableSymbol sym = fp.getVarId().getSymbol();
+                ASTVariableId varId = fp.getVarId();
+                if (varId.isUnnamed()) {
+                    return null;
+                }
+                JVariableSymbol sym = varId.getSymbol();
                 return sym.getTypeSystem().sigOf(enclosing, (JFormalParamSymbol) sym);
             })),
             TYPES.shadow(typeNode(parent), ScopeInfo.TYPE_PARAM, TYPES.groupByName(ASTList.orEmptyStream(tparams), ASTTypeParameter::getTypeMirror)),
@@ -386,13 +390,20 @@ final class SymTableFactory {
     JSymbolTable localVarSymTable(JSymbolTable parent, JClassType enclosing, Iterable<ASTVariableId> ids) {
         List<JVariableSig> sigs = new ArrayList<>();
         for (ASTVariableId id : ids) {
+            if (id.isUnnamed()) {
+                continue;
+            }
             sigs.add(id.getTypeSystem().sigOf(enclosing, (JLocalVariableSymbol) id.getSymbol()));
         }
         return SymbolTableImpl.withVars(parent, VARS.augment(varNode(parent), false, ScopeInfo.LOCAL, VARS.groupByName(sigs)));
     }
 
-    JSymbolTable localVarSymTable(JSymbolTable parent, JClassType enclosing, JVariableSymbol id) {
-        return SymbolTableImpl.withVars(parent, VARS.augment(varNode(parent), false, ScopeInfo.LOCAL, id.getTypeSystem().sigOf(enclosing, (JLocalVariableSymbol) id)));
+    JSymbolTable localVarSymTable(JSymbolTable parent, JClassType enclosing, ASTVariableId id) {
+        assert !id.isField();
+        if (id.isUnnamed()) { // checks language version already
+            return parent;
+        }
+        return SymbolTableImpl.withVars(parent, VARS.augment(varNode(parent), false, ScopeInfo.LOCAL, id.getTypeSystem().sigOf(enclosing, (JLocalVariableSymbol) id.getSymbol())));
     }
 
     JSymbolTable localTypeSymTable(JSymbolTable parent, JClassType sym) {

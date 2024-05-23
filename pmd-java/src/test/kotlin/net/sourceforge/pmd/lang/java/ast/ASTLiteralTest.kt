@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
@@ -15,6 +14,7 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
 import net.sourceforge.pmd.lang.test.ast.NodeSpec
 import net.sourceforge.pmd.lang.test.ast.ValuedNodeSpec
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.test.ast.shouldHaveText
 
 /**
@@ -133,6 +133,12 @@ $delim
     A text block inside a text block
     \$delim;
     $delim
+            """.testTextBlock()
+
+
+            """
+    $delim
+    x$delim
             """.testTextBlock()
 
         }
@@ -402,6 +408,23 @@ $delim
                     it::getBase shouldBe 10
                 }
             }
+
+            "0." should parseAs {
+                number(DOUBLE) {
+                    it::getBase shouldBe 10
+                }
+            }
+            val doubleOrFloatInBase10: NodeSpec<*> = {
+                number {
+                    it::getBase shouldBe 10
+                }
+            }
+            "05e10" should parseAs(doubleOrFloatInBase10)
+            "05e10f" should parseAs(doubleOrFloatInBase10)
+            "00f" should parseAs(doubleOrFloatInBase10)
+            "00d" should parseAs(doubleOrFloatInBase10)
+            "00D" should parseAs(doubleOrFloatInBase10)
+            "050.0" should parseAs(doubleOrFloatInBase10)
         }
     }
 
@@ -418,6 +441,7 @@ $delim
                     it::getValueAsDouble shouldBe 30.0
                     it::getValueAsFloat shouldBe 30f
                     it::getValueAsInt shouldBe 30
+                    it::getBase shouldBe 16
                 }
             }
 
@@ -430,6 +454,7 @@ $delim
                     it::getValueAsDouble shouldBe 7.5
                     it::getValueAsFloat shouldBe 7.5f
                     it::getValueAsInt shouldBe 7
+                    it::getBase shouldBe 16
                 }
             }
 
@@ -452,6 +477,7 @@ $delim
                     it::getValueAsFloat shouldBe 15f
                     it::getValueAsInt shouldBe 15
                     it::getValueAsLong shouldBe 15L
+                    it::getBase shouldBe 16
                 }
             }
 
@@ -502,6 +528,7 @@ $delim
                     it::getValueAsFloat shouldBe 3f
                     it::getValueAsInt shouldBe 3
                     it::getValueAsLong shouldBe 3L
+                    it::getBase shouldBe 2
                 }
             }
 

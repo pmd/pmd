@@ -102,6 +102,11 @@ public final class StreamImpl {
             }
 
             @Override
+            public List<Node> toList() {
+                return Collections.unmodifiableList(Arrays.asList(array));
+            }
+
+            @Override
             protected Iterator<Node> baseIterator() {
                 return Arrays.asList(array).iterator();
             }

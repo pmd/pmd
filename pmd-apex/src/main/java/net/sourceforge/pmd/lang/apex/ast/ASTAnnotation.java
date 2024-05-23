@@ -13,8 +13,8 @@ public final class ASTAnnotation extends AbstractApexNode.Single<AnnotationModif
 
     /**
      * Valid annotations in the Apex language.
-     * <p>
-     * Includes all annotations from the <a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_annotation.htm">official
+     *
+     * <p>Includes all annotations from the <a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_annotation.htm">official
      * documentation</a>, plus
      * <ul>
      *     <li>{@code AllowCertifiedApex}</li>
@@ -71,21 +71,38 @@ public final class ASTAnnotation extends AbstractApexNode.Single<AnnotationModif
         return visitor.visit(this, data);
     }
 
+    /**
+     * Returns the normalized annotation name for known, valid annotations.
+     * The normalized name is in PascalCase. If an unknown annotation is used,
+     * the raw name (as in the source code) is returned.
+     *
+     * @see #getRawName()
+     */
     public String getName() {
         // If resolvable to a known name, return the case-normalized name.
-        String rawName = node.getName().getString();
+        String rawName = getRawName();
         if (NORMALIZED_ANNOTATION_NAMES.contains(rawName)) {
             return NORMALIZED_ANNOTATION_NAMES.floor(rawName);
         }
         return rawName;
     }
-    
+
+    /**
+     * Returns the annotation name as it appears in the source code.
+     * This allows to verify the casing.
+     *
+     * @since 7.1.0
+     */
+    public String getRawName() {
+        return node.getName().getString();
+    }
+
     @Override
     public String getImage() {
         return getName();
     }
 
     public boolean isResolved() {
-        return NORMALIZED_ANNOTATION_NAMES.contains(node.getName().getString());
+        return NORMALIZED_ANNOTATION_NAMES.contains(getRawName());
     }
 }

@@ -4,14 +4,18 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
+import io.kotest.assertions.withClue
 import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.since
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.J22
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol
+import net.sourceforge.pmd.lang.java.types.methodCalls
 import net.sourceforge.pmd.lang.java.types.shouldHaveType
 import net.sourceforge.pmd.lang.test.ast.*
 import net.sourceforge.pmd.lang.test.ast.shouldBe
@@ -132,14 +136,18 @@ class VarScopingTest : ProcessorTestSpec({
                     try (Reader f = r;                      // reader3
                          BufferedReader r = f.buffered()) { // br2
                     }
+                    
+                    try (Reader f4 = r;                      // reader4
+                         f4.buffered().field) {              // inConciseResource
+                    }
                 }
             }
         """.trimIndent())
 
-        val (outerField, exception1, reader1, exception2, reader2, bufferedReader, reader3, br2) =
+        val (outerField, exception1, reader1, exception2, reader2, bufferedReader, reader3, br2, reader4) =
                 acu.descendants(ASTVariableId::class.java).toList()
 
-        val (inCatch1, inTry, inCatch2, inFinally, inResource) =
+        val (inCatch1, inTry, inCatch2, inFinally, inResource, _, inConciseResource) =
                 acu.descendants(ASTMethodCall::class.java).toList()
 
         doTest("Inside catch clause: catch param is in scope") {
@@ -168,6 +176,10 @@ class VarScopingTest : ProcessorTestSpec({
 
         doTest("Inside resource declaration 2: r is the resource, after its declaration") {
             br2.initializer!! shouldResolveToLocal reader3
+        }
+
+        doTest("Inside concise resource declaration") {
+            inConciseResource.qualifier!! shouldResolveToLocal reader4
         }
 
         doTest("Resources are in scope, even if the try body is empty") {
@@ -462,6 +474,43 @@ class VarScopingTest : ProcessorTestSpec({
         fooCall.qualifier!!.shouldMatchN {
             ambiguousName("A")
         }
+
+    }
+    parserTest("Unnamed variables", javaVersions = since(J22)) {
+
+        val acu = parser.parse("""
+
+        class Scratch {
+            interface Consumer<T> { void accept(T t); }
+
+            public static void main(String[] _) { // formal param
+                foo();
+
+                try (var _ = new StringReader("")) { // resource
+                    foo();
+                } catch (Exception _) { // catchParam
+                    foo();
+                }
+
+                int _ = 2; // local
+                foo();
+
+                if (this instanceof Runnable _) { // in pattern matching
+                    foo();
+                }
+
+                Consumer<Integer> consumer = _ -> { foo(); };
+            }
+        }
+
+        """.trimIndent())
+
+        for (call in acu.methodCalls()) {
+            withClue(call) {
+                call.symbolTable.variables().resolve("_").shouldBeEmpty()
+            }
+        }
+
 
     }
 

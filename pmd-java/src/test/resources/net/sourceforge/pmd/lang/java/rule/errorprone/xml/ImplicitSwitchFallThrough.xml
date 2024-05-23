@@ -422,4 +422,163 @@ record MyRecord(boolean b) {
 
             ]]></code>
     </test-code>
+    <test-code>
+        <description>#4948 FP with nested switch stmt</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Test {
+                boolean foo(String a, String b) {
+
+                    switch (a) {
+                    case "a1":
+                        return true;
+                    case "a2":
+                        switch (b) {
+                        case "b1":
+                            return true;
+                        default:
+                            return false;
+                        }
+                    default:
+                        return false;
+                    }
+                }
+
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Switch with loop with break</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>11,14,18</expected-linenumbers>
+        <code><![CDATA[
+            public class Test {
+                boolean foo(String a, String b) {
+
+                    switch (a) {
+                    case "a1":
+                        switch (b) {
+                        case "b1":
+                            for (int i = 0; i < 4; i++) {
+                                break;
+                            } // this loop completes normally
+                        default: // warn
+                            return false;
+                        }
+                    case "a2": // warn
+                        for (int i = 0; i < 4; i++) {
+                            break;
+                        } // this loop completes normally
+                    default: // warn
+                        return false;
+                    }
+                }
+
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Switch with loop with break</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+            public class Test {
+                boolean foo(int a) {
+                    switch (a) {
+                    case 1:
+                        switch(hashCode()){}
+                    case 2: // violation
+                        System.lineSeparator();
+                    break;
+                    }
+                }
+
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Switch with break to enclosing block</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    boolean foo(int a) {
+        parsing:
+        {
+            if (method()) {
+
+            }
+            int index;
+            switch (a) {
+            case 1:
+                if (method()) {
+                    if (method()) {
+                        return true;
+                    }
+                } else {
+                    if (method()) {
+                        return true;
+                    }
+                }
+                break parsing;
+            case 2:
+            case 3:
+                System.lineSeparator();
+                break;
+            }
+        }
+    }
+
+
+
+}
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Switch expr</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+
+    private String print2(int i, int j, int k) {
+        return switch (i) {
+            case 0:
+                String r;
+                OUTER: switch (j) {
+                case 0:
+                    String res;
+                    INNER: switch (k) {
+                    case 0: res = "0-0-0"; break;
+                    case 1: res = "0-0-1"; break;
+                    case 2: res = "0-0-2"; break INNER;
+                    default: r = "0-0-X"; break OUTER;
+                    }
+                    r = res;
+                    break;
+                case 1:
+                    r = "0-1";
+                    break;
+                default:
+                    r = "0-X";
+                    break;
+                }
+                yield r;
+            case 1:
+                yield "1";
+            case 2:
+                LOP: while (j-- > 0) {
+                    if (k == 5) {
+                        k--;
+                        continue;
+                    }
+                    break LOP;
+                }
+                Supplier<String> getter = () -> { return "2-X-5"; };
+                yield getter.get();
+            default:
+                yield "X";
+        };
+    }
+}
+            ]]></code>
+    </test-code>
 </test-data>

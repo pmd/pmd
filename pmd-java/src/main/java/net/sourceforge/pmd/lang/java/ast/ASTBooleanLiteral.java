@@ -9,7 +9,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 /**
  * The boolean literal, either "true" or "false".
  */
-public final class ASTBooleanLiteral extends AbstractLiteral implements ASTLiteral {
+public final class ASTBooleanLiteral extends AbstractLiteral {
 
     private boolean isTrue;
 

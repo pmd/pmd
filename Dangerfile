@@ -44,7 +44,7 @@ def run_pmdtester
         @base_branch = 'master'
         @logger.info "\n\n--------------------------------------"
         @logger.info "Run against #{@base_branch}"
-        @summary = PmdTester::Runner.new(get_args(@base_branch, FALSE, 'target/diff1/patch_config.xml')).run
+        @summary = PmdTester::Runner.new(get_args(@base_branch, false, 'target/diff1/patch_config.xml')).run
 
         # move the generated report out of the way
         FileUtils.mv 'target/reports/diff', 'target/diff2'
@@ -53,12 +53,12 @@ def run_pmdtester
 
       tar_report
 
-      message1 += "[Download full report as build artifact](#{ENV['PMD_CI_JOB_URL']})"
+      message1 += "[Download full report as build artifact](#{ENV['PMD_CI_JOB_URL']}?pr=#{ENV['PMD_CI_PULL_REQUEST_NUMBER']})"
       # set value of sticky to true and the message is kept after new commits are submitted to the PR
       message(message1, sticky: true)
 
       if message2
-        message2 += "[Download full report as build artifact](#{ENV['PMD_CI_JOB_URL']})"
+        message2 += "[Download full report as build artifact](#{ENV['PMD_CI_JOB_URL']}?pr=#{ENV['PMD_CI_PULL_REQUEST_NUMBER']})"
         # set value of sticky to true and the message is kept after new commits are submitted to the PR
         message(message2, sticky: true)
       end

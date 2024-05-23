@@ -13,7 +13,11 @@ import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -119,7 +123,27 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
 
     private boolean isConsideredReturnType(Method method) {
         Class<?> klass = method.getReturnType();
-        return CONSIDERED_RETURN_TYPES.contains(klass) || klass.isEnum();
+        if (CONSIDERED_RETURN_TYPES.contains(klass) || klass.isEnum()) {
+            return true;
+        }
+
+        if (Collection.class.isAssignableFrom(klass)) {
+            Type t = method.getGenericReturnType();
+            if (t instanceof ParameterizedType) {
+                try {
+                    // ignore type variables, such as List<N>… we could check all bounds, but probably it's overkill
+                    Type actualTypeArgument = ((ParameterizedType) t).getActualTypeArguments()[0];
+                    if (!TypeVariable.class.isAssignableFrom(actualTypeArgument.getClass())) {
+                        Class<?> elementKlass = Class.forName(actualTypeArgument.getTypeName());
+                        return CONSIDERED_RETURN_TYPES.contains(elementKlass) || elementKlass.isEnum();
+                    }
+                } catch (ClassNotFoundException e) {
+                    throw AssertionUtil.shouldNotReachHere("Method '" + method + "' should return a known type, but: " + e, e);
+                }
+            }
+        }
+
+        return false;
     }
 
     private boolean isIgnored(Class<?> nodeClass, Method method) {
