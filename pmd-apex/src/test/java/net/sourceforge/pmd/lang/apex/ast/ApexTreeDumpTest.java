@@ -49,4 +49,12 @@ class ApexTreeDumpTest extends BaseTreeDumpTest {
     void typeOfSubQuery() {
         doTest("TypeofTest");
     }
+
+    /**
+     * @see <a href="https://github.com/google/summit-ast/issues/53">Fail to parses SOSL with WITH USER_MODE or WITH SYSTEM_MODE #53</a>
+     */
+    @Test
+    void soslWithUsermode() {
+        doTest("SoslWithUsermode");
+    }
 }
