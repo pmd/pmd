@@ -15,7 +15,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * </pre>
  */
-public final class ASTNullLiteral extends AbstractLiteral implements ASTLiteral {
+public final class ASTNullLiteral extends AbstractLiteral {
     ASTNullLiteral(int id) {
         super(id);
     }

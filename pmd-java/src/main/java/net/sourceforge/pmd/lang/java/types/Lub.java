@@ -340,10 +340,21 @@ final class Lub {
                     JTypeMirror componentGlb = glb(ts, setOf(((JArrayType) ci).getComponentType(),
                                                              ((JArrayType) primaryBound).getComponentType()));
                     primaryBound = ts.arrayType(componentGlb);
+
                 } else {
-                    throw new IllegalArgumentException(
-                        "Bad intersection, unrelated class types " + ci + " and " + primaryBound + " in " + types
-                    );
+                    // We have two primary bounds. This may happen during capture
+                    // of recursive F-bounded types. Here we do a last resort check
+                    // to see if one of the bounds is a subtype (unchecked) of the other.
+                    // In that case we pick this as primary bound as it is more specific.
+
+                    int cmp = compareRelatedness(ci.getErasure(), primaryBound.getErasure());
+                    if (cmp == 0) {
+                        throw new IllegalArgumentException(
+                            "Bad intersection, unrelated class types " + ci + " and " + primaryBound + " in " + types
+                        );
+                    } else if (cmp < 0) {
+                        primaryBound = ci;
+                    }
                 }
             } else {
                 bounds.add(ci);
@@ -364,6 +375,15 @@ final class Lub {
         }
 
         return new JIntersectionType(ts, primaryBound, bounds);
+    }
+
+    private static int compareRelatedness(JTypeMirror t, JTypeMirror s) {
+        if (TypeOps.isConvertiblePure(t, s.getErasure()).withoutWarnings()) {
+            return -1;
+        } else if (TypeOps.isConvertiblePure(s, t.getErasure()).withoutWarnings()) {
+            return 1;
+        }
+        return 0;
     }
 
     private static void checkGlbComponent(Collection<? extends JTypeMirror> types, JTypeMirror ci) {
