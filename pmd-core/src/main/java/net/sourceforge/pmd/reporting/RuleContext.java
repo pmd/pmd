@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -155,7 +156,12 @@ public final class RuleContext {
      * @param astInfo    Info about the root of the tree ({@link Node#getAstInfo()})
      * @param message    Violation message
      * @param formatArgs Format arguments for the message
+     *
+     * @experimental This will probably never be stabilized, will instead be
+     * replaced by a fluent API or something to report violations. Do not use
+     * this outside of the PMD codebase. See https://github.com/pmd/pmd/issues/5039.
      */
+    @Experimental
     public void addViolationWithPosition(Reportable reportable, AstInfo<?> astInfo, FileLocation location,
                                          String message, Object... formatArgs) {
         Objects.requireNonNull(reportable, "Node was null");
