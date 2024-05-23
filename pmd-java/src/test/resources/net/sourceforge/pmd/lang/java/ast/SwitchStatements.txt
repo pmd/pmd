@@ -31,7 +31,7 @@
                   |  |  +- MethodCall[@CompileTimeConstant = false, @Image = "println", @MethodName = "println", @ParenthesisDepth = 0, @Parenthesized = false]
                   |  |     +- FieldAccess[@AccessType = AccessType.READ, @CompileTimeConstant = false, @Image = "out", @Name = "out", @ParenthesisDepth = 0, @Parenthesized = false]
                   |  |     |  +- TypeExpression[@CompileTimeConstant = false, @ParenthesisDepth = 0, @Parenthesized = false]
-                  |  |     |     +- ClassType[@FullyQualified = false, @SimpleName = "System"]
+                  |  |     |     +- ClassType[@FullyQualified = false, @PackageQualifier = null, @SimpleName = "System"]
                   |  |     +- ArgumentList[@Empty = false, @Size = 1]
                   |  |        +- StringLiteral[@CompileTimeConstant = true, @ConstValue = "1", @Empty = false, @Image = "\"1\"", @Length = 1, @LiteralText = "\"1\"", @ParenthesisDepth = 0, @Parenthesized = false, @TextBlock = false]
                   |  +- BreakStatement[@Label = null]

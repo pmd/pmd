@@ -43,7 +43,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
  * <p>Note: This node has been called ASTVariableDeclaratorId in PMD 6.
  */
 // @formatter:on
-public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariableSymbol> implements ModifierOwner, SymbolDeclaratorNode {
+public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariableSymbol> implements ModifierOwner {
 
     private String name;
     private List<ASTNamedReferenceExpr> usages = Collections.emptyList();
