@@ -73,5 +73,9 @@ For the changes, see [PMD Designer Changelog (7.2.0)](https://github.com/pmd/pmd
 
 * [#5020](https://github.com/pmd/pmd/issues/5020): \[java] Fix AvoidUsingOctalValues false-positive - [Gold856](https://github.com/Gold856) (@Gold856)
 
-{% endtocmaker %}
+### 📈 Stats
+* 152 commits
+* 46 closed tickets & PRs
+* Days since last release: 35
 
+{% endtocmaker %}
