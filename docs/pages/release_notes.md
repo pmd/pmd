@@ -49,6 +49,8 @@ For the changes, see [PMD Designer Changelog (7.2.0)](https://github.com/pmd/pmd
   * [#4975](https://github.com/pmd/pmd/issues/4975): \[java] UnusedPrivateMethod false positive when using @MethodSource on a @Nested test
   * [#4985](https://github.com/pmd/pmd/issues/4985): \[java] UnusedPrivateMethod false-positive / method reference in combination with custom object
 * java-codestyle
+  * [#1619](https://github.com/pmd/pmd/issues/1619): \[java] LocalVariableCouldBeFinal on 'size' variable in for loop
+  * [#3122](https://github.com/pmd/pmd/issues/3122): \[java] LocalVariableCouldBeFinal should consider blank local variables
   * [#4903](https://github.com/pmd/pmd/issues/4903): \[java] UnnecessaryBoxing, but explicit conversion is necessary
   * [#4924](https://github.com/pmd/pmd/issues/4924): \[java] UnnecessaryBoxing false positive in PMD 7.0.0 in lambda
   * [#4930](https://github.com/pmd/pmd/issues/4930): \[java] EmptyControlStatement should not allow empty try with concise resources

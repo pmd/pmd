@@ -79,6 +79,9 @@ import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
+import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
+import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
+import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefinitionSet;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
@@ -807,7 +810,6 @@ public final class JavaAstUtils {
                    );
     }
 
-
     /**
      * Return the target of the return. May be an {@link ASTMethodDeclaration},
      * {@link ASTLambdaExpression}, {@link ASTInitializer},
@@ -816,11 +818,39 @@ public final class JavaAstUtils {
      */
     public static @Nullable JavaNode getReturnTarget(ASTReturnStatement stmt) {
         return stmt.ancestors().first(
-            it -> it instanceof ASTMethodDeclaration
-                || it instanceof ASTLambdaExpression
-                || it instanceof ASTConstructorDeclaration
-                || it instanceof ASTInitializer
-                || it instanceof ASTCompactConstructorDeclaration
+                it -> it instanceof ASTMethodDeclaration
+                        || it instanceof ASTLambdaExpression
+                        || it instanceof ASTConstructorDeclaration
+                        || it instanceof ASTInitializer
+                        || it instanceof ASTCompactConstructorDeclaration
         );
+    }
+
+    /**
+     * Return true if the variable is effectively final. This means
+     * the variable is never reassigned.
+     */
+    public static boolean isEffectivelyFinal(ASTVariableId var) {
+        if (var.getInitializer() == null && var.isLocalVariable()) {
+            // blank variables may be assigned on several paths
+            DataflowResult dataflow = DataflowPass.getDataflowResult(var.getRoot());
+            for (ASTNamedReferenceExpr usage : var.getLocalUsages()) {
+                if (usage.getAccessType() == AccessType.WRITE) {
+                    ReachingDefinitionSet reaching = dataflow.getReachingDefinitions(usage);
+                    if (reaching.isNotFullyKnown() || !reaching.getReaching().isEmpty()) {
+                        // If the reaching def is not empty, then that means
+                        // the assignment is killing another one, ie it is a reassignment.
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        for (ASTNamedReferenceExpr usage : var.getLocalUsages()) {
+            if (usage.getAccessType() == AccessType.WRITE) {
+                return false;
+            }
+        }
+        return true;
     }
 }
