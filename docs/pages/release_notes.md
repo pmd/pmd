@@ -40,6 +40,8 @@ Since this release, PMD will also expose any getter returning a collection of an
   * [#4975](https://github.com/pmd/pmd/issues/4975): \[java] UnusedPrivateMethod false positive when using @MethodSource on a @Nested test
   * [#4985](https://github.com/pmd/pmd/issues/4985): \[java] UnusedPrivateMethod false-positive / method reference in combination with custom object
 * java-codestyle
+  * [#1619](https://github.com/pmd/pmd/issues/1619): \[java] LocalVariableCouldBeFinal on 'size' variable in for loop
+  * [#3122](https://github.com/pmd/pmd/issues/3122): \[java] LocalVariableCouldBeFinal should consider blank local variables
   * [#4930](https://github.com/pmd/pmd/issues/4930): \[java] EmptyControlStatement should not allow empty try with concise resources
 
 ### 🚨 API Changes
