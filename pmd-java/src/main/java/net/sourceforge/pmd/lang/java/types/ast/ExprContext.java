@@ -130,7 +130,7 @@ public abstract class ExprContext {
          * Assignment context. This includes:
          * <ul>
          * <li>RHS of an assignment
-         * <li>Return statement
+         * <li>Return statement or return expression of a lambda
          * <li>Array initializer
          * <li>Superclass constructor invocation
          * </ul>

@@ -13,8 +13,18 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
 class ASTLambdaExpressionTest : ParserTestSpec({
     parserTestContainer("Simple lambda expressions", javaVersions = J1_8..Latest) {
         inContext(ExpressionParsingCtx) {
+            "() -> foo()" should parseAs {
+                exprLambda {
+                    it::isExplicitlyTyped shouldBe true
+                    it::getParameters shouldBe lambdaFormals {}
+
+                    methodCall("foo")
+                }
+            }
+
             "a -> foo()" should parseAs {
                 exprLambda {
+                    it::isExplicitlyTyped shouldBe false
                     it::getParameters shouldBe lambdaFormals {
                         simpleLambdaParam("a") {
                             it::isTypeInferred shouldBe true
@@ -29,6 +39,7 @@ class ASTLambdaExpressionTest : ParserTestSpec({
 
             "(a,b) -> foo()" should parseAs {
                 exprLambda {
+                    it::isExplicitlyTyped shouldBe false
                     it::getParameters shouldBe lambdaFormals {
                         simpleLambdaParam("a") {
                             it::isTypeInferred shouldBe true
@@ -47,6 +58,7 @@ class ASTLambdaExpressionTest : ParserTestSpec({
 
             "(a,b) -> { foo(); } " should parseAs {
                 blockLambda {
+                    it::isExplicitlyTyped shouldBe false
                     it::getParameters shouldBe lambdaFormals {
                         simpleLambdaParam("a")
                         simpleLambdaParam("b")
@@ -58,6 +70,7 @@ class ASTLambdaExpressionTest : ParserTestSpec({
 
             "(final int a, @F List<String> b) -> foo()" should parseAs {
                 exprLambda {
+                    it::isExplicitlyTyped shouldBe true
                     it::getParameters shouldBe lambdaFormals {
                         lambdaParam {
                             it::getModifiers shouldBe modifiers {
@@ -97,6 +110,7 @@ class ASTLambdaExpressionTest : ParserTestSpec({
         inContext(ExpressionParsingCtx) {
             "(final int a[]@B[], @F List<String>@a [] b @A []) -> foo()" should parseAs {
                 exprLambda {
+                    it::isExplicitlyTyped shouldBe true
                     it::getParameters shouldBe child {
                         lambdaParam {
                             it::getModifiers shouldBe modifiers {
@@ -158,6 +172,7 @@ class ASTLambdaExpressionTest : ParserTestSpec({
         inContext(ExpressionParsingCtx) {
             "(String ... b) -> {}" should parseAs {
                 blockLambda {
+                    it::isExplicitlyTyped shouldBe true
                     it::getParameters shouldBe child {
                         lambdaParam {
                             it::getModifiers shouldBe modifiers {}
@@ -180,6 +195,7 @@ class ASTLambdaExpressionTest : ParserTestSpec({
 
             "(String @A [] @B ... b) -> {}" should parseAs {
                 blockLambda {
+                    it::isExplicitlyTyped shouldBe true
                     it::getParameters shouldBe child {
                         lambdaParam {
                             it::getModifiers shouldBe modifiers {}

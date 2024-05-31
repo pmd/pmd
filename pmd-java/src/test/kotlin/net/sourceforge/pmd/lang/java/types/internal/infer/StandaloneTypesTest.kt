@@ -156,6 +156,20 @@ class StandaloneTypesTest : ProcessorTestSpec({
         }
     }
 
+    parserTestContainer("Test boolean bitwise ops") {
+        inContext(ExpressionParsingCtx) {
+            listOf(OR, AND, XOR)
+                .forEach {
+                    val op = it.token
+
+                    "true $op (Boolean) true" should haveType { boolean }
+                    "(Boolean) true $op false" should haveType { boolean }
+                    "(Boolean) true $op (Boolean) false" should haveType { boolean }
+                    "true $op false" should haveType { boolean }
+                }
+        }
+    }
+
     parserTestContainer("Test boolean ops") {
         inContext(ExpressionParsingCtx) {
             listOf(

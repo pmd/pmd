@@ -6,16 +6,31 @@
 package net.sourceforge.pmd.lang.java.types.ast
 
 import io.kotest.assertions.withClue
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.test.ast.component6
-import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils
-import net.sourceforge.pmd.lang.java.types.STRING
-import net.sourceforge.pmd.lang.java.types.parseWithTypeInferenceSpy
-import net.sourceforge.pmd.lang.java.types.shouldHaveType
+import net.sourceforge.pmd.lang.java.types.*
+import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind
+import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind.*
+import net.sourceforge.pmd.lang.test.ast.*
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 
 class ConversionContextTests : ProcessorTestSpec({
+
+    fun haveContext(kind: ExprContextKind, target: JTypeMirror?): Matcher<ASTExpression> = Matcher {
+        val ctx = it.conversionContext
+        MatcherResult(
+            passed = ctx.targetType == target && ctx.kind == kind,
+            failureMessageFn = { "Expected $kind (target $target), but got ${ctx.kind} (target ${ctx.targetType})" },
+            negatedFailureMessageFn = { "Expected not $kind (target $target), but got ${ctx.kind} (target ${ctx.targetType})" },
+        )
+    }
+
+    fun TypeDslMixin.haveBooleanContext(): Matcher<ASTExpression> = haveContext(BOOLEAN, boolean)
+    fun haveNoContext(): Matcher<ASTExpression> = haveContext(MISSING, null)
 
     parserTest("Test simple contexts") {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
@@ -32,10 +47,10 @@ class ConversionContextTests : ProcessorTestSpec({
         val (valueOf, _, doubleCast, doubleLit, intLit) = acu.descendants(ASTExpression::class.java).toList()
 
         spy.shouldBeOk {
-            valueOf.conversionContext::isMissing shouldBe true
-            doubleCast.conversionContext::getTargetType shouldBe ts.OBJECT
-            doubleLit.conversionContext::getTargetType shouldBe double.box()
-            intLit.conversionContext::getTargetType shouldBe double
+            valueOf should haveNoContext()
+            doubleCast should haveContext(INVOCATION, ts.OBJECT)
+            doubleLit should haveContext(CAST, double.box())
+            intLit should haveContext(ASSIGNMENT, double)
         }
     }
 
@@ -51,12 +66,11 @@ class ConversionContextTests : ProcessorTestSpec({
     """
         )
 
-        val (ternary, _, num1, shortCast, _) = acu.descendants(ASTExpression::class.java).toList()
+        val (ternary, _, num1, shortCast, num5) = acu.descendants(ASTExpression::class.java).toList()
 
         spy.shouldBeOk {
             // ternary is in double assignment context
-            ternary.conversionContext::isMissing shouldBe false
-            ternary.conversionContext::getTargetType shouldBe double
+            ternary should haveContext(ASSIGNMENT, double)
 
             // but it has type int
             ternary shouldHaveType int
@@ -66,8 +80,9 @@ class ConversionContextTests : ProcessorTestSpec({
             num1 shouldHaveType int
             shortCast shouldHaveType short
 
-            num1.conversionContext::getTargetType shouldBe int
-            shortCast.conversionContext::getTargetType shouldBe int
+            num1 should haveContext(TERNARY, int)
+            shortCast should haveContext(TERNARY, int)
+            num5 should haveContext(CAST, short)
         }
     }
 
@@ -87,8 +102,7 @@ class ConversionContextTests : ProcessorTestSpec({
 
         spy.shouldBeOk {
             // ternary is in double assignment context
-            ternary.conversionContext::isMissing shouldBe true
-            ternary.conversionContext::getTargetType shouldBe null
+            ternary should haveNoContext()
 
             // but it has type int
             ternary shouldHaveType int
@@ -98,8 +112,8 @@ class ConversionContextTests : ProcessorTestSpec({
             integerCast shouldHaveType int.box()
             num4 shouldHaveType int
 
-            integerCast.conversionContext::getTargetType shouldBe int
-            num4.conversionContext::getTargetType shouldBe int
+            integerCast should haveContext(TERNARY, int)
+            num4 should haveContext(TERNARY, int)
         }
     }
 
@@ -118,9 +132,9 @@ class ConversionContextTests : ProcessorTestSpec({
         val (boxedBool, bool, str) = acu.descendants(ASTVariableAccess::class.java).toList()
 
         spy.shouldBeOk {
-            boxedBool.conversionContext::getTargetType shouldBe ts.BOOLEAN
-            bool.conversionContext::getTargetType shouldBe ts.BOOLEAN
-            str.conversionContext::getTargetType shouldBe ts.STRING
+            boxedBool should haveBooleanContext()
+            bool should haveBooleanContext()
+            str should haveContext(STRING, ts.STRING)
         }
     }
 
@@ -145,13 +159,13 @@ class ConversionContextTests : ProcessorTestSpec({
 
         spy.shouldBeOk {
 
-            ifstmt.conversionContext::getTargetType shouldBe ts.BOOLEAN
-            whilestmt.conversionContext::getTargetType shouldBe ts.BOOLEAN
-            forstmt.conversionContext::getTargetType shouldBe ts.BOOLEAN
-            dostmt.conversionContext::getTargetType shouldBe ts.BOOLEAN
+            ifstmt should haveBooleanContext()
+            whilestmt should haveBooleanContext()
+            forstmt should haveBooleanContext()
+            dostmt should haveBooleanContext()
 
-            forUpdate.conversionContext::getTargetType shouldBe null
-            foreachstmt.conversionContext::getTargetType shouldBe null
+            forUpdate should haveNoContext()
+            foreachstmt should haveNoContext()
         }
     }
 
@@ -170,8 +184,8 @@ class ConversionContextTests : ProcessorTestSpec({
         val (booleanCast, objectCast) = acu.descendants(ASTCastExpression::class.java).toList()
 
         spy.shouldBeOk {
-            booleanCast.conversionContext::getTargetType shouldBe null
-            objectCast.conversionContext::getTargetType shouldBe null
+            booleanCast should haveNoContext()
+            objectCast should haveNoContext()
         }
     }
 
@@ -189,7 +203,7 @@ class ConversionContextTests : ProcessorTestSpec({
         val (booleanCast) = acu.descendants(ASTCastExpression::class.java).toList()
 
         spy.shouldBeOk {
-            booleanCast.conversionContext::getTargetType shouldBe boolean
+            booleanCast should haveBooleanContext()
         }
     }
 
@@ -205,27 +219,39 @@ class ConversionContextTests : ProcessorTestSpec({
                 eat(i << j);
                 eat(i & j);
 
+                eatbool(i == (Integer) j);
+
                 eat(i + e);
                 eat(i * e);
             }
             void eat(double d) {}
+            void eatbool(boolean d) {}
         }
     """
         )
 
-        val (mulint, lshift, and, plusdouble, muldouble) = acu.descendants(ASTInfixExpression::class.java).toList()
+        val (mulint, lshift, and, cmp, plusdouble, muldouble) = acu.descendants(ASTInfixExpression::class.java).toList()
 
         spy.shouldBeOk {
             listOf(mulint, lshift, and).forEach {
                 withClue(it) {
-                    it.leftOperand.conversionContext::getTargetType shouldBe ts.INT
-                    it.rightOperand.conversionContext::getTargetType shouldBe ts.INT
+                    it.leftOperand should haveContext(NUMERIC, int)
+                    it.rightOperand should haveContext(NUMERIC, int)
+                }
+            }
+            withClue(cmp) {
+                cmp should haveContext(INVOCATION, boolean)
+
+                listOf(cmp.leftOperand, cmp.rightOperand).forEach {
+                    withClue(it) {
+                        it should haveContext(NUMERIC, int)
+                    }
                 }
             }
             listOf(plusdouble, muldouble).forEach {
                 withClue(it) {
-                    it.leftOperand.conversionContext::getTargetType shouldBe ts.DOUBLE
-                    it.rightOperand.conversionContext::getTargetType shouldBe ts.DOUBLE
+                    it.leftOperand should haveContext(NUMERIC, double)
+                    it.rightOperand should haveContext(NUMERIC, double)
                 }
             }
         }
@@ -252,8 +278,8 @@ class ConversionContextTests : ProcessorTestSpec({
             concats.forEach {
                 withClue(it) {
                     JavaAstUtils.isStringConcatExpr(it) shouldBe true
-                    it.leftOperand.conversionContext::getTargetType shouldBe ts.STRING
-                    it.rightOperand.conversionContext::getTargetType shouldBe ts.STRING
+                    it.leftOperand should haveContext(STRING, ts.STRING)
+                    it.rightOperand should haveContext(STRING, ts.STRING)
                 }
             }
         }
@@ -275,11 +301,157 @@ class ConversionContextTests : ProcessorTestSpec({
         val (l0, l1) = acu.descendants(ASTInfixExpression::class.java).toList()
 
         spy.shouldBeOk {
-            l0.leftOperand.conversionContext::getTargetType shouldBe int
-            l0.rightOperand.conversionContext::getTargetType shouldBe int
+            l0.leftOperand should haveContext(NUMERIC, int)
+            l0.rightOperand should haveContext(NUMERIC, int)
 
-            l1.leftOperand.conversionContext::getTargetType shouldBe long
-            l1.rightOperand.conversionContext::getTargetType shouldBe long
+            l1.leftOperand should haveContext(NUMERIC, long)
+            l1.rightOperand should haveContext(NUMERIC, long)
+        }
+    }
+
+    parserTest("Boolean contexts") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Scratch {
+                static void m(boolean a, Boolean b) {
+                    eat(a == b);       
+                    eat(a != b);  
+                    eat(a && b);  
+                    eat(a || b);  
+                    eat(a ^ b);  
+                    eat(a & b);  
+                    eat(a | b);  
+                }
+                void eat(Object d) {}
+            }
+        """
+        )
+
+        val exprs = acu.descendants(ASTVariableAccess::class.java).toList()
+
+        spy.shouldBeOk {
+            for (e in exprs) {
+                withClue(e.parent) {
+                    e should haveBooleanContext()
+                }
+            }
+        }
+    }
+
+    parserTest("Switch scrutinee") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Scratch {
+                static void m(boolean a, Boolean b) {
+                  switch (4) { }
+                  switch (Integer.valueOf(4)) { }
+                  
+                }
+                void eat(Object d) {}
+            }
+        """
+        )
+
+        val exprs = acu.descendants(ASTSwitchLike::class.java).toList { it.testedExpression }
+
+        spy.shouldBeOk {
+            for (e in exprs) {
+                withClue(e.parent) {
+                    e should haveContext(NUMERIC, int)
+                }
+            }
+        }
+    }
+
+    parserTest("Lambda ctx") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            class Foo {
+                record Item(int cents) {}
+                Object map(Item item) {
+                    // here the conversion is necessary to determine the context type
+                    return map(item, it -> Long.valueOf(it.cents()));
+                }
+                Object map2(Item item) {
+                    // here it is not necessary
+                    return mapToLong(item, it -> Long.valueOf(it.cents()));
+                }
+                interface Fun<T,R> { R apply(T t); }
+                interface ToLongFun<T> { long apply(T t); }
+                <T,R> R map(T t, Fun<T,R> fun) {}
+                <T> long mapToLong(T t, ToLongFun<T> fun) {}
+            }
+        """)
+
+        val (lambda, lambdaToLong) = acu.descendants(ASTLambdaExpression::class.java).toList()
+
+        spy.shouldBeOk {
+            lambda.expressionBody!! should haveNoContext()
+            lambda.conversionContext::getKind shouldBe INVOCATION
+
+            lambdaToLong.expressionBody!! should haveContext(ASSIGNMENT, long)
+        }
+    }
+
+    parserTest("Ctx of nested invocation") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            class Foo {
+                int eatByte(byte b) {}
+                int eatInt(int b) {}
+
+                void eq(Object val) {
+                    Bar b = (Bar) val;
+                    eatByte(b.x);
+                    eatInt(eatByte(b.x));
+                }
+                class Bar { byte x; }
+            }
+        """)
+
+        val (nonNested, nested) = acu.descendants(ASTFieldAccess::class.java).toList()
+
+        spy.shouldBeOk {
+            nested should haveContext(INVOCATION, byte) // not int
+            nonNested should haveContext(INVOCATION, byte)
+        }
+    }
+
+    parserTest("Context of unary exprs") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Foo {
+                void eq(boolean b, short s, int i, double d) {
+                    eat(!a);
+                    eat(~s);
+                    eat(+s); eat(+i); eat(+d);
+                    eat(-s); eat(-i); eat(-d);
+                    i++;
+                    --d;
+                }
+                void eat(Object o) {}
+            }
+        """
+        )
+
+        val (not, complement, plusShort, plusInt, plusDouble,
+            minusShort, minusInt, minusDouble, iplusplus, minusminusd) = acu.descendants(ASTUnaryExpression::class.java)
+            .toList { it.operand }
+
+        spy.shouldBeOk {
+            not should haveBooleanContext()
+            complement should haveContext(NUMERIC, int)
+            plusShort should haveContext(NUMERIC, int)
+            plusInt should haveContext(NUMERIC, int)
+            plusDouble should haveContext(NUMERIC, double)
+            minusShort should haveContext(NUMERIC, int)
+            minusInt should haveContext(NUMERIC, int)
+            minusDouble should haveContext(NUMERIC, double)
+            iplusplus should haveNoContext()
+            minusminusd should haveNoContext()
         }
     }
 })

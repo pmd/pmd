@@ -326,8 +326,8 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
         case XOR:
         case AND: {
             // those may be boolean or bitwise
-            final JTypeMirror lhs = node.getLeftOperand().getTypeMirror(ctx);
-            final JTypeMirror rhs = node.getRightOperand().getTypeMirror(ctx);
+            final JTypeMirror lhs = node.getLeftOperand().getTypeMirror(ctx).unbox();
+            final JTypeMirror rhs = node.getRightOperand().getTypeMirror(ctx).unbox();
 
             if (lhs.isNumeric() && rhs.isNumeric()) {
                 // NUMERIC(N) & NUMERIC(M)  -> promote(N, M)
