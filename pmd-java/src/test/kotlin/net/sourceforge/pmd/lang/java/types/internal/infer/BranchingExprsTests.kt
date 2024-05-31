@@ -13,21 +13,18 @@ import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 
 
-class BranchingExprsTestCases : ProcessorTestSpec({
+class BranchingExprsTests : ProcessorTestSpec({
 
     fun TypeSystem.stringSupplier() : JTypeMirror = with (TypeDslOf(this)) {
         java.util.function.Supplier::class[gen.t_String]
     }
 
-    parserTest("Test ternary lets context flow") {
-
+    parserTestContainer("Test ternary lets context flow") {
         asIfIn(TypeInferenceTestCases::class.java)
 
         inContext(ExpressionParsingCtx) {
-
             "makeThree(true ? () -> \"foo\" : () -> \"bar\")" should parseAs {
                 methodCall("makeThree") {
-
                     argList {
                         ternaryExpr {
                             boolean(true)
@@ -48,15 +45,11 @@ class BranchingExprsTestCases : ProcessorTestSpec({
         }
     }
 
-    parserTest("Test ternary infers outer stuff") {
-
+    parserTestContainer("Test ternary infers outer stuff") {
         asIfIn(TypeInferenceTestCases::class.java)
 
         inContext(ExpressionParsingCtx) {
-
-
             "makeThree(true ? () -> \"foo\" : () -> \"bar\")" should parseAs {
-
                 methodCall("makeThree") {
                     argList {
                         ternaryExpr {
@@ -78,13 +71,11 @@ class BranchingExprsTestCases : ProcessorTestSpec({
         }
     }
 
-    parserTest("Test ternary without context lubs params") {
-
+    parserTestContainer("Test ternary without context lubs params") {
         otherImports += "java.util.ArrayList"
         otherImports += "java.util.LinkedList"
 
         inContext(StatementParsingCtx) {
-
             "var ter = true ? new ArrayList<String>() : new LinkedList<String>();" should parseAs {
                 localVarDecl {
 
@@ -114,14 +105,12 @@ class BranchingExprsTestCases : ProcessorTestSpec({
         }
     }
 
-    parserTest("Test switch without context lubs params") {
-
+    parserTestContainer("Test switch without context lubs params") {
         otherImports += "java.util.ArrayList"
         otherImports += "java.util.LinkedList"
         otherImports += "java.util.Collections"
 
         inContext(StatementParsingCtx) {
-
             """
                 var ter = switch(foo) {
                  case 1  -> new ArrayList<String>();
@@ -183,10 +172,8 @@ class BranchingExprsTestCases : ProcessorTestSpec({
         }
     }
 
-    parserTest("Test ternary without context promotes primitives") {
-
+    parserTestContainer("Test ternary without context promotes primitives") {
         inContext(StatementParsingCtx) {
-
             "var ter = true ? 1 : 3;" should parseAs {
                 localVarDecl {
                     modifiers { }
@@ -237,11 +224,9 @@ class BranchingExprsTestCases : ProcessorTestSpec({
         }
     }
 
-
-
     parserTest("Cast context doesn't influence standalone ternary") {
-
-        val acu = parser.parse("""
+        val acu = parser.parse(
+                """
 class Scratch {
 
     static void putBoolean(byte[] b, int off, boolean val) {
@@ -249,7 +234,8 @@ class Scratch {
     }
 }
 
-        """.trimIndent())
+            """.trimIndent()
+        )
 
         val ternary = acu.descendants(ASTConditionalExpression::class.java).firstOrThrow()
 
@@ -263,11 +249,9 @@ class Scratch {
         }
     }
 
-
-
     parserTest("Cast context doesn't provide target type (only for lambdas)") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
             import java.util.Collection;
             import java.util.List;
             import java.util.Set;
@@ -276,7 +260,8 @@ class Scratch {
 
                 Collection<String> fun(boolean messageSelector) {
                     Collection<String> textFromMessage =
-                            // compile error: a cast doesn't contribute a target type,
+                            // compile error: Inconvertible types; cannot cast 'java.util.Collection<java.lang.Object>' to 'java.util.Collection<java.lang.String>'
+                            // a cast doesn't contribute a target type,
                             // the ternary is inferred to Collection<Object>
                             (Collection<String>) (messageSelector ? emptyList() : emptySet());
 
@@ -288,19 +273,20 @@ class Scratch {
                 <T> List<T> emptyList() {return null;}
                 <T> Set<T> emptySet() {return null;}
             }
-        """.trimIndent())
+            """.trimIndent()
+        )
 
         val (ternary1, ternary2) = acu.descendants(ASTConditionalExpression::class.java).toList()
 
         spy.shouldBeOk {
-            ternary1 shouldHaveType java.util.Collection::class[ts.OBJECT]
-            ternary2 shouldHaveType java.util.Collection::class[ts.STRING]
+            ternary1 shouldHaveType gen.t_Collection[captureMatcher(`?`)] // java.util.Collection<capture#534 of ?>
+            ternary2 shouldHaveType gen.`t_Collection{String}` // java.util.Collection<java.lang.String>
         }
     }
 
     parserTest("Null branches produce null type") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+                val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
             import java.util.Collection;
             class Test {
                 Collection<String> fun(boolean messageSelector) {
@@ -310,7 +296,8 @@ class Scratch {
                     return (Collection<String>) (messageSelector ? null : null);
                 }
             }
-        """.trimIndent())
+           """.trimIndent()
+            )
 
         val (ternary1, ternary2) = acu.descendants(ASTConditionalExpression::class.java).toList()
 
@@ -321,11 +308,8 @@ class Scratch {
     }
 
 
-    parserTest("Assignment context doesn't influence standalone ternary") {
-
-
+    parserTestContainer("Assignment context doesn't influence standalone ternary") {
         inContext(StatementParsingCtx) {
-
             "double ter = true ? 1 : 3;" should parseAs {
                 localVarDecl {
                     modifiers { }
@@ -400,10 +384,8 @@ class Scratch {
         }
     }
 
-    parserTest("Reference ternary with context has type of its target") {
-
+    parserTestContainer("Reference ternary with context has type of its target") {
         inContext(StatementParsingCtx) {
-
             "Object ter = true ? String.valueOf(1) : String.valueOf(2);" should parseAs {
                 localVarDecl {
                     modifiers { }
@@ -460,5 +442,4 @@ class Scratch {
             }
         }
     }
-
 })

@@ -18,15 +18,16 @@ import net.sourceforge.pmd.lang.java.types.shouldHaveType
 class ConversionContextTests : ProcessorTestSpec({
 
     parserTest("Test simple contexts") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
-            class Foo {
-                double foo() {
-                    String.valueOf((Double) 1d);
-                    return 2;
-                }
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+        class Foo {
+            double foo() {
+                String.valueOf((Double) 1d);
+                return 2;
             }
-        """)
+        }
+    """
+        )
 
         val (valueOf, _, doubleCast, doubleLit, intLit) = acu.descendants(ASTExpression::class.java).toList()
 
@@ -39,15 +40,16 @@ class ConversionContextTests : ProcessorTestSpec({
     }
 
     parserTest("Test standalone ternary context") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
-            class Foo {
-                double foo() {
-                    double r = true ? 1 : (short) 5;
-                    return 2;
-                }
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+        class Foo {
+            double foo() {
+                double r = true ? 1 : (short) 5;
+                return 2;
             }
-        """)
+        }
+    """
+        )
 
         val (ternary, _, num1, shortCast, _) = acu.descendants(ASTExpression::class.java).toList()
 
@@ -70,15 +72,16 @@ class ConversionContextTests : ProcessorTestSpec({
     }
 
     parserTest("Test standalone ternary context (2, boxing)") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
-            class Foo {
-                double foo(Integer i, Long l, boolean c) {
-                    var z = c ? (Integer) null
-                              : 4;
-                }
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+        class Foo {
+            double foo(Integer i, Long l, boolean c) {
+                var z = c ? (Integer) null
+                          : 4;
             }
-        """)
+        }
+    """
+        )
 
         val (ternary, _, integerCast, _, num4) = acu.descendants(ASTExpression::class.java).toList()
 
@@ -99,16 +102,18 @@ class ConversionContextTests : ProcessorTestSpec({
             num4.conversionContext::getTargetType shouldBe int
         }
     }
-    parserTest("Test context of assert stmt") {
 
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
-            class Foo {
-                static void m(Boolean boxedBool, boolean bool, String str) {
-                    assert boxedBool;
-                    assert bool : str;
-                }
+    parserTest("Test context of assert stmt") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+        class Foo {
+            static void m(Boolean boxedBool, boolean bool, String str) {
+                assert boxedBool;
+                assert bool : str;
             }
-        """)
+        }
+    """
+        )
 
         val (boxedBool, bool, str) = acu.descendants(ASTVariableAccess::class.java).toList()
 
@@ -120,20 +125,22 @@ class ConversionContextTests : ProcessorTestSpec({
     }
 
     parserTest("Test context of statements with conditions") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
-            class Foo {
-                static void m(Boolean boxedBool, boolean bool, String str, int[] ints) {
-                    if (boxedBool);
-                    while (boxedBool);
-                    for (int i = 0; boxedBool; i++) {}
-                    do; while (boxedBool);
-                    for (int i : ints);
-                }
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+        class Foo {
+            static void m(Boolean boxedBool, boolean bool, String str, int[] ints) {
+                if (boxedBool);
+                while (boxedBool);
+                for (int i = 0; boxedBool; i++) {}
+                do; while (boxedBool);
+                for (int i : ints);
             }
-        """)
+        }
+    """
+        )
 
-        val (ifstmt, whilestmt, forstmt, _, dostmt, foreachstmt) = acu.descendants(ASTVariableAccess::class.java).toList()
+        val (ifstmt, whilestmt, forstmt, _, dostmt, foreachstmt) = acu.descendants(ASTVariableAccess::class.java)
+            .toList()
         val forUpdate = acu.descendants(ASTForUpdate::class.java).firstOrThrow().exprList[0]
 
         spy.shouldBeOk {
@@ -149,15 +156,16 @@ class ConversionContextTests : ProcessorTestSpec({
     }
 
     parserTest("Test missing context in qualifier") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
-            class Scratch {
-                static void m(Boolean boxedBool) {
-                    ((Boolean) boxedBool).booleanValue(); 
-                    ((Object) boxedBool).somefield;
-                }
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+        class Scratch {
+            static void m(Boolean boxedBool) {
+                ((Boolean) boxedBool).booleanValue(); 
+                ((Object) boxedBool).somefield;
             }
-        """)
+        }
+    """
+        )
 
         val (booleanCast, objectCast) = acu.descendants(ASTCastExpression::class.java).toList()
 
@@ -168,14 +176,15 @@ class ConversionContextTests : ProcessorTestSpec({
     }
 
     parserTest("Test context of ternary condition") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
-            class Scratch {
-                static void m(Boolean boxedBool, boolean bool, String str, int[] ints) {
-                    str = (boolean) boxedBool ? "a" : "b";
-                }
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+        class Scratch {
+            static void m(Boolean boxedBool, boolean bool, String str, int[] ints) {
+                str = (boolean) boxedBool ? "a" : "b";
             }
-        """)
+        }
+    """
+        )
 
         val (booleanCast) = acu.descendants(ASTCastExpression::class.java).toList()
 
@@ -185,23 +194,24 @@ class ConversionContextTests : ProcessorTestSpec({
     }
 
     parserTest("Test numeric context") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+        class Scratch {
+            static void m() {
+                int i, j, k;
+                double d, e;
+                
+                eat(i * j);
+                eat(i << j);
+                eat(i & j);
 
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
-            class Scratch {
-                static void m() {
-                    int i, j, k;
-                    double d, e;
-                    
-                    eat(i * j);
-                    eat(i << j);
-                    eat(i & j);
-
-                    eat(i + e);
-                    eat(i * e);
-                }
-                void eat(double d) {}
+                eat(i + e);
+                eat(i * e);
             }
-        """)
+            void eat(double d) {}
+        }
+    """
+        )
 
         val (mulint, lshift, and, plusdouble, muldouble) = acu.descendants(ASTInfixExpression::class.java).toList()
 
@@ -220,19 +230,21 @@ class ConversionContextTests : ProcessorTestSpec({
             }
         }
     }
-    parserTest("String contexts") {
 
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
-            class Scratch {
-                static void m(int i) {
-                    eat(" " + i);
-                    eat(i + " ");
-                    eat(" " + " ");
-                    eat(" " + i + i);
-                }
-                void eat(Object d) {}
+    parserTest("String contexts") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+        class Scratch {
+            static void m(int i) {
+                eat(" " + i);
+                eat(i + " ");
+                eat(" " + " ");
+                eat(" " + i + i);
             }
-        """)
+            void eat(Object d) {}
+        }
+    """
+        )
 
         val concats = acu.descendants(ASTInfixExpression::class.java).toList()
 
@@ -246,17 +258,19 @@ class ConversionContextTests : ProcessorTestSpec({
             }
         }
     }
-    parserTest("Relational ops") {
 
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
-            class Scratch {
-                static void m(int i) {
-                    eat(i < i++);       //l0
-                    eat(i > (long) i);  //l1
-                }
-                void eat(Object d) {}
+    parserTest("Relational ops") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+        class Scratch {
+            static void m(int i) {
+                eat(i < i++);       //l0
+                eat(i > (long) i);  //l1
             }
-        """)
+            void eat(Object d) {}
+        }
+    """
+        )
 
         val (l0, l1) = acu.descendants(ASTInfixExpression::class.java).toList()
 

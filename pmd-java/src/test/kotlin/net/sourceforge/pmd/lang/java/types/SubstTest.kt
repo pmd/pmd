@@ -15,44 +15,40 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassType
 import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
 
 class SubstTest : ProcessorTestSpec({
-
-
     parserTest("Test full test case") {
-
-
         val typeDecl =
-                parser.parse("""
-                    package java.util;
+            parser.parse(
+                """
+                package java.util;
 
-                    class Foo<K extends F,
-                              F,
-                              C extends F> {
+                class Foo<K extends F,
+                          F,
+                          C extends F> {
 
-                        Map<Map<K, F>, Map<F, C>> field;
-
-                    }
-                """).descendants(ASTClassDeclaration::class.java).firstOrThrow()
+                    Map<Map<K, F>, Map<F, C>> field;
+                }
+                """
+            ).descendants(ASTClassDeclaration::class.java).firstOrThrow()
 
         val typeDsl = typeDecl.typeDsl
 
         val (k, f, c) = typeDecl.typeMirror.formalTypeParams
 
-
         val fieldT = typeDecl.descendants(ASTClassType::class.java).drop(2).firstOrThrow()
-        
+
         val map = Map::class
 
         // assert the form of the type
-        fieldT shouldHaveType with (typeDsl) {
+        fieldT shouldHaveType with(typeDsl) {
             map[map[k, f], map[f, c]]
         }
 
-        val `List{F}` = with (typeDsl) { List::class[f] }
+        val `List{F}` = with(typeDsl) { List::class[f] }
 
         val subst =
             Substitution.mapping(
-                    listOf(k, f),
-                    listOf(`List{F}`, k)
+                listOf(k, f),
+                listOf(`List{F}`, k)
             )
 
         subst.apply(f) shouldBe k
@@ -60,7 +56,7 @@ class SubstTest : ProcessorTestSpec({
 
         val subbed = TypeOps.subst(fieldT.typeMirror, subst)
 
-        subbed shouldBe with (typeDsl) {
+        subbed shouldBe with(typeDsl) {
             map[map[`List{F}`, k], map[k, c]]
         }
     }
@@ -73,10 +69,7 @@ class SubstTest : ProcessorTestSpec({
 
     operator fun Substitution.invoke(t: JTypeMirror) = TypeOps.subst(t, this)
 
-
     parserTest("Test simple subst") {
-
-
         val (a, b, c) = makeDummyTVars("A", "B", "C")
 
         with(TypeDslOf(a.typeSystem)) {
@@ -101,20 +94,18 @@ class SubstTest : ProcessorTestSpec({
 
             composed.map should contain<SubstVar, JTypeMirror>(a, Iterable::class[Collection::class[c]])
 
-            composed.map.shouldContainExactly(mapOf<SubstVar, JTypeMirror>(
+            composed.map.shouldContainExactly(
+                mapOf<SubstVar, JTypeMirror>(
                     a to Iterable::class[Collection::class[c]],
                     b to `t_Coll{C}`
-            ))
+                )
+            )
 
             composed(`t_List{A}`) shouldBe `t_List{Iter{t_Coll{C}}}`
         }
-
-
     }
 
     parserTest("Test subst toString") {
-
-
         val (a, b, c) = makeDummyTVars("A", "B", "C")
 
         with(TypeDslOf(a.typeSystem)) {
@@ -126,11 +117,5 @@ class SubstTest : ProcessorTestSpec({
 
             sub1.toString() shouldBe "Substitution[A => java.lang.Iterable<B>; B => java.util.Collection<C>]"
         }
-
-
     }
-
-
 })
-
-

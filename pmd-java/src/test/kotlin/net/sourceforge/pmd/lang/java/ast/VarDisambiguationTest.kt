@@ -14,9 +14,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors.*
 
 class VarDisambiguationTest : ParserTestSpec({
-
-
-    parserTest("AmbiguousName reclassification") {
+    parserTestContainer("AmbiguousName reclassification") {
         val code = ("""
             package com.foo.bar;
             class Foo {
@@ -85,7 +83,7 @@ class VarDisambiguationTest : ParserTestSpec({
         }
     }
 
-    parserTest("Disambiguation bug") {
+    parserTestContainer("Disambiguation bug") {
         val code = ("""
             class Foo {
                protected void setBandIndexes() {
@@ -112,7 +110,7 @@ class VarDisambiguationTest : ParserTestSpec({
         }
     }
 
-    parserTest("Failure cases") {
+    parserTestContainer("Failure cases") {
         val code = ("""
 package com.foo.bar;
 class Foo<T> {
@@ -152,7 +150,6 @@ class Foo<T> {
         parser.parse(code)
 
         doTest("Unresolved field") {
-
             logger.getWarning(CANNOT_RESOLVE_MEMBER, 0) { node, args ->
 
                 args shouldBe listOf("noField", "com.foo.bar.Foo.Inner", "a field access")
@@ -169,7 +166,6 @@ class Foo<T> {
         }
 
         doTest("Unresolved field chain") {
-
             logger.getWarning(CANNOT_RESOLVE_MEMBER, 1) { node, args ->
 
                 args shouldBe listOf("noField", "com.foo.bar.Foo.Inner", "a field access")
@@ -188,7 +184,6 @@ class Foo<T> {
         }
 
         doTest("Unresolved type var member") {
-
             logger.getWarning(CANNOT_RESOLVE_MEMBER, 2) { node, args ->
 
                 args shouldBe listOf("fofo", "type variable T", "a field access")
@@ -205,7 +200,6 @@ class Foo<T> {
         }
 
         doTest("Unresolved type var member (in type ctx)") {
-
             logger.getWarning(CANNOT_RESOLVE_MEMBER, 3) { node, args ->
 
                 args shouldBe listOf("Fofo", "type variable T", "an unresolved type")

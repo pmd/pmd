@@ -33,7 +33,7 @@ class StressTest : ProcessorTestSpec({
         println("[type inf stress test] $string")
     }
 
-    parserTest("Test hard overload resolution - no generics involved") {
+    parserTestContainer("Test hard overload resolution - no generics involved") {
         asIfIn(BoolLogic::class.java)
 
         fun TreeNodeWrapper<Node, out TypeNode>.typeIs(value: Boolean) {
@@ -115,44 +115,47 @@ class StressTest : ProcessorTestSpec({
     parserTest("OpenJDK bug 8055984: type inference exponential compilation performance") {
         // https://bugs.openjdk.java.net/browse/JDK-8055984
 
-        val acu = parser.parse("""
-            class C<U> {
-                U fu;
-                C() {}
-                C(C<U> other) { this.fu = other.fu; }
-                C(U fu) { this.fu = fu; }
+        val acu = parser.parse(
+        """
+        class C<U> {
+            U fu;
+            C() {}
+            C(C<U> other) { this.fu = other.fu; }
+            C(U fu) { this.fu = fu; }
 
-                static <U> C<U> m(C<U> src) { return new C<U>(src); }
+            static <U> C<U> m(C<U> src) { return new C<U>(src); }
 
-                public static void main(String argv[]) {
-                    /* type inference is expected here: */
-                    C<String> c2 = m(new C<>(m(new C<>())));
-                    C<String> c3 = m(new C<>(m(new C<>(m(new C<>())))));
-                    C<String> c4 = m(new C<>(m(new C<>(m(new C<>(m(new C<>()))))))); // Javac(1.04), ECJ(.71s)
-                    C<String> c5 = m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>()))))))))); // Javac(2.02s), ECJ(1.17s)
-                    C<String> c6 = m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>()))))))))))); // Javac(4.84s) ECJ(1.67s)
-                    C<String> c7 = m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>()))))))))))))); // Javac(14.99s) ECJ(10.82s)
-                    C<String> c8 = m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>()))))))))))))))); // Javac(79.62s) ECJ(134.64s)
-                    C<String> c9 = m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>()))))))))))))))))); // Javac(437s) ECJ(1305s)
-                    C<String> c10 = m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>()))))))))))))))))))); // 3600
-                }
+            public static void main(String argv[]) {
+                /* type inference is expected here: */
+                C<String> c2 = m(new C<>(m(new C<>())));
+                C<String> c3 = m(new C<>(m(new C<>(m(new C<>())))));
+                C<String> c4 = m(new C<>(m(new C<>(m(new C<>(m(new C<>()))))))); // Javac(1.04), ECJ(.71s)
+                C<String> c5 = m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>()))))))))); // Javac(2.02s), ECJ(1.17s)
+                C<String> c6 = m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>()))))))))))); // Javac(4.84s) ECJ(1.67s)
+                C<String> c7 = m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>()))))))))))))); // Javac(14.99s) ECJ(10.82s)
+                C<String> c8 = m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>()))))))))))))))); // Javac(79.62s) ECJ(134.64s)
+                C<String> c9 = m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>()))))))))))))))))); // Javac(437s) ECJ(1305s)
+                C<String> c10 = m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>(m(new C<>()))))))))))))))))))); // 3600
             }
-        """)
+        }
+        """
+        )
 
         acu.descendants(ASTLocalVariableDeclaration::class.java)
-                .map { it.varIds[0]!!.initializer!! }
-                .forEachIndexed { i, expr ->
-                    val t = measureTimeMillis {
-                        expr.typeMirror shouldNotBe expr.typeSystem.UNKNOWN
-                    }
-                    myLog("c${i + 2}: $t ms")
+            .map { it.varIds[0]!!.initializer!! }
+            .forEachIndexed { i, expr ->
+                val t = measureTimeMillis {
+                    expr.typeMirror shouldNotBe expr.typeSystem.UNKNOWN
                 }
+                myLog("c${i + 2}: $t ms")
+            }
     }
 
     parserTest("OpenJDK bug 8225508: Compiler OOM Error with Type Inference Hierarchy") {
         // https://bugs.openjdk.java.net/browse/JDK-8225508
 
-        val acu = parser.parse("""
+        val acu = parser.parse(
+        """
         import java.util.Arrays;
         import java.util.List;
 
@@ -229,20 +232,22 @@ class StressTest : ProcessorTestSpec({
                         Arrays.asList(baz1, baz2, baz3);
             }
         }
-        """.trimIndent())
+        """.trimIndent()
+        )
 
         acu.descendants(ASTLocalVariableDeclaration::class.java)
-                .map { it.varIds[0]!! }
-                .filter { it.name.startsWith("asList") }
-                .map { it.initializer!! }
-                .forEachIndexed { i, expr ->
-                    val t = measureTimeMillis { // todo these measurements are not accurate because typeres is done strictly now
+            .map { it.varIds[0]!! }
+            .filter { it.name.startsWith("asList") }
+            .map { it.initializer!! }
+            .forEachIndexed { i, expr ->
+                val t =
+                    measureTimeMillis { // todo these measurements are not accurate because typeres is done strictly now
                         assertFalse {
                             expr.typeMirror == expr.typeSystem.UNKNOWN
                         }
                     }
-                    myLog("asList$i: $t ms")
-                }
+                myLog("asList$i: $t ms")
+            }
     }
 
 
@@ -259,9 +264,7 @@ class StressTest : ProcessorTestSpec({
         slow down the build too much.
 
      */
-    parserTest("Test context passing in huge call chain") {
-
-
+    parserTestContainer("Test context passing in huge call chain") {
         asIfIn(TypeInferenceTestCases::class.java)
 
         //     public static <U> List<U> m(List<U> src)
@@ -320,6 +323,4 @@ class StressTest : ProcessorTestSpec({
             myLog("huge call chain: $t ms")
         }
     }
-
-
 })

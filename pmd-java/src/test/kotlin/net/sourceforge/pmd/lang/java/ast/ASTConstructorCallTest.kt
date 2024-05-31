@@ -8,9 +8,7 @@ import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType.READ
 
 class ASTConstructorCallTest : ParserTestSpec({
-
-    parserTest("Class instance creation") {
-
+    parserTestContainer("Class instance creation") {
         inContext(ExpressionParsingCtx) {
             "new Foo(a)" should parseAs {
                 constructorCall {
@@ -63,7 +61,7 @@ class ASTConstructorCallTest : ParserTestSpec({
         }
     }
 
-    parserTest("Qualified class instance auto disambiguation") {
+    parserTestContainer("Qualified class instance auto disambiguation") {
         /* JLS:
          *  A name is syntactically classified as an ExpressionName in these contexts:
          *       ...
@@ -109,8 +107,7 @@ class ASTConstructorCallTest : ParserTestSpec({
         }
     }
 
-    parserTest("Qualified class instance creation") {
-
+    parserTestContainer("Qualified class instance creation") {
         inContext(ExpressionParsingCtx) {
             "new O().new <Bar> Foo<F>()" should parseAs {
                 constructorCall {
@@ -159,5 +156,4 @@ class ASTConstructorCallTest : ParserTestSpec({
             }
         }
     }
-
 })

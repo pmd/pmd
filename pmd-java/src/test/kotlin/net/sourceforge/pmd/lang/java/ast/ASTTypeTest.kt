@@ -11,12 +11,8 @@ import net.sourceforge.pmd.lang.test.ast.shouldBe
  * @since 7.0.0
  */
 class ASTTypeTest : ParserTestSpec({
-
-    parserTest("Test ambiguous qualified names") {
-
+    parserTestContainer("Test ambiguous qualified names") {
         inContext(TypeParsingCtx) {
-
-
             "java.util.List" should parseAs {
                 classType("List") {
 
@@ -55,8 +51,7 @@ class ASTTypeTest : ParserTestSpec({
         }
     }
 
-    parserTest("Test non-ambiguous segments") {
-
+    parserTestContainer("Test non-ambiguous segments") {
         // Perhaps surprisingly a type annotation binds to the closest segment
         // So @B binds to "java"
         // If the annotation is not applicable to TYPE_USE then it doesn't compile
@@ -66,10 +61,7 @@ class ASTTypeTest : ParserTestSpec({
         // TYPE_USE annotations are prohibited e.g. before a declaration
 
         inContext(TypeParsingCtx) {
-
-
             "@B @H java.util.@C @K Map" should parseAs {
-
                 classType("Map") {
                     it::getQualifier shouldBe classType("util") {
                         it::getQualifier shouldBe classType("java") {
@@ -82,7 +74,6 @@ class ASTTypeTest : ParserTestSpec({
                     annotation("K")
                 }
             }
-
 
             "java.util.Map.@Foo Entry<K, V>" should parseAs {
                 classType("Entry") {
@@ -111,7 +102,6 @@ class ASTTypeTest : ParserTestSpec({
 
             "Foo<K>.@A Bar.Brew<V>" should parseAs {
                 classType("Brew") {
-
                     it::getQualifier shouldBe classType("Bar") {
                         it::getTypeArguments shouldBe null
 

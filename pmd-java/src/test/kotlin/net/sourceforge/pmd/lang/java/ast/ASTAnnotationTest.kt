@@ -17,19 +17,15 @@ import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_5
  */
 class ASTAnnotationTest : ParserTestSpec({
 
-
-    parserTest("Test annot fails before JDK 1.4", javaVersions = Earliest..J1_3) {
-
+    parserTestContainer("Test annot fails before JDK 1.4", javaVersions = Earliest..J1_3) {
         inContext(AnnotationParsingCtx) {
             "@F" shouldNot parse()
             "@F(a=1)" shouldNot parse()
         }
     }
 
-    parserTest("Marker annotations", javaVersions = J1_5..Latest) {
-
+    parserTestContainer("Marker annotations", javaVersions = J1_5..Latest) {
         inContext(AnnotationParsingCtx) {
-
             "@F" should parseAs {
                 child<ASTAnnotation> {
                     it::getSimpleName shouldBe "F"
@@ -66,13 +62,10 @@ class ASTAnnotationTest : ParserTestSpec({
                 }
             }
         }
-
     }
 
-    parserTest("Single-value shorthand", javaVersions = J1_5..Latest) {
-
+    parserTestContainer("Single-value shorthand", javaVersions = J1_5..Latest) {
         inContext(AnnotationParsingCtx) {
-
             "@F(\"ohio\")" should parseAs {
                 child<ASTAnnotation> {
                     it::getSimpleName shouldBe "F"
@@ -122,6 +115,7 @@ class ASTAnnotationTest : ParserTestSpec({
                     }
                 }
             }
+
             "@org.F(@Oh)" should parseAs {
                 child<ASTAnnotation> {
                     it::getSimpleName shouldBe "F"
@@ -136,13 +130,10 @@ class ASTAnnotationTest : ParserTestSpec({
                 }
             }
         }
-
     }
 
-    parserTest("Normal annotation", javaVersions = J1_5..Latest) {
-
+    parserTestContainer("Normal annotation", javaVersions = J1_5..Latest) {
         inContext(AnnotationParsingCtx) {
-
             "@F(a=\"ohio\")" should parseAs {
                 child<ASTAnnotation> {
                     it::getSimpleName shouldBe "F"
@@ -178,7 +169,6 @@ class ASTAnnotationTest : ParserTestSpec({
                     }
                 }
             }
-
 
             """
     @TestAnnotation({@SuppressWarnings({}),
