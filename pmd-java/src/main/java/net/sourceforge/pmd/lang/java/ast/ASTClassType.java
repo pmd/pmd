@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.util.AssertionUtil;
@@ -124,6 +125,32 @@ public final class ASTClassType extends AbstractJavaTypeNode implements ASTRefer
         return firstChild(ASTTypeArguments.class);
     }
 
+
+    /**
+     * Return the package qualifier, if this is a fully qualified name.
+     * Note that this will only be the case if we could resolve the
+     * qualifier to a package name during disambiguation. In other words,
+     * if the auxclasspath is not complete, and the qualifier could not
+     * be disambiguated, this method will return null (and an AmbiguousName
+     * will stay in the tree).
+     *
+     * <p>If a nested type is package-qualified, this method
+     * will only return a non-null result for the leftmost (=innermost)
+     * ASTClassType node. For instance in {@code java.util.Map.Entry},
+     * the node {@code java.util.Map} has package qualifier
+     * {@code "java.util"}, while the node for {@code Entry}
+     * has package qualifier {@code null}. Note that the
+     * {@linkplain JClassSymbol#getPackageName() package name}
+     * of the symbol and type mirror will reflect that package
+     * name anyway, on both nodes.
+     */
+    public @Nullable String getPackageQualifier() {
+        if (isFullyQualified()) {
+            assert symbol != null : "Symbol should be non-null if isFullyQualified returns true";
+            return symbol.getPackageName();
+        }
+        return null;
+    }
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

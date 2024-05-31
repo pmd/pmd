@@ -1091,14 +1091,10 @@ public final class TypeOps {
         <T extends JTypeMirror> JTypeMirror recurseIfNotDone(T t, BiFunction<T, RecursionStop, JTypeMirror> body) {
             if (t instanceof JTypeVar) {
                 JTypeVar var = (JTypeVar) t;
-                try {
-                    if (isAbsent(var)) {
-                        return body.apply(t, this);
-                    } else {
-                        return t;
-                    }
-                } finally {
-                    set.remove(var);
+                if (isAbsent(var)) {
+                    return body.apply(t, this);
+                } else {
+                    return t;
                 }
             } else {
                 return body.apply(t, this);

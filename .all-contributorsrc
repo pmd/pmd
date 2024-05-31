@@ -7071,7 +7071,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/26581168?v=4",
       "profile": "https://github.com/mluckam",
       "contributions": [
-        "code"
+        "code",
+        "bug"
       ]
     },
     {
@@ -7533,6 +7534,52 @@
       "profile": "https://github.com/VishV-Android",
       "contributions": [
         "bug"
+      ]
+    },
+    {
+      "login": "cowwoc",
+      "name": "Gili Tzabari",
+      "avatar_url": "https://avatars.githubusercontent.com/u/633348?v=4",
+      "profile": "https://github.com/cowwoc",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "bobalicious",
+      "name": "Rob Baillie",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6523911?v=4",
+      "profile": "http://robertbaillie.blogspot.co.uk/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "mdagcilar",
+      "name": "Metin Dagcilar",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6627550?v=4",
+      "profile": "https://github.com/mdagcilar",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "kesslerj",
+      "name": "Jonas Keßler",
+      "avatar_url": "https://avatars.githubusercontent.com/u/25590499?v=4",
+      "profile": "https://github.com/kesslerj",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "Gold856",
+      "name": "Gold856",
+      "avatar_url": "https://avatars.githubusercontent.com/u/117957790?v=4",
+      "profile": "https://github.com/Gold856",
+      "contributions": [
+        "bug",
+        "code"
       ]
     }
   ],

@@ -39,6 +39,7 @@ class TypeDisambiguationTest : ParserTestSpec({
             it::getAmbiguousLhs shouldBe null
             it::getQualifier shouldBe classType("Foo") {
                 it::isFullyQualified shouldBe false
+                it::getPackageQualifier shouldBe null
                 it::getReferencedSym shouldBe foo
             }
         }
@@ -52,6 +53,7 @@ class TypeDisambiguationTest : ParserTestSpec({
             "javasymbols.testdata.Statics" should parseAs {
                 qualClassType("javasymbols.testdata.Statics") {
                     it::isFullyQualified shouldBe true
+                    it::getPackageQualifier shouldBe "javasymbols.testdata"
                     it::getQualifier shouldBe null
                     it::getAmbiguousLhs shouldBe null
                 }
@@ -63,6 +65,7 @@ class TypeDisambiguationTest : ParserTestSpec({
 
                     it::getQualifier shouldBe qualClassType("javasymbols.testdata.Statics") {
                         it::isFullyQualified shouldBe true
+                        it::getPackageQualifier shouldBe "javasymbols.testdata"
                         it::getQualifier shouldBe null
                         it::getAmbiguousLhs shouldBe null
                     }

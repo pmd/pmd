@@ -17,9 +17,11 @@ import java.util.Map.Entry;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.MostlySingularMultimap.Builder;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.MostlySingularMultimap.MapMaker;
-import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.IteratorUtil;
 
 /**
  * Build a shadow chain for some type.
@@ -126,8 +128,9 @@ public abstract class ShadowChainBuilder<S, I> {
 
     // convenience to build name resolvers
 
-    public <N> ResolverBuilder groupByName(Iterable<? extends N> input, Function<? super N, ? extends S> symbolFetcher) {
-        return new ResolverBuilder(newMapBuilder().groupBy(CollectionUtil.map(input, symbolFetcher), this::getSimpleName));
+    public <N> ResolverBuilder groupByName(Iterable<? extends N> input, Function<? super N, ? extends @Nullable S> symbolFetcher) {
+        Iterable<? extends S> mapped = () -> IteratorUtil.mapNotNull(input.iterator(), symbolFetcher);
+        return new ResolverBuilder(newMapBuilder().groupBy(mapped, this::getSimpleName));
     }
 
     public ResolverBuilder groupByName(Iterable<? extends S> tparams) {
