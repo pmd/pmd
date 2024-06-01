@@ -85,8 +85,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.2.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 31-May-2024</div>
+    <li class="sidebarTitle">PMD 7.3.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 28-June-2024</div>
     
     
     
@@ -1871,98 +1871,19 @@
         <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
     </details>
 
-  <h2 id="31-may-2024---720-snapshot">31-May-2024 - 7.2.0-SNAPSHOT</h2>
+  <h2 id="28-june-2024---730-snapshot">28-June-2024 - 7.3.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 7.2.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 7.3.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
-<h4 id="collections-exposed-as-xpath-attributes">Collections exposed as XPath attributes</h4>
-
-<p>Up to now, all AST node getters would be exposed to XPath, as long as the return type was a primitive (boxed or unboxed), String or Enum. That meant that collections, even of these basic types, were not exposed, so for instance accessing Apex’s <code class="language-plaintext highlighter-rouge">ASTUserClass.getInterfaceNames()</code> to list the interfaces implemented by a class was impossible from XPath, and would require writing a Java rule to check it.</p>
-
-<p>Since this release, PMD will also expose any getter returning a collection of any supported type as a sequence through an XPath attribute. They would require to use apropriate XQuery functions to manipulate the sequence. So for instance, to detect any given <code class="language-plaintext highlighter-rouge">ASTUserClass</code> in Apex that implements <code class="language-plaintext highlighter-rouge">Queueable</code>, it is now possible to write:</p>
-
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/UserClass[@InterfaceNames = 'Queueable']
-</code></pre></div></div>
-
-<h4 id="updated-pmd-designer">Updated PMD Designer</h4>
-
-<p>This PMD release ships a new version of the pmd-designer.
-For the changes, see <a href="https://github.com/pmd/pmd-designer/releases/tag/7.2.0">PMD Designer Changelog (7.2.0)</a>.</p>
-
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
-<ul>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4467">#4467</a>: [core] Expose collections from getters as XPath sequence attributes</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4978">#4978</a>: [core] Referenced Rulesets do not emit details on validation errors</li>
-      <li><a href="https://github.com/pmd/pmd/pull/4983">#4983</a>: [cpd] Fix CPD crashes about unicode escapes</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5009">#5009</a>: [core] Kotest tests aren’t picked up by surefire</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4912">#4912</a>: [java] Unable to parse some Java9+ resource references</li>
-      <li><a href="https://github.com/pmd/pmd/pull/4973">#4973</a>: [java] Stop parsing Java for CPD</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4980">#4980</a>: [java] Bad intersection, unrelated class types java.lang.Object[] and java.lang.Number</li>
-      <li><a href="https://github.com/pmd/pmd/pull/4988">#4988</a>: [java] Fix impl of ASTVariableId::isResourceDeclaration / VariableId/@<!-- -->ResourceDeclaration</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4990">#4990</a>: [java] Add an attribute @<!-- -->PackageQualifier to ASTClassType</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5006">#5006</a>: [java] Bad intersection, unrelated class types Child and Parent&lt;? extends Child&gt;</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5029">#5029</a>: [java] PMD 7.x throws stack overflow in TypeOps$ProjectionVisitor while parsing a Java class</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4278">#4278</a>: [java] UnusedPrivateMethod FP with Junit 5 @MethodSource and default factory method name</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4852">#4852</a>: [java] ReplaceVectorWithList false-positive (neither Vector nor List usage)</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4975">#4975</a>: [java] UnusedPrivateMethod false positive when using @MethodSource on a @Nested test</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4985">#4985</a>: [java] UnusedPrivateMethod false-positive / method reference in combination with custom object</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1619">#1619</a>: [java] LocalVariableCouldBeFinal on ‘size’ variable in for loop</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3122">#3122</a>: [java] LocalVariableCouldBeFinal should consider blank local variables</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4903">#4903</a>: [java] UnnecessaryBoxing, but explicit conversion is necessary</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4924">#4924</a>: [java] UnnecessaryBoxing false positive in PMD 7.0.0 in lambda</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4930">#4930</a>: [java] EmptyControlStatement should not allow empty try with concise resources</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4954">#4954</a>: [java] LocalVariableNamingConventions should allow unnamed variables by default</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5028">#5028</a>: [java] FormalParameterNamingConventions should accept unnamed parameters by default</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4042">#4042</a>: [java] A false negative about the rule StringBufferInstantiationWithChar</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5007">#5007</a>: [java] AvoidUsingOctalValues triggers on non-octal double literals with a leading 0</li>
-    </ul>
-  </li>
-  <li>java-multithreading
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2368">#2368</a>: [java] False positive UnsynchronizedStaticFormatter in static initializer</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="-api-changes">🚨 API Changes</h3>
 
-<h4 id="deprecated-api">Deprecated API</h4>
-
-<ul>
-  <li>pmd-java
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.2.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTResource.html#getStableName()"><code>ASTResource#getStableName</code></a> and the corresponding attribute <code class="language-plaintext highlighter-rouge">@StableName</code></li>
-    </ul>
-  </li>
-</ul>
-
 <h3 id="-external-contributions">✨ External Contributions</h3>
-
-<ul>
-  <li><a href="https://github.com/pmd/pmd/issues/5020">#5020</a>: [java] Fix AvoidUsingOctalValues false-positive - <a href="https://github.com/Gold856">Gold856</a> (@Gold856)</li>
-</ul>
 
 
 
@@ -1993,7 +1914,7 @@ For the changes, see <a href="https://github.com/pmd/pmd-designer/releases/tag/7
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: May 31, 2024 <br />
+             Site last generated: Jun 1, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
