@@ -14,13 +14,9 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
  * @since 7.0.0
  */
 class ASTMethodReferenceTest : ParserTestSpec({
-
-    parserTest("Method reference") {
-
+    parserTestContainer("Method reference") {
         inContext(ExpressionParsingCtx) {
-
             "this::foo" should parseAs {
-
                 methodRef("foo") {
                     it::getExplicitTypeArguments shouldBe null
 
@@ -29,7 +25,6 @@ class ASTMethodReferenceTest : ParserTestSpec({
             }
 
             "foobar.b::foo" should parseAs {
-
                 methodRef("foo") {
                     it::getExplicitTypeArguments shouldBe null
 
@@ -38,7 +33,6 @@ class ASTMethodReferenceTest : ParserTestSpec({
             }
 
             "foobar.b::<B>foo" should parseAs {
-
                 methodRef("foo") {
                     it::getQualifier shouldBe ambiguousName("foobar.b")
 
@@ -50,7 +44,6 @@ class ASTMethodReferenceTest : ParserTestSpec({
 
 
             "foobar.b<B>::foo" should parseAs {
-
                 methodRef("foo") {
                     it::getExplicitTypeArguments shouldBe null
 
@@ -70,7 +63,6 @@ class ASTMethodReferenceTest : ParserTestSpec({
             }
 
             "java.util.Map<String, String>.Entry<String, String>::foo" should parseAs {
-
                 methodRef("foo") {
                     it::getQualifier shouldBe typeExpr {
                         classType("Entry") // ignore the rest
@@ -98,22 +90,16 @@ class ASTMethodReferenceTest : ParserTestSpec({
         }
     }
 
-    parserTest("Neg tests") {
-
+    parserTestContainer("Neg tests") {
         inContext(ExpressionParsingCtx) {
-
             "foo::bar::bar" shouldNot parse()
             "foo::bar.foo()" shouldNot parse()
             "foo::bar.foo" shouldNot parse()
-
         }
-
     }
 
-    parserTest("Constructor reference") {
-
+    parserTestContainer("Constructor reference") {
         inContext(ExpressionParsingCtx) {
-
             "foobar.b::new" should parseAs {
                 constructorRef {
                     it::getExplicitTypeArguments shouldBe null
@@ -129,7 +115,6 @@ class ASTMethodReferenceTest : ParserTestSpec({
             "foobar.b<B>::new" should parseAs {
                 constructorRef {
                     it::getExplicitTypeArguments shouldBe null
-
 
                     typeExpr {
                         classType("b") {
@@ -208,10 +193,8 @@ class ASTMethodReferenceTest : ParserTestSpec({
         }
     }
 
-    parserTest("Type annotations") {
-
+    parserTestContainer("Type annotations") {
         inContext(ExpressionParsingCtx) {
-
             "@Vernal Date::getDay" should parseAs {
                 methodRef(methodName = "getDay") {
                     it::getQualifier shouldBe typeExpr {
@@ -235,7 +218,6 @@ class ASTMethodReferenceTest : ParserTestSpec({
                                 annotation("Vernal")
                             }
                         }
-
                         it::getExplicitTypeArguments shouldBe null
                     }
                 }
@@ -243,7 +225,6 @@ class ASTMethodReferenceTest : ParserTestSpec({
         }
     }
 })
-
 
 
 fun ASTClassType.getAmbiguousLhs(): ASTAmbiguousName? =

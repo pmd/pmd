@@ -12,17 +12,13 @@ import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_8
  * @since 7.0.0
  */
 class ASTTypeParametersTest : ParserTestSpec({
-
-    parserTest("Test simple parameters", javaVersions = J1_8..Latest) {
-
+    parserTestContainer("Test simple parameters", javaVersions = J1_8..Latest) {
         inContext(TypeParametersParsingCtx) {
-
             "<T>" should parseAs {
                 typeParamList {
                     typeParam("T")
                 }
             }
-
 
             "<T, S>" should parseAs {
                 typeParamList {
@@ -42,7 +38,6 @@ class ASTTypeParametersTest : ParserTestSpec({
                 }
             }
 
-
             "<@F T extends @N Runnable>" should parseAs {
                 typeParamList {
                     typeParam("T") {
@@ -56,5 +51,4 @@ class ASTTypeParametersTest : ParserTestSpec({
             }
         }
     }
-
 })

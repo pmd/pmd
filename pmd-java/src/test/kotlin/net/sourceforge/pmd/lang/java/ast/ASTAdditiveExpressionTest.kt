@@ -9,8 +9,7 @@ import net.sourceforge.pmd.lang.java.ast.BinaryOp.*
 
 class ASTAdditiveExpressionTest : ParserTestSpec({
 
-    parserTest("Simple additive expression should be flat") {
-
+    parserTestContainer("Simple additive expression should be flat") {
         inContext(ExpressionParsingCtx) {
             "1 + 2 + 3" should parseAs {
                 infixExpr(ADD) {
@@ -72,7 +71,7 @@ class ASTAdditiveExpressionTest : ParserTestSpec({
         }
     }
 
-    parserTest("Changing operators should push a new node") {
+    parserTestContainer("Changing operators should push a new node") {
         inContext(ExpressionParsingCtx) {
             "1 + 2 - 3" should parseAs {
                 infixExpr(SUB) {
