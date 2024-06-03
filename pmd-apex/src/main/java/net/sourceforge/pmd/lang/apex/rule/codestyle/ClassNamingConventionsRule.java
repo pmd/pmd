@@ -53,12 +53,12 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionsRule {
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
-        if (node.getModifiers().isTest()) {
+        if(node.getParent() instanceof ASTUserClass) {
+            checkMatches(INNER_CLASS_REGEX, node, data);
+        } else if (node.getModifiers().isTest()) {
             checkMatches(TEST_CLASS_REGEX, node, data);
         } else if (node.getModifiers().isAbstract()) {
             checkMatches(ABSTRACT_CLASS_REGEX, node, data);
-        } else if (node.getParent() instanceof ASTUserClass) {
-            checkMatches(INNER_CLASS_REGEX, node, data);
         } else {
             checkMatches(CLASS_REGEX, node, data);
         }
