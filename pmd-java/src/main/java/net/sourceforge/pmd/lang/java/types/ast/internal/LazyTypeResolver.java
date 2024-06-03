@@ -11,6 +11,8 @@ import static net.sourceforge.pmd.lang.java.types.TypeConversion.capture;
 import static net.sourceforge.pmd.lang.java.types.TypeConversion.unaryNumericPromotion;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
+import java.util.List;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -44,6 +46,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPatternList;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
@@ -53,6 +57,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTemplateExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTTypePattern;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
@@ -228,6 +233,31 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
             TypeNode enumClass = node.getEnclosingType();
             return enumClass.getTypeMirror(ctx);
 
+        } else if (isTypeInferred && node.isPatternBinding()) {
+            JavaNode parent = node.getParent();
+            if (parent instanceof ASTTypePattern) {
+                // we should be in a record pattern, it's illegal
+                // to use var as a type outside of there
+                if (parent.getParent() instanceof ASTPatternList
+                    && parent.getParent().getParent() instanceof ASTRecordPattern) {
+                    @Nullable JTypeDeclSymbol recordType = ((ASTRecordPattern) parent.getParent().getParent()).getTypeNode().getTypeMirror().getSymbol();
+                    if (recordType instanceof JClassSymbol) {
+                        if (recordType.isUnresolved()) {
+                            return ts.UNKNOWN;
+                        }
+                        List<JFieldSymbol> components = ((JClassSymbol) recordType).getRecordComponents();
+                        if (parent.getIndexInParent() < components.size()) {
+                            return components.get(parent.getIndexInParent()).getTypeMirror(Substitution.EMPTY);
+                        }
+                    }
+                } else if (parent.getParent() instanceof ASTTypeExpression
+                    && parent.getParent().getParent() instanceof ASTInfixExpression) {
+                    // in instanceof
+                    return ((ASTInfixExpression) parent.getParent().getParent())
+                        .getLeftOperand().getTypeMirror(ctx);
+                }
+            }
+            return ts.ERROR;
         }
 
         ASTType typeNode = node.getTypeNode();

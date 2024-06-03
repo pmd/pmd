@@ -54,6 +54,7 @@ final class AstClassSym
     private final List<JConstructorSymbol> declaredCtors;
     private final List<JFieldSymbol> declaredFields;
     private final List<JFieldSymbol> enumConstants; // subset of declaredFields
+    private final List<JFieldSymbol> recordComponents; // subset of declaredFields
     private final PSet<String> annotAttributes;
 
     AstClassSym(ASTTypeDeclaration node,
@@ -142,6 +143,7 @@ final class AstClassSym
         this.declaredCtors = Collections.unmodifiableList(myCtors);
         this.declaredFields = Collections.unmodifiableList(myFields);
         this.enumConstants = CollectionUtil.makeUnmodifiableAndNonNull(enumConstants);
+        this.recordComponents = CollectionUtil.makeUnmodifiableAndNonNull(recordComponents);
         this.annotAttributes = isAnnotation()
                                ? getDeclaredMethods().stream().filter(JMethodSymbol::isAnnotationAttribute).map(JElementSymbol::getSimpleName).collect(CollectionUtil.toPersistentSet())
                                : HashTreePSet.empty();
@@ -216,7 +218,12 @@ final class AstClassSym
     public @NonNull List<JFieldSymbol> getEnumConstants() {
         return enumConstants;
     }
-    
+
+    @Override
+    public @NonNull List<JFieldSymbol> getRecordComponents() {
+        return recordComponents;
+    }
+
     @Override
     public @Nullable JClassType getSuperclassType(Substitution substitution) {
         TypeSystem ts = getTypeSystem();

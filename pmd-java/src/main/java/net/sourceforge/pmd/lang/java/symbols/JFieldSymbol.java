@@ -25,6 +25,10 @@ public interface JFieldSymbol extends JVariableSymbol, JAccessibleElementSymbol 
     /** Returns true if this field is an enum constant. */
     boolean isEnumConstant();
 
+    /** Returns true if this field is a record component. */
+    default boolean isRecordComponent() {
+        return false;
+    }
 
     @Override
     default boolean isFinal() {

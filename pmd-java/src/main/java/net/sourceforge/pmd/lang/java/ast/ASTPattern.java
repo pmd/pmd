@@ -14,7 +14,9 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre class="grammar">
  *
- * Pattern ::=   {@linkplain ASTTypePattern TypePattern} | {@linkplain ASTRecordPattern RecordPattern}
+ * Pattern ::=   {@linkplain ASTTypePattern TypePattern}
+ *           | {@linkplain ASTRecordPattern RecordPattern}
+ *           | {@linkplain ASTUnnamedPattern UnnamedPattern}
  *
  * </pre>
  * 

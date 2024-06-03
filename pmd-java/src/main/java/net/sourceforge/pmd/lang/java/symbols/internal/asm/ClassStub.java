@@ -62,6 +62,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     private List<JMethodSymbol> methods = new ArrayList<>();
     private List<JConstructorSymbol> ctors = new ArrayList<>();
     private List<JFieldSymbol> enumConstants = null;
+    private List<JFieldSymbol> recordComponents = null;
 
     private PSet<SymAnnot> annotations = HashTreePSet.empty();
 
@@ -120,6 +121,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
                 fields = Collections.unmodifiableList(fields);
                 memberClasses = Collections.unmodifiableList(memberClasses);
                 enumConstants = CollectionUtil.makeUnmodifiableAndNonNull(enumConstants);
+                recordComponents = CollectionUtil.makeUnmodifiableAndNonNull(recordComponents);
 
                 if (EnclosingInfo.NO_ENCLOSING.equals(enclosingInfo)) {
                     if (names.canonicalName == null || names.simpleName == null) {
@@ -227,6 +229,9 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         if ((accessFlags & Opcodes.ACC_ENUM) != 0) {
             this.enumConstants = new ArrayList<>();
         }
+        if ((accessFlags & Opcodes.ACC_RECORD) != 0) {
+            this.recordComponents = new ArrayList<>();
+        }
     }
 
     void setOuterClass(ClassStub outer, @Nullable String methodName, @Nullable String methodDescriptor) {
@@ -246,6 +251,9 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
         if (fieldStub.isEnumConstant() && enumConstants != null) {
             enumConstants.add(fieldStub);
+        }
+        if (fieldStub.isRecordComponent() && recordComponents != null) {
+            recordComponents.add(fieldStub);
         }
     }
 
@@ -378,6 +386,14 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         parseLock.ensureParsed();
         return enumConstants;
     }
+
+
+    @Override
+    public @NonNull List<JFieldSymbol> getRecordComponents() {
+        parseLock.ensureParsed();
+        return recordComponents;
+    }
+
 
     @Override
     public JTypeParameterOwnerSymbol getEnclosingTypeParameterOwner() {
