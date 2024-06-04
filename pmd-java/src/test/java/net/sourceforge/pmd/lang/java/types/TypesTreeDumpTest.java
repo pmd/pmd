@@ -45,6 +45,11 @@ class TypesTreeDumpTest extends BaseTreeDumpTest {
         doTest("SwitchExpressionWithPatterns");
     }
 
+    @Test
+    void testUnnamedPatterns() {
+        doTest("UnnamedPatterns");
+    }
+
     @Override
     protected @NonNull String normalize(@NonNull String str) {
         return super.normalize(str)

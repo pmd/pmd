@@ -183,6 +183,33 @@ public final class Infer {
         }
     }
 
+
+    /**
+     * Given a symbol S and a type T which is assumed to be
+     * a supertype of some parameterization of S, infer this
+     * parameterization.
+     */
+    public JTypeMirror inferParameterizationForSubtype(JClassSymbol symbol, JTypeMirror superType) {
+        if (!symbol.isGeneric()) {
+            return ts.typeOf(symbol, false);
+        } else if (superType instanceof JClassType && ((JClassType) superType).hasErasedSuperTypes()) {
+            return ts.typeOf(symbol, true); // raw type
+        }
+
+        // otherwise infer
+        try {
+            InferenceContext ctx = newContextFor(symbol.getTypeParameters());
+            JTypeMirror withIvars = ctx.mapToIVars(ts.typeOf(symbol, false));
+            if (TypeOps.isConvertible(withIvars, superType).bySubtyping()) {
+                ctx.solve(true);
+                return InferenceContext.groundOrWildcard(withIvars);
+            }
+        } catch (ResolutionFailedException ignored) {
+
+        }
+        return ts.parameterise(symbol, Collections.nCopies(symbol.getTypeParameterCount(), ts.ERROR));
+    }
+
     private MethodCtDecl goToInvocationWithFallback(MethodCallSite site) {
         MethodCtDecl ctdecl = getCompileTimeDecl(site);
         if (ctdecl == NO_CTDECL) { // NOPMD CompareObjectsWithEquals

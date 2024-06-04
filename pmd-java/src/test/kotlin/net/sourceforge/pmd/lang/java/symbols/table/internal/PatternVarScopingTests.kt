@@ -336,7 +336,7 @@ class PatternVarScopingTests : ProcessorTestSpec({
         }
     }
 
-    parserTestContainer("f:Bindings in switch", javaVersions = since(J22)) {
+    parserTestContainer("Bindings in switch", javaVersions = since(J22)) {
 
         doTest("Type tests") {
             val switch = parser.parse(
@@ -362,6 +362,7 @@ class PatternVarScopingTests : ProcessorTestSpec({
                 }
             }
         }
+
         doTest("Record tests") {
             val acu = parser.parse(
                 """
@@ -400,6 +401,41 @@ class PatternVarScopingTests : ProcessorTestSpec({
                     withClue(it) {
                         it shouldHaveType float.toArray()
                     }
+                }
+            }
+        }
+        doTest("Generic record") {
+            val acu = parser.parse(
+                """
+                class Foo {
+                 record Bar<T>(T y) {}
+                 void foo(Object foo) {
+                    Object xx = switch (foo) {
+                        case Bar bar -> bar;
+                        case Bar(var yy) -> { // yy : Object, pat: Bar<?>
+                            yield yy;
+                    }};
+                    Bar<? extends Exception> bar2 = new Bar(null);
+                    switch (bar2) {
+                        case Bar(var xx) -> { // xx : Serializable, pat: Bar<? extends Serializable>
+                            throw xx;
+                        }
+                    }
+                    }
+                }
+            """
+            )
+            val (_, bar) = acu.declaredTypeSignatures()
+
+            acu.withTypeDsl {
+                acu.varAccesses("bar").shouldBeSingleton {
+                    it shouldHaveType bar.erasure
+                }
+                acu.varAccesses("yy").shouldBeSingleton {
+                    it shouldHaveType captureMatcher(`?`)
+                }
+                acu.varAccesses("xx").shouldBeSingleton {
+                    it shouldHaveType captureMatcher(`?` extends Exception::class)
                 }
             }
         }
