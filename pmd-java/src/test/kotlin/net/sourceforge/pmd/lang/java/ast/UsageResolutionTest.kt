@@ -15,9 +15,9 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol
 
 class UsageResolutionTest : ProcessorTestSpec({
-
     parserTest("Test usage resolution") {
-        val acu = parser.parse("""
+        val acu = parser.parse(
+                """
             class Bar {
                 int f1;
                 {
@@ -38,7 +38,8 @@ class UsageResolutionTest : ProcessorTestSpec({
                     f2 = this.f2;
                 }
             }
-        """)
+        """
+        )
         val (barF1, fooF1, fooF2, localF2, localF22) = acu.descendants(ASTVariableId::class.java).toList()
         barF1.localUsages.map { it.text.toString() }.shouldContainExactly("this.f1", "super.f1")
         fooF1.localUsages.map { it.text.toString() }.shouldContainExactly("f1", "this.f1")
@@ -50,7 +51,8 @@ class UsageResolutionTest : ProcessorTestSpec({
     }
 
     parserTest("Test record components") {
-        val acu = parser.parse("""
+        val acu = parser.parse(
+                """
             record Foo(int p) {
                 Foo {
                     p = 10;
@@ -58,7 +60,8 @@ class UsageResolutionTest : ProcessorTestSpec({
 
                 void pPlus1() { return p + 1; }
             }
-        """)
+        """
+        )
 
         val (p) = acu.descendants(ASTVariableId::class.java).toList()
 
@@ -75,5 +78,4 @@ class UsageResolutionTest : ProcessorTestSpec({
             }
         }
     }
-
 })

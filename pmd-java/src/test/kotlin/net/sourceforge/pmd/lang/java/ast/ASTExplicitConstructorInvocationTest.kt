@@ -7,14 +7,10 @@ package net.sourceforge.pmd.lang.java.ast
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 
 class ASTExplicitConstructorInvocationTest : ParserTestSpec({
-
-    parserTest("Explicit this invocation") {
-
+    parserTestContainer("Explicit this invocation") {
         inContext(TypeBodyParsingCtx) {
-
             "Foo() { this(); }" should parseAs {
                 constructorDecl {
-
                     it::getModifiers shouldBe modifiers { }
 
                     formalsList(0) { }
@@ -34,7 +30,6 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
             "Foo() { <String>this(); }" should parseAs {
                 constructorDecl {
-
                     it::getModifiers shouldBe modifiers { }
 
                     formalsList(0) { }
@@ -59,12 +54,10 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
         }
     }
 
-    parserTest("Explicit super invocation") {
-
+    parserTestContainer("Explicit super invocation") {
         inContext(TypeBodyParsingCtx) {
             "Foo() { super(); }" should parseAs {
                 constructorDecl {
-
                     it::getModifiers shouldBe modifiers { }
 
                     formalsList(0) { }
@@ -83,9 +76,9 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                     }
                 }
             }
+
             "Foo() { <String>super(); }" should parseAs {
                 constructorDecl {
-
                     it::getModifiers shouldBe modifiers { }
 
                     formalsList(0) { }
@@ -109,13 +102,10 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
         }
     }
 
-
-    parserTest("Explicit super invocation with LHS") {
-
+    parserTestContainer("Explicit super invocation with LHS") {
         inContext(TypeBodyParsingCtx) {
             "Foo() { o.super(); }" should parseAs {
                 constructorDecl {
-
                     it::getModifiers shouldBe modifiers { }
 
                     formalsList(0) { }
@@ -138,7 +128,6 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
             "Foo() { o.<String>super(); }" should parseAs {
                 constructorDecl {
-
                     it::getModifiers shouldBe modifiers { }
 
                     formalsList(0) { }
@@ -164,7 +153,6 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
             "Foo() { o.<S>foo().<String>super(); }" should parseAs {
                 constructorDecl {
-
                     it::getModifiers shouldBe modifiers { }
 
                     formalsList(0) { }
@@ -187,9 +175,9 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                     }
                 }
             }
+
             "public TabbedPaneLayout() { MetalTabbedPaneUI.this.super(); }" should parseAs {
                 constructorDecl {
-
                     it::getModifiers shouldBe modifiers {
                         it::getExplicitModifiers shouldBe setOf(JModifier.PUBLIC)
                     }
@@ -221,17 +209,14 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
         // so we don't test those
     }
 
-    parserTest("Arguments of invocations") {
-
+    parserTestContainer("Arguments of invocations") {
         inContext(TypeBodyParsingCtx) {
-
             """
-        WebSocketReceivePublisher() {
-            super(AbstractListenerWebSocketSession.this.getLogPrefix());
-        }
-        """ should parseAs {
+                WebSocketReceivePublisher() {
+                    super(AbstractListenerWebSocketSession.this.getLogPrefix());
+                }
+            """ should parseAs {
                 constructorDecl {
-
                     it::getModifiers shouldBe modifiers { }
 
                     formalsList(0) { }
@@ -261,13 +246,10 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
         }
     }
 
-    parserTest("Neg tests, not explicit invocations") {
-
+    parserTestContainer("Neg tests, not explicit invocations") {
         inContext(TypeBodyParsingCtx) {
-
             "Foo() { this.name = null; }" should parseAs {
                 constructorDecl {
-
                     it::getModifiers shouldBe modifiers { }
 
                     formalsList(0) { }
@@ -314,5 +296,4 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
             }
         }
     }
-
 })

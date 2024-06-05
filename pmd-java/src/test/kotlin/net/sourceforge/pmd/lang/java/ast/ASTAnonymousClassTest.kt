@@ -11,10 +11,8 @@ import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility.V_ANONYMOUS
 
 class ASTAnonymousClassTest : ParserTestSpec({
 
-    parserTest("Anon class modifiers") {
-
+    parserTestContainer("Anon class modifiers") {
         inContext(StatementParsingCtx) {
-
             """
                new java.lang.Runnable() {
 
@@ -56,6 +54,4 @@ class ASTAnonymousClassTest : ParserTestSpec({
             }
         }
     }
-
-
 })

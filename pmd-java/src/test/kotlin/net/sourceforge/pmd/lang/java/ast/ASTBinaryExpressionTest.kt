@@ -11,10 +11,7 @@ import net.sourceforge.pmd.lang.java.ast.BinaryOp.*
     Tests for the rest of binary expressions
  */
 class ASTBinaryExpressionTest : ParserTestSpec({
-
-
-    parserTest("Conditional and logical operators") {
-
+    parserTestContainer("Conditional and logical operators") {
         inContext(ExpressionParsingCtx) {
             "a && b && a || b" should parseAs {
                 infixExpr(CONDITIONAL_OR) {
@@ -57,5 +54,4 @@ class ASTBinaryExpressionTest : ParserTestSpec({
             }
         }
     }
-
 })
