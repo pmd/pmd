@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JRecordComponentSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolVisitor;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
@@ -176,6 +177,25 @@ public final class SymbolEquality {
         }
     };
 
+
+    public static final EqAndHash<JRecordComponentSymbol> RECORD_COMPONENT = new EqAndHash<JRecordComponentSymbol>() {
+        @Override
+        public int hash(JRecordComponentSymbol t1) {
+            return 31 * t1.getEnclosingClass().hashCode() + t1.getSimpleName().hashCode();
+        }
+
+        @Override
+        public boolean equals(JRecordComponentSymbol f1, Object o) {
+            if (!(o instanceof JRecordComponentSymbol)) {
+                return false;
+            }
+            JRecordComponentSymbol f2 = (JRecordComponentSymbol) o;
+            return f1.nameEquals(f2.getSimpleName())
+                && f1.getEnclosingClass().equals(f2.getEnclosingClass());
+
+        }
+    };
+
     private static final EqAndHash<Object> IDENTITY = new EqAndHash<Object>() {
         @Override
         public int hash(Object t1) {
@@ -261,6 +281,12 @@ public final class SymbolEquality {
         @Override
         public EqAndHash<?> visitFormal(JFormalParamSymbol sym, Void param) {
             return FORMAL_PARAM;
+        }
+
+
+        @Override
+        public EqAndHash<?> visitRecordComponent(JRecordComponentSymbol sym, Void param) {
+            return RECORD_COMPONENT;
         }
     }
 

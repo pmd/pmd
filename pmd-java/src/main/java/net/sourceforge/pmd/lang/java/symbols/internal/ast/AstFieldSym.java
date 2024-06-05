@@ -48,10 +48,6 @@ final class AstFieldSym extends AbstractAstVariableSym implements JFieldSymbol {
         return node.isEnumConstant();
     }
 
-    @Override
-    public boolean isRecordComponent() {
-        return node.isRecordComponent();
-    }
 
     @Override
     public @NonNull JClassSymbol getEnclosingClass() {

@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JRecordComponentSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolVisitor;
@@ -115,6 +116,13 @@ public class SymbolToStrings {
         public StringBuilder visitField(JFieldSymbol sym, StringBuilder param) {
             return withImpl(param, "field", sym.getSimpleName(), sym.getEnclosingClass());
         }
+
+
+        @Override
+        public StringBuilder visitRecordComponent(JRecordComponentSymbol sym, StringBuilder param) {
+            return withImpl(param, "record component", sym.getSimpleName(), sym.getEnclosingClass());
+        }
+
 
         @Override
         public StringBuilder visitLocal(JLocalVariableSymbol sym, StringBuilder param) {

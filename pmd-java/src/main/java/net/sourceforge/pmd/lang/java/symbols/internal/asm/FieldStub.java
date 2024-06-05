@@ -49,12 +49,6 @@ class FieldStub extends MemberStubBase implements JFieldSymbol, TypeAnnotationRe
     }
 
     @Override
-    public boolean isRecordComponent() {
-        return (getModifiers() & Opcodes.ACC_RECORD) != 0;
-    }
-
-
-    @Override
     public JTypeMirror getTypeMirror(Substitution subst) {
         return type.get(subst);
     }

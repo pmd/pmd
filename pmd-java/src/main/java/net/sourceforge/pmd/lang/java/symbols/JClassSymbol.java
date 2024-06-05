@@ -183,12 +183,11 @@ public interface JClassSymbol extends JTypeDeclSymbol,
 
 
     /**
-     * Returns a list with all record component fields. If this symbol does
-     * not represent a record, returns an empty list. The returned list
-     * is a subset of {@link #getDeclaredFields()}. The order of fields
+     * Returns a list with all record components. If this symbol does
+     * not represent a record, returns an empty list. The order of values
      * denotes the normal order of components.
      */
-    default @NonNull List<JFieldSymbol> getRecordComponents() {
+    default @NonNull List<JRecordComponentSymbol> getRecordComponents() {
         return Collections.emptyList();
     }
 

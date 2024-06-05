@@ -46,6 +46,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPatternList;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
@@ -74,6 +75,7 @@ import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JRecordComponentSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver;
 import net.sourceforge.pmd.lang.java.types.JArrayType;
@@ -311,13 +313,19 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
             if (recordType.isUnresolved()) {
                 return ts.UNKNOWN;
             }
-            List<JFieldSymbol> components = ((JClassSymbol) recordType).getRecordComponents();
+            List<JRecordComponentSymbol> components = ((JClassSymbol) recordType).getRecordComponents();
             if (compIndex < components.size()) {
-                JFieldSymbol sym = components.get(compIndex);
+                JRecordComponentSymbol sym = components.get(compIndex);
                 return ((JClassType) type).getDeclaredField(sym.getSimpleName()).getTypeMirror();
             }
         }
         return ts.ERROR;
+    }
+
+
+    @Override
+    public @NonNull JTypeMirror visit(ASTRecordComponent node, TypingContext data) {
+        return node.getVarId().getTypeMirror();
     }
 
     /*

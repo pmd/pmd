@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JRecordComponentSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
@@ -61,8 +62,8 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     private List<JClassSymbol> memberClasses = new ArrayList<>();
     private List<JMethodSymbol> methods = new ArrayList<>();
     private List<JConstructorSymbol> ctors = new ArrayList<>();
+    private List<JRecordComponentSymbol> recordComponents = null;
     private List<JFieldSymbol> enumConstants = null;
-    private List<JFieldSymbol> recordComponents = null;
 
     private PSet<SymAnnot> annotations = HashTreePSet.empty();
 
@@ -252,9 +253,6 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         if (fieldStub.isEnumConstant() && enumConstants != null) {
             enumConstants.add(fieldStub);
         }
-        if (fieldStub.isRecordComponent() && recordComponents != null) {
-            recordComponents.add(fieldStub);
-        }
     }
 
     void addMemberClass(ClassStub classStub) {
@@ -268,6 +266,13 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
     void addCtor(CtorStub methodStub) {
         ctors.add(methodStub);
+    }
+
+    void addRecordComponent(RecordComponentStub recordComponentStub) {
+        if (recordComponents == null) {
+            recordComponents = new ArrayList<>();
+        }
+        recordComponents.add(recordComponentStub);
     }
 
     @Override
@@ -389,7 +394,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
 
     @Override
-    public @NonNull List<JFieldSymbol> getRecordComponents() {
+    public @NonNull List<JRecordComponentSymbol> getRecordComponents() {
         parseLock.ensureParsed();
         return recordComponents;
     }

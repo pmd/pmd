@@ -33,6 +33,7 @@ import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JRecordComponentSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.ImplicitMemberSymbols;
@@ -54,7 +55,7 @@ final class AstClassSym
     private final List<JConstructorSymbol> declaredCtors;
     private final List<JFieldSymbol> declaredFields;
     private final List<JFieldSymbol> enumConstants; // subset of declaredFields
-    private final List<JFieldSymbol> recordComponents; // subset of declaredFields
+    private final List<JRecordComponentSymbol> recordComponents;
     private final PSet<String> annotAttributes;
 
     AstClassSym(ASTTypeDeclaration node,
@@ -71,13 +72,12 @@ final class AstClassSym
         final List<JConstructorSymbol> myCtors = new ArrayList<>();
         final List<JFieldSymbol> myFields = new ArrayList<>();
         final List<JFieldSymbol> enumConstants;
-        final List<JFieldSymbol> recordComponents;
+        final List<JRecordComponentSymbol> recordComponents;
 
         if (isRecord()) {
             ASTRecordComponentList components = Objects.requireNonNull(node.getRecordComponents(),
                                                                        "Null component list for " + node);
-            recordComponents = mapComponentsToMutableList(factory, components);
-            myFields.addAll(recordComponents);
+            recordComponents = mapComponentsToMutableList(factory, components, myFields);
 
             JConstructorSymbol canonicalRecordCtor = ImplicitMemberSymbols.recordConstructor(this, recordComponents, components.isVarargs());
             myCtors.add(canonicalRecordCtor);
@@ -124,7 +124,7 @@ final class AstClassSym
             // then the recordsComponents contains all record components
             // for which we must synthesize an accessor (explicitly declared
             // accessors have been filtered out)
-            for (JFieldSymbol component : recordComponents) {
+            for (JRecordComponentSymbol component : recordComponents) {
                 myMethods.add(ImplicitMemberSymbols.recordAccessor(this, component));
             }
         }
@@ -149,10 +149,13 @@ final class AstClassSym
                                : HashTreePSet.empty();
     }
 
-    private List<JFieldSymbol> mapComponentsToMutableList(AstSymFactory factory, ASTRecordComponentList components) {
-        List<JFieldSymbol> list = new ArrayList<>();
+    private List<JRecordComponentSymbol> mapComponentsToMutableList(AstSymFactory factory,
+                                                          ASTRecordComponentList components,
+                                                          List<JFieldSymbol> fieldSyms) {
+        List<JRecordComponentSymbol> list = new ArrayList<>();
         for (ASTRecordComponent comp : components) {
-            list.add(new AstFieldSym(comp.getVarId(), factory, this));
+            list.add(new AstRecordComponentSym(comp, factory, this));
+            fieldSyms.add(new AstFieldSym(comp.getVarId(), factory, this));
         }
         return list;
     }
@@ -220,7 +223,7 @@ final class AstClassSym
     }
 
     @Override
-    public @NonNull List<JFieldSymbol> getRecordComponents() {
+    public @NonNull List<JRecordComponentSymbol> getRecordComponents() {
         return recordComponents;
     }
 
