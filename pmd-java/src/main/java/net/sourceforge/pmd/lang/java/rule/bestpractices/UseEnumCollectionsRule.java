@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -33,8 +35,11 @@ public class UseEnumCollectionsRule extends AbstractJavaRulechainRule {
         JTypeMirror builtType = call.getTypeMirror();
 
         if (!builtType.isRaw()) {
-            boolean isMap = TypeTestUtil.isExactlyA(HashMap.class, builtType);
-            if (isMap || TypeTestUtil.isExactlyA(HashSet.class, builtType)) {
+            boolean isMap = TypeTestUtil.isExactlyA(HashMap.class, builtType)
+                || TypeTestUtil.isExactlyA(TreeMap.class, builtType);
+            if (isMap
+                || TypeTestUtil.isExactlyA(HashSet.class, builtType)
+                || TypeTestUtil.isExactlyA(TreeSet.class, builtType)) {
 
                 List<JTypeMirror> typeArgs = ((JClassType) builtType).getTypeArgs();
                 JTypeDeclSymbol keySymbol = typeArgs.get(0).getSymbol();

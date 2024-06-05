@@ -6,9 +6,10 @@
 
     <test-code>
         <description>Use enumset</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,12</expected-linenumbers>
         <expected-messages>
+            <message>This collection could be an EnumSet</message>
             <message>This collection could be an EnumSet</message>
         </expected-messages>
         <code><![CDATA[
@@ -22,6 +23,10 @@
                     Set<E> set = new HashSet<>();
                     return set.contains(E.A);
                 }
+                public static boolean bar2() {
+                    Set<E> set = new TreeSet<>();
+                    return set.contains(E.A);
+                }
             }
             ]]></code>
     </test-code>
@@ -30,9 +35,10 @@
 
     <test-code>
         <description>Use enummap</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>7</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,10</expected-linenumbers>
         <expected-messages>
+            <message>This collection could be an EnumMap</message>
             <message>This collection could be an EnumMap</message>
         </expected-messages>
         <code><![CDATA[
@@ -43,6 +49,9 @@
 
                 public static Map<E, Boolean> bar() {
                     return new HashMap<>();
+                }
+                public static Map<E, Boolean> bar() {
+                    return new TreeMap<>();
                 }
             }
             ]]></code>
