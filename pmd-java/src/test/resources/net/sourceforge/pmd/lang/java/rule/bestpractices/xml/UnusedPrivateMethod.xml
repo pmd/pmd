@@ -2002,4 +2002,76 @@ class FooTest{
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>UnusedPrivateMethod for Generics and Overloads #5047</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.function.Function;
+
+            public class Main {
+                public static void main(String[] args) {
+                    new Utils().printValue();
+                }
+
+                public enum ConsentStatus {
+                    NOT_APPLICABLE(0L),
+                    NO_CONSENT(1L),
+                    CONSENT(2L),
+                    UNKNOWN_STATUS(3L);
+
+                    private final long id;
+
+                    ConsentStatus(long id) {
+                        this.id = id;
+                    }
+
+                    public long id() {
+                        return this.id;
+                    }
+                }
+
+                public enum OptOutStatus {
+                    NOT_APPLICABLE(0L),
+                    OPTED_OUT(1L),
+                    DID_NOT_OPT_OUT(2L),
+                    UNKNOWN_STATUS(3L);
+
+                    private final long id;
+
+                    OptOutStatus(long id) {
+                        this.id = id;
+                    }
+
+                    public long id() {
+                        return this.id;
+                    }
+                }
+
+                static class Utils {
+                    public void printValue() {
+                        System.out.println(getValue(ConsentStatus.CONSENT));
+                        System.out.println(getValue(ConsentStatus.NO_CONSENT));
+
+                        System.out.println(getValue(OptOutStatus.DID_NOT_OPT_OUT));
+                        System.out.println(getValue(OptOutStatus.OPTED_OUT));
+                    }
+
+                    private Long getValue(ConsentStatus val) {
+                        return getValue(val, ConsentStatus::id);
+                    }
+
+                    private Long getValue(OptOutStatus val) {
+                        return getValue(val, OptOutStatus::id);
+                    }
+
+                    private <T extends Enum<T>> Long getValue(T enumValue, Function<T, Long> fn) {
+                        if (enumValue == null) {
+                            return null;
+                        }
+                        return fn.apply(enumValue);
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

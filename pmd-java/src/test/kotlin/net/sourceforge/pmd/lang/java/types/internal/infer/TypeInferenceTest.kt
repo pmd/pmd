@@ -407,4 +407,51 @@ public class BadIntersection {
             acu.firstMethodCall() shouldHaveType java.util.List::class[t_Animal]
         }
     }
+    parserTest("#5047 inference failed with enum") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            interface Function<T,R> { R apply(T t); }
+
+            public class Main {
+                public enum OptOutStatus {
+                    UNKNOWN_STATUS(3L);
+
+                    private final long id;
+
+                    OptOutStatus(long id) {
+                        this.id = id;
+                    }
+
+                    public long id() {
+                        return this.id;
+                    }
+                }
+
+                static class Utils {
+                    private Long getValue(OptOutStatus val) {
+                        return getValue(val, OptOutStatus::id);
+                    }
+
+                    private <T extends Enum<T>> Long getValue(T enumValue, Function<T, Long> fn) {
+                        if (enumValue == null) {
+                            return null;
+                        }
+                        return fn.apply(enumValue);
+                    }
+                }
+            }
+
+            """.trimIndent()
+        )
+
+        val (_, _, optOutEnum) = acu.declaredTypeSignatures()
+        val (_, getValue2) = acu.methodDeclarations().filter { it.name == "getValue" }.toList()
+
+        spy.shouldBeOk {
+            val info = acu.firstMethodCall().overloadSelectionInfo
+            info::isFailed shouldBe false
+            info.methodType shouldBeSomeInstantiationOf getValue2.genericSignature
+            info.methodType.formalParameters[0] shouldBe optOutEnum
+        }
+    }
 })
