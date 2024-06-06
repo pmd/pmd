@@ -16,7 +16,8 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🐛 Fixed Issues
 * apex
-  * [#4922](https://github.com/pmd/pmd/issues/4922): \[apex] TYPEOF in sub-query throws error
+  * [#4922](https://github.com/pmd/pmd/issues/4922): \[apex] SOQL syntax error with TYPEOF in sub-query
+  * [#5055](https://github.com/pmd/pmd/issues/5055): \[apex] SOSL syntax error with WITH USER_MODE or WITH SYSTEM_MODE
 
 ### 🚨 API Changes
 

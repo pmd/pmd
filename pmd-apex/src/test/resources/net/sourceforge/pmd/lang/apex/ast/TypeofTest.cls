@@ -1,3 +1,5 @@
+// https://github.com/pmd/pmd/issues/4922
+
 public class TypeofTest {
 	static void test() {
 		Case c = [

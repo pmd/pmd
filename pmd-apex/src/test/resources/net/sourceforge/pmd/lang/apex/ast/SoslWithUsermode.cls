@@ -1,3 +1,4 @@
+// https://github.com/pmd/pmd/issues/5055
 // https://github.com/google/summit-ast/issues/53
 
 public inherited sharing class SoslWithUsermode {
