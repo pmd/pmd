@@ -1,0 +1,43 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L7
+    [public]                                1         7
+    [with]                                  8         12
+    [sharing]                               13        20
+    [class]                                 21        26
+    [pmd7cpd]                               27        34
+    [{]                                     35        36
+L8
+    [public]                                5         11
+    [static]                                12        18
+    [void]                                  19        23
+    [example]                               24        31
+    [(]                                     31        32
+    [)]                                     32        33
+    [{]                                     33        34
+L9
+    [string]                                7         13
+    [str]                                   14        17
+    [=]                                     18        19
+    ['alice']                               20        27
+    [;]                                     27        28
+L10
+    [str]                                   7         10
+    [=]                                     11        12
+    [str]                                   13        16
+    [.]                                     16        17
+    [replace]                               17        24
+    [(]                                     24        25
+    ['alice']                               25        32
+    [,]                                     32        33
+    ['<bob></charlie>dan<!--johannheinr[    34        84
+    [+]                                     85        86
+    ['\\u00a0']                             87        95
+    [+]                                     96        97
+    ['"100%"']                              98        106
+    [)]                                     106       107
+    [;]                                     107       108
+L11
+    [}]                                     5         6
+L12
+    [}]                                     1         2
+EOF
