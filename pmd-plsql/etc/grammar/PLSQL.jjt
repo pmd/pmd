@@ -27,6 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /**
+ * Add support for MERGE (INTO) statement
+ *
+ * Andreas Dangel 06/2024
+ *====================================================================
  * Add support for Select statement within OPEN FOR Statements
  *
  * Andreas Dangel 09/2021
@@ -293,7 +297,8 @@ ASTInput Input() :
 	 | DeleteStatement() [";"]
 	 | InsertStatement() [";"]
 	 | SelectStatement() [";"]
-	 |(<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<LOCK><TABLE>|<MERGE>|<WITH>) ReadPastNextOccurrence(";") //Ignore SQL statements in scripts
+	 | MergeStatement() [";"]
+	 |(<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<LOCK><TABLE>|<WITH>) ReadPastNextOccurrence(";") //Ignore SQL statements in scripts
 	 )
 	 ("/")*
 	)*
@@ -1078,19 +1083,32 @@ void Skip2NextTerminator(String initiator,String terminator) :
   if(t.getImage().equals(initiator)) count++;
   while (count > 0 || !t.getImage().equals(terminator))
   {
-    t = getNextToken();
-    t = getToken(1);
-	  if(t.getImage().equals(initiator)) count++;
-	  if(t.getImage().equals(terminator)) count--;
-    if((null != t.specialToken && beginToken.kind != SELECT && beginToken.kind != INSERT && beginToken.kind != UPDATE && beginToken.kind != DELETE
-        && beginToken.kind != MERGE && beginToken.kind != EXECUTE && beginToken.kind != WITH) || t.kind == EOF)
-        return;
-    if (t.specialToken != null && "/".equals(t.getImage()))
-	    return;
+      t = getNextToken();
+      t = getToken(1);
+      if (t.getImage().equals(initiator)) {
+          count++;
+      }
+      if (t.getImage().equals(terminator)) {
+          count--;
+      }
+      if ((null != t.specialToken
+            && beginToken.kind != SELECT
+            && beginToken.kind != INSERT
+            && beginToken.kind != UPDATE
+            && beginToken.kind != DELETE
+            && beginToken.kind != MERGE
+            && beginToken.kind != EXECUTE
+            && beginToken.kind != WITH)
+            || t.kind == EOF) {
+          return;
+      }
+      if (t.specialToken != null && "/".equals(t.getImage())) {
+          return;
+    }
   }
 }
 {
-	{ return; }
+    { return; }
 }
 
 /*
@@ -1256,10 +1274,10 @@ ASTSqlStatement SqlStatement(String initiator, String terminator)  :
     |<LOCK><TABLE>{jjtThis.setType(ASTSqlStatement.Type.LOCK_TABLE); }
     |<MERGE>{jjtThis.setType(ASTSqlStatement.Type.MERGE); }
     |<WITH>)
-	Skip2NextTerminator(initiator, terminator)
-	{
-          return jjtThis ;
-	}
+    Skip2NextTerminator(initiator, terminator)
+    {
+        return jjtThis;
+    }
 }
 
 void AbstractSelectStatement(AbstractSelectStatement node) #void :
@@ -2346,6 +2364,7 @@ ASTUnlabelledStatement UnlabelledStatement()  :
        UpdateStatement() ";" |
        DeleteStatement() ";" |
        InsertStatement() ";" |
+       LOOKAHEAD(2) MergeStatement() ";" |
 	LOOKAHEAD(["("] <SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<SET><TRANSACTION>|<LOCK><TABLE>|<MERGE>|<WITH>) SqlStatement(null,";") [";"]
 	| LOOKAHEAD(3)  ContinueStatement()  ";" // CONTINUE keyword was added in 11G, so Oracle compilation supports CONTINUE as a variable name
 	| CaseStatement()  ";"
@@ -2650,6 +2669,55 @@ ASTDeleteStatement DeleteStatement() :
 {
     <DELETE> [ <FROM> ]
     ( TableReference() | <ONLY> "(" TableReference() ")" )
+    [ WhereClause() ]
+    { return jjtThis; }
+}
+
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/MERGE.html#GUID-5692CCB7-24D9-4C0E-81A7-A22436DC968F
+ * https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/MERGE.html#GUID-5692CCB7-24D9-4C0E-81A7-A22436DC968F
+ */
+ASTMergeStatement MergeStatement() :
+{}
+{
+    <MERGE> <INTO> [ LOOKAHEAD(2) SchemaName() "." ] TableName() [ TableAlias() ]
+    <USING>
+    (
+            LOOKAHEAD(3) "(" ValuesClause() ")"
+        |   "(" Subquery() ")" [ TableAlias() ]
+        |   [ LOOKAHEAD(2) SchemaName() "." ] TableName() [ TableAlias() ]
+    )
+    <ON> "(" Condition() ")"
+    [ LOOKAHEAD(MergeUpdateClausePrefix()) MergeUpdateClause() ]
+    [ LOOKAHEAD(2) MergeInsertClause() ]
+    [ ErrorLoggingClause() ]
+    [ ReturningClause() ]
+    { return jjtThis; }
+}
+
+void MergeUpdateClausePrefix() #void:
+{}
+{
+    <WHEN> KEYWORD("MATCHED")
+}
+
+ASTMergeUpdateClause MergeUpdateClause() :
+{}
+{
+    MergeUpdateClausePrefix() <THEN> <UPDATE> <SET>
+    [ LOOKAHEAD(2) TableName() "." ] Column() "=" ( LOOKAHEAD(2) "(" Subquery() ")" | Expression() | <_DEFAULT> )
+    ( "," [ LOOKAHEAD(2) TableName() "." ] Column() "=" ( LOOKAHEAD(2) "(" Subquery() ")" | Expression() | <_DEFAULT> ) )*
+    [ WhereClause() ]
+    [ <DELETE> WhereClause() ]
+    { return jjtThis; }
+}
+
+ASTMergeInsertClause MergeInsertClause() :
+{}
+{
+    <WHEN> <NOT> KEYWORD("MATCHED") <THEN> <INSERT>
+    [ "(" Column() ( "," Column() )* ")" ]
+    ValuesClause()
     [ WhereClause() ]
     { return jjtThis; }
 }
@@ -5426,14 +5494,15 @@ void RESERVED_WORD() #void: {}
 void KEYWORD(String id) #void:
 {}
 {
-    <IDENTIFIER>
     {
-        if (!token.getImage().equalsIgnoreCase(id)) {
+        if (!isKeyword(id)) {
             String eol = System.getProperty("line.separator", "\n");
-            throw new ParseException("Encountered \"" + token.getImage() + "\" "
-                + "Was expecting: " + id).withLocation(token);
+            throw new ParseException("Encountered \"" + getToken(1).getImage() + "\" "
+                + "Was expecting: \"" + id + "\"").withLocation(token);
         }
     }
+
+    <IDENTIFIER>
 }
 
 ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
