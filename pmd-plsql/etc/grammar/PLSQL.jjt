@@ -569,7 +569,7 @@ ASTDeclarativeSection DeclarativeSection() :
 {}
 {
     DeclarativeUnit()
-    ( LOOKAHEAD(<PRAGMA>|<TYPE>|<SUBTYPE>|<FUNCTION>|<PROCEDURE>|<CURSOR>|ID() (<EXCEPTION>|<CONSTANT>|Datatype()), {getToken(1).kind != BEGIN}) DeclarativeUnit() )*
+    ( LOOKAHEAD(3) DeclarativeUnit() )*
     { return jjtThis; }
 }
 
@@ -1080,7 +1080,6 @@ ASTExceptionHandler ExceptionHandler() :
 {
     <WHEN>
     (
-        <OTHERS> |
         QualifiedName() (<OR> QualifiedName())*
     )
     <THEN> (Statement())+
@@ -3148,6 +3147,28 @@ ASTExpression Expression() :
  }
 }
 
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/23/lnpls/implicit-cursor-attribute.html
+ */
+ASTImplicitCursorAttribute ImplicitCursorAttribute() :
+{}
+{
+    <SQL> "%"
+    (
+          LOOKAHEAD({isKeyword("isopen")}) KEYWORD("ISOPEN")
+        | LOOKAHEAD({isKeyword("found")}) KEYWORD("FOUND")
+        | LOOKAHEAD({isKeyword("notfound")}) KEYWORD("NOTFOUND")
+        | LOOKAHEAD({isKeyword("rowcount")}) KEYWORD("ROWCOUNT")
+        | LOOKAHEAD({isKeyword("bulk_rowcount")}) KEYWORD("BULK_ROWCOUNT") "(" PrimaryExpression() ")"
+        | LOOKAHEAD({isKeyword("bulk_exceptions")}) KEYWORD("BULK_EXCEPTIONS")
+            ( "." "COUNT"
+              | "(" PrimaryExpression() ")" "." (LOOKAHEAD({isKeyword("error_index")}) KEYWORD("ERROR_INDEX") | LOOKAHEAD({isKeyword("error_code")}) KEYWORD("ERROR_CODE"))
+            )
+    )
+
+    { return jjtThis; }
+}
+
 ASTCompilationExpression CompilationExpression() :
 {
   PLSQLNode simpleNode = null;
@@ -3509,7 +3530,10 @@ ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() #UnaryExpressionNot
     LOOKAHEAD(2) simpleNode = ExtractExpression()
   |
     LOOKAHEAD(2) simpleNode = IsNullCondition()
-  ) {sb.append(simpleNode.getImage()); }
+  |
+    simpleNode = ImplicitCursorAttribute()
+  )
+  {sb.append(simpleNode.getImage()); }
  {
  jjtThis.setImage(sb.toString()); return jjtThis;
  }

@@ -4,7 +4,6 @@
          +- MethodDeclarator[@CanonicalImage = "TEST", @Image = "test", @ParameterCount = 1]
          |  +- ObjectNameDeclaration[@CanonicalImage = "TEST", @Image = "test"]
          |     +- ID[@CanonicalImage = "TEST", @Image = "test"]
-         +- DeclarativeSection[@CanonicalImage = null]
          +- Statement[@CanonicalImage = null]
          |  +- UnlabelledStatement[@CanonicalImage = null]
          |     +- InsertStatement[@CanonicalImage = null]

@@ -56,4 +56,9 @@ class PlsqlTreeDumpTest extends BaseTreeDumpTest {
     void compoundTriggerWithAdditionalDeclarations() {
         doTest("CompoundTriggerWithAdditionalDeclarations4270");
     }
+
+    @Test
+    void exceptionHandlerTomKytesDespair() {
+        doTest("ExceptionHandlerTomKytesDespair");
+    }
 }

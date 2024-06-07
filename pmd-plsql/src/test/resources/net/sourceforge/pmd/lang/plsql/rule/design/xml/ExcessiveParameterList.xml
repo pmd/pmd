@@ -189,8 +189,6 @@ CREATE OR REPLACE PACKAGE BODY Foo AS
         CARDINALITY IN OUT VARCHAR2,
         /** Unreserved Keyword Word CASCADE **/
         CASCADE IN OUT VARCHAR2,
-        /** Unreserved Keyword Word CASE **/
-        CASE IN OUT VARCHAR2,
         /** Unreserved Keyword Word CAST **/
         CAST IN OUT VARCHAR2,
         /** Unreserved Keyword Word CATEGORY **/
@@ -367,8 +365,6 @@ CREATE OR REPLACE PACKAGE BODY Foo AS
         DEBUG IN OUT VARCHAR2,
         /** Unreserved Keyword Word DEC **/
         DEC IN OUT VARCHAR2,
-        /** Unreserved Keyword Word DECLARE **/
-        DECLARE IN OUT VARCHAR2,
         /** Unreserved Keyword Word DECREMENT **/
         DECREMENT IN OUT VARCHAR2,
         /** Unreserved Keyword Word DECRYPT **/
@@ -657,8 +653,6 @@ CREATE OR REPLACE PACKAGE BODY Foo AS
         IDGENERATORS IN OUT VARCHAR2,
         /** Unreserved Keyword Word IDLE_TIME **/
         IDLE_TIME IN OUT VARCHAR2,
-        /** Unreserved Keyword Word IF **/
-        IF IN OUT VARCHAR2,
         /** Unreserved Keyword Word IGNORE **/
         IGNORE IN OUT VARCHAR2,
         /** Unreserved Keyword Word IGNORE_OPTIM_EMBEDDED_HINTS **/
@@ -1737,8 +1731,6 @@ CREATE OR REPLACE PACKAGE BODY Foo AS
         SPLIT IN OUT VARCHAR2,
         /** Unreserved Keyword Word SPREADSHEET **/
         SPREADSHEET IN OUT VARCHAR2,
-        /** Unreserved Keyword Word SQL **/
-        SQL IN OUT VARCHAR2,
         /** Unreserved Keyword Word SQL_TRACE **/
         SQL_TRACE IN OUT VARCHAR2,
         /** Unreserved Keyword Word SQLLDR **/
@@ -2955,7 +2947,6 @@ CREATE OR REPLACE PACKAGE BODY Foo AS
         SPFILE := 'SPFILE' ; -- SPFILE VARCHAR2(240)
         SPLIT := 'SPLIT' ; -- SPLIT VARCHAR2(240)
         SPREADSHEET := 'SPREADSHEET' ; -- SPREADSHEET VARCHAR2(240)
-        SQL := 'SQL' ; -- SQL VARCHAR2(240)
         SQL_TRACE := 'SQL_TRACE' ; -- SQL_TRACE VARCHAR2(240)
         SQLLDR := 'SQLLDR' ; -- SQLLDR VARCHAR2(240)
         STANDALONE := 'STANDALONE' ; -- STANDALONE VARCHAR2(240)
