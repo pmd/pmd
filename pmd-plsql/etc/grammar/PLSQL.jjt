@@ -28,6 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /**
  * Add support for MERGE (INTO) statement
+ * Add support Error Logging for INSERT, UPDATE, DELETE
  *
  * Andreas Dangel 06/2024
  *====================================================================
@@ -2105,7 +2106,7 @@ ASTTableReference TableReference() :
 {
     QueryTableExpression()
 
-    [ LOOKAHEAD(2) TableAlias() ]
+    [ LOOKAHEAD(2, {!getToken(1).getImage().equalsIgnoreCase("LOG")}) TableAlias() ]
 
     { return jjtThis; }
 }
@@ -2476,7 +2477,7 @@ ASTCursorForLoopStatement CursorForLoopStatement() :
 }
 
 /**
- * See https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/INSERT.html#GUID-903F8043-0254-4EE9-ACC1-CB8AC0AF3423
+ * https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/INSERT.html#GUID-903F8043-0254-4EE9-ACC1-CB8AC0AF3423
  */
 ASTInsertStatement InsertStatement() :
 {}
@@ -2489,6 +2490,7 @@ ASTSingleTableInsert SingleTableInsert() :
 {}
 {
     InsertIntoClause() ( ValuesClause() [ ReturningClause() ] | Subquery() )
+    [ ErrorLoggingClause() ]
     { return jjtThis; }
 }
 
@@ -2641,7 +2643,8 @@ ASTUpdateSetClause UpdateSetClause() :
 }
 
 /**
- * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/UPDATE.html#GUID-027A462D-379D-4E35-8611-410F3AC8FDA5__I2126358
+ * https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/UPDATE.html#GUID-027A462D-379D-4E35-8611-410F3AC8FDA5__I2126358
+ * https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/DELETE.html#GUID-156845A5-B626-412B-9F95-8869B988ABD7__I2122564
  */
 ASTReturningClause ReturningClause() :
 {}
@@ -2651,7 +2654,9 @@ ASTReturningClause ReturningClause() :
 }
 
 /**
- * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/UPDATE.html#GUID-027A462D-379D-4E35-8611-410F3AC8FDA5__BCEEAAGC
+ * https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/INSERT.html#GUID-903F8043-0254-4EE9-ACC1-CB8AC0AF3423__BGBDIGAH
+ * https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/UPDATE.html#GUID-027A462D-379D-4E35-8611-410F3AC8FDA5__BCEEAAGC
+ * https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/DELETE.html#GUID-156845A5-B626-412B-9F95-8869B988ABD7__CEGCHDJF
  */
 ASTErrorLoggingClause ErrorLoggingClause() :
 {}
@@ -2664,12 +2669,17 @@ ASTErrorLoggingClause ErrorLoggingClause() :
 }
 
 
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/DELETE.html#GUID-156845A5-B626-412B-9F95-8869B988ABD7
+ */
 ASTDeleteStatement DeleteStatement() :
 {}
 {
     <DELETE> [ <FROM> ]
     ( TableReference() | <ONLY> "(" TableReference() ")" )
     [ WhereClause() ]
+    [ ReturningClause() ]
+    [ ErrorLoggingClause() ]
     { return jjtThis; }
 }
 
