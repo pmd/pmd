@@ -92,10 +92,10 @@
 
 
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
-        <kotlin.version>1.7.20</kotlin.version>
-        <kotest.version>5.5.5</kotest.version>
+        <kotlin.version>1.9.24</kotlin.version>
+        <kotest.version>5.9.1</kotest.version>
         <junit5.version>5.8.2</junit5.version> <!-- needed by kotest -->
-        <dokka.version>1.7.20</dokka.version>
+        <dokka.version>1.9.20</dokka.version>
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>3.2.5</surefire.version>
@@ -335,7 +335,11 @@
                     <configuration>
                         <runOrder>alphabetical</runOrder>
                         <systemPropertyVariables>
+                            <!-- used by pmd-lang-test::net.sourceforge.pmd.lang.test.BaseTextComparisonTest -->
                             <mvn.project.src.test.resources>${project.build.testResources[0].directory}</mvn.project.src.test.resources>
+                            <!-- https://kotest.io/docs/framework/project-config.html#runtime-detection -->
+                            <kotest.framework.classpath.scanning.config.disable>true</kotest.framework.classpath.scanning.config.disable>
+                            <kotest.framework.classpath.scanning.autoscan.disable>true</kotest.framework.classpath.scanning.autoscan.disable>
                         </systemPropertyVariables>
                         <statelessTestsetInfoReporter implementation="net.sourceforge.pmd.buildtools.surefire.PMDStatelessTestSetInfoConsoleReporter">
                             <showFailedTests>true</showFailedTests>
