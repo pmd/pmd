@@ -18,6 +18,7 @@ This is a {{ site.pmd.release_type }} release.
 * apex
   * [#5053](https://github.com/pmd/pmd/issues/5053): \[apex] CPD fails to parse string literals with escaped characters
 * plsql
+  * [#1934](https://github.com/pmd/pmd/issues/1934): \[plsql] ParseException with MERGE statement in anonymous block
   * [#2779](https://github.com/pmd/pmd/issues/2779): \[plsql] Error while parsing statement with (Oracle) DML Error Logging
 
 ### 🚨 API Changes
