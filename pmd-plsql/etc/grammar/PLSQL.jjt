@@ -2508,7 +2508,7 @@ ASTInsertIntoClause InsertIntoClause() :
 {}
 {
     <INTO> DMLTableExpressionClause()
-    [ LOOKAHEAD(2) TableAlias() ]
+    [ LOOKAHEAD(2, {!getToken(1).getImage().equalsIgnoreCase("LOG")}) TableAlias() ]
     [
         LOOKAHEAD(2) "("
               [ LOOKAHEAD(2) TableName() "." ] Column()
@@ -2533,18 +2533,19 @@ ASTMultiTableInsert MultiTableInsert() :
 {}
 {
   (
-    LOOKAHEAD(2) <ALL> ( InsertIntoClause() [ ValuesClause() ] )+ Subquery()
+    LOOKAHEAD(2) <ALL> ( InsertIntoClause() [ ValuesClause() ] [ ErrorLoggingClause() ] )+
   |
     ConditionalInsertClause()
   )
+  Subquery()
     { return jjtThis; }
 }
 
 ASTConditionalInsertClause ConditionalInsertClause() :
 {}
 {
-    [ <ALL> | KEYWORD("FIRST") ] ( <WHEN> Condition() <THEN> ( InsertIntoClause() [ ValuesClause() ] )+ )+
-        [ <ELSE> ( InsertIntoClause() [ ValuesClause() ] )+ ]
+    [ <ALL> | KEYWORD("FIRST") ] ( <WHEN> Condition() <THEN> ( InsertIntoClause() [ ValuesClause() ] [ ErrorLoggingClause() ] )+ )+
+        [ <ELSE> ( InsertIntoClause() [ ValuesClause() ] [ ErrorLoggingClause() ] )+ ]
     { return jjtThis; }
 }
 
