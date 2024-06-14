@@ -2134,4 +2134,28 @@ public class ObtainViaTest {
 }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UnusedPrivateMethod false positive when .class files missing from classpath #819</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package com.bumptech.glide.load.engine;
+
+import com.bumptech.glide.load.Key; // key can't be resolved
+
+class Engine {
+
+  void load(EngineKey key) {
+    logWithTimeAndKey("", key);
+    loadFromActiveResources(key, true);
+  }
+
+  private static void logWithTimeAndKey(String log, Key key) { // false positive: not unused
+  }
+
+  private void loadFromActiveResources(Key key, boolean isMemoryCacheable) { // false positive: not unused
+  }
+}
+]]></code>
+    </test-code>
 </test-data>
