@@ -16,6 +16,7 @@ import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.ProviderNotFoundException;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -147,7 +148,7 @@ public final class FileCollector implements AutoCloseable {
             reporter.error("Not a regular file: {0}", file);
             return false;
         }
-        LanguageVersion languageVersion = discoverLanguage(file.toString());
+        LanguageVersion languageVersion = discoverLanguage(file);
         return languageVersion != null
             && addFileImpl(TextFile.builderForPath(file, charset, languageVersion)
                                    .setParentFsPath(outerFsPath)
@@ -199,7 +200,7 @@ public final class FileCollector implements AutoCloseable {
         AssertionUtil.requireParamNotNull("sourceContents", sourceContents);
         AssertionUtil.requireParamNotNull("pathId", fileId);
 
-        LanguageVersion version = discoverLanguage(fileId.getFileName());
+        LanguageVersion version = discoverLanguage(Paths.get(fileId.getAbsolutePath()));
         return version != null
             && addFileImpl(TextFile.builderForCharSeq(sourceContents, fileId, version)
                                    .setParentFsPath(outerFsPath)
@@ -221,11 +222,11 @@ public final class FileCollector implements AutoCloseable {
         return false;
     }
 
-    private LanguageVersion discoverLanguage(String file) {
+    private LanguageVersion discoverLanguage(Path file) {
         if (discoverer.getForcedVersion() != null) {
             return discoverer.getForcedVersion();
         }
-        List<Language> languages = discoverer.getLanguagesForFile(file);
+        List<Language> languages = discoverer.getLanguagesForFile(file.toString());
 
         if (languages.isEmpty()) {
             LOG.trace("File {} matches no known language, ignoring", file);

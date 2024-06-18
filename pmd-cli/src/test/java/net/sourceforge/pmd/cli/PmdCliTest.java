@@ -52,6 +52,7 @@ class PmdCliTest extends BaseCliTest {
 
     private static final String DUMMY_RULESET_WITH_VIOLATIONS = "net/sourceforge/pmd/cli/FakeRuleset2.xml";
     static final String RULESET_WITH_VIOLATION = "net/sourceforge/pmd/cli/RuleSetWithViolations.xml";
+    private static final String RULESET_WITH_VIOLATION_FOR_DUMMY2_LANG = "net/sourceforge/pmd/cli/RuleSetWithViolationsForDummy2.xml";
     private static final String RULESET_NO_VIOLATIONS = "net/sourceforge/pmd/cli/FakeRuleset.xml";
     private static final String NOT_A_RULESET = "ThisRuleSetDoesNotExist.xml";
     private static final String STRING_TO_REPLACE = "__should_be_replaced__";
@@ -72,6 +73,7 @@ class PmdCliTest extends BaseCliTest {
         // create a few files
         srcDir = Files.createDirectories(tempRoot().resolve("src"));
         writeString(srcDir.resolve("someSource.dummy"), "dummy text");
+        writeString(srcDir.resolve("someSource.DUMMY_2_CUSTOM_EXT"), "dummy text");
     }
 
 
@@ -316,6 +318,31 @@ class PmdCliTest extends BaseCliTest {
             .verify(r -> r.checkStdOut(
                 containsString("Violation from ReportAllRootNodes")
             ));
+    }
+
+    @Test
+    void testAssignLanguageOption() throws Exception {
+
+        // nothing found bc no file matches
+        runCli(OK, "-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION_FOR_DUMMY2_LANG)
+            .verify(r -> r.checkStdOut(equalTo("")));
+
+        runCli(VIOLATIONS_FOUND, "-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION_FOR_DUMMY2_LANG,
+               "--assign-language", "dummy2", ".*\\.DUMMY_2_CUSTOM_EXT")
+            .verify(r -> r.checkStdOut(containsString("someSource.DUMMY_2_CUSTOM_EXT:1:\tReportAllRootNodes")));
+    }
+
+
+    @Test
+    void testRepeatAssignLanguageOption() throws Exception {
+
+        runCli(VIOLATIONS_FOUND, "-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION_FOR_DUMMY2_LANG,
+               "--assign-language", "dummy2", ".*\\.DUMMY_2_CUSTOM_EXT",
+               "--assign-language", "dummy2", ".*/someSource.dummy")
+            .verify(r -> {
+                r.checkStdOut(containsString("someSource.DUMMY_2_CUSTOM_EXT"));
+                r.checkStdOut(containsString("someSource.dummy"));
+            });
     }
 
     @Test
