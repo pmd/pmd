@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 /**
  * A numeric literal of any type (double, int, long, float, etc).
  */
-public final class ASTNumericLiteral extends AbstractLiteral {
+public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiteral {
 
     /**
      * True if this is an integral literal, ie int OR long,
@@ -34,6 +34,11 @@ public final class ASTNumericLiteral extends AbstractLiteral {
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
+    }
+
+    @Override
+    public Chars getLiteralText() {
+        return super.getLiteralText();
     }
 
     @Override

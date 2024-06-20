@@ -18,7 +18,7 @@ import net.sourceforge.pmd.util.StringUtil;
  * in the source ({@link #getLiteralText()}). {@link #getConstValue()} allows to recover
  * the actual runtime value, by processing escapes.
  */
-public final class ASTStringLiteral extends AbstractLiteral {
+public final class ASTStringLiteral extends AbstractLiteral implements ASTLiteral {
 
     private static final String TEXTBLOCK_DELIMITER = "\"\"\"";
 
@@ -34,6 +34,11 @@ public final class ASTStringLiteral extends AbstractLiteral {
     @Override
     public String getImage() {
         return getText().toString();
+    }
+
+    @Override
+    public Chars getLiteralText() {
+        return super.getLiteralText();
     }
 
     void setTextBlock() {
