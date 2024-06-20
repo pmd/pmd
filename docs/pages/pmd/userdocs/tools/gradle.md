@@ -2,6 +2,7 @@
 title: Gradle
 tags: [userdocs, tools]
 permalink: pmd_userdocs_tools_gradle.html
+last_updated: June 2024 (7.3.0)
 ---
 
 The [Gradle Build Tool](https://gradle.org/) provides a [PMD Plugin](https://docs.gradle.org/current/userguide/pmd_plugin.html)
@@ -49,16 +50,18 @@ with the property `toolVersion`:
 
 ```
 pmd {
-    toolVersion = "6.21.0"
+    toolVersion = "{{ site.pmd.version }}"
 }
 ```
 
+Note: For PMD 7, at least gradle 8.6 is needed. See [Support for PMD 7.0](https://github.com/gradle/gradle/issues/24502).
+
 ## References
 
-Source code for Gradles PMD Plugin is available here:
+Source code for Gradle's PMD Plugin is available here:
 
 *   [gradle/gradle code-quality](https://github.com/gradle/gradle/tree/master/platforms/jvm/code-quality/src/main/groovy/org/gradle/api/plugins/quality)
     *   [Pmd.java](https://github.com/gradle/gradle/blob/master/platforms/jvm/code-quality/src/main/groovy/org/gradle/api/plugins/quality/Pmd.java)
     *   [PmdExtension.java](https://github.com/gradle/gradle/blob/master/platforms/jvm/code-quality/src/main/groovy/org/gradle/api/plugins/quality/PmdExtension.java)
     *   [PmdPlugin.java](https://github.com/gradle/gradle/blob/master/platforms/jvm/code-quality/src/main/groovy/org/gradle/api/plugins/quality/PmdPlugin.java)
-*   The default PMD version used by gradle: [DEFAULT_PMD_VERSION](https://github.com/gradle/gradle/blob/d6daeeb446e6a966c33efea5f3f5f1a2d96f6b8f/platforms/jvm/code-quality/src/main/groovy/org/gradle/api/plugins/quality/PmdPlugin.java#L66)
+*   The default PMD version used by gradle: [DEFAULT_PMD_VERSION](https://github.com/gradle/gradle/blob/v8.8.0/platforms/jvm/code-quality/src/main/groovy/org/gradle/api/plugins/quality/PmdPlugin.java#L66)
