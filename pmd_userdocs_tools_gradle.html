@@ -146,6 +146,30 @@
 
             
             
+            
+
+            
+
+                
+                <li><a href="pmd_about_release_policies.html">Release policies</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_about_support_lifecycle.html">Support lifecycle</a></li>
+                
+
+            
+
+            
+            
         </ul>
      </li>
        
@@ -1912,13 +1936,15 @@ that can be added to your build configuration. Technically it is based on the <a
 with the property <code class="language-plaintext highlighter-rouge">toolVersion</code>:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd {
-    toolVersion = "6.21.0"
+    toolVersion = "7.3.0-SNAPSHOT"
 }
 </code></pre></div></div>
 
+<p>Note: For PMD 7, at least gradle 8.6 is needed. See <a href="https://github.com/gradle/gradle/issues/24502">Support for PMD 7.0</a>.</p>
+
 <h2 id="references">References</h2>
 
-<p>Source code for Gradles PMD Plugin is available here:</p>
+<p>Source code for Gradle’s PMD Plugin is available here:</p>
 
 <ul>
   <li><a href="https://github.com/gradle/gradle/tree/master/platforms/jvm/code-quality/src/main/groovy/org/gradle/api/plugins/quality">gradle/gradle code-quality</a>
@@ -1928,7 +1954,7 @@ with the property <code class="language-plaintext highlighter-rouge">toolVersion
       <li><a href="https://github.com/gradle/gradle/blob/master/platforms/jvm/code-quality/src/main/groovy/org/gradle/api/plugins/quality/PmdPlugin.java">PmdPlugin.java</a></li>
     </ul>
   </li>
-  <li>The default PMD version used by gradle: <a href="https://github.com/gradle/gradle/blob/d6daeeb446e6a966c33efea5f3f5f1a2d96f6b8f/platforms/jvm/code-quality/src/main/groovy/org/gradle/api/plugins/quality/PmdPlugin.java#L66">DEFAULT_PMD_VERSION</a></li>
+  <li>The default PMD version used by gradle: <a href="https://github.com/gradle/gradle/blob/v8.8.0/platforms/jvm/code-quality/src/main/groovy/org/gradle/api/plugins/quality/PmdPlugin.java#L66">DEFAULT_PMD_VERSION</a></li>
 </ul>
 
 
@@ -1971,7 +1997,8 @@ with the property <code class="language-plaintext highlighter-rouge">toolVersion
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jun 13, 2024 <br />
+            <span>Page last updated:</span>
+            June 2024 (7.3.0)<br /> Site last generated: Jun 20, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

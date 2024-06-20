@@ -146,6 +146,30 @@
 
             
             
+            
+
+            
+
+                
+                <li><a href="pmd_about_release_policies.html">Release policies</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_about_support_lifecycle.html">Support lifecycle</a></li>
+                
+
+            
+
+            
+            
         </ul>
      </li>
        
@@ -1946,7 +1970,7 @@ in order to release version “6.34.0”, the configuration should look like thi
 <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">pmd</span><span class="pi">:</span>
     <span class="na">version</span><span class="pi">:</span> <span class="s">7.2.0</span>
     <span class="na">previous_version</span><span class="pi">:</span> <span class="s">7.1.0</span>
-    <span class="na">date</span><span class="pi">:</span> <span class="s">31-May-2024</span>
+    <span class="na">date</span><span class="pi">:</span> <span class="s">2024-05-31</span>
     <span class="na">release_type</span><span class="pi">:</span> <span class="s">minor</span>
 </code></pre></div></div>
 
@@ -2271,7 +2295,7 @@ in it otherwise the javadoc links won’t work during development.</p>
     <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">pmd</span><span class="pi">:</span>
     <span class="na">version</span><span class="pi">:</span> <span class="s">7.3.0-SNAPSHOT</span>
     <span class="na">previous_version</span><span class="pi">:</span> <span class="s">7.2.0</span>
-    <span class="na">date</span><span class="pi">:</span> <span class="s">??-??-2024</span>
+    <span class="na">date</span><span class="pi">:</span> <span class="s">2024-??-??</span>
     <span class="na">release_type</span><span class="pi">:</span> <span class="s">minor</span>
 </code></pre></div>    </div>
   </li>
@@ -2289,7 +2313,7 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
-## {{ site.pmd.date }} - {{ site.pmd.version }}
+## {{ site.pmd.date | date: "%d-%B-%Y" }} - {{ site.pmd.version }}
 
 The PMD team is pleased to announce PMD {{ site.pmd.version }}.
 
@@ -2372,7 +2396,7 @@ the tag. Here are the steps:</p>
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            April 2024<br /> Site last generated: Jun 13, 2024 <br />
+            April 2024<br /> Site last generated: Jun 20, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
