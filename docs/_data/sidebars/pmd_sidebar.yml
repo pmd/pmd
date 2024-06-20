@@ -1,7 +1,5 @@
 entries:
 - title: sidebar
-  product: PMD
-  version: '!PMD_VERSION!'
   folders:
   - title: null
     output: pdf
@@ -30,6 +28,12 @@ entries:
       output: web, pdf
     - title: Getting help
       url: /pmd_about_help.html
+      output: web, pdf
+    - title: Release policies
+      url: /pmd_about_release_policies.html
+      output: web, pdf
+    - title: Support lifecycle
+      url: /pmd_about_support_lifecycle.html
       output: web, pdf
   - title: User Documentation
     output: web, pdf
