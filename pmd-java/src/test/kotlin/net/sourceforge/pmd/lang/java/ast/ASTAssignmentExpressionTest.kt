@@ -14,11 +14,8 @@ import net.sourceforge.pmd.lang.java.ast.AssignmentOp.*
  * @since 7.0.0
  */
 class ASTAssignmentExpressionTest : ParserTestSpec({
-
-    parserTest("Simple assignment expressions") {
-
+    parserTestContainer("Simple assignment expressions") {
         inContext(ExpressionParsingCtx) {
-
             "a = b -> { foo(b); }" should parseAs {
                 assignmentExpr(ASSIGN) {
                     it::isCompound shouldBe false
@@ -104,8 +101,7 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
         }
     }
 
-    parserTest("Right associativity") {
-
+    parserTestContainer("Right associativity") {
         inContext(ExpressionParsingCtx) {
             "a = b = c" should parseAs {
                 assignmentExpr(ASSIGN) {

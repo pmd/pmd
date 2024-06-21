@@ -217,4 +217,26 @@ public class Bar {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#4954 Test unnamed vars are not checked</description>
+        <rule-property name="methodParameterPattern">abc</rule-property>
+        <rule-property name="finalMethodParameterPattern">abc</rule-property>
+        <rule-property name="lambdaParameterPattern">abc</rule-property>
+        <rule-property name="explicitLambdaParameterPattern">abc</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Bar {
+                void foo(int _, final int _){
+                    Consumer<String> _ = (final String _) -> {};
+                    Consumer<String> _ = (String _) -> {};
+                    Consumer<String> _ = (_) -> {};
+                    Consumer<String> _ = (var _) -> {};
+                    Consumer<String> _ = (final var _) -> {};
+                    Consumer<String> _ = _ -> {};
+                }
+            }
+            ]]></code>
+        <source-type>java 22</source-type>
+    </test-code>
+
 </test-data>

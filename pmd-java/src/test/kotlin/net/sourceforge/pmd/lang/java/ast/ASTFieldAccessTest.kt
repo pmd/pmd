@@ -10,11 +10,8 @@ import net.sourceforge.pmd.lang.test.ast.shouldBe
  * @author Clément Fournier
  */
 class ASTFieldAccessTest : ParserTestSpec({
-
-    parserTest("Field access expressions") {
-
+    parserTestContainer("Field access expressions") {
         inContext(ExpressionParsingCtx) {
-
             "Type.this.foo" should parseAs {
                 fieldAccess("foo") {
 
@@ -36,10 +33,8 @@ class ASTFieldAccessTest : ParserTestSpec({
                 }
             }
 
-
             "a.b.c" should parseAs {
                 fieldAccess("c") {
-
                     val fieldAccess = it
 
                     it::getQualifier shouldBe child<ASTAmbiguousName> {
@@ -49,7 +44,6 @@ class ASTFieldAccessTest : ParserTestSpec({
                     }
                 }
             }
-
 
             "a" should parseAs {
                 variableAccess("a")

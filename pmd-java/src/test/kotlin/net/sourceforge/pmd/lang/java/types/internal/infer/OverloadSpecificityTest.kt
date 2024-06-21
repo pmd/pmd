@@ -18,13 +18,10 @@ private val RefTypeConstants.t_Overloads: JClassType
     get() = ts.declaration(ts.getClassSymbol("net.sourceforge.pmd.lang.java.types.testdata.Overloads")!!) as JClassType
 
 class OverloadSpecificityTest : ProcessorTestSpec({
-
-    parserTest("Test strict overload") {
-
+    parserTestContainer("Test strict overload") {
         asIfIn(Overloads::class.java)
 
         inContext(ExpressionParsingCtx) {
-
             "ambig(\"a\", \"b\")" should parseAs {
                 methodCall("ambig") {
                     with(it.typeDsl) {
@@ -47,12 +44,10 @@ class OverloadSpecificityTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("Test generic varargs overload") {
-
+    parserTestContainer("Test generic varargs overload") {
         asIfIn(Overloads::class.java)
 
         inContext(ExpressionParsingCtx) {
-
             "genericOf(new String[] {\"\"})" should parseAs {
                 methodCall("genericOf") {
                     with(it.typeDsl) {
@@ -76,8 +71,7 @@ class OverloadSpecificityTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("Test method hidden by enclosing class") {
-
+    parserTestContainer("Test method hidden by enclosing class") {
         val acu = parser.parse(
                 """
 class Scratch {
@@ -125,11 +119,9 @@ class Other {
         }
     }
 
-
     parserTest("Test override from outside class") {
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+            """
 class Sup { 
     void m() {}
 }
@@ -146,7 +138,7 @@ class F {
     }
 }
 
-                """.trimIndent()
+            """.trimIndent()
         )
 
         val (_, subM) = acu.methodDeclarations().toList { it.genericSignature }
@@ -157,10 +149,8 @@ class F {
     }
 
     parserTest("Test hidden method from outside class") {
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
-
-                """
+            """
 class Sup { 
     static void m() {}
 }
@@ -175,7 +165,7 @@ class F {
     }
 }
 
-                """.trimIndent()
+            """.trimIndent()
         )
 
         val (_, subM) = acu.methodDeclarations().toList { it.genericSignature }
@@ -186,10 +176,8 @@ class F {
     }
 
     parserTest("Test hidden method from outside class, when generic") {
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
-
-                """
+            """
 interface Collection<E> {}
 class Sup { 
     static <E> void m(Collection<? extends E> e) {}
@@ -204,8 +192,7 @@ class F {
         Sub.m(); // should be Sub::m, no ambiguity
     }
 }
-
-                """.trimIndent()
+            """.trimIndent()
         )
 
         val (_, subM) = acu.methodDeclarations().toList { it.genericSignature }
@@ -216,10 +203,8 @@ class F {
     }
 
     parserTest("Test hidden method inside class") {
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
-
+            """
 class Sup {
     static void m() {}
 }
@@ -230,8 +215,7 @@ class Sub extends Sup {
         Sub.m(); // should be Sub::m, no ambiguity
     }
 }
-
-                """.trimIndent()
+            """.trimIndent()
         )
 
         val (_, subM) = acu.methodDeclarations().toList { it.genericSignature }
@@ -242,10 +226,8 @@ class Sub extends Sup {
     }
 
     parserTest("Test hidden method inside hiding method") {
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
-
+            """
 class Sup {
     static void m() {}
 }
@@ -255,8 +237,7 @@ class Sub extends Sup {
         Sup.m();
     }
 }
-
-                """.trimIndent()
+            """.trimIndent()
         )
 
         val (supM, _) = acu.methodDeclarations().toList { it.genericSignature }
@@ -267,9 +248,8 @@ class Sub extends Sup {
     }
 
     parserTest("Test distinct primitive overloads from import") {
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+            """
 import static java.lang.Integer.reverseBytes; // (int) -> int
 import static java.lang.Long.reverseBytes; // (long) -> long
 
@@ -278,27 +258,24 @@ class Scratch {
         reverseBytes(0L);
     }
 }
-
-                """.trimIndent()
+            """.trimIndent()
         )
 
         val call = acu.firstMethodCall()
 
         spy.shouldBeOk {
             call.methodType.shouldMatchMethod(
-                    named = "reverseBytes",
-                    declaredIn = long.box(),
-                    withFormals = listOf(long),
-                    returning = long
+                named = "reverseBytes",
+                declaredIn = long.box(),
+                withFormals = listOf(long),
+                returning = long
             )
         }
     }
 
     parserTest("Test specificity between generic ctors") {
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
-
+            """
 class C<U> {
  U fu;
  C() {}
@@ -309,8 +286,7 @@ class C<U> {
      C<String> c = new C<>(new C<>(new C<>()));
  }
 }
-
-                """.trimIndent()
+            """.trimIndent()
         )
         val genericCtor = acu.ctorDeclarations().get(1)!!.genericSignature // new(C<U>)
 
@@ -319,12 +295,9 @@ class C<U> {
         }
     }
 
-
     parserTest("Test specificity between generic and non-generic method") {
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
-
+            """
 class Scratch<N extends Number> {
     class ScratchOfInt extends Scratch<Integer> {}
 
@@ -336,8 +309,7 @@ class Scratch<N extends Number> {
         getN(new ScratchOfInt());
     }
 }
-
-                """.trimIndent()
+            """.trimIndent()
         )
 
         val (_, specific) = acu.methodDeclarations().toList { it.genericSignature }
@@ -348,9 +320,8 @@ class Scratch<N extends Number> {
     }
 
     parserTest("Test specificity between lamdbas") {
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+            """
 class Scratch {
 
     interface Runnable { void run(); }
@@ -370,8 +341,7 @@ class Scratch {
         bench("foo", () -> polyMethod());  // selects the supplier
     }
 }
-
-                """.trimIndent()
+            """.trimIndent()
         )
 
         val (_, _, withRunnable, withSupplier) = acu.declaredMethodSignatures()
@@ -387,7 +357,6 @@ class Scratch {
     }
 
     parserTest("Test specificity between exact mrefs") {
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
 class Scratch {
@@ -410,8 +379,7 @@ class Scratch {
         bench("foo", Scratch::polyMethod);  // ambiguous
     }
 }
-
-                """.trimIndent()
+            """.trimIndent()
         )
 
         val (_, _, withRunnable, withSupplier) = acu.declaredMethodSignatures()
@@ -427,7 +395,6 @@ class Scratch {
     }
 
     parserTest("Test specificity between implicitly typed lamdbas (ambiguous)") {
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
 class Scratch {
@@ -449,8 +416,7 @@ class Scratch {
         bench("foo", o -> polyMethod());  // selects the supplier
     }
 }
-
-                """.trimIndent()
+            """.trimIndent()
         )
 
         val (ctor, voidM, stdM, polyM) = acu.methodCalls().toList()
@@ -459,5 +425,4 @@ class Scratch {
         spy.shouldBeAmbiguous(stdM)
         spy.shouldBeAmbiguous(polyM)
     }
-
 })

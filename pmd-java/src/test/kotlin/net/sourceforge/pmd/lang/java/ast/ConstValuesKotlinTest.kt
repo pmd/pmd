@@ -7,25 +7,24 @@ package net.sourceforge.pmd.lang.java.ast
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType
 
 /**
  *
  */
 class ConstValuesKotlinTest : ProcessorTestSpec({
-
-
     parserTest("Test reference cycle doesn't crash resolution") {
-
-        val acu = parser.parse("""
+        val acu = parser.parse(
+            """
             class Foo {
                 static final int I1 = I2;
                 static final int I2 = I1;
                 static final int I3 = 0;
             }
-        """.trimIndent())
+            """.trimIndent()
+        )
 
         val (i1, i2, i3) = acu.descendants(ASTVariableId::class.java).toList()
-
 
         i1.initializer!!.constValue shouldBe null
         i2.initializer!!.constValue shouldBe null
@@ -35,5 +34,4 @@ class ConstValuesKotlinTest : ProcessorTestSpec({
             it.constValue shouldBe 0
         }
     }
-
 })

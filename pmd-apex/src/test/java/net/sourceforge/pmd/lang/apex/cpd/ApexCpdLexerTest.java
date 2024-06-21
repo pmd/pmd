@@ -32,4 +32,14 @@ class ApexCpdLexerTest extends CpdTextComparisonTest {
     void testTabWidth() {
         doTest("tabWidth");
     }
+
+    @Test
+    void lexExceptionExpected() {
+        expectLexException("class Foo { String s = \"not a string literal\"; }");
+    }
+
+    @Test
+    void caseInsensitiveStringLiterals() {
+        doTest("StringLiterals5053");
+    }
 }
