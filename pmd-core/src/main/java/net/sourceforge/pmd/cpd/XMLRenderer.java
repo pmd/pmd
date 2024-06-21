@@ -6,7 +6,10 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -20,6 +23,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
@@ -32,6 +36,8 @@ import net.sourceforge.pmd.util.StringUtil;
  *
  */
 public final class XMLRenderer implements CPDReportRenderer {
+    private static final String NAMESPACE_URI = "https://pmd-code.org/ns/cpd-report/1.0.0";
+    private static final String NAMESPACE_LOCATION = "https://pmd-code.org/ns/cpd-report_1_0_0.xsd";
 
     private String encoding;
 
@@ -83,7 +89,7 @@ public final class XMLRenderer implements CPDReportRenderer {
             transformer.setOutputProperty(OutputKeys.METHOD, "xml");
             transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty(OutputKeys.CDATA_SECTION_ELEMENTS, "codefragment");
+            transformer.setOutputProperty(OutputKeys.CDATA_SECTION_ELEMENTS, "{" + NAMESPACE_URI + "}codefragment");
             transformer.transform(new DOMSource(doc), new StreamResult(writer));
         } catch (TransformerException e) {
             throw new IllegalStateException(e);
@@ -94,14 +100,18 @@ public final class XMLRenderer implements CPDReportRenderer {
     @Override
     public void render(final CPDReport report, final Writer writer) throws IOException {
         final Document doc = createDocument();
-        final Element root = doc.createElement("pmd-cpd");
+        final Element root = doc.createElementNS(NAMESPACE_URI, "pmd-cpd");
+        root.setAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "xsi:schemaLocation", NAMESPACE_URI + " " + NAMESPACE_LOCATION);
+
+        root.setAttributeNS(NAMESPACE_URI, "version", PMDVersion.VERSION);
+        root.setAttributeNS(NAMESPACE_URI, "timestamp", OffsetDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
         final Map<FileId, Integer> numberOfTokensPerFile = report.getNumberOfTokensPerFile();
         doc.appendChild(root);
 
         for (final Map.Entry<FileId, Integer> pair : numberOfTokensPerFile.entrySet()) {
-            final Element fileElement = doc.createElement("file");
-            fileElement.setAttribute("path", report.getDisplayName(pair.getKey()));
-            fileElement.setAttribute("totalNumberOfTokens", String.valueOf(pair.getValue()));
+            final Element fileElement = doc.createElementNS(NAMESPACE_URI, "file");
+            fileElement.setAttributeNS(NAMESPACE_URI, "path", report.getDisplayName(pair.getKey()));
+            fileElement.setAttributeNS(NAMESPACE_URI, "totalNumberOfTokens", String.valueOf(pair.getValue()));
             root.appendChild(fileElement);
         }
 
@@ -113,9 +123,9 @@ public final class XMLRenderer implements CPDReportRenderer {
         }
 
         for (Report.ProcessingError error : report.getProcessingErrors()) {
-            Element errorElt = doc.createElement("error");
-            errorElt.setAttribute("filename", report.getDisplayName(error.getFileId()));
-            errorElt.setAttribute("msg", error.getMsg());
+            Element errorElt = doc.createElementNS(NAMESPACE_URI, "error");
+            errorElt.setAttributeNS(NAMESPACE_URI, "filename", report.getDisplayName(error.getFileId()));
+            errorElt.setAttributeNS(NAMESPACE_URI, "msg", error.getMsg());
             errorElt.setTextContent(error.getDetail());
             root.appendChild(errorElt);
         }
@@ -126,17 +136,17 @@ public final class XMLRenderer implements CPDReportRenderer {
 
     private void addFilesToDuplicationElement(Document doc, Element duplication, Match match, CPDReport report) {
         for (Mark mark : match) {
-            final Element file = doc.createElement("file");
+            final Element file = doc.createElementNS(NAMESPACE_URI, "file");
             FileLocation loc = mark.getLocation();
-            file.setAttribute("line", String.valueOf(loc.getStartLine()));
+            file.setAttributeNS(NAMESPACE_URI, "line", String.valueOf(loc.getStartLine()));
             // only remove invalid characters, escaping is done by the DOM impl.
             String filenameXml10 = StringUtil.removedInvalidXml10Characters(report.getDisplayName(loc.getFileId()));
-            file.setAttribute("path", filenameXml10);
-            file.setAttribute("endline", String.valueOf(loc.getEndLine()));
-            file.setAttribute("column", String.valueOf(loc.getStartColumn()));
-            file.setAttribute("endcolumn", String.valueOf(loc.getEndColumn()));
-            file.setAttribute("begintoken", String.valueOf(mark.getBeginTokenIndex()));
-            file.setAttribute("endtoken", String.valueOf(mark.getEndTokenIndex()));
+            file.setAttributeNS(NAMESPACE_URI, "path", filenameXml10);
+            file.setAttributeNS(NAMESPACE_URI, "endline", String.valueOf(loc.getEndLine()));
+            file.setAttributeNS(NAMESPACE_URI, "column", String.valueOf(loc.getStartColumn()));
+            file.setAttributeNS(NAMESPACE_URI, "endcolumn", String.valueOf(loc.getEndColumn()));
+            file.setAttributeNS(NAMESPACE_URI, "begintoken", String.valueOf(mark.getBeginTokenIndex()));
+            file.setAttributeNS(NAMESPACE_URI, "endtoken", String.valueOf(mark.getEndTokenIndex()));
             duplication.appendChild(file);
         }
     }
@@ -146,7 +156,7 @@ public final class XMLRenderer implements CPDReportRenderer {
         if (codeSnippet != null) {
             // the code snippet has normalized line endings
             String platformSpecific = codeSnippet.toString().replace("\n", System.lineSeparator());
-            Element codefragment = doc.createElement("codefragment");
+            Element codefragment = doc.createElementNS(NAMESPACE_URI, "codefragment");
             // only remove invalid characters, escaping is not necessary in CDATA.
             // if the string contains the end marker of a CDATA section, then the DOM impl will
             // create two cdata sections automatically.
@@ -156,9 +166,9 @@ public final class XMLRenderer implements CPDReportRenderer {
     }
 
     private Element createDuplicationElement(Document doc, Match match) {
-        Element duplication = doc.createElement("duplication");
-        duplication.setAttribute("lines", String.valueOf(match.getLineCount()));
-        duplication.setAttribute("tokens", String.valueOf(match.getTokenCount()));
+        Element duplication = doc.createElementNS(NAMESPACE_URI, "duplication");
+        duplication.setAttributeNS(NAMESPACE_URI, "lines", String.valueOf(match.getLineCount()));
+        duplication.setAttributeNS(NAMESPACE_URI, "tokens", String.valueOf(match.getTokenCount()));
         return duplication;
     }
 }
