@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 
-class StandaloneExprMirror extends BaseExprMirror<ASTExpression> implements ExprMirror {
+class StandaloneExprMirror extends BaseExprMirror<ASTExpression> {
 
     StandaloneExprMirror(JavaExprMirrors factory, ASTExpression myNode, @Nullable ExprMirror parent) {
         super(factory, myNode, parent);

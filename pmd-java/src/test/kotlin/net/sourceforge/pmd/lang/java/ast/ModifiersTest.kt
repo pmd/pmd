@@ -10,18 +10,14 @@ import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility.*
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
 
 class ModifiersTest : ParserTestSpec({
-
-    parserTest("Local classes") {
-
+    parserTestContainer("Local classes") {
         inContext(StatementParsingCtx) {
-
             """
                @F class Local {
                     private int i;
                }
             """ should parseAs {
                 localClassDecl(simpleName = "Local") {
-
                     it::getVisibility shouldBe V_LOCAL
                     it::getEffectiveVisibility shouldBe V_LOCAL
 
@@ -51,10 +47,8 @@ class ModifiersTest : ParserTestSpec({
         }
     }
 
-    parserTest("Anon classes") {
-
+    parserTestContainer("Anon classes") {
         inContext(StatementParsingCtx) {
-
             """
                new Runnable() {
                     private int i;
@@ -88,6 +82,4 @@ class ModifiersTest : ParserTestSpec({
             }
         }
     }
-
-
 })

@@ -13,13 +13,10 @@ import net.sourceforge.pmd.lang.test.ast.shouldBe
  */
 class ASTArrayTypeTest : ParserTestSpec({
 
-    parserTest("Multi-Dim Array") {
+    parserTestContainer("Multi-Dim Array") {
         inContext(TypeParsingCtx) {
-
             "ArrayTypes[][][]" should parseAs {
-
                 arrayType {
-
                     it::getElementType shouldBe classType("ArrayTypes")
 
                     it::getDimensions shouldBe dimList {
@@ -32,11 +29,9 @@ class ASTArrayTypeTest : ParserTestSpec({
         }
     }
 
-    parserTest("Annotated array type") {
+    parserTestContainer("Annotated array type") {
         inContext(TypeParsingCtx) {
-
             "ArrayTypes[][] @A []" should parseAs {
-
                 arrayType {
                     it::getElementType shouldBe classType("ArrayTypes")
 
@@ -54,10 +49,9 @@ class ASTArrayTypeTest : ParserTestSpec({
         }
     }
 
-    parserTest("Multi-Dim Array allocation") {
+    parserTestContainer("Multi-Dim Array allocation") {
         inContext(ExpressionParsingCtx) {
             "new ArrayTypes[][][] { }" should parseAs {
-
                 arrayAlloc {
 
                     arrayType({

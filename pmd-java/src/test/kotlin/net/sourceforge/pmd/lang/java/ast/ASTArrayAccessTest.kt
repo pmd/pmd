@@ -14,12 +14,9 @@ import net.sourceforge.pmd.lang.test.ast.shouldBe
  */
 class ASTArrayAccessTest : ParserTestSpec({
 
-    parserTest("Array access auto disambiguation") {
-
+    parserTestContainer("Array access auto disambiguation") {
         inContext(ExpressionParsingCtx) {
-
             "a.b[0]" should parseAs {
-
                 arrayAccess {
                     it::getQualifier shouldBe fieldAccess("b") {
                         it::getQualifier shouldBe ambiguousName("a")
@@ -27,16 +24,11 @@ class ASTArrayAccessTest : ParserTestSpec({
 
                     it::getIndexExpression shouldBe int(0)
                 }
-
             }
 
-
             "b[0]" should parseAs {
-
                 arrayAccess {
-
                     it::getQualifier shouldBe variableAccess("b")
-
 
                     it::getIndexExpression shouldBe int(0)
                 }

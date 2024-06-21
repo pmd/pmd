@@ -39,11 +39,7 @@ import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
  *
  * </pre>
  */
-public interface ASTExpression
-    extends JavaNode,
-            TypeNode,
-            ASTMemberValue,
-            ASTSwitchArrowRHS {
+public interface ASTExpression extends TypeNode, ASTMemberValue, ASTSwitchArrowRHS {
 
     /**
      * Always returns true. This is to allow XPath queries

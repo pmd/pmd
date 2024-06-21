@@ -9,10 +9,9 @@ import net.sourceforge.pmd.lang.java.ast.JavaVersion.J16
 import java.io.IOException
 
 class ASTPatternTest : ProcessorTestSpec({
-
     val typePatternsVersions = JavaVersion.since(J16)
 
-    parserTest("Test patterns only available on JDK16 or higher (including preview)",
+    parserTestContainer("Test patterns only available on JDK16 or higher (including preview)",
         javaVersions = JavaVersion.except(typePatternsVersions)) {
 
         inContext(ExpressionParsingCtx) {
@@ -20,11 +19,10 @@ class ASTPatternTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("Test simple patterns", javaVersions = typePatternsVersions) {
-
+    parserTestContainer("Test simple patterns", javaVersions = typePatternsVersions) {
         importedTypes += IOException::class.java
-        inContext(ExpressionParsingCtx) {
 
+        inContext(ExpressionParsingCtx) {
             "obj instanceof Class c" should parseAs {
                 infixExpr(BinaryOp.INSTANCEOF) {
                     variableAccess("obj")

@@ -14,12 +14,9 @@ import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_8
  * @since 7.0.0
  */
 class ASTWildcardTypeTest : ParserTestSpec({
-
-    parserTest("Test simple names", javaVersions = J1_5..Latest) {
-
+    parserTestContainer("Test simple names", javaVersions = J1_5..Latest) {
         inContext(TypeParsingCtx) {
             "List<? extends B>" should parseAs {
-
                 classType("List") {
                     typeArgList {
                         child<ASTWildcardType> {
@@ -33,7 +30,6 @@ class ASTWildcardTypeTest : ParserTestSpec({
             }
 
             "List<? super B>" should parseAs {
-
                 classType("List") {
                     typeArgList {
                         child<ASTWildcardType> {
@@ -47,7 +43,6 @@ class ASTWildcardTypeTest : ParserTestSpec({
             }
 
             "List<?>" should parseAs {
-
                 classType("List") {
                     typeArgList {
                         child<ASTWildcardType> {
@@ -64,8 +59,7 @@ class ASTWildcardTypeTest : ParserTestSpec({
         }
     }
 
-    parserTest("Annotation placement", javaVersions = J1_8..Latest) {
-
+    parserTestContainer("Annotation placement", javaVersions = J1_8..Latest) {
         inContext(TypeParsingCtx) {
             "List<@A @B ? extends @C B>" should parseAs {
 
@@ -88,6 +82,4 @@ class ASTWildcardTypeTest : ParserTestSpec({
             }
         }
     }
-
-
 })

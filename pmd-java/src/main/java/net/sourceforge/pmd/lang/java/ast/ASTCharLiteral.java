@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.document.Chars;
  * retrieve the actual runtime value. Use {@link #getLiteralText()} to
  * retrieve the text.
  */
-public final class ASTCharLiteral extends AbstractLiteral implements ASTLiteral {
+public final class ASTCharLiteral extends AbstractLiteral {
 
 
     ASTCharLiteral(int id) {

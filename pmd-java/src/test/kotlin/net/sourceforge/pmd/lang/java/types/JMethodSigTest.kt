@@ -10,15 +10,15 @@ import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
 /**
  */
 class JMethodSigTest : ProcessorTestSpec({
-
     parserTest("Test erasure of generic method") {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
-            """
-            package p;
-            class Foo<A,B extends Number> {
-                <T, E extends RuntimeException>
-                 T method(A a, B b) throws E {}
-            }"""
+        """
+        package p;
+        class Foo<A,B extends Number> {
+            <T, E extends RuntimeException>
+             T method(A a, B b) throws E {}
+        }
+        """
         )
 
         val (a, b, t, e) = acu.typeVariables()
@@ -47,5 +47,3 @@ class JMethodSigTest : ProcessorTestSpec({
         }
     }
 })
-
-

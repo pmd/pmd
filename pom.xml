@@ -3,23 +3,25 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>7.2.0-SNAPSHOT</version>
+    <version>7.3.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
     <description>
-        PMD is a source code analyzer. It finds common programming flaws like unused variables, empty catch blocks,
-        unnecessary object creation, and so forth. It supports many languages. It can be extended with custom rules.
-        It uses JavaCC and Antlr to parse source files into abstract syntax trees (AST) and runs rules against them to find violations.
-        Rules can be written in Java or using a XPath query.
+        PMD is an extensible multilanguage static code analyzer. It finds common programming flaws like unused variables,
+        empty catch blocks, unnecessary object creation, and so forth. It's mainly concerned with Java and
+        Apex, but supports 16 other languages. It comes with 400+ built-in rules. It can be
+        extended with custom rules. It uses JavaCC and Antlr to parse source files into abstract syntax trees
+        (AST) and runs rules against them to find violations. Rules can be written in Java or using a XPath query.
 
-        It supports Java, JavaScript, Salesforce.com Apex and Visualforce,
-        Kotlin, Swift, Modelica, PLSQL, Apache Velocity, JSP, WSDL, HTML, XML and XSL.
+        Currently, PMD supports Java, JavaScript, Salesforce.com Apex and Visualforce,
+        Kotlin, Swift, Modelica, PLSQL, Apache Velocity, JSP, WSDL, Maven POM, HTML, XML and XSL.
         Scala is supported, but there are currently no Scala rules available.
 
         Additionally, it includes CPD, the copy-paste-detector. CPD finds duplicated code in
-        Coco, C/C++, C#, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Julia, Kotlin, Lua, Matlab, Modelica,
-        Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex and Visualforce, Scala, Swift, T-SQL, Typescript and XML.
+        Coco, C/C++, C#, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Julia, Kotlin,
+        Lua, Matlab, Modelica, Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex and
+        Visualforce, Scala, Swift, T-SQL, Typescript, Apache Velocity, WSDL, XML and XSL.
     </description>
 
     <url>https://pmd.github.io/</url>
@@ -81,7 +83,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2024-04-26T06:14:52Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2024-05-31T10:33:57Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -90,10 +92,10 @@
 
 
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
-        <kotlin.version>1.7.20</kotlin.version>
-        <kotest.version>5.5.5</kotest.version>
+        <kotlin.version>1.9.24</kotlin.version>
+        <kotest.version>5.9.1</kotest.version>
         <junit5.version>5.8.2</junit5.version> <!-- needed by kotest -->
-        <dokka.version>1.7.20</dokka.version>
+        <dokka.version>1.9.20</dokka.version>
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>3.2.5</surefire.version>
@@ -113,9 +115,9 @@
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding} ${extraArgLine}</argLine>
         <extraArgLine /> <!-- empty by default, profiles set it as needed -->
 
-        <pmd.build-tools.version>24</pmd.build-tools.version>
+        <pmd.build-tools.version>26-SNAPSHOT</pmd.build-tools.version>
 
-        <pmd-designer.version>7.0.0</pmd-designer.version>
+        <pmd-designer.version>7.2.0</pmd-designer.version>
         <javacc.jar>${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar</javacc.jar>
         <javacc.outputDirectory>${project.build.directory}/generated-sources/javacc</javacc.outputDirectory>
         <javacc.ant.wrapper>${project.basedir}/../javacc-wrapper.xml</javacc.ant.wrapper>
@@ -333,7 +335,11 @@
                     <configuration>
                         <runOrder>alphabetical</runOrder>
                         <systemPropertyVariables>
+                            <!-- used by pmd-lang-test::net.sourceforge.pmd.lang.test.BaseTextComparisonTest -->
                             <mvn.project.src.test.resources>${project.build.testResources[0].directory}</mvn.project.src.test.resources>
+                            <!-- https://kotest.io/docs/framework/project-config.html#runtime-detection -->
+                            <kotest.framework.classpath.scanning.config.disable>true</kotest.framework.classpath.scanning.config.disable>
+                            <kotest.framework.classpath.scanning.autoscan.disable>true</kotest.framework.classpath.scanning.autoscan.disable>
                         </systemPropertyVariables>
                         <statelessTestsetInfoReporter implementation="net.sourceforge.pmd.buildtools.surefire.PMDStatelessTestSetInfoConsoleReporter">
                             <showFailedTests>true</showFailedTests>
@@ -504,9 +510,22 @@
                             <id>pmd-main</id>
                             <phase>verify</phase>
                             <goals>
+                                <goal>pmd</goal>
                                 <goal>check</goal>
+                                <goal>cpd</goal>
                                 <goal>cpd-check</goal>
                             </goals>
+                            <configuration>
+                                <skip>${pmd.skip}</skip>
+                                <minimumTokens>100</minimumTokens>
+                                <rulesets>
+                                    <ruleset>/net/sourceforge/pmd/pmd-dogfood-config.xml</ruleset>
+                                </rulesets>
+                                <excludeRoots>
+                                    <excludeRoot>target/generated-sources/javacc</excludeRoot>
+                                    <excludeRoot>target/generated-sources/antlr4</excludeRoot>
+                                </excludeRoots>
+                            </configuration>
                         </execution>
                         <execution>
                             <id>pmd-test</id>
@@ -516,6 +535,7 @@
                                 <goal>check</goal>
                             </goals>
                             <configuration>
+                                <skip>${pmd.skip}</skip>
                                 <targetDirectory>${project.build.directory}/pmdTest/</targetDirectory>
                                 <includeTests>true</includeTests>
                                 <rulesets>
@@ -526,19 +546,15 @@
                     </executions>
                     <configuration>
                         <linkXRef>false</linkXRef>
-                        <minimumTokens>100</minimumTokens>
                         <targetJdk>1.${java.version}</targetJdk>
-                        <rulesets>
-                            <ruleset>/net/sourceforge/pmd/pmd-dogfood-config.xml</ruleset>
-                        </rulesets>
-                        <excludeRoots>
-                            <excludeRoot>target/generated-sources/javacc</excludeRoot>
-                            <excludeRoot>target/generated-sources/antlr4</excludeRoot>
-                        </excludeRoots>
                         <skipPmdError>false</skipPmdError>
                         <failurePriority>2</failurePriority>
                         <failOnViolation>true</failOnViolation>
                         <printFailingErrors>true</printFailingErrors>
+                        <!-- Skip the default pmd executions, which is triggered by pmd:check and avoid
+                             unnecessary pmd analysis of the main code.
+                             We use executions pmd-main and pmd-test instead and explicitly run pmd:pmd. -->
+                        <skip>true</skip>
                     </configuration>
                     <dependencies>
                         <!-- Note: we can't use a property for the version here due to https://issues.apache.org/jira/browse/MRELEASE-932 -->

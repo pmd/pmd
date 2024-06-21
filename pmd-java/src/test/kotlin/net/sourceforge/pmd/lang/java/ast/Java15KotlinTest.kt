@@ -8,10 +8,8 @@ import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 
 class Java15KotlinTest : ParserTestSpec({
-
     // Note: More tests are in ASTLiteralTest.
-    parserTest("textBlocks", javaVersions = JavaVersion.J15..JavaVersion.Latest) {
-
+    parserTestContainer("textBlocks", javaVersions = JavaVersion.J15..JavaVersion.Latest) {
         val tblock = "\"\"\"\n" +
                 // 4 spaces of insignificant indentation
                 "    <html>   \n" +
@@ -35,5 +33,4 @@ class Java15KotlinTest : ParserTestSpec({
             }
         }
     }
-
 })

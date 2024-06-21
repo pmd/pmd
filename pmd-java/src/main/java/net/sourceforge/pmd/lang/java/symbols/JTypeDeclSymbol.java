@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
  *
  * @since 7.0.0
  */
-public interface JTypeDeclSymbol extends JElementSymbol, JAccessibleElementSymbol {
+public interface JTypeDeclSymbol extends JAccessibleElementSymbol {
 
     /**
      * Returns true if this class is a symbolic reference to an unresolved

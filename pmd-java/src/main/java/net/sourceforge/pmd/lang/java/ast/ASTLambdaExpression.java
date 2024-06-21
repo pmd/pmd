@@ -64,6 +64,15 @@ public final class ASTLambdaExpression extends AbstractJavaExpr implements Funct
     }
 
 
+    /**
+     * Return true if this lambda is explicitly typed, meaning
+     * all parameters have an explicit type. Note that lambdas
+     * with zero parameters are explicitly typed.
+     */
+    public boolean isExplicitlyTyped() {
+        return getParameters().toStream().none(ASTLambdaParameter::isTypeInferred);
+    }
+
     /** Returns true if this lambda has a block for body. */
     public boolean isBlockBody() {
         return getChild(1) instanceof ASTBlock;

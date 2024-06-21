@@ -18,10 +18,7 @@ import java.util.function.Supplier
  *
  */
 class SpecialMethodsTest : ProcessorTestSpec({
-
-
-    parserTest("Test getClass special type") {
-
+    parserTestContainer("Test getClass special type") {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
             import java.util.function.Function;
@@ -93,8 +90,6 @@ class SpecialMethodsTest : ProcessorTestSpec({
     }
 
     parserTest("Test enum methods") {
-
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
             import java.util.Arrays;
@@ -106,8 +101,7 @@ class SpecialMethodsTest : ProcessorTestSpec({
                     Arrays.stream(values());
                 }
             }
-
-        """.trimIndent()
+            """.trimIndent()
         )
 
         val t_Foo = acu.descendants(ASTTypeDeclaration::class.java).firstOrThrow().typeMirror
@@ -121,9 +115,8 @@ class SpecialMethodsTest : ProcessorTestSpec({
     }
 
     parserTest("getClass in invocation ctx, unchecked conversion") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
-
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             class Scratch {
                 public static <T,U> T[] copyOf(U[] original, Class<? extends T[]> newType) {
                     return null;
@@ -135,8 +128,8 @@ class SpecialMethodsTest : ProcessorTestSpec({
                     return (T[]) copyOf(elements, a.getClass());
                 }
             }
-
-        """.trimIndent())
+            """.trimIndent()
+        )
 
         acu.descendants(ASTTypeDeclaration::class.java).firstOrThrow().typeMirror shouldNotBe null
 
@@ -163,18 +156,16 @@ class SpecialMethodsTest : ProcessorTestSpec({
         }
     }
 
-
     parserTest("Record ctor formal param reference") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
-
-           record Foo(int comp) {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            record Foo(int comp) {
                 Foo {
                     comp = comp - 1;
                 }
-           }
-
-        """.trimIndent())
+            }
+            """.trimIndent()
+        )
 
         val (compLhs, compRhs) = acu.descendants(ASTVariableAccess::class.java).toList()
         val id = acu.varId("comp")
@@ -192,6 +183,4 @@ class SpecialMethodsTest : ProcessorTestSpec({
             }
         }
     }
-
-
 })

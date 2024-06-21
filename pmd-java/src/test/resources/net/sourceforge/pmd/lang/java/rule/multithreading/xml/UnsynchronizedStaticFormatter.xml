@@ -304,4 +304,21 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description> [java] False positive UnsynchronizedStaticFormatter in static initializer #2368 </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.text.NumberFormat;
+
+            class WithFormatter {
+                private static final NumberFormat formatter;
+
+                static {
+                    formatter = NumberFormat.getInstance();
+                    formatter.setMaximumFractionDigits(2); // FALSE POSITIVE
+                }
+                // …
+            }
+        ]]></code>
+    </test-code>
 </test-data>

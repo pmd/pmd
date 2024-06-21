@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
+
 import com.google.summit.ast.Identifier;
 
 public final class ASTReferenceExpression extends AbstractApexNode.Many<Identifier> {
@@ -38,6 +40,7 @@ public final class ASTReferenceExpression extends AbstractApexNode.Many<Identifi
         return "";
     }
 
+    @NoAttribute
     public List<String> getNames() {
         return nodes.stream().map(Identifier::getString).collect(Collectors.toList());
     }

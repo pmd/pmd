@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.types.Substitution;
  * Common supertype for {@linkplain JMethodSymbol method}
  * and {@linkplain JConstructorSymbol constructor symbols}.
  */
-public interface JExecutableSymbol extends JAccessibleElementSymbol, JTypeParameterOwnerSymbol {
+public interface JExecutableSymbol extends JTypeParameterOwnerSymbol {
 
 
     /**

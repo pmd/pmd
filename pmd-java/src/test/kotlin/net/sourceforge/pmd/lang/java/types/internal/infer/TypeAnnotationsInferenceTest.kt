@@ -12,7 +12,6 @@ import net.sourceforge.pmd.lang.java.types.*
 /**
  */
 class TypeAnnotationsInferenceTest : ProcessorTestSpec({
-
     parserTest("Test type annotation propagate even with boxing") {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
@@ -34,7 +33,7 @@ class Foo {
     }
 }
 
-        """.trimIndent()
+            """.trimIndent()
         )
 
         val (_, A) = acu.typeDeclarations().toList { it.symbol }
@@ -65,7 +64,7 @@ class Foo {
     }
 }
 
-        """.trimIndent()
+            """.trimIndent()
         )
 
         val (_, A, t_Predicate) = acu.typeDeclarations().toList { it.symbol }
@@ -76,10 +75,8 @@ class Foo {
             acu.firstMethodCall() shouldHaveType boolean
             acu.firstMethodCall().methodType.shouldMatchMethod(
                 named = "test",
-                declaredIn = t_Predicate[captureMatcher( `?` `super` (`@A` on acu.typeVar("T")))]
+                declaredIn = t_Predicate[captureMatcher(`?` `super` (`@A` on acu.typeVar("T")))]
             )
         }
     }
-
-
 })

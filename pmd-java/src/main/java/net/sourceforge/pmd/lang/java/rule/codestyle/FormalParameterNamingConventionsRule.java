@@ -39,6 +39,10 @@ public final class FormalParameterNamingConventionsRule extends AbstractNamingCo
 
     @Override
     public Object visit(ASTVariableId node, Object data) {
+        if (node.isUnnamed()) {
+            // unnamed variables do not have to match the regexes.
+            return null;
+        }
 
         if (node.isLambdaParameter()) {
             checkMatches(node, node.isTypeInferred() ? lambdaParamRegex : explicitLambdaParamRegex, data);
