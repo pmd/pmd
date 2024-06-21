@@ -103,7 +103,7 @@ public class CPDTask extends Task {
             config.setSkipDuplicates(skipDuplicateFiles);
 
             if (skipLexicalErrors) {
-                log("skipLexicalErrors is deprecated since 7.2.0 and the property is ignored. "
+                log("skipLexicalErrors is deprecated since 7.3.0 and the property is ignored. "
                         + "Lexical errors are now skipped by default and the build is failed. "
                         + "Use failOnError=\"false\" to not fail the build.", Project.MSG_WARN);
             }
@@ -277,7 +277,7 @@ public class CPDTask extends Task {
     /**
      * Whether to fail the build if any recoverable errors occurred while processing the files.
      *
-     * @since 7.2.0
+     * @since 7.3.0
      */
     public void setFailOnError(boolean failOnError) {
         this.failOnError = failOnError;

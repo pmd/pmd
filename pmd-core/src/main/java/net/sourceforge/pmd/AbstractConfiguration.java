@@ -416,13 +416,13 @@ public abstract class AbstractConfiguration {
      * Whether PMD should exit with status 5 (the default behavior, true) if
      * recoverable errors occurred or just with 0 (to not break the build, e.g.).
      *
-     * <p>Note: If only violations are found, the exist status is 4. See
+     * <p>Note: If only violations are found, the exit status is 4. See
      * {@link #isFailOnViolation()}.
      *
      * @return failOnError
      *
      * @see #isFailOnViolation()
-     * @since 7.2.0
+     * @since 7.3.0
      */
     public boolean isFailOnError() {
         return failOnError;
@@ -432,13 +432,13 @@ public abstract class AbstractConfiguration {
      * Sets whether PMD should exit with status 5 (the default behavior, true)
      * if recoverable errors occurred or just with 0 (to not break the build, e.g.).
      *
-     * <p>Note: If only violations are found, the exist status is 4. See
+     * <p>Note: If only violations are found, the exit status is 4. See
      * {@link #isFailOnViolation()}.
      *
      * @param failOnError whether to exit with 5 and fail the build if recoverable errors occurred.
      *
      * @see #isFailOnViolation()
-     * @since 7.2.0
+     * @since 7.3.0
      */
     public void setFailOnError(boolean failOnError) {
         this.failOnError = failOnError;

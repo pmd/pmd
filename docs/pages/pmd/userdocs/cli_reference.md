@@ -5,7 +5,7 @@ tags: [userdocs]
 keywords: [command, line, options, help, formats, renderers]
 permalink: pmd_userdocs_cli_reference.html
 author: Tom Copeland <tom@infoether.com>, Xavier Le Vourch <xlv@users.sourceforge.net>, Juan Martín Sotuyo Dodero <juansotuyo@gmail.com>
-last_updated: May 2024 (7.2.0)
+last_updated: June 2024 (7.3.0)
 ---
 
 
@@ -210,7 +210,7 @@ Or you can set the environment variable `CLASSPATH` before starting PMD, e.g.
 
 ## Exit Status
 
-Please note that if PMD detects any violations, it will exit with status 4 (since 5.3) or 5 (since 7.2.0).
+Please note that if PMD detects any violations, it will exit with status 4 (since 5.3) or 5 (since 7.3.0).
 This behavior has been introduced to ease PMD integration into scripts or hooks, such as SVN hooks.
 
 <table>
@@ -219,7 +219,7 @@ This behavior has been introduced to ease PMD integration into scripts or hooks,
 <tr><td>2</td><td>Usage error. Command-line parameters are invalid or missing.</td></tr>
 <tr><td>4</td><td>At least one violation has been detected, unless <code>--no-fail-on-violation</code> is set.<p>Since PMD 5.3.</p></td></tr>
 <tr><td>5</td><td>At least one recoverable error has occurred. There might be additionally zero or more violations detected.
-    To ignore recoverable errors, use <code>--no-fail-on-error</code>.<p>Since PMD 7.2.0.</p></td></tr>
+    To ignore recoverable errors, use <code>--no-fail-on-error</code>.<p>Since PMD 7.3.0.</p></td></tr>
 </table>
 
 {%include note.html content="If PMD exits with 5, then PMD had either trouble parsing one or more files or a rule failed with an exception.

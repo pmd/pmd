@@ -4,7 +4,7 @@ tags: [cpd, userdocs]
 summary: "Learn how to use CPD, the copy-paste detector shipped with PMD."
 permalink: pmd_userdocs_cpd.html
 author: Tom Copeland <tom@infoether.com>
-last_updated: May 2024 (7.2.0)
+last_updated: June 2024 (7.3.0)
 ---
 
 ## Overview
@@ -284,7 +284,7 @@ If you specify a source directory but don't want to scan the sub-directories, yo
 
 ### Exit status
 
-Please note that if CPD detects duplicated source code, it will exit with status 4 (since 5.0) or 5 (since 7.2.0).
+Please note that if CPD detects duplicated source code, it will exit with status 4 (since 5.0) or 5 (since 7.3.0).
 This behavior has been introduced to ease CPD integration into scripts or hooks, such as SVN hooks.
 
 <table>
@@ -293,7 +293,7 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 <tr><td>2</td><td>Usage error. Command-line parameters are invalid or missing.</td></tr>
 <tr><td>4</td><td>At least one code duplication has been detected unless <code>--no-fail-on-violation</code> is set.<p>Since PMD 5.0.</p></td></tr>
 <tr><td>5</td><td>At least one recoverable error has occurred. There might be additionally zero or more duplications detected.
-    To ignore recoverable errors, use <code>--no-fail-on-error</code>.<p>Since PMD 7.2.0.</p></td></tr>
+    To ignore recoverable errors, use <code>--no-fail-on-error</code>.<p>Since PMD 7.3.0.</p></td></tr>
 </table>
 
 {%include note.html content="If PMD exits with 5, then PMD had trouble lexing one or more files.
@@ -402,7 +402,7 @@ Andy Glover wrote an Ant task for CPD; here's how to use it:
                             If not specified, CPD uses the system default encoding."
     %}
     {% include custom/cli_option_row.html options="failOnError"
-               description="Whether to fail the build if any errors occurred while processing the files. Since PMD 7.2.0."
+               description="Whether to fail the build if any errors occurred while processing the files. Since PMD 7.3.0."
                default="true"
     %}
     {% include custom/cli_option_row.html options="format"
@@ -441,7 +441,7 @@ Andy Glover wrote an Ant task for CPD; here's how to use it:
     {% include custom/cli_option_row.html options="skipLexicalErrors"
                description="<span class='label label-primary'>Deprecated</span> Skip files which can't be tokenized
                             due to invalid characters instead of aborting CPD. This parameter is deprecated and
-                            ignored since PMD 7.2.0. It is now by default true. Use `failOnError` instead to fail the build."
+                            ignored since PMD 7.3.0. It is now by default true. Use `failOnError` instead to fail the build."
                default="true"
     %}
     {% include custom/cli_option_row.html options="skipBlocks"
