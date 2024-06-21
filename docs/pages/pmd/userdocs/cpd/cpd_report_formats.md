@@ -5,7 +5,7 @@ keywords: [formats, renderers]
 summary: "Overview of the built-in report formats for CPD"
 permalink: pmd_userdocs_cpd_report_formats.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: May 2024 (7.2.0)
+last_updated: June 2024 (7.3.0)
 ---
 
 ## Overview
@@ -98,7 +98,8 @@ Starting at line 110 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/
 This format uses XML to output the duplications in a more structured format.
 The XML format can then further be processed using XSLT transformations. See [section xslt](#xslt) for examples.
 
-Since PMD 7.2.0 any processing errors are also reported (if `--skip-lexical-errors` is used) as additional elements `error`.
+Since PMD 7.3.0 any recoverable errors are also reported as additional elements `error` to help investigate
+any errors occurred during analysis.
 
 Example:
 
