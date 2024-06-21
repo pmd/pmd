@@ -127,7 +127,7 @@ copy-paste into your ruleset XML. The resulting element looks like so:
 <rule name="DontCallBossShort"
       language="java"
       message="Boss wants to talk to you."
-      class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+      class="net.sourceforge.pmd.lang.rule.XPathRule">
     <description>
         TODO
     </description>
