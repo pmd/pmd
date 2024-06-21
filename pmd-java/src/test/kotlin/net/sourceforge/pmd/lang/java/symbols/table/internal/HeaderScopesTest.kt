@@ -373,4 +373,14 @@ class HeaderScopesTest : ProcessorTestSpec({
         val block = acu.descendants(ASTBlock::class.java).firstOrThrow()
         block.symbolTable.types().shouldResolveToClass("List", "java.util.List")
     }
+
+    parserTest("[java] Incorrect type resolution with classes having the same name #913") {
+        val acu1 = parser.parseClass(javasymbols.testdata.deep.ClassInDifferentPackage::class.java)
+        acu1.symbolTable.types().shouldResolveToClass("ClassInDifferentPackage", "javasymbols.testdata.deep.ClassInDifferentPackage")
+        TypeTestUtil.isExactlyA("javasymbols.testdata.deep.ClassInDifferentPackage", acu1.typeDeclarations.first())
+
+        val acu2 = parser.parseClass(javasymbols.testdata.ClassInDifferentPackage::class.java)
+        acu2.symbolTable.types().shouldResolveToClass("ClassInDifferentPackage", "javasymbols.testdata.ClassInDifferentPackage")
+        TypeTestUtil.isExactlyA("javasymbols.testdata.ClassInDifferentPackage", acu2.typeDeclarations.first())
+    }
 })
