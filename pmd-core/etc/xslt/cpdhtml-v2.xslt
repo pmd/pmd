@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xpath-default-namespace="https://pmd-code.org/schema/cpd-report">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:cpd="https://pmd-code.org/schema/cpd-report"
+                exclude-result-prefixes="cpd">
 <!--
    PMD CPD (Copy and Paste Detector) XML to HTML transformer 
 -->
@@ -68,10 +70,10 @@
               <th>Approximate number of bytes</th>
             </tr>
             <tr>
-              <td class="SummaryNumber"><xsl:value-of select="count(//duplication)"/></td>
-              <td class="SummaryNumber"><xsl:value-of select="sum(//duplication/@lines)"/></td>
-              <td class="SummaryNumber"><xsl:value-of select="sum(//duplication/@tokens)"/></td>
-              <td class="SummaryNumber"><xsl:value-of select="sum(//duplication/@tokens) * 4"/></td>
+              <td class="SummaryNumber"><xsl:value-of select="count(//cpd:duplication)"/></td>
+              <td class="SummaryNumber"><xsl:value-of select="sum(//cpd:duplication/@lines)"/></td>
+              <td class="SummaryNumber"><xsl:value-of select="sum(//cpd:duplication/@tokens)"/></td>
+              <td class="SummaryNumber"><xsl:value-of select="sum(//cpd:duplication/@tokens) * 4"/></td>
             </tr>
           </table>
         </div>
@@ -91,7 +93,7 @@
             </tr>
           </thead>
           <tbody>
-            <xsl:apply-templates select="pmd-cpd/duplication" />
+            <xsl:apply-templates select="cpd:pmd-cpd/cpd:duplication" />
           </tbody>
       </table>
     </div>
@@ -133,7 +135,7 @@
 </xsl:template>
 
 <!-- templates -->
-<xsl:template match="pmd-cpd/duplication">
+<xsl:template match="cpd:pmd-cpd/cpd:duplication">
   <xsl:for-each select=".">
       <tr>
         <td><xsl:value-of select="@lines"/></td>
@@ -141,7 +143,7 @@
         <td>
           <table class="table table-light table-bordered table-striped table-hover">
             <tr><th>column</th><th>endcolumn</th><th>line</th><th>endline</th><th>path</th></tr>
-            <xsl:for-each select="file">
+            <xsl:for-each select="cpd:file">
               <tr>
                 <td><xsl:value-of select="@column"/></td>
                 <td><xsl:value-of select="@endcolumn"/></td>
@@ -152,7 +154,7 @@
             </xsl:for-each>
           </table>
         </td>
-        <td><pre><xsl:value-of select="codefragment"/></pre></td>
+        <td><pre><xsl:value-of select="cpd:codefragment"/></pre></td>
       </tr>
   </xsl:for-each>
 </xsl:template>
