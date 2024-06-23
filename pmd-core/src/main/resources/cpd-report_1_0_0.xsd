@@ -19,12 +19,12 @@
 
     <xs:complexType name="file">
         <xs:attribute name="path" type="xs:string" use="required"/>
-        <xs:attribute name="totalNumberOfTokens" type="xs:int" use="required"/>
+        <xs:attribute name="totalNumberOfTokens" type="xs:nonNegativeInteger" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="duplication">
         <xs:sequence>
-            <xs:element name="file" type="fileLocation" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="file" type="fileLocation" minOccurs="2" maxOccurs="unbounded"/>
             <xs:element name="codefragment" type="codefragment" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="lines" type="xs:positiveInteger" use="required"/>
@@ -45,8 +45,8 @@
         <xs:attribute name="endcolumn" type="xs:positiveInteger" use="required"/>
         <xs:attribute name="endline" type="xs:positiveInteger" use="required"/>
         <xs:attribute name="line" type="xs:positiveInteger" use="required"/>
-        <xs:attribute name="begintoken" type="xs:integer" use="required"/>
-        <xs:attribute name="endtoken" type="xs:integer" use="required"/>
+        <xs:attribute name="begintoken" type="xs:nonNegativeInteger" use="required"/>
+        <xs:attribute name="endtoken" type="xs:nonNegativeInteger" use="required"/>
         <xs:attribute name="path" type="xs:string" use="required"/>
     </xs:complexType>
 
