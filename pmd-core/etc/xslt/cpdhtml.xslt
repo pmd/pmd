@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Stylesheet to turn the XML output of CPD into a nice-looking HTML page -->
 <!-- $Id$ -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xpath-default-namespace="https://pmd-code.org/schema/cpd-report" version="2.0">
 <xsl:output method="html" encoding="utf-8" doctype-system="about:legacy-compat"/>
 <xsl:param name="lines" required="yes">30</xsl:param>
 

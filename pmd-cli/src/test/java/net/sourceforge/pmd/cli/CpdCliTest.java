@@ -10,7 +10,6 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.emptyString;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 
 import java.nio.charset.StandardCharsets;
