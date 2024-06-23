@@ -36,8 +36,9 @@ import net.sourceforge.pmd.util.StringUtil;
  *
  */
 public final class XMLRenderer implements CPDReportRenderer {
-    private static final String NAMESPACE_URI = "https://pmd-code.org/ns/cpd-report/1.0.0";
-    private static final String NAMESPACE_LOCATION = "https://pmd-code.org/ns/cpd-report_1_0_0.xsd";
+    private static final String NAMESPACE_URI = "https://pmd-code.org/schema/cpd-report";
+    private static final String NAMESPACE_LOCATION = "https://pmd.github.io/schema/cpd-report_1_0_0.xsd";
+    private static final String SCHEMA_VERSION = "1.0.0";
 
     private String encoding;
 
@@ -103,7 +104,8 @@ public final class XMLRenderer implements CPDReportRenderer {
         final Element root = doc.createElementNS(NAMESPACE_URI, "pmd-cpd");
         root.setAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "xsi:schemaLocation", NAMESPACE_URI + " " + NAMESPACE_LOCATION);
 
-        root.setAttributeNS(NAMESPACE_URI, "version", PMDVersion.VERSION);
+        root.setAttributeNS(NAMESPACE_URI, "version", SCHEMA_VERSION);
+        root.setAttributeNS(NAMESPACE_URI, "pmdVersion", PMDVersion.VERSION);
         root.setAttributeNS(NAMESPACE_URI, "timestamp", OffsetDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
         final Map<FileId, Integer> numberOfTokensPerFile = report.getNumberOfTokensPerFile();
         doc.appendChild(root);

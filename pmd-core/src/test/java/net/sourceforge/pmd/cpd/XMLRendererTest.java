@@ -57,14 +57,15 @@ class XMLRendererTest {
         assertReportIsValidSchema(report);
 
         assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                + "<pmd-cpd xmlns=\"https://pmd-code.org/ns/cpd-report/1.0.0\"\n"
+                + "<pmd-cpd xmlns=\"https://pmd-code.org/schema/cpd-report\"\n"
                 + "         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+                + "         pmdVersion=\"XXX\"\n"
                 + "         timestamp=\"XXX\"\n"
-                + "         version=\"XXX\"\n"
-                + "         xsi:schemaLocation=\"https://pmd-code.org/ns/cpd-report/1.0.0 https://pmd-code.org/ns/cpd-report_1_0_0.xsd\"/>\n",
-                report.replaceAll(" {4}timestamp=\".+?\"", "    timestamp=\"XXX\"")
-                        .replaceAll(" {4}version=\".+?\"", "    version=\"XXX\""),
-                "namespace is missing");
+                + "         version=\"1.0.0\"\n"
+                + "         xsi:schemaLocation=\"https://pmd-code.org/schema/cpd-report https://pmd.github.io/schema/cpd-report_1_0_0.xsd\"/>\n",
+                report.replaceAll("timestamp=\".+?\"", "timestamp=\"XXX\"")
+                        .replaceAll("pmdVersion=\".+?\"", "pmdVersion=\"XXX\""),
+                "namespace is missing or wrong");
 
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
                                              .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));

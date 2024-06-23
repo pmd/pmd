@@ -1,9 +1,17 @@
 <?xml version="1.0"?>
 <xs:schema
         xmlns:xs="http://www.w3.org/2001/XMLSchema"
-        xmlns="https://pmd-code.org/ns/cpd-report/1.0.0"
-        targetNamespace="https://pmd-code.org/ns/cpd-report/1.0.0"
+        xmlns="https://pmd-code.org/schema/cpd-report" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="https://pmd-code.org/schema/cpd-report"
         elementFormDefault="qualified">
+
+    <xsd:annotation>
+        <xs:documentation><![CDATA[
+    PMD CPD Report Schema, version 1.0.0
+
+    This XML format is produced by CPD's XMLRenderer "xml".
+]]></xs:documentation>
+    </xsd:annotation>
 
     <xs:element name="pmd-cpd">
         <xs:complexType>
@@ -13,6 +21,7 @@
                 <xs:element name="error" type="error" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
             <xs:attribute name="version" type="xs:string" use="required"/>
+            <xs:attribute name="pmdVersion" type="xs:string" use="required"/>
             <xs:attribute name="timestamp" type="xs:string" use="required"/>
         </xs:complexType>
     </xs:element>
