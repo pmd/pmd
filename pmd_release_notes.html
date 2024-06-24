@@ -1905,6 +1905,11 @@
 
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
 <ul>
+  <li>core
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/4992">#4992</a>: [core] CPD: Include processing errors in XML report</li>
+    </ul>
+  </li>
   <li>apex
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/5053">#5053</a>: [apex] CPD fails to parse string literals with escaped characters</li>
@@ -1924,6 +1929,33 @@
 </ul>
 
 <h3 id="-api-changes">🚨 API Changes</h3>
+
+<h4 id="cpd-report-format-xml">CPD Report Format XML</h4>
+
+<p>There are some important changes:</p>
+
+<ol>
+  <li>The XML format will now use an XSD schema, that is available at <a href="https://pmd.github.io/schema/cpd-report_1_0_0.xsd">https://pmd.github.io/schema/cpd-report_1_0_0.xsd</a>.
+This schema defines the valid elements and attributes that one can expect from a CPD report.</li>
+  <li>The root element <code class="language-plaintext highlighter-rouge">pmd-cpd</code> contains the new attributes <code class="language-plaintext highlighter-rouge">pmdVersion</code>, <code class="language-plaintext highlighter-rouge">timestamp</code> and <code class="language-plaintext highlighter-rouge">version</code>. The latter is
+the schema version and is currently “1.0.0”.</li>
+  <li>The CPD XML report will now also contain recoverable errors as additional <code class="language-plaintext highlighter-rouge">&lt;error&gt;</code> elements.</li>
+</ol>
+
+<p>See <a href="pmd_userdocs_cpd_report_formats.html#xml">Report formats for CPD</a> for an example.</p>
+
+<p>The XML format should be compatible as only attributes and elements have been added. However, if you parse
+the document with a namespace aware parser, you might encounter some issues like no elements being found.
+In case the new format doesn’t work for you (e.g. namespaces, unexpected error elements), you can
+go back using the old format with the renderer “xmlold” (<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.3.0-SNAPSHOT/net/sourceforge/pmd/cpd/XMLOldRenderer.html#"><code>XMLOldRenderer</code></a>). Note, that
+this old renderer is deprecated and only there for compatibility reasons. Whatever tooling is used to
+read the XML format should be updated.</p>
+
+<h4 id="deprecated-for-removal">Deprecated for removal</h4>
+
+<ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.3.0-SNAPSHOT/net/sourceforge/pmd/cpd/XMLOldRenderer.html#"><code>net.sourceforge.pmd.cpd.XMLOldRenderer</code></a> (the CPD format “xmlold”).</li>
+</ul>
 
 <h3 id="-external-contributions">✨ External Contributions</h3>
 
@@ -1956,7 +1988,7 @@
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jun 20, 2024 <br />
+             Site last generated: Jun 24, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

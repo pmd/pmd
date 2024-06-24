@@ -1986,10 +1986,18 @@ Starting at line 110 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/
 <p>This format uses XML to output the duplications in a more structured format.
 The XML format can then further be processed using XSLT transformations. See <a href="#xslt">section xslt</a> for examples.</p>
 
+<p>Since PMD 7.3.0 any recoverable errors are also reported as additional elements <code class="language-plaintext highlighter-rouge">error</code> to help investigate
+any errors occurred during analysis.</p>
+
 <p>Example:</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
-<span class="nt">&lt;pmd-cpd&gt;</span>
+<span class="nt">&lt;pmd-cpd</span> <span class="na">xmlns=</span><span class="s">"https://pmd-code.org/schema/cpd-report"</span>
+         <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
+         <span class="na">pmdVersion=</span><span class="s">"7.3.0"</span>
+         <span class="na">timestamp=</span><span class="s">"2024-06-23T09:00:00+02:00"</span>
+         <span class="na">version=</span><span class="s">"1.0.0"</span>
+         <span class="na">xsi:schemaLocation=</span><span class="s">"https://pmd-code.org/schema/cpd-report https://pmd.github.io/schema/cpd-report_1_0_0.xsd"</span><span class="nt">&gt;</span>
    <span class="nt">&lt;file</span> <span class="na">path=</span><span class="s">"/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java"</span> <span class="na">totalNumberOfTokens=</span><span class="s">"523"</span><span class="nt">/&gt;</span>
    <span class="nt">&lt;file</span> <span class="na">path=</span><span class="s">"/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java"</span> <span class="na">totalNumberOfTokens=</span><span class="s">"120"</span><span class="nt">/&gt;</span>
    <span class="nt">&lt;duplication</span> <span class="na">lines=</span><span class="s">"33"</span> <span class="na">tokens=</span><span class="s">"239"</span><span class="nt">&gt;</span>
@@ -2055,6 +2063,32 @@ The XML format can then further be processed using XSLT transformations. See <a 
         Assert.assertEquals(2, query.nodeNameToXPaths.size());
         Assert.assertEquals("self::node()[(attribute::Test1 = \"false\")][(attribute::Test2 = \"true\")]", query.nodeNameToXPaths.get("dummyNode").get(0).toString());]]&gt;<span class="nt">&lt;/codefragment&gt;</span>
    <span class="nt">&lt;/duplication&gt;</span>
+   <span class="nt">&lt;error</span> <span class="na">filename=</span><span class="s">"/home/pmd/source/pmd-cli/src/test/resources/net/sourceforge/pmd/cli/cpd/badandgood/BadFile.java"</span>
+          <span class="na">msg=</span><span class="s">"LexException: Lexical error in file '/home/pmd/source/pmd-cli/src/test/resources/net/sourceforge/pmd/cli/cpd/badandgood/BadFile.java' at line 4, column 14: &amp;#34;\ufffd&amp;#34; (65533), after : &amp;#34;&amp;#34; (in lexical state DEFAULT)"</span><span class="nt">&gt;</span>net.sourceforge.pmd.lang.ast.LexException: Lexical error in file '/home/pmd/source/pmd-cli/src/test/resources/net/sourceforge/pmd/cli/cpd/badandgood/BadFile.java' at line 4, column 14: "\ufffd" (65533), after : "" (in lexical state DEFAULT)
+        at net.sourceforge.pmd.lang.ast.InternalApiBridge.newLexException(InternalApiBridge.java:25)
+        at net.sourceforge.pmd.lang.java.ast.JavaParserImplTokenManager.getNextToken(JavaParserImplTokenManager.java:2698)
+        at net.sourceforge.pmd.lang.java.ast.JavaParserImplTokenManager.getNextToken(JavaParserImplTokenManager.java:18)
+        at net.sourceforge.pmd.cpd.impl.BaseTokenFilter.getNextToken(BaseTokenFilter.java:44)
+        at net.sourceforge.pmd.cpd.impl.CpdLexerBase.tokenize(CpdLexerBase.java:40)
+        at net.sourceforge.pmd.cpd.CpdLexer.tokenize(CpdLexer.java:29)
+        at net.sourceforge.pmd.cpd.CpdAnalysis.doTokenize(CpdAnalysis.java:146)
+        at net.sourceforge.pmd.cpd.CpdAnalysis.performAnalysis(CpdAnalysis.java:173)
+        at net.sourceforge.pmd.cli.commands.internal.CpdCommand.doExecute(CpdCommand.java:134)
+        at net.sourceforge.pmd.cli.commands.internal.CpdCommand.doExecute(CpdCommand.java:29)
+        at net.sourceforge.pmd.cli.internal.PmdRootLogger.executeInLoggingContext(PmdRootLogger.java:55)
+        at net.sourceforge.pmd.cli.commands.internal.AbstractAnalysisPmdSubcommand.execute(AbstractAnalysisPmdSubcommand.java:111)
+        at net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand.call(AbstractPmdSubcommand.java:30)
+        at net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand.call(AbstractPmdSubcommand.java:16)
+        at picocli.CommandLine.executeUserObject(CommandLine.java:2041)
+        at picocli.CommandLine.access$1500(CommandLine.java:148)
+        at picocli.CommandLine$RunLast.executeUserObjectOfLastSubcommandWithSameParent(CommandLine.java:2461)
+        at picocli.CommandLine$RunLast.handle(CommandLine.java:2453)
+        at picocli.CommandLine$RunLast.handle(CommandLine.java:2415)
+        at picocli.CommandLine$AbstractParseResultHandler.execute(CommandLine.java:2273)
+        at picocli.CommandLine$RunLast.execute(CommandLine.java:2417)
+        at picocli.CommandLine.execute(CommandLine.java:2170)
+        at net.sourceforge.pmd.cli.PmdCli.main(PmdCli.java:24)
+   <span class="nt">&lt;/error&gt;</span>
 <span class="nt">&lt;/pmd-cpd&gt;</span>
 </code></pre></div></div>
 
@@ -2177,7 +2211,8 @@ the param <code class="language-plaintext highlighter-rouge">lines</code>:</p>
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jun 20, 2024 <br />
+            <span>Page last updated:</span>
+            June 2024 (7.3.0)<br /> Site last generated: Jun 24, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
