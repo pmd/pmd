@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.reporting.Report;
 
 /**
  * The result of a CPD analysis. This is rendered by a {@link CPDReportRenderer}.
@@ -24,13 +25,16 @@ public class CPDReport {
     private final SourceManager sourceManager;
     private final List<Match> matches;
     private final Map<FileId, Integer> numberOfTokensPerFile;
+    private final List<Report.ProcessingError> processingErrors;
 
     CPDReport(SourceManager sourceManager,
               List<Match> matches,
-              Map<FileId, Integer> numberOfTokensPerFile) {
+              Map<FileId, Integer> numberOfTokensPerFile,
+              List<Report.ProcessingError> processingErrors) {
         this.sourceManager = sourceManager;
         this.matches = Collections.unmodifiableList(matches);
         this.numberOfTokensPerFile = Collections.unmodifiableMap(new TreeMap<>(numberOfTokensPerFile));
+        this.processingErrors = Collections.unmodifiableList(processingErrors);
     }
 
     /** Return the list of duplication matches found by the CPD analysis. */
@@ -39,9 +43,13 @@ public class CPDReport {
     }
 
     /** Return a map containing the number of tokens by processed file. */
-
     public Map<FileId, Integer> getNumberOfTokensPerFile() {
         return numberOfTokensPerFile;
+    }
+
+    /** Returns the list of occurred processing errors. */
+    public List<Report.ProcessingError> getProcessingErrors() {
+        return processingErrors;
     }
 
     /**
@@ -66,7 +74,7 @@ public class CPDReport {
     public CPDReport filterMatches(Predicate<Match> filter) {
         List<Match> filtered = this.matches.stream().filter(filter).collect(Collectors.toList());
 
-        return new CPDReport(sourceManager, filtered, this.getNumberOfTokensPerFile());
+        return new CPDReport(sourceManager, filtered, this.getNumberOfTokensPerFile(), this.getProcessingErrors());
     }
 
     /**
