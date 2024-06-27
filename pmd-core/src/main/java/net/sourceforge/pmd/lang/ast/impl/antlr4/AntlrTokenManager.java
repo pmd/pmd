@@ -20,20 +20,12 @@ public class AntlrTokenManager implements TokenManager<AntlrToken> {
 
     private final Lexer lexer;
     private final TextDocument textDoc;
-    private final AntlrLexerBehavior behavior;
     private AntlrToken previousToken;
 
 
     public AntlrTokenManager(final Lexer lexer, final TextDocument textDocument) {
-        this(lexer, textDocument, new AntlrLexerBehavior());
-    }
-
-    public AntlrTokenManager(final Lexer lexer,
-                             final TextDocument textDocument,
-                             final AntlrLexerBehavior behavior) {
         this.lexer = lexer;
         this.textDoc = textDocument;
-        this.behavior = behavior;
         resetListeners();
     }
 
@@ -48,7 +40,7 @@ public class AntlrTokenManager implements TokenManager<AntlrToken> {
 
     private AntlrToken getNextTokenFromAnyChannel() {
         final AntlrToken previousComment = previousToken != null && previousToken.isHidden() ? previousToken : null;
-        final AntlrToken currentToken = new AntlrToken(lexer.nextToken(), previousComment, textDoc, this.behavior);
+        final AntlrToken currentToken = new AntlrToken(lexer.nextToken(), previousComment, textDoc);
         if (previousToken != null) {
             previousToken.next = currentToken;
         }

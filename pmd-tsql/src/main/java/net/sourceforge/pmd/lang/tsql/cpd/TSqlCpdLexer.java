@@ -8,10 +8,9 @@ import java.util.Locale;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Lexer;
-import org.antlr.v4.runtime.Token;
 
 import net.sourceforge.pmd.cpd.impl.AntlrCpdLexer;
-import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrLexerBehavior;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
 import net.sourceforge.pmd.lang.tsql.ast.TSqlLexer;
 
 /**
@@ -25,17 +24,12 @@ public class TSqlCpdLexer extends AntlrCpdLexer {
     }
 
     @Override
-    protected AntlrLexerBehavior getLexerBehavior() {
-        return new AntlrLexerBehavior() {
-            @Override
-            protected String getTokenImage(Token token) {
-                if (token.getType() == TSqlLexer.STRING) {
-                    // This path is for case-sensitive tokens
-                    return super.getTokenImage(token);
-                }
-                // normalize case sensitive tokens
-                return token.getText().toUpperCase(Locale.ROOT);
-            }
-        };
+    protected String getImage(AntlrToken token) {
+        if (token.getKind() == TSqlLexer.STRING) {
+            // This path is for case-sensitive tokens
+            return token.getImage();
+        }
+        // normalize case-insensitive tokens
+        return token.getImage().toUpperCase(Locale.ROOT);
     }
 }

@@ -33,23 +33,18 @@ public class AntlrToken implements GenericToken<AntlrToken> {
      * @param token           The antlr token implementation
      * @param previousComment The previous comment
      * @param textDoc         The text document
-     */
-    AntlrToken(final Token token, final AntlrToken previousComment, TextDocument textDoc, AntlrLexerBehavior behavior) {
-        this.previousComment = previousComment;
-        this.textDoc = textDoc;
-        this.image = behavior.getTokenImage(token);
-        this.startOffset = token.getStartIndex();
-        this.endOffset = token.getStopIndex() + 1; // exclusive
-        this.channel = token.getChannel();
-        this.kind = token.getType();
-    }
-
-    /**
+     *
      * @deprecated Don't create antlr tokens directly, use an {@link AntlrTokenManager}
      */
     @Deprecated
     public AntlrToken(final Token token, final AntlrToken previousComment, TextDocument textDoc) {
-        this(token, previousComment, textDoc, new AntlrLexerBehavior());
+        this.previousComment = previousComment;
+        this.textDoc = textDoc;
+        this.image = token.getText();
+        this.startOffset = token.getStartIndex();
+        this.endOffset = token.getStopIndex() + 1; // exclusive
+        this.channel = token.getChannel();
+        this.kind = token.getType();
     }
 
     @Override
