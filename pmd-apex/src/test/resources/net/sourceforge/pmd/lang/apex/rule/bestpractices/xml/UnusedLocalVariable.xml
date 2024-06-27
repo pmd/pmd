@@ -307,7 +307,7 @@ public class Foo {
         if (B != null) {} // usage of B
     }
 
-/* not supported by apex-parser yet
+/* not supported by apex-parser yet - see https://github.com/apex-dev-tools/apex-parser/issues/44
     public void bindWithIncludes() {
         Account A = new Account(Name='xxx');
         //insert A; // usage of A
