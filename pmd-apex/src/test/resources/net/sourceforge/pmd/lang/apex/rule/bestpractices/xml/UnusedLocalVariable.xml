@@ -242,4 +242,165 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>[apex] UnusedLocalVariable FP with binds in SOSL / SOQL #5000</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void example() {
+        SObject record = this.getOldRecords()[0];
+        List<SObject> objectsToQuery = this.getOldRecords(); // used in bind
+
+        SObjectType sObjectType = record.getSObjectType();
+
+        String[] relatedObjectData = RELATED_RECORD_DATA_BY_OBJECT.get(sObjectType).split('::');
+
+        String relatedObjectName = relatedObjectData[0];
+        String relatedFieldName = relatedObjectData[1];
+
+        String query = 'SELECT ' + String.escapeSingleQuotes(relatedFieldName) +
+                       ' FROM ' + String.escapeSingleQuotes(relatedObjectName) +
+                       ' WHERE ' + String.escapeSingleQuotes(relatedFieldName) +
+                       ' IN :objectsToQuery'; // bind
+
+        for (sObject relatedRecord : (Database.query(query))) {
+            this.withRelatedRecords.add((String)relatedRecord.get(relatedFieldName));
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Using Apex Variables in SOQL and SOSL Queries (#5000)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+// examples taken from https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_SOQL_variables.htm
+public class Foo {
+    public void simpleBind() {
+        Account A = new Account(Name='xxx');
+        //insert A; // usage
+
+        // A simple bind
+        Account B = [SELECT Id FROM Account WHERE Id = :A.Id]; // usage of A
+        if (B != null) {} // usage of B
+    }
+
+    public void bindWithArithmetic() {
+        Account A = new Account(Name='xxx');
+        insert A; // usage of A
+
+        // A bind with arithmetic
+        Account B = [SELECT Id FROM Account
+            WHERE Name = :('x' + 'xx')]; // that's actually not a variable ref, but an expression
+        if (B != null) {} // usage of B
+    }
+
+    public void bindWithExpressions() {
+        Account A = new Account(Name='xxx');
+        insert A; // usage of A
+
+        // A bind with expressions
+        Account B = [SELECT Id FROM Account
+             WHERE Name = :'XXXX'.substring(0,3)];
+        if (B != null) {} // usage of B
+    }
+
+/* not supported by apex-parser yet - see https://github.com/apex-dev-tools/apex-parser/issues/44
+    public void bindWithIncludes() {
+        Account A = new Account(Name='xxx');
+        //insert A; // usage of A
+
+        // A bind with INCLUDES clause
+        Account B = [SELECT Id FROM Account WHERE :A.TYPE INCLUDES ('Customer - Direct; Customer - Channel')]; // usage of A
+        if (B != null) {} // usage of B
+    }
+*/
+
+    public void bindWithQueryResult() {
+        Account A = new Account(Name='xxx');
+        //insert A; // usage of A
+
+        // A bind with an expression that is itself a query result
+        Account B = [SELECT Id FROM Account
+             WHERE Name = :[SELECT Name FROM Account
+                            WHERE Id = :A.Id].Name]; // usage of A
+        if (B != null) {} // usage of B
+    }
+
+    public void bindInParentAndAggregateQuery() {
+        Account A = new Account(Name='xxx');
+        //insert A; // usage of A
+
+        Contact C = new Contact(LastName='xxx', AccountId=A.Id);
+        //insert new Contact[]{C, new Contact(LastName='yyy', // usage of C
+        //                                    accountId=A.id)}; // usage of A
+
+        // Binds in both the parent and aggregate queries
+        Account B = [SELECT Id, (SELECT Id FROM Contacts
+                         WHERE Id = :C.Id) // usage of C
+             FROM Account
+             WHERE Id = :A.Id]; // usage of A
+
+        // One contact returned
+        Contact D = B.Contacts; // usage of B
+        update D; // usage of D
+    }
+
+    public void limitBind() {
+        // A limit bind
+        Integer i = 1;
+        Account B = [SELECT Id FROM Account LIMIT :i]; // usage of i
+        if (B != null) {} // usage of B
+    }
+
+    public void offsetBind() {
+        // An OFFSET bind
+        Integer offsetVal = 10;
+        List<Account> offsetList = [SELECT Id FROM Account OFFSET :offsetVal]; // usage of offsetVal
+        if (offsetList != null) {} // usage of offsetList
+    }
+
+    public void inBindIdList() {
+        // An IN-bind with an Id list. Note that a list of sObjects
+        // can also be used--the Ids of the objects are used for
+        // the bind
+        Contact[] cc = [SELECT Id FROM Contact LIMIT 2];
+        Task[] tt = [SELECT Id FROM Task WHERE WhoId IN :cc]; // usage of cc
+        if (tt != null) {} // usage of tt
+    }
+
+    public void inBindStringList() {
+        // An IN-bind with a String list
+        String[] ss = new String[]{'a', 'b'};
+        Account[] aa = [SELECT Id FROM Account
+                        WHERE AccountNumber IN :ss]; // usage of ss
+        if (aa != null) {} // usage of aa
+    }
+
+    public void soslQuery() {
+        // A SOSL query with binds in all possible clauses
+
+        String myString1 = 'aaa';
+        String myString2 = 'bbb';
+        Integer myInt3 = 11;
+        //String myString4 = 'ccc';
+        Integer myInt5 = 22;
+
+        List<List<SObject>> searchList = [FIND :myString1 IN ALL FIELDS
+                                          RETURNING
+                                             Account (Id, Name WHERE Name LIKE :myString2
+                                                      LIMIT :myInt3),
+                                             Contact,
+                                             Opportunity,
+                                             Lead
+                                          // WITH DIVISION =:myString4 -- that's not supported by apex-parser yet
+                                          WITH DIVISION = 'ccc'
+                                          LIMIT :myInt5];
+        if (searchList != null) {} // usage of searchList
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
