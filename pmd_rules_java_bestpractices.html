@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce generally accepted best practices.">
-<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, OneDeclarationPerLine, PreserveStackTrace, PrimitiveWrapperInstantiation, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SimplifiableTestAssertion, SwitchStmtsShouldHaveDefault, SystemPrintln, UnnecessaryVarargsArrayCreation, UnusedAssignment, UnusedFormalParameter, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseCollectionIsEmpty, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
+<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, OneDeclarationPerLine, PreserveStackTrace, PrimitiveWrapperInstantiation, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SimplifiableTestAssertion, SwitchStmtsShouldHaveDefault, SystemPrintln, UnnecessaryVarargsArrayCreation, UnusedAssignment, UnusedFormalParameter, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseCollectionIsEmpty, UseEnumCollections, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
 <title>Best Practices | PMD Source Code Analyzer</title>
 
 
@@ -4021,6 +4021,41 @@ Comparing the value of size() to 0 does not convey intent as well as the isEmpty
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/UseCollectionIsEmpty"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="useenumcollections">UseEnumCollections</h2>
+
+<p><strong>Since:</strong> PMD 7.3.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Wherever possible, use <code class="language-plaintext highlighter-rouge">EnumSet</code> or <code class="language-plaintext highlighter-rouge">EnumMap</code> instead of <code class="language-plaintext highlighter-rouge">HashSet</code> and <code class="language-plaintext highlighter-rouge">HashMap</code> when the keys
+are of an enum type. The specialized enum collections are more space- and time-efficient.
+This rule reports constructor expressions for hash sets or maps whose key
+type is an enum type.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UseEnumCollectionsRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UseEnumCollectionsRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.EnumMap</span><span class="o">;</span>
+            <span class="kn">import</span> <span class="nn">java.util.HashSet</span><span class="o">;</span>
+
+            <span class="kd">enum</span> <span class="nc">Example</span> <span class="o">{</span>
+                <span class="no">A</span><span class="o">,</span> <span class="no">B</span><span class="o">,</span> <span class="no">C</span><span class="o">;</span>
+
+                <span class="kd">public</span> <span class="kd">static</span> <span class="nc">Set</span><span class="o">&lt;</span><span class="nc">Example</span><span class="o">&gt;</span> <span class="nf">newSet</span><span class="o">()</span> <span class="o">{</span>
+                    <span class="k">return</span> <span class="k">new</span> <span class="nc">HashSet</span><span class="o">&lt;&gt;();</span> <span class="c1">// Could be EnumSet.noneOf(Example.class)</span>
+                <span class="o">}</span>
+
+                <span class="kd">public</span> <span class="kd">static</span> <span class="o">&lt;</span><span class="no">V</span><span class="o">&gt;</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">Example</span><span class="o">,</span> <span class="no">V</span><span class="o">&gt;</span> <span class="nf">newMap</span><span class="o">()</span> <span class="o">{</span>
+                    <span class="k">return</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;&gt;();</span> <span class="c1">// Could be new EnumMap&lt;&gt;(Example.class)</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/UseEnumCollections"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="usestandardcharsets">UseStandardCharsets</h2>

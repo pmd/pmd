@@ -1903,6 +1903,12 @@
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
+<h4 id="-new-rules">✨ New Rules</h4>
+<ul>
+  <li>The new Java rule <a href="pmd_rules_java_bestpractices.html#useenumcollections"><code class="language-plaintext highlighter-rouge">UseEnumCollections</code></a> reports usages for <code class="language-plaintext highlighter-rouge">HashSet</code> and <code class="language-plaintext highlighter-rouge">HashMap</code>
+when the keys are of an enum type. The specialized enum collections are more space- and time-efficient.</li>
+</ul>
+
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
 <ul>
   <li>core
@@ -1922,8 +1928,14 @@
       <li><a href="https://github.com/pmd/pmd/issues/5000">#5000</a>: [apex] UnusedLocalVariable FP with binds in SOSL / SOQL</li>
     </ul>
   </li>
+  <li>java
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/5050">#5050</a>: [java] Problems with pattern variables in switch branches</li>
+    </ul>
+  </li>
   <li>java-bestpractices
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/577">#577</a>: [java] New Rule: Check that Map&lt;K,V&gt; is an EnumMap if K is an enum value</li>
       <li><a href="https://github.com/pmd/pmd/issues/5047">#5047</a>: [java] UnusedPrivateMethod FP for Generics &amp; Overloads</li>
     </ul>
   </li>
@@ -1931,6 +1943,7 @@
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1934">#1934</a>: [plsql] ParseException with MERGE statement in anonymous block</li>
       <li><a href="https://github.com/pmd/pmd/issues/2779">#2779</a>: [plsql] Error while parsing statement with (Oracle) DML Error Logging</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4270">#4270</a>: [plsql] Parsing exception COMPOUND TRIGGER with EXCEPTION handler</li>
     </ul>
   </li>
 </ul>
@@ -1961,7 +1974,18 @@ read the XML format should be updated.</p>
 <h4 id="deprecated-for-removal">Deprecated for removal</h4>
 
 <ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.3.0-SNAPSHOT/net/sourceforge/pmd/cpd/XMLOldRenderer.html#"><code>net.sourceforge.pmd.cpd.XMLOldRenderer</code></a> (the CPD format “xmlold”).</li>
+  <li>core
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.3.0-SNAPSHOT/net/sourceforge/pmd/cpd/XMLOldRenderer.html#"><code>net.sourceforge.pmd.cpd.XMLOldRenderer</code></a> (the CPD format “xmlold”).</li>
+    </ul>
+  </li>
+  <li>pmd-java
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTRecordPattern.html#getVarId()"><code>ASTRecordPattern#getVarId</code></a> This method was added here by mistake. Record
+patterns don’t declare a pattern variable for the whole pattern, but rather for individual record
+components, which can be accessed via <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTRecordPattern.html#getComponentPatterns()"><code>getComponentPatterns</code></a>.</li>
+    </ul>
+  </li>
 </ul>
 
 <h3 id="-external-contributions">✨ External Contributions</h3>
