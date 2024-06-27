@@ -2150,7 +2150,6 @@ ASTTableCollectionExpression TableCollectionExpression() :
 /**
  * Special production, used in joins. The table reference might have
  * a table alias, but this should not match any following NATURAL, CROSS, etc.
-
  * keywords, although these are allowed as alias names since these are
  * not reserved words.
  */
