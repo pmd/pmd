@@ -13,6 +13,5 @@ BEGIN
         THEN  UPDATE SET b.text = e.text
       WHEN NOT MATCHED
         THEN  INSERT (ID,KEY1, TEXT,LCE_ID) values (JHS_SEQ.NEXTVAL,'PROM_EDIT_PROM_NR','Edycja promocji nr',123123);
-
 END;
 /
