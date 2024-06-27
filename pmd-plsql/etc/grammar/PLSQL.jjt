@@ -2690,7 +2690,7 @@ ASTDeleteStatement DeleteStatement() :
 ASTMergeStatement MergeStatement() :
 {}
 {
-    <MERGE> <INTO> [ LOOKAHEAD(2) SchemaName() "." ] TableName() [ LOOKAHEAD(1, ID(), { getToken(1).kind != USING } ) TableAlias() ]
+    <MERGE> <INTO> [ LOOKAHEAD(2) SchemaName() "." ] TableName() [ TableAlias() ]
     <USING>
     (
             LOOKAHEAD(3) "(" ValuesClause() ")"
@@ -3821,7 +3821,7 @@ ASTArgument Argument() :
 {
 	//[LOOKAHEAD(2) UnqualifiedID() "=>"] Expression()
 	[LOOKAHEAD(2) (simpleNode = UnqualifiedID())  ("=>" | <AS> )  ]
-        (Expression() )
+        (Expression() [ <_DEFAULT> Expression() <ON> <CONVERSION> "ERROR" ] )
 	//Allow Using CharacterSet suffix clause
 	[
 	   ( <USING>  )
@@ -4984,6 +4984,7 @@ TOKEN [IGNORE_CASE]:
 <CONSTRAINT: "CONSTRAINT"> |
 <CONSTRUCTOR: "CONSTRUCTOR"> |
 <CONTINUE: "CONTINUE"> |
+<CONVERSION: "CONVERSION"> |
 <CONVERT: "CONVERT"> |
 <CROSS: "CROSS"> |
 <CUBE: "CUBE"> |

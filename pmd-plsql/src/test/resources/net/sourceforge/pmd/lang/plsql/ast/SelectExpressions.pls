@@ -108,4 +108,10 @@ SELECT CASE
        INTO VAL
        FROM dual;
 END;
+
+SELECT
+    TO_NUMBER$('xyz' default 0 on conversion error) BOGUS
+  INTO some_record
+  FROM some_table;
+
 /
