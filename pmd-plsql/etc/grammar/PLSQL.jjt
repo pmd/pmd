@@ -171,6 +171,10 @@ import net.sourceforge.pmd.lang.plsql.ast.internal.ParsingExclusion;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @deprecated PLSQLParserImpl should have been package private because this is an implementation class
+ * that should not be used directly.
+ */
 @Deprecated
 public class PLSQLParserImpl {
 
