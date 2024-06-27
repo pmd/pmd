@@ -218,7 +218,7 @@ public final class TypeOps {
         @Override
         public Boolean visitInferenceVar(InferenceVar t, JTypeMirror s) {
             if (pure) {
-                return t == s;
+                return t == s || t.getBounds(BoundKind.EQ).contains(s);
             }
 
             if (s instanceof JPrimitiveType) {

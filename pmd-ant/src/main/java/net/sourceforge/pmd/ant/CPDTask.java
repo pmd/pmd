@@ -29,6 +29,7 @@ import net.sourceforge.pmd.cpd.CPDReportRenderer;
 import net.sourceforge.pmd.cpd.CSVRenderer;
 import net.sourceforge.pmd.cpd.CpdAnalysis;
 import net.sourceforge.pmd.cpd.SimpleRenderer;
+import net.sourceforge.pmd.cpd.XMLOldRenderer;
 import net.sourceforge.pmd.cpd.XMLRenderer;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -66,6 +67,8 @@ public class CPDTask extends Task {
 
     private static final String TEXT_FORMAT = "text";
     private static final String XML_FORMAT = "xml";
+    @Deprecated
+    private static final String XMLOLD_FORMAT = "xmlold";
     private static final String CSV_FORMAT = "csv";
 
     private String format = TEXT_FORMAT;
@@ -177,6 +180,8 @@ public class CPDTask extends Task {
             return new SimpleRenderer();
         } else if (CSV_FORMAT.equals(format)) {
             return new CSVRenderer();
+        } else if (XMLOLD_FORMAT.equals(format)) {
+            return new XMLOldRenderer();
         }
         return new XMLRenderer();
     }
@@ -253,7 +258,7 @@ public class CPDTask extends Task {
     }
 
     public static class FormatAttribute extends EnumeratedAttribute {
-        private static final String[] FORMATS = new String[] { XML_FORMAT, TEXT_FORMAT, CSV_FORMAT };
+        private static final String[] FORMATS = new String[] { XML_FORMAT, TEXT_FORMAT, CSV_FORMAT, XMLOLD_FORMAT };
 
         @Override
         public String[] getValues() {

@@ -74,7 +74,7 @@ in order to release version "6.34.0", the configuration should look like this:
 pmd:
     version: 7.2.0
     previous_version: 7.1.0
-    date: 31-May-2024
+    date: 2024-05-31
     release_type: minor
 ```
 
@@ -307,7 +307,7 @@ There are a couple of manual steps needed to prepare the current main branch for
     pmd:
         version: 7.3.0-SNAPSHOT
         previous_version: 7.2.0
-        date: ??-??-2024
+        date: 2024-??-??
         release_type: minor
     ```
 
@@ -324,7 +324,7 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
-## {{ site.pmd.date }} - {{ site.pmd.version }}
+## {{ site.pmd.date | date: "%d-%B-%Y" }} - {{ site.pmd.version }}
 
 The PMD team is pleased to announce PMD {{ site.pmd.version }}.
 

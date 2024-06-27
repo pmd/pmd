@@ -39,7 +39,7 @@ final class RendererHelper {
         }
 
         try (SourceManager sourceManager = new SourceManager(textFiles)) {
-            CPDReport report = new CPDReport(sourceManager, matchesList, Collections.emptyMap());
+            CPDReport report = new CPDReport(sourceManager, matchesList, Collections.emptyMap(), Collections.emptyList());
             renderer.render(report, writer);
         } catch (Exception e) {
             throw new RuntimeException(e);

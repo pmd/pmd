@@ -282,7 +282,7 @@ Example:
 <?xml version="1.0" encoding="UTF-8"?>
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 https://pmd.sourceforge.io/report_2_0_0.xsd"
+    xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 https://pmd.github.io/schema/report_2_0_0.xsd"
     version="6.22.0" timestamp="2020-04-11T19:17:03.207">
 <file name="/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/RuleContext.java">
 <violation beginline="124" endline="125" begincolumn="9" endcolumn="111" rule="GuardLogStatement" ruleset="Best Practices" package="net.sourceforge.pmd" class="RuleContext" method="setSourceCodeFilename" externalInfoUrl="https://pmd.github.io/pmd-6.22.0/pmd_rules_java_bestpractices.html#guardlogstatement" priority="2">
