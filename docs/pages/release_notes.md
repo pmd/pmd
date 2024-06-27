@@ -47,6 +47,7 @@ See also [Maven PMD Plugin]({{ baseurl }}pmd_userdocs_tools_maven.html).
 * apex-bestpractices
   * [#5000](https://github.com/pmd/pmd/issues/5000): \[apex] UnusedLocalVariable FP with binds in SOSL / SOQL
 * java
+  * [#4885](https://github.com/pmd/pmd/issues/4885): \[java] AssertionError: Method should be accessible
   * [#5050](https://github.com/pmd/pmd/issues/5050): \[java] Problems with pattern variables in switch branches
 * java-bestpractices
   * [#577](https://github.com/pmd/pmd/issues/577): \[java] New Rule: Check that Map<K,V> is an EnumMap if K is an enum value
