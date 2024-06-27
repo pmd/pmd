@@ -16,8 +16,8 @@ import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrTokenManager;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
-import com.nawforce.apexparser.ApexLexer;
-import com.nawforce.apexparser.CaseInsensitiveInputStream;
+import io.github.apexdevtools.apexparser.ApexLexer;
+import io.github.apexdevtools.apexparser.CaseInsensitiveInputStream;
 
 public class ApexCpdLexer implements CpdLexer {
     @Override

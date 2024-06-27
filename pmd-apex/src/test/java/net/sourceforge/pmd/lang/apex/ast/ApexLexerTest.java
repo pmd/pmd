@@ -14,9 +14,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
 import org.junit.jupiter.api.Test;
 
-import com.nawforce.apexparser.ApexLexer;
-import com.nawforce.apexparser.ApexParser;
-
+import io.github.apexdevtools.apexparser.ApexLexer;
+import io.github.apexdevtools.apexparser.ApexParser;
 
 /**
  * This is an exploration test for {@link ApexLexer}.
@@ -46,7 +45,7 @@ class ApexLexerTest {
     void testParser() {
         CharStream in = CharStreams.fromString(CODE);
         ApexLexer lexer = new ApexLexer(in);
-        ApexParser parser = new com.nawforce.apexparser.ApexParser(new CommonTokenStream(lexer));
+        ApexParser parser = new ApexParser(new CommonTokenStream(lexer));
         ApexParser.CompilationUnitContext compilationUnit = parser.compilationUnit();
         assertNotNull(compilationUnit);
     }

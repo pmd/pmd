@@ -18,7 +18,9 @@ This is a {{ site.pmd.release_type }} release.
 * core
   * [#4992](https://github.com/pmd/pmd/pull/4992): \[core] CPD: Include processing errors in XML report
 * apex
+  * [#4922](https://github.com/pmd/pmd/issues/4922): \[apex] SOQL syntax error with TYPEOF in sub-query
   * [#5053](https://github.com/pmd/pmd/issues/5053): \[apex] CPD fails to parse string literals with escaped characters
+  * [#5055](https://github.com/pmd/pmd/issues/5055): \[apex] SOSL syntax error with WITH USER_MODE or WITH SYSTEM_MODE
 * java-bestpractices
   * [#5047](https://github.com/pmd/pmd/issues/5047): \[java] UnusedPrivateMethod FP for Generics & Overloads
 * plsql

@@ -27,7 +27,6 @@ import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleViolation;
 
-import com.nawforce.pkgforce.path.PathFactory;
 import com.nawforce.pkgforce.path.PathLike;
 import com.nawforce.runtime.platform.Environment;
 import scala.Option;
@@ -50,7 +49,7 @@ class UnusedMethodTest {
     }
 
     private Report runRule(Path testProjectDir) throws IOException {
-        Option<PathLike> pathLikeOption = Option.apply(PathFactory.apply(tempDir.toString()));
+        Option<PathLike> pathLikeOption = Option.apply(new com.nawforce.runtime.platform.Path(tempDir));
         Option<Option<PathLike>> cachDirOption = Option.apply(pathLikeOption);
         Environment.setCacheDirOverride(cachDirOption);
 
