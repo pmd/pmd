@@ -68,7 +68,7 @@ class MatchCollector {
          *  - BC
          * It should be reduced to a single match with 3 marks
          */
-        if (tokenMatchSets.computeIfAbsent(mark1.getIndex(), HashSet::new).contains(mark2.getIndex())) {
+        if (tokenMatchSets.computeIfAbsent(mark1.getIndex(), (i) -> new HashSet<>()).contains(mark2.getIndex())) {
             return;
         }
 
@@ -76,7 +76,7 @@ class MatchCollector {
         // always rely on the lowest mark index, as that's the order in which process them
         final int lowestKey = tokenMatchSets.get(mark1.getIndex()).stream().reduce(mark1.getIndex(), Math::min);
 
-        List<Match> matches = matchTree.computeIfAbsent(lowestKey, ArrayList::new);
+        List<Match> matches = matchTree.computeIfAbsent(lowestKey, (i) -> new ArrayList<>());
         Iterator<Match> matchIterator = matches.iterator();
         while (matchIterator.hasNext()) {
             Match m = matchIterator.next();
@@ -116,8 +116,8 @@ class MatchCollector {
     }
 
     private void registerTokenMatch(TokenEntry mark1, TokenEntry mark2) {
-        tokenMatchSets.computeIfAbsent(mark1.getIndex(), HashSet::new).add(mark2.getIndex());
-        tokenMatchSets.computeIfAbsent(mark2.getIndex(), HashSet::new).add(mark1.getIndex());
+        tokenMatchSets.computeIfAbsent(mark1.getIndex(), (i) -> new HashSet<>()).add(mark2.getIndex());
+        tokenMatchSets.computeIfAbsent(mark2.getIndex(), (i) -> new HashSet<>()).add(mark1.getIndex());
     }
 
     List<Match> getMatches() {
