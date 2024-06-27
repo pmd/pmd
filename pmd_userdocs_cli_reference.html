@@ -1908,7 +1908,6 @@
         <th>Default value</th>
         <th>Applies to</th>
     </tr>
-
     <!-- Row of the CLI reference table, describing an option -->
 <!-- Rows can be linked to the name of the option (without leading dash) -->
 <!-- Argument summary: -->
@@ -2011,7 +2010,6 @@
                (":" on Linux, ";" on Windows) is used to separate the entries.
                Alternatively, a single <code>file:</code> URL
                to a text file containing path elements on consecutive lines can be specified.
-
                <p>See also <a href="pmd_languages_java.html#providing-the-auxiliary-classpath">Providing the auxiliary classpath</a>.</p></td>
     <td><code></code></td>
     <td>Java</td>
@@ -2127,10 +2125,34 @@
 
 
 <tr>
+    <td><a style="pointer-events: none; cursor: default;" name="-%5Bno-%5Dfail-on-error"><code>--[no-]fail-on-error</code></a></td>
+    <td>Specifies whether PMD exits with non-zero status if recoverable errors occurred.
+                            By default PMD exits with status 5 if recoverable errors occurred (whether there are violations or not).
+                            Disable this option with <code>--no-fail-on-error</code> to exit with 0 instead. In any case, a report with the found violations will be written.</td>
+    <td><code></code></td>
+    <td></td>
+</tr>
+
+    <!-- Row of the CLI reference table, describing an option -->
+<!-- Rows can be linked to the name of the option (without leading dash) -->
+<!-- Argument summary: -->
+<!-- options: comma separated list of aliases for the option.-->
+<!-- option_arg: optional name for the argument of the option, eg 'arg', will be formatted eg to '<arg>'-->
+<!-- description: description, you can use "some" inline markdown -->
+<!-- required: whether the option is required, if specified, whatever the value, it's considered required -->
+<!-- languages: languages to which the option applies -->
+<!-- default: default value -->
+
+
+
+<!-- fragment id in the page -->
+
+
+<tr>
     <td><a style="pointer-events: none; cursor: default;" name="-%5Bno-%5Dfail-on-violation"><code>--[no-]fail-on-violation</code></a></td>
     <td>Specifies whether PMD exits with non-zero status if violations are found.
                             By default PMD exits with status 4 if violations are found.
-                            Disable this feature with <code>--no-fail-on-violation</code> to exit with 0 instead and just output the report.</td>
+                            Disable this feature with <code>--no-fail-on-violation</code> to exit with 0 instead. In any case a report with the found violations will be written.</td>
     <td><code></code></td>
     <td></td>
 </tr>
@@ -2181,9 +2203,7 @@
                             by extension is disabled and PMD tries to parse all files with
                             the given language <code>&lt;lang&gt;</code>. Parsing errors are ignored and unparsable files
                             are skipped.
-                            
                             <p>Use <code>--use-version</code> to specify the language version to use, if it is not the default.</p>
-
                             <p>This option allows to use the xml language for files, that don't
                             use xml as extension. See <a href="#analyze-other-xml-formats">example</a> below.</p></td>
     <td><code></code></td>
@@ -2281,7 +2301,7 @@
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="-minimum-priority"><code>--minimum-priority&nbsp;&lt;priority&gt;</code></a></td>
     <td>Rule priority threshold; rules with lower priority than configured here won't be used.
-                            Valid values (case insensitive): High, Medium_High, Medium, Medium_Low, Low.
+                            Valid values (case-insensitive): High, Medium_High, Medium, Medium_Low, Low.
                             An integer between 1 (High) and 5 (Low) is also supported. See <a href="pmd_userdocs_configuring_rules.html">Configuring rules</a>
                             on how to override priorities in custom rulesets.</td>
     <td><code>Low</code></td>
@@ -2581,15 +2601,22 @@ standard distribution.</p>
 
 <h2 id="exit-status">Exit Status</h2>
 
-<p>Please note that if PMD detects any violations, it will exit with status 4 (since 5.3).
+<p>Please note that if PMD detects any violations, it will exit with status 4 (since 5.3) or 5 (since 7.3.0).
 This behavior has been introduced to ease PMD integration into scripts or hooks, such as SVN hooks.</p>
 
 <table>
-<tr><td>0</td><td>Everything is fine, no violations found.</td></tr>
+<tr><td>0</td><td>Everything is fine, no violations found and no recoverable error occurred.</td></tr>
 <tr><td>1</td><td>PMD exited with an exception.</td></tr>
 <tr><td>2</td><td>Usage error. Command-line parameters are invalid or missing.</td></tr>
-<tr><td>4</td><td>At least one violation has been detected, unless <code>--no-fail-on-violation</code> is set.</td></tr>
+<tr><td>4</td><td>At least one violation has been detected, unless <code>--no-fail-on-violation</code> is set.<p>Since PMD 5.3.</p></td></tr>
+<tr><td>5</td><td>At least one recoverable error has occurred. There might be additionally zero or more violations detected.
+    To ignore recoverable errors, use <code>--no-fail-on-error</code>.<p>Since PMD 7.3.0.</p></td></tr>
 </table>
+
+<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> If PMD exits with 5, then PMD had either trouble parsing one or more files or a rule failed with an exception.
+That means, that either no violations for the entire file or for that rule are reported. These cases can be considered as false-negatives.
+In any case, the root cause should be investigated. If it’s a problem in PMD itself, please create a bug report. Recoverable errors
+are usually part of the generated PMD report.</div>
 
 <h2 id="logging">Logging</h2>
 
@@ -2786,7 +2813,8 @@ parse errors are suppressed in order to reduce irrelevant noise:</p>
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jun 27, 2024 <br />
+            <span>Page last updated:</span>
+            June 2024 (7.3.0)<br /> Site last generated: Jun 27, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
