@@ -14,9 +14,7 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.BOOL
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
 
 class ASTUnaryExpressionTest : ParserTestSpec({
-
-    parserTest("Simple unary expressions") {
-
+    parserTestContainer("Simple unary expressions") {
         inContext(ExpressionParsingCtx) {
             "-2" should parseAs {
                 unaryExpr(UNARY_MINUS) {
@@ -26,8 +24,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
         }
     }
 
-    parserTest("Unary expression precedence") {
-
+    parserTestContainer("Unary expression precedence") {
         inContext(ExpressionParsingCtx) {
             "2 + -2" should parseAs {
                 infixExpr(ADD) {
@@ -66,6 +63,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                     }
                 }
             }
+
             "+-(int)a" should parseAs {
                 unaryExpr(UNARY_PLUS) {
                     unaryExpr(UNARY_MINUS) {
@@ -82,8 +80,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
         }
     }
 
-    parserTest("Unary expression ambiguity corner cases") {
-
+    parserTestContainer("Unary expression ambiguity corner cases") {
         // the following cases test ambiguity between cast of unary, and e.g. parenthesized additive expr
 
         // see https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-UnaryExpressionNotPlusMinus
@@ -98,7 +95,6 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                     variableAccess("q", READ)
                 }
             }
-
 
             "(p)~q" should parseAs {
                 castExpr {
@@ -151,7 +147,6 @@ class ASTUnaryExpressionTest : ParserTestSpec({
 
             // "++i++" parses, but doesn't compile, so don't test it
             // same for eg "p+++++q" (which doesn't parse)
-
             (JPrimitiveType.PrimitiveTypeKind.values().toList() - BOOLEAN)
                     .forEach { type ->
 
@@ -201,11 +196,8 @@ class ASTUnaryExpressionTest : ParserTestSpec({
         }
     }
 
-
-    parserTest("Unary expression is right-associative") {
-
+    parserTestContainer("Unary expression is right-associative") {
         inContext(ExpressionParsingCtx) {
-
             "!!true" should parseAs {
                 unaryExpr(NEGATION) {
                     unaryExpr(NEGATION) {

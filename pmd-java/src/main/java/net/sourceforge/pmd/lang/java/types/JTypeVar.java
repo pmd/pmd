@@ -36,7 +36,7 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
  * <p>Type variables do not, in general, use reference identity. Use
  * equals to compare them.
  */
-public interface JTypeVar extends JTypeMirror, SubstVar {
+public interface JTypeVar extends SubstVar {
 
 
     /**

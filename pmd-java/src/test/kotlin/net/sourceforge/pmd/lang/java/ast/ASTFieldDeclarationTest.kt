@@ -11,11 +11,8 @@ import net.sourceforge.pmd.lang.test.ast.textOfReportLocation
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
 
 class ASTFieldDeclarationTest : ParserTestSpec({
-
-    parserTest("Extra dimensions") {
-
+    parserTestContainer("Extra dimensions") {
         inContext(TypeBodyParsingCtx) {
-
             // int x[][] = null;
             // int[] x[][] = null;
 
@@ -48,12 +45,10 @@ class ASTFieldDeclarationTest : ParserTestSpec({
         }
     }
 
-    parserTest("In annotation") {
-
+    parserTestContainer("In annotation") {
         genClassHeader = "@interface A"
 
         inContext(TypeBodyParsingCtx) {
-
             // int x[][] = null;
             // int[] x[][] = null;
 
@@ -88,5 +83,4 @@ class ASTFieldDeclarationTest : ParserTestSpec({
             }
         }
     }
-
 })

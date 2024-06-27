@@ -6,10 +6,7 @@ package net.sourceforge.pmd.lang.java.ast
 
 
 class ASTRelationalExpressionTest : ParserTestSpec({
-
-
-    parserTest("Relational expressions operator") {
-
+    parserTestContainer("Relational expressions operator") {
         inContext(ExpressionParsingCtx) {
             "b < 3" should parseAs {
                 infixExpr(BinaryOp.LT) {
@@ -17,7 +14,6 @@ class ASTRelationalExpressionTest : ParserTestSpec({
                     number()
                 }
             }
-
 
             "a <= 3" should parseAs {
                 infixExpr(BinaryOp.LE) {
@@ -42,11 +38,9 @@ class ASTRelationalExpressionTest : ParserTestSpec({
         }
     }
 
-    parserTest("Relational expressions precedence") {
+    parserTestContainer("Relational expressions precedence") {
         inContext(ExpressionParsingCtx) {
-
             "1 < 3 instanceof Boolean" should parseAs {
-
                 infixExpr(BinaryOp.INSTANCEOF) {
                     infixExpr(BinaryOp.LT) {
                         int(1)
@@ -71,7 +65,6 @@ class ASTRelationalExpressionTest : ParserTestSpec({
             }
 
             "1 < 3 + 4 instanceof Boolean" should parseAs {
-
                 infixExpr(BinaryOp.INSTANCEOF) {
                     infixExpr(BinaryOp.LT) {
 
@@ -90,5 +83,4 @@ class ASTRelationalExpressionTest : ParserTestSpec({
             }
         }
     }
-
 })

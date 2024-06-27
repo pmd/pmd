@@ -9,12 +9,17 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
-import net.sourceforge.pmd.lang.java.ast.InvocationNode;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -22,6 +27,7 @@ import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
+import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind;
 import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
@@ -54,7 +60,7 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
             }
             JTypeMirror argT = arg.getTypeMirror();
             if (argT.isPrimitive()) {
-                checkBox((RuleContext) data, "boxing", node, arg, node.getMethodType().getFormalParameters().get(0));
+                checkBox((RuleContext) data, node, arg);
             }
         }
         return null;
@@ -73,18 +79,19 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
             ASTExpression qualifier = node.getQualifier();
 
             if (isValueOf && isWrapperValueOf(m)) {
-                checkBox((RuleContext) data, "boxing", node, node.getArguments().get(0), m.getFormalParameters().get(0));
-            } else if (isValueOf && isStringValueOf(m) && qualifier != null) {
-                checkUnboxing((RuleContext) data, node, qualifier.getTypeMirror());
-            } else if (!isValueOf && isUnboxingCall(m) && qualifier != null) {
-                checkBox((RuleContext) data, "unboxing", node, qualifier, qualifier.getTypeMirror());
+                checkBox((RuleContext) data, node, node.getArguments().get(0));
+            } else if (isValueOf && isBoxValueOfString(m)) {
+                checkUnboxing((RuleContext) data, node, m.getDeclaringType());
+            } else if (!isValueOf && qualifier != null && isUnboxingCall(m)) {
+                checkBox((RuleContext) data, node, qualifier);
             }
         }
         return null;
     }
 
     private boolean isUnboxingCall(JMethodSig m) {
-        return !m.isStatic() && m.getDeclaringType().isBoxedPrimitive() && m.getArity() == 0;
+        return !m.isStatic() && m.getDeclaringType().isBoxedPrimitive() && m.getArity() == 0
+            && m.getReturnType().isPrimitive();
     }
 
     private boolean isWrapperValueOf(JMethodSig m) {
@@ -94,7 +101,8 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
             && m.getFormalParameters().get(0).isPrimitive();
     }
 
-    private boolean isStringValueOf(JMethodSig m) {
+    private boolean isBoxValueOfString(JMethodSig m) {
+        // eg Integer.valueOf("2")
         return m.isStatic()
                 && (m.getArity() == 1 || m.getArity() == 2)
                 && m.getDeclaringType().isBoxedPrimitive()
@@ -103,10 +111,8 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
 
     private void checkBox(
         RuleContext rctx,
-        String opKind,
         ASTExpression conversionExpr,
-        ASTExpression convertedExpr,
-        JTypeMirror conversionInput
+        ASTExpression convertedExpr
     ) {
         // the conversion looks like
         //  CTX _ = conversion(sourceExpr)
@@ -120,47 +126,83 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
         // we want to report a violation if this is equivalent to
         //      sourceExpr -> ctx
 
-        // which basically means testing that convInput -> convOutput
-        // may be performed implicitly.
+        // which means testing that
+        // 1. the result of the implicit conversion of sourceExpr
+        // with context type ctx is the same type as the result of conversion 3
+        // 2. conversion 2 does not truncate the value
 
         // We cannot just test compatibility of the source to the ctx,
         // because of situations like
         //   int i = integer.byteValue()
-        // where the conversion actually truncates the input value.
+        // where the conversion actually truncates the input value
+        // (here we do sourceExpr=Integer (-> convInput=Integer) -> convOutput=byte -> ctx=int).
 
         JTypeMirror sourceType = convertedExpr.getTypeMirror();
         JTypeMirror conversionOutput = conversionExpr.getTypeMirror();
         ExprContext ctx = conversionExpr.getConversionContext();
         JTypeMirror ctxType = ctx.getTargetType();
-        if (ctxType == null && conversionExpr instanceof InvocationNode) {
-            ctxType = conversionOutput;
+
+        if (sourceType.isPrimitive()
+            && !conversionOutput.isPrimitive()
+            && ctxType == null
+            && isObjectConversionNecessary(conversionExpr)) {
+            // eg Integer.valueOf(2).equals(otherInteger)
+            return;
         }
 
-        if (ctxType != null) {
-
-            if (isImplicitlyConvertible(conversionInput, conversionOutput)) {
-
-                boolean simpleConv = isReferenceSubtype(sourceType, conversionInput);
-
-                final String reason;
-                if (simpleConv && conversionInput.unbox().equals(conversionOutput)) {
-                    reason = "explicit unboxing";
-                } else if (simpleConv && conversionInput.box().equals(conversionOutput)) {
-                    reason = "explicit boxing";
-                } else if (sourceType.equals(conversionOutput)) {
-                    reason = "boxing of boxed value";
-                } else {
-                    if (sourceType.equals(ctxType)) {
-                        reason = opKind;
-                    } else {
-                        reason = "explicit conversion from " + TypePrettyPrint.prettyPrintWithSimpleNames(sourceType) + " to " + TypePrettyPrint.prettyPrintWithSimpleNames(ctxType);
-                    }
+        String reason = null;
+        if (sourceType.equals(conversionOutput)) {
+            reason = "boxing of boxed value";
+        } else if (isImplicitlyTypedLambdaReturnExpr(conversionExpr)
+            || ctxType != null && conversionIsImplicitlyRealisable(sourceType, ctxType, ctx, conversionOutput)) {
+            if (sourceType.unbox().equals(conversionOutput)) {
+                reason = "explicit unboxing";
+            } else if (sourceType.box().equals(conversionOutput)) {
+                reason = "explicit boxing";
+            } else if (ctxType != null) {
+                reason = "explicit conversion from " + TypePrettyPrint.prettyPrintWithSimpleNames(sourceType)
+                    + " to " + TypePrettyPrint.prettyPrintWithSimpleNames(ctxType);
+                if (!conversionOutput.equals(ctxType)) {
+                    reason += " through " + TypePrettyPrint.prettyPrintWithSimpleNames(conversionOutput);
                 }
-
-                rctx.addViolation(conversionExpr, reason);
             }
+
+        }
+        if (reason != null) {
+            rctx.addViolation(conversionExpr, reason);
         }
     }
+
+
+    private static boolean conversionIsImplicitlyRealisable(JTypeMirror sourceType, JTypeMirror ctxType, ExprContext ctx, JTypeMirror conversionOutput) {
+        JTypeMirror conv = implicitConversionResult(sourceType, ctxType, ctx.getKind());
+        return conv != null
+            && conv.equals(implicitConversionResult(conversionOutput, ctxType, ctx.getKind()))
+            && conversionDoesNotChangesValue(sourceType, conversionOutput);
+    }
+
+
+    private boolean isImplicitlyTypedLambdaReturnExpr(ASTExpression e) {
+        JavaNode parent = e.getParent();
+        if (isImplicitlyTypedLambda(parent)) {
+            return true;
+        } else if (parent instanceof ASTReturnStatement) {
+            JavaNode target = JavaAstUtils.getReturnTarget((ASTReturnStatement) parent);
+            return isImplicitlyTypedLambda(target);
+        }
+        return false;
+    }
+
+
+    private static boolean isImplicitlyTypedLambda(JavaNode e) {
+        return e instanceof ASTLambdaExpression && !((ASTLambdaExpression) e).isExplicitlyTyped();
+    }
+
+    private boolean isObjectConversionNecessary(ASTExpression e) {
+        JavaNode parent = e.getParent();
+        return e.getIndexInParent() == 0 && parent instanceof QualifiableExpression;
+    }
+
 
     private void checkUnboxing(
             RuleContext rctx,
@@ -185,18 +227,57 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isImplicitlyConvertible(JTypeMirror i, JTypeMirror o) {
-        return i.box().isSubtypeOf(o.box())
-            || i.unbox().isSubtypeOf(o.unbox());
+        if (i.isBoxedPrimitive() && o.isBoxedPrimitive()) {
+            // There is no implicit conversions between box types,
+            // only between primitives
+            return i.equals(o);
+        } else if (i.isPrimitive() && o.isPrimitive()) {
+            return i.isSubtypeOf(o);
+        } else {
+            return i.unbox().equals(o.unbox());
+        }
     }
 
+
     /**
-     * Whether {@code S <: T}, but ignoring primitive widening.
-     * {@code isReferenceSubtype(int, double) == false} even though
-     * {@code int.isSubtypeOf(double)}.
+     * Type of the converted i in context ctx. If no implicit
+     * conversion is possible then return null.
      */
-    private static boolean isReferenceSubtype(JTypeMirror s, JTypeMirror t) {
-        return s.isPrimitive() ? t.equals(s)
-                               : s.isSubtypeOf(t);
+    private static @Nullable JTypeMirror implicitConversionResult(JTypeMirror i, JTypeMirror ctx, ExprContextKind kind) {
+        if (kind == ExprContextKind.CAST) {
+            // In cast contexts conversions are less restrictive.
+            if (i.isPrimitive() != ctx.isPrimitive()) {
+                // Whether an unboxing or boxing conversion may occur depends on whether
+                // the expression has a primitive type or not (not on the cast type).
+                // https://docs.oracle.com/javase/specs/jls/se22/html/jls-5.html#jls-5.5
+                return i.isPrimitive() ? i.box() : i.unbox();
+            } else if (i.isNumeric() && ctx.isNumeric()) {
+                // then narrowing or widening conversions occur to transform i to ctx
+                return ctx;
+            }
+            // otherwise no conversion occurs
+            return i;
+        }
+        if (!ctx.isPrimitive()) {
+            // boxing
+            return i.box().isSubtypeOf(ctx) ? i.box() : null;
+        } else if (i.isBoxedPrimitive()) {
+            // unboxing then optional widening
+            return i.unbox().isSubtypeOf(ctx) ? ctx : null;
+        } else if (i.isPrimitive()) {
+            // widening
+            return i.isSubtypeOf(ctx) ? ctx : null;
+        }
+        return null;
+    }
+
+
+    /**
+     * Whether the explicit conversion from i to o changes the value.
+     * This is e.g. truncating an integer.
+     */
+    private static boolean conversionDoesNotChangesValue(JTypeMirror i, JTypeMirror o) {
+        return i.box().isSubtypeOf(o.box()) || i.unbox().isSubtypeOf(o.unbox());
     }
 
 }

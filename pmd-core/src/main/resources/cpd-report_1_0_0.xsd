@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<xs:schema
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns="https://pmd-code.org/schema/cpd-report" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="https://pmd-code.org/schema/cpd-report"
+        elementFormDefault="qualified">
+
+    <xsd:annotation>
+        <xs:documentation><![CDATA[
+    PMD CPD Report Schema, version 1.0.0
+
+    This XML format is produced by CPD's XMLRenderer "xml".
+]]></xs:documentation>
+    </xsd:annotation>
+
+    <xs:element name="pmd-cpd">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="file" type="file" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="duplication" type="duplication" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="error" type="error" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="version" type="xs:string" use="required"/>
+            <xs:attribute name="pmdVersion" type="xs:string" use="required"/>
+            <xs:attribute name="timestamp" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="file">
+        <xs:attribute name="path" type="xs:string" use="required"/>
+        <xs:attribute name="totalNumberOfTokens" type="xs:nonNegativeInteger" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="duplication">
+        <xs:sequence>
+            <xs:element name="file" type="fileLocation" minOccurs="2" maxOccurs="unbounded"/>
+            <xs:element name="codefragment" type="codefragment" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="lines" type="xs:positiveInteger" use="required"/>
+        <xs:attribute name="tokens" type="xs:positiveInteger" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="error">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="filename" type="xs:string" use="required"/>
+                <xs:attribute name="msg" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="fileLocation">
+        <xs:attribute name="column" type="xs:positiveInteger" use="required"/>
+        <xs:attribute name="endcolumn" type="xs:positiveInteger" use="required"/>
+        <xs:attribute name="endline" type="xs:positiveInteger" use="required"/>
+        <xs:attribute name="line" type="xs:positiveInteger" use="required"/>
+        <xs:attribute name="begintoken" type="xs:nonNegativeInteger" use="required"/>
+        <xs:attribute name="endtoken" type="xs:nonNegativeInteger" use="required"/>
+        <xs:attribute name="path" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="codefragment">
+        <xs:simpleContent>
+            <xs:extension base="xs:string"/>
+        </xs:simpleContent>
+    </xs:complexType>
+</xs:schema>

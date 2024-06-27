@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.AbruptCompletionAnalysis.canCompleteNormally;
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.PatternBindingsUtil.bindersOfExpr;
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.PatternBindingsUtil.bindersOfPattern;
 
 import java.util.ArrayDeque;
 import java.util.Collections;
@@ -50,6 +51,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLocalClassStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
+import net.sourceforge.pmd.lang.java.ast.ASTPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
@@ -363,8 +365,8 @@ public final class SymbolTableResolver {
                 ASTSwitchLabel label = branch.getLabel();
                 // collect all bindings. Maybe it's illegal to use composite label with bindings, idk
                 BindSet bindings =
-                    label.getExprList().reduce(BindSet.EMPTY,
-                                               (bindSet, expr) -> bindSet.union(bindersOfExpr(expr)));
+                    label.children(ASTPattern.class)
+                         .reduce(BindSet.EMPTY, (bindSet, pat) -> bindSet.union(bindersOfPattern(pat)));
 
                 // visit guarded patterns in label
                 setTopSymbolTableAndVisit(label, ctx);
@@ -428,7 +430,7 @@ public final class SymbolTableResolver {
             int pushed = 0;
             for (ASTVariableDeclarator declarator : st.children(ASTVariableDeclarator.class)) {
                 ASTVariableId varId = declarator.getVarId();
-                pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), varId.getSymbol()));
+                pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), varId));
                 // visit initializer
                 setTopSymbolTableAndVisit(declarator.getInitializer(), ctx);
             }
@@ -443,7 +445,7 @@ public final class SymbolTableResolver {
             ASTVariableId varId = node.getVarId();
             setTopSymbolTableAndVisit(varId.getTypeNode(), ctx);
 
-            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varId.getSymbol()));
+            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varId));
             ASTStatement body = node.getBody();
             // unless it's a block the body statement may never set a
             // symbol table that would have this table as parent,
@@ -479,7 +481,7 @@ public final class SymbolTableResolver {
 
         @Override
         public Void visit(ASTCatchClause node, @NonNull ReferenceCtx ctx) {
-            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), node.getParameter().getVarId().getSymbol()));
+            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), node.getParameter().getVarId()));
             setTopSymbolTableAndVisitAllChildren(node, ctx);
             popStack(pushed);
             return null;

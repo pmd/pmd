@@ -25,10 +25,7 @@ import net.sourceforge.pmd.lang.java.types.TypingContext;
  * </pre>
  */
 public final class ASTFormalParameter extends AbstractJavaNode
-    implements ModifierOwner,
-               TypeNode,
-               Annotatable,
-               VariableIdOwner {
+    implements ModifierOwner, TypeNode, VariableIdOwner {
 
     ASTFormalParameter(int id) {
         super(id);

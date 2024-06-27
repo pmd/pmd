@@ -11,9 +11,7 @@ import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JModifier.*
 
 class ASTEnumConstantTest : ParserTestSpec({
-
-    parserTest("Enum constants should have a variable declarator id") {
-
+    parserTestContainer("Enum constants should have a variable declarator id") {
         inContext(TopLevelTypeDeclarationParsingCtx) {
             "enum Foo { A, B }" should parseAs {
                 enumDecl("Foo") {
@@ -54,14 +52,9 @@ class ASTEnumConstantTest : ParserTestSpec({
         }
     }
 
-
-    parserTest("Corner cases with separators") {
-
+    parserTestContainer("Corner cases with separators") {
         inContext(TopLevelTypeDeclarationParsingCtx) {
-
-
             "enum Foo { A, }" should parseAs {
-
                 enumDecl("Foo") {
                     modifiers { }
                     enumBody {
@@ -72,7 +65,6 @@ class ASTEnumConstantTest : ParserTestSpec({
             }
 
             "enum Foo { , }" should parseAs {
-
                 enumDecl("Foo") {
                     modifiers { }
 
@@ -83,7 +75,6 @@ class ASTEnumConstantTest : ParserTestSpec({
             }
 
             "enum Foo { ,; }" should parseAs {
-
                 enumDecl("Foo") {
                     modifiers { }
                     enumBody {
@@ -96,7 +87,6 @@ class ASTEnumConstantTest : ParserTestSpec({
             "enum Foo { ,, }" shouldNot parse()
 
             "enum Foo { ; }" should parseAs {
-
                 enumDecl("Foo") {
                     modifiers { }
                     enumBody {
@@ -107,7 +97,6 @@ class ASTEnumConstantTest : ParserTestSpec({
             }
 
             "enum Foo { ;; }" should parseAs {
-
                 enumDecl("Foo") {
                     modifiers { }
 
@@ -121,9 +110,7 @@ class ASTEnumConstantTest : ParserTestSpec({
         }
     }
 
-
-    parserTest("Enum constants should have an anonymous class node") {
-
+    parserTestContainer("Enum constants should have an anonymous class node") {
         inContext(TopLevelTypeDeclarationParsingCtx) {
             "enum Foo { B { } }" should parseAs {
                 enumDecl("Foo") {
@@ -154,9 +141,7 @@ class ASTEnumConstantTest : ParserTestSpec({
         }
     }
 
-
-    parserTest("Enum constants should contain their annotations") {
-
+    parserTestContainer("Enum constants should contain their annotations") {
         inContext(TopLevelTypeDeclarationParsingCtx) {
             "enum Foo { @C B, @A@a C }" should parseAs {
                 enumDecl("Foo") {
@@ -171,7 +156,6 @@ class ASTEnumConstantTest : ParserTestSpec({
                                 c::declaredAnnotationsList shouldBe listOf(annotation("C"))
                             }
 
-
                             it::getVarId shouldBe variableId("B")
 
                             it::getArguments shouldBe null
@@ -179,14 +163,11 @@ class ASTEnumConstantTest : ParserTestSpec({
                         }
 
                         enumConstant("C") {
-
-
                             val c = it
 
                             it::getModifiers shouldBe modifiers {
                                 c::declaredAnnotationsList shouldBe listOf(annotation("A"), annotation("a"))
                             }
-
 
                             it::getVarId shouldBe variableId("C")
 
@@ -199,9 +180,7 @@ class ASTEnumConstantTest : ParserTestSpec({
         }
     }
 
-
-    parserTest("Enum constants with arguments") {
-
+    parserTestContainer("Enum constants with arguments") {
         inContext(TopLevelTypeDeclarationParsingCtx) {
             "enum Foo { B(\"str\") }" should parseAs {
                 enumDecl("Foo") {
@@ -237,7 +216,6 @@ class ASTEnumConstantTest : ParserTestSpec({
 
                     it::getModifiers shouldBe modifiers {}
 
-
                     enumBody {
                         enumConstant("B") {
 
@@ -262,5 +240,4 @@ class ASTEnumConstantTest : ParserTestSpec({
             }
         }
     }
-
 })

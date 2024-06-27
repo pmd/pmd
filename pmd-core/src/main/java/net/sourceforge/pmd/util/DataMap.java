@@ -6,9 +6,11 @@ package net.sourceforge.pmd.util;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -86,6 +88,14 @@ public final class DataMap<K> {
     @SuppressWarnings("unchecked")
     public <T> T compute(DataKey<? extends K, T> key, Function<? super @Nullable T, ? extends T> function) {
         return (T) getMap().compute(key, (k, v) -> function.apply((T) v));
+    }
+
+    /**
+     * @see Map#merge(Object, Object, BiFunction)
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public <T> T merge(DataKey<? extends K, T> key, T value, BiFunction<? super @NonNull T, ? super T, ? extends T> function) {
+        return (T) getMap().merge(key, value, (BiFunction) function);
     }
 
     private Map<DataKey<? extends K, ?>, Object> getMap() {

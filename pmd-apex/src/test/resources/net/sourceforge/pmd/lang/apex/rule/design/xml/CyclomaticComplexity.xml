@@ -260,9 +260,10 @@ trigger CaseAssignLevel on CaseAssignLevel__c (after delete, after insert, after
 
     <test-code>
         <description>#768 NPE caused by exception in ApexQualifiedName.ofMethod because of trigger</description>
+        <rule-property name="methodReportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The trigger 'CaseAssignLevel' has a cyclomatic complexity of 12.</message>
+            <message>The trigger 'CaseAssignLevel' has a cyclomatic complexity of 9.</message>
         </expected-messages>
         <code-ref id="trigger"/>
     </test-code>

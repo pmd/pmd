@@ -11,6 +11,8 @@ import static net.sourceforge.pmd.lang.java.types.TypeConversion.capture;
 import static net.sourceforge.pmd.lang.java.types.TypeConversion.unaryNumericPromotion;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
+import java.util.List;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -42,8 +44,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPatternList;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
@@ -53,9 +57,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTTemplateExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTTypePattern;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTUnnamedPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
@@ -69,6 +75,7 @@ import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JRecordComponentSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver;
 import net.sourceforge.pmd.lang.java.types.JArrayType;
@@ -178,6 +185,43 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
         return ts.NO_TYPE;
     }
 
+
+    @Override
+    public @NonNull JTypeMirror visit(ASTRecordPattern node, TypingContext data) {
+        JTypeMirror type = node.getTypeNode().getTypeMirror();
+        if (node.getParent() instanceof ASTSwitchLabel) {
+            // If the parent is a switch label, and the type
+            // is generic, the type arguments of the type are
+            // found in the scrutinee expression
+
+            JTypeMirror scrutineeType = node.ancestors(ASTSwitchLike.class).firstOrThrow()
+                                         .getTestedExpression().getTypeMirror(data);
+            JTypeDeclSymbol symbol = type.getSymbol();
+            if (symbol instanceof JClassSymbol) {
+                JTypeMirror inferred = infer.inferParameterizationForSubtype((JClassSymbol) symbol, scrutineeType);
+                return TypeConversion.capture(inferred);
+            }
+        }
+        return type;
+    }
+
+
+    @Override
+    public @NonNull JTypeMirror visit(ASTTypePattern node, TypingContext data) {
+        return node.getVarId().getTypeMirror();
+    }
+
+
+    @Override
+    public @NonNull JTypeMirror visit(ASTUnnamedPattern node, TypingContext data) {
+        if (node.getParent() instanceof ASTPatternList && node.getParent().getParent() instanceof ASTRecordPattern) {
+            return getTypeOfRecordComponent((ASTRecordPattern) node.getParent().getParent(), node.getIndexInParent());
+        }
+        // not allowed in any other context for now
+        return ts.ERROR;
+    }
+
+
     @Override
     public JTypeMirror visit(ASTVariableId node, TypingContext ctx) {
         boolean isTypeInferred = node.isTypeInferred();
@@ -228,6 +272,23 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
             TypeNode enumClass = node.getEnclosingType();
             return enumClass.getTypeMirror(ctx);
 
+        } else if (isTypeInferred && node.isPatternBinding()) {
+            JavaNode parent = node.getParent();
+            if (parent instanceof ASTTypePattern) {
+                // we should be in a record pattern, it's illegal
+                // to use var as a type outside of there
+                if (parent.getParent() instanceof ASTPatternList
+                    && parent.getParent().getParent() instanceof ASTRecordPattern) {
+                    return getTypeOfRecordComponent((ASTRecordPattern) parent.getParent().getParent(),
+                                                    parent.getIndexInParent());
+                } else if (parent.getParent() instanceof ASTTypeExpression
+                    && parent.getParent().getParent() instanceof ASTInfixExpression) {
+                    // in instanceof
+                    return ((ASTInfixExpression) parent.getParent().getParent())
+                        .getLeftOperand().getTypeMirror(ctx);
+                }
+            }
+            return ts.ERROR;
         }
 
         ASTType typeNode = node.getTypeNode();
@@ -242,6 +303,29 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
         return extras != null
                ? ts.arrayType(baseType, extras.size())
                : baseType;
+    }
+
+
+    private JTypeMirror getTypeOfRecordComponent(ASTRecordPattern record, int compIndex) {
+        JTypeMirror type = record.getTypeMirror();
+        @Nullable JTypeDeclSymbol recordType = type.getSymbol();
+        if (recordType instanceof JClassSymbol && type instanceof JClassType) {
+            if (recordType.isUnresolved()) {
+                return ts.UNKNOWN;
+            }
+            List<JRecordComponentSymbol> components = ((JClassSymbol) recordType).getRecordComponents();
+            if (compIndex < components.size()) {
+                JRecordComponentSymbol sym = components.get(compIndex);
+                return ((JClassType) type).getDeclaredField(sym.getSimpleName()).getTypeMirror();
+            }
+        }
+        return ts.ERROR;
+    }
+
+
+    @Override
+    public @NonNull JTypeMirror visit(ASTRecordComponent node, TypingContext data) {
+        return node.getVarId().getTypeMirror();
     }
 
     /*
@@ -326,8 +410,8 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
         case XOR:
         case AND: {
             // those may be boolean or bitwise
-            final JTypeMirror lhs = node.getLeftOperand().getTypeMirror(ctx);
-            final JTypeMirror rhs = node.getRightOperand().getTypeMirror(ctx);
+            final JTypeMirror lhs = node.getLeftOperand().getTypeMirror(ctx).unbox();
+            final JTypeMirror rhs = node.getRightOperand().getTypeMirror(ctx).unbox();
 
             if (lhs.isNumeric() && rhs.isNumeric()) {
                 // NUMERIC(N) & NUMERIC(M)  -> promote(N, M)
@@ -410,11 +494,7 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
 
     @Override
     public JTypeMirror visit(ASTPatternExpression node, TypingContext ctx) {
-        ASTPattern pattern = node.getPattern();
-        if (pattern instanceof ASTTypePattern) {
-            return ((ASTTypePattern) pattern).getTypeNode().getTypeMirror(ctx);
-        }
-        throw new IllegalArgumentException("Unknown pattern " + pattern);
+        return node.getPattern().getTypeMirror(ctx);
     }
 
     @Override

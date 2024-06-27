@@ -218,7 +218,7 @@ public final class TypeOps {
         @Override
         public Boolean visitInferenceVar(InferenceVar t, JTypeMirror s) {
             if (pure) {
-                return t == s;
+                return t == s || t.getBounds(BoundKind.EQ).contains(s);
             }
 
             if (s instanceof JPrimitiveType) {
@@ -1091,14 +1091,10 @@ public final class TypeOps {
         <T extends JTypeMirror> JTypeMirror recurseIfNotDone(T t, BiFunction<T, RecursionStop, JTypeMirror> body) {
             if (t instanceof JTypeVar) {
                 JTypeVar var = (JTypeVar) t;
-                try {
-                    if (isAbsent(var)) {
-                        return body.apply(t, this);
-                    } else {
-                        return t;
-                    }
-                } finally {
-                    set.remove(var);
+                if (isAbsent(var)) {
+                    return body.apply(t, this);
+                } else {
+                    return t;
                 }
             } else {
                 return body.apply(t, this);
@@ -2075,5 +2071,25 @@ public final class TypeOps {
         return t instanceof JArrayType ? ((JArrayType) t).getComponentType() : null;
     }
 
+
+    /**
+     * Return true if the method is context dependent. That
+     * means its return type is influenced by the surrounding
+     * context during type inference. Generic constructors
+     * are always context dependent.
+     */
+    public static boolean isContextDependent(JMethodSig sig) {
+        JExecutableSymbol symbol = sig.getSymbol();
+        if (symbol.isGeneric() || symbol.getEnclosingClass().isGeneric()) {
+            if (symbol instanceof JMethodSymbol) {
+                JTypeMirror returnType = ((JMethodSymbol) symbol).getReturnType(EMPTY);
+                return mentionsAny(returnType, symbol.getTypeParameters())
+                    || mentionsAny(returnType, symbol.getEnclosingClass().getTypeParameters());
+            }
+            // generic ctors are context dependent
+            return true;
+        }
+        return false;
+    }
     // </editor-fold>
 }

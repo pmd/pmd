@@ -15,9 +15,7 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
  * @author Clément Fournier
  */
 class AstSymbolResolverTest : ProcessorTestSpec({
-
-    parserTest("Simple test") {
-
+    parserTestContainer("Simple test") {
         val resolver = parser.parse("""
             package com.foo.bar;
             
@@ -29,8 +27,6 @@ class AstSymbolResolverTest : ProcessorTestSpec({
         """.trimIndent()).let {
             InternalApiBridge.getProcessor(it).symResolver
         }
-
-
 
         doTest("Test outer class") {
             resolver.resolveClassFromBinaryName("com.foo.bar") shouldBe null

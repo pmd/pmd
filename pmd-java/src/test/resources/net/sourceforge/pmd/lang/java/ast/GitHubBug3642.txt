@@ -7,7 +7,7 @@
             +- AnnotationTypeBody[@Empty = false, @Size = 1]
                +- MethodDeclaration[@Abstract = true, @Arity = 0, @EffectiveVisibility = Visibility.V_PACKAGE, @Final = false, @Name = "v1", @Overridden = false, @Static = false, @Varargs = false, @Visibility = Visibility.V_PUBLIC, @Void = false]
                   +- ModifierList[@EffectiveModifiers = (JModifier.PUBLIC, JModifier.ABSTRACT), @ExplicitModifiers = ()]
-                  +- ClassType[@FullyQualified = false, @SimpleName = "String"]
+                  +- ClassType[@FullyQualified = false, @PackageQualifier = null, @SimpleName = "String"]
                   +- FormalParameters[@Empty = true, @Size = 0]
                   +- ArrayDimensions[@Empty = false, @Size = 1]
                      +- ArrayTypeDim[@Varargs = false]

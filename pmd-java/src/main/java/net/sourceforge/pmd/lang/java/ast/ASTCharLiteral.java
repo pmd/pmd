@@ -39,4 +39,8 @@ public final class ASTCharLiteral extends AbstractLiteral implements ASTLiteral 
         return StringEscapeUtils.UNESCAPE_JAVA.translate(woDelims).charAt(0);
     }
 
+    @Override
+    public Chars getLiteralText() {
+        return super.getLiteralText();
+    }
 }

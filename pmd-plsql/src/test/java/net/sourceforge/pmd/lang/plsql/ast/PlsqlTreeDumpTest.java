@@ -41,4 +41,24 @@ class PlsqlTreeDumpTest extends BaseTreeDumpTest {
     void parseSelectIntoAssociativeArrayType() {
         doTest("SelectIntoArray");
     }
+
+    @Test
+    void parseMergeStatement() {
+        doTest("MergeStatementIssue1934");
+    }
+  
+    @Test
+    void errorLoggingClause() {
+        doTest("ErrorLoggingClause2779");
+    }
+
+    @Test
+    void compoundTriggerWithAdditionalDeclarations() {
+        doTest("CompoundTriggerWithAdditionalDeclarations4270");
+    }
+
+    @Test
+    void exceptionHandlerTomKytesDespair() {
+        doTest("ExceptionHandlerTomKytesDespair");
+    }
 }

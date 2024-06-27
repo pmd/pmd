@@ -8,11 +8,8 @@ import net.sourceforge.pmd.lang.java.ast.BinaryOp.*
 
 
 class ASTEqualityExpressionTest : ParserTestSpec({
-
-    parserTest("Test equality expressions") {
-
+    parserTestContainer("Test equality expressions") {
         inContext(ExpressionParsingCtx) {
-
             "1 == 2 == 3" should parseAs {
                 infixExpr(EQ) {
                     infixExpr(EQ) {
@@ -80,5 +77,4 @@ class ASTEqualityExpressionTest : ParserTestSpec({
             }
         }
     }
-
 })

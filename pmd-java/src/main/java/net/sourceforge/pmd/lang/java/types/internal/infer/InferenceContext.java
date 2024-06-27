@@ -290,6 +290,22 @@ final class InferenceContext {
         });
     }
 
+
+    /**
+     * Replace instantiated inference vars with their instantiation in the given type,
+     * or else replace them with a wildcard.
+     */
+    static JTypeMirror groundOrWildcard(JTypeMirror t) {
+        return t.subst(s -> {
+            if (!(s instanceof InferenceVar)) {
+                return s;
+            } else {
+                InferenceVar ivar = (InferenceVar) s;
+                return ivar.getInst() != null ? ivar.getInst() : s.getTypeSystem().UNBOUNDED_WILD;
+            }
+        });
+    }
+
     /**
      * Copy variable in this inference context to the given context
      */

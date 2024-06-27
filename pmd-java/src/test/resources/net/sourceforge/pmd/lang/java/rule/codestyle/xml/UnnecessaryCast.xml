@@ -845,4 +845,47 @@ class MyClass {
 }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Boxing in ternary</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public abstract class Example {
+
+                boolean cast(boolean shouldBeLong, int n) {
+                    // The first valueOf call is necessary, not the second
+                    Number result = shouldBeLong ?
+                                    (Number)Long.valueOf(n) // ok
+                                                 : (Number)Integer.valueOf(n); // warn
+                    short s = 2;
+                    // here both are necessary
+                    result = shouldBeLong ?
+                             (Number)Long.valueOf(s) : (Number)Integer.valueOf(s);
+
+
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Unboxing in lambda</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+            public abstract class Example {
+                VoidSpecies<Integer> mismatch = payload -> (int) payload; // nowarn: here the cast does a null check
+                RefSpecies<Integer, Object> i = t -> (int) t; // nowarn: here the cast does a null check
+                IntSpecies<Integer> i = t -> (int) t; // warn: in this context t->t is equivalent because it will be unboxed
+
+                interface VoidSpecies<T> {
+                    void doSomething(T t);
+                }
+                interface RefSpecies<T, X> {
+                    X foo(T t);
+                }
+                interface IntSpecies<T> {
+                    int foo(T t);
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

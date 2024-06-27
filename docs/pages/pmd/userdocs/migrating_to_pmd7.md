@@ -4,6 +4,7 @@ tags: [pmd, userdocs]
 summary: "Migrating to PMD 7 from PMD 6.x"
 permalink: pmd_userdocs_migrating_to_pmd7.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
+last_updated: June 2024 (7.3.0)
 ---
 
 {% include important.html content="
@@ -3363,8 +3364,9 @@ See the use case [I'm using only built-in rules](#im-using-only-built-in-rules) 
 
 #### Maven
 
-* Due to some changes in PMD's API, you can't simply pull in the new PMD 7 dependency.
-* See [Using PMD 7 with maven-pmd-plugin](pmd_userdocs_tools_maven.html#using-pmd-7-with-maven-pmd-plugin).
+* Since maven-pmd-plugin 3.22.0, PMD 7 is supported directly.
+* See [MPMD-379](https://issues.apache.org/jira/browse/MPMD-379)
+* See [Using PMD 7 with maven-pmd-plugin](pmd_userdocs_tools_maven.html#using-pmd-7-with-maven-pmd-plugin)
 
 #### Gradle
 

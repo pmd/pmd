@@ -230,7 +230,7 @@ class ApexTreeBuilder(private val task: ParserTask, private val proc: ApexLangua
                 // 2. Add the expected ASTModifier child node
                 buildModifiers(emptyList()).also { it.setParent(invokeMethod) }
                 // 3. Elide the body CompoundStatement->ASTBlockStatement
-                buildChildren(node.body, parent = invokeMethod as AbstractApexNode)
+                node.body.forEach { buildChildren(it, parent = invokeMethod as AbstractApexNode) }
             } else {
                 buildChildren(node, parent = this, exclude = { it in node.modifiers })
             }

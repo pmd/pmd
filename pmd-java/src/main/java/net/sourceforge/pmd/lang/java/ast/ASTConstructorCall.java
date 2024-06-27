@@ -22,11 +22,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * </pre>
  */
-public final class ASTConstructorCall extends AbstractInvocationExpr
-    implements ASTPrimaryExpression,
-               QualifiableExpression,
-               LeftRecursiveNode,
-               InvocationNode {
+public final class ASTConstructorCall extends AbstractInvocationExpr implements QualifiableExpression, LeftRecursiveNode {
 
     ASTConstructorCall(int id) {
         super(id);

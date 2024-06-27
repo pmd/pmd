@@ -16,12 +16,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
-import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.EmptyClassSymbol;
 
-class AstUnnamedClassSym extends EmptyClassSymbol implements JClassSymbol {
+class AstUnnamedClassSym extends EmptyClassSymbol {
     private final List<JMethodSymbol> declaredMethods;
     private final List<JFieldSymbol> declaredFields;
 
