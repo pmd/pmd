@@ -2695,7 +2695,8 @@ ASTDeleteStatement DeleteStatement() :
 ASTMergeStatement MergeStatement() :
 {}
 {
-    <MERGE> <INTO> [ LOOKAHEAD(2) SchemaName() "." ] TableName() [ TableAlias() ]
+    <MERGE> <INTO> [ LOOKAHEAD(2) SchemaName() "." ] TableName() [ LOOKAHEAD(1, ID(), { getToken(1).kind != USING } ) TableAlias() ]
+    /* <MERGE> <INTO> [ LOOKAHEAD(2) SchemaName() "." ] TableName() [ TableAlias() ] */
     <USING>
     (
             LOOKAHEAD(3) "(" ValuesClause() ")"
