@@ -43,7 +43,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
         PropertyFactory.stringProperty("encoding").desc("XML encoding format").defaultValue("UTF-8").build();
 
     private static final String PMD_REPORT_NS_URI = "http://pmd.sourceforge.net/report/2.0.0";
-    private static final String PMD_REPORT_NS_LOCATION = "http://pmd.sourceforge.net/report_2_0_0.xsd";
+    private static final String PMD_REPORT_NS_LOCATION = "https://pmd.github.io/schema/report_2_0_0.xsd";
     private static final String XSI_NS_PREFIX = "xsi";
 
     private XMLStreamWriter xmlWriter;
