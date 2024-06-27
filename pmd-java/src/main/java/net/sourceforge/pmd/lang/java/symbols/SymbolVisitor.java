@@ -56,6 +56,11 @@ public interface SymbolVisitor<R, P> {
         return visitVariable(sym, param);
     }
 
+    /** Delegates to {@link #visitSymbol(JElementSymbol, Object)}. */
+    default R visitRecordComponent(JRecordComponentSymbol sym, P param) {
+        return visitSymbol(sym, param);
+    }
+
     /** Delegates to {@link #visitVariable(JVariableSymbol, Object) visitVariable}. */
     default R visitLocal(JLocalVariableSymbol sym, P param) {
         return visitVariable(sym, param);

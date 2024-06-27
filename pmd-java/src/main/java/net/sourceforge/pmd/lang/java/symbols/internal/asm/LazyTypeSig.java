@@ -39,6 +39,9 @@ class LazyTypeSig {
 
 
     JTypeMirror get(Substitution subst) {
+        if (Substitution.isEmptySubst(subst)) {
+            return get();
+        }
         return get().subst(subst);
     }
 

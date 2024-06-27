@@ -23,6 +23,8 @@ This is a {{ site.pmd.release_type }} release.
   * [#5055](https://github.com/pmd/pmd/issues/5055): \[apex] SOSL syntax error with WITH USER_MODE or WITH SYSTEM_MODE
 * apex-bestpractices
   * [#5000](https://github.com/pmd/pmd/issues/5000): \[apex] UnusedLocalVariable FP with binds in SOSL / SOQL
+* java
+  * [#5050](https://github.com/pmd/pmd/issues/5050): \[java] Problems with pattern variables in switch branches
 * java-bestpractices
   * [#5047](https://github.com/pmd/pmd/issues/5047): \[java] UnusedPrivateMethod FP for Generics & Overloads
 * plsql
@@ -52,7 +54,12 @@ read the XML format should be updated.
 
 #### Deprecated for removal
 
-* {%jdoc !!core::cpd.XMLOldRenderer %} (the CPD format "xmlold").
+* core
+  * {%jdoc !!core::cpd.XMLOldRenderer %} (the CPD format "xmlold").
+* pmd-java
+  * {%jdoc !!java::lang.java.ast.ASTRecordPattern#getVarId() %} This method was added here by mistake. Record
+    patterns don't declare a pattern variable for the whole pattern, but rather for individual record
+    components, which can be accessed via {%jdoc java::lang.java.ast.ASTRecordPattern#getComponentPatterns() %}.
 
 ### ✨ External Contributions
 

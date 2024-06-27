@@ -8,6 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.VariableIdOwner;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JRecordComponentSymbol;
 
 /**
  * Defines a single component of a {@linkplain ASTRecordDeclaration RecordDeclaration} (JDK 16 feature).
@@ -22,6 +23,7 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
  * <ul>
  * <li>The symbol exposed by the {@link ASTVariableId} is the field
  * symbol.
+ * <li>The symbol exposed by this node (ASTRecordComponent) is a {@link JRecordComponentSymbol}.
  * <li> The formal parameter symbol is accessible in the formal parameter
  * list of the {@link JConstructorSymbol} for the {@linkplain ASTRecordComponentList#getSymbol() canonical constructor}.
  * <li>The symbol for the accessor method can be found in the {@link JClassSymbol#getDeclaredMethods() declared methods}
@@ -34,7 +36,8 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
  *
  * </pre>
  */
-public final class ASTRecordComponent extends AbstractJavaNode implements ModifierOwner, VariableIdOwner {
+public final class ASTRecordComponent extends AbstractTypedSymbolDeclarator<JRecordComponentSymbol>
+    implements ModifierOwner, VariableIdOwner, SymbolDeclaratorNode {
 
     ASTRecordComponent(int id) {
         super(id);
@@ -44,7 +47,6 @@ public final class ASTRecordComponent extends AbstractJavaNode implements Modifi
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
-
 
     /**
      * Returns true if this component's corresponding formal parameter

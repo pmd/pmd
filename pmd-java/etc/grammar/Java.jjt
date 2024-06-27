@@ -1863,7 +1863,7 @@ void Pattern() #void:
 void TypePattern():
 {}
 {
-  LocalVarModifierList() FormalParamType() VariableDeclaratorId()
+  LocalVarModifierList() LocalVariableType() VariableDeclaratorId()
 }
 
 void RecordPattern():

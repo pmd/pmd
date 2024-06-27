@@ -64,7 +64,7 @@
          |        |  +- IfStatement[@Else = false]
          |        |     +- InfixExpression[@CompileTimeConstant = false, @Operator = BinaryOp.GT, @ParenthesisDepth = 0, @Parenthesized = false]
          |        |     |  +- MethodCall[@CompileTimeConstant = false, @Image = "calculateArea", @MethodName = "calculateArea", @ParenthesisDepth = 0, @Parenthesized = false]
-         |        |     |  |  +- AmbiguousName[@CompileTimeConstant = false, @Image = "t", @Name = "t", @ParenthesisDepth = 0, @Parenthesized = false]
+         |        |     |  |  +- VariableAccess[@AccessType = AccessType.READ, @CompileTimeConstant = false, @Image = "t", @Name = "t", @ParenthesisDepth = 0, @Parenthesized = false]
          |        |     |  |  +- ArgumentList[@Empty = true, @Size = 0]
          |        |     |  +- NumericLiteral[@Base = 10, @CompileTimeConstant = true, @DoubleLiteral = false, @FloatLiteral = false, @Image = "100", @IntLiteral = true, @Integral = true, @LiteralText = "100", @LongLiteral = false, @ParenthesisDepth = 0, @Parenthesized = false, @ValueAsDouble = 100.0, @ValueAsFloat = 100.0, @ValueAsInt = 100, @ValueAsLong = 100]
          |        |     +- Block[@Empty = false, @Size = 2, @containsComment = false]
