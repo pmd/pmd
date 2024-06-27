@@ -79,7 +79,7 @@ public final class InferenceVar implements SubstVar {
      * Returns the bounds of a certain kind that apply to
      * this variable.
      */
-    Set<JTypeMirror> getBounds(BoundKind kind) {
+    public Set<JTypeMirror> getBounds(BoundKind kind) {
         return boundSet.bounds.getOrDefault(kind, Collections.emptySet());
     }
 

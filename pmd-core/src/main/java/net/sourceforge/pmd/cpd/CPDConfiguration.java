@@ -39,6 +39,7 @@ public class CPDConfiguration extends AbstractConfiguration {
     static {
         RENDERERS.put(DEFAULT_RENDERER, SimpleRenderer.class);
         RENDERERS.put("xml", XMLRenderer.class);
+        RENDERERS.put("xmlold", XMLOldRenderer.class);
         RENDERERS.put("csv", CSVRenderer.class);
         RENDERERS.put("csv_with_linecount_per_file", CSVWithLinecountPerFileRenderer.class);
         RENDERERS.put("vs", VSRenderer.class);
