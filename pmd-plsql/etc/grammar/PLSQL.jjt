@@ -27,6 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /**
+ * Add support for SQL_MACRO
+ *
+ * Arjen Duursma 06/2024
+ *====================================================================
  * Add support for MERGE (INTO) statement
  * Add support Error Logging for INSERT, UPDATE, DELETE
  *
@@ -728,7 +732,7 @@ ASTMethodDeclarator MethodDeclarator() :
         }
       }
        // There is no RETURN for a WRAPPED object
-      [ <RETURN> Datatype() ]
+      [ <RETURN> Datatype() [ SqlMacroClause() ] ]
 
     )
   | <PROCEDURE>
@@ -2115,7 +2119,7 @@ void QueryTableExpression() #void :
 {}
 {
   (
-    LOOKAHEAD(2) [ LOOKAHEAD(2) SchemaName() "." ] TableName()
+    LOOKAHEAD(2) [ LOOKAHEAD(2) SchemaName() "." ] ( LOOKAHEAD(2) FunctionCall() | TableName() )
   |
     TableCollectionExpression()
   |
@@ -2146,6 +2150,7 @@ ASTTableCollectionExpression TableCollectionExpression() :
 /**
  * Special production, used in joins. The table reference might have
  * a table alias, but this should not match any following NATURAL, CROSS, etc.
+
  * keywords, although these are allowed as alias names since these are
  * not reserved words.
  */
@@ -2690,7 +2695,8 @@ ASTDeleteStatement DeleteStatement() :
 ASTMergeStatement MergeStatement() :
 {}
 {
-    <MERGE> <INTO> [ LOOKAHEAD(2) SchemaName() "." ] TableName() [ TableAlias() ]
+    <MERGE> <INTO> [ LOOKAHEAD(2) SchemaName() "." ] TableName() [ LOOKAHEAD(1, ID(), { getToken(1).kind != USING } ) TableAlias() ]
+    /* <MERGE> <INTO> [ LOOKAHEAD(2) SchemaName() "." ] TableName() [ TableAlias() ] */
     <USING>
     (
             LOOKAHEAD(3) "(" ValuesClause() ")"
@@ -5133,6 +5139,7 @@ TOKEN [IGNORE_CASE]:
 <ROWTYPE: "ROWTYPE"> |
 <SAVE: "SAVE"> |
 <SAVEPOINT: "SAVEPOINT"> |
+<SCALAR: "SCALAR"> |
 <SECOND: "SECOND"> |
 <SELF: "SELF"> |
 <SEPARATE: "SEPARATE"> |
@@ -5146,6 +5153,7 @@ TOKEN [IGNORE_CASE]:
 <SPACE: "SPACE"> |
 <SQLCODE: "SQLCODE"> |
 <SQLERRM: "SQLERRM"> |
+<SQL_MACRO: "SQL_MACRO"> |
 <STATIC: "STATIC"> |
 <SUBSTITUTABLE: "SUBSTITUTABLE"> |
 <SUCCESSFUL: "SUCCESSFUL"> |
@@ -7057,4 +7065,15 @@ ASTJavaInterfaceClass JavaInterfaceClass(): {}
           <SQLDATA_CLASS> | <CUSTOMDATUM_CLASS> | <ORADATA_CLASS>
         )
 	{ jjtThis.setImage(token.getImage()) ; jjtThis.value = token ; return jjtThis ; }
+}
+
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/23/lnpls/SQL_MACRO-clause.html#LNPLS-GUID-292C3A17-2A4B-4EFB-AD38-68DF6380E5F7
+ */
+ASTSqlMacroClause SqlMacroClause(): {}
+{
+       (
+         <SQL_MACRO> [ <LPAREN> [ <TYPE> "=>" ] ( <SCALAR> | <TABLE> ) { jjtThis.setType(token.getImage()); } <RPAREN> ]
+       )
+       { return jjtThis; }
 }
