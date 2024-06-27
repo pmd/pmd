@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.types.Substitution;
  * with a private final {@link JFieldSymbol} and a public
  * {@linkplain JMethodSymbol accessor method}.
  *
- * @since 7.0.0
+ * @since 7.3.0
  */
 public interface JRecordComponentSymbol extends JAccessibleElementSymbol, BoundToNode<ASTRecordComponent> {
 

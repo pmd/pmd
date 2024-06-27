@@ -38,6 +38,8 @@ public final class ASTRecordPattern extends AbstractJavaPattern {
 
     /**
      * Return the patterns for each record component.
+     *
+     * @since 7.3.0
      */
     public ASTPatternList getComponentPatterns() {
         return firstChild(ASTPatternList.class);
@@ -47,7 +49,9 @@ public final class ASTRecordPattern extends AbstractJavaPattern {
     /**
      * Returns the declared variable.
      *
-     * @deprecated This method was added here by mistake
+     * @deprecated This method was added here by mistake. Record patterns don't declare a pattern variable
+     * for the whole pattern, but rather for individual record components, which can be accessed via
+     * {@link #getComponentPatterns()}.
      */
     @Deprecated
     public ASTVariableId getVarId() {
