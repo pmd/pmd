@@ -14,6 +14,22 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+### 🌟 Rule Changes
+
+Several rules for unit testing have been renamed to better reflect their actual scope. Lots of them were called after JUnit / JUnit 4, even when they applied to JUnit 5 and / or TestNG.
+
+* `java/bestpractices/JUnit4TestShouldUseAfterAnnotation` has been renamed to {% rule java/bestpractices/JUnitTestShouldUseAfterAnnotation %}
+
+* `java/bestpractices/JUnit4TestShouldUseBeforeAnnotation` has been renamed to {% rule java/bestpractices/JUnitTestShouldUseBeforeAnnotation %}
+
+* `java/bestpractices/JUnit4TestShouldUseTestAnnotation` has been renamed to {% rule java/bestpractices/UnitTestShouldUseTestAnnotation %}
+
+* `java/bestpractices/JUnitAssertionsShouldIncludeMessage` has been renamed to {% rule java/bestpractices/UnitTestAssertionsShouldIncludeMessage %}
+
+* `java/bestpractices/JUnitTestContainsTooManyAsserts` has been renamed to {% rule java/bestpractices/UnitTestContainsTooManyAsserts %}
+
+* `java/bestpractices/JUnitTestsShouldIncludeAssert` has been renamed to {% rule java/bestpractices/UnitTestsShouldIncludeAssert %}
+
 ### 🐛 Fixed Issues
 * core
   * [#4992](https://github.com/pmd/pmd/pull/4992): \[core] CPD: Include processing errors in XML report

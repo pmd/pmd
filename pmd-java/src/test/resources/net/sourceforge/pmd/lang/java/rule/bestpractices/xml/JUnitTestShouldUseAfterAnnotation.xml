@@ -5,12 +5,12 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
-        <description>Contains setUp</description>
+        <description>Contains tearDown</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import org.junit.Test;
 public class Foo {
-    public void setUp() {
+    public void tearDown() {
     }
     @Test
     public void foo() {
@@ -20,14 +20,14 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Contains @setUp</description>
+        <description>Contains @After tearDown</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.After;
 public class Foo {
-    @Before
-    public void setUp() {
+    @After
+    public void tearDown() {
     }
     @Test
     public void foo() {
@@ -37,37 +37,18 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Renamed setup</description>
+        <description>Renamed tearDown</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.After;
 public class Foo {
-    @Before
-    public void configure() {
+    @After
+    public void clean() {
     }
     @Test
     public void foo() {
     }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>#1400 False positive with JUnit4TestShouldUseBeforeAnnotation</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-import org.junit.Before;
-import org.junit.Test;
-import my.EsSetup;
-public class Foo {
-    EsSetup esSetup;
-    @Before("@ResetEsSetup")
-    public void setUp() {
-        esSetup.execute(EsSetup.deleteAll());
-    }
-    @Test
-    public void someTest() {}
 }
         ]]></code>
     </test-code>
@@ -76,13 +57,12 @@ public class Foo {
         <description>#1446 False positive with JUnit4TestShouldUseBeforeAnnotation when TestNG is used</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
-import java.lang.reflect.Method;
 
 public class Foo {
-    @BeforeMethod
-    public void setUp(Method m) {
+    @AfterMethod
+    public void tearDown(java.lang.reflect.Method m) {
       //...
     }
     @Test
@@ -92,31 +72,32 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>#940 False positive with JUnit4TestShouldUseBeforeAnnotation when JUnit5's 'BeforeEach' is used</description>
+        <description>#940 False positive with JUnit4TestShouldUseAfterAnnotation when JUnit5's 'AfterEach' is used</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.junit.jupiter.api.*;
 
 public class Foo {
-    @BeforeEach
-    public void setUp() {
+    @AfterEach
+    public void tearDown() {
       //...
     }
     @Test
     public void someTest() {}
+
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>#940 False positive with JUnit4TestShouldUseBeforeAnnotation when JUnit5's 'BeforeAll' is used</description>
+        <description>#940 False positive with JUnit4TestShouldUseAfterAnnotation when JUnit5's 'AfterAll' is used</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.junit.jupiter.api.*;
 
 public class Foo {
-    @BeforeAll
-    public void setUp() {
+    @AfterAll
+    public void tearDown() {
       //...
     }
     @Test
@@ -125,11 +106,11 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>Contains setUp, not a junit 4 test</description>
+        <description>Contains tearDown, not a junit 4 test</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             public class Foo {
-                public void setUp() {
+                public void tearDown() {
                 }
                 public void foo() {
                 }
@@ -137,16 +118,13 @@ public class Foo {
             ]]></code>
     </test-code>
     <test-code>
-        <description>Contains setUp with different signature</description>
+        <description>Contains tearDown with different signature</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             import org.junit.Test;
-
             public class Foo {
-
-                public void setUp(int something) {
+                public void tearDown(int something) {
                 }
-
                 @Test
                 public void foo() {
                 }
@@ -158,7 +136,7 @@ public class Foo {
         <description>[java] JUnit4TestShouldUseBeforeAnnotation false positive when overriding setUp #1592</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import net.sourceforge.pmd.lang.java.rule.bestpractices.JUnit4TestShouldUseBeforeAnnotationTest.BaseTest;
+import net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitTestShouldUseBeforeAnnotationTest.BaseTest;
 
 public class AReallyCoolFeatureTest extends BaseTest {
     @Override
