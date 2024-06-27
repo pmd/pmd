@@ -8,6 +8,9 @@
     <test-code>
         <description>Query without a where statement</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Avoid SOQL queries without a where or limit statement</message>
+        </expected-messages>
         <code><![CDATA[
 public class Something {
     public static void main( String[] as ) {
@@ -32,6 +35,9 @@ public class Something {
     <test-code>
         <description>Subquery without limit</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Avoid SOQL sub-queries without a where or limit statement</message>
+        </expected-messages>
         <code><![CDATA[
 public class Something {
     public static void main( String[] as ) {
@@ -45,6 +51,11 @@ public class Something {
         <description>Multiple non restrictive queries</description>
         <expected-problems>3</expected-problems>
         <expected-linenumbers>3,4,5</expected-linenumbers>
+        <expected-messages>
+            <message>Avoid SOQL queries without a where or limit statement</message>
+            <message>Avoid SOQL queries without a where or limit statement</message>
+            <message>Avoid SOQL queries without a where or limit statement</message>
+        </expected-messages>
         <code><![CDATA[
 public class Something {
     public static Account[] main( String[] as ) {
@@ -70,4 +81,30 @@ public class Something {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>subquery with limit, main query without</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Avoid SOQL queries without a where or limit statement</message>
+        </expected-messages>
+        <code><![CDATA[
+class Query {
+    void method() {
+        Account[] accounts = [ select id, (SELECT Id FROM Contact where id = 1 limit 1) from account ];
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code disabled="true">
+        <description>main query with limit, subquery without is OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Query {
+    void method() {
+        Account[] accounts = [ select id, (SELECT Id FROM Contact) from account limit 1 ];
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

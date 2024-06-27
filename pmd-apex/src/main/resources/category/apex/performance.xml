@@ -56,7 +56,7 @@ public class Foo {
     <rule name="AvoidNonRestrictiveQueries"
           language="apex"
           since="7.4.0"
-          message="Avoid SOQL queries without a where or limit statement"
+          message="Avoid SOQL {0}queries without a where or limit statement"
           class="net.sourceforge.pmd.lang.apex.rule.performance.AvoidNonRestrictiveQueriesRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#avoidnonrestrictivequeries">
         <description>
