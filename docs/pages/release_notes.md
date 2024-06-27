@@ -14,6 +14,10 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+#### ✨ New Rules
+* The new Java rule {%rule java/bestpractices/UseEnumCollections %} reports usages for `HashSet` and `HashMap`
+  when the keys are of an enum type. The specialized enum collections are more space- and time-efficient.
+
 ### 🐛 Fixed Issues
 * core
   * [#4992](https://github.com/pmd/pmd/pull/4992): \[core] CPD: Include processing errors in XML report
@@ -26,6 +30,7 @@ This is a {{ site.pmd.release_type }} release.
 * java
   * [#5050](https://github.com/pmd/pmd/issues/5050): \[java] Problems with pattern variables in switch branches
 * java-bestpractices
+  * [#577](https://github.com/pmd/pmd/issues/577): \[java] New Rule: Check that Map<K,V> is an EnumMap if K is an enum value
   * [#5047](https://github.com/pmd/pmd/issues/5047): \[java] UnusedPrivateMethod FP for Generics & Overloads
 * plsql
   * [#1934](https://github.com/pmd/pmd/issues/1934): \[plsql] ParseException with MERGE statement in anonymous block
