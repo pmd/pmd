@@ -1731,9 +1731,9 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.UseEnumCollectionsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#useenumcollections">
         <description>
-            Wherever possible, use `EnumSet` or `EnumMap` instead of more generic set and map implementations when the keys
-            are of an enum type. The specialized collections are more space- and time-efficient.
-            This rule reports constructor expressions for hash and tree sets or maps whose key type is an enum type.
+            Wherever possible, use `EnumSet` or `EnumMap` instead of `HashSet` and `HashMap` when the keys
+            are of an enum type. This rule reports constructor expressions for hash sets or maps whose key
+            type is an enum type.
         </description>
         <priority>3</priority>
         <example>
