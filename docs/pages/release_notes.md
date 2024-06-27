@@ -19,6 +19,8 @@ This is a {{ site.pmd.release_type }} release.
   when the keys are of an enum type. The specialized enum collections are more space- and time-efficient.
 
 ### 🐛 Fixed Issues
+* cli
+  * [#2827](https://github.com/pmd/pmd/issues/2827): \[cli] Consider processing errors in exit status
 * core
   * [#4992](https://github.com/pmd/pmd/pull/4992): \[core] CPD: Include processing errors in XML report
 * apex
@@ -58,11 +60,42 @@ go back using the old format with the renderer "xmlold" ({%jdoc core::cpd.XMLOld
 this old renderer is deprecated and only there for compatibility reasons. Whatever tooling is used to
 read the XML format should be updated.
 
-#### Deprecated for removal
+#### CLI
 
-* core
+* New exit code 5 introduced. PMD and CPD will exit now by default with exit code 5, if any recoverable error
+  (e.g. parsing exception, lexing exception or rule exception) occurred. PMD will still create a report with
+  all detected violations or duplications if recoverable errors occurred. Such errors mean, that the report
+  might be incomplete, as either violations or duplications for an entire file or for a specific rule are missing.
+  These cases can be considered as false-negatives.
+
+  In any case, the root cause should be investigated. If it's a problem in PMD itself, please create a bug report.
+
+* New CLI parameter `--no-fail-on-error` to ignore such errors and not exit with code 5. By default,
+  a build with errors will now fail and with that parameter, the previous behavior can be restored.
+  This parameter is available for both PMD and CPD.
+
+* The CLI parameter `--skip-lexical-errors` is deprecated. By default, lexical errors are skipped but the
+  build is failed. Use the new parameter `--[no-]fail-on-error` instead to control whether to fail the build or not.
+
+#### Ant
+
+* CPDTask has a new parameter `failOnError`. It controls, whether to fail the build if any recoverable error occurred.
+  By default, the build will fail. CPD will still create a report with all detected duplications, but the report might
+  be incomplete.
+* The parameter `skipLexicalError` in CPDTask is deprecated and ignored. Lexical errors are now always skipped.
+  Use the new parameter `failOnError` instead to control whether to fail the build or not.
+
+#### Deprecated API
+
+* pmd-ant
+  * {% jdoc !!ant::ant.CPDTask#setSkipLexicalErrors(boolean) %}: Use {% jdoc ant::ant.CPDTask#setFailOnError(boolean) %}
+  instead to control, whether to ignore errors or fail the build.
+* pmd-core
+  * {% jdoc !!core::cpd.CPDConfiguration#isSkipLexicalErrors() %} and {% jdoc core::cpd.CPDConfiguration#setSkipLexicalErrors(boolean) %}:
+  Use {%jdoc core::AbstractConfiguration#setFailOnError(boolean) %} to control whether to ignore errors or fail the build.
   * {%jdoc !!core::cpd.XMLOldRenderer %} (the CPD format "xmlold").
 * pmd-java
+  * {% jdoc !!java::lang.java.ast.ASTResource#getStableName() %} and the corresponding attribute `@StableName`.
   * {%jdoc !!java::lang.java.ast.ASTRecordPattern#getVarId() %} This method was added here by mistake. Record
     patterns don't declare a pattern variable for the whole pattern, but rather for individual record
     components, which can be accessed via {%jdoc java::lang.java.ast.ASTRecordPattern#getComponentPatterns() %}.
