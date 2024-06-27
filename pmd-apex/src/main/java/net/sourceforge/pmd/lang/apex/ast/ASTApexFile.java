@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextRegion;
 
 import com.google.summit.ast.CompilationUnit;
-import com.nawforce.pkgforce.api.Issue;
+import io.github.apexdevtools.api.Issue;
 
 public final class ASTApexFile extends AbstractApexNode.Single<CompilationUnit> implements RootNode {
 
