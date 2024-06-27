@@ -35,6 +35,7 @@ This is a {{ site.pmd.release_type }} release.
 * plsql
   * [#1934](https://github.com/pmd/pmd/issues/1934): \[plsql] ParseException with MERGE statement in anonymous block
   * [#2779](https://github.com/pmd/pmd/issues/2779): \[plsql] Error while parsing statement with (Oracle) DML Error Logging
+  * [#4270](https://github.com/pmd/pmd/issues/4270): \[plsql] Parsing exception COMPOUND TRIGGER with EXCEPTION handler
 
 ### 🚨 API Changes
 

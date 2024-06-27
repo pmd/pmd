@@ -9,8 +9,8 @@ DECLARE
 BEGIN
    OPEN emp_cv FOR  -- open cursor variable
       'SELECT ename, sal FROM emp WHERE sal > :s' USING my_sal;
-   open cursor for 'query' USING variable;
-   open cursor for 'query' USING IN variable;
-   open cursor for 'query' USING OUT variable, IN othervariable;
-   open cursor for 'query' USING IN OUT variable;
+   open cursorvar for 'query' USING variable;
+   open cursorvar for 'query' USING IN variable;
+   open cursorvar for 'query' USING OUT variable, IN othervariable;
+   open cursorvar for 'query' USING IN OUT variable;
 END;

@@ -126,8 +126,6 @@ CREATE OR REPLACE PROCEDURE prc_test_unreserved_keyword
         BECOME VARCHAR2(240);
         /** Unreserved Keyword Word BEFORE **/
         BEFORE VARCHAR2(240);
-        /** Unreserved Keyword Word BEGIN **/
-        --SRT  BEGIN VARCHAR2(240);
         /** Unreserved Keyword Word BEGIN_OUTLINE_DATA **/
         BEGIN_OUTLINE_DATA VARCHAR2(240);
         /** Unreserved Keyword Word BEHALF **/
@@ -208,8 +206,6 @@ CREATE OR REPLACE PROCEDURE prc_test_unreserved_keyword
         CARDINALITY VARCHAR2(240);
         /** Unreserved Keyword Word CASCADE **/
         CASCADE VARCHAR2(240);
-        /** Unreserved Keyword Word CASE **/
-        CASE VARCHAR2(240);
         /** Unreserved Keyword Word CAST **/
         CAST VARCHAR2(240);
         /** Unreserved Keyword Word CATEGORY **/
@@ -346,8 +342,6 @@ CREATE OR REPLACE PROCEDURE prc_test_unreserved_keyword
         CURRENT_TIMESTAMP VARCHAR2(240);
         /** Unreserved Keyword Word CURRENT_USER **/
         CURRENT_USER VARCHAR2(240);
-        /** Unreserved Keyword Word CURSOR **/
-        CURSOR VARCHAR2(240);
         /** Unreserved Keyword Word CURSOR_SHARING_EXACT **/
         CURSOR_SHARING_EXACT VARCHAR2(240);
         /** Unreserved Keyword Word CURSOR_SPECIFIC_SEGMENT **/
@@ -388,8 +382,6 @@ CREATE OR REPLACE PROCEDURE prc_test_unreserved_keyword
         DEBUG VARCHAR2(240);
         /** Unreserved Keyword Word DEC **/
         DEC VARCHAR2(240);
-        /** Unreserved Keyword Word DECLARE **/
-        DECLARE VARCHAR2(240);
         /** Unreserved Keyword Word DECREMENT **/
         DECREMENT VARCHAR2(240);
         /** Unreserved Keyword Word DECRYPT **/
@@ -490,8 +482,6 @@ CREATE OR REPLACE PROCEDURE prc_test_unreserved_keyword
         ENCRYPT VARCHAR2(240);
         /** Unreserved Keyword Word ENCRYPTION **/
         ENCRYPTION VARCHAR2(240);
-        /** Unreserved Keyword Word END **/
-        --SRT END VARCHAR2(240);
         /** Unreserved Keyword Word END_OUTLINE_DATA **/
         END_OUTLINE_DATA VARCHAR2(240);
         /** Unreserved Keyword Word ENFORCE **/
@@ -612,8 +602,6 @@ CREATE OR REPLACE PROCEDURE prc_test_unreserved_keyword
         FRESH VARCHAR2(240);
         /** Unreserved Keyword Word FULL **/
         FULL VARCHAR2(240);
-        /** Unreserved Keyword Word FUNCTION **/
-        --SRT FUNCTION VARCHAR2(240);
         /** Unreserved Keyword Word FUNCTIONS **/
         FUNCTIONS VARCHAR2(240);
         /** Unreserved Keyword Word G **/
@@ -678,8 +666,6 @@ CREATE OR REPLACE PROCEDURE prc_test_unreserved_keyword
         IDGENERATORS VARCHAR2(240);
         /** Unreserved Keyword Word IDLE_TIME **/
         IDLE_TIME VARCHAR2(240);
-        /** Unreserved Keyword Word IF **/
-        IF VARCHAR2(240);
         /** Unreserved Keyword Word IGNORE **/
         IGNORE VARCHAR2(240);
         /** Unreserved Keyword Word IGNORE_OPTIM_EMBEDDED_HINTS **/
@@ -1758,8 +1744,6 @@ CREATE OR REPLACE PROCEDURE prc_test_unreserved_keyword
         SPLIT VARCHAR2(240);
         /** Unreserved Keyword Word SPREADSHEET **/
         SPREADSHEET VARCHAR2(240);
-        /** Unreserved Keyword Word SQL **/
-        SQL VARCHAR2(240);
         /** Unreserved Keyword Word SQL_TRACE **/
         SQL_TRACE VARCHAR2(240);
         /** Unreserved Keyword Word SQLLDR **/
@@ -2271,7 +2255,6 @@ CREATE OR REPLACE PROCEDURE prc_test_unreserved_keyword
         CURRENT_TIME := 'CURRENT_TIME' ; -- CURRENT_TIME VARCHAR2(240)
         CURRENT_TIMESTAMP := 'CURRENT_TIMESTAMP' ; -- CURRENT_TIMESTAMP VARCHAR2(240)
         CURRENT_USER := 'CURRENT_USER' ; -- CURRENT_USER VARCHAR2(240)
-        CURSOR := 'CURSOR' ; -- CURSOR VARCHAR2(240)
         CURSOR_SHARING_EXACT := 'CURSOR_SHARING_EXACT' ; -- CURSOR_SHARING_EXACT VARCHAR2(240)
         CURSOR_SPECIFIC_SEGMENT := 'CURSOR_SPECIFIC_SEGMENT' ; -- CURSOR_SPECIFIC_SEGMENT VARCHAR2(240)
         CYCLE := 'CYCLE' ; -- CYCLE VARCHAR2(240)
@@ -2292,7 +2275,6 @@ CREATE OR REPLACE PROCEDURE prc_test_unreserved_keyword
         DEALLOCATE := 'DEALLOCATE' ; -- DEALLOCATE VARCHAR2(240)
         DEBUG := 'DEBUG' ; -- DEBUG VARCHAR2(240)
         --SRT 20110508 DEC := 'DEC' ; -- DEC VARCHAR2(240)
-        --SRT 20110508 DECLARE := 'DECLARE' ; -- DECLARE VARCHAR2(240)
         DECREMENT := 'DECREMENT' ; -- DECREMENT VARCHAR2(240)
         DECRYPT := 'DECRYPT' ; -- DECRYPT VARCHAR2(240)
         DEFERRABLE := 'DEFERRABLE' ; -- DEFERRABLE VARCHAR2(240)
@@ -2343,7 +2325,6 @@ CREATE OR REPLACE PROCEDURE prc_test_unreserved_keyword
         ENABLE := 'ENABLE' ; -- ENABLE VARCHAR2(240)
         ENCRYPT := 'ENCRYPT' ; -- ENCRYPT VARCHAR2(240)
         ENCRYPTION := 'ENCRYPTION' ; -- ENCRYPTION VARCHAR2(240)
-        --SRT END := 'END' ; END VARCHAR2(240)
         END_OUTLINE_DATA := 'END_OUTLINE_DATA' ; -- END_OUTLINE_DATA VARCHAR2(240)
         ENFORCE := 'ENFORCE' ; -- ENFORCE VARCHAR2(240)
         ENFORCED := 'ENFORCED' ; -- ENFORCED VARCHAR2(240)
@@ -2404,7 +2385,6 @@ CREATE OR REPLACE PROCEDURE prc_test_unreserved_keyword
         FREEPOOLS := 'FREEPOOLS' ; -- FREEPOOLS VARCHAR2(240)
         FRESH := 'FRESH' ; -- FRESH VARCHAR2(240)
         FULL := 'FULL' ; -- FULL VARCHAR2(240)
-        --SRT FUNCTION := 'FUNCTION' ; FUNCTION VARCHAR2(240)
         FUNCTIONS := 'FUNCTIONS' ; -- FUNCTIONS VARCHAR2(240)
         G := 'G' ; -- G VARCHAR2(240)
         GATHER_PLAN_STATISTICS := 'GATHER_PLAN_STATISTICS' ; -- GATHER_PLAN_STATISTICS VARCHAR2(240)
@@ -2437,7 +2417,6 @@ CREATE OR REPLACE PROCEDURE prc_test_unreserved_keyword
         IDENTITY := 'IDENTITY' ; -- IDENTITY VARCHAR2(240)
         IDGENERATORS := 'IDGENERATORS' ; -- IDGENERATORS VARCHAR2(240)
         IDLE_TIME := 'IDLE_TIME' ; -- IDLE_TIME VARCHAR2(240)
-        --SRT 20110508 IF := 'IF' ; -- IF VARCHAR2(240)
         IGNORE := 'IGNORE' ; -- IGNORE VARCHAR2(240)
         IGNORE_OPTIM_EMBEDDED_HINTS := 'IGNORE_OPTIM_EMBEDDED_HINTS' ; -- IGNORE_OPTIM_EMBEDDED_HINTS VARCHAR2(240)
         IGNORE_WHERE_CLAUSE := 'IGNORE_WHERE_CLAUSE' ; -- IGNORE_WHERE_CLAUSE VARCHAR2(240)
@@ -2976,7 +2955,6 @@ CREATE OR REPLACE PROCEDURE prc_test_unreserved_keyword
         SPFILE := 'SPFILE' ; -- SPFILE VARCHAR2(240)
         SPLIT := 'SPLIT' ; -- SPLIT VARCHAR2(240)
         SPREADSHEET := 'SPREADSHEET' ; -- SPREADSHEET VARCHAR2(240)
-        SQL := 'SQL' ; -- SQL VARCHAR2(240)
         SQL_TRACE := 'SQL_TRACE' ; -- SQL_TRACE VARCHAR2(240)
         SQLLDR := 'SQLLDR' ; -- SQLLDR VARCHAR2(240)
         STANDALONE := 'STANDALONE' ; -- STANDALONE VARCHAR2(240)
