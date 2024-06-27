@@ -1324,18 +1324,6 @@
                 <module>pmd-dist</module>
             </modules>
         </profile>
-
-        <profile>
-            <id>pmd-compat6-module</id>
-            <activation>
-                <property>
-                    <name>!skip-pmd-compat6</name>
-                </property>
-            </activation>
-            <modules>
-                <module>pmd-compat6</module>
-            </modules>
-        </profile>
     </profiles>
 
     <modules>

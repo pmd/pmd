@@ -2,8 +2,8 @@
 title: Maven PMD Plugin
 tags: [userdocs, tools]
 permalink: pmd_userdocs_tools_maven.html
-last_updated: February 2024
-mpmd_version: 3.21.2
+last_updated: June 2024 (7.3.0)
+mpmd_version: 3.23.0
 author: >
     Miguel Griffa <mikkey@users.sourceforge.net>,
     Romain PELISSE <belaran@gmail.com>,
@@ -72,7 +72,7 @@ This will add an entry to the 'project reports' section with the PMD report when
 
 To run PMD on a Maven project without adding it as a report, simply run
 
-    mvn pmd:pmd
+    mvn complile pmd:pmd
 
 The PMD plugin writes the report in XML which will then be formatted into more readable HTML.
 
@@ -241,46 +241,24 @@ Maven plugin will use and benefit from the latest bugfixes and enhancements:
 
 #### Using PMD 7 with maven-pmd-plugin
 
-The Maven PMD plugin comes with a specific PMD version, which is documented on the
+Since version 3.22.0 ([MPMD-379](https://issues.apache.org/jira/browse/MPMD-379)), maven-pmd-plugin uses
+by default now PMD 7.0.0 and no extra configuration is required.
+
+The specific PMD version used by maven-pmd-plugin might change. The exact version is documented on the
 [plugin project page](https://maven.apache.org/plugins/maven-pmd-plugin/index.html).
-This might not support PMD 7 out of the box.
 
-Since PMD 7 is a major release which breaks compatibility in various ways, the solution described
-above in [Upgrading the PMD version at runtime](#upgrading-the-pmd-version-at-runtime) doesn't work
-directly.
+In order to use newer versions of PMD 7, you can simply follow the guide
+[Upgrading PMD at Runtime](https://maven.apache.org/plugins/maven-pmd-plugin/examples/upgrading-PMD-at-runtime.html).
 
-In order to use PMD 7 with [maven-pmd-plugin](https://maven.apache.org/plugins/maven-pmd-plugin/) a new
-compatibility module has been created. This allows to use PMD 7 by simply adding one additional dependency:
-
-1. Follow the guide [Upgrading PMD at Runtime](https://maven.apache.org/plugins/maven-pmd-plugin/examples/upgrading-PMD-at-runtime.html)
-2. Add additionally the following dependency:
-
-```xml
-<dependency>
-  <groupId>net.sourceforge.pmd</groupId>
-  <artifactId>pmd-compat6</artifactId>
-  <version>${pmdVersion}</version>
-</dependency>
-```
-
-It is important to add this dependency as the **first** in the list, so that maven-pmd-plugin sees the (old)
-compatible versions of some classes.
-
-This module is available beginning with version 7.0.0-rc4 and will be there at least for the first
-final version PMD 7 (7.0.0). It's not decided yet, whether we will keep updating it, after PMD 7 is finally
-released.
-
-Note: This compatibility module only works for the built-in rules, that are still available in PMD 7. E.g. you need
-to review your rulesets and look out for deprecated rules and such. See the use case
-[I'm using only built-in rules](pmd_userdocs_migrating_to_pmd7.html#im-using-only-built-in-rules)
-in the [Migration Guide for PMD 7](pmd_userdocs_migrating_to_pmd7.html).
+Note: If you upgrade from Maven PMD Plugin before 3.22.0 you are most likely updating from PMD 6 to PMD 7.
+This upgrade is a major version change. If you use the default ruleset from Maven PMD Plugin, then everything should
+just work. But if you use a custom ruleset, you most likely need to review your ruleset and migrate it to PMD 7.
+Rules might have been renamed or replaced. See [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html)
+and [Migration Guide for PMD 7](pmd_userdocs_migrating_to_pmd7.html).
 
 As PMD 7 revamped the Java module, if you have custom rules, you need to migrate these rules.
 See the use case [I'm using custom rules](pmd_userdocs_migrating_to_pmd7.html#im-using-custom-rules)
 in the Migration Guide.
-
-
-
 
 ### Reference
 

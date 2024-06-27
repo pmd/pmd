@@ -4,6 +4,12 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
+{% if is_release_notes_processor %}
+{% capture baseurl %}https://docs.pmd-code.org/pmd-doc-{{ site.pmd.version }}/{% endcapture %}
+{% else %}
+{% assign baseurl = "" %}
+{% endif %}
+
 ## {{ site.pmd.date | date: "%d-%B-%Y" }} - {{ site.pmd.version }}
 
 The PMD team is pleased to announce PMD {{ site.pmd.version }}.
@@ -17,6 +23,17 @@ This is a {{ site.pmd.release_type }} release.
 #### ✨ New Rules
 * The new Java rule {%rule java/bestpractices/UseEnumCollections %} reports usages for `HashSet` and `HashMap`
   when the keys are of an enum type. The specialized enum collections are more space- and time-efficient.
+
+#### 💥 pmd-compat6 removed (breaking)
+
+The already deprecated PMD 6 compatibility module (pmd-compat6) has been removed. It was intended to be used with
+older versions of the maven-pmd-plugin, but since maven-pmd-plugin 3.22.0, PMD 7 is supported directly and this
+module is not needed anymore.
+
+If you currently use this dependency (`net.sourceforge.pmd:pmd-compat6`), remove it and upgrade maven-pmd-plugin
+to the latest version (3.23.0 or newer).
+
+See also [Maven PMD Plugin]({{ baseurl }}pmd_userdocs_tools_maven.html).
 
 ### 🐛 Fixed Issues
 * cli
@@ -99,6 +116,11 @@ read the XML format should be updated.
   * {%jdoc !!java::lang.java.ast.ASTRecordPattern#getVarId() %} This method was added here by mistake. Record
     patterns don't declare a pattern variable for the whole pattern, but rather for individual record
     components, which can be accessed via {%jdoc java::lang.java.ast.ASTRecordPattern#getComponentPatterns() %}.
+
+#### Breaking changes: pmd-compat6 removed
+
+The already deprecated PMD 6 compatibility module (pmd-compat6) has been removed.
+See above for details.
 
 ### ✨ External Contributions
 
