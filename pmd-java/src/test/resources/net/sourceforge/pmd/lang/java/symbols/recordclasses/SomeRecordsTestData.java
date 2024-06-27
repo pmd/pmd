@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 /**
  * Note: this is compiled manually as it uses features of Java 21.
  * Compile with
- *   javac pmd-java/src/test/resources/net/sourceforge/pmd/lang/java/symbols/recordclasses/SomeRecordsTestData.java
+ *   javac --release 21 pmd-java/src/test/resources/net/sourceforge/pmd/lang/java/symbols/recordclasses/SomeRecordsTestData.java
  */
 
 
