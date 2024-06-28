@@ -40,6 +40,7 @@ See also [Maven PMD Plugin]({{ baseurl }}pmd_userdocs_tools_maven.html).
   * [#2827](https://github.com/pmd/pmd/issues/2827): \[cli] Consider processing errors in exit status
 * core
   * [#4992](https://github.com/pmd/pmd/pull/4992): \[core] CPD: Include processing errors in XML report
+  * [#5066](https://github.com/pmd/pmd/issues/5066): \[core] CPD throws java.lang.OutOfMemoryError: Java heap space (since 7.1.0)
 * apex
   * [#4922](https://github.com/pmd/pmd/issues/4922): \[apex] SOQL syntax error with TYPEOF in sub-query
   * [#5053](https://github.com/pmd/pmd/issues/5053): \[apex] CPD fails to parse string literals with escaped characters
