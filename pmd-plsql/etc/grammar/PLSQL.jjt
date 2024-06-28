@@ -3868,7 +3868,7 @@ ASTArgument Argument() :
 {
 	//[LOOKAHEAD(2) UnqualifiedID() "=>"] Expression()
 	[LOOKAHEAD(2) (simpleNode = UnqualifiedID())  ("=>" | <AS> )  ]
-        (Expression() )
+        (Expression() [ <_DEFAULT> Expression() <ON> <CONVERSION> "ERROR" ] )
 	//Allow Using CharacterSet suffix clause
 	[
 	   ( <USING>  )
@@ -5018,6 +5018,7 @@ TOKEN [IGNORE_CASE]:
 <CONSTRAINT: "CONSTRAINT"> |
 <CONSTRUCTOR: "CONSTRUCTOR"> |
 <CONTINUE: "CONTINUE"> |
+<CONVERSION: "CONVERSION"> |
 <CONVERT: "CONVERT"> |
 <CROSS: "CROSS"> |
 <CUBE: "CUBE"> |
