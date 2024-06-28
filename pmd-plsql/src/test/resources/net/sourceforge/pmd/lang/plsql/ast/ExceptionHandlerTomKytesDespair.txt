@@ -182,7 +182,6 @@
       |        +- ExceptionHandler[@CanonicalImage = null]
       |        |  +- QualifiedName[@CanonicalImage = "OTHERS", @Image = "OTHERS"]
       |        |  |  +- UnqualifiedID[@CanonicalImage = "OTHERS", @Image = "OTHERS"]
-      |        |  |     +- KEYWORD_UNRESERVED[@CanonicalImage = "OTHERS", @Image = "OTHERS"]
       |        |  +- Statement[@CanonicalImage = null]
       |        |     +- UnlabelledStatement[@CanonicalImage = null]
       |        |        +- Expression[@CanonicalImage = "NULL", @Image = "NULL"]

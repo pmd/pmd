@@ -39,6 +39,7 @@ See also [Maven PMD Plugin]({{ baseurl }}pmd_userdocs_tools_maven.html).
 * cli
   * [#2827](https://github.com/pmd/pmd/issues/2827): \[cli] Consider processing errors in exit status
 * core
+  * [#4396](https://github.com/pmd/pmd/issues/4396): \[core] CPD is always case sensitive
   * [#4992](https://github.com/pmd/pmd/pull/4992): \[core] CPD: Include processing errors in XML report
   * [#5066](https://github.com/pmd/pmd/issues/5066): \[core] CPD throws java.lang.OutOfMemoryError: Java heap space (since 7.1.0)
 * apex
@@ -113,11 +114,18 @@ read the XML format should be updated.
   * {% jdoc !!core::cpd.CPDConfiguration#isSkipLexicalErrors() %} and {% jdoc core::cpd.CPDConfiguration#setSkipLexicalErrors(boolean) %}:
   Use {%jdoc core::AbstractConfiguration#setFailOnError(boolean) %} to control whether to ignore errors or fail the build.
   * {%jdoc !!core::cpd.XMLOldRenderer %} (the CPD format "xmlold").
+  * The constructor
+    {%jdoc !!core::lang.ast.impl.antlr4.AntlrToken#AntlrToken(org.antlr.v4.runtime.Token,core::lang.ast.impl.antlr4.AntlrToken,core::lang.document.TextDocument) %}
+    shouldn't be used directly. Use {%jdoc core::lang.ast.impl.antlr4.AntlrTokenManager %} instead.
 * pmd-java
   * {% jdoc !!java::lang.java.ast.ASTResource#getStableName() %} and the corresponding attribute `@StableName`.
   * {%jdoc !!java::lang.java.ast.ASTRecordPattern#getVarId() %} This method was added here by mistake. Record
     patterns don't declare a pattern variable for the whole pattern, but rather for individual record
     components, which can be accessed via {%jdoc java::lang.java.ast.ASTRecordPattern#getComponentPatterns() %}.
+* pmd-plsql
+  * {%jdoc plsql::lang.plsql.ast.PLSQLParserImpl %} is deprecated now. It should have been package-private
+    because this is an implementation class that should not be used directly.
+  * The node {%jdoc plsql::lang.plsql.ast.ASTKEYWORD_UNRESERVED %} is deprecated and is now removed from the AST.
 
 #### Breaking changes: pmd-compat6 removed
 
