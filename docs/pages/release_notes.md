@@ -21,6 +21,7 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀 New and noteworthy
 
 #### ✨ New Rules
+
 * The new Java rule {%rule java/bestpractices/UseEnumCollections %} reports usages for `HashSet` and `HashMap`
   when the keys are of an enum type. The specialized enum collections are more space- and time-efficient.
 
@@ -36,6 +37,7 @@ to the latest version (3.23.0 or newer).
 See also [Maven PMD Plugin]({{ baseurl }}pmd_userdocs_tools_maven.html).
 
 ### 🐛 Fixed Issues
+
 * cli
   * [#2827](https://github.com/pmd/pmd/issues/2827): \[cli] Consider processing errors in exit status
 * core
@@ -132,7 +134,9 @@ read the XML format should be updated.
 The already deprecated PMD 6 compatibility module (pmd-compat6) has been removed.
 See above for details.
 
-### ✨ External Contributions
+### 📈 Stats
+* 88 commits
+* 32 closed tickets & PRs
+* Days since last release: 27
 
 {% endtocmaker %}
-
