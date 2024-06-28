@@ -1941,8 +1941,15 @@ Once that is done, <code class="language-plaintext highlighter-rouge">mvn genera
 </code></pre></div>    </div>
 
     <ul>
+      <li>If your language is case-insensitive, then you might want to overwrite <code class="language-plaintext highlighter-rouge">getImage(AntlrToken)</code>. There you can
+change each token e.g. into uppercase, so that CPD sees the same strings and can find duplicates even when
+the casing differs. See <a href="https://docs.pmd-code.org/apidocs/pmd-tsql/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/tsql/cpd/TSqlCpdLexer.html#"><code>TSqlCpdLexer</code></a> for an example. You will also need a
+“CaseChangingCharStream”, so that antlr itself is case-insensitive.</li>
       <li>For JavaCC grammars, place your grammar in <code class="language-plaintext highlighter-rouge">etc/grammar</code> and edit the <code class="language-plaintext highlighter-rouge">pom.xml</code> like the <a href="https://github.com/pmd/pmd/blob/master/pmd-python/pom.xml">Python implementation</a> does.
 You can then subclass <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.3.0-SNAPSHOT/net/sourceforge/pmd/cpd/impl/JavaccCpdLexer.html#"><code>JavaccCpdLexer</code></a> instead of AntlrCpdLexer.</li>
+      <li>If your JavaCC based language is case-insensitive (option <code class="language-plaintext highlighter-rouge">IGNORE_CASE=true</code>), then you need to implement
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/impl/javacc/JavaccTokenDocument.TokenDocumentBehavior.html#"><code>JavaccTokenDocument.TokenDocumentBehavior</code></a>, which can change each token
+e.g. into uppercase. See <a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/ast/PLSQLParser.html#"><code>PLSQLParser</code></a> for an example.</li>
       <li>For any other scenario just implement the interface however you can. Look at the Scala or Apex module for existing implementations.</li>
     </ul>
   </li>
@@ -2106,7 +2113,7 @@ call the method <code class="language-plaintext highlighter-rouge">doTest</code>
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            April 2023 (7.0.0)<br /> Site last generated: Jun 27, 2024 <br />
+            June 2024 (7.3.0)<br /> Site last generated: Jun 28, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

@@ -1930,7 +1930,9 @@ to the latest version (3.23.0 or newer).</p>
   </li>
   <li>core
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4396">#4396</a>: [core] CPD is always case sensitive</li>
       <li><a href="https://github.com/pmd/pmd/pull/4992">#4992</a>: [core] CPD: Include processing errors in XML report</li>
+      <li><a href="https://github.com/pmd/pmd/issues/5066">#5066</a>: [core] CPD throws java.lang.OutOfMemoryError: Java heap space (since 7.1.0)</li>
     </ul>
   </li>
   <li>apex
@@ -2036,6 +2038,9 @@ instead to control, whether to ignore errors or fail the build.</li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.3.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDConfiguration.html#isSkipLexicalErrors()"><code>CPDConfiguration#isSkipLexicalErrors</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.3.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDConfiguration.html#setSkipLexicalErrors(boolean)"><code>setSkipLexicalErrors</code></a>:
 Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.3.0-SNAPSHOT/net/sourceforge/pmd/AbstractConfiguration.html#setFailOnError(boolean)"><code>setFailOnError</code></a> to control whether to ignore errors or fail the build.</li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.3.0-SNAPSHOT/net/sourceforge/pmd/cpd/XMLOldRenderer.html#"><code>net.sourceforge.pmd.cpd.XMLOldRenderer</code></a> (the CPD format “xmlold”).</li>
+      <li>The constructor
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrToken.html#AntlrToken(org.antlr.v4.runtime.Token,net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken,net.sourceforge.pmd.lang.document.TextDocument)"><code>AntlrToken#AntlrToken</code></a>
+shouldn’t be used directly. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrTokenManager.html#"><code>AntlrTokenManager</code></a> instead.</li>
     </ul>
   </li>
   <li>pmd-java
@@ -2044,6 +2049,13 @@ Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.3.0-SNAPSHOT/net/sourc
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTRecordPattern.html#getVarId()"><code>ASTRecordPattern#getVarId</code></a> This method was added here by mistake. Record
 patterns don’t declare a pattern variable for the whole pattern, but rather for individual record
 components, which can be accessed via <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTRecordPattern.html#getComponentPatterns()"><code>getComponentPatterns</code></a>.</li>
+    </ul>
+  </li>
+  <li>pmd-plsql
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/ast/PLSQLParserImpl.html#"><code>PLSQLParserImpl</code></a> is deprecated now. It should have been package-private
+because this is an implementation class that should not be used directly.</li>
+      <li>The node <a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/ast/ASTKEYWORD_UNRESERVED.html#"><code>ASTKEYWORD_UNRESERVED</code></a> is deprecated and is now removed from the AST.</li>
     </ul>
   </li>
 </ul>
@@ -2084,7 +2096,7 @@ See above for details.</p>
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jun 27, 2024 <br />
+             Site last generated: Jun 28, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
