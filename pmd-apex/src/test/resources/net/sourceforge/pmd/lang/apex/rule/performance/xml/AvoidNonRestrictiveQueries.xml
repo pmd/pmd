@@ -34,14 +34,11 @@ public class Something {
 
     <test-code>
         <description>Subquery without limit</description>
-        <expected-problems>1</expected-problems>
-        <expected-messages>
-            <message>Avoid SOQL sub-queries without a where or limit statement</message>
-        </expected-messages>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Something {
     public static void main( String[] as ) {
-        Account[] accs = [ select id, (SELECT Id FROM Contact) from account where id = 1];  //Bad
+        Account[] accs = [ select id, (SELECT Id FROM Contact) from account where id = 1]; // That's ok, as long as the main query is restricted
     }
 }
         ]]></code>
@@ -96,7 +93,7 @@ class Query {
 ]]></code>
     </test-code>
 
-    <test-code disabled="true">
+    <test-code>
         <description>main query with limit, subquery without is OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
