@@ -85,8 +85,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.3.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 28-June-2024</div>
+    <li class="sidebarTitle">PMD 7.4.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 26-July-2024</div>
     
     
     
@@ -1911,7 +1911,7 @@ with opt-in support for XPath 2.0.</p>
 <p>See <a href="https://www.saxonica.com/html/documentation/expressions/xpath31new.html">the Saxonica documentation</a>
 for an introduction to new features in XPath 3.1.</p>
 
-<p>The property <code class="language-plaintext highlighter-rouge">version</code> of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/xpath/XPathRule.html#"><code>XPathRule</code></a> is deprecated and
+<p>The property <code class="language-plaintext highlighter-rouge">version</code> of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.4.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/xpath/XPathRule.html#"><code>XPathRule</code></a> is deprecated and
 has been removed with PMD 7.</p>
 
 <h2 id="dom-representation-of-asts">DOM representation of ASTs</h2>
@@ -1921,7 +1921,7 @@ defined on. Concretely, this means:</p>
 <ul>
   <li>Every AST node is viewed as an XML element
     <ul>
-      <li>The element has for local name the value of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getXPathNodeName()"><code>getXPathNodeName</code></a>
+      <li>The element has for local name the value of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.4.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getXPathNodeName()"><code>getXPathNodeName</code></a>
 for the given node</li>
     </ul>
   </li>
@@ -1929,7 +1929,7 @@ for the given node</li>
     <ul>
       <li>This means, that documentation for attributes can be found in our Javadocs. For
 example, the attribute <code class="language-plaintext highlighter-rouge">@SimpleName</code> of the Java node <code class="language-plaintext highlighter-rouge">EnumDeclaration</code> is backed
-by the Java getter <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypeDeclaration.html#getSimpleName()"><code>getSimpleName</code></a>.</li>
+by the Java getter <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.4.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypeDeclaration.html#getSimpleName()"><code>getSimpleName</code></a>.</li>
     </ul>
   </li>
 </ul>
@@ -2461,7 +2461,7 @@ Column numbers are 1-based. The end column is exclusive.
                                             <span class="param-name">nodeClassName</span>
                                             <span class="param-type"> as xs:string</span>
                                         </dt>
-                                        <dd>Simple name of a class or interface in package <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.java.ast</code></a>, without the 'AST' prefix</dd>
+                                        <dd>Simple name of a class or interface in package <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.4.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.java.ast</code></a>, without the 'AST' prefix</dd>
                                         
                                     </dl>
                                 </dd>
@@ -2476,10 +2476,10 @@ Column numbers are 1-based. The end column is exclusive.
                                     <dl class="code-examples">
                                         
                                         <dt><code>//*[pmd-java:nodeIs("Expression")]</code></dt>
-                                        <dd>Matches all nodes that implement <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#"><code>ASTExpression</code></a></dd>
+                                        <dd>Matches all nodes that implement <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.4.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#"><code>ASTExpression</code></a></dd>
                                         
                                         <dt><code>//*[pmd-java:nodeIs("TypeDeclaration")]</code></dt>
-                                        <dd>Matches all nodes that implement <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypeDeclaration.html#"><code>ASTTypeDeclaration</code></a></dd>
+                                        <dd>Matches all nodes that implement <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.4.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypeDeclaration.html#"><code>ASTTypeDeclaration</code></a></dd>
                                         
                                         <dt><code>//*[pmd-java:nodeIs("Foo")]</code></dt>
                                         <dd>Runtime error, there's no class ASTFoo in the package</dd>
@@ -2526,7 +2526,7 @@ Column numbers are 1-based. The end column is exclusive.
                                 <dd>Returns true if the context node's static Java type is a subtype of the given type. This tests for the resolved type of the Java construct, not the type of the AST node. For example, the AST node for a literal (e.g. <code>5d</code>) has type ASTNumericLiteral, however this function will compare the type of the literal (eg here, <code>double</code>) against the argument.</dd>
                                 
                                 <dt>Remarks</dt>
-                                <dd>The context node must be a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a></dd>
+                                <dd>The context node must be a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.4.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a></dd>
 
                                 
 
@@ -2601,7 +2601,7 @@ Column numbers are 1-based. The end column is exclusive.
                                 <dd>Returns true if the context node's static type is exactly the given type. In particular, returns false if the context node's type is a subtype of the given type.</dd>
                                 
                                 <dt>Remarks</dt>
-                                <dd>The context node must be a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a></dd>
+                                <dd>The context node must be a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.4.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a></dd>
 
                                 
 
@@ -2686,7 +2686,7 @@ Column numbers are 1-based. The end column is exclusive.
                                             <span class="param-name">metricKey</span>
                                             <span class="param-type"> as xs:string</span>
                                         </dt>
-                                        <dd>The name of a metric in <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.html#"><code>JavaMetrics</code></a> (or an alias thereof).</dd>
+                                        <dd>The name of a metric in <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.4.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.html#"><code>JavaMetrics</code></a> (or an alias thereof).</dd>
                                         
                                     </dl>
                                 </dd>
@@ -2751,7 +2751,7 @@ Column numbers are 1-based. The end column is exclusive.
                                 <dd>Returns true if the node has an annotation with the given qualified name</dd>
                                 
                                 <dt>Remarks</dt>
-                                <dd>The context node must be an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/Annotatable.html#"><code>Annotatable</code></a>, otherwise this returns false</dd>
+                                <dd>The context node must be an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.4.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/Annotatable.html#"><code>Annotatable</code></a>, otherwise this returns false</dd>
 
                                 
 
@@ -2820,10 +2820,10 @@ Column numbers are 1-based. The end column is exclusive.
                         <div style="margin-left: 30px">
 
                             <dl>
-                                <dd>Returns a sequence of the effective modifiers of a node as strings. This is documented on <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTModifierList.html#getEffectiveModifiers()"><code>getEffectiveModifiers</code></a>.</dd>
+                                <dd>Returns a sequence of the effective modifiers of a node as strings. This is documented on <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.4.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTModifierList.html#getEffectiveModifiers()"><code>getEffectiveModifiers</code></a>.</dd>
                                 
                                 <dt>Remarks</dt>
-                                <dd>The context node must be an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#"><code>ModifierOwner</code></a>, otherwise this returns an empty sequence</dd>
+                                <dd>The context node must be an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.4.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#"><code>ModifierOwner</code></a>, otherwise this returns an empty sequence</dd>
 
                                 
 
@@ -2882,10 +2882,10 @@ Column numbers are 1-based. The end column is exclusive.
                         <div style="margin-left: 30px">
 
                             <dl>
-                                <dd>Returns a sequence of the explicit modifiers of a node as strings. This is documented on <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTModifierList.html#getExplicitModifiers()"><code>getExplicitModifiers</code></a>.</dd>
+                                <dd>Returns a sequence of the explicit modifiers of a node as strings. This is documented on <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.4.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTModifierList.html#getExplicitModifiers()"><code>getExplicitModifiers</code></a>.</dd>
                                 
                                 <dt>Remarks</dt>
-                                <dd>The context node must be an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#"><code>ModifierOwner</code></a>, otherwise this returns an empty sequence</dd>
+                                <dd>The context node must be an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.4.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#"><code>ModifierOwner</code></a>, otherwise this returns an empty sequence</dd>
 
                                 
 
@@ -2938,10 +2938,10 @@ Column numbers are 1-based. The end column is exclusive.
                         <div style="margin-left: 30px">
 
                             <dl>
-                                <dd>Uses an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeTestUtil.InvocationMatcher.html#"><code>TypeTestUtil.InvocationMatcher</code></a> to test the method signature called by the context node. The format of the parameter is described on that class.</dd>
+                                <dd>Uses an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.4.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeTestUtil.InvocationMatcher.html#"><code>TypeTestUtil.InvocationMatcher</code></a> to test the method signature called by the context node. The format of the parameter is described on that class.</dd>
                                 
                                 <dt>Remarks</dt>
-                                <dd>The context node must be an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/InvocationNode.html#"><code>InvocationNode</code></a>, otherwise this returns false</dd>
+                                <dd>The context node must be an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.4.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/InvocationNode.html#"><code>InvocationNode</code></a>, otherwise this returns false</dd>
 
                                 
 
@@ -2954,7 +2954,7 @@ Column numbers are 1-based. The end column is exclusive.
                                             <span class="param-name">sig</span>
                                             <span class="param-type"> as xs:string</span>
                                         </dt>
-                                        <dd>A signature, in the format described on <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.3.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeTestUtil.InvocationMatcher.html#"><code>TypeTestUtil.InvocationMatcher</code></a></dd>
+                                        <dd>A signature, in the format described on <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.4.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeTestUtil.InvocationMatcher.html#"><code>TypeTestUtil.InvocationMatcher</code></a></dd>
                                         
                                     </dl>
                                 </dd>
