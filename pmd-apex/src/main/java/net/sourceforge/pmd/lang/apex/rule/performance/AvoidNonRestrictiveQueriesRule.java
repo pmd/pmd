@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule.performance;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,6 +17,7 @@ import net.sourceforge.pmd.reporting.RuleContext;
 public class AvoidNonRestrictiveQueriesRule extends AbstractApexRule {
     private static final Pattern RESTRICTIVE_PATTERN = Pattern.compile("(where )|(limit )", Pattern.CASE_INSENSITIVE);
     private static final Pattern SELECT_PATTERN = Pattern.compile("(select )", Pattern.CASE_INSENSITIVE);
+    private static final Pattern SUB_QUERY_PATTERN = Pattern.compile("(?i)\\(\\s*select\\s+[^)]+\\)");
 
     @Override
     protected @NonNull RuleTargetSelector buildTargetSelector() {
@@ -29,33 +28,25 @@ public class AvoidNonRestrictiveQueriesRule extends AbstractApexRule {
     public Object visit(ASTSoqlExpression node, Object data) {
         String query = node.getQuery();
 
-        Pattern subQueryPattern = Pattern.compile("(?i)\\(\\s*select\\s+[^)]+\\)");
-        Matcher subQueryMatcher = subQueryPattern.matcher(query);
-        List<String> subQueries = new ArrayList<>();
+        Matcher subQueryMatcher = SUB_QUERY_PATTERN.matcher(query);
         StringBuffer queryWithoutSubQueries = new StringBuffer(query.length());
         while (subQueryMatcher.find()) {
-            subQueries.add(subQueryMatcher.group());
-            subQueryMatcher.appendReplacement(queryWithoutSubQueries, "replaced_subquery");
+            subQueryMatcher.appendReplacement(queryWithoutSubQueries, "(replaced_subquery)");
         }
         subQueryMatcher.appendTail(queryWithoutSubQueries);
 
-        verifyQuery(asCtx(data), node, queryWithoutSubQueries.toString(), "");
-
-        for (String subQuery : subQueries) {
-            verifyQuery(asCtx(data), node, subQuery, "sub-");
-        }
+        verifyQuery(asCtx(data), node, queryWithoutSubQueries.toString());
 
         return data;
     }
 
-    private void verifyQuery(RuleContext ctx, ASTSoqlExpression node, String query, String messageArgument) {
+    private void verifyQuery(RuleContext ctx, ASTSoqlExpression node, String query) {
         int occurrencesSelect = countOccurrences(SELECT_PATTERN, query);
         int occurrencesWhereOrLimit = countOccurrences(RESTRICTIVE_PATTERN, query);
 
         if (occurrencesSelect > 0 && occurrencesWhereOrLimit == 0) {
-            ctx.addViolation(node, messageArgument);
+            ctx.addViolation(node);
         }
-
     }
 
     private int countOccurrences(Pattern pattern, String s) {
