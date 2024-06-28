@@ -48,8 +48,6 @@ jobs:
           ~/.cache
           ~/work/pmd/target/repositories
           vendor/bundle
-          # avoid caching missed dependencies
-          !~/.m2/repository/**/*.lastUpdated
         key: v3-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
           v3-${{ runner.os }}-
