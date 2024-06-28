@@ -104,4 +104,100 @@ class Query {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Test case with SOQL query - non-restrictive - SeeAllData=true</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+@IsTest(SeeAllData=true)
+public class TestDataAccessClass {
+    @IsTest
+    static void myTestMethod() {
+        Account[] accounts = [SELECT Id, Name FROM Account];
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test case with SOQL query - non-restrictive - SeeAllData=False is OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@IsTest(SeeAllData=false)
+public class TestDataAccessClass {
+    @IsTest
+    static void myTestMethod() {
+        Account[] accounts = [SELECT Id, Name FROM Account];
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test case with SOQL query - restrictive is OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@IsTest(SeeAllData=true)
+public class TestDataAccessClass {
+    @IsTest
+    static void myTestMethod() {
+        Account[] accounts = [SELECT Id, Name FROM Account LIMIT 1];
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test case with SOQL query - restrictive - SeeAllData=false is OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@IsTest(SeeAllData=false)
+public class TestDataAccessClass {
+    @IsTest
+    static void myTestMethod() {
+        Account[] accounts = [SELECT Id, Name FROM Account LIMIT 1];
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test case with SOQL query - non-restrictive - SeeAllData=false on class but true on method</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+@IsTest(SeeAllData=false)
+public class TestDataAccessClass {
+    @IsTest(SeeAllData=true)
+    static void myTestMethod1() {
+        Account[] accounts = [SELECT Id, Name FROM Account];
+    }
+
+    @IsTest
+    static void myTestMethod2() {
+        Account[] accounts = [SELECT Id, Name FROM Account]; // inherits from class annotation SeeAllData=false
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test case with SOQL query - non-restrictive - SeeAllData=true on class but false on method</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>10</expected-linenumbers>
+        <code><![CDATA[
+@IsTest(SeeAllData=true)
+public class TestDataAccessClass {
+    @IsTest(SeeAllData=false)
+    static void myTestMethod1() {
+        Account[] accounts = [SELECT Id, Name FROM Account]; // that's ok, since SeeAllData=false
+    }
+
+    @IsTest
+    static void myTestMethod2() {
+        Account[] accounts = [SELECT Id, Name FROM Account]; // not good, inherits SeeAllData=true from class
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

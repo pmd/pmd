@@ -4,13 +4,20 @@
 
 package net.sourceforge.pmd.lang.apex.rule.performance;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.lang.apex.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.apex.ast.ASTAnnotationParameter;
+import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
+import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTSoqlExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.reporting.RuleContext;
 
@@ -18,6 +25,7 @@ public class AvoidNonRestrictiveQueriesRule extends AbstractApexRule {
     private static final Pattern RESTRICTIVE_PATTERN = Pattern.compile("(where )|(limit )", Pattern.CASE_INSENSITIVE);
     private static final Pattern SELECT_PATTERN = Pattern.compile("(select )", Pattern.CASE_INSENSITIVE);
     private static final Pattern SUB_QUERY_PATTERN = Pattern.compile("(?i)\\(\\s*select\\s+[^)]+\\)");
+    private static final String SEE_ALL_DATA_ANNOTATION_PARAMETER = "SeeAllData";
 
     @Override
     protected @NonNull RuleTargetSelector buildTargetSelector() {
@@ -27,6 +35,40 @@ public class AvoidNonRestrictiveQueriesRule extends AbstractApexRule {
     @Override
     public Object visit(ASTSoqlExpression node, Object data) {
         String query = node.getQuery();
+
+        ASTMethod method = node.ancestors(ASTMethod.class).first();
+        if (method != null && method.getModifiers().isTest()) {
+            Optional<ASTAnnotation> methodAnnotation = method
+                    .children(ASTModifierNode.class)
+                    .children(ASTAnnotation.class)
+                    .filter(a -> "isTest".equalsIgnoreCase(a.getName()))
+                    .firstOpt();
+
+            Optional<ASTAnnotation> classAnnotation = method
+                    .ancestors(ASTUserClass.class)
+                    .firstOpt()
+                    .map(u -> u.children(ASTModifierNode.class))
+                    .map(s -> s.children(ASTAnnotation.class))
+                    .map(NodeStream::first);
+
+            Optional<Boolean> methodSeeAllData = methodAnnotation.flatMap(m -> m.children(ASTAnnotationParameter.class)
+                    .filter(p -> SEE_ALL_DATA_ANNOTATION_PARAMETER.equalsIgnoreCase(p.getName()))
+                    .firstOpt()
+                    .map(ASTAnnotationParameter::getBooleanValue));
+            boolean classSeeAllData = classAnnotation.flatMap(m -> m.children(ASTAnnotationParameter.class)
+                    .filter(p -> SEE_ALL_DATA_ANNOTATION_PARAMETER.equalsIgnoreCase(p.getName()))
+                    .firstOpt()
+                    .map(ASTAnnotationParameter::getBooleanValue))
+                    .orElse(false);
+
+            if (methodSeeAllData.isPresent()) {
+                if (!methodSeeAllData.get()) {
+                    return null;
+                }
+            } else if (!classSeeAllData) {
+                return null;
+            }
+        }
 
         Matcher subQueryMatcher = SUB_QUERY_PATTERN.matcher(query);
         StringBuffer queryWithoutSubQueries = new StringBuffer(query.length());
