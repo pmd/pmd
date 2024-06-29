@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
@@ -57,7 +58,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionsRule {
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
-        if(node.getParent() != null) {
+        if(node.getParent() != null && node.getParent() instanceof ASTUserClass) {
             checkMatches(INNER_CLASS_REGEX, node, data);
         } else if (node.getModifiers().isTest()) {
             checkMatches(TEST_CLASS_REGEX, node, data);
@@ -72,7 +73,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionsRule {
 
     @Override
     public Object visit(ASTUserInterface node, Object data) {
-        if(node.getParent() != null) {
+        if(node.getParent() != null && node.getParent() instanceof ASTUserClassOrInterface) {
             checkMatches(INNER_INTERFACE_REGEX, node, data);
         } else {
             checkMatches(INTERFACE_REGEX, node, data);
