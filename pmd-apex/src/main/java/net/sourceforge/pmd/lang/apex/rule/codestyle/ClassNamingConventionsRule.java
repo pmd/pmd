@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
@@ -22,7 +23,13 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionsRule {
     private static final PropertyDescriptor<Pattern> TEST_CLASS_REGEX = prop("testClassPattern", "test class",
             DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(PASCAL_CASE_WITH_UNDERSCORES).build();
 
+    private static final PropertyDescriptor<Pattern> INNER_CLASS_REGEX = prop("innerClassPattern", "inner class",
+            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(PASCAL_CASE_WITH_UNDERSCORES).build();
+
     private static final PropertyDescriptor<Pattern> ABSTRACT_CLASS_REGEX = prop("abstractClassPattern", "abstract class",
+            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(PASCAL_CASE_WITH_UNDERSCORES).build();
+
+    private static final PropertyDescriptor<Pattern> INNER_INTERFACE_REGEX = prop("innerInterfacePattern", "inner interface",
             DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(PASCAL_CASE_WITH_UNDERSCORES).build();
 
     private static final PropertyDescriptor<Pattern> CLASS_REGEX = prop("classPattern", "class",
@@ -36,6 +43,8 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionsRule {
 
     public ClassNamingConventionsRule() {
         definePropertyDescriptor(TEST_CLASS_REGEX);
+        definePropertyDescriptor(INNER_CLASS_REGEX);
+        definePropertyDescriptor(INNER_INTERFACE_REGEX);
         definePropertyDescriptor(ABSTRACT_CLASS_REGEX);
         definePropertyDescriptor(CLASS_REGEX);
         definePropertyDescriptor(INTERFACE_REGEX);
@@ -49,7 +58,9 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionsRule {
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
-        if (node.getModifiers().isTest()) {
+        if(node.getParent() != null && node.getParent() instanceof ASTUserClass) {
+            checkMatches(INNER_CLASS_REGEX, node, data);
+        } else if (node.getModifiers().isTest()) {
             checkMatches(TEST_CLASS_REGEX, node, data);
         } else if (node.getModifiers().isAbstract()) {
             checkMatches(ABSTRACT_CLASS_REGEX, node, data);
@@ -62,7 +73,11 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionsRule {
 
     @Override
     public Object visit(ASTUserInterface node, Object data) {
-        checkMatches(INTERFACE_REGEX, node, data);
+        if(node.getParent() != null && node.getParent() instanceof ASTUserClassOrInterface) {
+            checkMatches(INNER_INTERFACE_REGEX, node, data);
+        } else {
+            checkMatches(INTERFACE_REGEX, node, data);
+        }
 
         return data;
     }
