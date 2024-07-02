@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaComment;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -51,10 +52,12 @@ public class CommentContentRule extends AbstractJavaRulechainRule {
         int lineNumber = comment.getReportLocation().getStartLine();
         for (Chars line : comment.getFilteredLines(true)) {
             if (violationRegex.matcher(line).find()) {
+
+                FileLocation location = FileLocation.caret(acu.getTextDocument().getFileId(), lineNumber, 1);
                 ctx.addViolationWithPosition(
-                    acu,
-                    lineNumber,
-                    lineNumber,
+                    comment.getToken(),
+                    acu.getAstInfo(),
+                    location,
                     "Line matches forbidden content regex ({0})",
                     violationRegex.pattern()
                 );
