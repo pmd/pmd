@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import com.google.summit.ast.expression.Expression;
 import com.google.summit.ast.expression.LiteralExpression;
 import com.google.summit.ast.modifier.ElementArgument;
@@ -49,5 +51,18 @@ public final class ASTAnnotationParameter extends AbstractApexNode.Single<Elemen
     @Override
     public String getImage() {
         return getValue();
+    }
+
+    /**
+     * Checks whether this annotation parameter has the given name.
+     * The check is done case-insensitive.
+     *
+     * @param name the expected annotation parameter name
+     * @return {@code true} if this parameter has the expected name.
+     * @see #SEE_ALL_DATA
+     * @since 7.4.0
+     */
+    public boolean hasName(@NonNull String name) {
+        return name.equalsIgnoreCase(getName());
     }
 }
