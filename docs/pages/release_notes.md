@@ -15,6 +15,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀 New and noteworthy
 
 ### 🐛 Fixed Issues
+* apex
+  * [#5094](https://github.com/pmd/pmd/issues/5094): \[apex] "No adapter exists for type" error message printed to stdout instead of stderr
 
 ### 🚨 API Changes
 
