@@ -239,8 +239,22 @@ class CpdCliTest extends BaseCliTest {
                "--skip-lexical-errors")
             .verify(r -> {
                 r.checkStdErr(containsPattern("Skipping file: Lexical error in file .*?BadFile\\.java"));
+                r.checkStdErr(containsString("--skip-lexical-errors is deprecated. Use --no-fail-on-error instead."));
                 r.checkStdOut(containsString("Found a 5 line (13 tokens) duplication"));
             });
+    }
+
+    /**
+     * @see <a href="https://github.com/pmd/pmd/issues/5091">[core] PMD CPD v7.3.0 gives deprecation warning for skipLexicalErrors even when not used #5091</a>
+     * @throws Exception
+     */
+    @Test
+    void noWarningsWithoutSkipLexicalErrors() throws Exception {
+        runCliSuccessfully("--minimum-tokens", "340", "--language", "java", "--dir", SRC_DIR, "--format", "text")
+                .verify(r -> {
+                    r.checkNoErrorOutput();
+                    r.checkStdOut(emptyString());
+                });
     }
 
     @Test

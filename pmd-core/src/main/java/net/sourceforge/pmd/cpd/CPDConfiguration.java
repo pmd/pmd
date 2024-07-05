@@ -67,7 +67,8 @@ public class CPDConfiguration extends AbstractConfiguration {
     private boolean ignoreIdentifierAndLiteralSequences = false;
 
     @Deprecated
-    private boolean skipLexicalErrors = false;
+    // Note: The default value was false until up to 7.3.0 and is true since 7.4.0
+    private boolean skipLexicalErrors = true;
 
     private boolean noSkipBlocks = false;
 

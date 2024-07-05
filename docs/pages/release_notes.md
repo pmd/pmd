@@ -15,6 +15,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀 New and noteworthy
 
 ### 🐛 Fixed Issues
+* core
+  * [#5091](https://github.com/pmd/pmd/issues/5091): \[core] PMD CPD v7.3.0 gives deprecation warning for skipLexicalErrors even when not used
 
 ### 🚨 API Changes
 
