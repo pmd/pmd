@@ -12,7 +12,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 public class Foo extends TestCase {
-    public TestSuite suite() {}
+    public TestSuite suite() {} // oops, should be static
 }
         ]]></code>
     </test-code>
@@ -37,7 +37,7 @@ public class Foo extends TestCase {
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 public class Foo extends TestCase {
-    private static TestSuite suite() {}
+    private static TestSuite suite() {} // oops, should be public
 }
         ]]></code>
     </test-code>
@@ -63,5 +63,29 @@ public class Foo {
     public TestSuite suite() {}
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>should be static - void suite()</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.*;
+
+public class Foo extends TestCase {
+    public void suite() {}         // oops, should be static
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>should be public - void suite()</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.*;
+
+public class Foo extends TestCase {
+    private static void suite() {} // oops, should be public
+}
+]]></code>
     </test-code>
 </test-data>
