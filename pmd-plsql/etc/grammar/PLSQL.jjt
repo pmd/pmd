@@ -3872,10 +3872,13 @@ ASTArgument Argument() :
 {
 	//[LOOKAHEAD(2) UnqualifiedID() "=>"] Expression()
 	[LOOKAHEAD(2) (simpleNode = UnqualifiedID())  ("=>" | <AS> )  ]
-        (Expression() )
+        Expression()
+        // e.g. TO_NUMBER allows a DEFAULT clause within an argument
+        // https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/TO_NUMBER.html#GUID-D4807212-AFD7-48A7-9AED-BEC3E8809866
+        [ <_DEFAULT> Expression() <ON> KEYWORD("CONVERSION") "ERROR" ]
 	//Allow Using CharacterSet suffix clause
 	[
-	   ( <USING>  )
+	   <USING>
 	   ( <CHAR_CS> | <NCHAR_CS>  )
 	]
  {

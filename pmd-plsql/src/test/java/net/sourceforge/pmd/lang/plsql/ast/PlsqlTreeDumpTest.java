@@ -66,4 +66,9 @@ class PlsqlTreeDumpTest extends BaseTreeDumpTest {
     void sqlMacroClause() {
         doTest("SqlMacroClause");
     }
+
+    @Test
+    void parseSelectExpression() {
+        doTest("SelectExpressions");
+    }
 }
