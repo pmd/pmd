@@ -19,7 +19,6 @@ Usually the latest non-preview Java Version is the default version.
 | 23 (default) |       | 7.5.0                  |
 | 22-preview   |       | 7.0.0                  |
 | 22           |       | 7.0.0                  |
-| 21-preview   |       | 7.0.0                  |
 | 21           |       | 7.0.0                  |
 | 20           |       | 6.55.0                 |
 | 19           |       | 6.48.0                 |

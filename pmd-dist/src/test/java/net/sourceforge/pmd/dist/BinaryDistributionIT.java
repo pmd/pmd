@@ -51,7 +51,7 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         "java-11", "java-12", "java-13", "java-14", "java-15",
         "java-16", "java-17", "java-18", "java-19",
         "java-20",
-        "java-21", "java-21-preview",
+        "java-21",
         "java-22", "java-22-preview",
         "java-23", "java-23-preview",
         "java-5", "java-6", "java-7",

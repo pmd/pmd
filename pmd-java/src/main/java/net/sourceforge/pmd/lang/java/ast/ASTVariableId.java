@@ -135,7 +135,7 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
      * identifier.
      */
     public boolean isUnnamed() {
-        return "_".equals(name) && getLanguageVersion().compareToVersion("21-preview") >= 0;
+        return "_".equals(name) && getLanguageVersion().compareToVersion("21") >= 0;
     }
 
     /** Returns the name of the variable. */
