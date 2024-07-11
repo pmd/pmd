@@ -747,7 +747,7 @@ ASTMethodDeclarator MethodDeclarator() :
         }
       }
        // There is no RETURN for a WRAPPED object
-      [ <RETURN> Datatype() [ SqlMacroClause() ] ]
+      [ <RETURN> Datatype() [ LOOKAHEAD({isKeyword("SQL_MACRO")}) SqlMacroClause() ] ]
 
     )
   | <PROCEDURE>
@@ -5171,7 +5171,6 @@ TOKEN [IGNORE_CASE]:
 <ROWTYPE: "ROWTYPE"> |
 <SAVE: "SAVE"> |
 <SAVEPOINT: "SAVEPOINT"> |
-<SCALAR: "SCALAR"> |
 <SECOND: "SECOND"> |
 <SELF: "SELF"> |
 <SEPARATE: "SEPARATE"> |
@@ -5185,7 +5184,6 @@ TOKEN [IGNORE_CASE]:
 <SPACE: "SPACE"> |
 <SQLCODE: "SQLCODE"> |
 <SQLERRM: "SQLERRM"> |
-<SQL_MACRO: "SQL_MACRO"> |
 <STATIC: "STATIC"> |
 <SUBSTITUTABLE: "SUBSTITUTABLE"> |
 <SUCCESSFUL: "SUCCESSFUL"> |
@@ -5535,7 +5533,6 @@ void KEYWORD(String id) #void:
 {
     {
         if (!isKeyword(id)) {
-            String eol = System.getProperty("line.separator", "\n");
             throw new ParseException("Encountered \"" + getToken(1).getImage() + "\" "
                 + "Was expecting: \"" + id + "\"").withLocation(token);
         }
@@ -7056,7 +7053,11 @@ ASTJavaInterfaceClass JavaInterfaceClass(): {}
 ASTSqlMacroClause SqlMacroClause(): {}
 {
        (
-         <SQL_MACRO> [ <LPAREN> [ <TYPE> "=>" ] ( <SCALAR> | <TABLE> ) { jjtThis.setType(token.getImage()); } <RPAREN> ]
+         LOOKAHEAD({isKeyword("SQL_MACRO")}) KEYWORD("SQL_MACRO")
+         [
+            <LPAREN> [ <TYPE> "=>" ] ( LOOKAHEAD({isKeyword("SCALAR")}) KEYWORD("SCALAR") | <TABLE> )
+            { jjtThis.setType(token.getImage()); } <RPAREN>
+         ]
        )
        { return jjtThis; }
 }

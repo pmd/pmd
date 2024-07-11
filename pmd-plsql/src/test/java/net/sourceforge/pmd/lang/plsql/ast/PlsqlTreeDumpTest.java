@@ -61,4 +61,9 @@ class PlsqlTreeDumpTest extends BaseTreeDumpTest {
     void exceptionHandlerTomKytesDespair() {
         doTest("ExceptionHandlerTomKytesDespair");
     }
+
+    @Test
+    void sqlMacroClause() {
+        doTest("SqlMacroClause");
+    }
 }

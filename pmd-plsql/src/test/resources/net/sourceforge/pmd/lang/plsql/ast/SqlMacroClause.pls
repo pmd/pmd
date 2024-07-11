@@ -21,7 +21,7 @@ create or replace package body test is
 
   end test3;
 
-  function test3() return clob sql_macro(TABLE) is
+  function test4() return clob sql_macro(TABLE) is
   begin
 
     return 'q[select * from dual]';

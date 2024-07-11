@@ -6,8 +6,11 @@ package net.sourceforge.pmd.lang.plsql.ast;
 
 import java.util.Locale;
 
+/**
+ * @since 7.4.0
+ */
 public final class ASTSqlMacroClause extends AbstractPLSQLNode {
-    private String type = "TABLE";
+    private String type = "TABLE"; // TABLE is the default type if it is not explicitly given in the source
 
     ASTSqlMacroClause(int id) {
         super(id);
