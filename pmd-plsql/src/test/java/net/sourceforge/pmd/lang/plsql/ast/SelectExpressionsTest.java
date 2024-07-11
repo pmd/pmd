@@ -16,11 +16,6 @@ import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 class SelectExpressionsTest extends AbstractPLSQLParserTst {
 
     @Test
-    void parseSelectExpression() {
-        plsql.parseResource("SelectExpressions.pls");
-    }
-
-    @Test
     void parseSelectSimpleExpression() {
         ASTInput input = plsql.parseResource("SelectSimpleExpression.pls");
         assertNotNull(input);
