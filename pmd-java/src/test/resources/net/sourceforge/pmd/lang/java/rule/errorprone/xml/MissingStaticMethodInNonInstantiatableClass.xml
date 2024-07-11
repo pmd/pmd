@@ -593,4 +593,16 @@ public class Bar extends Foo {
 ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#1488:[java]false-positive about MissingStaticMethodInNonInstantiatableClass and @lombok.Builder</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Builder;
+public class Foo {
+   @Builder
+   private Foo() {}
+}
+]]></code>
+    </test-code>
+
 </test-data>
