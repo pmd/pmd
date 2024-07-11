@@ -19,6 +19,7 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚨 API Changes
 
 ### ✨ External Contributions
+* [#5107](https://github.com/pmd/pmd/pull/5107): \[doc] Update maven.md - Typo fixed for maven target - [karthikaiyasamy](https://github.com/karthikaiyasamy) (@karthikaiyasamy)
 
 {% endtocmaker %}
 
