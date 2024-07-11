@@ -132,13 +132,6 @@ public class LanguageLevelChecker<T> {
         STRING_TEMPLATES(21, 22, false),
 
         /**
-         * Unnamed variables and patterns.
-         * @see <a href="https://openjdk.org/jeps/443">JEP 443: Unnamed patterns and variables (Preview)</a> (Java 21)
-         * @see <a href="https://openjdk.org/jeps/456">JEP 456: Unnamed Variables & Patterns</a> (Java 22)
-         */
-        UNNAMED_VARIABLES_AND_PATTERNS(21, 21, true),
-
-        /**
          * Unnamed Classes and Instance Main Methods
          * @see <a href="https://openjdk.org/jeps/445">JEP 445: Unnamed Classes and Instance Main Methods (Preview)</a> (Java 21)
          * @see <a href="https://openjdk.org/jeps/463">JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)</a> (Java 22)
@@ -380,6 +373,13 @@ public class LanguageLevelChecker<T> {
          * @see <a href="https://openjdk.org/jeps/440">JEP 440: Record Patterns</a> (Java 21)
          */
         RECORD_PATTERNS(21),
+
+        /**
+         * Unnamed variables and patterns.
+         * @see <a href="https://openjdk.org/jeps/443">JEP 443: Unnamed patterns and variables (Preview)</a> (Java 21)
+         * @see <a href="https://openjdk.org/jeps/456">JEP 456: Unnamed Variables & Patterns</a> (Java 22)
+         */
+        UNNAMED_VARIABLES_AND_PATTERNS(22),
 
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
@@ -664,7 +664,7 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTUnnamedPattern node, T data) {
-            check(node, PreviewFeature.UNNAMED_VARIABLES_AND_PATTERNS, data);
+            check(node, RegularLanguageFeature.UNNAMED_VARIABLES_AND_PATTERNS, data);
             return null;
         }
 
@@ -708,8 +708,16 @@ public class LanguageLevelChecker<T> {
             } else if ("assert".equals(simpleName)) {
                 check(node, Keywords.ASSERT_AS_AN_IDENTIFIER, acc);
             } else if ("_".equals(simpleName)) {
+                // see ASTVariableId#isUnnamed()
+                // java 1-8: "_" is a valid name for an identifier
+                // java 9-21: "_" is a restricted keyword and cannot be used anymore as an identifier
+                // java 22+: "_" denotes an unnamed variable
+
+                // in order to display a nicer message, we tell beginning with java 21,
+                // (which brings record patterns, where unnamed patterns might be interesting)
+                // that with java 22+ "_" can be used for unnamed variables
                 if (LanguageLevelChecker.this.jdkVersion >= 21) {
-                    check(node, PreviewFeature.UNNAMED_VARIABLES_AND_PATTERNS, acc);
+                    check(node, RegularLanguageFeature.UNNAMED_VARIABLES_AND_PATTERNS, acc);
                 } else {
                     check(node, Keywords.UNDERSCORE_AS_AN_IDENTIFIER, acc);
                 }
