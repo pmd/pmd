@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
@@ -29,6 +30,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.AbstractIgnoredAnnotationRule
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * This rule detects private methods, that are not used and can therefore be
@@ -46,24 +48,36 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
 
     @Override
     public Object visit(ASTCompilationUnit file, Object param) {
-        // We do three traversals:
-        // - one to find methods referenced by Junit5 MethodSource annotations
+        // We do four traversals:
+        // - one to find methods referenced by Junit5 MethodSource
+        // - one to find methods referenced by Lombok Builder.ObtainVia
         // - one to find the "interesting methods", ie those that may be violations
         // - another to find the possible usages. We only try to resolve
         //   method calls/method refs that may refer to a method in the
         //   first set, ie, not every call in the file.
-
-        Set<String> methodsUsedByAnnotations = file.descendants(ASTMethodDeclaration.class)
-            .crossFindBoundaries()
-            .children(ASTModifierList.class)
-            .children(ASTAnnotation.class)
-            .filter(t -> TypeTestUtil.isA("org.junit.jupiter.params.provider.MethodSource", t))
-            .toStream()
-            // Get the referenced method names… if none, use the test method name instead
-            .flatMap(a -> a.getFlatValue("value").isEmpty()
-                    ? Stream.of(a.ancestors(ASTMethodDeclaration.class).first().getName())
-                    : a.getFlatValue("value").toStream().map(mv -> (String) mv.getConstValue()))
-            .collect(Collectors.toSet());
+        Set<String> methodsUsedByAnnotations =
+            Stream.concat(
+                      file.descendants(ASTMethodDeclaration.class)
+                          .crossFindBoundaries()
+                          .children(ASTModifierList.class)
+                          .children(ASTAnnotation.class)
+                          .filter(t -> TypeTestUtil.isA("org.junit.jupiter.params.provider.MethodSource", t))
+                          .toStream()
+                          // Get the referenced method names… if none, use the test method name instead
+                          .flatMap(a -> a.getFlatValue("value").isEmpty()
+                              ? Stream.of(a.ancestors(ASTMethodDeclaration.class).first().getName())
+                              : a.getFlatValue("value").toStream().map(mv -> (String) mv.getConstValue())),
+                      file.descendants(ASTFieldDeclaration.class)
+                          .crossFindBoundaries()
+                          .children(ASTModifierList.class)
+                          .children(ASTAnnotation.class)
+                          .filter(t -> TypeTestUtil.isA("lombok.Builder.ObtainVia", t))
+                          .toStream()
+                          .flatMap(a -> a.getFlatValue("method").toStream()
+                                         .map(mv -> (String) mv.getConstValue())
+                                         .filter(StringUtils::isNotEmpty))
+                  )
+                  .collect(Collectors.toSet());
 
         Map<String, Set<ASTMethodDeclaration>> consideredNames =
             file.descendants(ASTMethodDeclaration.class)

@@ -2074,4 +2074,26 @@ class FooTest{
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>UnusedPrivateMethod for Lombok ObtainVia #5110</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Builder;
+import lombok.Builder.ObtainVia;
+
+import java.util.Collections;
+import java.util.List;
+
+@Builder(toBuilder = true)
+public class ObtainViaTest {
+
+    @ObtainVia(method = "fooProvider")
+    private List<String> foo;
+
+    private List<String> fooProvider() {
+        return Collections.emptyList();
+    }
+}
+            ]]></code>
+    </test-code>
 </test-data>
