@@ -3,12 +3,12 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
     <description>
-  Ruleset used by test RuleSetFactoryTest
+  Ruleset used by test net.sourceforge.pmd.cli.PmdCliTest
   </description>
 
     <rule name="ReportAllRootNodes" language="dummy" since="1.0" message="Violation from ReportAllRootNodes"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-        externalInfoUrl="${pmd.website.baseurl}/rules/test/TestRuleset3.xml#Ruleset3Rule1">
+        externalInfoUrl="${pmd.website.baseurl}/rules/test/RuleSetWithViolations.xml#ReportAllRootNodes">
         <description>Just for test</description>
         <priority>3</priority>
         <properties>

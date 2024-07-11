@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -36,7 +37,7 @@ class StringLiteralsTest extends AbstractPLSQLParserTst {
         ASTInput input = plsql.parseResource("MultilineVarchar.pls");
         List<ASTStringLiteral> strings = input.descendants(ASTStringLiteral.class).toList();
         assertEquals(1, strings.size());
-        assertTrue(normalizeEol(strings.get(0).getString()).startsWith("\ncreate or replace and"));
+        assertThat(normalizeEol(strings.get(0).getString()), startsWith("\ncreate or replace and"));
     }
 
     private static void assertString(String quoted, String plain, int index, List<ASTStringLiteral> strings) {

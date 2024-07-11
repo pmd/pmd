@@ -8,9 +8,9 @@ import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.impl.JavaccCpdLexer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.plsql.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLTokenKinds;
 
 /**
@@ -34,25 +34,26 @@ public class PLSQLCpdLexer extends JavaccCpdLexer {
 
     @Override
     protected String getImage(JavaccToken plsqlToken) {
-        String image = plsqlToken.getImage();
+        String image;
 
         if (ignoreIdentifiers && plsqlToken.kind == PLSQLTokenKinds.IDENTIFIER) {
-            image = String.valueOf(plsqlToken.kind);
-        }
-
-        if (ignoreLiterals && (plsqlToken.kind == PLSQLTokenKinds.UNSIGNED_NUMERIC_LITERAL
+            image = "<identifier>";
+        } else if (ignoreLiterals && (plsqlToken.kind == PLSQLTokenKinds.UNSIGNED_NUMERIC_LITERAL
             || plsqlToken.kind == PLSQLTokenKinds.FLOAT_LITERAL
             || plsqlToken.kind == PLSQLTokenKinds.INTEGER_LITERAL
             || plsqlToken.kind == PLSQLTokenKinds.CHARACTER_LITERAL
             || plsqlToken.kind == PLSQLTokenKinds.STRING_LITERAL
             || plsqlToken.kind == PLSQLTokenKinds.QUOTED_LITERAL)) {
-            image = String.valueOf(plsqlToken.kind);
+            // the token kind is preserved
+            image = PLSQLTokenKinds.describe(plsqlToken.kind);
+        } else {
+            image = plsqlToken.getImage();
         }
         return image;
     }
 
     @Override
     protected TokenManager<JavaccToken> makeLexerImpl(TextDocument doc) {
-        return PLSQLTokenKinds.newTokenManager(CharStream.create(doc));
+        return InternalApiBridge.newTokenManager(doc);
     }
 }

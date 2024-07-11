@@ -149,4 +149,6 @@ class WildcardDsl(override val ts: TypeSystem) : JWildcardType by ts.UNBOUNDED_W
             other is JWildcardType && isSameType(this, other)
 
     override fun hashCode(): Int = ts.UNBOUNDED_WILD.hashCode()
+
+    override fun toString(): String = TypePrettyPrint.prettyPrint(this)
 }

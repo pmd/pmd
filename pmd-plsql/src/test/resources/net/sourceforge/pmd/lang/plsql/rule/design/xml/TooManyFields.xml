@@ -105,8 +105,6 @@ CREATE OR REPLACE PACKAGE pkg_fields AS
     BECOME VARCHAR2(240);
     /** Unreserved Keyword Word BEFORE **/
     BEFORE VARCHAR2(240);
-    /** Unreserved Keyword Word BEGIN **/
-    --SRT  BEGIN VARCHAR2(240);
     /** Unreserved Keyword Word BEGIN_OUTLINE_DATA **/
     BEGIN_OUTLINE_DATA VARCHAR2(240);
     /** Unreserved Keyword Word BEHALF **/
@@ -187,8 +185,6 @@ CREATE OR REPLACE PACKAGE pkg_fields AS
     CARDINALITY VARCHAR2(240);
     /** Unreserved Keyword Word CASCADE **/
     CASCADE VARCHAR2(240);
-    /** Unreserved Keyword Word CASE **/
-    CASE VARCHAR2(240);
     /** Unreserved Keyword Word CAST **/
     CAST VARCHAR2(240);
     /** Unreserved Keyword Word CATEGORY **/
@@ -325,8 +321,6 @@ CREATE OR REPLACE PACKAGE pkg_fields AS
     CURRENT_TIMESTAMP VARCHAR2(240);
     /** Unreserved Keyword Word CURRENT_USER **/
     CURRENT_USER VARCHAR2(240);
-    /** Unreserved Keyword Word CURSOR **/
-    CURSOR VARCHAR2(240);
     /** Unreserved Keyword Word CURSOR_SHARING_EXACT **/
     CURSOR_SHARING_EXACT VARCHAR2(240);
     /** Unreserved Keyword Word CURSOR_SPECIFIC_SEGMENT **/
@@ -367,8 +361,6 @@ CREATE OR REPLACE PACKAGE pkg_fields AS
     DEBUG VARCHAR2(240);
     /** Unreserved Keyword Word DEC **/
     DEC VARCHAR2(240);
-    /** Unreserved Keyword Word DECLARE **/
-    DECLARE VARCHAR2(240);
     /** Unreserved Keyword Word DECREMENT **/
     DECREMENT VARCHAR2(240);
     /** Unreserved Keyword Word DECRYPT **/
@@ -469,8 +461,6 @@ CREATE OR REPLACE PACKAGE pkg_fields AS
     ENCRYPT VARCHAR2(240);
     /** Unreserved Keyword Word ENCRYPTION **/
     ENCRYPTION VARCHAR2(240);
-    /** Unreserved Keyword Word END **/
-    --SRT END VARCHAR2(240);
     /** Unreserved Keyword Word END_OUTLINE_DATA **/
     END_OUTLINE_DATA VARCHAR2(240);
     /** Unreserved Keyword Word ENFORCE **/
@@ -576,7 +566,7 @@ CREATE OR REPLACE PACKAGE pkg_fields AS
     /** Unreserved Keyword Word FOLLOWING **/
     FOLLOWING VARCHAR2(240);
     /** Unreserved Keyword Word FORCE **/
-    -- FORCE VARCHAR2(240);
+    FORCE VARCHAR2(240);
     /** Unreserved Keyword Word FORCE_XML_QUERY_REWRITE **/
     FORCE_XML_QUERY_REWRITE VARCHAR2(240);
     /** Unreserved Keyword Word FOREIGN **/
@@ -591,8 +581,6 @@ CREATE OR REPLACE PACKAGE pkg_fields AS
     FRESH VARCHAR2(240);
     /** Unreserved Keyword Word FULL **/
     FULL VARCHAR2(240);
-    /** Unreserved Keyword Word FUNCTION **/
-    --SRT FUNCTION VARCHAR2(240);
     /** Unreserved Keyword Word FUNCTIONS **/
     FUNCTIONS VARCHAR2(240);
     /** Unreserved Keyword Word G **/
@@ -657,8 +645,6 @@ CREATE OR REPLACE PACKAGE pkg_fields AS
     IDGENERATORS VARCHAR2(240);
     /** Unreserved Keyword Word IDLE_TIME **/
     IDLE_TIME VARCHAR2(240);
-    /** Unreserved Keyword Word IF **/
-    IF VARCHAR2(240);
     /** Unreserved Keyword Word IGNORE **/
     IGNORE VARCHAR2(240);
     /** Unreserved Keyword Word IGNORE_OPTIM_EMBEDDED_HINTS **/
@@ -674,7 +660,7 @@ CREATE OR REPLACE PACKAGE pkg_fields AS
     /** Unreserved Keyword Word INCLUDE_VERSION **/
     INCLUDE_VERSION VARCHAR2(240);
     /** Unreserved Keyword Word INCLUDING **/
-    -- INCLUDING VARCHAR2(240);
+    INCLUDING VARCHAR2(240);
     /** Unreserved Keyword Word INCREMENT **/
     INCREMENT VARCHAR2(240);
     /** Unreserved Keyword Word INCREMENTAL **/
@@ -1258,7 +1244,7 @@ CREATE OR REPLACE PACKAGE pkg_fields AS
     /** Unreserved Keyword Word ONLINE **/
     ONLINE VARCHAR2(240);
     /** Unreserved Keyword Word ONLY **/
-    --  ONLY VARCHAR2(240);
+    ONLY VARCHAR2(240);
     /** Unreserved Keyword Word OPAQUE **/
     OPAQUE VARCHAR2(240);
     /** Unreserved Keyword Word OPAQUE_TRANSFORM **/
@@ -1433,8 +1419,6 @@ CREATE OR REPLACE PACKAGE pkg_fields AS
     PRIVILEGE VARCHAR2(240);
     /** Unreserved Keyword Word PRIVILEGES **/
     PRIVILEGES VARCHAR2(240);
-    /** Unreserved Keyword Word PROCEDURE **/
-    --SRT PROCEDURE VARCHAR2(240);
     /** Unreserved Keyword Word PROFILE **/
     PROFILE VARCHAR2(240);
     /** Unreserved Keyword Word PROGRAM **/
@@ -1520,7 +1504,7 @@ CREATE OR REPLACE PACKAGE pkg_fields AS
     /** Unreserved Keyword Word REFERENCES **/
     REFERENCES VARCHAR2(240);
     /** Unreserved Keyword Word REFERENCING **/
-    --REFERENCING VARCHAR2(240);
+    REFERENCING VARCHAR2(240);
     /** Unreserved Keyword Word REFRESH **/
     REFRESH VARCHAR2(240);
     /** Unreserved Keyword Word REGEXP_LIKE **/
@@ -1737,8 +1721,6 @@ CREATE OR REPLACE PACKAGE pkg_fields AS
     SPLIT VARCHAR2(240);
     /** Unreserved Keyword Word SPREADSHEET **/
     SPREADSHEET VARCHAR2(240);
-    /** Unreserved Keyword Word SQL **/
-    SQL VARCHAR2(240);
     /** Unreserved Keyword Word SQL_TRACE **/
     SQL_TRACE VARCHAR2(240);
     /** Unreserved Keyword Word SQLLDR **/
@@ -2037,8 +2019,6 @@ CREATE OR REPLACE PACKAGE pkg_fields AS
     WALLET VARCHAR2(240);
     /** Unreserved Keyword Word WELLFORMED **/
     WELLFORMED VARCHAR2(240);
-    /** Unreserved Keyword Word WHEN **/
-    --SRT WHEN VARCHAR2(240);
     /** Unreserved Keyword Word WHENEVER **/
     WHENEVER VARCHAR2(240);
     /** Unreserved Keyword Word WHITESPACE **/

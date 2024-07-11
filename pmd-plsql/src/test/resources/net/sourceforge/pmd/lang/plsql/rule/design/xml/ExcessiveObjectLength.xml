@@ -189,8 +189,6 @@ CREATE OR REPLACE TYPE typ_unreserved_keywords AS OBJECT
         CARDINALITY VARCHAR2(240),
         /** Unreserved Keyword Word CASCADE **/
         CASCADE VARCHAR2(240),
-        /** Unreserved Keyword Word CASE **/
-        CASE VARCHAR2(240),
         /** Unreserved Keyword Word CAST **/
         CAST VARCHAR2(240),
         /** Unreserved Keyword Word CATEGORY **/
@@ -327,8 +325,6 @@ CREATE OR REPLACE TYPE typ_unreserved_keywords AS OBJECT
         CURRENT_TIMESTAMP VARCHAR2(240),
         /** Unreserved Keyword Word CURRENT_USER **/
         CURRENT_USER VARCHAR2(240),
-        /** Unreserved Keyword Word CURSOR **/
-        CURSOR VARCHAR2(240),
         /** Unreserved Keyword Word CURSOR_SHARING_EXACT **/
         CURSOR_SHARING_EXACT VARCHAR2(240),
         /** Unreserved Keyword Word CURSOR_SPECIFIC_SEGMENT **/
@@ -369,8 +365,6 @@ CREATE OR REPLACE TYPE typ_unreserved_keywords AS OBJECT
         DEBUG VARCHAR2(240),
         /** Unreserved Keyword Word DEC **/
         DEC VARCHAR2(240),
-        /** Unreserved Keyword Word DECLARE **/
-        DECLARE VARCHAR2(240),
         /** Unreserved Keyword Word DECREMENT **/
         DECREMENT VARCHAR2(240),
         /** Unreserved Keyword Word DECRYPT **/
@@ -471,8 +465,6 @@ CREATE OR REPLACE TYPE typ_unreserved_keywords AS OBJECT
         ENCRYPT VARCHAR2(240),
         /** Unreserved Keyword Word ENCRYPTION **/
         ENCRYPTION VARCHAR2(240),
-        /** Unreserved Keyword Word END **/
-        --SRT END VARCHAR2(240),
         /** Unreserved Keyword Word END_OUTLINE_DATA **/
         END_OUTLINE_DATA VARCHAR2(240),
         /** Unreserved Keyword Word ENFORCE **/
@@ -593,8 +585,6 @@ CREATE OR REPLACE TYPE typ_unreserved_keywords AS OBJECT
         FRESH VARCHAR2(240),
         /** Unreserved Keyword Word FULL **/
         FULL VARCHAR2(240),
-        /** Unreserved Keyword Word FUNCTION **/
-        --SRT FUNCTION VARCHAR2(240),
         /** Unreserved Keyword Word FUNCTIONS **/
         FUNCTIONS VARCHAR2(240),
         /** Unreserved Keyword Word G **/
@@ -659,8 +649,6 @@ CREATE OR REPLACE TYPE typ_unreserved_keywords AS OBJECT
         IDGENERATORS VARCHAR2(240),
         /** Unreserved Keyword Word IDLE_TIME **/
         IDLE_TIME VARCHAR2(240),
-        /** Unreserved Keyword Word IF **/
-        IF VARCHAR2(240),
         /** Unreserved Keyword Word IGNORE **/
         IGNORE VARCHAR2(240),
         /** Unreserved Keyword Word IGNORE_OPTIM_EMBEDDED_HINTS **/
@@ -1739,8 +1727,6 @@ CREATE OR REPLACE TYPE typ_unreserved_keywords AS OBJECT
         SPLIT VARCHAR2(240),
         /** Unreserved Keyword Word SPREADSHEET **/
         SPREADSHEET VARCHAR2(240),
-        /** Unreserved Keyword Word SQL **/
-        SQL VARCHAR2(240),
         /** Unreserved Keyword Word SQL_TRACE **/
         SQL_TRACE VARCHAR2(240),
         /** Unreserved Keyword Word SQLLDR **/

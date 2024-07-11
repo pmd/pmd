@@ -83,6 +83,16 @@ function build() {
                 ./mvnw clean verify -Dskip-cli-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
             else
                 # b) only pmd-cli and pmd-dist
+                #
+                # In the first stage build (without pmd-cli and pmd-dist), cyclonedx:makeAggregateBom tries to
+                # fetch the jars of the to-be-released modules, which don't exist yet. This is recorded in *.lastUpdated
+                # files in the local repo and might end up in the cache, that is used for this 2nd stage build.
+                # Trying to delete the files now, if they exist.
+                # Alternatively, we could run maven with flag "-U" to force update all dependencies...
+                pmd_ci_log_info "Cleanup local maven repo..."
+                find ~/.m2/repository -wholename "*/net/sourceforge/pmd/*/${PMD_CI_MAVEN_PROJECT_VERSION}/*.lastUpdated" | xargs rm -v
+                pmd_ci_log_info "Cleanup local maven repo finished."
+
                 ./mvnw clean verify -pl pmd-cli,pmd-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
             fi
         else

@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JRecordComponentSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
@@ -61,6 +62,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     private List<JClassSymbol> memberClasses = new ArrayList<>();
     private List<JMethodSymbol> methods = new ArrayList<>();
     private List<JConstructorSymbol> ctors = new ArrayList<>();
+    private List<JRecordComponentSymbol> recordComponents = null;
     private List<JFieldSymbol> enumConstants = null;
 
     private PSet<SymAnnot> annotations = HashTreePSet.empty();
@@ -120,6 +122,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
                 fields = Collections.unmodifiableList(fields);
                 memberClasses = Collections.unmodifiableList(memberClasses);
                 enumConstants = CollectionUtil.makeUnmodifiableAndNonNull(enumConstants);
+                recordComponents = CollectionUtil.makeUnmodifiableAndNonNull(recordComponents);
 
                 if (EnclosingInfo.NO_ENCLOSING.equals(enclosingInfo)) {
                     if (names.canonicalName == null || names.simpleName == null) {
@@ -227,6 +230,9 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         if ((accessFlags & Opcodes.ACC_ENUM) != 0) {
             this.enumConstants = new ArrayList<>();
         }
+        if ((accessFlags & Opcodes.ACC_RECORD) != 0) {
+            this.recordComponents = new ArrayList<>();
+        }
     }
 
     void setOuterClass(ClassStub outer, @Nullable String methodName, @Nullable String methodDescriptor) {
@@ -260,6 +266,13 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
     void addCtor(CtorStub methodStub) {
         ctors.add(methodStub);
+    }
+
+    void addRecordComponent(RecordComponentStub recordComponentStub) {
+        if (recordComponents == null) {
+            recordComponents = new ArrayList<>();
+        }
+        recordComponents.add(recordComponentStub);
     }
 
     @Override
@@ -378,6 +391,14 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         parseLock.ensureParsed();
         return enumConstants;
     }
+
+
+    @Override
+    public @NonNull List<JRecordComponentSymbol> getRecordComponents() {
+        parseLock.ensureParsed();
+        return recordComponents;
+    }
+
 
     @Override
     public JTypeParameterOwnerSymbol getEnclosingTypeParameterOwner() {

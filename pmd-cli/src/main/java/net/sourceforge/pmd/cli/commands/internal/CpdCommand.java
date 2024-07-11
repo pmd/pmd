@@ -68,8 +68,12 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
     @Option(names = "--ignore-sequences", description = "Ignore sequences of identifiers and literals")
     private boolean ignoreIdentifierAndLiteralSequences;
 
+    /**
+     * @deprecated Use {@link #failOnError} instead.
+     */
     @Option(names = "--skip-lexical-errors",
-            description = "Skip files which can't be tokenized due to invalid characters, instead of aborting with an error.")
+            description = "Skip files which can't be tokenized due to invalid characters, instead of aborting with an error. Deprecated - use --[no-]fail-on-error instead.")
+    @Deprecated
     private boolean skipLexicalErrors;
 
     @Option(names = "--no-skip-blocks",
@@ -103,6 +107,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
             configuration.addRelativizeRoots(relativizeRootPaths);
         }
         configuration.setFailOnViolation(failOnViolation);
+        configuration.setFailOnError(failOnError);
         configuration.setInputFilePath(fileListPath);
         if (inputPaths != null) {
             configuration.setInputPathList(new ArrayList<>(inputPaths));
@@ -123,6 +128,14 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
         configuration.setSourceEncoding(encoding.getEncoding());
         configuration.setInputUri(uri);
 
+        if (skipLexicalErrors) {
+            configuration.getReporter().warn("--skip-lexical-errors is deprecated. Use --no-fail-on-error instead.");
+            configuration.setFailOnError(false);
+        }
+
+        // implicitly enable skipLexicalErrors, so that we can fail the build at the end. A report is created in any case.
+        configuration.setSkipLexicalErrors(true);
+
         return configuration;
     }
 
@@ -132,6 +145,11 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
 
             MutableBoolean hasViolations = new MutableBoolean();
             cpd.performAnalysis(report -> hasViolations.setValue(!report.getMatches().isEmpty()));
+
+            boolean hasErrors = configuration.getReporter().numErrors() > 0;
+            if (hasErrors && configuration.isFailOnError()) {
+                return CliExitCode.RECOVERED_ERRORS_OR_VIOLATIONS;
+            }
 
             if (hasViolations.booleanValue() && configuration.isFailOnViolation()) {
                 return CliExitCode.VIOLATIONS_FOUND;

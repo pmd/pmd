@@ -51,4 +51,19 @@ class PlsqlTreeDumpTest extends BaseTreeDumpTest {
     void errorLoggingClause() {
         doTest("ErrorLoggingClause2779");
     }
+
+    @Test
+    void compoundTriggerWithAdditionalDeclarations() {
+        doTest("CompoundTriggerWithAdditionalDeclarations4270");
+    }
+
+    @Test
+    void exceptionHandlerTomKytesDespair() {
+        doTest("ExceptionHandlerTomKytesDespair");
+    }
+
+    @Test
+    void sqlMacroClause() {
+        doTest("SqlMacroClause");
+    }
 }
