@@ -72,7 +72,7 @@ This will add an entry to the 'project reports' section with the PMD report when
 
 To run PMD on a Maven project without adding it as a report, simply run
 
-    mvn complile pmd:pmd
+    mvn compile pmd:pmd
 
 The PMD plugin writes the report in XML which will then be formatted into more readable HTML.
 
