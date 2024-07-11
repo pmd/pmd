@@ -2,7 +2,7 @@
 title: Java support
 permalink: pmd_languages_java.html
 author: Clément Fournier
-last_updated: December 2023 (7.0.0)
+last_updated: July 2024 (7.5.0)
 tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 summary: "Java-specific features and guidance"
 ---
@@ -15,8 +15,10 @@ Usually the latest non-preview Java Version is the default version.
 
 | Java Version | Alias | Supported by PMD since |
 |--------------|-------|------------------------|
+| 23-preview   |       | 7.5.0                  |
+| 23 (default) |       | 7.5.0                  |
 | 22-preview   |       | 7.0.0                  |
-| 22 (default) |       | 7.0.0                  |
+| 22           |       | 7.0.0                  |
 | 21-preview   |       | 7.0.0                  |
 | 21           |       | 7.0.0                  |
 | 20           |       | 6.55.0                 |

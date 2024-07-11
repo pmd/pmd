@@ -53,6 +53,7 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         "java-20",
         "java-21", "java-21-preview",
         "java-22", "java-22-preview",
+        "java-23", "java-23-preview",
         "java-5", "java-6", "java-7",
         "java-8", "java-9", "jsp-2", "jsp-3", "kotlin-1.6",
         "kotlin-1.7", "kotlin-1.8", "modelica-3.4", "modelica-3.5",
