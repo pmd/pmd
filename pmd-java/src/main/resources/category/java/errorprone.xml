@@ -2099,7 +2099,8 @@ $topLevelClass[
             (: no lombok produced constructors :)
             not(pmd-java:hasAnnotation('lombok.NoArgsConstructor') or
                 pmd-java:hasAnnotation('lombok.RequiredArgsConstructor') or
-                pmd-java:hasAnnotation('lombok.AllArgsConstructor')) and
+                pmd-java:hasAnnotation('lombok.AllArgsConstructor') or
+                pmd-java:hasAnnotation('lombok.Builder')) and
             (: or has non-default constructors … :)
             ClassBody/ConstructorDeclaration and
                 (: … but only private … :)

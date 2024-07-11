@@ -594,12 +594,24 @@ public class Bar extends Foo {
     </test-code>
 
     <test-code>
-        <description>#1488:[java]false-positive about MissingStaticMethodInNonInstantiatableClass and @lombok.Builder</description>
+        <description>#1488:[java]false-positive about MissingStaticMethodInNonInstantiatableClass and @lombok.Builder on constructor</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import lombok.Builder;
 public class Foo {
    @Builder
+   private Foo() {}
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1488:[java]false-positive about MissingStaticMethodInNonInstantiatableClass and @lombok.Builder on class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Builder;
+@Builder
+public class Foo {
    private Foo() {}
 }
 ]]></code>
