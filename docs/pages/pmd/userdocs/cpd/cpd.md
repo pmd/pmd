@@ -4,7 +4,7 @@ tags: [cpd, userdocs]
 summary: "Learn how to use CPD, the copy-paste detector shipped with PMD."
 permalink: pmd_userdocs_cpd.html
 author: Tom Copeland <tom@infoether.com>
-last_updated: August 2023 (7.0.0)
+last_updated: June 2024 (7.3.0)
 ---
 
 ## Overview
@@ -132,8 +132,8 @@ exactly identical.
                description="Don't scan subdirectories. By default, subdirectories are considered."
     %}
     {% include custom/cli_option_row.html options="--skip-lexical-errors"
-               description="Skip files which can't be tokenized due to invalid characters instead of aborting CPD.
-                            By default, CPD analysis is stopped on the first error."
+               description="<span class='label label-primary'>Deprecated</span> Skip files which can't be tokenized due to invalid characters instead of aborting CPD.
+                            By default, CPD analysis is stopped on the first error. This is deprecated. Use `--fail-on-error` instead."
     %}
     {% include custom/cli_option_row.html options="--format,-f"
                option_arg="format"
@@ -149,6 +149,11 @@ exactly identical.
                     The option can be repeated, in which case the shortest relative path will be used.
                     If the root path is mentioned (e.g. \"/\" or \"C:\\\"), then the paths will be rendered
                     as absolute."
+    %}
+    {% include custom/cli_option_row.html options="--[no-]fail-on-error"
+               description="Specifies whether CPD exits with non-zero status if recoverable errors occurred.
+                            By default CPD exits with status 5 if recoverable errors occurred (whether there are duplications or not).
+                            Disable this option with `--no-fail-on-error` to exit with 0 instead. In any case, a report with the found duplications will be written."
     %}
     {% include custom/cli_option_row.html options="--[no-]fail-on-violation"
                description="Specifies whether CPD exits with non-zero status if violations are found.
@@ -279,15 +284,21 @@ If you specify a source directory but don't want to scan the sub-directories, yo
 
 ### Exit status
 
-Please note that if CPD detects duplicated source code, it will exit with status 4 (since 5.0).
+Please note that if CPD detects duplicated source code, it will exit with status 4 (since 5.0) or 5 (since 7.3.0).
 This behavior has been introduced to ease CPD integration into scripts or hooks, such as SVN hooks.
 
 <table>
-<tr><td>0</td><td>Everything is fine, no code duplications found.</td></tr>
+<tr><td>0</td><td>Everything is fine, no code duplications found and no recoverable errors occurred.</td></tr>
 <tr><td>1</td><td>CPD exited with an exception.</td></tr>
 <tr><td>2</td><td>Usage error. Command-line parameters are invalid or missing.</td></tr>
-<tr><td>4</td><td>At least one code duplication has been detected unless <code>--no-fail-on-violation</code> is set.</td></tr>
+<tr><td>4</td><td>At least one code duplication has been detected unless <code>--no-fail-on-violation</code> is set.<p>Since PMD 5.0.</p></td></tr>
+<tr><td>5</td><td>At least one recoverable error has occurred. There might be additionally zero or more duplications detected.
+    To ignore recoverable errors, use <code>--no-fail-on-error</code>.<p>Since PMD 7.3.0.</p></td></tr>
 </table>
+
+{%include note.html content="If PMD exits with 5, then PMD had trouble lexing one or more files.
+That means, that no duplications for the entire file are reported. This can be considered as false-negative.
+In any case, the root cause should be investigated. If it's a problem in PMD itself, please create a bug report." %}
 
 ## Logging
 
@@ -390,6 +401,10 @@ Andy Glover wrote an Ant task for CPD; here's how to use it:
                             keep their encoding.<br />
                             If not specified, CPD uses the system default encoding."
     %}
+    {% include custom/cli_option_row.html options="failOnError"
+               description="Whether to fail the build if any errors occurred while processing the files. Since PMD 7.3.0."
+               default="true"
+    %}
     {% include custom/cli_option_row.html options="format"
                description="The format of the report (e.g. `csv`, `text`, `xml`)."
                default="text"
@@ -424,8 +439,10 @@ Andy Glover wrote an Ant task for CPD; here's how to use it:
                default="false"
     %}
     {% include custom/cli_option_row.html options="skipLexicalErrors"
-               description="Skip files which can't be tokenized due to invalid characters instead of aborting CPD."
-               default="false"
+               description="<span class='label label-primary'>Deprecated</span> Skip files which can't be tokenized
+                            due to invalid characters instead of aborting CPD. This parameter is deprecated and
+                            ignored since PMD 7.3.0. It is now by default true. Use `failOnError` instead to fail the build."
+               default="true"
     %}
     {% include custom/cli_option_row.html options="skipBlocks"
                description="Enables or disabled skipping of blocks like a pre-processor. See also option skipBlocksPattern."

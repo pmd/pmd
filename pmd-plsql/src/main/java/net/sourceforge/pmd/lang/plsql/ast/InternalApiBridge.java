@@ -6,6 +6,10 @@
 package net.sourceforge.pmd.lang.plsql.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.TokenManager;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
@@ -35,5 +39,9 @@ public final class InternalApiBridge {
 
     public static void setNameDeclaration(ASTVariableOrConstantDeclaratorId node, NameDeclaration decl) {
         node.setNameDeclaration(decl);
+    }
+
+    public static TokenManager<JavaccToken> newTokenManager(TextDocument doc) {
+        return PLSQLTokenKinds.newTokenManager(CharStream.create(doc, PLSQLParser.TOKEN_BEHAVIOR));
     }
 }

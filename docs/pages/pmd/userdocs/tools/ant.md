@@ -6,6 +6,7 @@ author: >
     David Dixon-Peugh <dpeugh@users.sourceforge.net>,
     Tom Copeland <tom@infoether.com>,
     Xavier Le Vourch <xlv@users.sourceforge.net>
+last_updated: June 2024 (7.3.0)
 ---
 
 ## PMD
@@ -63,8 +64,8 @@ The examples below won't repeat this taskdef element, as this is always required
     <td>Yes, unless the ruleset nested element is used</td>
   </tr>
   <tr>
-    <td>failonerror</td>
-    <td>Whether or not to fail the build if any errors occur while processing the files</td>
+    <td>failOnError</td>
+    <td>Whether or not to fail the build if any recoverable errors occurred while analyzing files.</td>
     <td>No</td>
   </tr>
     <tr>
