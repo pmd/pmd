@@ -158,15 +158,15 @@ public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JM
             && this.isVoid()
             && this.getArity() == 1
             && TypeTestUtil.isExactlyA(String[].class, this.getFormalParameters().get(0))
-            || isMainMethodUnnamedClass();
+            || isMainMethodInImplicitlyDeclaredClass();
     }
 
     /**
-     * With JEP 445 (Java 21 Preview) the main method does not need to be static anymore and
+     * With JEP 445/463/477 (Java 23 Preview) the main method does not need to be static anymore and
      * does not need to be public or have a formal parameter.
      */
-    private boolean isMainMethodUnnamedClass() {
-        return this.getRoot().isUnnamedClass()
+    private boolean isMainMethodInImplicitlyDeclaredClass() {
+        return this.getRoot().isImplicitlyDeclaredClass()
                 && "main".equals(this.getName())
                 && !this.hasModifiers(JModifier.PRIVATE)
                 && this.isVoid()

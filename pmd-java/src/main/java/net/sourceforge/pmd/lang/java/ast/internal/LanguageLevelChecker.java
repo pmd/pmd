@@ -135,8 +135,9 @@ public class LanguageLevelChecker<T> {
          * Unnamed Classes and Instance Main Methods
          * @see <a href="https://openjdk.org/jeps/445">JEP 445: Unnamed Classes and Instance Main Methods (Preview)</a> (Java 21)
          * @see <a href="https://openjdk.org/jeps/463">JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)</a> (Java 22)
+         * @see <a href="https://openjdk.org/jeps/477">JEP 477: Implicitly Declared Classes and Instance Main Methods (Third Preview)</a> (Java 23)
          */
-        UNNAMED_CLASSES(21, 22, false),
+        IMPLICITLY_DECLARED_CLASSES_AND_INSTANCE_MAIN_METHODS(22, 23, false),
 
         /**
          * Statements before super
@@ -422,8 +423,8 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTCompilationUnit node, T data) {
-            if (node.isUnnamedClass()) {
-                check(node, PreviewFeature.UNNAMED_CLASSES, data);
+            if (node.isImplicitlyDeclaredClass()) {
+                check(node, PreviewFeature.IMPLICITLY_DECLARED_CLASSES_AND_INSTANCE_MAIN_METHODS, data);
             }
             return null;
         }

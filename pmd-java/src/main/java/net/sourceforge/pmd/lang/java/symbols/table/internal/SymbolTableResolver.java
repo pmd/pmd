@@ -140,7 +140,7 @@ public final class SymbolTableResolver {
         private final SymTableFactory f;
         private final Deque<JSymbolTable> stack = new ArrayDeque<>();
 
-        private final Deque<ASTTypeDeclaration> enclosingType = new ArrayDeque<>();
+        private final Deque<JClassType> enclosingType = new ArrayDeque<>();
 
         private final Set<DeferredNode> deferredInPrevRound;
         private final Set<DeferredNode> newDeferred;
@@ -213,10 +213,18 @@ public final class SymbolTableResolver {
             pushed += pushOnStack(f.samePackageSymTable(top()));
             pushed += pushOnStack(f.singleImportsSymbolTable(top(), isImportOnDemand.get(false)));
 
+            // TODO Java 23 implicitly imports "import static java.io.IO.*" for implicitly declared classes
+            boolean implicitlyDeclaredClass = node.isImplicitlyDeclaredClass();
+
             NodeStream<ASTTypeDeclaration> typeDecls = node.getTypeDeclarations();
 
             // types declared inside the compilation unit
             pushed += pushOnStack(f.typesInFile(top(), typeDecls));
+
+            if (implicitlyDeclaredClass) {
+                // TODO the implicitly declared class is a subclass of Object, but not exactly Object...
+                enclosingType.push(node.getTypeSystem().OBJECT);
+            }
 
             setTopSymbolTable(node);
 
@@ -227,6 +235,10 @@ public final class SymbolTableResolver {
 
             // All of the header symbol tables belong to the CompilationUnit
             visitChildren(node, ctx);
+
+            if (implicitlyDeclaredClass) {
+                enclosingType.pop();
+            }
 
             popStack(pushed);
 
@@ -258,7 +270,7 @@ public final class SymbolTableResolver {
         public Void visitTypeDecl(ASTTypeDeclaration node, @NonNull ReferenceCtx ctx) {
             int pushed = 0;
 
-            enclosingType.push(node);
+            enclosingType.push(node.getTypeMirror());
             ReferenceCtx bodyCtx = ctx.scopeDownToNested(node.getSymbol());
 
             // the following is just for the body
@@ -711,7 +723,7 @@ public final class SymbolTableResolver {
             if (enclosingType.isEmpty()) {
                 return null;
             }
-            return enclosingType.getFirst().getTypeMirror();
+            return enclosingType.getFirst();
         }
 
         // this does not visit the given node, only its children

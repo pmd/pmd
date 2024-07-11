@@ -55,7 +55,7 @@ class Java22PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
     void jep463UnnamedClasses1() {
         doTest("Jep463_UnnamedClasses1");
         ASTCompilationUnit compilationUnit = java22p.parseResource("Jep463_UnnamedClasses1.java");
-        assertTrue(compilationUnit.isUnnamedClass());
+        assertTrue(compilationUnit.isImplicitlyDeclaredClass());
         ASTMethodCall methodCall = compilationUnit.descendants(ASTMethodCall.class).first();
         assertNotNull(methodCall.getTypeMirror());
     }
@@ -78,19 +78,19 @@ class Java22PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
     @Test
     void jep463UnnamedClassesBeforeJava22Preview() {
         ParseException thrown = assertThrows(ParseException.class, () -> java22.parseResource("Jep463_UnnamedClasses1.java"));
-        assertThat(thrown.getMessage(), containsString("Unnamed classes is a preview feature of JDK 22, you should select your language version accordingly"));
+        assertThat(thrown.getMessage(), containsString("Implicitly declared classes and instance main methods is a preview feature of JDK 22, you should select your language version accordingly"));
     }
 
     @Test
     void jep463TestOrdinaryCompilationUnit() {
         ASTCompilationUnit compilationUnit = java22.parse("public class Foo { public static void main(String[] args) {}}");
-        assertFalse(compilationUnit.isUnnamedClass());
+        assertFalse(compilationUnit.isImplicitlyDeclaredClass());
     }
 
     @Test
     void jep463TestModularCompilationUnit() {
         ASTCompilationUnit compilationUnit = java22.parse("module foo {}");
-        assertFalse(compilationUnit.isUnnamedClass());
+        assertFalse(compilationUnit.isImplicitlyDeclaredClass());
     }
 
     @Test

@@ -45,8 +45,8 @@ import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
  *
  * </pre>
  *
- * @see <a href="https://openjdk.org/jeps/445">JEP 445: Unnamed Classes and Instance Main Methods (Preview)</a> (Java 21)
- * @see #isUnnamedClass()
+ * @see <a href="https://openjdk.org/jeps/477">JEP 477: Implicitly Declared Classes and Instance Main Methods (Third Preview)</a> (Java 23)
+ * @see #isImplicitlyDeclaredClass()
  */
 public final class ASTCompilationUnit extends AbstractJavaNode implements RootNode {
 
@@ -137,9 +137,9 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements RootNo
         return lazyTypeResolver;
     }
 
-    @Experimental("Unnamed classes is a Java 21 Preview feature")
+    @Experimental("Implicitly Declared Classes and Instance Main Methods is a Java 22 / Java 23 Preview feature")
     @NoAttribute
-    public boolean isUnnamedClass() {
+    public boolean isImplicitlyDeclaredClass() {
         return children(ASTMethodDeclaration.class).nonEmpty();
     }
 }
