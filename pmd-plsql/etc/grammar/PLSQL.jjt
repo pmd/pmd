@@ -27,6 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /**
+ * Add support for SQL_MACRO
+ *
+ * Arjen Duursma 06/2024
+ *====================================================================
  * Add support for MERGE (INTO) statement
  * Add support Error Logging for INSERT, UPDATE, DELETE
  * Add support for exception handlers in compound triggers,
@@ -743,7 +747,7 @@ ASTMethodDeclarator MethodDeclarator() :
         }
       }
        // There is no RETURN for a WRAPPED object
-      [ <RETURN> Datatype() ]
+      [ <RETURN> Datatype() [ LOOKAHEAD({isKeyword("SQL_MACRO")}) SqlMacroClause() ] ]
 
     )
   | <PROCEDURE>
@@ -2133,7 +2137,7 @@ void QueryTableExpression() #void :
 {}
 {
   (
-    LOOKAHEAD(2) [ LOOKAHEAD(2) SchemaName() "." ] TableName()
+    LOOKAHEAD(2) [ LOOKAHEAD(2) SchemaName() "." ] ( LOOKAHEAD(2) FunctionCall() | TableName() )
   |
     TableCollectionExpression()
   |
@@ -2709,7 +2713,7 @@ ASTDeleteStatement DeleteStatement() :
 ASTMergeStatement MergeStatement() :
 {}
 {
-    <MERGE> <INTO> [ LOOKAHEAD(2) SchemaName() "." ] TableName() [ LOOKAHEAD(1, ID(), { getToken(1).kind != USING } ) TableAlias() ]
+    <MERGE> <INTO> [ LOOKAHEAD(2) SchemaName() "." ] TableName() [ TableAlias() ]
     <USING>
     (
             LOOKAHEAD(3) "(" ValuesClause() ")"
@@ -5529,7 +5533,6 @@ void KEYWORD(String id) #void:
 {
     {
         if (!isKeyword(id)) {
-            String eol = System.getProperty("line.separator", "\n");
             throw new ParseException("Encountered \"" + getToken(1).getImage() + "\" "
                 + "Was expecting: \"" + id + "\"").withLocation(token);
         }
@@ -7042,4 +7045,19 @@ ASTJavaInterfaceClass JavaInterfaceClass(): {}
           <JAVA_INTERFACE_CLASS>
         )
 	{ jjtThis.setImage(token.getImage()) ; jjtThis.value = token ; return jjtThis ; }
+}
+
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/23/lnpls/SQL_MACRO-clause.html#LNPLS-GUID-292C3A17-2A4B-4EFB-AD38-68DF6380E5F7
+ */
+ASTSqlMacroClause SqlMacroClause(): {}
+{
+       (
+         LOOKAHEAD({isKeyword("SQL_MACRO")}) KEYWORD("SQL_MACRO")
+         [
+            <LPAREN> [ <TYPE> "=>" ] ( LOOKAHEAD({isKeyword("SCALAR")}) KEYWORD("SCALAR") | <TABLE> )
+            { jjtThis.setType(token.getImage()); } <RPAREN>
+         ]
+       )
+       { return jjtThis; }
 }
