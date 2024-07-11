@@ -66,6 +66,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private boolean ignoreIdentifierAndLiteralSequences = false;
 
+    @Deprecated
     private boolean skipLexicalErrors = false;
 
     private boolean noSkipBlocks = false;
@@ -73,8 +74,6 @@ public class CPDConfiguration extends AbstractConfiguration {
     private String skipBlocksPattern = CpdLanguagePropertiesDefaults.DEFAULT_SKIP_BLOCKS_PATTERN;
 
     private boolean help;
-
-    private boolean failOnViolation = true;
 
 
     public CPDConfiguration() {
@@ -229,10 +228,20 @@ public class CPDConfiguration extends AbstractConfiguration {
         this.ignoreIdentifierAndLiteralSequences = ignoreIdentifierAndLiteralSequences;
     }
 
+    /**
+     * @deprecated This option will be removed. With {@link #isFailOnError()}, you can
+     * control whether lexical errors should fail the build or not.
+     */
+    @Deprecated
     public boolean isSkipLexicalErrors() {
         return skipLexicalErrors;
     }
 
+    /**
+     * @deprecated This option will be removed. With {@link #setFailOnError(boolean)}, you can
+     * control whether lexical errors should fail the build or not.
+     */
+    @Deprecated
     public void setSkipLexicalErrors(boolean skipLexicalErrors) {
         this.skipLexicalErrors = skipLexicalErrors;
     }
@@ -259,14 +268,6 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     public void setSkipBlocksPattern(String skipBlocksPattern) {
         this.skipBlocksPattern = skipBlocksPattern;
-    }
-
-    public boolean isFailOnViolation() {
-        return failOnViolation;
-    }
-
-    public void setFailOnViolation(boolean failOnViolation) {
-        this.failOnViolation = failOnViolation;
     }
 
     @Override

@@ -43,10 +43,16 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
     protected URI uri;
     
     @Option(names = "--no-fail-on-violation",
-            description = "By default PMD exits with status 4 if violations are found. "
-                    + "Disable this option with '--no-fail-on-violation' to exit with 0 instead and just write the report.",
+            description = "By default PMD exits with status 4 if violations or duplications are found. "
+                    + "Disable this option with '--no-fail-on-violation' to exit with 0 instead. In any case a report with the found violations or duplications will be written.",
             defaultValue = "true", negatable = true)
     protected boolean failOnViolation;
+
+    @Option(names = "--no-fail-on-error",
+            description = "By default PMD exits with status 5 if recoverable errors occurred (whether or not there are violations or duplications). "
+                    + "Disable this option with '--no-fail-on-error' to exit with 0 instead. In any case, a report with the found violations or duplications will be written.",
+            defaultValue = "true", negatable = true)
+    protected boolean failOnError;
 
     protected List<Path> relativizeRootPaths;
 

@@ -7,7 +7,7 @@
     <test-code>
         <description>Example code</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>34</expected-linenumbers>
+        <expected-linenumbers>35</expected-linenumbers>
         <code><![CDATA[
 CREATE OR REPLACE PACKAGE BODY update_planned_hrs
 IS
@@ -43,7 +43,7 @@ BEGIN
    RETURN (existing_hours);
 
    EXCEPTION
-          WHEN OTHERS THEN NULL;
+          WHEN OTHERS THEN NULL; -- rule violation
 
    END existing_planned;
 

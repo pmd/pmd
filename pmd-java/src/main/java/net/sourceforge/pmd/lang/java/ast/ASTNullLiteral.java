@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.document.Chars;
+
 /**
  * The null literal.
  *
@@ -15,7 +17,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * </pre>
  */
-public final class ASTNullLiteral extends AbstractLiteral {
+public final class ASTNullLiteral extends AbstractLiteral implements ASTLiteral {
     ASTNullLiteral(int id) {
         super(id);
     }
@@ -34,5 +36,10 @@ public final class ASTNullLiteral extends AbstractLiteral {
     @Override
     public @Nullable Object getConstValue() {
         return null;
+    }
+
+    @Override
+    public Chars getLiteralText() {
+        return super.getLiteralText();
     }
 }

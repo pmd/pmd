@@ -126,7 +126,7 @@ final class CaptureMatcher implements JTypeVar {
 
     @Override
     public String toString() {
-        return captured == null ? "unbound capture matcher"
-                                : "bound(" + captured.toString() + ")";
+        return captured == null ? "unbound capture matcher of (" + wild + ")"
+                                : "bound(" + captured + ")";
     }
 }

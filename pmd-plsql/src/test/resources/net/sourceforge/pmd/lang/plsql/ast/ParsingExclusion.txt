@@ -37,7 +37,6 @@
       |     |  +- ID[@CanonicalImage = "DUAL", @Image = "dual"]
       |     +- TableAlias[@CanonicalImage = "A", @Image = "a"]
       |        +- ID[@CanonicalImage = "A", @Image = "a"]
-      |           +- KEYWORD_UNRESERVED[@CanonicalImage = "A", @Image = "a"]
       +- WhereClause[@CanonicalImage = null]
          +- Condition[@CanonicalImage = null]
             +- CompoundCondition[@CanonicalImage = null, @Type = null]

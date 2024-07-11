@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.document.Chars;
  * retrieve the actual runtime value. Use {@link #getLiteralText()} to
  * retrieve the text.
  */
-public final class ASTCharLiteral extends AbstractLiteral {
+public final class ASTCharLiteral extends AbstractLiteral implements ASTLiteral {
 
 
     ASTCharLiteral(int id) {
@@ -39,4 +39,8 @@ public final class ASTCharLiteral extends AbstractLiteral {
         return StringEscapeUtils.UNESCAPE_JAVA.translate(woDelims).charAt(0);
     }
 
+    @Override
+    public Chars getLiteralText() {
+        return super.getLiteralText();
+    }
 }
