@@ -101,6 +101,6 @@ class Java22PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
     @Test
     void jep447StatementsBeforeSuperBeforeJava22Preview() {
         ParseException thrown = assertThrows(ParseException.class, () -> java22.parseResource("Jep447_StatementsBeforeSuper.java"));
-        assertThat(thrown.getMessage(), containsString("Statements before super is a preview feature of JDK 22, you should select your language version accordingly"));
+        assertThat(thrown.getMessage(), containsString("Flexible constructor bodies is a preview feature of JDK 22, you should select your language version accordingly"));
     }
 }

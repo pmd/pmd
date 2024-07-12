@@ -48,4 +48,14 @@ class Java23PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
         doTest("Jep477_ImplicitlyDeclaredClassesAndInstanceMainMethods2");
     }
 
+    @Test
+    void jep482FlexibleConstructorBodies() {
+        doTest("Jep482_FlexibleConstructorBodies");
+    }
+
+    @Test
+    void jep482FlexibleConstructorBodiesBeforeJava23Preview() {
+        ParseException thrown = assertThrows(ParseException.class, () -> java23.parseResource("Jep482_FlexibleConstructorBodies.java"));
+        assertThat(thrown.getMessage(), containsString("Flexible constructor bodies is a preview feature of JDK 23, you should select your language version accordingly"));
+    }
 }

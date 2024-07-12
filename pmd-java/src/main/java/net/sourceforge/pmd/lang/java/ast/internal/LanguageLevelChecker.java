@@ -142,8 +142,9 @@ public class LanguageLevelChecker<T> {
         /**
          * Statements before super
          * @see <a href="https://openjdk.org/jeps/447">JEP 447: Statements before super(...) (Preview)</a> (Java 22)
+         * @see <a href="https://openjdk.org/jeps/482">JEP 482: Flexible Constructor Bodies (Second Preview)</a> (Java 23)
          */
-        STATEMENTS_BEFORE_SUPER(22, 22, false),
+        FLEXIBLE_CONSTRUCTOR_BODIES(22, 23, false),
 
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
@@ -697,7 +698,7 @@ public class LanguageLevelChecker<T> {
             super.visit(node, data);
             if (node.getBody().descendants(ASTExplicitConstructorInvocation.class).nonEmpty()) {
                 if (!(node.getBody().getFirstChild() instanceof ASTExplicitConstructorInvocation)) {
-                    check(node, PreviewFeature.STATEMENTS_BEFORE_SUPER, data);
+                    check(node, PreviewFeature.FLEXIBLE_CONSTRUCTOR_BODIES, data);
                 }
             }
             return null;
