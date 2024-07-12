@@ -25,7 +25,6 @@ public class AvoidNonRestrictiveQueriesRule extends AbstractApexRule {
     private static final Pattern RESTRICTIVE_PATTERN = Pattern.compile("(where )|(limit )", Pattern.CASE_INSENSITIVE);
     private static final Pattern SELECT_PATTERN = Pattern.compile("(select )", Pattern.CASE_INSENSITIVE);
     private static final Pattern SUB_QUERY_PATTERN = Pattern.compile("(?i)\\(\\s*select\\s+[^)]+\\)");
-    private static final String SEE_ALL_DATA_ANNOTATION_PARAMETER = "SeeAllData";
 
     @Override
     protected @NonNull RuleTargetSelector buildTargetSelector() {
@@ -52,11 +51,11 @@ public class AvoidNonRestrictiveQueriesRule extends AbstractApexRule {
                     .map(NodeStream::first);
 
             Optional<Boolean> methodSeeAllData = methodAnnotation.flatMap(m -> m.children(ASTAnnotationParameter.class)
-                    .filter(p -> SEE_ALL_DATA_ANNOTATION_PARAMETER.equalsIgnoreCase(p.getName()))
+                    .filter(p -> ASTAnnotationParameter.SEE_ALL_DATA.equalsIgnoreCase(p.getName()))
                     .firstOpt()
                     .map(ASTAnnotationParameter::getBooleanValue));
             boolean classSeeAllData = classAnnotation.flatMap(m -> m.children(ASTAnnotationParameter.class)
-                    .filter(p -> SEE_ALL_DATA_ANNOTATION_PARAMETER.equalsIgnoreCase(p.getName()))
+                    .filter(p -> ASTAnnotationParameter.SEE_ALL_DATA.equalsIgnoreCase(p.getName()))
                     .firstOpt()
                     .map(ASTAnnotationParameter::getBooleanValue))
                     .orElse(false);
