@@ -787,6 +787,10 @@ public final class JavaAstUtils {
         }
     }
 
+    public static boolean isMarkdownComment(JavaccToken token) {
+        return token.kind == JavaTokenKinds.SINGLE_LINE_COMMENT && token.getText().charAt(2) == '/';
+    }
+
     /**
      * Return true if the catch clause just rethrows the caught exception
      * immediately.
