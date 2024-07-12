@@ -14,7 +14,14 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+#### ✨ New Rules
+
+* The new Apex rule {% apex/performance/AvoidNonRestrictiveQueries %} finds SOQL and SOSL queries without a where
+  or limit statement. This can quickly cause governor limit exceptions.
+
 ### 🐛 Fixed Issues
+* apex
+  * [#635](https://github.com/pmd/pmd/issues/635): \[apex] New Rule: Avoid soql/sosl queries without a where clause or limit statement
 * plsql
   * [#5086](https://github.com/pmd/pmd/pull/5086): \[plsql] Fixed issue with missing optional table alias in MERGE usage
   * [#5087](https://github.com/pmd/pmd/pull/5087): \[plsql] Add support for SQL_MACRO
