@@ -1231,4 +1231,32 @@ public class MessageFormatWithThrowable {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] InvalidLogMessageFormat rule : False positive for lambda parameter #2718</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class Foo {
+  private static final Logger LOG = LoggerFactory.getLogger(Foo.class);
+
+  public static class Event {
+    private Throwable lastThrowable;
+    public Throwable getLastThrowable() {
+      return lastThrowable;
+    }
+  }
+
+  public void bar(Event event) {
+    Optional.of(event).ifPresent(e -> LOG.warn(
+        "Failed on {}",
+        1,
+        e.getLastThrowable()));
+  }
+}
+]]></code>
+    </test-code>
 </test-data>
