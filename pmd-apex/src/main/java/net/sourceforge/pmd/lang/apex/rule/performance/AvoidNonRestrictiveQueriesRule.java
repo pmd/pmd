@@ -15,7 +15,9 @@ import net.sourceforge.pmd.lang.apex.ast.ASTAnnotationParameter;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTSoqlExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTSoslExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
+import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
@@ -23,18 +25,27 @@ import net.sourceforge.pmd.reporting.RuleContext;
 
 public class AvoidNonRestrictiveQueriesRule extends AbstractApexRule {
     private static final Pattern RESTRICTIVE_PATTERN = Pattern.compile("(where )|(limit )", Pattern.CASE_INSENSITIVE);
-    private static final Pattern SELECT_PATTERN = Pattern.compile("(select )", Pattern.CASE_INSENSITIVE);
+    private static final Pattern SELECT_OR_FIND_PATTERN = Pattern.compile("(select|find )", Pattern.CASE_INSENSITIVE);
     private static final Pattern SUB_QUERY_PATTERN = Pattern.compile("(?i)\\(\\s*select\\s+[^)]+\\)");
 
     @Override
     protected @NonNull RuleTargetSelector buildTargetSelector() {
-        return RuleTargetSelector.forTypes(ASTSoqlExpression.class);
+        return RuleTargetSelector.forTypes(ASTSoqlExpression.class, ASTSoslExpression.class);
     }
 
     @Override
     public Object visit(ASTSoqlExpression node, Object data) {
-        String query = node.getQuery();
+        visitSoqlOrSosl(node, "SOQL", node.getQuery(), asCtx(data));
+        return data;
+    }
 
+    @Override
+    public Object visit(ASTSoslExpression node, Object data) {
+        visitSoqlOrSosl(node, "SOSL", node.getQuery(), asCtx(data));
+        return data;
+    }
+
+    private void visitSoqlOrSosl(ApexNode<?> node, String type, String query, RuleContext ruleContext) {
         ASTMethod method = node.ancestors(ASTMethod.class).first();
         if (method != null && method.getModifiers().isTest()) {
             Optional<ASTAnnotation> methodAnnotation = method
@@ -55,17 +66,17 @@ public class AvoidNonRestrictiveQueriesRule extends AbstractApexRule {
                     .firstOpt()
                     .map(ASTAnnotationParameter::getBooleanValue));
             boolean classSeeAllData = classAnnotation.flatMap(m -> m.children(ASTAnnotationParameter.class)
-                    .filter(p -> ASTAnnotationParameter.SEE_ALL_DATA.equalsIgnoreCase(p.getName()))
-                    .firstOpt()
-                    .map(ASTAnnotationParameter::getBooleanValue))
+                            .filter(p -> ASTAnnotationParameter.SEE_ALL_DATA.equalsIgnoreCase(p.getName()))
+                            .firstOpt()
+                            .map(ASTAnnotationParameter::getBooleanValue))
                     .orElse(false);
 
             if (methodSeeAllData.isPresent()) {
                 if (!methodSeeAllData.get()) {
-                    return null;
+                    return;
                 }
             } else if (!classSeeAllData) {
-                return null;
+                return;
             }
         }
 
@@ -76,17 +87,15 @@ public class AvoidNonRestrictiveQueriesRule extends AbstractApexRule {
         }
         subQueryMatcher.appendTail(queryWithoutSubQueries);
 
-        verifyQuery(asCtx(data), node, queryWithoutSubQueries.toString());
-
-        return data;
+        verifyQuery(ruleContext, node, type, queryWithoutSubQueries.toString());
     }
 
-    private void verifyQuery(RuleContext ctx, ASTSoqlExpression node, String query) {
-        int occurrencesSelect = countOccurrences(SELECT_PATTERN, query);
+    private void verifyQuery(RuleContext ctx, ApexNode<?> node, String type, String query) {
+        int occurrencesSelectOrFind = countOccurrences(SELECT_OR_FIND_PATTERN, query);
         int occurrencesWhereOrLimit = countOccurrences(RESTRICTIVE_PATTERN, query);
 
-        if (occurrencesSelect > 0 && occurrencesWhereOrLimit == 0) {
-            ctx.addViolation(node);
+        if (occurrencesSelectOrFind > 0 && occurrencesWhereOrLimit == 0) {
+            ctx.addViolation(node, type);
         }
     }
 

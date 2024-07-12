@@ -200,4 +200,43 @@ public class TestDataAccessClass {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Test case with SOSL query - missing where</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Avoid SOSL queries without a where or limit statement</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Something {
+    public static void main( String[] as ) {
+        List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead]; // bad
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test case with SOSL query - with limit is OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Something {
+    public static void main( String[] as ) {
+        List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead LIMIT 1];
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test case with SOSL query - with where is OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Something {
+    public static void main( String[] as ) {
+        List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name WHERE Name like 'test'), Contact, Opportunity, Lead];
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
