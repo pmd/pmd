@@ -196,7 +196,7 @@ public enum FooEnum { }
     </test-code>
     
     <test-code>
-        <description>Inner class naming convention, class name failed to match RegEx</description>
+        <description>Inner class naming convention, class name failed to match RegEx #5048</description>
         <rule-property name="innerClassPattern">[A-Za-z]</rule-property>
         <expected-problems>1</expected-problems>
         <code>
