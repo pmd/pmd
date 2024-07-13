@@ -73,7 +73,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionsRule {
 
     @Override
     public Object visit(ASTUserInterface node, Object data) {
-        if(node.getParent() != null && node.getParent() instanceof ASTUserClassOrInterface) {
+        if (node.getParent() instanceof ASTUserClassOrInterface) {
             checkMatches(INNER_INTERFACE_REGEX, node, data);
         } else {
             checkMatches(INTERFACE_REGEX, node, data);
