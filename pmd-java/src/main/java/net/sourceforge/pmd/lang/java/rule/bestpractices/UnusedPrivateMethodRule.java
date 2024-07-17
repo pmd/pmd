@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
@@ -51,7 +52,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
     public Object visit(ASTCompilationUnit file, Object param) {
         // We do four traversals:
         // - one to find methods referenced by Junit5 MethodSource
-        // - one to find methods referenced by Lombok Builder.ObtainVia
+        // - one to find methods referenced by any String attribute of any field annotation, for example Lombok Builder.ObtainVia
         // - one to find the "interesting methods", ie those that may be violations
         // - another to find the possible usages. We only try to resolve
         //   method calls/method refs that may refer to a method in the
@@ -72,10 +73,11 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
                           .crossFindBoundaries()
                           .children(ASTModifierList.class)
                           .children(ASTAnnotation.class)
-                          .filter(t -> TypeTestUtil.isA("lombok.Builder.ObtainVia", t))
                           .toStream()
-                          .flatMap(a -> a.getFlatValue("method").toStream()
-                                         .map(mv -> (String) mv.getConstValue())
+                          .flatMap(a -> a.getFlatValues().toStream()
+                                         .map(ASTMemberValue::getConstValue)
+                                         .filter(value -> value instanceof String)
+                                         .map(value -> (String) value)
                                          .filter(StringUtils::isNotEmpty))
                   )
                   .collect(Collectors.toSet());

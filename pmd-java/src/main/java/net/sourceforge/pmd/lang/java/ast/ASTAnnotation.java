@@ -81,8 +81,29 @@ public final class ASTAnnotation extends AbstractJavaTypeNode implements ASTMemb
      */
     public NodeStream<ASTMemberValue> getFlatValue(String attrName) {
         return NodeStream.of(getAttribute(attrName))
-                         .flatMap(v -> v instanceof ASTMemberValueArrayInitializer ? v.children(ASTMemberValue.class)
-                                                                                   : NodeStream.of(v));
+                         .flatMap(this::flatValue);
+    }
+
+    /**
+     * Return expression values for all attributes.
+     * This may flatten an array initializer. For example, for the attribute
+     * named "value":
+     * <pre>{@code
+     * - @SuppressWarnings -> returns empty node stream
+     * - @SuppressWarning("fallthrough") -> returns ["fallthrough"]
+     * - @SuppressWarning(value={"fallthrough"}) -> returns ["fallthrough"]
+     * - @SuppressWarning({"fallthrough", "rawtypes"}) -> returns ["fallthrough", "rawtypes"]
+     * }</pre>
+     */
+    public NodeStream<ASTMemberValue> getFlatValues() {
+        return getMembers().map(ASTMemberValuePair::getValue)
+                           .flatMap(this::flatValue);
+    }
+
+    private NodeStream<ASTMemberValue> flatValue(ASTMemberValue value) {
+        return value instanceof ASTMemberValueArrayInitializer
+            ? value.children(ASTMemberValue.class)
+            : NodeStream.of(value);
     }
 
     /**
