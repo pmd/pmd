@@ -24,8 +24,8 @@ import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.reporting.RuleContext;
 
 public class AvoidNonRestrictiveQueriesRule extends AbstractApexRule {
-    private static final Pattern RESTRICTIVE_PATTERN = Pattern.compile("(where )|(limit )", Pattern.CASE_INSENSITIVE);
-    private static final Pattern SELECT_OR_FIND_PATTERN = Pattern.compile("(select|find )", Pattern.CASE_INSENSITIVE);
+    private static final Pattern RESTRICTIVE_PATTERN = Pattern.compile("(where\\s+)|(limit\\s+)", Pattern.CASE_INSENSITIVE);
+    private static final Pattern SELECT_OR_FIND_PATTERN = Pattern.compile("(select\\s+|find\\s+)", Pattern.CASE_INSENSITIVE);
     private static final Pattern SUB_QUERY_PATTERN = Pattern.compile("(?i)\\(\\s*select\\s+[^)]+\\)");
 
     @Override

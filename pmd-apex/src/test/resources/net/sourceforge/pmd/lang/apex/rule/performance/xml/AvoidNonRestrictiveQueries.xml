@@ -239,4 +239,27 @@ public class Something {
 }
 ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>False positives for SOQL queries with WHERE on multiple lines</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Something {
+    private static final String NAMESPACE_PREFIX = 'some_prefix';
+    private static final String PERMISSION_SET = 'some_permission';
+
+    public static Boolean hasPermission(Id userId) {
+        return ![
+            SELECT Id
+            FROM PermissionSetAssignment
+            WHERE
+              AssigneeId = :userId
+              AND PermissionSet.Name = :PERMISSION_SET
+              AND PermissionSet.NamespacePrefix = :NAMESPACE_PREFIX
+          ]
+          .isEmpty();
+  }
+}
+]]></code>
+    </test-code>
 </test-data>
