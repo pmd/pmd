@@ -16,12 +16,18 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🌟 New and changed rules
 
+#### New Rules
+
+* The new Apex rule {% apex/performance/AvoidNonRestrictiveQueries %} finds SOQL and SOSL queries without a where
+  or limit statement. This can quickly cause governor limit exceptions.
+
 #### Changed rules
 * {%rule apex/codestyle/ClassNamingConvention %}: Two new properties to configure different patterns
   for inner classes and interfaces: `innerClassPattern` and `innerInterfacePattern`.
 
 ### 🐛 Fixed Issues
-* apex-codestyle
+* apex
+  * [#635](https://github.com/pmd/pmd/issues/635): \[apex] New Rule: Avoid soql/sosl queries without a where clause or limit statement
   * [#4800](https://github.com/pmd/pmd/issues/4800): \[apex] ClassNamingConvention: Support naming convention for *inner* classes
 * plsql
   * [#5086](https://github.com/pmd/pmd/pull/5086): \[plsql] Fixed issue with missing optional table alias in MERGE usage

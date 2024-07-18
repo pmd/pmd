@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Query without a where statement</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Avoid SOQL queries without a where or limit statement</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Something {
+    public static void main( String[] as ) {
+        Account[] accs = [ select id from account ];  //Bad
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Query with where and limit statement</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Something {
+    public static void main( String[] as ) {
+        Account[] accs = [ select id from account where id = 1 limit 1];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Subquery without limit</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Something {
+    public static void main( String[] as ) {
+        Account[] accs = [ select id, (SELECT Id FROM Contact) from account where id = 1]; // That's ok, as long as the main query is restricted
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Multiple non restrictive queries</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>3,4,5</expected-linenumbers>
+        <expected-messages>
+            <message>Avoid SOQL queries without a where or limit statement</message>
+            <message>Avoid SOQL queries without a where or limit statement</message>
+            <message>Avoid SOQL queries without a where or limit statement</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Something {
+    public static Account[] main( String[] as ) {
+        Account[] accs = [ select id from account ];
+        Account[] accs2 = [ select id from account ];
+        return [SELECT Id FROM Contact];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Restrictive queries</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Something {
+    public static Account[] main( String[] as ) {
+        Account[] accs = [ select id from account where name='foo' and id < 100 LIMIT 5 ];
+        Account[] accs2 = [ select id from account where id > 1 ];
+        return [SELECT Id FROM Contact limit 1];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>subquery with limit, main query without</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Avoid SOQL queries without a where or limit statement</message>
+        </expected-messages>
+        <code><![CDATA[
+class Query {
+    void method() {
+        Account[] accounts = [ select id, (SELECT Id FROM Contact where id = 1 limit 1) from account ];
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>main query with limit, subquery without is OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Query {
+    void method() {
+        Account[] accounts = [ select id, (SELECT Id FROM Contact) from account limit 1 ];
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test case with SOQL query - non-restrictive - SeeAllData=true</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+@IsTest(SeeAllData=true)
+public class TestDataAccessClass {
+    @IsTest
+    static void myTestMethod() {
+        Account[] accounts = [SELECT Id, Name FROM Account];
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test case with SOQL query - non-restrictive - SeeAllData=False is OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@IsTest(SeeAllData=false)
+public class TestDataAccessClass {
+    @IsTest
+    static void myTestMethod() {
+        Account[] accounts = [SELECT Id, Name FROM Account];
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test case with SOQL query - restrictive is OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@IsTest(SeeAllData=true)
+public class TestDataAccessClass {
+    @IsTest
+    static void myTestMethod() {
+        Account[] accounts = [SELECT Id, Name FROM Account LIMIT 1];
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test case with SOQL query - restrictive - SeeAllData=false is OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@IsTest(SeeAllData=false)
+public class TestDataAccessClass {
+    @IsTest
+    static void myTestMethod() {
+        Account[] accounts = [SELECT Id, Name FROM Account LIMIT 1];
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test case with SOQL query - non-restrictive - SeeAllData=false on class but true on method</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+@IsTest(SeeAllData=false)
+public class TestDataAccessClass {
+    @IsTest(SeeAllData=true)
+    static void myTestMethod1() {
+        Account[] accounts = [SELECT Id, Name FROM Account];
+    }
+
+    @IsTest
+    static void myTestMethod2() {
+        Account[] accounts = [SELECT Id, Name FROM Account]; // inherits from class annotation SeeAllData=false
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test case with SOQL query - non-restrictive - SeeAllData=true on class but false on method</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>10</expected-linenumbers>
+        <code><![CDATA[
+@IsTest(SeeAllData=true)
+public class TestDataAccessClass {
+    @IsTest(SeeAllData=false)
+    static void myTestMethod1() {
+        Account[] accounts = [SELECT Id, Name FROM Account]; // that's ok, since SeeAllData=false
+    }
+
+    @IsTest
+    static void myTestMethod2() {
+        Account[] accounts = [SELECT Id, Name FROM Account]; // not good, inherits SeeAllData=true from class
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test case with SOSL query - missing where</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Avoid SOSL queries without a where or limit statement</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Something {
+    public static void main( String[] as ) {
+        List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead]; // bad
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test case with SOSL query - with limit is OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Something {
+    public static void main( String[] as ) {
+        List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead LIMIT 1];
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test case with SOSL query - with where is OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Something {
+    public static void main( String[] as ) {
+        List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name WHERE Name like 'test'), Contact, Opportunity, Lead];
+    }
+}
+]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>False positives for SOQL queries with WHERE on multiple lines</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Something {
+    private static final String NAMESPACE_PREFIX = 'some_prefix';
+    private static final String PERMISSION_SET = 'some_permission';
+
+    public static Boolean hasPermission(Id userId) {
+        return ![
+            SELECT Id
+            FROM PermissionSetAssignment
+            WHERE
+              AssigneeId = :userId
+              AND PermissionSet.Name = :PERMISSION_SET
+              AND PermissionSet.NamespacePrefix = :NAMESPACE_PREFIX
+          ]
+          .isEmpty();
+  }
+}
+]]></code>
+    </test-code>
+</test-data>
