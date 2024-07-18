@@ -22,7 +22,7 @@ This is a {{ site.pmd.release_type }} release.
   or limit statement. This can quickly cause governor limit exceptions.
 
 #### Changed rules
-* {%rule apex/codestyle/ClassNamingConvention %}: Two new properties to configure different patterns
+* {%rule apex/codestyle/ClassNamingConventions %}: Two new properties to configure different patterns
   for inner classes and interfaces: `innerClassPattern` and `innerInterfacePattern`.
 
 ### 🐛 Fixed Issues
