@@ -7663,6 +7663,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "justinstroudbah",
+      "name": "Justin Stroud",
+      "avatar_url": "https://avatars.githubusercontent.com/u/157166970?v=4",
+      "profile": "https://github.com/justinstroudbah",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
