@@ -161,4 +161,19 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>FP in switch #5050</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Example {
+                String foo(Object foo) {
+                    return switch (foo) {
+                        case char[] array -> new String(array);
+                        case String string -> string;
+                        default -> throw new RuntimeException();
+                    };
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

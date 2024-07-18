@@ -29,6 +29,7 @@ import net.sourceforge.pmd.cpd.CPDReportRenderer;
 import net.sourceforge.pmd.cpd.CSVRenderer;
 import net.sourceforge.pmd.cpd.CpdAnalysis;
 import net.sourceforge.pmd.cpd.SimpleRenderer;
+import net.sourceforge.pmd.cpd.XMLOldRenderer;
 import net.sourceforge.pmd.cpd.XMLRenderer;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -66,6 +67,8 @@ public class CPDTask extends Task {
 
     private static final String TEXT_FORMAT = "text";
     private static final String XML_FORMAT = "xml";
+    @Deprecated
+    private static final String XMLOLD_FORMAT = "xmlold";
     private static final String CSV_FORMAT = "csv";
 
     private String format = TEXT_FORMAT;
@@ -75,6 +78,7 @@ public class CPDTask extends Task {
     private boolean ignoreIdentifiers;
     private boolean ignoreAnnotations;
     private boolean ignoreUsings;
+    @Deprecated
     private boolean skipLexicalErrors;
     private boolean skipDuplicateFiles;
     private boolean skipBlocks = true;
@@ -82,6 +86,7 @@ public class CPDTask extends Task {
     private File outputFile;
     private String encoding = System.getProperty("file.encoding");
     private List<FileSet> filesets = new ArrayList<>();
+    private boolean failOnError = true;
 
     @Override
     public void execute() throws BuildException {
@@ -99,7 +104,15 @@ public class CPDTask extends Task {
             config.setOnlyRecognizeLanguage(config.getLanguageRegistry().getLanguageById(language));
             config.setSourceEncoding(Charset.forName(encoding));
             config.setSkipDuplicates(skipDuplicateFiles);
-            config.setSkipLexicalErrors(skipLexicalErrors);
+
+            if (skipLexicalErrors) {
+                log("skipLexicalErrors is deprecated since 7.3.0 and the property is ignored. "
+                        + "Lexical errors are now skipped by default and the build is failed. "
+                        + "Use failOnError=\"false\" to not fail the build.", Project.MSG_WARN);
+            }
+
+            // implicitly enable skipLexicalErrors, so that we can fail the build at the end. A report is created in any case.
+            config.setSkipLexicalErrors(true);
 
             config.setIgnoreAnnotations(ignoreAnnotations);
             config.setIgnoreLiterals(ignoreLiterals);
@@ -118,12 +131,20 @@ public class CPDTask extends Task {
                 long timeTaken = System.currentTimeMillis() - start;
                 log("Done analyzing code; that took " + timeTaken + " milliseconds");
 
+                int errors = config.getReporter().numErrors();
+                if (errors > 0) {
+                    String message = String.format("There were %d recovered errors during analysis.", errors);
+                    if (failOnError) {
+                        throw new BuildException(message + " Ignore these with failOnError=\"true\".");
+                    } else {
+                        log(message + " Not failing build, because failOnError=\"false\".", Project.MSG_WARN);
+                    }
+                }
             }
         } catch (IOException ioe) {
             log(ioe.toString(), Project.MSG_ERR);
             throw new BuildException("IOException during task execution", ioe);
         } catch (ReportException re) {
-            re.printStackTrace();
             log(re.toString(), Project.MSG_ERR);
             throw new BuildException("ReportException during task execution", re);
         } finally {
@@ -177,6 +198,8 @@ public class CPDTask extends Task {
             return new SimpleRenderer();
         } else if (CSV_FORMAT.equals(format)) {
             return new CSVRenderer();
+        } else if (XMLOLD_FORMAT.equals(format)) {
+            return new XMLOldRenderer();
         }
         return new XMLRenderer();
     }
@@ -220,6 +243,10 @@ public class CPDTask extends Task {
         this.ignoreUsings = value;
     }
 
+    /**
+     * @deprecated Use {@link #setFailOnError(boolean)} instead.
+     */
+    @Deprecated
     public void setSkipLexicalErrors(boolean skipLexicalErrors) {
         this.skipLexicalErrors = skipLexicalErrors;
     }
@@ -252,8 +279,17 @@ public class CPDTask extends Task {
         this.skipBlocksPattern = skipBlocksPattern;
     }
 
+    /**
+     * Whether to fail the build if any recoverable errors occurred while processing the files.
+     *
+     * @since 7.3.0
+     */
+    public void setFailOnError(boolean failOnError) {
+        this.failOnError = failOnError;
+    }
+
     public static class FormatAttribute extends EnumeratedAttribute {
-        private static final String[] FORMATS = new String[] { XML_FORMAT, TEXT_FORMAT, CSV_FORMAT };
+        private static final String[] FORMATS = new String[] { XML_FORMAT, TEXT_FORMAT, CSV_FORMAT, XMLOLD_FORMAT };
 
         @Override
         public String[] getValues() {

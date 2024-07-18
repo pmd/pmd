@@ -3,7 +3,7 @@ title: How to add a new CPD language
 short_title: Adding a new CPD language
 tags: [devdocs, extending]
 summary: How to add a new language module with CPD support.
-last_updated: April 2023 (7.0.0)
+last_updated: June 2024 (7.3.0)
 permalink: pmd_devdocs_major_adding_new_cpd_language.html
 author: Matías Fraga, Clément Fournier
 ---
@@ -45,8 +45,15 @@ Use the following guide to set up a new language module that supports CPD.
     }
     ```
     
+    - If your language is case-insensitive, then you might want to overwrite `getImage(AntlrToken)`. There you can
+      change each token e.g. into uppercase, so that CPD sees the same strings and can find duplicates even when
+      the casing differs. See {% jdoc tsql::lang.tsql.cpd.TSqlCpdLexer %} for an example. You will also need a
+      "CaseChangingCharStream", so that antlr itself is case-insensitive.
     - For JavaCC grammars, place your grammar in `etc/grammar` and edit the `pom.xml` like the [Python implementation](https://github.com/pmd/pmd/blob/master/pmd-python/pom.xml) does.
       You can then subclass {% jdoc core::cpd.impl.JavaccCpdLexer %} instead of AntlrCpdLexer.
+    - If your JavaCC based language is case-insensitive (option `IGNORE_CASE=true`), then you need to implement
+      {%jdoc core::lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior %}, which can change each token
+      e.g. into uppercase. See {%jdoc plsql::lang.plsql.ast.PLSQLParser %} for an example.
     - For any other scenario just implement the interface however you can. Look at the Scala or Apex module for existing implementations.
 
 3. Create a {% jdoc core::lang.Language %} implementation, and make it implement {% jdoc core::cpd.CpdCapableLanguage %}.

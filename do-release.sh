@@ -108,11 +108,11 @@ if [ "${BUILD_TOOLS_VERSION}" != "${BUILD_TOOLS_VERSION_RELEASE}" ]; then
   exit 1
 fi
 
-echo "*   Update date info in **docs/_config.yml**."
-echo "    date: $(date -u +%d-%B-%Y)"
-echo
 echo "*   Update version info in **docs/_config.yml**."
 echo "    remove the SNAPSHOT from site.pmd.version"
+echo
+echo "*   Update date info in **docs/_config.yml**."
+echo "    date: $(date -u +%Y-%m-%d)"
 echo
 echo "*   Update **pmd-apex/src/main/resources/rulesets/apex/quickstart.xml** and"
 echo "    **pmd-java/src/main/resources/rulesets/java/quickstart.xml** with the new rules."
@@ -204,7 +204,7 @@ echo
 echo "Tag has been pushed.... now check github actions: <https://github.com/pmd/pmd/actions>"
 echo
 echo "Now wait, until first stage of the release is finished successfully..."
-echo "You don't need to wait until artifacts are in maven central, just the github action must be successful."
+echo "You don't need to wait until artifacts are in maven central, just the GitHub Action must be successful."
 echo
 echo "If it is failing, you can fix the code/scripts and force push the tag via"
 echo
@@ -214,7 +214,7 @@ echo "    git push origin tag \"pmd_releases/${RELEASE_VERSION}\" --force"
 echo
 echo "However: This is only possible, if the artefacts have not been pushed to maven central yet..."
 echo
-echo "Press enter to continue..."
+echo "Press enter to continue, once the GitHub Action finished successfully..."
 read -r
 
 echo
@@ -254,7 +254,7 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
-## {{ site.pmd.date }} - {{ site.pmd.version }}
+## {{ site.pmd.date | date: "%d-%B-%Y" }} - {{ site.pmd.version }}
 
 The PMD team is pleased to announce PMD {{ site.pmd.version }}.
 
@@ -344,8 +344,8 @@ tweet="${tweet//#/%23}"
 tweet="${tweet//\//%2F}"
 tweet="${tweet//$'\r'/}"
 tweet="${tweet//$'\n'/%0A}"
-echo "*   Tweet about this release on https://twitter.com/pmd_analyzer:"
-echo "        <https://twitter.com/intent/tweet?text=$tweet>"
+echo "*   Tweet about this release on https://x.com/pmd_analyzer:"
+echo "        <https://x.com/intent/post?text=$tweet>"
 echo "*   Post this also into <https://matrix.to/#/#pmd_pmd:gitter.im>:"
 echo "        PMD ${RELEASE_VERSION} released: https://github.com/pmd/pmd/releases/tag/pmd_releases/${RELEASE_VERSION} #PMD"
 echo

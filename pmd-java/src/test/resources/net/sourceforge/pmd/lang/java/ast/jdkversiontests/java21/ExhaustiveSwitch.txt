@@ -21,7 +21,7 @@
          |           |  |     +- ClassType[@FullyQualified = false, @PackageQualifier = null, @SimpleName = "String"]
          |           |  |     +- VariableId[@ArrayType = false, @EffectiveVisibility = Visibility.V_LOCAL, @EnumConstant = false, @ExceptionBlockParameter = false, @Field = false, @Final = false, @ForLoopVariable = false, @ForeachVariable = false, @FormalParameter = false, @LambdaParameter = false, @LocalVariable = false, @Name = "s", @PatternBinding = true, @RecordComponent = false, @ResourceDeclaration = false, @Static = false, @TypeInferred = false, @Unnamed = false, @Visibility = Visibility.V_LOCAL]
          |           |  +- MethodCall[@CompileTimeConstant = false, @Image = "length", @MethodName = "length", @ParenthesisDepth = 0, @Parenthesized = false]
-         |           |     +- AmbiguousName[@CompileTimeConstant = false, @Image = "s", @Name = "s", @ParenthesisDepth = 0, @Parenthesized = false]
+         |           |     +- VariableAccess[@AccessType = AccessType.READ, @CompileTimeConstant = false, @Image = "s", @Name = "s", @ParenthesisDepth = 0, @Parenthesized = false]
          |           |     +- ArgumentList[@Empty = true, @Size = 0]
          |           +- SwitchArrowBranch[@Default = false]
          |           |  +- SwitchLabel[@Default = false]

@@ -23,10 +23,16 @@ public final class ReportStats {
         return new ReportStats(0, 0);
     }
 
+    /**
+     * Count of processing errors.
+     */
     public int getNumErrors() {
         return numErrors;
     }
 
+    /**
+     * Count of found rule violations.
+     */
     public int getNumViolations() {
         return numViolations;
     }

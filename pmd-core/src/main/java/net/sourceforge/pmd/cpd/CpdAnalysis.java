@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cpd;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import net.sourceforge.pmd.lang.document.InternalApiBridge;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
@@ -151,6 +153,9 @@ public final class CpdAnalysis implements AutoCloseable {
 
     @SuppressWarnings("PMD.CloseResource")
     public void performAnalysis(Consumer<CPDReport> consumer) {
+        if (configuration.isSkipLexicalErrors()) {
+            LOGGER.warn("The option skipLexicalErrors is deprecated. Use failOnError instead.");
+        }
 
         try (SourceManager sourceManager = new SourceManager(files.getCollectedFiles())) {
             Map<Language, CpdLexer> tokenizers =
@@ -162,7 +167,7 @@ public final class CpdAnalysis implements AutoCloseable {
 
             Map<FileId, Integer> numberOfTokensPerFile = new HashMap<>();
 
-            boolean hasErrors = false;
+            List<Report.ProcessingError> processingErrors = new ArrayList<>();
             Tokens tokens = new Tokens();
             for (TextFile textFile : sourceManager.getTextFiles()) {
                 TextDocument textDocument = sourceManager.get(textFile);
@@ -177,11 +182,11 @@ public final class CpdAnalysis implements AutoCloseable {
                     }
                     String message = configuration.isSkipLexicalErrors() ? "Skipping file" : "Error while tokenizing";
                     reporter.errorEx(message, e);
-                    hasErrors = true;
+                    processingErrors.add(new Report.ProcessingError(e, textFile.getFileId()));
                     savedState.restore(tokens);
                 }
             }
-            if (hasErrors && !configuration.isSkipLexicalErrors()) {
+            if (!processingErrors.isEmpty() && !configuration.isSkipLexicalErrors()) {
                 // will be caught by CPD command
                 throw new IllegalStateException("Errors were detected while lexing source, exiting because --skip-lexical-errors is unset.");
             }
@@ -192,7 +197,7 @@ public final class CpdAnalysis implements AutoCloseable {
             tokens = null; // NOPMD null it out before rendering
             LOGGER.debug("Finished: {} duplicates found", matches.size());
 
-            CPDReport cpdReport = new CPDReport(sourceManager, matches, numberOfTokensPerFile);
+            CPDReport cpdReport = new CPDReport(sourceManager, matches, numberOfTokensPerFile, processingErrors);
 
             if (renderer != null) {
                 try (Writer writer = IOUtil.createWriter(Charset.defaultCharset(), null)) {

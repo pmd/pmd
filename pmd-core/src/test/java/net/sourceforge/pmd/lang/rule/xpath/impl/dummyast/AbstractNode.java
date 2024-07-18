@@ -8,16 +8,16 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.document.Chars;
 
 // This class is package private
-// and provides the implementation for getValue(). This
-// class is the DeclaringClass for that method.
-class AbstractNode extends DummyNode implements ValueNode {
+// and provides the implementation for getValue().
+// This method is not accessible from outside this package,
+// it is made available in the subclass ConcreteNode.
+class AbstractNode extends DummyNode {
 
     AbstractNode() {
 
     }
 
-    @Override
-    public final Chars getValue() {
+    Chars getValue() {
         return Chars.wrap("actual_value");
     }
 }
