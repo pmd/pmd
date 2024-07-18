@@ -57,4 +57,12 @@ class ApexTreeDumpTest extends BaseTreeDumpTest {
     void soslWithUsermode() {
         doTest("SoslWithUsermode");
     }
+
+    /**
+     * @see <a href="https://github.com/pmd/pmd/issues/5094">[apex] "No adapter exists for type" error message printed to stdout instead of stderr</a>
+     */
+    @Test
+    void switchStatements() {
+        doTest("SwitchStatements");
+    }
 }

@@ -7681,6 +7681,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "ethan-sargent",
+      "name": "Ethan Sargent",
+      "avatar_url": "https://avatars.githubusercontent.com/u/17370760?v=4",
+      "profile": "https://github.com/ethan-sargent",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,

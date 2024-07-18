@@ -26,6 +26,8 @@ This is a {{ site.pmd.release_type }} release.
   for inner classes and interfaces: `innerClassPattern` and `innerInterfacePattern`.
 
 ### 🐛 Fixed Issues
+* apex
+  * [#5094](https://github.com/pmd/pmd/issues/5094): \[apex] "No adapter exists for type" error message printed to stdout instead of stderr
 * apex-bestpractices
   * [#5095](https://github.com/pmd/pmd/issues/5095): \[apex] ApexUnitTestShouldNotUseSeeAllDataTrue false negative due to casing (regression in PMD 7)
 * apex-codestyle

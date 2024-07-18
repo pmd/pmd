@@ -163,6 +163,7 @@ class ApexTreeBuilder(private val task: ParserTask, private val proc: ApexLangua
             is DmlStatement -> buildDmlStatement(node)
             is IfStatement -> buildIfStatement(node)
             is VariableDeclarationStatement -> buildVariableDeclarationGroup(node.group)
+            is VariableDeclarationGroup -> buildVariableDeclarationGroup(node)
             is VariableDeclaration -> buildVariableDeclaration(node)
             is EnhancedForLoopStatement -> buildEnhancedForLoopStatement(node)
             is DoWhileLoopStatement -> buildDoWhileLoopStatement(node)
@@ -187,9 +188,7 @@ class ApexTreeBuilder(private val task: ParserTask, private val proc: ApexLangua
             is KeywordModifier,
             is TypeRef -> null
             else -> {
-                println("No adapter exists for type ${node::class.qualifiedName}")
-                // TODO(b/239648780): temporary print
-                null
+                throw ParseException("No adapter exists for type ${node::class.qualifiedName}")
             }
         }
 
