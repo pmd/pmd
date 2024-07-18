@@ -62,11 +62,11 @@ public class AvoidNonRestrictiveQueriesRule extends AbstractApexRule {
                     .map(NodeStream::first);
 
             Optional<Boolean> methodSeeAllData = methodAnnotation.flatMap(m -> m.children(ASTAnnotationParameter.class)
-                    .filter(p -> ASTAnnotationParameter.SEE_ALL_DATA.equalsIgnoreCase(p.getName()))
+                    .filter(p -> p.hasName(ASTAnnotationParameter.SEE_ALL_DATA))
                     .firstOpt()
                     .map(ASTAnnotationParameter::getBooleanValue));
             boolean classSeeAllData = classAnnotation.flatMap(m -> m.children(ASTAnnotationParameter.class)
-                            .filter(p -> ASTAnnotationParameter.SEE_ALL_DATA.equalsIgnoreCase(p.getName()))
+                            .filter(p -> p.hasName(ASTAnnotationParameter.SEE_ALL_DATA))
                             .firstOpt()
                             .map(ASTAnnotationParameter::getBooleanValue))
                     .orElse(false);
