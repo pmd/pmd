@@ -11,7 +11,6 @@ import java.util.regex.Pattern;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
@@ -58,7 +57,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionsRule {
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
-        if (node.getParent() instanceof ASTUserClass) {
+        if (node.isNested()) {
             checkMatches(INNER_CLASS_REGEX, node, data);
         } else if (node.getModifiers().isTest()) {
             checkMatches(TEST_CLASS_REGEX, node, data);
@@ -73,7 +72,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionsRule {
 
     @Override
     public Object visit(ASTUserInterface node, Object data) {
-        if (node.getParent() instanceof ASTUserClassOrInterface) {
+        if (node.isNested()) {
             checkMatches(INNER_INTERFACE_REGEX, node, data);
         } else {
             checkMatches(INTERFACE_REGEX, node, data);
@@ -85,7 +84,6 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionsRule {
     @Override
     public Object visit(ASTUserEnum node, Object data) {
         checkMatches(ENUM_REGEX, node, data);
-
         return data;
     }
 

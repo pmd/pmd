@@ -34,5 +34,11 @@ public interface ASTUserClassOrInterface<T> extends ApexQualifiableNode, ApexNod
         return children(ASTMethod.class);
     }
 
-
+    /**
+     * Returns true if this type declaration is nested inside a class.
+     * @since 7.4.0
+     */
+    default boolean isNested() {
+        return getParent() instanceof ASTUserClassOrInterface;
+    }
 }
