@@ -7672,6 +7672,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "gearsethenry",
+      "name": "gearsethenry",
+      "avatar_url": "https://avatars.githubusercontent.com/u/127120320?v=4",
+      "profile": "https://github.com/gearsethenry",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
