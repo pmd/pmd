@@ -14,7 +14,15 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+### 🌟 New and changed rules
+
+#### Changed rules
+* {%rule apex/codestyle/ClassNamingConvention %}: Two new properties to configure different patterns
+  for inner classes and interfaces: `innerClassPattern` and `innerInterfacePattern`.
+
 ### 🐛 Fixed Issues
+* apex-codestyle
+  * [#4800](https://github.com/pmd/pmd/issues/4800): \[apex] ClassNamingConvention: Support naming convention for *inner* classes
 * plsql
   * [#5086](https://github.com/pmd/pmd/pull/5086): \[plsql] Fixed issue with missing optional table alias in MERGE usage
   * [#5087](https://github.com/pmd/pmd/pull/5087): \[plsql] Add support for SQL_MACRO
@@ -23,6 +31,7 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚨 API Changes
 
 ### ✨ External Contributions
+* [#5048](https://github.com/pmd/pmd/pull/5048): \[apex] Added Inner Classes to Apex Class Naming Conventions Rule - [Justin Stroud](https://github.com/justinstroudbah) (@justinstroudbah / @sgnl-labs)
 * [#5086](https://github.com/pmd/pmd/pull/5086): \[plsql] Fixed issue with missing optional table alias in MERGE usage - [Arjen Duursma](https://github.com/duursma) (@duursma)
 * [#5087](https://github.com/pmd/pmd/pull/5087): \[plsql] Add support for SQL_MACRO - [Arjen Duursma](https://github.com/duursma) (@duursma)
 * [#5088](https://github.com/pmd/pmd/pull/5088): \[plsql] Add support for 'DEFAULT' clause on the arguments of some oracle functions - [Arjen Duursma](https://github.com/duursma) (@duursma)
