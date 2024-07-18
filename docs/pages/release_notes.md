@@ -18,7 +18,7 @@ This is a {{ site.pmd.release_type }} release.
 
 #### New Rules
 
-* The new Apex rule {% apex/performance/AvoidNonRestrictiveQueries %} finds SOQL and SOSL queries without a where
+* The new Apex rule {%rule apex/performance/AvoidNonRestrictiveQueries %} finds SOQL and SOSL queries without a where
   or limit statement. This can quickly cause governor limit exceptions.
 
 #### Changed rules
