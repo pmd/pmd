@@ -196,42 +196,40 @@ public enum FooEnum { }
     </test-code>
     
     <test-code>
-        <description>Inner class naming convention, class name failed to match RegEx #5048</description>
+        <description>#4800 #5048 Inner class/interface naming convention, names fail to match RegEx</description>
         <rule-property name="innerClassPattern">[A-Za-z]</rule-property>
-        <expected-problems>1</expected-problems>
+        <rule-property name="innerInterfacePattern">[A-Za-z]</rule-property>
+        <expected-problems>2</expected-problems>
         <code>
             <![CDATA[
 public class Outer {
-
-    public class inner_class_with_a_weird_name_1{
-    }
+    public class inner_class_with_a_weird_name_1 { }
+    public interface inner_interface_with_a_weird_name_2 { }
 }
             ]]>
         </code>
     </test-code>
 
-
     <test-code>
         <description>
-            Inner class has one standard, outer class has another,
+            #4800 #5048 Inner class/interface has one standard, outer class has another,
             and an inner enum has another (should pass.)
             * Inner class should be camel case.
             * Outer class should have a prefix (one character, all caps), underscore, then camel case.
             * Enum name should be all caps (not best practice!)
-            * See #5048
         </description>
-        <rule-property name="innerClassPattern">[A-Za-z]+</rule-property>
         <rule-property name="classPattern">[A-Z]_[A-Za-z]+</rule-property>
+        <rule-property name="innerClassPattern">[A-Za-z]+</rule-property>
+        <rule-property name="innerInterfacePattern">[A-Za-z]+</rule-property>
         <rule-property name="enumPattern">[A-Z]+</rule-property>
         <expected-problems>0</expected-problems>
         <code>
             <![CDATA[
 public class C_Outer {
+    public class InnerClass {}
+    public interface InnerInterface {}
 
-    public class InnerClass{
-    }
-
-    public enum SOMEVALUES{
+    public enum SOMEVALUES {
         VALUE1,
         VALUE2
     }
