@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules that flag suboptimal code.">
-<meta name="keywords" content=" Performance, AvoidDebugStatements, EagerlyLoadedDescribeSObjectResult, OperationWithHighCostInLoop, OperationWithLimitsInLoop">
+<meta name="keywords" content=" Performance, AvoidDebugStatements, AvoidNonRestrictiveQueries, EagerlyLoadedDescribeSObjectResult, OperationWithHighCostInLoop, OperationWithLimitsInLoop">
 <title>Performance | PMD Source Code Analyzer</title>
 
 
@@ -1937,6 +1937,34 @@
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/performance.xml/AvoidDebugStatements"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="avoidnonrestrictivequeries">AvoidNonRestrictiveQueries</h2>
+
+<p><strong>Since:</strong> PMD 7.4.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>When working with very large amounts of data, unfiltered SOQL or SOSL queries can quickly cause
+<a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_gov_limits.htm">governor limit</a>
+exceptions.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/performance/AvoidNonRestrictiveQueriesRule.java">net.sourceforge.pmd.lang.apex.rule.performance.AvoidNonRestrictiveQueriesRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Something</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span> <span class="nc">String</span><span class="o">[]</span> <span class="n">as</span> <span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Account</span><span class="o">[]</span> <span class="n">accs1</span> <span class="o">=</span> <span class="o">[</span> <span class="n">select</span> <span class="n">id</span> <span class="n">from</span> <span class="n">account</span> <span class="o">];</span>  <span class="c1">// Bad</span>
+        <span class="nc">Account</span><span class="o">[]</span> <span class="n">accs2</span> <span class="o">=</span> <span class="o">[</span> <span class="n">select</span> <span class="n">id</span> <span class="n">from</span> <span class="n">account</span> <span class="n">limit</span> <span class="mi">10</span> <span class="o">];</span>  <span class="c1">// better</span>
+
+        <span class="nc">List</span><span class="o">&lt;</span><span class="nc">List</span><span class="o">&lt;</span><span class="nc">SObject</span><span class="o">&gt;&gt;</span> <span class="n">searchList</span> <span class="o">=</span> <span class="o">[</span><span class="no">FIND</span> <span class="err">'</span><span class="n">map</span><span class="o">*</span><span class="err">'</span> <span class="no">IN</span> <span class="no">ALL</span> <span class="no">FIELDS</span> <span class="no">RETURNING</span> <span class="nf">Account</span> <span class="o">(</span><span class="nc">Id</span><span class="o">,</span> <span class="nc">Name</span><span class="o">),</span> <span class="nc">Contact</span><span class="o">,</span> <span class="nc">Opportunity</span><span class="o">,</span> <span class="nc">Lead</span><span class="o">];</span> <span class="c1">// bad</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/performance.xml/AvoidNonRestrictiveQueries"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="eagerlyloadeddescribesobjectresult">EagerlyLoadedDescribeSObjectResult</h2>
 
 <p><strong>Since:</strong> PMD 6.40.0</p>
@@ -2201,7 +2229,7 @@ a potential performance issue.</p>
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jul 11, 2024 <br />
+             Site last generated: Jul 18, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

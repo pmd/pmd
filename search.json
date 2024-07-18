@@ -5493,6 +5493,15 @@
 ,
 
 {
+"title": "AvoidNonRestrictiveQueries (Apex, Performance)",
+"tags": "",
+"keywords": "AvoidNonRestrictiveQueries",
+"url": "pmd_rules_apex_performance.html#avoidnonrestrictivequeries",
+"summary": "Rules that flag suboptimal code."
+}
+,
+
+{
 "title": "EagerlyLoadedDescribeSObjectResult (Apex, Performance)",
 "tags": "",
 "keywords": "EagerlyLoadedDescribeSObjectResult",
