@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.ecmascript.rule.errorprone;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-class InnaccurateNumericLiteralTest extends PmdRuleTst {
+class InaccurateNumericLiteralTest extends PmdRuleTst {
     // no additional unit tests
 }
