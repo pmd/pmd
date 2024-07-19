@@ -1497,7 +1497,33 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     @Deprecated
-    private bar() {
+    private void bar() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5117 Ignore methods with jakarta.annotation.PostConstruct in UnusedPrivateMethod rule</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import jakarta.annotation.PostConstruct;
+public class Foo {
+    @PostConstruct
+    private void bar() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5117 Ignore methods with jakarta.annotation.PreDestroy in UnusedPrivateMethod rule</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import jakarta.annotation.PreDestroy;
+public class Foo {
+    @PreDestroy
+    private void bar() {
     }
 }
         ]]></code>
