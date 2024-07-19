@@ -1259,4 +1259,44 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3250 [java] InvalidLogMessageFormat detection failing when another %-parameter is used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import static java.lang.String.format;
+
+class TestInvalidLogMessageFormat {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestInvalidLogMessageFormat.class);
+    public void testPMD() {
+        LOGGER.info(SomeOtherClass.someOtherMethod("Here we have a few %s!"));
+        LOGGER.info(format("Skipping file %s", getName()));
+    }
+
+    private String getName() { return "the-name"; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3250 [java] InvalidLogMessageFormat detection failing when another %-parameter is used in a variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import static java.lang.String.format;
+
+class TestInvalidLogMessageFormat {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestInvalidLogMessageFormat.class);
+    public void testPMD() {
+        String message = SomeOtherClass.someOtherMethod("Here we have a few %s!");
+        LOGGER.info(message);
+    }
+
+    private String getName() { return "the-name"; }
+}
+        ]]></code>
+    </test-code>
 </test-data>
