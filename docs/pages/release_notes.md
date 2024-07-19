@@ -25,6 +25,10 @@ This is a {{ site.pmd.release_type }} release.
 * {%rule apex/codestyle/ClassNamingConventions %}: Two new properties to configure different patterns
   for inner classes and interfaces: `innerClassPattern` and `innerInterfacePattern`.
 
+#### Renamed rules
+* {%rule ecmascript/errorprone/InaccurateNumericLiteral %} has been renamed from `InnaccurateNumericLiteral`.
+  The old rule name still works but is deprecated.
+
 ### 🐛 Fixed Issues
 * apex
   * [#5094](https://github.com/pmd/pmd/issues/5094): \[apex] "No adapter exists for type" error message printed to stdout instead of stderr
@@ -39,6 +43,7 @@ This is a {{ site.pmd.release_type }} release.
 * java-errorprone
   * [#1488](https://github.com/pmd/pmd/issues/1488): \[java] MissingStaticMethodInNonInstantiatableClass: False positive with Lombok Builder on Constructor
 * javascript-errorprone
+  * [#2367](https://github.com/pmd/pmd/issues/2367): \[javascript] InnaccurateNumericLiteral is misspelled
   * [#4716](https://github.com/pmd/pmd/issues/4716): \[javascript] InaccurateNumericLiteral with number 259200000
 * plsql
   * [#5086](https://github.com/pmd/pmd/pull/5086): \[plsql] Fixed issue with missing optional table alias in MERGE usage
@@ -48,6 +53,10 @@ This is a {{ site.pmd.release_type }} release.
   * [#5120](https://github.com/pmd/pmd/issues/5120): \[cli] Can't start designer under Windows
 
 ### 🚨 API Changes
+
+* javascript
+  * The old rule name `InnaccurateNumericLiteral` has been deprecated. Use the new name
+    {%rule ecmascript/errorprone/InaccurateNumericLiteral %} instead.
 
 ### ✨ External Contributions
 * [#5048](https://github.com/pmd/pmd/pull/5048): \[apex] Added Inner Classes to Apex Class Naming Conventions Rule - [Justin Stroud](https://github.com/justinstroudbah) (@justinstroudbah / @sgnl-labs)

@@ -91,12 +91,12 @@ if (someVar != 3) {
         </example>
     </rule>
 
-    <rule name="InnaccurateNumericLiteral"
+    <rule name="InaccurateNumericLiteral"
           language="ecmascript"
           since="5.0"
           message="The numeric literal ''{0}'' will have at different value at runtime."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_errorprone.html#innaccuratenumericliteral">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_errorprone.html#inaccuratenumericliteral">
         <description>
 The numeric literal will have a different value at runtime, which can happen if you provide too much
 precision in a floating point number.  This may result in numeric calculations being in error.
@@ -106,6 +106,8 @@ are represented by 64bit double-precision floating point numbers internally and 
 to the available precision of the number.
 See [Number.isSafeInteger()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger)
 and [Number.EPSILON](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/EPSILON).
+
+Note: This rule was named InnaccurateNumericLiteral before PMD 7.4.0.
         </description>
         <priority>2</priority>
         <properties>
@@ -130,4 +132,5 @@ var z = 1.12345678901234567; // Not good
         </example>
     </rule>
 
+    <rule name="InnaccurateNumericLiteral" ref="InaccurateNumericLiteral" deprecated="true"/>
 </ruleset>
