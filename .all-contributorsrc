@@ -7690,6 +7690,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "tomasvts",
+      "name": "Tomas",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4351937?v=4",
+      "profile": "https://github.com/tomasvts",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
