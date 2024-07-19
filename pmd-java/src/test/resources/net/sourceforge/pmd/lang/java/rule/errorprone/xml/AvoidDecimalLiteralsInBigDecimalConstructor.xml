@@ -113,4 +113,16 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#3080 [java] AvoidDecimalLiteralsInBigDecimalConstructor FP with PMD 6.30.0</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.math.BigDecimal;
+class TestAvoidDecimalLiteralsInBigDecimalConstructor{
+        public static void main(String[] args){
+                BigDecimal d = new BigDecimal(Double.toString(0.1));
+        }
+}
+]]></code>
+    </test-code>
 </test-data>
