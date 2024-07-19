@@ -57,6 +57,7 @@ This is a {{ site.pmd.release_type }} release.
 * [#5107](https://github.com/pmd/pmd/pull/5107): \[doc] Update maven.md - Typo fixed for maven target - [karthikaiyasamy](https://github.com/karthikaiyasamy) (@karthikaiyasamy)
 * [#5109](https://github.com/pmd/pmd/pull/5109): \[java] Exclude constructor with lombok.Builder for MissingStaticMethodInNonInstantiatableClass - [Krzysztof Debski](https://github.com/kdebski85) (@kdebski85)
 * [#5118](https://github.com/pmd/pmd/pull/5118): \[java] FP for UnusedPrivateMethod with Jakarta @<!-- -->PostConstruct/PreDestroy annotations - [Krzysztof Debski](https://github.com/kdebski85) (@kdebski85)
+* [#5121](https://github.com/pmd/pmd/pull/5121): \[plsql] Fixed issue with missing optional table alias in MERGE usage - [Arjen Duursma](https://github.com/duursma) (@duursma)
 
 {% endtocmaker %}
 
