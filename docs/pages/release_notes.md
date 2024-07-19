@@ -38,6 +38,8 @@ This is a {{ site.pmd.release_type }} release.
   * [#5117](https://github.com/pmd/pmd/issues/5117): \[java] UnusedPrivateMethod for methods annotated with jakarta.annotation.PostConstruct or PreDestroy
 * java-errorprone
   * [#1488](https://github.com/pmd/pmd/issues/1488): \[java] MissingStaticMethodInNonInstantiatableClass: False positive with Lombok Builder on Constructor
+* javascript-errorprone
+  * [#4716](https://github.com/pmd/pmd/issues/4716): \[javascript] InaccurateNumericLiteral with number 259200000
 * plsql
   * [#5086](https://github.com/pmd/pmd/pull/5086): \[plsql] Fixed issue with missing optional table alias in MERGE usage
   * [#5087](https://github.com/pmd/pmd/pull/5087): \[plsql] Add support for SQL_MACRO

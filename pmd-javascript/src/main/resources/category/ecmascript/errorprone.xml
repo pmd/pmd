@@ -100,13 +100,19 @@ if (someVar != 3) {
         <description>
 The numeric literal will have a different value at runtime, which can happen if you provide too much
 precision in a floating point number.  This may result in numeric calculations being in error.
+
+[Numbers](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) in JavaScript
+are represented by 64bit double-precision floating point numbers internally and that's why there are some limits
+to the available precision of the number.
+See [Number.isSafeInteger()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger)
+and [Number.EPSILON](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/EPSILON).
         </description>
         <priority>2</priority>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-//NumberLiteral[@NormalizedImage != string(@Number)]
+//NumberLiteral[@Inaccurate = true()]
 ]]>
                 </value>
             </property>
