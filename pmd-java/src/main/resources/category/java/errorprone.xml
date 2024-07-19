@@ -2086,7 +2086,7 @@ See the property `annotations`.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="annotations" type="List[String]" value="org.springframework.beans.factory.annotation.Autowired,javax.inject.Inject,com.google.inject.Inject" description="If a constructor is annotated with one of these annotations, then the class is ignored."/>
+            <property name="annotations" type="List[String]" value="org.springframework.beans.factory.annotation.Autowired,javax.inject.Inject,com.google.inject.Inject,lombok.Builder" description="If a constructor is annotated with one of these annotations, then the class is ignored."/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -2099,7 +2099,8 @@ $topLevelClass[
             (: no lombok produced constructors :)
             not(pmd-java:hasAnnotation('lombok.NoArgsConstructor') or
                 pmd-java:hasAnnotation('lombok.RequiredArgsConstructor') or
-                pmd-java:hasAnnotation('lombok.AllArgsConstructor')) and
+                pmd-java:hasAnnotation('lombok.AllArgsConstructor') or
+                pmd-java:hasAnnotation('lombok.Builder')) and
             (: or has non-default constructors … :)
             ClassBody/ConstructorDeclaration and
                 (: … but only private … :)

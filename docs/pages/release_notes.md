@@ -34,6 +34,8 @@ This is a {{ site.pmd.release_type }} release.
   * [#4800](https://github.com/pmd/pmd/issues/4800): \[apex] ClassNamingConvention: Support naming convention for *inner* classes
 * apex-performance
   * [#635](https://github.com/pmd/pmd/issues/635): \[apex] New Rule: Avoid soql/sosl queries without a where clause or limit statement
+* java-errorprone
+  * [#1488](https://github.com/pmd/pmd/issues/1488): \[java] MissingStaticMethodInNonInstantiatableClass: False positive with Lombok Builder on Constructor
 * plsql
   * [#5086](https://github.com/pmd/pmd/pull/5086): \[plsql] Fixed issue with missing optional table alias in MERGE usage
   * [#5087](https://github.com/pmd/pmd/pull/5087): \[plsql] Add support for SQL_MACRO
@@ -49,6 +51,7 @@ This is a {{ site.pmd.release_type }} release.
 * [#5087](https://github.com/pmd/pmd/pull/5087): \[plsql] Add support for SQL_MACRO - [Arjen Duursma](https://github.com/duursma) (@duursma)
 * [#5088](https://github.com/pmd/pmd/pull/5088): \[plsql] Add support for 'DEFAULT' clause on the arguments of some oracle functions - [Arjen Duursma](https://github.com/duursma) (@duursma)
 * [#5107](https://github.com/pmd/pmd/pull/5107): \[doc] Update maven.md - Typo fixed for maven target - [karthikaiyasamy](https://github.com/karthikaiyasamy) (@karthikaiyasamy)
+* [#5109](https://github.com/pmd/pmd/pull/5109): \[java] Exclude constructor with lombok.Builder for MissingStaticMethodInNonInstantiatableClass - [Krzysztof Debski](https://github.com/kdebski85) (@kdebski85)
 
 {% endtocmaker %}
 
