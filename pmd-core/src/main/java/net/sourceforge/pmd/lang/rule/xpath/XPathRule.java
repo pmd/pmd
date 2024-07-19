@@ -109,7 +109,7 @@ public final class XPathRule extends AbstractRule {
             // Nodes might already have been refactored to not use getImage anymore.
             // Therefore, try several other common names
             if (messageArg == null) {
-                messageArg = getFirstMessageArgFromNode(nodeWithViolation, "Name", "SimpleName", "MethodName");
+                messageArg = getFirstMessageArgFromNode(nodeWithViolation, "Name", "SimpleName", "MethodName", "Value");
             }
             ctx.addViolation(nodeWithViolation, messageArg);
         }

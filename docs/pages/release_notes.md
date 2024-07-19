@@ -34,6 +34,8 @@ This is a {{ site.pmd.release_type }} release.
   * [#4800](https://github.com/pmd/pmd/issues/4800): \[apex] ClassNamingConvention: Support naming convention for *inner* classes
 * apex-performance
   * [#635](https://github.com/pmd/pmd/issues/635): \[apex] New Rule: Avoid soql/sosl queries without a where clause or limit statement
+* javascript-errorprone
+  * [#4716](https://github.com/pmd/pmd/issues/4716): \[javascript] InaccurateNumericLiteral with number 259200000
 * plsql
   * [#5086](https://github.com/pmd/pmd/pull/5086): \[plsql] Fixed issue with missing optional table alias in MERGE usage
   * [#5087](https://github.com/pmd/pmd/pull/5087): \[plsql] Add support for SQL_MACRO
