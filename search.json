@@ -3227,6 +3227,15 @@
 ,
 
 {
+"title": "InaccurateNumericLiteral (JavaScript, Error Prone)",
+"tags": "",
+"keywords": "InaccurateNumericLiteral",
+"url": "pmd_rules_ecmascript_errorprone.html#inaccuratenumericliteral",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
 "title": "InnaccurateNumericLiteral (JavaScript, Error Prone)",
 "tags": "",
 "keywords": "InnaccurateNumericLiteral",

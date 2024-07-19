@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.">
-<meta name="keywords" content=" Error Prone, AvoidTrailingComma, EqualComparison, InnaccurateNumericLiteral">
+<meta name="keywords" content=" Error Prone, AvoidTrailingComma, EqualComparison, InaccurateNumericLiteral, InnaccurateNumericLiteral">
 <title>Error Prone | PMD Source Code Analyzer</title>
 
 
@@ -2001,7 +2001,7 @@ same type. The === operator avoids the casting.</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/ecmascript/errorprone.xml/EqualComparison"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
-<h2 id="innaccuratenumericliteral">InnaccurateNumericLiteral</h2>
+<h2 id="inaccuratenumericliteral">InaccurateNumericLiteral</h2>
 
 <p><strong>Since:</strong> PMD 5.0</p>
 
@@ -2015,6 +2015,50 @@ are represented by 64bit double-precision floating point numbers internally and 
 to the available precision of the number.
 See <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger">Number.isSafeInteger()</a>
 and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/EPSILON">Number.EPSILON</a>.</p>
+
+<p>Note: This rule was named InnaccurateNumericLiteral before PMD 7.4.0.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">NumberLiteral</span><span class="p">[</span><span class="na">@Inaccurate</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">9</span><span class="p">;</span> <span class="c1">// Ok</span>
+<span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="mi">999999999999999</span><span class="p">;</span> <span class="c1">// Ok</span>
+<span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="mi">999999999999999999999</span><span class="p">;</span> <span class="c1">// Not good</span>
+<span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mf">1.12</span><span class="nx">e</span><span class="o">-</span><span class="mi">4</span><span class="p">;</span> <span class="c1">// Ok</span>
+<span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="mf">1.12</span><span class="p">;</span> <span class="c1">// Ok</span>
+<span class="kd">var</span> <span class="nx">y</span> <span class="o">=</span> <span class="mf">1.1234567890123</span><span class="p">;</span> <span class="c1">// Ok</span>
+<span class="kd">var</span> <span class="nx">z</span> <span class="o">=</span> <span class="mf">1.12345678901234567</span><span class="p">;</span> <span class="c1">// Not good</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/ecmascript/errorprone.xml/InaccurateNumericLiteral"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="innaccuratenumericliteral">InnaccurateNumericLiteral</h2>
+
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
+<p>This rule has been renamed. Use instead: <a href="#inaccuratenumericliteral">InaccurateNumericLiteral</a></p>
+
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
+<p><strong>Since:</strong> PMD 5.0</p>
+
+<p><strong>Priority:</strong> Medium High (2)</p>
+
+<p>The numeric literal will have a different value at runtime, which can happen if you provide too much
+precision in a floating point number.  This may result in numeric calculations being in error.</p>
+
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Numbers</a> in JavaScript
+are represented by 64bit double-precision floating point numbers internally and that’s why there are some limits
+to the available precision of the number.
+See <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger">Number.isSafeInteger()</a>
+and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/EPSILON">Number.EPSILON</a>.</p>
+
+<p>Note: This rule was named InnaccurateNumericLiteral before PMD 7.4.0.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">NumberLiteral</span><span class="p">[</span><span class="na">@Inaccurate</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">

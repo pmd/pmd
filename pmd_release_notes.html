@@ -1918,6 +1918,12 @@ or limit statement. This can quickly cause governor limit exceptions.</li>
 for inner classes and interfaces: <code class="language-plaintext highlighter-rouge">innerClassPattern</code> and <code class="language-plaintext highlighter-rouge">innerInterfacePattern</code>.</li>
 </ul>
 
+<h4 id="renamed-rules">Renamed rules</h4>
+<ul>
+  <li><a href="pmd_rules_ecmascript_errorprone.html#inaccuratenumericliteral"><code class="language-plaintext highlighter-rouge">InaccurateNumericLiteral</code></a> has been renamed from <code class="language-plaintext highlighter-rouge">InnaccurateNumericLiteral</code>.
+The old rule name still works but is deprecated.</li>
+</ul>
+
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
 <ul>
   <li>apex
@@ -1952,6 +1958,7 @@ for inner classes and interfaces: <code class="language-plaintext highlighter-ro
   </li>
   <li>javascript-errorprone
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2367">#2367</a>: [javascript] InnaccurateNumericLiteral is misspelled</li>
       <li><a href="https://github.com/pmd/pmd/issues/4716">#4716</a>: [javascript] InaccurateNumericLiteral with number 259200000</li>
     </ul>
   </li>
@@ -1970,6 +1977,15 @@ for inner classes and interfaces: <code class="language-plaintext highlighter-ro
 </ul>
 
 <h3 id="-api-changes">🚨 API Changes</h3>
+
+<ul>
+  <li>javascript
+    <ul>
+      <li>The old rule name <code class="language-plaintext highlighter-rouge">InnaccurateNumericLiteral</code> has been deprecated. Use the new name
+<a href="pmd_rules_ecmascript_errorprone.html#inaccuratenumericliteral"><code class="language-plaintext highlighter-rouge">InaccurateNumericLiteral</code></a> instead.</li>
+    </ul>
+  </li>
+</ul>
 
 <h3 id="-external-contributions">✨ External Contributions</h3>
 <ul>
