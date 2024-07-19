@@ -2010,8 +2010,14 @@ same type. The === operator avoids the casting.</p>
 <p>The numeric literal will have a different value at runtime, which can happen if you provide too much
 precision in a floating point number.  This may result in numeric calculations being in error.</p>
 
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Numbers</a> in JavaScript
+are represented by 64bit double-precision floating point numbers internally and that’s why there are some limits
+to the available precision of the number.
+See <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger">Number.isSafeInteger()</a>
+and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/EPSILON">Number.EPSILON</a>.</p>
+
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">NumberLiteral</span><span class="p">[</span><span class="na">@NormalizedImage</span><span class="w"> </span><span class="p">!</span><span class="err">=</span><span class="w"> </span><span class="nf">string</span><span class="p">(</span><span class="na">@Number</span><span class="p">)]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">NumberLiteral</span><span class="p">[</span><span class="na">@Inaccurate</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
