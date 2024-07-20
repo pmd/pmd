@@ -1259,4 +1259,62 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>module import declarations (since java 23 preview, JEP 476)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import module java.base;
+public class Foo {
+    private File file; // imported via module import from java.base
+}
+]]></code>
+        <source-type>java 23-preview</source-type>
+    </test-code>
+
+    <test-code>
+        <description>module import declarations - unnecessary (since java 23 preview, JEP 476)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>Unused module import 'java.base'</message>
+        </expected-messages>
+        <code><![CDATA[
+import module java.base; // unnecessary
+public class Foo {
+}
+]]></code>
+        <source-type>java 23-preview</source-type>
+    </test-code>
+
+    <test-code>
+        <description>module import declarations - duplicate 1 (since java 23 preview, JEP 476)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+import module java.base;
+import module java.base; // plain duplicate
+public class Foo {
+    private File file;
+}
+]]></code>
+        <source-type>java 23-preview</source-type>
+    </test-code>
+
+    <test-code>
+        <description>module import declarations - duplicate 2 (since java 23 preview, JEP 476)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>Unused module import 'java.base'</message>
+        </expected-messages>
+        <code><![CDATA[
+import module java.base; // unnecessary since there is a single import for java.io.File
+import java.io.File;
+public class Foo {
+    private File file;
+}
+]]></code>
+        <source-type>java 23-preview</source-type>
+    </test-code>
 </test-data>

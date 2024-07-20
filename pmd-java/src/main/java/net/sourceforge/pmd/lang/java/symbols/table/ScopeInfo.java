@@ -27,6 +27,7 @@ public enum ScopeInfo {
     LOCAL,
 
     // import-likes
+    MODULE_IMPORT, // Java 23 preview
     IMPORT_ON_DEMAND,
     SAME_PACKAGE,
     JAVA_LANG,

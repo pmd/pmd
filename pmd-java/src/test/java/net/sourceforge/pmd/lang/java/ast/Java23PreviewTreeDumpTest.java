@@ -58,4 +58,15 @@ class Java23PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
         ParseException thrown = assertThrows(ParseException.class, () -> java23.parseResource("Jep482_FlexibleConstructorBodies.java"));
         assertThat(thrown.getMessage(), containsString("Flexible constructor bodies is a preview feature of JDK 23, you should select your language version accordingly"));
     }
+
+    @Test
+    void jep476ModuleImportDeclarations() {
+        doTest("Jep476_ModuleImportDeclarations");
+    }
+
+    @Test
+    void jep476ModuleImportDeclarationsBeforeJava23Preview() {
+        ParseException thrown = assertThrows(ParseException.class, () -> java23.parseResource("Jep476_ModuleImportDeclarations.java"));
+        assertThat(thrown.getMessage(), containsString("Module import declarations is a preview feature of JDK 23, you should select your language version accordingly"));
+    }
 }

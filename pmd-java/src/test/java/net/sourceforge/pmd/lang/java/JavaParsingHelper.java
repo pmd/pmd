@@ -6,7 +6,16 @@ package net.sourceforge.pmd.lang.java;
 
 import static net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
+import java.io.UncheckedIOException;
+import java.net.URI;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +54,32 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
      * default options of JavaParsingHelper. This allows constants like
      * the null type to be compared.
      */
-    public static final TypeSystem TEST_TYPE_SYSTEM = TypeSystem.usingClassLoaderClasspath(JavaParsingHelper.class.getClassLoader());
+    public static final TypeSystem TEST_TYPE_SYSTEM = TypeSystem.usingClasspath(name -> {
+        ClassLoader classLoader = JavaParsingHelper.class.getClassLoader();
+
+        if (name.endsWith("/module-info.class")) {
+            String moduleName = name.substring(0, name.length() - "/module-info.class".length());
+
+            InputStream inputStream = null;
+            @SuppressWarnings("PMD.CloseResource")
+            // this JrtFileSystem instance can't be closed (UnsupportedOperationException),
+            // because it used by the current running JVM
+            FileSystem fs = FileSystems.getFileSystem(URI.create("jrt:/"));
+            try {
+                Path moduleInfoPath = fs.getPath("modules", moduleName, "module-info.class");
+                if (Files.exists(moduleInfoPath)) {
+                    inputStream = new ByteArrayInputStream(Files.readAllBytes(moduleInfoPath));
+                }
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            if (inputStream != null) {
+                return inputStream;
+            }
+        }
+
+        return classLoader.getResourceAsStream(name);
+    });
 
     /** This runs all processing stages when parsing. */
     public static final JavaParsingHelper DEFAULT = new JavaParsingHelper(

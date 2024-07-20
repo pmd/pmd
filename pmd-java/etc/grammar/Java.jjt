@@ -1,4 +1,8 @@
 /**
+ * Support "JEP 476: Module Import Declarations (Preview)" (Java 23)
+ *     Changes in ImportDeclaration
+ * Andreas Dangel 07/2024
+ *====================================================================
  * Support "JEP 447: Statements before super(...) (Preview)" (Java 22)
  *     Changes in ConstructorBlock
  * Support "JEP 456: Unnamed Variables & Patterns" (Java 22)
@@ -1148,9 +1152,13 @@ void PackageDeclaration() :
 void ImportDeclaration() :
 {String image;}
 {
-  "import" [ "static" {jjtThis.setStatic();} ]
-  image=VoidName() { jjtThis.setImage(image); }
-  [ "." "*" {jjtThis.setImportOnDemand();} ] ";"
+  "import"
+    (
+       "static" {jjtThis.setStatic();}
+     | LOOKAHEAD({isKeyword("module")}) <IDENTIFIER> {jjtThis.setModuleImport();}
+    )?
+    image=VoidName() { jjtThis.setImage(image); }
+    [ "." "*" {jjtThis.setImportOnDemand();} ] ";"
 }
 
 /*

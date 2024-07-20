@@ -146,6 +146,12 @@ public class LanguageLevelChecker<T> {
          */
         FLEXIBLE_CONSTRUCTOR_BODIES(22, 23, false),
 
+        /**
+         * Module import declarations
+         * @see <a href="https://openjdk.org/jeps/476">JEP 476: Module Import Declarations (Preview)</a> (Java 23)
+         */
+        MODULE_IMPORT_DECLARATIONS(23, 23, false),
+
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
 
@@ -445,6 +451,9 @@ public class LanguageLevelChecker<T> {
         public Void visit(ASTImportDeclaration node, T data) {
             if (node.isStatic()) {
                 check(node, RegularLanguageFeature.STATIC_IMPORT, data);
+            }
+            if (node.isModule()) {
+                check(node, PreviewFeature.MODULE_IMPORT_DECLARATIONS, data);
             }
             return null;
         }

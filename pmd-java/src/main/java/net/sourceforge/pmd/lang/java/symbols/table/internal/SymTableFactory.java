@@ -12,6 +12,7 @@ import static net.sourceforge.pmd.util.AssertionUtil.isValidJavaPackageName;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -215,6 +216,29 @@ final class SymTableFactory {
                 importedPackagesAndTypes.add(anImport.getPackageName());
             }
         }
+    }
+
+    JSymbolTable moduleImports(JSymbolTable parent, Collection<ASTImportDeclaration> moduleImports) {
+        if (moduleImports.isEmpty()) {
+            return parent;
+        }
+
+        Set<String> lazyImportedModules = new HashSet<>();
+        for (ASTImportDeclaration anImport : moduleImports) {
+            assert anImport.isModule() : "Expected module import: " + anImport;
+            lazyImportedModules.add(anImport.getImportedName());
+        }
+
+        ShadowChainBuilder<JTypeMirror, ScopeInfo>.ResolverBuilder importedTypes = TYPES.new ResolverBuilder();
+
+        ShadowChainNode<JTypeMirror, ScopeInfo> types = TYPES.shadowWithCache(
+                typeNode(parent),
+                ScopeInfo.MODULE_IMPORT,
+                importedTypes.getMutableMap(),
+                JavaResolvers.moduleImport(lazyImportedModules, processor.getSymResolver(), thisPackage)
+        );
+
+        return SymbolTableImpl.withTypes(parent, types);
     }
 
 
