@@ -101,7 +101,18 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
     private static final Pattern LINK_IN_SNIPPET = Pattern
         .compile("//\\s*@link\\s+(?:.*?)?target=[\"']?" + TYPE_PART_GROUP + "[\"']?");
 
-    private static final Pattern[] PATTERNS = { SEE_PATTERN, LINK_PATTERNS, VALUE_PATTERN, THROWS_PATTERN, EXCEPTION_PATTERN, LINK_IN_SNIPPET };
+    /*
+     * Java 23, JEP 467: Markdown Documentation Comments
+     *
+     * [Type#method()]
+     * [Type]
+     * [alternative Text][Type#method()]
+     * [alternative Text][Type]
+     */
+    private static final Pattern MARKDOWN_PATTERN = Pattern.compile("\\[" + TYPE_PART_GROUP + "]");
+
+    private static final Pattern[] PATTERNS = { SEE_PATTERN, LINK_PATTERNS, VALUE_PATTERN, THROWS_PATTERN,
+                                                EXCEPTION_PATTERN, LINK_IN_SNIPPET, MARKDOWN_PATTERN };
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
