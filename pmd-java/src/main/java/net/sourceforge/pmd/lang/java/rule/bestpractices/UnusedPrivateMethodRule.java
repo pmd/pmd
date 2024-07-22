@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -18,7 +17,6 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
@@ -68,14 +66,13 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
                      .filter(value -> value instanceof String)
                      .map(value -> (String) value)
                      .filter(StringUtils::isNotEmpty),
-                    TypeTestUtil.isA("org.junit.jupiter.params.provider.MethodSource", a) && a.getFlatValue("value").isEmpty()
-                        ? Optional.ofNullable(a.getParent())
-                                .map(GenericNode::getParent)
-                                .filter(m -> m instanceof ASTMethodDeclaration)
-                                .map(m -> ((ASTMethodDeclaration) m).getName())
-                                .map(Stream::of)
-                                .orElseGet(Stream::empty)
-                        : Stream.empty())
+                    NodeStream.of(a)
+                              .filter(it -> TypeTestUtil.isA("org.junit.jupiter.params.provider.MethodSource", it)
+                                  && it.getFlatValue("value").isEmpty())
+                              .parents().parents()
+                              .filterIs(ASTMethodDeclaration.class)
+                              .toStream()
+                              .map(ASTMethodDeclaration::getName))
                 )
                 .collect(Collectors.toSet());
 
