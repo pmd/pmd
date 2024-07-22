@@ -2721,23 +2721,16 @@ ASTMergeStatement MergeStatement() :
         |   [ LOOKAHEAD(2) SchemaName() "." ] TableName() [ TableAlias() ]
     )
     <ON> "(" Condition() ")"
-    [ LOOKAHEAD(MergeUpdateClausePrefix()) MergeUpdateClause() ]
-    [ LOOKAHEAD(2) MergeInsertClause() ]
+    ( <WHEN> ( ( KEYWORD("MATCHED") MergeUpdateClause() )  | ( <NOT> KEYWORD("MATCHED") MergeInsertClause() ) ) ) +
     [ ErrorLoggingClause() ]
     [ ReturningClause() ]
     { return jjtThis; }
 }
 
-void MergeUpdateClausePrefix() #void:
-{}
-{
-    <WHEN> KEYWORD("MATCHED")
-}
-
 ASTMergeUpdateClause MergeUpdateClause() :
 {}
 {
-    MergeUpdateClausePrefix() <THEN> <UPDATE> <SET>
+    <THEN> <UPDATE> <SET>
     [ LOOKAHEAD(2) TableName() "." ] Column() "=" ( LOOKAHEAD(2) "(" Subquery() ")" | Expression() | <_DEFAULT> )
     ( "," [ LOOKAHEAD(2) TableName() "." ] Column() "=" ( LOOKAHEAD(2) "(" Subquery() ")" | Expression() | <_DEFAULT> ) )*
     [ WhereClause() ]
@@ -2748,8 +2741,8 @@ ASTMergeUpdateClause MergeUpdateClause() :
 ASTMergeInsertClause MergeInsertClause() :
 {}
 {
-    <WHEN> <NOT> KEYWORD("MATCHED") <THEN> <INSERT>
-    [ "(" Column() ( "," Column() )* ")" ]
+    <THEN> <INSERT>
+    [ "(" ColumnPath() ( "," ColumnPath() )* ")" ]
     ValuesClause()
     [ WhereClause() ]
     { return jjtThis; }
