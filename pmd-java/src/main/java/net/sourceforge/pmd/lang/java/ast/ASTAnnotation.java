@@ -81,7 +81,7 @@ public final class ASTAnnotation extends AbstractJavaTypeNode implements ASTMemb
      */
     public NodeStream<ASTMemberValue> getFlatValue(String attrName) {
         return NodeStream.of(getAttribute(attrName))
-                         .flatMap(this::flatValue);
+                         .flatMap(ASTAnnotation::flatValue);
     }
 
     /**
@@ -97,10 +97,10 @@ public final class ASTAnnotation extends AbstractJavaTypeNode implements ASTMemb
      */
     public NodeStream<ASTMemberValue> getFlatValues() {
         return getMembers().map(ASTMemberValuePair::getValue)
-                           .flatMap(this::flatValue);
+                           .flatMap(ASTAnnotation::flatValue);
     }
 
-    private NodeStream<ASTMemberValue> flatValue(ASTMemberValue value) {
+    private static NodeStream<ASTMemberValue> flatValue(ASTMemberValue value) {
         return value instanceof ASTMemberValueArrayInitializer
             ? value.children(ASTMemberValue.class)
             : NodeStream.of(value);
