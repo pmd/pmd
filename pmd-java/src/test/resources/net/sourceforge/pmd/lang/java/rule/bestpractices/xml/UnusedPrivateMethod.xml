@@ -28,6 +28,18 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>simple unused annotated private method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.symbols.testdata.MethodAnnotation;
+public class Foo {
+    @MethodAnnotation
+    private void foo() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>anonymous inner class calls private method</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
