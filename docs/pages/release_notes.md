@@ -39,6 +39,7 @@ This is a {{ site.pmd.release_type }} release.
 * apex-performance
   * [#635](https://github.com/pmd/pmd/issues/635): \[apex] New Rule: Avoid soql/sosl queries without a where clause or limit statement
 * java-bestpractices
+  * [#5110](https://github.com/pmd/pmd/issues/5110): \[java] UnusedPrivateMethod for method referenced by lombok.Builder.ObtainVia
   * [#5117](https://github.com/pmd/pmd/issues/5117): \[java] UnusedPrivateMethod for methods annotated with jakarta.annotation.PostConstruct or PreDestroy
 * java-errorprone
   * [#1488](https://github.com/pmd/pmd/issues/1488): \[java] MissingStaticMethodInNonInstantiatableClass: False positive with Lombok Builder on Constructor
@@ -65,6 +66,7 @@ This is a {{ site.pmd.release_type }} release.
 * [#5088](https://github.com/pmd/pmd/pull/5088): \[plsql] Add support for 'DEFAULT' clause on the arguments of some oracle functions - [Arjen Duursma](https://github.com/duursma) (@duursma)
 * [#5107](https://github.com/pmd/pmd/pull/5107): \[doc] Update maven.md - Typo fixed for maven target - [karthikaiyasamy](https://github.com/karthikaiyasamy) (@karthikaiyasamy)
 * [#5109](https://github.com/pmd/pmd/pull/5109): \[java] Exclude constructor with lombok.Builder for MissingStaticMethodInNonInstantiatableClass - [Krzysztof Debski](https://github.com/kdebski85) (@kdebski85)
+* [#5111](https://github.com/pmd/pmd/pull/5111): \[java] Fix UnusedPrivateMethod for @<!-- -->lombok.Builder.ObtainVia - [Krzysztof Debski](https://github.com/kdebski85) (@kdebski85)
 * [#5118](https://github.com/pmd/pmd/pull/5118): \[java] FP for UnusedPrivateMethod with Jakarta @<!-- -->PostConstruct/PreDestroy annotations - [Krzysztof Debski](https://github.com/kdebski85) (@kdebski85)
 * [#5121](https://github.com/pmd/pmd/pull/5121): \[plsql] Fixed issue with missing optional table alias in MERGE usage - [Arjen Duursma](https://github.com/duursma) (@duursma)
 
