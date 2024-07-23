@@ -57,24 +57,26 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         //   method calls/method refs that may refer to a method in the
         //   first set, ie, not every call in the file.
         Set<String> methodsUsedByAnnotations =
-            file.descendants(ASTAnnotation.class)
-                .crossFindBoundaries()
-                .toStream()
-                .flatMap(a -> Stream.concat(
-                    a.getFlatValues().toStream()
-                     .map(ASTMemberValue::getConstValue)
-                     .filter(value -> value instanceof String)
-                     .map(value -> (String) value)
-                     .filter(StringUtils::isNotEmpty),
-                    NodeStream.of(a)
-                              .filter(it -> TypeTestUtil.isA("org.junit.jupiter.params.provider.MethodSource", it)
-                                  && it.getFlatValue("value").isEmpty())
-                              .parents().parents()
-                              .filterIs(ASTMethodDeclaration.class)
-                              .toStream()
-                              .map(ASTMethodDeclaration::getName))
-                )
-                .collect(Collectors.toSet());
+                file.descendants(ASTAnnotation.class)
+                        .crossFindBoundaries()
+                        .toStream()
+                        .flatMap(a -> Stream.concat(
+                                        a.getFlatValues().toStream()
+                                                .map(ASTMemberValue::getConstValue)
+                                                .filter(String.class::isInstance)
+                                                .map(String.class::cast)
+                                                .filter(StringUtils::isNotEmpty),
+                                        NodeStream.of(a)
+                                                .filter(it -> TypeTestUtil.isA("org.junit.jupiter.params.provider.MethodSource", it)
+                                                        && it.getFlatValue("value").isEmpty())
+                                                .ancestors(ASTMethodDeclaration.class)
+                                                .firstOpt()
+                                                .map(ASTMethodDeclaration::getName)
+                                                .map(Stream::of)
+                                                .orElse(Stream.empty())
+                                )
+                        )
+                        .collect(Collectors.toSet());
 
         Map<String, Set<ASTMethodDeclaration>> consideredNames =
             file.descendants(ASTMethodDeclaration.class)
