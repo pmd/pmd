@@ -176,7 +176,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @deprecated PLSQLParserImpl should have been package private because this is an implementation class
+ * @deprecated Since 7.3.0. PLSQLParserImpl should have been package private because this is an implementation class
  * that should not be used directly.
  */
 @Deprecated
