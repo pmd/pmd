@@ -74,10 +74,9 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
                                                 .filter(it -> TypeTestUtil.isA("org.junit.jupiter.params.provider.MethodSource", it)
                                                         && it.getFlatValue("value").isEmpty())
                                                 .ancestors(ASTMethodDeclaration.class)
-                                                .firstOpt()
+                                                .take(1)
+                                                .toStream()
                                                 .map(ASTMethodDeclaration::getName)
-                                                .map(Stream::of)
-                                                .orElse(Stream.empty())
                                 )
                         )
                         .collect(Collectors.toSet());
