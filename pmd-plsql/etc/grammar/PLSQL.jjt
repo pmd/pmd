@@ -871,6 +871,9 @@ ASTCompilationDataType CompilationDataType() :
  }
 }
 
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/23/lnpls/CREATE-TYPE-statement.html#GUID-389D603D-FBD0-452A-8414-240BBBC57034__OBJECT_BASE_TYPE_DEF-DE2DD0FF
+ */
 ASTCollectionTypeName CollectionTypeName() :
 { PLSQLNode size=null, precision=null;
 	StringBuilder sb = new StringBuilder();
@@ -886,8 +889,8 @@ ASTCollectionTypeName CollectionTypeName() :
         sb.append(token.getImage());
       }
     }
-	(LOOKAHEAD(2) "(" size=NumericLiteral() {sb.append( "(" + size);}
-		["," precision=NumericLiteral() {sb.append( "," + precision);}]
+	(LOOKAHEAD(2) "(" size = NumericLiteral() { sb.append("(").append(size.getImage()); }
+		["," precision = NumericLiteral() { sb.append(",").append(precision.getImage()); }]
 		[ <CHAR> {sb.append( " CHAR") ;}]
 		[ <BYTE> {sb.append( " BYTE") ;}]
 	")" {sb.append( ")");})?
