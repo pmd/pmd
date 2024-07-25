@@ -52,6 +52,8 @@ This is a {{ site.pmd.release_type }} release.
   * [#5088](https://github.com/pmd/pmd/pull/5088): \[plsql] Add support for 'DEFAULT' clause on the arguments of some oracle functions
 * cli
   * [#5120](https://github.com/pmd/pmd/issues/5120): \[cli] Can't start designer under Windows
+* core
+  * [#5091](https://github.com/pmd/pmd/issues/5091): \[core] PMD CPD v7.3.0 gives deprecation warning for skipLexicalErrors even when not used
 
 ### 🚨 API Changes
 

@@ -124,7 +124,6 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
         configuration.setRendererName(rendererName);
         configuration.setSkipBlocksPattern(skipBlocksPattern);
         configuration.setSkipDuplicates(skipDuplicates);
-        configuration.setSkipLexicalErrors(skipLexicalErrors);
         configuration.setSourceEncoding(encoding.getEncoding());
         configuration.setInputUri(uri);
 
@@ -132,9 +131,6 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
             configuration.getReporter().warn("--skip-lexical-errors is deprecated. Use --no-fail-on-error instead.");
             configuration.setFailOnError(false);
         }
-
-        // implicitly enable skipLexicalErrors, so that we can fail the build at the end. A report is created in any case.
-        configuration.setSkipLexicalErrors(true);
 
         return configuration;
     }
