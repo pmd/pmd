@@ -50,6 +50,7 @@ This is a {{ site.pmd.release_type }} release.
   * [#5086](https://github.com/pmd/pmd/pull/5086): \[plsql] Fixed issue with missing optional table alias in MERGE usage
   * [#5087](https://github.com/pmd/pmd/pull/5087): \[plsql] Add support for SQL_MACRO
   * [#5088](https://github.com/pmd/pmd/pull/5088): \[plsql] Add support for 'DEFAULT' clause on the arguments of some oracle functions
+  * [#5133](https://github.com/pmd/pmd/issues/5133): \[plsql] AssertionError: Root of the tree should implement RootNode for a PL/SQL type declaration
 * cli
   * [#5120](https://github.com/pmd/pmd/issues/5120): \[cli] Can't start designer under Windows
 * core

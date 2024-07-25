@@ -993,12 +993,8 @@ ASTScalarDataTypeName ScalarDataTypeName() :
     LOOKAHEAD(4) (<WITH><LOCAL><TIME><ZONE> {name.append(" WITH LOCAL TIME ZONE");}) |
     LOOKAHEAD(3) (<WITH><TIME><ZONE> {name.append( " WITH TIME ZONE");}) |
     LOOKAHEAD(2) (<TO><MONTH> {name.append( " TO MONTH");}) |
-    LOOKAHEAD(2) (<TO><SECOND> {name.append( " TO SECOND");}
-			(
-			  LOOKAHEAD(2) "(" precision=NumericLiteral() {name.append( "(" + precision) ;}
-					")" {name.append( ")");}
-			)?
-                 )
+    LOOKAHEAD(2) <TO><SECOND> { name.append(" TO SECOND"); }
+                [ LOOKAHEAD(2) "(" precision = NumericLiteral() { name.append("(").append(precision.getImage()).append(")"); } ")" ]
    ]
 
       { jjtThis.setImage(name.toString()) ;  return jjtThis; }

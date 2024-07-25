@@ -71,4 +71,9 @@ class PlsqlTreeDumpTest extends BaseTreeDumpTest {
     void parseSelectExpression() {
         doTest("SelectExpressions");
     }
+
+    @Test
+    void issue5133SubTypeDefinition() {
+        doTest("Issue5133SubTypeDefinition");
+    }
 }
