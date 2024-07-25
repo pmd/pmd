@@ -2721,10 +2721,20 @@ ASTMergeStatement MergeStatement() :
         |   [ LOOKAHEAD(2) SchemaName() "." ] TableName() [ TableAlias() ]
     )
     <ON> "(" Condition() ")"
-    ( <WHEN> ( ( KEYWORD("MATCHED") MergeUpdateClause() )  | ( <NOT> KEYWORD("MATCHED") MergeInsertClause() ) ) ) +
+    ( <WHEN> ( ( KEYWORD("MATCHED") MergeUpdateClause() )  | ( <NOT> KEYWORD("MATCHED") MergeInsertClause() ) ) ) *
     [ ErrorLoggingClause() ]
     [ ReturningClause() ]
     { return jjtThis; }
+}
+
+/*
+ * Beware: MergeUpdateClausePrefixfunction is no longer used as MergeStatement is simplified,
+ * but kept for tooling requirement not breaking interface
+ */
+void MergeUpdateClausePrefix() #void:
+{}
+{
+    <WHEN> KEYWORD("MATCHED")
 }
 
 ASTMergeUpdateClause MergeUpdateClause() :
