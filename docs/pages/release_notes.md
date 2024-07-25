@@ -17,8 +17,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🌟 New and changed rules
 #### New Rules
 
-* The new JavaScript rule {%rule ecmascript/performance/AvoidConsoleStatements %} finds usages of `console.log` and
-  similar function calls. Using these in production code might negatively impact performance.
+* The new JavaScript rule {%rule ecmascript/performance/AvoidConsoleStatements %} finds any function calls
+  on the Console API (e.g. `console.log`). Using these in production code might negatively impact performance.
 
 ### 🐛 Fixed Issues
 * javascript-performance

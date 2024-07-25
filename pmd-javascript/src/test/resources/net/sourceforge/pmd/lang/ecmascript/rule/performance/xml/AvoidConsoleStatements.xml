@@ -5,46 +5,36 @@
         xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.github.io/schema/rule-tests_1_0_0.xsd">
 
     <test-code>
-        <description>Default console methods should be flagged</description>
-        <expected-problems>6</expected-problems>
+        <description>Any console method should be flagged</description>
+        <expected-problems>9</expected-problems>
         <code><![CDATA[
-console.log('foo'); // bad
-console.error('foo'); // bad
-console.info('foo'); // bad
-console.warn('foo'); // bad
-console.debug('foo'); // bad
-console.trace('foo'); // bad
+console.log('foo');
+console.error('foo');
+console.info('foo');
+console.warn('foo');
+console.debug('foo');
+console.trace('foo');
+console.assert(false, 'foo');
+console.dir(myObj);
+console.group('label');
 ]]></code>
     </test-code>
 
     <test-code>
-        <description>Default console methods via window.console should be flagged</description>
-        <expected-problems>6</expected-problems>
+        <description>Any console method via window.console should be flagged</description>
+        <expected-problems>9</expected-problems>
         <code><![CDATA[
-window.console.log('foo'); // bad
-window.console.error('foo'); // bad
-window.console.info('foo'); // bad
-window.console.warn('foo'); // bad
-window.console.debug('foo'); // bad
-window.console.trace('foo'); // bad
+window.console.log('foo');
+window.console.error('foo');
+window.console.info('foo');
+window.console.warn('foo');
+window.console.debug('foo');
+window.console.trace('foo');
+window.console.assert(false, 'foo');
+window.console.dir(myObj);
+window.console.group('label');
 ]]></code>
     </test-code>
-
-    <test-code>
-        <description>Some console methods should be flagged</description>
-        <rule-property name="methods">log,info,debug,trace</rule-property>
-        <expected-problems>4</expected-problems>
-        <expected-linenumbers>1,3,5,6</expected-linenumbers>
-        <code><![CDATA[
-console.log('foo'); // bad
-console.error('foo'); // ok per configuration
-console.info('foo'); // bad
-console.warn('foo'); // ok per configuration
-console.debug('foo'); // bad
-console.trace('foo'); // bad
-]]></code>
-    </test-code>
-
 
     <test-code>
         <description>Other similar methods shouldn't be flagged</description>
@@ -53,10 +43,16 @@ console.trace('foo'); // bad
 var MyFoo = {
     debug: function(a) {
         // ...
+    },
+    console: {
+        debug: function(a) {
+            // ...
+        }
     }
 };
 
 MyFoo.debug('bar'); // ok, it is not console.debug
+MyFoo.console.debug('bar'); // ok, it is not console.debug
 ]]></code>
     </test-code>
 </test-data>
