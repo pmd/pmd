@@ -39,6 +39,7 @@ This is a {{ site.pmd.release_type }} release.
 * apex-performance
   * [#635](https://github.com/pmd/pmd/issues/635): \[apex] New Rule: Avoid soql/sosl queries without a where clause or limit statement
 * java-bestpractices
+  * [#5106](https://github.com/pmd/pmd/issues/5106): \[java] AccessorClassGeneration: Node was null for default constructor
   * [#5110](https://github.com/pmd/pmd/issues/5110): \[java] UnusedPrivateMethod for method referenced by lombok.Builder.ObtainVia
   * [#5117](https://github.com/pmd/pmd/issues/5117): \[java] UnusedPrivateMethod for methods annotated with jakarta.annotation.PostConstruct or PreDestroy
 * java-errorprone

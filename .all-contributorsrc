@@ -7699,6 +7699,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "rbri",
+      "name": "RBRi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2544132?v=4",
+      "profile": "https://github.com/rbri",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,

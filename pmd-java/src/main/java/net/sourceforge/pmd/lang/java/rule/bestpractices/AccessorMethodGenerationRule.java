@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
@@ -74,6 +75,10 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
                                refExpr.getEnclosingType().getSymbol())) {
 
             JavaNode node = sym.tryGetNode();
+            if (node == null && JConstructorSymbol.CTOR_NAME.equals(sym.getSimpleName())) {
+                // might be a default constructor, implicitly defined and not explicitly in the compilation unit
+                node = sym.getEnclosingClass().tryGetNode();
+            }
             assert node != null : "Node should be in the same compilation unit";
             if (reportedNodes.add(node)) {
                 ruleContext.addViolation(node, stripPackageName(refExpr.getEnclosingType().getSymbol()));
