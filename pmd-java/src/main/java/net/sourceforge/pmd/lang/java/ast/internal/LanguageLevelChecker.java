@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTGuard;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIntersectionType;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -33,6 +34,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTModuleDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPattern;
+import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTReceiverParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordPattern;
@@ -46,11 +49,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTTypePattern;
 import net.sourceforge.pmd.lang.java.ast.ASTUnnamedPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
+import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
@@ -151,6 +156,12 @@ public class LanguageLevelChecker<T> {
          * @see <a href="https://openjdk.org/jeps/476">JEP 476: Module Import Declarations (Preview)</a> (Java 23)
          */
         MODULE_IMPORT_DECLARATIONS(23, 23, false),
+
+        /**
+         * Primitive types in patterns, instanceof, and switch
+         * @see <a href="https://openjdk.org/jeps/455">JEP 455: Primitive Types in Patterns, instanceof, and switch (Preview)</a> (Java 23)
+         */
+        PRIMITIVE_TYPES_IN_PATTERNS_INSTANCEOF_AND_SWITCH(23, 23, false),
 
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
@@ -646,6 +657,10 @@ public class LanguageLevelChecker<T> {
             if (node.getFirstChild() instanceof ASTPattern) {
                 check(node, RegularLanguageFeature.PATTERNS_IN_SWITCH_STATEMENTS, data);
             }
+            if (node.getFirstChild() instanceof ASTTypePattern
+                    && ((ASTTypePattern) node.getFirstChild()).getTypeNode() instanceof ASTPrimitiveType) {
+                check(node, PreviewFeature.PRIMITIVE_TYPES_IN_PATTERNS_INSTANCEOF_AND_SWITCH, data);
+            }
             return null;
         }
 
@@ -711,6 +726,24 @@ public class LanguageLevelChecker<T> {
                 }
             }
             return null;
+        }
+
+        @Override
+        public Void visit(ASTInfixExpression node, T data) {
+            if (node.getOperator() == BinaryOp.INSTANCEOF) {
+                if (node.getRightOperand() instanceof ASTPatternExpression && node.getRightOperand().getFirstChild() instanceof ASTTypePattern) {
+                    ASTTypePattern typePattern = (ASTTypePattern) node.getRightOperand().getFirstChild();
+                    if (typePattern.getTypeNode() instanceof ASTPrimitiveType) {
+                        check(node, PreviewFeature.PRIMITIVE_TYPES_IN_PATTERNS_INSTANCEOF_AND_SWITCH, data);
+                    }
+                } else if (node.getRightOperand() instanceof ASTTypeExpression) {
+                    ASTTypeExpression typeExpression = (ASTTypeExpression) node.getRightOperand();
+                    if (typeExpression.getTypeNode() instanceof ASTPrimitiveType) {
+                        check(node, PreviewFeature.PRIMITIVE_TYPES_IN_PATTERNS_INSTANCEOF_AND_SWITCH, data);
+                    }
+                }
+            }
+            return super.visit(node, data);
         }
 
         private void checkIdent(JavaNode node, String simpleName, T acc) {

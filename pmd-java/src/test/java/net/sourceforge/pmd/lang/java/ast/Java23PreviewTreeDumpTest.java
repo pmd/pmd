@@ -69,4 +69,15 @@ class Java23PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
         ParseException thrown = assertThrows(ParseException.class, () -> java23.parseResource("Jep476_ModuleImportDeclarations.java"));
         assertThat(thrown.getMessage(), containsString("Module import declarations is a preview feature of JDK 23, you should select your language version accordingly"));
     }
+
+    @Test
+    void jep455PrimitiveTypesInPatternsInstanceofAndSwitch() {
+        doTest("Jep455_PrimitiveTypesInPatternsInstanceofAndSwitch");
+    }
+
+    @Test
+    void jep455PrimitiveTypesInPatternsInstanceofAndSwitchBeforeJava23Preview() {
+        ParseException thrown = assertThrows(ParseException.class, () -> java23.parseResource("Jep455_PrimitiveTypesInPatternsInstanceofAndSwitch.java"));
+        assertThat(thrown.getMessage(), containsString("Primitive types in patterns instanceof and switch is a preview feature of JDK 23, you should select your language version accordingly"));
+    }
 }

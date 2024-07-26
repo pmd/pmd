@@ -1,4 +1,6 @@
 /**
+ * Support "JEP 455: Primitive Types in Patterns, instanceof, and switch (Preview)" (Java 23)
+ *     Changes in InstanceOfExpression
  * Support "JEP 476: Module Import Declarations (Preview)" (Java 23)
  *     Changes in ImportDeclaration
  * Andreas Dangel 07/2024
@@ -1912,7 +1914,7 @@ void InstanceOfExpression() #void:
     ("instanceof"
         (
               LOOKAHEAD(ReferenceType() "(") RecordPattern()
-            | AnnotatedRefType() [
+            | AnnotatedType() [
                   VariableDeclaratorId() #TypePattern(2)
                 | RecordStructurePattern() #RecordPattern(2)
             ]
