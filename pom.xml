@@ -1092,7 +1092,7 @@
             <dependency>
                 <groupId>org.junit.platform</groupId>
                 <artifactId>junit-platform-commons</artifactId>
-                <version>1.8.2</version>
+                <version>1.10.3</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
