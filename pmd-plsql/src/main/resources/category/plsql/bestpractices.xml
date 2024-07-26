@@ -24,7 +24,9 @@ Rules which enforce generally accepted best practices.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ExceptionHandler[QualifiedName/@Image='OTHERS' and upper-case(Statement/UnlabelledStatement/Expression/@Image)='NULL']
+//ExceptionHandler[QualifiedName/@Image='OTHERS']
+                  [count(Statement)=1]
+                  [Statement/UnlabelledStatement/Expression/PrimaryPrefix/Literal/NullLiteral]
 ]]>
                 </value>
             </property>
