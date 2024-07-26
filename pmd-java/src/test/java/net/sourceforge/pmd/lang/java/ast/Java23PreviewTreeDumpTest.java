@@ -80,4 +80,12 @@ class Java23PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
         ParseException thrown = assertThrows(ParseException.class, () -> java23.parseResource("Jep455_PrimitiveTypesInPatternsInstanceofAndSwitch.java"));
         assertThat(thrown.getMessage(), containsString("Primitive types in patterns instanceof and switch is a preview feature of JDK 23, you should select your language version accordingly"));
     }
+
+    @Test
+    void stringTemplatesAreNotSupportedAnymore() {
+        ParseException thrown = assertThrows(ParseException.class, () -> java23p.parseResource("StringTemplatesAreNotSupportedAnymore.java"));
+        assertThat(thrown.getMessage(), containsString("String templates is a preview feature of JDK 22, you should select your language version accordingly"));
+        ParseException thrown2 = assertThrows(ParseException.class, () -> java23.parseResource("StringTemplatesAreNotSupportedAnymore.java"));
+        assertThat(thrown2.getMessage(), containsString("String templates is a preview feature of JDK 22, you should select your language version accordingly"));
+    }
 }

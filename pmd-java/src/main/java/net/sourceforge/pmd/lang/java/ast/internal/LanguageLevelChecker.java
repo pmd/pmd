@@ -130,11 +130,12 @@ public class LanguageLevelChecker<T> {
      */
     private enum PreviewFeature implements LanguageFeature {
         /**
-         * String Templates.
+         * String Templates. Only support with Java 22 Preview now.
          * @see <a href="https://openjdk.org/jeps/430">JEP 430: String Templates (Preview)</a> (Java 21)
          * @see <a href="https://openjdk.org/jeps/459">JEP 459: String Templates (Second Preview)</a> (Java 22)
+         * @see <a href="https://bugs.openjdk.org/browse/JDK-8329949">JDK-8329949 Remove the String Templates preview feature</a> (Java 23)
          */
-        STRING_TEMPLATES(21, 22, false),
+        STRING_TEMPLATES(22, 22, false),
 
         /**
          * Unnamed Classes and Instance Main Methods
