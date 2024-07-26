@@ -85,8 +85,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.4.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 26-July-2024</div>
+    <li class="sidebarTitle">PMD 7.5.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 30-August-2024</div>
     
     
     
@@ -1895,118 +1895,39 @@
         <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
     </details>
 
-  <h2 id="26-july-2024---740-snapshot">26-July-2024 - 7.4.0-SNAPSHOT</h2>
+  <h2 id="30-august-2024---750-snapshot">30-August-2024 - 7.5.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 7.4.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 7.5.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
-<h3 id="-new-and-changed-rules">🌟 New and changed rules</h3>
-
-<h4 id="new-rules">New Rules</h4>
-
-<ul>
-  <li>The new Apex rule <a href="pmd_rules_apex_performance.html#avoidnonrestrictivequeries"><code class="language-plaintext highlighter-rouge">AvoidNonRestrictiveQueries</code></a> finds SOQL and SOSL queries without a where
-or limit statement. This can quickly cause governor limit exceptions.</li>
-</ul>
-
-<h4 id="changed-rules">Changed rules</h4>
-<ul>
-  <li><a href="pmd_rules_apex_codestyle.html#classnamingconventions"><code class="language-plaintext highlighter-rouge">ClassNamingConventions</code></a>: Two new properties to configure different patterns
-for inner classes and interfaces: <code class="language-plaintext highlighter-rouge">innerClassPattern</code> and <code class="language-plaintext highlighter-rouge">innerInterfacePattern</code>.</li>
-</ul>
-
-<h4 id="renamed-rules">Renamed rules</h4>
-<ul>
-  <li><a href="pmd_rules_ecmascript_errorprone.html#inaccuratenumericliteral"><code class="language-plaintext highlighter-rouge">InaccurateNumericLiteral</code></a> has been renamed from <code class="language-plaintext highlighter-rouge">InnaccurateNumericLiteral</code>.
-The old rule name still works but is deprecated.</li>
-</ul>
-
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
-<ul>
-  <li>apex
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5094">#5094</a>: [apex] “No adapter exists for type” error message printed to stdout instead of stderr</li>
-    </ul>
-  </li>
-  <li>apex-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5095">#5095</a>: [apex] ApexUnitTestShouldNotUseSeeAllDataTrue false negative due to casing (regression in PMD 7)</li>
-    </ul>
-  </li>
-  <li>apex-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4800">#4800</a>: [apex] ClassNamingConvention: Support naming convention for <em>inner</em> classes</li>
-    </ul>
-  </li>
-  <li>apex-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/635">#635</a>: [apex] New Rule: Avoid soql/sosl queries without a where clause or limit statement</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5106">#5106</a>: [java] AccessorClassGeneration: Node was null for default constructor</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5110">#5110</a>: [java] UnusedPrivateMethod for method referenced by lombok.Builder.ObtainVia</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5117">#5117</a>: [java] UnusedPrivateMethod for methods annotated with jakarta.annotation.PostConstruct or PreDestroy</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1488">#1488</a>: [java] MissingStaticMethodInNonInstantiatableClass: False positive with Lombok Builder on Constructor</li>
-    </ul>
-  </li>
-  <li>javascript-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2367">#2367</a>: [javascript] InnaccurateNumericLiteral is misspelled</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4716">#4716</a>: [javascript] InaccurateNumericLiteral with number 259200000</li>
-    </ul>
-  </li>
-  <li>plsql
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/pull/5086">#5086</a>: [plsql] Fixed issue with missing optional table alias in MERGE usage</li>
-      <li><a href="https://github.com/pmd/pmd/pull/5087">#5087</a>: [plsql] Add support for SQL_MACRO</li>
-      <li><a href="https://github.com/pmd/pmd/pull/5088">#5088</a>: [plsql] Add support for ‘DEFAULT’ clause on the arguments of some oracle functions</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5133">#5133</a>: [plsql] AssertionError: Root of the tree should implement RootNode for a PL/SQL type declaration</li>
-    </ul>
-  </li>
-  <li>cli
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5120">#5120</a>: [cli] Can’t start designer under Windows</li>
-    </ul>
-  </li>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5091">#5091</a>: [core] PMD CPD v7.3.0 gives deprecation warning for skipLexicalErrors even when not used</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="-api-changes">🚨 API Changes</h3>
-
 <ul>
-  <li>javascript
+  <li>pmd-jsp
     <ul>
-      <li>The old rule name <code class="language-plaintext highlighter-rouge">InnaccurateNumericLiteral</code> has been deprecated. Use the new name
-<a href="pmd_rules_ecmascript_errorprone.html#inaccuratenumericliteral"><code class="language-plaintext highlighter-rouge">InaccurateNumericLiteral</code></a> instead.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.5.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/JspParserImpl.html#"><code>JspParserImpl</code></a> is deprecated now. It should have been package-private
+because this is an implementation class that should not be used directly.</li>
+    </ul>
+  </li>
+  <li>pmd-velocity
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-velocity/7.5.0-SNAPSHOT/net/sourceforge/pmd/lang/velocity/ast/VtlParserImpl.html#"><code>VtlParserImpl</code></a> is deprecated now. It should have been package-private
+because this is an implementation class that should not be used directly.</li>
+    </ul>
+  </li>
+  <li>pmd-visualforce
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.5.0-SNAPSHOT/net/sourceforge/pmd/lang/visualforce/ast/VfParserImpl.html#"><code>VfParserImpl</code></a> is deprecated now. It should have been package-private
+because this is an implementation class that should not be used directly.</li>
     </ul>
   </li>
 </ul>
 
 <h3 id="-external-contributions">✨ External Contributions</h3>
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/5048">#5048</a>: [apex] Added Inner Classes to Apex Class Naming Conventions Rule - <a href="https://github.com/justinstroudbah">Justin Stroud</a> (@justinstroudbah / @sgnl-labs)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5086">#5086</a>: [plsql] Fixed issue with missing optional table alias in MERGE usage - <a href="https://github.com/duursma">Arjen Duursma</a> (@duursma)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5087">#5087</a>: [plsql] Add support for SQL_MACRO - <a href="https://github.com/duursma">Arjen Duursma</a> (@duursma)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5088">#5088</a>: [plsql] Add support for ‘DEFAULT’ clause on the arguments of some oracle functions - <a href="https://github.com/duursma">Arjen Duursma</a> (@duursma)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5107">#5107</a>: [doc] Update maven.md - Typo fixed for maven target - <a href="https://github.com/karthikaiyasamy">karthikaiyasamy</a> (@karthikaiyasamy)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5109">#5109</a>: [java] Exclude constructor with lombok.Builder for MissingStaticMethodInNonInstantiatableClass - <a href="https://github.com/kdebski85">Krzysztof Debski</a> (@kdebski85)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5111">#5111</a>: [java] Fix UnusedPrivateMethod for @<!-- -->lombok.Builder.ObtainVia - <a href="https://github.com/kdebski85">Krzysztof Debski</a> (@kdebski85)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5118">#5118</a>: [java] FP for UnusedPrivateMethod with Jakarta @<!-- -->PostConstruct/PreDestroy annotations - <a href="https://github.com/kdebski85">Krzysztof Debski</a> (@kdebski85)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5121">#5121</a>: [plsql] Fixed issue with missing optional table alias in MERGE usage - <a href="https://github.com/duursma">Arjen Duursma</a> (@duursma)</li>
-</ul>
 
 
 
@@ -2037,7 +1958,7 @@ The old rule name still works but is deprecated.</li>
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jul 25, 2024 <br />
+             Site last generated: Jul 26, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

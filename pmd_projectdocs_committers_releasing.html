@@ -85,8 +85,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.4.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 26-July-2024</div>
+    <li class="sidebarTitle">PMD 7.5.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 30-August-2024</div>
     
     
     
@@ -1964,8 +1964,8 @@ news posts can be changed afterward (although that’s an entirely manual proces
 
 <p>You can find the release notes here: <code class="language-plaintext highlighter-rouge">docs/pages/release_notes.md</code>.</p>
 
-<p>The date (<code class="language-plaintext highlighter-rouge">date +%d-%B-%Y</code>) and the version (remove the SNAPSHOT) must be updated in <code class="language-plaintext highlighter-rouge">docs/_config.yml</code>,  e.g.
-in order to release version “6.34.0”, the configuration should look like this:</p>
+<p>The date (<code class="language-plaintext highlighter-rouge">date +%Y-%m-%d</code>) and the version (remove the SNAPSHOT) must be updated in <code class="language-plaintext highlighter-rouge">docs/_config.yml</code>,  e.g.
+in order to release version “7.2.0”, the configuration should look like this:</p>
 
 <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">pmd</span><span class="pi">:</span>
     <span class="na">version</span><span class="pi">:</span> <span class="s">7.2.0</span>
@@ -1974,7 +1974,7 @@ in order to release version “6.34.0”, the configuration should look like thi
     <span class="na">release_type</span><span class="pi">:</span> <span class="s">minor</span>
 </code></pre></div></div>
 
-<p>The release type could be one of “bugfix” (e.g. 7.1.x), “minor” (7.x.0), or “major” (x.0.0).</p>
+<p>The release type could be one of “bugfix” (e.g. 7.2.x), “minor” (7.x.0), or “major” (x.0.0).</p>
 
 <p>The release notes usually mention any new rules that have been added since the last release.</p>
 
@@ -1993,24 +1993,48 @@ not pmd-cli and pmd-dist.</p>
 <p>In case, there is no need for a new pmd-designer version, we could stick to the latest already available version.
 Then we can skip the release of pmd-designer and immediately start the second phase of the release.</p>
 
+<p>Starting with PMD 7.5.0 we use Dependabot to update dependencies. Dependabot will create pull requests
+labeled with <code class="language-plaintext highlighter-rouge">dependencies</code>. When we merge such a pull request, we should assign it to the correct
+milestone. It is important, that the due date of the milestone is set correctly, otherwise the query won’t find
+the milestone number.
+Then we can query which PRs have been merged and generate a section for the release notes:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">NEW_VERSION</span><span class="o">=</span>7.2.0
+<span class="nv">MILESTONE_JSON</span><span class="o">=</span><span class="si">$(</span>curl <span class="nt">-s</span> <span class="s2">"https://api.github.com/repos/pmd/pmd/milestones?state=all&amp;direction=desc&amp;per_page=5"</span>|jq <span class="s2">".[] | select(.title == </span><span class="se">\"</span><span class="nv">$NEW_VERSION</span><span class="se">\"</span><span class="s2">)"</span><span class="si">)</span>
+<span class="nv">MILESTONE</span><span class="o">=</span><span class="si">$(</span><span class="nb">echo</span> <span class="s2">"</span><span class="nv">$MILESTONE_JSON</span><span class="s2">"</span> | jq .number<span class="si">)</span>
+
+<span class="c"># determine dependency updates</span>
+<span class="nv">DEPENDENCIES_JSON</span><span class="o">=</span><span class="si">$(</span>curl <span class="nt">-s</span> <span class="s2">"https://api.github.com/repos/pmd/pmd/issues?labels=dependencies&amp;state=closed&amp;direction=asc&amp;per_page=50&amp;page=1&amp;milestone=</span><span class="k">${</span><span class="nv">MILESTONE</span><span class="k">}</span><span class="s2">"</span><span class="si">)</span>
+<span class="nv">DEPENDENCIES_COUNT</span><span class="o">=</span><span class="si">$(</span><span class="nb">echo</span> <span class="s2">"</span><span class="nv">$DEPENDENCIES_JSON</span><span class="s2">"</span> | jq length<span class="si">)</span>
+<span class="k">if</span> <span class="o">[</span> <span class="nv">$DEPENDENCIES_COUNT</span> <span class="nt">-gt</span> 0 <span class="o">]</span><span class="p">;</span> <span class="k">then
+  </span><span class="nb">echo</span> <span class="s2">"### 📦 Dependency updates"</span>
+  <span class="nb">echo</span> <span class="s2">"</span><span class="nv">$DEPENDENCIES_JSON</span><span class="s2">"</span> | jq <span class="nt">--raw-output</span> <span class="s1">'.[] | "* [#\(.number)](https://github.com/pmd/pmd/issues/\(.number)): \(.title)"'</span>
+<span class="k">else
+  </span><span class="nb">echo</span> <span class="s2">"### 📦 Dependency updates"</span>
+  <span class="nb">echo</span> <span class="s2">"No dependency updates"</span>
+<span class="k">fi</span>
+</code></pre></div></div>
+<p>This section needs to be added to the release notes at the end.</p>
+
 <p>Starting with PMD 6.23.0 we’ll provide small statistics for every release. This needs to be added
-to the release notes as the last section. To count the closed issues and pull requests, the milestone
+to the release notes as the last section (after “Dependency updates”). To count the closed issues and pull requests, the milestone
 on GitHub with the title of the new release is searched. It is important, that the due date of the milestone
 is correctly set, as the returned milestones in the API call are sorted by due date.
 Make sure, there is such a milestone on <a href="https://github.com/pmd/pmd/milestones">https://github.com/pmd/pmd/milestones</a>. The following snippet will
-create the numbers, that can be attached to the release notes as a last section:</p>
+create the numbers, that can be attached to the release notes as a last section. Note: It uses part of the
+above code snippet (e.g. NEW_VERSION, MILESTONE, DEPENDENCIES_COUNT):</p>
 
 <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">LAST_VERSION</span><span class="o">=</span>7.1.0
-<span class="nv">NEW_VERSION</span><span class="o">=</span>7.2.0
 <span class="nv">NEW_VERSION_COMMITISH</span><span class="o">=</span>HEAD
+<span class="nv">STATS_CLOSED_ISSUES</span><span class="o">=</span><span class="si">$(</span><span class="nb">echo</span> <span class="s2">"</span><span class="nv">$MILESTONE_JSON</span><span class="s2">"</span> | jq .closed_issues<span class="si">)</span>
 
 <span class="nb">echo</span> <span class="s2">"### Stats"</span>
 <span class="nb">echo</span> <span class="s2">"* </span><span class="si">$(</span>git log pmd_releases/<span class="k">${</span><span class="nv">LAST_VERSION</span><span class="k">}</span>..<span class="k">${</span><span class="nv">NEW_VERSION_COMMITISH</span><span class="k">}</span> <span class="nt">--oneline</span> <span class="nt">--no-merges</span> |wc <span class="nt">-l</span><span class="si">)</span><span class="s2"> commits"</span>
-<span class="nb">echo</span> <span class="s2">"* </span><span class="si">$(</span>curl <span class="nt">-s</span> <span class="s2">"https://api.github.com/repos/pmd/pmd/milestones?state=all&amp;direction=desc&amp;per_page=5"</span>|jq <span class="s2">".[] | select(.title == </span><span class="se">\"</span><span class="nv">$NEW_VERSION</span><span class="se">\"</span><span class="s2">) | .closed_issues"</span><span class="si">)</span><span class="s2"> closed tickets &amp; PRs"</span>
+<span class="nb">echo</span> <span class="s2">"* </span><span class="k">$((</span><span class="nv">$STATS_CLOSED_ISSUES</span> <span class="o">-</span> <span class="nv">$DEPENDENCIES_COUNT</span><span class="k">))</span><span class="s2"> closed tickets &amp; PRs"</span>
 <span class="nb">echo</span> <span class="s2">"* Days since last release: </span><span class="k">$((</span> <span class="o">(</span> <span class="si">$(</span><span class="nb">date</span> +%s<span class="si">)</span> <span class="o">-</span> <span class="si">$(</span>git log <span class="nt">--max-count</span><span class="o">=</span>1 <span class="nt">--format</span><span class="o">=</span><span class="s2">"%at"</span> pmd_releases/<span class="k">${</span><span class="nv">LAST_VERSION</span><span class="k">}</span><span class="si">)</span> <span class="o">)</span> <span class="o">/</span> <span class="m">86400</span><span class="k">))</span><span class="s2">"</span>
 </code></pre></div></div>
 
-<p>Note: this part is also integrated into <code class="language-plaintext highlighter-rouge">do-release.sh</code>.</p>
+<p>Note: both shell snippets are also integrated into <code class="language-plaintext highlighter-rouge">do-release.sh</code>.</p>
 
 <p>Check in all (version) changes to branch master or any other branch, from which the release takes place:</p>
 
@@ -2396,7 +2420,7 @@ the tag. Here are the steps:</p>
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            April 2024<br /> Site last generated: Jul 25, 2024 <br />
+            July 2024 (7.5.0)<br /> Site last generated: Jul 26, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
