@@ -12,21 +12,18 @@ This is a {{ site.pmd.release_type }} release.
 
 {% tocmaker is_release_notes_processor %}
 
-### 🚀 New and noteworthy
-
 ### 🌟 New and changed rules
 
 #### New Rules
-
 * The new Apex rule {%rule apex/performance/AvoidNonRestrictiveQueries %} finds SOQL and SOSL queries without a where
   or limit statement. This can quickly cause governor limit exceptions.
 
 #### Changed rules
-* {%rule apex/codestyle/ClassNamingConventions %}: Two new properties to configure different patterns
+* {%rule apex/codestyle/ClassNamingConventions %} (Apex Codestyle): Two new properties to configure different patterns
   for inner classes and interfaces: `innerClassPattern` and `innerInterfacePattern`.
 
 #### Renamed rules
-* {%rule ecmascript/errorprone/InaccurateNumericLiteral %} has been renamed from `InnaccurateNumericLiteral`.
+* {%rule ecmascript/errorprone/InaccurateNumericLiteral %} (JavaScript Error Prone) has been renamed from `InnaccurateNumericLiteral`.
   The old rule name still works but is deprecated.
 
 ### 🐛 Fixed Issues
@@ -58,7 +55,6 @@ This is a {{ site.pmd.release_type }} release.
   * [#5091](https://github.com/pmd/pmd/issues/5091): \[core] PMD CPD v7.3.0 gives deprecation warning for skipLexicalErrors even when not used
 
 ### 🚨 API Changes
-
 * javascript
   * The old rule name `InnaccurateNumericLiteral` has been deprecated. Use the new name
     {%rule ecmascript/errorprone/InaccurateNumericLiteral %} instead.
@@ -74,5 +70,9 @@ This is a {{ site.pmd.release_type }} release.
 * [#5118](https://github.com/pmd/pmd/pull/5118): \[java] FP for UnusedPrivateMethod with Jakarta @<!-- -->PostConstruct/PreDestroy annotations - [Krzysztof Debski](https://github.com/kdebski85) (@kdebski85)
 * [#5121](https://github.com/pmd/pmd/pull/5121): \[plsql] Fixed issue with missing optional table alias in MERGE usage - [Arjen Duursma](https://github.com/duursma) (@duursma)
 
-{% endtocmaker %}
+### 📈 Stats
+* 81 commits
+* 32 closed tickets & PRs
+* Days since last release: 27
 
+{% endtocmaker %}
