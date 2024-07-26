@@ -10,7 +10,7 @@ Rules that flag suboptimal code.
 
     <rule name="AvoidConsoleStatements"
           language="ecmascript"
-          since="7.4.0"
+          since="7.5.0"
           message="Avoid console statements since they negatively impact performance"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_performance.html#avoidconsolestatements">
