@@ -1907,7 +1907,9 @@
 <p>"WHEN OTHERS THEN NULL" hides all errors - (Re)RAISE an exception or call RAISE_APPLICATION_ERROR</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ExceptionHandler</span><span class="p">[</span><span class="nt">QualifiedName</span><span class="err">/</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'OTHERS'</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nf">upper-case</span><span class="p">(</span><span class="nt">Statement</span><span class="o">/</span><span class="nt">UnlabelledStatement</span><span class="o">/</span><span class="nt">Expression</span><span class="err">/</span><span class="na">@Image</span><span class="p">)</span><span class="err">=</span><span class="s1">'NULL'</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ExceptionHandler</span><span class="p">[</span><span class="nt">QualifiedName</span><span class="err">/</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'OTHERS'</span><span class="p">]</span><span class="w">
+                  </span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="nt">Statement</span><span class="p">)</span><span class="err">=</span><span class="m">1</span><span class="p">]</span><span class="w">
+                  </span><span class="p">[</span><span class="nt">Statement</span><span class="o">/</span><span class="nt">UnlabelledStatement</span><span class="o">/</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">NullLiteral</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
