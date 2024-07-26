@@ -17,6 +17,15 @@ This is a {{ site.pmd.release_type }} release.
 ### 🐛 Fixed Issues
 
 ### 🚨 API Changes
+* pmd-jsp
+  * {%jdoc jsp::lang.jsp.ast.JspParserImpl %} is deprecated now. It should have been package-private
+    because this is an implementation class that should not be used directly.
+* pmd-velocity
+  * {%jdoc velocity::lang.velocity.ast.VtlParserImpl %} is deprecated now. It should have been package-private
+    because this is an implementation class that should not be used directly.
+* pmd-visualforce
+  * {%jdoc visualforce::lang.visualforce.ast.VfParserImpl %} is deprecated now. It should have been package-private
+    because this is an implementation class that should not be used directly.
 
 ### ✨ External Contributions
 

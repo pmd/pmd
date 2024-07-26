@@ -33,7 +33,10 @@ package net.sourceforge.pmd.lang.jsp.ast;
 /**
  * JSP Parser for PMD.
  * @author Pieter, Application Engineers NV/SA, http://www.ae.be
+ * @deprecated Since 7.5.0. JspParserImpl should have been package private because this is an implementation class
+ * that should not be used directly.
  */
+@Deprecated
 public class JspParserImpl {
 
 
