@@ -65,4 +65,9 @@ class ApexTreeDumpTest extends BaseTreeDumpTest {
     void switchStatements() {
         doTest("SwitchStatements");
     }
+
+    @Test
+    void trigger() {
+        doTest("AccountTrigger");
+    }
 }
