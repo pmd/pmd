@@ -166,7 +166,7 @@ public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JM
      * does not need to be public or have a formal parameter.
      */
     private boolean isMainMethodInImplicitlyDeclaredClass() {
-        return this.getRoot().isImplicitlyDeclaredClass()
+        return this.getRoot().isSimpleCompilationUnit()
                 && "main".equals(this.getName())
                 && !this.hasModifiers(JModifier.PRIVATE)
                 && this.isVoid()

@@ -226,17 +226,11 @@ public final class SymbolTableResolver {
             pushed += pushOnStack(f.singleImportsSymbolTable(top(), singleImports));
 
             // TODO Java 23 implicitly imports "import static java.io.IO.*" for implicitly declared classes
-            boolean implicitlyDeclaredClass = node.isImplicitlyDeclaredClass();
 
             NodeStream<ASTTypeDeclaration> typeDecls = node.getTypeDeclarations();
 
             // types declared inside the compilation unit
             pushed += pushOnStack(f.typesInFile(top(), typeDecls));
-
-            if (implicitlyDeclaredClass) {
-                // TODO the implicitly declared class is a subclass of Object, but not exactly Object...
-                enclosingType.push(node.getTypeSystem().OBJECT);
-            }
 
             setTopSymbolTable(node);
 
@@ -247,10 +241,6 @@ public final class SymbolTableResolver {
 
             // All of the header symbol tables belong to the CompilationUnit
             visitChildren(node, ctx);
-
-            if (implicitlyDeclaredClass) {
-                enclosingType.pop();
-            }
 
             popStack(pushed);
 

@@ -27,28 +27,23 @@ import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
  * <pre class="grammar">
  *
  * CompilationUnit ::= OrdinaryCompilationUnit
- *                   | UnnamedClassCompilationUnit
+ *                   | SimpleCompilationUnit
  *                   | ModularCompilationUnit
  *
- * RegularCompilationUnit ::=
+ * OrdinaryCompilationUnit ::=
  *   {@linkplain ASTPackageDeclaration PackageDeclaration}?
  *   {@linkplain ASTImportDeclaration ImportDeclaration}*
  *   {@linkplain ASTTypeDeclaration TypeDeclaration}*
  *
- * UnnamedClassCompilationUnit ::=
+ * SimpleCompilationUnit ::=
  *   {@linkplain ASTImportDeclaration ImportDeclaration}*
- *   {@linkplain ASTFieldDeclaration FieldDeclaration}*
- *   {@linkplain ASTMethodDeclaration MethodDeclaration}
- *   {@linkplain ASTBodyDeclaration BodyDeclaration}*
+ *   {@linkplain ASTImplicitClassDeclaration ImplicitClassDeclaration}
  *
  * ModularCompilationUnit ::=
  *   {@linkplain ASTImportDeclaration ImportDeclaration}*
  *   {@linkplain ASTModuleDeclaration ModuleDeclaration}
  *
  * </pre>
- *
- * @see <a href="https://openjdk.org/jeps/477">JEP 477: Implicitly Declared Classes and Instance Main Methods (Third Preview)</a> (Java 23)
- * @see #isImplicitlyDeclaredClass()
  */
 public final class ASTCompilationUnit extends AbstractJavaNode implements RootNode {
 
@@ -171,7 +166,7 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements RootNo
 
     @Experimental("Implicitly Declared Classes and Instance Main Methods is a Java 22 / Java 23 Preview feature")
     @NoAttribute
-    public boolean isImplicitlyDeclaredClass() {
-        return children(ASTMethodDeclaration.class).nonEmpty();
+    public boolean isSimpleCompilationUnit() {
+        return children(ASTImplicitClassDeclaration.class).nonEmpty();
     }
 }

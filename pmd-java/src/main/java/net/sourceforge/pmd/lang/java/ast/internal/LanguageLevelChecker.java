@@ -16,7 +16,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
@@ -24,6 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTGuard;
+import net.sourceforge.pmd.lang.java.ast.ASTImplicitClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIntersectionType;
@@ -441,10 +441,8 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
-        public Void visit(ASTCompilationUnit node, T data) {
-            if (node.isImplicitlyDeclaredClass()) {
-                check(node, PreviewFeature.IMPLICITLY_DECLARED_CLASSES_AND_INSTANCE_MAIN_METHODS, data);
-            }
+        public Void visit(ASTImplicitClassDeclaration node, T data) {
+            check(node, PreviewFeature.IMPLICITLY_DECLARED_CLASSES_AND_INSTANCE_MAIN_METHODS, data);
             return null;
         }
 

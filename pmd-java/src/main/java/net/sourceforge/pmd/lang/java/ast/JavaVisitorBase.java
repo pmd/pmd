@@ -76,6 +76,11 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
         return visitTypeDecl(node, data);
     }
 
+    @Override
+    public R visit(ASTImplicitClassDeclaration node, P data) {
+        return visitTypeDecl(node, data);
+    }
+
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Type & ReferenceType">

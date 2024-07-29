@@ -3,6 +3,8 @@
  *     Changes in InstanceOfExpression
  * Support "JEP 476: Module Import Declarations (Preview)" (Java 23)
  *     Changes in ImportDeclaration
+ * Support "JEP 477: Implicitly Declared Classes and Instance Main Methods (Third Preview)" (Java 23)
+ *     Changes in CompilationUnit, added new node ImplicitClassDeclaration
  * Andreas Dangel 07/2024
  *====================================================================
  * Support "JEP 447: Statements before super(...) (Preview)" (Java 22)
@@ -1112,9 +1114,14 @@ ASTCompilationUnit CompilationUnit() :
 
   // SimpleCompilationUnit:
   [
-      ( LOOKAHEAD(3) ClassMemberDeclarationNoMethod() )*
-      ModifierList() MethodDeclaration()
-      ( ClassOrInterfaceBodyDeclaration() )*
+    (
+      { pushEmptyModifierList(); }
+      (
+          ( LOOKAHEAD(3) ClassMemberDeclarationNoMethod() )*
+          ModifierList() MethodDeclaration()
+          ( ClassOrInterfaceBodyDeclaration() )*
+      ) #ClassBody
+    ) #ImplicitClassDeclaration
   ]
 
   <EOF>

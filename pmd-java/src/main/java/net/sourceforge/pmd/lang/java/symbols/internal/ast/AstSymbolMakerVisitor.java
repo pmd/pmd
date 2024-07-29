@@ -79,18 +79,6 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
     }
 
     @Override
-    public Void visit(ASTCompilationUnit node, AstSymFactory data) {
-        if (node.isImplicitlyDeclaredClass()) {
-            JClassSymbol sym = data.setClassSymbol(node);
-            enclosingSymbols.push(sym);
-            visitChildren(node, data);
-            enclosingSymbols.pop();
-            return null;
-        }
-        return super.visit(node, data);
-    }
-
-    @Override
     public Void visitTypeDecl(ASTTypeDeclaration node, AstSymFactory data) {
         String binaryName = makeBinaryName(node);
         @Nullable String canonicalName = makeCanonicalName(node, binaryName);

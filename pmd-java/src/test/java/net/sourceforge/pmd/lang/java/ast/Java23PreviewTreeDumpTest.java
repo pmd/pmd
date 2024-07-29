@@ -32,7 +32,7 @@ class Java23PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
     void jep477ImplicitlyDeclaredClassesAndInstanceMainMethods1() {
         doTest("Jep477_ImplicitlyDeclaredClassesAndInstanceMainMethods1");
         ASTCompilationUnit compilationUnit = java23p.parseResource("Jep477_ImplicitlyDeclaredClassesAndInstanceMainMethods1.java");
-        assertTrue(compilationUnit.isImplicitlyDeclaredClass());
+        assertTrue(compilationUnit.isSimpleCompilationUnit());
         ASTMethodCall methodCall = compilationUnit.descendants(ASTMethodCall.class).first();
         assertNotNull(methodCall.getTypeMirror());
     }

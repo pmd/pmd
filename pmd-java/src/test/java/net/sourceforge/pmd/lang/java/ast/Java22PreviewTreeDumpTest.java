@@ -55,7 +55,7 @@ class Java22PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
     void jep463UnnamedClasses1() {
         doTest("Jep463_UnnamedClasses1");
         ASTCompilationUnit compilationUnit = java22p.parseResource("Jep463_UnnamedClasses1.java");
-        assertTrue(compilationUnit.isImplicitlyDeclaredClass());
+        assertTrue(compilationUnit.isSimpleCompilationUnit());
         ASTMethodCall methodCall = compilationUnit.descendants(ASTMethodCall.class).first();
         assertNotNull(methodCall.getTypeMirror());
     }
@@ -84,13 +84,13 @@ class Java22PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
     @Test
     void jep463TestOrdinaryCompilationUnit() {
         ASTCompilationUnit compilationUnit = java22.parse("public class Foo { public static void main(String[] args) {}}");
-        assertFalse(compilationUnit.isImplicitlyDeclaredClass());
+        assertFalse(compilationUnit.isSimpleCompilationUnit());
     }
 
     @Test
     void jep463TestModularCompilationUnit() {
         ASTCompilationUnit compilationUnit = java22.parse("module foo {}");
-        assertFalse(compilationUnit.isImplicitlyDeclaredClass());
+        assertFalse(compilationUnit.isSimpleCompilationUnit());
     }
 
     @Test
