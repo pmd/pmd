@@ -219,13 +219,17 @@ public final class SymbolTableResolver {
             });
 
             int pushed = 0;
+
+            // Java 23 Preview
+            if (node.isSimpleCompilationUnit()) {
+                pushed += pushOnStack(f.moduleImportJavaBase(top()));
+                pushed += pushOnStack(f.importsOnDemandJavaIo(top()));
+            }
             pushed += pushOnStack(f.moduleImports(top(), moduleImports)); // Java 23 preview
             pushed += pushOnStack(f.importsOnDemand(top(), importsOnDemand));
             pushed += pushOnStack(f.javaLangSymTable(top()));
             pushed += pushOnStack(f.samePackageSymTable(top()));
             pushed += pushOnStack(f.singleImportsSymbolTable(top(), singleImports));
-
-            // TODO Java 23 implicitly imports "import static java.io.IO.*" for implicitly declared classes
 
             NodeStream<ASTTypeDeclaration> typeDecls = node.getTypeDeclarations();
 

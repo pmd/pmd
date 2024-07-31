@@ -6,15 +6,22 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
+import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 
 class Java23PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
@@ -33,8 +40,32 @@ class Java23PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
         doTest("Jep477_ImplicitlyDeclaredClassesAndInstanceMainMethods1");
         ASTCompilationUnit compilationUnit = java23p.parseResource("Jep477_ImplicitlyDeclaredClassesAndInstanceMainMethods1.java");
         assertTrue(compilationUnit.isSimpleCompilationUnit());
-        ASTMethodCall methodCall = compilationUnit.descendants(ASTMethodCall.class).first();
-        assertNotNull(methodCall.getTypeMirror());
+
+        List<ASTMethodCall> methodCalls = compilationUnit.descendants(ASTMethodCall.class).toList();
+        OverloadSelectionResult systemOutPrintln = methodCalls.get(0).getOverloadSelectionInfo(); // System.out.println
+        assertFalse(systemOutPrintln.isFailed());
+        TypeTestUtil.isA("java.io.PrintStream", systemOutPrintln.getMethodType().getDeclaringType());
+
+        ASTVariableDeclarator authorsVar = compilationUnit.descendants(ASTVariableDeclarator.class).filter(decl -> "authors".equals(decl.getName())).first();
+        assertInstanceOf(ASTMethodCall.class, authorsVar.getInitializer());
+        ASTMethodCall initializer = (ASTMethodCall) authorsVar.getInitializer();
+        assertEquals("of", initializer.getMethodName());
+        assertInstanceOf(ASTTypeExpression.class, initializer.getQualifier());
+        ASTTypeExpression qualifier = (ASTTypeExpression) initializer.getQualifier();
+        TypeTestUtil.isA("java.util.List", qualifier.getTypeNode().getTypeMirror());
+    }
+
+    @Test
+    void jep477ImplicitlyDeclaredClassesAndInstanceMainMethods1WithJava23Runtime() {
+        int javaVersion = Integer.parseInt(System.getProperty("java.version").split("\\.")[0].replaceAll("-ea", ""));
+        assumeTrue(javaVersion >= 23, "Java " + javaVersion + " doesn't support java.io.IO. At least Java 23 is needed for this test.");
+
+        ASTCompilationUnit compilationUnit = java23p.parseResource("Jep477_ImplicitlyDeclaredClassesAndInstanceMainMethods1.java");
+
+        List<ASTMethodCall> methodCalls = compilationUnit.descendants(ASTMethodCall.class).toList();
+        OverloadSelectionResult javaIoPrintln = methodCalls.get(1).getOverloadSelectionInfo(); // println from java.io.IO
+        assertFalse(javaIoPrintln.isFailed());
+        TypeTestUtil.isA("java.io.IO", javaIoPrintln.getMethodType().getDeclaringType());
     }
 
     @Test
