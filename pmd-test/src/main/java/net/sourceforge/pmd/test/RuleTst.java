@@ -31,6 +31,7 @@ import org.xml.sax.InputSource;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
+import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
@@ -225,9 +226,10 @@ public abstract class RuleTst {
         return runTestFromString(test.getCode(), rule, test.getLanguageVersion());
     }
 
-    private static final Path PATH_TO_JRT_FS_JAR;
+    private static final ClassLoader TEST_AUXCLASSPATH_CLASSLOADER;
 
     static {
+        final Path PATH_TO_JRT_FS_JAR;
         // find jrt-fs.jar to be added to auxclasspath
         // Similar logic like jdk.internal.jrtfs.SystemImage
         CodeSource codeSource = Object.class.getProtectionDomain().getCodeSource();
@@ -244,6 +246,12 @@ public abstract class RuleTst {
                 throw new IllegalStateException(e);
             }
         }
+
+        try {
+            TEST_AUXCLASSPATH_CLASSLOADER = new ClasspathClassLoader(PATH_TO_JRT_FS_JAR.toString(), PMDConfiguration.class.getClassLoader());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -254,9 +262,7 @@ public abstract class RuleTst {
         configuration.setIgnoreIncrementalAnalysis(true);
         configuration.setDefaultLanguageVersion(languageVersion);
         configuration.setThreads(0); // don't use separate threads
-        configuration.prependAuxClasspath(".");
-        configuration.prependAuxClasspath(PATH_TO_JRT_FS_JAR.toString());
-
+        configuration.setClassLoader(TEST_AUXCLASSPATH_CLASSLOADER);
 
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
             pmd.files().addFile(TextFile.forCharSeq(code, FileId.fromPathLikeString("file"), languageVersion));
