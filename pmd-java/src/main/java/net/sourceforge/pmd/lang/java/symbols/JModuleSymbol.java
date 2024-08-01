@@ -8,6 +8,9 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTModuleDeclaration;
 
+/**
+ * @since 7.5.0
+ */
 public interface JModuleSymbol extends AnnotableSymbol,
                                        BoundToNode<ASTModuleDeclaration> {
 

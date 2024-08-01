@@ -77,11 +77,9 @@ public class AsmSymbolResolver implements SymbolResolver {
 
     @Override
     public @Nullable JModuleSymbol resolveModule(@NonNull String moduleName) {
-        // TODO loading module-info.class from custom jars on the classpath are not supported...
-
         // by convention try to load module-info via "moduleName/module-info.class". The used
         // classloader will need to handle this case to return the correct module-info.class for the
-        // requested module.
+        // requested module. See impl of ClasspathClassLoader in pmd-core.
         InputStream inputStream = classLoader.findResource(moduleName + "/module-info.class");
         if (inputStream != null) {
             return new ModuleStub(this, moduleName, new StreamLoader(moduleName, inputStream));

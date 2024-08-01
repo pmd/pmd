@@ -30,6 +30,9 @@ public interface SymbolResolver {
     @Nullable
     JClassSymbol resolveClassFromBinaryName(@NonNull String binaryName);
 
+    /**
+     * @since 7.5.0
+     */
     @Nullable
     JModuleSymbol resolveModule(@NonNull String moduleName);
 

@@ -398,6 +398,9 @@ public final class TypeSystem {
                            : resolver.resolveClassFromBinaryName(name);
     }
 
+    /**
+     * @since 7.5.0
+     */
     public @Nullable JModuleSymbol getModuleSymbol(String moduleName) {
         return resolver.resolveModule(moduleName);
     }
