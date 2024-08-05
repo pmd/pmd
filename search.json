@@ -150,11 +150,11 @@
 
 
 {
-"title": "Apex support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"title": "Apex Rules",
+"tags": "rule_referencesapex",
 "keywords": "",
-"url": "pmd_languages_apex.html",
-"summary": "Apex-specific features and guidance"
+"url": "pmd_rules_apex.html",
+"summary": "Index of all built-in rules available for Apex"
 }
 
 
@@ -166,11 +166,11 @@
 
 
 {
-"title": "Apex Rules",
-"tags": "rule_referencesapex",
+"title": "Apex support",
+"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
 "keywords": "",
-"url": "pmd_rules_apex.html",
-"summary": "Index of all built-in rules available for Apex"
+"url": "pmd_languages_apex.html",
+"summary": "Apex-specific features and guidance"
 }
 
 
@@ -216,113 +216,19 @@
 
 
 {
-"title": "Best Practices (PLSQL, Best Practices)",
+"title": "Best Practices (XML, Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
-"url": "pmd_rules_plsql_bestpractices.html#best practices",
+"url": "pmd_rules_xml_bestpractices.html#best practices",
 "summary": "Rules which enforce generally accepted best practices."
 }
 ,
 
 {
-"title": "TomKytesDespair (PLSQL, Best Practices)",
+"title": "MissingEncoding (XML, Best Practices)",
 "tags": "",
-"keywords": "TomKytesDespair",
-"url": "pmd_rules_plsql_bestpractices.html#tomkytesdespair",
-"summary": "Rules which enforce generally accepted best practices."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Best Practices (Swift, Best Practices)",
-"tags": "",
-"keywords": "Best Practices",
-"url": "pmd_rules_swift_bestpractices.html#best practices",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "ProhibitedInterfaceBuilder (Swift, Best Practices)",
-"tags": "",
-"keywords": "ProhibitedInterfaceBuilder",
-"url": "pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "UnavailableFunction (Swift, Best Practices)",
-"tags": "",
-"keywords": "UnavailableFunction",
-"url": "pmd_rules_swift_bestpractices.html#unavailablefunction",
-"summary": "Rules which enforce generally accepted best practices."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Best Practices (Java Server Pages, Best Practices)",
-"tags": "",
-"keywords": "Best Practices",
-"url": "pmd_rules_jsp_bestpractices.html#best practices",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "DontNestJsfInJstlIteration (Java Server Pages, Best Practices)",
-"tags": "",
-"keywords": "DontNestJsfInJstlIteration",
-"url": "pmd_rules_jsp_bestpractices.html#dontnestjsfinjstliteration",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "NoClassAttribute (Java Server Pages, Best Practices)",
-"tags": "",
-"keywords": "NoClassAttribute",
-"url": "pmd_rules_jsp_bestpractices.html#noclassattribute",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "NoHtmlComments (Java Server Pages, Best Practices)",
-"tags": "",
-"keywords": "NoHtmlComments",
-"url": "pmd_rules_jsp_bestpractices.html#nohtmlcomments",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "NoJspForward (Java Server Pages, Best Practices)",
-"tags": "",
-"keywords": "NoJspForward",
-"url": "pmd_rules_jsp_bestpractices.html#nojspforward",
+"keywords": "MissingEncoding",
+"url": "pmd_rules_xml_bestpractices.html#missingencoding",
 "summary": "Rules which enforce generally accepted best practices."
 }
 
@@ -827,19 +733,28 @@
 
 
 {
-"title": "Best Practices (Kotlin, Best Practices)",
+"title": "Best Practices (Velocity Template Language (VTL), Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
-"url": "pmd_rules_kotlin_bestpractices.html#best practices",
+"url": "pmd_rules_velocity_bestpractices.html#best practices",
 "summary": "Rules which enforce generally accepted best practices."
 }
 ,
 
 {
-"title": "FunctionNameTooShort (Kotlin, Best Practices)",
+"title": "AvoidReassigningParameters (Velocity Template Language (VTL), Best Practices)",
 "tags": "",
-"keywords": "FunctionNameTooShort",
-"url": "pmd_rules_kotlin_bestpractices.html#functionnametooshort",
+"keywords": "AvoidReassigningParameters",
+"url": "pmd_rules_velocity_bestpractices.html#avoidreassigningparameters",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "UnusedMacroParameter (Velocity Template Language (VTL), Best Practices)",
+"tags": "",
+"keywords": "UnusedMacroParameter",
+"url": "pmd_rules_velocity_bestpractices.html#unusedmacroparameter",
 "summary": "Rules which enforce generally accepted best practices."
 }
 
@@ -856,19 +771,46 @@
 
 
 {
-"title": "Best Practices (XML, Best Practices)",
+"title": "Best Practices (Java Server Pages, Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
-"url": "pmd_rules_xml_bestpractices.html#best practices",
+"url": "pmd_rules_jsp_bestpractices.html#best practices",
 "summary": "Rules which enforce generally accepted best practices."
 }
 ,
 
 {
-"title": "MissingEncoding (XML, Best Practices)",
+"title": "DontNestJsfInJstlIteration (Java Server Pages, Best Practices)",
 "tags": "",
-"keywords": "MissingEncoding",
-"url": "pmd_rules_xml_bestpractices.html#missingencoding",
+"keywords": "DontNestJsfInJstlIteration",
+"url": "pmd_rules_jsp_bestpractices.html#dontnestjsfinjstliteration",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "NoClassAttribute (Java Server Pages, Best Practices)",
+"tags": "",
+"keywords": "NoClassAttribute",
+"url": "pmd_rules_jsp_bestpractices.html#noclassattribute",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "NoHtmlComments (Java Server Pages, Best Practices)",
+"tags": "",
+"keywords": "NoHtmlComments",
+"url": "pmd_rules_jsp_bestpractices.html#nohtmlcomments",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "NoJspForward (Java Server Pages, Best Practices)",
+"tags": "",
+"keywords": "NoJspForward",
+"url": "pmd_rules_jsp_bestpractices.html#nojspforward",
 "summary": "Rules which enforce generally accepted best practices."
 }
 
@@ -950,37 +892,19 @@
 
 
 {
-"title": "Best Practices (HTML, Best Practices)",
+"title": "Best Practices (Kotlin, Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
-"url": "pmd_rules_html_bestpractices.html#best practices",
+"url": "pmd_rules_kotlin_bestpractices.html#best practices",
 "summary": "Rules which enforce generally accepted best practices."
 }
 ,
 
 {
-"title": "AvoidInlineStyles (HTML, Best Practices)",
+"title": "FunctionNameTooShort (Kotlin, Best Practices)",
 "tags": "",
-"keywords": "AvoidInlineStyles",
-"url": "pmd_rules_html_bestpractices.html#avoidinlinestyles",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "UnnecessaryTypeAttribute (HTML, Best Practices)",
-"tags": "",
-"keywords": "UnnecessaryTypeAttribute",
-"url": "pmd_rules_html_bestpractices.html#unnecessarytypeattribute",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "UseAltAttributeForImages (HTML, Best Practices)",
-"tags": "",
-"keywords": "UseAltAttributeForImages",
-"url": "pmd_rules_html_bestpractices.html#usealtattributeforimages",
+"keywords": "FunctionNameTooShort",
+"url": "pmd_rules_kotlin_bestpractices.html#functionnametooshort",
 "summary": "Rules which enforce generally accepted best practices."
 }
 
@@ -1145,28 +1069,104 @@
 
 
 {
-"title": "Best Practices (Velocity Template Language (VTL), Best Practices)",
+"title": "Best Practices (PLSQL, Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
-"url": "pmd_rules_velocity_bestpractices.html#best practices",
+"url": "pmd_rules_plsql_bestpractices.html#best practices",
 "summary": "Rules which enforce generally accepted best practices."
 }
 ,
 
 {
-"title": "AvoidReassigningParameters (Velocity Template Language (VTL), Best Practices)",
+"title": "TomKytesDespair (PLSQL, Best Practices)",
 "tags": "",
-"keywords": "AvoidReassigningParameters",
-"url": "pmd_rules_velocity_bestpractices.html#avoidreassigningparameters",
+"keywords": "TomKytesDespair",
+"url": "pmd_rules_plsql_bestpractices.html#tomkytesdespair",
+"summary": "Rules which enforce generally accepted best practices."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Best Practices (Swift, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_swift_bestpractices.html#best practices",
 "summary": "Rules which enforce generally accepted best practices."
 }
 ,
 
 {
-"title": "UnusedMacroParameter (Velocity Template Language (VTL), Best Practices)",
+"title": "ProhibitedInterfaceBuilder (Swift, Best Practices)",
 "tags": "",
-"keywords": "UnusedMacroParameter",
-"url": "pmd_rules_velocity_bestpractices.html#unusedmacroparameter",
+"keywords": "ProhibitedInterfaceBuilder",
+"url": "pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "UnavailableFunction (Swift, Best Practices)",
+"tags": "",
+"keywords": "UnavailableFunction",
+"url": "pmd_rules_swift_bestpractices.html#unavailablefunction",
+"summary": "Rules which enforce generally accepted best practices."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Best Practices (HTML, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_html_bestpractices.html#best practices",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "AvoidInlineStyles (HTML, Best Practices)",
+"tags": "",
+"keywords": "AvoidInlineStyles",
+"url": "pmd_rules_html_bestpractices.html#avoidinlinestyles",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "UnnecessaryTypeAttribute (HTML, Best Practices)",
+"tags": "",
+"keywords": "UnnecessaryTypeAttribute",
+"url": "pmd_rules_html_bestpractices.html#unnecessarytypeattribute",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "UseAltAttributeForImages (HTML, Best Practices)",
+"tags": "",
+"keywords": "UseAltAttributeForImages",
+"url": "pmd_rules_html_bestpractices.html#usealtattributeforimages",
 "summary": "Rules which enforce generally accepted best practices."
 }
 
@@ -1251,129 +1251,6 @@
 "url": "pmd_languages_coco.html",
 "summary": "Coco features and guidance"
 }
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Code Style (XSL, Code Style)",
-"tags": "",
-"keywords": "Code Style",
-"url": "pmd_rules_xsl_codestyle.html#code style",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "UseConcatOnce (XSL, Code Style)",
-"tags": "",
-"keywords": "UseConcatOnce",
-"url": "pmd_rules_xsl_codestyle.html#useconcatonce",
-"summary": "Rules which enforce a specific coding style."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Code Style (PLSQL, Code Style)",
-"tags": "",
-"keywords": "Code Style",
-"url": "pmd_rules_plsql_codestyle.html#code style",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "AvoidTabCharacter (PLSQL, Code Style)",
-"tags": "",
-"keywords": "AvoidTabCharacter",
-"url": "pmd_rules_plsql_codestyle.html#avoidtabcharacter",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "CodeFormat (PLSQL, Code Style)",
-"tags": "",
-"keywords": "CodeFormat",
-"url": "pmd_rules_plsql_codestyle.html#codeformat",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "MisplacedPragma (PLSQL, Code Style)",
-"tags": "",
-"keywords": "MisplacedPragma",
-"url": "pmd_rules_plsql_codestyle.html#misplacedpragma",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "ForLoopNaming (PLSQL, Code Style)",
-"tags": "",
-"keywords": "ForLoopNaming",
-"url": "pmd_rules_plsql_codestyle.html#forloopnaming",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "LineLength (PLSQL, Code Style)",
-"tags": "",
-"keywords": "LineLength",
-"url": "pmd_rules_plsql_codestyle.html#linelength",
-"summary": "Rules which enforce a specific coding style."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Code Style (Java Server Pages, Code Style)",
-"tags": "",
-"keywords": "Code Style",
-"url": "pmd_rules_jsp_codestyle.html#code style",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "DuplicateJspImports (Java Server Pages, Code Style)",
-"tags": "",
-"keywords": "DuplicateJspImports",
-"url": "pmd_rules_jsp_codestyle.html#duplicatejspimports",
-"summary": "Rules which enforce a specific coding style."
-}
-
-
 
 
 
@@ -1919,6 +1796,64 @@
 
 
 {
+"title": "Code Style (Java Server Pages, Code Style)",
+"tags": "",
+"keywords": "Code Style",
+"url": "pmd_rules_jsp_codestyle.html#code style",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "DuplicateJspImports (Java Server Pages, Code Style)",
+"tags": "",
+"keywords": "DuplicateJspImports",
+"url": "pmd_rules_jsp_codestyle.html#duplicatejspimports",
+"summary": "Rules which enforce a specific coding style."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Code Style (XSL, Code Style)",
+"tags": "",
+"keywords": "Code Style",
+"url": "pmd_rules_xsl_codestyle.html#code style",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "UseConcatOnce (XSL, Code Style)",
+"tags": "",
+"keywords": "UseConcatOnce",
+"url": "pmd_rules_xsl_codestyle.html#useconcatonce",
+"summary": "Rules which enforce a specific coding style."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
 "title": "Code Style (JavaScript, Code Style)",
 "tags": "",
 "keywords": "Code Style",
@@ -2145,6 +2080,71 @@
 
 
 
+
+
+{
+"title": "Code Style (PLSQL, Code Style)",
+"tags": "",
+"keywords": "Code Style",
+"url": "pmd_rules_plsql_codestyle.html#code style",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "AvoidTabCharacter (PLSQL, Code Style)",
+"tags": "",
+"keywords": "AvoidTabCharacter",
+"url": "pmd_rules_plsql_codestyle.html#avoidtabcharacter",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "CodeFormat (PLSQL, Code Style)",
+"tags": "",
+"keywords": "CodeFormat",
+"url": "pmd_rules_plsql_codestyle.html#codeformat",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "MisplacedPragma (PLSQL, Code Style)",
+"tags": "",
+"keywords": "MisplacedPragma",
+"url": "pmd_rules_plsql_codestyle.html#misplacedpragma",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "ForLoopNaming (PLSQL, Code Style)",
+"tags": "",
+"keywords": "ForLoopNaming",
+"url": "pmd_rules_plsql_codestyle.html#forloopnaming",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "LineLength (PLSQL, Code Style)",
+"tags": "",
+"keywords": "LineLength",
+"url": "pmd_rules_plsql_codestyle.html#linelength",
+"summary": "Rules which enforce a specific coding style."
+}
+
+
+
+
+
+,
+
+
+
+
+
 {
 "title": "Configuring rules",
 "tags": "userdocsgetting_started",
@@ -2280,190 +2280,6 @@
 "url": "pmd_userdocs_extending_defining_properties.html",
 "summary": "Learn how to define your own properties both for Java and XPath rules."
 }
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Design (PLSQL, Design)",
-"tags": "",
-"keywords": "Design",
-"url": "pmd_rules_plsql_design.html#design",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "CyclomaticComplexity (PLSQL, Design)",
-"tags": "",
-"keywords": "CyclomaticComplexity",
-"url": "pmd_rules_plsql_design.html#cyclomaticcomplexity",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "ExcessiveMethodLength (PLSQL, Design)",
-"tags": "",
-"keywords": "ExcessiveMethodLength",
-"url": "pmd_rules_plsql_design.html#excessivemethodlength",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "ExcessiveObjectLength (PLSQL, Design)",
-"tags": "",
-"keywords": "ExcessiveObjectLength",
-"url": "pmd_rules_plsql_design.html#excessiveobjectlength",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "ExcessivePackageBodyLength (PLSQL, Design)",
-"tags": "",
-"keywords": "ExcessivePackageBodyLength",
-"url": "pmd_rules_plsql_design.html#excessivepackagebodylength",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "ExcessivePackageSpecificationLength (PLSQL, Design)",
-"tags": "",
-"keywords": "ExcessivePackageSpecificationLength",
-"url": "pmd_rules_plsql_design.html#excessivepackagespecificationlength",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "ExcessiveParameterList (PLSQL, Design)",
-"tags": "",
-"keywords": "ExcessiveParameterList",
-"url": "pmd_rules_plsql_design.html#excessiveparameterlist",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "ExcessiveTypeLength (PLSQL, Design)",
-"tags": "",
-"keywords": "ExcessiveTypeLength",
-"url": "pmd_rules_plsql_design.html#excessivetypelength",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NcssMethodCount (PLSQL, Design)",
-"tags": "",
-"keywords": "NcssMethodCount",
-"url": "pmd_rules_plsql_design.html#ncssmethodcount",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NcssObjectCount (PLSQL, Design)",
-"tags": "",
-"keywords": "NcssObjectCount",
-"url": "pmd_rules_plsql_design.html#ncssobjectcount",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NPathComplexity (PLSQL, Design)",
-"tags": "",
-"keywords": "NPathComplexity",
-"url": "pmd_rules_plsql_design.html#npathcomplexity",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "TooManyFields (PLSQL, Design)",
-"tags": "",
-"keywords": "TooManyFields",
-"url": "pmd_rules_plsql_design.html#toomanyfields",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "TooManyMethods (PLSQL, Design)",
-"tags": "",
-"keywords": "TooManyMethods",
-"url": "pmd_rules_plsql_design.html#toomanymethods",
-"summary": "Rules that help you discover design issues."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Design (Java Server Pages, Design)",
-"tags": "",
-"keywords": "Design",
-"url": "pmd_rules_jsp_design.html#design",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NoInlineScript (Java Server Pages, Design)",
-"tags": "",
-"keywords": "NoInlineScript",
-"url": "pmd_rules_jsp_design.html#noinlinescript",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NoInlineStyleInformation (Java Server Pages, Design)",
-"tags": "",
-"keywords": "NoInlineStyleInformation",
-"url": "pmd_rules_jsp_design.html#noinlinestyleinformation",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NoLongScripts (Java Server Pages, Design)",
-"tags": "",
-"keywords": "NoLongScripts",
-"url": "pmd_rules_jsp_design.html#nolongscripts",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NoScriptlets (Java Server Pages, Design)",
-"tags": "",
-"keywords": "NoScriptlets",
-"url": "pmd_rules_jsp_design.html#noscriptlets",
-"summary": "Rules that help you discover design issues."
-}
-
-
 
 
 
@@ -2865,6 +2681,127 @@
 
 
 {
+"title": "Design (Velocity Template Language (VTL), Design)",
+"tags": "",
+"keywords": "Design",
+"url": "pmd_rules_velocity_design.html#design",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "AvoidDeeplyNestedIfStmts (Velocity Template Language (VTL), Design)",
+"tags": "",
+"keywords": "AvoidDeeplyNestedIfStmts",
+"url": "pmd_rules_velocity_design.html#avoiddeeplynestedifstmts",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "CollapsibleIfStatements (Velocity Template Language (VTL), Design)",
+"tags": "",
+"keywords": "CollapsibleIfStatements",
+"url": "pmd_rules_velocity_design.html#collapsibleifstatements",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "ExcessiveTemplateLength (Velocity Template Language (VTL), Design)",
+"tags": "",
+"keywords": "ExcessiveTemplateLength",
+"url": "pmd_rules_velocity_design.html#excessivetemplatelength",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "NoInlineJavaScript (Velocity Template Language (VTL), Design)",
+"tags": "",
+"keywords": "NoInlineJavaScript",
+"url": "pmd_rules_velocity_design.html#noinlinejavascript",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "NoInlineStyles (Velocity Template Language (VTL), Design)",
+"tags": "",
+"keywords": "NoInlineStyles",
+"url": "pmd_rules_velocity_design.html#noinlinestyles",
+"summary": "Rules that help you discover design issues."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Design (Java Server Pages, Design)",
+"tags": "",
+"keywords": "Design",
+"url": "pmd_rules_jsp_design.html#design",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "NoInlineScript (Java Server Pages, Design)",
+"tags": "",
+"keywords": "NoInlineScript",
+"url": "pmd_rules_jsp_design.html#noinlinescript",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "NoInlineStyleInformation (Java Server Pages, Design)",
+"tags": "",
+"keywords": "NoInlineStyleInformation",
+"url": "pmd_rules_jsp_design.html#noinlinestyleinformation",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "NoLongScripts (Java Server Pages, Design)",
+"tags": "",
+"keywords": "NoLongScripts",
+"url": "pmd_rules_jsp_design.html#nolongscripts",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "NoScriptlets (Java Server Pages, Design)",
+"tags": "",
+"keywords": "NoScriptlets",
+"url": "pmd_rules_jsp_design.html#noscriptlets",
+"summary": "Rules that help you discover design issues."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
 "title": "Design (Apex, Design)",
 "tags": "",
 "keywords": "Design",
@@ -2993,55 +2930,118 @@
 
 
 {
-"title": "Design (Velocity Template Language (VTL), Design)",
+"title": "Design (PLSQL, Design)",
 "tags": "",
 "keywords": "Design",
-"url": "pmd_rules_velocity_design.html#design",
+"url": "pmd_rules_plsql_design.html#design",
 "summary": "Rules that help you discover design issues."
 }
 ,
 
 {
-"title": "AvoidDeeplyNestedIfStmts (Velocity Template Language (VTL), Design)",
+"title": "CyclomaticComplexity (PLSQL, Design)",
 "tags": "",
-"keywords": "AvoidDeeplyNestedIfStmts",
-"url": "pmd_rules_velocity_design.html#avoiddeeplynestedifstmts",
+"keywords": "CyclomaticComplexity",
+"url": "pmd_rules_plsql_design.html#cyclomaticcomplexity",
 "summary": "Rules that help you discover design issues."
 }
 ,
 
 {
-"title": "CollapsibleIfStatements (Velocity Template Language (VTL), Design)",
+"title": "ExcessiveMethodLength (PLSQL, Design)",
 "tags": "",
-"keywords": "CollapsibleIfStatements",
-"url": "pmd_rules_velocity_design.html#collapsibleifstatements",
+"keywords": "ExcessiveMethodLength",
+"url": "pmd_rules_plsql_design.html#excessivemethodlength",
 "summary": "Rules that help you discover design issues."
 }
 ,
 
 {
-"title": "ExcessiveTemplateLength (Velocity Template Language (VTL), Design)",
+"title": "ExcessiveObjectLength (PLSQL, Design)",
 "tags": "",
-"keywords": "ExcessiveTemplateLength",
-"url": "pmd_rules_velocity_design.html#excessivetemplatelength",
+"keywords": "ExcessiveObjectLength",
+"url": "pmd_rules_plsql_design.html#excessiveobjectlength",
 "summary": "Rules that help you discover design issues."
 }
 ,
 
 {
-"title": "NoInlineJavaScript (Velocity Template Language (VTL), Design)",
+"title": "ExcessivePackageBodyLength (PLSQL, Design)",
 "tags": "",
-"keywords": "NoInlineJavaScript",
-"url": "pmd_rules_velocity_design.html#noinlinejavascript",
+"keywords": "ExcessivePackageBodyLength",
+"url": "pmd_rules_plsql_design.html#excessivepackagebodylength",
 "summary": "Rules that help you discover design issues."
 }
 ,
 
 {
-"title": "NoInlineStyles (Velocity Template Language (VTL), Design)",
+"title": "ExcessivePackageSpecificationLength (PLSQL, Design)",
 "tags": "",
-"keywords": "NoInlineStyles",
-"url": "pmd_rules_velocity_design.html#noinlinestyles",
+"keywords": "ExcessivePackageSpecificationLength",
+"url": "pmd_rules_plsql_design.html#excessivepackagespecificationlength",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "ExcessiveParameterList (PLSQL, Design)",
+"tags": "",
+"keywords": "ExcessiveParameterList",
+"url": "pmd_rules_plsql_design.html#excessiveparameterlist",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "ExcessiveTypeLength (PLSQL, Design)",
+"tags": "",
+"keywords": "ExcessiveTypeLength",
+"url": "pmd_rules_plsql_design.html#excessivetypelength",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "NcssMethodCount (PLSQL, Design)",
+"tags": "",
+"keywords": "NcssMethodCount",
+"url": "pmd_rules_plsql_design.html#ncssmethodcount",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "NcssObjectCount (PLSQL, Design)",
+"tags": "",
+"keywords": "NcssObjectCount",
+"url": "pmd_rules_plsql_design.html#ncssobjectcount",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "NPathComplexity (PLSQL, Design)",
+"tags": "",
+"keywords": "NPathComplexity",
+"url": "pmd_rules_plsql_design.html#npathcomplexity",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "TooManyFields (PLSQL, Design)",
+"tags": "",
+"keywords": "TooManyFields",
+"url": "pmd_rules_plsql_design.html#toomanyfields",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "TooManyMethods (PLSQL, Design)",
+"tags": "",
+"keywords": "TooManyMethods",
+"url": "pmd_rules_plsql_design.html#toomanymethods",
 "summary": "Rules that help you discover design issues."
 }
 
@@ -3200,142 +3200,19 @@
 
 
 {
-"title": "Error Prone (PLSQL, Error Prone)",
+"title": "Error Prone (XML, Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
-"url": "pmd_rules_plsql_errorprone.html#error prone",
+"url": "pmd_rules_xml_errorprone.html#error prone",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
 
 {
-"title": "TO_DATE_TO_CHAR (PLSQL, Error Prone)",
+"title": "MistypedCDATASection (XML, Error Prone)",
 "tags": "",
-"keywords": "TO_DATE_TO_CHAR",
-"url": "pmd_rules_plsql_errorprone.html#to_date_to_char",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "TO_DATEWithoutDateFormat (PLSQL, Error Prone)",
-"tags": "",
-"keywords": "TO_DATEWithoutDateFormat",
-"url": "pmd_rules_plsql_errorprone.html#to_datewithoutdateformat",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "TO_TIMESTAMPWithoutDateFormat (PLSQL, Error Prone)",
-"tags": "",
-"keywords": "TO_TIMESTAMPWithoutDateFormat",
-"url": "pmd_rules_plsql_errorprone.html#to_timestampwithoutdateformat",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Error Prone (Swift, Error Prone)",
-"tags": "",
-"keywords": "Error Prone",
-"url": "pmd_rules_swift_errorprone.html#error prone",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "ForceCast (Swift, Error Prone)",
-"tags": "",
-"keywords": "ForceCast",
-"url": "pmd_rules_swift_errorprone.html#forcecast",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "ForceTry (Swift, Error Prone)",
-"tags": "",
-"keywords": "ForceTry",
-"url": "pmd_rules_swift_errorprone.html#forcetry",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Error Prone (Java Server Pages, Error Prone)",
-"tags": "",
-"keywords": "Error Prone",
-"url": "pmd_rules_jsp_errorprone.html#error prone",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "JspEncoding (Java Server Pages, Error Prone)",
-"tags": "",
-"keywords": "JspEncoding",
-"url": "pmd_rules_jsp_errorprone.html#jspencoding",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Error Prone (Maven POM, Error Prone)",
-"tags": "",
-"keywords": "Error Prone",
-"url": "pmd_rules_pom_errorprone.html#error prone",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "InvalidDependencyTypes (Maven POM, Error Prone)",
-"tags": "",
-"keywords": "InvalidDependencyTypes",
-"url": "pmd_rules_pom_errorprone.html#invaliddependencytypes",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "ProjectVersionAsDependencyVersion (Maven POM, Error Prone)",
-"tags": "",
-"keywords": "ProjectVersionAsDependencyVersion",
-"url": "pmd_rules_pom_errorprone.html#projectversionasdependencyversion",
+"keywords": "MistypedCDATASection",
+"url": "pmd_rules_xml_errorprone.html#mistypedcdatasection",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 
@@ -4146,19 +4023,28 @@
 
 
 {
-"title": "Error Prone (Kotlin, Error Prone)",
+"title": "Error Prone (Velocity Template Language (VTL), Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
-"url": "pmd_rules_kotlin_errorprone.html#error prone",
+"url": "pmd_rules_velocity_errorprone.html#error prone",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
 
 {
-"title": "OverrideBothEqualsAndHashcode (Kotlin, Error Prone)",
+"title": "EmptyForeachStmt (Velocity Template Language (VTL), Error Prone)",
 "tags": "",
-"keywords": "OverrideBothEqualsAndHashcode",
-"url": "pmd_rules_kotlin_errorprone.html#overridebothequalsandhashcode",
+"keywords": "EmptyForeachStmt",
+"url": "pmd_rules_velocity_errorprone.html#emptyforeachstmt",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "EmptyIfStmt (Velocity Template Language (VTL), Error Prone)",
+"tags": "",
+"keywords": "EmptyIfStmt",
+"url": "pmd_rules_velocity_errorprone.html#emptyifstmt",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 
@@ -4175,19 +4061,19 @@
 
 
 {
-"title": "Error Prone (XML, Error Prone)",
+"title": "Error Prone (Java Server Pages, Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
-"url": "pmd_rules_xml_errorprone.html#error prone",
+"url": "pmd_rules_jsp_errorprone.html#error prone",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
 
 {
-"title": "MistypedCDATASection (XML, Error Prone)",
+"title": "JspEncoding (Java Server Pages, Error Prone)",
 "tags": "",
-"keywords": "MistypedCDATASection",
-"url": "pmd_rules_xml_errorprone.html#mistypedcdatasection",
+"keywords": "JspEncoding",
+"url": "pmd_rules_jsp_errorprone.html#jspencoding",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 
@@ -4244,6 +4130,73 @@
 "tags": "",
 "keywords": "InnaccurateNumericLiteral",
 "url": "pmd_rules_ecmascript_errorprone.html#innaccuratenumericliteral",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Error Prone (Maven POM, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_pom_errorprone.html#error prone",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "InvalidDependencyTypes (Maven POM, Error Prone)",
+"tags": "",
+"keywords": "InvalidDependencyTypes",
+"url": "pmd_rules_pom_errorprone.html#invaliddependencytypes",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "ProjectVersionAsDependencyVersion (Maven POM, Error Prone)",
+"tags": "",
+"keywords": "ProjectVersionAsDependencyVersion",
+"url": "pmd_rules_pom_errorprone.html#projectversionasdependencyversion",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Error Prone (Kotlin, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_kotlin_errorprone.html#error prone",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "OverrideBothEqualsAndHashcode (Kotlin, Error Prone)",
+"tags": "",
+"keywords": "OverrideBothEqualsAndHashcode",
+"url": "pmd_rules_kotlin_errorprone.html#overridebothequalsandhashcode",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 
@@ -4397,28 +4350,75 @@
 
 
 {
-"title": "Error Prone (Velocity Template Language (VTL), Error Prone)",
+"title": "Error Prone (PLSQL, Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
-"url": "pmd_rules_velocity_errorprone.html#error prone",
+"url": "pmd_rules_plsql_errorprone.html#error prone",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
 
 {
-"title": "EmptyForeachStmt (Velocity Template Language (VTL), Error Prone)",
+"title": "TO_DATE_TO_CHAR (PLSQL, Error Prone)",
 "tags": "",
-"keywords": "EmptyForeachStmt",
-"url": "pmd_rules_velocity_errorprone.html#emptyforeachstmt",
+"keywords": "TO_DATE_TO_CHAR",
+"url": "pmd_rules_plsql_errorprone.html#to_date_to_char",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
 
 {
-"title": "EmptyIfStmt (Velocity Template Language (VTL), Error Prone)",
+"title": "TO_DATEWithoutDateFormat (PLSQL, Error Prone)",
 "tags": "",
-"keywords": "EmptyIfStmt",
-"url": "pmd_rules_velocity_errorprone.html#emptyifstmt",
+"keywords": "TO_DATEWithoutDateFormat",
+"url": "pmd_rules_plsql_errorprone.html#to_datewithoutdateformat",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "TO_TIMESTAMPWithoutDateFormat (PLSQL, Error Prone)",
+"tags": "",
+"keywords": "TO_TIMESTAMPWithoutDateFormat",
+"url": "pmd_rules_plsql_errorprone.html#to_timestampwithoutdateformat",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Error Prone (Swift, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_swift_errorprone.html#error prone",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "ForceCast (Swift, Error Prone)",
+"tags": "",
+"keywords": "ForceCast",
+"url": "pmd_rules_swift_errorprone.html#forcecast",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "ForceTry (Swift, Error Prone)",
+"tags": "",
+"keywords": "ForceTry",
+"url": "pmd_rules_swift_errorprone.html#forcetry",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 
@@ -4563,11 +4563,11 @@
 
 
 {
-"title": "HTML support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"title": "HTML Rules",
+"tags": "rule_referenceshtml",
 "keywords": "",
-"url": "pmd_languages_html.html",
-"summary": "HTML-specific features and guidance"
+"url": "pmd_rules_html.html",
+"summary": "Index of all built-in rules available for HTML"
 }
 
 
@@ -4579,11 +4579,11 @@
 
 
 {
-"title": "HTML Rules",
-"tags": "rule_referenceshtml",
+"title": "HTML support",
+"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
 "keywords": "",
-"url": "pmd_rules_html.html",
-"summary": "Index of all built-in rules available for HTML"
+"url": "pmd_languages_html.html",
+"summary": "HTML-specific features and guidance"
 }
 
 
@@ -4691,11 +4691,11 @@
 
 
 {
-"title": "Java support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"title": "Java Rules",
+"tags": "rule_referencesjava",
 "keywords": "",
-"url": "pmd_languages_java.html",
-"summary": "Java-specific features and guidance"
+"url": "pmd_rules_java.html",
+"summary": "Index of all built-in rules available for Java"
 }
 
 
@@ -4707,11 +4707,11 @@
 
 
 {
-"title": "Java Rules",
-"tags": "rule_referencesjava",
+"title": "Java support",
+"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
 "keywords": "",
-"url": "pmd_rules_java.html",
-"summary": "Index of all built-in rules available for Java"
+"url": "pmd_languages_java.html",
+"summary": "Java-specific features and guidance"
 }
 
 
@@ -4739,11 +4739,11 @@
 
 
 {
-"title": "JSP Support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"title": "Java Server Pages Rules",
+"tags": "rule_referencesjsp",
 "keywords": "",
-"url": "pmd_languages_jsp.html",
-"summary": "JSP-specific features and guidance"
+"url": "pmd_rules_jsp.html",
+"summary": "Index of all built-in rules available for Java Server Pages"
 }
 
 
@@ -4755,11 +4755,11 @@
 
 
 {
-"title": "Java Server Pages Rules",
-"tags": "rule_referencesjsp",
+"title": "JSP Support",
+"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
 "keywords": "",
-"url": "pmd_rules_jsp.html",
-"summary": "Index of all built-in rules available for Java Server Pages"
+"url": "pmd_languages_jsp.html",
+"summary": "JSP-specific features and guidance"
 }
 
 
@@ -4787,11 +4787,11 @@
 
 
 {
-"title": "Kotlin Support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"title": "Kotlin Rules",
+"tags": "rule_referenceskotlin",
 "keywords": "",
-"url": "pmd_languages_kotlin.html",
-"summary": "Kotlin-specific features and guidance"
+"url": "pmd_rules_kotlin.html",
+"summary": "Index of all built-in rules available for Kotlin"
 }
 
 
@@ -4803,11 +4803,11 @@
 
 
 {
-"title": "Kotlin Rules",
-"tags": "rule_referenceskotlin",
+"title": "Kotlin Support",
+"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
 "keywords": "",
-"url": "pmd_rules_kotlin.html",
-"summary": "Index of all built-in rules available for Kotlin"
+"url": "pmd_languages_kotlin.html",
+"summary": "Kotlin-specific features and guidance"
 }
 
 
@@ -5011,11 +5011,11 @@
 
 
 {
-"title": "Modelica support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"title": "Modelica Rules",
+"tags": "rule_referencesmodelica",
 "keywords": "",
-"url": "pmd_languages_modelica.html",
-"summary": "Modelica-specific features and guidance"
+"url": "pmd_rules_modelica.html",
+"summary": "Index of all built-in rules available for Modelica"
 }
 
 
@@ -5027,11 +5027,11 @@
 
 
 {
-"title": "Modelica Rules",
-"tags": "rule_referencesmodelica",
+"title": "Modelica support",
+"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
 "keywords": "",
-"url": "pmd_rules_modelica.html",
-"summary": "Index of all built-in rules available for Modelica"
+"url": "pmd_languages_modelica.html",
+"summary": "Modelica-specific features and guidance"
 }
 
 
@@ -5207,35 +5207,6 @@
 "url": "pmd_languages_objectivec.html",
 "summary": "Objective-C-specific features and guidance"
 }
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Performance (XSL, Performance)",
-"tags": "",
-"keywords": "Performance",
-"url": "pmd_rules_xsl_performance.html#performance",
-"summary": "Rules that flag suboptimal code."
-}
-,
-
-{
-"title": "AvoidAxisNavigation (XSL, Performance)",
-"tags": "",
-"keywords": "AvoidAxisNavigation",
-"url": "pmd_rules_xsl_performance.html#avoidaxisnavigation",
-"summary": "Rules that flag suboptimal code."
-}
-
-
 
 
 
@@ -5484,6 +5455,35 @@
 
 
 {
+"title": "Performance (XSL, Performance)",
+"tags": "",
+"keywords": "Performance",
+"url": "pmd_rules_xsl_performance.html#performance",
+"summary": "Rules that flag suboptimal code."
+}
+,
+
+{
+"title": "AvoidAxisNavigation (XSL, Performance)",
+"tags": "",
+"keywords": "AvoidAxisNavigation",
+"url": "pmd_rules_xsl_performance.html#avoidaxisnavigation",
+"summary": "Rules that flag suboptimal code."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
 "title": "Performance (Apex, Performance)",
 "tags": "",
 "keywords": "Performance",
@@ -5579,11 +5579,11 @@
 
 
 {
-"title": "PL/SQL Support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"title": "PLSQL Rules",
+"tags": "rule_referencesplsql",
 "keywords": "",
-"url": "pmd_languages_plsql.html",
-"summary": "PL/SQL-specific features and guidance"
+"url": "pmd_rules_plsql.html",
+"summary": "Index of all built-in rules available for PLSQL"
 }
 
 
@@ -5595,11 +5595,11 @@
 
 
 {
-"title": "PLSQL Rules",
-"tags": "rule_referencesplsql",
+"title": "PL/SQL Support",
+"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
 "keywords": "",
-"url": "pmd_rules_plsql.html",
-"summary": "Index of all built-in rules available for PLSQL"
+"url": "pmd_languages_plsql.html",
+"summary": "PL/SQL-specific features and guidance"
 }
 
 
@@ -5851,22 +5851,6 @@
 
 
 {
-"title": "Scala support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
-"keywords": "",
-"url": "pmd_languages_scala.html",
-"summary": "Scala-specific features and guidance"
-}
-
-
-
-,
-
-
-
-
-
-{
 "title": "Scala Rules",
 "tags": "rule_referencesscala",
 "keywords": "",
@@ -5882,41 +5866,19 @@
 
 
 
-
-
-
-
 {
-"title": "Security (Java Server Pages, Security)",
-"tags": "",
-"keywords": "Security",
-"url": "pmd_rules_jsp_security.html#security",
-"summary": "Rules that flag potential security flaws."
-}
-,
-
-{
-"title": "IframeMissingSrcAttribute (Java Server Pages, Security)",
-"tags": "",
-"keywords": "IframeMissingSrcAttribute",
-"url": "pmd_rules_jsp_security.html#iframemissingsrcattribute",
-"summary": "Rules that flag potential security flaws."
-}
-,
-
-{
-"title": "NoUnsanitizedJSPExpression (Java Server Pages, Security)",
-"tags": "",
-"keywords": "NoUnsanitizedJSPExpression",
-"url": "pmd_rules_jsp_security.html#nounsanitizedjspexpression",
-"summary": "Rules that flag potential security flaws."
+"title": "Scala support",
+"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"keywords": "",
+"url": "pmd_languages_scala.html",
+"summary": "Scala-specific features and guidance"
 }
 
 
 
-
-
 ,
+
+
 
 
 
@@ -5947,6 +5909,44 @@
 "tags": "",
 "keywords": "InsecureCryptoIv",
 "url": "pmd_rules_java_security.html#insecurecryptoiv",
+"summary": "Rules that flag potential security flaws."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Security (Java Server Pages, Security)",
+"tags": "",
+"keywords": "Security",
+"url": "pmd_rules_jsp_security.html#security",
+"summary": "Rules that flag potential security flaws."
+}
+,
+
+{
+"title": "IframeMissingSrcAttribute (Java Server Pages, Security)",
+"tags": "",
+"keywords": "IframeMissingSrcAttribute",
+"url": "pmd_rules_jsp_security.html#iframemissingsrcattribute",
+"summary": "Rules that flag potential security flaws."
+}
+,
+
+{
+"title": "NoUnsanitizedJSPExpression (Java Server Pages, Security)",
+"tags": "",
+"keywords": "NoUnsanitizedJSPExpression",
+"url": "pmd_rules_jsp_security.html#nounsanitizedjspexpression",
 "summary": "Rules that flag potential security flaws."
 }
 
@@ -6168,11 +6168,11 @@
 
 
 {
-"title": "Swift support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"title": "Swift Rules",
+"tags": "rule_referencesswift",
 "keywords": "",
-"url": "pmd_languages_swift.html",
-"summary": "Swift-specific features and guidance"
+"url": "pmd_rules_swift.html",
+"summary": "Index of all built-in rules available for Swift"
 }
 
 
@@ -6184,11 +6184,11 @@
 
 
 {
-"title": "Swift Rules",
-"tags": "rule_referencesswift",
+"title": "Swift support",
+"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
 "keywords": "",
-"url": "pmd_rules_swift.html",
-"summary": "Index of all built-in rules available for Swift"
+"url": "pmd_languages_swift.html",
+"summary": "Swift-specific features and guidance"
 }
 
 
@@ -6274,22 +6274,6 @@
 
 
 {
-"title": "Velocity Template Language (VTL) support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
-"keywords": "",
-"url": "pmd_languages_velocity.html",
-"summary": "VTL-specific features and guidance"
-}
-
-
-
-,
-
-
-
-
-
-{
 "title": "Velocity Template Language (VTL) Rules",
 "tags": "rule_referencesvelocity",
 "keywords": "",
@@ -6306,11 +6290,11 @@
 
 
 {
-"title": "Visualforce Support",
+"title": "Velocity Template Language (VTL) support",
 "tags": "languagesPmdCapableLanguageCpdCapableLanguage",
 "keywords": "",
-"url": "pmd_languages_visualforce.html",
-"summary": "Visualforce-specific features and guidance"
+"url": "pmd_languages_velocity.html",
+"summary": "VTL-specific features and guidance"
 }
 
 
@@ -6327,6 +6311,22 @@
 "keywords": "",
 "url": "pmd_rules_visualforce.html",
 "summary": "Index of all built-in rules available for Salesforce Visualforce"
+}
+
+
+
+,
+
+
+
+
+
+{
+"title": "Visualforce Support",
+"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"keywords": "",
+"url": "pmd_languages_visualforce.html",
+"summary": "Visualforce-specific features and guidance"
 }
 
 
@@ -6418,11 +6418,11 @@
 
 
 {
-"title": "XML support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"title": "XML Rules",
+"tags": "rule_referencesxml",
 "keywords": "",
-"url": "pmd_languages_xml.html",
-"summary": "XML-specific features and guidance"
+"url": "pmd_rules_xml.html",
+"summary": "Index of all built-in rules available for XML"
 }
 
 
@@ -6434,11 +6434,11 @@
 
 
 {
-"title": "XML Rules",
-"tags": "rule_referencesxml",
+"title": "XML support",
+"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
 "keywords": "",
-"url": "pmd_rules_xml.html",
-"summary": "Index of all built-in rules available for XML"
+"url": "pmd_languages_xml.html",
+"summary": "XML-specific features and guidance"
 }
 
 
