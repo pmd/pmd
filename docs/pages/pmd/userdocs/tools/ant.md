@@ -213,7 +213,7 @@ accordingly and this rule won't be executed.
 The specific version of a language to be used is selected via the `sourceLanguage`
 nested element. Example:
 
-    <sourceLanguage name="java" version="22"/>
+    <sourceLanguage name="java" version="23"/>
 
 The available versions depend on the language. You can get a list of the currently supported language versions
 via the CLI option `--help`.

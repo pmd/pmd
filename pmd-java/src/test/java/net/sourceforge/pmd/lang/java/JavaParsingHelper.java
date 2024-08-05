@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java;
 
 import static net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
@@ -45,7 +47,15 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
      * default options of JavaParsingHelper. This allows constants like
      * the null type to be compared.
      */
-    public static final TypeSystem TEST_TYPE_SYSTEM = TypeSystem.usingClassLoaderClasspath(JavaParsingHelper.class.getClassLoader());
+    public static final TypeSystem TEST_TYPE_SYSTEM;
+
+    static {
+        try {
+            TEST_TYPE_SYSTEM = TypeSystem.usingClassLoaderClasspath(new ClasspathClassLoader("", JavaParsingHelper.class.getClassLoader()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /** This runs all processing stages when parsing. */
     public static final JavaParsingHelper DEFAULT = new JavaParsingHelper(

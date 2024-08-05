@@ -551,4 +551,41 @@ public class CommentRequirement {
 }
 ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>Traditional Javadoc with single line comment intercepted</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * Class level comment.
+ */
+// this single line comment is ignored. The above javadoc is used.
+public class Foo {
+}
+]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>Markdown Javadoc Comment (since java 23, JEP 467)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+/// Class level comment.
+public class Foo {
+    /// the bar counter
+    // some other single line comment
+    public int bar;
+    // this is missing a javadoc comment
+    public int anotherField;
+    /// the test enum
+    public enum Enum {}
+    /// This is the comment for the constructor
+    public Foo() {}
+    /// This is the comment for the first method
+    public void doNothing() {}
+    /// This is the comment for the second method
+    public void doSomething() {}
+}
+]]></code>
+    </test-code>
 </test-data>

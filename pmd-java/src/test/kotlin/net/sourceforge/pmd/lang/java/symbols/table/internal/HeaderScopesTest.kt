@@ -42,6 +42,7 @@ class HeaderScopesTest : ProcessorTestSpec({
     val staticSingleMemberImports = "static single-member imports"
     val onDemandTypeImports = "on-demand type imports"
     val onDemandStaticImports = "on-demand static imports"
+    var moduleImport = "module import"
 
     // The test data is placed in a short package to allow typing out FQCNs here for readability
 
@@ -354,5 +355,22 @@ class HeaderScopesTest : ProcessorTestSpec({
 
         val block = acu.descendants(ASTBlock::class.java).firstOrThrow()
         block.symbolTable.types().resolve("Inner").shouldBeEmpty()
+    }
+
+    parserTest("$moduleImport of java.base should resolve java.util.List") {
+        assertNoSemanticErrorsOrWarnings()
+
+        val acu = parser.parse(
+                """
+            package some.pkg;
+            import module java.base;
+            class Foo {
+                static {}
+            }
+            """
+        )
+
+        val block = acu.descendants(ASTBlock::class.java).firstOrThrow()
+        block.symbolTable.types().shouldResolveToClass("List", "java.util.List")
     }
 })
