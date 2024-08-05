@@ -820,7 +820,7 @@
             <dependency>
                 <groupId>org.pcollections</groupId>
                 <artifactId>pcollections</artifactId>
-                <version>3.2.0</version>
+                <version>4.0.2</version>
             </dependency>
             <dependency>
                 <groupId>net.sourceforge.pmd</groupId>
