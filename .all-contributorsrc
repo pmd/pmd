@@ -7708,6 +7708,16 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "maxwai",
+      "name": "Maximilian Waidelich",
+      "avatar_url": "https://avatars.githubusercontent.com/u/44324946?v=4",
+      "profile": "https://github.com/maxwai",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
