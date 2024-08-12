@@ -12,7 +12,7 @@
   <rule name="CognitiveComplexity"
         language="java"
         message="The {0} ''{1}'' has a cognitive complexity of {2}"
-        since="7.4.1"
+        since="7.5.0"
         class="net.sourceforge.pmd.lang.java.rule.metric.CognitiveComplexityRule"
         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#cognitivecomplexity">
     <description><![CDATA[
@@ -70,7 +70,7 @@ public class Foo {
   <rule name="CyclomaticComplexity"
         language="java"
         message="The {0} ''{1}'' has a{2} cyclomatic complexity of {3}."
-        since="7.4.1"
+        since="7.5.0"
         class="net.sourceforge.pmd.lang.java.rule.metric.CyclomaticComplexityRule"
         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#cyclomaticcomplexity">
     <description>
@@ -118,7 +118,7 @@ class Foo {
 
   <rule name="NPathComplexity"
         language="java"
-        since="7.4.1"
+        since="7.5.0"
         message="The {0} ''{1}'' has an NPath complexity of {2}"
         class="net.sourceforge.pmd.lang.java.rule.metric.NPathComplexityRule"
         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#npathcomplexity">
@@ -175,7 +175,7 @@ public class Foo {
   <rule name="NcssCount"
         language="java"
         message="The {0} ''{1}'' has a NCSS line count of {2}."
-        since="7.4.1"
+        since="7.5.0"
         class="net.sourceforge.pmd.lang.java.rule.metric.NcssCountRule"
         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#ncsscount">
     <description>
