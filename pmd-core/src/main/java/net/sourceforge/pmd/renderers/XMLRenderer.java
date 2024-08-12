@@ -60,19 +60,32 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
         setProperty(ENCODING, encoding);
     }
 
+    public XMLRenderer(String name, String description) {
+        super(name, description);
+        definePropertyDescriptor(ENCODING);
+    }
+
+    /* default */ XMLStreamWriter getXmlWriter() {
+        return xmlWriter;
+    }
+
     @Override
     public String defaultFileExtension() {
         return "xml";
     }
 
-    @Override
-    public void start() throws IOException {
+    /* default */ void initLineSeparator() throws UnsupportedEncodingException {
         String encoding = getProperty(ENCODING);
         String unmarkedEncoding = toUnmarkedEncoding(encoding);
         lineSeparator = System.lineSeparator().getBytes(unmarkedEncoding);
+    }
+
+    @Override
+    public void start() throws IOException {
+        initLineSeparator();
 
         try {
-            xmlWriter.writeStartDocument(encoding, "1.0");
+            xmlWriter.writeStartDocument(getProperty(ENCODING), "1.0");
             writeNewLine();
             xmlWriter.setDefaultNamespace(PMD_REPORT_NS_URI);
             xmlWriter.writeStartElement(PMD_REPORT_NS_URI, "pmd");
@@ -115,7 +128,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
      * @throws XMLStreamException if XMLStreamWriter couldn't be flushed.
      * @throws IOException if an I/O error occurs.
      */
-    private void writeNewLine() throws XMLStreamException, IOException {
+    /* default */  void writeNewLine() throws XMLStreamException, IOException {
         /*
          * Note: we are not using xmlWriter.writeCharacters(PMD.EOL), because some
          * XMLStreamWriter implementations might do extra encoding for \r and/or \n.

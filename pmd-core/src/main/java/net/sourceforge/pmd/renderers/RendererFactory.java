@@ -48,6 +48,7 @@ public final class RendererFactory {
         map.put(EmptyRenderer.NAME, EmptyRenderer.class);
         map.put(JsonRenderer.NAME, JsonRenderer.class);
         map.put(SarifRenderer.NAME, SarifRenderer.class);
+        map.put(MetricsRenderer.METRICS_NAME, MetricsRenderer.class);
         REPORT_FORMAT_TO_RENDERER = Collections.unmodifiableMap(map);
     }
 

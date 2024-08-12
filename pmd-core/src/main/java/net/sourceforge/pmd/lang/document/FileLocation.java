@@ -174,4 +174,22 @@ public final class FileLocation {
     public String toString() {
         return "!debug only! " + startPosToStringWithFile();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof FileLocation)) {
+            return false;
+        }
+        FileLocation that = (FileLocation) o;
+        return beginLine == that.beginLine && endLine == that.endLine && beginColumn == that.beginColumn && endColumn == that.endColumn && Objects.equals(
+                fileName, that.fileName) && Objects.equals(region, that.region);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(beginLine, endLine);
+    }
 }

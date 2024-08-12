@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ruleset name="Metric"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+  <description>
+    Rules that output metrics.
+  </description>
+
+  <rule name="CognitiveComplexity"
+        language="java"
+        message="The {0} ''{1}'' has a cognitive complexity of {2}"
+        since="7.4.1"
+        class="net.sourceforge.pmd.lang.java.rule.metric.CognitiveComplexityRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#cognitivecomplexity">
+    <description><![CDATA[
+            Methods that are highly complex are difficult to read and more costly to maintain. If you include too much decisional
+            logic within a single method, you make its behavior hard to understand and more difficult to modify.
+
+            Cognitive complexity is a measure of how difficult it is for humans to read and understand a method. Code that contains
+            a break in the control flow is more complex, whereas the use of language shorthands doesn't increase the level of
+            complexity. Nested control flows can make a method more difficult to understand, with each additional nesting of the
+            control flow leading to an increase in cognitive complexity.
+
+            Information about Cognitive complexity can be found in the original paper here:
+            <https://www.sonarsource.com/docs/CognitiveComplexity.pdf>
+        ]]></description>
+    <priority>3</priority>
+    <example>
+      <![CDATA[
+public class Foo {
+  // Has a cognitive complexity of 0
+  public void createAccount() {
+    Account account = new Account("PMD");
+    // save account
+  }
+
+  // Has a cognitive complexity of 1
+  public Boolean setPhoneNumberIfNotExisting(Account a, String phone) {
+    if (a.phone == null) {                          // +1
+      a.phone = phone;
+      return true;
+    }
+
+    return false;
+  }
+
+  // Has a cognitive complexity of 4
+  public void updateContacts(List<Contact> contacts) {
+    List<Contact> contactsToUpdate = new ArrayList<Contact>();
+
+    for (Contact contact : contacts) {                           // +1
+      if (contact.department.equals("Finance")) {                // +2 (nesting = 1)
+        contact.title = "Finance Specialist";
+        contactsToUpdate.add(contact);
+      } else if (contact.department.equals("Sales")) {           // +1
+        contact.title = "Sales Specialist";
+        contactsToUpdate.add(contact);
+      }
+    }
+    // save contacts
+  }
+}
+]]>
+    </example>
+  </rule>
+
+  <rule name="CyclomaticComplexity"
+        language="java"
+        message="The {0} ''{1}'' has a{2} cyclomatic complexity of {3}."
+        since="7.4.1"
+        class="net.sourceforge.pmd.lang.java.rule.metric.CyclomaticComplexityRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#cyclomaticcomplexity">
+    <description>
+The complexity of methods directly affects maintenance costs and readability. Concentrating too much decisional logic
+in a single method makes its behaviour hard to read and change.
+
+Cyclomatic complexity assesses the complexity of a method by counting the number of decision points in a method,
+plus one for the method entry. Decision points are places where the control flow jumps to another place in the
+program. As such, they include all control flow statements, such as `if`, `while`, `for`, and `case`. For more
+details on the calculation, see the documentation {% jdoc java::lang.java.metrics.JavaMetrics#CYCLO %}.
+
+Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
+high complexity, and 11+ is very high complexity.
+    </description>
+    <priority>3</priority>
+    <example>
+      <![CDATA[
+class Foo {
+  void baseCyclo() {                // Cyclo = 1
+    highCyclo();
+  }
+
+  void highCyclo() {                // Cyclo = 10: reported!
+    int x = 0, y = 2;
+    boolean a = false, b = true;
+
+    if (a && (y == 1 ? b : true)) { // +3
+      if (y == x) {                 // +1
+        while (true) {              // +1
+          if (x++ < 20) {           // +1
+            break;                  // +1
+          }
+        }
+      } else if (y == t && !d) {    // +2
+        x = a ? y : x;              // +1
+      } else {
+        x = 2;
+      }
+    }
+  }
+}
+]]>
+    </example>
+  </rule>
+
+  <rule name="NPathComplexity"
+        language="java"
+        since="7.4.1"
+        message="The {0} ''{1}'' has an NPath complexity of {2}"
+        class="net.sourceforge.pmd.lang.java.rule.metric.NPathComplexityRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#npathcomplexity">
+    <description>
+      The NPath complexity of a method is the number of acyclic execution paths through that method.
+      While cyclomatic complexity counts the number of decision points in a method, NPath counts the
+      number of
+      full paths from the beginning to the end of the block of the method. That metric grows
+      exponentially, as
+      it multiplies the complexity of statements in the same block. For more details on the
+      calculation, see the
+      documentation {% jdoc java::lang.java.metrics.JavaMetrics#NPATH %}.
+    </description>
+    <priority>3</priority>
+    <example>
+      <![CDATA[
+public class Foo {
+  public static void bar() { // Ncss = 252: reported!
+    boolean a, b = true;
+    try { // 2 * 2 + 2 = 6
+      if (true) { // 2
+        List buz = new ArrayList();
+      }
+
+      for(int i = 0; i < 19; i++) { // * 2
+        List buz = new ArrayList();
+      }
+    } catch(Exception e) {
+      if (true) { // 2
+        e.printStackTrace();
+      }
+    }
+
+    while (j++ < 20) { //  * 2
+      List buz = new ArrayList();
+    }
+
+    switch(j) { // * 7
+      case 1:
+      case 2: break;
+      case 3: j = 5; break;
+      case 4: if (b && a) { bar(); } break;
+      default: break;
+    }
+
+    do { // * 3
+        List buz = new ArrayList();
+    } while (a && j++ < 30);
+  }
+}
+ ]]>
+    </example>
+  </rule>
+  <rule name="NcssCount"
+        language="java"
+        message="The {0} ''{1}'' has a NCSS line count of {2}."
+        since="7.4.1"
+        class="net.sourceforge.pmd.lang.java.rule.metric.NcssCountRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#ncsscount">
+    <description>
+      This rule uses the NCSS (Non-Commenting Source Statements) metric to determine the number of
+      lines
+      of code in a class, method or constructor. NCSS ignores comments, blank lines, and only counts
+      actual
+      statements. For more details on the calculation, see the documentation
+      {% jdoc java::lang.java.metrics.JavaMetrics#NCSS %}.
+    </description>
+    <priority>3</priority>
+    <example>
+      <![CDATA[
+import java.util.Collections;       // +0
+import java.io.IOException;         // +0
+
+class Foo {                         // +1, total Ncss = 12
+
+  public void bigMethod()           // +1
+      throws IOException {
+    int x = 0, y = 2;               // +1
+    boolean a = false, b = true;    // +1
+
+    if (a || b) {                   // +1
+      try {                         // +1
+        do {                        // +1
+          x += 2;                   // +1
+        } while (x < 12);
+
+        System.exit(0);             // +1
+      } catch (IOException ioe) {   // +1
+        throw new PatheticFailException(ioe); // +1
+      }
+    } else {
+      assert false;                 // +1
+    }
+  }
+}
+]]>
+    </example>
+  </rule>
+</ruleset>
