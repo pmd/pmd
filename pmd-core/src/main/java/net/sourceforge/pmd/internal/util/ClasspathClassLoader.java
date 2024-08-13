@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -206,6 +207,8 @@ public class ClasspathClassLoader extends URLClassLoader {
 
     private static final String MODULE_INFO_SUFFIX = "module-info.class";
     private static final String MODULE_INFO_SUFFIX_SLASH = "/" + MODULE_INFO_SUFFIX;
+    // this is lazily initialized on first query of a module-info.class
+    private Map<String, URL> moduleNameToModuleInfoUrls;
 
     @Nullable
     private static String extractModuleName(String name) {
@@ -263,10 +266,10 @@ public class ClasspathClassLoader extends URLClassLoader {
         }
     }
 
-    private static class ModuleFinder extends ClassVisitor {
+    private static class ModuleNameExtractor extends ClassVisitor {
         private String moduleName;
 
-        protected ModuleFinder() {
+        protected ModuleNameExtractor() {
             super(Opcodes.ASM9);
         }
 
@@ -281,21 +284,39 @@ public class ClasspathClassLoader extends URLClassLoader {
         }
     }
 
-    private URL findModule(Enumeration<URL> moduleInfoUrls, String moduleName) throws IOException {
+    private void collectAllModules() {
+        if (moduleNameToModuleInfoUrls != null) {
+            return;
+        }
+
+        Map<String, URL> allModules = new HashMap<>();
+        try {
+            Enumeration<URL> moduleInfoUrls = findResources(MODULE_INFO_SUFFIX);
+            collectModules(allModules, moduleInfoUrls);
+
+            // also search in parents
+            moduleInfoUrls = getParent().getResources(MODULE_INFO_SUFFIX);
+            collectModules(allModules, moduleInfoUrls);
+
+            LOG.debug("Found {} modules on auxclasspath", allModules.size());
+
+            moduleNameToModuleInfoUrls = Collections.unmodifiableMap(allModules);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void collectModules(Map<String, URL> allModules, Enumeration<URL> moduleInfoUrls) throws IOException {
         while (moduleInfoUrls.hasMoreElements()) {
             URL url = moduleInfoUrls.nextElement();
 
-            ModuleFinder finder = new ModuleFinder();
+            ModuleNameExtractor finder = new ModuleNameExtractor();
             try (InputStream inputStream = url.openStream()) {
                 ClassReader classReader = new ClassReader(inputStream);
                 classReader.accept(finder, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
             }
-            if (moduleName.equals(finder.getModuleName())) {
-                return url;
-            }
+            allModules.putIfAbsent(finder.getModuleName(), url);
         }
-
-        return null;
     }
 
     @Override
@@ -306,20 +327,9 @@ public class ClasspathClassLoader extends URLClassLoader {
 
         String moduleName = extractModuleName(name);
         if (moduleName != null) {
-            try {
-                Enumeration<URL> moduleInfoUrls = findResources(MODULE_INFO_SUFFIX);
-                URL moduleUrl = findModule(moduleInfoUrls, moduleName);
-
-                // no match in this classloader, search in parents
-                if (moduleUrl == null) {
-                    moduleInfoUrls = getParent().getResources(MODULE_INFO_SUFFIX);
-                    moduleUrl = findModule(moduleInfoUrls, moduleName);
-                }
-
-                return moduleUrl;
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            collectAllModules();
+            assert moduleNameToModuleInfoUrls != null : "Modules should have been detected by collectAllModules()";
+            return moduleNameToModuleInfoUrls.get(moduleName);
         }
 
         URL url = findResource(name);
