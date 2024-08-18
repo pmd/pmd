@@ -581,4 +581,25 @@ public class GuardLogStatementTest {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5151 Field accesses do not require guards</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class GuardLogStatementTest {
+    private static final Logger LOG = LogManager.getLogger(GuardLogStatementTest.class);
+    private static final String MY_CONSTANT = "";
+
+    public void test() {
+        LOG.info(
+                "Some message here : foo={}",
+                GuardLogStatementTest.MY_CONSTANT
+        );
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
