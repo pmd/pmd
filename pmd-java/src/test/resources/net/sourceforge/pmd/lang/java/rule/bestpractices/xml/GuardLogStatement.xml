@@ -622,4 +622,49 @@ public class GuardLogStatementTest {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5153 array access to constants do not require guards</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class GuardLogStatementTest {
+    private static final Logger LOG = LogManager.getLogger(GuardLogStatementTest.class);
+    private final String[] foo = { "foo" };
+
+    public void test() {
+        LOG.info(
+            "Some message here : foo={}",
+            foo[0]
+        );
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5153 array access to method returned values require guards</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class GuardLogStatementTest {
+    private static final Logger LOG = LogManager.getLogger(GuardLogStatementTest.class);
+
+    public void test() {
+        LOG.info(
+            "Some message here : foo={}",
+            foo()[0]
+        );
+    }
+
+    private String[] foo() {
+        return new String[] { "foo" };
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
