@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
@@ -237,7 +238,9 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
         // so that we can ignore it
         return call.getArguments().toStream()
                    .drop(messageArgIndex) // remove the level argument if needed
-                   .all(it -> it instanceof ASTStringLiteral || it instanceof ASTLambdaExpression || it instanceof ASTVariableAccess || it instanceof ASTMethodReference);
+                   .all(it -> it instanceof ASTStringLiteral || it instanceof ASTLambdaExpression
+                           || it instanceof ASTVariableAccess || it instanceof ASTMethodReference
+                           || it instanceof ASTFieldAccess);
     }
 
     private void extractProperties() {
