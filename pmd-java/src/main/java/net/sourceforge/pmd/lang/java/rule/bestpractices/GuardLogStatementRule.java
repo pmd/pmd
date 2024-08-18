@@ -15,6 +15,7 @@ import java.util.Map;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
@@ -239,9 +240,14 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
         // so that we can ignore it
         return call.getArguments().toStream()
                    .drop(messageArgIndex) // remove the level argument if needed
-                   .all(it -> it instanceof ASTStringLiteral || it instanceof ASTLambdaExpression
-                           || it instanceof ASTVariableAccess || it instanceof ASTMethodReference
-                           || it instanceof ASTFieldAccess || it instanceof ASTThisExpression);
+                   .all(GuardLogStatementRule::isDirectAccess);
+    }
+
+    private static boolean isDirectAccess(ASTExpression it) {
+        return it instanceof ASTStringLiteral || it instanceof ASTLambdaExpression
+                || it instanceof ASTVariableAccess || it instanceof ASTMethodReference
+                || it instanceof ASTFieldAccess || it instanceof ASTThisExpression
+                || (it instanceof ASTArrayAccess && isDirectAccess(((ASTArrayAccess) it).getQualifier()) );
     }
 
     private void extractProperties() {
