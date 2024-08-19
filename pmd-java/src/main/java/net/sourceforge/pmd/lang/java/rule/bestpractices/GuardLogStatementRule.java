@@ -247,7 +247,7 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
         return it instanceof ASTStringLiteral || it instanceof ASTLambdaExpression
                 || it instanceof ASTVariableAccess || it instanceof ASTMethodReference
                 || it instanceof ASTFieldAccess || it instanceof ASTThisExpression
-                || (it instanceof ASTArrayAccess && isDirectAccess(((ASTArrayAccess) it).getQualifier()) );
+                || (it instanceof ASTArrayAccess && isDirectAccess(((ASTArrayAccess) it).getQualifier()));
     }
 
     private void extractProperties() {
