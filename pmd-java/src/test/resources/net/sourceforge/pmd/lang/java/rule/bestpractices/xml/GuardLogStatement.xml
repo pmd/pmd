@@ -583,6 +583,31 @@ public class GuardLogStatementTest {
     </test-code>
 
     <test-code>
+        <description>GuardLogStatement should flag method reference from method / constructor calls</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class GuardLogStatementTest {
+    String foo() {
+        return "foo";
+    }
+
+    private GuardLogStatementTest factory() {
+        return new GuardLogStatementTest();
+    }
+
+    public void test() {
+        final Logger logger = LogManager.getLogger(GuardLogStatementTest.class);
+        logger.info("Some info: {}", new GuardLogStatementTest()::foo);
+        logger.info("Some info: {}", factory()::foo);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>#5151 Field accesses do not require guards</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -592,12 +617,48 @@ import org.apache.logging.log4j.LogManager;
 public class GuardLogStatementTest {
     private static final Logger LOG = LogManager.getLogger(GuardLogStatementTest.class);
     private static final String MY_CONSTANT = "";
+    private String my_field = "";
 
     public void test() {
         LOG.info(
             "Some message here : foo={}",
             GuardLogStatementTest.MY_CONSTANT
         );
+
+        LOG.info(
+            "Some message here : foo={}",
+            this.my_field
+        );
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5151 Field accesses on method call returned values require guards</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class GuardLogStatementTest {
+    private static final Logger LOG = LogManager.getLogger(GuardLogStatementTest.class);
+    private String my_field = "";
+
+    public void test() {
+        LOG.info(
+            "Some message here : foo={}",
+            new GuardLogStatementTest().my_field
+        );
+
+        LOG.info(
+            "Some message here : foo={}",
+            factory().my_field
+        );
+    }
+
+    private GuardLogStatementTest factory() {
+        return new GuardLogStatementTest();
     }
 }
         ]]></code>

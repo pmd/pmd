@@ -23,13 +23,16 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
+import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -244,10 +247,21 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
     }
 
     private static boolean isDirectAccess(ASTExpression it) {
-        return it instanceof ASTStringLiteral || it instanceof ASTLambdaExpression
-                || it instanceof ASTVariableAccess || it instanceof ASTMethodReference
-                || it instanceof ASTFieldAccess || it instanceof ASTThisExpression
-                || (it instanceof ASTArrayAccess && isDirectAccess(((ASTArrayAccess) it).getQualifier()));
+        final boolean isPermittedType = it instanceof ASTLiteral || it instanceof ASTLambdaExpression
+                || it instanceof ASTVariableAccess || it instanceof ASTThisExpression
+                || it instanceof ASTMethodReference || it instanceof ASTFieldAccess
+                || it instanceof ASTArrayAccess;
+
+        if (!isPermittedType) {
+            return false;
+        }
+
+        if (it instanceof QualifiableExpression) {
+            final ASTExpression qualifier = ((QualifiableExpression) it).getQualifier();
+            return qualifier == null || qualifier instanceof ASTTypeExpression || isDirectAccess(qualifier);
+        }
+
+        return true;
     }
 
     private void extractProperties() {
