@@ -753,4 +753,22 @@ public class GuardLogStatementTest {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3602 False positive when compile-time constant is created from external constants</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import net.sourceforge.pmd.lang.java.rule.bestpractices.GuardLogStatementTest;
+
+public class MyClass {
+  private static final Logger logger = LogManager.getLogger();
+  public void doSomething() {
+     final Object arg = new Object();
+     logger.info("Problem message: {}. " + GuardLogStatementTest.TERM_MSG, arg);
+  }
+}
+        ]]></code>
+    </test-code>
 </test-data>

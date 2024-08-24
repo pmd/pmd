@@ -20,19 +20,15 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
-import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.reporting.RuleContext;
@@ -127,48 +123,12 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
         // or a compile-time constant string to not require a guard
         int messageArg = getMessageArgIndex(node);
         ASTExpression messageExpr = node.getArguments().get(messageArg);
-        if (!isDirectAccess(messageExpr) && !isConstantStringExpression(messageExpr)) {
+        if (!isDirectAccess(messageExpr) && !messageExpr.isCompileTimeConstant()) {
             return true;
         }
 
         // if any additional params are not a direct access, we need a guard
         return !areAdditionalParamsDirectAccess(node, messageArg + 1);
-    }
-
-    private boolean isConstantStringExpression(ASTExpression expr) {
-        if (expr == null) {
-            return false;
-        }
-
-        if (expr instanceof ASTStringLiteral) {
-            return true;
-        }
-
-        if (expr instanceof ASTVariableAccess) {
-            ASTVariableAccess var = (ASTVariableAccess) expr;
-            if (var.isCompileTimeConstant()) {
-                return true;
-            }
-            JVariableSymbol symbol = var.getReferencedSym();
-            if (symbol == null) {
-                return false;
-            }
-            if (!var.getReferencedSym().isFinal()) {
-                return false;
-            }
-            @Nullable
-            ASTVariableId declaratorId = symbol.tryGetNode();
-            if (declaratorId != null) {
-                return isConstantStringExpression(declaratorId.getInitializer());
-            }
-        }
-
-        if (expr instanceof ASTInfixExpression) {
-            ASTInfixExpression infix = (ASTInfixExpression) expr;
-            return isConstantStringExpression(infix.getLeftOperand())
-                    && isConstantStringExpression(infix.getRightOperand());
-        }
-        return false;
     }
 
     private boolean hasGuard(ASTMethodCall node, String logLevel) {
