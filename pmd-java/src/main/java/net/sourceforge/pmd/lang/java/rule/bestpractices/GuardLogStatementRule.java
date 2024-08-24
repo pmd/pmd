@@ -113,6 +113,7 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
         return null;
     }
 
+    @SuppressWarnings("PMD.SimplifyBooleanReturns")
     private boolean needsGuard(ASTMethodCall node) {
         if (node.getArguments().isEmpty()) {
             return false;
