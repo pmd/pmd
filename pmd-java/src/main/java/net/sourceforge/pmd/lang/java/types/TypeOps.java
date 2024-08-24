@@ -1170,6 +1170,13 @@ public final class TypeOps {
                     } else if (!upwards) {
                         // If Ai is a type that mentions a restricted type variable, then Ai' is undefined.
                         return NO_DOWN_PROJECTION;
+                    } else if (u instanceof JWildcardType) {
+                        // The rest of this function, below, treats u as the bound of a wildcard,
+                        // but if u is already a wildcard (and therefore ai was a wildcard), we
+                        // are already done.
+                        newTargs.add(u);
+                        change = true;
+                        continue;
                     }
 
                     change = true;
