@@ -14,7 +14,6 @@ import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -31,7 +30,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
-import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
@@ -120,23 +118,21 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
     }
 
     private boolean needsGuard(ASTMethodCall node) {
-        if (node.getArguments().size() == 0) {
+        if (node.getArguments().isEmpty()) {
             return false;
         }
 
-        ASTArgumentList argumentList = node.getArguments();
-        for (ASTExpression child : argumentList) {
-            if (child.descendantsOrSelf()
-                    .filterIs(ASTInfixExpression.class)
-                    .filter(n -> n.getOperator() == BinaryOp.ADD)
-                    .nonEmpty()
-                && TypeTestUtil.isA(String.class, child)) {
-                // only consider the first String argument - which is the log message - and return here
-                return !isConstantStringExpression(child);
-            }
+        // get the message expression
+        // it must either be a direct access (var / param access, lambda, method ref, etc.)
+        // or a compile-time constant string to not require a guard
+        int messageArg = getMessageArgIndex(node);
+        ASTExpression messageExpr = node.getArguments().get(messageArg);
+        if (!isDirectAccess(messageExpr) && !isConstantStringExpression(messageExpr)) {
+            return true;
         }
 
-        return true;
+        // if any additional params are not a direct access, we need a guard
+        return !areAdditionalParamsDirectAccess(node, messageArg + 1);
     }
 
     private boolean isConstantStringExpression(ASTExpression expr) {
@@ -169,10 +165,8 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
 
         if (expr instanceof ASTInfixExpression) {
             ASTInfixExpression infix = (ASTInfixExpression) expr;
-            if (isConstantStringExpression(infix.getLeftOperand())
-                    && isConstantStringExpression(infix.getRightOperand())) {
-                return true;
-            }
+            return isConstantStringExpression(infix.getLeftOperand())
+                    && isConstantStringExpression(infix.getRightOperand());
         }
         return false;
     }
@@ -216,18 +210,20 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
     private @Nullable String getLogLevelName(ASTMethodCall methodCall) {
         String methodName = methodCall.getMethodName();
         if (!JAVA_UTIL_LOG_METHOD.equals(methodName)) {
-            if (isUnguardedAccessOk(methodCall, 0)) {
-                return null;
-            }
             return methodName; // probably logger.warn(...)
         }
 
-        // else it's java.util.logging, eg
-        // LOGGER.log(Level.FINE, "m")
-        if (isUnguardedAccessOk(methodCall, 1)) {
-            return null;
-        }
         return getJutilLogLevelInFirstArg(methodCall);
+    }
+
+    private int getMessageArgIndex(ASTMethodCall methodCall) {
+        String methodName = methodCall.getMethodName();
+        if (JAVA_UTIL_LOG_METHOD.equals(methodName)) {
+            // LOGGER.log(Level.FINE, "m")
+            return 1;
+        }
+
+        return 0;
     }
 
     private @Nullable String getJutilLogLevelInFirstArg(ASTMethodCall methodCall) {
@@ -238,7 +234,7 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    private boolean isUnguardedAccessOk(ASTMethodCall call, int messageArgIndex) {
+    private boolean areAdditionalParamsDirectAccess(ASTMethodCall call, int messageArgIndex) {
         // return true if the statement has limited overhead even if unguarded,
         // so that we can ignore it
         return call.getArguments().toStream()
@@ -258,6 +254,12 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
 
         if (it instanceof QualifiableExpression) {
             final ASTExpression qualifier = ((QualifiableExpression) it).getQualifier();
+
+            // for array access, we also care about the index expression
+            if (it instanceof ASTArrayAccess && !isDirectAccess(((ASTArrayAccess) it).getIndexExpression())) {
+                return false;
+            }
+
             return qualifier == null || qualifier instanceof ASTTypeExpression || isDirectAccess(qualifier);
         }
 

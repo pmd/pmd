@@ -706,6 +706,31 @@ public class GuardLogStatementTest {
     </test-code>
 
     <test-code>
+        <description>array access with computed keys require guards</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class GuardLogStatementTest {
+    private static final Logger LOG = LogManager.getLogger(GuardLogStatementTest.class);
+    private final String[] foo = { "foo" };
+
+    public void test() {
+        LOG.info(
+            "Some message here : foo={}",
+            foo[getFooIndex()]
+        );
+    }
+
+    public int getFooIndex() {
+        return 0;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>#5153 array access to method returned values require guards</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
