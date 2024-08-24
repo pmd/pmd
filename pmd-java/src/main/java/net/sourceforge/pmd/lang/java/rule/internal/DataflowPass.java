@@ -1054,10 +1054,16 @@ public final class DataflowPass {
 
         @Override
         public SpanInfo visit(ASTThisExpression node, SpanInfo data) {
-            if (trackThisInstance() && !(node.getParent() instanceof ASTFieldAccess)) {
+            if (trackThisInstance() && isThisExprLeaking(node)) {
                 data.recordThisLeak(enclosingClassScope, node);
             }
             return data;
+        }
+
+        private static boolean isThisExprLeaking(ASTThisExpression node) {
+            boolean isAllowed = node.getParent() instanceof ASTFieldAccess
+                || node.getParent() instanceof ASTSynchronizedStatement;
+            return !isAllowed;
         }
 
         @Override
@@ -1202,7 +1208,7 @@ public final class DataflowPass {
             for (JFieldSymbol field : enclosingSym.getDeclaredFields()) {
                 if (!inStaticCtx || field.isStatic()) {
                     JavaNode escapingNode = enclosingSym.tryGetNode();
-                    state.assignOutOfScope(field, escapingNode, SpecialAssignmentKind.END_OF_CTOR);
+                    state.assignOutOfScope(field, escapingNode, SpecialAssignmentKind.INITIAL_FIELD_VALUE);
                 }
             }
         }
@@ -1397,11 +1403,7 @@ public final class DataflowPass {
                     continue;
                 }
 
-                // Final fields definitions are fully known since they
-                // have to occur in a ctor.
-                if (!field.isFinal()) {
-                    assign(field, id, SpecialAssignmentKind.INITIAL_FIELD_VALUE);
-                }
+                assign(field, id, SpecialAssignmentKind.INITIAL_FIELD_VALUE);
             }
         }
 
@@ -1844,8 +1846,7 @@ public final class DataflowPass {
     enum SpecialAssignmentKind {
         NOT_SPECIAL,
         UNKNOWN_METHOD_CALL,
-        INITIAL_FIELD_VALUE,
-        END_OF_CTOR;
+        INITIAL_FIELD_VALUE;
 
         boolean shouldJoinWithPreviousAssignment() {
             return this == UNKNOWN_METHOD_CALL;
