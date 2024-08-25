@@ -21,6 +21,7 @@ This is a {{ site.pmd.release_type }} release.
   * [#5167](https://github.com/pmd/pmd/pull/5167): \[java] java.lang.IllegalArgumentException: \<\?\> cannot be a wildcard bound
 * java-bestpractices
   * [#3602](https://github.com/pmd/pmd/issues/3602): \[java] GuardLogStatement: False positive when compile-time constant is created from external constants
+  * [#4731](https://github.com/pmd/pmd/issues/4731): \[java] GuardLogStatement documentation is unclear why getters are flagged
   * [#5145](https://github.com/pmd/pmd/issues/5145): \[java] False positive UnusedPrivateMethod
   * [#5151](https://github.com/pmd/pmd/issues/5151): \[java] GuardLogStatement: Should not need to guard parameterized log messages where the replacement arg is a constant from another class
   * [#5152](https://github.com/pmd/pmd/issues/5152): \[java] GuardLogStatement: Should not need to guard parameterized log messages where the replacement arg is "this"
