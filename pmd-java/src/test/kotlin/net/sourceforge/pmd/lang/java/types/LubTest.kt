@@ -165,7 +165,6 @@ class LubTest : FunSpec({
 
                 val (supert, derivedt) = ast.declaredTypeSignatures()
 
-                // the component type
                 lub(
                     supert.erasure,
                     derivedt.erasure,
