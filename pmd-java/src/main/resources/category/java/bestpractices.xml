@@ -602,8 +602,8 @@ for (int i = 0, j = 0; i < 10; i++, j += 2) {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.GuardLogStatementRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#guardlogstatement">
         <description>
-Whenever using a log level, one should check if the loglevel is actually enabled, or
-otherwise skip the associate String creation and manipulation, as well as any expensive method calls.
+Whenever using a log level, one should check if it is actually enabled, or
+otherwise skip the associate String creation and manipulation, as well as any method calls.
 
 An alternative to checking the log level are substituting parameters, formatters or lazy logging
 with lambdas. The available alternatives depend on the actual logging framework.
@@ -627,6 +627,9 @@ log.debug("log something expensive: {}", calculateExpensiveLoggingText());
 
 // Avoid the guarding if statement with lazy logging and lambdas
 log.debug("log something expensive: {}", () -> calculateExpensiveLoggingText());
+
+// … alternatively use method references
+log.debug("log something expensive: {}", this::calculateExpensiveLoggingText);
 ]]>
         </example>
     </rule>
