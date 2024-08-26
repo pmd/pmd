@@ -157,6 +157,72 @@ and then the violations grouped by file. The root object fields are
 [Example](report-examples/pmd-report-json.json)
 
 
+## metrics-xml
+
+XML format for Metrics.
+
+This format is a XML document used to reports various metrics. This is used by Jenkins in the [coverage-plugin](https://github.com/jenkinsci/coverage-plugin).
+
+Example:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<metrics version="7.4.1" timestamp="2024-08-01T21:16:16.280" source="PMD">
+  <package fqcn="net.sourceforge.pmd.java.regression.tests.java10">
+    <file name="/home/pmd/source/src/main/java/net/sourceforge/pmd/java/regression/tests/java10/LocalVariableTypeInference.java">
+      <class name="LocalVariableTypeInference">
+        <metric name="NCSS" value="9"/>
+        <method name="aMethod" beginline="8" endline="8" begincolumn="17" endcolumn="24">
+          <metric name="CognitiveComplexity" value="0"/>
+          <metric name="CyclomaticComplexity" value="1"/>
+          <metric name="NCSS" value="3"/>
+          <metric name="NPathComplexity" value="1"/>
+        </method>
+        <method name="asMethodParameter" beginline="13" endline="13" begincolumn="17" endcolumn="34">
+          <metric name="CognitiveComplexity" value="0"/>
+          <metric name="CyclomaticComplexity" value="1"/>
+          <metric name="NCSS" value="3"/>
+          <metric name="NPathComplexity" value="1"/>
+        </method>
+      </class>
+    </file>
+    <file name="/home/pmd/source/src/main/java/net/sourceforge/pmd/java/regression/tests/java10/LocalVariableTypeInferenceForLoop.java">
+      <class name="LocalVariableTypeInferenceForLoop">
+        <metric name="NCSS" value="4"/>
+        <method name="aMethod" beginline="6" endline="6" begincolumn="17" endcolumn="24">
+          <metric name="CognitiveComplexity" value="1"/>
+          <metric name="CyclomaticComplexity" value="2"/>
+          <metric name="NCSS" value="3"/>
+          <metric name="NPathComplexity" value="2"/>
+        </method>
+      </class>
+    </file>
+  </package>
+  <package fqcn="net.sourceforge.pmd.java.regression.tests.java11">
+    <file name="/home/pmd/source/src/main/java/net/sourceforge/pmd/java/regression/tests/java11/LocalVariableSyntaxForLambdaParameters.java">
+      <class name="LocalVariableSyntaxForLambdaParameters">
+        <metric name="NCSS" value="8"/>
+      </class>
+      <class name="Nonnull">
+        <metric name="NCSS" value="1"/>
+      </class>
+      <class name="LocalVariableSyntaxForLambdaParameters">
+        <method name="createLambdas" beginline="17" endline="17" begincolumn="17" endcolumn="30">
+          <metric name="CognitiveComplexity" value="0"/>
+          <metric name="CyclomaticComplexity" value="1"/>
+          <metric name="NCSS" value="3"/>
+          <metric name="NPathComplexity" value="1"/>
+        </method>
+      </class>
+    </file>
+  </package>
+</metrics>
+```
+
+**Properties:**
+
+*   encoding: XML encoding format, defaults to UTF-8.
+
 ## summaryhtml
 
 Summary HTML format.
