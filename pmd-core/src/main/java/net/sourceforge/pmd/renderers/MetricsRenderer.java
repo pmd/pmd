@@ -91,7 +91,7 @@ public class MetricsRenderer extends XMLRenderer {
                     methodLocation = null;
                     writeNewLine();
                     getXmlWriter().writeStartElement("package");
-                    getXmlWriter().writeAttribute("fqcn", packageName);
+                    getXmlWriter().writeAttribute("name", packageName);
                 }
                 String nextFilename = determineFileName(rv.getFileId());
                 if (!nextFilename.equals(filename)) {
