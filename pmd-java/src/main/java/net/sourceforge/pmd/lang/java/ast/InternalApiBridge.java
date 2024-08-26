@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -78,23 +76,16 @@ public final class InternalApiBridge {
         AstDisambiguationPass.disambigWithCtx(nodes, ctx);
     }
 
-    private static final Logger LOG = LoggerFactory.getLogger(InternalApiBridge.class);
-
     /**
      * Forcing type resolution allows us to report errors more cleanly
-     * than if it was done completely lazy. All errors are reported, if
-     * the
+     * than if it was done completely lazy. Failures are thrown, because
+     * they are rare enough, and can cause further failures down the line
+     * if execution continues.
      */
     public static void forceTypeResolutionPhase(JavaAstProcessor processor, ASTCompilationUnit root) {
         root.descendants(TypeNode.class)
             .crossFindBoundaries()
-            .forEach(it -> {
-                try {
-                    it.getTypeMirror();
-                } catch (Exception e) {
-                    LOG.warn("Error during type resolution ", e);
-                }
-            });
+            .forEach(TypeNode::getTypeMirror);
     }
 
     public static void usageResolution(JavaAstProcessor processor, ASTCompilationUnit root) {
