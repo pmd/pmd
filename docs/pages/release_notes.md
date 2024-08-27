@@ -18,7 +18,7 @@ This is a {{ site.pmd.release_type }} release.
 * apex-performance
   * [#5139](https://github.com/pmd/pmd/issues/5139): \[apex] OperationWithHighCostInLoop not firing in triggers
 * java
-  * [#5167](https://github.com/pmd/pmd/pull/5167): \[java] java.lang.IllegalArgumentException: \<\?\> cannot be a wildcard bound
+  * [#5167](https://github.com/pmd/pmd/issues/5167): \[java] java.lang.IllegalArgumentException: \<?\> cannot be a wildcard bound
 * java-bestpractices
   * [#5145](https://github.com/pmd/pmd/issues/5145): \[java] False positive UnusedPrivateMethod
 * plsql-bestpractices
