@@ -227,7 +227,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         }
 
         Set<ImportWrapper> container =
-            node.isModule() ? moduleImports
+            node.isModuleImport() ? moduleImports
                                   : node.isImportOnDemand() ? allImportsOnDemand
                                                             : allSingleNameImports;
 

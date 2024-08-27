@@ -209,7 +209,7 @@ public final class SymbolTableResolver {
             List<ASTImportDeclaration> moduleImports = new ArrayList<>();
 
             node.children(ASTImportDeclaration.class).forEach(i -> {
-                if (i.isModule()) {
+                if (i.isModuleImport()) {
                     moduleImports.add(i);
                 } else if (i.isImportOnDemand()) {
                     importsOnDemand.add(i);

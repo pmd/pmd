@@ -68,7 +68,7 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
 
     /**
      * Returns the full name of the import. For on-demand imports, this is the name without
-     * the final dot and asterisk. For {@link #isModule() module declaration imports},
+     * the final dot and asterisk. For {@link #isModuleImport() module declaration imports},
      * this is the name of the module.
      */
     public @NonNull String getImportedName() {
@@ -86,7 +86,7 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
      * Returns the simple name of the type or method imported by this declaration.
      * For on-demand imports, returns {@code null}.
      *
-     * <p>For {@link #isModule() module import declarations}, this returns {@code null}.
+     * <p>For {@link #isModuleImport() module import declarations}, this returns {@code null}.
      * Use {@link #getImportedName()} for the module name of a module import declaration.
      */
     public String getImportedSimpleName() {
@@ -104,7 +104,7 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
      * imports, this is really the package name of the imported type(s). For static imports,
      * this is actually the qualified name of the enclosing type, including the type name.
      *
-     * <p>For {@link #isModule() module import declarations}, this returns {@code null}.
+     * <p>For {@link #isModuleImport() module import declarations}, this returns {@code null}.
      * Use {@link #getImportedName()} for the module name of a module import declaration.
      */
     public String getPackageName() {
@@ -141,7 +141,7 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
      * @see <a href="https://openjdk.org/jeps/476">JEP 476: Module Import Declarations (Preview)</a> (Java 23)
      */
     @Experimental
-    public boolean isModule() {
+    public boolean isModuleImport() {
         return moduleImport;
     }
 }

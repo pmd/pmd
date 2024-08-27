@@ -239,7 +239,7 @@ final class SymTableFactory {
 
         Set<String> lazyImportedModules = new HashSet<>();
         for (ASTImportDeclaration anImport : moduleImports) {
-            assert anImport.isModule() : "Expected module import: " + anImport;
+            assert anImport.isModuleImport() : "Expected module import: " + anImport;
             lazyImportedModules.add(anImport.getImportedName());
         }
 

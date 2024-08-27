@@ -462,7 +462,7 @@ public class LanguageLevelChecker<T> {
             if (node.isStatic()) {
                 check(node, RegularLanguageFeature.STATIC_IMPORT, data);
             }
-            if (node.isModule()) {
+            if (node.isModuleImport()) {
                 check(node, PreviewFeature.MODULE_IMPORT_DECLARATIONS, data);
             }
             return null;

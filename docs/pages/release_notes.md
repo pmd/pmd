@@ -61,7 +61,7 @@ are no longer available.
 * pmd-java
   * Renamed `isUnnamedClass()` to {%jdoc !!java::lang.java.ast.ASTCompilationUnit#isSimpleCompilationUnit() %}
   * {%jdoc java::lang.java.ast.ASTImplicitClassDeclaration %}
-  * {%jdoc !!java::lang.java.ast.ASTImportDeclaration#isModule() %}
+  * {%jdoc !!java::lang.java.ast.ASTImportDeclaration#isModuleImport() %}
   * {%jdoc !ac!java::lang.java.ast.JavaVisitorBase#visit(java::lang.java.ast.ASTImplicitClassDeclaration,P) %}
 
 ### ✨ External Contributions
