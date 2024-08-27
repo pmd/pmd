@@ -4,10 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
-import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
 import net.sourceforge.pmd.lang.java.ast.variableAccess
 import net.sourceforge.pmd.lang.java.types.*
+import net.sourceforge.pmd.lang.test.ast.component6
+import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 
 /**
  *
@@ -99,6 +100,41 @@ class Scratch {
         spy.shouldBeOk {
             // not the anon type
             acu.varId("k") shouldHaveType Runnable::class.decl
+        }
+    }
+    parserTest("Local var with conditional and 2 poly expressions") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+interface Collector<T, A, R> {}
+interface Stream<T> {
+    <R, A> R collect(Collector<? super T, A, R> collector);
+}
+interface List<T> {}
+interface Function<T,R> { R apply(T t); }
+public class Scratch {
+
+    static <T, R> Collector<T, ?, List<List<T>>> groupingByNullable(Function<? super T, ? extends R> key){}
+    static {
+        var lookup = System.currentTimeMillis() > 100L // permission based
+            ? Dao.source1().collect(groupingByNullable(Data::parent)) // DAO call #1
+            : Dao.source2().collect(groupingByNullable(Data::parent)); // DAO call #2
+    }
+    
+    interface Data {
+        Integer parent();
+    }
+    static class Dao {
+       static Stream<Data> source1(){}
+       static Stream<Data> source2(){}
+    }
+}
+            """.trimIndent()
+        )
+
+        spy.shouldBeOk {
+            val (_, _, list, _, _, data) = acu.declaredTypeSignatures()
+            // not the anon type
+            acu.varId("lookup") shouldHaveType list[list[data]]
         }
     }
 })

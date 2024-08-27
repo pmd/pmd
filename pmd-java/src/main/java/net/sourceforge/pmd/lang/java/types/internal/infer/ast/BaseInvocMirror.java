@@ -31,9 +31,17 @@ abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<
 
     private MethodCtDecl ctDecl;
     private List<ExprMirror> args;
+    /**
+     * Some method invocations may appear to be poly expressions,
+     * but they have no context type (for instance because they
+     * are in the initializer of a local with inferred type).
+     * These must be treated as standalone expressions.
+     */
+    protected final boolean mayBePoly;
 
-    BaseInvocMirror(JavaExprMirrors mirrors, T call, @Nullable ExprMirror parent, MirrorMaker subexprMaker) {
+    BaseInvocMirror(JavaExprMirrors mirrors, T call, boolean mustBeStandalone, @Nullable ExprMirror parent, MirrorMaker subexprMaker) {
         super(mirrors, call, parent, subexprMaker);
+        mayBePoly = !mustBeStandalone;
     }
 
     @Override
@@ -61,8 +69,13 @@ abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<
 
     protected MethodCtDecl getStandaloneCtdecl() {
         MethodCallSite site = factory.infer.newCallSite(this, null);
-        // this is cached for later anyway
-        return factory.infer.getCompileTimeDecl(site);
+        if (mayBePoly) {
+            // this is cached for later anyway
+            return factory.infer.getCompileTimeDecl(site);
+        } else {
+            factory.infer.inferInvocationRecursively(site);
+            return site.getExpr().getCtDecl();
+        }
     }
 
     @Override

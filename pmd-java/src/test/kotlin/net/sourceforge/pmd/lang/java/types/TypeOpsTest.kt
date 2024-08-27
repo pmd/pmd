@@ -95,7 +95,44 @@ class TypeOpsTest : FunSpec({
 
 
             }
+            test("#5167 problem in projection") {
+                val (acu, spy) = javaParser.parseWithTypeInferenceSpy(
+                    """
+import java.lang.annotation.Annotation;
+interface Bar<T> {
+    Baz<T> getBaz();
+}
+
+interface Predicate<T> {
+    boolean check(T t);
+}
+interface Stream<T>{
+    T findSome();
+}
+interface Baz<T>{
+    Stream<Bar<? super T>> filterMethods(Predicate<? super T> p);
+}
+
+class Foo {
+
+    private static Bar<?> foo(
+        Bar<?> type, Class<? extends Annotation> annotation, boolean required) {
+        var method = type.getBaz().filterMethods(m -> true).findSome();
+        return method;
+    }
+}
+            """.trimIndent()
+                )
+
+                val (barT) = acu.declaredTypeSignatures()
+                val methodId = acu.varId("method")
+
+                spy.shouldBeOk {
+                    methodId shouldHaveType barT[`?`]
+                }
+            }
         }
     }
+
 
 })

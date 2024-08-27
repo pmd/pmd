@@ -42,6 +42,9 @@ are no longer available.
   * [#5139](https://github.com/pmd/pmd/issues/5139): \[apex] OperationWithHighCostInLoop not firing in triggers
 * java
   * [#5062](https://github.com/pmd/pmd/issues/5062): \[java] Support Java 23
+  * [#5167](https://github.com/pmd/pmd/issues/5167): \[java] java.lang.IllegalArgumentException: \<?\> cannot be a wildcard bound
+* java-bestpractices
+  * [#5145](https://github.com/pmd/pmd/issues/5145): \[java] False positive UnusedPrivateMethod
 * plsql-bestpractices
   * [#5132](https://github.com/pmd/pmd/issues/5132): \[plsql] TomKytesDespair - exception for more complex exception handler
 

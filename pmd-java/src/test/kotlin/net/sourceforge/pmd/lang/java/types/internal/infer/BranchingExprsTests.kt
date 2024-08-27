@@ -279,7 +279,7 @@ class Scratch {
         val (ternary1, ternary2) = acu.descendants(ASTConditionalExpression::class.java).toList()
 
         spy.shouldBeOk {
-            ternary1 shouldHaveType gen.t_Collection[captureMatcher(`?`)] // java.util.Collection<capture#534 of ?>
+            ternary1 shouldHaveType gen.t_Collection[ts.OBJECT] // java.util.Collection<Object>
             ternary2 shouldHaveType gen.`t_Collection{String}` // java.util.Collection<java.lang.String>
         }
     }
