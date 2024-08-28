@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -24,7 +25,7 @@ import net.sourceforge.pmd.lang.document.FileLocation;
  * phase, because the source code is semantically invalid
  * </ul>
  */
-public class FileAnalysisException extends RuntimeException {
+public class FileAnalysisException extends ContextedRuntimeException {
 
     private FileId fileId = FileId.UNKNOWN;
 

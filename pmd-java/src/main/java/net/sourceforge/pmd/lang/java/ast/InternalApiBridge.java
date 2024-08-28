@@ -9,6 +9,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.SemanticException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
@@ -78,14 +79,21 @@ public final class InternalApiBridge {
 
     /**
      * Forcing type resolution allows us to report errors more cleanly
-     * than if it was done completely lazy. Failures are thrown, because
-     * they are rare enough, and can cause further failures down the line
-     * if execution continues.
+     * than if it was done completely lazy. Failures (other than semantic exceptions)
+     * are thrown, because they are bugs in the typeres framework.
+     * Semantic exceptions cause execution to abort too, but only right before
+     * rules are applied, so several semantic exceptions may be collected.
      */
     public static void forceTypeResolutionPhase(JavaAstProcessor processor, ASTCompilationUnit root) {
         root.descendants(TypeNode.class)
             .crossFindBoundaries()
-            .forEach(TypeNode::getTypeMirror);
+            .forEach(typeNode -> {
+                try {
+                    typeNode.getTypeMirror();
+                } catch (SemanticException e) {
+                    processor.getLogger().acceptError(e);
+                }
+            });
     }
 
     public static void usageResolution(JavaAstProcessor processor, ASTCompilationUnit root) {
