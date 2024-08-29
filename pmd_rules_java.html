@@ -2171,7 +2171,8 @@
 <div class="bs-callout bs-callout-">Rules that flag issues when dealing with multiple threads of execution.</div>
 
 <ul>
-  <li><a href="pmd_rules_java_multithreading.html#avoidsynchronizedatmethodlevel">AvoidSynchronizedAtMethodLevel</a>: Method-level synchronization can cause problems when new code is added to the method. Block-level…</li>
+  <li><a href="pmd_rules_java_multithreading.html#avoidsynchronizedatmethodlevel">AvoidSynchronizedAtMethodLevel</a>: Method-level synchronization will pin virtual threads and can cause performance problems. Additio…</li>
+  <li><a href="pmd_rules_java_multithreading.html#avoidsynchronizedstatement">AvoidSynchronizedStatement</a>: Synchronization will pin virtual threads and can cause performance problems.</li>
   <li><a href="pmd_rules_java_multithreading.html#avoidthreadgroup">AvoidThreadGroup</a>: Avoid using java.lang.ThreadGroup; although it is intended to be used in a threaded environment i…</li>
   <li><a href="pmd_rules_java_multithreading.html#avoidusingvolatile">AvoidUsingVolatile</a>: Use of the keyword ‘volatile’ is generally used to fine tune a Java application, and therefore, r…</li>
   <li><a href="pmd_rules_java_multithreading.html#donotusethreads">DoNotUseThreads</a>: The J2EE specification explicitly forbids the use of threads. Threads are resources, that should …</li>

@@ -1903,6 +1903,13 @@
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
+<h3 id="-new-and-changed-rules">🌟 New and changed rules</h3>
+<h4 id="new-rules">New Rules</h4>
+<ul>
+  <li>The new Java rule <a href="pmd_rules_java_multithreading.html#avoidsynchronizedstatement"><code class="language-plaintext highlighter-rouge">AvoidSynchronizedStatement</code></a> finds synchronization blocks that
+could cause performance issues with virtual threads due to pinning.</li>
+</ul>
+
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
 <ul>
   <li>apex-performance
@@ -1923,6 +1930,11 @@
       <li><a href="https://github.com/pmd/pmd/issues/5151">#5151</a>: [java] GuardLogStatement: Should not need to guard parameterized log messages where the replacement arg is a constant from another class</li>
       <li><a href="https://github.com/pmd/pmd/issues/5152">#5152</a>: [java] GuardLogStatement: Should not need to guard parameterized log messages where the replacement arg is “this”</li>
       <li><a href="https://github.com/pmd/pmd/issues/5153">#5153</a>: [java] GuardLogStatement: Should not need to guard parameterized log messages where the replacement arg is an array element</li>
+    </ul>
+  </li>
+  <li>java-multithreading
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/5175">#5175</a>: [java] Update AvoidSynchronizedAtMethodLevel message to mention ReentrantLock, new rule AvoidSynchronizedStatement</li>
     </ul>
   </li>
   <li>plsql
@@ -1969,6 +1981,7 @@ because this is an implementation class that should not be used directly.</li>
 <h3 id="-external-contributions">✨ External Contributions</h3>
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/5125">#5125</a>: [plsql] Improve merge statement (order of merge insert/update flexible, allow prefixes in column names) - <a href="https://github.com/duursma">Arjen Duursma</a> (@duursma)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5175">#5175</a>: [java] Update AvoidSynchronizedAtMethodLevel message to mention ReentrantLock, new rule AvoidSynchronizedStatement - <a href="https://github.com/chonton">Chas Honton</a> (@chonton)</li>
 </ul>
 
 

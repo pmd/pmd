@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules that flag issues when dealing with multiple threads of execution.">
-<meta name="keywords" content=" Multithreading, AvoidSynchronizedAtMethodLevel, AvoidThreadGroup, AvoidUsingVolatile, DoNotUseThreads, DontCallThreadRun, DoubleCheckedLocking, NonThreadSafeSingleton, UnsynchronizedStaticFormatter, UseConcurrentHashMap, UseNotifyAllInsteadOfNotify">
+<meta name="keywords" content=" Multithreading, AvoidSynchronizedAtMethodLevel, AvoidSynchronizedStatement, AvoidThreadGroup, AvoidUsingVolatile, DoNotUseThreads, DontCallThreadRun, DoubleCheckedLocking, NonThreadSafeSingleton, UnsynchronizedStaticFormatter, UseConcurrentHashMap, UseNotifyAllInsteadOfNotify">
 <title>Multithreading | PMD Source Code Analyzer</title>
 
 
@@ -1904,9 +1904,9 @@
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Method-level synchronization can cause problems when new code is added to the method.
-Block-level synchronization helps to ensure that only the code that needs synchronization
-gets it.</p>
+<p>Method-level synchronization will pin virtual threads and can cause performance problems. Additionally, it can cause
+problems when new code is added to the method.  Block-level ReentrantLock helps to ensure that only the code that
+needs mutual exclusion will be locked.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="ow">mod</span><span class="kr">if</span><span class="nf">iers</span><span class="p">()</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"synchronized"</span><span class="p">]</span><span class="w">
@@ -1927,13 +1927,18 @@ gets it.</p>
         <span class="c1">// ...</span>
     <span class="o">}</span>
     <span class="c1">// Prefer this:</span>
+    <span class="nc">Lock</span> <span class="n">instanceLock</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ReentrantLock</span><span class="o">();</span>
+
     <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
         <span class="c1">// code, that doesn't need synchronization</span>
         <span class="c1">// ...</span>
-        <span class="kd">synchronized</span><span class="o">(</span><span class="k">this</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">instanceLock</span><span class="o">.</span><span class="na">lock</span><span class="o">();</span>  <span class="c1">// or instanceLock.tryLock(long time, TimeUnit unit)</span>
             <span class="k">if</span> <span class="o">(!</span><span class="n">sharedData</span><span class="o">.</span><span class="na">has</span><span class="o">(</span><span class="s">"bar"</span><span class="o">))</span> <span class="o">{</span>
                 <span class="n">sharedData</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"bar"</span><span class="o">);</span>
             <span class="o">}</span>
+        <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+            <span class="n">instanceLock</span><span class="o">.</span><span class="na">unlock</span><span class="o">();</span>
         <span class="o">}</span>
         <span class="c1">// more code, that doesn't need synchronization</span>
         <span class="c1">// ...</span>
@@ -1944,11 +1949,16 @@ gets it.</p>
     <span class="o">}</span>
 
     <span class="c1">// Prefer this:</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="nc">Lock</span> <span class="no">CLASS_LOCK</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ReentrantLock</span><span class="o">();</span>
+
     <span class="kd">static</span> <span class="kt">void</span> <span class="nf">barStatic</span><span class="o">()</span> <span class="o">{</span>
         <span class="c1">// code, that doesn't need synchronization</span>
         <span class="c1">// ...</span>
-        <span class="kd">synchronized</span><span class="o">(</span><span class="nc">Foo</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="no">CLS_LOCK</span><span class="o">.</span><span class="na">lock</span><span class="o">();</span>
             <span class="c1">// code, that requires synchronization</span>
+        <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+            <span class="no">CLS_LOCK</span><span class="o">.</span><span class="na">unlock</span><span class="o">();</span>
         <span class="o">}</span>
         <span class="c1">// more code, that doesn't need synchronization</span>
         <span class="c1">// ...</span>
@@ -1958,6 +1968,49 @@ gets it.</p>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/AvoidSynchronizedAtMethodLevel"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="avoidsynchronizedstatement">AvoidSynchronizedStatement</h2>
+
+<p><strong>Since:</strong> PMD 7.5.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Synchronization will pin virtual threads and can cause performance problems.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">SynchronizedStatement</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="c1">// Try to avoid this:</span>
+    <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// code that doesn't need mutual exclusion</span>
+        <span class="kd">synchronized</span><span class="o">(</span><span class="k">this</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// code that requires mutual exclusion</span>
+        <span class="o">}</span>
+        <span class="c1">// more code that doesn't need mutual exclusion</span>
+    <span class="o">}</span>
+    <span class="c1">// Prefer this:</span>
+    <span class="nc">Lock</span> <span class="n">instanceLock</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ReentrantLock</span><span class="o">();</span>
+
+    <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// code that doesn't need mutual exclusion</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">instanceLock</span><span class="o">.</span><span class="na">lock</span><span class="o">();</span>  <span class="c1">// or instanceLock.tryLock(long time, TimeUnit unit)</span>
+            <span class="c1">// code that requires mutual exclusion</span>
+        <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+            <span class="n">instanceLock</span><span class="o">.</span><span class="na">unlock</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="c1">// more code that doesn't need mutual exclusion</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/AvoidSynchronizedStatement"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="avoidthreadgroup">AvoidThreadGroup</h2>
