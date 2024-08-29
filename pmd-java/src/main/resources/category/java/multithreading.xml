@@ -30,7 +30,7 @@ needs mutual exclusion will be locked.
 <![CDATA[
 public class Foo {
     // Try to avoid this:
-    synchronized void bar() {
+    synchronized void foo() {
         // code, that doesn't need synchronization
         // ...
         // code, that requires synchronization
@@ -63,7 +63,7 @@ public class Foo {
     }
 
     // Prefer this:
-    private static Lock CLS_LOCK = new ReentrantLock();
+    private static Lock CLASS_LOCK = new ReentrantLock();
 
     static void barStatic() {
         // code, that doesn't need synchronization
