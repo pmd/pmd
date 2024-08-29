@@ -1008,6 +1008,15 @@
   
   
   <url>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_ecmascript_performance.html</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+    <lastmod>2024-08-29</lastmod>
+  </url>
+  
+  
+  
+  <url>
     <loc>https://docs.pmd-code.org/latest/pmd_languages_perl.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>

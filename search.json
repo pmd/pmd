@@ -5555,6 +5555,35 @@
 
 
 
+
+
+{
+"title": "Performance (JavaScript, Performance)",
+"tags": "",
+"keywords": "Performance",
+"url": "pmd_rules_ecmascript_performance.html#performance",
+"summary": "Rules that flag suboptimal code."
+}
+,
+
+{
+"title": "AvoidConsoleStatements (JavaScript, Performance)",
+"tags": "",
+"keywords": "AvoidConsoleStatements",
+"url": "pmd_rules_ecmascript_performance.html#avoidconsolestatements",
+"summary": "Rules that flag suboptimal code."
+}
+
+
+
+
+
+,
+
+
+
+
+
 {
 "title": "Perl support",
 "tags": "languagesCpdCapableLanguage",
