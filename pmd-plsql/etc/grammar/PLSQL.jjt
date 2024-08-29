@@ -176,7 +176,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @deprecated PLSQLParserImpl should have been package private because this is an implementation class
+ * @deprecated Since 7.3.0. PLSQLParserImpl should have been package private because this is an implementation class
  * that should not be used directly.
  */
 @Deprecated
@@ -871,6 +871,9 @@ ASTCompilationDataType CompilationDataType() :
  }
 }
 
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/23/lnpls/CREATE-TYPE-statement.html#GUID-389D603D-FBD0-452A-8414-240BBBC57034__OBJECT_BASE_TYPE_DEF-DE2DD0FF
+ */
 ASTCollectionTypeName CollectionTypeName() :
 { PLSQLNode size=null, precision=null;
 	StringBuilder sb = new StringBuilder();
@@ -886,8 +889,8 @@ ASTCollectionTypeName CollectionTypeName() :
         sb.append(token.getImage());
       }
     }
-	(LOOKAHEAD(2) "(" size=NumericLiteral() {sb.append( "(" + size);}
-		["," precision=NumericLiteral() {sb.append( "," + precision);}]
+	(LOOKAHEAD(2) "(" size = NumericLiteral() { sb.append("(").append(size.getImage()); }
+		["," precision = NumericLiteral() { sb.append(",").append(precision.getImage()); }]
 		[ <CHAR> {sb.append( " CHAR") ;}]
 		[ <BYTE> {sb.append( " BYTE") ;}]
 	")" {sb.append( ")");})?
@@ -993,12 +996,8 @@ ASTScalarDataTypeName ScalarDataTypeName() :
     LOOKAHEAD(4) (<WITH><LOCAL><TIME><ZONE> {name.append(" WITH LOCAL TIME ZONE");}) |
     LOOKAHEAD(3) (<WITH><TIME><ZONE> {name.append( " WITH TIME ZONE");}) |
     LOOKAHEAD(2) (<TO><MONTH> {name.append( " TO MONTH");}) |
-    LOOKAHEAD(2) (<TO><SECOND> {name.append( " TO SECOND");}
-			(
-			  LOOKAHEAD(2) "(" precision=NumericLiteral() {name.append( "(" + precision) ;}
-					")" {name.append( ")");}
-			)?
-                 )
+    LOOKAHEAD(2) <TO><SECOND> { name.append(" TO SECOND"); }
+                [ LOOKAHEAD(2) "(" precision = NumericLiteral() { name.append("(").append(precision.getImage()).append(")"); } ")" ]
    ]
 
       { jjtThis.setImage(name.toString()) ;  return jjtThis; }

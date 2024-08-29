@@ -263,7 +263,7 @@ trigger CaseAssignLevel on CaseAssignLevel__c (after delete, after insert, after
         <rule-property name="methodReportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The trigger 'CaseAssignLevel' has a cyclomatic complexity of 9.</message>
+            <message>The trigger 'CaseAssignLevel' has a cyclomatic complexity of 12.</message>
         </expected-messages>
         <code-ref id="trigger"/>
     </test-code>

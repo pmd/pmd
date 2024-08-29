@@ -2,7 +2,7 @@
 title: Release process
 permalink: pmd_projectdocs_committers_releasing.html
 author: Romain Pelisse <rpelisse@users.sourceforge.net>, Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: April 2024
+last_updated: July 2024 (7.5.0)
 ---
 
 This page describes the current status of the release process.
@@ -67,8 +67,8 @@ news posts can be changed afterward (although that's an entirely manual process)
 
 You can find the release notes here: `docs/pages/release_notes.md`.
 
-The date (`date +%d-%B-%Y`) and the version (remove the SNAPSHOT) must be updated in `docs/_config.yml`,  e.g.
-in order to release version "6.34.0", the configuration should look like this:
+The date (`date +%Y-%m-%d`) and the version (remove the SNAPSHOT) must be updated in `docs/_config.yml`,  e.g.
+in order to release version "7.2.0", the configuration should look like this:
 
 ```yaml
 pmd:
@@ -78,7 +78,7 @@ pmd:
     release_type: minor
 ```
 
-The release type could be one of "bugfix" (e.g. 7.1.x), "minor" (7.x.0), or "major" (x.0.0).
+The release type could be one of "bugfix" (e.g. 7.2.x), "minor" (7.x.0), or "major" (x.0.0).
 
 The release notes usually mention any new rules that have been added since the last release.
 
@@ -95,25 +95,50 @@ not pmd-cli and pmd-dist.
 In case, there is no need for a new pmd-designer version, we could stick to the latest already available version.
 Then we can skip the release of pmd-designer and immediately start the second phase of the release.
 
+Starting with PMD 7.5.0 we use Dependabot to update dependencies. Dependabot will create pull requests
+labeled with `dependencies`. When we merge such a pull request, we should assign it to the correct
+milestone. It is important, that the due date of the milestone is set correctly, otherwise the query won't find
+the milestone number.
+Then we can query which PRs have been merged and generate a section for the release notes:
+
+```shell
+NEW_VERSION=7.2.0
+MILESTONE_JSON=$(curl -s "https://api.github.com/repos/pmd/pmd/milestones?state=all&direction=desc&per_page=5"|jq ".[] | select(.title == \"$NEW_VERSION\")")
+MILESTONE=$(echo "$MILESTONE_JSON" | jq .number)
+
+# determine dependency updates
+DEPENDENCIES_JSON=$(curl -s "https://api.github.com/repos/pmd/pmd/issues?labels=dependencies&state=closed&direction=asc&per_page=50&page=1&milestone=${MILESTONE}")
+DEPENDENCIES_COUNT=$(echo "$DEPENDENCIES_JSON" | jq length)
+if [ $DEPENDENCIES_COUNT -gt 0 ]; then
+  echo "### 📦 Dependency updates"
+  echo "$DEPENDENCIES_JSON" | jq --raw-output '.[] | "* [#\(.number)](https://github.com/pmd/pmd/issues/\(.number)): \(.title)"'
+else
+  echo "### 📦 Dependency updates"
+  echo "No dependency updates"
+fi
+```
+This section needs to be added to the release notes at the end.
+
 Starting with PMD 6.23.0 we'll provide small statistics for every release. This needs to be added
-to the release notes as the last section. To count the closed issues and pull requests, the milestone
+to the release notes as the last section (after "Dependency updates"). To count the closed issues and pull requests, the milestone
 on GitHub with the title of the new release is searched. It is important, that the due date of the milestone
 is correctly set, as the returned milestones in the API call are sorted by due date.
 Make sure, there is such a milestone on <https://github.com/pmd/pmd/milestones>. The following snippet will
-create the numbers, that can be attached to the release notes as a last section:
+create the numbers, that can be attached to the release notes as a last section. Note: It uses part of the
+above code snippet (e.g. NEW_VERSION, MILESTONE, DEPENDENCIES_COUNT):
 
 ```shell
 LAST_VERSION=7.1.0
-NEW_VERSION=7.2.0
 NEW_VERSION_COMMITISH=HEAD
+STATS_CLOSED_ISSUES=$(echo "$MILESTONE_JSON" | jq .closed_issues)
 
 echo "### Stats"
 echo "* $(git log pmd_releases/${LAST_VERSION}..${NEW_VERSION_COMMITISH} --oneline --no-merges |wc -l) commits"
-echo "* $(curl -s "https://api.github.com/repos/pmd/pmd/milestones?state=all&direction=desc&per_page=5"|jq ".[] | select(.title == \"$NEW_VERSION\") | .closed_issues") closed tickets & PRs"
+echo "* $(($STATS_CLOSED_ISSUES - $DEPENDENCIES_COUNT)) closed tickets & PRs"
 echo "* Days since last release: $(( ( $(date +%s) - $(git log --max-count=1 --format="%at" pmd_releases/${LAST_VERSION}) ) / 86400))"
 ```
 
-Note: this part is also integrated into `do-release.sh`.
+Note: both shell snippets are also integrated into `do-release.sh`.
 
 Check in all (version) changes to branch master or any other branch, from which the release takes place:
 

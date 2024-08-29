@@ -111,9 +111,6 @@ public class CPDTask extends Task {
                         + "Use failOnError=\"false\" to not fail the build.", Project.MSG_WARN);
             }
 
-            // implicitly enable skipLexicalErrors, so that we can fail the build at the end. A report is created in any case.
-            config.setSkipLexicalErrors(true);
-
             config.setIgnoreAnnotations(ignoreAnnotations);
             config.setIgnoreLiterals(ignoreLiterals);
             config.setIgnoreIdentifiers(ignoreIdentifiers);

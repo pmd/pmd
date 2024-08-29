@@ -1,13 +1,23 @@
 version: 2
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
 updates:
   - package-ecosystem: "maven"
     directory: "/"
     schedule:
       interval: "weekly"
-    target-branch: "master"
-    open-pull-requests-limit: 0
+  - package-ecosystem: "bundler"
+    directories:
+      - "/"
+      - "/docs"
+    schedule:
+      interval: "weekly"
+    groups:
+      all-gems:
+        patterns: [ "*" ]
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
-    target-branch: "master"
+    groups:
+      all-actions:
+        patterns: [ "*" ]

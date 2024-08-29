@@ -28,6 +28,18 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>simple unused annotated private method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.symbols.testdata.MethodAnnotation;
+public class Foo {
+    @MethodAnnotation
+    private void foo() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>anonymous inner class calls private method</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -2098,6 +2110,28 @@ class FooTest{
                     }
                 }
             }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>UnusedPrivateMethod for Lombok ObtainVia #5110</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Builder;
+import lombok.Builder.ObtainVia;
+
+import java.util.Collections;
+import java.util.List;
+
+@Builder(toBuilder = true)
+public class ObtainViaTest {
+
+    @ObtainVia(method = "fooProvider")
+    private List<String> foo;
+
+    private List<String> fooProvider() {
+        return Collections.emptyList();
+    }
+}
             ]]></code>
     </test-code>
 </test-data>

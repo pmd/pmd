@@ -223,7 +223,6 @@ class CpdAnalysisTest {
         PmdReporter reporter = mock(PmdReporter.class);
         config.setReporter(reporter);
 
-        config.setSkipLexicalErrors(true); // must be true, otherwise CPD is aborted with first processing error
         try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
             assertTrue(cpd.files().addSourceFile(FileId.fromPathLikeString("foo.dummy"), DummyLanguageModule.CPD_THROW_LEX_EXCEPTION));
             assertTrue(cpd.files().addSourceFile(FileId.fromPathLikeString("foo2.dummy"), DummyLanguageModule.CPD_THROW_MALFORMED_SOURCE_EXCEPTION));
@@ -252,7 +251,6 @@ class CpdAnalysisTest {
         PmdReporter reporter = mock(PmdReporter.class);
         config.setReporter(reporter);
 
-        config.setSkipLexicalErrors(true);
         try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
             assertTrue(cpd.files().addSourceFile(FileId.fromPathLikeString("foo.dummy"), DummyLanguageModule.CPD_THROW_LEX_EXCEPTION));
             assertTrue(cpd.files().addSourceFile(FileId.fromPathLikeString("foo2.dummy"), DummyLanguageModule.CPD_THROW_MALFORMED_SOURCE_EXCEPTION));
