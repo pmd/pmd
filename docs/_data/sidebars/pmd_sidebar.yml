@@ -260,6 +260,9 @@ entries:
         - title: Error Prone
           output: web, pdf
           url: /pmd_rules_ecmascript_errorprone.html
+        - title: Performance
+          output: web, pdf
+          url: /pmd_rules_ecmascript_performance.html
     - title: null
       output: web, pdf
       subfolders:
