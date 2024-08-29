@@ -31,6 +31,8 @@ This is a {{ site.pmd.release_type }} release.
   * [#5151](https://github.com/pmd/pmd/issues/5151): \[java] GuardLogStatement: Should not need to guard parameterized log messages where the replacement arg is a constant from another class
   * [#5152](https://github.com/pmd/pmd/issues/5152): \[java] GuardLogStatement: Should not need to guard parameterized log messages where the replacement arg is "this"
   * [#5153](https://github.com/pmd/pmd/issues/5153): \[java] GuardLogStatement: Should not need to guard parameterized log messages where the replacement arg is an array element
+* java-design
+  * [#5162](https://github.com/pmd/pmd/issues/5162): \[java] SingularField: False-positive when preceded by synchronized block
 * java-multithreading
   * [#5175](https://github.com/pmd/pmd/issues/5175): \[java] Update AvoidSynchronizedAtMethodLevel message to mention ReentrantLock, new rule AvoidSynchronizedStatement
 * plsql
