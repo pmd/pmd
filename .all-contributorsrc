@@ -7745,6 +7745,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "dschach",
+      "name": "David Schach",
+      "avatar_url": "https://avatars.githubusercontent.com/u/636977?v=4",
+      "profile": "https://github.com/dschach",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,

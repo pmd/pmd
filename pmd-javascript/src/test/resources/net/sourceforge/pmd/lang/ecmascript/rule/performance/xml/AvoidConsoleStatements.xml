@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.github.io/schema/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Any console method should be flagged</description>
+        <expected-problems>9</expected-problems>
+        <code><![CDATA[
+console.log('foo');
+console.error('foo');
+console.info('foo');
+console.warn('foo');
+console.debug('foo');
+console.trace('foo');
+console.assert(false, 'foo');
+console.dir(myObj);
+console.group('label');
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Any console method via window.console should be flagged</description>
+        <expected-problems>9</expected-problems>
+        <code><![CDATA[
+window.console.log('foo');
+window.console.error('foo');
+window.console.info('foo');
+window.console.warn('foo');
+window.console.debug('foo');
+window.console.trace('foo');
+window.console.assert(false, 'foo');
+window.console.dir(myObj);
+window.console.group('label');
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Other similar methods shouldn't be flagged</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+var MyFoo = {
+    debug: function(a) {
+        // ...
+    },
+    console: {
+        debug: function(a) {
+            // ...
+        }
+    }
+};
+
+MyFoo.debug('bar'); // ok, it is not console.debug
+MyFoo.console.debug('bar'); // ok, it is not console.debug
+]]></code>
+    </test-code>
+</test-data>
