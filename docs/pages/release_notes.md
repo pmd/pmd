@@ -14,6 +14,11 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+### 🌟 New and changed rules
+#### New Rules
+* The new Java rule {%rule java/multithreading/AvoidSynchronizedStatement %} finds synchronization blocks that
+  could cause performance issues with virtual threads due to pinning.
+
 ### 🐛 Fixed Issues
 * apex-performance
   * [#5139](https://github.com/pmd/pmd/issues/5139): \[apex] OperationWithHighCostInLoop: false negative for triggers
@@ -26,6 +31,8 @@ This is a {{ site.pmd.release_type }} release.
   * [#5151](https://github.com/pmd/pmd/issues/5151): \[java] GuardLogStatement: Should not need to guard parameterized log messages where the replacement arg is a constant from another class
   * [#5152](https://github.com/pmd/pmd/issues/5152): \[java] GuardLogStatement: Should not need to guard parameterized log messages where the replacement arg is "this"
   * [#5153](https://github.com/pmd/pmd/issues/5153): \[java] GuardLogStatement: Should not need to guard parameterized log messages where the replacement arg is an array element
+* java-multithreading
+  * [#5175](https://github.com/pmd/pmd/issues/5175): \[java] Update AvoidSynchronizedAtMethodLevel message to mention ReentrantLock, new rule AvoidSynchronizedStatement
 * plsql
   * [#5125](https://github.com/pmd/pmd/pull/5125): \[plsql] Improve merge statement (order of merge insert/update flexible, allow prefixes in column names)
 * plsql-bestpractices
@@ -48,6 +55,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### ✨ External Contributions
 * [#5125](https://github.com/pmd/pmd/pull/5125): \[plsql] Improve merge statement (order of merge insert/update flexible, allow prefixes in column names) - [Arjen Duursma](https://github.com/duursma) (@duursma)
+* [#5175](https://github.com/pmd/pmd/pull/5175): \[java] Update AvoidSynchronizedAtMethodLevel message to mention ReentrantLock, new rule AvoidSynchronizedStatement - [Chas Honton](https://github.com/chonton) (@chonton)
 
 {% endtocmaker %}
 

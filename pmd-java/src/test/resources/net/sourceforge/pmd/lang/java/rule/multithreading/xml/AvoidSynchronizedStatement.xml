@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Synchronized block in instance method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo () {
+        synchronized(mutex) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Synchronized block in static methods</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public static void foo() {
+        synchronized(Test.class) {
+            // only a block is synchronized on Test.class
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>synchronized methods are not flagged - we have a separate rule AvoidSynchronizedAtMethodLevel for that</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public synchronized void foo() {}
+    public static synchronized void fooStatic() {}
+}
+        ]]></code>
+    </test-code>
+</test-data>
