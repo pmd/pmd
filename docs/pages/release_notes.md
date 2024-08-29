@@ -26,6 +26,8 @@ This is a {{ site.pmd.release_type }} release.
   * [#5151](https://github.com/pmd/pmd/issues/5151): \[java] GuardLogStatement: Should not need to guard parameterized log messages where the replacement arg is a constant from another class
   * [#5152](https://github.com/pmd/pmd/issues/5152): \[java] GuardLogStatement: Should not need to guard parameterized log messages where the replacement arg is "this"
   * [#5153](https://github.com/pmd/pmd/issues/5153): \[java] GuardLogStatement: Should not need to guard parameterized log messages where the replacement arg is an array element
+* plsql
+  * [#5125](https://github.com/pmd/pmd/pull/5125): \[plsql] Improve merge statement (order of merge insert/update flexible, allow prefixes in column names)
 * plsql-bestpractices
   * [#5132](https://github.com/pmd/pmd/issues/5132): \[plsql] TomKytesDespair: XPathException for more complex exception handler
 
@@ -33,6 +35,10 @@ This is a {{ site.pmd.release_type }} release.
 * pmd-jsp
   * {%jdoc jsp::lang.jsp.ast.JspParserImpl %} is deprecated now. It should have been package-private
     because this is an implementation class that should not be used directly.
+* pmd-plsql
+  * {%jdoc plsql::lang.plsql.ast.PLSQLParserImpl#MergeUpdateClausePrefix() %} is deprecated. This production is
+    not used anymore and will be removed. Note: The whole parser implementation class has been deprecated since 7.3.0,
+    as it is supposed to be internalized.
 * pmd-velocity
   * {%jdoc velocity::lang.velocity.ast.VtlParserImpl %} is deprecated now. It should have been package-private
     because this is an implementation class that should not be used directly.
@@ -41,6 +47,7 @@ This is a {{ site.pmd.release_type }} release.
     because this is an implementation class that should not be used directly.
 
 ### ✨ External Contributions
+* [#5125](https://github.com/pmd/pmd/pull/5125): \[plsql] Improve merge statement (order of merge insert/update flexible, allow prefixes in column names) - [Arjen Duursma](https://github.com/duursma) (@duursma)
 
 {% endtocmaker %}
 
