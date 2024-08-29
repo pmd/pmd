@@ -7736,6 +7736,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "AB-xdev",
+      "name": "Alex B",
+      "avatar_url": "https://avatars.githubusercontent.com/u/45384811?v=4",
+      "profile": "https://xdev.software/",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
