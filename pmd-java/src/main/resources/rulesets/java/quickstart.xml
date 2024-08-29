@@ -279,6 +279,7 @@
 
 
     <!-- <rule ref="category/java/multithreading.xml/AvoidSynchronizedAtMethodLevel" /> -->
+    <!-- <rule ref="category/java/multithreading.xml/AvoidSynchronizedStatement" /> -->
     <rule ref="category/java/multithreading.xml/AvoidThreadGroup"/>
     <rule ref="category/java/multithreading.xml/AvoidUsingVolatile"/>
     <!-- <rule ref="category/java/multithreading.xml/DoNotUseThreads" /> -->
