@@ -127,7 +127,6 @@ final class TypesFromAst {
             return null;
         }
 
-        // TODO error handling, what if we're saying List<String, Int> in source: should be caught before
 
         PSet<SymAnnot> typeAnnots = getTypeAnnotations(node);
         JTypeDeclSymbol reference = getReferenceEnsureResolved(node);
@@ -152,10 +151,21 @@ final class TypesFromAst {
             // until the constructor call is fully type resolved
         }
 
-        if (enclosing != null) {
-            return enclosing.selectInner((JClassSymbol) reference, boundGenerics, typeAnnots);
-        } else {
-            return ts.parameterise((JClassSymbol) reference, boundGenerics).withAnnotations(typeAnnots);
+        try {
+            if (enclosing != null) {
+                return enclosing.selectInner((JClassSymbol) reference, boundGenerics, typeAnnots);
+            } else {
+                return ts.parameterise((JClassSymbol) reference, boundGenerics).withAnnotations(typeAnnots);
+            }
+        } catch (IllegalArgumentException e) {
+            // This is because the enclosing type or type arguments are invalid.
+            // Since we are building the type from an AST node, this is caused
+            // by invalid types that were written in the source, which is always
+            // possible (malformed source) and should be handled. If the invalid
+            // parameterizations are created internally by the framework though
+            // (that is, not here), that is a bug in our framework and therefore
+            // is not rethrown as a semantic exception, but propagated.
+            throw InternalApiBridge.getProcessor(node).getLogger().error(node, e.getMessage());
         }
     }
 

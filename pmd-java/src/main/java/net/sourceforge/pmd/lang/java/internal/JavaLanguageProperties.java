@@ -25,9 +25,21 @@ public class JavaLanguageProperties extends JvmLanguagePropertyBundle {
                        .defaultValue(InferenceLoggingVerbosity.DISABLED)
                        .build();
 
+
+    /**
+     * @since 7.5.0
+     */
+    static final PropertyDescriptor<Boolean> INTERNAL_DO_STRICT_TYPERES =
+        PropertyFactory.booleanProperty("xStrictTypeRes")
+                       .desc("Whether to perform type resolution strictly at the start of execution or not")
+                       .defaultValue(true)
+                       .build();
+
+
     public JavaLanguageProperties() {
         super(JavaLanguageModule.getInstance());
         definePropertyDescriptor(INTERNAL_INFERENCE_LOGGING_VERBOSITY);
+        definePropertyDescriptor(INTERNAL_DO_STRICT_TYPERES);
         definePropertyDescriptor(CpdLanguageProperties.CPD_IGNORE_METADATA);
         definePropertyDescriptor(CpdLanguageProperties.CPD_ANONYMIZE_IDENTIFIERS);
         definePropertyDescriptor(CpdLanguageProperties.CPD_ANONYMIZE_LITERALS);

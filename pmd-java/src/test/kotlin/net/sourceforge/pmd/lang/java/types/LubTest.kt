@@ -156,6 +156,21 @@ class LubTest : FunSpec({
                 ) shouldBe (t_Enum * EnumSuperItf::class.decl).toArray()
 
             }
+
+            test("Test lub of related raw types") {
+                val ast = javaParser.parse("""
+                    class Super<T> {}
+                    class Derived<T> extends Super<T> {}
+                """.trimIndent())
+
+                val (supert, derivedt) = ast.declaredTypeSignatures()
+
+                lub(
+                    supert.erasure,
+                    derivedt.erasure,
+                ) shouldBe supert.erasure
+
+            }
         }
     }
 

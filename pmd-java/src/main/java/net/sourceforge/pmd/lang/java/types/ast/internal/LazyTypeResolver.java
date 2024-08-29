@@ -78,6 +78,7 @@ import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JRecordComponentSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors;
 import net.sourceforge.pmd.lang.java.types.JArrayType;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
@@ -172,7 +173,13 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
 
     @Override
     public JTypeMirror visit(ASTAnnotation node, TypingContext ctx) {
-        return node.getTypeNode().getTypeMirror(ctx);
+        JTypeMirror ty = node.getTypeNode().getTypeMirror(ctx);
+        if (ty instanceof JClassType) {
+            return ty;
+        }
+        // we throw this error because it would cause
+        // class cast exceptions down the line if we don't abort now.
+        throw getProcessor().getLogger().error(node, JavaSemanticErrors.EXPECTED_ANNOTATION_TYPE);
     }
 
     @Override
