@@ -21,6 +21,8 @@ This is a {{ site.pmd.release_type }} release.
   * [#5167](https://github.com/pmd/pmd/pull/5167): \[java] java.lang.IllegalArgumentException: \<\?\> cannot be a wildcard bound
 * java-bestpractices
   * [#5145](https://github.com/pmd/pmd/issues/5145): \[java] False positive UnusedPrivateMethod
+* java-design
+  * [#5162](https://github.com/pmd/pmd/issues/5162): \[java] SingularField: False-positive when preceded by synchronized block
 * plsql-bestpractices
   * [#5132](https://github.com/pmd/pmd/issues/5132): \[plsql] TomKytesDespair - exception for more complex exception handler
 
