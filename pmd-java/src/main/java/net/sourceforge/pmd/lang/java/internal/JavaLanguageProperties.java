@@ -26,6 +26,9 @@ public class JavaLanguageProperties extends JvmLanguagePropertyBundle {
                        .build();
 
 
+    /**
+     * @since 7.5.0
+     */
     static final PropertyDescriptor<Boolean> INTERNAL_DO_STRICT_TYPERES =
         PropertyFactory.booleanProperty("xStrictTypeRes")
                        .desc("Whether to perform type resolution strictly at the start of execution or not")

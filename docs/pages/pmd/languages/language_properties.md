@@ -2,7 +2,7 @@
 title: Language configuration
 permalink: pmd_languages_configuration.html
 author: Clément Fournier
-last_updated: February 2024 (7.0.0)
+last_updated: August 2024 (7.5.0)
 tags: [languages]
 keywords: [pmd, cpd, options, command, auxclasspath, language, properties]
 summary: "Summary of language configuration options and properties"
@@ -97,6 +97,11 @@ The Java language can be configured with the following properties:
 - `xTypeInferenceLogging`: Verbosity of type inference logging, possible values `DISABLED`, `SIMPLE`, `VERBOSE`.
 
   Environment variable: `PMD_JAVA_X_TYPE_INFERENCE_LOGGING`
+
+- `xStrictTypeRes`: Whether to perform type resolution strictly at the start of execution or not (default: "true")
+
+  Since: 7.5.0  
+  Environment variable: `PMD_JAVA_X_STRICT_TYPE_RES`
 
 ## Apex language properties
 
