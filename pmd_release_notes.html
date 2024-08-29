@@ -1925,6 +1925,11 @@
       <li><a href="https://github.com/pmd/pmd/issues/5153">#5153</a>: [java] GuardLogStatement: Should not need to guard parameterized log messages where the replacement arg is an array element</li>
     </ul>
   </li>
+  <li>plsql
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/5125">#5125</a>: [plsql] Improve merge statement (order of merge insert/update flexible, allow prefixes in column names)</li>
+    </ul>
+  </li>
   <li>plsql-bestpractices
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/5132">#5132</a>: [plsql] TomKytesDespair: XPathException for more complex exception handler</li>
@@ -1938,6 +1943,13 @@
     <ul>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.5.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/JspParserImpl.html#"><code>JspParserImpl</code></a> is deprecated now. It should have been package-private
 because this is an implementation class that should not be used directly.</li>
+    </ul>
+  </li>
+  <li>pmd-plsql
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.5.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/ast/PLSQLParserImpl.html#MergeUpdateClausePrefix()"><code>MergeUpdateClausePrefix</code></a> is deprecated. This production is
+not used anymore and will be removed. Note: The whole parser implementation class has been deprecated since 7.3.0,
+as it is supposed to be internalized.</li>
     </ul>
   </li>
   <li>pmd-velocity
@@ -1955,6 +1967,9 @@ because this is an implementation class that should not be used directly.</li>
 </ul>
 
 <h3 id="-external-contributions">✨ External Contributions</h3>
+<ul>
+  <li><a href="https://github.com/pmd/pmd/pull/5125">#5125</a>: [plsql] Improve merge statement (order of merge insert/update flexible, allow prefixes in column names) - <a href="https://github.com/duursma">Arjen Duursma</a> (@duursma)</li>
+</ul>
 
 
 
