@@ -14,21 +14,21 @@ import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
-import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
-import net.sourceforge.pmd.lang.java.ast.BinaryOp;
+import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.reporting.RuleContext;
@@ -113,62 +113,23 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
         return null;
     }
 
+    @SuppressWarnings("PMD.SimplifyBooleanReturns")
     private boolean needsGuard(ASTMethodCall node) {
-        if (node.getArguments().size() == 0) {
+        if (node.getArguments().isEmpty()) {
             return false;
         }
 
-        ASTArgumentList argumentList = node.getArguments();
-        for (ASTExpression child : argumentList) {
-            if (child.descendantsOrSelf()
-                    .filterIs(ASTInfixExpression.class)
-                    .filter(n -> n.getOperator() == BinaryOp.ADD)
-                    .nonEmpty()
-                && TypeTestUtil.isA(String.class, child)) {
-                // only consider the first String argument - which is the log message - and return here
-                return !isConstantStringExpression(child);
-            }
-        }
-
-        return true;
-    }
-
-    private boolean isConstantStringExpression(ASTExpression expr) {
-        if (expr == null) {
-            return false;
-        }
-
-        if (expr instanceof ASTStringLiteral) {
+        // get the message expression
+        // it must either be a direct access (var / param access, lambda, method ref, etc.)
+        // or a compile-time constant string to not require a guard
+        int messageArg = getMessageArgIndex(node);
+        ASTExpression messageExpr = node.getArguments().get(messageArg);
+        if (!isDirectAccess(messageExpr) && !messageExpr.isCompileTimeConstant()) {
             return true;
         }
 
-        if (expr instanceof ASTVariableAccess) {
-            ASTVariableAccess var = (ASTVariableAccess) expr;
-            if (var.isCompileTimeConstant()) {
-                return true;
-            }
-            JVariableSymbol symbol = var.getReferencedSym();
-            if (symbol == null) {
-                return false;
-            }
-            if (!var.getReferencedSym().isFinal()) {
-                return false;
-            }
-            @Nullable
-            ASTVariableId declaratorId = symbol.tryGetNode();
-            if (declaratorId != null) {
-                return isConstantStringExpression(declaratorId.getInitializer());
-            }
-        }
-
-        if (expr instanceof ASTInfixExpression) {
-            ASTInfixExpression infix = (ASTInfixExpression) expr;
-            if (isConstantStringExpression(infix.getLeftOperand())
-                    && isConstantStringExpression(infix.getRightOperand())) {
-                return true;
-            }
-        }
-        return false;
+        // if any additional params are not a direct access, we need a guard
+        return !areAdditionalParamsDirectAccess(node, messageArg + 1);
     }
 
     private boolean hasGuard(ASTMethodCall node, String logLevel) {
@@ -210,18 +171,20 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
     private @Nullable String getLogLevelName(ASTMethodCall methodCall) {
         String methodName = methodCall.getMethodName();
         if (!JAVA_UTIL_LOG_METHOD.equals(methodName)) {
-            if (isUnguardedAccessOk(methodCall, 0)) {
-                return null;
-            }
             return methodName; // probably logger.warn(...)
         }
 
-        // else it's java.util.logging, eg
-        // LOGGER.log(Level.FINE, "m")
-        if (isUnguardedAccessOk(methodCall, 1)) {
-            return null;
-        }
         return getJutilLogLevelInFirstArg(methodCall);
+    }
+
+    private int getMessageArgIndex(ASTMethodCall methodCall) {
+        String methodName = methodCall.getMethodName();
+        if (JAVA_UTIL_LOG_METHOD.equals(methodName)) {
+            // LOGGER.log(Level.FINE, "m")
+            return 1;
+        }
+
+        return 0;
     }
 
     private @Nullable String getJutilLogLevelInFirstArg(ASTMethodCall methodCall) {
@@ -232,12 +195,36 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    private boolean isUnguardedAccessOk(ASTMethodCall call, int messageArgIndex) {
+    private boolean areAdditionalParamsDirectAccess(ASTMethodCall call, int messageArgIndex) {
         // return true if the statement has limited overhead even if unguarded,
         // so that we can ignore it
         return call.getArguments().toStream()
                    .drop(messageArgIndex) // remove the level argument if needed
-                   .all(it -> it instanceof ASTStringLiteral || it instanceof ASTLambdaExpression || it instanceof ASTVariableAccess || it instanceof ASTMethodReference);
+                   .all(GuardLogStatementRule::isDirectAccess);
+    }
+
+    private static boolean isDirectAccess(ASTExpression it) {
+        final boolean isPermittedType = it instanceof ASTLiteral || it instanceof ASTLambdaExpression
+                || it instanceof ASTVariableAccess || it instanceof ASTThisExpression
+                || it instanceof ASTMethodReference || it instanceof ASTFieldAccess
+                || it instanceof ASTArrayAccess;
+
+        if (!isPermittedType) {
+            return false;
+        }
+
+        if (it instanceof QualifiableExpression) {
+            final ASTExpression qualifier = ((QualifiableExpression) it).getQualifier();
+
+            // for array access, we also care about the index expression
+            if (it instanceof ASTArrayAccess && !isDirectAccess(((ASTArrayAccess) it).getIndexExpression())) {
+                return false;
+            }
+
+            return qualifier == null || qualifier instanceof ASTTypeExpression || isDirectAccess(qualifier);
+        }
+
+        return true;
     }
 
     private void extractProperties() {

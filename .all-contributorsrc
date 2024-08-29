@@ -1929,7 +1929,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/1444125?v=4",
       "profile": "http://www.linkedin.com/in/chonton",
       "contributions": [
-        "bug"
+        "bug",
+        "code"
       ]
     },
     {
@@ -7705,6 +7706,33 @@
       "name": "RBRi",
       "avatar_url": "https://avatars.githubusercontent.com/u/2544132?v=4",
       "profile": "https://github.com/rbri",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "jbisotti",
+      "name": "Jamie Bisotti",
+      "avatar_url": "https://avatars.githubusercontent.com/u/899712?v=4",
+      "profile": "https://github.com/jbisotti",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "soloturn",
+      "name": "soloturn",
+      "avatar_url": "https://avatars.githubusercontent.com/u/825568?v=4",
+      "profile": "https://github.com/soloturn",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "schosin",
+      "name": "schosin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1669777?v=4",
+      "profile": "https://github.com/schosin",
       "contributions": [
         "bug"
       ]
