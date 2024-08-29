@@ -4,15 +4,20 @@
 
 package net.sourceforge.pmd.internal.util;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.endsWith;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -193,22 +198,56 @@ class ClasspathClassLoaderTest {
         try (ClasspathClassLoader loader = new ClasspathClassLoader(classPath, null)) {
             assertEquals(javaHome.toString(), loader.javaHome);
             try (InputStream stream = loader.getResourceAsStream("java/lang/Object.class")) {
-                assertNotNull(stream);
-                try (DataInputStream data = new DataInputStream(stream)) {
-                    assertClassFile(data, javaVersion);
-                }
+                assertClassFile(stream, javaVersion);
             }
 
             // should not fail for resources without a package
             assertNull(loader.getResourceAsStream("ClassInDefaultPackage.class"));
+
+            // load module java.base
+            try (InputStream stream = loader.getResourceAsStream("java.base/module-info.class")) {
+                assertClassFile(stream, javaVersion);
+            }
         }
     }
 
-    private void assertClassFile(DataInputStream data, int javaVersion) throws IOException {
-        int magicNumber = data.readInt();
-        assertEquals(0xcafebabe, magicNumber);
-        data.readUnsignedShort(); // minorVersion
-        int majorVersion = data.readUnsignedShort();
-        assertEquals(44 + javaVersion, majorVersion);
+    private void assertClassFile(InputStream inputStream, int javaVersion) throws IOException {
+        assertNotNull(inputStream);
+        try (DataInputStream data = new DataInputStream(inputStream)) {
+            int magicNumber = data.readInt();
+            assertEquals(0xcafebabe, magicNumber);
+            data.readUnsignedShort(); // minorVersion
+            int majorVersion = data.readUnsignedShort();
+            assertEquals(44 + javaVersion, majorVersion);
+        }
+    }
+
+    private static byte[] readBytes(InputStream stream) throws IOException {
+        assertNotNull(stream);
+        ByteArrayOutputStream data = new ByteArrayOutputStream();
+        try (InputStream inputStream = stream) {
+            byte[] buffer = new byte[8192];
+            int count;
+            while ((count = inputStream.read(buffer)) != -1) {
+                data.write(buffer, 0, count);
+            }
+        }
+        return data.toByteArray();
+    }
+
+    @Test
+    void findModuleInfoFromJar() throws IOException {
+        try (ClasspathClassLoader loader = new ClasspathClassLoader("", ClasspathClassLoader.class.getClassLoader())) {
+            // search for module org.junit.platform.suite.api, which should be on the test-classpath in pmd-core...
+            // inside a jar
+            String junitJupiterApiModule = "org.junit.platform.suite.api/module-info.class";
+            URL resource = loader.getResource(junitJupiterApiModule);
+            assertNotNull(resource);
+            assertThat(resource.toString(), endsWith(".jar!/module-info.class"));
+
+            byte[] fromUrl = readBytes(resource.openStream());
+            byte[] fromStream = readBytes(loader.getResourceAsStream(junitJupiterApiModule));
+            assertArrayEquals(fromUrl, fromStream, "getResource and getResourceAsStream should return the same module");
+        }
     }
 }

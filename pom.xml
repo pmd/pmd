@@ -585,6 +585,12 @@
                             <artifactId>pmd-build-tools-config</artifactId>
                             <version>${pmd.build-tools.version}</version>
                         </dependency>
+                        <!-- Allow to build PMD with Java 23 -->
+                        <dependency>
+                            <groupId>org.ow2.asm</groupId>
+                            <artifactId>asm</artifactId>
+                            <version>9.7</version>
+                        </dependency>
                     </dependencies>
                 </plugin>
                 <plugin>
@@ -815,7 +821,7 @@
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
-                <version>9.6</version>
+                <version>9.7</version>
             </dependency>
             <dependency>
                 <groupId>org.pcollections</groupId>

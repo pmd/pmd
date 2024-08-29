@@ -1,6 +1,6 @@
 +- CompilationUnit[@PackageName = ""]
-   +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "java.util.stream.Collectors", @ImportedSimpleName = "Collectors", @PackageName = "java.util.stream", @Static = false]
-   +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "java.util.List", @ImportedSimpleName = "List", @PackageName = "java.util", @Static = false]
+   +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "java.util.stream.Collectors", @ImportedSimpleName = "Collectors", @ModuleImport = false, @PackageName = "java.util.stream", @Static = false]
+   +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "java.util.List", @ImportedSimpleName = "List", @ModuleImport = false, @PackageName = "java.util", @Static = false]
    +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "LocalRecords", @CanonicalName = "LocalRecords", @EffectiveVisibility = Visibility.V_PUBLIC, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "LocalRecords", @Static = false, @TopLevel = true, @Visibility = Visibility.V_PUBLIC]
       +- ModifierList[@EffectiveModifiers = (JModifier.PUBLIC), @ExplicitModifiers = (JModifier.PUBLIC)]
       +- ClassBody[@Empty = false, @Size = 6]

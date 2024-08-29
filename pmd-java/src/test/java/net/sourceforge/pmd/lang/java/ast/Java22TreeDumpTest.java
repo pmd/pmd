@@ -35,7 +35,7 @@ class Java22TreeDumpTest extends BaseJavaTreeDumpTest {
     @Test
     void jep456UnnamedPatternsAndVariablesBeforeJava22() {
         ParseException thrown = assertThrows(ParseException.class, () -> java21.parseResource("Jep456_UnnamedPatternsAndVariables.java"));
-        assertThat(thrown.getMessage(), containsString("Unnamed variables and patterns was only standardized in Java 22, you should select your language version accordingly"));
+        assertThat(thrown.getMessage(), containsString("Unnamed variables and patterns are a feature of Java 22, you should select your language version accordingly"));
     }
 
     @Test

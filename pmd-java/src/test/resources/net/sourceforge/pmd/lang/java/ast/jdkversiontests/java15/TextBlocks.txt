@@ -1,6 +1,6 @@
 +- CompilationUnit[@PackageName = ""]
-   +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "javax.script.ScriptEngine", @ImportedSimpleName = "ScriptEngine", @PackageName = "javax.script", @Static = false]
-   +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "javax.script.ScriptEngineManager", @ImportedSimpleName = "ScriptEngineManager", @PackageName = "javax.script", @Static = false]
+   +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "javax.script.ScriptEngine", @ImportedSimpleName = "ScriptEngine", @ModuleImport = false, @PackageName = "javax.script", @Static = false]
+   +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "javax.script.ScriptEngineManager", @ImportedSimpleName = "ScriptEngineManager", @ModuleImport = false, @PackageName = "javax.script", @Static = false]
    +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "TextBlocks", @CanonicalName = "TextBlocks", @EffectiveVisibility = Visibility.V_PUBLIC, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "TextBlocks", @Static = false, @TopLevel = true, @Visibility = Visibility.V_PUBLIC]
       +- ModifierList[@EffectiveModifiers = (JModifier.PUBLIC), @ExplicitModifiers = (JModifier.PUBLIC)]
       +- ClassBody[@Empty = false, @Size = 1]

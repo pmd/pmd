@@ -20,6 +20,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +32,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ModuleVisitor;
+import org.objectweb.asm.Opcodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -198,12 +205,34 @@ public class ClasspathClassLoader extends URLClassLoader {
             + "] jrt-fs: " + javaHome + " parent: " + getParent() + ']';
     }
 
+    private static final String MODULE_INFO_SUFFIX = "module-info.class";
+    private static final String MODULE_INFO_SUFFIX_SLASH = "/" + MODULE_INFO_SUFFIX;
+    // this is lazily initialized on first query of a module-info.class
+    private Map<String, URL> moduleNameToModuleInfoUrls;
+
+    @Nullable
+    private static String extractModuleName(String name) {
+        if (!name.endsWith(MODULE_INFO_SUFFIX_SLASH)) {
+            return null;
+        }
+        return name.substring(0, name.length() - MODULE_INFO_SUFFIX_SLASH.length());
+    }
+
     @Override
     public InputStream getResourceAsStream(String name) {
         // always first search in jrt-fs, if available
         // note: we can't override just getResource(String) and return a jrt:/-URL, because the URL itself
         // won't be connected to the correct JrtFileSystem and would just load using the system classloader.
         if (fileSystem != null) {
+            String moduleName = extractModuleName(name);
+            if (moduleName != null) {
+                LOG.trace("Trying to load module-info.class for module {} in jrt-fs", moduleName);
+                Path candidate = fileSystem.getPath("modules", moduleName, MODULE_INFO_SUFFIX);
+                if (Files.exists(candidate)) {
+                    return newInputStreamFromJrtFilesystem(candidate);
+                }
+            }
+
             int lastSlash = name.lastIndexOf('/');
             String packageName = name.substring(0, Math.max(lastSlash, 0));
             Set<String> moduleNames = packagesDirsToModules.get(packageName);
@@ -214,15 +243,7 @@ public class ClasspathClassLoader extends URLClassLoader {
                 for (String moduleCandidate : moduleNames) {
                     Path candidate = fileSystem.getPath("modules", moduleCandidate, name);
                     if (Files.exists(candidate)) {
-                        LOG.trace("Found {}", candidate);
-                        try {
-                            // Note: The input streams from JrtFileSystem are ByteArrayInputStreams and do not
-                            // need to be closed - we don't need to track these. The filesystem itself needs to be closed at the end.
-                            // See https://github.com/openjdk/jdk/blob/970cd202049f592946f9c1004ea92dbd58abf6fb/src/java.base/share/classes/jdk/internal/jrtfs/JrtFileSystem.java#L334
-                            return Files.newInputStream(candidate);
-                        } catch (IOException e) {
-                            throw new UncheckedIOException(e);
-                        }
+                        return newInputStreamFromJrtFilesystem(candidate);
                     }
                 }
             }
@@ -233,11 +254,83 @@ public class ClasspathClassLoader extends URLClassLoader {
         return super.getResourceAsStream(name);
     }
 
+    private static InputStream newInputStreamFromJrtFilesystem(Path path) {
+        LOG.trace("Found {}", path);
+        try {
+            // Note: The input streams from JrtFileSystem are ByteArrayInputStreams and do not
+            // need to be closed - we don't need to track these. The filesystem itself needs to be closed at the end.
+            // See https://github.com/openjdk/jdk/blob/970cd202049f592946f9c1004ea92dbd58abf6fb/src/java.base/share/classes/jdk/internal/jrtfs/JrtFileSystem.java#L334
+            return Files.newInputStream(path);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    private static class ModuleNameExtractor extends ClassVisitor {
+        private String moduleName;
+
+        protected ModuleNameExtractor() {
+            super(Opcodes.ASM9);
+        }
+
+        @Override
+        public ModuleVisitor visitModule(String name, int access, String version) {
+            moduleName = name;
+            return null;
+        }
+
+        public String getModuleName() {
+            return moduleName;
+        }
+    }
+
+    private void collectAllModules() {
+        if (moduleNameToModuleInfoUrls != null) {
+            return;
+        }
+
+        Map<String, URL> allModules = new HashMap<>();
+        try {
+            Enumeration<URL> moduleInfoUrls = findResources(MODULE_INFO_SUFFIX);
+            collectModules(allModules, moduleInfoUrls);
+
+            // also search in parents
+            moduleInfoUrls = getParent().getResources(MODULE_INFO_SUFFIX);
+            collectModules(allModules, moduleInfoUrls);
+
+            LOG.debug("Found {} modules on auxclasspath", allModules.size());
+
+            moduleNameToModuleInfoUrls = Collections.unmodifiableMap(allModules);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void collectModules(Map<String, URL> allModules, Enumeration<URL> moduleInfoUrls) throws IOException {
+        while (moduleInfoUrls.hasMoreElements()) {
+            URL url = moduleInfoUrls.nextElement();
+
+            ModuleNameExtractor finder = new ModuleNameExtractor();
+            try (InputStream inputStream = url.openStream()) {
+                ClassReader classReader = new ClassReader(inputStream);
+                classReader.accept(finder, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+            }
+            allModules.putIfAbsent(finder.getModuleName(), url);
+        }
+    }
+
     @Override
     public URL getResource(String name) {
         // Override to make it child-first. This is the method used by
         // pmd-java's type resolution to fetch classes, instead of loadClass.
         Objects.requireNonNull(name);
+
+        String moduleName = extractModuleName(name);
+        if (moduleName != null) {
+            collectAllModules();
+            assert moduleNameToModuleInfoUrls != null : "Modules should have been detected by collectAllModules()";
+            return moduleNameToModuleInfoUrls.get(moduleName);
+        }
 
         URL url = findResource(name);
         if (url == null) {

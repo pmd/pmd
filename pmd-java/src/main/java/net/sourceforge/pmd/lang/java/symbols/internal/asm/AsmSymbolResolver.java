@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JModuleSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.Loader.FailedLoader;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.Loader.StreamLoader;
@@ -72,6 +73,18 @@ public class AsmSymbolResolver implements SymbolResolver {
         }
 
         return found == failed ? null : found; // NOPMD CompareObjectsWithEquals
+    }
+
+    @Override
+    public @Nullable JModuleSymbol resolveModule(@NonNull String moduleName) {
+        // by convention try to load module-info via "moduleName/module-info.class". The used
+        // classloader will need to handle this case to return the correct module-info.class for the
+        // requested module. See impl of ClasspathClassLoader in pmd-core.
+        InputStream inputStream = classLoader.findResource(moduleName + "/module-info.class");
+        if (inputStream != null) {
+            return new ModuleStub(this, moduleName, new StreamLoader(moduleName, inputStream));
+        }
+        return null;
     }
 
     SignatureParser getSigParser() {

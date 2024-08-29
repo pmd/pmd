@@ -10,11 +10,11 @@ import static net.sourceforge.pmd.lang.java.symbols.table.internal.PatternBindin
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.PatternBindingsUtil.bindersOfPattern;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -140,7 +140,7 @@ public final class SymbolTableResolver {
         private final SymTableFactory f;
         private final Deque<JSymbolTable> stack = new ArrayDeque<>();
 
-        private final Deque<ASTTypeDeclaration> enclosingType = new ArrayDeque<>();
+        private final Deque<JClassType> enclosingType = new ArrayDeque<>();
 
         private final Set<DeferredNode> deferredInPrevRound;
         private final Set<DeferredNode> newDeferred;
@@ -204,14 +204,32 @@ public final class SymbolTableResolver {
 
         @Override
         public Void visit(ASTCompilationUnit node, @NonNull ReferenceCtx ctx) {
-            Map<Boolean, List<ASTImportDeclaration>> isImportOnDemand = node.children(ASTImportDeclaration.class)
-                                                                            .collect(Collectors.partitioningBy(ASTImportDeclaration::isImportOnDemand));
+            List<ASTImportDeclaration> importsOnDemand = new ArrayList<>();
+            List<ASTImportDeclaration> singleImports = new ArrayList<>();
+            List<ASTImportDeclaration> moduleImports = new ArrayList<>();
+
+            node.children(ASTImportDeclaration.class).forEach(i -> {
+                if (i.isModuleImport()) {
+                    moduleImports.add(i);
+                } else if (i.isImportOnDemand()) {
+                    importsOnDemand.add(i);
+                } else {
+                    singleImports.add(i);
+                }
+            });
 
             int pushed = 0;
-            pushed += pushOnStack(f.importsOnDemand(top(), isImportOnDemand.get(true)));
+
+            // Java 23 Preview
+            if (node.isSimpleCompilationUnit()) {
+                pushed += pushOnStack(f.moduleImportJavaBase(top()));
+                pushed += pushOnStack(f.importsOnDemandJavaIo(top()));
+            }
+            pushed += pushOnStack(f.moduleImports(top(), moduleImports)); // Java 23 preview
+            pushed += pushOnStack(f.importsOnDemand(top(), importsOnDemand));
             pushed += pushOnStack(f.javaLangSymTable(top()));
             pushed += pushOnStack(f.samePackageSymTable(top()));
-            pushed += pushOnStack(f.singleImportsSymbolTable(top(), isImportOnDemand.get(false)));
+            pushed += pushOnStack(f.singleImportsSymbolTable(top(), singleImports));
 
             NodeStream<ASTTypeDeclaration> typeDecls = node.getTypeDeclarations();
 
@@ -258,7 +276,7 @@ public final class SymbolTableResolver {
         public Void visitTypeDecl(ASTTypeDeclaration node, @NonNull ReferenceCtx ctx) {
             int pushed = 0;
 
-            enclosingType.push(node);
+            enclosingType.push(node.getTypeMirror());
             ReferenceCtx bodyCtx = ctx.scopeDownToNested(node.getSymbol());
 
             // the following is just for the body
@@ -711,7 +729,7 @@ public final class SymbolTableResolver {
             if (enclosingType.isEmpty()) {
                 return null;
             }
-            return enclosingType.getFirst().getTypeMirror();
+            return enclosingType.getFirst();
         }
 
         // this does not visit the given node, only its children
