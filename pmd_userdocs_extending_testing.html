@@ -85,8 +85,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.5.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 30-August-2024</div>
+    <li class="sidebarTitle">PMD 7.6.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 27-September-2024</div>
     
     
     
@@ -1921,7 +1921,7 @@ Each category-ruleset has a single abstract base test class, from which the indi
 We have one test class per rule, which executes all test cases for a single rule. The actual test cases are
 stored in separate XML files, for each rule a separate file is used.</p>
 
-<p>All the test classes inherit from <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.5.0-SNAPSHOT/net/sourceforge/pmd/test/PmdRuleTst.html#"><code>PmdRuleTst</code></a>,
+<p>All the test classes inherit from <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.6.0-SNAPSHOT/net/sourceforge/pmd/test/PmdRuleTst.html#"><code>PmdRuleTst</code></a>,
 which provides the seamless integration with JUnit5. This base class determines the language, the category name
 and the rule name from the concrete test class. It then searches the test code on its own.
 E.g. the individual rule test class
@@ -1937,7 +1937,7 @@ test case and just execute this one.</p>
 
 <h2 id="where-to-place-the-test-code">Where to place the test code</h2>
 
-<p>The <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.5.0-SNAPSHOT/net/sourceforge/pmd/test/PmdRuleTst.html#"><code>PmdRuleTst</code></a> class searches the XML file, that describes the test cases
+<p>The <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.6.0-SNAPSHOT/net/sourceforge/pmd/test/PmdRuleTst.html#"><code>PmdRuleTst</code></a> class searches the XML file, that describes the test cases
 for a certain rule using the following convention:</p>
 
 <p>The XML file is a test resource, so it is searched in the tree under <code class="language-plaintext highlighter-rouge">src/test/resources</code>.</p>
@@ -1961,7 +1961,7 @@ which is under test.</p>
 src/test/resources/net/sourceforge/pmd/lang/&lt;Language Id&gt;/rule/&lt;Category Name&gt;/xml/&lt;Rule Name&gt;.xml
 </code></pre></div></div>
 
-<p>Note: Language Id is the id defined by the language module, see <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.5.0-SNAPSHOT/net/sourceforge/pmd/lang/Language.html#getId()"><code>getId</code></a>.</p>
+<p>Note: Language Id is the id defined by the language module, see <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.6.0-SNAPSHOT/net/sourceforge/pmd/lang/Language.html#getId()"><code>getId</code></a>.</p>
 
 <div class="alert alert-success" role="alert"><i class="fas fa-check-square-o"></i> <b>Tip:</b> This convention allows you to quickly find the test cases for a given rule:
 Just search in the project for a file <code class="language-plaintext highlighter-rouge">&lt;Rule Name&gt;.xml</code>. Search for a class <code class="language-plaintext highlighter-rouge">&lt;Rule Name&gt;Test</code> to find the
@@ -1975,7 +1975,7 @@ see <a href="#using-the-test-framework-externally">Using the test framework exte
 
 <h3 id="test-class-abstractclasswithoutabstractmethodtest">Test Class: AbstractClassWithoutAbstractMethodTest</h3>
 
-<p>This class inherits from <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.5.0-SNAPSHOT/net/sourceforge/pmd/test/PmdRuleTst.html#"><code>PmdRuleTst</code></a> and is located in the package “bestpractices”,
+<p>This class inherits from <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.6.0-SNAPSHOT/net/sourceforge/pmd/test/PmdRuleTst.html#"><code>PmdRuleTst</code></a> and is located in the package “bestpractices”,
 since the rule belongs to the category “Best Practices”:</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">net.sourceforge.pmd.lang.java.rule.bestpractices</span><span class="o">;</span>
@@ -2149,7 +2149,7 @@ In order to use the test framework you just need to reference the dependency <co
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependency&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>net.sourceforge.pmd<span class="nt">&lt;/groupId&gt;</span>
     <span class="nt">&lt;artifactId&gt;</span>pmd-test<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>7.5.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;version&gt;</span>7.6.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
     <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 </code></pre></div></div>
@@ -2184,22 +2184,22 @@ of JUnit5 under the hood, among a couple of utility classes:</p>
 
 <ul>
   <li>
-    <p><a href="https://docs.pmd-code.org/apidocs/pmd-test/7.5.0-SNAPSHOT/net/sourceforge/pmd/test/PmdRuleTst.html#"><code>PmdRuleTst</code></a>: This is the base class for tests in PMD’s code base. It is a subclass of
-<a href="https://docs.pmd-code.org/apidocs/pmd-test/7.5.0-SNAPSHOT/net/sourceforge/pmd/test/RuleTst.html#"><code>RuleTst</code></a> and just
+    <p><a href="https://docs.pmd-code.org/apidocs/pmd-test/7.6.0-SNAPSHOT/net/sourceforge/pmd/test/PmdRuleTst.html#"><code>PmdRuleTst</code></a>: This is the base class for tests in PMD’s code base. It is a subclass of
+<a href="https://docs.pmd-code.org/apidocs/pmd-test/7.6.0-SNAPSHOT/net/sourceforge/pmd/test/RuleTst.html#"><code>RuleTst</code></a> and just
 contains the logic to determine the test resources based on the test class name.</p>
   </li>
   <li>
-    <p><a href="https://docs.pmd-code.org/apidocs/pmd-test/7.5.0-SNAPSHOT/net/sourceforge/pmd/test/SimpleAggregatorTst.html#"><code>SimpleAggregatorTst</code></a>: This is a more generic base class for the test classes.
+    <p><a href="https://docs.pmd-code.org/apidocs/pmd-test/7.6.0-SNAPSHOT/net/sourceforge/pmd/test/SimpleAggregatorTst.html#"><code>SimpleAggregatorTst</code></a>: This is a more generic base class for the test classes.
 It doesn’t register any test cases on its own. You can register your own rule tests.
-It itself is a subclass of <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.5.0-SNAPSHOT/net/sourceforge/pmd/test/RuleTst.html#"><code>RuleTst</code></a>.</p>
+It itself is a subclass of <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.6.0-SNAPSHOT/net/sourceforge/pmd/test/RuleTst.html#"><code>RuleTst</code></a>.</p>
   </li>
   <li>
     <p>The maven module “pmd-test-schema” contains the logic to parse the XML files and provides a
-<a href="https://docs.pmd-code.org/apidocs/pmd-test-schema/7.5.0-SNAPSHOT/net/sourceforge/pmd/test/schema/RuleTestCollection.html#"><code>RuleTestCollection</code></a>. This in turn contains a list of
-<a href="https://docs.pmd-code.org/apidocs/pmd-test-schema/7.5.0-SNAPSHOT/net/sourceforge/pmd/test/schema/RuleTestDescriptor.html#"><code>RuleTestDescriptor</code></a>s. Each rule test descriptor describes a single test case.</p>
+<a href="https://docs.pmd-code.org/apidocs/pmd-test-schema/7.6.0-SNAPSHOT/net/sourceforge/pmd/test/schema/RuleTestCollection.html#"><code>RuleTestCollection</code></a>. This in turn contains a list of
+<a href="https://docs.pmd-code.org/apidocs/pmd-test-schema/7.6.0-SNAPSHOT/net/sourceforge/pmd/test/schema/RuleTestDescriptor.html#"><code>RuleTestDescriptor</code></a>s. Each rule test descriptor describes a single test case.</p>
   </li>
   <li>
-    <p><a href="https://docs.pmd-code.org/apidocs/pmd-test/7.5.0-SNAPSHOT/net/sourceforge/pmd/test/RuleTst.html#"><code>RuleTst</code></a>: uses the <a href="https://docs.pmd-code.org/apidocs/pmd-test-schema/7.5.0-SNAPSHOT/net/sourceforge/pmd/test/schema/TestSchemaParser.html#"><code>TestSchemaParser</code></a>
+    <p><a href="https://docs.pmd-code.org/apidocs/pmd-test/7.6.0-SNAPSHOT/net/sourceforge/pmd/test/RuleTst.html#"><code>RuleTst</code></a>: uses the <a href="https://docs.pmd-code.org/apidocs/pmd-test-schema/7.6.0-SNAPSHOT/net/sourceforge/pmd/test/schema/TestSchemaParser.html#"><code>TestSchemaParser</code></a>
 from module “pmd-test-schema” to parse the test cases, executes each
 rule test descriptor and asserts the results. It defines a test method <code class="language-plaintext highlighter-rouge">ruleTests()</code> which is a test factory
 and returns one dynamic test per rule test.</p>
@@ -2252,7 +2252,7 @@ create custom PMD rules for different languages including tests.</p>
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            December 2023 (7.0.0)<br /> Site last generated: Aug 29, 2024 <br />
+            December 2023 (7.0.0)<br /> Site last generated: Aug 30, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
