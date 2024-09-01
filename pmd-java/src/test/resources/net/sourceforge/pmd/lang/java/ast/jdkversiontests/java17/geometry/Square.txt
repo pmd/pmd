@@ -1,7 +1,7 @@
 +- CompilationUnit[@PackageName = "com.example.geometry"]
    +- PackageDeclaration[@Name = "com.example.geometry"]
    |  +- ModifierList[@EffectiveModifiers = (), @ExplicitModifiers = ()]
-   +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "com.example.geometry.Square", @CanonicalName = "com.example.geometry.Square", @EffectiveVisibility = Visibility.V_PUBLIC, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "com.example.geometry", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "Square", @Static = false, @TopLevel = true, @Visibility = Visibility.V_PUBLIC]
+   +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "com.example.geometry.Square", @CanonicalName = "com.example.geometry.Square", @EffectiveVisibility = Visibility.V_PUBLIC, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "com.example.geometry", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "Square", @Static = false, @TopLevel = true, @UnnamedToplevelClass = false, @Visibility = Visibility.V_PUBLIC]
       +- ModifierList[@EffectiveModifiers = (JModifier.PUBLIC, JModifier.NON_SEALED), @ExplicitModifiers = (JModifier.PUBLIC, JModifier.NON_SEALED)]
       +- ExtendsList[@Empty = false, @Size = 1]
       |  +- ClassType[@FullyQualified = false, @PackageQualifier = null, @SimpleName = "Shape"]

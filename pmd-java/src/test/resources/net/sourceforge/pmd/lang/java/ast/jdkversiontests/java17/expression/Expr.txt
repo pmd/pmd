@@ -1,7 +1,7 @@
 +- CompilationUnit[@PackageName = "com.example.expression"]
    +- PackageDeclaration[@Name = "com.example.expression"]
    |  +- ModifierList[@EffectiveModifiers = (), @ExplicitModifiers = ()]
-   +- ClassDeclaration[@Abstract = true, @Annotation = false, @Anonymous = false, @BinaryName = "com.example.expression.Expr", @CanonicalName = "com.example.expression.Expr", @EffectiveVisibility = Visibility.V_PUBLIC, @Enum = false, @Final = false, @Interface = true, @Local = false, @Nested = false, @PackageName = "com.example.expression", @Record = false, @RegularClass = false, @RegularInterface = true, @SimpleName = "Expr", @Static = false, @TopLevel = true, @Visibility = Visibility.V_PUBLIC]
+   +- ClassDeclaration[@Abstract = true, @Annotation = false, @Anonymous = false, @BinaryName = "com.example.expression.Expr", @CanonicalName = "com.example.expression.Expr", @EffectiveVisibility = Visibility.V_PUBLIC, @Enum = false, @Final = false, @Interface = true, @Local = false, @Nested = false, @PackageName = "com.example.expression", @Record = false, @RegularClass = false, @RegularInterface = true, @SimpleName = "Expr", @Static = false, @TopLevel = true, @UnnamedToplevelClass = false, @Visibility = Visibility.V_PUBLIC]
       +- ModifierList[@EffectiveModifiers = (JModifier.PUBLIC, JModifier.SEALED, JModifier.ABSTRACT), @ExplicitModifiers = (JModifier.PUBLIC, JModifier.SEALED)]
       +- PermitsList[@Empty = false, @Size = 4]
       |  +- ClassType[@FullyQualified = false, @PackageQualifier = null, @SimpleName = "ConstantExpr"]

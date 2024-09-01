@@ -1,5 +1,5 @@
 +- CompilationUnit[@PackageName = ""]
-   +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "Sync", @CanonicalName = "Sync", @EffectiveVisibility = Visibility.V_PACKAGE, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "Sync", @Static = false, @TopLevel = true, @Visibility = Visibility.V_PACKAGE]
+   +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "Sync", @CanonicalName = "Sync", @EffectiveVisibility = Visibility.V_PACKAGE, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "Sync", @Static = false, @TopLevel = true, @UnnamedToplevelClass = false, @Visibility = Visibility.V_PACKAGE]
       +- ModifierList[@EffectiveModifiers = (), @ExplicitModifiers = ()]
       +- ClassBody[@Empty = false, @Size = 1]
          +- MethodDeclaration[@Abstract = false, @Arity = 0, @EffectiveVisibility = Visibility.V_PACKAGE, @Final = false, @Name = "getInstance", @Overridden = false, @Static = true, @Varargs = false, @Visibility = Visibility.V_PUBLIC, @Void = true]
