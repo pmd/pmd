@@ -1,5 +1,5 @@
 +- CompilationUnit[@PackageName = ""]
-   +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "SwitchRules", @CanonicalName = "SwitchRules", @EffectiveVisibility = Visibility.V_PUBLIC, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "SwitchRules", @Static = false, @TopLevel = true, @Visibility = Visibility.V_PUBLIC]
+   +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "SwitchRules", @CanonicalName = "SwitchRules", @EffectiveVisibility = Visibility.V_PUBLIC, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "SwitchRules", @Static = false, @TopLevel = true, @UnnamedToplevelClass = false, @Visibility = Visibility.V_PUBLIC]
       +- ModifierList[@EffectiveModifiers = (JModifier.PUBLIC), @ExplicitModifiers = (JModifier.PUBLIC)]
       +- ClassBody[@Empty = false, @Size = 8]
          +- FieldDeclaration[@EffectiveVisibility = Visibility.V_PRIVATE, @Static = true, @Visibility = Visibility.V_PRIVATE]

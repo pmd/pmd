@@ -115,6 +115,8 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
                 + simpleName;
         } else if (node.isAnonymous()) {
             simpleName = "" + anonymousCounters.getFirst().incrementAndGet();
+        } else if (node.isUnnamedToplevelClass()) {
+            simpleName = "";
         }
 
         String enclosing = enclosingBinaryNames.peek();
@@ -125,7 +127,7 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
 
     @Nullable
     private String makeCanonicalName(ASTTypeDeclaration node, String binaryName) {
-        if (node.isAnonymous() || node.isLocal()) {
+        if (node.isAnonymous() || node.isLocal() || node.isUnnamedToplevelClass()) {
             return null;
         }
 

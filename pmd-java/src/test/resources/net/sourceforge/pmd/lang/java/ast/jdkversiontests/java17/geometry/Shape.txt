@@ -1,7 +1,7 @@
 +- CompilationUnit[@PackageName = "com.example.geometry"]
    +- PackageDeclaration[@Name = "com.example.geometry"]
    |  +- ModifierList[@EffectiveModifiers = (), @ExplicitModifiers = ()]
-   +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "com.example.geometry.Shape", @CanonicalName = "com.example.geometry.Shape", @EffectiveVisibility = Visibility.V_PUBLIC, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "com.example.geometry", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "Shape", @Static = false, @TopLevel = true, @Visibility = Visibility.V_PUBLIC]
+   +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "com.example.geometry.Shape", @CanonicalName = "com.example.geometry.Shape", @EffectiveVisibility = Visibility.V_PUBLIC, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "com.example.geometry", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "Shape", @Static = false, @TopLevel = true, @UnnamedToplevelClass = false, @Visibility = Visibility.V_PUBLIC]
       +- ModifierList[@EffectiveModifiers = (JModifier.PUBLIC, JModifier.SEALED), @ExplicitModifiers = (JModifier.PUBLIC, JModifier.SEALED)]
       +- PermitsList[@Empty = false, @Size = 3]
       |  +- ClassType[@FullyQualified = false, @PackageQualifier = null, @SimpleName = "Circle"]
