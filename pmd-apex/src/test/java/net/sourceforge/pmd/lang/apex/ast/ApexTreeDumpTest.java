@@ -70,4 +70,20 @@ class ApexTreeDumpTest extends BaseTreeDumpTest {
     void trigger() {
         doTest("AccountTrigger");
     }
+
+    /**
+     * @see <a href="https://github.com/pmd/pmd/issues/5163">[apex] Parser error when using toLabel in SOSL query</a>
+     */
+    @Test
+    void toLabelInSosl() {
+        doTest("ToLabelInSosl");
+    }
+
+    /**
+     * @see <a href="https://github.com/pmd/pmd/issues/5182">[apex] Parser error when using GROUPING in a SOQL query</a>
+     */
+    @Test
+    void groupingInSoql() {
+        doTest("GroupingInSoql");
+    }
 }
