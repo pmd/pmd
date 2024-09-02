@@ -92,12 +92,17 @@
             <artifactId>kotlin-stdlib-jdk8</artifactId>
             <scope>compile</scope>
         </dependency>
+
+        <dependency>
+            <groupId>io.github.apex-dev-tools</groupId>
+            <artifactId>apex-parser</artifactId>
+            <version>4.2.0</version>
+        </dependency>
         <dependency>
             <groupId>com.google.summit</groupId>
             <artifactId>summit-ast</artifactId>
             <version>2.3.0</version>
         </dependency>
-
         <dependency>
             <groupId>io.github.apex-dev-tools</groupId>
             <artifactId>apex-ls_2.13</artifactId>
