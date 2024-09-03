@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-class InvalidLogMessageFormatTest extends PmdRuleTst {
+public class InvalidLogMessageFormatTest extends PmdRuleTst {
     // no additional unit tests
 }

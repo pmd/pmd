@@ -636,7 +636,16 @@ public final class DataflowPass {
                 SpanInfo exceptionalState = null;
                 int i = 0;
                 for (ASTCatchClause catchClause : node.getCatchClauses()) {
-                    SpanInfo current = acceptOpt(catchClause, catchSpans.get(i));
+                    /*
+                        Note: here we absorb the end state of the body, which is not necessary.
+                        We do that to conform to the language's definition of "effective-finality",
+                        which is more conservative than needed. Doing this fixes FPs in LocalVariableCouldBeFinal
+                        at the cost of some FNs in UnusedAssignment.
+                     */
+                    SpanInfo catchSpan = catchSpans.get(i);
+                    catchSpan.absorb(bodyState);
+
+                    SpanInfo current = acceptOpt(catchClause, catchSpan);
                     exceptionalState = current.absorb(exceptionalState);
                     i++;
                 }
