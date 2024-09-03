@@ -454,4 +454,32 @@ public class BadIntersection {
             info.methodType.formalParameters[0] shouldBe optOutEnum
         }
     }
+    parserTest("#5190 NPE in type inf") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+    interface Optional<T> {
+        static Optional<T> ofNullable(T t) {}
+    }
+    interface Map<K,V> {}
+    interface AttributeValue{}
+    public class Main {
+        private Optional<Map<String, AttributeValue>> loadForKey(final String key) {
+            return Optional.ofNullable(
+                Iterables.getOnlyElement(queryForKey(key), null)
+            );
+        }
+    }
+
+            """.trimIndent()
+        )
+
+        val (_, _, _) = acu.declaredTypeSignatures()
+        val (ofNullable) = acu.methodDeclarations().toList { it.genericSignature }
+
+        spy.shouldBeOk {
+            val info = acu.firstMethodCall().overloadSelectionInfo
+            info::isFailed shouldBe false
+            info.methodType shouldBeSomeInstantiationOf ofNullable
+        }
+    }
 })
