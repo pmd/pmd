@@ -74,6 +74,22 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         verify(log).boundAdded(ctx, v2, BoundKind.UPPER, listOfV1, false);
     }
 
+
+    @Test
+    void testNullTypeCannotBeLowerBound() {
+        TypeInferenceLogger log = spy(TypeInferenceLogger.noop());
+        InferenceContext ctx = emptyCtx(log);
+
+        InferenceVar v1 = newIvar(ctx);
+
+        addSubtypeConstraint(ctx, ts.NULL_TYPE, v1);
+
+
+        assertThat(v1, hasBoundsExactly(upper(ts.OBJECT)));
+
+        verify(log, never()).boundAdded(ctx, v1, BoundKind.LOWER, ts.NULL_TYPE, false);
+    }
+
     @Test
     void testEqBoundWithGenerics() {
         TypeInferenceLogger log = spy(TypeInferenceLogger.noop());

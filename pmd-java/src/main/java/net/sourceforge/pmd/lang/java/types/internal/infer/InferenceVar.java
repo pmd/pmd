@@ -97,7 +97,6 @@ public final class InferenceVar implements SubstVar {
      * Adds a new bound on this variable.
      */
     public void addBound(BoundKind kind, JTypeMirror type) {
-        this.hasNonTrivialBound = true;
         addBound(kind, type, false);
     }
 
@@ -115,9 +114,15 @@ public final class InferenceVar implements SubstVar {
             // may occur because of transitive propagation
             // alpha <: alpha is always true and not interesting
             return;
+        } else if (kind == BoundKind.LOWER && type.isBottom()) {
+            // null <: alpha is not interesting and may cause errors because of lub.
+            return;
         }
 
         if (boundSet.bounds.computeIfAbsent(kind, k -> new LinkedHashSet<>()).add(type)) {
+            if (!isPrimaryBound) {
+                this.hasNonTrivialBound = true;
+            }
             ctx.onBoundAdded(this, kind, type, isPrimaryBound);
         }
     }

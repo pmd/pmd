@@ -457,19 +457,35 @@ public class BadIntersection {
     parserTest("#5190 NPE in type inf") {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
-    interface Optional<T> {
-        static Optional<T> ofNullable(T t) {}
+    import java.util.Iterator;
+    interface Optional<V> {
+        static <T> Optional<T> ofNullable(T t) {}
     }
     interface Map<K,V> {}
+    interface List<V> extends Iterable<V> {}
     interface AttributeValue{}
-    public class Main {
+    
+class Main {
+
         private Optional<Map<String, AttributeValue>> loadForKey(final String key) {
             return Optional.ofNullable(
-                Iterables.getOnlyElement(queryForKey(key), null)
+                getOnlyElement(queryForKey(key), null)
             );
         }
-    }
 
+        private List<Map<String, AttributeValue>> queryForKey(final String key) {
+            return null;
+        }
+
+        public static <T> T getOnlyElement(final Iterable<? extends T> iterable, final T defaultValue) {
+            return getOnlyElement(iterable.iterator(), defaultValue);
+        }
+
+        public static <T> T getOnlyElement(final Iterator<? extends T> iterator, final T defaultValue) {
+            return null;
+        }
+
+    }
             """.trimIndent()
         )
 
