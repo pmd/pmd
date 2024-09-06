@@ -823,9 +823,30 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                     StringBuilder typeCheck = new StringBuilder().append(variableDeclFor.getDefiningType())
                             .append(":").append(type);
 
-                    validateCRUDCheckPresent(node, data, ANY, typeCheck.toString());
+                    violationAdded = validateCRUDCheckPresent(node, data, ANY, typeCheck.toString());
                 }
 
+            } else {
+                for (String typeFromSOQL : typesFromSOQL) {
+                    violationAdded |= validateCRUDCheckPresent(node, data, ANY, typeFromSOQL);
+                }
+            }
+        }
+
+        // If the node's already in violation, we don't need to keep checking.
+        if (violationAdded) {
+            return;
+        }
+
+        final ASTFieldDeclarationStatements fieldDeclarationStatements = node.ancestors(ASTFieldDeclarationStatements.class).first();
+        if (fieldDeclarationStatements != null) {
+            String type = fieldDeclarationStatements.getTypeName();
+            type = getSimpleType(type);
+            StringBuilder typeCheck = new StringBuilder().append(fieldDeclarationStatements.getDefiningType())
+                    .append(":").append(type);
+
+            if (typesFromSOQL.isEmpty()) {
+                validateCRUDCheckPresent(node, data, ANY, typeCheck.toString());
             } else {
                 for (String typeFromSOQL : typesFromSOQL) {
                     validateCRUDCheckPresent(node, data, ANY, typeFromSOQL);
