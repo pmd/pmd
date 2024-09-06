@@ -86,4 +86,12 @@ class ApexTreeDumpTest extends BaseTreeDumpTest {
     void groupingInSoql() {
         doTest("GroupingInSoql");
     }
+
+    /**
+     * @see <a href="https://github.com/pmd/pmd/issues/5138">[apex] Seeing false-negatives on PMD 7.3.0 that were not there with 7.2.0</a>
+     */
+    @Test
+    void triggersWithMethods() {
+        doTest("TriggerWithMethod");
+    }
 }
