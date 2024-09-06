@@ -173,4 +173,36 @@ public class Test {
         <expected-problems>0</expected-problems>
         <code-ref id="constructor-violation"/>
     </test-code>
+
+    <test-code>
+        <description>StdCyclomaticComplexity for triggers</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>3</expected-problems>
+        <expected-messages>
+            <message>The method 'invoke' has a Standard Cyclomatic Complexity of 4.</message>
+            <message>The trigger 'Accounts' has a Standard Cyclomatic Complexity of 4 (Highest = 4).</message>
+            <message>The method 'anotherMethod' has a Standard Cyclomatic Complexity of 3.</message>
+        </expected-messages>
+        <code><![CDATA[
+trigger Accounts on Account (before insert, before update, before delete, after insert, after update, after delete, after undelete) {
+    for(Account acc : Trigger.new) {
+        if(Trigger.isInsert) {
+            // ...
+        }
+
+        // ...
+
+        if(Trigger.isDelete) {
+            // ...
+        }
+    }
+
+    void anotherMethod(Integer i) {
+        if (i == 1) {
+        } else if (i == 2) {
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
