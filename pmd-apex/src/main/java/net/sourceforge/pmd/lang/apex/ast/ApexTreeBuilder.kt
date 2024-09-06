@@ -218,7 +218,11 @@ class ApexTreeBuilder(private val task: ParserTask, private val proc: ApexLangua
         }.apply {
             buildModifiers(node.modifiers).also { it.setParent(this) }
             if (node is TriggerDeclaration) {
-                // 1. Create a synthetic "invoke" ASTMethod for the trigger body
+                // 1. Add all extra methods that are defined in the trigger
+                node.body.filterIsInstance<MethodDeclaration>().forEach { it ->
+                    buildMethodDeclaration(it, this)?.also { it.setParent(this) }
+                }
+                // 2. Create a synthetic "invoke" ASTMethod for the trigger body
                 val invokeMethod = ASTMethod(
                   /* name= */ "invoke",
                   /* internalName= */ "<invoke>",
@@ -226,10 +230,11 @@ class ApexTreeBuilder(private val task: ParserTask, private val proc: ApexLangua
                   /* returnType= */ "void",
                  SourceLocation.UNKNOWN,
                 ).also{ it.setParent(this) }
-                // 2. Add the expected ASTModifier child node
+                // 3. Add the expected ASTModifier child node
                 buildModifiers(emptyList()).also { it.setParent(invokeMethod) }
-                // 3. Elide the body CompoundStatement->ASTBlockStatement
-                node.body.forEach { buildAndSetParent(it, parent = invokeMethod as AbstractApexNode) }
+                // 4. Elide the remaining body CompoundStatement->ASTBlockStatement
+                node.body.filterNot { it is MethodDeclaration }
+                    .forEach { buildAndSetParent(it, parent = invokeMethod as AbstractApexNode) }
             } else {
                 buildChildren(node, parent = this, exclude = { it in node.modifiers })
             }

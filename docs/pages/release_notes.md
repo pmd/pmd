@@ -16,6 +16,8 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🐛 Fixed Issues
 * apex
+  * [#5138](https://github.com/pmd/pmd/issues/5138): \[apex] Various false-negatives since 7.3.0 when using triggers
+    (ApexCRUDViolation, CognitiveComplexity, OperationWithLimitsInLoop)
   * [#5163](https://github.com/pmd/pmd/issues/5163): \[apex] Parser error when using toLabel in SOSL query
   * [#5182](https://github.com/pmd/pmd/issues/5182): \[apex] Parser error when using GROUPING in a SOQL query
 
