@@ -816,7 +816,7 @@ public final class Infer {
 
     private boolean commonSuperWithDiffParameterization(JTypeMirror t, JTypeMirror s) {
         JTypeMirror lubResult = ts.lub(listOf(t, s));
-        if (lubResult.isBottom() || lubResult.isTop()) {
+        if (lubResult.isBottom() || lubResult.isTop() || t.isBottom() || s.isBottom()) {
             return false;
         }
         for (JTypeMirror sup : asList(lubResult)) {
@@ -824,6 +824,8 @@ public final class Infer {
                 JClassSymbol sym = ((JClassType) sup).getSymbol();
                 JTypeMirror asSuperOfT = t.getAsSuper(sym);
                 JTypeMirror asSuperOfS = s.getAsSuper(sym);
+                assert asSuperOfS != null : "s <: sup, because sup is part of the LUB of s";
+                assert asSuperOfT != null : "t <: sup, because sup is part of the LUB of t";
                 if (!asSuperOfS.equals(asSuperOfT)) {
                     return true;
                 }

@@ -454,4 +454,48 @@ public class BadIntersection {
             info.methodType.formalParameters[0] shouldBe optOutEnum
         }
     }
+    parserTest("#5190 NPE in type inf") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+    import java.util.Iterator;
+    interface Optional<V> {
+        static <T> Optional<T> ofNullable(T t) {}
+    }
+    interface Map<K,V> {}
+    interface List<V> extends Iterable<V> {}
+    interface AttributeValue{}
+    
+class Main {
+
+        private Optional<Map<String, AttributeValue>> loadForKey(final String key) {
+            return Optional.ofNullable(
+                getOnlyElement(queryForKey(key), null)
+            );
+        }
+
+        private List<Map<String, AttributeValue>> queryForKey(final String key) {
+            return null;
+        }
+
+        public static <T> T getOnlyElement(final Iterable<? extends T> iterable, final T defaultValue) {
+            return getOnlyElement(iterable.iterator(), defaultValue);
+        }
+
+        public static <T> T getOnlyElement(final Iterator<? extends T> iterator, final T defaultValue) {
+            return null;
+        }
+
+    }
+            """.trimIndent()
+        )
+
+        val (_, _, _) = acu.declaredTypeSignatures()
+        val (ofNullable) = acu.methodDeclarations().toList { it.genericSignature }
+
+        spy.shouldBeOk {
+            val info = acu.firstMethodCall().overloadSelectionInfo
+            info::isFailed shouldBe false
+            info.methodType shouldBeSomeInstantiationOf ofNullable
+        }
+    }
 })

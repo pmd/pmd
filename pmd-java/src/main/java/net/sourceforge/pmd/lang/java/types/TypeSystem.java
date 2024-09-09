@@ -799,6 +799,11 @@ public final class TypeSystem {
         }
 
         @Override
+        public @Nullable JTypeMirror getAsSuper(@NonNull JClassSymbol symbol) {
+            throw new UnsupportedOperationException("Null type cannot call asSuper, will return null always");
+        }
+
+        @Override
         public <T, P> T acceptVisitor(JTypeVisitor<T, P> visitor, P p) {
             return visitor.visitNullType(this, p);
         }
