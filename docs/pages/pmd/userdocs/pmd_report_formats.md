@@ -24,7 +24,7 @@ those can be specified with the `--property` / `-P` option on the command-line.
 "SARIF, the Static Analysis Results Interchange Format, is a standard, JSON-based format for the output of static
 analysis tools. It has been approved as an OASIS standard" - <https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html>.
 
-SARIF schema can be found here: <https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json>.
+SARIF schema can be found here: <https://json.schemastore.org/sarif-2.1.0.json>.
 
 PMD holds an initial implementation version of SARIF rendering. This means SARIF allows for more complexity and the
 current implementation can be extended.
@@ -233,7 +233,7 @@ Was expecting one of:
     "implements" ...
     "{" ...
     "<" ...
-    
+
     at net.sourceforge.pmd.lang.java.ast.JavaParser.generateParseException(JavaParser.java:12713)
     at net.sourceforge.pmd.lang.java.ast.JavaParser.jj_consume_token(JavaParser.java:12597)
     at net.sourceforge.pmd.lang.java.ast.JavaParser.ClassOrInterfaceBody(JavaParser.java:1554)
@@ -313,7 +313,7 @@ Was expecting one of:
     "implements" ...
     "{" ...
     "<" ...
-    
+
     at net.sourceforge.pmd.lang.java.ast.JavaParser.generateParseException(JavaParser.java:12713)
     at net.sourceforge.pmd.lang.java.ast.JavaParser.jj_consume_token(JavaParser.java:12597)
     at net.sourceforge.pmd.lang.java.ast.JavaParser.ClassOrInterfaceBody(JavaParser.java:1554)
@@ -350,7 +350,7 @@ There are many other stylesheets available online: <https://github.com/pmd/pmd/t
 Examples:
 * [Example with pmd-nicerhtml.xsl](report-examples/pmd-report-pmd-nicerhtml.html)
 * [Example with html-report-v2.xslt](report-examples/html-report-v2.html) - includes charts. It requires javascript enabled and uses
-  [jQuery](https://jquery.com/), [DataTables](https://datatables.net/), and [Vega](https://vega.github.io/vega/) for charting. 
+  [jQuery](https://jquery.com/), [DataTables](https://datatables.net/), and [Vega](https://vega.github.io/vega/) for charting.
 
 **Properties:**
 
