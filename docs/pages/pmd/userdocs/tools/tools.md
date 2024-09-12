@@ -21,6 +21,15 @@ With Codacy you have PMDJava analysis out-of-the-box, and it is free for open so
 * Source code: [https://github.com/codacy/codacy-pmdjava](https://github.com/codacy/codacy-pmdjava)
 * Maintainer: Codacy
 
+### Codety
+
+[Codety](https://www.codety.io/) provides comprehensive code scanning solution designed to detect code issues for 30+ programming languages and IaC frameworks. It embeds more than 6,000 code analysis rules(including pmd rules) and can detect code smells, vulnerable code, secrets in the code, performance issues, style violations, and more. 
+
+Codety Scanner provides out-of-the-box PMD integration, it is free for personal and commercial use. 
+
+* Homepage: [https://www.codety.io/](https://www.codety.io/)
+* Source code: [https://github.com/codetyio/codety-scanner](https://github.com/codetyio/codety-scanner)
+
 ### Codiga
 
 [Codiga](https://www.codiga.io) automates code review, check your code quality and helps you manage your technical debt.
