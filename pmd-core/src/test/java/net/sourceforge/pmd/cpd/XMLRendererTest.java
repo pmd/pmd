@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cpd;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayInputStream;
@@ -15,6 +16,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Collections;
 import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -314,6 +316,29 @@ class XMLRendererTest {
         assertEquals(processingError.getMsg(), msg);
         String textContent = error.getTextContent();
         assertEquals(processingError.getDetail(), textContent);
+    }
+
+    /**
+     * Note, that CPD's processing error isn't output as a CDATA section at the moment.
+     * This test just makes sure, the XML is valid, in case {@code <error>} is changed into CDATA.
+     * Currently, {@code >>]} is automatically escaped into {@code ]]&gt;}.
+     *
+     * @see <a href="https://github.com/pmd/pmd/issues/5059">[core] xml output doesn't escape CDATA inside its own CDATA</a>
+     */
+    @Test
+    void cdataSectionInError() throws Exception {
+        FileId fileId = FileId.fromPathLikeString("file1.txt");
+        Report.ProcessingError processingError = new Report.ProcessingError(
+                new LexException(2, 1, fileId, "test exception", new RuntimeException("Invalid source: '<![CDATA[ ... ]]> ...'")),
+                fileId);
+        CPDReportRenderer renderer = new XMLRenderer();
+        StringWriter sw = new StringWriter();
+        renderer.render(CpdTestUtils.makeReport(Collections.emptyList(), Collections.emptyMap(), Collections.singletonList(processingError)), sw);
+        String report = sw.toString();
+        assertReportIsValidSchema(report);
+
+        DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        assertDoesNotThrow(() -> documentBuilder.parse(new InputSource(new StringReader(report))));
     }
 
     private static void assertReportIsValidSchema(String report) throws SAXException, ParserConfigurationException, IOException {

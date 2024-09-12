@@ -20,6 +20,8 @@ This is a {{ site.pmd.release_type }} release.
     (ApexCRUDViolation, CognitiveComplexity, OperationWithLimitsInLoop)
   * [#5163](https://github.com/pmd/pmd/issues/5163): \[apex] Parser error when using toLabel in SOSL query
   * [#5182](https://github.com/pmd/pmd/issues/5182): \[apex] Parser error when using GROUPING in a SOQL query
+* core
+  * [#5059](https://github.com/pmd/pmd/issues/5059): \[core] xml output doesn't escape CDATA inside its own CDATA
 * java
   * [#5190](https://github.com/pmd/pmd/issues/5190): \[java] NPE in type inference
 
