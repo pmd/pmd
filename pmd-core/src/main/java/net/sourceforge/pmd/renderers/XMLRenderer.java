@@ -196,7 +196,14 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
                 xmlWriter.writeAttribute("filename", determineFileName(pe.getFileId()));
                 xmlWriter.writeAttribute("msg", pe.getMsg());
                 writeNewLine();
-                xmlWriter.writeCData(pe.getDetail());
+
+                // in case the message contains itself some CDATA sections, they need to be handled
+                // in order to not produce invalid XML...
+                String detail = pe.getDetail();
+                // split "]]>" into "]]" and ">" into two cdata sections
+                detail = detail.replace("]]>", "]]]]><![CDATA[>");
+
+                xmlWriter.writeCData(detail);
                 writeNewLine();
                 xmlWriter.writeEndElement();
             }
