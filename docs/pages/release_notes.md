@@ -20,7 +20,7 @@ We are joining the Git community and updating "master" to "main". Using the term
 development branch can be offensive to some people. Existing versions of Git have been always capable of
 working with any branch name and since 2.28.0 (July 2020) the default initial branch is configurable
 (`init.defaultBranch`). Since October 2020, the default branch for new repositories on GitHub
-is "main". Finally, PMD will also use this new name for the main branch.
+is "main". Finally, PMD will also use this new name for the main branch in all our own repositories.
 
 Why "main"? PMD uses a very simple branching model - pull requests with feature branches and one main development
 branch, from which releases are created. That's why "main" is currently the best fitting name.
@@ -33,7 +33,7 @@ What changes?
 - We change the default branch on GitHub, so that pull requests are automatically created against `main` from
   now on.
 - If you have already a local clone of PMD's repository, you'll need to rename the old master branch locally:
-  `git branch --move master main && git branch --set-upstream-to=origin`. More info:
+  `git branch --move master main && git branch --set-upstream-to=origin/main`. More info:
   <https://git-scm.com/book/en/v2/Git-Branching-Branch-Management#_changing_master>
 - Some time after this release, we'll delete the old master branch on GitHub. Then only `main` can be used.
 - This change is expanded to the other PMD repositories as well, e.g. pmd-designer and pmd-regression-tester.
