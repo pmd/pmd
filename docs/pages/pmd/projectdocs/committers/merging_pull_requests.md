@@ -5,7 +5,7 @@ last_updated: October 2021
 author: Andreas Dangel <andreas.dangel@adangel.org>
 ---
 
-## Example 1: Merging PR #123 into master
+## Example 1: Merging PR #123 into main
 
 1.  Review the pull request
 
@@ -20,15 +20,15 @@ author: Andreas Dangel <andreas.dangel@adangel.org>
 
 2.  The actual merge commands:
 
-    We assume, that the PR has been created from the master branch. If this is not the case,
+    We assume, that the PR has been created from the main branch. If this is not the case,
     then we'll either need to rebase or ask for rebasing before merging.
 
     ```
-    git checkout master && git pull origin master                    # make sure, you have the latest code
+    git checkout main && git pull origin main                        # make sure, you have the latest code
     git fetch origin pull/123/head:pr-123 && git checkout pr-123     # creates a new temporary branch "pr-123"
     ```
 
-3.  Update the [release notes](https://github.com/pmd/pmd/blob/master/docs/pages/release_notes.md):
+3.  Update the [release notes](https://github.com/pmd/pmd/blob/main/docs/pages/release_notes.md):
     
     *   Are there any API changes, that need to be documented? (Section "API Changes")
     *   Are there any significant changes to existing rules, that should be mentioned?
@@ -61,13 +61,13 @@ author: Andreas Dangel <andreas.dangel@adangel.org>
     And follow the instructions. This will create a new commit into to the current branch (pr-123) updating both
     the file `.all-contributorsrc` and `docs/pages/pmd/projectdocs/credits.md`.
 
-5.  Now merge the pull request into the master branch:
+5.  Now merge the pull request into the main branch:
 
     ```
-    git checkout master
-    git merge --no-ff pr-123 -m "Merge pull request #123 from xyz:branch
+    git checkout main
+    git merge --no-ff pr-123 -m "Full-title-of-the-pr (#123)
     
-    Full-title-of-the-pr #123" --log
+    Merge pull request #123 from xyz:branch" --log
     ```
 
     {%include note.html content="If there are merge conflicts, you'll need to deal with them here." %}
@@ -75,7 +75,7 @@ author: Andreas Dangel <andreas.dangel@adangel.org>
 6.  Run the complete build: `./mvnw clean verify -Pgenerate-rule-docs`
 
     {% include note.html content="This will execute all the unit tests and the checkstyle tests. It ensures,
-    that the complete project can be build and is functioning on top of the current master." %}
+    that the complete project can be build and is functioning on top of the current main." %}
     
     {% include note.html content="The profile `generate-rule-docs` will run the doc checks, that would
     otherwise only run on github actions and fail the build, if e.g. a jdoc or rule reference is wrong." %}
@@ -83,7 +83,7 @@ author: Andreas Dangel <andreas.dangel@adangel.org>
 7.  If the build was successful, you are ready to push:
 
     ```
-    git push origin master
+    git push origin main
     ```
 
     Since the temporary branch is now not needed anymore, you can delete it:
@@ -92,7 +92,7 @@ author: Andreas Dangel <andreas.dangel@adangel.org>
 
 ## Example 2: Merging PR #124 into a maintenance branch
 
-We ask, to create every pull request against master, to make it easier to contribute.
+We ask, to create every pull request against main, to make it easier to contribute.
 But if a pull request is intended to fix a bug in an older version of PMD, then we need to backport this pull request.
 
 ### Creating a maintenance branch
@@ -124,7 +124,7 @@ PMD version 5.8.0, so that we can create a bugfix release 5.8.1.
 
     ```
     git fetch origin pull/124/head:pr-124 && git checkout pr-124     # creates a new temporary branch
-    git rebase master --onto pmd/5.8.x
+    git rebase main --onto pmd/5.8.x
     ./mvnw clean verify                                # make sure, everything works after the rebase
     ```
 
@@ -154,7 +154,7 @@ PMD version 5.8.0, so that we can create a bugfix release 5.8.1.
     You need to manually close the pull request. Leave a comment, that it has been
     rebased onto the maintenance branch.
 
-### Merging into master
+### Merging into main
 
 Now the PR has been merged into the maintenance branch, but it is missing in any later version of PMD.
 Therefore, we merge first into the next minor version maintenance branch (if existing):
@@ -162,17 +162,17 @@ Therefore, we merge first into the next minor version maintenance branch (if exi
     git checkout pmd/5.9.x
     git merge pmd/5.8.x
 
-After that, we merge the changes into the master branch:
+After that, we merge the changes into the main branch:
 
-    git checkout master
+    git checkout main
     git merge pmd/5.9.x
 
 {%include note.html content="This ensures, that every change on the maintenance branch eventually ends
-up in the master branch and therefore in any future version of PMD.<br>
+up in the main branch and therefore in any future version of PMD.<br>
 The downside is however, that there are inevitable merge conflicts for the maven `pom.xml` files, since
 every branch changed the version number differently.<br>
 We could avoid this by merging only the temporary branch \"pr-124\" into each maintenance branch and
-eventually into master, with the risk of missing single commits in a maintenance branch, that have been
+eventually into main, with the risk of missing single commits in a maintenance branch, that have been
 done outside the temporary branch." %}
 
 ### Merging vs. Cherry-Picking
@@ -181,4 +181,4 @@ We are not using cherry-picking, so that each fix is represented by a single com
 Cherry-picking would duplicate the commit and you can't see in the log, on which branches the fix has been
 integrated (e.g. gitk and github show the branches, from which the specific commit is reachable).
 
-The downside is a more complex history - the maintenance branches and master branch are "connected" and not separate.
+The downside is a more complex history - the maintenance branches and main branch are "connected" and not separate.

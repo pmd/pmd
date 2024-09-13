@@ -7,12 +7,12 @@ By participating in this project you agree to abide by its terms.
 
 You can find the code of conduct in the file [code_of_conduct.md](code_of_conduct.md).
 
-| NB: the rule designer is developed over at [pmd/pmd-designer](https://github.com/pmd/pmd-designer). Please refer to the specific [contributor documentation](https://github.com/pmd/pmd-designer/blob/master/CONTRIBUTING.md) if your issue, feature request or PR touches the designer.  |
-| --- |
+| NB: the rule designer is developed over at [pmd/pmd-designer](https://github.com/pmd/pmd-designer). Please refer to the specific [contributor documentation](https://github.com/pmd/pmd-designer/blob/main/CONTRIBUTING.md) if your issue, feature request or PR touches the designer. |
+|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
 ## Pull requests
 
-*   Please create your pull request against the `master` branch. We will rebase/merge it to the maintenance
+*   Please create your pull request against the `main` branch. We will rebase/merge it to the maintenance
     branches, if necessary.
 
 *   We are using [checkstyle](http://checkstyle.sourceforge.net/) to enforce a common code style.
@@ -36,7 +36,7 @@ When filing a bug report, please provide as much information as possible, so tha
 There is some documentation available under <https://docs.pmd-code.org/latest>. Feel free to create a bug report if
 documentation is missing, incomplete or outdated. See [Bug reports](#bug-reports).
 
-The documentation is generated as a Jekyll site, the source is available at: <https://github.com/pmd/pmd/tree/master/docs>. You can find build instructions there.
+The documentation is generated as a Jekyll site, the source is available at: <https://github.com/pmd/pmd/tree/main/docs>. You can find build instructions there.
 For more on contributing documentation check <https://docs.pmd-code.org/latest/pmd_devdocs_writing_documentation.html>
 
 ## Questions
@@ -53,8 +53,8 @@ There are various channels, on which you can ask questions:
 
 PMD uses [checkstyle](http://checkstyle.sourceforge.net/) to enforce a common code style.
 
-See [pmd-checkstyle-config.xml](https://github.com/pmd/build-tools/blob/master/src/main/resources/net/sourceforge/pmd/pmd-checkstyle-config.xml) for the configuration and
-[the eclipse configuration files](https://github.com/pmd/build-tools/tree/master/eclipse) that can
+See [pmd-checkstyle-config.xml](https://github.com/pmd/build-tools/blob/main/src/main/resources/net/sourceforge/pmd/pmd-checkstyle-config.xml) for the configuration and
+[the eclipse configuration files](https://github.com/pmd/build-tools/tree/main/eclipse) that can
 be imported into a fresh workspace.
 
 ## Add yourself as contributor

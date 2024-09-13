@@ -67,7 +67,7 @@ public class DeadLinksChecker {
     );
 
     // the link is actually pointing to a file in the pmd project
-    private static final String LOCAL_FILE_PREFIX = "https://github.com/pmd/pmd/blob/master/";
+    private static final String LOCAL_FILE_PREFIX = "https://github.com/pmd/pmd/blob/main/";
 
     // don't check links to PMD bugs/issues/pull-requests and some other sites (performance optimization)
     private static final List<String> IGNORED_URL_PREFIXES = Collections.unmodifiableList(Arrays.asList(

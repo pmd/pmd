@@ -17,8 +17,8 @@ Regression difference reports are commented back to the PR for the reviewer's in
 
 **Verifying your local changes and generate a diff-report locally**  
 
-`pmdtester -r YOUR_LOCAL_PMD_GIT_REPO_ROOT_DIR -b master -p YOUR_DEVELOPMENT_BRANCH`  
+`pmdtester -r YOUR_LOCAL_PMD_GIT_REPO_ROOT_DIR -b main -p YOUR_DEVELOPMENT_BRANCH`  
 
 The regression difference report is placed in the `YOUR_WORKING_DIR/target/reports/diff` directory.
 
-For more documentation on pmdtester, see [README.rdoc](https://github.com/pmd/pmd-regression-tester/blob/master/README.rdoc)
+For more documentation on pmdtester, see [README.rdoc](https://github.com/pmd/pmd-regression-tester/blob/main/README.rdoc)

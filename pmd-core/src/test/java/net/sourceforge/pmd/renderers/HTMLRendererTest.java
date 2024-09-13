@@ -93,7 +93,7 @@ class HTMLRendererTest extends AbstractRendererTest {
     @Test
     void testLinkPrefix() throws IOException {
         final HTMLRenderer renderer = new HTMLRenderer();
-        final String linkPrefix = "https://github.com/pmd/pmd/blob/master/";
+        final String linkPrefix = "https://github.com/pmd/pmd/blob/main/";
         final String linePrefix = "L";
         renderer.setProperty(HTMLRenderer.LINK_PREFIX, linkPrefix);
         renderer.setProperty(HTMLRenderer.LINE_PREFIX, Optional.of(linePrefix));
@@ -106,7 +106,7 @@ class HTMLRendererTest extends AbstractRendererTest {
     @Test
     void testLinePrefixNotSet() throws IOException {
         final HTMLRenderer renderer = new HTMLRenderer();
-        final String linkPrefix = "https://github.com/pmd/pmd/blob/master/";
+        final String linkPrefix = "https://github.com/pmd/pmd/blob/main/";
         renderer.setProperty(HTMLRenderer.LINK_PREFIX, linkPrefix);
         // dont set line prefix renderer.setProperty(HTMLRenderer.LINE_PREFIX, linePrefix);
         renderer.setProperty(HTMLRenderer.HTML_EXTENSION, false);
@@ -118,7 +118,7 @@ class HTMLRendererTest extends AbstractRendererTest {
     @Test
     void testEmptyLinePrefix() throws IOException {
         final HTMLRenderer renderer = new HTMLRenderer();
-        final String linkPrefix = "https://github.com/pmd/pmd/blob/master/";
+        final String linkPrefix = "https://github.com/pmd/pmd/blob/main/";
         renderer.setProperty(HTMLRenderer.LINK_PREFIX, linkPrefix);
         renderer.setProperty(HTMLRenderer.LINE_PREFIX, Optional.of(""));
         renderer.setProperty(HTMLRenderer.HTML_EXTENSION, false);

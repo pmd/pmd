@@ -36,5 +36,5 @@ The latest release documentation is always available under [docs.pmd-code.org/la
 
 First off, thanks for taking the time to contribute!
 
-Please have a look at [CONTRIBUTING.md](https://github.com/pmd/pmd/blob/master/CONTRIBUTING.md) and
-[BUILDING.md](https://github.com/pmd/pmd/blob/master/BUILDING.md).
+Please have a look at [CONTRIBUTING.md](https://github.com/pmd/pmd/blob/main/CONTRIBUTING.md) and
+[BUILDING.md](https://github.com/pmd/pmd/blob/main/BUILDING.md).

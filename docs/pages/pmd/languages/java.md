@@ -199,4 +199,4 @@ You can access these via {% jdoc core::reporting.RuleViolation#getAdditionalInfo
 There is no API yet for dataflow analysis. However, some rules such as {% rule java/bestpractices/UnusedAssignment %}
 or {% rule java/design/ImmutableField %} are using an internal implementation of an additional
 AST pass that adds dataflow information. The implementation can be found in
-[net.sourceforge.pmd.lang.java.rule.internal.DataflowPass](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/internal/DataflowPass.java).
+[net.sourceforge.pmd.lang.java.rule.internal.DataflowPass](https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/internal/DataflowPass.java).

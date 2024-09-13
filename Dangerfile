@@ -39,9 +39,9 @@ def run_pmdtester
       FileUtils.mv 'target/reports/diff', 'target/diff1'
       message1 = create_message
 
-      # run against master branch (if the PR is not already against master)
-      unless ENV['PMD_CI_BRANCH'] == 'master'
-        @base_branch = 'master'
+      # run against main branch (if the PR is not already against main)
+      unless ENV['PMD_CI_BRANCH'] == 'main'
+        @base_branch = 'main'
         @logger.info "\n\n--------------------------------------"
         @logger.info "Run against #{@base_branch}"
         @summary = PmdTester::Runner.new(get_args(@base_branch, false, 'target/diff1/patch_config.xml')).run

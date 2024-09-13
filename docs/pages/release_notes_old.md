@@ -7635,7 +7635,7 @@ conduct.
 Please note that this project is released with a Contributor Code of Conduct.
 By participating in this project you agree to abide by its terms.
 
-You can find the code of conduct in the file [code_of_conduct.md](https://github.com/pmd/pmd/blob/master/code_of_conduct.md)
+You can find the code of conduct in the file [code_of_conduct.md](https://github.com/pmd/pmd/blob/main/code_of_conduct.md)
 in our repository.
 
 #### Performance improvements for XPath 2.0 rules
