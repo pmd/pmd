@@ -24,6 +24,8 @@ This is a {{ site.pmd.release_type }} release.
   * [#5059](https://github.com/pmd/pmd/issues/5059): \[core] xml output doesn't escape CDATA inside its own CDATA
 * java
   * [#5190](https://github.com/pmd/pmd/issues/5190): \[java] NPE in type inference
+* java-errorprone
+  * [#5207](https://github.com/pmd/pmd/issues/5207): \[java] CheckSkipResult: false positve for a private method `void skip(int)` in a subclass of FilterInputStream
 
 ### 🚨 API Changes
 
