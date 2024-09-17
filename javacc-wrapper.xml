@@ -224,9 +224,7 @@
 
     <target name="cleanup-parser" unless="jjtreeBuildNotRequired">
 
-        <replace token="class ${parser-name}">
-            <replacevalue expandProperties="true"><![CDATA[@net.sourceforge.pmd.annotation.Generated("org.javacc.javacc")
-class ]]>${parser-name}</replacevalue>
+        <replace token="class ${parser-name}" value='@net.sourceforge.pmd.annotation.Generated("org.javacc.javacc")${line.separator}class ${parser-name}'>
             <file name="${parser-file}" />
         </replace>
 
