@@ -35,6 +35,31 @@
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>antlr-cleanup</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <ant antfile="${antlr4.ant.wrapper}" target="cpd-language">
+                                    <property name="ant.contrib.jar" value="${ant.contrib.jar}" />
+                                    <property name="lang-name" value="Xml" />
+                                    <property name="lang-id" value="xml" />
+                                    <!-- TODO : The XML namespacing of Antlr is different to all others… we need to change it in PMD 8 -->
+                                    <property name="ast-pkg" value="antlr4" />
+                                </ant>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>com.github.siom79.japicmp</groupId>
                 <artifactId>japicmp-maven-plugin</artifactId>
                 <configuration>

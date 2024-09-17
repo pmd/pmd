@@ -9,15 +9,29 @@
         - lang-id: the language id, used in the conventional package name (eg "swift")
         - node-prefix: prefix for generated AST nodes (eg "Sw")
         - root-node-name: name of the root node without prefix (eg "TopLevel"), will be made to implement RootNode
+        - ast-pkg: shouldn't be used, but needed for compatibility with Xml module. Used when the package is not "ast"
 
         See AntlrGeneratedParserBase
 
+        It also uses the following maven properties:
+
+         - ant.contrib.jar:  Location of the ant-contrib jar
 -->
 
-    <property name="target-package-dir" value="${antlr4.outputDirectory}/net/sourceforge/pmd/lang/${lang-id}/ast"/>
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+        <classpath>
+            <pathelement location="${ant.contrib.jar}"/>
+        </classpath>
+    </taskdef>
 
+    <!-- default to "ast" -->
+    <condition property="ast-pkg" value="${ast-pkg}" else="ast">
+        <isset property="ast-pkg" />
+    </condition>
 
-    <property name="lang-ast-package" value="net.sourceforge.pmd.lang.${lang-id}.ast" />
+    <property name="target-package-dir" value="${antlr4.outputDirectory}/net/sourceforge/pmd/lang/${lang-id}/${ast-pkg}"/>
+
+    <property name="lang-ast-package" value="net.sourceforge.pmd.lang.${lang-id}.${ast-pkg}" />
     <property name="ast-api-package" value="net.sourceforge.pmd.lang.ast" />
     <property name="ast-impl-package" value="${ast-api-package}.impl.antlr4" />
 
@@ -32,10 +46,13 @@
     <property name="base-visitor-file" value="${target-package-dir}/${base-visitor-name}.java"/>
 
     <property name="listener-name" value="${lang-name}Listener"/>
-    <property name="listener-file" value="${target-package-dir}/${visitor-name}.java"/>
+    <property name="listener-file" value="${target-package-dir}/${listener-name}.java"/>
 
     <property name="base-listener-name" value="${lang-name}BaseListener"/>
-    <property name="base-listener-file" value="${target-package-dir}/${base-visitor-name}.java"/>
+    <property name="base-listener-file" value="${target-package-dir}/${base-listener-name}.java"/>
+
+    <property name="lexer-name" value="${lang-name}Lexer"/>
+    <property name="lexer-file" value="${target-package-dir}/${lexer-name}.java"/>
 
     <property name="node-itf-name" value="${lang-name}Node"/>
     <property name="base-class-name" value="Abstract${lang-name}Node"/>
@@ -72,9 +89,76 @@
               tofile="${parser-file}"/>
     </target>
 
-    <target name="cpd-language" description="Adapt Antlr sources for CPD-only languages">
+    <target name="annotate-classes" description="Adds the @Generated annotation to all classes">
+        <if>
+            <available file="${parser-file}"/>
+            <then>
+                <replace file="${parser-file}"
+                         token="public class ${parser-name}"
+                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+public class ${parser-name}'/>
+
+                <!-- Parse tree classes for each element -->
+                <replace file="${parser-file}"
+                         token="public static class "
+                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+public static class '/>
+            </then>
+        </if>
+
+        <if>
+            <available file="${visitor-file}"/>
+            <then>
+                <replace file="${visitor-file}"
+                         token="public interface ${visitor-name}"
+                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+public interface ${visitor-name}'/>
+            </then>
+        </if>
+
+        <if>
+            <available file="${base-visitor-file}"/>
+            <then>
+                <replace file="${base-visitor-file}"
+                         token="public class ${base-visitor-name}"
+                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+public class ${base-visitor-name}'/>
+            </then>
+        </if>
+
+        <if>
+            <available file="${listener-file}"/>
+            <then>
+                <replace file="${listener-file}"
+                         token="public interface ${listener-name}"
+                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+public interface ${listener-name}'/>
+            </then>
+        </if>
+
+        <if>
+            <available file="${base-listener-file}"/>
+            <then>
+                <replace file="${base-listener-file}"
+                         token="public class ${base-listener-name}"
+                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+public class ${base-listener-name}'/>
+            </then>
+        </if>
+
+        <if>
+            <available file="${lexer-file}"/>
+            <then>
+            <replace file="${lexer-file}"
+                     token="public class ${lexer-name}"
+                     value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+public class ${lexer-name}'/>
+            </then>
+        </if>
+    </target>
+
+    <target name="cpd-language" description="Adapt Antlr sources for CPD-only languages" depends="annotate-classes">
         <!-- We only need the Lexer file. -->
-        <delete file="${parser-file}"/>
         <delete>
             <fileset dir="${target-package-dir}">
                 <include name="*"/>
@@ -83,7 +167,7 @@
         </delete>
     </target>
 
-    <target name="pmd-language" description="Adapt Antlr sources for PMD languages" depends="rename-parser">
+    <target name="pmd-language" description="Adapt Antlr sources for PMD languages" depends="annotate-classes,rename-parser">
 
         <!-- Adapt parser. -->
         <replace file="${parser-file}">
