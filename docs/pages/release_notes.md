@@ -20,6 +20,7 @@ This is a {{ site.pmd.release_type }} release.
     (ApexCRUDViolation, CognitiveComplexity, OperationWithLimitsInLoop)
   * [#5163](https://github.com/pmd/pmd/issues/5163): \[apex] Parser error when using toLabel in SOSL query
   * [#5182](https://github.com/pmd/pmd/issues/5182): \[apex] Parser error when using GROUPING in a SOQL query
+  * [#5218](https://github.com/pmd/pmd/issues/5218): \[apex] Parser error when using nested subqueries in SOQL
 * core
   * [#5059](https://github.com/pmd/pmd/issues/5059): \[core] xml output doesn't escape CDATA inside its own CDATA
   * [#5201](https://github.com/pmd/pmd/issues/5201): \[core] PMD sarif schema file points to nonexistent location

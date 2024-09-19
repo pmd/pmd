@@ -94,4 +94,12 @@ class ApexTreeDumpTest extends BaseTreeDumpTest {
     void triggersWithMethods() {
         doTest("TriggerWithMethod");
     }
+
+    /**
+     * @see <a href="https://github.com/pmd/pmd/issues/5218">[apex] Parser error when using nested subqueries in SOQL</a>
+     */
+    @Test
+    void nestedSubqueries() {
+        doTest("NestedSubqueries");
+    }
 }
