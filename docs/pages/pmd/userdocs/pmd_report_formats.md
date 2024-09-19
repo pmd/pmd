@@ -5,6 +5,7 @@ keywords: [formats, renderers]
 summary: "Overview of the built-in report formats for PMD"
 permalink: pmd_userdocs_report_formats.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
+last_updated: September 2024 (7.6.0)
 ---
 
 ## Overview
@@ -24,7 +25,9 @@ those can be specified with the `--property` / `-P` option on the command-line.
 "SARIF, the Static Analysis Results Interchange Format, is a standard, JSON-based format for the output of static
 analysis tools. It has been approved as an OASIS standard" - <https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html>.
 
-SARIF schema can be found here: <https://json.schemastore.org/sarif-2.1.0.json>.
+SARIF schema can be found here: <https://github.com/oasis-tcs/sarif-spec/tree/main/sarif-2.1/schema>.
+In the generated report, we refer to the schema on [schemastore.org/json](https://www.schemastore.org/json/):
+<https://json.schemastore.org/sarif-2.1.0.json>.
 
 PMD holds an initial implementation version of SARIF rendering. This means SARIF allows for more complexity and the
 current implementation can be extended.
@@ -233,7 +236,7 @@ Was expecting one of:
     "implements" ...
     "{" ...
     "<" ...
-
+    
     at net.sourceforge.pmd.lang.java.ast.JavaParser.generateParseException(JavaParser.java:12713)
     at net.sourceforge.pmd.lang.java.ast.JavaParser.jj_consume_token(JavaParser.java:12597)
     at net.sourceforge.pmd.lang.java.ast.JavaParser.ClassOrInterfaceBody(JavaParser.java:1554)
@@ -313,7 +316,7 @@ Was expecting one of:
     "implements" ...
     "{" ...
     "<" ...
-
+    
     at net.sourceforge.pmd.lang.java.ast.JavaParser.generateParseException(JavaParser.java:12713)
     at net.sourceforge.pmd.lang.java.ast.JavaParser.jj_consume_token(JavaParser.java:12597)
     at net.sourceforge.pmd.lang.java.ast.JavaParser.ClassOrInterfaceBody(JavaParser.java:1554)
