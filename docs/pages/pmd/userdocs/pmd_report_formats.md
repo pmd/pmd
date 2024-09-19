@@ -5,6 +5,7 @@ keywords: [formats, renderers]
 summary: "Overview of the built-in report formats for PMD"
 permalink: pmd_userdocs_report_formats.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
+last_updated: September 2024 (7.6.0)
 ---
 
 ## Overview
@@ -24,7 +25,9 @@ those can be specified with the `--property` / `-P` option on the command-line.
 "SARIF, the Static Analysis Results Interchange Format, is a standard, JSON-based format for the output of static
 analysis tools. It has been approved as an OASIS standard" - <https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html>.
 
-SARIF schema can be found here: <https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json>.
+SARIF schema can be found here: <https://github.com/oasis-tcs/sarif-spec/tree/main/sarif-2.1/schema>.
+In the generated report, we refer to the schema on [schemastore.org/json](https://www.schemastore.org/json/):
+<https://json.schemastore.org/sarif-2.1.0.json>.
 
 PMD holds an initial implementation version of SARIF rendering. This means SARIF allows for more complexity and the
 current implementation can be extended.
@@ -350,7 +353,7 @@ There are many other stylesheets available online: <https://github.com/pmd/pmd/t
 Examples:
 * [Example with pmd-nicerhtml.xsl](report-examples/pmd-report-pmd-nicerhtml.html)
 * [Example with html-report-v2.xslt](report-examples/html-report-v2.html) - includes charts. It requires javascript enabled and uses
-  [jQuery](https://jquery.com/), [DataTables](https://datatables.net/), and [Vega](https://vega.github.io/vega/) for charting. 
+  [jQuery](https://jquery.com/), [DataTables](https://datatables.net/), and [Vega](https://vega.github.io/vega/) for charting.
 
 **Properties:**
 
