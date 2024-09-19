@@ -33,8 +33,18 @@ What changes?
 - We change the default branch on GitHub, so that pull requests are automatically created against `main` from
   now on.
 - If you have already a local clone of PMD's repository, you'll need to rename the old master branch locally:
-  `git branch --move master main && git branch --set-upstream-to=origin/main`. More info:
-  <https://git-scm.com/book/en/v2/Git-Branching-Branch-Management#_changing_master>
+  ```
+  git branch --move master main
+  git fetch origin
+  git branch --set-upstream-to=origin/main main
+  git remote set-head origin --auto
+  ```
+  
+  More info:
+  <https://git-scm.com/book/en/v2/Git-Branching-Branch-Management#_changing_master> and
+  <https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-branches-in-your-repository/renaming-a-branch#updating-a-local-clone-after-a-branch-name-changes>
+- If you created a fork on GitHub, you'll need to change the default branch in your fork to `main` as
+  well (Settings > Default Branch).
 - Some time after this release, we'll delete the old master branch on GitHub. Then only `main` can be used.
 - This change is expanded to the other PMD repositories as well, e.g. pmd-designer and pmd-regression-tester.
 
