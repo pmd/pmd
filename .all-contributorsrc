@@ -7773,6 +7773,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "imax-erik",
+      "name": "imax-erik",
+      "avatar_url": "https://avatars.githubusercontent.com/u/62863607?v=4",
+      "profile": "https://github.com/imax-erik",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
