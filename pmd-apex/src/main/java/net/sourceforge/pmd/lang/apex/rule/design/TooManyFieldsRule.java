@@ -30,7 +30,7 @@ public class TooManyFieldsRule extends AbstractApexRule {
 
 
     public TooManyFieldsRule() {
-        definePropertyDescriptor(MAX_FIELDS_DESCRIPTOR);
+        definePropertyDescriptorFinal(MAX_FIELDS_DESCRIPTOR);
     }
 
 

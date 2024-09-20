@@ -29,9 +29,9 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionsRule {
             DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(CAMEL_CASE).build();
 
     public MethodNamingConventionsRule() {
-        definePropertyDescriptor(TEST_REGEX);
-        definePropertyDescriptor(STATIC_REGEX);
-        definePropertyDescriptor(INSTANCE_REGEX);
+        definePropertyDescriptorFinal(TEST_REGEX);
+        definePropertyDescriptorFinal(STATIC_REGEX);
+        definePropertyDescriptorFinal(INSTANCE_REGEX);
     }
 
 

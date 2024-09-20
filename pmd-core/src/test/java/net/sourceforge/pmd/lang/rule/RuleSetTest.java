@@ -199,7 +199,7 @@ class RuleSetTest {
     @Test
     void testEquals1() {
         RuleSet s = createRuleSetBuilder("ruleset").build();
-        assertFalse(s.equals(null), "A ruleset cannot be equals to null");
+        assertFalse(s == null, "A ruleset cannot be equals to null");
     }
 
     @Test

@@ -72,7 +72,7 @@ public class ApexUnitTestClassShouldHaveAssertsRule extends AbstractApexUnitTest
     private Optional<Pattern> compiledAdditionalAssertMethodPattern = null;
 
     public ApexUnitTestClassShouldHaveAssertsRule() {
-        definePropertyDescriptor(ADDITIONAL_ASSERT_METHOD_PATTERN_DESCRIPTOR);
+        definePropertyDescriptorFinal(ADDITIONAL_ASSERT_METHOD_PATTERN_DESCRIPTOR);
     }
 
     @Override

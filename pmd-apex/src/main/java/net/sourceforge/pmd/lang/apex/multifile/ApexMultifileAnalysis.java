@@ -92,8 +92,10 @@ public final class ApexMultifileAnalysis {
             // found, so we get a java.nio.file.ProviderNotFoundException. Since all this happens during initialization of the class
             // com.nawforce.apexlink.types.platform.PlatformTypeDeclaration we get a ExceptionInInitializerError
             // and later NoClassDefFoundErrors, because PlatformTypeDeclaration couldn't be loaded.
-            LOG.error("Exception while initializing Apexlink ({})", e.getMessage(), e);
-            LOG.error("PMD will not attempt to initialize Apexlink further, this can cause rules like UnusedMethod to be dysfunctional");
+            if(LOG.isErrorEnabled()) {
+                LOG.error("Exception while initializing Apexlink ({})", e.getMessage(), e);
+                LOG.error("PMD will not attempt to initialize Apexlink further, this can cause rules like UnusedMethod to be dysfunctional");
+            }
         }
         this.org = org;
     }

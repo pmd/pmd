@@ -1,18 +1,24 @@
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 public class dup2 {
+    static final Logger LOG = LoggerFactory.getLogger(dup2.class);
 
     public static void main(String[] args) {
-        System.out.println("Test1");
-        System.out.println("Test2");
-        System.out.println("Test3");
-        System.out.println("Test4");
-        System.out.println("Test5");
-        System.out.println("Test6");
-        System.out.println("Test7");
-        System.out.println("Test8");
-        System.out.println("Test9");
+        if(LOG.isInfoEnabled()) {
+            LOG.info("Test1");
+            LOG.info("Test2");
+            LOG.info("Test3");
+            LOG.info("Test4");
+            LOG.info("Test5");
+            LOG.info("Test6");
+            LOG.info("Test7");
+            LOG.info("Test8");
+            LOG.info("Test9");
+        }
     }
 }

@@ -25,8 +25,8 @@ public class LocalVariableNamingConventionsRule extends AbstractNamingConvention
             DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(CAMEL_CASE).build();
 
     public LocalVariableNamingConventionsRule() {
-        definePropertyDescriptor(FINAL_REGEX);
-        definePropertyDescriptor(LOCAL_REGEX);
+        definePropertyDescriptorFinal(FINAL_REGEX);
+        definePropertyDescriptorFinal(LOCAL_REGEX);
     }
 
 

@@ -24,8 +24,8 @@ public class FormalParameterNamingConventionsRule extends AbstractNamingConventi
             DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(CAMEL_CASE).build();
 
     public FormalParameterNamingConventionsRule() {
-        definePropertyDescriptor(FINAL_METHOD_PARAMETER_REGEX);
-        definePropertyDescriptor(METHOD_PARAMETER_REGEX);
+        definePropertyDescriptorFinal(FINAL_METHOD_PARAMETER_REGEX);
+        definePropertyDescriptorFinal(METHOD_PARAMETER_REGEX);
     }
 
     @Override

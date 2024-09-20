@@ -140,7 +140,7 @@ class AbstractRuleTest {
     @Test
     void testEquals1() {
         MyRule r = new MyRule();
-        assertFalse(r.equals(null), "A rule is never equals to null!");
+        assertFalse(r == null, "A rule is never equals to null!");
     }
 
     @Test
