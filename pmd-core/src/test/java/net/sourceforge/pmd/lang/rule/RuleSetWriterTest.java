@@ -174,6 +174,6 @@ class RuleSetWriterTest extends RulesetFactoryTestBase {
         assertThat(written, not(containsString("min=\"")));
         assertThat(written, not(containsString("max=\"")));
         assertThat(written, not(containsString("type=\"")));
-        assertThat(written, containsString("42"));
+        assertThat(written, containsString("value=\"42\""));
     }
 }

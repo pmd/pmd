@@ -286,7 +286,7 @@ public class RuleSetWriter {
             if (isPropertyDefinition) {
                 propertiesElement.appendChild(createPropertyDefinitionElementBR(descriptor, typeId));
             } else {
-                propertiesElement.appendChild(propertyElementWithValue(propertySource, descriptor));
+                propertiesElement.appendChild(propertyElementWithValueAttribute(propertySource, descriptor));
             }
         }
 
@@ -294,8 +294,14 @@ public class RuleSetWriter {
     }
 
     @NonNull
-    private <T> Element propertyElementWithValue(PropertySource propertySource, PropertyDescriptor<T> descriptor) {
-        return createPropertyValueElement(descriptor, propertySource.getProperty(descriptor));
+    private <T> Element propertyElementWithValueAttribute(PropertySource propertySource, PropertyDescriptor<T> propertyDescriptor) {
+        Element element = document.createElementNS(RULESET_2_0_0_NS_URI, "property");
+        SchemaConstants.NAME.setOn(element, propertyDescriptor.name());
+
+        PropertySerializer<T> xmlStrategy = propertyDescriptor.serializer();
+        T value = propertySource.getProperty(propertyDescriptor);
+        SchemaConstants.PROPERTY_VALUE.setOn(element, xmlStrategy.toString(value));
+        return element;
     }
 
     private <T> Element createPropertyValueElement(PropertyDescriptor<T> propertyDescriptor, T value) {
