@@ -24,6 +24,7 @@ This is a {{ site.pmd.release_type }} release.
 * core
   * [#5059](https://github.com/pmd/pmd/issues/5059): \[core] xml output doesn't escape CDATA inside its own CDATA
   * [#5201](https://github.com/pmd/pmd/issues/5201): \[core] PMD sarif schema file points to nonexistent location
+  * [#5222](https://github.com/pmd/pmd/issues/5222): \[core] RuleReference/RuleSetWriter don't handle changed default property values correctly
 * java
   * [#5190](https://github.com/pmd/pmd/issues/5190): \[java] NPE in type inference
 * java-errorprone

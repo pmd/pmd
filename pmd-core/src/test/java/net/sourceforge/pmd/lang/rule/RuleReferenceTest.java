@@ -6,10 +6,12 @@ package net.sourceforge.pmd.lang.rule;
 
 import static net.sourceforge.pmd.PmdCoreTestUtils.dummyLanguage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
@@ -59,6 +61,32 @@ class RuleReferenceTest {
         ruleReference.setPriority(RulePriority.MEDIUM_HIGH);
 
         validateOverriddenValues(PROPERTY1_DESCRIPTOR, PROPERTY2_DESCRIPTOR, ruleReference);
+    }
+
+    @Test
+    void testOverridingDefaultValueOfProperty() {
+        final PropertyDescriptor<String> PROPERTY1_DESCRIPTOR = PropertyFactory.stringProperty("property1").desc("Test property").defaultValue("the-default").build();
+        MockRule rule = new MockRule();
+        rule.definePropertyDescriptor(PROPERTY1_DESCRIPTOR);
+        Language dummyLang = dummyLanguage();
+        rule.setLanguage(dummyLang);
+        rule.setName("name1");
+        rule.setProperty(PROPERTY1_DESCRIPTOR, "value1");
+        rule.setMessage("message1");
+        rule.setDescription("description1");
+        rule.addExample("example1");
+        rule.setExternalInfoUrl("externalInfoUrl1");
+        rule.setPriority(RulePriority.HIGH);
+
+        RuleReference ruleReference = new RuleReference(rule, null);
+        ruleReference.setProperty(PROPERTY1_DESCRIPTOR, "overridden-value");
+
+        assertTrue(ruleReference.isPropertyOverridden(PROPERTY1_DESCRIPTOR));
+        assertEquals("overridden-value", ruleReference.getProperty(PROPERTY1_DESCRIPTOR), "Override failed");
+        Map<PropertyDescriptor<?>, Object> overriddenPropertiesByPropertyDescriptor = ruleReference.getOverriddenPropertiesByPropertyDescriptor();
+        assertTrue(overriddenPropertiesByPropertyDescriptor.containsKey(PROPERTY1_DESCRIPTOR));
+        List<PropertyDescriptor<?>> overriddenPropertyDescriptors = ruleReference.getOverriddenPropertyDescriptors();
+        assertTrue(overriddenPropertyDescriptors.contains(PROPERTY1_DESCRIPTOR));
     }
 
     @Test
@@ -137,7 +165,7 @@ class RuleReferenceTest {
         assertEquals("value3", ruleReference.getProperty(propertyDescriptor2), "Override failed");
         assertTrue(ruleReference.getPropertyDescriptors().contains(propertyDescriptor1), "Override failed");
         assertTrue(ruleReference.getPropertyDescriptors().contains(propertyDescriptor2), "Override failed");
-        assertFalse(ruleReference.getOverriddenPropertyDescriptors().contains(propertyDescriptor1), "Override failed");
+        assertTrue(ruleReference.getOverriddenPropertyDescriptors().contains(propertyDescriptor1), "Override failed");
         assertTrue(ruleReference.getOverriddenPropertyDescriptors().contains(propertyDescriptor2), "Override failed");
         assertTrue(ruleReference.getPropertiesByPropertyDescriptor().containsKey(propertyDescriptor1),
                 "Override failed");
