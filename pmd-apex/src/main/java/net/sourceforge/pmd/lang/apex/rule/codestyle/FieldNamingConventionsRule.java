@@ -37,11 +37,11 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionsRule {
             DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(CAMEL_CASE).build();
 
     public FieldNamingConventionsRule() {
-        definePropertyDescriptor(ENUM_CONSTANT_REGEX);
-        definePropertyDescriptor(CONSTANT_REGEX);
-        definePropertyDescriptor(FINAL_REGEX);
-        definePropertyDescriptor(STATIC_REGEX);
-        definePropertyDescriptor(INSTANCE_REGEX);
+        definePropertyDescriptorFinal(ENUM_CONSTANT_REGEX);
+        definePropertyDescriptorFinal(CONSTANT_REGEX);
+        definePropertyDescriptorFinal(FINAL_REGEX);
+        definePropertyDescriptorFinal(STATIC_REGEX);
+        definePropertyDescriptorFinal(INSTANCE_REGEX);
     }
 
 

@@ -133,11 +133,18 @@ public final class CpdAnalysis implements AutoCloseable {
         return files;
     }
 
-    public void setCpdListener(@Nullable CPDListener cpdListener) {
+    private CPDListener cpdListenerVerifier(CPDListener cpdListener){
+        CPDListener newCpdListener = cpdListener;
+
         if (cpdListener == null) {
-            cpdListener = new CPDNullListener();
+            newCpdListener = new CPDNullListener();
         }
-        this.listener = cpdListener;
+
+        return newCpdListener;
+    }
+
+    public void setCpdListener(@Nullable CPDListener cpdListener) {
+        this.listener = cpdListenerVerifier(cpdListener);
     }
 
     private int doTokenize(TextDocument document, CpdLexer cpdLexer, Tokens tokens) throws IOException, LexException {

@@ -93,22 +93,30 @@ public class CPDConfiguration extends AbstractConfiguration {
         }
     }
 
-    static CPDReportRenderer createRendererByName(String name, Charset encoding) {
+    private static String changeNameForRenderer(String name){
+        String newName = name;
+
         if (name == null || "".equals(name)) {
-            name = DEFAULT_RENDERER;
+            newName = DEFAULT_RENDERER;
         }
-        Class<? extends CPDReportRenderer> rendererClass = RENDERERS.get(name.toLowerCase(Locale.ROOT));
+        return newName;
+    }
+
+    static CPDReportRenderer createRendererByName(String name, Charset encoding) {
+        String renderName = changeNameForRenderer(name);
+
+        Class<? extends CPDReportRenderer> rendererClass = RENDERERS.get(renderName.toLowerCase(Locale.ROOT));
         if (rendererClass == null) {
             Class<?> klass;
             try {
-                klass = Class.forName(name);
+                klass = Class.forName(renderName);
                 if (CPDReportRenderer.class.isAssignableFrom(klass)) {
                     rendererClass = (Class) klass;
                 } else {
-                    throw new IllegalArgumentException("Class " + name + " does not implement " + CPDReportRenderer.class);
+                    throw new IllegalArgumentException("Class " + renderName + " does not implement " + CPDReportRenderer.class);
                 }
             } catch (ClassNotFoundException e) {
-                throw new IllegalArgumentException("Cannot find class " + name);
+                throw new IllegalArgumentException("Cannot find class " + renderName);
             }
         }
 

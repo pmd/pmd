@@ -39,8 +39,8 @@ public class CognitiveComplexityRule extends AbstractApexRule {
 
 
     public CognitiveComplexityRule() {
-        definePropertyDescriptor(CLASS_LEVEL_DESCRIPTOR);
-        definePropertyDescriptor(METHOD_LEVEL_DESCRIPTOR);
+        definePropertyDescriptorFinal(CLASS_LEVEL_DESCRIPTOR);
+        definePropertyDescriptorFinal(METHOD_LEVEL_DESCRIPTOR);
     }
 
 

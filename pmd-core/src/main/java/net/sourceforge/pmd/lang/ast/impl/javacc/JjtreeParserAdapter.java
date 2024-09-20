@@ -24,6 +24,10 @@ public abstract class JjtreeParserAdapter<R extends RootNode> implements Parser 
 
     protected abstract JavaccTokenDocument.TokenDocumentBehavior tokenBehavior();
 
+    private ParserTask toTextDoc(ParserTask task, CharStream charStream) {
+        return  task.withTextDocument(charStream.getTokenDocument().getTextDocument());
+    }
+
     @Override
     public final R parse(ParserTask task) throws ParseException {
         try {
@@ -31,9 +35,8 @@ public abstract class JjtreeParserAdapter<R extends RootNode> implements Parser 
             CharStream charStream = CharStream.create(task.getTextDocument(), tokenBehavior());
             // We replace the text document, so that it reflects escapes properly
             // Escapes are processed by CharStream#create
-            task = task.withTextDocument(charStream.getTokenDocument().getTextDocument());
             // Finally, do the parsing
-            return parseImpl(charStream, task);
+            return parseImpl(charStream, toTextDoc(task, charStream));
         } catch (FileAnalysisException tme) {
             throw tme.setFileId(task.getTextDocument().getFileId());
         }

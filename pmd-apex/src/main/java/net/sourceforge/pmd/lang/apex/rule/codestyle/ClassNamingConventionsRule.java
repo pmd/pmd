@@ -41,13 +41,13 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionsRule {
             DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(PASCAL_CASE_WITH_UNDERSCORES).build();
 
     public ClassNamingConventionsRule() {
-        definePropertyDescriptor(TEST_CLASS_REGEX);
-        definePropertyDescriptor(INNER_CLASS_REGEX);
-        definePropertyDescriptor(INNER_INTERFACE_REGEX);
-        definePropertyDescriptor(ABSTRACT_CLASS_REGEX);
-        definePropertyDescriptor(CLASS_REGEX);
-        definePropertyDescriptor(INTERFACE_REGEX);
-        definePropertyDescriptor(ENUM_REGEX);
+        definePropertyDescriptorFinal(TEST_CLASS_REGEX);
+        definePropertyDescriptorFinal(INNER_CLASS_REGEX);
+        definePropertyDescriptorFinal(INNER_INTERFACE_REGEX);
+        definePropertyDescriptorFinal(ABSTRACT_CLASS_REGEX);
+        definePropertyDescriptorFinal(CLASS_REGEX);
+        definePropertyDescriptorFinal(INTERFACE_REGEX);
+        definePropertyDescriptorFinal(ENUM_REGEX);
     }
 
     @Override

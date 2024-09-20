@@ -832,12 +832,19 @@ public class GUI implements CPDListener {
                 sortDescending = flag;
             }
 
+            private Comparator<Match> reverseComparator(Comparator<Match> comparator) {
+                Comparator<Match> reversedComparator = comparator;
+
+                if (sortDescending) {
+                    reversedComparator = comparator.reversed();
+                }
+
+                return reversedComparator;
+            }
+
             @Override
             public void sort(Comparator<Match> comparator) {
-                if (sortDescending) {
-                    comparator = comparator.reversed();
-                }
-                items.sort(comparator);
+                items.sort(reverseComparator(comparator));
             }
         };
     }

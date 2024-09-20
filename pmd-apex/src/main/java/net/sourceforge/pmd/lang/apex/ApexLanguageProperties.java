@@ -24,7 +24,7 @@ public class ApexLanguageProperties extends LanguagePropertyBundle {
 
     public ApexLanguageProperties() {
         super(ApexLanguageModule.getInstance());
-        definePropertyDescriptor(MULTIFILE_DIRECTORY);
+        definePropertyDescriptorFinal(MULTIFILE_DIRECTORY);
     }
 
 

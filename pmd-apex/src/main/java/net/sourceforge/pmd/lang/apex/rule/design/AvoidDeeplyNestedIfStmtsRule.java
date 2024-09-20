@@ -24,7 +24,7 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractApexRule {
                              .require(positive()).defaultValue(3).build();
 
     public AvoidDeeplyNestedIfStmtsRule() {
-        definePropertyDescriptor(PROBLEM_DEPTH_DESCRIPTOR);
+        definePropertyDescriptorFinal(PROBLEM_DEPTH_DESCRIPTOR);
     }
 
     @Override

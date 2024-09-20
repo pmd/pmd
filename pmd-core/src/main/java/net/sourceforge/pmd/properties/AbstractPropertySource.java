@@ -48,6 +48,15 @@ public abstract class AbstractPropertySource implements PropertySource {
         propertyDescriptors.add(propertyDescriptor);
     }
 
+    public final void definePropertyDescriptorFinal(PropertyDescriptor<?> propertyDescriptor) {
+        // Check to ensure the property does not already exist.
+        if (getPropertyDescriptor(propertyDescriptor.name()) != null) {
+            throw new IllegalArgumentException("There is already a PropertyDescriptor with name '"
+                    + propertyDescriptor.name() + "' defined on " + getPropertySourceType() + " " + getName() + ".");
+
+        }
+        propertyDescriptors.add(propertyDescriptor);
+    }
 
     protected abstract String getPropertySourceType();
 
