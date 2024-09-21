@@ -204,6 +204,7 @@ public class CloseResourceRule extends AbstractJavaRule {
             .filter(this::isVariableNotSpecifiedInTryWithResource)
             .filter(var -> isResourceTypeOrSubtype(var) || isNodeInstanceOfResourceType(getTypeOfVariable(var)))
             .filterNot(var -> var.isAnnotationPresent("lombok.Cleanup"))
+            .filterNot(this::isDefaultFileSystem)
             .toList();
 
         for (ASTVariableId var : vars) {
@@ -497,6 +498,12 @@ public class CloseResourceRule extends AbstractJavaRule {
             .filter(ASTTryStatement::isTryWithResources)
             .first();
         return tryStatement == null || !isVariableSpecifiedInTryWithResource(varId, tryStatement);
+    }
+
+    private boolean isDefaultFileSystem(ASTVariableId varId) {
+        @Nullable
+        ASTExpression initializer = varId.getInitializer();
+        return initializer != null && initializer.getText().contentEquals("FileSystems.getDefault()");
     }
 
     private boolean isVariableSpecifiedInTryWithResource(ASTVariableId varId, ASTTryStatement tryWithResource) {

@@ -2047,4 +2047,18 @@ public class CastedParameter {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#5067: FileSystems.getDefault() can't be closed </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+
+public class DefaultFileSystemUsage {
+    public void useDefaultFS() {
+        FileSystem defaultFS = FileSystems.getDefault();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
