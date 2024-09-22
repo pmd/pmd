@@ -28,6 +28,7 @@ This is a {{ site.pmd.release_type }} release.
 * java
   * [#5190](https://github.com/pmd/pmd/issues/5190): \[java] NPE in type inference
 * java-errorprone
+  * [#5068](https://github.com/pmd/pmd/issues/5068): \[java] MissingStaticMethodInNonInstantiatableClass: false positive with builder pattern
   * [#5207](https://github.com/pmd/pmd/issues/5207): \[java] CheckSkipResult: false positve for a private method `void skip(int)` in a subclass of FilterInputStream
 
 ### 🚨 API Changes
@@ -35,6 +36,7 @@ This is a {{ site.pmd.release_type }} release.
 ### ✨ External Contributions
 * [#5202](https://github.com/pmd/pmd/pull/5202): \[core] Sarif format: refer to schemastore.org - [David Schach](https://github.com/dschach) (@dschach)
 * [#5208](https://github.com/pmd/pmd/pull/5208): \[doc] Added Codety to "Tools / Integrations" - [Tony](https://github.com/random1223) (@random1223)
+* [#5224](https://github.com/pmd/pmd/pull/5224): \[java] Fix #5068: Class incorrectly identified as non-instantiatable - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 
 {% endtocmaker %}
 

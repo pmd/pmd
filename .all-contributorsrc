@@ -7782,6 +7782,24 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "lukasgraef",
+      "name": "Lukas Gräf",
+      "avatar_url": "https://avatars.githubusercontent.com/u/48957581?v=4",
+      "profile": "https://github.com/lukasgraef",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "SaschaRiemer",
+      "name": "Sascha Riemer",
+      "avatar_url": "https://avatars.githubusercontent.com/u/108794941?v=4",
+      "profile": "https://github.com/SaschaRiemer",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
