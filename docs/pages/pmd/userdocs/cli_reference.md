@@ -159,7 +159,7 @@ The tool comes with a rather extensive help text, simply running with `--help`!
                description="Path to a file to which report output is written. The file is created if it does not exist. If this option is not specified, the report is rendered to standard output."
     %}
     {% include custom/cli_option_row.html options="--show-suppressed"
-               description="Causes the suppressed rule violations to be added to the report."
+               description="Causes the suppressed rule violations to be added to the report if supported by the report format. See [PMD Report formats](pmd_userdocs_report_formats.html) for details."
     %}
     {% include custom/cli_option_row.html options="--suppress-marker"
                option_arg="marker"
