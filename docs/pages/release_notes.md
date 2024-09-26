@@ -27,6 +27,8 @@ This is a {{ site.pmd.release_type }} release.
   * [#5222](https://github.com/pmd/pmd/issues/5222): \[core] RuleReference/RuleSetWriter don't handle changed default property values correctly
 * java
   * [#5190](https://github.com/pmd/pmd/issues/5190): \[java] NPE in type inference
+* java-codestyle
+  * [#5046](https://github.com/pmd/pmd/issues/5046): \[java] LocalVariableCouldBeFinal false positive with try/catch
 * java-errorprone
   * [#5068](https://github.com/pmd/pmd/issues/5068): \[java] MissingStaticMethodInNonInstantiatableClass: false positive with builder pattern
   * [#5207](https://github.com/pmd/pmd/issues/5207): \[java] CheckSkipResult: false positve for a private method `void skip(int)` in a subclass of FilterInputStream
