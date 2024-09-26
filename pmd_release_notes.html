@@ -1560,7 +1560,7 @@
             
 
                 
-                <li><a href="https://github.com/pmd/pmd/blob/master/CONTRIBUTING.md" target="_blank">Contributing</a></li>
+                <li><a href="https://github.com/pmd/pmd/blob/main/CONTRIBUTING.md" target="_blank">Contributing</a></li>
                 
 
             
@@ -1876,7 +1876,7 @@
             » PMD Release Notes   
             <a
                 target="_blank"
-                href="https://github.com/pmd/pmd/blob/master/docs/pages/release_notes.md"
+                href="https://github.com/pmd/pmd/blob/main/docs/pages/release_notes.md"
                 class="float-right"
                 role="button"
                 ><i class="fab fa-github fa-lg"></i> Edit on GitHub</a
@@ -1893,7 +1893,7 @@
    <h1 class="post-title-main">PMD Release Notes</h1>
 </div>
 
-<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/master/docs/pages/release_notes.md">
+<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/main/docs/pages/release_notes.md">
 
    
     <details id="inline-toc-details">
@@ -1908,6 +1908,44 @@
 <p>This is a minor release.</p>
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
+
+<h4 id="new-git-default-branch---main">New Git default branch - “main”</h4>
+
+<p>We are joining the Git community and updating “master” to “main”. Using the term “master” for the main
+development branch can be offensive to some people. Existing versions of Git have been always capable of
+working with any branch name and since 2.28.0 (July 2020) the default initial branch is configurable
+(<code class="language-plaintext highlighter-rouge">init.defaultBranch</code>). Since October 2020, the default branch for new repositories on GitHub
+is “main”. Finally, PMD will also use this new name for the main branch in all our own repositories.</p>
+
+<p>Why “main”? PMD uses a very simple branching model - pull requests with feature branches and one main development
+branch, from which releases are created. That’s why “main” is currently the best fitting name.</p>
+
+<p>More information:</p>
+<ul>
+  <li><a href="https://sfconservancy.org/news/2020/jun/23/gitbranchname/">https://sfconservancy.org/news/2020/jun/23/gitbranchname/</a></li>
+  <li><a href="https://github.blog/changelog/2020-10-01-the-default-branch-for-newly-created-repositories-is-now-main/">https://github.blog/changelog/2020-10-01-the-default-branch-for-newly-created-repositories-is-now-main/</a></li>
+</ul>
+
+<p>What changes?</p>
+<ul>
+  <li>We change the default branch on GitHub, so that pull requests are automatically created against <code class="language-plaintext highlighter-rouge">main</code> from
+now on.</li>
+  <li>If you have already a local clone of PMD’s repository, you’ll need to rename the old master branch locally:
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git branch --move master main
+git fetch origin
+git branch --set-upstream-to=origin/main main
+git remote set-head origin --auto
+</code></pre></div>    </div>
+
+    <p>More info:
+<a href="https://git-scm.com/book/en/v2/Git-Branching-Branch-Management#_changing_master">https://git-scm.com/book/en/v2/Git-Branching-Branch-Management#_changing_master</a> and
+<a href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-branches-in-your-repository/renaming-a-branch#updating-a-local-clone-after-a-branch-name-changes">https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-branches-in-your-repository/renaming-a-branch#updating-a-local-clone-after-a-branch-name-changes</a></p>
+  </li>
+  <li>If you created a fork on GitHub, you’ll need to change the default branch in your fork to <code class="language-plaintext highlighter-rouge">main</code> as
+well (Settings &gt; Default Branch).</li>
+  <li>Some time after this release, we’ll delete the old master branch on GitHub. Then only <code class="language-plaintext highlighter-rouge">main</code> can be used.</li>
+  <li>This change is expanded to the other PMD repositories as well, e.g. pmd-designer and pmd-regression-tester.</li>
+</ul>
 
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
 <ul>
@@ -1972,7 +2010,7 @@
         github and create a PR:
         <a
             target="_blank"
-            href="https://github.com/pmd/pmd/blob/master/docs/pages/release_notes.md"
+            href="https://github.com/pmd/pmd/blob/main/docs/pages/release_notes.md"
             role="button"
             ><i class="fab fa-github fa-lg"></i> Edit on GitHub</a
         >

@@ -1560,7 +1560,7 @@
             
 
                 
-                <li><a href="https://github.com/pmd/pmd/blob/master/CONTRIBUTING.md" target="_blank">Contributing</a></li>
+                <li><a href="https://github.com/pmd/pmd/blob/main/CONTRIBUTING.md" target="_blank">Contributing</a></li>
                 
 
             
@@ -1876,7 +1876,7 @@
             » Performance   
             <a
                 target="_blank"
-                href="https://github.com/pmd/pmd/blob/master/docs/../pmd-java/src/main/resources/category/java/performance.xml"
+                href="https://github.com/pmd/pmd/blob/main/docs/../pmd-java/src/main/resources/category/java/performance.xml"
                 class="float-right"
                 role="button"
                 ><i class="fab fa-github fa-lg"></i> Edit on GitHub</a
@@ -1893,7 +1893,7 @@
    <h1 class="post-title-main">Performance</h1>
 </div>
 
-<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/master/docs/../pmd-java/src/main/resources/category/java/performance.xml">
+<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/main/docs/../pmd-java/src/main/resources/category/java/performance.xml">
 
    
     <div class="summary">Rules that flag suboptimal code.</div>
@@ -1913,7 +1913,7 @@
 <p>The conversion of literals to strings by concatenating them with empty strings is inefficient.
 It is much better to use one of the type-specific <code class="language-plaintext highlighter-rouge">toString()</code> methods instead or <code class="language-plaintext highlighter-rouge">String.valueOf()</code>.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/AddEmptyStringRule.java">net.sourceforge.pmd.lang.java.rule.performance.AddEmptyStringRule</a></p>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/AddEmptyStringRule.java">net.sourceforge.pmd.lang.java.rule.performance.AddEmptyStringRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -1933,7 +1933,7 @@ It is much better to use one of the type-specific <code class="language-plaintex
 
 <p>Avoid concatenating characters as strings in StringBuffer/StringBuilder.append methods.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/AppendCharacterWithCharRule.java">net.sourceforge.pmd.lang.java.rule.performance.AppendCharacterWithCharRule</a></p>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/AppendCharacterWithCharRule.java">net.sourceforge.pmd.lang.java.rule.performance.AppendCharacterWithCharRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -2182,7 +2182,7 @@ that one covers both.</p>
 
 <p>New objects created within loops should be checked to see if they can created outside them and reused.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/AvoidInstantiatingObjectsInLoopsRule.java">net.sourceforge.pmd.lang.java.rule.performance.AvoidInstantiatingObjectsInLoopsRule</a></p>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/AvoidInstantiatingObjectsInLoopsRule.java">net.sourceforge.pmd.lang.java.rule.performance.AvoidInstantiatingObjectsInLoopsRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -2209,7 +2209,7 @@ that one covers both.</p>
 for Java 1.5 onwards, BigInteger.TEN and BigDecimal (<code class="language-plaintext highlighter-rouge">BigDecimal.ZERO</code>, <code class="language-plaintext highlighter-rouge">BigDecimal.ONE</code>, <code class="language-plaintext highlighter-rouge">BigDecimal.TEN</code>) and
 for Java 9 onwards <code class="language-plaintext highlighter-rouge">BigInteger.TWO</code>.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/BigIntegerInstantiationRule.java">net.sourceforge.pmd.lang.java.rule.performance.BigIntegerInstantiationRule</a></p>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/BigIntegerInstantiationRule.java">net.sourceforge.pmd.lang.java.rule.performance.BigIntegerInstantiationRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -2236,7 +2236,7 @@ for Java 9 onwards <code class="language-plaintext highlighter-rouge">BigInteger
 <p>Consecutive calls to StringBuffer/StringBuilder .append should be chained, reusing the target object. This can improve the performance
 by producing a smaller bytecode, reducing overhead and improving inlining. A complete analysis can be found <a href="https://github.com/pmd/pmd/issues/202#issuecomment-274349067">here</a></p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/ConsecutiveAppendsShouldReuseRule.java">net.sourceforge.pmd.lang.java.rule.performance.ConsecutiveAppendsShouldReuseRule</a></p>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/ConsecutiveAppendsShouldReuseRule.java">net.sourceforge.pmd.lang.java.rule.performance.ConsecutiveAppendsShouldReuseRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -2265,7 +2265,7 @@ by producing a smaller bytecode, reducing overhead and improving inlining. A com
 Since the literals are constants, they can already be combined into a single String literal and this String
 can be appended in a single method call.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/ConsecutiveLiteralAppendsRule.java">net.sourceforge.pmd.lang.java.rule.performance.ConsecutiveLiteralAppendsRule</a></p>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/ConsecutiveLiteralAppendsRule.java">net.sourceforge.pmd.lang.java.rule.performance.ConsecutiveLiteralAppendsRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -2338,7 +2338,7 @@ Spring’s StringUtils#hasText (in the Spring framework) or Google’s
 CharMatcher#whitespace (in Guava) for existing implementations (some might
 include the check for != null).</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/InefficientEmptyStringCheckRule.java">net.sourceforge.pmd.lang.java.rule.performance.InefficientEmptyStringCheckRule</a></p>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/InefficientEmptyStringCheckRule.java">net.sourceforge.pmd.lang.java.rule.performance.InefficientEmptyStringCheckRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -2362,7 +2362,7 @@ include the check for != null).</p>
 <p>Avoid concatenating non-literals in a StringBuffer constructor or append() since intermediate buffers will
 need to be be created and destroyed by the JVM.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/InefficientStringBufferingRule.java">net.sourceforge.pmd.lang.java.rule.performance.InefficientStringBufferingRule</a></p>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/InefficientStringBufferingRule.java">net.sourceforge.pmd.lang.java.rule.performance.InefficientStringBufferingRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -2390,7 +2390,7 @@ passed into StringBuffer.append(), but represents a best guess "worst case" scen
 StringBuffer/StringBuilder constructor initializes the object to 16 characters. This default
 is assumed if the length of the constructor can not be determined.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/InsufficientStringBufferDeclarationRule.java">net.sourceforge.pmd.lang.java.rule.performance.InsufficientStringBufferDeclarationRule</a></p>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/InsufficientStringBufferDeclarationRule.java">net.sourceforge.pmd.lang.java.rule.performance.InsufficientStringBufferDeclarationRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -2455,7 +2455,7 @@ is faster, but returns only an array of type <code class="language-plaintext hig
 <p>Java will initialize fields with known default values so any explicit initialization of those same defaults
 is redundant and results in a larger class file (approximately three additional bytecode instructions per field).</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/RedundantFieldInitializerRule.java">net.sourceforge.pmd.lang.java.rule.performance.RedundantFieldInitializerRule</a></p>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/RedundantFieldInitializerRule.java">net.sourceforge.pmd.lang.java.rule.performance.RedundantFieldInitializerRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -2492,7 +2492,7 @@ is redundant and results in a larger class file (approximately three additional 
 
 <p>Avoid instantiating String objects; this is usually unnecessary since they are immutable and can be safely shared.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/StringInstantiationRule.java">net.sourceforge.pmd.lang.java.rule.performance.StringInstantiationRule</a></p>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/StringInstantiationRule.java">net.sourceforge.pmd.lang.java.rule.performance.StringInstantiationRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -2685,7 +2685,7 @@ You must use <code class="language-plaintext highlighter-rouge">new ArrayList&lt
 
 <p>Use String.indexOf(char) when checking for the index of a single character; it executes faster.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/UseIndexOfCharRule.java">net.sourceforge.pmd.lang.java.rule.performance.UseIndexOfCharRule</a></p>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/UseIndexOfCharRule.java">net.sourceforge.pmd.lang.java.rule.performance.UseIndexOfCharRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -2746,7 +2746,7 @@ and buffering.</p>
 
 <p>No need to call String.valueOf to append to a string; just use the valueOf() argument directly.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/UselessStringValueOfRule.java">net.sourceforge.pmd.lang.java.rule.performance.UselessStringValueOfRule</a></p>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/UselessStringValueOfRule.java">net.sourceforge.pmd.lang.java.rule.performance.UselessStringValueOfRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -2772,7 +2772,7 @@ and buffering.</p>
 If a non-trivial number of these concatenations are being used then the explicit use of a StringBuilder or
 threadsafe StringBuffer is recommended to avoid this.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/UseStringBufferForStringAppendsRule.java">net.sourceforge.pmd.lang.java.rule.performance.UseStringBufferForStringAppendsRule</a></p>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/UseStringBufferForStringAppendsRule.java">net.sourceforge.pmd.lang.java.rule.performance.UseStringBufferForStringAppendsRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -2852,7 +2852,7 @@ or StringBuffer.toString().length() == …</p>
         github and create a PR:
         <a
             target="_blank"
-            href="https://github.com/pmd/pmd/blob/master/docs/../pmd-java/src/main/resources/category/java/performance.xml"
+            href="https://github.com/pmd/pmd/blob/main/docs/../pmd-java/src/main/resources/category/java/performance.xml"
             role="button"
             ><i class="fab fa-github fa-lg"></i> Edit on GitHub</a
         >

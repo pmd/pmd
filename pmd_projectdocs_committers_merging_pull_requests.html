@@ -1560,7 +1560,7 @@
             
 
                 
-                <li><a href="https://github.com/pmd/pmd/blob/master/CONTRIBUTING.md" target="_blank">Contributing</a></li>
+                <li><a href="https://github.com/pmd/pmd/blob/main/CONTRIBUTING.md" target="_blank">Contributing</a></li>
                 
 
             
@@ -1876,7 +1876,7 @@
             » Merging pull requests   
             <a
                 target="_blank"
-                href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/projectdocs/committers/merging_pull_requests.md"
+                href="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/projectdocs/committers/merging_pull_requests.md"
                 class="float-right"
                 role="button"
                 ><i class="fab fa-github fa-lg"></i> Edit on GitHub</a
@@ -1893,7 +1893,7 @@
    <h1 class="post-title-main">Merging pull requests</h1>
 </div>
 
-<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/projectdocs/committers/merging_pull_requests.md">
+<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/projectdocs/committers/merging_pull_requests.md">
 
    
     <details id="inline-toc-details">
@@ -1901,7 +1901,7 @@
         <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
     </details>
 
-  <h2 id="example-1-merging-pr-123-into-master">Example 1: Merging PR #123 into master</h2>
+  <h2 id="example-1-merging-pr-123-into-main">Example 1: Merging PR #123 into main</h2>
 
 <ol>
   <li>
@@ -1921,15 +1921,15 @@ If the PR fixes a bug, make sure, that the bug issue is added to the same milest
   <li>
     <p>The actual merge commands:</p>
 
-    <p>We assume, that the PR has been created from the master branch. If this is not the case,
+    <p>We assume, that the PR has been created from the main branch. If this is not the case,
 then we’ll either need to rebase or ask for rebasing before merging.</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout master &amp;&amp; git pull origin master                    # make sure, you have the latest code
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout main &amp;&amp; git pull origin main                        # make sure, you have the latest code
 git fetch origin pull/123/head:pr-123 &amp;&amp; git checkout pr-123     # creates a new temporary branch "pr-123"
 </code></pre></div>    </div>
   </li>
   <li>
-    <p>Update the <a href="https://github.com/pmd/pmd/blob/master/docs/pages/release_notes.md">release notes</a>:</p>
+    <p>Update the <a href="https://github.com/pmd/pmd/blob/main/docs/pages/release_notes.md">release notes</a>:</p>
 
     <ul>
       <li>Are there any API changes, that need to be documented? (Section “API Changes”)</li>
@@ -1967,12 +1967,12 @@ This will automatically close the github issue.</div>
 the file <code class="language-plaintext highlighter-rouge">.all-contributorsrc</code> and <code class="language-plaintext highlighter-rouge">docs/pages/pmd/projectdocs/credits.md</code>.</p>
   </li>
   <li>
-    <p>Now merge the pull request into the master branch:</p>
+    <p>Now merge the pull request into the main branch:</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout master
-git merge --no-ff pr-123 -m "Merge pull request #123 from xyz:branch
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout main
+git merge --no-ff pr-123 -m "Full-title-of-the-pr (#123)
     
-Full-title-of-the-pr #123" --log
+Merge pull request #123 from xyz:branch" --log
 </code></pre></div>    </div>
 
     <div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> If there are merge conflicts, you’ll need to deal with them here.</div>
@@ -1981,7 +1981,7 @@ Full-title-of-the-pr #123" --log
     <p>Run the complete build: <code class="language-plaintext highlighter-rouge">./mvnw clean verify -Pgenerate-rule-docs</code></p>
 
     <div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> This will execute all the unit tests and the checkstyle tests. It ensures,
-that the complete project can be build and is functioning on top of the current master.</div>
+that the complete project can be build and is functioning on top of the current main.</div>
 
     <div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> The profile <code class="language-plaintext highlighter-rouge">generate-rule-docs</code> will run the doc checks, that would
 otherwise only run on github actions and fail the build, if e.g. a jdoc or rule reference is wrong.</div>
@@ -1989,7 +1989,7 @@ otherwise only run on github actions and fail the build, if e.g. a jdoc or rule 
   <li>
     <p>If the build was successful, you are ready to push:</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git push origin master
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git push origin main
 </code></pre></div>    </div>
 
     <p>Since the temporary branch is now not needed anymore, you can delete it:
@@ -1999,7 +1999,7 @@ otherwise only run on github actions and fail the build, if e.g. a jdoc or rule 
 
 <h2 id="example-2-merging-pr-124-into-a-maintenance-branch">Example 2: Merging PR #124 into a maintenance branch</h2>
 
-<p>We ask, to create every pull request against master, to make it easier to contribute.
+<p>We ask, to create every pull request against main, to make it easier to contribute.
 But if a pull request is intended to fix a bug in an older version of PMD, then we need to backport this pull request.</p>
 
 <h3 id="creating-a-maintenance-branch">Creating a maintenance branch</h3>
@@ -2036,7 +2036,7 @@ git commit -m "Prepare next version 5.8.1-SNAPSHOT"
     <p>Fetch the PR and rebase it onto the maintenance branch:</p>
 
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git fetch origin pull/124/head:pr-124 &amp;&amp; git checkout pr-124     # creates a new temporary branch
-git rebase master --onto pmd/5.8.x
+git rebase main --onto pmd/5.8.x
 ./mvnw clean verify                                # make sure, everything works after the rebase
 </code></pre></div>    </div>
 
@@ -2071,7 +2071,7 @@ rebased onto the maintenance branch.</p>
   </li>
 </ol>
 
-<h3 id="merging-into-master">Merging into master</h3>
+<h3 id="merging-into-main">Merging into main</h3>
 
 <p>Now the PR has been merged into the maintenance branch, but it is missing in any later version of PMD.
 Therefore, we merge first into the next minor version maintenance branch (if existing):</p>
@@ -2080,18 +2080,18 @@ Therefore, we merge first into the next minor version maintenance branch (if exi
 git merge pmd/5.8.x
 </code></pre></div></div>
 
-<p>After that, we merge the changes into the master branch:</p>
+<p>After that, we merge the changes into the main branch:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout master
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout main
 git merge pmd/5.9.x
 </code></pre></div></div>
 
 <div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> This ensures, that every change on the maintenance branch eventually ends
-up in the master branch and therefore in any future version of PMD.<br />
+up in the main branch and therefore in any future version of PMD.<br />
 The downside is however, that there are inevitable merge conflicts for the maven <code class="language-plaintext highlighter-rouge">pom.xml</code> files, since
 every branch changed the version number differently.<br />
 We could avoid this by merging only the temporary branch “pr-124” into each maintenance branch and
-eventually into master, with the risk of missing single commits in a maintenance branch, that have been
+eventually into main, with the risk of missing single commits in a maintenance branch, that have been
 done outside the temporary branch.</div>
 
 <h3 id="merging-vs-cherry-picking">Merging vs. Cherry-Picking</h3>
@@ -2100,7 +2100,7 @@ done outside the temporary branch.</div>
 Cherry-picking would duplicate the commit and you can’t see in the log, on which branches the fix has been
 integrated (e.g. gitk and github show the branches, from which the specific commit is reachable).</p>
 
-<p>The downside is a more complex history - the maintenance branches and master branch are “connected” and not separate.</p>
+<p>The downside is a more complex history - the maintenance branches and main branch are “connected” and not separate.</p>
 
 
     <div class="tags">
@@ -2119,7 +2119,7 @@ integrated (e.g. gitk and github show the branches, from which the specific comm
         github and create a PR:
         <a
             target="_blank"
-            href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/projectdocs/committers/merging_pull_requests.md"
+            href="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/projectdocs/committers/merging_pull_requests.md"
             role="button"
             ><i class="fab fa-github fa-lg"></i> Edit on GitHub</a
         >

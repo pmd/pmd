@@ -1560,7 +1560,7 @@
             
 
                 
-                <li><a href="https://github.com/pmd/pmd/blob/master/CONTRIBUTING.md" target="_blank">Contributing</a></li>
+                <li><a href="https://github.com/pmd/pmd/blob/main/CONTRIBUTING.md" target="_blank">Contributing</a></li>
                 
 
             
@@ -1876,7 +1876,7 @@
             » Best Practices   
             <a
                 target="_blank"
-                href="https://github.com/pmd/pmd/blob/master/docs/../pmd-apex/src/main/resources/category/apex/bestpractices.xml"
+                href="https://github.com/pmd/pmd/blob/main/docs/../pmd-apex/src/main/resources/category/apex/bestpractices.xml"
                 class="float-right"
                 role="button"
                 ><i class="fab fa-github fa-lg"></i> Edit on GitHub</a
@@ -1893,7 +1893,7 @@
    <h1 class="post-title-main">Best Practices</h1>
 </div>
 
-<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/master/docs/../pmd-apex/src/main/resources/category/apex/bestpractices.xml">
+<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/main/docs/../pmd-apex/src/main/resources/category/apex/bestpractices.xml">
 
    
     <div class="summary">Rules which enforce generally accepted best practices.</div>
@@ -1914,7 +1914,7 @@
 Having a second/third parameter provides more information and makes it easier to debug the test failure and
 improves the readability of test output.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/bestpractices/ApexAssertionsShouldIncludeMessageRule.java">net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexAssertionsShouldIncludeMessageRule</a></p>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/bestpractices/ApexAssertionsShouldIncludeMessageRule.java">net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexAssertionsShouldIncludeMessageRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -1944,7 +1944,7 @@ improves the readability of test output.</p>
 with messages provide the developer a clearer idea of what the test does.  Custom assert method invocation
 patterns can be specified using the ‘additionalAssertMethodPattern’ property if required.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/bestpractices/ApexUnitTestClassShouldHaveAssertsRule.java">net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestClassShouldHaveAssertsRule</a></p>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/bestpractices/ApexUnitTestClassShouldHaveAssertsRule.java">net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestClassShouldHaveAssertsRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -1999,7 +1999,7 @@ patterns can be specified using the ‘additionalAssertMethodPattern’ property
 <p>Apex unit tests should include at least one runAs method.  This makes the tests more robust, and independent from the 
 user running it.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/bestpractices/ApexUnitTestClassShouldHaveRunAsRule.java">net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestClassShouldHaveRunAsRule</a></p>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/bestpractices/ApexUnitTestClassShouldHaveRunAsRule.java">net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestClassShouldHaveRunAsRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -2077,7 +2077,7 @@ annotation for test classes and methods.</p>
 
 <p>Apex unit tests should not use @isTest(seeAllData=true) because it opens up the existing database data for unexpected modification by tests.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/bestpractices/ApexUnitTestShouldNotUseSeeAllDataTrueRule.java">net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestShouldNotUseSeeAllDataTrueRule</a></p>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/bestpractices/ApexUnitTestShouldNotUseSeeAllDataTrueRule.java">net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestShouldNotUseSeeAllDataTrueRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -2105,7 +2105,7 @@ annotation for test classes and methods.</p>
 <p>Global classes should be avoided (especially in managed packages) as they can never be deleted or changed in signature. Always check twice if something needs to be global.
 Many interfaces (e.g. Batch) required global modifiers in the past but don’t require this anymore. Don’t lock yourself in.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/bestpractices/AvoidGlobalModifierRule.java">net.sourceforge.pmd.lang.apex.rule.bestpractices.AvoidGlobalModifierRule</a></p>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/bestpractices/AvoidGlobalModifierRule.java">net.sourceforge.pmd.lang.apex.rule.bestpractices.AvoidGlobalModifierRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -2131,7 +2131,7 @@ Therefore delegate the triggers work to a regular class (often called Trigger ha
 
 <p>See more here: <a href="https://developer.salesforce.com/page/Trigger_Frameworks_and_Apex_Trigger_Best_Practices">https://developer.salesforce.com/page/Trigger_Frameworks_and_Apex_Trigger_Best_Practices</a></p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/bestpractices/AvoidLogicInTriggerRule.java">net.sourceforge.pmd.lang.apex.rule.bestpractices.AvoidLogicInTriggerRule</a></p>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/bestpractices/AvoidLogicInTriggerRule.java">net.sourceforge.pmd.lang.apex.rule.bestpractices.AvoidLogicInTriggerRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -2221,7 +2221,7 @@ Therefore delegate the triggers work to a regular class (often called Trigger ha
 
 <p>Detects when a local variable is declared and/or assigned but not used.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/bestpractices/UnusedLocalVariableRule.java">net.sourceforge.pmd.lang.apex.rule.bestpractices.UnusedLocalVariableRule</a></p>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/bestpractices/UnusedLocalVariableRule.java">net.sourceforge.pmd.lang.apex.rule.bestpractices.UnusedLocalVariableRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -2255,7 +2255,7 @@ Therefore delegate the triggers work to a regular class (often called Trigger ha
         github and create a PR:
         <a
             target="_blank"
-            href="https://github.com/pmd/pmd/blob/master/docs/../pmd-apex/src/main/resources/category/apex/bestpractices.xml"
+            href="https://github.com/pmd/pmd/blob/main/docs/../pmd-apex/src/main/resources/category/apex/bestpractices.xml"
             role="button"
             ><i class="fab fa-github fa-lg"></i> Edit on GitHub</a
         >
