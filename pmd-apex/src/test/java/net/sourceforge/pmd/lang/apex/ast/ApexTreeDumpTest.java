@@ -102,4 +102,12 @@ class ApexTreeDumpTest extends BaseTreeDumpTest {
     void nestedSubqueries() {
         doTest("NestedSubqueries");
     }
+
+    /**
+     * @see <a href="https://github.com/pmd/pmd/issues/5228>[apex] Parser error when using convertCurrency() in SOQL</a>
+     */
+    @Test
+    void convertCurrencyInSoqlAndSosl() {
+        doTest("ConvertCurrencyInSoqlAndSosl");
+    }
 }
