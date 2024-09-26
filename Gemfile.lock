@@ -70,7 +70,7 @@ GEM
     rchardet (1.8.0)
     rexml (3.3.6)
       strscan
-    rouge (4.3.0)
+    rouge (4.4.0)
     rufus-scheduler (3.9.1)
       fugit (~> 1.1, >= 1.1.6)
     safe_yaml (1.0.5)
