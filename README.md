@@ -1,6 +1,6 @@
 # PMD - source code analyzer
 
-![PMD Logo](https://raw.githubusercontent.com/pmd/pmd/pmd/main/docs/images/logo/pmd-logo-300px.png)
+![PMD Logo](https://raw.githubusercontent.com/pmd/pmd/main/docs/images/logo/pmd-logo-300px.png)
 
 [![Join the chat](https://img.shields.io/gitter/room/pmd/pmd)](https://app.gitter.im/#/room/#pmd_pmd:gitter.im?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://github.com/pmd/pmd/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/pmd/pmd/actions)
