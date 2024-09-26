@@ -33,7 +33,7 @@ This makes it easy to view the documentation also offline.
 
 The categories for a language `%lang%` are located in
 `pmd-%lang%/src/main/resources/category/%lang% `. So for Java the categories
-can be found under [pmd-java/src/main/resources/category/java](https://github.com/pmd/pmd/tree/master/pmd-java/src/main/resources/category/java).
+can be found under [pmd-java/src/main/resources/category/java](https://github.com/pmd/pmd/tree/main/pmd-java/src/main/resources/category/java).
 The XML category files in this directory are transformed during build into markdown pages
 describing the rules they contain. These pages are placed under `docs/` like the handwritten
 documentation, and are then rendered with Jekyll like the rest of them. The rule documentation
@@ -83,7 +83,7 @@ Here's a short overview:
 
 For the javadoc tags, the standard PMD maven modules are already defined as namespaces, e.g. `core`, `java`, `apex`, ....
 
-For the implementation of these tags, see the [_plugins](https://github.com/pmd/pmd/tree/master/docs/_plugins) folder.
+For the implementation of these tags, see the [_plugins](https://github.com/pmd/pmd/tree/main/docs/_plugins) folder.
 
 
 ## Building

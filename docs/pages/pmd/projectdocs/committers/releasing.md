@@ -140,7 +140,7 @@ echo "* Days since last release: $(( ( $(date +%s) - $(git log --max-count=1 --f
 
 Note: both shell snippets are also integrated into `do-release.sh`.
 
-Check in all (version) changes to branch master or any other branch, from which the release takes place:
+Check in all (version) changes to branch main or any other branch, from which the release takes place:
 
     $ git commit -a -m "Prepare pmd release <version>"
     $ git push
@@ -180,7 +180,7 @@ NEW_RELEASE_NOTES=$(bundle exec docs/render_release_notes.rb docs/pages/release_
 cat > "../pmd.github.io/${RELEASE_NOTES_POST}" <<EOF
 ```
 
-Check in all (version, blog post) changes to branch master:
+Check in all (version, blog post) changes to branch main:
 
     $ git commit -a -m "Prepare pmd release <version>"
     $ git push
@@ -259,7 +259,7 @@ Here is, what happens:
     under <https://pmd.sourceforge.io/archive.phtml>.
 
 The release on GitHub Actions currently takes about 30-45 minutes. Once this is done, you
-can proceed with releasing pmd designer, see <https://github.com/pmd/pmd-designer/blob/master/releasing.md>.
+can proceed with releasing pmd designer, see <https://github.com/pmd/pmd-designer/blob/main/releasing.md>.
 Make sure to release the version, you have used earlier for the property `pmd-designer.version`.
 
 Once the pmd-designer release is done, you can proceed with part 2. This is simply triggering manually
@@ -374,7 +374,7 @@ This is a {{ site.pmd.release_type }} release.
 Finally, commit and push the changes:
 
     $ git commit -m "Prepare next development version"
-    $ git push origin master
+    $ git push origin main
 
 
 ## Branches
@@ -382,7 +382,7 @@ Finally, commit and push the changes:
 ### Merging
 
 If the release was done on a maintenance branch, such as `pmd/5.4.x`, then this branch should be
-merged into the next "higher" branches, such as `pmd/5.5.x` and `master`.
+merged into the next "higher" branches, such as `pmd/5.5.x` and `main`.
 
 This ensures, that all fixes done on the maintenance branch, finally end up in the other branches.
 In theory, the fixes should already be there, but you never now.
@@ -392,7 +392,7 @@ In theory, the fixes should already be there, but you never now.
 
 If releases from multiple branches are being done, the order matters. You should start from the "oldest" branch,
 e.g. `pmd/5.4.x`, release from there. Then merge (see above) into the next branch, e.g. `pmd/5.5.x` and release
-from there. Then merge into the `master` branch and release from there. This way, the last release done, becomes
+from there. Then merge into the `main` branch and release from there. This way, the last release done, becomes
 automatically the latest release on <https://docs.pmd-code.org/latest/> and on sourceforge.
 
 

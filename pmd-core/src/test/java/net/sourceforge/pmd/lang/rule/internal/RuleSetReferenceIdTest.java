@@ -91,8 +91,8 @@ class RuleSetReferenceIdTest {
                 new RuleSetReferenceId("rulesets/java/basic.xml/EmptyCatchBlock"));
         assertRuleSetReferenceId(false, null, false, "EmptyCatchBlock", "EmptyCatchBlock",
                 new RuleSetReferenceId("EmptyCatchBlock"));
-        assertRuleSetReferenceId(true, "https://raw.githubusercontent.com/pmd/pmd/master/pmd-java/src/main/resources/rulesets/java/quickstart.xml", false, "ConstantsInInterface", "https://raw.githubusercontent.com/pmd/pmd/master/pmd-java/src/main/resources/rulesets/java/quickstart.xml/ConstantsInInterface",
-                new RuleSetReferenceId("https://raw.githubusercontent.com/pmd/pmd/master/pmd-java/src/main/resources/rulesets/java/quickstart.xml/ConstantsInInterface"));
+        assertRuleSetReferenceId(true, "https://raw.githubusercontent.com/pmd/pmd/main/pmd-java/src/main/resources/rulesets/java/quickstart.xml", false, "ConstantsInInterface", "https://raw.githubusercontent.com/pmd/pmd/main/pmd-java/src/main/resources/rulesets/java/quickstart.xml/ConstantsInInterface",
+                new RuleSetReferenceId("https://raw.githubusercontent.com/pmd/pmd/main/pmd-java/src/main/resources/rulesets/java/quickstart.xml/ConstantsInInterface"));
         assertRuleSetReferenceId(true, "https://example.org/ruleset/MyRule", true, null, "https://example.org/ruleset/MyRule",
                 new RuleSetReferenceId("https://example.org/ruleset/MyRule"));
         assertRuleSetReferenceId(true, "https://example.org/ruleset.xml", false, "MyRule", "https://example.org/ruleset.xml/MyRule",

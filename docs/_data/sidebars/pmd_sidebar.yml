@@ -524,7 +524,7 @@ entries:
       url: /pmd_devdocs_building.html
       output: web, pdf
     - title: Contributing
-      external_url: https://github.com/pmd/pmd/blob/master/CONTRIBUTING.md
+      external_url: https://github.com/pmd/pmd/blob/main/CONTRIBUTING.md
       output: web, pdf
     - title: Writing documentation
       url: /pmd_devdocs_writing_documentation.html
