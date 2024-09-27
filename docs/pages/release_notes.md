@@ -71,11 +71,37 @@ What changes?
 
 ### 🚨 API Changes
 
-### ✨ External Contributions
+No changes.
+
+### ✨ Merged pull requests
+* [#5186](https://github.com/pmd/pmd/pull/5186): \[java] Cleanup things about implicit classes - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5188](https://github.com/pmd/pmd/pull/5188): \[apex] Use new apex-parser 4.2.0 - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5191](https://github.com/pmd/pmd/pull/5191): \[java] Fix #5046 - FPs in LocalVariableCouldBeFinal - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5192](https://github.com/pmd/pmd/pull/5192): \[java] Fix #5190 - NPE in type inference caused by null type - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5195](https://github.com/pmd/pmd/pull/5195): \[apex] Fix various FNs when using triggers - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5202](https://github.com/pmd/pmd/pull/5202): \[core] Sarif format: refer to schemastore.org - [David Schach](https://github.com/dschach) (@dschach)
 * [#5208](https://github.com/pmd/pmd/pull/5208): \[doc] Added Codety to "Tools / Integrations" - [Tony](https://github.com/random1223) (@random1223)
+* [#5210](https://github.com/pmd/pmd/pull/5210): \[core] Fix PMD's XMLRenderer to escape CDATA - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5211](https://github.com/pmd/pmd/pull/5211): Change branch master to main - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5212](https://github.com/pmd/pmd/pull/5212): \[java] Adjust signature matching in CheckSkipResultRule - [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
+* [#5223](https://github.com/pmd/pmd/pull/5223): \[core] Fix RuleReference / RuleSetWriter handling of properties - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5224](https://github.com/pmd/pmd/pull/5224): \[java] Fix #5068: Class incorrectly identified as non-instantiatable - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#5230](https://github.com/pmd/pmd/pull/5230): \[doc] Documentation update for --show-suppressed flag - [David Schach](https://github.com/dschach) (@dschach)
+* [#5237](https://github.com/pmd/pmd/pull/5237): \[apex] Support convertCurrency() in SOQL/SOSL - [Andreas Dangel](https://github.com/adangel) (@adangel)
+
+### 📦 Dependency updates
+* [#5185](https://github.com/pmd/pmd/issues/5185): Bump checkstyle from 10.14.0 to 10.18.1
+* [#5187](https://github.com/pmd/pmd/issues/5187): Bump org.apache.maven.plugins:maven-install-plugin from 3.1.1 to 3.1.3
+* [#5199](https://github.com/pmd/pmd/issues/5199): Bump org.apache.maven.plugins:maven-deploy-plugin from 3.1.1 to 3.1.3
+* [#5216](https://github.com/pmd/pmd/issues/5216): Bump com.github.siom79.japicmp:japicmp-maven-plugin from 0.20.0 to 0.23.0
+* [#5226](https://github.com/pmd/pmd/issues/5226): Bump rouge from 4.3.0 to 4.4.0 in the all-gems group across 1 directory
+* [#5227](https://github.com/pmd/pmd/issues/5227): Bump com.google.code.gson:gson from 2.10.1 to 2.11.0
+* [#5232](https://github.com/pmd/pmd/issues/5232): Bump com.google.protobuf:protobuf-java from 3.25.3 to 3.25.5
+* [#5233](https://github.com/pmd/pmd/issues/5233): Bump webrick from 1.8.1 to 1.8.2 in /docs
+
+### 📈 Stats
+* 60 commits
+* 27 closed tickets & PRs
+* Days since last release: 27
 
 {% endtocmaker %}
-
