@@ -1913,7 +1913,7 @@ be processing errors or configuration errors. Not all report formats display all
 arguments to the <code class="language-plaintext highlighter-rouge">--format</code> option. When a format accepts <em>properties</em>,
 those can be specified with the <code class="language-plaintext highlighter-rouge">--property</code> / <code class="language-plaintext highlighter-rouge">-P</code> option on the command-line.</p>
 
-<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> Suppressed violations are only reported, if the CLI parameter <code class="language-plaintext highlighter-rouge">--show-suppressed</code> is set.</div>
+<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> Suppressed violations are only reported, if the CLI parameter <code class="language-plaintext highlighter-rouge">--show-suppressed</code> is set and if the format supports showing suppressed violations. Currently only html, summaryhtml and xml show suppressed violations.</div>
 
 <h2 id="sarif">sarif</h2>
 
@@ -2320,7 +2320,7 @@ The output directory must exist. If not specified, the html files are created in
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            September 2024 (7.6.0)<br /> Site last generated: Sep 26, 2024 <br />
+            September 2024 (7.6.0)<br /> Site last generated: Sep 27, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
