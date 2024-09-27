@@ -18,7 +18,7 @@ The header of the sections below are used to select the format on the command li
 arguments to the `--format` option. When a format accepts *properties*,
 those can be specified with the `--property` / `-P` option on the command-line.
 
-{% include note.html content="Suppressed violations are only reported, if the CLI parameter `--show-suppressed` is set." %}
+{% include note.html content="Suppressed violations are only reported, if the CLI parameter `--show-suppressed` is set and if the format supports showing suppressed violations. Currently only html, summaryhtml and xml show suppressed violations." %}
 
 ## sarif
 

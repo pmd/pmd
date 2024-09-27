@@ -59,6 +59,7 @@ What changes?
   * [#5059](https://github.com/pmd/pmd/issues/5059): \[core] xml output doesn't escape CDATA inside its own CDATA
   * [#5201](https://github.com/pmd/pmd/issues/5201): \[core] PMD sarif schema file points to nonexistent location
   * [#5222](https://github.com/pmd/pmd/issues/5222): \[core] RuleReference/RuleSetWriter don't handle changed default property values correctly
+  * [#5229](https://github.com/pmd/pmd/issues/5229): \[doc] CLI flag `--show-suppressed` needs to mention xml, html, summaryhtml
 * java
   * [#5190](https://github.com/pmd/pmd/issues/5190): \[java] NPE in type inference
 * java-codestyle
@@ -73,6 +74,7 @@ What changes?
 * [#5202](https://github.com/pmd/pmd/pull/5202): \[core] Sarif format: refer to schemastore.org - [David Schach](https://github.com/dschach) (@dschach)
 * [#5208](https://github.com/pmd/pmd/pull/5208): \[doc] Added Codety to "Tools / Integrations" - [Tony](https://github.com/random1223) (@random1223)
 * [#5224](https://github.com/pmd/pmd/pull/5224): \[java] Fix #5068: Class incorrectly identified as non-instantiatable - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
+* [#5230](https://github.com/pmd/pmd/pull/5230): \[doc] Documentation update for --show-suppressed flag - [David Schach](https://github.com/dschach) (@dschach)
 
 {% endtocmaker %}
 

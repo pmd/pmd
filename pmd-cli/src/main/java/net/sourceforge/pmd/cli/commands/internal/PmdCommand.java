@@ -138,7 +138,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
         this.benchmark = benchmark;
     }
 
-    @Option(names = "--show-suppressed", description = "Report should show suppressed rule violations.")
+    @Option(names = "--show-suppressed", description = "Report should show suppressed rule violations if supported by the report format.")
     public void setShowSuppressed(final boolean showSuppressed) {
         this.showSuppressed = showSuppressed;
     }
