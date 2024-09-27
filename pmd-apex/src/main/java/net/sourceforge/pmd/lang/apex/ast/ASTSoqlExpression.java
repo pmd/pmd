@@ -77,6 +77,7 @@ public final class ASTSoqlExpression extends AbstractApexNode.Single<SoqlExpress
         query = query.replaceAll("(?i)\\bFIELDS\\(standard\\)", "FIELDS(STANDARD)");
         query = query.replaceAll("(?i)\\bDISTANCE\\(", "DISTANCE(");
         query = query.replaceAll("(?i)\\bconverttimezone\\(", "CONVERTTIMEZONE(");
+        query = query.replaceAll("(?i)\\bconvertcurrency\\(", "CONVERTCURRENCY(");
 
         // sosl keywords
         query = query.replaceAll("(?i)\\bfind\\b", "FIND");
