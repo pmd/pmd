@@ -290,7 +290,14 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚨 API Changes
 
-### ✨ External Contributions
+### ✨ Merged pull requests
+<!-- content will be automatically generated, see /do-release.sh -->
+
+### 📦 Dependency updates
+<!-- content will be automatically generated, see /do-release.sh -->
+
+### 📈 Stats
+<!-- content will be automatically generated, see /do-release.sh -->
 
 {% endtocmaker %}
 

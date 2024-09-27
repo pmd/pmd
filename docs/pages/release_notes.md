@@ -27,7 +27,14 @@ This is a {{ site.pmd.release_type }} release.
   * {%jdoc xml::lang.xml.antlr4.XMLLexer %} is deprecated for removal. Use {%jdoc !!xml::lang.xml.ast.XMLLexer %}
     instead (note different package `ast` instead of `antlr4`).
 
-### ✨ External Contributions
+### ✨ Merged pull requests
+<!-- content will be automatically generated, see /do-release.sh -->
+
+### 📦 Dependency updates
+<!-- content will be automatically generated, see /do-release.sh -->
+
+### 📈 Stats
+<!-- content will be automatically generated, see /do-release.sh -->
 
 {% endtocmaker %}
 
