@@ -125,46 +125,11 @@ echo
 echo "Press enter to continue..."
 read -r
 
-
-# determine current milestone
-MILESTONE_JSON=$(curl -s "https://api.github.com/repos/pmd/pmd/milestones?state=all&direction=desc&per_page=5"|jq ".[] | select(.title == \"$RELEASE_VERSION\")")
-MILESTONE=$(echo "$MILESTONE_JSON" | jq .number)
-
-# determine dependency updates
-DEPENDENCIES_JSON=$(curl -s "https://api.github.com/repos/pmd/pmd/issues?labels=dependencies&state=closed&direction=asc&per_page=50&page=1&milestone=${MILESTONE}")
-DEPENDENCIES_COUNT=$(echo "$DEPENDENCIES_JSON" | jq length)
-DEPENDENCIES=""
-if [ $DEPENDENCIES_COUNT -gt 0 ]; then
-  DEPENDENCIES=$(
-    echo "### 📦 Dependency updates"
-    echo "$DEPENDENCIES_JSON" | jq --raw-output '.[] | "* [#\(.number)](https://github.com/pmd/pmd/issues/\(.number)): \(.title)"'
-  )
-else
-  DEPENDENCIES=$(
-    echo "### 📦 Dependency updates"
-    echo "No dependency updates"
-  )
-fi
-
-# calculating stats for release notes (excluding dependency updates)
-STATS_CLOSED_ISSUES=$(echo "$MILESTONE_JSON" | jq .closed_issues)
-STATS=$(
-echo "### 📈 Stats"
-echo "* $(git log pmd_releases/"${LAST_VERSION}"..HEAD --oneline --no-merges |wc -l) commits"
-echo "* $(($STATS_CLOSED_ISSUES - $DEPENDENCIES_COUNT)) closed tickets & PRs"
-echo "* Days since last release: $(( ( $(date +%s) - $(git log --max-count=1 --format="%at" pmd_releases/"${LAST_VERSION}") ) / 86400))"
-)
-
-
-TEMP_RELEASE_NOTES=$(cat docs/pages/release_notes.md)
-TEMP_RELEASE_NOTES=${TEMP_RELEASE_NOTES/\{\% endtocmaker \%\}/${DEPENDENCIES//\&/\\\&}$'\n'$'\n'${STATS//\&/\\\&}$'\n'$'\n'\{\% endtocmaker \%\}}
-echo "${TEMP_RELEASE_NOTES}" > docs/pages/release_notes.md
+# updating release notes
+.ci/tools/release-notes-generate.sh "$LAST_VERSION" "$RELEASE_VERSION"
 
 echo
-echo "Updated dependencies and stats in release notes:"
-echo "$DEPENDENCIES"
-echo "$STATS"
-echo
+echo "Updated merged pull requests, dependency updates and stats in release notes:"
 echo "Please verify docs/pages/release_notes.md"
 echo
 echo "Press enter to continue..."
