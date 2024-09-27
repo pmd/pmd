@@ -7801,6 +7801,24 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "kratoon",
+      "name": "Ondrej Kratochvil",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26163421?v=4",
+      "profile": "https://github.com/kratoon",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "mattr9124",
+      "name": "Matthew Rossner",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8940608?v=4",
+      "profile": "https://github.com/mattr9124",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
