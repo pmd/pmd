@@ -108,6 +108,7 @@ public class CloseResourceRule extends AbstractJavaRule {
                 .desc("Detect if 'close' (or other closeTargets) is called outside of a finally-block").defaultValue(false).build();
 
     private static final InvocationMatcher OBJECTS_NON_NULL = InvocationMatcher.parse("java.util.Objects#nonNull(_)");
+    private static final InvocationMatcher FILESYSTEMS_GET_DEFAULT = InvocationMatcher.parse("java.nio.file.FileSystems#getDefault()");
 
     private final Set<String> types = new HashSet<>();
     private final Set<String> simpleTypes = new HashSet<>();
@@ -503,7 +504,7 @@ public class CloseResourceRule extends AbstractJavaRule {
     private boolean isDefaultFileSystem(ASTVariableId varId) {
         @Nullable
         ASTExpression initializer = varId.getInitializer();
-        return initializer != null && InvocationMatcher.parse("java.nio.file.FileSystems#getDefault()").matchesCall(initializer);
+        return FILESYSTEMS_GET_DEFAULT.matchesCall(initializer);
     }
 
     private boolean isVariableSpecifiedInTryWithResource(ASTVariableId varId, ASTTryStatement tryWithResource) {
