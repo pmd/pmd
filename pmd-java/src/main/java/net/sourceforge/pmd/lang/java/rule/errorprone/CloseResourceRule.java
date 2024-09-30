@@ -503,7 +503,7 @@ public class CloseResourceRule extends AbstractJavaRule {
     private boolean isDefaultFileSystem(ASTVariableId varId) {
         @Nullable
         ASTExpression initializer = varId.getInitializer();
-        return initializer != null && initializer.getText().contentEquals("FileSystems.getDefault()");
+        return initializer != null && InvocationMatcher.parse("java.nio.file.FileSystems#getDefault()").matchesCall(initializer);
     }
 
     private boolean isVariableSpecifiedInTryWithResource(ASTVariableId varId, ASTTryStatement tryWithResource) {
