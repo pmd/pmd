@@ -20,7 +20,7 @@ Several rules for unit testing have been renamed to better reflect their actual 
 
 * `java/bestpractices/JUnit4TestShouldUseAfterAnnotation` has been renamed to {% rule java/bestpractices/JUnitTestShouldUseAfterAnnotation %}
 
-* `java/bestpractices/JUnit4TestShouldUseBeforeAnnotation` has been renamed to {% rule java/bestpractices/JUnitTestShouldUseBeforeAnnotation %}
+* `java/bestpractices/JUnit4TestShouldUseBeforeAnnotation` has been renamed to {% rule java/bestpractices/UnitTestShouldUseBeforeAnnotation %}
 
 * `java/bestpractices/JUnit4TestShouldUseTestAnnotation` has been renamed to {% rule java/bestpractices/UnitTestShouldUseTestAnnotation %}
 

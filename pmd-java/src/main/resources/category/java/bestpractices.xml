@@ -715,55 +715,7 @@ public class MyTest2 {
         </example>
     </rule>
 
-    <rule name="JUnit4TestShouldUseBeforeAnnotation" deprecated="true" ref="JUnitTestShouldUseBeforeAnnotation"/>
-
-    <rule name="JUnitTestShouldUseBeforeAnnotation"
-          language="java"
-          since="4.0"
-          message="JUnit 4 tests that set up tests should use the @Before annotation, JUnit5 tests should use @BeforeEach or @BeforeAll"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junittestshouldusebeforeannotation">
-        <description>
-This rule detects methods called setUp() that are not properly annotated as a setup method.
-This is primarily intended to assist in upgrading from JUnit 3, where setup methods were required to be called setUp().
-To a lesser extent, this may help detect omissions even under newer JUnit versions, as long as you are following this convention to name the methods.
-
-JUnit 4 will only execute methods annotated with @Before before all tests.
-JUnit 5 introduced @BeforeEach and @BeforeAll annotations to execute methods before each test or before all tests in the class, respectively.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//MethodDeclaration[@Name='setUp' and @Arity=0]
-    [not(ModifierList/Annotation[
-           pmd-java:typeIs('org.junit.Before')
-        or pmd-java:typeIs('org.junit.jupiter.api.BeforeEach')
-        or pmd-java:typeIs('org.junit.jupiter.api.BeforeAll')
-        or pmd-java:typeIs('org.testng.annotations.BeforeMethod')])]
-    (: Make sure this is a junit 4 class :)
-    [../MethodDeclaration[pmd-java:hasAnnotation('org.junit.Test')]]
-
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public class MyTest {
-    public void setUp() {
-        bad();
-    }
-}
-public class MyTest2 {
-    @Before public void setUp() {
-        good();
-    }
-}
-]]>
-        </example>
-    </rule>
+    <rule name="JUnit4TestShouldUseBeforeAnnotation" deprecated="true" ref="UnitTestShouldUseBeforeAnnotation"/>
 
     <rule name="JUnit4TestShouldUseTestAnnotation" deprecated="true" ref="UnitTestShouldUseTestAnnotation" />
 
@@ -1462,6 +1414,54 @@ class Foo{
 ]]>
         </example>
     </rule>
+
+    <rule name="UnitTestShouldUseBeforeAnnotation"
+          language="java"
+          since="4.0"
+          message="JUnit 4 tests that set up tests should use the @Before annotation, JUnit5 tests should use @BeforeEach or @BeforeAll"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestshouldusebeforeannotation">
+        <description>
+            This rule detects methods called `setUp()` that are not properly annotated as a setup method.
+            This is primarily intended to assist in upgrading from JUnit 3, where setup methods were required to be called `setUp()`.
+            To a lesser extent, this may help detect omissions even under newer JUnit versions, as long as you are following this convention to name the methods.
+
+            JUnit 4 will only execute methods annotated with `@Before` before all tests.
+            JUnit 5 introduced `@BeforeEach` and `@BeforeAll` annotations to execute methods before each test or before all tests in the class, respectively.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//MethodDeclaration[@Name='setUp' and @Arity=0]
+    [not(ModifierList/Annotation[
+           pmd-java:typeIs('org.junit.Before')
+        or pmd-java:typeIs('org.junit.jupiter.api.BeforeEach')
+        or pmd-java:typeIs('org.junit.jupiter.api.BeforeAll')
+        or pmd-java:typeIs('org.testng.annotations.BeforeMethod')])]
+    (: Make sure this is a junit 4 class :)
+    [../MethodDeclaration[pmd-java:hasAnnotation('org.junit.Test')]]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public class MyTest {
+    public void setUp() {
+        bad();
+    }
+}
+public class MyTest2 {
+    @Before public void setUp() {
+        good();
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="UnnecessaryVarargsArrayCreation"
           language="java"
           since="7.1.0"
