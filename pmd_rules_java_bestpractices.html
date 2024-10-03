@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce generally accepted best practices.">
-<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, OneDeclarationPerLine, PreserveStackTrace, PrimitiveWrapperInstantiation, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SimplifiableTestAssertion, SwitchStmtsShouldHaveDefault, SystemPrintln, UnnecessaryVarargsArrayCreation, UnusedAssignment, UnusedFormalParameter, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseCollectionIsEmpty, UseEnumCollections, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
+<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, OneDeclarationPerLine, PreserveStackTrace, PrimitiveWrapperInstantiation, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SimplifiableTestAssertion, SwitchStmtsShouldHaveDefault, SystemPrintln, UnitTestAssertionsShouldIncludeMessage, UnitTestContainsTooManyAsserts, UnitTestShouldUseAfterAnnotation, UnitTestShouldUseBeforeAnnotation, UnitTestShouldUseTestAnnotation, UnitTestsShouldIncludeAssert, UnnecessaryVarargsArrayCreation, UnusedAssignment, UnusedFormalParameter, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseCollectionIsEmpty, UseEnumCollections, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
 <title>Best Practices | PMD Source Code Analyzer</title>
 
 
@@ -2735,13 +2735,22 @@ through the @RunWith(Suite.class) annotation.</p>
 
 <h2 id="junit4testshoulduseafterannotation">JUnit4TestShouldUseAfterAnnotation</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
+<p>This rule has been renamed. Use instead: <a href="#unittestshoulduseafterannotation">UnitTestShouldUseAfterAnnotation</a></p>
+
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 4.0</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>In JUnit 3, the tearDown method was used to clean up all data entities required in running tests.
-JUnit 4 skips the tearDown method and executes all methods annotated with @After after running each test.
-JUnit 5 introduced @AfterEach and @AfterAll annotations to execute methods after each test or after all tests in the class, respectively.</p>
+<p>This rule detects methods called <code class="language-plaintext highlighter-rouge">tearDown()</code> that are not properly annotated as a cleanup method.
+This is primarily intended to assist in upgrading from JUnit 3, where tear down methods were required to be called <code class="language-plaintext highlighter-rouge">tearDown()</code>.
+To a lesser extent, this may help detect omissions under newer JUnit versions, as long as you are following this convention to name the methods.</p>
+
+<p>JUnit 4 will only execute methods annotated with <code class="language-plaintext highlighter-rouge">@After</code> after running each test.
+JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@AfterEach</code> and <code class="language-plaintext highlighter-rouge">@AfterAll</code> annotations to execute methods after each test or after all tests in the class, respectively.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Name</span><span class="err">=</span><span class="s1">'tearDown'</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@Arity</span><span class="err">=</span><span class="m">0</span><span class="p">]</span><span class="w">
@@ -2774,13 +2783,22 @@ JUnit 5 introduced @AfterEach and @AfterAll annotations to execute methods after
 
 <h2 id="junit4testshouldusebeforeannotation">JUnit4TestShouldUseBeforeAnnotation</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
+<p>This rule has been renamed. Use instead: <a href="#unittestshouldusebeforeannotation">UnitTestShouldUseBeforeAnnotation</a></p>
+
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 4.0</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>In JUnit 3, the setUp method was used to set up all data entities required in running tests.
-JUnit 4 skips the setUp method and executes all methods annotated with @Before before all tests.
-JUnit 5 introduced @BeforeEach and @BeforeAll annotations to execute methods before each test or before all tests in the class, respectively.</p>
+<p>This rule detects methods called <code class="language-plaintext highlighter-rouge">setUp()</code> that are not properly annotated as a setup method.
+This is primarily intended to assist in upgrading from JUnit 3, where setup methods were required to be called <code class="language-plaintext highlighter-rouge">setUp()</code>.
+To a lesser extent, this may help detect omissions even under newer JUnit versions, as long as you are following this convention to name the methods.</p>
+
+<p>JUnit 4 will only execute methods annotated with <code class="language-plaintext highlighter-rouge">@Before</code> before all tests.
+JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@BeforeEach</code> and <code class="language-plaintext highlighter-rouge">@BeforeAll</code> annotations to execute methods before each test or before all tests in the class, respectively.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Name</span><span class="err">=</span><span class="s1">'setUp'</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@Arity</span><span class="err">=</span><span class="m">0</span><span class="p">]</span><span class="w">
@@ -2813,14 +2831,21 @@ JUnit 5 introduced @BeforeEach and @BeforeAll annotations to execute methods bef
 
 <h2 id="junit4testshouldusetestannotation">JUnit4TestShouldUseTestAnnotation</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
+<p>This rule has been renamed. Use instead: <a href="#unittestshouldusetestannotation">UnitTestShouldUseTestAnnotation</a></p>
+
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 4.0</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>In JUnit 3, the framework executed all methods which started with the word test as a unit test.
-In JUnit 4, only methods annotated with the @Test annotation are executed.
-In JUnit 5, one of the following annotations should be used for tests: @Test, @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest.
-In TestNG, only methods annotated with the @Test annotation are executed.</p>
+<p>The rule will detect any test method starting with "test" that is not properly annotated, and will therefore not be run.</p>
+
+<p>In JUnit 4, only methods annotated with the <code class="language-plaintext highlighter-rouge">@Test</code> annotation are executed.
+In JUnit 5, one of the following annotations should be used for tests: <code class="language-plaintext highlighter-rouge">@Test</code>, <code class="language-plaintext highlighter-rouge">@RepeatedTest</code>, <code class="language-plaintext highlighter-rouge">@TestFactory</code>, <code class="language-plaintext highlighter-rouge">@TestTemplate</code> or <code class="language-plaintext highlighter-rouge">@ParameterizedTest</code>.
+In TestNG, only methods annotated with the <code class="language-plaintext highlighter-rouge">@Test</code> annotation are executed.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="p">[</span><span class="nf">matches</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">,</span><span class="w"> </span><span class="nv">$testClassPattern</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'junit.framework.TestCase'</span><span class="p">)]</span><span class="w">
@@ -2949,18 +2974,27 @@ is a good practice to limit their visibility.</p>
 
 <h2 id="junitassertionsshouldincludemessage">JUnitAssertionsShouldIncludeMessage</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
+<p>This rule has been renamed. Use instead: <a href="#unittestassertionsshouldincludemessage">UnitTestAssertionsShouldIncludeMessage</a></p>
+
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 1.04</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>JUnit assertions should include an informative message - i.e., use the three-argument version of
-assertEquals(), not the two-argument version.</p>
+<p>Unit assertions should include an informative message - i.e., use the three-argument version of
+<code class="language-plaintext highlighter-rouge">assertEquals()</code>, not the two-argument version.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/JUnitAssertionsShouldIncludeMessageRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitAssertionsShouldIncludeMessageRule</a></p>
+<p>This rule supports tests using JUnit (3, 4 and 5) and TestNG.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnitTestAssertionsShouldIncludeMessageRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestAssertionsShouldIncludeMessageRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">extends</span> <span class="nc">TestCase</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="nd">@Test</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testSomething</span><span class="o">()</span> <span class="o">{</span>
         <span class="n">assertEquals</span><span class="o">(</span><span class="s">"foo"</span><span class="o">,</span> <span class="s">"bar"</span><span class="o">);</span>
         <span class="c1">// Use the form:</span>
@@ -2976,6 +3010,12 @@ assertEquals(), not the two-argument version.</p>
 
 <h2 id="junittestcontainstoomanyasserts">JUnitTestContainsTooManyAsserts</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
+<p>This rule has been renamed. Use instead: <a href="#unittestcontainstoomanyasserts">UnitTestContainsTooManyAsserts</a></p>
+
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 5.0</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
@@ -2984,20 +3024,22 @@ assertEquals(), not the two-argument version.</p>
 it is harder to verify correctness.  Consider breaking the test scenario into multiple, shorter test scenarios.
 Customize the maximum number of assertions used by this Rule to suit your needs.</p>
 
-<p>This rule checks for JUnit4, JUnit5 and TestNG Tests, as well as methods starting with "test".</p>
+<p>This rule checks for JUnit (3, 4 and 5) and TestNG Tests.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/JUnitTestContainsTooManyAssertsRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitTestContainsTooManyAssertsRule</a></p>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnitTestContainsTooManyAssertsRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestContainsTooManyAssertsRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyTestCase</span> <span class="kd">extends</span> <span class="nc">TestCase</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyTestCase</span> <span class="o">{</span>
     <span class="c1">// Ok</span>
+    <span class="nd">@Test</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testMyCaseWithOneAssert</span><span class="o">()</span> <span class="o">{</span>
         <span class="kt">boolean</span> <span class="n">myVar</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
         <span class="n">assertFalse</span><span class="o">(</span><span class="s">"should be false"</span><span class="o">,</span> <span class="n">myVar</span><span class="o">);</span>
     <span class="o">}</span>
 
     <span class="c1">// Bad, too many asserts (assuming max=1)</span>
+    <span class="nd">@Test</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testMyCaseWithMoreAsserts</span><span class="o">()</span> <span class="o">{</span>
         <span class="kt">boolean</span> <span class="n">myVar</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
         <span class="n">assertFalse</span><span class="o">(</span><span class="s">"myVar should be false"</span><span class="o">,</span> <span class="n">myVar</span><span class="o">);</span>
@@ -3045,23 +3087,32 @@ Customize the maximum number of assertions used by this Rule to suit your needs.
 
 <h2 id="junittestsshouldincludeassert">JUnitTestsShouldIncludeAssert</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
+<p>This rule has been renamed. Use instead: <a href="#unittestsshouldincludeassert">UnitTestsShouldIncludeAssert</a></p>
+
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 2.0</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>JUnit tests should include at least one assertion.  This makes the tests more robust, and using assert
+<p>Unit tests should include at least one assertion. This makes the tests more robust, and using assert
 with messages provide the developer a clearer idea of what the test does.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/JUnitTestsShouldIncludeAssertRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitTestsShouldIncludeAssertRule</a></p>
+<p>This rule checks for JUnit (3, 4 and 5) and TestNG Tests.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnitTestsShouldIncludeAssertRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestsShouldIncludeAssertRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">extends</span> <span class="nc">TestCase</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+   <span class="nd">@Test</span>
    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testSomething</span><span class="o">()</span> <span class="o">{</span>
       <span class="nc">Bar</span> <span class="n">b</span> <span class="o">=</span> <span class="n">findBar</span><span class="o">();</span>
-   <span class="c1">// This is better than having a NullPointerException</span>
-   <span class="c1">// assertNotNull("bar not found", b);</span>
-   <span class="n">b</span><span class="o">.</span><span class="na">work</span><span class="o">();</span>
+      <span class="c1">// This is better than having a NullPointerException</span>
+      <span class="c1">// assertNotNull("bar not found", b);</span>
+      <span class="n">b</span><span class="o">.</span><span class="na">work</span><span class="o">();</span>
    <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -3616,6 +3667,324 @@ will (and by priority) and avoid clogging the Standard out log.</p>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/SystemPrintln"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="unittestassertionsshouldincludemessage">UnitTestAssertionsShouldIncludeMessage</h2>
+
+<p><strong>Since:</strong> PMD 1.04</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Unit assertions should include an informative message - i.e., use the three-argument version of
+<code class="language-plaintext highlighter-rouge">assertEquals()</code>, not the two-argument version.</p>
+
+<p>This rule supports tests using JUnit (3, 4 and 5) and TestNG.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnitTestAssertionsShouldIncludeMessageRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestAssertionsShouldIncludeMessageRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testSomething</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">assertEquals</span><span class="o">(</span><span class="s">"foo"</span><span class="o">,</span> <span class="s">"bar"</span><span class="o">);</span>
+        <span class="c1">// Use the form:</span>
+        <span class="c1">// assertEquals("Foo does not equals bar", "foo", "bar");</span>
+        <span class="c1">// instead</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/UnitTestAssertionsShouldIncludeMessage"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="unittestcontainstoomanyasserts">UnitTestContainsTooManyAsserts</h2>
+
+<p><strong>Since:</strong> PMD 5.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Unit tests should not contain too many asserts. Many asserts are indicative of a complex test, for which
+it is harder to verify correctness.  Consider breaking the test scenario into multiple, shorter test scenarios.
+Customize the maximum number of assertions used by this Rule to suit your needs.</p>
+
+<p>This rule checks for JUnit (3, 4 and 5) and TestNG Tests.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnitTestContainsTooManyAssertsRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestContainsTooManyAssertsRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyTestCase</span> <span class="o">{</span>
+    <span class="c1">// Ok</span>
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testMyCaseWithOneAssert</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kt">boolean</span> <span class="n">myVar</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="n">assertFalse</span><span class="o">(</span><span class="s">"should be false"</span><span class="o">,</span> <span class="n">myVar</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="c1">// Bad, too many asserts (assuming max=1)</span>
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testMyCaseWithMoreAsserts</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kt">boolean</span> <span class="n">myVar</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="n">assertFalse</span><span class="o">(</span><span class="s">"myVar should be false"</span><span class="o">,</span> <span class="n">myVar</span><span class="o">);</span>
+        <span class="n">assertEquals</span><span class="o">(</span><span class="s">"should equals false"</span><span class="o">,</span> <span class="kc">false</span><span class="o">,</span> <span class="n">myVar</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>maximumAsserts</td>
+      <td>1</td>
+      <td>Maximum number of assert calls in a test method</td>
+    </tr>
+    <tr>
+      <td>extraAssertMethodNames</td>
+      <td> </td>
+      <td>Extra valid assertion methods names</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/UnitTestContainsTooManyAsserts"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/UnitTestContainsTooManyAsserts"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"maximumAsserts"</span> <span class="na">value=</span><span class="s">"1"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"extraAssertMethodNames"</span> <span class="na">value=</span><span class="s">""</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
+<h2 id="unittestshoulduseafterannotation">UnitTestShouldUseAfterAnnotation</h2>
+
+<p><strong>Since:</strong> PMD 4.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>This rule detects methods called <code class="language-plaintext highlighter-rouge">tearDown()</code> that are not properly annotated as a cleanup method.
+This is primarily intended to assist in upgrading from JUnit 3, where tear down methods were required to be called <code class="language-plaintext highlighter-rouge">tearDown()</code>.
+To a lesser extent, this may help detect omissions under newer JUnit versions, as long as you are following this convention to name the methods.</p>
+
+<p>JUnit 4 will only execute methods annotated with <code class="language-plaintext highlighter-rouge">@After</code> after running each test.
+JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@AfterEach</code> and <code class="language-plaintext highlighter-rouge">@AfterAll</code> annotations to execute methods after each test or after all tests in the class, respectively.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Name</span><span class="err">=</span><span class="s1">'tearDown'</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@Arity</span><span class="err">=</span><span class="m">0</span><span class="p">]</span><span class="w">
+    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">ModifierList</span><span class="o">/</span><span class="nt">Annotation</span><span class="p">[</span><span class="w">
+           </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.After'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.AfterEach'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.AfterAll'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.testng.annotations.AfterMethod'</span><span class="p">)])]</span><span class="w">
+    </span><span class="c">(: Make sure this is a junit 4 class :)</span><span class="w">
+    </span><span class="p">[..</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.junit.Test'</span><span class="p">)]]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyTest</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">tearDown</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">bad</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyTest2</span> <span class="o">{</span>
+    <span class="nd">@After</span> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">tearDown</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">good</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/UnitTestShouldUseAfterAnnotation"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="unittestshouldusebeforeannotation">UnitTestShouldUseBeforeAnnotation</h2>
+
+<p><strong>Since:</strong> PMD 4.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>This rule detects methods called <code class="language-plaintext highlighter-rouge">setUp()</code> that are not properly annotated as a setup method.
+This is primarily intended to assist in upgrading from JUnit 3, where setup methods were required to be called <code class="language-plaintext highlighter-rouge">setUp()</code>.
+To a lesser extent, this may help detect omissions even under newer JUnit versions, as long as you are following this convention to name the methods.</p>
+
+<p>JUnit 4 will only execute methods annotated with <code class="language-plaintext highlighter-rouge">@Before</code> before all tests.
+JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@BeforeEach</code> and <code class="language-plaintext highlighter-rouge">@BeforeAll</code> annotations to execute methods before each test or before all tests in the class, respectively.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Name</span><span class="err">=</span><span class="s1">'setUp'</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@Arity</span><span class="err">=</span><span class="m">0</span><span class="p">]</span><span class="w">
+    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">ModifierList</span><span class="o">/</span><span class="nt">Annotation</span><span class="p">[</span><span class="w">
+           </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.Before'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.BeforeEach'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.BeforeAll'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.testng.annotations.BeforeMethod'</span><span class="p">)])]</span><span class="w">
+    </span><span class="c">(: Make sure this is a junit 4 class :)</span><span class="w">
+    </span><span class="p">[..</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.junit.Test'</span><span class="p">)]]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyTest</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setUp</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">bad</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyTest2</span> <span class="o">{</span>
+    <span class="nd">@Before</span> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setUp</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">good</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/UnitTestShouldUseBeforeAnnotation"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="unittestshouldusetestannotation">UnitTestShouldUseTestAnnotation</h2>
+
+<p><strong>Since:</strong> PMD 4.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>The rule will detect any test method starting with "test" that is not properly annotated, and will therefore not be run.</p>
+
+<p>In JUnit 4, only methods annotated with the <code class="language-plaintext highlighter-rouge">@Test</code> annotation are executed.
+In JUnit 5, one of the following annotations should be used for tests: <code class="language-plaintext highlighter-rouge">@Test</code>, <code class="language-plaintext highlighter-rouge">@RepeatedTest</code>, <code class="language-plaintext highlighter-rouge">@TestFactory</code>, <code class="language-plaintext highlighter-rouge">@TestTemplate</code> or <code class="language-plaintext highlighter-rouge">@ParameterizedTest</code>.
+In TestNG, only methods annotated with the <code class="language-plaintext highlighter-rouge">@Test</code> annotation are executed.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="p">[</span><span class="nf">matches</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">,</span><span class="w"> </span><span class="nv">$testClassPattern</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'junit.framework.TestCase'</span><span class="p">)]</span><span class="w">
+    </span><span class="c">(: a junit 3 method :)</span><span class="w">
+    </span><span class="o">/</span><span class="nt">ClassBody</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="w">
+        </span><span class="na">@Visibility</span><span class="err">=</span><span class="s2">"public"</span><span class="w">
+        </span><span class="ow">and</span><span class="w"> </span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Name</span><span class="p">,</span><span class="w"> </span><span class="s1">'test'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">and</span><span class="w"> </span><span class="ow">not</span><span class="p">(</span><span class="nt">ModifierList</span><span class="o">/</span><span class="nt">Annotation</span><span class="p">[</span><span class="w">
+          </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.Test'</span><span class="p">)</span><span class="w">
+          </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.Test'</span><span class="p">)</span><span class="w">
+          </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.RepeatedTest'</span><span class="p">)</span><span class="w">
+          </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.TestFactory'</span><span class="p">)</span><span class="w">
+          </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.TestTemplate'</span><span class="p">)</span><span class="w">
+          </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.params.ParameterizedTest'</span><span class="p">)</span><span class="w">
+          </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.testng.annotations.Test'</span><span class="p">)</span><span class="w">
+          </span><span class="p">]</span><span class="w">
+        </span><span class="p">)</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyTest</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testBad</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">doSomething</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testGood</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">doSomething</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>testClassPattern</td>
+      <td>Test</td>
+      <td>The regex pattern used to identify test classes</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/UnitTestShouldUseTestAnnotation"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/UnitTestShouldUseTestAnnotation"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"testClassPattern"</span> <span class="na">value=</span><span class="s">"Test"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
+<h2 id="unittestsshouldincludeassert">UnitTestsShouldIncludeAssert</h2>
+
+<p><strong>Since:</strong> PMD 2.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Unit tests should include at least one assertion. This makes the tests more robust, and using assert
+with messages provide the developer a clearer idea of what the test does.</p>
+
+<p>This rule checks for JUnit (3, 4 and 5) and TestNG Tests.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnitTestsShouldIncludeAssertRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestsShouldIncludeAssertRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+   <span class="nd">@Test</span>
+   <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testSomething</span><span class="o">()</span> <span class="o">{</span>
+      <span class="nc">Bar</span> <span class="n">b</span> <span class="o">=</span> <span class="n">findBar</span><span class="o">();</span>
+      <span class="c1">// This is better than having a NullPointerException</span>
+      <span class="c1">// assertNotNull("bar not found", b);</span>
+      <span class="n">b</span><span class="o">.</span><span class="na">work</span><span class="o">();</span>
+   <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>extraAssertMethodNames</td>
+      <td> </td>
+      <td>Extra valid assertion methods names</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/UnitTestsShouldIncludeAssert"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/UnitTestsShouldIncludeAssert"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"extraAssertMethodNames"</span> <span class="na">value=</span><span class="s">""</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="unnecessaryvarargsarraycreation">UnnecessaryVarargsArrayCreation</h2>
@@ -4323,7 +4692,7 @@ a block <code class="language-plaintext highlighter-rouge">{}</code> is sufficie
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Oct 1, 2024 <br />
+             Site last generated: Oct 3, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

@@ -1909,11 +1909,39 @@
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
+<h3 id="-rule-changes">🌟 Rule Changes</h3>
+
+<h4 id="renamed-rules">Renamed Rules</h4>
+<p>Several rules for unit testing have been renamed to better reflect their actual scope. Lots of them were called
+after JUnit / JUnit 4, even when they applied to JUnit 5 and / or TestNG.</p>
+
+<ul>
+  <li><a href="pmd_rules_java_bestpractices.html#unittestshoulduseafterannotation"><code class="language-plaintext highlighter-rouge">UnitTestShouldUseAfterAnnotation</code></a> (Java Best Practices) has been renamed from <code class="language-plaintext highlighter-rouge">JUnit4TestShouldUseAfterAnnotation</code>.</li>
+  <li><a href="pmd_rules_java_bestpractices.html#unittestshouldusebeforeannotation"><code class="language-plaintext highlighter-rouge">UnitTestShouldUseBeforeAnnotation</code></a> (Java Best Practices) has been renamed from <code class="language-plaintext highlighter-rouge">JUnit4TestShouldUseBeforeAnnotation</code>.</li>
+  <li><a href="pmd_rules_java_bestpractices.html#unittestshouldusetestannotation"><code class="language-plaintext highlighter-rouge">UnitTestShouldUseTestAnnotation</code></a> (Java Best Practices) has been renamed from <code class="language-plaintext highlighter-rouge">JUnit4TestShouldUseTestAnnotation</code>.</li>
+  <li><a href="pmd_rules_java_bestpractices.html#unittestassertionsshouldincludemessage"><code class="language-plaintext highlighter-rouge">UnitTestAssertionsShouldIncludeMessage</code></a> (Java Best Practices) has been renamed from <code class="language-plaintext highlighter-rouge">JUnitAssertionsShouldIncludeMessage</code>.</li>
+  <li><a href="pmd_rules_java_bestpractices.html#unittestcontainstoomanyasserts"><code class="language-plaintext highlighter-rouge">UnitTestContainsTooManyAsserts</code></a> (Java Best Practices) has been renamed from <code class="language-plaintext highlighter-rouge">JUnitTestContainsTooManyAsserts</code>.</li>
+  <li><a href="pmd_rules_java_bestpractices.html#unittestsshouldincludeassert"><code class="language-plaintext highlighter-rouge">UnitTestsShouldIncludeAssert</code></a> (Java Best Practices) has been renamed from <code class="language-plaintext highlighter-rouge">JUnitTestsShouldIncludeAssert</code>.</li>
+</ul>
+
+<p>The old rule names still work but are deprecated.</p>
+
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
+<ul>
+  <li>java
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4532">#4532</a>: [java] Rule misnomer for JUnit* rules</li>
+    </ul>
+  </li>
+</ul>
 
 <h3 id="-api-changes">🚨 API Changes</h3>
 
-<h3 id="-external-contributions">✨ External Contributions</h3>
+<h3 id="-merged-pull-requests">✨ Merged pull requests</h3>
+<ul>
+  <li><a href="https://github.com/pmd/pmd/pull/4965">#4965</a>: [java] Rename JUnit rules with overly restrictive names - <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5241">#5241</a>: \Ignore javacc code in coverage report - <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</li>
+</ul>
 
 
 
@@ -1944,7 +1972,7 @@
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Oct 1, 2024 <br />
+             Site last generated: Oct 3, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
