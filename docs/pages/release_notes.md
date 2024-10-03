@@ -18,7 +18,7 @@ This is a {{ site.pmd.release_type }} release.
 
 Several rules for unit testing have been renamed to better reflect their actual scope. Lots of them were called after JUnit / JUnit 4, even when they applied to JUnit 5 and / or TestNG.
 
-* `java/bestpractices/JUnit4TestShouldUseAfterAnnotation` has been renamed to {% rule java/bestpractices/JUnitTestShouldUseAfterAnnotation %}
+* `java/bestpractices/JUnit4TestShouldUseAfterAnnotation` has been renamed to {% rule java/bestpractices/UnitTestShouldUseAfterAnnotation %}
 
 * `java/bestpractices/JUnit4TestShouldUseBeforeAnnotation` has been renamed to {% rule java/bestpractices/UnitTestShouldUseBeforeAnnotation %}
 

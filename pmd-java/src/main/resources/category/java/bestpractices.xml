@@ -666,54 +666,7 @@ public class GoodTest {
         </example>
     </rule>
 
-    <rule name="JUnit4TestShouldUseAfterAnnotation" deprecated="true" ref="JUnitTestShouldUseAfterAnnotation" />
-
-    <rule name="JUnitTestShouldUseAfterAnnotation"
-          language="java"
-          since="4.0"
-          message="JUnit 4 tests that clean up tests should use the @After annotation, JUnit5 tests should use @AfterEach or @AfterAll"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junittestshoulduseafterannotation">
-        <description>
-This rule detects methods called tearDown() that are not properly annotated as a setup method.
-This is primarily intended to assist in upgrading from JUnit 3, where tear down methods were required to be called tearDown().
-To a lesser extent, this may help detect omissions under newer JUnit versions, as long as you are following this convention to name the methods.
-
-JUnit 4 will only execute methods annotated with @After after running each test.
-JUnit 5 introduced @AfterEach and @AfterAll annotations to execute methods after each test or after all tests in the class, respectively.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//MethodDeclaration[@Name='tearDown' and @Arity=0]
-    [not(ModifierList/Annotation[
-           pmd-java:typeIs('org.junit.After')
-        or pmd-java:typeIs('org.junit.jupiter.api.AfterEach')
-        or pmd-java:typeIs('org.junit.jupiter.api.AfterAll')
-        or pmd-java:typeIs('org.testng.annotations.AfterMethod')])]
-    (: Make sure this is a junit 4 class :)
-    [../MethodDeclaration[pmd-java:hasAnnotation('org.junit.Test')]]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public class MyTest {
-    public void tearDown() {
-        bad();
-    }
-}
-public class MyTest2 {
-    @After public void tearDown() {
-        good();
-    }
-}
-]]>
-        </example>
-    </rule>
+    <rule name="JUnit4TestShouldUseAfterAnnotation" deprecated="true" ref="UnitTestShouldUseAfterAnnotation" />
 
     <rule name="JUnit4TestShouldUseBeforeAnnotation" deprecated="true" ref="UnitTestShouldUseBeforeAnnotation"/>
 
@@ -1409,6 +1362,53 @@ class Foo{
         System.out.println("Entering test");
         // Better use this
         log.fine("Entering test");
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnitTestShouldUseAfterAnnotation"
+          language="java"
+          since="4.0"
+          message="JUnit 4 tests that clean up tests should use the @After annotation, JUnit5 tests should use @AfterEach or @AfterAll"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestshoulduseafterannotation">
+        <description>
+            This rule detects methods called `tearDown()` that are not properly annotated as a cleanup method.
+            This is primarily intended to assist in upgrading from JUnit 3, where tear down methods were required to be called `tearDown()`.
+            To a lesser extent, this may help detect omissions under newer JUnit versions, as long as you are following this convention to name the methods.
+
+            JUnit 4 will only execute methods annotated with `@After` after running each test.
+            JUnit 5 introduced `@AfterEach` and `@AfterAll` annotations to execute methods after each test or after all tests in the class, respectively.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//MethodDeclaration[@Name='tearDown' and @Arity=0]
+    [not(ModifierList/Annotation[
+           pmd-java:typeIs('org.junit.After')
+        or pmd-java:typeIs('org.junit.jupiter.api.AfterEach')
+        or pmd-java:typeIs('org.junit.jupiter.api.AfterAll')
+        or pmd-java:typeIs('org.testng.annotations.AfterMethod')])]
+    (: Make sure this is a junit 4 class :)
+    [../MethodDeclaration[pmd-java:hasAnnotation('org.junit.Test')]]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public class MyTest {
+    public void tearDown() {
+        bad();
+    }
+}
+public class MyTest2 {
+    @After public void tearDown() {
+        good();
     }
 }
 ]]>
