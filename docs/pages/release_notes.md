@@ -29,6 +29,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### ✨ External Contributions
 * [#5208](https://github.com/pmd/pmd/pull/5208): \[doc] Added Codety to "Tools / Integrations" - [Tony](https://github.com/random1223) (@random1223)
+* [#5241](https://github.com/pmd/pmd/pull/5241): \Ignore javacc code in coverage report - [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
 
 {% endtocmaker %}
 
