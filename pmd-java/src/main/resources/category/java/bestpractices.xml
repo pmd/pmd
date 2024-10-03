@@ -672,61 +672,6 @@ public class GoodTest {
 
     <rule name="JUnit4TestShouldUseTestAnnotation" deprecated="true" ref="UnitTestShouldUseTestAnnotation" />
 
-    <rule name="UnitTestShouldUseTestAnnotation"
-          language="java"
-          since="4.0"
-          message="Unit tests should use the @Test annotation or won't be run. In case of JUnit 5, test methods might use @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest annotations instead."
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestshouldusetestannotation">
-        <description>
-The rule will detect any test method starting with "test" that is not properly annotated, and will therefore not be run.
-
-In JUnit 4, only methods annotated with the @Test annotation are executed.
-In JUnit 5, one of the following annotations should be used for tests: @Test, @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest.
-In TestNG, only methods annotated with the @Test annotation are executed.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//ClassDeclaration[matches(@SimpleName, $testClassPattern) or pmd-java:typeIs('junit.framework.TestCase')]
-    (: a junit 3 method :)
-    /ClassBody/MethodDeclaration[
-        @Visibility="public"
-        and starts-with(@Name, 'test')
-        and not(ModifierList/Annotation[
-          pmd-java:typeIs('org.junit.Test')
-          or pmd-java:typeIs('org.junit.jupiter.api.Test')
-          or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-          or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
-          or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-          or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
-          or pmd-java:typeIs('org.testng.annotations.Test')
-          ]
-        )
-    ]
-]]>
-                </value>
-            </property>
-            <property name="testClassPattern" type="Regex" description="The regex pattern used to identify test classes" value="Test" />
-        </properties>
-        <example>
-<![CDATA[
-public class MyTest {
-    public void testBad() {
-        doSomething();
-    }
-
-    @Test
-    public void testGood() {
-        doSomething();
-    }
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="JUnit5TestShouldBePackagePrivate"
           language="java"
           since="6.35.0"
@@ -795,101 +740,9 @@ class MyTest { // not public, that's fine
 
     <rule name="JUnitAssertionsShouldIncludeMessage" deprecated="true" ref="UnitTestAssertionsShouldIncludeMessage" />
 
-    <rule name="UnitTestAssertionsShouldIncludeMessage"
-          language="java"
-          since="1.04"
-          message="Unit test assertions should include a message"
-          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestAssertionsShouldIncludeMessageRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestassertionsshouldincludemessage">
-        <description>
-Unit assertions should include an informative message - i.e., use the three-argument version of
-assertEquals(), not the two-argument version.
-
-This rule supports tests using JUnit (3, 4 and 5) and TestNG.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public class Foo {
-    @Test
-    public void testSomething() {
-        assertEquals("foo", "bar");
-        // Use the form:
-        // assertEquals("Foo does not equals bar", "foo", "bar");
-        // instead
-    }
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="JUnitTestContainsTooManyAsserts" deprecated="true" ref="UnitTestContainsTooManyAsserts"/>
 
-    <rule name="UnitTestContainsTooManyAsserts"
-          language="java"
-          since="5.0"
-          message="Unit tests should not contain more than ${maximumAsserts} assert(s)."
-          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestContainsTooManyAssertsRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestcontainstoomanyasserts">
-        <description>
-Unit tests should not contain too many asserts. Many asserts are indicative of a complex test, for which
-it is harder to verify correctness.  Consider breaking the test scenario into multiple, shorter test scenarios.
-Customize the maximum number of assertions used by this Rule to suit your needs.
-
-This rule checks for JUnit (3, 4 and 5) and TestNG Tests.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public class MyTestCase {
-    // Ok
-    @Test
-    public void testMyCaseWithOneAssert() {
-        boolean myVar = false;
-        assertFalse("should be false", myVar);
-    }
-
-    // Bad, too many asserts (assuming max=1)
-    @Test
-    public void testMyCaseWithMoreAsserts() {
-        boolean myVar = false;
-        assertFalse("myVar should be false", myVar);
-        assertEquals("should equals false", false, myVar);
-    }
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="JUnitTestsShouldIncludeAssert" deprecated="true" ref="UnitTestsShouldIncludeAssert" />
-
-    <rule name="UnitTestsShouldIncludeAssert"
-          language="java"
-          since="2.0"
-          message="Unit tests should include assert() or fail()"
-          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestsShouldIncludeAssertRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestsshouldincludeassert">
-        <description>
-Unit tests should include at least one assertion. This makes the tests more robust, and using assert
-with messages provide the developer a clearer idea of what the test does.
-
-This rule checks for JUnit (3, 4 and 5) and TestNG Tests.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public class Foo {
-   @Test
-   public void testSomething() {
-      Bar b = findBar();
-      // This is better than having a NullPointerException
-      // assertNotNull("bar not found", b);
-      b.work();
-   }
-}
-]]>
-        </example>
-    </rule>
 
     <rule name="JUnitUseExpected"
           language="java"
@@ -1368,6 +1221,70 @@ class Foo{
         </example>
     </rule>
 
+    <rule name="UnitTestAssertionsShouldIncludeMessage"
+          language="java"
+          since="1.04"
+          message="Unit test assertions should include a message"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestAssertionsShouldIncludeMessageRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestassertionsshouldincludemessage">
+        <description>
+Unit assertions should include an informative message - i.e., use the three-argument version of
+`assertEquals()`, not the two-argument version.
+
+This rule supports tests using JUnit (3, 4 and 5) and TestNG.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Foo {
+    @Test
+    public void testSomething() {
+        assertEquals("foo", "bar");
+        // Use the form:
+        // assertEquals("Foo does not equals bar", "foo", "bar");
+        // instead
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnitTestContainsTooManyAsserts"
+          language="java"
+          since="5.0"
+          message="Unit tests should not contain more than ${maximumAsserts} assert(s)."
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestContainsTooManyAssertsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestcontainstoomanyasserts">
+        <description>
+            Unit tests should not contain too many asserts. Many asserts are indicative of a complex test, for which
+            it is harder to verify correctness.  Consider breaking the test scenario into multiple, shorter test scenarios.
+            Customize the maximum number of assertions used by this Rule to suit your needs.
+
+            This rule checks for JUnit (3, 4 and 5) and TestNG Tests.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class MyTestCase {
+    // Ok
+    @Test
+    public void testMyCaseWithOneAssert() {
+        boolean myVar = false;
+        assertFalse("should be false", myVar);
+    }
+
+    // Bad, too many asserts (assuming max=1)
+    @Test
+    public void testMyCaseWithMoreAsserts() {
+        boolean myVar = false;
+        assertFalse("myVar should be false", myVar);
+        assertEquals("should equals false", false, myVar);
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="UnitTestShouldUseAfterAnnotation"
           language="java"
           since="4.0"
@@ -1457,6 +1374,89 @@ public class MyTest2 {
     @Before public void setUp() {
         good();
     }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnitTestShouldUseTestAnnotation"
+          language="java"
+          since="4.0"
+          message="Unit tests should use the @Test annotation or won't be run. In case of JUnit 5, test methods might use @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest annotations instead."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestshouldusetestannotation">
+        <description>
+            The rule will detect any test method starting with "test" that is not properly annotated, and will therefore not be run.
+
+            In JUnit 4, only methods annotated with the `@Test` annotation are executed.
+            In JUnit 5, one of the following annotations should be used for tests: `@Test`, `@RepeatedTest`, `@TestFactory`, `@TestTemplate` or `@ParameterizedTest`.
+            In TestNG, only methods annotated with the `@Test` annotation are executed.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ClassDeclaration[matches(@SimpleName, $testClassPattern) or pmd-java:typeIs('junit.framework.TestCase')]
+    (: a junit 3 method :)
+    /ClassBody/MethodDeclaration[
+        @Visibility="public"
+        and starts-with(@Name, 'test')
+        and not(ModifierList/Annotation[
+          pmd-java:typeIs('org.junit.Test')
+          or pmd-java:typeIs('org.junit.jupiter.api.Test')
+          or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+          or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
+          or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+          or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+          or pmd-java:typeIs('org.testng.annotations.Test')
+          ]
+        )
+    ]
+]]>
+                </value>
+            </property>
+            <property name="testClassPattern" type="Regex" description="The regex pattern used to identify test classes" value="Test" />
+        </properties>
+        <example>
+            <![CDATA[
+public class MyTest {
+    public void testBad() {
+        doSomething();
+    }
+
+    @Test
+    public void testGood() {
+        doSomething();
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnitTestsShouldIncludeAssert"
+          language="java"
+          since="2.0"
+          message="Unit tests should include assert() or fail()"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestsShouldIncludeAssertRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestsshouldincludeassert">
+        <description>
+            Unit tests should include at least one assertion. This makes the tests more robust, and using assert
+            with messages provide the developer a clearer idea of what the test does.
+
+            This rule checks for JUnit (3, 4 and 5) and TestNG Tests.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Foo {
+   @Test
+   public void testSomething() {
+      Bar b = findBar();
+      // This is better than having a NullPointerException
+      // assertNotNull("bar not found", b);
+      b.work();
+   }
 }
 ]]>
         </example>
