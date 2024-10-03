@@ -37,6 +37,7 @@ The old rule names still work but are deprecated.
 
 ### ✨ Merged pull requests
 * [#4965](https://github.com/pmd/pmd/pull/4965): \[java] Rename JUnit rules with overly restrictive names - [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
+* [#5241](https://github.com/pmd/pmd/pull/5241): \Ignore javacc code in coverage report - [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
 
 {% endtocmaker %}
 
