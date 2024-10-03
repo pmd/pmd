@@ -17,6 +17,7 @@ This is a {{ site.pmd.release_type }} release.
 ### 🌟 Rule Changes
 
 #### Changed Rules
+* {% rule java/bestpractices/UnitTestShouldUseAfterAnnotation %} (Java Best Practices) now also considers JUnit 5 and TestNG tests.
 * {% rule java/bestpractices/UnitTestShouldUseBeforeAnnotation %} (Java Best Practices) now also considers JUnit 5 and TestNG tests.
 
 #### Renamed Rules
