@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
-        <description>Only one case, this is useless</description>
+        <description>Switch Statement with only one case, not ok</description>
         <rule-property name="minimumNumberCaseForASwitch">3</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -17,6 +17,24 @@ public class DumbSwitch {
                 System.err.println("I am a fish.");
             }
         }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch Expression with only one case, not ok</description>
+        <rule-property name="minimumNumberCaseForASwitch">3</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class DumbSwitch {
+    public String foo(int i) {
+        return switch (i) {
+            case 0:
+            {
+                yield "I am a fish.";
+            }
+        };
     }
 }
         ]]></code>

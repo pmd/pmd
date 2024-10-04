@@ -624,7 +624,7 @@ if-else statement to increase code readability.
             <property name="xpath">
                 <value>
 <![CDATA[
-//SwitchStatement[ (count(*) - 1) < $minimumNumberCaseForASwitch ]
+//(SwitchStatement | SwitchExpression)[ (count(*) - 1) < $minimumNumberCaseForASwitch ]
   (: exclude pattern matching :)
   [not(*/SwitchLabel/TypePattern)]
 ]]>
