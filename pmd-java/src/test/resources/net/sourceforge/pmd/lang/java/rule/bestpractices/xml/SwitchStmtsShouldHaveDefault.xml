@@ -240,4 +240,79 @@ public enum GradeSystem {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] SwitchStmtsShouldHaveDefault false positive with pattern matching #4813</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public sealed interface AcceptableResult permits Success, Warning {
+    public String message();
+}
+public final class Success implements AcceptableResult {
+    @Override
+    public String message() {
+        return "Success!";
+    }
+}
+public abstract class Failure {
+    abstract public String message();
+}
+public non-sealed class Warning extends Failure implements AcceptableResult {
+    @Override
+    public String message() {
+        return "Oopsie";
+    }
+}
+public class ProviderWarning extends Warning {
+    @Override
+    public String message() {
+        return "Ohoh";
+    }
+}
+public class Example {
+    public void test(AcceptableResult result) {
+        switch (result) {
+            case Warning failure -> System.out.println("WARNING " + failure.message());
+            case Success success -> System.out.println(success.message());
+        }
+    }
+    public void test2(AcceptableResult result) {
+        switch (result) {
+            case ProviderWarning failure: System.out.println("Provider WARNING " + failure.message()); break;
+            case Warning failure: System.out.println("WARNING " + failure.message()); break;
+            case Success success: System.out.println(success.message()); break;
+        }
+    }
+    public void test3(AcceptableResult result) {
+        switch (result) {
+            case ProviderWarning failure -> System.out.println("Provider WARNING " + failure.message());
+            case Success success -> System.out.println(success.message());
+            default -> System.out.println("default case");
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] SwitchStmtsShouldHaveDefault false positive with pattern matching #4813, example 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+sealed interface S permits A, B {}
+final class A implements S {}
+sealed abstract class B implements S permits C, D {}
+final class C extends B {}
+final class D extends B {}
+public class Example2 {
+    static int testSealedExhaustive(S s) {
+        switch(s) {
+            case A a -> { return 1; }
+            case C c -> { return 2; }
+            case D d -> { return 3; }
+            // case B b -> { return 4; } // not explicitly necessary, but possible
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
