@@ -36,6 +36,14 @@ The old rule names still work but are deprecated.
   * [#5067](https://github.com/pmd/pmd/issues/5067): \[java] CloseResource: False positive for FileSystems.getDefault()
 
 ### 🚨 API Changes
+* java-bestpractices
+  * The old rule name `JUnit4TestShouldUseAfterAnnotation` has been deprecated. Use the new name {% rule java/bestpractices/UnitTestShouldUseAfterAnnotation %} instead.
+  * The old rule name `JUnit4TestShouldUseBeforeAnnotation` has been deprecated. Use the new name {% rule java/bestpractices/UnitTestShouldUseBeforeAnnotation %} instead.
+  * The old rule name `JUnit4TestShouldUseTestAnnotation` has been deprecated. Use the new name {% rule java/bestpractices/UnitTestShouldUseTestAnnotation %} instead.
+  * The old rule name `JUnitAssertionsShouldIncludeMessage` has been deprecated. Use the new name {% rule java/bestpractices/UnitTestAssertionsShouldIncludeMessage %} instead.
+  * The old rule name `JUnitTestContainsTooManyAsserts` has been deprecated. Use the new name {% rule java/bestpractices/UnitTestContainsTooManyAsserts %} instead.
+  * The old rule name `JUnitTestsShouldIncludeAssert` has been deprecated. Use the new name {% rule java/bestpractices/UnitTestShouldIncludeAssert %} instead.
+
 
 ### ✨ Merged pull requests
 * [#4965](https://github.com/pmd/pmd/pull/4965): \[java] Rename JUnit rules with overly restrictive names - [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
