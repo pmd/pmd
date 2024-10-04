@@ -45,9 +45,9 @@ See also
 
 ## Git branches/tags policy
 
-* Main development happens on the main branch (currently called `master`).
+* Main development happens on the main branch (currently called `main`).
 * PR and enhancements are done on the main branch.
-* Release are usually done directly from the main branch, we don't create release branches.
+* Releases are usually done directly from the main branch, we don't create release branches.
 * Each release has its own tag named `pmd_releases/MAJOR.MINOR.PATCH`.
 * In case of a patch release, we either do it from the main branch (if there was no development ongoing)
   or create a separate branch off the last release tag.

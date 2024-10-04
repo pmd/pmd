@@ -167,7 +167,7 @@ Second paragraph.
 
 Third paragraph.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.OverrideBothEqualsAndHashcodeRule](https://github.com/pmd/pmd/blob/master/net/sourceforge/pmd/lang/java/rule/errorprone/OverrideBothEqualsAndHashcodeRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.OverrideBothEqualsAndHashcodeRule](https://github.com/pmd/pmd/blob/main/net/sourceforge/pmd/lang/java/rule/errorprone/OverrideBothEqualsAndHashcodeRule.java)
 
 **Example(s):**
 

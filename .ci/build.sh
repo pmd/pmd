@@ -280,9 +280,9 @@ function pmd_ci_deploy_build_artifacts() {
 # Renders release notes and uploads them as ReadMe.md to sourceforge
 #
 function pmd_ci_build_and_upload_doc() {
-    # generate the site only for snapshots from master and for release builds for case a) (everything without cli/dist)
+    # generate the site only for snapshots from main and for release builds for case a) (everything without cli/dist)
     # to avoid building it twice during a release...
-    if pmd_ci_maven_isSnapshotBuild && [ "${PMD_CI_BRANCH}" = "master" ] || [ "${BUILD_CLI_DIST_ONLY}" = "false" ]; then
+    if pmd_ci_maven_isSnapshotBuild && [ "${PMD_CI_BRANCH}" = "main" ] || [ "${BUILD_CLI_DIST_ONLY}" = "false" ]; then
         pmd_doc_generate_jekyll_site
         pmd_doc_create_archive
 
@@ -312,8 +312,8 @@ function pmd_ci_build_and_upload_doc() {
         pmd_ci_sourceforge_uploadReleaseNotes "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "${rendered_release_notes}"
     fi
 
-    if pmd_ci_maven_isSnapshotBuild && [ "${PMD_CI_BRANCH}" = "master" ]; then
-        # only for snapshot builds from branch master: https://docs.pmd-code.org/snapshot -> pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}
+    if pmd_ci_maven_isSnapshotBuild && [ "${PMD_CI_BRANCH}" = "main" ]; then
+        # only for snapshot builds from branch main: https://docs.pmd-code.org/snapshot -> pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}
         pmd_code_createSymlink "${PMD_CI_MAVEN_PROJECT_VERSION}" "snapshot"
 
         # update github pages https://pmd.github.io/pmd/

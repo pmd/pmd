@@ -7753,7 +7753,8 @@
       "profile": "https://github.com/dschach",
       "contributions": [
         "bug",
-        "code"
+        "code",
+        "doc"
       ]
     },
     {
@@ -7779,6 +7780,42 @@
       "name": "imax-erik",
       "avatar_url": "https://avatars.githubusercontent.com/u/62863607?v=4",
       "profile": "https://github.com/imax-erik",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "lukasgraef",
+      "name": "Lukas Gräf",
+      "avatar_url": "https://avatars.githubusercontent.com/u/48957581?v=4",
+      "profile": "https://github.com/lukasgraef",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "SaschaRiemer",
+      "name": "Sascha Riemer",
+      "avatar_url": "https://avatars.githubusercontent.com/u/108794941?v=4",
+      "profile": "https://github.com/SaschaRiemer",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "kratoon",
+      "name": "Ondrej Kratochvil",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26163421?v=4",
+      "profile": "https://github.com/kratoon",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "mattr9124",
+      "name": "Matthew Rossner",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8940608?v=4",
+      "profile": "https://github.com/mattr9124",
       "contributions": [
         "bug"
       ]

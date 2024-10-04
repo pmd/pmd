@@ -24,13 +24,7 @@
     <!-- <rule ref="category/java/bestpractices.xml/ForLoopVariableCount" /> -->
     <rule ref="category/java/bestpractices.xml/GuardLogStatement"/>
     <!-- <rule ref="category/java/bestpractices.xml/JUnit4SuitesShouldUseSuiteAnnotation" /> -->
-    <!-- <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseAfterAnnotation" /> -->
-    <!-- <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseBeforeAnnotation" /> -->
-    <!-- <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseTestAnnotation" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnit5TestShouldBePackagePrivate" /> -->
-    <!-- <rule ref="category/java/bestpractices.xml/JUnitAssertionsShouldIncludeMessage" /> -->
-    <!-- <rule ref="category/java/bestpractices.xml/JUnitTestContainsTooManyAsserts" /> -->
-    <!-- <rule ref="category/java/bestpractices.xml/JUnitTestsShouldIncludeAssert" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnitUseExpected" /> -->
     <rule ref="category/java/bestpractices.xml/LiteralsFirstInComparisons" />
     <rule ref="category/java/bestpractices.xml/LooseCoupling"/>
@@ -45,6 +39,12 @@
     <rule ref="category/java/bestpractices.xml/SimplifiableTestAssertion"/>
     <rule ref="category/java/bestpractices.xml/SwitchStmtsShouldHaveDefault"/>
     <!-- <rule ref="category/java/bestpractices.xml/SystemPrintln" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/UnitTestAssertionsShouldIncludeMessage" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/UnitTestContainsTooManyAsserts" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/UnitTestShouldIncludeAssert" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/UnitTestShouldUseAfterAnnotation" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/UnitTestShouldUseBeforeAnnotation" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/UnitTestShouldUseTestAnnotation" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/UnnecessaryVarargsArrayCreation" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/UnusedAssignment"/> -->
     <rule ref="category/java/bestpractices.xml/UnusedFormalParameter"/>

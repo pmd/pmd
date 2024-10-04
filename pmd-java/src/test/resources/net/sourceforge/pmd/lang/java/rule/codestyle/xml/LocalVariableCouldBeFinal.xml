@@ -389,4 +389,24 @@ public class ClassWithLambda {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description> [java] LocalVariableCouldBeFinal false positive with try/catch #5046 </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Optional;
+import foo.FileWatcher;
+public class ClassWithLambda {
+    private Optional<FileWatcher> createFileWatcher() {
+        Optional<FileWatcher> optionalFileWatcher;  // false positive in PMD 7.2.0, cannot be final
+        try {
+            optionalFileWatcher = Optional.of(new FileWatcher());
+        } catch (final IOException e) {
+            optionalFileWatcher = Optional.empty();
+        }
+        return optionalFileWatcher;
+    }
+
+}
+        ]]></code>
+    </test-code>
 </test-data>

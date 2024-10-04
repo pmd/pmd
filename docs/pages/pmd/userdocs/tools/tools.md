@@ -91,7 +91,7 @@ With TCA you have PMD analysis out-of-the-box, and it is open source under the M
     <tr>
         <td><a href="#bluej">BlueJ</a></td>
         <td></td>
-        <td><a href="https://github.com/pmd/pmd-misc/tree/master/pmd-bluej/">pmd-bluej</a></td>
+        <td><a href="https://github.com/pmd/pmd-misc/tree/main/pmd-bluej/">pmd-bluej</a></td>
         <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
     </tr>
 
@@ -133,7 +133,7 @@ With TCA you have PMD analysis out-of-the-box, and it is open source under the M
     <tr>
         <td><a href="#gel">Gel</a></td>
         <td></td>
-        <td><a href="https://github.com/pmd/pmd-misc/tree/master/pmd-gel/">github: pmd/pmd-misc/pmd-gel</a></td>
+        <td><a href="https://github.com/pmd/pmd-misc/tree/main/pmd-gel/">github: pmd/pmd-misc/pmd-gel</a></td>
         <td>Andrei Lumianski</td>
     </tr>
 
@@ -161,7 +161,7 @@ With TCA you have PMD analysis out-of-the-box, and it is open source under the M
     <tr>
         <td><a href="#jbuilder">JBuilder</a></td>
         <td></td>
-        <td><a href="https://github.com/pmd/pmd-misc/tree/master/pmd-jbuilder/">github: pmd/pmd-misc/pmd-jbuilder</a></td>
+        <td><a href="https://github.com/pmd/pmd-misc/tree/main/pmd-jbuilder/">github: pmd/pmd-misc/pmd-jbuilder</a></td>
         <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
     </tr>
 

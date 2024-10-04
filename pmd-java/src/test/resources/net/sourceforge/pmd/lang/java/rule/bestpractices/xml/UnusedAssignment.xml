@@ -1199,11 +1199,12 @@ public class Foo {
 
     <test-code>
         <description>Definitions in try block reach catch blocks through method calls</description>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>4,7</expected-linenumbers>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <expected-messages>
             <message>The initializer for variable 'halfway' is never used (overwritten on line 7)</message>
-            <message>The value assigned to variable 'halfway' is never used</message>
+            <!-- This was disabled because it causes FPs in LocalVariableCouldBeFinal. -->
+            <!-- <message>The value assigned to variable 'halfway' is never used</message>-->
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -1251,11 +1252,13 @@ public class Foo {
     </test-code>
     <test-code>
         <description>Definitions in try block reach catch blocks through method calls 3</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
-        <expected-messages>
-            <message>The value assigned to variable 'halfway' is never used</message>
-        </expected-messages>
+        <!-- This was disabled because it causes FPs in LocalVariableCouldBeFinal. -->
+        <expected-problems>0</expected-problems>
+<!--        <expected-problems>1</expected-problems>-->
+<!--        <expected-linenumbers>8</expected-linenumbers>-->
+<!--        <expected-messages>-->
+<!--            <message>The value assigned to variable 'halfway' is never used</message>-->
+<!--        </expected-messages>-->
         <code><![CDATA[
 public class Foo {
 
@@ -1328,7 +1331,7 @@ public class Foo {
         <expected-linenumbers>5,7,9</expected-linenumbers>
         <expected-messages>
             <message>The initializer for variable 'a' is never used (overwritten on lines 7, 9 and 11)</message>
-            <message>The value assigned to variable 'a' is never used (overwritten on line 11)</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on lines 9 and 11)</message>
             <message>The value assigned to variable 'a' is never used (overwritten on line 11)</message>
         </expected-messages>
         <code><![CDATA[

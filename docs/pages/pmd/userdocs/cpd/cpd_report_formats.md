@@ -267,7 +267,7 @@ e.g. `xalan` (see <https://xalan.apache.org/>).
 
 ### cpdhtml.xslt
 
-This stylesheet is available in the sources or from GitHub at: <https://raw.githubusercontent.com/pmd/pmd/master/pmd-core/etc/xslt/cpdhtml.xslt>.
+This stylesheet is available in the sources or from GitHub at: <https://raw.githubusercontent.com/pmd/pmd/main/pmd-core/etc/xslt/cpdhtml.xslt>.
 
 ```shell
 xalan -in cpd-report-sample.xml -xsl cpdhtml.xslt -out cpd-report-sample-cpdhtml.html
@@ -284,7 +284,7 @@ xalan -in cpd-report-sample.xml -xsl cpdhtml.xslt -out cpd-report-sample-cpdhtml
 
 ### cpdhtml-v2.xslt
 
-This stylesheet is available in the sources or from GitHub at: <https://raw.githubusercontent.com/pmd/pmd/master/pmd-core/etc/xslt/cpdhtml-v2.xslt>.
+This stylesheet is available in the sources or from GitHub at: <https://raw.githubusercontent.com/pmd/pmd/main/pmd-core/etc/xslt/cpdhtml-v2.xslt>.
 
 ```shell
 xalan -in pmd-core-cpd-report.xml -xsl etc/xslt/cpdhtml-v2.xslt -out pmd-core-cpd-report-v2.html

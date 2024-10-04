@@ -311,7 +311,7 @@ echo "    <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/maven-me
 echo
 echo
 echo "Then proceed with releasing pmd-designer..."
-echo "<https://github.com/pmd/pmd-designer/blob/master/releasing.md>"
+echo "<https://github.com/pmd/pmd-designer/blob/main/releasing.md>"
 echo
 echo "Press enter to continue when pmd-designer is available in maven-central..."
 echo "<https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-designer/maven-metadata.xml>."

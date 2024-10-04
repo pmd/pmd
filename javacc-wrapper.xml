@@ -224,6 +224,9 @@
 
     <target name="cleanup-parser" unless="jjtreeBuildNotRequired">
 
+        <replace token="class ${parser-name}" value='@net.sourceforge.pmd.annotation.Generated("org.javacc.javacc")${line.separator}class ${parser-name}'>
+            <file name="${parser-file}" />
+        </replace>
 
         <replace token="new Token()" value="token_source.input_stream.getTokenDocument().open()">
             <file name="${parser-file}" />
@@ -262,7 +265,8 @@
 
         <replaceregexp>
             <regexp pattern="public interface"/>
-            <substitution expression="interface"/>
+            <substitution expression='@net.sourceforge.pmd.annotation.Generated("org.javacc.javacc")${line.separator}
+interface'/>
             <file name="${target-package-dir}/${parser-name}TreeConstants.java" />
         </replaceregexp>
 
@@ -272,7 +276,8 @@
 
         <replaceregexp>
             <regexp pattern='(public )?class ${tokenmgr-name}' />
-            <substitution expression='class ${tokenmgr-name} extends ${base-tokenmgr}' />
+            <substitution expression='@net.sourceforge.pmd.annotation.Generated("org.javacc.javacc")${line.separator}
+class ${tokenmgr-name} extends ${base-tokenmgr}' />
             <file name="${tokenmgr-file}" />
         </replaceregexp>
 
@@ -385,11 +390,12 @@
 
         <replaceregexp>
             <regexp pattern="(public )?interface ${constants-itf-name} \{" />
-            <substitution expression="/** Token kinds ({@link ${ast-impl-package}.JavaccToken#kind}) for this language. */${line.separator}
+            <substitution expression='/** Token kinds ({@link ${ast-impl-package}.JavaccToken#kind}) for this language. */${line.separator}
 @net.sourceforge.pmd.annotation.InternalApi${line.separator}
+@net.sourceforge.pmd.annotation.Generated("org.javacc.javacc")${line.separator}
 public final class ${token-constants-name} \{${line.separator}
     private ${token-constants-name}() { /* Utility class */ }${line.separator}
-"/>
+'/>
             <file name="${token-constants-file}" />
         </replaceregexp>
 
@@ -534,8 +540,9 @@ public final class ${token-constants-name} \{${line.separator}
     <target name="default-visitor" depends="jjtree" unless="jjtreeBuildNotRequired">
         <move file="${target-package-dir}/${gen-visitor-name}.java" tofile="${generic-visitor-interface-file}" />
         <replace file="${generic-visitor-interface-file}">
-            <replacefilter token="${gen-visitor-name}"
-                           value="${generic-visitor-interface-name}&lt;P, R> extends ${ast-api-package}.AstVisitor&lt;P, R>" />
+            <replacefilter token="public interface ${gen-visitor-name}"
+                           value='@net.sourceforge.pmd.annotation.Generated("org.javacc.javacc")${line.separator}
+public interface ${generic-visitor-interface-name}&lt;P, R> extends ${ast-api-package}.AstVisitor&lt;P, R>' />
 
             <replacefilter token="SimpleNode" value="${node-name}" />
             <!-- Root method, eg visitJavaNode -->

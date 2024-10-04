@@ -132,7 +132,7 @@ The root element is `<test-data>`. It can contain one or more `<test-code>` and 
 Each `<test-code>` element defines a single test case. `<code-fragment>` elements are used to share code snippets
 between different test cases.
 
-{%include note.html content="The XML schema is available at [rule-tests.xsd](https://github.com/pmd/pmd/blob/master/pmd-test-schema/src/main/resources/net/sourceforge/pmd/test/schema/rule-tests_1_0_0.xsd)." %}
+{%include note.html content="The XML schema is available at [rule-tests.xsd](https://github.com/pmd/pmd/blob/main/pmd-test-schema/src/main/resources/net/sourceforge/pmd/test/schema/rule-tests_1_0_0.xsd)." %}
 
 ### `<test-code>` attributes
 

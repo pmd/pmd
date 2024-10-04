@@ -2118,8 +2118,6 @@ $topLevelClass[
         (: … no nested classes, that are non-private and static … :)
         not(ClassBody/ClassDeclaration
             [pmd-java:modifiers() = "static" and @Visibility != "private"]
-            (: … with a default or non-private constructor … :)
-            [not(ClassBody/ConstructorDeclaration) or ClassBody/ConstructorDeclaration[@Visibility != "private"]]
             (: … and a non-private method returning the outer class type … :)
             [(ClassBody/MethodDeclaration
                 [@Visibility != "private"]

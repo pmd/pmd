@@ -18,7 +18,7 @@ The header of the sections below are used to select the format on the command li
 arguments to the `--format` option. When a format accepts *properties*,
 those can be specified with the `--property` / `-P` option on the command-line.
 
-{% include note.html content="Suppressed violations are only reported, if the CLI parameter `--show-suppressed` is set." %}
+{% include note.html content="Suppressed violations are only reported, if the CLI parameter `--show-suppressed` is set and if the format supports showing suppressed violations. Currently only html, summaryhtml and xml show suppressed violations." %}
 
 ## sarif
 
@@ -98,7 +98,7 @@ Example:
 HTML format.
 
 This renderer provides two properties to render a link to the source where the violations
-have been found. The following example has been created with `-property linkPrefix=https://github.com/pmd/pmd/blob/master/ -property linePrefix=L -shortnames -d pmd`.
+have been found. The following example has been created with `-property linkPrefix=https://github.com/pmd/pmd/blob/main/ -property linePrefix=L -shortnames -d pmd`.
 If "linkPrefix" is not set, then "linePrefix" has no effect anyway: just the filename will
 be rendered, with no html link. Otherwise if "linePrefix" is not set, then the link will
 not contain a line number.
@@ -277,7 +277,7 @@ Vladimir Bossicard HTML format.
 
 XML format.
 
-This format is a XML document, that can be validated by a XSD schema. The schema is [report_2_0_0.xsd](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/resources/report_2_0_0.xsd).
+This format is a XML document, that can be validated by a XSD schema. The schema is [report_2_0_0.xsd](https://github.com/pmd/pmd/blob/main/pmd-core/src/main/resources/report_2_0_0.xsd).
 
 Example:
 
@@ -345,10 +345,10 @@ XML with a XSL transformation applied.
 
 PMD provides one built-in stylesheet, that is used by default, if no other
 stylesheet with the property "xsltFilename" is specified. It is called
-[pmd-nicerhtml.xsl](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/resources/pmd-nicerhtml.xsl)
+[pmd-nicerhtml.xsl](https://github.com/pmd/pmd/blob/main/pmd-core/src/main/resources/pmd-nicerhtml.xsl)
 and can be used for customization.
 
-There are many other stylesheets available online: <https://github.com/pmd/pmd/tree/master/pmd-core/etc/xslt>.
+There are many other stylesheets available online: <https://github.com/pmd/pmd/tree/main/pmd-core/etc/xslt>.
 
 Examples:
 * [Example with pmd-nicerhtml.xsl](report-examples/pmd-report-pmd-nicerhtml.html)
