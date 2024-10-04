@@ -41,10 +41,10 @@
     <!-- <rule ref="category/java/bestpractices.xml/SystemPrintln" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/UnitTestAssertionsShouldIncludeMessage" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/UnitTestContainsTooManyAsserts" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/UnitTestShouldIncludeAssert" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/UnitTestShouldUseAfterAnnotation" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/UnitTestShouldUseBeforeAnnotation" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/UnitTestShouldUseTestAnnotation" /> -->
-    <!-- <rule ref="category/java/bestpractices.xml/UnitTestsShouldIncludeAssert" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/UnnecessaryVarargsArrayCreation" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/UnusedAssignment"/> -->
     <rule ref="category/java/bestpractices.xml/UnusedFormalParameter"/>

@@ -748,7 +748,7 @@ class MyTest { // not public, that's fine
 
     <rule name="JUnitTestContainsTooManyAsserts" deprecated="true" ref="UnitTestContainsTooManyAsserts"/>
 
-    <rule name="JUnitTestsShouldIncludeAssert" deprecated="true" ref="UnitTestsShouldIncludeAssert" />
+    <rule name="JUnitTestsShouldIncludeAssert" deprecated="true" ref="UnitTestShouldIncludeAssert" />
 
     <rule name="JUnitUseExpected"
           language="java"
@@ -1292,6 +1292,34 @@ public class MyTestCase {
         </example>
     </rule>
 
+    <rule name="UnitTestShouldIncludeAssert"
+          language="java"
+          since="2.0"
+          message="This unit test should include assert() or fail()"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestShouldIncludeAssertRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestshouldincludeassert">
+        <description>
+            Unit tests should include at least one assertion. This makes the tests more robust, and using assert
+            with messages provide the developer a clearer idea of what the test does.
+
+            This rule checks for JUnit (3, 4 and 5) and TestNG Tests.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Foo {
+   @Test
+   public void testSomething() {
+      Bar b = findBar();
+      // This is better than having a NullPointerException
+      // assertNotNull("bar not found", b);
+      b.work();
+   }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="UnitTestShouldUseAfterAnnotation"
           language="java"
           since="4.0"
@@ -1436,34 +1464,6 @@ public class MyTest {
     public void testGood() {
         doSomething();
     }
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="UnitTestsShouldIncludeAssert"
-          language="java"
-          since="2.0"
-          message="Unit tests should include assert() or fail()"
-          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestsShouldIncludeAssertRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestsshouldincludeassert">
-        <description>
-            Unit tests should include at least one assertion. This makes the tests more robust, and using assert
-            with messages provide the developer a clearer idea of what the test does.
-
-            This rule checks for JUnit (3, 4 and 5) and TestNG Tests.
-        </description>
-        <priority>3</priority>
-        <example>
-            <![CDATA[
-public class Foo {
-   @Test
-   public void testSomething() {
-      Bar b = findBar();
-      // This is better than having a NullPointerException
-      // assertNotNull("bar not found", b);
-      b.work();
-   }
 }
 ]]>
         </example>
