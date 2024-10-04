@@ -317,7 +317,7 @@ public class Example2 {
             case A a -> { return 1; }
             case C c -> { return 2; }
             case D d -> { return 3; }
-            // case B b -> { return 4; } // not explicitly necessary, but possible
+            case B b -> { return 4; } // not explicitly necessary, but possible
         }
     }
 }
