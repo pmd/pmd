@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce generally accepted best practices.">
-<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, OneDeclarationPerLine, PreserveStackTrace, PrimitiveWrapperInstantiation, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SimplifiableTestAssertion, SwitchStmtsShouldHaveDefault, SystemPrintln, UnitTestAssertionsShouldIncludeMessage, UnitTestContainsTooManyAsserts, UnitTestShouldUseAfterAnnotation, UnitTestShouldUseBeforeAnnotation, UnitTestShouldUseTestAnnotation, UnitTestsShouldIncludeAssert, UnnecessaryVarargsArrayCreation, UnusedAssignment, UnusedFormalParameter, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseCollectionIsEmpty, UseEnumCollections, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
+<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, OneDeclarationPerLine, PreserveStackTrace, PrimitiveWrapperInstantiation, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SimplifiableTestAssertion, SwitchStmtsShouldHaveDefault, SystemPrintln, UnitTestAssertionsShouldIncludeMessage, UnitTestContainsTooManyAsserts, UnitTestShouldIncludeAssert, UnitTestShouldUseAfterAnnotation, UnitTestShouldUseBeforeAnnotation, UnitTestShouldUseTestAnnotation, UnnecessaryVarargsArrayCreation, UnusedAssignment, UnusedFormalParameter, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseCollectionIsEmpty, UseEnumCollections, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
 <title>Best Practices | PMD Source Code Analyzer</title>
 
 
@@ -3089,7 +3089,7 @@ Customize the maximum number of assertions used by this Rule to suit your needs.
 
 <p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
 
-<p>This rule has been renamed. Use instead: <a href="#unittestsshouldincludeassert">UnitTestsShouldIncludeAssert</a></p>
+<p>This rule has been renamed. Use instead: <a href="#unittestshouldincludeassert">UnitTestShouldIncludeAssert</a></p>
 
 <p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
 
@@ -3102,7 +3102,7 @@ with messages provide the developer a clearer idea of what the test does.</p>
 
 <p>This rule checks for JUnit (3, 4 and 5) and TestNG Tests.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnitTestsShouldIncludeAssertRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestsShouldIncludeAssertRule</a></p>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnitTestShouldIncludeAssertRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestShouldIncludeAssertRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -3770,6 +3770,63 @@ Customize the maximum number of assertions used by this Rule to suit your needs.
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
+<h2 id="unittestshouldincludeassert">UnitTestShouldIncludeAssert</h2>
+
+<p><strong>Since:</strong> PMD 2.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Unit tests should include at least one assertion. This makes the tests more robust, and using assert
+with messages provide the developer a clearer idea of what the test does.</p>
+
+<p>This rule checks for JUnit (3, 4 and 5) and TestNG Tests.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnitTestShouldIncludeAssertRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestShouldIncludeAssertRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+   <span class="nd">@Test</span>
+   <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testSomething</span><span class="o">()</span> <span class="o">{</span>
+      <span class="nc">Bar</span> <span class="n">b</span> <span class="o">=</span> <span class="n">findBar</span><span class="o">();</span>
+      <span class="c1">// This is better than having a NullPointerException</span>
+      <span class="c1">// assertNotNull("bar not found", b);</span>
+      <span class="n">b</span><span class="o">.</span><span class="na">work</span><span class="o">();</span>
+   <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>extraAssertMethodNames</td>
+      <td> </td>
+      <td>Extra valid assertion methods names</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/UnitTestShouldIncludeAssert"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/UnitTestShouldIncludeAssert"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"extraAssertMethodNames"</span> <span class="na">value=</span><span class="s">""</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
 <h2 id="unittestshoulduseafterannotation">UnitTestShouldUseAfterAnnotation</h2>
 
 <p><strong>Since:</strong> PMD 4.0</p>
@@ -3926,63 +3983,6 @@ In TestNG, only methods annotated with the <code class="language-plaintext highl
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/UnitTestShouldUseTestAnnotation"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;properties&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"testClassPattern"</span> <span class="na">value=</span><span class="s">"Test"</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;/properties&gt;</span>
-<span class="nt">&lt;/rule&gt;</span>
-</code></pre></div></div>
-
-<h2 id="unittestsshouldincludeassert">UnitTestsShouldIncludeAssert</h2>
-
-<p><strong>Since:</strong> PMD 2.0</p>
-
-<p><strong>Priority:</strong> Medium (3)</p>
-
-<p>Unit tests should include at least one assertion. This makes the tests more robust, and using assert
-with messages provide the developer a clearer idea of what the test does.</p>
-
-<p>This rule checks for JUnit (3, 4 and 5) and TestNG Tests.</p>
-
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnitTestsShouldIncludeAssertRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestsShouldIncludeAssertRule</a></p>
-
-<p><strong>Example(s):</strong></p>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-   <span class="nd">@Test</span>
-   <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testSomething</span><span class="o">()</span> <span class="o">{</span>
-      <span class="nc">Bar</span> <span class="n">b</span> <span class="o">=</span> <span class="n">findBar</span><span class="o">();</span>
-      <span class="c1">// This is better than having a NullPointerException</span>
-      <span class="c1">// assertNotNull("bar not found", b);</span>
-      <span class="n">b</span><span class="o">.</span><span class="na">work</span><span class="o">();</span>
-   <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></div></div>
-
-<p><strong>This rule has the following properties:</strong></p>
-
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Default Value</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>extraAssertMethodNames</td>
-      <td> </td>
-      <td>Extra valid assertion methods names</td>
-    </tr>
-  </tbody>
-</table>
-
-<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/UnitTestsShouldIncludeAssert"</span> <span class="nt">/&gt;</span>
-</code></pre></div></div>
-
-<p><strong>Use this rule and customize it:</strong></p>
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/UnitTestsShouldIncludeAssert"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;properties&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"extraAssertMethodNames"</span> <span class="na">value=</span><span class="s">""</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
@@ -4692,7 +4692,7 @@ a block <code class="language-plaintext highlighter-rouge">{}</code> is sufficie
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Oct 3, 2024 <br />
+             Site last generated: Oct 4, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
