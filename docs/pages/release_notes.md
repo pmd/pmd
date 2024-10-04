@@ -34,6 +34,9 @@ The old rule names still work but are deprecated.
   * [#4532](https://github.com/pmd/pmd/issues/4532): \[java] Rule misnomer for JUnit* rules
 * java-errorprone
   * [#5067](https://github.com/pmd/pmd/issues/5067): \[java] CloseResource: False positive for FileSystems.getDefault()
+* java-performance
+  * [#5249](https://github.com/pmd/pmd/issues/5249): \[java] TooFewBranchesForASwitchStatement false positive for Pattern Matching
+  * [#....](https://github.com/pmd/pmd/issues/....): \[java] TooFewBranchesForASwitchStatement should consider Switch Expressions
 
 ### 🚨 API Changes
 * java-bestpractices

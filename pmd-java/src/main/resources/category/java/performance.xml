@@ -625,6 +625,8 @@ if-else statement to increase code readability.
                 <value>
 <![CDATA[
 //SwitchStatement[ (count(*) - 1) < $minimumNumberCaseForASwitch ]
+  (: exclude pattern matching :)
+  [not(*/SwitchLabel/TypePattern)]
 ]]>
                 </value>
             </property>

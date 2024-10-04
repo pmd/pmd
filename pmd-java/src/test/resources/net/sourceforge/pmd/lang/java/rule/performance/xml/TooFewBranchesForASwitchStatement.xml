@@ -69,4 +69,26 @@ public class ValidSwitch {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] TooFewBranchesForASwitchStatement false positive for Pattern Matching</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+sealed interface S permits A {}
+final class A implements S {}
+public class Sample {
+    public void simpleSwitchStatment(S s) {
+        switch(s) {
+            case A a -> System.out.println("a");
+        }
+    }
+
+    public void simpleSwitchExpression(S s) {
+        String result = switch(s) {
+            case A a -> "a";
+        };
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
