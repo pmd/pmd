@@ -286,4 +286,8 @@ public interface ASTTypeDeclaration
         return ASTList.orEmptyStream(isInterface() ? firstChild(ASTExtendsList.class)
                                                    : firstChild(ASTImplementsList.class));
     }
+
+    default boolean isSealed() {
+        return hasModifiers(JModifier.SEALED);
+    }
 }

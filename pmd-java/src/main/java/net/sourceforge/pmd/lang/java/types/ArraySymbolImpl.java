@@ -209,6 +209,11 @@ class ArraySymbolImpl implements JClassSymbol {
     }
 
     @Override
+    public boolean isSealed() {
+        return false;
+    }
+
+    @Override
     public String toString() {
         return SymbolToStrings.SHARED.toString(this);
     }

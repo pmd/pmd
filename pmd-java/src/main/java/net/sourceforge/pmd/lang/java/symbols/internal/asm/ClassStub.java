@@ -64,6 +64,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     private List<JConstructorSymbol> ctors = new ArrayList<>();
     private List<JRecordComponentSymbol> recordComponents = null;
     private List<JFieldSymbol> enumConstants = null;
+    private List<JClassSymbol> permittedSubclasses = new ArrayList<>();
 
     private PSet<SymAnnot> annotations = HashTreePSet.empty();
 
@@ -573,12 +574,26 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         return getSimpleName().isEmpty();
     }
 
+    @Override
+    public boolean isSealed() {
+        return !permittedSubclasses.isEmpty();
+    }
+
+    @Override
+    public List<JClassSymbol> getPermittedSubclasses() {
+        return permittedSubclasses;
+    }
+
     boolean isFailed() {
         return this.parseLock.isFailed();
     }
 
     boolean isNotParsed() {
         return this.parseLock.isNotParsed();
+    }
+
+    void addPermittedSubclass(JClassSymbol permittedSubclass) {
+        permittedSubclasses.add(permittedSubclass);
     }
 
 

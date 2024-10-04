@@ -1174,6 +1174,10 @@ class SomeTestClass {
             <property name="xpath">
                 <value><![CDATA[
                 //SwitchStatement[@DefaultCase = false() and @ExhaustiveEnumSwitch = false()]
+
+                  (: exclude type pattern tests - for these, the compiler will ensure exhaustiveness
+                  [not(*/SwitchLabel/TypePattern)]
+                  :)
             ]]></value>
             </property>
         </properties>

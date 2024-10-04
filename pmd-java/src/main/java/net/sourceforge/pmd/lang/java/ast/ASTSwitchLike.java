@@ -5,10 +5,14 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 
 /**
@@ -71,6 +75,22 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
             // we assume there's no duplicate labels
             int numLabels = getBranches().sumByInt(it -> it.getLabel().getNumChildren());
             return numLabels == numConstants;
+        } else if (symbol instanceof JClassSymbol && ((JClassSymbol) symbol).isSealed()) {
+            Set<String> permittedSubclasses = ((JClassSymbol) symbol).getPermittedSubclasses().stream()
+                    .map(JClassSymbol::getBinaryName).collect(Collectors.toSet());
+            Set<String> testedTypes = getBranches().map(ASTSwitchBranch::getLabel)
+                        .children(ASTTypePattern.class)
+                        .map(ASTTypePattern::getTypeNode)
+                        .toStream()
+                            .map(ASTType::getTypeMirror)
+                            .map(JTypeMirror::getSymbol)
+                            .map(JClassSymbol.class::cast)
+                            .filter(Objects::nonNull)
+                            .map(JClassSymbol::getBinaryName)
+                            .collect(Collectors.toSet());
+
+            permittedSubclasses.removeAll(testedTypes);
+            return permittedSubclasses.isEmpty();
         }
         return false;
     }

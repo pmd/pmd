@@ -124,6 +124,11 @@ public abstract class EmptyClassSymbol implements JClassSymbol {
     }
 
     @Override
+    public boolean isSealed() {
+        return false;
+    }
+
+    @Override
     public TypeSystem getTypeSystem() {
         return typeSystemSupplier.get();
     }

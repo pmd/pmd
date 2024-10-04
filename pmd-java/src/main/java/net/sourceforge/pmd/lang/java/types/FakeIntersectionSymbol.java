@@ -138,6 +138,11 @@ class FakeIntersectionSymbol implements JClassSymbol {
     }
 
     @Override
+    public boolean isSealed() {
+        return false;
+    }
+
+    @Override
     public @NonNull String getSimpleName() {
         return "";
     }

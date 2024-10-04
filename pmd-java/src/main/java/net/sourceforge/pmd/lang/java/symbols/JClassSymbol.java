@@ -237,6 +237,9 @@ public interface JClassSymbol extends JTypeDeclSymbol,
 
     boolean isAnonymousClass();
 
+    boolean isSealed();
+
+
     /**
      * Return the simple names of all annotation attributes. If this
      * is not an annotation type, return an empty set.
@@ -328,5 +331,9 @@ public interface JClassSymbol extends JTypeDeclSymbol,
     @Override
     default <R, P> R acceptVisitor(SymbolVisitor<R, P> visitor, P param) {
         return visitor.visitClass(this, param);
+    }
+
+    default List<JClassSymbol> getPermittedSubclasses() {
+        return Collections.emptyList();
     }
 }

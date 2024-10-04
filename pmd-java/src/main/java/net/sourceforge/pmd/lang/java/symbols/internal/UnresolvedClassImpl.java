@@ -160,6 +160,11 @@ abstract class UnresolvedClassImpl implements JClassSymbol {
     }
 
     @Override
+    public boolean isSealed() {
+        return false;
+    }
+
+    @Override
     public boolean isLocalClass() {
         return false;
     }
