@@ -23,7 +23,7 @@ public class DumbSwitch {
     </test-code>
 
     <test-code>
-        <description>Switch Expression with only one case, not ok</description>
+        <description>Switch Expression with only one case, not ok #5250</description>
         <rule-property name="minimumNumberCaseForASwitch">3</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
