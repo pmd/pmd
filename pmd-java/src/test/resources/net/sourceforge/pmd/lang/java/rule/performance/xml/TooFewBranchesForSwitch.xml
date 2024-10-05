@@ -89,7 +89,7 @@ public class ValidSwitch {
     </test-code>
 
     <test-code>
-        <description>[java] TooFewBranchesForASwitchStatement false positive for Pattern Matching</description>
+        <description>[java] TooFewBranchesForASwitchStatement false positive for Pattern Matching #5249</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 sealed interface S permits A {}
@@ -105,6 +105,22 @@ public class Sample {
         String result = switch(s) {
             case A a -> "a";
         };
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Record patterns are ignored, too #5249</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+record R(int i) {}
+
+public class SwitchWithRecordPattern {
+    public void check(R r) {
+        switch(r) {
+            case R(int a) -> System.out.println(a);
+        }
     }
 }
 ]]></code>
