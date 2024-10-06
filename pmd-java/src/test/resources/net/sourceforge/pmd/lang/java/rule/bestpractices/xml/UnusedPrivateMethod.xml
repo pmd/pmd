@@ -2158,4 +2158,32 @@ class Engine {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3633 [java] Make UnusedPrivateMethod consider enum classes</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+class Impl {
+  enum EnumClass {
+      FOO;
+      EnumClass() {}
+      private void func(){};  // should report a warning here
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3633 [java] Make UnusedPrivateMethod consider enum classes (top-level)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+enum EnumClass {
+  FOO;
+  EnumClass() {}
+  private void func(){};  // should report a warning here
+}
+]]></code>
+    </test-code>
 </test-data>
