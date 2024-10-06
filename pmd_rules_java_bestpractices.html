@@ -2752,6 +2752,8 @@ To a lesser extent, this may help detect omissions under newer JUnit versions, a
 <p>JUnit 4 will only execute methods annotated with <code class="language-plaintext highlighter-rouge">@After</code> after running each test.
 JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@AfterEach</code> and <code class="language-plaintext highlighter-rouge">@AfterAll</code> annotations to execute methods after each test or after all tests in the class, respectively.</p>
 
+<p>Note: This rule was named JUnit4TestShouldUseAfterAnnotation before PMD 7.7.0.</p>
+
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Name</span><span class="err">=</span><span class="s1">'tearDown'</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@Arity</span><span class="err">=</span><span class="m">0</span><span class="p">]</span><span class="w">
     </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">ModifierList</span><span class="o">/</span><span class="nt">Annotation</span><span class="p">[</span><span class="w">
@@ -2800,6 +2802,8 @@ To a lesser extent, this may help detect omissions even under newer JUnit versio
 <p>JUnit 4 will only execute methods annotated with <code class="language-plaintext highlighter-rouge">@Before</code> before all tests.
 JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@BeforeEach</code> and <code class="language-plaintext highlighter-rouge">@BeforeAll</code> annotations to execute methods before each test or before all tests in the class, respectively.</p>
 
+<p>Note: This rule was named JUnit4TestShouldUseBeforeAnnotation before PMD 7.7.0.</p>
+
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Name</span><span class="err">=</span><span class="s1">'setUp'</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@Arity</span><span class="err">=</span><span class="m">0</span><span class="p">]</span><span class="w">
     </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">ModifierList</span><span class="o">/</span><span class="nt">Annotation</span><span class="p">[</span><span class="w">
@@ -2846,6 +2850,8 @@ JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@BeforeEac
 <p>In JUnit 4, only methods annotated with the <code class="language-plaintext highlighter-rouge">@Test</code> annotation are executed.
 In JUnit 5, one of the following annotations should be used for tests: <code class="language-plaintext highlighter-rouge">@Test</code>, <code class="language-plaintext highlighter-rouge">@RepeatedTest</code>, <code class="language-plaintext highlighter-rouge">@TestFactory</code>, <code class="language-plaintext highlighter-rouge">@TestTemplate</code> or <code class="language-plaintext highlighter-rouge">@ParameterizedTest</code>.
 In TestNG, only methods annotated with the <code class="language-plaintext highlighter-rouge">@Test</code> annotation are executed.</p>
+
+<p>Note: This rule was named JUnit4TestShouldUseTestAnnotation before PMD 7.7.0.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="p">[</span><span class="nf">matches</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">,</span><span class="w"> </span><span class="nv">$testClassPattern</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'junit.framework.TestCase'</span><span class="p">)]</span><span class="w">
@@ -2989,6 +2995,8 @@ is a good practice to limit their visibility.</p>
 
 <p>This rule supports tests using JUnit (3, 4 and 5) and TestNG.</p>
 
+<p>Note: This rule was named JUnitAssertionsShouldIncludeMessage before PMD 7.7.0.</p>
+
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnitTestAssertionsShouldIncludeMessageRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestAssertionsShouldIncludeMessageRule</a></p>
 
 <p><strong>Example(s):</strong></p>
@@ -3025,6 +3033,8 @@ it is harder to verify correctness.  Consider breaking the test scenario into mu
 Customize the maximum number of assertions used by this Rule to suit your needs.</p>
 
 <p>This rule checks for JUnit (3, 4 and 5) and TestNG Tests.</p>
+
+<p>Note: This rule was named JUnitTestContainsTooManyAsserts before PMD 7.7.0.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnitTestContainsTooManyAssertsRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestContainsTooManyAssertsRule</a></p>
 
@@ -3101,6 +3111,8 @@ Customize the maximum number of assertions used by this Rule to suit your needs.
 with messages provide the developer a clearer idea of what the test does.</p>
 
 <p>This rule checks for JUnit (3, 4 and 5) and TestNG Tests.</p>
+
+<p>Note: This rule was named JUnitTestsShouldIncludeAssert before PMD 7.7.0.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnitTestShouldIncludeAssertRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestShouldIncludeAssertRule</a></p>
 
@@ -3680,6 +3692,8 @@ will (and by priority) and avoid clogging the Standard out log.</p>
 
 <p>This rule supports tests using JUnit (3, 4 and 5) and TestNG.</p>
 
+<p>Note: This rule was named JUnitAssertionsShouldIncludeMessage before PMD 7.7.0.</p>
+
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnitTestAssertionsShouldIncludeMessageRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestAssertionsShouldIncludeMessageRule</a></p>
 
 <p><strong>Example(s):</strong></p>
@@ -3710,6 +3724,8 @@ it is harder to verify correctness.  Consider breaking the test scenario into mu
 Customize the maximum number of assertions used by this Rule to suit your needs.</p>
 
 <p>This rule checks for JUnit (3, 4 and 5) and TestNG Tests.</p>
+
+<p>Note: This rule was named JUnitTestContainsTooManyAsserts before PMD 7.7.0.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnitTestContainsTooManyAssertsRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestContainsTooManyAssertsRule</a></p>
 
@@ -3781,6 +3797,8 @@ with messages provide the developer a clearer idea of what the test does.</p>
 
 <p>This rule checks for JUnit (3, 4 and 5) and TestNG Tests.</p>
 
+<p>Note: This rule was named JUnitTestsShouldIncludeAssert before PMD 7.7.0.</p>
+
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnitTestShouldIncludeAssertRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestShouldIncludeAssertRule</a></p>
 
 <p><strong>Example(s):</strong></p>
@@ -3840,6 +3858,8 @@ To a lesser extent, this may help detect omissions under newer JUnit versions, a
 <p>JUnit 4 will only execute methods annotated with <code class="language-plaintext highlighter-rouge">@After</code> after running each test.
 JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@AfterEach</code> and <code class="language-plaintext highlighter-rouge">@AfterAll</code> annotations to execute methods after each test or after all tests in the class, respectively.</p>
 
+<p>Note: This rule was named JUnit4TestShouldUseAfterAnnotation before PMD 7.7.0.</p>
+
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Name</span><span class="err">=</span><span class="s1">'tearDown'</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@Arity</span><span class="err">=</span><span class="m">0</span><span class="p">]</span><span class="w">
     </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">ModifierList</span><span class="o">/</span><span class="nt">Annotation</span><span class="p">[</span><span class="w">
@@ -3882,6 +3902,8 @@ To a lesser extent, this may help detect omissions even under newer JUnit versio
 <p>JUnit 4 will only execute methods annotated with <code class="language-plaintext highlighter-rouge">@Before</code> before all tests.
 JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@BeforeEach</code> and <code class="language-plaintext highlighter-rouge">@BeforeAll</code> annotations to execute methods before each test or before all tests in the class, respectively.</p>
 
+<p>Note: This rule was named JUnit4TestShouldUseBeforeAnnotation before PMD 7.7.0.</p>
+
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Name</span><span class="err">=</span><span class="s1">'setUp'</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@Arity</span><span class="err">=</span><span class="m">0</span><span class="p">]</span><span class="w">
     </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">ModifierList</span><span class="o">/</span><span class="nt">Annotation</span><span class="p">[</span><span class="w">
@@ -3922,6 +3944,8 @@ JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@BeforeEac
 <p>In JUnit 4, only methods annotated with the <code class="language-plaintext highlighter-rouge">@Test</code> annotation are executed.
 In JUnit 5, one of the following annotations should be used for tests: <code class="language-plaintext highlighter-rouge">@Test</code>, <code class="language-plaintext highlighter-rouge">@RepeatedTest</code>, <code class="language-plaintext highlighter-rouge">@TestFactory</code>, <code class="language-plaintext highlighter-rouge">@TestTemplate</code> or <code class="language-plaintext highlighter-rouge">@ParameterizedTest</code>.
 In TestNG, only methods annotated with the <code class="language-plaintext highlighter-rouge">@Test</code> annotation are executed.</p>
+
+<p>Note: This rule was named JUnit4TestShouldUseTestAnnotation before PMD 7.7.0.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="p">[</span><span class="nf">matches</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">,</span><span class="w"> </span><span class="nv">$testClassPattern</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'junit.framework.TestCase'</span><span class="p">)]</span><span class="w">
@@ -4692,7 +4716,7 @@ a block <code class="language-plaintext highlighter-rouge">{}</code> is sufficie
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Oct 4, 2024 <br />
+             Site last generated: Oct 6, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
