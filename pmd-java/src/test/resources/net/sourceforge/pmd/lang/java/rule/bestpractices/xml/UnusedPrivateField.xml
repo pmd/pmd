@@ -830,4 +830,32 @@ public class Tester {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3632 [java] Make UnusedPrivateField consider enum classes</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+class Test {
+  enum EnumClass {
+      subClass();
+      EnumClass() {}
+      private int a;  // should report a warning here
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3632 [java] Make UnusedPrivateField consider enum classes (top-level)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+enum EnumClass {
+  subClass();
+  EnumClass() {}
+  private int a;  // should report a warning here
+}
+]]></code>
+    </test-code>
 </test-data>
