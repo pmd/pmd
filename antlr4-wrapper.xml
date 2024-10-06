@@ -32,10 +32,10 @@
     <property name="base-visitor-file" value="${target-package-dir}/${base-visitor-name}.java"/>
 
     <property name="listener-name" value="${lang-name}Listener"/>
-    <property name="listener-file" value="${target-package-dir}/${visitor-name}.java"/>
+    <property name="listener-file" value="${target-package-dir}/${listener-name}.java"/>
 
     <property name="base-listener-name" value="${lang-name}BaseListener"/>
-    <property name="base-listener-file" value="${target-package-dir}/${base-visitor-name}.java"/>
+    <property name="base-listener-file" value="${target-package-dir}/${base-listener-name}.java"/>
 
     <property name="node-itf-name" value="${lang-name}Node"/>
     <property name="base-class-name" value="Abstract${lang-name}Node"/>
