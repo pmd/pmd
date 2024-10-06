@@ -15,6 +15,7 @@
 -->
 
     <property name="target-package-dir" value="${antlr4.outputDirectory}/net/sourceforge/pmd/lang/${lang-id}/ast"/>
+    <property name="stamp-file" value="${project.build.directory}/last-generated-timestamp" />
 
 
     <property name="lang-ast-package" value="net.sourceforge.pmd.lang.${lang-id}.ast" />
@@ -39,6 +40,20 @@
 
     <property name="node-itf-name" value="${lang-name}Node"/>
     <property name="base-class-name" value="Abstract${lang-name}Node"/>
+
+    <target name="check-up-to-date"
+            description="Checks the input files are up to date">
+
+        <uptodate property="processing-not-required" targetfile="${stamp-file}">
+            <srcfiles dir="${target-package-dir}" includes="*.java" />
+            <srcfiles file="${ant.file}" />
+        </uptodate>
+        <echo message="Up-to-date check: processing-not-required=${processing-not-required}" />
+    </target>
+
+    <target name="update-stamp-file" unless="processing-not-required">
+        <touch file="${stamp-file}" />
+    </target>
 
     <condition property="rename-parser">
         <and>
@@ -72,7 +87,9 @@
               tofile="${parser-file}"/>
     </target>
 
-    <target name="cpd-language" description="Adapt Antlr sources for CPD-only languages">
+    <target name="cpd-language" depends="check-up-to-date, cpd-language-processing, update-stamp-file"/>
+    <target name="cpd-language-processing" description="Adapt Antlr sources for CPD-only languages"
+            unless="processing-not-required">
         <!-- We only need the Lexer file. -->
         <delete file="${parser-file}"/>
         <delete>
