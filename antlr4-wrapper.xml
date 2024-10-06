@@ -48,6 +48,9 @@
     <property name="node-itf-name" value="${lang-name}Node"/>
     <property name="base-class-name" value="Abstract${lang-name}Node"/>
 
+    <property name="lexer-name" value="${lang-name}Lexer"/>
+    <property name="lexer-file" value="${target-package-dir}/${lexer-name}.java"/>
+
     <target name="check-up-to-date"
             description="Checks the input files are up to date">
 
