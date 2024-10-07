@@ -1889,13 +1889,13 @@ void RecordPattern():
   (Annotation())* ReferenceType() RecordStructurePattern()
 }
 
-void RecordStructurePattern() #void:
+void RecordStructurePattern() #PatternList:
 {}
 {
     "(" [ ComponentPatternList() ] ")"
 }
 
-void ComponentPatternList() #PatternList :
+void ComponentPatternList() #void :
 {}
 {
   ComponentPattern() ( "," ComponentPattern() )*

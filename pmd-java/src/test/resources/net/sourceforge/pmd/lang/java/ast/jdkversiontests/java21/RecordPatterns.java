@@ -97,4 +97,14 @@ public class RecordPatterns {
             System.out.println("String " + s);
         }
     }
+
+
+    record Empty(){}
+    void foo(Object o) {
+        if (o instanceof Empty
+            || o instanceof Empty())
+            System.out.println("Empty " + o);
+    }
+
+    ;
 }
