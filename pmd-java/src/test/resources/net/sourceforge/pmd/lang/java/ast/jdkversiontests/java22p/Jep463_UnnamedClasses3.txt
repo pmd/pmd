@@ -1,5 +1,5 @@
 +- CompilationUnit[@PackageName = ""]
-   +- ImplicitClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "", @CanonicalName = null, @EffectiveVisibility = Visibility.V_PACKAGE, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = false, @RegularClass = false, @RegularInterface = false, @SimpleName = "", @Static = false, @TopLevel = true, @UnnamedToplevelClass = true, @Visibility = Visibility.V_PACKAGE]
+   +- ImplicitClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "", @CanonicalName = null, @EffectiveVisibility = Visibility.V_PACKAGE, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = false, @RegularClass = false, @RegularInterface = false, @Sealed = false, @SimpleName = "", @Static = false, @TopLevel = true, @UnnamedToplevelClass = true, @Visibility = Visibility.V_PACKAGE]
       +- ModifierList[@EffectiveModifiers = (), @ExplicitModifiers = ()]
       +- ClassBody[@Empty = false, @Size = 2]
          +- FieldDeclaration[@EffectiveVisibility = Visibility.V_PACKAGE, @Static = false, @Visibility = Visibility.V_PACKAGE]

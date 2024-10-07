@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTPermitsList;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponentList;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
@@ -362,6 +363,24 @@ final class AstClassSym
     @Override
     public boolean isAnonymousClass() {
         return node.isAnonymous();
+    }
+
+    @Override
+    public boolean isSealed() {
+        return node.isSealed();
+    }
+
+    @Override
+    public List<JClassSymbol> getPermittedSubclasses() {
+        ASTPermitsList permitsList = node.firstChild(ASTPermitsList.class);
+        if (permitsList != null) {
+            List<JClassSymbol> result = new ArrayList<>();
+            for (ASTClassType type : permitsList) {
+                result.add((JClassSymbol) type.getTypeMirror().getSymbol());
+            }
+            return result;
+        }
+        return Collections.emptyList();
     }
 
     @Override

@@ -152,4 +152,10 @@ class ClassStubBuilder extends ClassVisitor {
         }
         return new MethodInfoVisitor(execStub);
     }
+
+    @Override
+    public void visitPermittedSubclass(String permittedSubclass) {
+        ClassStub classStub = resolver.resolveFromInternalNameCannotFail(permittedSubclass);
+        myStub.addPermittedSubclass(classStub);
+    }
 }
