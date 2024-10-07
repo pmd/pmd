@@ -26,7 +26,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
@@ -435,10 +434,6 @@ final class SymTableFactory {
      * of fields by local variables and formals.
      */
     JSymbolTable bodyDeclaration(JSymbolTable parent, JClassType enclosing, @Nullable ASTFormalParameters formals, @Nullable ASTTypeParameters tparams) {
-        NodeStream<ASTVariableId> namedFormals = ASTList.orEmptyStream(formals).map(ASTFormalParameter::getVarId);
-        if (unnamedVariableIsSupported()) {
-            namedFormals = namedFormals.filterNot(ASTVariableId::isUnnamed);
-        }
         return new SymbolTableImpl(
             VARS.shadow(varNode(parent), ScopeInfo.FORMAL_PARAM, VARS.groupByName(ASTList.orEmptyStream(formals), fp -> {
                 ASTVariableId varId = fp.getVarId();
@@ -478,10 +473,6 @@ final class SymTableFactory {
             return parent;
         }
         return SymbolTableImpl.withVars(parent, VARS.augment(varNode(parent), false, ScopeInfo.LOCAL, id.getTypeSystem().sigOf(enclosing, (JLocalVariableSymbol) id.getSymbol())));
-    }
-
-    private boolean unnamedVariableIsSupported() {
-        return processor.getJdkVersion() >= 22;
     }
 
     JSymbolTable localTypeSymTable(JSymbolTable parent, JClassType sym) {
