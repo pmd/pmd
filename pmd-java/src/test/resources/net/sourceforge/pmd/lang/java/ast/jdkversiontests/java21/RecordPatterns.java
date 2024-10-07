@@ -101,8 +101,9 @@ public class RecordPatterns {
 
     record Empty(){}
     void foo(Object o) {
-        boolean x = o instanceof Empty;
-        x = o instanceof Empty();
+        if (o instanceof Empty
+            || o instanceof Empty())
+            System.out.println("Empty " + o);
     }
 
     ;
