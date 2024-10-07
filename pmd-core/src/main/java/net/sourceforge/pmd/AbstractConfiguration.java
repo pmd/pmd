@@ -46,6 +46,8 @@ public abstract class AbstractConfiguration {
     private Path ignoreFilePath;
     private List<Path> excludes = new ArrayList<>();
     private boolean collectRecursive = true;
+    private boolean failOnViolation = true;
+    private boolean failOnError = true;
 
 
     protected AbstractConfiguration(LanguageRegistry languageRegistry, PmdReporter messageReporter) {
@@ -376,5 +378,69 @@ public abstract class AbstractConfiguration {
 
     public void collectFilesRecursively(boolean collectRecursive) {
         this.collectRecursive = collectRecursive;
+    }
+
+    /**
+     * Whether PMD should exit with status 4 (the default behavior, true) if
+     * violations are found or just with 0 (to not break the build, e.g.).
+     *
+     * <p>Note: If additionally recoverable errors occurred, the exit status is 5. See
+     * {@link #isFailOnError()}.
+     *
+     * @return failOnViolation
+     *
+     * @see #isFailOnError()
+     * @since 6.0.0
+     */
+    public boolean isFailOnViolation() {
+        return failOnViolation;
+    }
+
+    /**
+     * Sets whether PMD should exit with status 4 (the default behavior, true)
+     * if violations are found or just with 0 (to not break the build, e.g.).
+     *
+     * <p>Note: If additionally recoverable errors occurred, the exit status is 5. See
+     * {@link #isFailOnError()}.
+     *
+     * @param failOnViolation whether to exit with 4 and fail the build if violations are found.
+     *
+     * @see #isFailOnError()
+     * @since 6.0.0
+     */
+    public void setFailOnViolation(boolean failOnViolation) {
+        this.failOnViolation = failOnViolation;
+    }
+
+    /**
+     * Whether PMD should exit with status 5 (the default behavior, true) if
+     * recoverable errors occurred or just with 0 (to not break the build, e.g.).
+     *
+     * <p>Note: If only violations are found, the exit status is 4. See
+     * {@link #isFailOnViolation()}.
+     *
+     * @return failOnError
+     *
+     * @see #isFailOnViolation()
+     * @since 7.3.0
+     */
+    public boolean isFailOnError() {
+        return failOnError;
+    }
+
+    /**
+     * Sets whether PMD should exit with status 5 (the default behavior, true)
+     * if recoverable errors occurred or just with 0 (to not break the build, e.g.).
+     *
+     * <p>Note: If only violations are found, the exit status is 4. See
+     * {@link #isFailOnViolation()}.
+     *
+     * @param failOnError whether to exit with 5 and fail the build if recoverable errors occurred.
+     *
+     * @see #isFailOnViolation()
+     * @since 7.3.0
+     */
+    public void setFailOnError(boolean failOnError) {
+        this.failOnError = failOnError;
     }
 }

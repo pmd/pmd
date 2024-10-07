@@ -1,7 +1,5 @@
 entries:
 - title: sidebar
-  product: PMD
-  version: '!PMD_VERSION!'
   folders:
   - title: null
     output: pdf
@@ -30,6 +28,12 @@ entries:
       output: web, pdf
     - title: Getting help
       url: /pmd_about_help.html
+      output: web, pdf
+    - title: Release policies
+      url: /pmd_about_release_policies.html
+      output: web, pdf
+    - title: Support lifecycle
+      url: /pmd_about_support_lifecycle.html
       output: web, pdf
   - title: User Documentation
     output: web, pdf
@@ -256,6 +260,9 @@ entries:
         - title: Error Prone
           output: web, pdf
           url: /pmd_rules_ecmascript_errorprone.html
+        - title: Performance
+          output: web, pdf
+          url: /pmd_rules_ecmascript_performance.html
     - title: null
       output: web, pdf
       subfolders:
@@ -517,7 +524,7 @@ entries:
       url: /pmd_devdocs_building.html
       output: web, pdf
     - title: Contributing
-      external_url: https://github.com/pmd/pmd/blob/master/CONTRIBUTING.md
+      external_url: https://github.com/pmd/pmd/blob/main/CONTRIBUTING.md
       output: web, pdf
     - title: Writing documentation
       url: /pmd_devdocs_writing_documentation.html

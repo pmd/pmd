@@ -75,7 +75,7 @@ public class CognitiveComplexityRule extends AbstractApexRule {
                     String.valueOf(classLevelThreshold),
                 };
 
-                asCtx(data).addViolation(node, messageParams);
+                asCtx(data).addViolation(node, (Object[]) messageParams);
             }
         }
         return data;

@@ -93,6 +93,9 @@ open class BaseNodeAttributePrinter : TextTreeRenderer(true, -1) {
             is Enum<*> -> value.enumDeclaringClass.simpleName + "." + value.name
             is Class<*> -> value.canonicalName?.let { "$it.class" }
             is Number, is Boolean -> value.toString()
+            is Collection<*> -> value.joinToString(prefix = "(", postfix = ")", separator = ", ") {
+                "${valueToString(it)}"
+            }
             null -> "null"
             else -> null
         }

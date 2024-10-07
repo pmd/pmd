@@ -13,11 +13,8 @@ import net.sourceforge.pmd.lang.java.ast.BinaryOp.*
  * @since 7.0.0
  */
 class ASTShiftExpressionTest : ParserTestSpec({
-
-    parserTest("Simple shift expressions") {
-
+    parserTestContainer("Simple shift expressions") {
         inContext(ExpressionParsingCtx) {
-
             "1 >> 2" should parseAs {
                 infixExpr(RIGHT_SHIFT) {
                     int(1)
@@ -86,9 +83,8 @@ class ASTShiftExpressionTest : ParserTestSpec({
         }
     }
 
-    parserTest("Unary expression precedence") {
+    parserTestContainer("Unary expression precedence") {
         inContext(ExpressionParsingCtx) {
-
             "2 >> 2 < 3" should parseAs {
                 infixExpr(LT) {
                     infixExpr(RIGHT_SHIFT) {

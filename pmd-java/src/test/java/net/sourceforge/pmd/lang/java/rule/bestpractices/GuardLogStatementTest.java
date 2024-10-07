@@ -8,4 +8,6 @@ import net.sourceforge.pmd.test.PmdRuleTst;
 
 class GuardLogStatementTest extends PmdRuleTst {
     // no additional unit tests
+
+    public static final String TERM_MSG = "A terminating log message.";
 }

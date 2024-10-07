@@ -7,22 +7,25 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 
 /**
  * An exception that occurs while processing a file. Subtypes include
  * <ul>
+ * <li>{@link MalformedSourceException}: error in source format, eg invalid character escapes (in case that happens before lexing)
  * <li>{@link LexException}: lexical syntax errors
  * <li>{@link ParseException}: syntax errors
  * <li>{@link SemanticException}: exceptions occurring after the parsing
  * phase, because the source code is semantically invalid
  * </ul>
  */
-public class FileAnalysisException extends RuntimeException {
+public class FileAnalysisException extends ContextedRuntimeException {
 
     private FileId fileId = FileId.UNKNOWN;
 

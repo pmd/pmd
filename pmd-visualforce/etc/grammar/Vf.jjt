@@ -13,6 +13,11 @@ options {
 PARSER_BEGIN(VfParserImpl)
 package net.sourceforge.pmd.lang.visualforce.ast;
 
+/**
+ * @deprecated Since 7.5.0. VfParserImpl should have been package private because this is an implementation class
+ * that should not be used directly.
+ */
+@Deprecated
 public class VfParserImpl {
 
 

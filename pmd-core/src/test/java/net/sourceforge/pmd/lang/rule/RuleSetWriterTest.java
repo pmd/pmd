@@ -157,4 +157,23 @@ class RuleSetWriterTest extends RulesetFactoryTestBase {
         assertThat(written, not(containsString("min=\"")));
         assertThat(written, containsString("max=\"10\""));
     }
+
+    @Test
+    void overridingDefaultValueOfPropertyInReference() throws Exception {
+        RuleSet ruleSet = loadRuleSet("created-on-the-fly.xml",
+                rulesetXml(
+                    ruleRef("net/sourceforge/pmd/lang/rule/rulesetwriter-test.xml/SampleXPathRuleWithProperty",
+                            properties(
+                                propertyWithValueAttr("minimum", "42")
+                            )
+                    )
+                )
+        );
+        writer.write(ruleSet);
+        String written = out.toString(StandardCharsets.UTF_8.name());
+        assertThat(written, not(containsString("min=\"")));
+        assertThat(written, not(containsString("max=\"")));
+        assertThat(written, not(containsString("type=\"")));
+        assertThat(written, containsString("value=\"42\""));
+    }
 }

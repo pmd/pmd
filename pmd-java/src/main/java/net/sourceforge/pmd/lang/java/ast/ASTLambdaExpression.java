@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
@@ -65,6 +64,15 @@ public final class ASTLambdaExpression extends AbstractJavaExpr implements Funct
     }
 
 
+    /**
+     * Return true if this lambda is explicitly typed, meaning
+     * all parameters have an explicit type. Note that lambdas
+     * with zero parameters are explicitly typed.
+     */
+    public boolean isExplicitlyTyped() {
+        return getParameters().toStream().none(ASTLambdaParameter::isTypeInferred);
+    }
+
     /** Returns true if this lambda has a block for body. */
     public boolean isBlockBody() {
         return getChild(1) instanceof ASTBlock;
@@ -75,33 +83,39 @@ public final class ASTLambdaExpression extends AbstractJavaExpr implements Funct
         return !isBlockBody();
     }
 
-    /** Returns the body of this expression, if it is a block. */
-    @Nullable
-    public ASTBlock getBlock() {
-        return AstImplUtil.getChildAs(this, 1, ASTBlock.class);
+    /**
+     * Returns the body of this expression, if it is a block.
+     *
+     * @deprecated Use {@link #getBlockBody()}
+     */
+    @Deprecated
+    public @Nullable ASTBlock getBlock() {
+        return getBlockBody();
     }
 
-    /** Returns the body of this expression, if it is an expression. */
-    @Nullable
-    public ASTExpression getExpression() {
-        return AstImplUtil.getChildAs(this, 1, ASTExpression.class);
+    /**
+     * Returns the body of this expression, if it is an expression.
+     *
+     * @deprecated Use {@link #getExpressionBody()}
+     */
+    @Deprecated
+    public @Nullable ASTExpression getExpression() {
+        return getExpressionBody();
     }
 
 
     /**
      * Returns the body of this lambda if it is a block.
      */
-    @Nullable
-    public ASTBlock getBlockBody() {
-        return NodeStream.of(getLastChild()).filterIs(ASTBlock.class).first();
+    public @Nullable ASTBlock getBlockBody() {
+        return AstImplUtil.getChildAs(this, 1, ASTBlock.class);
     }
 
     /**
      * Returns the body of this lambda if it is an expression.
      */
-    @Nullable
-    public ASTExpression getExpressionBody() {
-        return NodeStream.of(getLastChild()).filterIs(ASTExpression.class).first();
+    public @Nullable ASTExpression getExpressionBody() {
+        return AstImplUtil.getChildAs(this, 1, ASTExpression.class);
     }
 
     @Override

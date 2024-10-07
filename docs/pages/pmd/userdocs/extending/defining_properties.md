@@ -97,7 +97,7 @@ static PropertyDescriptor<Mode> modeProperty
 
 ### Example
 
-You can see an example of properties used in a PMD rule such as [AvoidReassigningLoopVariables](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/AvoidReassigningLoopVariablesRule.java#L40).
+You can see an example of properties used in a PMD rule such as [AvoidReassigningLoopVariables](https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/AvoidReassigningLoopVariablesRule.java#L40).
 There are several things to notice here:
 * The property descriptors are declared `static final`, which should generally be
 the case, as descriptors are immutable and can be shared between instances of the same rule;

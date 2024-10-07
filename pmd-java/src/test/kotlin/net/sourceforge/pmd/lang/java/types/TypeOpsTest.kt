@@ -69,7 +69,70 @@ class TypeOpsTest : FunSpec({
                         output = listOf(`t_List{String}`, `t_List{Integer}`))
 
             }
+
+            test("Bug #5029: Recursive type projection") {
+
+                val (acu, spy) = javaParser.parseWithTypeInferenceSpy(
+                    """
+                       class Job<J extends Job<J, R>, R extends Run<J, R>> {
+                            J getLast() { return null; }
+                       }
+                       class Run<J extends Job<J, R>, R extends Run<J, R>> {}
+                       
+                       class Foo {
+                         static Job<?, ?> foo(Job<?,?> job) {
+                            var x = job.getLast();
+                            return x;
+                         }
+                       }
+                    """.trimIndent()
+                )
+                val (jobt, runt) = acu.declaredTypeSignatures()
+                val xVar = acu.varId("x")
+                spy.shouldBeOk {
+                    xVar shouldHaveType jobt[`?` extends jobt[`?`, `?` extends runt[`?`, `?`]], `?`]
+                }
+
+
+            }
+            test("#5167 problem in projection") {
+                val (acu, spy) = javaParser.parseWithTypeInferenceSpy(
+                    """
+import java.lang.annotation.Annotation;
+interface Bar<T> {
+    Baz<T> getBaz();
+}
+
+interface Predicate<T> {
+    boolean check(T t);
+}
+interface Stream<T>{
+    T findSome();
+}
+interface Baz<T>{
+    Stream<Bar<? super T>> filterMethods(Predicate<? super T> p);
+}
+
+class Foo {
+
+    private static Bar<?> foo(
+        Bar<?> type, Class<? extends Annotation> annotation, boolean required) {
+        var method = type.getBaz().filterMethods(m -> true).findSome();
+        return method;
+    }
+}
+            """.trimIndent()
+                )
+
+                val (barT) = acu.declaredTypeSignatures()
+                val methodId = acu.varId("method")
+
+                spy.shouldBeOk {
+                    methodId shouldHaveType barT[`?`]
+                }
+            }
         }
     }
+
 
 })

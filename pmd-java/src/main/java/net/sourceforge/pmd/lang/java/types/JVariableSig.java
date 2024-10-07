@@ -88,8 +88,13 @@ public class JVariableSig {
                              ? ((JClassType) declarator).getTypeParamSubst()
                              : Substitution.EMPTY; // array
 
-        return declarator.isRaw() ? ClassTypeImpl.eraseToRaw(sym.getTypeMirror(Substitution.EMPTY), subst)
+        JTypeMirror symType = declarator.isRaw()
+                                  ? ClassTypeImpl.eraseToRaw(sym.getTypeMirror(Substitution.EMPTY), subst)
                                   : sym.getTypeMirror(subst);
+        if (symType instanceof JWildcardType) {
+            throw new IllegalStateException("Forgotten capture of " + this.declarator + " for symbol " + sym);
+        }
+        return symType;
     }
 
     static JVariableSig.FieldSig forField(JTypeMirror declarator, JFieldSymbol sym) {

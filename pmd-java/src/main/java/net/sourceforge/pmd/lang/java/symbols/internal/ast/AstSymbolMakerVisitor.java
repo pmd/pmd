@@ -79,18 +79,6 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
     }
 
     @Override
-    public Void visit(ASTCompilationUnit node, AstSymFactory data) {
-        if (node.isUnnamedClass()) {
-            JClassSymbol sym = data.setClassSymbol(node);
-            enclosingSymbols.push(sym);
-            visitChildren(node, data);
-            enclosingSymbols.pop();
-            return null;
-        }
-        return super.visit(node, data);
-    }
-
-    @Override
     public Void visitTypeDecl(ASTTypeDeclaration node, AstSymFactory data) {
         String binaryName = makeBinaryName(node);
         @Nullable String canonicalName = makeCanonicalName(node, binaryName);
@@ -127,6 +115,8 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
                 + simpleName;
         } else if (node.isAnonymous()) {
             simpleName = "" + anonymousCounters.getFirst().incrementAndGet();
+        } else if (node.isUnnamedToplevelClass()) {
+            simpleName = "";
         }
 
         String enclosing = enclosingBinaryNames.peek();
@@ -137,7 +127,7 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
 
     @Nullable
     private String makeCanonicalName(ASTTypeDeclaration node, String binaryName) {
-        if (node.isAnonymous() || node.isLocal()) {
+        if (node.isAnonymous() || node.isLocal() || node.isUnnamedToplevelClass()) {
             return null;
         }
 

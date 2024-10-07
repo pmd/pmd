@@ -24,13 +24,7 @@
     <!-- <rule ref="category/java/bestpractices.xml/ForLoopVariableCount" /> -->
     <rule ref="category/java/bestpractices.xml/GuardLogStatement"/>
     <!-- <rule ref="category/java/bestpractices.xml/JUnit4SuitesShouldUseSuiteAnnotation" /> -->
-    <!-- <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseAfterAnnotation" /> -->
-    <!-- <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseBeforeAnnotation" /> -->
-    <!-- <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseTestAnnotation" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnit5TestShouldBePackagePrivate" /> -->
-    <!-- <rule ref="category/java/bestpractices.xml/JUnitAssertionsShouldIncludeMessage" /> -->
-    <!-- <rule ref="category/java/bestpractices.xml/JUnitTestContainsTooManyAsserts" /> -->
-    <!-- <rule ref="category/java/bestpractices.xml/JUnitTestsShouldIncludeAssert" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnitUseExpected" /> -->
     <rule ref="category/java/bestpractices.xml/LiteralsFirstInComparisons" />
     <rule ref="category/java/bestpractices.xml/LooseCoupling"/>
@@ -45,12 +39,20 @@
     <rule ref="category/java/bestpractices.xml/SimplifiableTestAssertion"/>
     <rule ref="category/java/bestpractices.xml/SwitchStmtsShouldHaveDefault"/>
     <!-- <rule ref="category/java/bestpractices.xml/SystemPrintln" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/UnitTestAssertionsShouldIncludeMessage" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/UnitTestContainsTooManyAsserts" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/UnitTestShouldIncludeAssert" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/UnitTestShouldUseAfterAnnotation" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/UnitTestShouldUseBeforeAnnotation" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/UnitTestShouldUseTestAnnotation" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/UnnecessaryVarargsArrayCreation" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/UnusedAssignment"/> -->
     <rule ref="category/java/bestpractices.xml/UnusedFormalParameter"/>
     <rule ref="category/java/bestpractices.xml/UnusedLocalVariable"/>
     <rule ref="category/java/bestpractices.xml/UnusedPrivateField"/>
     <rule ref="category/java/bestpractices.xml/UnusedPrivateMethod"/>
     <rule ref="category/java/bestpractices.xml/UseCollectionIsEmpty"/>
+    <!-- <rule ref="category/java/bestpractices.xml/UseEnumCollections"/> -->
     <rule ref="category/java/bestpractices.xml/UseStandardCharsets" />
     <!-- <rule ref="category/java/bestpractices.xml/UseTryWithResources" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/UseVarargs" /> -->
@@ -62,6 +64,7 @@
     <!--<rule ref="category/java/codestyle.xml/FieldNamingConventions" />-->
     <rule ref="category/java/codestyle.xml/FormalParameterNamingConventions"/>
     <rule ref="category/java/codestyle.xml/GenericsNaming"/>
+    <rule ref="category/java/codestyle.xml/LambdaCanBeMethodReference"/>
     <!-- <rule ref="category/java/codestyle.xml/LinguisticNaming" /> -->
     <rule ref="category/java/codestyle.xml/LocalVariableNamingConventions"/>
     <!-- <rule ref="category/java/codestyle.xml/LongVariable" /> -->
@@ -209,6 +212,7 @@
     <rule ref="category/java/errorprone.xml/CloneMethodReturnTypeMustMatchClassName"/>
     <!-- <rule ref="category/java/errorprone.xml/CloneThrowsCloneNotSupportedException"/> deprecated since 6.35.0 -->
     <rule ref="category/java/errorprone.xml/CloseResource"/>
+    <!-- <rule ref="category/java/errorprone.xml/ConfusingArgumentToVarargsMethod"/> -->
     <rule ref="category/java/errorprone.xml/CompareObjectsWithEquals"/>
     <rule ref="category/java/errorprone.xml/ComparisonWithNaN"/>
     <!-- <rule ref="category/java/errorprone.xml/ConstructorCallsOverridableMethod" /> -->
@@ -275,6 +279,7 @@
 
 
     <!-- <rule ref="category/java/multithreading.xml/AvoidSynchronizedAtMethodLevel" /> -->
+    <!-- <rule ref="category/java/multithreading.xml/AvoidSynchronizedStatement" /> -->
     <rule ref="category/java/multithreading.xml/AvoidThreadGroup"/>
     <rule ref="category/java/multithreading.xml/AvoidUsingVolatile"/>
     <!-- <rule ref="category/java/multithreading.xml/DoNotUseThreads" /> -->

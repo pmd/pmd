@@ -18,15 +18,15 @@ It usually takes 15 minutes.
 ## Contents
 
 * Main page - aka "Landing page": <https://pmd.github.io>
-  * Layout: [_layouts/default.html](https://github.com/pmd/pmd.github.io/blob/master/_layouts/default.html).
-    It includes all the sub section, which can be found in the includes directory [_includes/](https://github.com/pmd/pmd.github.io/tree/master/_includes)
+  * Layout: [_layouts/default.html](https://github.com/pmd/pmd.github.io/blob/main/_layouts/default.html).
+    It includes all the sub section, which can be found in the includes directory [_includes/](https://github.com/pmd/pmd.github.io/tree/main/_includes)
   * The latest PMD version is configured in `_config.yml` and the variables `site.pmd.latestVersion` are used
-    e.g. in [_includes/home.html](https://github.com/pmd/pmd.github.io/blob/master/_includes/home.html).
+    e.g. in [_includes/home.html](https://github.com/pmd/pmd.github.io/blob/main/_includes/home.html).
 * Blog - aka "News": <https://pmd.github.io/news/>
-  * This is a section on main page. It shows the 5 latest news. See [_includes/news.html](https://github.com/pmd/pmd.github.io/blob/master/_includes/news.html).
+  * This is a section on main page. It shows the 5 latest news. See [_includes/news.html](https://github.com/pmd/pmd.github.io/blob/main/_includes/news.html).
   * There is also a sub page "news" which lists all news.
-    * Layout: [_layouts/news.html](https://github.com/pmd/pmd.github.io/blob/master/_layouts/news.html)
-    * Page (which is pretty empty): [news.html](https://github.com/pmd/pmd.github.io/blob/master/news.html)
+    * Layout: [_layouts/news.html](https://github.com/pmd/pmd.github.io/blob/main/_layouts/news.html)
+    * Page (which is pretty empty): [news.html](https://github.com/pmd/pmd.github.io/blob/main/news.html)
 
 ## Building the page locally
 

@@ -30,6 +30,7 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JModuleSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.CoreResolvers;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver;
@@ -71,6 +72,39 @@ public final class JavaResolvers {
      */
     static boolean canBeImportedIn(String thisPackage, JAccessibleElementSymbol member) {
         return isAccessibleIn(null, thisPackage, member, false);
+    }
+
+    @NonNull
+    static NameResolver<JTypeMirror> moduleImport(Set<String> moduleNames,
+                                                  final SymbolResolver symbolResolver,
+                                                  final String thisPackage) {
+        return new SingleNameResolver<JTypeMirror>() {
+            @Override
+            public @Nullable JTypeMirror resolveFirst(String simpleName) {
+                for (String module : moduleNames) {
+                    JModuleSymbol moduleSymbol = symbolResolver.resolveModule(module);
+
+                    if (moduleSymbol == null) {
+                        // TODO: log warning about incomplete auxclasspath
+                        return null;
+                    }
+
+                    for (String packageName : moduleSymbol.getExportedPackages()) {
+                        JClassSymbol sym = symbolResolver.resolveClassFromCanonicalName(packageName + "." + simpleName);
+                        if (sym != null && canBeImportedIn(thisPackage, sym)) {
+                            return sym.getTypeSystem().typeOf(sym, false);
+                        }
+                    }
+                }
+
+                return null;
+            }
+
+            @Override
+            public String toString() {
+                return "ModuleImportResolver(" + moduleNames + ")";
+            }
+        };
     }
 
     @NonNull

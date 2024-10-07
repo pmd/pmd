@@ -8,6 +8,7 @@ import com.github.oowekyala.treeutils.matchers.baseShouldMatchSubtree
 import com.github.oowekyala.treeutils.printers.KotlintestBeanTreePrinter
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.scopes.AbstractContainerScope
+import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestScope
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
@@ -34,8 +35,9 @@ enum class JavaVersion : Comparable<JavaVersion> {
     J18,
     J19,
     J20,
-    J21, J21__PREVIEW,
-    J22, J22__PREVIEW;
+    J21,
+    J22, J22__PREVIEW,
+    J23, J23__PREVIEW;
 
     /** Name suitable for use with e.g. [JavaParsingHelper.parse] */
     val pmdName: String = name.removePrefix("J").replaceFirst("__", "-").replace('_', '.').lowercase()
@@ -183,7 +185,8 @@ open class ParserTestCtx(testScope: TestScope,
                          val importedTypes: MutableList<Class<*>> = mutableListOf(),
                          val otherImports: MutableList<String> = mutableListOf(),
                          var packageName: String = "",
-                         var genClassHeader: String = "class Foo"): AbstractContainerScope(testScope) {
+                         var genClassHeader: String = "class Foo",
+                         private var registeredTestCases: Int = 0): AbstractContainerScope(testScope) {
 
     var parser: JavaParsingHelper = javaVersion.parser.withProcessing(false)
         private set
@@ -272,8 +275,13 @@ open class ParserTestCtx(testScope: TestScope,
                     "Expected '$value' not to parse in ${nodeParsingCtx.toString().addArticle()}"
                 }
             )
-
         }
     }
 
+    override suspend fun registerTestCase(nested: NestedTest) {
+        registeredTestCases++
+        super.registerTestCase(nested)
+    }
+
+    fun hasMoreThanOneChild() : Boolean = registeredTestCases > 1
 }

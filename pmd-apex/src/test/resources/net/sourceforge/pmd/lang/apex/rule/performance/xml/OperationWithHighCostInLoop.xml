@@ -135,4 +135,18 @@ public class Foo {
             ]]></code>
     </test-code>
     <!-- End Schema method invocations -->
+
+    <test-code>
+        <description>#5139 [apex] OperationWithHighCostInLoop not firing in triggers</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+trigger AccountTrigger on Account (before insert, before update) {
+    integer i = 0;
+    for (i = 0; i <15; i++) {
+        SObjectType token = Schema.getGlobalDescribe().get('Account');
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

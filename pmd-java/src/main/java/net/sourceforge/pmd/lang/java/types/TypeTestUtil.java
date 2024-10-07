@@ -139,7 +139,7 @@ public final class TypeTestUtil {
      * @param t1 A supertype
      * @param t2 A type
      *
-     * @return Whether t1 is a subtype of t2
+     * @return Whether t2 is a subtype of t1
      */
     public static boolean isA(@Nullable JTypeMirror t1, @NonNull JTypeMirror t2) {
         if (t1 == null) {
@@ -153,6 +153,13 @@ public final class TypeTestUtil {
             return false; // conventionally
         } else if (t2 instanceof JTypeVar) {
             return t1.isTop() || isA(t1, ((JTypeVar) t2).getUpperBound());
+        } else if (t2 instanceof JIntersectionType) {
+            for (JTypeMirror subt : ((JIntersectionType) t2).getComponents()) {
+                if (isA(t1, subt)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         return t2.isSubtypeOf(t1);

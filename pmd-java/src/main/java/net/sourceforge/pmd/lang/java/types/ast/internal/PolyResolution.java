@@ -15,12 +15,13 @@ import static net.sourceforge.pmd.util.AssertionUtil.shouldNotReachHere;
 import static net.sourceforge.pmd.util.CollectionUtil.all;
 import static net.sourceforge.pmd.util.CollectionUtil.map;
 
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayInitializer;
@@ -44,7 +45,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVoidType;
 import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
@@ -57,6 +58,7 @@ import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
@@ -86,6 +88,7 @@ public final class PolyResolution {
     private final ExprContext booleanCtx;
     private final ExprContext stringCtx;
     private final ExprContext intCtx;
+    private final Map<PrimitiveTypeKind, ExprContext> numericContexts;
 
     PolyResolution(Infer infer) {
         this.infer = infer;
@@ -94,7 +97,13 @@ public final class PolyResolution {
 
         this.stringCtx = newStringCtx(ts);
         this.booleanCtx = newNonPolyContext(ts.BOOLEAN);
-        this.intCtx = newNumericContext(ts.INT);
+        this.numericContexts = new EnumMap<>(PrimitiveTypeKind.class);
+        for (PrimitiveTypeKind kind : PrimitiveTypeKind.values()) {
+            if (kind != PrimitiveTypeKind.BOOLEAN) {
+                this.numericContexts.put(kind, newOtherContext(ts.getPrimitive(kind), ExprContextKind.NUMERIC));
+            }
+        }
+        this.intCtx = numericContexts.get(PrimitiveTypeKind.INT);
     }
 
     private boolean isPreJava8() {
@@ -361,28 +370,23 @@ public final class PolyResolution {
     }
 
     private static @Nullable JTypeMirror returnTargetType(ASTReturnStatement context) {
-        Node methodDecl =
-            context.ancestors().first(
-                it -> it instanceof ASTMethodDeclaration
-                    || it instanceof ASTLambdaExpression
-                    || it instanceof ASTTypeDeclaration
-            );
+        JavaNode methodDecl = JavaAstUtils.getReturnTarget(context);
 
-        if (methodDecl == null || methodDecl instanceof ASTTypeDeclaration) {
-            // in initializer, or constructor decl, return with expression is forbidden
-            // (this is an error)
-            return null;
-        } else if (methodDecl instanceof ASTLambdaExpression) {
+        if (methodDecl instanceof ASTLambdaExpression) {
             // return within a lambda
             // "assignment context", deferred to lambda inference
             JMethodSig fun = ((ASTLambdaExpression) methodDecl).getFunctionalMethod();
             return fun == null ? null : fun.getReturnType();
-        } else {
+        } else if (methodDecl instanceof ASTMethodDeclaration) {
             @NonNull ASTType resultType = ((ASTMethodDeclaration) methodDecl).getResultTypeNode();
             return resultType instanceof ASTVoidType ? null // (this is an error)
                                                      : resultType.getTypeMirror();
         }
+        // Return within ctor or initializer or the like,
+        // return with value is disallowed. This is an error.
+        return null;
     }
+
 
     /**
      * Returns the node on which the type of the given node depends.
@@ -441,6 +445,11 @@ public final class PolyResolution {
                     return ExprContext.getMissingInstance();
                 }
 
+                if (!internalUse) {
+                    // Only in type resolution do we need to fetch the outermost context
+                    return newInvocContext(papi, node.getIndexInParent());
+                }
+
                 // Constructor or method call, maybe there's another context around
                 // We want to fetch the outermost invocation node, but not further
                 ExprContext outerCtx = contextOf(papi, /*onlyInvoc:*/true, internalUse);
@@ -476,6 +485,7 @@ public final class PolyResolution {
         } else if (papa instanceof ASTReturnStatement) {
 
             return newAssignmentCtx(returnTargetType((ASTReturnStatement) papa));
+
 
         } else if (papa instanceof ASTVariableDeclarator
             && !((ASTVariableDeclarator) papa).getVarId().isTypeInferred()) {
@@ -520,6 +530,19 @@ public final class PolyResolution {
             return node.getIndexInParent() == 0 ? booleanCtx // condition
                                                 : stringCtx; // message
 
+        } else if (papa instanceof ASTLambdaExpression && node.getIndexInParent() == 1) {
+            // lambda expression body
+
+
+            JMethodSig fun = ((ASTLambdaExpression) papa).getFunctionalMethod();
+            if (fun == null || TypeOps.isContextDependent(fun)) {
+                // Missing context, because the expression type itself
+                // is used to infer the context type.
+                return ExprContext.getMissingInstance();
+            }
+            return newAssignmentCtx(fun.getReturnType());
+
+
         } else if (papa instanceof ASTIfStatement
             || papa instanceof ASTLoopStatement && !(papa instanceof ASTForeachStatement)) {
 
@@ -553,17 +576,26 @@ public final class PolyResolution {
             case OR:
             case XOR:
             case AND:
-                return ctxType == ts.BOOLEAN ? booleanCtx : newNumericContext(ctxType); // NOPMD CompareObjectsWithEquals
+                return ctxType == ts.BOOLEAN ? booleanCtx : getNumericContext(ctxType); // NOPMD CompareObjectsWithEquals
             case LEFT_SHIFT:
             case RIGHT_SHIFT:
             case UNSIGNED_RIGHT_SHIFT:
                 return node.getIndexInParent() == 1 ? intCtx
-                                                    : newNumericContext(nodeType.unbox());
+                                                    : getNumericContext(nodeType.unbox());
             case EQ:
             case NE:
-                if (otherType.isPrimitive() != nodeType.isPrimitive()) {
-                    return newNonPolyContext(otherType.unbox());
+                if (otherType.isNumeric() || nodeType.isNumeric()) {
+                    JTypeMirror prom = TypeConversion.binaryNumericPromotion(otherType.unbox(), nodeType.unbox());
+                    if (prom == ts.ERROR) {
+                        // cannot be promoted
+                        return ExprContext.getMissingInstance();
+                    }
+                    return getNumericContext(prom);
+                } else if (otherType.isPrimitive(PrimitiveTypeKind.BOOLEAN)
+                    || nodeType.isPrimitive(PrimitiveTypeKind.BOOLEAN)) {
+                    return booleanCtx;
                 }
+
                 return ExprContext.getMissingInstance();
             case ADD:
                 if (TypeTestUtil.isA(String.class, ctxType)) {
@@ -575,15 +607,34 @@ public final class PolyResolution {
             case MUL:
             case DIV:
             case MOD:
-                return newNumericContext(ctxType); // binary promoted by LazyTypeResolver
+                return getNumericContext(ctxType); // binary promoted by LazyTypeResolver
             case LE:
             case GE:
             case GT:
             case LT:
-                return newNumericContext(TypeConversion.binaryNumericPromotion(nodeType, otherType));
+                return getNumericContext(TypeConversion.binaryNumericPromotion(nodeType, otherType));
             default:
                 return ExprContext.getMissingInstance();
             }
+        } else if (papa instanceof ASTUnaryExpression) {
+            switch (((ASTUnaryExpression) papa).getOperator()) {
+            case UNARY_PLUS:
+            case UNARY_MINUS:
+            case COMPLEMENT:
+                JTypeMirror parentType = ((ASTUnaryExpression) papa).getTypeMirror();
+                if (parentType == ts.ERROR) {
+                    break;
+                }
+                // this was already unary promoted
+                return getNumericContext(parentType);
+            case NEGATION:
+                return booleanCtx;
+            default:
+                break;
+            }
+            return ExprContext.getMissingInstance();
+        } else if (papa instanceof ASTSwitchLike && node.getIndexInParent() == 0) {
+            return getNumericContext(((ASTExpression) node).getTypeMirror().unbox());
         } else {
             return ExprContext.getMissingInstance();
         }
@@ -611,8 +662,7 @@ public final class PolyResolution {
         return node instanceof ASTSwitchExpression && child.getIndexInParent() != 0 // not the condition
             || node instanceof ASTSwitchArrowBranch
             || node instanceof ASTConditionalExpression && child.getIndexInParent() != 0 // not the condition
-            // lambdas "forward the context" when you have nested lambdas, eg: `x -> y -> f(x, y)`
-            || node instanceof ASTLambdaExpression && child.getIndexInParent() == 1; // the body expression
+            || internalUse && node instanceof ASTLambdaExpression && child.getIndexInParent() == 1;
     }
 
 
@@ -682,10 +732,10 @@ public final class PolyResolution {
         return newOtherContext(stringType, ExprContextKind.STRING);
     }
 
-    static ExprContext newNumericContext(JTypeMirror targetType) {
+    ExprContext getNumericContext(JTypeMirror targetType) {
         if (targetType.isPrimitive()) {
             assert targetType.isNumeric() : "Not a numeric type - " + targetType;
-            return newOtherContext(targetType, ExprContextKind.NUMERIC);
+            return numericContexts.get(((JPrimitiveType) targetType).getKind());
         }
         return ExprContext.getMissingInstance(); // error
     }

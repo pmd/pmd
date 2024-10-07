@@ -138,7 +138,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
         this.benchmark = benchmark;
     }
 
-    @Option(names = "--show-suppressed", description = "Report should show suppressed rule violations.")
+    @Option(names = "--show-suppressed", description = "Report should show suppressed rule violations if supported by the report format.")
     public void setShowSuppressed(final boolean showSuppressed) {
         this.showSuppressed = showSuppressed;
     }
@@ -270,6 +270,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
         configuration.setSuppressMarker(suppressMarker);
         configuration.setThreads(threads);
         configuration.setFailOnViolation(failOnViolation);
+        configuration.setFailOnError(failOnError);
         configuration.setAnalysisCacheLocation(cacheLocation != null ? cacheLocation.toString() : null);
         configuration.setIgnoreIncrementalAnalysis(noCache);
 
@@ -330,6 +331,8 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
                 if (pmdReporter.numErrors() > 0) {
                     // processing errors are ignored
                     return CliExitCode.ERROR;
+                } else if (stats.getNumErrors() > 0 && configuration.isFailOnError()) {
+                    return CliExitCode.RECOVERED_ERRORS_OR_VIOLATIONS;
                 } else if (stats.getNumViolations() > 0 && configuration.isFailOnViolation()) {
                     return CliExitCode.VIOLATIONS_FOUND;
                 } else {

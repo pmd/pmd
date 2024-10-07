@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>Static referee, return type adapted int to void</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Lambda expression could be written as a method reference: `Foo::correct`</message>
+        </expected-messages>
+        <code><![CDATA[
+            public final class Foo {
+
+                public static void iTakeLambda(ALambda l) {}
+                static {
+                    iTakeLambda(x -> correct(x)); // flag
+                    int foo = 0;
+                    iTakeLambda(x -> correct(foo)); // ok
+                }
+                public static int correct(int a) {
+                    return 0;
+                }
+            }
+
+            interface ALambda {
+                void doSomething(int a);
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>self referee, return type adapted int to void</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Lambda expression could be written as a method reference: `this::correct`</message>
+        </expected-messages>
+        <code><![CDATA[
+            public final class Foo {
+
+                public static void iTakeLambda(ALambda l) {}
+                static {
+                    iTakeLambda(x -> correct(x)); // flag
+                    int foo = 0;
+                    iTakeLambda(x -> correct(foo)); // ok
+                }
+                public int correct(int a) {
+                    return 0;
+                }
+            }
+
+            interface ALambda {
+                void doSomething(int a);
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Block lambda</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Lambda expression could be written as a method reference: `this::correct`</message>
+        </expected-messages>
+        <code><![CDATA[
+            public final class Foo {
+
+                public static void iTakeLambda(ALambda l) {}
+                static {
+                    iTakeLambda(x ->{ return correct(x); }); // flag
+                    iTakeLambda(x ->{ if(x == 1) return correct(x); else return correct(x); }); // do not flag
+                    iTakeLambda(x ->{
+                        foo();
+                        return correct(x);
+                    }); // do not flag
+                    iTakeLambda(x -> {});
+                }
+                public int correct(int a) {
+                    return 0;
+                }
+            }
+
+            interface ALambda {
+                void doSomething(int a);
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>cannot rewrite if qualifier is ctor call</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public final class Foo {
+
+                public static void iTakeLambda(ALambda l) {}
+                static {
+                    iTakeLambda(x -> new Foo().correct(x));
+                }
+                public int correct(int a) {
+                    return 0;
+                }
+            }
+
+            interface ALambda {
+                void doSomething(int a);
+            }
+            ]]></code>
+    </test-code>
+
+    <code-fragment id="methodReceiver">
+        <![CDATA[
+            public final class Foo {
+
+                public static void iTakeLambda(ALambda l) {}
+                static {
+                    iTakeLambda(x -> foo().correct(x));
+                }
+                public int correct(int a) {
+                    return 0;
+                }
+                static Foo foo() { return new Foo(); }
+            }
+
+            interface ALambda {
+                void doSomething(int a);
+            }
+            ]]>
+    </code-fragment>
+    
+    <test-code>
+        <description>Ignore methods by default</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="methodReceiver"/>
+    </test-code>
+    <test-code>
+        <description>Property to consider methods</description>
+        <rule-property name="ignoreIfReceiverIsMethod">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Lambda expression could be written as a method reference: `foo()::correct`</message>
+        </expected-messages>
+        <code-ref id="methodReceiver"/>
+    </test-code>
+
+
+    <test-code>
+        <description>can rewrite many different qualifier types without NPE risk</description>
+        <rule-property name="ignoreIfMayNPE">true</rule-property>
+        <expected-problems>4</expected-problems>
+        <expected-messages>
+            <message>Lambda expression could be written as a method reference: `"abc"::indexOf`</message>
+            <message>Lambda expression could be written as a method reference: `this::correct`</message>
+            <message>Lambda expression could be written as a method reference: `Integer::valueOf`</message>
+            <message>Lambda expression could be written as a method reference: `String.class::isAssignableFrom`</message>
+        </expected-messages>
+        <code><![CDATA[
+            public final class Foo {
+
+                public static void iTakeLambda(ALambda l) {}
+                public static void iTakeClass(Consumer<Class<?>> l) {}
+                static {
+                    iTakeLambda(x -> "abc".indexOf(x));
+                    iTakeLambda(x -> this.correct(x));
+                    iTakeLambda(x -> Integer.valueOf(x));
+                    iTakeClass(x -> String.class.isAssignableFrom(x));
+                }
+                public boolean correct(int a) {
+                    return false;
+                }
+            }
+
+            interface ALambda {
+                boolean doSomething(int a);
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Test annotated lambda</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.lang.annotation.ElementType;
+            import java.lang.annotation.Target;
+
+            public final class Foo {
+
+                public static void iTakeLambda(ALambda l) {
+                }
+
+                static {
+                    iTakeLambda((@Annot var x) -> Integer.valueOf(x));
+                }
+
+                public boolean correct(int a) {
+                    return false;
+                }
+            }
+
+            @Target(ElementType.TYPE_USE)
+            @interface Annot {
+            }
+
+            interface ALambda {
+                boolean doSomething(int a);
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>test when method call is invalid</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public final class Foo {
+
+                public static void iTakeLambda(ALambda l) {}
+                static {
+                    // parseInt(int) does not exist
+                    iTakeLambda(x -> Integer.parseInt(x));
+                }
+                public boolean correct(int a) {
+                    return false;
+                }
+            }
+
+            interface ALambda {
+                boolean doSomething(int a);
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test when method ref is on receiver</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>Lambda expression could be written as a method reference: `String::isEmpty`</message>
+            <message>Lambda expression could be written as a method reference: `String::contains`</message>
+        </expected-messages>
+        <code><![CDATA[
+            public final class Foo {
+
+                public static void iTakeLambda(ALambda l) {}
+                public static void iTakeLambda(ALambda2 l) {}
+                static {
+                    // parseInt(int) does not exist
+                    iTakeLambda(x -> x.isEmpty());
+                    iTakeLambda((x,c) -> x.contains(c));
+                }
+                public boolean correct(int a) {
+                    return false;
+                }
+            }
+
+            interface ALambda {
+                boolean doSomething(String a, CharSequence c);
+            }
+            interface ALambda2 {
+                boolean doSomething(String a);
+            }
+            ]]></code>
+    </test-code>
+
+    <code-fragment id="riskOfNPE">
+        <![CDATA[
+            public final class Foo {
+
+                public static void iTakeLambda(ALambda l) {}
+                public static void iTakeLambda(ALambda2 l) {}
+                static {
+                    iTakeLambda(x -> foo().bar(x));
+                    iTakeLambda(x -> ((Foo) foo()).bar(x));
+                    iTakeLambda(x -> fooField.bar(x));
+                    // this also may not NPE because it will be converted to String::contains
+                    iTakeLambda((x,c) -> x.contains(c));
+                }
+                public boolean correct(int a) {
+                    return false;
+                }
+                static Foo foo() { return new Foo(); }
+                boolean bar(String x) { return true; }
+                static Foo fooField;
+            }
+
+            interface ALambda {
+                boolean doSomething(String a, CharSequence c);
+            }
+            interface ALambda2 {
+                boolean doSomething(String a);
+            }
+            ]]>
+    </code-fragment>
+
+
+    <test-code>
+        <description>Risk of NPE, ignore = true</description>
+        <rule-property name="ignoreIfMayNPE">true</rule-property>
+        <rule-property name="ignoreIfReceiverIsMethod">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Lambda expression could be written as a method reference: `String::contains`</message>
+        </expected-messages>
+        <code-ref id="riskOfNPE"/>
+    </test-code>
+
+    <test-code>
+        <description>Risk of NPE, ignore = false</description>
+        <rule-property name="ignoreIfMayNPE">false</rule-property>
+        <rule-property name="ignoreIfReceiverIsMethod">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>Lambda expression could be written as a method reference: `fooField::bar`</message>
+            <message>Lambda expression could be written as a method reference: `String::contains`</message>
+        </expected-messages>
+        <code-ref id="riskOfNPE"/>
+    </test-code>
+    <test-code>
+        <description>Risk of NPE, ignore = true, ignore method = false</description>
+        <rule-property name="ignoreIfMayNPE">true</rule-property>
+        <rule-property name="ignoreIfReceiverIsMethod">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Lambda expression could be written as a method reference: `String::contains`</message>
+        </expected-messages>
+        <code-ref id="riskOfNPE"/>
+    </test-code>
+
+    <test-code>
+        <description>Risk of NPE, ignore npe = false, dont ignore methods</description>
+        <rule-property name="ignoreIfMayNPE">false</rule-property>
+        <rule-property name="ignoreIfReceiverIsMethod">false</rule-property>
+        <expected-problems>4</expected-problems>
+        <expected-messages>
+            <message>Lambda expression could be written as a method reference: `foo()::bar`</message>
+            <message>Lambda expression could be written as a method reference: `((Foo) foo())::bar`</message>
+            <message>Lambda expression could be written as a method reference: `fooField::bar`</message>
+            <message>Lambda expression could be written as a method reference: `String::contains`</message>
+        </expected-messages>
+        <code-ref id="riskOfNPE"/>
+    </test-code>
+
+
+
+
+</test-data>

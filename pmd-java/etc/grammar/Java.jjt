@@ -1,4 +1,12 @@
 /**
+ * Support "JEP 455: Primitive Types in Patterns, instanceof, and switch (Preview)" (Java 23)
+ *     Changes in InstanceOfExpression
+ * Support "JEP 476: Module Import Declarations (Preview)" (Java 23)
+ *     Changes in ImportDeclaration
+ * Support "JEP 477: Implicitly Declared Classes and Instance Main Methods (Third Preview)" (Java 23)
+ *     Changes in CompilationUnit, added new node ImplicitClassDeclaration
+ * Andreas Dangel 07/2024
+ *====================================================================
  * Support "JEP 447: Statements before super(...) (Preview)" (Java 22)
  *     Changes in ConstructorBlock
  * Support "JEP 456: Unnamed Variables & Patterns" (Java 22)
@@ -300,7 +308,6 @@ options {
   MULTI = true;
   VISITOR = true;
   NODE_PACKAGE="net.sourceforge.pmd.lang.java.ast";
-  TOKEN_MANAGER_USES_PARSER = true;
 
   // disable the calculation of expected tokens when a parse error occurs
   // depending on the possible allowed next tokens, this
@@ -324,7 +331,6 @@ import java.util.Set;
 import java.util.Map;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.JavaParserImplTokenManager.TokenContext;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 
 class JavaParserImpl {
@@ -602,37 +608,56 @@ class JavaParserImpl {
      */
     private boolean inExplicitConstructorInvoc = false;
 
-    /**
-     * Keeps track of the current token context. This is needed to resolve the ambiguities around String Templates:
-     * A closing bracket (RBRACE) might close a block or might be the start of a STRING_TEMPLATE_MID/END token.
-     *
-     * @see <a href="https://openjdk.org/jeps/430">JEP 430: String Templates (Preview)</a>
-     */
-    private Deque<TokenContext> tokenContexts = new ArrayDeque<TokenContext>();
-    TokenContext determineTokenContext() {
-        if (tokenContexts.isEmpty()) {
-            return TokenContext.BLOCK;
-        }
-        return tokenContexts.peek();
-    }
 }
 PARSER_END(JavaParserImpl)
 
 TOKEN_MGR_DECLS :
 {
     protected List<JavaComment> comments = new ArrayList<JavaComment>();
-
-    enum TokenContext { STRING_TEMPLATE, TEXT_BLOCK_TEMPLATE, BLOCK; }
+    private Deque<Boolean> savedTemplateKind = new ArrayDeque<Boolean>();
+    private Deque<Integer> braceDepthInTemplate = new ArrayDeque<Integer>();
+    private int braceDepthCurrentTemplate;
+    private boolean templateKind;
 
     private static final java.util.regex.Pattern TEXT_BLOCK_TEMPLATE_END_PATTERN =
         java.util.regex.Pattern.compile("^}[^\"]*\"\"\"");
     private static final java.util.regex.Pattern STRING_TEMPLATE_MID_OR_END_PATTERN =
         java.util.regex.Pattern.compile("^}(?:[^\"\\\\\n\r]|\\\\(?:[ntbrfs\\\\'\"]|[0-7][0-7]?|[0-3][0-7][0-7]))*(\\{|\")");
 
-    private TokenContext determineContext() {
-       return parser.determineTokenContext();
+    private void pushBrace() {
+        braceDepthCurrentTemplate++;
     }
-
+    private void pushTemplate(boolean isTextBlockTemplate) {
+        braceDepthInTemplate.push(braceDepthCurrentTemplate);
+        savedTemplateKind.push(templateKind);
+        templateKind = isTextBlockTemplate;
+        braceDepthCurrentTemplate = 1;
+    }
+    private boolean isInTemplate() {
+        return braceDepthCurrentTemplate > 0;
+    }
+    private void popBrace() {
+        if (!isInTemplate())
+            return;
+        if (--braceDepthCurrentTemplate == 0) {
+            // this brace ends the template
+            popTemplate();
+        }
+    }
+    private void popTemplate() {
+        boolean isInTextBlockTemplate = templateKind;
+        if (!braceDepthInTemplate.isEmpty()) {
+            braceDepthCurrentTemplate = braceDepthInTemplate.pop();
+            templateKind = savedTemplateKind.pop();
+            if (isInTextBlockTemplate) {
+                SwitchTo(JavaTokenKinds.IN_TEXT_BLOCK_LITERAL);
+            } else {
+                SwitchTo(JavaTokenKinds.IN_STRING_TEMPLATE);
+            }
+        } else {
+            SwitchTo(JavaTokenKinds.DEFAULT);
+        }
+    }
     private net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken rereadTokenAs(int kind, int length) {
         input_stream.backup(lengthOfMatch);
         try {
@@ -834,6 +859,8 @@ TOKEN :
         )
   >
 | < #TEXT_BLOCK_CHARACTER: ~["\\"] | <STRING_ESCAPE> | ("\\")? <LINE_TERMINATOR> >
+| < #STRING_FRAGMENT: (<STRING_CHARACTER>)* >
+| < STRING_TEMPLATE_BEGIN: "\"" <STRING_FRAGMENT> "\\{" > { pushTemplate(false); }
 }
 
 /* TEXT BLOCKS */
@@ -845,15 +872,22 @@ MORE :
 }
 
 <IN_TEXT_BLOCK_LITERAL>
-TOKEN :
-{
+TOKEN : {
   <TEXT_BLOCK_LITERAL: "\"\"\"" > : DEFAULT
+| <TEXT_BLOCK_TEMPLATE_MID: "\\{"> { pushTemplate(true); }: DEFAULT
 }
 
 <IN_TEXT_BLOCK_LITERAL>
 MORE :
 {
   < <TEXT_BLOCK_CHARACTER> >
+}
+
+<IN_STRING_TEMPLATE>
+TOKEN:
+{
+    < STRING_TEMPLATE_END: <STRING_FRAGMENT> "\""  > : DEFAULT
+|   < STRING_TEMPLATE_MID: <STRING_FRAGMENT> "\\{" > { pushTemplate(false); } : DEFAULT
 }
 
 /* IDENTIFIERS */
@@ -993,8 +1027,8 @@ TOKEN :
 {
   < LPAREN: "(" >
 | < RPAREN: ")" >
-| < LBRACE: "{" >
-| < RBRACE: "}" >
+| < LBRACE: "{" > { pushBrace(); }
+| < RBRACE: "}" > { popBrace(); }
 | < LBRACKET: "[" >
 | < RBRACKET: "]" >
 | < SEMICOLON: ";" >
@@ -1055,87 +1089,6 @@ TOKEN :
 | < GT: ">" >
 }
 
-/* FRAGMENTS */
-
-// Note: The fragments introduce ambiguity with other token productions, especially the separator token "}" (RBRACE).
-// In order to produce the correct token sequence, the ambiguity needs to be resolved using the context.
-// That means, that STRING_TEMPLATE_MID/END and TEXT_BLOCK_TEMPLATE_MID/END could actually be a closing bracket ("}").
-// Additionally, a STRING_TEMPLATE_MID could be a TEXT_BLOCK_TEMPLATE_MID and the other way round.
-// See JLS 3.13 Fragments (Java 21 Preview and Java 22 Preview)
-
-TOKEN :
-{
-  < STRING_TEMPLATE_BEGIN: "\"" <STRING_FRAGMENT> "\\{" >
-| < STRING_TEMPLATE_MID: "}" <STRING_FRAGMENT> "\\{" >
-{
-    {
-        TokenContext ctx = determineContext();
-        switch (ctx) {
-            case TEXT_BLOCK_TEMPLATE:
-                jjmatchedKind = TEXT_BLOCK_TEMPLATE_MID;
-                matchedToken = jjFillToken();
-                break;
-            case BLOCK:
-                matchedToken = handleBlock();
-                break;
-        }
-    }
-}
-| < STRING_TEMPLATE_END: "}" <STRING_FRAGMENT> "\"" >
-{
-    {
-        TokenContext ctx = determineContext();
-        if (ctx == TokenContext.BLOCK) {
-            matchedToken = handleBlock();
-        }
-    }
-}
-| < #STRING_FRAGMENT: (<STRING_CHARACTER>)* >
-
-| < TEXT_BLOCK_TEMPLATE_BEGIN: "\"\"\"" (<HORIZONTAL_WHITESPACE>)* <LINE_TERMINATOR> <TEXT_BLOCK_FRAGMENT> "\\{" >
-| < TEXT_BLOCK_TEMPLATE_MID: "}" <TEXT_BLOCK_FRAGMENT> "\\{" >
-{
-    {
-        TokenContext ctx = determineContext();
-        switch (ctx) {
-            case STRING_TEMPLATE: {
-                java.util.regex.Matcher m = STRING_TEMPLATE_MID_OR_END_PATTERN.matcher(matchedToken.getImage());
-                if (m.find()) {
-                    int kind = STRING_TEMPLATE_END;
-                    if ("\\{".equals(m.group(1))) {
-                        kind = STRING_TEMPLATE_MID;
-                    }
-                    matchedToken = rereadTokenAs(kind, m.end());
-                }
-                break;
-            }
-            case TEXT_BLOCK_TEMPLATE: {
-                // Note: TEXT_BLOCK_FRAGMENT is not really correct and might match """ as part of TEXT_BLOCK_TEMPLATE_MID
-                // instead of TEXT_BLOCK_TEMPLATE_END. In case this happens, this is corrected here.
-                java.util.regex.Matcher m = TEXT_BLOCK_TEMPLATE_END_PATTERN.matcher(matchedToken.getImage());
-                if (m.find()) {
-                    matchedToken = rereadTokenAs(TEXT_BLOCK_TEMPLATE_END, m.end());
-                }
-                break;
-            }
-            case BLOCK:
-                matchedToken = handleBlock();
-                break;
-        }
-    }
- }
-| < TEXT_BLOCK_TEMPLATE_END: "}" <TEXT_BLOCK_FRAGMENT> "\"\"\"" >
-{
-    {
-        TokenContext ctx = determineContext();
-        if (ctx == TokenContext.BLOCK) {
-            matchedToken = handleBlock();
-        }
-    }
-}
-| < #TEXT_BLOCK_FRAGMENT: (<TEXT_BLOCK_CHARACTER>)* >
-}
-
 /*****************************************
  * THE JAVA LANGUAGE GRAMMAR STARTS HERE *
  *****************************************/
@@ -1161,9 +1114,14 @@ ASTCompilationUnit CompilationUnit() :
 
   // SimpleCompilationUnit:
   [
-      ( LOOKAHEAD(3) ClassMemberDeclarationNoMethod() )*
-      ModifierList() MethodDeclaration()
-      ( ClassOrInterfaceBodyDeclaration() )*
+    (
+      { pushEmptyModifierList(); }
+      (
+          ( LOOKAHEAD(3) ClassMemberDeclarationNoMethod() )*
+          ModifierList() MethodDeclaration()
+          ( ClassOrInterfaceBodyDeclaration() )*
+      ) #ClassBody
+    ) #ImplicitClassDeclaration
   ]
 
   <EOF>
@@ -1203,9 +1161,13 @@ void PackageDeclaration() :
 void ImportDeclaration() :
 {String image;}
 {
-  "import" [ "static" {jjtThis.setStatic();} ]
-  image=VoidName() { jjtThis.setImage(image); }
-  [ "." "*" {jjtThis.setImportOnDemand();} ] ";"
+  "import"
+    (
+       "static" {jjtThis.setStatic();}
+     | LOOKAHEAD({isKeyword("module")}) <IDENTIFIER> {jjtThis.setModuleImport();}
+    )?
+    image=VoidName() { jjtThis.setImage(image); }
+    [ "." "*" {jjtThis.setImportOnDemand();} ] ";"
 }
 
 /*
@@ -1304,11 +1266,11 @@ void EnumDeclaration():
 void EnumBody():
 {}
 {
-   "{" { tokenContexts.push(TokenContext.BLOCK); }
+   "{"
     [ EnumConstant() ( LOOKAHEAD(2) "," EnumConstant() )* ]
     [ "," { jjtThis.setTrailingComma(); } ]
     [ ";" { jjtThis.setSeparatorSemi(); } ( ClassOrInterfaceBodyDeclaration() )* ]
-   "}" { tokenContexts.pop(); }
+   "}"
 }
 
 void EnumConstant():
@@ -1351,9 +1313,9 @@ void RecordComponent():
 void RecordBody():
 {}
 {
-  "{" { tokenContexts.push(TokenContext.BLOCK); }
+  "{"
     ( RecordBodyDeclaration() )*
-  "}" { tokenContexts.pop(); }
+  "}"
 }
 
 void RecordBodyDeclaration() #void :
@@ -1393,9 +1355,9 @@ void TypeParameter():
 void ClassOrInterfaceBody() #ClassBody:
 {}
 {
-  "{" { tokenContexts.push(TokenContext.BLOCK); }
+  "{"
   ( ClassOrInterfaceBodyDeclaration() )*
-  "}" { tokenContexts.pop(); }
+  "}"
 }
 
 void ClassOrInterfaceBodyDeclaration() #void:
@@ -1456,9 +1418,9 @@ void VariableInitializer() #void:
 void ArrayInitializer() :
 {}
 {
-  "{" { tokenContexts.push(TokenContext.BLOCK); }
+  "{"
   [ VariableInitializer() ( LOOKAHEAD(2) "," VariableInitializer() )* ] [ "," ]
-  "}" { tokenContexts.pop(); }
+  "}"
 }
 
 void MethodDeclaration() :
@@ -1523,7 +1485,7 @@ void ConstructorDeclaration() :
 private void ConstructorBlock() #Block:
 {}
 {
-    "{" { tokenContexts.push(TokenContext.BLOCK); }
+    "{"
         (
             LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation()
                |
@@ -1531,7 +1493,7 @@ private void ConstructorBlock() #Block:
             [ LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation() ]
         )
         ( BlockStatement() )*
-    "}" { tokenContexts.pop(); }
+    "}"
 }
 
 void ExplicitConstructorInvocation() :
@@ -1918,7 +1880,7 @@ void Pattern() #void:
 void TypePattern():
 {}
 {
-  LocalVarModifierList() FormalParamType() VariableDeclaratorId()
+  LocalVarModifierList() LocalVariableType() VariableDeclaratorId()
 }
 
 void RecordPattern():
@@ -1959,7 +1921,7 @@ void InstanceOfExpression() #void:
     ("instanceof"
         (
               LOOKAHEAD(ReferenceType() "(") RecordPattern()
-            | AnnotatedRefType() [
+            | AnnotatedType() [
                   VariableDeclaratorId() #TypePattern(2)
                 | RecordStructurePattern() #RecordPattern(2)
             ]
@@ -2224,7 +2186,7 @@ void PrimaryStep2() #void:
             // "super" alone is not a valid expression
             ("." MemberSelector() | MethodReference())
         | MemberSelector()
-        | {forceExprContext();} TemplateArgument() #TemplateExpression(2)
+        | {forceExprContext();} Template() #TemplateExpression(2)
     )
     // catches the case where the ambig name is the start of an array type
     | LOOKAHEAD("@" | "[" "]") {forceTypeContext();} Dims() #ArrayType(2)  (MethodReference() | "." "class" #ClassLiteral(1))
@@ -2329,45 +2291,33 @@ boolean LambdaParameterType() #void :
     | FormalParamType() { return false; }
 }
 
-void TemplateArgument() #void :
-{}
-{
-    Template()
-    | StringLiteral()
-}
-
 void Template() :
 {}
 {
       StringTemplate()
     | TextBlockTemplate()
+    | <STRING_LITERAL> #TemplateFragment
+    | <TEXT_BLOCK_LITERAL> #TemplateFragment
 
 }
 
 void StringTemplate() #void :
 {}
 {
-  { tokenContexts.push(TokenContext.STRING_TEMPLATE); }
-
-        <STRING_TEMPLATE_BEGIN> { jjtThis.setContent(getToken(0).getImage()); } #TemplateFragment
+        <STRING_TEMPLATE_BEGIN>  #TemplateFragment
         EmbeddedExpression()
-        ( <STRING_TEMPLATE_MID> { jjtThis.setContent(getToken(0).getImage()); } #TemplateFragment EmbeddedExpression() )*
-        <STRING_TEMPLATE_END> { jjtThis.setContent(getToken(0).getImage()); } #TemplateFragment
-
-  { tokenContexts.pop(); }
+        (LOOKAHEAD(2) (<RBRACE> <STRING_TEMPLATE_MID> ) #TemplateFragment EmbeddedExpression() )*
+        (<RBRACE> <STRING_TEMPLATE_END>)  #TemplateFragment
 }
 
 void TextBlockTemplate() #void :
 {}
 {
-  { tokenContexts.push(TokenContext.TEXT_BLOCK_TEMPLATE); }
 
-        <TEXT_BLOCK_TEMPLATE_BEGIN> { jjtThis.setContent(getToken(0).getImage()); } #TemplateFragment
+        <TEXT_BLOCK_TEMPLATE_MID>  #TemplateFragment
         EmbeddedExpression()
-        ( <TEXT_BLOCK_TEMPLATE_MID> { jjtThis.setContent(getToken(0).getImage()); } #TemplateFragment EmbeddedExpression() )*
-        <TEXT_BLOCK_TEMPLATE_END> { jjtThis.setContent(getToken(0).getImage()); } #TemplateFragment
-
-  { tokenContexts.pop(); }
+        (LOOKAHEAD(2) ( <RBRACE> <TEXT_BLOCK_TEMPLATE_MID> ) #TemplateFragment EmbeddedExpression() )*
+        (<RBRACE> <TEXT_BLOCK_LITERAL>)  #TemplateFragment
 }
 
 void EmbeddedExpression() #void :
@@ -2533,9 +2483,9 @@ void LabeledStatement() :
 void Block() :
 {}
 {
-    "{" { tokenContexts.push(TokenContext.BLOCK); }
+    "{"
     ( BlockStatement() )*
-    "}" { tokenContexts.pop(); }
+    "}"
 }
 
 void BlockStatement() #void:
@@ -2666,12 +2616,12 @@ void SwitchStatement():
 void SwitchBlock() #void:
 {}
 {
-  "{" { tokenContexts.push(TokenContext.BLOCK); }
+  "{"
         (
           LOOKAHEAD(SwitchLabel() ":") (SwitchFallthroughBranch())+
         | (SwitchArrowBranch())*
         )
-  "}" { tokenContexts.pop(); }
+  "}"
 }
 
 void SwitchArrowBranch():
@@ -2867,8 +2817,8 @@ void Resource() :
    PrimaryExpression()
    {
     Node top = jjtree.peekNode();
-    if (!(top instanceof ASTVariableAccess || top instanceof ASTFieldAccess))
-      throwParseException("Expected a variable access, but was a " + top.getXPathNodeName());
+    if (!(top instanceof ASTVariableAccess || top instanceof ASTFieldAccess || top instanceof ASTThisExpression))
+      throwParseException("Expected a variable or field access, but was a " + top.getXPathNodeName());
    }
    {}
 }
@@ -2966,9 +2916,9 @@ void MemberValue() #void:
 void  MemberValueArrayInitializer():
 {}
 {
-  "{" { tokenContexts.push(TokenContext.BLOCK); }
+  "{"
   (MemberValue() ( LOOKAHEAD(2) "," MemberValue() )*)? [ "," ]
-  "}" { tokenContexts.pop(); }
+  "}"
 }
 
 /*
@@ -2993,9 +2943,9 @@ void AnnotationTypeDeclaration():
 void AnnotationTypeBody():
 {}
 {
-  "{" { tokenContexts.push(TokenContext.BLOCK); }
+  "{"
   ( AnnotationTypeMemberDeclaration() )*
-  "}" { tokenContexts.pop(); }
+  "}"
 }
 
 void AnnotationTypeMemberDeclaration() #void:
@@ -3040,9 +2990,9 @@ void ModuleDeclaration():
   [LOOKAHEAD({isKeyword("open")}) <IDENTIFIER> {jjtThis.setOpen(true);}]
   LOOKAHEAD({isKeyword("module")}) <IDENTIFIER>
   ModuleName()
-  "{" { tokenContexts.push(TokenContext.BLOCK); }
+  "{"
   (ModuleDirective())*
-  "}" { tokenContexts.pop(); }
+  "}"
 }
 
 void ModuleDirective() #void:

@@ -21,7 +21,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 
-import com.nawforce.apexparser.ApexLexer;
+import io.github.apexdevtools.apexparser.ApexLexer;
 
 @InternalApi
 final class ApexCommentBuilder {

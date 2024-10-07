@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
-import net.sourceforge.pmd.lang.java.ast.SyntacticJavaTokenizerFactory;
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties;
 
 /**
@@ -44,7 +43,7 @@ public class JavaCpdLexer extends JavaccCpdLexer {
 
     @Override
     protected TokenManager<JavaccToken> makeLexerImpl(TextDocument doc) {
-        return SyntacticJavaTokenizerFactory.createTokenizer(CharStream.create(doc, InternalApiBridge.javaTokenDoc()));
+        return JavaTokenKinds.newTokenManager(CharStream.create(doc, InternalApiBridge.javaTokenDoc()));
     }
 
     @Override

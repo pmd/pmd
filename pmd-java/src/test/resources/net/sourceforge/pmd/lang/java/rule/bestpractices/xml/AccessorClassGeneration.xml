@@ -7,6 +7,7 @@
     <test-code>
         <description>inner class has private constructor</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo1 {
     public class InnerClass {
@@ -188,6 +189,22 @@ public class Foo {
                     new Inner(null); // complains as if Inner(int) is was called
                 }
             }
+        ]]></code>
+        <source-type>java 10</source-type>
+    </test-code>
+
+    <test-code>
+        <description>#5106 [java] AccessorClassGeneration: Node was null for default constructor</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo1 {
+    private static class InnerClass {
+    }
+    void method() {
+        new InnerClass(); //Causes generation of accessor
+    }
+}
         ]]></code>
         <source-type>java 10</source-type>
     </test-code>

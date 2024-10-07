@@ -28,6 +28,18 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>simple unused annotated private method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.symbols.testdata.MethodAnnotation;
+public class Foo {
+    @MethodAnnotation
+    private void foo() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>anonymous inner class calls private method</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -1497,7 +1509,33 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     @Deprecated
-    private bar() {
+    private void bar() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5117 Ignore methods with jakarta.annotation.PostConstruct in UnusedPrivateMethod rule</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import jakarta.annotation.PostConstruct;
+public class Foo {
+    @PostConstruct
+    private void bar() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5117 Ignore methods with jakarta.annotation.PreDestroy in UnusedPrivateMethod rule</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import jakarta.annotation.PreDestroy;
+public class Foo {
+    @PreDestroy
+    private void bar() {
     }
 }
         ]]></code>
@@ -1902,5 +1940,198 @@ public class NotUsedPrivateMethodFalsePositive {
     }
 }
 ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedPrivateMethod false positive when using @MethodSource on a @Nested test #4975</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.ParameterizedTest;
+
+class FooTest{
+    @Nested
+    class ExampleTest {
+
+        @ParameterizedTest
+        @MethodSource("getStrings")
+        void exampleTestUsingPrivateMethod(
+                List<String> strings) {
+            // insert code
+        }
+
+        private static Stream<Arguments> getStrings() {
+            Stream<Arguments> tests = Stream.of(
+                    Arguments.of(List.of("TEST", "TEST_1")),
+                    Arguments.of(List.of("TEST_2", "TEST_3"))
+            );
+
+            return Stream.of(tests)
+                    .reduce(Stream::concat)
+                    .orElseGet(Stream::empty);
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedPrivateMethod FP with Junit 5 @MethodSource and default factory method name #4278</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.ParameterizedTest;
+
+class FooTest{
+    private static Stream<Arguments> testGetUsername_noMethodSourceValue() {
+        return Stream.of(
+                Arguments.of("foo"),
+                Arguments.of("bar"),
+                Arguments.of("baz")
+        );
+    }
+
+    @MethodSource
+    @ParameterizedTest
+    void testGetUsername_noMethodSourceValue(String username) {
+        User sut = new User(username);
+
+        Assertions.assertEquals(username, sut.getUsername());
+    }
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] UnusedPrivateMethod false-positive / method reference in combination with custom object #4985</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.List;
+
+            public class Main {
+
+                public static void main(String[] args) {
+                    System.out.println("list");
+
+                    // usage of method reference in combination with a custom object leads to a false positive of PMD.UnusedPrivateMethod
+                    List.of(new StringWrapper().getString())
+                        .stream()
+
+                        .map(Main::foo)
+                        .filter(Objects::nonNull)
+                        .toList();
+
+                    // no false positive .. :/
+                    List.of("s")
+                        .stream()
+                        .map(Main::foo2)
+                        .filter(Objects::nonNull)
+                        .toList();
+                }
+
+                private static int foo(String s) {
+                    return s.length();
+                }
+
+                private static int foo2(String s) {
+                    return s.length();
+                }
+
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>UnusedPrivateMethod for Generics and Overloads #5047</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.function.Function;
+
+            public class Main {
+                public static void main(String[] args) {
+                    new Utils().printValue();
+                }
+
+                public enum ConsentStatus {
+                    NOT_APPLICABLE(0L),
+                    NO_CONSENT(1L),
+                    CONSENT(2L),
+                    UNKNOWN_STATUS(3L);
+
+                    private final long id;
+
+                    ConsentStatus(long id) {
+                        this.id = id;
+                    }
+
+                    public long id() {
+                        return this.id;
+                    }
+                }
+
+                public enum OptOutStatus {
+                    NOT_APPLICABLE(0L),
+                    OPTED_OUT(1L),
+                    DID_NOT_OPT_OUT(2L),
+                    UNKNOWN_STATUS(3L);
+
+                    private final long id;
+
+                    OptOutStatus(long id) {
+                        this.id = id;
+                    }
+
+                    public long id() {
+                        return this.id;
+                    }
+                }
+
+                static class Utils {
+                    public void printValue() {
+                        System.out.println(getValue(ConsentStatus.CONSENT));
+                        System.out.println(getValue(ConsentStatus.NO_CONSENT));
+
+                        System.out.println(getValue(OptOutStatus.DID_NOT_OPT_OUT));
+                        System.out.println(getValue(OptOutStatus.OPTED_OUT));
+                    }
+
+                    private Long getValue(ConsentStatus val) {
+                        return getValue(val, ConsentStatus::id);
+                    }
+
+                    private Long getValue(OptOutStatus val) {
+                        return getValue(val, OptOutStatus::id);
+                    }
+
+                    private <T extends Enum<T>> Long getValue(T enumValue, Function<T, Long> fn) {
+                        if (enumValue == null) {
+                            return null;
+                        }
+                        return fn.apply(enumValue);
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>UnusedPrivateMethod for Lombok ObtainVia #5110</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Builder;
+import lombok.Builder.ObtainVia;
+
+import java.util.Collections;
+import java.util.List;
+
+@Builder(toBuilder = true)
+public class ObtainViaTest {
+
+    @ObtainVia(method = "fooProvider")
+    private List<String> foo;
+
+    private List<String> fooProvider() {
+        return Collections.emptyList();
+    }
+}
+            ]]></code>
     </test-code>
 </test-data>

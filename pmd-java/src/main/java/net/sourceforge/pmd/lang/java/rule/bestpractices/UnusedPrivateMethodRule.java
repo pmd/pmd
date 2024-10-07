@@ -4,23 +4,25 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
-import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
-import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.MethodUsage;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
@@ -41,26 +43,43 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
 
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
-        return Collections.singletonList("java.lang.Deprecated");
+        return listOf(
+            "java.lang.Deprecated",
+            "jakarta.annotation.PostConstruct",
+            "jakarta.annotation.PreDestroy"
+        );
     }
 
     @Override
     public Object visit(ASTCompilationUnit file, Object param) {
         // We do three traversals:
-        // - one to find methods referenced by Junit5 MethodSource annotations
+        // - one to find methods:
+        // --- referenced by any attribute of any annotation
+        // --- with name same as a method annotated with Junit5 MethodSource if the annotation value is empty
         // - one to find the "interesting methods", ie those that may be violations
         // - another to find the possible usages. We only try to resolve
         //   method calls/method refs that may refer to a method in the
         //   first set, ie, not every call in the file.
-
-        Set<String> methodsUsedByAnnotations = file.descendants(ASTMethodDeclaration.class)
-            .children(ASTModifierList.class)
-            .children(ASTAnnotation.class)
-            .filter(t -> TypeTestUtil.isA("org.junit.jupiter.params.provider.MethodSource", t))
-            .descendants(ASTStringLiteral.class)
-            .toStream()
-            .map(ASTStringLiteral::getConstValue)
-            .collect(Collectors.toSet());
+        Set<String> methodsUsedByAnnotations =
+                file.descendants(ASTAnnotation.class)
+                        .crossFindBoundaries()
+                        .toStream()
+                        .flatMap(a -> Stream.concat(
+                                        a.getFlatValues().toStream()
+                                                .map(ASTMemberValue::getConstValue)
+                                                .filter(String.class::isInstance)
+                                                .map(String.class::cast)
+                                                .filter(StringUtils::isNotEmpty),
+                                        NodeStream.of(a)
+                                                .filter(it -> TypeTestUtil.isA("org.junit.jupiter.params.provider.MethodSource", it)
+                                                        && it.getFlatValue("value").isEmpty())
+                                                .ancestors(ASTMethodDeclaration.class)
+                                                .take(1)
+                                                .toStream()
+                                                .map(ASTMethodDeclaration::getName)
+                                )
+                        )
+                        .collect(Collectors.toSet());
 
         Map<String, Set<ASTMethodDeclaration>> consideredNames =
             file.descendants(ASTMethodDeclaration.class)

@@ -67,8 +67,10 @@ if %_needjfxlib% EQU 1 (
     )
     rem The wildcard will include only jar files, but we need to access also
     rem property files such as javafx.properties that lay bare in the dir
-    set pmd_classpath=%TOPDIR%\conf;%TOPDIR%\lib\*;%JAVAFX_HOME%\lib\*;%JAVAFX_HOME%\lib\
+    rem note: no trailing backslash, as this would escape a following quote when %pmd_classpath% is used later
+    set pmd_classpath=%TOPDIR%\conf;%TOPDIR%\lib\*;%JAVAFX_HOME%\lib\*;%JAVAFX_HOME%\lib
 ) else (
+    rem note: no trailing backslash, as this would escape a following quote when %pmd_classpath% is used later
     set pmd_classpath=%TOPDIR%\conf;%TOPDIR%\lib\*
 )
 

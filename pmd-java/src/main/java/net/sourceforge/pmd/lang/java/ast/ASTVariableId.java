@@ -43,7 +43,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
  * <p>Note: This node has been called ASTVariableDeclaratorId in PMD 6.
  */
 // @formatter:on
-public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariableSymbol> implements ModifierOwner, SymbolDeclaratorNode {
+public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariableSymbol> implements ModifierOwner {
 
     private String name;
     private List<ASTNamedReferenceExpr> usages = Collections.emptyList();
@@ -130,10 +130,13 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
     /**
      * Return true if this variable has no name. The name is then equal to {@code "_"}.
      * A variable declaration with this name does not actually declare a variable in
-     * the current scope.
+     * the current scope, since Java 22. In Java 9 to 21, the identifier {@code _} is
+     * restricted and cannot be used to name a variable. Before Java 9, it is a regular
+     * identifier.
+     * @see <a href="https://openjdk.org/jeps/456">JEP 456: Unnamed Variables &amp; Patterns</a> (Java 22)
      */
     public boolean isUnnamed() {
-        return "_".equals(name);
+        return "_".equals(name) && getLanguageVersion().compareToVersion("22") >= 0;
     }
 
     /** Returns the name of the variable. */
@@ -241,7 +244,8 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
      * Returns true if this declarator id declares a resource in a try-with-resources statement.
      */
     public boolean isResourceDeclaration() {
-        return getParent() instanceof ASTResource;
+        // Resource/LocalVariableDeclaration/VariableDeclarator
+        return getParent().getParent().getParent() instanceof ASTResource;
     }
 
 

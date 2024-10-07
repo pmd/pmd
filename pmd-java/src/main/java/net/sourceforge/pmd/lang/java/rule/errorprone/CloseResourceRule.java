@@ -51,6 +51,7 @@ import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -107,6 +108,7 @@ public class CloseResourceRule extends AbstractJavaRule {
                 .desc("Detect if 'close' (or other closeTargets) is called outside of a finally-block").defaultValue(false).build();
 
     private static final InvocationMatcher OBJECTS_NON_NULL = InvocationMatcher.parse("java.util.Objects#nonNull(_)");
+    private static final InvocationMatcher FILESYSTEMS_GET_DEFAULT = InvocationMatcher.parse("java.nio.file.FileSystems#getDefault()");
 
     private final Set<String> types = new HashSet<>();
     private final Set<String> simpleTypes = new HashSet<>();
@@ -175,7 +177,7 @@ public class CloseResourceRule extends AbstractJavaRule {
             if (isWrappingResourceSpecifiedInTry(resVar)) {
                 reportedVarNames.add(resVar.getName());
                 asCtx(data).addViolationWithMessage(resVar, WRAPPING_TRY_WITH_RES_VAR_MESSAGE,
-                        new Object[] { resVar.getName() });
+                                                    resVar.getName());
             } else if (shouldVarOfTypeBeClosedInMethod(resVar, resVarType, methodOrConstructor)) {
                 reportedVarNames.add(resVar.getName());
                 addCloseResourceViolation(resVar, runtimeType, data);
@@ -184,7 +186,7 @@ public class CloseResourceRule extends AbstractJavaRule {
                 if (reassigningStatement != null) {
                     reportedVarNames.add(resVar.getName());
                     asCtx(data).addViolationWithMessage(reassigningStatement, REASSIGN_BEFORE_CLOSED_MESSAGE,
-                            new Object[] { resVar.getName() });
+                                                        resVar.getName());
                 }
             }
         }
@@ -203,6 +205,7 @@ public class CloseResourceRule extends AbstractJavaRule {
             .filter(this::isVariableNotSpecifiedInTryWithResource)
             .filter(var -> isResourceTypeOrSubtype(var) || isNodeInstanceOfResourceType(getTypeOfVariable(var)))
             .filterNot(var -> var.isAnnotationPresent("lombok.Cleanup"))
+            .filterNot(this::isDefaultFileSystem)
             .toList();
 
         for (ASTVariableId var : vars) {
@@ -287,12 +290,15 @@ public class CloseResourceRule extends AbstractJavaRule {
     private boolean isWrappingResourceSpecifiedInTry(ASTVariableId var) {
         ASTVariableAccess wrappedVarName = getWrappedVariableName(var);
         if (wrappedVarName != null) {
-            ASTVariableId referencedVar = wrappedVarName.getReferencedSym().tryGetNode();
-            if (referencedVar != null) {
-                List<ASTTryStatement> tryContainers = referencedVar.ancestors(ASTTryStatement.class).toList();
-                for (ASTTryStatement tryContainer : tryContainers) {
-                    if (isTryWithResourceSpecifyingVariable(tryContainer, referencedVar)) {
-                        return true;
+            JVariableSymbol referencedSym = wrappedVarName.getReferencedSym();
+            if (referencedSym != null) {
+                ASTVariableId referencedVar = referencedSym.tryGetNode();
+                if (referencedVar != null) {
+                    List<ASTTryStatement> tryContainers = referencedVar.ancestors(ASTTryStatement.class).toList();
+                    for (ASTTryStatement tryContainer : tryContainers) {
+                        if (isTryWithResourceSpecifyingVariable(tryContainer, referencedVar)) {
+                            return true;
+                        }
                     }
                 }
             }
@@ -495,6 +501,12 @@ public class CloseResourceRule extends AbstractJavaRule {
         return tryStatement == null || !isVariableSpecifiedInTryWithResource(varId, tryStatement);
     }
 
+    private boolean isDefaultFileSystem(ASTVariableId varId) {
+        @Nullable
+        ASTExpression initializer = varId.getInitializer();
+        return FILESYSTEMS_GET_DEFAULT.matchesCall(initializer);
+    }
+
     private boolean isVariableSpecifiedInTryWithResource(ASTVariableId varId, ASTTryStatement tryWithResource) {
         // skip own resources - these are definitively closed
         if (tryWithResource.getResources().descendants(ASTVariableId.class).toList().contains(varId)) {
@@ -692,7 +704,7 @@ public class CloseResourceRule extends AbstractJavaRule {
             ASTVariableAccess closedVar = (ASTVariableAccess) node.getQualifier();
             if (isNotInFinallyBlock(closedVar) && !reportedVarNames.contains(closedVar.getName())) {
                 asCtx(data).addViolationWithMessage(closedVar, CLOSE_IN_FINALLY_BLOCK_MESSAGE,
-                        new Object[] { closedVar.getName() });
+                                                    closedVar.getName());
             }
         }
 

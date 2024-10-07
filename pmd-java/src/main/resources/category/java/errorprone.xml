@@ -1103,6 +1103,60 @@ boolean x = (y == Double.NaN);
         </example>
     </rule>
 
+    <rule name="ConfusingArgumentToVarargsMethod"
+          language="java"
+          since="7.1.0"
+          message="Unclear if a varargs or non-varargs call is intended. Cast to {0} or {0}[], or pass varargs parameters separately to clarify intent."
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.ConfusingArgumentToVarargsMethodRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#confusingargumenttovarargsmethod">
+        <description>
+            Reports a confusing argument passed to a varargs method.
+
+            This can occur when an array is passed as a single varargs argument, when the array type is not exactly the
+            type of array that the varargs method expects. If, that array is a subtype of the component type of the expected
+            array type, then it might not be clear what value the called varargs method will receive.
+            For instance if you have:
+            ```java
+            void varargs(Object... parm);
+            ```
+            and call it like so:
+            ```java
+            varargs(new String[]{"a"});
+            ```
+            it is not clear whether you intended the method to receive the value `new Object[]{ new String[] {"a"} }` or
+            just `new String[] {"a"}` (the latter happens). This confusion occurs because `String[]` is both a subtype
+            of `Object[]` and of `Object`. To clarify your intent in this case, use a cast or pass individual elements like so:
+            ```java
+            // varargs call
+            // parm will be `new Object[] { "a" }`
+            varargs("a");
+
+            // non-varargs call
+            // parm will be `new String[] { "a" }`
+            varargs((Object[]) new String[]{"a"});
+
+            // varargs call
+            // parm will be `new Object[] { new String[] { "a" } }`
+            varargs((Object) new String[]{"a"});
+            ```
+
+            Another confusing case is when you pass `null` as the varargs argument. Here it is not clear whether you intended
+            to pass an array with a single null element, or a null array (the latter happens). This can similarly be clarified
+            with a cast.
+        </description>
+        <priority>3</priority>
+        <example><![CDATA[
+            import java.util.Arrays;
+
+            abstract class C {
+                abstract void varargs(Object... args);
+                static {
+                    varargs(new String[] { "a" });
+                    varargs(null);
+                }
+            }
+            ]]></example>
+    </rule>
 
     <rule name="ConstructorCallsOverridableMethod"
           language="java"
@@ -1866,6 +1920,14 @@ import junit.framework.*;
 
 public class Foo extends TestCase {
     public void suite() {}         // oops, should be static
+}
+]]>
+        </example>
+        <example>
+<![CDATA[
+import junit.framework.*;
+
+public class Foo extends TestCase {
     private static void suite() {} // oops, should be public
 }
 ]]>
@@ -2024,7 +2086,7 @@ See the property `annotations`.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="annotations" type="List[String]" value="org.springframework.beans.factory.annotation.Autowired,javax.inject.Inject,com.google.inject.Inject" description="If a constructor is annotated with one of these annotations, then the class is ignored."/>
+            <property name="annotations" type="List[String]" value="org.springframework.beans.factory.annotation.Autowired,javax.inject.Inject,com.google.inject.Inject,lombok.Builder" description="If a constructor is annotated with one of these annotations, then the class is ignored."/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -2037,7 +2099,8 @@ $topLevelClass[
             (: no lombok produced constructors :)
             not(pmd-java:hasAnnotation('lombok.NoArgsConstructor') or
                 pmd-java:hasAnnotation('lombok.RequiredArgsConstructor') or
-                pmd-java:hasAnnotation('lombok.AllArgsConstructor')) and
+                pmd-java:hasAnnotation('lombok.AllArgsConstructor') or
+                pmd-java:hasAnnotation('lombok.Builder')) and
             (: or has non-default constructors … :)
             ClassBody/ConstructorDeclaration and
                 (: … but only private … :)
@@ -2052,12 +2115,10 @@ $topLevelClass[
         not(ClassBody/MethodDeclaration[($isLombokUtility or pmd-java:modifiers() = "static") and @Visibility != "private"]) and
         (: … nor fields … :)
         not(ClassBody/FieldDeclaration[($isLombokUtility or pmd-java:modifiers() = "static") and @Visibility != "private"]) and
-        (: … no nested classes, that are non-private and static … :)
+        (: … no nested classes, that are non-private and static … :)
         not(ClassBody/ClassDeclaration
             [pmd-java:modifiers() = "static" and @Visibility != "private"]
-            (: … with a default or non-private constructor … :)
-            [not(ClassBody/ConstructorDeclaration) or ClassBody/ConstructorDeclaration[@Visibility != "private"]]
-            (: … and a non-private method returning the outer class type … :)
+            (: … and a non-private method returning the outer class type … :)
             [(ClassBody/MethodDeclaration
                 [@Visibility != "private"]
                 [descendant::ReturnStatement/*[1][pmd-java:typeIs(ancestor::ClassDeclaration[@Nested = false()]/@BinaryName)]]
@@ -2588,7 +2649,7 @@ public class SomeEJB extends EJBObject implements EJBLocalHome {
     <rule name="StringBufferInstantiationWithChar"
           language="java"
           since="3.9"
-          message="Do not instantiate a StringBuffer or StringBuilder with a char"
+          message="Argument to `new StringBuilder()` or `new StringBuffer()` is implicitly converted from char to int"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#stringbufferinstantiationwithchar">
         <description>
@@ -2614,8 +2675,9 @@ new StringBuilder("A")   //  1 + 16 = 17
             <property name="xpath">
                 <value>
 <![CDATA[
-//ConstructorCall[ArgumentList/CharLiteral]
-    [pmd-java:typeIs('java.lang.StringBuilder') or pmd-java:typeIs('java.lang.StringBuffer')]
+//ConstructorCall[ArgumentList/*[pmd-java:typeIsExactly('char')]]
+    [pmd-java:matchesSig('java.lang.StringBuilder#new(int)')
+     or pmd-java:matchesSig('java.lang.StringBuffer#new(int)')]
 ]]>
                 </value>
             </property>

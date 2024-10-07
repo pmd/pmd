@@ -10,6 +10,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,9 +29,21 @@ class JavaCommentTest extends BaseParserTest {
         JavaComment comment = parseComment(
             "/**\n"
                 + " * @author Clément Fournier\n"
-                + " *"
+                + " *\n"
                 + " */\n"
         );
+
+        assertThat(comment.getFilteredLines(),
+                   contains(Chars.wrap("@author Clément Fournier")));
+    }
+
+    @Test
+    void testFilteredLinesMarkdown() {
+        JavadocComment comment = new JavadocComment(Arrays.asList(
+                parseComment("///\n"),
+                parseComment("/// @author Clément Fournier\n"),
+                parseComment("///\n")
+        ));
 
         assertThat(comment.getFilteredLines(),
                    contains(Chars.wrap("@author Clément Fournier")));
@@ -41,12 +54,12 @@ class JavaCommentTest extends BaseParserTest {
         JavaComment comment = parseComment(
             "/**\n"
                 + " * @author Clément Fournier\n"
-                + " *"
+                + " *\n"
                 + " */\n"
         );
 
         assertThat(comment.getFilteredLines(true),
-                   contains(Chars.wrap(""), Chars.wrap("@author Clément Fournier"), Chars.wrap("")));
+                   contains(Chars.wrap(""), Chars.wrap("@author Clément Fournier"), Chars.wrap(""), Chars.wrap("")));
     }
 
     JavaComment parseComment(String text) {

@@ -173,11 +173,21 @@ public interface JClassSymbol extends JTypeDeclSymbol,
 
     /**
      * Returns a list with all enum constants. If this symbol does
-     * not represent an enum, returns an empty set. The returned list
+     * not represent an enum, returns an empty list. The returned list
      * is a subset of {@link #getDeclaredFields()}. The order of fields
      * denotes the normal order of enum constants.
      */
     default @NonNull List<JFieldSymbol> getEnumConstants() {
+        return Collections.emptyList();
+    }
+
+
+    /**
+     * Returns a list with all record components. If this symbol does
+     * not represent a record, returns an empty list. The order of values
+     * denotes the normal order of components.
+     */
+    default @NonNull List<JRecordComponentSymbol> getRecordComponents() {
         return Collections.emptyList();
     }
 

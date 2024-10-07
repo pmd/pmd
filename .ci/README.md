@@ -45,12 +45,12 @@ Start docker without binding to local directory, so that we can do a fresh check
 
 ```
 export LANG=en_US.UTF-8
-export PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/master/scripts
+export PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/main/scripts
 
 export PMD_CI_SECRET_PASSPHRASE="xyz"
 export PMD_CI_DEBUG=true
 
-MAIN_BRANCH="master"
+MAIN_BRANCH="main"
 eval $(~/create-gh-actions-env.sh push pmd/pmd $MAIN_BRANCH)
 
 cd /workspaces/pmd
@@ -108,7 +108,7 @@ $(~/create-gh-actions-env.sh push adangel/pmd $MAIN_BRANCH)
 
 ```
 export LANG=en_US.UTF-8
-export PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/master/scripts
+export PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/main/scripts
 
 export PMD_CI_SECRET_PASSPHRASE="xyz"
 export PMD_CI_DEBUG=true

@@ -165,6 +165,9 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
 
     private boolean usagesObserveValueBeforeMethodCall(List<ASTNamedReferenceExpr> usages, DataflowResult dataflow) {
         for (ASTNamedReferenceExpr usage : usages) {
+            if (JavaAstUtils.isVarAccessStrictlyWrite(usage)) {
+                continue;
+            }
             ReachingDefinitionSet reaching = dataflow.getReachingDefinitions(usage);
             if (reaching.containsInitialFieldValue()) {
                 return true;

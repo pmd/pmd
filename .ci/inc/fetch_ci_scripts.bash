@@ -4,7 +4,7 @@ function fetch_ci_scripts() {
     local inc_dir
     local inc_url
     inc_dir="$(dirname "$0")/inc"
-    inc_url="${PMD_CI_SCRIPTS_URL:-https://raw.githubusercontent.com/pmd/build-tools/master/scripts}/inc"
+    inc_url="${PMD_CI_SCRIPTS_URL:-https://raw.githubusercontent.com/pmd/build-tools/main/scripts}/inc"
 
     mkdir -p "${inc_dir}"
 

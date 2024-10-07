@@ -19,7 +19,6 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMirror;
-import net.sourceforge.pmd.lang.java.types.internal.infer.MethodCallSite;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors.MirrorMaker;
 
 class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> implements BranchingMirror {
@@ -135,23 +134,7 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
         }
 
         if (e instanceof ASTMethodCall) {
-            /*
-                A method invocation expression (§15.12) for which the chosen most specific method (§15.12.2.5) has return type boolean or Boolean.
-                Note that, for a generic method, this is the type before instantiating the method's type arguments.
-
-            */
-            JTypeMirror current = InternalApiBridge.getTypeMirrorInternal(e);
-            if (current != null) {
-                // don't redo the compile-time decl resolution
-                // The CTDecl is cached on the mirror, not the node
-                return current;
-            }
-
-            MethodCallSite site = factory.infer.newCallSite((InvocationMirror) mirror, null);
-
-            return factory.infer.getCompileTimeDecl(site)
-                                .getMethodType()
-                                .getReturnType();
+            return mirror.getStandaloneType();
         }
 
         return null;

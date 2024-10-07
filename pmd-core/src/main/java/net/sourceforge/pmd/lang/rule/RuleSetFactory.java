@@ -658,7 +658,9 @@ final class RuleSetFactory {
         return new RuleSetLoader().loadResourcesWith(resourceLoader)
                                   .filterAbovePriority(minimumPriority)
                                   .warnDeprecated(warnDeprecated)
-                                  .includeDeprecatedRuleReferences(includeDeprecatedRuleReferences);
+                                  .includeDeprecatedRuleReferences(includeDeprecatedRuleReferences)
+                                  .withReporter(reporter)
+                                  .withLanguages(languageRegistry);
     }
 
     private @NonNull XmlMessageHandler getXmlMessagePrinter() {

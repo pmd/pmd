@@ -58,7 +58,7 @@ public class RuleDocGenerator {
     private static final String DEPRECATION_LABEL = "<span style=\"border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;\">Deprecated</span>";
     private static final String DEPRECATED_RULE_PROPERTY_MARKER = "deprecated!";
 
-    private static final String GITHUB_SOURCE_LINK = "https://github.com/pmd/pmd/blob/master/";
+    private static final String GITHUB_SOURCE_LINK = "https://github.com/pmd/pmd/blob/main/";
 
     /** Maintains mapping from pmd terse language name to rouge highlighter language. */
     private static final Map<String, String> LANGUAGE_HIGHLIGHT_MAPPER = new HashMap<>();
@@ -656,7 +656,7 @@ public class RuleDocGenerator {
             Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                    String path = file.toString();
+                    String path = RuleSetUtils.normalizeForwardSlashes(file.toString());
 
                     if (path.contains("src")) {
                         String foundRuleClass = null;

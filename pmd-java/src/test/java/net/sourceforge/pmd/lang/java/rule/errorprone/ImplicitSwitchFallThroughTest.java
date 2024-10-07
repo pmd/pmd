@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-class ImplicitSwitchFallThroughTest extends PmdRuleTst {
+public class ImplicitSwitchFallThroughTest extends PmdRuleTst {
     // no additional unit tests
 }

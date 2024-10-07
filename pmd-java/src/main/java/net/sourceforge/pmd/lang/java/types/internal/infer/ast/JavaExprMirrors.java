@@ -68,7 +68,7 @@ public final class JavaExprMirrors {
 
     ExprMirror makeSubexprDefault(ASTExpression e, @Nullable ExprMirror parent, MirrorMaker subexprMaker) {
         if (e instanceof InvocationNode) {
-            return getInvocationMirror((InvocationNode) e, parent, subexprMaker);
+            return getInvocationMirror((InvocationNode) e, parent, false, subexprMaker);
         } else if (e instanceof ASTLambdaExpression || e instanceof ASTMethodReference) {
             return getFunctionalMirror(e, parent, subexprMaker);
         } else if (e instanceof ASTConditionalExpression) {
@@ -81,11 +81,13 @@ public final class JavaExprMirrors {
         }
     }
 
-    ExprMirror getBranchMirrorSubexpression(ASTExpression e, boolean isStandalone, @NonNull BranchingMirror parent, MirrorMaker subexprMaker) {
+    ExprMirror getBranchMirrorSubexpression(ASTExpression e, boolean mustBeStandalone, @NonNull BranchingMirror parent, MirrorMaker subexprMaker) {
         if (e instanceof ASTConditionalExpression) {
-            return new ConditionalMirrorImpl(this, (ASTConditionalExpression) e, isStandalone, parent, subexprMaker);
+            return new ConditionalMirrorImpl(this, (ASTConditionalExpression) e, mustBeStandalone, parent, subexprMaker);
         } else if (e instanceof ASTSwitchExpression) {
-            return new SwitchMirror(this, (ASTSwitchExpression) e, isStandalone, parent, subexprMaker);
+            return new SwitchMirror(this, (ASTSwitchExpression) e, mustBeStandalone, parent, subexprMaker);
+        } else if (e instanceof InvocationNode) {
+            return getInvocationMirror((InvocationNode) e, parent, mustBeStandalone, subexprMaker);
         } else {
             return subexprMaker.createMirrorForSubexpression(e, parent, subexprMaker);
         }
@@ -96,14 +98,15 @@ public final class JavaExprMirrors {
     }
 
     public InvocationMirror getInvocationMirror(InvocationNode e, MirrorMaker subexprMaker) {
-        return getInvocationMirror(e, null, subexprMaker);
+        return getInvocationMirror(e, null, false, subexprMaker);
     }
 
-    private InvocationMirror getInvocationMirror(InvocationNode e, @Nullable ExprMirror parent, MirrorMaker subexprMaker) {
+    private InvocationMirror getInvocationMirror(InvocationNode e, @Nullable ExprMirror parent,
+                                                 boolean mustBeStandalone, MirrorMaker subexprMaker) {
         if (e instanceof ASTMethodCall) {
-            return new MethodInvocMirror(this, (ASTMethodCall) e, parent, subexprMaker);
+            return new MethodInvocMirror(this, (ASTMethodCall) e, mustBeStandalone, parent, subexprMaker);
         } else if (e instanceof ASTConstructorCall) {
-            return new CtorInvocMirror(this, (ASTConstructorCall) e, parent, subexprMaker);
+            return new CtorInvocMirror(this, (ASTConstructorCall) e, mustBeStandalone, parent, subexprMaker);
         } else if (e instanceof ASTExplicitConstructorInvocation) {
             return new CtorInvocMirror.ExplicitCtorInvocMirror(this, (ASTExplicitConstructorInvocation) e, parent, subexprMaker);
         } else if (e instanceof ASTEnumConstant) {

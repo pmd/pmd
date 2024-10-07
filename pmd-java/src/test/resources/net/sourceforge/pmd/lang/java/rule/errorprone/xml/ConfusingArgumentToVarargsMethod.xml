@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Unnecessary in asList</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.Arrays;
+
+            public class Foo {
+                static {
+                    Arrays.asList("a" , "b");
+                    Arrays.asList(new String[] { "a", "b" });
+                    Arrays.asList(new Object[] { "a", "b" });
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Necessary array creation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.Arrays;
+
+            public class Foo {
+                static {
+                    Arrays.asList(new String[]{""}, new String[] { "a", "b" });
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Confusing argument</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unclear if a varargs or non-varargs call is intended. Cast to Object or Object[], or pass varargs parameters separately to clarify intent.</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.Arrays;
+
+            public class Foo {
+                static {
+                    foo(new Object[]{ "a" });
+                    foo(new String[]{ "a" }); // confusing bc String[] <: Object
+                }
+                static void foo(Object... args) {}
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Confusing null argument</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unclear if a varargs or non-varargs call is intended. Cast to Object or Object[] to clarify intent.</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.Arrays;
+
+            public class Foo {
+                static {
+                    foo(null); // confusing bc String[] <: Object
+                }
+                static void foo(Object... args) {}
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Confusing argument, not an array allocation</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unclear if a varargs or non-varargs call is intended. Cast to Object or Object[] to clarify intent.</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.Arrays;
+
+            public class Foo {
+                static {
+                    String[] parms = getParms();
+                    foo(parms); // confusing bc String[] <: Object
+                }
+                static String[] getParms(){ }
+                static void foo(Object... args) {}
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Array creation without elements</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.Arrays;
+
+            public class Foo {
+                static {
+                    foo(new Object[4]);
+                }
+                static void foo(Object... args) {}
+            }
+            ]]></code>
+    </test-code>
+
+</test-data>

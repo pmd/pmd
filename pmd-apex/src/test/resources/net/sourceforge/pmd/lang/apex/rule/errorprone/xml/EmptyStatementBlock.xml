@@ -145,4 +145,33 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>EmptyStatementBlock in trigger (#5138)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>18</expected-linenumbers>
+        <code><![CDATA[
+// https://github.com/SalesforceLabs/chatter-delete-blocker/blob/master/src/triggers/DisableFeedPostDeletes.trigger
+/**
+ * Author: Marcus Ericsson - mericsson@salesforce.com
+ */
+trigger DisableFeedPostDeletes on FeedItem (before delete)
+{
+    if (!DisableChatterDeleteDelegate.allowDelete()) {
+        for(FeedItem f : Trigger.old){
+            if (((String)f.parentId).startsWith('00Q') && f.type == 'TrackedChange') {
+                // ok to ignore
+            }
+            else {
+                f.addError('Your administrator has disabled feed post and comment deletions.');
+            }
+        }
+    }
+
+    public void setBar(Integer bar) {
+         // empty
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

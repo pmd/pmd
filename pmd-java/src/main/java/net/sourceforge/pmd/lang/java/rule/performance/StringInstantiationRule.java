@@ -9,6 +9,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
@@ -26,7 +27,8 @@ public class StringInstantiationRule extends AbstractJavaRule {
             && TypeTestUtil.isExactlyA(String.class, node.getTypeNode())) {
             if (args.size() == 1 && (
                     TypeTestUtil.isExactlyA(byte[].class, args.get(0))
-                    || TypeTestUtil.isExactlyA(char[].class, args.get(0)))) {
+                        || TypeTestUtil.isExactlyA(char[].class, args.get(0))
+                        || TypeOps.isUnresolved(args.get(0).getTypeMirror()))) {
                 // byte/char array ctor is ok
                 return data;
             }

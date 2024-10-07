@@ -22,9 +22,7 @@ import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
  * </pre>
  */
 public final class ASTFieldDeclaration extends AbstractJavaNode
-    implements Iterable<ASTVariableId>,
-               LeftRecursiveNode,
-        ModifierOwner,
+    implements LeftRecursiveNode,
                ASTBodyDeclaration,
                InternalInterfaces.MultiVariableIdOwner,
                JavadocCommentOwner {

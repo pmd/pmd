@@ -9,11 +9,8 @@ import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
 
 class ASTLocalVariableDeclarationTest : ParserTestSpec({
-
-    parserTest("Extra dimensions") {
-
+    parserTestContainer("Extra dimensions") {
         inContext(StatementParsingCtx) {
-
             // int x[][] = null;
             // int[] x[][] = null;
 
@@ -40,5 +37,4 @@ class ASTLocalVariableDeclarationTest : ParserTestSpec({
             }
         }
     }
-
 })

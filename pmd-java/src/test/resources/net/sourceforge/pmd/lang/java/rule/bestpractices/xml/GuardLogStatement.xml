@@ -581,4 +581,194 @@ public class GuardLogStatementTest {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>GuardLogStatement should flag method reference from method / constructor calls</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class GuardLogStatementTest {
+    String foo() {
+        return "foo";
+    }
+
+    private GuardLogStatementTest factory() {
+        return new GuardLogStatementTest();
+    }
+
+    public void test() {
+        final Logger logger = LogManager.getLogger(GuardLogStatementTest.class);
+        logger.info("Some info: {}", new GuardLogStatementTest()::foo);
+        logger.info("Some info: {}", factory()::foo);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5151 Field accesses do not require guards</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class GuardLogStatementTest {
+    private static final Logger LOG = LogManager.getLogger(GuardLogStatementTest.class);
+    private static final String MY_CONSTANT = "";
+    private String my_field = "";
+
+    public void test() {
+        LOG.info(
+            "Some message here : foo={}",
+            GuardLogStatementTest.MY_CONSTANT
+        );
+
+        LOG.info(
+            "Some message here : foo={}",
+            this.my_field
+        );
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5151 Field accesses on method call returned values require guards</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class GuardLogStatementTest {
+    private static final Logger LOG = LogManager.getLogger(GuardLogStatementTest.class);
+    private String my_field = "";
+
+    public void test() {
+        LOG.info(
+            "Some message here : foo={}",
+            new GuardLogStatementTest().my_field
+        );
+
+        LOG.info(
+            "Some message here : foo={}",
+            factory().my_field
+        );
+    }
+
+    private GuardLogStatementTest factory() {
+        return new GuardLogStatementTest();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5152 "this" do not require guards</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class GuardLogStatementTest {
+    private static final Logger LOG = LogManager.getLogger(GuardLogStatementTest.class);
+
+    public void test() {
+        LOG.info(
+            "Some message here : foo={}",
+            this
+        );
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5153 array access to constants do not require guards</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class GuardLogStatementTest {
+    private static final Logger LOG = LogManager.getLogger(GuardLogStatementTest.class);
+    private final String[] foo = { "foo" };
+
+    public void test() {
+        LOG.info(
+            "Some message here : foo={}",
+            foo[0]
+        );
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>array access with computed keys require guards</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class GuardLogStatementTest {
+    private static final Logger LOG = LogManager.getLogger(GuardLogStatementTest.class);
+    private final String[] foo = { "foo" };
+
+    public void test() {
+        LOG.info(
+            "Some message here : foo={}",
+            foo[getFooIndex()]
+        );
+    }
+
+    public int getFooIndex() {
+        return 0;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5153 array access to method returned values require guards</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class GuardLogStatementTest {
+    private static final Logger LOG = LogManager.getLogger(GuardLogStatementTest.class);
+
+    public void test() {
+        LOG.info(
+            "Some message here : foo={}",
+            foo()[0]
+        );
+    }
+
+    private String[] foo() {
+        return new String[] { "foo" };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3602 False positive when compile-time constant is created from external constants</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import net.sourceforge.pmd.lang.java.rule.bestpractices.GuardLogStatementTest;
+
+public class MyClass {
+  private static final Logger logger = LogManager.getLogger();
+  public void doSomething() {
+     final Object arg = new Object();
+     logger.info("Problem message: {}. " + GuardLogStatementTest.TERM_MSG, arg);
+  }
+}
+        ]]></code>
+    </test-code>
 </test-data>

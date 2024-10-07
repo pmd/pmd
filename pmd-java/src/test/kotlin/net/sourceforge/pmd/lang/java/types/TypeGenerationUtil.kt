@@ -145,6 +145,7 @@ class RefTypeConstants(override val ts: TypeSystem) : TypeDslMixin {
     val `t_Enum{E}`: JClassType                     get() = java.lang.Enum::class.decl
 
     val t_Stream: JClassType                        get() = java.util.stream.Stream::class.raw
+    val `t_Stream{Number}`: JClassType              get() = java.util.stream.Stream::class[t_Number]
     val t_Function: JClassType                      get() = java.util.function.Function::class.raw
     val t_Map: JClassType                           get() = java.util.Map::class.raw
     val t_MapEntry: JClassType                      get() = java.util.Map.Entry::class.raw

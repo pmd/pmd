@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.renderers;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -15,6 +16,7 @@ import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.junit.jupiter.api.Test;
@@ -26,6 +28,7 @@ import org.xml.sax.InputSource;
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRange2d;
@@ -132,7 +135,7 @@ class XMLRendererTest extends AbstractRendererTest {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + EOL
                 + "<pmd xmlns=\"http://pmd.sourceforge.net/report/2.0.0\""
                 + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-                + " xsi:schemaLocation=\"http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd\""
+                + " xsi:schemaLocation=\"http://pmd.sourceforge.net/report/2.0.0 https://pmd.github.io/schema/report_2_0_0.xsd\""
                 + " version=\"" + PMDVersion.VERSION + "\" timestamp=\"2014-10-06T19:30:51.262\">" + EOL;
     }
 
@@ -159,6 +162,19 @@ class XMLRendererTest extends AbstractRendererTest {
             assertEquals(1, violations.getLength());
             assertEquals(msg.replaceAll(formFeed, ""), violations.item(0).getTextContent().trim());
         });
+    }
+
+    /**
+     * @see <a href="https://github.com/pmd/pmd/issues/5059">[core] xml output doesn't escape CDATA inside its own CDATA</a>
+     */
+    @Test
+    void cdataSectionInError() throws Exception {
+        ProcessingError processingError = new ProcessingError(new ParseException("Invalid source: '<![CDATA[ ... ]]> ...'"),
+                FileId.fromPathLikeString("dummy.txt"));
+        String result = renderReport(getRenderer(), it -> it.onError(processingError), StandardCharsets.UTF_8);
+
+        DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        assertDoesNotThrow(() -> documentBuilder.parse(new InputSource(new StringReader(result))));
     }
 
     private String renderTempFile(Renderer renderer, Report report, Charset expectedCharset) throws IOException {

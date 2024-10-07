@@ -5,80 +5,80 @@ L14
     [ON]                                    13        15
 L17
     [DECLARE]                               1         8
-    [@StartDate]                            9         19
+    [@STARTDATE]                            9         19
     [DATETIME]                              20        28
 L18
     [DECLARE]                               1         8
-    [@EndDate]                              9         17
+    [@ENDDATE]                              9         17
     [DATETIME]                              18        26
 L19
     [DECLARE]                               1         8
-    [@MinimalJobDurationInSeconds]          9         37
+    [@MINIMALJOBDURATIONINSECONDS]          9         37
     [INT]                                   39        42
 L20
     [DECLARE]                               1         8
-    [@EmailTo]                              9         17
+    [@EMAILTO]                              9         17
     [VARCHAR]                               18        25
     [(]                                     25        26
     [500]                                   26        29
     [)]                                     29        30
 L21
     [DECLARE]                               1         8
-    [@DaysPast]                             9         18
+    [@DAYSPAST]                             9         18
     [INT]                                   19        22
 L22
     [DECLARE]                               1         8
-    [@HoursPast]                            9         19
+    [@HOURSPAST]                            9         19
     [INT]                                   20        23
 L23
     [DECLARE]                               1         8
-    [@Servername]                           9         20
+    [@SERVERNAME]                           9         20
     [VARCHAR]                               21        28
     [(]                                     28        29
     [50]                                    29        31
     [)]                                     31        32
 L32
     [SET]                                   1         4
-    [@EmailTo]                              5         13
+    [@EMAILTO]                              5         13
     [=]                                     14        15
     ['John.Doe@xyz.com;Jennifer.Doe@xyz[    16        55
 L35
     [SET]                                   1         4
-    [@DaysPast]                             5         14
+    [@DAYSPAST]                             5         14
     [=]                                     15        16
     [1]                                     17        18
 L38
     [SET]                                   1         4
-    [@HoursPast]                            5         15
+    [@HOURSPAST]                            5         15
     [=]                                     16        17
     [0]                                     18        19
 L41
     [SET]                                   1         4
-    [@MinimalJobDurationInSeconds]          5         33
+    [@MINIMALJOBDURATIONINSECONDS]          5         33
     [=]                                     35        36
     [0]                                     37        38
 L55
     [SET]                                   1         4
-    [@StartDate]                            5         15
+    [@STARTDATE]                            5         15
     [=]                                     16        17
-    [DateAdd]                               18        25
+    [DATEADD]                               18        25
     [(]                                     25        26
-    [hh]                                    26        28
+    [HH]                                    26        28
     [,]                                     28        29
     [-]                                     30        31
     [(]                                     31        32
-    [@HoursPast]                            32        42
+    [@HOURSPAST]                            32        42
     [)]                                     42        43
     [,]                                     43        44
     [GETDATE]                               45        52
     [(]                                     52        53
     [)]                                     53        54
     [-]                                     55        56
-    [@DaysPast]                             57        66
+    [@DAYSPAST]                             57        66
     [)]                                     66        67
 L56
     [SET]                                   1         4
-    [@EndDate]                              5         13
+    [@ENDDATE]                              5         13
     [=]                                     14        15
     [GETDATE]                               16        23
     [(]                                     23        24
@@ -191,7 +191,7 @@ L102
 L103
     [DROP]                                  4         8
     [TABLE]                                 9         14
-    [#JobExecutionTimes]                    15        33
+    [#JOBEXECUTIONTIMES]                    15        33
     [;]                                     33        34
 L105
     [IF]                                    1         3
@@ -205,12 +205,12 @@ L105
 L106
     [DROP]                                  4         8
     [TABLE]                                 9         14
-    [##TimelineGraph]                       15        30
+    [##TIMELINEGRAPH]                       15        30
     [;]                                     30        31
 L115
     [CREATE]                                1         7
     [TABLE]                                 8         13
-    [##TimelineGraph]                       14        29
+    [##TIMELINEGRAPH]                       14        29
 L116
     [(]                                     4         5
     [ID]                                    5         7
@@ -241,7 +241,7 @@ L128
     [*]                                     18        19
 L129
     [INTO]                                  1         5
-    [#JobExecutionTimes]                    10        28
+    [#JOBEXECUTIONTIMES]                    10        28
 L130
     [FROM]                                  1         5
     [(]                                     10        11
@@ -249,16 +249,16 @@ L132
     [SELECT]                                11        17
     [JOB]                                   19        22
     [.]                                     22        23
-    [name]                                  23        27
+    [NAME]                                  23        27
     [AS]                                    28        30
-    [JobName]                               31        38
+    [JOBNAME]                               31        38
 L133
     [,]                                     18        19
     [CAT]                                   19        22
     [.]                                     22        23
-    [name]                                  23        27
+    [NAME]                                  23        27
     [AS]                                    28        30
-    [CatName]                               31        38
+    [CATNAME]                               31        38
 L134
     [,]                                     18        19
     [CONVERT]                               19        26
@@ -274,7 +274,7 @@ L134
     [,]                                     52        53
     [HIS]                                   54        57
     [.]                                     57        58
-    [run_date]                              58        66
+    [RUN_DATE]                              58        66
     [,]                                     66        67
     [112]                                   68        71
     [)]                                     71        72
@@ -300,7 +300,7 @@ L136
     [,]                                     59        60
     [HIS]                                   61        64
     [.]                                     64        65
-    [run_time]                              65        73
+    [RUN_TIME]                              65        73
     [)]                                     73        74
     [,]                                     74        75
     [6]                                     76        77
@@ -329,14 +329,14 @@ L138
     [,]                                     18        19
     [DATEADD]                               19        26
     [(]                                     26        27
-    [s]                                     27        28
+    [S]                                     27        28
     [,]                                     28        29
 L139
     [(]                                     27        28
     [(]                                     28        29
     [HIS]                                   29        32
     [.]                                     32        33
-    [run_duration]                          33        45
+    [RUN_DURATION]                          33        45
     [/]                                     46        47
     [10000]                                 48        53
     [)]                                     53        54
@@ -351,7 +351,7 @@ L140
     [(]                                     30        31
     [HIS]                                   31        34
     [.]                                     34        35
-    [run_duration]                          35        47
+    [RUN_DURATION]                          35        47
     [/]                                     48        49
     [100]                                   50        53
     [)]                                     53        54
@@ -364,7 +364,7 @@ L141
     [+]                                     27        28
     [HIS]                                   29        32
     [.]                                     32        33
-    [run_duration]                          33        45
+    [RUN_DURATION]                          33        45
     [%]                                     46        47
     [100]                                   48        51
     [,]                                     51        52
@@ -382,7 +382,7 @@ L142
     [,]                                     60        61
     [HIS]                                   62        65
     [.]                                     65        66
-    [run_date]                              66        74
+    [RUN_DATE]                              66        74
     [,]                                     74        75
     [112]                                   76        79
     [)]                                     79        80
@@ -408,7 +408,7 @@ L144
     [,]                                     73        74
     [HIS]                                   75        78
     [.]                                     78        79
-    [run_time]                              79        87
+    [RUN_TIME]                              79        87
     [)]                                     87        88
     [,]                                     88        89
 L145
@@ -438,19 +438,19 @@ L146
     [,]                                     18        19
     [JOB]                                   19        22
     [.]                                     22        23
-    [description]                           23        34
+    [DESCRIPTION]                           23        34
 L147
     [,]                                     18        19
     [HIS]                                   19        22
     [.]                                     22        23
-    [run_status]                            23        33
+    [RUN_STATUS]                            23        33
 L148
     [,]                                     18        19
     [CASE]                                  19        23
     [WHEN]                                  24        28
     [HIS]                                   29        32
     [.]                                     32        33
-    [run_status]                            33        43
+    [RUN_STATUS]                            33        43
     [=]                                     44        45
     [0]                                     46        47
     [THEN]                                  48        52
@@ -459,7 +459,7 @@ L149
     [WHEN]                                  24        28
     [HIS]                                   29        32
     [.]                                     32        33
-    [run_status]                            33        43
+    [RUN_STATUS]                            33        43
     [=]                                     44        45
     [1]                                     46        47
     [THEN]                                  48        52
@@ -468,7 +468,7 @@ L150
     [WHEN]                                  24        28
     [HIS]                                   29        32
     [.]                                     32        33
-    [run_status]                            33        43
+    [RUN_STATUS]                            33        43
     [=]                                     44        45
     [2]                                     46        47
     [THEN]                                  48        52
@@ -477,7 +477,7 @@ L151
     [WHEN]                                  24        28
     [HIS]                                   29        32
     [.]                                     32        33
-    [run_status]                            33        43
+    [RUN_STATUS]                            33        43
     [=]                                     44        45
     [3]                                     46        47
     [THEN]                                  48        52
@@ -488,25 +488,25 @@ L152
 L153
     [END]                                   19        22
     [AS]                                    23        25
-    [JobStatus]                             26        35
+    [JOBSTATUS]                             26        35
 L154
     [,]                                     18        19
     [CASE]                                  19        23
     [WHEN]                                  24        28
     [HIS]                                   29        32
     [.]                                     32        33
-    [run_status]                            33        43
+    [RUN_STATUS]                            33        43
     [=]                                     44        45
     [0]                                     46        47
     [THEN]                                  48        52
     [HIS]                                   53        56
     [.]                                     56        57
-    [message]                               57        64
+    [MESSAGE]                               57        64
 L155
     [WHEN]                                  24        28
     [HIS]                                   29        32
     [.]                                     32        33
-    [run_status]                            33        43
+    [RUN_STATUS]                            33        43
     [=]                                     44        45
     [1]                                     46        47
     [THEN]                                  48        52
@@ -515,78 +515,78 @@ L156
     [WHEN]                                  24        28
     [HIS]                                   29        32
     [.]                                     32        33
-    [run_status]                            33        43
+    [RUN_STATUS]                            33        43
     [=]                                     44        45
     [2]                                     46        47
     [THEN]                                  48        52
     [HIS]                                   53        56
     [.]                                     56        57
-    [message]                               57        64
+    [MESSAGE]                               57        64
 L157
     [WHEN]                                  24        28
     [HIS]                                   29        32
     [.]                                     32        33
-    [run_status]                            33        43
+    [RUN_STATUS]                            33        43
     [=]                                     44        45
     [3]                                     46        47
     [THEN]                                  48        52
     [HIS]                                   53        56
     [.]                                     56        57
-    [message]                               57        64
+    [MESSAGE]                               57        64
 L158
     [ELSE]                                  24        28
     [HIS]                                   29        32
     [.]                                     32        33
-    [message]                               33        40
+    [MESSAGE]                               33        40
 L159
     [END]                                   19        22
     [AS]                                    23        25
-    [JobMessage]                            26        36
+    [JOBMESSAGE]                            26        36
 L161
     [FROM]                                  11        15
-    [msdb]                                  19        23
+    [MSDB]                                  19        23
     [.]                                     23        24
-    [dbo]                                   24        27
+    [DBO]                                   24        27
     [.]                                     27        28
-    [sysjobs]                               28        35
+    [SYSJOBS]                               28        35
     [AS]                                    36        38
     [JOB]                                   39        42
 L162
     [LEFT]                                  11        15
     [JOIN]                                  16        20
-    [msdb]                                  21        25
+    [MSDB]                                  21        25
     [.]                                     25        26
-    [dbo]                                   26        29
+    [DBO]                                   26        29
     [.]                                     29        30
-    [sysjobhistory]                         30        43
+    [SYSJOBHISTORY]                         30        43
     [AS]                                    44        46
     [HIS]                                   47        50
     [ON]                                    51        53
     [HIS]                                   54        57
     [.]                                     57        58
-    [job_id]                                58        64
+    [JOB_ID]                                58        64
     [=]                                     65        66
-    [job]                                   67        70
+    [JOB]                                   67        70
     [.]                                     70        71
-    [job_id]                                71        77
+    [JOB_ID]                                71        77
 L163
     [INNER]                                 11        16
     [JOIN]                                  17        21
-    [msdb]                                  22        26
+    [MSDB]                                  22        26
     [.]                                     26        27
-    [dbo]                                   27        30
+    [DBO]                                   27        30
     [.]                                     30        31
-    [syscategories]                         31        44
+    [SYSCATEGORIES]                         31        44
     [AS]                                    45        47
     [CAT]                                   48        51
     [ON]                                    52        54
     [CAT]                                   55        58
     [.]                                     58        59
-    [category_id]                           59        70
+    [CATEGORY_ID]                           59        70
     [=]                                     71        72
     [JOB]                                   73        76
     [.]                                     76        77
-    [category_id]                           77        88
+    [CATEGORY_ID]                           77        88
 L164
     [WHERE]                                 11        16
     [CONVERT]                               19        26
@@ -602,7 +602,7 @@ L164
     [,]                                     52        53
     [HIS]                                   54        57
     [.]                                     57        58
-    [run_date]                              58        66
+    [RUN_DATE]                              58        66
     [,]                                     66        67
     [112]                                   68        71
     [)]                                     71        72
@@ -628,7 +628,7 @@ L166
     [,]                                     59        60
     [HIS]                                   61        64
     [.]                                     64        65
-    [run_time]                              65        73
+    [RUN_TIME]                              65        73
     [)]                                     73        74
     [,]                                     74        75
     [6]                                     76        77
@@ -652,16 +652,16 @@ L167
     [120]                                   57        60
     [)]                                     60        61
     [BETWEEN]                               62        69
-    [@StartDate]                            70        80
+    [@STARTDATE]                            70        80
 L168
     [AND]                                   62        65
 L169
-    [@EndDate]                              63        71
+    [@ENDDATE]                              63        71
 L170
     [AND]                                   19        22
     [HIS]                                   23        26
     [.]                                     26        27
-    [step_id]                               27        34
+    [STEP_ID]                               27        34
     [=]                                     35        36
     [0]                                     37        38
 L171
@@ -670,7 +670,7 @@ L171
     [(]                                     24        25
     [HIS]                                   25        28
     [.]                                     28        29
-    [run_duration]                          29        41
+    [RUN_DURATION]                          29        41
     [/]                                     42        43
     [10000]                                 44        49
     [)]                                     49        50
@@ -685,7 +685,7 @@ L172
     [(]                                     22        23
     [HIS]                                   23        26
     [.]                                     26        27
-    [run_duration]                          27        39
+    [RUN_DURATION]                          27        39
     [/]                                     40        41
     [100]                                   42        45
     [)]                                     45        46
@@ -697,13 +697,13 @@ L172
     [+]                                     59        60
     [HIS]                                   61        64
     [.]                                     64        65
-    [run_duration]                          65        77
+    [RUN_DURATION]                          65        77
 L173
     [%]                                     19        20
     [100]                                   21        24
     [>]                                     25        26
     [=]                                     26        27
-    [@MinimalJobDurationInSeconds]          28        56
+    [@MINIMALJOBDURATIONINSECONDS]          28        56
 L175
     [UNION]                                 11        16
     [ALL]                                   17        20
@@ -711,21 +711,21 @@ L178
     [SELECT]                                11        17
     [JOB]                                   19        22
     [.]                                     22        23
-    [name]                                  23        27
+    [NAME]                                  23        27
     [AS]                                    28        30
-    [JobName]                               31        38
+    [JOBNAME]                               31        38
 L179
     [,]                                     18        19
     [CAT]                                   19        22
     [.]                                     22        23
-    [name]                                  23        27
+    [NAME]                                  23        27
     [AS]                                    28        30
-    [CatName]                               31        38
+    [CATNAME]                               31        38
 L180
     [,]                                     18        19
     [JA]                                    19        21
     [.]                                     21        22
-    [start_execution_date]                  22        42
+    [START_EXECUTION_DATE]                  22        42
     [AS]                                    43        45
     [SDT]                                   46        49
 L181
@@ -739,19 +739,19 @@ L182
     [,]                                     18        19
     [JOB]                                   19        22
     [.]                                     22        23
-    [description]                           23        34
+    [DESCRIPTION]                           23        34
 L183
     [,]                                     18        19
     [HIS]                                   19        22
     [.]                                     22        23
-    [run_status]                            23        33
+    [RUN_STATUS]                            23        33
 L184
     [,]                                     18        19
     [CASE]                                  19        23
     [WHEN]                                  24        28
     [HIS]                                   29        32
     [.]                                     32        33
-    [run_status]                            33        43
+    [RUN_STATUS]                            33        43
     [=]                                     44        45
     [0]                                     46        47
     [THEN]                                  48        52
@@ -760,7 +760,7 @@ L185
     [WHEN]                                  24        28
     [HIS]                                   29        32
     [.]                                     32        33
-    [run_status]                            33        43
+    [RUN_STATUS]                            33        43
     [=]                                     44        45
     [1]                                     46        47
     [THEN]                                  48        52
@@ -769,7 +769,7 @@ L186
     [WHEN]                                  24        28
     [HIS]                                   29        32
     [.]                                     32        33
-    [run_status]                            33        43
+    [RUN_STATUS]                            33        43
     [=]                                     44        45
     [2]                                     46        47
     [THEN]                                  48        52
@@ -778,7 +778,7 @@ L187
     [WHEN]                                  24        28
     [HIS]                                   29        32
     [.]                                     32        33
-    [run_status]                            33        43
+    [RUN_STATUS]                            33        43
     [=]                                     44        45
     [3]                                     46        47
     [THEN]                                  48        52
@@ -787,7 +787,7 @@ L188
     [WHEN]                                  24        28
     [HIS]                                   29        32
     [.]                                     32        33
-    [run_status]                            33        43
+    [RUN_STATUS]                            33        43
     [IS]                                    44        46
     [NULL]                                  47        51
     [THEN]                                  52        56
@@ -798,25 +798,25 @@ L189
 L190
     [END]                                   19        22
     [AS]                                    23        25
-    [JobStatus]                             26        35
+    [JOBSTATUS]                             26        35
 L191
     [,]                                     18        19
     [CASE]                                  19        23
     [WHEN]                                  24        28
     [HIS]                                   29        32
     [.]                                     32        33
-    [run_status]                            33        43
+    [RUN_STATUS]                            33        43
     [=]                                     44        45
     [0]                                     46        47
     [THEN]                                  48        52
     [HIS]                                   53        56
     [.]                                     56        57
-    [message]                               57        64
+    [MESSAGE]                               57        64
 L192
     [WHEN]                                  24        28
     [HIS]                                   29        32
     [.]                                     32        33
-    [run_status]                            33        43
+    [RUN_STATUS]                            33        43
     [=]                                     44        45
     [1]                                     46        47
     [THEN]                                  48        52
@@ -825,29 +825,29 @@ L193
     [WHEN]                                  24        28
     [HIS]                                   29        32
     [.]                                     32        33
-    [run_status]                            33        43
+    [RUN_STATUS]                            33        43
     [=]                                     44        45
     [2]                                     46        47
     [THEN]                                  48        52
     [HIS]                                   53        56
     [.]                                     56        57
-    [message]                               57        64
+    [MESSAGE]                               57        64
 L194
     [WHEN]                                  24        28
     [HIS]                                   29        32
     [.]                                     32        33
-    [run_status]                            33        43
+    [RUN_STATUS]                            33        43
     [=]                                     44        45
     [3]                                     46        47
     [THEN]                                  48        52
     [HIS]                                   53        56
     [.]                                     56        57
-    [message]                               57        64
+    [MESSAGE]                               57        64
 L195
     [WHEN]                                  24        28
     [HIS]                                   29        32
     [.]                                     32        33
-    [run_status]                            33        43
+    [RUN_STATUS]                            33        43
     [IS]                                    44        46
     [NULL]                                  47        51
     [THEN]                                  52        56
@@ -856,79 +856,79 @@ L196
     [ELSE]                                  24        28
     [HIS]                                   29        32
     [.]                                     32        33
-    [message]                               33        40
+    [MESSAGE]                               33        40
 L197
     [END]                                   19        22
     [AS]                                    23        25
-    [JobMessage]                            26        36
+    [JOBMESSAGE]                            26        36
 L199
     [FROM]                                  11        15
-    [msdb]                                  19        23
+    [MSDB]                                  19        23
     [.]                                     23        24
-    [dbo]                                   24        27
+    [DBO]                                   24        27
     [.]                                     27        28
-    [sysjobactivity]                        28        42
+    [SYSJOBACTIVITY]                        28        42
     [AS]                                    43        45
     [JA]                                    46        48
 L200
     [LEFT]                                  11        15
     [JOIN]                                  16        20
-    [msdb]                                  21        25
+    [MSDB]                                  21        25
     [.]                                     25        26
-    [dbo]                                   26        29
+    [DBO]                                   26        29
     [.]                                     29        30
-    [sysjobhistory]                         30        43
+    [SYSJOBHISTORY]                         30        43
     [AS]                                    44        46
     [HIS]                                   47        50
     [ON]                                    51        53
     [HIS]                                   54        57
     [.]                                     57        58
-    [instance_id]                           58        69
+    [INSTANCE_ID]                           58        69
     [=]                                     70        71
     [JA]                                    72        74
     [.]                                     74        75
-    [job_history_id]                        75        89
+    [JOB_HISTORY_ID]                        75        89
 L201
     [JOIN]                                  11        15
-    [msdb]                                  19        23
+    [MSDB]                                  19        23
     [.]                                     23        24
-    [dbo]                                   24        27
+    [DBO]                                   24        27
     [.]                                     27        28
-    [sysjobs]                               28        35
+    [SYSJOBS]                               28        35
     [AS]                                    36        38
     [JOB]                                   39        42
     [ON]                                    43        45
     [JOB]                                   46        49
     [.]                                     49        50
-    [job_id]                                50        56
+    [JOB_ID]                                50        56
     [=]                                     57        58
     [JA]                                    59        61
     [.]                                     61        62
-    [job_id]                                62        68
+    [JOB_ID]                                62        68
 L202
     [JOIN]                                  11        15
-    [msdb]                                  19        23
+    [MSDB]                                  19        23
     [.]                                     23        24
-    [dbo]                                   24        27
+    [DBO]                                   24        27
     [.]                                     27        28
-    [sysjobsteps]                           28        39
+    [SYSJOBSTEPS]                           28        39
     [AS]                                    40        42
     [JS]                                    43        45
     [ON]                                    46        48
     [JS]                                    49        51
     [.]                                     51        52
-    [job_id]                                52        58
+    [JOB_ID]                                52        58
     [=]                                     59        60
     [JA]                                    61        63
     [.]                                     63        64
-    [job_id]                                64        70
+    [JOB_ID]                                64        70
 L203
     [AND]                                   46        49
     [ISNULL]                                50        56
     [(]                                     56        57
     [JA]                                    57        59
     [.]                                     59        60
-    [last_executed_step_id]                 60        81
+    [LAST_EXECUTED_STEP_ID]                 60        81
     [,]                                     81        82
 L204
     [0]                                     57        58
@@ -938,48 +938,48 @@ L204
     [=]                                     64        65
     [JS]                                    66        68
     [.]                                     68        69
-    [step_id]                               69        76
+    [STEP_ID]                               69        76
 L205
     [LEFT]                                  11        15
     [JOIN]                                  16        20
-    [msdb]                                  21        25
+    [MSDB]                                  21        25
     [.]                                     25        26
-    [dbo]                                   26        29
+    [DBO]                                   26        29
     [.]                                     29        30
-    [syscategories]                         30        43
+    [SYSCATEGORIES]                         30        43
     [AS]                                    44        46
     [CAT]                                   47        50
     [ON]                                    51        53
     [CAT]                                   54        57
     [.]                                     57        58
-    [category_id]                           58        69
+    [CATEGORY_ID]                           58        69
     [=]                                     70        71
     [JOB]                                   72        75
     [.]                                     75        76
-    [category_id]                           76        87
+    [CATEGORY_ID]                           76        87
 L206
     [WHERE]                                 11        16
     [JA]                                    19        21
     [.]                                     21        22
-    [session_id]                            22        32
+    [SESSION_ID]                            22        32
     [=]                                     33        34
     [(]                                     35        36
     [SELECT]                                36        42
     [TOP]                                   43        46
     [1]                                     47        48
 L207
-    [session_id]                            43        53
+    [SESSION_ID]                            43        53
 L208
     [FROM]                                  36        40
-    [msdb]                                  43        47
+    [MSDB]                                  43        47
     [.]                                     47        48
-    [dbo]                                   48        51
+    [DBO]                                   48        51
     [.]                                     51        52
-    [syssessions]                           52        63
+    [SYSSESSIONS]                           52        63
 L209
     [ORDER]                                 36        41
     [BY]                                    42        44
-    [agent_start_date]                      45        61
+    [AGENT_START_DATE]                      45        61
     [DESC]                                  62        66
 L210
     [)]                                     35        36
@@ -987,7 +987,7 @@ L211
     [AND]                                   19        22
     [JA]                                    23        25
     [.]                                     25        26
-    [start_execution_date]                  26        46
+    [START_EXECUTION_DATE]                  26        46
     [IS]                                    47        49
     [NOT]                                   50        53
     [NULL]                                  54        58
@@ -995,7 +995,7 @@ L212
     [AND]                                   19        22
     [JA]                                    23        25
     [.]                                     25        26
-    [stop_execution_date]                   26        45
+    [STOP_EXECUTION_DATE]                   26        45
     [IS]                                    46        48
     [NULL]                                  49        53
 L213
@@ -1007,7 +1007,7 @@ L215
     [BY]                                    7         9
     [JOBDATA]                               10        17
     [.]                                     17        18
-    [JobName]                               18        25
+    [JOBNAME]                               18        25
 L217
     [IF]                                    1         3
     [NOT]                                   4         7
@@ -1017,11 +1017,11 @@ L217
     [1]                                     25        26
 L218
     [FROM]                                  17        21
-    [#JobExecutionTimes]                    25        43
+    [#JOBEXECUTIONTIMES]                    25        43
     [)]                                     44        45
 L219
     [GOTO]                                  4         8
-    [NothingToDo]                           9         20
+    [NOTHINGTODO]                           9         20
 L228
     [DECLARE]                               1         8
     [@ERROR_COUNT]                          9         21
@@ -1046,9 +1046,9 @@ L230
     [*]                                     34        35
     [)]                                     35        36
     [FROM]                                  37        41
-    [#JobExecutionTimes]                    42        60
+    [#JOBEXECUTIONTIMES]                    42        60
     [WHERE]                                 61        66
-    [run_status]                            67        77
+    [RUN_STATUS]                            67        77
     [=]                                     77        78
     [0]                                     78        79
     [)]                                     79        80
@@ -1065,7 +1065,7 @@ L232
     [+]                                     35        36
     [CONVERT]                               37        44
     [(]                                     44        45
-    [varchar]                               45        52
+    [VARCHAR]                               45        52
     [(]                                     52        53
     [4]                                     53        54
     [)]                                     54        55
@@ -1084,7 +1084,7 @@ L234
 L243
     [INSERT]                                1         7
     [INTO]                                  10        14
-    [##TimelineGraph]                       15        30
+    [##TIMELINEGRAPH]                       15        30
 L244
     [(]                                     10        11
     [HTML]                                  11        15
@@ -1096,7 +1096,7 @@ L246
 L263
     [INSERT]                                1         7
     [INTO]                                  10        14
-    [##TimelineGraph]                       15        30
+    [##TIMELINEGRAPH]                       15        30
 L264
     [(]                                     10        11
     [HTML]                                  11        15
@@ -1143,7 +1143,7 @@ L315
 L321
     [INSERT]                                1         7
     [INTO]                                  10        14
-    [##TimelineGraph]                       15        30
+    [##TIMELINEGRAPH]                       15        30
 L322
     [(]                                     10        11
     [HTML]                                  11        15
@@ -1154,7 +1154,7 @@ L323
 L326
     [INSERT]                                1         7
     [INTO]                                  10        14
-    [##TimelineGraph]                       15        30
+    [##TIMELINEGRAPH]                       15        30
 L327
     [(]                                     10        11
     [HTML]                                  11        15
@@ -1166,7 +1166,7 @@ L329
 L333
     [INSERT]                                1         7
     [INTO]                                  10        14
-    [##TimelineGraph]                       15        30
+    [##TIMELINEGRAPH]                       15        30
 L334
     [(]                                     10        11
     [HTML]                                  11        15
@@ -1178,7 +1178,7 @@ L336
 L341
     [INSERT]                                1         7
     [INTO]                                  10        14
-    [##TimelineGraph]                       15        30
+    [##TIMELINEGRAPH]                       15        30
 L342
     [(]                                     10        11
     [HTML]                                  11        15
@@ -1190,7 +1190,7 @@ L344
 L349
     [INSERT]                                1         7
     [INTO]                                  10        14
-    [##TimelineGraph]                       15        30
+    [##TIMELINEGRAPH]                       15        30
 L350
     [(]                                     10        11
     [HTML]                                  11        15
@@ -1202,7 +1202,7 @@ L352
 L361
     [INSERT]                                1         7
     [INTO]                                  10        14
-    [##TimelineGraph]                       15        30
+    [##TIMELINEGRAPH]                       15        30
 L362
     [(]                                     10        11
     [HTML]                                  11        15
@@ -1214,11 +1214,11 @@ L364
     [+]                                     34        35
     ['''']                                  36        40
     [+]                                     41        42
-    [JobName]                               43        50
+    [JOBNAME]                               43        50
     [+]                                     51        52
     [''','''', ''']                         53        66
     [+]                                     67        68
-    [JobStatus]                             69        78
+    [JOBSTATUS]                             69        78
     [+]                                     79        80
     [''', ']                                81        87
 L365
@@ -1447,32 +1447,32 @@ L376
     [') \],']                               56        62
 L377
     [FROM]                                  1         5
-    [#JobExecutionTimes]                    10        28
+    [#JOBEXECUTIONTIMES]                    10        28
 L385
     [DECLARE]                               1         8
-    [@DTServerstart]                        9         23
+    [@DTSERVERSTART]                        9         23
     [AS]                                    24        26
     [DATETIME]                              27        35
 L386
     [SET]                                   1         4
-    [@DTServerstart]                        5         19
+    [@DTSERVERSTART]                        5         19
     [=]                                     20        21
     [(]                                     22        23
     [SELECT]                                23        29
-    [login_time]                            30        40
+    [LOGIN_TIME]                            30        40
     [FROM]                                  41        45
-    [sys]                                   46        49
+    [SYS]                                   46        49
     [.]                                     49        50
-    [dm_exec_sessions]                      50        66
+    [DM_EXEC_SESSIONS]                      50        66
     [WHERE]                                 67        72
-    [session_id]                            73        83
+    [SESSION_ID]                            73        83
     [=]                                     83        84
     [1]                                     84        85
     [)]                                     85        86
 L389
     [INSERT]                                1         7
     [INTO]                                  10        14
-    [##TimelineGraph]                       15        30
+    [##TIMELINEGRAPH]                       15        30
 L390
     [(]                                     10        11
     [HTML]                                  11        15
@@ -1501,7 +1501,7 @@ L393
     [(]                                     39        40
     [YEAR]                                  40        44
     [,]                                     44        45
-    [@DTServerstart]                        46        60
+    [@DTSERVERSTART]                        46        60
     [)]                                     60        61
     [AS]                                    62        64
     [VARCHAR]                               65        72
@@ -1519,7 +1519,7 @@ L394
     [(]                                     25        26
     [MONTH]                                 26        31
     [,]                                     31        32
-    [@DTServerstart]                        33        47
+    [@DTSERVERSTART]                        33        47
     [)]                                     47        48
     [-]                                     49        50
     [1]                                     51        52
@@ -1539,7 +1539,7 @@ L395
     [(]                                     32        33
     [DAY]                                   33        36
     [,]                                     36        37
-    [@DTServerstart]                        38        52
+    [@DTSERVERSTART]                        38        52
     [)]                                     52        53
     [AS]                                    54        56
     [VARCHAR]                               57        64
@@ -1557,7 +1557,7 @@ L396
     [(]                                     25        26
     [HOUR]                                  26        30
     [,]                                     30        31
-    [@DTServerstart]                        32        46
+    [@DTSERVERSTART]                        32        46
     [)]                                     46        47
     [AS]                                    48        50
     [VARCHAR]                               51        58
@@ -1575,7 +1575,7 @@ L397
     [(]                                     25        26
     [MINUTE]                                26        32
     [,]                                     32        33
-    [@DTServerstart]                        34        48
+    [@DTSERVERSTART]                        34        48
     [)]                                     48        49
     [AS]                                    50        52
     [VARCHAR]                               53        60
@@ -1593,7 +1593,7 @@ L398
     [(]                                     25        26
     [SECOND]                                26        32
     [,]                                     32        33
-    [@DTServerstart]                        34        48
+    [@DTSERVERSTART]                        34        48
     [)]                                     48        49
     [AS]                                    50        52
     [VARCHAR]                               53        60
@@ -1613,7 +1613,7 @@ L399
     [(]                                     25        26
     [YEAR]                                  26        30
     [,]                                     30        31
-    [@DTServerstart]                        32        46
+    [@DTSERVERSTART]                        32        46
     [)]                                     46        47
     [AS]                                    48        50
     [VARCHAR]                               51        58
@@ -1631,7 +1631,7 @@ L400
     [(]                                     25        26
     [MONTH]                                 26        31
     [,]                                     31        32
-    [@DTServerstart]                        33        47
+    [@DTSERVERSTART]                        33        47
     [)]                                     47        48
     [-]                                     49        50
     [1]                                     51        52
@@ -1651,7 +1651,7 @@ L401
     [(]                                     32        33
     [DAY]                                   33        36
     [,]                                     36        37
-    [@DTServerstart]                        38        52
+    [@DTSERVERSTART]                        38        52
     [)]                                     52        53
     [AS]                                    54        56
     [VARCHAR]                               57        64
@@ -1669,7 +1669,7 @@ L402
     [(]                                     25        26
     [HOUR]                                  26        30
     [,]                                     30        31
-    [@DTServerstart]                        32        46
+    [@DTSERVERSTART]                        32        46
     [)]                                     46        47
     [AS]                                    48        50
     [VARCHAR]                               51        58
@@ -1687,7 +1687,7 @@ L403
     [(]                                     25        26
     [MINUTE]                                26        32
     [,]                                     32        33
-    [@DTServerstart]                        34        48
+    [@DTSERVERSTART]                        34        48
     [)]                                     48        49
     [AS]                                    50        52
     [VARCHAR]                               53        60
@@ -1705,7 +1705,7 @@ L404
     [(]                                     25        26
     [SECOND]                                26        32
     [,]                                     32        33
-    [@DTServerstart]                        34        48
+    [@DTSERVERSTART]                        34        48
     [)]                                     48        49
     [AS]                                    50        52
     [VARCHAR]                               53        60
@@ -1717,14 +1717,14 @@ L404
     [') \],']                               67        73
 L405
     [WHERE]                                 1         6
-    [@DTServerstart]                        7         21
+    [@DTSERVERSTART]                        7         21
     [>]                                     22        23
     [=]                                     23        24
-    [@StartDate]                            25        35
+    [@STARTDATE]                            25        35
 L413
     [INSERT]                                1         7
     [INTO]                                  10        14
-    [##TimelineGraph]                       15        30
+    [##TIMELINEGRAPH]                       15        30
 L414
     [(]                                     10        11
     [HTML]                                  11        15
@@ -1736,7 +1736,7 @@ L416
 L438
     [INSERT]                                1         7
     [INTO]                                  10        14
-    [##TimelineGraph]                       15        30
+    [##TIMELINEGRAPH]                       15        30
 L439
     [(]                                     10        11
     [HTML]                                  11        15
@@ -1748,7 +1748,7 @@ L441
 L444
     [INSERT]                                1         7
     [INTO]                                  10        14
-    [##TimelineGraph]                       15        30
+    [##TIMELINEGRAPH]                       15        30
 L445
     [(]                                     10        11
     [HTML]                                  11        15
@@ -1760,7 +1760,7 @@ L447
 L451
     [INSERT]                                1         7
     [INTO]                                  10        14
-    [##TimelineGraph]                       15        30
+    [##TIMELINEGRAPH]                       15        30
 L452
     [(]                                     10        11
     [HTML]                                  11        15
@@ -1778,7 +1778,7 @@ L454
     [(]                                     35        36
     [COALESCE]                              36        44
     [(]                                     44        45
-    [JobMessage]                            45        55
+    [JOBMESSAGE]                            45        55
     [,]                                     55        56
     ['']                                    57        59
     [)]                                     59        60
@@ -1794,11 +1794,11 @@ L454
     ['''\],']                               80        86
 L455
     [FROM]                                  1         5
-    [#JobExecutionTimes]                    10        28
+    [#JOBEXECUTIONTIMES]                    10        28
 L459
     [INSERT]                                1         7
     [INTO]                                  10        14
-    [##TimelineGraph]                       15        30
+    [##TIMELINEGRAPH]                       15        30
 L460
     [(]                                     10        11
     [HTML]                                  11        15
@@ -1815,24 +1815,24 @@ L462
     ['''\],']                               28        34
 L463
     [FROM]                                  1         5
-    [sys]                                   6         9
+    [SYS]                                   6         9
     [.]                                     9         10
-    [dm_exec_sessions]                      10        26
+    [DM_EXEC_SESSIONS]                      10        26
 L464
     [WHERE]                                 1         6
-    [session_id]                            7         17
+    [SESSION_ID]                            7         17
     [=]                                     18        19
     [1]                                     19        20
 L465
     [AND]                                   1         4
-    [login_time]                            5         15
+    [LOGIN_TIME]                            5         15
     [>]                                     16        17
     [=]                                     17        18
-    [@StartDate]                            19        29
+    [@STARTDATE]                            19        29
 L469
     [INSERT]                                1         7
     [INTO]                                  10        14
-    [##TimelineGraph]                       15        30
+    [##TIMELINEGRAPH]                       15        30
 L470
     [(]                                     10        11
     [HTML]                                  11        15
@@ -1843,7 +1843,7 @@ L471
 L475
     [INSERT]                                1         7
     [INTO]                                  10        14
-    [##TimelineGraph]                       15        30
+    [##TIMELINEGRAPH]                       15        30
 L476
     [(]                                     10        11
     [HTML]                                  11        15
@@ -1855,7 +1855,7 @@ L478
 L496
     [INSERT]                                1         7
     [INTO]                                  10        14
-    [##TimelineGraph]                       15        30
+    [##TIMELINEGRAPH]                       15        30
 L497
     [(]                                     10        11
     [HTML]                                  11        15
@@ -1867,7 +1867,7 @@ L499
 L523
     [INSERT]                                1         7
     [INTO]                                  10        14
-    [##TimelineGraph]                       15        30
+    [##TIMELINEGRAPH]                       15        30
 L524
     [(]                                     10        11
     [HTML]                                  11        15
@@ -1880,7 +1880,7 @@ L529
     [+]                                     21        22
     ['<font face="Helvetica" size="3" >[    23        61
     [+]                                     62        63
-    [@@servername]                          64        76
+    [@@SERVERNAME]                          64        76
 L530
     [+]                                     10        11
     [' Jobs']                               12        19
@@ -1894,7 +1894,7 @@ L530
     [20]                                    49        51
     [)]                                     51        52
     [,]                                     52        53
-    [@StartDate]                            54        64
+    [@STARTDATE]                            54        64
     [,]                                     64        65
     [120]                                   66        69
     [)]                                     69        70
@@ -1909,7 +1909,7 @@ L531
     [20]                                    37        39
     [)]                                     39        40
     [,]                                     40        41
-    [@EndDate]                              42        50
+    [@ENDDATE]                              42        50
     [,]                                     50        51
     [120]                                   52        55
     [)]                                     55        56
@@ -1935,7 +1935,7 @@ L536
     [+]                                     10        11
     [CASE]                                  12        16
     [WHEN]                                  17        21
-    [@MinimalJobDurationInSeconds]          22        50
+    [@MINIMALJOBDURATIONINSECONDS]          22        50
     [=]                                     52        53
     [0]                                     54        55
     [THEN]                                  56        60
@@ -1947,7 +1947,7 @@ L538
     [+]                                     22        23
     [CAST]                                  24        28
     [(]                                     28        29
-    [@MinimalJobDurationInSeconds]          29        57
+    [@MINIMALJOBDURATIONINSECONDS]          29        57
     [AS]                                    59        61
     [VARCHAR]                               62        69
     [(]                                     69        70
@@ -1965,7 +1965,7 @@ L541
 L546
     [INSERT]                                1         7
     [INTO]                                  10        14
-    [##TimelineGraph]                       15        30
+    [##TIMELINEGRAPH]                       15        30
 L547
     [(]                                     10        11
     [HTML]                                  11        15
@@ -1977,7 +1977,7 @@ L549
 L573
     [INSERT]                                1         7
     [INTO]                                  10        14
-    [##TimelineGraph]                       15        30
+    [##TIMELINEGRAPH]                       15        30
 L574
     [(]                                     10        11
     [HTML]                                  11        15
@@ -1990,12 +1990,12 @@ L577
     [+]                                     40        41
     [CONVERT]                               42        49
     [(]                                     49        50
-    [char]                                  50        54
+    [CHAR]                                  50        54
     [(]                                     54        55
     [20]                                    55        57
     [)]                                     57        58
     [,]                                     58        59
-    [@DTServerstart]                        60        74
+    [@DTSERVERSTART]                        60        74
     [,]                                     74        75
     [113]                                   75        78
     [)]                                     78        79
@@ -2005,7 +2005,7 @@ L578
 L582
     [INSERT]                                1         7
     [INTO]                                  10        14
-    [##TimelineGraph]                       15        30
+    [##TIMELINEGRAPH]                       15        30
 L583
     [(]                                     10        11
     [HTML]                                  11        15
@@ -2017,32 +2017,32 @@ L586
     ['</li>\n                          [    36        2
 L601
     [DECLARE]                               1         8
-    [@Timeline_Width]                       9         24
+    [@TIMELINE_WIDTH]                       9         24
     [AS]                                    25        27
     [INTEGER]                               28        35
 L602
     [IF]                                    1         3
-    [@DaysPast]                             4         13
+    [@DAYSPAST]                             4         13
     [<]                                     14        15
     [1]                                     16        17
 L603
     [SET]                                   4         7
-    [@Timeline_Width]                       8         23
+    [@TIMELINE_WIDTH]                       8         23
     [=]                                     24        25
     [1800]                                  26        30
 L604
     [ELSE]                                  1         5
 L605
     [SET]                                   4         7
-    [@Timeline_Width]                       8         23
+    [@TIMELINE_WIDTH]                       8         23
     [=]                                     24        25
-    [@DaysPast]                             26        35
+    [@DAYSPAST]                             26        35
     [*]                                     36        37
     [1800]                                  38        42
 L608
     [INSERT]                                1         7
     [INTO]                                  10        14
-    [##TimelineGraph]                       15        30
+    [##TIMELINEGRAPH]                       15        30
 L609
     [(]                                     10        11
     [HTML]                                  11        15
@@ -2055,7 +2055,7 @@ L612
     [+]                                     63        64
     [CAST]                                  65        69
     [(]                                     69        70
-    [@Timeline_Width]                       70        85
+    [@TIMELINE_WIDTH]                       70        85
     [AS]                                    86        88
     [VARCHAR]                               89        96
     [(]                                     96        97
@@ -2067,7 +2067,7 @@ L613
     ['px; height: 950px;"></div>\n     [    12        9
 L624
     [DECLARE]                               1         8
-    [@emailBodyText]                        9         23
+    [@EMAILBODYTEXT]                        9         23
     [NVARCHAR]                              24        32
     [(]                                     32        33
     [MAX]                                   33        36
@@ -2075,7 +2075,7 @@ L624
     [;]                                     37        38
 L625
     [SET]                                   1         4
-    [@emailBodyText]                        5         19
+    [@EMAILBODYTEXT]                        5         19
     [=]                                     20        21
     ['Timeline of all jobs between ']       22        53
 L626
@@ -2087,7 +2087,7 @@ L626
     [20]                                    22        24
     [)]                                     24        25
     [,]                                     25        26
-    [@StartDate]                            27        37
+    [@STARTDATE]                            27        37
     [,]                                     37        38
     [120]                                   39        42
     [)]                                     42        43
@@ -2102,7 +2102,7 @@ L627
     [20]                                    22        24
     [)]                                     24        25
     [,]                                     25        26
-    [@EndDate]                              27        35
+    [@ENDDATE]                              27        35
     [,]                                     35        36
     [120]                                   37        40
     [)]                                     40        41
@@ -2110,7 +2110,7 @@ L627
     [' open the attachement.']              44        68
 L629
     [DECLARE]                               1         8
-    [@emailSubjectText]                     9         26
+    [@EMAILSUBJECTTEXT]                     9         26
     [NVARCHAR]                              27        35
     [(]                                     35        36
     [MAX]                                   36        39
@@ -2118,9 +2118,9 @@ L629
     [;]                                     40        41
 L630
     [SET]                                   1         4
-    [@emailSubjectText]                     5         22
+    [@EMAILSUBJECTTEXT]                     5         22
     [=]                                     23        24
-    [@@servername]                          25        37
+    [@@SERVERNAME]                          25        37
     [+]                                     38        39
     [' Jons between ']                      40        56
 L631
@@ -2132,7 +2132,7 @@ L631
     [20]                                    22        24
     [)]                                     24        25
     [,]                                     25        26
-    [@StartDate]                            27        37
+    [@STARTDATE]                            27        37
     [,]                                     37        38
     [120]                                   39        42
     [)]                                     42        43
@@ -2147,7 +2147,7 @@ L632
     [20]                                    22        24
     [)]                                     24        25
     [,]                                     25        26
-    [@EndDate]                              27        35
+    [@ENDDATE]                              27        35
     [,]                                     35        36
     [120]                                   37        40
     [)]                                     40        41
@@ -2158,7 +2158,7 @@ L633
     [@ERROR_TEXT]                           12        23
 L635
     [DECLARE]                               1         8
-    [@emailHTMLFilenameText]                9         31
+    [@EMAILHTMLFILENAMETEXT]                9         31
     [NVARCHAR]                              32        40
     [(]                                     40        41
     [MAX]                                   41        44
@@ -2166,9 +2166,9 @@ L635
     [;]                                     45        46
 L636
     [SET]                                   1         4
-    [@emailHTMLFilenameText]                5         27
+    [@EMAILHTMLFILENAMETEXT]                5         27
     [=]                                     28        29
-    [@@servername]                          30        42
+    [@@SERVERNAME]                          30        42
     [+]                                     43        44
     [' Jobs between ']                      45        61
 L637
@@ -2180,7 +2180,7 @@ L637
     [20]                                    22        24
     [)]                                     24        25
     [,]                                     25        26
-    [@StartDate]                            27        37
+    [@STARTDATE]                            27        37
     [,]                                     37        38
     [120]                                   39        42
     [)]                                     42        43
@@ -2195,7 +2195,7 @@ L638
     [20]                                    22        24
     [)]                                     24        25
     [,]                                     25        26
-    [@EndDate]                              27        35
+    [@ENDDATE]                              27        35
     [,]                                     35        36
     [120]                                   37        40
     [)]                                     40        41
@@ -2203,11 +2203,11 @@ L638
     ['.html']                               44        51
 L639
     [SET]                                   1         4
-    [@emailHTMLFilenameText]                5         27
+    [@EMAILHTMLFILENAMETEXT]                5         27
     [=]                                     28        29
     [REPLACE]                               30        37
     [(]                                     37        38
-    [@emailHTMLFilenameText]                38        60
+    [@EMAILHTMLFILENAMETEXT]                38        60
     [,]                                     60        61
     [':']                                   62        65
     [,]                                     65        66
@@ -2215,7 +2215,7 @@ L639
     [)]                                     70        71
 L641
     [DECLARE]                               1         8
-    [@email_Importance]                     9         26
+    [@EMAIL_IMPORTANCE]                     9         26
     [NVARCHAR]                              27        35
     [(]                                     35        36
     [10]                                    36        38
@@ -2228,90 +2228,90 @@ L642
     [0]                                     19        20
 L643
     [SET]                                   4         7
-    [@email_Importance]                     8         25
+    [@EMAIL_IMPORTANCE]                     8         25
     [=]                                     26        27
     ['High']                                28        34
 L644
     [ELSE]                                  1         5
 L645
     [SET]                                   4         7
-    [@email_Importance]                     8         25
+    [@EMAIL_IMPORTANCE]                     8         25
     [=]                                     26        27
     ['Normal']                              28        36
 L647
     [EXECUTE]                               1         8
-    [msdb]                                  9         13
+    [MSDB]                                  9         13
     [.]                                     13        14
-    [dbo]                                   14        17
+    [DBO]                                   14        17
     [.]                                     17        18
-    [sp_send_dbmail]                        18        32
-    [@recipients]                           33        44
+    [SP_SEND_DBMAIL]                        18        32
+    [@RECIPIENTS]                           33        44
     [=]                                     45        46
-    [@EmailTo]                              47        55
+    [@EMAILTO]                              47        55
     [,]                                     55        56
 L648
-    [@subject]                              4         12
+    [@SUBJECT]                              4         12
     [=]                                     13        14
-    [@emailSubjectText]                     15        32
+    [@EMAILSUBJECTTEXT]                     15        32
     [,]                                     32        33
-    [@body]                                 34        39
+    [@BODY]                                 34        39
     [=]                                     40        41
-    [@emailBodyText]                        42        56
+    [@EMAILBODYTEXT]                        42        56
     [,]                                     56        57
 L649
-    [@body_format]                          4         16
+    [@BODY_FORMAT]                          4         16
     [=]                                     17        18
     ['HTML']                                19        25
 L650
     [,]                                     4         5
-    [@importance]                           6         17
+    [@IMPORTANCE]                           6         17
     [=]                                     18        19
-    [@email_Importance]                     20        37
+    [@EMAIL_IMPORTANCE]                     20        37
 L651
     [,]                                     4         5
-    [@sensitivity]                          6         18
+    [@SENSITIVITY]                          6         18
     [=]                                     19        20
     ['Normal']                              21        29
 L652
     [,]                                     4         5
-    [@execute_query_database]               6         29
+    [@EXECUTE_QUERY_DATABASE]               6         29
     [=]                                     30        31
     ['master']                              32        40
     [,]                                     40        41
-    [@query_result_header]                  42        62
+    [@QUERY_RESULT_HEADER]                  42        62
     [=]                                     63        64
     [0]                                     65        66
     [,]                                     66        67
 L653
-    [@query]                                4         10
+    [@QUERY]                                4         10
     [=]                                     11        12
     ['set nocount on; SELECT HTML FROM [    13        75
     [,]                                     75        76
 L654
-    [@query_result_no_padding]              4         28
+    [@QUERY_RESULT_NO_PADDING]              4         28
     [=]                                     29        30
     [1]                                     31        32
 L656
     [,]                                     4         5
-    [@attach_query_result_as_file]          6         34
+    [@ATTACH_QUERY_RESULT_AS_FILE]          6         34
     [=]                                     35        36
     [1]                                     37        38
     [,]                                     38        39
 L657
-    [@query_attachment_filename]            4         30
+    [@QUERY_ATTACHMENT_FILENAME]            4         30
     [=]                                     31        32
-    [@emailHTMLFilenameText]                33        55
+    [@EMAILHTMLFILENAMETEXT]                33        55
 L660
     [GOTO]                                  1         5
-    [Cleanup]                               6         13
+    [CLEANUP]                               6         13
 L669
-    [NothingToDo]                           1         12
+    [NOTHINGTODO]                           1         12
     [:]                                     12        13
 L670
     [PRINT]                                 1         6
     ['Found no jobs (this could be also[    7         52
 L679
-    [Cleanup]                               1         8
+    [CLEANUP]                               1         8
     [:]                                     8         9
 L681
     [IF]                                    1         3
@@ -2325,7 +2325,7 @@ L681
 L682
     [DROP]                                  4         8
     [TABLE]                                 9         14
-    [#JobExecutionTimes]                    15        33
+    [#JOBEXECUTIONTIMES]                    15        33
     [;]                                     33        34
 L684
     [IF]                                    1         3
@@ -2339,6 +2339,6 @@ L684
 L685
     [DROP]                                  4         8
     [TABLE]                                 9         14
-    [##TimelineGraph]                       15        30
+    [##TIMELINEGRAPH]                       15        30
     [;]                                     30        31
 EOF

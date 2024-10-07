@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTTypePattern;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTUnnamedPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
@@ -89,14 +90,16 @@ final class PatternBindingsUtil {
 
     static BindSet bindersOfPattern(ASTPattern pattern) {
         if (pattern instanceof ASTTypePattern) {
-            return BindSet.whenTrue(HashTreePSet.singleton(((ASTTypePattern) pattern).getVarId()));
-        } else if (pattern instanceof ASTRecordPattern) {
-            // record pattern might not bind a variable for the whole record...
-            ASTVariableId varId = ((ASTRecordPattern) pattern).getVarId();
-            if (varId == null) {
-                return BindSet.whenTrue(BindSet.noBindings());
+            if (!((ASTTypePattern) pattern).getVarId().isUnnamed()) {
+                return BindSet.whenTrue(HashTreePSet.singleton(((ASTTypePattern) pattern).getVarId()));
             }
-            return BindSet.whenTrue(HashTreePSet.singleton(varId));
+            return BindSet.EMPTY;
+        } else if (pattern instanceof ASTRecordPattern) {
+            return ((ASTRecordPattern) pattern)
+                .getComponentPatterns().toStream()
+                .reduce(BindSet.EMPTY, (bs, pat) -> bs.union(bindersOfPattern(pat)));
+        } else if (pattern instanceof ASTUnnamedPattern) {
+            return BindSet.EMPTY;
         } else {
             throw AssertionUtil.shouldNotReachHere("no other instances of pattern should exist: " + pattern);
         }

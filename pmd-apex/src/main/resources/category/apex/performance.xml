@@ -53,6 +53,32 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="AvoidNonRestrictiveQueries"
+          language="apex"
+          since="7.4.0"
+          message="Avoid {0} queries without a where or limit statement"
+          class="net.sourceforge.pmd.lang.apex.rule.performance.AvoidNonRestrictiveQueriesRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#avoidnonrestrictivequeries">
+        <description>
+            When working with very large amounts of data, unfiltered SOQL or SOSL queries can quickly cause
+            [governor limit](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_gov_limits.htm)
+            exceptions.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Something {
+    public static void main( String[] as ) {
+        Account[] accs1 = [ select id from account ];  // Bad
+        Account[] accs2 = [ select id from account limit 10 ];  // better
+
+        List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead]; // bad
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="EagerlyLoadedDescribeSObjectResult"
           language="apex"
           since="6.40.0"

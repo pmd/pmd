@@ -27,10 +27,12 @@ public enum ScopeInfo {
     LOCAL,
 
     // import-likes
+    MODULE_IMPORT, // since 7.5.0; Java 23 preview
     IMPORT_ON_DEMAND,
     SAME_PACKAGE,
-    JAVA_LANG,
+    JAVA_LANG, // default imports for any compilation unit
     SINGLE_IMPORT,
+    SIMPLE_COMPILATION_UNIT, // since 7.5.0; default imports for java.io.IO.* and module java.base
 
     /** Sibling types in the same file, that are not nested into one another. */
     SAME_FILE,
