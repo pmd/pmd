@@ -35,10 +35,10 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
 
     @Override
     public Object visit(ASTCompilationUnit compilationUnit, Object data) {
-        Map<String, Set<ASTMethodDeclaration>> unusedPrivateMethods = identifyUnusedPrivateMethods(compilationUnit,
-                findMethodsUsedByAnnotations(compilationUnit));
-        trackMethodReferences(compilationUnit, unusedPrivateMethods);
-        reportUnusedPrivateMethods(data, unusedPrivateMethods);
+        reportUnusedPrivateMethods(data,
+                trackMethodReferences(compilationUnit,
+                        identifyUnusedPrivateMethods(compilationUnit,
+                                findMethodsUsedByAnnotations(compilationUnit))));
         return null;
     }
 
@@ -92,8 +92,9 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
     /**
      * Tracks method references and removes them from the unused methods map if they are used.
      */
-    private static void trackMethodReferences(final ASTCompilationUnit compilationUnit,
-                                              final Map<String, Set<ASTMethodDeclaration>> unusedPrivateMethods) {
+    private static Map<String, Set<ASTMethodDeclaration>> trackMethodReferences(final ASTCompilationUnit compilationUnit,
+                                                                                final Map<String,
+                                                                                        Set<ASTMethodDeclaration>> unusedPrivateMethods) {
         compilationUnit.descendants()
                 .crossFindBoundaries()
                 .map(NodeStream.<MethodUsage>asInstanceOf(ASTMethodCall.class, ASTMethodReference.class))
@@ -106,6 +107,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
                             : ((ASTMethodReference) ref).getReferencedMethod().getSymbol())
                             .tryGetNode(), ref, unusedPrivateMethods);
                 });
+        return unusedPrivateMethods;
     }
 
     /**
