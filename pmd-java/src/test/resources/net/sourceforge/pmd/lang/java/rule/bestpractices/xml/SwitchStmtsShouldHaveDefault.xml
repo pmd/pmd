@@ -331,4 +331,37 @@ public class SwitchWithRecordPattern {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Multiple Case Constants</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+enum MyEnum { A, B, C }
+
+public class SwitchMultipleCaseConstants {
+    public void switchLabels(MyEnum e) {
+        switch(e) {
+            case A,B: System.out.println("a or b"); break;
+            case C: System.out.println("c");
+        }
+        String s = switch(e) {
+            case A,B: yield "a or b";
+            case C: yield "c";
+        };
+        System.out.println(s);
+    }
+    public void switchRules(MyEnum e) {
+        switch(e) {
+            case A,B -> System.out.println("a or b");
+            case C -> System.out.println("c");
+        }
+        String s = switch(e) {
+            case A,B -> "a or b";
+            case C -> "c";
+        };
+        System.out.println(s);
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
