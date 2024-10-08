@@ -32,6 +32,8 @@ The old rule names still work but are deprecated.
 ### 🐛 Fixed Issues
 * java
   * [#4532](https://github.com/pmd/pmd/issues/4532): \[java] Rule misnomer for JUnit* rules
+* java-bestpractices
+  * [#4813](https://github.com/pmd/pmd/issues/4813): \[java] SwitchStmtsShouldHaveDefault false positive with pattern matching
 * java-errorprone
   * [#5067](https://github.com/pmd/pmd/issues/5067): \[java] CloseResource: False positive for FileSystems.getDefault()
 
