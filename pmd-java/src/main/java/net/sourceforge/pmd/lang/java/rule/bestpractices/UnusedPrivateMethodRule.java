@@ -101,24 +101,24 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
                     if (!unusedPrivateMethods.containsKey(ref.getMethodName())) {
                         return;
                     }
-                    processMethodReference(unusedPrivateMethods, ref, (ref instanceof ASTMethodCall
+                    processMethodReference((ref instanceof ASTMethodCall
                             ? ((ASTMethodCall) ref).getMethodType().getSymbol()
                             : ((ASTMethodReference) ref).getReferencedMethod().getSymbol())
-                            .tryGetNode());
+                            .tryGetNode(), ref, unusedPrivateMethods);
                 });
     }
 
     /**
      * Processes a method reference and removes the method from the unused set if called outside itself.
      */
-    private static void processMethodReference(final Map<String, Set<ASTMethodDeclaration>> unusedPrivateMethods,
-                                               final MethodUsage ref, final JavaNode referencedNode) {
+    private static void processMethodReference(final JavaNode referencedNode, final MethodUsage ref,
+                                               final Map<String, Set<ASTMethodDeclaration>> unusedPrivateMethods) {
         if (referencedNode instanceof ASTMethodDeclaration
                 && ref.ancestors(ASTMethodDeclaration.class).first() != referencedNode) {
-            // Remove from set only if the method is called outside of itself
+            // Remove from set only if the method is called outside itself
             Set<ASTMethodDeclaration> remainingUnusedMethods = unusedPrivateMethods.get(ref.getMethodName());
             if (nonNull(remainingUnusedMethods)
-                    && remainingUnusedMethods.remove(referencedNode) // note: side-effect
+                    && remainingUnusedMethods.remove(referencedNode) // note: side effect
                     && remainingUnusedMethods.isEmpty()) {
                 unusedPrivateMethods.remove(ref.getMethodName()); // clear this name
             }
