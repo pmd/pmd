@@ -260,7 +260,7 @@
          |     +- SwitchStatement[@DefaultCase = false, @EnumSwitch = false, @ExhaustiveEnumSwitch = false, @FallthroughSwitch = false]
          |        +- VariableAccess[@AccessType = AccessType.READ, @CompileTimeConstant = false, @Image = "pair", @Name = "pair", @ParenthesisDepth = 0, @Parenthesized = false]
          |        +- SwitchArrowBranch[@Default = false]
-         |           +- SwitchLabel[@Default = false]
+         |           +- SwitchLabel[@Default = false, @PatternLabel = true]
          |           |  +- RecordPattern[]
          |           |     +- ClassType[@FullyQualified = false, @PackageQualifier = null, @SimpleName = "MyPair"]
          |           |     +- PatternList[@Empty = false, @Size = 2]
