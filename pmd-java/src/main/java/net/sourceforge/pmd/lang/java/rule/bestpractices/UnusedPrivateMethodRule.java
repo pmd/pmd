@@ -26,13 +26,28 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static net.sourceforge.pmd.util.CollectionUtil.toMutableSet;
 
 /**
- * This rule detects private methods that are not used and can be deleted.
+ * This rule identifies private methods that are never used within the code
+ * and can be safely removed. It aims to improve code maintainability
+ * by eliminating unnecessary methods.
  */
 public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
 
     private static final Set<String> SERIALIZATION_METHODS =
             setOf("readObject", "writeObject", "readResolve", "writeReplace");
 
+    /**
+     * Visits the compilation unit and checks for unused private methods.
+     * <p>
+     * This involves three main steps:
+     * 1. Identify methods referenced by annotations.
+     * 2. Identify potentially unused private methods.
+     * 3. Track method references to determine if any identified
+     * methods are actually used.
+     *
+     * @param compilationUnit the compilation unit being analyzed
+     * @param data            additional data for reporting violations
+     * @return null
+     */
     @Override
     public Object visit(ASTCompilationUnit compilationUnit, Object data) {
         reportUnusedPrivateMethods(data,
@@ -42,7 +57,13 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
     }
 
     /**
-     * Identifies and returns a map of unused private methods in the file.
+     * Identifies and returns a map of unused private methods in the given
+     * compilation unit.
+     *
+     * @param compilationUnit          the compilation unit being analyzed
+     * @param methodsUsedByAnnotations a set of methods used via annotations
+     * @return a map of method names to their corresponding unused
+     * method declarations
      */
     private Map<String, Set<ASTMethodDeclaration>> identifyUnusedPrivateMethods(final ASTCompilationUnit compilationUnit,
                                                                                 final Set<String> methodsUsedByAnnotations) {
@@ -57,14 +78,22 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
     }
 
     /**
-     * Checks if the method is related to serialization.
+     * Checks if the specified method is related to serialization
+     * based on its name.
+     *
+     * @param method the method declaration to check
+     * @return true if the method is a serialization method, false otherwise
      */
     private boolean isSerializationMethod(ASTMethodDeclaration method) {
         return SERIALIZATION_METHODS.contains(method.getName());
     }
 
     /**
-     * Finds method names that are used via annotations in the file.
+     * Finds method names that are used via annotations within the
+     * provided compilation unit.
+     *
+     * @param compilationUnit the compilation unit being analyzed
+     * @return a set of method names that are used via annotations
      */
     private static Set<String> findMethodsUsedByAnnotations(final ASTCompilationUnit compilationUnit) {
         return compilationUnit.descendants(ASTAnnotation.class)
@@ -89,7 +118,12 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
     }
 
     /**
-     * Tracks method references and removes them from the unused methods map if they are used.
+     * Tracks method references and removes methods from the unused methods map
+     * if they are invoked.
+     *
+     * @param compilationUnit      the compilation unit being analyzed
+     * @param unusedPrivateMethods a map of unused private methods to check
+     * @return the updated map of unused private methods
      */
     private static Map<String, Set<ASTMethodDeclaration>> trackMethodReferences(final ASTCompilationUnit compilationUnit,
                                                                                 final Map<String,
@@ -110,7 +144,12 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
     }
 
     /**
-     * Processes a method reference and removes the method from the unused set if called outside itself.
+     * Processes a method reference, removing the method from the unused set
+     * if it is called outside of itself.
+     *
+     * @param referencedNode       the referenced method declaration node
+     * @param ref                  the method usage reference
+     * @param unusedPrivateMethods the map of unused private methods
      */
     private static void processMethodReference(final JavaNode referencedNode, final MethodUsage ref,
                                                final Map<String, Set<ASTMethodDeclaration>> unusedPrivateMethods) {
@@ -127,7 +166,10 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
     }
 
     /**
-     * Reports the methods that remain unused.
+     * Reports the methods that remain unused after analysis.
+     *
+     * @param data                 additional data for reporting violations
+     * @param unusedPrivateMethods a map of unused private methods
      */
     private void reportUnusedPrivateMethods(final Object data,
                                             final Map<String, Set<ASTMethodDeclaration>> unusedPrivateMethods) {
@@ -146,5 +188,4 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
                 "jakarta.annotation.PreDestroy"
         );
     }
-
 }
