@@ -4,26 +4,26 @@
 
 package net.sourceforge.pmd.lang.java.rule.internal;
 
-import net.sourceforge.pmd.lang.java.ast.Annotatable;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.properties.PropertyDescriptor;
+import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
+import net.sourceforge.pmd.lang.java.ast.Annotatable;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
- * @apiNote Internal API
+ * @apiNote  Internal API
  */
 public abstract class AbstractIgnoredAnnotationRule extends AbstractJavaRule {
 
     private final PropertyDescriptor<List<String>> ignoredAnnotationsDescriptor
-            = stringListProperty("ignoredAnnotations")
-            .desc(defaultIgnoredAnnotationsDescription())
-            .defaultValue(defaultSuppressionAnnotations())
-            .build();
+        = stringListProperty("ignoredAnnotations")
+        .desc(defaultIgnoredAnnotationsDescription())
+        .defaultValue(defaultSuppressionAnnotations())
+        .build();
 
     protected Collection<String> defaultSuppressionAnnotations() {
         return Collections.emptyList();
@@ -41,7 +41,8 @@ public abstract class AbstractIgnoredAnnotationRule extends AbstractJavaRule {
     /**
      * Checks whether any annotation in ignoredAnnotationsDescriptor is present on the node.
      *
-     * @param node the node to check
+     * @param node
+     *            the node to check
      * @return <code>true</code> if the annotation has been found, otherwise <code>false</code>
      */
     protected boolean hasIgnoredAnnotation(Annotatable node) {
