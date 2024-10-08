@@ -904,6 +904,40 @@ public class SecureSystem {
         </example>
     </rule>
 
+    <rule name="NonExhaustiveSwitch"
+          language="java"
+          since="1.0"
+          message="Switch statements or expressions should be exhaustive, add a default case (or missing enum branches)"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#nonexhaustiveswitch">
+        <description>
+            Switch statements should be exhaustive, to make their control flow
+            easier to follow. This can be achieved by adding a `default` case, or,
+            if the switch is on an enum type, by ensuring there is one switch branch
+            for each enum constant.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                //SwitchStatement[@DefaultCase = false() and @ExhaustiveEnumSwitch = false()]
+            ]]></value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+class Foo {{
+    int x = 2;
+    switch (x) {
+      case 1: int j = 6;
+      case 2: int j = 8;
+      // missing default: here
+    }
+}}
+]]>
+        </example>
+    </rule>
+
     <rule name="OneDeclarationPerLine"
           language="java"
           since="5.0"
@@ -1157,39 +1191,7 @@ class SomeTestClass {
         </example>
     </rule>
 
-    <rule name="SwitchStmtsShouldHaveDefault"
-          language="java"
-          since="1.0"
-          message="Switch statements should be exhaustive, add a default case (or missing enum branches)"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#switchstmtsshouldhavedefault">
-        <description>
-            Switch statements should be exhaustive, to make their control flow
-            easier to follow. This can be achieved by adding a `default` case, or,
-            if the switch is on an enum type, by ensuring there is one switch branch
-            for each enum constant.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value><![CDATA[
-                //SwitchStatement[@DefaultCase = false() and @ExhaustiveEnumSwitch = false()]
-            ]]></value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-class Foo {{
-    int x = 2;
-    switch (x) {
-      case 1: int j = 6;
-      case 2: int j = 8;
-      // missing default: here
-    }
-}}
-]]>
-        </example>
-    </rule>
+    <rule name="SwitchStmtsShouldHaveDefault" deprecated="true" ref="NonExhaustiveSwitch"/>
 
     <rule name="SystemPrintln"
           language="java"
