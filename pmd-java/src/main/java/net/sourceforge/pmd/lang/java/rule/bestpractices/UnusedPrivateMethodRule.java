@@ -24,6 +24,7 @@ import static net.sourceforge.pmd.lang.java.types.TypeTestUtil.isA;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static net.sourceforge.pmd.util.CollectionUtil.toMutableSet;
+import static org.apache.commons.lang3.ObjectUtils.notEqual;
 
 /**
  * This rule identifies private methods that are never used within the code
@@ -136,9 +137,11 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
                         return;
                     }
                     processMethodReference((ref instanceof ASTMethodCall
-                            ? ((ASTMethodCall) ref).getMethodType().getSymbol()
-                            : ((ASTMethodReference) ref).getReferencedMethod().getSymbol())
-                            .tryGetNode(), ref, unusedPrivateMethods);
+                                    ? ((ASTMethodCall) ref).getMethodType().getSymbol()
+                                    : ((ASTMethodReference) ref).getReferencedMethod().getSymbol())
+                                    .tryGetNode(), ref, unusedPrivateMethods,
+                            unusedPrivateMethods.get(ref.getMethodName())
+                    );
                 });
         return unusedPrivateMethods;
     }
@@ -146,22 +149,22 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
     /**
      * Processes a method reference, removing the method from the unused set
      * if it is called outside of itself.
+     * // Remove from set only if the method is called outside itself
      *
-     * @param referencedNode       the referenced method declaration node
-     * @param ref                  the method usage reference
-     * @param unusedPrivateMethods the map of unused private methods
+     * @param referencedNode         the referenced method declaration node
+     * @param ref                    the method usage reference
+     * @param unusedPrivateMethods   the map of unused private methods
+     * @param remainingUnusedMethods
      */
     private static void processMethodReference(final JavaNode referencedNode, final MethodUsage ref,
-                                               final Map<String, Set<ASTMethodDeclaration>> unusedPrivateMethods) {
+                                               final Map<String, Set<ASTMethodDeclaration>> unusedPrivateMethods,
+                                               final Set<ASTMethodDeclaration> remainingUnusedMethods) {
         if (referencedNode instanceof ASTMethodDeclaration
-                && ref.ancestors(ASTMethodDeclaration.class).first() != referencedNode) {
-            // Remove from set only if the method is called outside itself
-            Set<ASTMethodDeclaration> remainingUnusedMethods = unusedPrivateMethods.get(ref.getMethodName());
-            if (nonNull(remainingUnusedMethods)
-                    && remainingUnusedMethods.remove(referencedNode) // note: side effect
-                    && remainingUnusedMethods.isEmpty()) {
-                unusedPrivateMethods.remove(ref.getMethodName()); // clear this name
-            }
+                && notEqual(ref.ancestors(ASTMethodDeclaration.class).first(), referencedNode)
+                && nonNull(remainingUnusedMethods)
+                && remainingUnusedMethods.remove(referencedNode) // note: side effect
+                && remainingUnusedMethods.isEmpty()) {
+            unusedPrivateMethods.remove(ref.getMethodName()); // clear this name
         }
     }
 
