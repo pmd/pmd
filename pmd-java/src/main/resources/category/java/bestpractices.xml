@@ -457,14 +457,18 @@ public interface YetAnotherConstantInterface {
         </example>
     </rule>
 
-    <rule name="DefaultLabelNotLastInSwitchStmt"
+    <rule name="DefaultLabelNotLastInSwitchStmt" deprecated="true" ref="DefaultLabelNotLastInSwitch" />
+
+    <rule name="DefaultLabelNotLastInSwitch"
           language="java"
           since="1.5"
-          message="The default label should be the last label in a switch statement"
+          message="The default label should be the last label in a switch statement or expression"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#defaultlabelnotlastinswitchstmt">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#defaultlabelnotlastinswitch">
         <description>
-By convention, the default label should be the last label in a switch statement.
+By convention, the default label should be the last label in a switch statement or switch expression.
+
+Note: This rule has been renamed from "DefaultLabelNotLastInSwitchStmt" with PMD 7.7.0.
         </description>
         <priority>3</priority>
         <properties>
