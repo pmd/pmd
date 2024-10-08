@@ -45,8 +45,8 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
     /**
      * Identifies and returns a map of unused private methods in the file.
      */
-    private HashMap<String, Set<ASTMethodDeclaration>> identifyUnusedPrivateMethods(final ASTCompilationUnit compilationUnit,
-                                                                                    final Set<String> methodsUsedByAnnotations) {
+    private Map<String, Set<ASTMethodDeclaration>> identifyUnusedPrivateMethods(final ASTCompilationUnit compilationUnit,
+                                                                                final Set<String> methodsUsedByAnnotations) {
         return compilationUnit.descendants(ASTMethodDeclaration.class)
                 .crossFindBoundaries()
                 .filter(method -> method.getVisibility() == V_PRIVATE)
