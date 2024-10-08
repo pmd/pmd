@@ -7,16 +7,15 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.*;
 import net.sourceforge.pmd.lang.java.rule.internal.AbstractIgnoredAnnotationRule;
-import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toSet;
 import static java.util.stream.Stream.concat;
 import static net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility.V_PRIVATE;
 import static net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil.displaySignature;
@@ -30,17 +29,8 @@ import static net.sourceforge.pmd.util.CollectionUtil.toMutableSet;
  */
 public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
 
-    private static final Set<String> SERIALIZATION_METHOD_NAMES =
+    private static final Set<String> SERIALIZATION_METHODS =
             setOf("readObject", "writeObject", "readResolve", "writeReplace");
-
-    @Override
-    protected Collection<String> defaultSuppressionAnnotations() {
-        return listOf(
-                "java.lang.Deprecated",
-                "jakarta.annotation.PostConstruct",
-                "jakarta.annotation.PreDestroy"
-        );
-    }
 
     @Override
     public Object visit(ASTCompilationUnit compilationUnit, Object data) {
@@ -67,6 +57,13 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
     }
 
     /**
+     * Checks if the method has a serialization-related name.
+     */
+    private boolean isSerializationMethod(ASTMethodDeclaration method) {
+        return SERIALIZATION_METHODS.contains(method.getName());
+    }
+
+    /**
      * Finds method names that are used via annotations in the file.
      */
     private static Set<String> findMethodsUsedByAnnotations(final ASTCompilationUnit compilationUnit) {
@@ -88,7 +85,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
                                         .map(ASTMethodDeclaration::getName)
                         )
                 )
-                .collect(Collectors.toSet());
+                .collect(toSet());
     }
 
     /**
@@ -103,15 +100,10 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
                     if (!unusedMethodsMap.containsKey(ref.getMethodName())) {
                         return;
                     }
-                    JExecutableSymbol methodSymbol;
-                    if (ref instanceof ASTMethodCall) {
-                        methodSymbol = ((ASTMethodCall) ref).getMethodType().getSymbol();
-                    } else if (ref instanceof ASTMethodReference) {
-                        methodSymbol = ((ASTMethodReference) ref).getReferencedMethod().getSymbol();
-                    } else {
-                        return;
-                    }
-                    extracted(unusedMethodsMap, ref, methodSymbol.tryGetNode());
+                    extracted(unusedMethodsMap, ref, (ref instanceof ASTMethodCall
+                            ? ((ASTMethodCall) ref).getMethodType().getSymbol()
+                            : ((ASTMethodReference) ref).getReferencedMethod().getSymbol())
+                            .tryGetNode());
                 });
     }
 
@@ -140,10 +132,13 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         });
     }
 
-    /**
-     * Checks if the method has a serialization-related name.
-     */
-    private boolean isSerializationMethod(ASTMethodDeclaration method) {
-        return SERIALIZATION_METHOD_NAMES.contains(method.getName());
+    @Override
+    protected Collection<String> defaultSuppressionAnnotations() {
+        return listOf(
+                "java.lang.Deprecated",
+                "jakarta.annotation.PostConstruct",
+                "jakarta.annotation.PreDestroy"
+        );
     }
+
 }
