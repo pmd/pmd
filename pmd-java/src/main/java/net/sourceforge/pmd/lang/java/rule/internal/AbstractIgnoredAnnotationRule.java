@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.internal;
 
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -48,6 +47,4 @@ public abstract class AbstractIgnoredAnnotationRule extends AbstractJavaRule {
     protected boolean hasIgnoredAnnotation(Annotatable node) {
         return getProperty(ignoredAnnotationsDescriptor).stream().anyMatch(node::isAnnotationPresent);
     }
-
-    public abstract Object visit(ASTCompilationUnit file, Object param);
 }
