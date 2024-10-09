@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.*;
 import net.sourceforge.pmd.lang.java.rule.internal.AbstractIgnoredAnnotationRule;
+import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
@@ -40,10 +41,12 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
      * Visits the compilation unit and checks for unused private methods.
      * <p>
      * This involves three main steps:
-     * 1. Identify methods referenced by annotations.
-     * 2. Identify potentially unused private methods.
-     * 3. Track method references to determine if any identified
-     * methods are actually used.
+     * <ol>
+     * <li>Identify methods referenced by annotations.</li>
+     * <li>Identify potentially unused private methods.</li>
+     * <li>Track method references to determine if any identified
+     * methods are actually used.</li>
+     * </ol>
      *
      * @param compilationUnit the compilation unit being analyzed
      * @param data            additional data for reporting violations
@@ -134,31 +137,42 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
                 .map(NodeStream.<MethodUsage>asInstanceOf(ASTMethodCall.class, ASTMethodReference.class))
                 .forEach(ref -> {
                     if (!unusedPrivateMethods.containsKey(ref.getMethodName())) {
-                        return;
+                        return; // early exit
                     }
-                    processMethodReference((ref instanceof ASTMethodCall
-                                    ? ((ASTMethodCall) ref).getMethodType().getSymbol()
-                                    : ((ASTMethodReference) ref).getReferencedMethod().getSymbol())
-                                    .tryGetNode(), ref, unusedPrivateMethods,
-                            unusedPrivateMethods.get(ref.getMethodName())
-                    );
+                    isUnused(ref,
+                            unusedPrivateMethods,
+                            unusedPrivateMethods.get(ref.getMethodName()));
                 });
         return unusedPrivateMethods;
+    }
+
+    private static JExecutableSymbol getMethodOrReference(final MethodUsage ref) {
+        return ref instanceof ASTMethodCall
+                ? ((ASTMethodCall) ref).getMethodType().getSymbol()
+                : ((ASTMethodReference) ref).getReferencedMethod().getSymbol();
     }
 
     /**
      * Processes a method reference, removing the method from the unused set
      * if it is called outside of itself.
-     * // Remove from set only if the method is called outside itself
+     * <p>
+     * This method removes the method from the unused set only if it is called
+     * from outside its own definition.
      *
      * @param referencedNode         the referenced method declaration node
      * @param ref                    the method usage reference
      * @param unusedPrivateMethods   the map of unused private methods
-     * @param remainingUnusedMethods
+     * @param remainingUnusedMethods the set of remaining unused methods
      */
-    private static void processMethodReference(final JavaNode referencedNode, final MethodUsage ref,
-                                               final Map<String, Set<ASTMethodDeclaration>> unusedPrivateMethods,
-                                               final Set<ASTMethodDeclaration> remainingUnusedMethods) {
+    private static void isUnused(final MethodUsage ref,
+                                 final Map<String, Set<ASTMethodDeclaration>> unusedPrivateMethods,
+                                 final Set<ASTMethodDeclaration> remainingUnusedMethods) {
+        isUnused(getMethodOrReference(ref).tryGetNode(), ref, remainingUnusedMethods, unusedPrivateMethods);
+    }
+
+    private static void isUnused(final JavaNode referencedNode, final MethodUsage ref,
+                                 final Set<ASTMethodDeclaration> remainingUnusedMethods,
+                                 final Map<String, Set<ASTMethodDeclaration>> unusedPrivateMethods) {
         if (referencedNode instanceof ASTMethodDeclaration
                 && notEqual(ref.ancestors(ASTMethodDeclaration.class).first(), referencedNode)
                 && nonNull(remainingUnusedMethods)
@@ -183,6 +197,12 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         });
     }
 
+    /**
+     * Provides the default list of annotations that can suppress the
+     * reporting of unused private methods.
+     *
+     * @return a collection of suppression annotations
+     */
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
         return listOf(
