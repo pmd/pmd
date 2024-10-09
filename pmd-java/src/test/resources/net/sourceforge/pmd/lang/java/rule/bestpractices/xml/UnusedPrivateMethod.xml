@@ -1,8 +1,175 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-    xmlns="http://pmd.sourceforge.net/rule-tests"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>public method called by public method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        fooPublic();
+    }
+    public void fooPublic() {}
+}
+                ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>public method called by protected method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    protected void bar() {
+        fooPublic();
+    }
+    public void fooPublic() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>public method called by package-private method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        fooPublic();
+    }
+    public void fooPublic() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>public method called by private method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private void bar() {
+        fooPublic();
+    }
+    public void fooPublic() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>protected method called by public method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        fooProtected();
+    }
+    protected void fooProtected() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>protected method called by protected method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    protected void bar() {
+        fooProtected();
+    }
+    protected void fooProtected() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>protected method called by package-private method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        fooProtected();
+    }
+    protected void fooProtected() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>protected method called by private method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private void bar() {
+        fooProtected();
+    }
+    protected void fooProtected() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>package-private method called by public method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        fooPackagePrivate();
+    }
+    void fooPackagePrivate() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>package-private method called by protected method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    protected void bar() {
+        fooPackagePrivate();
+    }
+    void fooPackagePrivate() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>package-private method called by package-private method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        fooPackagePrivate();
+    }
+    void fooPackagePrivate() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>package-private method called by private method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private void bar() {
+        fooPackagePrivate();
+    }
+    void fooPackagePrivate() {}
+}
+        ]]>
+        </code>
+    </test-code>
 
     <test-code>
         <description>private method called by public method</description>
@@ -10,11 +177,412 @@
         <code><![CDATA[
 public class Foo {
     public void bar() {
-        foo();
+        fooPrivate();
     }
-    private void foo() {}
+    private void fooPrivate() {}
 }
-        ]]></code>
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>private method called by protected method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    protected void bar() {
+        fooPrivate();
+    }
+    private void fooPrivate() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>private method called by package-private method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        fooPrivate();
+    }
+    private void fooPrivate() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>private method called by private method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private void bar() {
+        fooPrivate();
+    }
+    private void fooPrivate() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>public method not called by public method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+    }
+    public void fooPublic() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>protected method not called by public method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+    }
+    protected void fooProtected() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>package-private method not called by public method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+    }
+    void fooPackagePrivate() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>private method not called by public method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+    }
+    private void fooPrivate() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>public method not called by protected method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    protected void bar() {
+    }
+    public void fooPublic() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>protected method not called by protected method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    protected void bar() {
+    }
+    protected void fooProtected() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>package-private method not called by protected method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    protected void bar() {
+    }
+    void fooPackagePrivate() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>private method not called by protected method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    protected void bar() {
+    }
+    private void fooPrivate() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>public method not called by package-private method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+    }
+    public void fooPublic() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>protected method not called by package-private method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+    }
+    protected void fooProtected() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>package-private method not called by package-private method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+    }
+    void fooPackagePrivate() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>private method not called by package-private method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+    }
+    private void fooPrivate() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>public method not called by private method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private void bar() {
+    }
+    public void fooPublic() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>protected method not called by private method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private void bar() {
+    }
+    protected void fooProtected() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>package-private method not called by private method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private void bar() {
+    }
+    void fooPackagePrivate() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>private method not called by private method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private void bar() {
+    }
+    private void fooPrivate() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>public and protected methods not called</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+    }
+    protected void fooProtected() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>public and package-private methods not called</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+    }
+    void fooPackagePrivate() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>public and private methods not called</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+    }
+    private void fooPrivate() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>protected and package-private methods not called</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    protected void bar() {
+    }
+    void fooPackagePrivate() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>protected and private methods not called</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    protected void bar() {
+    }
+    private void fooPrivate() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>package-private and private methods not called</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+    }
+    private void fooPrivate() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>public and protected methods not called</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {}
+    protected void fooProtected() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>public and package-private methods not called</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {}
+    void fooPackagePrivate() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>public and private methods not called</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {}
+    private void fooPrivate() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>protected and package-private methods not called</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    protected void bar() {}
+    void fooPackagePrivate() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>protected and private methods not called</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    protected void bar() {}
+    private void fooPrivate() {}
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>package-private and private methods not called</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {}
+    private void fooPrivate() {}
+}
+        ]]>
+        </code>
     </test-code>
 
     <test-code>
@@ -298,7 +866,8 @@ public class Foo {
     </test-code>
 
     <test-code disabled="true">
-        <description>#46 False +: Unused private field: call to instance of self, received from another class</description>
+        <description>#46 False +: Unused private field: call to instance of self, received from another class
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -340,7 +909,8 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Reproducing bug #1955852: false positives for UnusedPrivateMethod and UnusedLocalField</description>
+        <description>Reproducing bug #1955852: false positives for UnusedPrivateMethod and UnusedLocalField
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class PMDFalsePositiveTest {
@@ -1192,7 +1762,9 @@ public class TestPrivate {
     </test-code>
 
     <test-code>
-        <description>#1276 False positive in UnusedPrivateMethod when method arg is Object and not called with plain Object</description>
+        <description>#1276 False positive in UnusedPrivateMethod when method arg is Object and not called with plain
+            Object
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Parent {
@@ -1343,7 +1915,8 @@ public class UnusedPrivateMethodWithEnum {
     </test-code>
 
     <test-code>
-        <description>#1296 PMD UnusedPrivateMethod invalid detection of 'private void method(int,boolean,Integer...)'</description>
+        <description>#1296 PMD UnusedPrivateMethod invalid detection of 'private void method(int,boolean,Integer...)'
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class UnusedPrivateMethod {
@@ -1485,7 +2058,8 @@ public class Blabla extends Sup {
 
 
     <test-code>
-        <description>#521 UnusedPrivateMethod returns false positives with primitive data type in map argument</description>
+        <description>#521 UnusedPrivateMethod returns false positives with primitive data type in map argument
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.Map;
@@ -1516,7 +2090,8 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>#5117 Ignore methods with jakarta.annotation.PostConstruct in UnusedPrivateMethod rule</description>
+        <description>#5117 Ignore methods with jakarta.annotation.PostConstruct in UnusedPrivateMethod rule
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import jakarta.annotation.PostConstruct;
@@ -1625,7 +2200,8 @@ public class UnusedPrivateMethodFP {
         <description>#2454 [java] UnusedPrivateMethod violation for disabled annotation in 6.23.0</description>
         <!-- Note: weird whitespace in the property is important        -->
         <rule-property name="ignoredAnnotations">java
-            .lang.Deprecated</rule-property>
+            .lang.Deprecated
+        </rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class OOO {
@@ -1720,7 +2296,8 @@ public class Client {
     </test-code>
 
     <test-code>
-        <description>[java] UnusedPrivateMethod false positive when passing in lombok.val as argument #3118</description>
+        <description>[java] UnusedPrivateMethod false positive when passing in lombok.val as argument #3118
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import lombok.val;
@@ -1789,7 +2366,9 @@ public class Outer {
     </test-code>
 
     <test-code>
-        <description>#3468 UnusedPrivateMethod false positive when outer class calls private static method on inner class</description>
+        <description>#3468 UnusedPrivateMethod false positive when outer class calls private static method on inner
+            class
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class OuterClass {
@@ -1803,10 +2382,11 @@ public class OuterClass {
     }
 }
         ]]></code>
-    </test-code> 
+    </test-code>
 
     <test-code>
-        <description>[java] UnusedPrivateMethod false positive with static method and cast expression #3209</description>
+        <description>[java] UnusedPrivateMethod false positive with static method and cast expression #3209
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class UnusedAssignmentRule {
@@ -1826,7 +2406,7 @@ public class UnusedAssignmentRule {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>[java] UnusedPrivateMethod false positive: Autoboxing into Number #4625</description>
         <expected-problems>0</expected-problems>
@@ -1943,7 +2523,8 @@ public class NotUsedPrivateMethodFalsePositive {
     </test-code>
 
     <test-code>
-        <description>[java] UnusedPrivateMethod false positive when using @MethodSource on a @Nested test #4975</description>
+        <description>[java] UnusedPrivateMethod false positive when using @MethodSource on a @Nested test #4975
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.junit.jupiter.api.Nested;
@@ -1977,7 +2558,8 @@ class FooTest{
     </test-code>
 
     <test-code>
-        <description>[java] UnusedPrivateMethod FP with Junit 5 @MethodSource and default factory method name #4278</description>
+        <description>[java] UnusedPrivateMethod FP with Junit 5 @MethodSource and default factory method name #4278
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.junit.jupiter.params.provider.MethodSource;
@@ -2003,7 +2585,9 @@ class FooTest{
 ]]></code>
     </test-code>
     <test-code>
-        <description>[java] UnusedPrivateMethod false-positive / method reference in combination with custom object #4985</description>
+        <description>[java] UnusedPrivateMethod false-positive / method reference in combination with custom object
+            #4985
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             import java.util.List;
