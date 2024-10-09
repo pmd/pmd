@@ -8,9 +8,6 @@
     <suppress
             files="[\\/]src[\\/]main[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]lang[\\/]java[\\/]rule[\\/]AbstractJavaRule\.java"
             checks="AvoidStarImport"/>
-    <suppress
-            files="[\\/]src[\\/]main[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]lang[\\/]java[\\/]rule[\\/]UnusedPrivateMethodRule\.java"
-            checks="ImportOrder"/>
     <suppress files="[\\/]src[\\/]test[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]typeresolution[\\/]testdata[\\/]*"
               checks="AvoidStarImport"/>
     <suppress files="[\\/]src[\\/]test[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]typeresolution[\\/]testdata[\\/]*"
@@ -18,6 +15,9 @@
     <suppress files="[\\/]src[\\/]test[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]typeresolution[\\/]testdata[\\/]*"
               checks="OneTopLevelClass"/>
     <suppress
-            files="src[\\/]main[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]lang[\\/]java[\\/]types[\\/]TypeSystem\.java"
+            files="[\\/]src[\\/]main[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]lang[\\/]java[\\/]types[\\/]TypeSystem\.java"
             checks="MemberName"/>
+    <suppress
+            files="[\\/]src[\\/]main[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]lang[\\/]java[\\/]rule[\\/]bestpractices[\\/]*"
+            checks="UnusedPrivateMethod"/>
 </suppressions>
