@@ -61,13 +61,13 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
     }
 
     /**
-     * Identifies and returns a map of unused private methods in the given
+     * Identifies and returns a map of unused private methods in the specified
      * compilation unit.
      *
      * @param compilationUnit          the compilation unit being analyzed
-     * @param methodsUsedByAnnotations a set of methods used via annotations
-     * @return a map of method names to their corresponding unused
-     * method declarations
+     * @param methodsUsedByAnnotations a set of method names that are referenced via annotations
+     * @return a map where keys are method names and values are sets of
+     * corresponding unused method declarations
      */
     private Map<String, Set<ASTMethodDeclaration>> identifyUnusedPrivateMethods(final ASTCompilationUnit compilationUnit,
                                                                                 final Set<String> methodsUsedByAnnotations) {
@@ -93,11 +93,11 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
     }
 
     /**
-     * Finds method names that are used via annotations within the
+     * Finds and returns method names that are used via annotations within the
      * provided compilation unit.
      *
      * @param compilationUnit the compilation unit being analyzed
-     * @return a set of method names that are used via annotations
+     * @return a set of method names that are referenced via annotations
      */
     private static Set<String> findMethodsUsedByAnnotations(final ASTCompilationUnit compilationUnit) {
         return compilationUnit.descendants(ASTAnnotation.class)
@@ -122,8 +122,8 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
     }
 
     /**
-     * Tracks method references and removes methods from the unused methods map
-     * if they are invoked.
+     * Tracks method references within the given compilation unit and removes
+     * methods from the unused methods map if they are invoked.
      *
      * @param compilationUnit      the compilation unit being analyzed
      * @param unusedPrivateMethods a map of unused private methods to check
@@ -139,13 +139,19 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
                     if (!unusedPrivateMethods.containsKey(ref.getMethodName())) {
                         return; // early exit
                     }
-                    isUnused(ref,
+                    removeIfUnused(ref,
                             unusedPrivateMethods,
                             unusedPrivateMethods.get(ref.getMethodName()));
                 });
         return unusedPrivateMethods;
     }
 
+    /**
+     * Retrieves the method or reference associated with the given method usage.
+     *
+     * @param ref the method usage reference
+     * @return the associated executable symbol for the method reference
+     */
     private static JExecutableSymbol getMethodOrReference(final MethodUsage ref) {
         return ref instanceof ASTMethodCall
                 ? ((ASTMethodCall) ref).getMethodType().getSymbol()
@@ -153,26 +159,31 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
     }
 
     /**
-     * Processes a method reference, removing the method from the unused set
-     * if it is called outside of itself.
-     * <p>
-     * This method removes the method from the unused set only if it is called
-     * from outside its own definition.
+     * Processes a method reference and removes the method from the unused set
+     * if it is called from outside its own definition.
      *
-     * @param referencedNode         the referenced method declaration node
      * @param ref                    the method usage reference
      * @param unusedPrivateMethods   the map of unused private methods
      * @param remainingUnusedMethods the set of remaining unused methods
      */
-    private static void isUnused(final MethodUsage ref,
-                                 final Map<String, Set<ASTMethodDeclaration>> unusedPrivateMethods,
-                                 final Set<ASTMethodDeclaration> remainingUnusedMethods) {
-        isUnused(getMethodOrReference(ref).tryGetNode(), ref, remainingUnusedMethods, unusedPrivateMethods);
+    private static void removeIfUnused(final MethodUsage ref,
+                                       final Map<String, Set<ASTMethodDeclaration>> unusedPrivateMethods,
+                                       final Set<ASTMethodDeclaration> remainingUnusedMethods) {
+        removeIfUnused(getMethodOrReference(ref).tryGetNode(), ref, remainingUnusedMethods, unusedPrivateMethods);
     }
 
-    private static void isUnused(final JavaNode referencedNode, final MethodUsage ref,
-                                 final Set<ASTMethodDeclaration> remainingUnusedMethods,
-                                 final Map<String, Set<ASTMethodDeclaration>> unusedPrivateMethods) {
+    /**
+     * Checks if the referenced method is unused, and removes it from the
+     * unused methods set if it is invoked from outside its own definition.
+     *
+     * @param referencedNode         the referenced method declaration node
+     * @param ref                    the method usage reference
+     * @param remainingUnusedMethods the set of remaining unused methods
+     * @param unusedPrivateMethods   the map of unused private methods
+     */
+    private static void removeIfUnused(final JavaNode referencedNode, final MethodUsage ref,
+                                       final Set<ASTMethodDeclaration> remainingUnusedMethods,
+                                       final Map<String, Set<ASTMethodDeclaration>> unusedPrivateMethods) {
         if (referencedNode instanceof ASTMethodDeclaration
                 && notEqual(ref.ancestors(ASTMethodDeclaration.class).first(), referencedNode)
                 && nonNull(remainingUnusedMethods)
