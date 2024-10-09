@@ -18,6 +18,6 @@
             files="[\\/]src[\\/]main[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]lang[\\/]java[\\/]types[\\/]TypeSystem\.java"
             checks="MemberName"/>
     <suppress
-            files="[\\/]src[\\/]main[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]lang[\\/]java[\\/]rule[\\/]bestpractices[\\/]*"
-            checks="UnusedPrivateMethod"/>
+            files="[\\/]src[\\/]main[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]lang[\\/]java[\\/]rule[\\/]bestpractices[\\/]UnusedPrivateMethodRule\.java"
+            checks="ImportOrder"/>
 </suppressions>
