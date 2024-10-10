@@ -172,32 +172,33 @@ public class SomeJNIClass {
     <rule name="BooleanGetMethodName"
           language="java"
           since="4.0"
-          message="A 'getX()' method which returns a boolean should be named 'isX()'"
+          message="A 'getX()' method which returns a boolean or Boolean should be named 'isX()'"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#booleangetmethodname">
         <description>
-Methods that return boolean results should be named as predicate statements to denote this.
-I.e, 'isReady()', 'hasValues()', 'canCommit()', 'willFail()', etc.   Avoid the use of the 'get'
-prefix for these methods.
+            Methods that return boolean or Boolean results should be named as predicate statements to denote this.
+            I.e., 'isReady()', 'hasValues()', 'canCommit()', 'willFail()', etc. Avoid the use of the 'get' prefix for these methods.
         </description>
         <priority>4</priority>
         <properties>
             <property name="xpath">
                 <value>
-<![CDATA[
+                    <![CDATA[
 //MethodDeclaration
     [starts-with(@Name, 'get')]
     [@Arity = 0 or $checkParameterizedMethods = true()]
-    [ PrimitiveType[@Kind = 'boolean'] and @Overridden = false() ]
+    [ (PrimitiveType[@Kind = 'boolean'] or ClassType[pmd-java:typeIs('java.lang.Boolean')]) and @Overridden = false() ]
 ]]>
                 </value>
             </property>
             <property name="checkParameterizedMethods" type="Boolean" description="Check parameterized methods" value="false"/>
         </properties>
         <example>
-<![CDATA[
+            <![CDATA[
 public boolean getFoo();            // bad
+public Boolean getFoo();            // bad
 public boolean isFoo();             // ok
+public Boolean isFoo();             // ok
 public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
 ]]>
         </example>
