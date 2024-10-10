@@ -187,7 +187,7 @@ public class SomeJNIClass {
 //MethodDeclaration
     [starts-with(@Name, 'get')]
     [@Arity = 0 or $checkParameterizedMethods = true()]
-    [ (PrimitiveType[@Kind = 'boolean'] or ReferenceType[@Type = 'Boolean']) and @Overridden = false() ]
+    [ (PrimitiveType[@Kind = 'boolean'] or ClassType[pmd-java:typeIs('java.lang.Boolean')]) and @Overridden = false() ]
 ]]>
                 </value>
             </property>
