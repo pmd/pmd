@@ -3930,4 +3930,27 @@ public class Main {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UnusedAssignment false-positive with try-with-resources #4127</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.function.Function;
+
+class Lock implements Autocloseable {
+    public close() { }
+
+    private static Function<Integer, Lock> locks;
+    public static void foo() {
+        Lock lock;
+        synchronized (locks) {
+            lock = locks.get(0);
+        }
+        try (lock) {
+            // ...
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
