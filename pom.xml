@@ -94,7 +94,7 @@
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
         <kotlin.version>1.9.24</kotlin.version>
         <kotest.version>5.9.1</kotest.version>
-        <junit5.version>5.8.2</junit5.version> <!-- needed by kotest -->
+        <junit5.version>5.11.2</junit5.version>
         <dokka.version>1.9.20</dokka.version>
 
         <javacc.version>5.0</javacc.version>
@@ -963,7 +963,7 @@
             <dependency>
                 <groupId>org.junit.platform</groupId>
                 <artifactId>junit-platform-suite</artifactId>
-                <version>1.10.2</version>
+                <version>1.11.2</version>
                 <scope>test</scope>
             </dependency>
 
@@ -1092,13 +1092,13 @@
                 <version>3.25.5</version>
             </dependency>
 
-            <!-- Make sure to use the correct version the JUnit5 needs. E.g. 5.8.2 needs 1.8.2
+            <!-- Make sure to use the correct version the JUnit5 needs. E.g. 5.11.2 needs 1.11.2
                  Kotest might bring a wrong version.
                  see junit5.version -->
             <dependency>
                 <groupId>org.junit.platform</groupId>
                 <artifactId>junit-platform-commons</artifactId>
-                <version>1.8.2</version>
+                <version>1.11.2</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
