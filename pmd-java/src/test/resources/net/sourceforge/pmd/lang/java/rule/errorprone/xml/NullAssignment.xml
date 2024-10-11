@@ -288,4 +288,20 @@ public class NullAssignmentConstructorCall {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] A false negative for NullAssignment #3959</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+class Tester {
+    public void foo() {
+        Object x;
+        x = new Object();
+        bar(x);
+        x = (null); // should report a warning in this line
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
