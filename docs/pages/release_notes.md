@@ -30,6 +30,8 @@ after JUnit / JUnit 4, even when they applied to JUnit 5 and / or TestNG.
 The old rule names still work but are deprecated.
 
 ### 🐛 Fixed Issues
+* apex-performance
+  * [#5270](https://github.com/pmd/pmd/issues/5270): \[apex] AvoidNonRestrictiveQueries when LIMIT is followed by bind expression
 * java
   * [#4532](https://github.com/pmd/pmd/issues/4532): \[java] Rule misnomer for JUnit* rules
 * java-errorprone
