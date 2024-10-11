@@ -35,11 +35,13 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Should not match on multiple parameters by default</description>
+        <description>Should not match for boxed Boolean on multiple parameters by default (#5253)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public Boolean getEnabled(boolean thisIsNotABean);
+    public Boolean getEnabled(boolean thisIsNotABean) {
+        return false;
+    }
 }
         ]]></code>
     </test-code>
@@ -72,11 +74,13 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Bad name</description>
+        <description>Bad name with boxed Boolean (#5253)</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public Boolean getEnabled();
+    public Boolean getEnabled() {
+        return true;
+    }
 }
         ]]></code>
     </test-code>
@@ -86,13 +90,15 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public Boolean isEnabled();
+    public Boolean isEnabled() {
+        return false;
+    }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>Should not match on methods annotated with @Override</description>
+        <description>Should not match for boxed Boolean on methods annotated with @Override (#5253)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo implements Toggleable {
@@ -107,15 +113,50 @@ interface Toggleable {
         ]]></code>
     </test-code>
 
-
-
     <test-code>
-        <description>Should match on multiple parameters when checkParameterizedMethods = true</description>
+        <description>Should match for boxed Boolean on multiple parameters when checkParameterizedMethods = true (#5253)</description>
         <rule-property name="checkParameterizedMethods">true</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     public Boolean getEnabled(boolean thisIsNotABean);
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Should match for boxed Boolean on multiple parameters when checkParameterizedMethods = true (#5253)</description>
+        <rule-property name="checkParameterizedMethods">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Boolean getEnabled(boolean thisIsNotABean) {
+        return false;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Custom Boolean type (#5253)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Boolean { }
+public class Foo {
+    public Boolean getEnabled() {
+        return null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Custom Boolean type with returning value (#5253)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Boolean { }
+public class Foo {
+    public Boolean getEnabled() { return false; }
 }
         ]]></code>
     </test-code>
