@@ -479,4 +479,17 @@ public class LiteralsFirstInComparisonBigInteger {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>[java] Regression with LiteralsFirstInComparisons in 6.35.0 #3352</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.function.BiFunction;
+class Tester {
+    void testcase(BiFunction<Class<?>, Object, Boolean> ARG_CLASS_HAS_TOSTRING, Object arg, Object ctx) {
+        if (Boolean.TRUE.equals(ARG_CLASS_HAS_TOSTRING.apply(arg.getClass(), ctx)));
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
