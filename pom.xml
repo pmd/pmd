@@ -123,7 +123,6 @@
         <javacc.ant.wrapper>${project.basedir}/../javacc-wrapper.xml</javacc.ant.wrapper>
 
         <ant-contrib.version>1.0b3</ant-contrib.version>
-        <ant.contrib.jar>${settings.localRepository}/ant-contrib/ant-contrib/${ant-contrib.version}/ant-contrib-${ant-contrib.version}.jar</ant.contrib.jar>
 
         <antlr4.outputDirectory>${project.build.directory}/generated-sources/antlr4</antlr4.outputDirectory>
         <antlr4.ant.wrapper>${project.basedir}/../antlr4-wrapper.xml</antlr4.ant.wrapper>

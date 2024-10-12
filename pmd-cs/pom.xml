@@ -30,7 +30,6 @@
                         <configuration>
                             <target>
                                 <ant antfile="${antlr4.ant.wrapper}" target="cpd-language">
-                                    <property name="ant.contrib.jar" value="${ant.contrib.jar}" />
                                     <property name="lang-name" value="CSharp" />
                                     <property name="lang-id" value="cs" />
                                 </ant>

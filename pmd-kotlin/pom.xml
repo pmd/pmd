@@ -43,7 +43,6 @@
                         <configuration>
                             <target>
                                 <ant antfile="${antlr4.ant.wrapper}" target="pmd-language">
-                                    <property name="ant.contrib.jar" value="${ant.contrib.jar}" />
                                     <property name="lang-name" value="Kotlin" />
                                     <property name="lang-id" value="kotlin" />
                                     <property name="root-node-name" value="KotlinFile" />
