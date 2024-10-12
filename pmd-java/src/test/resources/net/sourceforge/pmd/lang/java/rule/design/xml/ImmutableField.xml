@@ -924,7 +924,7 @@ class Foo {
             }
             ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>[java] ImmutableField should consider fields in anonymous classes #3956</description>
         <expected-problems>2</expected-problems>
@@ -935,6 +935,20 @@ public class C {
     public Object o = new Object() {
         private int f = 0;  // should report a warning in this line
     };
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ImmutableField should consider enum class #3957</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class D {
+    enum E {
+        R;
+        private int y = 42;  // should have a warning in this line
+    }
 }
 ]]></code>
     </test-code>
