@@ -924,4 +924,18 @@ class Foo {
             }
             ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>[java] ImmutableField should consider fields in anonymous classes #3956</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,4</expected-linenumbers>
+        <code><![CDATA[
+public class C {
+    private int g = 0;  // can report a warning in this line
+    public Object o = new Object() {
+        private int f = 0;  // should report a warning in this line
+    };
+}
+]]></code>
+    </test-code>
 </test-data>
