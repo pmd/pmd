@@ -1198,22 +1198,23 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Definitions in try block reach catch blocks through method calls</description>
+        <description>Definitions in try block reach catch blocks through method calls (#3975)</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
+<!--        <expected-linenumbers>4,7</expected-linenumbers>-->
         <expected-messages>
             <message>The initializer for variable 'halfway' is never used (overwritten on line 7)</message>
-            <!-- This was disabled because it causes FPs in LocalVariableCouldBeFinal. -->
+            <!-- Violation on line 7 was disabled because it causes FPs in LocalVariableCouldBeFinal. - see PR #5191 -->
             <!-- <message>The value assigned to variable 'halfway' is never used</message>-->
         </expected-messages>
         <code><![CDATA[
 public class Foo {
 
     void method() {
-        boolean halfway = false;
+        boolean halfway = false; // (line 4)
 
         try {
-            halfway = true; // this may not fail so the catch block is unreachable
+            halfway = true; // this may not fail so the catch block is unreachable (line 7)
         } catch(Exception e) {
             System.out.println(halfway);
         }
@@ -1225,7 +1226,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Definitions in try block reach catch blocks through method calls 2</description>
+        <description>Definitions in try block reach catch blocks through method calls 2 (#3975)</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
         <expected-messages>
@@ -1251,8 +1252,8 @@ public class Foo {
 ]]></code>
     </test-code>
     <test-code>
-        <description>Definitions in try block reach catch blocks through method calls 3</description>
-        <!-- This was disabled because it causes FPs in LocalVariableCouldBeFinal. -->
+        <description>Definitions in try block reach catch blocks through method calls 3 (#3975)</description>
+        <!-- This was disabled because it causes FPs in LocalVariableCouldBeFinal. - see PR #5191 -->
         <expected-problems>0</expected-problems>
 <!--        <expected-problems>1</expected-problems>-->
 <!--        <expected-linenumbers>8</expected-linenumbers>-->
