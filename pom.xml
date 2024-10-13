@@ -122,6 +122,8 @@
         <javacc.outputDirectory>${project.build.directory}/generated-sources/javacc</javacc.outputDirectory>
         <javacc.ant.wrapper>${project.basedir}/../javacc-wrapper.xml</javacc.ant.wrapper>
 
+        <ant-contrib.version>1.0b3</ant-contrib.version>
+
         <antlr4.outputDirectory>${project.build.directory}/generated-sources/antlr4</antlr4.outputDirectory>
         <antlr4.ant.wrapper>${project.basedir}/../antlr4-wrapper.xml</antlr4.ant.wrapper>
 
@@ -166,6 +168,11 @@
                             <groupId>org.apache.ant</groupId>
                             <artifactId>ant</artifactId>
                             <version>${ant.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>ant-contrib</groupId>
+                            <artifactId>ant-contrib</artifactId>
+                            <version>${ant-contrib.version}</version>
                         </dependency>
                     </dependencies>
                 </plugin>
