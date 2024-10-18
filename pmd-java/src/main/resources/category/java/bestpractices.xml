@@ -748,7 +748,7 @@ class MyTest { // not public, that's fine
 
     <rule name="JUnitTestContainsTooManyAsserts" deprecated="true" ref="UnitTestContainsTooManyAsserts"/>
 
-    <rule name="JUnitTestsShouldIncludeAssert" deprecated="true" ref="UnitTestsShouldIncludeAssert" />
+    <rule name="JUnitTestsShouldIncludeAssert" deprecated="true" ref="UnitTestShouldIncludeAssert" />
 
     <rule name="JUnitUseExpected"
           language="java"
@@ -1239,6 +1239,8 @@ Unit assertions should include an informative message - i.e., use the three-argu
 `assertEquals()`, not the two-argument version.
 
 This rule supports tests using JUnit (3, 4 and 5) and TestNG.
+
+Note: This rule was named JUnitAssertionsShouldIncludeMessage before PMD 7.7.0.
         </description>
         <priority>3</priority>
         <example>
@@ -1268,6 +1270,8 @@ public class Foo {
             Customize the maximum number of assertions used by this Rule to suit your needs.
 
             This rule checks for JUnit (3, 4 and 5) and TestNG Tests.
+
+            Note: This rule was named JUnitTestContainsTooManyAsserts before PMD 7.7.0.
         </description>
         <priority>3</priority>
         <example>
@@ -1292,6 +1296,36 @@ public class MyTestCase {
         </example>
     </rule>
 
+    <rule name="UnitTestShouldIncludeAssert"
+          language="java"
+          since="2.0"
+          message="This unit test should include assert() or fail()"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestShouldIncludeAssertRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestshouldincludeassert">
+        <description>
+            Unit tests should include at least one assertion. This makes the tests more robust, and using assert
+            with messages provide the developer a clearer idea of what the test does.
+
+            This rule checks for JUnit (3, 4 and 5) and TestNG Tests.
+
+            Note: This rule was named JUnitTestsShouldIncludeAssert before PMD 7.7.0.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Foo {
+   @Test
+   public void testSomething() {
+      Bar b = findBar();
+      // This is better than having a NullPointerException
+      // assertNotNull("bar not found", b);
+      b.work();
+   }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="UnitTestShouldUseAfterAnnotation"
           language="java"
           since="4.0"
@@ -1309,6 +1343,8 @@ as long as you are following this convention to name the methods.
   all tests in the class, respectively.
 * TestNG provides the annotations `@AfterMethod` and `@AfterClass` to execute methods after each test or after
   tests in the class, respectively.
+
+Note: This rule was named JUnit4TestShouldUseAfterAnnotation before PMD 7.7.0.
         </description>
         <priority>3</priority>
         <properties>
@@ -1366,6 +1402,8 @@ as long as you are following this convention to name the methods.
   tests in the class, respectively.
 * TestNG provides the annotations `@BeforeMethod` and `@BeforeClass` to execute methods before each test or before
   tests in the class, respectively.
+
+Note: This rule was named JUnit4TestShouldUseBeforeAnnotation before PMD 7.7.0.
         </description>
         <priority>3</priority>
         <properties>
@@ -1418,6 +1456,8 @@ public class MyTest2 {
             In JUnit 4, only methods annotated with the `@Test` annotation are executed.
             In JUnit 5, one of the following annotations should be used for tests: `@Test`, `@RepeatedTest`, `@TestFactory`, `@TestTemplate` or `@ParameterizedTest`.
             In TestNG, only methods annotated with the `@Test` annotation are executed.
+
+            Note: This rule was named JUnit4TestShouldUseTestAnnotation before PMD 7.7.0.
         </description>
         <priority>3</priority>
         <properties>
@@ -1456,34 +1496,6 @@ public class MyTest {
     public void testGood() {
         doSomething();
     }
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="UnitTestsShouldIncludeAssert"
-          language="java"
-          since="2.0"
-          message="Unit tests should include assert() or fail()"
-          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestsShouldIncludeAssertRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestsshouldincludeassert">
-        <description>
-            Unit tests should include at least one assertion. This makes the tests more robust, and using assert
-            with messages provide the developer a clearer idea of what the test does.
-
-            This rule checks for JUnit (3, 4 and 5) and TestNG Tests.
-        </description>
-        <priority>3</priority>
-        <example>
-            <![CDATA[
-public class Foo {
-   @Test
-   public void testSomething() {
-      Bar b = findBar();
-      // This is better than having a NullPointerException
-      // assertNotNull("bar not found", b);
-      b.work();
-   }
 }
 ]]>
         </example>

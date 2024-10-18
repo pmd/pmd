@@ -5,9 +5,9 @@
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 /**
- * @deprecated The rule was renamed {@link UnitTestsShouldIncludeAssertRule}
+ * @deprecated The rule was renamed {@link UnitTestShouldIncludeAssertRule}
  */
 @Deprecated
-public class JUnitTestsShouldIncludeAssertRule extends UnitTestsShouldIncludeAssertRule {
+public class JUnitTestsShouldIncludeAssertRule extends UnitTestShouldIncludeAssertRule {
 
 }

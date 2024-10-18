@@ -25,9 +25,9 @@
          It also uses the following maven properties:
 
          - javacc.outputDirectory:  Directory in which to root the generated package tree
-         - javacc.jar:              JAR of JavaCC in the local maven repository
+         - plugin-classpath:        The classpath of maven-antrun-plugin with javacc.jar dependency
+                                    Provided by maven via "<property name="plugin-classpath" refid="maven.plugin.classpath"/>"
          - some properties of project.build
-
     -->
 
     <condition property="lang-name-camelcase" value="${lang-name}">
@@ -39,8 +39,6 @@
 
     <property name="target-package-dir" value="${javacc.outputDirectory}/net/sourceforge/pmd/lang/${lang-id}/ast" />
     <property name="stamp-file" value="${project.build.directory}/last-generated-timestamp" />
-
-    <property name="javacc-home.path" value="${project.build.directory}/lib/javacc" />
 
     <property name="lang-ast-package" value="net.sourceforge.pmd.lang.${lang-id}.ast" />
     <property name="ast-api-package" value="net.sourceforge.pmd.lang.ast" />
@@ -84,7 +82,7 @@
 
     <target name="alljavacc"
             description="Generates JavaCC sources and cleans them up"
-            depends="checkUpToDate,init,jjtree,jjtree-ersatz,javacc,adapt-generated,default-visitor,cleanup" />
+            depends="checkUpToDate,init,jjtree,jjtree-ersatz,javacc,adapt-generated,default-visitor" />
 
     <target name="checkUpToDate"
             description="Checks the input files are up to date">
@@ -104,9 +102,6 @@
 
 
     <target name="init" unless="javaccBuildNotRequired" description="Initialize build">
-        <mkdir dir="${javacc-home.path}" />
-        <copy file="${javacc.jar}" tofile="${javacc-home.path}/javacc.jar" />
-
         <mkdir dir="${javacc.outputDirectory}" />
         <touch file="${stamp-file}" />
         <delete dir="${target-package-dir}" />
@@ -117,11 +112,6 @@
         </condition>
     </target>
 
-    <target name="cleanup" unless="javaccBuildNotRequired">
-        <delete dir="${javacc-home.path}" />
-    </target>
-
-
     <target name="jjtree" unless="jjtreeBuildNotRequired" description="Runs JJTree">
 
         <!--
@@ -130,7 +120,7 @@
         -->
         <java fork="true"
               classname="jjtree"
-              classpath="${javacc-home.path}/javacc.jar">
+              classpath="${plugin-classpath}">
             <sysproperty key="file.encoding" value="UTF-8" />
             <arg value="-OUTPUT_DIRECTORY:${target-package-dir}" />
             <arg value="-NODE_USES_PARSER:false" />
@@ -148,7 +138,7 @@
     <target name="javacc" depends="jjtree" unless="javaccBuildNotRequired">
         <java fork="true"
               classname="javacc"
-              classpath="${javacc-home.path}/javacc.jar">
+              classpath="${plugin-classpath}">
             <sysproperty key="file.encoding" value="UTF-8" />
             <arg value="-STATIC:false" />
             <arg value="-USER_CHAR_STREAM:true" />

@@ -9,6 +9,9 @@
         <rule-property name="threshold">2</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>A value of 3 may denote a high amount of coupling within the class (threshold: 2)</message>
+        </expected-messages>
         <code><![CDATA[
 import java.util.*;
 public class Foo {
@@ -51,6 +54,9 @@ public interface Foo {
         <rule-property name="threshold">2</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>A value of 3 may denote a high amount of coupling within the class (threshold: 2)</message>
+        </expected-messages>
         <code><![CDATA[
 import java.util.*;
 public interface Foo {
