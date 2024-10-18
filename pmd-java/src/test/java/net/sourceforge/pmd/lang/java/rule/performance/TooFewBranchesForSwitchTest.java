@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.performance;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-class TooFewBranchesForASwitchStatementTest extends PmdRuleTst {
+class TooFewBranchesForSwitchTest extends PmdRuleTst {
     // no additional unit tests
 }

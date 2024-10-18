@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
-        <description>Only one case, this is useless</description>
+        <description>Switch Statement with only one case, not ok</description>
         <rule-property name="minimumNumberCaseForASwitch">3</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -17,6 +17,24 @@ public class DumbSwitch {
                 System.err.println("I am a fish.");
             }
         }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch Expression with only one case, not ok #5250</description>
+        <rule-property name="minimumNumberCaseForASwitch">3</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class DumbSwitch {
+    public String foo(int i) {
+        return switch (i) {
+            case 0:
+            {
+                yield "I am a fish.";
+            }
+        };
     }
 }
         ]]></code>
@@ -68,5 +86,43 @@ public class ValidSwitch {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] TooFewBranchesForASwitchStatement false positive for Pattern Matching #5249</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+sealed interface S permits A {}
+final class A implements S {}
+public class Sample {
+    public void simpleSwitchStatment(S s) {
+        switch(s) {
+            case A a -> System.out.println("a");
+        }
+    }
+
+    public void simpleSwitchExpression(S s) {
+        String result = switch(s) {
+            case A a -> "a";
+        };
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Record patterns are ignored, too #5249</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+record R(int i) {}
+
+public class SwitchWithRecordPattern {
+    public void check(R r) {
+        switch(r) {
+            case R(int a) -> System.out.println(a);
+        }
+    }
+}
+]]></code>
     </test-code>
 </test-data>
