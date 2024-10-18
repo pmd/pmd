@@ -1080,12 +1080,7 @@
                 <scope>test</scope>
             </dependency>
 
-            <!-- transitive dependency through org.scalameta:trees_2.13
-                 upgrade to 3.16.1 to fix CVE-2021-22569 A potential Denial of Service issue in protobuf-java
-                 https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-wrvw-hg22-4m67
-                 upgrade to 3.16.3 to fix CVE-2022-3171 protobuf-java has a potential Denial of Service issue
-                 https://github.com/advisories/GHSA-h4h5-3hr4-j3g2
-            -->
+            <!-- transitive dependency through org.scalameta:trees_2.13 -->
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
