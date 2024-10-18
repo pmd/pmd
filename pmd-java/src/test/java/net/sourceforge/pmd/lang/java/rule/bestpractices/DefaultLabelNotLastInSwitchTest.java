@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-class DefaultLabelNotLastInSwitchStmtTest extends PmdRuleTst {
+class DefaultLabelNotLastInSwitchTest extends PmdRuleTst {
     // no additional unit tests
 }
