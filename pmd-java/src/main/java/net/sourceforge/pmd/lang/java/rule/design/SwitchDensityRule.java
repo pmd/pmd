@@ -55,7 +55,7 @@ public class SwitchDensityRule extends AbstractJavaRulechainRule {
         int stmtCount = node.descendants(ASTStatement.class).count();
         int labelCount = node.getBranches()
                 .map(ASTSwitchBranch::getLabel)
-                .sumBy(label -> label.isDefault() ? 1 : label.getExprList().count());
+                .sumBy(label -> label.isDefault() || label.isPatternLabel() ? 1 : label.getExprList().count());
 
         // note: if labelCount is zero, double division will produce +Infinity or NaN, not ArithmeticException
         double density = stmtCount / (double) labelCount;
