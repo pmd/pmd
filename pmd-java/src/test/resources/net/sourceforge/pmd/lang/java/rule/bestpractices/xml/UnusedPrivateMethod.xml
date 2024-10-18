@@ -2230,4 +2230,23 @@ public class TestUnusedPrivateMethodWithFunctionReference {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UnusedPrivateMethod false-positive when a private method defined in an inner private class is called. #4016</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class OuterClass {
+    private final class InnerClass {
+        private String readLine() { return ""; }
+    }
+
+    private InnerClass currentInner;
+
+    public String readLine() {
+        String line = currentInner.readLine();
+        return line;
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
