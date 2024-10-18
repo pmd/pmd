@@ -36,6 +36,7 @@ The old rule names still work but are deprecated.
   * [#5253](https://github.com/pmd/pmd/issues/5253): \[java] BooleanGetMethodName: False-negatives with `Boolean` wrapper
 * java-errorprone
   * [#5067](https://github.com/pmd/pmd/issues/5067): \[java] CloseResource: False positive for FileSystems.getDefault()
+  * [#5244](https://github.com/pmd/pmd/issues/5244): \[java] UselessOperationOnImmutable should detect java.time types
 
 ### 🚨 API Changes
 * java-bestpractices
