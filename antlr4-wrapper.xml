@@ -11,10 +11,11 @@
         - root-node-name: name of the root node without prefix (eg "TopLevel"), will be made to implement RootNode
 
         See AntlrGeneratedParserBase
-
 -->
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties" />
 
     <property name="target-package-dir" value="${antlr4.outputDirectory}/net/sourceforge/pmd/lang/${lang-id}/ast"/>
+    <property name="stamp-file" value="${project.build.directory}/last-generated-timestamp" />
 
 
     <property name="lang-ast-package" value="net.sourceforge.pmd.lang.${lang-id}.ast" />
@@ -32,13 +33,99 @@
     <property name="base-visitor-file" value="${target-package-dir}/${base-visitor-name}.java"/>
 
     <property name="listener-name" value="${lang-name}Listener"/>
-    <property name="listener-file" value="${target-package-dir}/${visitor-name}.java"/>
+    <property name="listener-file" value="${target-package-dir}/${listener-name}.java"/>
 
     <property name="base-listener-name" value="${lang-name}BaseListener"/>
-    <property name="base-listener-file" value="${target-package-dir}/${base-visitor-name}.java"/>
+    <property name="base-listener-file" value="${target-package-dir}/${base-listener-name}.java"/>
 
     <property name="node-itf-name" value="${lang-name}Node"/>
     <property name="base-class-name" value="Abstract${lang-name}Node"/>
+
+    <property name="lexer-name" value="${lang-name}Lexer"/>
+    <property name="lexer-file" value="${target-package-dir}/${lexer-name}.java"/>
+
+    <target name="check-up-to-date"
+            description="Checks the input files are up to date">
+
+        <uptodate property="processing-not-required" targetfile="${stamp-file}">
+            <srcfiles dir="${target-package-dir}" includes="*.java" />
+            <srcfiles file="${ant.file}" />
+        </uptodate>
+        <echo message="Up-to-date check: processing-not-required=${processing-not-required}" />
+    </target>
+
+    <target name="update-stamp-file" unless="processing-not-required">
+        <touch file="${stamp-file}" />
+    </target>
+
+    <target name="annotate-classes" description="Adds the @Generated annotation to all classes"
+            unless="processing-not-required">
+        <if>
+            <available file="${parser-file}"/>
+            <then>
+                <replace file="${parser-file}"
+                         token="public class ${parser-name}"
+                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+public class ${parser-name}'/>
+
+                <!-- Parse tree classes for each element -->
+                <replace file="${parser-file}"
+                         token="public static class "
+                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+public static class '/>
+            </then>
+        </if>
+
+        <if>
+            <available file="${visitor-file}"/>
+            <then>
+                <replace file="${visitor-file}"
+                         token="public interface ${visitor-name}"
+                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+public interface ${visitor-name}'/>
+            </then>
+        </if>
+
+        <if>
+            <available file="${base-visitor-file}"/>
+            <then>
+                <replace file="${base-visitor-file}"
+                         token="public class ${base-visitor-name}"
+                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+public class ${base-visitor-name}'/>
+            </then>
+        </if>
+
+        <if>
+            <available file="${listener-file}"/>
+            <then>
+                <replace file="${listener-file}"
+                         token="public interface ${listener-name}"
+                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+public interface ${listener-name}'/>
+            </then>
+        </if>
+
+        <if>
+            <available file="${base-listener-file}"/>
+            <then>
+                <replace file="${base-listener-file}"
+                         token="public class ${base-listener-name}"
+                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+public class ${base-listener-name}'/>
+            </then>
+        </if>
+
+        <if>
+            <available file="${lexer-file}"/>
+            <then>
+                <replace file="${lexer-file}"
+                         token="public class ${lexer-name}"
+                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+public class ${lexer-name}'/>
+            </then>
+        </if>
+    </target>
 
     <condition property="rename-parser">
         <and>
@@ -72,7 +159,9 @@
               tofile="${parser-file}"/>
     </target>
 
-    <target name="cpd-language" description="Adapt Antlr sources for CPD-only languages">
+    <target name="cpd-language" depends="check-up-to-date, annotate-classes, cpd-language-processing, update-stamp-file"/>
+    <target name="cpd-language-processing" description="Adapt Antlr sources for CPD-only languages"
+            unless="processing-not-required">
         <!-- We only need the Lexer file. -->
         <delete file="${parser-file}"/>
         <delete>
@@ -83,7 +172,9 @@
         </delete>
     </target>
 
-    <target name="pmd-language" description="Adapt Antlr sources for PMD languages" depends="rename-parser">
+    <target name="pmd-language" depends="check-up-to-date, annotate-classes, pmd-language-processing, update-stamp-file"/>
+    <target name="pmd-language-processing" description="Adapt Antlr sources for PMD languages" depends="rename-parser"
+            unless="processing-not-required">
 
         <!-- Adapt parser. -->
         <replace file="${parser-file}">
