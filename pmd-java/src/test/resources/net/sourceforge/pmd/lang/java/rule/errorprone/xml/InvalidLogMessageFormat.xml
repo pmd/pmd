@@ -1299,4 +1299,21 @@ class TestInvalidLogMessageFormat {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] False Positives in InvalidLogMessageFormat rule #3433</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class InvalidLogMessageFormat{
+        private static final Logger log = LoggerFactory.getLogger(InvalidLogMessageFormat.class);
+        public void test(){
+                //detected
+                log.error("Error starting " + app + ": "+ Exceptions.collapseText(e),Exceptions.getFirstInteresting(e));
+        }
+}
+]]></code>
+    </test-code>
 </test-data>
