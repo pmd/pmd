@@ -2186,4 +2186,48 @@ enum EnumClass {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UnusedPrivateMethod: false positive with inner class instance method passed as a function reference parameter #3292</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package com.example;
+
+import java.util.function.BiFunction;
+
+public class TestUnusedPrivateMethodWithFunctionReference {
+
+  private final String separator;
+
+  public TestUnusedPrivateMethodWithFunctionReference(String separator) {
+    this.separator = separator;
+  }
+
+  public static void main(String[] args) {
+    new TestUnusedPrivateMethodWithFunctionReference("|").test();
+  }
+
+  private void test() {
+    System.out.println(makeValue(Holder::combine));
+  }
+
+  private String makeValue(BiFunction<Holder, Holder, Holder> combiner) {
+    return combiner.apply(new Holder("t1"), new Holder("t2")).value;
+  }
+
+  private class Holder {
+
+    private final String value;
+
+    public Holder(String value) {
+      this.value = value;
+    }
+
+    private Holder combine(Holder other) { // false positive - not unused, used as Holder::combine
+      return new Holder(value + separator + other.value);
+    }
+  }
+}
+]]></code>
+    </test-code>
 </test-data>
