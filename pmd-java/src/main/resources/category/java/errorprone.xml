@@ -3127,12 +3127,13 @@ public boolean test(String s) {
     <rule name="UselessOperationOnImmutable"
           language="java"
           since="3.5"
-          message="An operation on an Immutable object (String, BigDecimal or BigInteger) won't change the object itself"
+          message="An operation on an Immutable object (String, BigDecimal, BigInteger or java.time.*) won't change the object itself"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.UselessOperationOnImmutableRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#uselessoperationonimmutable">
         <description>
-An operation on an Immutable object (String, BigDecimal or BigInteger) won't change the object itself
-since the result of the operation is a new object. Therefore, ignoring the operation result is an error.
+An operation on an Immutable object (`String`, `BigDecimal`, `BigInteger` or any type from `java.time.*`)
+won't change the object itself since the result of the operation is a new object.
+Therefore, ignoring the operation result is an error.
         </description>
         <priority>3</priority>
         <example>
