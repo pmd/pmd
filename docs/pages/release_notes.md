@@ -55,6 +55,7 @@ The old rule names still work but are deprecated.
 * [#5258](https://github.com/pmd/pmd/pull/5258): Ignore generated antlr classes in coverage reports - [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
 * [#5264](https://github.com/pmd/pmd/pull/5264): \[java] Fix NPE with empty pattern list - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#5269](https://github.com/pmd/pmd/pull/5269): \[java] Fix #5253: Support Boolean wrapper class for BooleanGetMethodName rule - [Aryant Tripathi](https://github.com/Aryant-Tripathi) (@Aryant-Tripathi)
+* [#5278](https://github.com/pmd/pmd/pull/5278): \[java] CouplingBetweenObjects: improve violation message - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 {% endtocmaker %}
 
