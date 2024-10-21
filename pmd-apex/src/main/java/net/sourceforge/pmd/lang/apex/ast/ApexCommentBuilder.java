@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 
 import io.github.apexdevtools.apexparser.ApexLexer;
+import io.github.apexdevtools.apexparser.CaseInsensitiveInputStream;
 
 @InternalApi
 final class ApexCommentBuilder {
@@ -103,7 +104,8 @@ final class ApexCommentBuilder {
     }
 
     private static CommentInformation extractInformationFromComments(TextDocument sourceCode, String suppressMarker) {
-        ApexLexer lexer = new ApexLexer(CharStreams.fromString(sourceCode.getText().toString()));
+        String source = sourceCode.getText().toString();
+        ApexLexer lexer = new ApexLexer(new CaseInsensitiveInputStream(CharStreams.fromString(source)));
 
         List<Token> allCommentTokens = new ArrayList<>();
         Map<Integer, String> suppressMap = new HashMap<>();
