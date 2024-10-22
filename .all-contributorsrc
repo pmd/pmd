@@ -7828,6 +7828,33 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "gudzpoz",
+      "name": "gudzpoz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14026120?v=4",
+      "profile": "https://kyo.iroiro.party/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "phansys",
+      "name": "Javier Spagnoletti",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1231441?v=4",
+      "profile": "https://github.com/phansys",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "Aryant-Tripathi",
+      "name": "Aryant Tripathi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/60316716?v=4",
+      "profile": "https://github.com/Aryant-Tripathi",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
