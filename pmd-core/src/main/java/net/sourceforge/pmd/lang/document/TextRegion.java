@@ -184,8 +184,8 @@ public final class TextRegion implements Comparable<TextRegion> {
     /**
      * Builds a new region from start and end offset.
      *
-     * @param startOffset Start offset
-     * @param endOffset   End offset
+     * @param startOffset Start offset (inclusive)
+     * @param endOffset   End offset (exclusive)
      *
      * @throws AssertionError If either offset is negative, or the two
      *                        offsets are not ordered
@@ -230,7 +230,7 @@ public final class TextRegion implements Comparable<TextRegion> {
 
     @Override
     public String toString() {
-        return "Region(start=" + startOffset + ", len=" + length + ")";
+        return "Region(start=" + startOffset + ", len=" + length + ", end=" + getEndOffset() + ")";
     }
 
     @Override

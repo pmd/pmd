@@ -1335,7 +1335,7 @@ private void CompactConstructorDeclarationLookahead() #void:
 void CompactConstructorDeclaration():
 {}
 {
-  <IDENTIFIER> { jjtThis.setImage(token.image); }
+  <IDENTIFIER> { jjtThis.setIdentToken(token); }
   Block()
 }
 
@@ -1428,7 +1428,7 @@ void MethodDeclaration() :
 {
   [ TypeParameters() ]
   ResultType()
-  <IDENTIFIER> { jjtThis.setName(getToken(0).getImage()); }
+  <IDENTIFIER> { jjtThis.setIdentToken(getToken(0)); }
   FormalParameters()
   [ Dims() ]
   [ ThrowsList() ]
@@ -1476,7 +1476,7 @@ void ConstructorDeclaration() :
 {}
 {
    [ TypeParameters() ]
-   <IDENTIFIER>  {setLastTokenImage(jjtThis);}
+   <IDENTIFIER>  {jjtThis.setIdentToken(token);}
    FormalParameters()
    [ ThrowsList() ]
    ConstructorBlock()
@@ -2971,7 +2971,7 @@ void AnnotationMethodDeclaration() #MethodDeclaration:
 {}
 {
   Type()
-  <IDENTIFIER> { jjtThis.setName(getToken(0).getImage()); }
+  <IDENTIFIER> { jjtThis.setIdentToken(getToken(0)); }
   ("(" ")") #FormalParameters
   [ Dims() ]
   [ DefaultValue() ] ";"

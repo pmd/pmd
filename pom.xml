@@ -423,6 +423,11 @@
                                 <placement>a</placement>
                                 <head>Implementation Note:</head>
                             </tag>
+                            <tag>
+                                <name>experimental</name>
+                                <placement>a</placement>
+                                <head>Experimental Status:</head>
+                            </tag>
                             <tag><name>param</name></tag>
                             <tag><name>return</name></tag>
                             <tag><name>throws</name></tag>
