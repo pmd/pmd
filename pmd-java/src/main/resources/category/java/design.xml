@@ -377,7 +377,7 @@ class Foo {
     <rule name="CouplingBetweenObjects"
           language="java"
           since="1.04"
-          message="High amount of different objects as members denotes a high coupling"
+          message="A value of {0} may denote a high amount of coupling within the class (threshold: {1})"
           class="net.sourceforge.pmd.lang.java.rule.design.CouplingBetweenObjectsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#couplingbetweenobjects">
         <description>

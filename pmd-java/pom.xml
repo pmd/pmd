@@ -105,7 +105,7 @@
                         <configuration>
                             <target>
                                 <ant antfile="${javacc.ant.wrapper}" target="alljavacc">
-                                    <property name="javacc.jar" value="${javacc.jar}" />
+                                    <property name="plugin-classpath" refid="maven.plugin.classpath"/>
                                     <property name="lang-name" value="Java" />
                                     <property name="lang-id" value="java" />
                                 </ant>

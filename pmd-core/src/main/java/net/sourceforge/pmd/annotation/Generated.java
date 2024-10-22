@@ -11,7 +11,7 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * Marks a class as generated code, and therefore to be ignored for code coverage purposes.
  *
- * @since 7.6.0
+ * @since 7.7.0
  */
 @Retention(RetentionPolicy.CLASS)
 @Documented
