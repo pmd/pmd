@@ -97,7 +97,7 @@
         <junit5.version>5.11.2</junit5.version>
         <dokka.version>1.9.20</dokka.version>
 
-        <javacc.version>5.0</javacc.version>
+        <javacc.version>7.0.13</javacc.version>
         <surefire.version>3.2.5</surefire.version>
         <checkstyle.version>10.18.1</checkstyle.version>
         <checkstyle.plugin.version>3.5.0</checkstyle.plugin.version>
