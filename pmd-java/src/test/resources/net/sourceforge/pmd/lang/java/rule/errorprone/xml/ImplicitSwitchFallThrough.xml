@@ -581,4 +581,24 @@ public class Test {
 }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>switch expression with one case, which is not empty</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+  public static void main(String[] args) {
+    int i = 1;
+    String result = switch(i) {
+      case 1: doSomething();
+      default: yield "default case fall through";
+    };
+    System.out.println(result);
+  }
+
+  private static void doSomething() {}
+}
+]]></code>
+    </test-code>
 </test-data>

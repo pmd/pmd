@@ -163,7 +163,7 @@ exactly identical.
     {% include custom/cli_option_row.html options="--ignore-literals"
                description="Ignore literal values such as numbers and strings when comparing text.
                             By default, literals are not ignored."
-               languages="Java"
+               languages="Java, C++"
     %}
     {% include custom/cli_option_row.html options="--ignore-literal-sequences"
                description="Ignore sequences of literals such as list initializers.
@@ -173,7 +173,7 @@ exactly identical.
     {% include custom/cli_option_row.html options="--ignore-identifiers"
                description="Ignore names of classes, methods, variables, constants, etc. when comparing text.
                             By default, identifier names are not ignored."
-               languages="Java"
+               languages="Java, C++"
     %}
     {% include custom/cli_option_row.html options="--ignore-annotations"
                description="Ignore language annotations (Java) or attributes (C#) when comparing text.

@@ -5,129 +5,69 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
-        <description>Contains tearDown</description>
+        <description>JUnit4 test class contains tearDown</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 import org.junit.Test;
 public class Foo {
-    public void tearDown() {
-    }
+    public void tearDown() {}
     @Test
-    public void foo() {
-    }
+    public void foo() {}
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>Contains @After tearDown</description>
+        <description>JUnit4 test class contains tearDown with different signature is ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.junit.Test;
-import org.junit.After;
 public class Foo {
-    @After
-    public void tearDown() {
-    }
+    public void tearDown(int something) {}
     @Test
-    public void foo() {
-    }
+    public void foo() {}
 }
-        ]]></code>
+]]></code>
     </test-code>
 
     <test-code>
-        <description>Renamed tearDown</description>
+        <description>JUnit4 test class contains @After tearDown is ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.junit.Test;
 import org.junit.After;
 public class Foo {
     @After
-    public void clean() {
-    }
+    public void tearDown() {}
     @Test
-    public void foo() {
-    }
+    public void foo() {}
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>#1446 False positive with JUnit4TestShouldUseBeforeAnnotation when TestNG is used</description>
+        <description>JUnit4 test class contains renamed tearDown is ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.Test;
-
+import org.junit.Test;
+import org.junit.After;
 public class Foo {
-    @AfterMethod
-    public void tearDown(java.lang.reflect.Method m) {
-      //...
-    }
+    @After
+    public void clean() {}
     @Test
-    public void someTest() {}
+    public void foo() {}
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>#940 False positive with JUnit4TestShouldUseAfterAnnotation when JUnit5's 'AfterEach' is used</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-import org.junit.jupiter.api.*;
-
-public class Foo {
-    @AfterEach
-    public void tearDown() {
-      //...
-    }
-    @Test
-    public void someTest() {}
-
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>#940 False positive with JUnit4TestShouldUseAfterAnnotation when JUnit5's 'AfterAll' is used</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-import org.junit.jupiter.api.*;
-
-public class Foo {
-    @AfterAll
-    public void tearDown() {
-      //...
-    }
-    @Test
-    public void someTest() {}
-}
-        ]]></code>
-    </test-code>
-    <test-code>
-        <description>Contains tearDown, not a junit 4 test</description>
+        <description>Contains tearDown, not a JUnit 4/5 or TestNG test is ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             public class Foo {
-                public void tearDown() {
-                }
-                public void foo() {
-                }
-            }
-            ]]></code>
-    </test-code>
-    <test-code>
-        <description>Contains tearDown with different signature</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-            import org.junit.Test;
-            public class Foo {
-                public void tearDown(int something) {
-                }
-                @Test
-                public void foo() {
-                }
+                public void tearDown() {}
+                public void foo() {}
             }
             ]]></code>
     </test-code>
@@ -150,5 +90,120 @@ public class AReallyCoolFeatureTest extends BaseTest {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>TestNG test contains tearDown</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import org.testng.annotations.Test;
+
+public class MyTestCase {
+    public void tearDown() {} // violation expected
+
+    @Test
+    public void myTest() {}
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>TestNG test contains tearDown with different signature is ok (#1446)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.Test;
+public class Foo {
+    @AfterMethod
+    public void tearDown(java.lang.reflect.Method m) {}
+    @Test
+    public void foo() {}
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>TestNG test contains tearDown with @AfterMethod is ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.Test;
+
+public class MyTestCase {
+    @AfterMethod
+    public void tearDown() {}
+
+    @Test
+    public void myTest() {}
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>TestNG test contains tearDown with @AfterClass is ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.Test;
+
+public class MyTestCase {
+    @AfterClass
+    public void tearDown() {}
+
+    @Test
+    public void myTest() {}
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit 5 test class contains tearDown</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+public class MyTestCase {
+    public void tearDown() {} // violation expected
+
+    @Test
+    public void myTest() {}
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit 5 test class contains tearDown with @AfterEach is ok (#940)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+
+public class MyTestCase {
+    @AfterEach
+    public void tearDown() {}
+
+    @Test
+    public void myTest() {}
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit 5 test class contains tearDown with @AfterAll is ok (#940)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
+
+public class MyTestCase {
+    @AfterAll
+    public void tearDown() {}
+
+    @Test
+    public void myTest() {}
+}
+]]></code>
     </test-code>
 </test-data>
