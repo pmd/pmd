@@ -1314,4 +1314,45 @@ public class DbServlet extends HttpServlet {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3801 [java] LawOfDemeter - false negative with braces</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>11,15</expected-linenumbers>
+        <code><![CDATA[
+public class Example {
+    public void func() {
+        MyObject myObject = MyObjectProvider.get();
+        myObject.func();   // allowed, distance 1
+        {myObject.func();} // allowed, distance 1
+    }
+
+    public void func2() {
+        MyObject myObject = MyObjectProvider.get();
+        {
+        Object obj = myObject.getFunc2();  // not allowed (line 11)
+        obj.hashCode();
+        }
+
+        myObject.getFunc2().hashCode(); // not allowed (line 15)
+    }
+}
+
+class MyObject {
+    public void func(){
+        // do nothing
+    }
+
+    public Object getFunc2(){
+        return new Object();
+    }
+}
+
+class MyObjectProvider {
+    public static MyObject get(){
+        return new MyObject();
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
