@@ -2249,4 +2249,33 @@ class OuterClass {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3899 [java] UnusedPrivateMethod - false positive with JDK 17</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedprivatemethod.issue3899;
+
+public class PmdTestCase {
+    public void check() {
+        Child child = new Child();
+
+        checkChild(child);
+        checkParent(child);
+    }
+
+    // OK
+    private void checkChild(Child child) {
+    }
+
+    // This method results in "UnusedPrivateMethod: Avoid unused private methods such as 'checkParent(Parent)'"
+    private void checkParent(Parent parent) { // false positive
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
