@@ -1255,4 +1255,63 @@ class MyObjectProvider {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#2192 [java] LawOfDemeter: False negative with Try-resource block treated as function call by rule</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package pmdtests;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+// @WebServlet("/DbServlet")
+public class DbServlet extends HttpServlet {
+  private static final long serialVersionUID = 1L;
+  private static final String URL = "jdbc:derby:HomeDB";
+  private transient Connection link;
+
+  public void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    response.setContentType("text/HTML");
+    PrintWriter out = response.getWriter();
+
+    try (Statement statement = link.createStatement();
+         ResultSet results = statement.executeQuery("SELECT * FROM PhoneNums");) {
+
+      while (results.next()) {
+        out.println("<TR>");
+        out.println("<TD>");
+        out.println(results.getString("Surname"));
+        out.println("</TD>");
+        out.println("<TD>");
+        out.println(results.getString("Forenames"));
+        out.println("</TD>");
+        out.println("<TD>");
+        out.println(results.getString("PhoneNum"));
+        out.println("</TD>");
+        out.println("</TR>");
+      }
+      out.println("</TABLE>");
+    } catch (SQLException sqlEx) {
+      printHtmlSelectError(out);
+      return;
+    }
+    out.println("<BODY>");
+    out.println("</HTML>");
+    out.flush();
+  }
+}
+]]></code>
+    </test-code>
 </test-data>
