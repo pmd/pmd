@@ -24,6 +24,8 @@ See [PR #5040](https://github.com/pmd/pmd/pull/5040) for details.
 ### 🌟 Rule Changes
 
 #### Changed Rules
+* {% rule java/performance/TooFewBranchesForSwitch %} (Java Performance) doesn't report empty switches anymore.
+  To detect these, use {% rule java/codestyle/EmptyControlStatement %}.
 * {% rule java/bestpractices/UnitTestShouldUseAfterAnnotation %} (Java Best Practices) now also considers JUnit 5 and TestNG tests.
 * {% rule java/bestpractices/UnitTestShouldUseBeforeAnnotation %} (Java Best Practices) now also considers JUnit 5 and TestNG tests.
 
@@ -36,6 +38,8 @@ See [PR #5040](https://github.com/pmd/pmd/pull/5040) for details.
   * {% rule java/bestpractices/UnitTestShouldUseAfterAnnotation %} (Java Best Practices) has been renamed from `JUnit4TestShouldUseAfterAnnotation`.
   * {% rule java/bestpractices/UnitTestShouldUseBeforeAnnotation %} (Java Best Practices) has been renamed from `JUnit4TestShouldUseBeforeAnnotation`.
   * {% rule java/bestpractices/UnitTestShouldUseTestAnnotation %} (Java Best Practices) has been renamed from `JUnit4TestShouldUseTestAnnotation`.
+* {% rule java/performance/TooFewBranchesForSwitch %} (Java Performance) has been renamed from `TooFewBranchesForASwitchStatement`,
+  as it now applies to Switch Expressions as well.
 
 The old rule names still work but are deprecated.
 
@@ -50,6 +54,9 @@ The old rule names still work but are deprecated.
 * java-errorprone
   * [#3362](https://github.com/pmd/pmd/issues/3362): \[java] ImplicitSwitchFallThrough should consider switch expressions
   * [#5067](https://github.com/pmd/pmd/issues/5067): \[java] CloseResource: False positive for FileSystems.getDefault()
+* java-performance
+  * [#5249](https://github.com/pmd/pmd/issues/5249): \[java] TooFewBranchesForASwitchStatement false positive for Pattern Matching
+  * [#5250](https://github.com/pmd/pmd/issues/5250): \[java] TooFewBranchesForASwitchStatement should consider Switch Expressions
 
 ### 🚨 API Changes
 * java-bestpractices
@@ -59,6 +66,8 @@ The old rule names still work but are deprecated.
   * The old rule name `JUnitAssertionsShouldIncludeMessage` has been deprecated. Use the new name {% rule java/bestpractices/UnitTestAssertionsShouldIncludeMessage %} instead.
   * The old rule name `JUnitTestContainsTooManyAsserts` has been deprecated. Use the new name {% rule java/bestpractices/UnitTestContainsTooManyAsserts %} instead.
   * The old rule name `JUnitTestsShouldIncludeAssert` has been deprecated. Use the new name {% rule java/bestpractices/UnitTestShouldIncludeAssert %} instead.
+* java-performance
+  * The old rule name `TooFewBranchesForASwitchStatement` has been deprecated. Use the new name {% rule java/performance/TooFewBranchesForSwitch %} instead.
 
 
 ### ✨ Merged pull requests
@@ -69,6 +78,7 @@ The old rule names still work but are deprecated.
 * [#5245](https://github.com/pmd/pmd/pull/5245): \[java] Improve UnitTestShouldUse{After,Before}Annotation rules to support JUnit5 and TestNG - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5247](https://github.com/pmd/pmd/pull/5247): Fix #5030: \[java] SwitchDensity false positive with pattern matching - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5248](https://github.com/pmd/pmd/pull/5248): Fix #3362: \[java] ImplicitSwitchFallThrough should consider switch expressions - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5251](https://github.com/pmd/pmd/pull/5251): Fix #5249 and #5250: \[java] TooFewBranchesForSwitch ignore pattern matching and support switch expressions - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5258](https://github.com/pmd/pmd/pull/5258): Ignore generated antlr classes in coverage reports - [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
 * [#5264](https://github.com/pmd/pmd/pull/5264): Fix #5261: \[java] Fix NPE with empty pattern list - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#5269](https://github.com/pmd/pmd/pull/5269): Fix #5253: \[java] Support Boolean wrapper class for BooleanGetMethodName rule - [Aryant Tripathi](https://github.com/Aryant-Tripathi) (@Aryant-Tripathi)
