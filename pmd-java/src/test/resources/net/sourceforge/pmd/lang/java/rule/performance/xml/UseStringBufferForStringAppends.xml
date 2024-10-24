@@ -665,4 +665,27 @@ public class UseStringBufferForStringAppendsFP {
             }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4078 [java] False positive about the rule UseStringBufferForStringAppends</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>4,6,12,13</expected-linenumbers>
+        <code><![CDATA[
+class Tester {
+    public void bar1(boolean tag) {
+      String x = "foo";
+      x += "bar" + x;  // report one warning in this line
+      if (false) {
+        x += "bar" + x;  // report one warning in this line
+      }
+    }
+
+    public void bar2(boolean tag) {
+      String x = "foo";
+      x += "bar" + x;  // report one warning in this line
+      x += "bar" + x;  // report one warning in this line
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
