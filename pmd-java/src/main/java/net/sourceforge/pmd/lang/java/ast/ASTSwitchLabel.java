@@ -50,8 +50,9 @@ public final class ASTSwitchLabel extends AbstractJavaNode implements Iterable<A
 
     /**
      * Returns the expressions of this label, or an empty list if this
-     * is the default label. This may contain {@linkplain  ASTPatternExpression pattern expressions}
-     * to represent patterns.
+     * is the default label. This does neither contain {@linkplain  ASTTypePattern TypePatterns}
+     * nor {@linkplain ASTRecordPattern RecordPatterns}. To check for this,
+     * use {@link #isPatternLabel()}.
      */
     public NodeStream<ASTExpression> getExprList() {
         return children(ASTExpression.class);
@@ -65,5 +66,13 @@ public final class ASTSwitchLabel extends AbstractJavaNode implements Iterable<A
     @Override
     public Iterator<ASTExpression> iterator() {
         return children(ASTExpression.class).iterator();
+    }
+
+    /**
+     * Checks whether this label tests a {@link ASTTypePattern} or a {@link ASTRecordPattern}.
+     * @since 7.7.0
+     */
+    public boolean isPatternLabel() {
+        return children(ASTPattern.class).nonEmpty();
     }
 }
