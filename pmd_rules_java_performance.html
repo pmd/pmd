@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules that flag suboptimal code.">
-<meta name="keywords" content=" Performance, AddEmptyString, AppendCharacterWithChar, AvoidArrayLoops, AvoidCalendarDateCreation, AvoidFileStream, AvoidInstantiatingObjectsInLoops, BigIntegerInstantiation, ConsecutiveAppendsShouldReuse, ConsecutiveLiteralAppends, InefficientEmptyStringCheck, InefficientStringBuffering, InsufficientStringBufferDeclaration, OptimizableToArrayCall, RedundantFieldInitializer, StringInstantiation, StringToString, TooFewBranchesForASwitchStatement, UseArrayListInsteadOfVector, UseArraysAsList, UseIndexOfChar, UseIOStreamsWithApacheCommonsFileItem, UselessStringValueOf, UseStringBufferForStringAppends, UseStringBufferLength">
+<meta name="keywords" content=" Performance, AddEmptyString, AppendCharacterWithChar, AvoidArrayLoops, AvoidCalendarDateCreation, AvoidFileStream, AvoidInstantiatingObjectsInLoops, BigIntegerInstantiation, ConsecutiveAppendsShouldReuse, ConsecutiveLiteralAppends, InefficientEmptyStringCheck, InefficientStringBuffering, InsufficientStringBufferDeclaration, OptimizableToArrayCall, RedundantFieldInitializer, StringInstantiation, StringToString, TooFewBranchesForASwitchStatement, TooFewBranchesForSwitch, UseArrayListInsteadOfVector, UseArraysAsList, UseIndexOfChar, UseIOStreamsWithApacheCommonsFileItem, UselessStringValueOf, UseStringBufferForStringAppends, UseStringBufferLength">
 <title>Performance | PMD Source Code Analyzer</title>
 
 
@@ -2529,6 +2529,12 @@ is redundant and results in a larger class file (approximately three additional 
 
 <h2 id="toofewbranchesforaswitchstatement">TooFewBranchesForASwitchStatement</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
+<p>This rule has been renamed. Use instead: <a href="#toofewbranchesforswitch">TooFewBranchesForSwitch</a></p>
+
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 4.2</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
@@ -2537,8 +2543,13 @@ is redundant and results in a larger class file (approximately three additional 
 cases is ill-advised, since switches are not as easy to understand as if-else statements. In these cases use the
 if-else statement to increase code readability.</p>
 
+<p>Note: This rule was named TooFewBranchesForASwitchStatement before PMD 7.7.0.</p>
+
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">SwitchStatement</span><span class="p">[</span><span class="w"> </span><span class="p">(</span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nv">$minimumNumberCaseForASwitch</span><span class="w"> </span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">//</span><span class="p">(</span><span class="nt">SwitchStatement</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nt">SwitchExpression</span><span class="p">)</span><span class="w">
+  </span><span class="p">[</span><span class="w"> </span><span class="p">(</span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nv">$minimumNumberCaseForASwitch</span><span class="w"> </span><span class="p">]</span><span class="w">
+  </span><span class="c">(: only consider if no pattern matching is used :)</span><span class="w">
+  </span><span class="p">[</span><span class="err">*</span><span class="o">/</span><span class="nt">SwitchLabel</span><span class="p">[</span><span class="na">@PatternLabel</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -2582,6 +2593,72 @@ if-else statement to increase code readability.</p>
 
 <p><strong>Use this rule and customize it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/TooFewBranchesForASwitchStatement"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"minimumNumberCaseForASwitch"</span> <span class="na">value=</span><span class="s">"3"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
+<h2 id="toofewbranchesforswitch">TooFewBranchesForSwitch</h2>
+
+<p><strong>Since:</strong> PMD 4.2</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Switch statements are intended to be used to support complex branching behaviour. Using a switch for only a few
+cases is ill-advised, since switches are not as easy to understand as if-else statements. In these cases use the
+if-else statement to increase code readability.</p>
+
+<p>Note: This rule was named TooFewBranchesForASwitchStatement before PMD 7.7.0.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">//</span><span class="p">(</span><span class="nt">SwitchStatement</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nt">SwitchExpression</span><span class="p">)</span><span class="w">
+  </span><span class="p">[</span><span class="w"> </span><span class="p">(</span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nv">$minimumNumberCaseForASwitch</span><span class="w"> </span><span class="p">]</span><span class="w">
+  </span><span class="c">(: only consider if no pattern matching is used :)</span><span class="w">
+  </span><span class="p">[</span><span class="err">*</span><span class="o">/</span><span class="nt">SwitchLabel</span><span class="p">[</span><span class="na">@PatternLabel</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// With a minimumNumberCaseForASwitch of 3</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">switch</span> <span class="o">(</span><span class="n">condition</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="nl">ONE:</span>
+                <span class="n">instruction</span><span class="o">;</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="k">default</span><span class="o">:</span>
+                <span class="k">break</span><span class="o">;</span> <span class="c1">// not enough for a 'switch' stmt, a simple 'if' stmt would have been more appropriate</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>minimumNumberCaseForASwitch</td>
+      <td>3</td>
+      <td>Minimum number of branches for a switch</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/TooFewBranchesForSwitch"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/TooFewBranchesForSwitch"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;properties&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"minimumNumberCaseForASwitch"</span> <span class="na">value=</span><span class="s">"3"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>

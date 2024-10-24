@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce generally accepted best practices.">
-<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, OneDeclarationPerLine, PreserveStackTrace, PrimitiveWrapperInstantiation, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SimplifiableTestAssertion, SwitchStmtsShouldHaveDefault, SystemPrintln, UnitTestAssertionsShouldIncludeMessage, UnitTestContainsTooManyAsserts, UnitTestShouldIncludeAssert, UnitTestShouldUseAfterAnnotation, UnitTestShouldUseBeforeAnnotation, UnitTestShouldUseTestAnnotation, UnnecessaryVarargsArrayCreation, UnusedAssignment, UnusedFormalParameter, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseCollectionIsEmpty, UseEnumCollections, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
+<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, DefaultLabelNotLastInSwitch, DoubleBraceInitialization, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, NonExhaustiveSwitch, OneDeclarationPerLine, PreserveStackTrace, PrimitiveWrapperInstantiation, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SimplifiableTestAssertion, SwitchStmtsShouldHaveDefault, SystemPrintln, UnitTestAssertionsShouldIncludeMessage, UnitTestContainsTooManyAsserts, UnitTestShouldIncludeAssert, UnitTestShouldUseAfterAnnotation, UnitTestShouldUseBeforeAnnotation, UnitTestShouldUseTestAnnotation, UnnecessaryVarargsArrayCreation, UnusedAssignment, UnusedFormalParameter, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseCollectionIsEmpty, UseEnumCollections, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
 <title>Best Practices | PMD Source Code Analyzer</title>
 
 
@@ -2470,13 +2470,55 @@ For other scenarios, consider using a utility class. See Effective Java’s ‘U
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
-<h2 id="defaultlabelnotlastinswitchstmt">DefaultLabelNotLastInSwitchStmt</h2>
+<h2 id="defaultlabelnotlastinswitch">DefaultLabelNotLastInSwitch</h2>
 
 <p><strong>Since:</strong> PMD 1.5</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>By convention, the default label should be the last label in a switch statement.</p>
+<p>By convention, the default label should be the last label in a switch statement or switch expression.</p>
+
+<p>Note: This rule has been renamed from "DefaultLabelNotLastInSwitchStmt" with PMD 7.7.0.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">SwitchLabel</span><span class="p">[</span><span class="na">@Default</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="ow">not</span><span class="p">(..</span><span class="w"> </span><span class="kr">is</span><span class="w"> </span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="o">*</span><span class="p">[</span><span class="nf">last</span><span class="p">()])]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+  <span class="kt">void</span> <span class="nf">bar</span><span class="o">(</span><span class="kt">int</span> <span class="n">a</span><span class="o">)</span> <span class="o">{</span>
+   <span class="k">switch</span> <span class="o">(</span><span class="n">a</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>  <span class="c1">// do something</span>
+       <span class="k">break</span><span class="o">;</span>
+    <span class="k">default</span><span class="o">:</span>  <span class="c1">// the default case should be last, by convention</span>
+       <span class="k">break</span><span class="o">;</span>
+    <span class="k">case</span> <span class="mi">2</span><span class="o">:</span>
+       <span class="k">break</span><span class="o">;</span>
+   <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/DefaultLabelNotLastInSwitch"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="defaultlabelnotlastinswitchstmt">DefaultLabelNotLastInSwitchStmt</h2>
+
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
+<p>This rule has been renamed. Use instead: <a href="#defaultlabelnotlastinswitch">DefaultLabelNotLastInSwitch</a></p>
+
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
+<p><strong>Since:</strong> PMD 1.5</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>By convention, the default label should be the last label in a switch statement or switch expression.</p>
+
+<p>Note: This rule has been renamed from "DefaultLabelNotLastInSwitchStmt" with PMD 7.7.0.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">SwitchLabel</span><span class="p">[</span><span class="na">@Default</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="ow">not</span><span class="p">(..</span><span class="w"> </span><span class="kr">is</span><span class="w"> </span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="o">*</span><span class="p">[</span><span class="nf">last</span><span class="p">()])]</span><span class="w">
@@ -3375,6 +3417,45 @@ the method really overrides one, which helps refactoring and clarifies intent.</
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/MissingOverride"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="nonexhaustiveswitch">NonExhaustiveSwitch</h2>
+
+<p><strong>Since:</strong> PMD 1.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Switch statements should be exhaustive, to make their control flow
+easier to follow. This can be achieved by adding a <code class="language-plaintext highlighter-rouge">default</code> case, or,
+if the switch is on an enum type, by ensuring there is one switch branch
+for each enum constant.</p>
+
+<p>This rule doesn’t consider Switch Statements, that use Pattern Matching, since for these the
+compiler already ensures that all cases are covered. The same is true for Switch Expressions,
+which are also not considered by this rule.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">SwitchStatement</span><span class="w">
+                    </span><span class="p">[</span><span class="na">@DefaultCase</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
+                    </span><span class="p">[</span><span class="na">@ExhaustiveEnumSwitch</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
+                    </span><span class="c">(: exclude pattern tests - for these, the compiler will ensure exhaustiveness :)</span><span class="w">
+                    </span><span class="p">[</span><span class="err">*</span><span class="o">/</span><span class="nt">SwitchLabel</span><span class="p">[</span><span class="na">@PatternLabel</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{{</span>
+    <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span>
+    <span class="k">switch</span> <span class="o">(</span><span class="n">x</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">case</span> <span class="mi">1</span><span class="o">:</span> <span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">6</span><span class="o">;</span>
+      <span class="k">case</span> <span class="mi">2</span><span class="o">:</span> <span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">8</span><span class="o">;</span>
+      <span class="c1">// missing default: here</span>
+    <span class="o">}</span>
+<span class="o">}}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/NonExhaustiveSwitch"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="onedeclarationperline">OneDeclarationPerLine</h2>
 
 <p><strong>Since:</strong> PMD 5.0</p>
@@ -3644,6 +3725,12 @@ assertions more readable.</p>
 
 <h2 id="switchstmtsshouldhavedefault">SwitchStmtsShouldHaveDefault</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
+<p>This rule has been renamed. Use instead: <a href="#nonexhaustiveswitch">NonExhaustiveSwitch</a></p>
+
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 1.0</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
@@ -3653,8 +3740,16 @@ easier to follow. This can be achieved by adding a <code class="language-plainte
 if the switch is on an enum type, by ensuring there is one switch branch
 for each enum constant.</p>
 
+<p>This rule doesn’t consider Switch Statements, that use Pattern Matching, since for these the
+compiler already ensures that all cases are covered. The same is true for Switch Expressions,
+which are also not considered by this rule.</p>
+
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">SwitchStatement</span><span class="p">[</span><span class="na">@DefaultCase</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@ExhaustiveEnumSwitch</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">SwitchStatement</span><span class="w">
+                    </span><span class="p">[</span><span class="na">@DefaultCase</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
+                    </span><span class="p">[</span><span class="na">@ExhaustiveEnumSwitch</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
+                    </span><span class="c">(: exclude pattern tests - for these, the compiler will ensure exhaustiveness :)</span><span class="w">
+                    </span><span class="p">[</span><span class="err">*</span><span class="o">/</span><span class="nt">SwitchLabel</span><span class="p">[</span><span class="na">@PatternLabel</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.">
-<meta name="keywords" content=" Error Prone, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAccessibilityAlteration, AvoidAssertAsIdentifier, AvoidBranchingStatementAsLastInLoop, AvoidCallingFinalize, AvoidCatchingNPE, AvoidCatchingThrowable, AvoidDecimalLiteralsInBigDecimalConstructor, AvoidDuplicateLiterals, AvoidEnumAsIdentifier, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingTypeName, AvoidInstanceofChecksInCatchClause, AvoidLiteralsInIfCondition, AvoidLosingExceptionInformation, AvoidMultipleUnaryOperators, AvoidUsingOctalValues, BrokenNullCheck, CallSuperFirst, CallSuperLast, CheckSkipResult, ClassCastExceptionWithToArray, CloneMethodMustBePublic, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloseResource, CompareObjectsWithEquals, ComparisonWithNaN, ConfusingArgumentToVarargsMethod, ConstructorCallsOverridableMethod, DetachedTestCase, DoNotCallGarbageCollectionExplicitly, DoNotExtendJavaLangThrowable, DoNotHardCodeSDCard, DoNotTerminateVM, DoNotThrowExceptionInFinally, DontImportSun, DontUseFloatTypeForLoopIndices, EmptyCatchBlock, EmptyFinalizer, EqualsNull, FinalizeDoesNotCallSuperFinalize, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeShouldBeProtected, IdempotentOperations, ImplicitSwitchFallThrough, InstantiationToGetClass, InvalidLogMessageFormat, JumbledIncrementer, JUnitSpelling, JUnitStaticSuite, MethodWithSameNameAsEnclosingClass, MisplacedNullCheck, MissingSerialVersionUID, MissingStaticMethodInNonInstantiatableClass, MoreThanOneLogger, NonCaseLabelInSwitchStatement, NonSerializableClass, NonStaticInitializer, NullAssignment, OverrideBothEqualsAndHashcode, ProperCloneImplementation, ProperLogger, ReturnEmptyCollectionRatherThanNull, ReturnFromFinallyBlock, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, StaticEJBFieldShouldBeFinal, StringBufferInstantiationWithChar, SuspiciousEqualsMethodName, SuspiciousHashcodeMethodName, SuspiciousOctalEscape, TestClassWithoutTestCases, UnconditionalIfStatement, UnnecessaryBooleanAssertion, UnnecessaryCaseChange, UnnecessaryConversionTemporary, UnusedNullCheckInEquals, UseCorrectExceptionLogging, UseEqualsToCompareStrings, UselessOperationOnImmutable, UseLocaleWithCaseConversions, UseProperClassLoader">
+<meta name="keywords" content=" Error Prone, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAccessibilityAlteration, AvoidAssertAsIdentifier, AvoidBranchingStatementAsLastInLoop, AvoidCallingFinalize, AvoidCatchingNPE, AvoidCatchingThrowable, AvoidDecimalLiteralsInBigDecimalConstructor, AvoidDuplicateLiterals, AvoidEnumAsIdentifier, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingTypeName, AvoidInstanceofChecksInCatchClause, AvoidLiteralsInIfCondition, AvoidLosingExceptionInformation, AvoidMultipleUnaryOperators, AvoidUsingOctalValues, BrokenNullCheck, CallSuperFirst, CallSuperLast, CheckSkipResult, ClassCastExceptionWithToArray, CloneMethodMustBePublic, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloseResource, CompareObjectsWithEquals, ComparisonWithNaN, ConfusingArgumentToVarargsMethod, ConstructorCallsOverridableMethod, DetachedTestCase, DoNotCallGarbageCollectionExplicitly, DoNotExtendJavaLangThrowable, DoNotHardCodeSDCard, DoNotTerminateVM, DoNotThrowExceptionInFinally, DontImportSun, DontUseFloatTypeForLoopIndices, EmptyCatchBlock, EmptyFinalizer, EqualsNull, FinalizeDoesNotCallSuperFinalize, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeShouldBeProtected, IdempotentOperations, ImplicitSwitchFallThrough, InstantiationToGetClass, InvalidLogMessageFormat, JumbledIncrementer, JUnitSpelling, JUnitStaticSuite, MethodWithSameNameAsEnclosingClass, MisplacedNullCheck, MissingSerialVersionUID, MissingStaticMethodInNonInstantiatableClass, MoreThanOneLogger, NonCaseLabelInSwitchStatement, NonCaseLabelInSwitch, NonSerializableClass, NonStaticInitializer, NullAssignment, OverrideBothEqualsAndHashcode, ProperCloneImplementation, ProperLogger, ReturnEmptyCollectionRatherThanNull, ReturnFromFinallyBlock, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, StaticEJBFieldShouldBeFinal, StringBufferInstantiationWithChar, SuspiciousEqualsMethodName, SuspiciousHashcodeMethodName, SuspiciousOctalEscape, TestClassWithoutTestCases, UnconditionalIfStatement, UnnecessaryBooleanAssertion, UnnecessaryCaseChange, UnnecessaryConversionTemporary, UnusedNullCheckInEquals, UseCorrectExceptionLogging, UseEqualsToCompareStrings, UselessOperationOnImmutable, UseLocaleWithCaseConversions, UseProperClassLoader">
 <title>Error Prone | PMD Source Code Analyzer</title>
 
 
@@ -4241,17 +4241,19 @@ log4j2 (since 6.19.0).</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/MoreThanOneLogger"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
-<h2 id="noncaselabelinswitchstatement">NonCaseLabelInSwitchStatement</h2>
+<h2 id="noncaselabelinswitch">NonCaseLabelInSwitch</h2>
 
 <p><strong>Since:</strong> PMD 1.5</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>A non-case label (e.g. a named break/continue label) was present in a switch statement.
+<p>A non-case label (e.g. a named break/continue label) was present in a switch statement or switch expression.
 This is legal, but confusing. It is easy to mix up the case labels and the non-case labels.</p>
 
+<p>Note: This rule was renamed from <code class="language-plaintext highlighter-rouge">NonCaseLabelInSwitchStatement</code> with PMD 7.7.0.</p>
+
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">SwitchStatement</span><span class="o">//</span><span class="nt">LabeledStatement</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">//</span><span class="p">(</span><span class="nt">SwitchStatement</span><span class="p">|</span><span class="nt">SwitchExpression</span><span class="p">)</span><span class="o">//</span><span class="nt">LabeledStatement</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -4261,7 +4263,47 @@ This is legal, but confusing. It is easy to mix up the case labels and the non-c
    <span class="k">switch</span> <span class="o">(</span><span class="n">a</span><span class="o">)</span> <span class="o">{</span>
      <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
        <span class="c1">// do something</span>
+     <span class="nl">mylabel:</span> <span class="c1">// this is legal, but confusing!</span>
        <span class="k">break</span><span class="o">;</span>
+     <span class="k">default</span><span class="o">:</span>
+       <span class="k">break</span><span class="o">;</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/NonCaseLabelInSwitch"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="noncaselabelinswitchstatement">NonCaseLabelInSwitchStatement</h2>
+
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
+<p>This rule has been renamed. Use instead: <a href="#noncaselabelinswitch">NonCaseLabelInSwitch</a></p>
+
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
+<p><strong>Since:</strong> PMD 1.5</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>A non-case label (e.g. a named break/continue label) was present in a switch statement or switch expression.
+This is legal, but confusing. It is easy to mix up the case labels and the non-case labels.</p>
+
+<p>Note: This rule was renamed from <code class="language-plaintext highlighter-rouge">NonCaseLabelInSwitchStatement</code> with PMD 7.7.0.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">//</span><span class="p">(</span><span class="nt">SwitchStatement</span><span class="p">|</span><span class="nt">SwitchExpression</span><span class="p">)</span><span class="o">//</span><span class="nt">LabeledStatement</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+  <span class="kt">void</span> <span class="nf">bar</span><span class="o">(</span><span class="kt">int</span> <span class="n">a</span><span class="o">)</span> <span class="o">{</span>
+   <span class="k">switch</span> <span class="o">(</span><span class="n">a</span><span class="o">)</span> <span class="o">{</span>
+     <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
+       <span class="c1">// do something</span>
      <span class="nl">mylabel:</span> <span class="c1">// this is legal, but confusing!</span>
        <span class="k">break</span><span class="o">;</span>
      <span class="k">default</span><span class="o">:</span>
@@ -5222,8 +5264,10 @@ is used on both sides.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>An operation on an Immutable object (String, BigDecimal or BigInteger) won’t change the object itself
-since the result of the operation is a new object. Therefore, ignoring the operation result is an error.</p>
+<p>An operation on an immutable object will not change the object itself since the result of the operation is a new object.
+Therefore, ignoring the result of such an operation is likely a mistake. The operation can probably be removed.</p>
+
+<p>This rule recognizes the types <code class="language-plaintext highlighter-rouge">String</code>, <code class="language-plaintext highlighter-rouge">BigDecimal</code>, <code class="language-plaintext highlighter-rouge">BigInteger</code> or any type from <code class="language-plaintext highlighter-rouge">java.time.*</code> as immutable.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/UselessOperationOnImmutableRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.UselessOperationOnImmutableRule</a></p>
 

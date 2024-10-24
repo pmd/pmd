@@ -492,6 +492,15 @@
 ,
 
 {
+"title": "DefaultLabelNotLastInSwitch (Java, Best Practices)",
+"tags": "",
+"keywords": "DefaultLabelNotLastInSwitch",
+"url": "pmd_rules_java_bestpractices.html#defaultlabelnotlastinswitch",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
 "title": "DoubleBraceInitialization (Java, Best Practices)",
 "tags": "",
 "keywords": "DoubleBraceInitialization",
@@ -640,6 +649,15 @@
 "tags": "",
 "keywords": "MissingOverride",
 "url": "pmd_rules_java_bestpractices.html#missingoverride",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "NonExhaustiveSwitch (Java, Best Practices)",
+"tags": "",
+"keywords": "NonExhaustiveSwitch",
+"url": "pmd_rules_java_bestpractices.html#nonexhaustiveswitch",
 "summary": "Rules which enforce generally accepted best practices."
 }
 ,
@@ -3917,6 +3935,15 @@
 ,
 
 {
+"title": "NonCaseLabelInSwitch (Java, Error Prone)",
+"tags": "",
+"keywords": "NonCaseLabelInSwitch",
+"url": "pmd_rules_java_errorprone.html#noncaselabelinswitch",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
 "title": "NonSerializableClass (Java, Error Prone)",
 "tags": "",
 "keywords": "NonSerializableClass",
@@ -5497,6 +5524,15 @@
 "tags": "",
 "keywords": "TooFewBranchesForASwitchStatement",
 "url": "pmd_rules_java_performance.html#toofewbranchesforaswitchstatement",
+"summary": "Rules that flag suboptimal code."
+}
+,
+
+{
+"title": "TooFewBranchesForSwitch (Java, Performance)",
+"tags": "",
+"keywords": "TooFewBranchesForSwitch",
+"url": "pmd_rules_java_performance.html#toofewbranchesforswitch",
 "summary": "Rules that flag suboptimal code."
 }
 ,
