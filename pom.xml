@@ -853,7 +853,7 @@
             <dependency>
                 <groupId>org.checkerframework</groupId>
                 <artifactId>checker-qual</artifactId>
-                <version>2.11.1</version>
+                <version>3.48.1</version>
             </dependency>
             <dependency>
                 <groupId>net.sf.saxon</groupId>
@@ -910,7 +910,7 @@
             <dependency>
                 <groupId>org.scala-lang</groupId>
                 <artifactId>scala-reflect</artifactId>
-                <version>2.13.13</version>
+                <version>2.13.15</version>
             </dependency>
             <dependency>
                 <groupId>org.scala-lang</groupId>
@@ -1087,16 +1087,11 @@
                 <scope>test</scope>
             </dependency>
 
-            <!-- transitive dependency through org.scalameta:trees_2.13
-                 upgrade to 3.16.1 to fix CVE-2021-22569 A potential Denial of Service issue in protobuf-java
-                 https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-wrvw-hg22-4m67
-                 upgrade to 3.16.3 to fix CVE-2022-3171 protobuf-java has a potential Denial of Service issue
-                 https://github.com/advisories/GHSA-h4h5-3hr4-j3g2
-            -->
+            <!-- transitive dependency through org.scalameta:trees_2.13 -->
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
-                <version>3.25.5</version>
+                <version>4.28.2</version>
             </dependency>
 
             <!-- Make sure to use the correct version the JUnit5 needs. E.g. 5.11.2 needs 1.11.2

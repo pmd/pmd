@@ -1329,38 +1329,48 @@ public class Foo {
     <rule name="UnitTestShouldUseAfterAnnotation"
           language="java"
           since="4.0"
-          message="JUnit 4 tests that clean up tests should use the @After annotation, JUnit5 tests should use @AfterEach or @AfterAll"
+          message="Apply the correct annotation if this method is used to clean up the tests"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestshoulduseafterannotation">
         <description>
-            This rule detects methods called `tearDown()` that are not properly annotated as a cleanup method.
-            This is primarily intended to assist in upgrading from JUnit 3, where tear down methods were required to be called `tearDown()`.
-            To a lesser extent, this may help detect omissions under newer JUnit versions, as long as you are following this convention to name the methods.
+This rule detects methods called `tearDown()` that are not properly annotated as a cleanup method.
+This is primarily intended to assist in upgrading from JUnit 3, where tear down methods were required to be called `tearDown()`.
+To a lesser extent, this may help detect omissions even under newer JUnit versions or under TestNG,
+as long as you are following this convention to name the methods.
 
-            JUnit 4 will only execute methods annotated with `@After` after running each test.
-            JUnit 5 introduced `@AfterEach` and `@AfterAll` annotations to execute methods after each test or after all tests in the class, respectively.
+* JUnit 4 will only execute methods annotated with `@After` after running each test.
+* JUnit 5 introduced `@AfterEach` and `@AfterAll` annotations to execute methods after each test or after
+  all tests in the class, respectively.
+* TestNG provides the annotations `@AfterMethod` and `@AfterClass` to execute methods after each test or after
+  tests in the class, respectively.
 
-            Note: This rule was named JUnit4TestShouldUseAfterAnnotation before PMD 7.7.0.
+Note: This rule was named JUnit4TestShouldUseAfterAnnotation before PMD 7.7.0.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
-                    <![CDATA[
+<![CDATA[
 //MethodDeclaration[@Name='tearDown' and @Arity=0]
     [not(ModifierList/Annotation[
            pmd-java:typeIs('org.junit.After')
         or pmd-java:typeIs('org.junit.jupiter.api.AfterEach')
         or pmd-java:typeIs('org.junit.jupiter.api.AfterAll')
-        or pmd-java:typeIs('org.testng.annotations.AfterMethod')])]
-    (: Make sure this is a junit 4 class :)
-    [../MethodDeclaration[pmd-java:hasAnnotation('org.junit.Test')]]
+        or pmd-java:typeIs('org.testng.annotations.AfterClass')
+        or pmd-java:typeIs('org.testng.annotations.AfterMethod')
+    ])]
+    (: Make sure this is a JUnit 4/5 or TestNG class :)
+    [../MethodDeclaration[
+            pmd-java:hasAnnotation('org.junit.Test')
+         or pmd-java:hasAnnotation('org.junit.jupiter.api.Test')
+         or pmd-java:hasAnnotation('org.testng.annotations.Test')
+    ]]
 ]]>
                 </value>
             </property>
         </properties>
         <example>
-            <![CDATA[
+<![CDATA[
 public class MyTest {
     public void tearDown() {
         bad();
@@ -1378,18 +1388,22 @@ public class MyTest2 {
     <rule name="UnitTestShouldUseBeforeAnnotation"
           language="java"
           since="4.0"
-          message="JUnit 4 tests that set up tests should use the @Before annotation, JUnit5 tests should use @BeforeEach or @BeforeAll"
+          message="Apply the correct annotation if this method is used to set up the tests"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestshouldusebeforeannotation">
         <description>
-            This rule detects methods called `setUp()` that are not properly annotated as a setup method.
-            This is primarily intended to assist in upgrading from JUnit 3, where setup methods were required to be called `setUp()`.
-            To a lesser extent, this may help detect omissions even under newer JUnit versions, as long as you are following this convention to name the methods.
+This rule detects methods called `setUp()` that are not properly annotated as a setup method.
+This is primarily intended to assist in upgrading from JUnit 3, where setup methods were required to be called `setUp()`.
+To a lesser extent, this may help detect omissions even under newer JUnit versions or under TestNG,
+as long as you are following this convention to name the methods.
 
-            JUnit 4 will only execute methods annotated with `@Before` before all tests.
-            JUnit 5 introduced `@BeforeEach` and `@BeforeAll` annotations to execute methods before each test or before all tests in the class, respectively.
+* JUnit 4 will only execute methods annotated with `@Before` before all tests.
+* JUnit 5 introduced `@BeforeEach` and `@BeforeAll` annotations to execute methods before each test or before all
+  tests in the class, respectively.
+* TestNG provides the annotations `@BeforeMethod` and `@BeforeClass` to execute methods before each test or before
+  tests in the class, respectively.
 
-            Note: This rule was named JUnit4TestShouldUseBeforeAnnotation before PMD 7.7.0.
+Note: This rule was named JUnit4TestShouldUseBeforeAnnotation before PMD 7.7.0.
         </description>
         <priority>3</priority>
         <properties>
@@ -1401,9 +1415,15 @@ public class MyTest2 {
            pmd-java:typeIs('org.junit.Before')
         or pmd-java:typeIs('org.junit.jupiter.api.BeforeEach')
         or pmd-java:typeIs('org.junit.jupiter.api.BeforeAll')
-        or pmd-java:typeIs('org.testng.annotations.BeforeMethod')])]
-    (: Make sure this is a junit 4 class :)
-    [../MethodDeclaration[pmd-java:hasAnnotation('org.junit.Test')]]
+        or pmd-java:typeIs('org.testng.annotations.BeforeMethod')
+        or pmd-java:typeIs('org.testng.annotations.BeforeClass')
+    ])]
+    (: Make sure this is a JUnit 4/5 or TestNG class :)
+    [../MethodDeclaration[
+               pmd-java:hasAnnotation('org.junit.Test')
+            or pmd-java:hasAnnotation('org.junit.jupiter.api.Test')
+            or pmd-java:hasAnnotation('org.testng.annotations.Test')
+    ]]
 ]]>
                 </value>
             </property>
