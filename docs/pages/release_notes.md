@@ -45,6 +45,7 @@ See [PR #5040](https://github.com/pmd/pmd/pull/5040) for details.
   * {% rule java/bestpractices/DefaultLabelNotLastInSwitch %} (Java Best Practices) has been renamed from `DefaultLabelNotLastInSwitch`.
   * {% rule java/errorprone/NonCaseLabelInSwitch %} (Java Error Prone) has been renamed from `NonCaseLabelInSwitchStatement`.
   * {% rule java/performance/TooFewBranchesForSwitch %} (Java Performance) has been renamed from `TooFewBranchesForASwitchStatement`.
+  * {% rule java/bestpractices/NonExhaustiveSwitch %} (Java Best Practices) has been renamed from `SwitchStmtsShouldHaveDefault`.
 
 The old rule names still work but are deprecated.
 
@@ -53,6 +54,7 @@ The old rule names still work but are deprecated.
   * [#4532](https://github.com/pmd/pmd/issues/4532): \[java] Rule misnomer for JUnit* rules
   * [#5261](https://github.com/pmd/pmd/issues/5261): \[java] Record patterns with empty deconstructor lists lead to NPE
 * java-bestpractices
+  * [#4286](https://github.com/pmd/pmd/issues/4286): \[java] Rename rule SwitchStmtsShouldHaveDefault to NonExhaustiveSwitch
   * [#4813](https://github.com/pmd/pmd/issues/4813): \[java] SwitchStmtsShouldHaveDefault false positive with pattern matching
 * java-codestyle
   * [#5253](https://github.com/pmd/pmd/issues/5253): \[java] BooleanGetMethodName: False-negatives with `Boolean` wrapper
@@ -75,6 +77,7 @@ The old rule names still work but are deprecated.
   * The old rule name `JUnitTestContainsTooManyAsserts` has been deprecated. Use the new name {% rule java/bestpractices/UnitTestContainsTooManyAsserts %} instead.
   * The old rule name `JUnitTestsShouldIncludeAssert` has been deprecated. Use the new name {% rule java/bestpractices/UnitTestShouldIncludeAssert %} instead.
   * The old rule name `DefaultLabelNotLastInSwitch` has been deprecated. Use the new name {% rule java/bestpractices/DefaultLabelNotLastInSwitch %} instead.
+  * The old rule name `SwitchStmtsShouldHaveDefault` has been deprecated. USe the new name {%rule java/bestpractices/NonExhaustiveSwitch %} instead.
 * java-errorprone
   * The old rule name  `NonCaseLabelInSwitchStatement` has been deprecated. Use the new name {% rule java/errorprone/NonCaseLabelInSwitch %} instead.
 * java-performance
@@ -94,6 +97,7 @@ The old rule names still work but are deprecated.
 * [#5256](https://github.com/pmd/pmd/pull/5256): Fix #5257: \[java] NonCaseLabelInSwitch - support switch expressions - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5258](https://github.com/pmd/pmd/pull/5258): Ignore generated antlr classes in coverage reports - [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
 * [#5264](https://github.com/pmd/pmd/pull/5264): Fix #5261: \[java] Fix NPE with empty pattern list - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5267](https://github.com/pmd/pmd/pull/5267): \[java] Rename rule SwitchStmtsShouldHaveDefault to NonExhaustiveSwitch - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5269](https://github.com/pmd/pmd/pull/5269): Fix #5253: \[java] Support Boolean wrapper class for BooleanGetMethodName rule - [Aryant Tripathi](https://github.com/Aryant-Tripathi) (@Aryant-Tripathi)
 * [#5275](https://github.com/pmd/pmd/pull/5275): Use plugin-classpath to simplify javacc-wrapper.xml - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5278](https://github.com/pmd/pmd/pull/5278): \[java] CouplingBetweenObjects: improve violation message - [Andreas Dangel](https://github.com/adangel) (@adangel)
