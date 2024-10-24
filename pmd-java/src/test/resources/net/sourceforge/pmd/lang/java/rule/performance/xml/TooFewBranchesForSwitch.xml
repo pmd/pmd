@@ -5,13 +5,13 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
-        <description>Switch Statement with no case, not ok</description>
+        <description>Switch Statement with no case, ok</description>
         <rule-property name="minimumNumberCaseForASwitch">3</rule-property>
-        <expected-problems>1</expected-problems>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class DumbSwitch {
     public void foo(int i) {
-        switch (i) { }
+        switch (i) { } // This is detected by EmptyControlStatement
     }
 }
         ]]></code>

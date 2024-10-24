@@ -24,6 +24,8 @@ See [PR #5040](https://github.com/pmd/pmd/pull/5040) for details.
 ### 🌟 Rule Changes
 
 #### Changed Rules
+* {% rule java/performance/TooFewBranchesForSwitch %} (Java Performance) doesn't report empty switches anymore.
+  To detect these, use {% rule java/codestyle/EmptyControlStatement %}.
 * {% rule java/bestpractices/UnitTestShouldUseAfterAnnotation %} (Java Best Practices) now also considers JUnit 5 and TestNG tests.
 * {% rule java/bestpractices/UnitTestShouldUseBeforeAnnotation %} (Java Best Practices) now also considers JUnit 5 and TestNG tests.
 
