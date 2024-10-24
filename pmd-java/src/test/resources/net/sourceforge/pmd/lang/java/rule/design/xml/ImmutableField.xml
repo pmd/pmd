@@ -952,4 +952,25 @@ public class D {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4046 [java] Incorrect ImmutableField error on field with both declaration and constructor initializer</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class NotSoImmutableField {
+    private int foo = 2;
+
+    NotSoImmutableField() {
+    }
+
+    NotSoImmutableField(final int foo) {
+        this.foo = foo;
+    }
+
+    public int getFoo() {
+        return foo;
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
