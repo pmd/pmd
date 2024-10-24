@@ -262,4 +262,34 @@ public class Something {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[apex] AvoidNonRestrictiveQueries when LIMIT is followed by bind expression #5270</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public with sharing class DemoController {
+    public static final Integer LIMIT_ACCOUNTS = 2;
+    @AuraEnabled
+    public static List<Account> getTwoAccounts() {
+        List<Account> result = [
+            SELECT Id, Name FROM Account WITH SECURITY_ENFORCED
+            LIMIT:LIMIT_ACCOUNTS // note: no spaces... - false positive here
+        ];
+        List<Account> result2 = [
+            SELECT Id, Name FROM Account WITH SECURITY_ENFORCED
+            LIMIT :LIMIT_ACCOUNTS
+        ];
+        List<Account> result3 = [
+            SELECT Id, Name FROM Account WITH SECURITY_ENFORCED
+            LIMIT : LIMIT_ACCOUNTS
+        ];
+
+        // sosl:
+        List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead LIMIT:LIMIT_ACCOUNTS];
+
+        return result;
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

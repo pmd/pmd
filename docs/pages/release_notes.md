@@ -50,6 +50,8 @@ See [PR #5040](https://github.com/pmd/pmd/pull/5040) for details.
 The old rule names still work but are deprecated.
 
 ### 🐛 Fixed Issues
+* apex-performance
+  * [#5270](https://github.com/pmd/pmd/issues/5270): \[apex] AvoidNonRestrictiveQueries when LIMIT is followed by bind expression
 * java
   * [#4532](https://github.com/pmd/pmd/issues/4532): \[java] Rule misnomer for JUnit* rules
   * [#5261](https://github.com/pmd/pmd/issues/5261): \[java] Record patterns with empty deconstructor lists lead to NPE
@@ -99,6 +101,7 @@ The old rule names still work but are deprecated.
 * [#5264](https://github.com/pmd/pmd/pull/5264): Fix #5261: \[java] Fix NPE with empty pattern list - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#5267](https://github.com/pmd/pmd/pull/5267): \[java] Rename rule SwitchStmtsShouldHaveDefault to NonExhaustiveSwitch - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5269](https://github.com/pmd/pmd/pull/5269): Fix #5253: \[java] Support Boolean wrapper class for BooleanGetMethodName rule - [Aryant Tripathi](https://github.com/Aryant-Tripathi) (@Aryant-Tripathi)
+* [#5273](https://github.com/pmd/pmd/pull/5273): Fix #5270: \[apex] AvoidNonRestrictiveQueries: Fix regex for detecting LIMIT clause - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5275](https://github.com/pmd/pmd/pull/5275): Use plugin-classpath to simplify javacc-wrapper.xml - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5278](https://github.com/pmd/pmd/pull/5278): \[java] CouplingBetweenObjects: improve violation message - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
