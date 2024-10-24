@@ -338,4 +338,47 @@ async function run2(){
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4129 [javascript] UnnecessaryBlock FP for function declaration</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+const getAdditionalTagTrackingImpressionObj = (
+    profileId,
+    cityName,
+    tracking,
+    isAdditionalTagsAndSlicerAbTest
+) => {
+    const action = isAdditionalTagsAndSlicerAbTest
+        ? `TagShown${tracking}`
+        : ADDITIONAL_TAG_NOT_SHOWN_ACTION;
+    return { // unnecessary block false positive here
+        gaCat: SEARCH_PAGE_TRACKING_CATEGORY,
+        gaActImp: action,
+        gaLblImp: `profileId=${profileId}|Cityname=${cityName}`,
+        once: true,
+        trackImpression: true,
+    };
+};
+
+/* export is not supported by rhino and produces a syntax error/empty statement */
+export const getAdditionalTagTrackingImpressionObj = (
+    profileId,
+    cityName,
+    tracking,
+    isAdditionalTagsAndSlicerAbTest
+) => {
+    const action = isAdditionalTagsAndSlicerAbTest
+        ? `TagShown${tracking}`
+        : ADDITIONAL_TAG_NOT_SHOWN_ACTION;
+    return { // unnecessary block false positive here
+        gaCat: SEARCH_PAGE_TRACKING_CATEGORY,
+        gaActImp: action,
+        gaLblImp: `profileId=${profileId}|Cityname=${cityName}`,
+        once: true,
+        trackImpression: true,
+    };
+};
+]]></code>
+    </test-code>
 </test-data>
