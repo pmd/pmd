@@ -2747,10 +2747,16 @@ through the @RunWith(Suite.class) annotation.</p>
 
 <p>This rule detects methods called <code class="language-plaintext highlighter-rouge">tearDown()</code> that are not properly annotated as a cleanup method.
 This is primarily intended to assist in upgrading from JUnit 3, where tear down methods were required to be called <code class="language-plaintext highlighter-rouge">tearDown()</code>.
-To a lesser extent, this may help detect omissions under newer JUnit versions, as long as you are following this convention to name the methods.</p>
+To a lesser extent, this may help detect omissions even under newer JUnit versions or under TestNG,
+as long as you are following this convention to name the methods.</p>
 
-<p>JUnit 4 will only execute methods annotated with <code class="language-plaintext highlighter-rouge">@After</code> after running each test.
-JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@AfterEach</code> and <code class="language-plaintext highlighter-rouge">@AfterAll</code> annotations to execute methods after each test or after all tests in the class, respectively.</p>
+<ul>
+  <li>JUnit 4 will only execute methods annotated with <code class="language-plaintext highlighter-rouge">@After</code> after running each test.</li>
+  <li>JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@AfterEach</code> and <code class="language-plaintext highlighter-rouge">@AfterAll</code> annotations to execute methods after each test or after
+all tests in the class, respectively.</li>
+  <li>TestNG provides the annotations <code class="language-plaintext highlighter-rouge">@AfterMethod</code> and <code class="language-plaintext highlighter-rouge">@AfterClass</code> to execute methods after each test or after
+tests in the class, respectively.</li>
+</ul>
 
 <p>Note: This rule was named JUnit4TestShouldUseAfterAnnotation before PMD 7.7.0.</p>
 
@@ -2760,9 +2766,15 @@ JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@AfterEach
            </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.After'</span><span class="p">)</span><span class="w">
         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.AfterEach'</span><span class="p">)</span><span class="w">
         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.AfterAll'</span><span class="p">)</span><span class="w">
-        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.testng.annotations.AfterMethod'</span><span class="p">)])]</span><span class="w">
-    </span><span class="c">(: Make sure this is a junit 4 class :)</span><span class="w">
-    </span><span class="p">[..</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.junit.Test'</span><span class="p">)]]</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.testng.annotations.AfterClass'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.testng.annotations.AfterMethod'</span><span class="p">)</span><span class="w">
+    </span><span class="p">])]</span><span class="w">
+    </span><span class="c">(: Make sure this is a JUnit 4/5 or TestNG class :)</span><span class="w">
+    </span><span class="p">[..</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="w">
+            </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.junit.Test'</span><span class="p">)</span><span class="w">
+         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.Test'</span><span class="p">)</span><span class="w">
+         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.testng.annotations.Test'</span><span class="p">)</span><span class="w">
+    </span><span class="p">]]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -2797,10 +2809,16 @@ JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@AfterEach
 
 <p>This rule detects methods called <code class="language-plaintext highlighter-rouge">setUp()</code> that are not properly annotated as a setup method.
 This is primarily intended to assist in upgrading from JUnit 3, where setup methods were required to be called <code class="language-plaintext highlighter-rouge">setUp()</code>.
-To a lesser extent, this may help detect omissions even under newer JUnit versions, as long as you are following this convention to name the methods.</p>
+To a lesser extent, this may help detect omissions even under newer JUnit versions or under TestNG,
+as long as you are following this convention to name the methods.</p>
 
-<p>JUnit 4 will only execute methods annotated with <code class="language-plaintext highlighter-rouge">@Before</code> before all tests.
-JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@BeforeEach</code> and <code class="language-plaintext highlighter-rouge">@BeforeAll</code> annotations to execute methods before each test or before all tests in the class, respectively.</p>
+<ul>
+  <li>JUnit 4 will only execute methods annotated with <code class="language-plaintext highlighter-rouge">@Before</code> before all tests.</li>
+  <li>JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@BeforeEach</code> and <code class="language-plaintext highlighter-rouge">@BeforeAll</code> annotations to execute methods before each test or before all
+tests in the class, respectively.</li>
+  <li>TestNG provides the annotations <code class="language-plaintext highlighter-rouge">@BeforeMethod</code> and <code class="language-plaintext highlighter-rouge">@BeforeClass</code> to execute methods before each test or before
+tests in the class, respectively.</li>
+</ul>
 
 <p>Note: This rule was named JUnit4TestShouldUseBeforeAnnotation before PMD 7.7.0.</p>
 
@@ -2810,9 +2828,15 @@ JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@BeforeEac
            </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.Before'</span><span class="p">)</span><span class="w">
         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.BeforeEach'</span><span class="p">)</span><span class="w">
         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.BeforeAll'</span><span class="p">)</span><span class="w">
-        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.testng.annotations.BeforeMethod'</span><span class="p">)])]</span><span class="w">
-    </span><span class="c">(: Make sure this is a junit 4 class :)</span><span class="w">
-    </span><span class="p">[..</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.junit.Test'</span><span class="p">)]]</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.testng.annotations.BeforeMethod'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.testng.annotations.BeforeClass'</span><span class="p">)</span><span class="w">
+    </span><span class="p">])]</span><span class="w">
+    </span><span class="c">(: Make sure this is a JUnit 4/5 or TestNG class :)</span><span class="w">
+    </span><span class="p">[..</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="w">
+               </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.junit.Test'</span><span class="p">)</span><span class="w">
+            </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.Test'</span><span class="p">)</span><span class="w">
+            </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.testng.annotations.Test'</span><span class="p">)</span><span class="w">
+    </span><span class="p">]]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -3853,10 +3877,16 @@ with messages provide the developer a clearer idea of what the test does.</p>
 
 <p>This rule detects methods called <code class="language-plaintext highlighter-rouge">tearDown()</code> that are not properly annotated as a cleanup method.
 This is primarily intended to assist in upgrading from JUnit 3, where tear down methods were required to be called <code class="language-plaintext highlighter-rouge">tearDown()</code>.
-To a lesser extent, this may help detect omissions under newer JUnit versions, as long as you are following this convention to name the methods.</p>
+To a lesser extent, this may help detect omissions even under newer JUnit versions or under TestNG,
+as long as you are following this convention to name the methods.</p>
 
-<p>JUnit 4 will only execute methods annotated with <code class="language-plaintext highlighter-rouge">@After</code> after running each test.
-JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@AfterEach</code> and <code class="language-plaintext highlighter-rouge">@AfterAll</code> annotations to execute methods after each test or after all tests in the class, respectively.</p>
+<ul>
+  <li>JUnit 4 will only execute methods annotated with <code class="language-plaintext highlighter-rouge">@After</code> after running each test.</li>
+  <li>JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@AfterEach</code> and <code class="language-plaintext highlighter-rouge">@AfterAll</code> annotations to execute methods after each test or after
+all tests in the class, respectively.</li>
+  <li>TestNG provides the annotations <code class="language-plaintext highlighter-rouge">@AfterMethod</code> and <code class="language-plaintext highlighter-rouge">@AfterClass</code> to execute methods after each test or after
+tests in the class, respectively.</li>
+</ul>
 
 <p>Note: This rule was named JUnit4TestShouldUseAfterAnnotation before PMD 7.7.0.</p>
 
@@ -3866,9 +3896,15 @@ JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@AfterEach
            </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.After'</span><span class="p">)</span><span class="w">
         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.AfterEach'</span><span class="p">)</span><span class="w">
         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.AfterAll'</span><span class="p">)</span><span class="w">
-        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.testng.annotations.AfterMethod'</span><span class="p">)])]</span><span class="w">
-    </span><span class="c">(: Make sure this is a junit 4 class :)</span><span class="w">
-    </span><span class="p">[..</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.junit.Test'</span><span class="p">)]]</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.testng.annotations.AfterClass'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.testng.annotations.AfterMethod'</span><span class="p">)</span><span class="w">
+    </span><span class="p">])]</span><span class="w">
+    </span><span class="c">(: Make sure this is a JUnit 4/5 or TestNG class :)</span><span class="w">
+    </span><span class="p">[..</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="w">
+            </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.junit.Test'</span><span class="p">)</span><span class="w">
+         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.Test'</span><span class="p">)</span><span class="w">
+         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.testng.annotations.Test'</span><span class="p">)</span><span class="w">
+    </span><span class="p">]]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -3897,10 +3933,16 @@ JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@AfterEach
 
 <p>This rule detects methods called <code class="language-plaintext highlighter-rouge">setUp()</code> that are not properly annotated as a setup method.
 This is primarily intended to assist in upgrading from JUnit 3, where setup methods were required to be called <code class="language-plaintext highlighter-rouge">setUp()</code>.
-To a lesser extent, this may help detect omissions even under newer JUnit versions, as long as you are following this convention to name the methods.</p>
+To a lesser extent, this may help detect omissions even under newer JUnit versions or under TestNG,
+as long as you are following this convention to name the methods.</p>
 
-<p>JUnit 4 will only execute methods annotated with <code class="language-plaintext highlighter-rouge">@Before</code> before all tests.
-JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@BeforeEach</code> and <code class="language-plaintext highlighter-rouge">@BeforeAll</code> annotations to execute methods before each test or before all tests in the class, respectively.</p>
+<ul>
+  <li>JUnit 4 will only execute methods annotated with <code class="language-plaintext highlighter-rouge">@Before</code> before all tests.</li>
+  <li>JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@BeforeEach</code> and <code class="language-plaintext highlighter-rouge">@BeforeAll</code> annotations to execute methods before each test or before all
+tests in the class, respectively.</li>
+  <li>TestNG provides the annotations <code class="language-plaintext highlighter-rouge">@BeforeMethod</code> and <code class="language-plaintext highlighter-rouge">@BeforeClass</code> to execute methods before each test or before
+tests in the class, respectively.</li>
+</ul>
 
 <p>Note: This rule was named JUnit4TestShouldUseBeforeAnnotation before PMD 7.7.0.</p>
 
@@ -3910,9 +3952,15 @@ JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@BeforeEac
            </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.Before'</span><span class="p">)</span><span class="w">
         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.BeforeEach'</span><span class="p">)</span><span class="w">
         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.BeforeAll'</span><span class="p">)</span><span class="w">
-        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.testng.annotations.BeforeMethod'</span><span class="p">)])]</span><span class="w">
-    </span><span class="c">(: Make sure this is a junit 4 class :)</span><span class="w">
-    </span><span class="p">[..</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.junit.Test'</span><span class="p">)]]</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.testng.annotations.BeforeMethod'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.testng.annotations.BeforeClass'</span><span class="p">)</span><span class="w">
+    </span><span class="p">])]</span><span class="w">
+    </span><span class="c">(: Make sure this is a JUnit 4/5 or TestNG class :)</span><span class="w">
+    </span><span class="p">[..</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="w">
+               </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.junit.Test'</span><span class="p">)</span><span class="w">
+            </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.Test'</span><span class="p">)</span><span class="w">
+            </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.testng.annotations.Test'</span><span class="p">)</span><span class="w">
+    </span><span class="p">]]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>

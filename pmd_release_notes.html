@@ -1918,6 +1918,12 @@ See <a href="https://github.com/pmd/pmd/pull/5040">PR #5040</a> for details.</p>
 
 <h3 id="-rule-changes">🌟 Rule Changes</h3>
 
+<h4 id="changed-rules">Changed Rules</h4>
+<ul>
+  <li><a href="pmd_rules_java_bestpractices.html#unittestshoulduseafterannotation"><code class="language-plaintext highlighter-rouge">UnitTestShouldUseAfterAnnotation</code></a> (Java Best Practices) now also considers JUnit 5 and TestNG tests.</li>
+  <li><a href="pmd_rules_java_bestpractices.html#unittestshouldusebeforeannotation"><code class="language-plaintext highlighter-rouge">UnitTestShouldUseBeforeAnnotation</code></a> (Java Best Practices) now also considers JUnit 5 and TestNG tests.</li>
+</ul>
+
 <h4 id="renamed-rules">Renamed Rules</h4>
 <ul>
   <li>Several rules for unit testing have been renamed to better reflect their actual scope. Lots of them were called
@@ -1975,6 +1981,7 @@ after JUnit / JUnit 4, even when they applied to JUnit 5 and / or TestNG.
   <li><a href="https://github.com/pmd/pmd/pull/5040">#5040</a>: [cpp] Ignore literals and ignore identifiers capability to C++ CPD - <a href="https://github.com/jdupak">Jakub Dupak</a> (@jdupak)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5225">#5225</a>: Fix #5067: [java] CloseResource: False positive for FileSystems.getDefault() - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5241">#5241</a>: Ignore javacc code in coverage report - <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5245">#5245</a>: [java] Improve UnitTestShouldUse{After,Before}Annotation rules to support JUnit5 and TestNG - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5258">#5258</a>: Ignore generated antlr classes in coverage reports - <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5264">#5264</a>: Fix #5261: [java] Fix NPE with empty pattern list - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5269">#5269</a>: Fix #5253: [java] Support Boolean wrapper class for BooleanGetMethodName rule - <a href="https://github.com/Aryant-Tripathi">Aryant Tripathi</a> (@Aryant-Tripathi)</li>
