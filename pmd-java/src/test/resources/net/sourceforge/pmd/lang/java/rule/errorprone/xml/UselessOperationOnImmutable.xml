@@ -320,4 +320,18 @@ class Tester {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False positive for package private method calls in openjdk</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package java.time;
+import java.io.ObjectOutput;
+class Tester {
+    static void writeExternal(ZonedDateTime zonedDateTime, ObjectOutput out) {
+        zonedDateTime.writeExternal(out); // false positive
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

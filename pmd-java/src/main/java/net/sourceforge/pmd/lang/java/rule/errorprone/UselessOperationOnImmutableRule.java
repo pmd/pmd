@@ -30,7 +30,8 @@ public class UselessOperationOnImmutableRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTMethodCall node, Object data) {
         ASTExpression qualifier = node.getQualifier();
-        if (node.getParent() instanceof ASTExpressionStatement && qualifier != null) {
+        boolean returnsVoid = node.getTypeMirror().isVoid();
+        if (node.getParent() instanceof ASTExpressionStatement && qualifier != null && !returnsVoid) {
 
             // these types are immutable, so any method of those whose
             // result is ignored is a violation
