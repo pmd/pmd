@@ -659,5 +659,48 @@ public class Foo {
             ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#3820 [java] SimplifiableTestAssertion has a tendency to report false positives</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>13</expected-linenumbers>
+        <expected-messages>
+            <message>Assertion may be simplified using assertFalse</message>
+        </expected-messages>
+        <code><![CDATA[
+import org.junit.Test;
+import static org.junit.Assert.*;
+import java.util.Arrays;
 
+public class Foo {
+    private static final Envelope ROI;
+    private static final double DELTA = 0.1;
+
+    @Test
+    public void test() {
+        Doc doc = null;
+        // can be assertFalse(...)
+        assertTrue(!"0".equalsIgnoreCase(doc.select("mapml-viewer").attr("zoom"))); // line 13
+
+        Envelope outputReader = null;
+        // this equality method takes as extra parameters a comparison tolerance, the signature is
+        // public boolean equals(final Envelope envelope, final double eps, final boolean epsIsRelative) {
+        assertTrue(outputReader.getOriginalEnvelope().equals(ROI, DELTA, false));
+
+        Object[] destImageRowBand0 = null;
+        Object[] srcImageRowBand0 = null;
+        // no such thing as Assert.assertArraysNotEquals (though easy to replace with Hamcrest CoreMatchers, if available in the classpath, may not be if using JUnit 5)
+        assertFalse(Arrays.equals(destImageRowBand0, srcImageRowBand0));
+    }
+}
+
+class Doc {
+    public Doc select(String selector) { return this; }
+    public String attr(String name) { return ""; }
+}
+class Envelope {
+    public boolean equals(Envelope env, double eps, boolean epsIsRelative) { return true; }
+    public Envelope getOriginalEnvelope() { return this; }
+}
+]]></code>
+    </test-code>
 </test-data>
