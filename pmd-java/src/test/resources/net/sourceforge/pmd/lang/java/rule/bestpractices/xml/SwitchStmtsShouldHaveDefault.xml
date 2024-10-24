@@ -20,6 +20,19 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>empty switch is ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int x = 2;
+        switch (x) { } // this is ok. The empty switch is detected by EmptyControlStatement
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>simple ok case</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
