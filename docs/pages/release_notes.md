@@ -23,6 +23,10 @@ See [PR #5040](https://github.com/pmd/pmd/pull/5040) for details.
 
 ### 🌟 Rule Changes
 
+#### Changed Rules
+* {% rule java/bestpractices/UnitTestShouldUseAfterAnnotation %} (Java Best Practices) now also considers JUnit 5 and TestNG tests.
+* {% rule java/bestpractices/UnitTestShouldUseBeforeAnnotation %} (Java Best Practices) now also considers JUnit 5 and TestNG tests.
+
 #### Renamed Rules
 * Several rules for unit testing have been renamed to better reflect their actual scope. Lots of them were called
   after JUnit / JUnit 4, even when they applied to JUnit 5 and / or TestNG.
@@ -59,6 +63,7 @@ The old rule names still work but are deprecated.
 * [#5040](https://github.com/pmd/pmd/pull/5040): \[cpp] Ignore literals and ignore identifiers capability to C++ CPD - [Jakub Dupak](https://github.com/jdupak) (@jdupak)
 * [#5225](https://github.com/pmd/pmd/pull/5225): Fix #5067: \[java] CloseResource: False positive for FileSystems.getDefault() - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#5241](https://github.com/pmd/pmd/pull/5241): Ignore javacc code in coverage report - [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
+* [#5245](https://github.com/pmd/pmd/pull/5245): \[java] Improve UnitTestShouldUse{After,Before}Annotation rules to support JUnit5 and TestNG - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5258](https://github.com/pmd/pmd/pull/5258): Ignore generated antlr classes in coverage reports - [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
 * [#5264](https://github.com/pmd/pmd/pull/5264): Fix #5261: \[java] Fix NPE with empty pattern list - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#5269](https://github.com/pmd/pmd/pull/5269): Fix #5253: \[java] Support Boolean wrapper class for BooleanGetMethodName rule - [Aryant Tripathi](https://github.com/Aryant-Tripathi) (@Aryant-Tripathi)
