@@ -14,6 +14,13 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+#### CPD can now ignore literals and identifiers in C++ code
+
+When searching for duplicated code in C++ differences in literals or identifiers can be
+ignored now (like in Java). This can be enabled via the command line options `--ignore-literal`
+and `--ignore-identifiers`.  
+See [PR #5040](https://github.com/pmd/pmd/pull/5040) for details.
+
 ### 🌟 Rule Changes
 
 #### Renamed Rules
@@ -49,6 +56,7 @@ The old rule names still work but are deprecated.
 
 ### ✨ Merged pull requests
 * [#4965](https://github.com/pmd/pmd/pull/4965): Fix #4532: \[java] Rename JUnit rules with overly restrictive names - [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
+* [#5040](https://github.com/pmd/pmd/pull/5040): \[cpp] Ignore literals and ignore identifiers capability to C++ CPD - [Jakub Dupak](https://github.com/jdupak) (@jdupak)
 * [#5225](https://github.com/pmd/pmd/pull/5225): Fix #5067: \[java] CloseResource: False positive for FileSystems.getDefault() - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#5241](https://github.com/pmd/pmd/pull/5241): Ignore javacc code in coverage report - [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
 * [#5258](https://github.com/pmd/pmd/pull/5258): Ignore generated antlr classes in coverage reports - [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
