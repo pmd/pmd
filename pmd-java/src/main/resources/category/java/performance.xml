@@ -631,7 +631,7 @@ Note: This rule was named TooFewBranchesForASwitchStatement before PMD 7.7.0.
 //(SwitchStatement | SwitchExpression)
   [ (count(*) - 1) < $minimumNumberCaseForASwitch ]
   (: only consider if no pattern matching is used :)
-  [*/SwitchLabel[@PatternLabel = false()]]
+  [not(*/SwitchLabel[@PatternLabel = true()])]
 ]]>
                 </value>
             </property>
