@@ -299,4 +299,43 @@ import { foo2 } from './someScript2.js';
 const { isLoggedIn2 } = useAuth2()  //
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4055 [javascript] UnnecessaryBlock FP for try/catch</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+function run(){
+    try{
+        client.connect()
+        console.log("Successfully connected to the database")
+        var server = app.listen(8081, function (){
+            var host = server.address().hostname
+            var port = server.address().port
+            console.log("Example app running at https://%s:%s", host, port)
+        })
+    }
+    catch(err){
+        console.log(err)
+        client.close()
+    }
+}
+
+/* note: async/await is not support by rhino and produces a syntax error/empty statement */
+async function run2(){
+    try{
+        await client.connect()
+        console.log("Successfully connected to the database")
+        var server = app.listen(8081, function (){
+            var host = server.address().hostname
+            var port = server.address().port
+            console.log("Example app running at https://%s:%s", host, port)
+        })
+    }
+    catch(err){
+        console.log(err)
+        await client.close()
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
