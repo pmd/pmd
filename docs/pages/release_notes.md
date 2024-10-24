@@ -24,10 +24,12 @@ See [PR #5040](https://github.com/pmd/pmd/pull/5040) for details.
 ### 🌟 Rule Changes
 
 #### Changed Rules
-* {% rule java/performance/TooFewBranchesForSwitch %} (Java Performance) doesn't report empty switches anymore.
+* {% rule java/bestpractices/SwitchStmtsShouldHaveDefault %} (Java Best Practices) doesn't report empty switch statements anymore.
   To detect these, use {% rule java/codestyle/EmptyControlStatement %}.
 * {% rule java/bestpractices/UnitTestShouldUseAfterAnnotation %} (Java Best Practices) now also considers JUnit 5 and TestNG tests.
 * {% rule java/bestpractices/UnitTestShouldUseBeforeAnnotation %} (Java Best Practices) now also considers JUnit 5 and TestNG tests.
+* {% rule java/performance/TooFewBranchesForSwitch %} (Java Performance) doesn't report empty switches anymore.
+  To detect these, use {% rule java/codestyle/EmptyControlStatement %}.
 
 #### Renamed Rules
 * Several rules for unit testing have been renamed to better reflect their actual scope. Lots of them were called
@@ -47,6 +49,8 @@ The old rule names still work but are deprecated.
 * java
   * [#4532](https://github.com/pmd/pmd/issues/4532): \[java] Rule misnomer for JUnit* rules
   * [#5261](https://github.com/pmd/pmd/issues/5261): \[java] Record patterns with empty deconstructor lists lead to NPE
+* java-bestpractices
+  * [#4813](https://github.com/pmd/pmd/issues/4813): \[java] SwitchStmtsShouldHaveDefault false positive with pattern matching
 * java-codestyle
   * [#5253](https://github.com/pmd/pmd/issues/5253): \[java] BooleanGetMethodName: False-negatives with `Boolean` wrapper
 * java-design
@@ -79,6 +83,7 @@ The old rule names still work but are deprecated.
 * [#5247](https://github.com/pmd/pmd/pull/5247): Fix #5030: \[java] SwitchDensity false positive with pattern matching - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5248](https://github.com/pmd/pmd/pull/5248): Fix #3362: \[java] ImplicitSwitchFallThrough should consider switch expressions - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5251](https://github.com/pmd/pmd/pull/5251): Fix #5249 and #5250: \[java] TooFewBranchesForSwitch ignore pattern matching and support switch expressions - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5252](https://github.com/pmd/pmd/pull/5252): Fix #4813: \[java] SwitchStmtsShouldHaveDefault false positive with pattern matching - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5258](https://github.com/pmd/pmd/pull/5258): Ignore generated antlr classes in coverage reports - [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
 * [#5264](https://github.com/pmd/pmd/pull/5264): Fix #5261: \[java] Fix NPE with empty pattern list - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#5269](https://github.com/pmd/pmd/pull/5269): Fix #5253: \[java] Support Boolean wrapper class for BooleanGetMethodName rule - [Aryant Tripathi](https://github.com/Aryant-Tripathi) (@Aryant-Tripathi)

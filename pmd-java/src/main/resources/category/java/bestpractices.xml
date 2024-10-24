@@ -1168,12 +1168,20 @@ class SomeTestClass {
             easier to follow. This can be achieved by adding a `default` case, or,
             if the switch is on an enum type, by ensuring there is one switch branch
             for each enum constant.
+
+            This rule doesn't consider Switch Statements, that use Pattern Matching, since for these the
+            compiler already ensures that all cases are covered. The same is true for Switch Expressions,
+            which are also not considered by this rule.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-                //SwitchStatement[@DefaultCase = false() and @ExhaustiveEnumSwitch = false()]
+                //SwitchStatement
+                    [@DefaultCase = false()]
+                    [@ExhaustiveEnumSwitch = false()]
+                    (: exclude pattern tests - for these, the compiler will ensure exhaustiveness :)
+                    [*/SwitchLabel[@PatternLabel = false()]]
             ]]></value>
             </property>
         </properties>
