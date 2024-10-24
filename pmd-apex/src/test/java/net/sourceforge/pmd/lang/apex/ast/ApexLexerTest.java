@@ -8,14 +8,18 @@ package net.sourceforge.pmd.lang.apex.ast;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
 import org.junit.jupiter.api.Test;
 
 import io.github.apexdevtools.apexparser.ApexLexer;
 import io.github.apexdevtools.apexparser.ApexParser;
+import io.github.apexdevtools.apexparser.CaseInsensitiveInputStream;
 
 /**
  * This is an exploration test for {@link ApexLexer}.
@@ -48,5 +52,36 @@ class ApexLexerTest {
         ApexParser parser = new ApexParser(new CommonTokenStream(lexer));
         ApexParser.CompilationUnitContext compilationUnit = parser.compilationUnit();
         assertNotNull(compilationUnit);
+    }
+
+    @Test
+    void testLexerUnicodeEscapes() {
+        String s = "'Fran\\u00E7ois'";
+        assertEquals(2, getLexingErrors(CharStreams.fromString(s)));
+        assertEquals(0, getLexingErrors(new CaseInsensitiveInputStream(CharStreams.fromString(s))));
+    }
+
+    private int getLexingErrors(CharStream stream) {
+        ApexLexer lexer = new ApexLexer(stream);
+        ErrorListener errorListener = new ErrorListener();
+        lexer.removeErrorListeners(); // Avoid distracting "token recognition error" stderr output
+        lexer.addErrorListener(errorListener);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        tokens.fill();
+        return errorListener.getErrorCount();
+    }
+
+    static class ErrorListener extends BaseErrorListener {
+        private int errorCount = 0;
+
+        @Override
+        public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
+            int charPositionInLine, String msg, RecognitionException e) {
+            ++errorCount;
+        }
+
+        public int getErrorCount() {
+            return errorCount;
+        }
     }
 }
