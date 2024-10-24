@@ -1909,6 +1909,13 @@
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
+<h4 id="cpd-can-now-ignore-literals-and-identifiers-in-c-code">CPD can now ignore literals and identifiers in C++ code</h4>
+
+<p>When searching for duplicated code in C++ differences in literals or identifiers can be
+ignored now (like in Java). This can be enabled via the command line options <code class="language-plaintext highlighter-rouge">--ignore-literal</code>
+and <code class="language-plaintext highlighter-rouge">--ignore-identifiers</code>.<br />
+See <a href="https://github.com/pmd/pmd/pull/5040">PR #5040</a> for details.</p>
+
 <h3 id="-rule-changes">🌟 Rule Changes</h3>
 
 <h4 id="renamed-rules">Renamed Rules</h4>
@@ -1965,6 +1972,7 @@ after JUnit / JUnit 4, even when they applied to JUnit 5 and / or TestNG.
 <h3 id="-merged-pull-requests">✨ Merged pull requests</h3>
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/4965">#4965</a>: Fix #4532: [java] Rename JUnit rules with overly restrictive names - <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5040">#5040</a>: [cpp] Ignore literals and ignore identifiers capability to C++ CPD - <a href="https://github.com/jdupak">Jakub Dupak</a> (@jdupak)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5225">#5225</a>: Fix #5067: [java] CloseResource: False positive for FileSystems.getDefault() - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5241">#5241</a>: Ignore javacc code in coverage report - <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5258">#5258</a>: Ignore generated antlr classes in coverage reports - <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</li>
@@ -2003,7 +2011,7 @@ after JUnit / JUnit 4, even when they applied to JUnit 5 and / or TestNG.
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Oct 22, 2024 <br />
+             Site last generated: Oct 24, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
