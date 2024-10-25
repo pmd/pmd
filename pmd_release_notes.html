@@ -85,8 +85,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.7.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 25-October-2024</div>
+    <li class="sidebarTitle">PMD 7.8.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 29-November-2024</div>
     
     
     
@@ -1901,152 +1901,19 @@
         <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
     </details>
 
-  <h2 id="25-october-2024---770-snapshot">25-October-2024 - 7.7.0-SNAPSHOT</h2>
+  <h2 id="29-november-2024---780-snapshot">29-November-2024 - 7.8.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 7.7.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 7.8.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
-<h4 id="cpd-can-now-ignore-literals-and-identifiers-in-c-code">CPD can now ignore literals and identifiers in C++ code</h4>
-
-<p>When searching for duplicated code in C++ differences in literals or identifiers can be
-ignored now (like in Java). This can be enabled via the command line options <code class="language-plaintext highlighter-rouge">--ignore-literal</code>
-and <code class="language-plaintext highlighter-rouge">--ignore-identifiers</code>.<br />
-See <a href="https://github.com/pmd/pmd/pull/5040">PR #5040</a> for details.</p>
-
-<h3 id="-rule-changes">🌟 Rule Changes</h3>
-
-<h4 id="changed-rules">Changed Rules</h4>
-<ul>
-  <li><a href="pmd_rules_java_bestpractices.html#switchstmtsshouldhavedefault"><code class="language-plaintext highlighter-rouge">SwitchStmtsShouldHaveDefault</code></a> (Java Best Practices) doesn’t report empty switch statements anymore.
-To detect these, use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a>.</li>
-  <li><a href="pmd_rules_java_bestpractices.html#unittestshoulduseafterannotation"><code class="language-plaintext highlighter-rouge">UnitTestShouldUseAfterAnnotation</code></a> (Java Best Practices) now also considers JUnit 5 and TestNG tests.</li>
-  <li><a href="pmd_rules_java_bestpractices.html#unittestshouldusebeforeannotation"><code class="language-plaintext highlighter-rouge">UnitTestShouldUseBeforeAnnotation</code></a> (Java Best Practices) now also considers JUnit 5 and TestNG tests.</li>
-  <li><a href="pmd_rules_java_performance.html#toofewbranchesforswitch"><code class="language-plaintext highlighter-rouge">TooFewBranchesForSwitch</code></a> (Java Performance) doesn’t report empty switches anymore.
-To detect these, use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a>.</li>
-</ul>
-
-<h4 id="renamed-rules">Renamed Rules</h4>
-<ul>
-  <li>Several rules for unit testing have been renamed to better reflect their actual scope. Lots of them were called
-after JUnit / JUnit 4, even when they applied to JUnit 5 and / or TestNG.
-    <ul>
-      <li><a href="pmd_rules_java_bestpractices.html#unittestassertionsshouldincludemessage"><code class="language-plaintext highlighter-rouge">UnitTestAssertionsShouldIncludeMessage</code></a> (Java Best Practices) has been renamed from <code class="language-plaintext highlighter-rouge">JUnitAssertionsShouldIncludeMessage</code>.</li>
-      <li><a href="pmd_rules_java_bestpractices.html#unittestcontainstoomanyasserts"><code class="language-plaintext highlighter-rouge">UnitTestContainsTooManyAsserts</code></a> (Java Best Practices) has been renamed from <code class="language-plaintext highlighter-rouge">JUnitTestContainsTooManyAsserts</code>.</li>
-      <li><a href="pmd_rules_java_bestpractices.html#unittestshouldincludeassert"><code class="language-plaintext highlighter-rouge">UnitTestShouldIncludeAssert</code></a> (Java Best Practices) has been renamed from <code class="language-plaintext highlighter-rouge">JUnitTestsShouldIncludeAssert</code>.</li>
-      <li><a href="pmd_rules_java_bestpractices.html#unittestshoulduseafterannotation"><code class="language-plaintext highlighter-rouge">UnitTestShouldUseAfterAnnotation</code></a> (Java Best Practices) has been renamed from <code class="language-plaintext highlighter-rouge">JUnit4TestShouldUseAfterAnnotation</code>.</li>
-      <li><a href="pmd_rules_java_bestpractices.html#unittestshouldusebeforeannotation"><code class="language-plaintext highlighter-rouge">UnitTestShouldUseBeforeAnnotation</code></a> (Java Best Practices) has been renamed from <code class="language-plaintext highlighter-rouge">JUnit4TestShouldUseBeforeAnnotation</code>.</li>
-      <li><a href="pmd_rules_java_bestpractices.html#unittestshouldusetestannotation"><code class="language-plaintext highlighter-rouge">UnitTestShouldUseTestAnnotation</code></a> (Java Best Practices) has been renamed from <code class="language-plaintext highlighter-rouge">JUnit4TestShouldUseTestAnnotation</code>.</li>
-    </ul>
-  </li>
-  <li>Several rules about switch statements and switch expression have been renamed, as they apply both to Switch Statements
-and to Switch Expressions:
-    <ul>
-      <li><a href="pmd_rules_java_bestpractices.html#defaultlabelnotlastinswitch"><code class="language-plaintext highlighter-rouge">DefaultLabelNotLastInSwitch</code></a> (Java Best Practices) has been renamed from <code class="language-plaintext highlighter-rouge">DefaultLabelNotLastInSwitch</code>.</li>
-      <li><a href="pmd_rules_java_errorprone.html#noncaselabelinswitch"><code class="language-plaintext highlighter-rouge">NonCaseLabelInSwitch</code></a> (Java Error Prone) has been renamed from <code class="language-plaintext highlighter-rouge">NonCaseLabelInSwitchStatement</code>.</li>
-      <li><a href="pmd_rules_java_performance.html#toofewbranchesforswitch"><code class="language-plaintext highlighter-rouge">TooFewBranchesForSwitch</code></a> (Java Performance) has been renamed from <code class="language-plaintext highlighter-rouge">TooFewBranchesForASwitchStatement</code>.</li>
-      <li><a href="pmd_rules_java_bestpractices.html#nonexhaustiveswitch"><code class="language-plaintext highlighter-rouge">NonExhaustiveSwitch</code></a> (Java Best Practices) has been renamed from <code class="language-plaintext highlighter-rouge">SwitchStmtsShouldHaveDefault</code>.</li>
-    </ul>
-  </li>
-</ul>
-
-<p>The old rule names still work but are deprecated.</p>
-
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
-<ul>
-  <li>apex-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5270">#5270</a>: [apex] AvoidNonRestrictiveQueries when LIMIT is followed by bind expression</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4532">#4532</a>: [java] Rule misnomer for JUnit* rules</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5261">#5261</a>: [java] Record patterns with empty deconstructor lists lead to NPE</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4286">#4286</a>: [java] Rename rule SwitchStmtsShouldHaveDefault to NonExhaustiveSwitch</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4813">#4813</a>: [java] SwitchStmtsShouldHaveDefault false positive with pattern matching</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5253">#5253</a>: [java] BooleanGetMethodName: False-negatives with <code class="language-plaintext highlighter-rouge">Boolean</code> wrapper</li>
-    </ul>
-  </li>
-  <li>java-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5030">#5030</a>: [java] SwitchDensity false positive with pattern matching</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3362">#3362</a>: [java] ImplicitSwitchFallThrough should consider switch expressions</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5067">#5067</a>: [java] CloseResource: False positive for FileSystems.getDefault()</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5244">#5244</a>: [java] UselessOperationOnImmutable should detect java.time types</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5257">#5257</a>: [java] NonCaseLabelInSwitch should consider switch expressions</li>
-    </ul>
-  </li>
-  <li>java-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5249">#5249</a>: [java] TooFewBranchesForASwitchStatement false positive for Pattern Matching</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5250">#5250</a>: [java] TooFewBranchesForASwitchStatement should consider Switch Expressions</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="-api-changes">🚨 API Changes</h3>
-<ul>
-  <li>java-bestpractices
-    <ul>
-      <li>The old rule name <code class="language-plaintext highlighter-rouge">JUnit4TestShouldUseAfterAnnotation</code> has been deprecated. Use the new name <a href="pmd_rules_java_bestpractices.html#unittestshoulduseafterannotation"><code class="language-plaintext highlighter-rouge">UnitTestShouldUseAfterAnnotation</code></a> instead.</li>
-      <li>The old rule name <code class="language-plaintext highlighter-rouge">JUnit4TestShouldUseBeforeAnnotation</code> has been deprecated. Use the new name <a href="pmd_rules_java_bestpractices.html#unittestshouldusebeforeannotation"><code class="language-plaintext highlighter-rouge">UnitTestShouldUseBeforeAnnotation</code></a> instead.</li>
-      <li>The old rule name <code class="language-plaintext highlighter-rouge">JUnit4TestShouldUseTestAnnotation</code> has been deprecated. Use the new name <a href="pmd_rules_java_bestpractices.html#unittestshouldusetestannotation"><code class="language-plaintext highlighter-rouge">UnitTestShouldUseTestAnnotation</code></a> instead.</li>
-      <li>The old rule name <code class="language-plaintext highlighter-rouge">JUnitAssertionsShouldIncludeMessage</code> has been deprecated. Use the new name <a href="pmd_rules_java_bestpractices.html#unittestassertionsshouldincludemessage"><code class="language-plaintext highlighter-rouge">UnitTestAssertionsShouldIncludeMessage</code></a> instead.</li>
-      <li>The old rule name <code class="language-plaintext highlighter-rouge">JUnitTestContainsTooManyAsserts</code> has been deprecated. Use the new name <a href="pmd_rules_java_bestpractices.html#unittestcontainstoomanyasserts"><code class="language-plaintext highlighter-rouge">UnitTestContainsTooManyAsserts</code></a> instead.</li>
-      <li>The old rule name <code class="language-plaintext highlighter-rouge">JUnitTestsShouldIncludeAssert</code> has been deprecated. Use the new name <a href="pmd_rules_java_bestpractices.html#unittestshouldincludeassert"><code class="language-plaintext highlighter-rouge">UnitTestShouldIncludeAssert</code></a> instead.</li>
-      <li>The old rule name <code class="language-plaintext highlighter-rouge">DefaultLabelNotLastInSwitch</code> has been deprecated. Use the new name <a href="pmd_rules_java_bestpractices.html#defaultlabelnotlastinswitch"><code class="language-plaintext highlighter-rouge">DefaultLabelNotLastInSwitch</code></a> instead.</li>
-      <li>The old rule name <code class="language-plaintext highlighter-rouge">SwitchStmtsShouldHaveDefault</code> has been deprecated. USe the new name <a href="pmd_rules_java_bestpractices.html#nonexhaustiveswitch"><code class="language-plaintext highlighter-rouge">NonExhaustiveSwitch</code></a> instead.</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li>The old rule name  <code class="language-plaintext highlighter-rouge">NonCaseLabelInSwitchStatement</code> has been deprecated. Use the new name <a href="pmd_rules_java_errorprone.html#noncaselabelinswitch"><code class="language-plaintext highlighter-rouge">NonCaseLabelInSwitch</code></a> instead.</li>
-    </ul>
-  </li>
-  <li>java-performance
-    <ul>
-      <li>The old rule name <code class="language-plaintext highlighter-rouge">TooFewBranchesForASwitchStatement</code> has been deprecated. Use the new name <a href="pmd_rules_java_performance.html#toofewbranchesforswitch"><code class="language-plaintext highlighter-rouge">TooFewBranchesForSwitch</code></a> instead.</li>
-    </ul>
-  </li>
-</ul>
 
-<h3 id="-merged-pull-requests">✨ Merged pull requests</h3>
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/4965">#4965</a>: Fix #4532: [java] Rename JUnit rules with overly restrictive names - <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5040">#5040</a>: [cpp] Ignore literals and ignore identifiers capability to C++ CPD - <a href="https://github.com/jdupak">Jakub Dupak</a> (@jdupak)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5225">#5225</a>: Fix #5067: [java] CloseResource: False positive for FileSystems.getDefault() - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5241">#5241</a>: Ignore javacc code in coverage report - <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5245">#5245</a>: [java] Improve UnitTestShouldUse{After,Before}Annotation rules to support JUnit5 and TestNG - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5247">#5247</a>: Fix #5030: [java] SwitchDensity false positive with pattern matching - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5248">#5248</a>: Fix #3362: [java] ImplicitSwitchFallThrough should consider switch expressions - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5251">#5251</a>: Fix #5249 and #5250: [java] TooFewBranchesForSwitch ignore pattern matching and support switch expressions - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5252">#5252</a>: Fix #4813: [java] SwitchStmtsShouldHaveDefault false positive with pattern matching - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5255">#5255</a>: [java] Rename rule DefaultLabelNotLastInSwitch - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5256">#5256</a>: Fix #5257: [java] NonCaseLabelInSwitch - support switch expressions - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5258">#5258</a>: Ignore generated antlr classes in coverage reports - <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5264">#5264</a>: Fix #5261: [java] Fix NPE with empty pattern list - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5267">#5267</a>: [java] Rename rule SwitchStmtsShouldHaveDefault to NonExhaustiveSwitch - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5269">#5269</a>: Fix #5253: [java] Support Boolean wrapper class for BooleanGetMethodName rule - <a href="https://github.com/Aryant-Tripathi">Aryant Tripathi</a> (@Aryant-Tripathi)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5273">#5273</a>: Fix #5270: [apex] AvoidNonRestrictiveQueries: Fix regex for detecting LIMIT clause - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5275">#5275</a>: Use plugin-classpath to simplify javacc-wrapper.xml - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5278">#5278</a>: [java] CouplingBetweenObjects: improve violation message - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5279">#5279</a>: Fix #5244: [java] UselessOperationOnImmutable: consider java.time.* types - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-</ul>
+<h3 id="-external-contributions">✨ External Contributions</h3>
 
 
 
@@ -2077,7 +1944,7 @@ and to Switch Expressions:
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Oct 24, 2024 <br />
+             Site last generated: Oct 25, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
