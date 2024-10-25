@@ -107,5 +107,16 @@ The old rule names still work but are deprecated.
 * [#5278](https://github.com/pmd/pmd/pull/5278): \[java] CouplingBetweenObjects: improve violation message - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5279](https://github.com/pmd/pmd/pull/5279): Fix #5244: \[java] UselessOperationOnImmutable: consider java.time.* types - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
-{% endtocmaker %}
+### 📦 Dependency updates
+* [#5234](https://github.com/pmd/pmd/issues/5234): Bump com.google.protobuf:protobuf-java from 3.25.3 to 4.28.2
+* [#5274](https://github.com/pmd/pmd/issues/5274): Bump org.junit from 5.8.2 to 5.11.2
+* [#5276](https://github.com/pmd/pmd/issues/5276): Bump org.checkerframework:checker-qual from 2.11.1 to 3.48.1
+* [#5280](https://github.com/pmd/pmd/issues/5280): Bump danger from 9.5.0 to 9.5.1 in the all-gems group across 1 directory
+* [#5281](https://github.com/pmd/pmd/issues/5281): Bump org.scala-lang:scala-reflect from 2.13.13 to 2.13.15
 
+### 📈 Stats
+* 98 commits
+* 32 closed tickets & PRs
+* Days since last release: 27
+
+{% endtocmaker %}
