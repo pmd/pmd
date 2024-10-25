@@ -54,7 +54,7 @@ See [PR #5040](https://github.com/pmd/pmd/pull/5040) for details.
   * [`UnitTestShouldUseTestAnnotation`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#unittestshouldusetestannotation) (Java Best Practices) has been renamed from `JUnit4TestShouldUseTestAnnotation`.
 * Several rules about switch statements and switch expression have been renamed, as they apply both to Switch Statements
   and to Switch Expressions:
-  * [`DefaultLabelNotLastInSwitch`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#defaultlabelnotlastinswitch) (Java Best Practices) has been renamed from `DefaultLabelNotLastInSwitch`.
+  * [`DefaultLabelNotLastInSwitch`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#defaultlabelnotlastinswitch) (Java Best Practices) has been renamed from `DefaultLabelNotLastInSwitchStmt`.
   * [`NonCaseLabelInSwitch`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_errorprone.html#noncaselabelinswitch) (Java Error Prone) has been renamed from `NonCaseLabelInSwitchStatement`.
   * [`TooFewBranchesForSwitch`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_performance.html#toofewbranchesforswitch) (Java Performance) has been renamed from `TooFewBranchesForASwitchStatement`.
   * [`NonExhaustiveSwitch`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#nonexhaustiveswitch) (Java Best Practices) has been renamed from `SwitchStmtsShouldHaveDefault`.
@@ -91,7 +91,7 @@ The old rule names still work but are deprecated.
   * The old rule name `JUnitAssertionsShouldIncludeMessage` has been deprecated. Use the new name [`UnitTestAssertionsShouldIncludeMessage`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#unittestassertionsshouldincludemessage) instead.
   * The old rule name `JUnitTestContainsTooManyAsserts` has been deprecated. Use the new name [`UnitTestContainsTooManyAsserts`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#unittestcontainstoomanyasserts) instead.
   * The old rule name `JUnitTestsShouldIncludeAssert` has been deprecated. Use the new name [`UnitTestShouldIncludeAssert`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#unittestshouldincludeassert) instead.
-  * The old rule name `DefaultLabelNotLastInSwitch` has been deprecated. Use the new name [`DefaultLabelNotLastInSwitch`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#defaultlabelnotlastinswitch) instead.
+  * The old rule name `DefaultLabelNotLastInSwitchStmt` has been deprecated. Use the new name [`DefaultLabelNotLastInSwitch`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#defaultlabelnotlastinswitch) instead.
   * The old rule name `SwitchStmtsShouldHaveDefault` has been deprecated. USe the new name [`NonExhaustiveSwitch`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#nonexhaustiveswitch) instead.
 * java-errorprone
   * The old rule name  `NonCaseLabelInSwitchStatement` has been deprecated. Use the new name [`NonCaseLabelInSwitch`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_errorprone.html#noncaselabelinswitch) instead.
