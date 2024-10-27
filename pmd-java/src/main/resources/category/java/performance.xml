@@ -629,7 +629,7 @@ Note: This rule was named TooFewBranchesForASwitchStatement before PMD 7.7.0.
                 <value>
 <![CDATA[
 //(SwitchStatement | SwitchExpression)
-  [ (count(*) - 1) < $minimumNumberCaseForASwitch ]
+  [ (count(*/SwitchLabel/*) + count(*/SwitchLabel[@Default = true()])) < $minimumNumberCaseForASwitch ]
   (: only consider if no pattern matching is used :)
   [*/SwitchLabel[@PatternLabel = false()]]
 ]]>
