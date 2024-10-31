@@ -18,7 +18,7 @@
     <rule ref="category/java/bestpractices.xml/AvoidUsingHardCodedIP"/>
     <rule ref="category/java/bestpractices.xml/CheckResultSet"/>
     <rule ref="category/java/bestpractices.xml/ConstantsInInterface"/>
-    <rule ref="category/java/bestpractices.xml/DefaultLabelNotLastInSwitchStmt"/>
+    <rule ref="category/java/bestpractices.xml/DefaultLabelNotLastInSwitch"/>
     <rule ref="category/java/bestpractices.xml/DoubleBraceInitialization"/>
     <rule ref="category/java/bestpractices.xml/ForLoopCanBeForeach"/>
     <!-- <rule ref="category/java/bestpractices.xml/ForLoopVariableCount" /> -->
@@ -30,6 +30,7 @@
     <rule ref="category/java/bestpractices.xml/LooseCoupling"/>
     <!-- <rule ref="category/java/bestpractices.xml/MethodReturnsInternalArray" /> -->
     <rule ref="category/java/bestpractices.xml/MissingOverride"/>
+    <rule ref="category/java/bestpractices.xml/NonExhaustiveSwitch"/>
     <rule ref="category/java/bestpractices.xml/OneDeclarationPerLine"/>
     <rule ref="category/java/bestpractices.xml/PrimitiveWrapperInstantiation"/>
     <rule ref="category/java/bestpractices.xml/PreserveStackTrace"/>
@@ -37,7 +38,6 @@
     <!-- <rule ref="category/java/bestpractices.xml/ReplaceHashtableWithMap" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/ReplaceVectorWithList" /> -->
     <rule ref="category/java/bestpractices.xml/SimplifiableTestAssertion"/>
-    <rule ref="category/java/bestpractices.xml/SwitchStmtsShouldHaveDefault"/>
     <!-- <rule ref="category/java/bestpractices.xml/SystemPrintln" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/UnitTestAssertionsShouldIncludeMessage" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/UnitTestContainsTooManyAsserts" /> -->
@@ -243,7 +243,7 @@
     <!-- <rule ref="category/java/errorprone.xml/MissingSerialVersionUID" /> -->
     <rule ref="category/java/errorprone.xml/MissingStaticMethodInNonInstantiatableClass"/>
     <!-- <rule ref="category/java/errorprone.xml/MoreThanOneLogger" /> -->
-    <rule ref="category/java/errorprone.xml/NonCaseLabelInSwitchStatement"/>
+    <rule ref="category/java/errorprone.xml/NonCaseLabelInSwitch"/>
     <rule ref="category/java/errorprone.xml/NonStaticInitializer"/>
     <!-- <rule ref="category/java/errorprone.xml/NullAssignment" /> -->
     <rule ref="category/java/errorprone.xml/OverrideBothEqualsAndHashcode"/>
@@ -307,7 +307,7 @@
     <!--<rule ref="category/java/performance.xml/RedundantFieldInitializer"/>-->
     <!-- <rule ref="category/java/performance.xml/StringInstantiation" /> -->
     <!-- <rule ref="category/java/performance.xml/StringToString" /> -->
-    <!--<rule ref="category/java/performance.xml/TooFewBranchesForASwitchStatement"/>-->
+    <!-- <rule ref="category/java/performance.xml/TooFewBranchesForSwitch"/> -->
     <!-- <rule ref="category/java/performance.xml/UseArrayListInsteadOfVector" /> -->
     <!-- <rule ref="category/java/performance.xml/UseArraysAsList" /> -->
     <!-- <rule ref="category/java/performance.xml/UseIndexOfChar" /> -->
