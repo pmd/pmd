@@ -46,9 +46,9 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
     protected List<JTypeVar> typeParameters;
     private final ParseLock lock;
 
-    protected GenericSigBase(T ctx) {
+    protected GenericSigBase(T ctx, String parseLockName) {
         this.ctx = ctx;
-        this.lock = new ParseLock() {
+        this.lock = new ParseLock(parseLockName) {
             @Override
             protected boolean doParse() {
                 GenericSigBase.this.doParse();
@@ -116,7 +116,7 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
                            @Nullable String signature, // null if doesn't use generics in header
                            @Nullable String superInternalName, // null if this is the Object class
                            String[] interfaces) {
-            super(ctx);
+            super(ctx, "LazyClassSignature:" + ctx.getInternalName() + "[" + signature + "]");
             this.signature = signature;
 
             this.rawItfs = CollectionUtil.map(interfaces, ctx.getResolver()::resolveFromInternalNameCannotFail);
@@ -233,7 +233,7 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
                        @Nullable String genericSig,
                        @Nullable String[] exceptions,
                        boolean skipFirstParam) {
-            super(ctx);
+            super(ctx, "LazyMethodType:" + (genericSig != null ? genericSig : descriptor));
             this.signature = genericSig != null ? genericSig : descriptor;
             // generic signatures already omit the synthetic param
             this.skipFirstParam = skipFirstParam && genericSig == null;

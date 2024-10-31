@@ -84,12 +84,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         this.resolver = resolver;
         this.names = new Names(internalName);
 
-        this.parseLock = new ParseLock() {
-            // note to devs: to debug the parsing logic you might have
-            // to replace the implementation of toString temporarily,
-            // otherwise an IDE could call toString just to show the item
-            // in the debugger view (which could cause parsing of the class file).
-
+        this.parseLock = new ParseLock("ClassStub:" + internalName) {
             @Override
             protected boolean doParse() throws IOException {
                 try (InputStream instream = loader.getInputStream()) {
