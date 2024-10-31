@@ -11,7 +11,7 @@ import org.antlr.v4.runtime.CharStream;
  * This class will be removed in PMD 8.0.0.
  * Use {@link net.sourceforge.pmd.lang.xml.ast.XMLLexer} directly instead.
  *
- * @deprecated
+ * @deprecated since 7.8.0. Use {@link net.sourceforge.pmd.lang.xml.ast.XMLLexer} directly instead.
  */
 @Deprecated
 public class XMLLexer extends net.sourceforge.pmd.lang.xml.ast.XMLLexer {
