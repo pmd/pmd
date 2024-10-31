@@ -18,6 +18,11 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚨 API Changes
 
+#### Deprecations
+* pmd-xml
+  * {%jdoc xml::lang.xml.antlr4.XMLLexer %} is deprecated for removal. Use {%jdoc !!xml::lang.xml.ast.XMLLexer %}
+    instead (note different package `ast` instead of `antlr4`).
+
 ### ✨ External Contributions
 
 {% endtocmaker %}
