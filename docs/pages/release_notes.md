@@ -15,6 +15,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀 New and noteworthy
 
 ### 🐛 Fixed Issues
+* ant
+  * [#1860](https://github.com/pmd/pmd/issues/1860): \[ant] Reflective access warnings on java > 9 and java < 17
 
 ### 🚨 API Changes
 
