@@ -197,6 +197,7 @@ class ClasspathClassLoaderTest {
 
         try (ClasspathClassLoader loader = new ClasspathClassLoader(classPath, null)) {
             assertEquals(javaHome.toString(), loader.javaHome);
+            assertEquals(javaVersion, loader.jdkVersion);
             try (InputStream stream = loader.getResourceAsStream("java/lang/Object.class")) {
                 assertClassFile(stream, javaVersion);
             }
@@ -208,6 +209,27 @@ class ClasspathClassLoaderTest {
             try (InputStream stream = loader.getResourceAsStream("java.base/module-info.class")) {
                 assertClassFile(stream, javaVersion);
             }
+        }
+    }
+
+    @Test
+    void loadFromJava8() throws IOException {
+        Path javaHome = Paths.get(System.getProperty("user.home"), "openjdk8");
+        assumeTrue(Files.isDirectory(javaHome), "Couldn't find java8 installation at " + javaHome);
+
+        Path rtJarPath = javaHome.resolve("jre/lib/rt.jar");
+        assertTrue(Files.isRegularFile(rtJarPath), "java8 installation is incomplete. " + rtJarPath + " not found!");
+        String classPath = rtJarPath.toString();
+
+        try (ClasspathClassLoader loader = new ClasspathClassLoader(classPath, null)) {
+            assertNull(loader.javaHome);
+            assertEquals(8, loader.jdkVersion);
+            try (InputStream stream = loader.getResourceAsStream("java/lang/Object.class")) {
+                assertClassFile(stream, 8);
+            }
+
+            // should not fail for resources without a package
+            assertNull(loader.getResourceAsStream("ClassInDefaultPackage.class"));
         }
     }
 

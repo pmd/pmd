@@ -65,6 +65,11 @@ public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
 
         levelChecker.check(root);
 
+        int jdkVersionAuxclasspath = javaProcessor.getJdkVersionAuxclasspath();
+        if (jdkVersionAuxclasspath > 0 && jdkVersion != jdkVersionAuxclasspath) {
+            task.getReporter().warning(root, "Auxclasspath contains Java API {0} but parser requested {1}", jdkVersionAuxclasspath, jdkVersion);
+        }
+
         if (postProcess) {
             JavaAstProcessor.process(javaProcessor, task.getReporter(), root);
         }
