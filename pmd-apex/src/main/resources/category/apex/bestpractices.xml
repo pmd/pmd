@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <ruleset name="Best Practices"
-         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
     <description>
 Rules which enforce generally accepted best practices.
     </description>
 
     <rule name="ApexAssertionsShouldIncludeMessage"
-          language="apex"
-          since="6.13.0"
-          message="Apex test assert statement should make use of the message parameter."
-          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexAssertionsShouldIncludeMessageRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexassertionsshouldincludemessage">
+        language="apex"
+        since="6.13.0"
+        message="Apex test assert statement should make use of the message parameter."
+        class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexAssertionsShouldIncludeMessageRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexassertionsshouldincludemessage">
         <description>
 The second parameter of System.assert/third parameter of System.assertEquals/System.assertNotEquals is a message.
 Having a second/third parameter provides more information and makes it easier to debug the test failure and
@@ -38,11 +38,11 @@ public class Foo {
     </rule>
 
     <rule name="ApexUnitTestClassShouldHaveAsserts"
-          language="apex"
-          since="5.5.1"
-          message="Apex unit tests should System.assert() or assertEquals() or assertNotEquals()"
-          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestClassShouldHaveAssertsRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaveasserts">
+        language="apex"
+        since="5.5.1"
+        message="Apex unit tests should System.assert() or assertEquals() or assertNotEquals()"
+        class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestClassShouldHaveAssertsRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaveasserts">
         <description>
 Apex unit tests should include at least one assertion.  This makes the tests more robust, and using assert
 with messages provide the developer a clearer idea of what the test does.  Custom assert method invocation
@@ -65,11 +65,11 @@ public class Foo {
     </rule>
 
     <rule name="ApexUnitTestClassShouldHaveRunAs"
-          language="apex"
-          since="6.51.0"
-          message="Apex unit test classes should have at least one System.runAs() call"
-          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestClassShouldHaveRunAsRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaverunas">
+        language="apex"
+        since="6.51.0"
+        message="Apex unit test classes should have at least one System.runAs() call"
+        class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestClassShouldHaveRunAsRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaverunas">
         <description>
 Apex unit tests should include at least one runAs method.  This makes the tests more robust, and independent from the 
 user running it.
@@ -103,11 +103,11 @@ private class TestRunAs {
     </rule>
 
     <rule name="ApexUnitTestMethodShouldHaveIsTestAnnotation"
-          since="6.13.0"
-          language="apex"
-          message="Apex test methods should have @isTest annotation."
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestmethodshouldhaveistestannotation">
+        since="6.13.0"
+        language="apex"
+        message="Apex test methods should have @isTest annotation."
+        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestmethodshouldhaveistestannotation">
         <description>
 Apex test methods should have `@isTest` annotation instead of the `testMethod` keyword,
 as `testMethod` is deprecated.
@@ -148,11 +148,11 @@ private class ATest {
     </rule>
 
     <rule name="ApexUnitTestShouldNotUseSeeAllDataTrue"
-          language="apex"
-          since="5.5.1"
-          message="Apex unit tests should not use @isTest(seeAllData = true)"
-          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestShouldNotUseSeeAllDataTrueRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestshouldnotuseseealldatatrue">
+        language="apex"
+        since="5.5.1"
+        message="Apex unit tests should not use @isTest(seeAllData = true)"
+        class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestShouldNotUseSeeAllDataTrueRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestshouldnotuseseealldatatrue">
         <description>
 Apex unit tests should not use @isTest(seeAllData=true) because it opens up the existing database data for unexpected modification by tests.
         </description>
@@ -173,11 +173,11 @@ public class Foo {
     </rule>
 
     <rule name="AvoidGlobalModifier"
-          language="apex"
-          since="5.5.0"
-          message="Avoid using global modifier"
-          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.AvoidGlobalModifierRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#avoidglobalmodifier">
+        language="apex"
+        since="5.5.0"
+        message="Avoid using global modifier"
+        class="net.sourceforge.pmd.lang.apex.rule.bestpractices.AvoidGlobalModifierRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#avoidglobalmodifier">
         <description>
 Global classes should be avoided (especially in managed packages) as they can never be deleted or changed in signature. Always check twice if something needs to be global.
 Many interfaces (e.g. Batch) required global modifiers in the past but don't require this anymore. Don't lock yourself in.
@@ -195,11 +195,11 @@ global class Unchangeable {
     </rule>
 
     <rule name="AvoidLogicInTrigger"
-          language="apex"
-          since="5.5.0"
-          message="Avoid logic in triggers"
-          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.AvoidLogicInTriggerRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#avoidlogicintrigger">
+        language="apex"
+        since="5.5.0"
+        message="Avoid logic in triggers"
+        class="net.sourceforge.pmd.lang.apex.rule.bestpractices.AvoidLogicInTriggerRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#avoidlogicintrigger">
         <description>
 As triggers do not allow methods like regular classes they are less flexible and suited to apply good encapsulation style.
 Therefore delegate the triggers work to a regular class (often called Trigger handler class).
@@ -227,29 +227,30 @@ trigger Accounts on Account (before insert, before update, before delete, after 
     </rule>
 
     <rule name="DebugsShouldUseLoggingLevel"
-          since="6.18.0"
-          language="apex"
-          message="Calls to System.debug should specify a logging level."
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#debugsshoulduselogginglevel">
-       <description>
+        since="6.18.0"
+        language="apex"
+        message="Calls to System.debug should specify a logging level."
+        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#debugsshoulduselogginglevel">
+        <description>
 The first parameter of System.debug, when using the signature with two parameters, is a LoggingLevel enum.
 
 Having the Logging Level specified provides a cleaner log, and improves readability of it.
        </description>
-       <priority>3</priority>
-       <properties>
-          <property name="strictMode" type="Boolean" value="false" description="If true, mark statements that use the DEBUG enum of LoggingLevel."/>
-          <property name="xpath">
-             <value>
+        <priority>3</priority>
+        <properties>
+            <property name="strictMode" type="Boolean" value="false"
+                description="If true, mark statements that use the DEBUG enum of LoggingLevel." />
+            <property name="xpath">
+                <value>
 <![CDATA[
 //MethodCallExpression[lower-case(@FullMethodName)='system.debug'][count(*)=2
     or ($strictMode=true() and count(*)=3 and lower-case(VariableExpression/@Image)='debug')]
 ]]>
              </value>
-          </property>
-       </properties>
-       <example>
+            </property>
+        </properties>
+        <example>
 <![CDATA[
 @isTest
 public class Foo {
@@ -265,14 +266,15 @@ public class Foo {
     </rule>
 
     <rule name="UnusedLocalVariable"
-          since="6.23.0"
-          language="apex"
-          message="Variable ''{0}'' defined but not used"
-          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.UnusedLocalVariableRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#unusedlocalvariable">
+        since="6.23.0"
+        language="apex"
+        message="Variable ''{0}'' defined but not used"
+        class="net.sourceforge.pmd.lang.apex.rule.bestpractices.UnusedLocalVariableRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#unusedlocalvariable">
         <description>
 Detects when a local variable is declared and/or assigned but not used.
         </description>
+        <priority>5</priority>
         <example>
 <![CDATA[
     public Boolean bar(String z) {
@@ -286,11 +288,11 @@ Detects when a local variable is declared and/or assigned but not used.
     </rule>
 
     <rule name="QueueableShouldAttachFinalizer"
-          since="7.8.0"
-          language="apex"
-          message="It is best practice to call the `System.attachFinalizer(Finalizer f)` method within the `execute` method of a class which implements the `Queueable` interface."
-          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.QueueableShouldAttachFinalizerRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#queueableshouldattachfinalizer">
+        since="7.8.0"
+        language="apex"
+        message="It is best practice to call the `System.attachFinalizer(Finalizer f)` method within the `execute` method of a class which implements the `Queueable` interface."
+        class="net.sourceforge.pmd.lang.apex.rule.bestpractices.QueueableShouldAttachFinalizerRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#queueableshouldattachfinalizer">
         <description>
 Detects when the Queueable interface is used but a Finalizer is not attached.
         </description>
