@@ -285,4 +285,30 @@ Detects when a local variable is declared and/or assigned but not used.
         </example>
     </rule>
 
+    <rule name="QueueableShouldAttachFinalizer"
+          since="7.8.0"
+          language="apex"
+          message="It is best practice to call the `System.attachFinalizer(Finalizer f)` method within the `execute` method of a class which implements the `Queueable` interface."
+          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.QueueableShouldAttachFinalizerRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#queueableshouldattachfinalizer">
+        <description>
+Detects when the Queueable interface is used but a Finalizer is not attached.
+        </description>
+        <example>
+<![CDATA[
+    public class UserUpdater implements Queueable {
+        public List<User> usersToUpdate;
+
+        public UserUpdater(List<User> usersToUpdate) {
+            this.usersToUpdate = usersToUpdate;
+        }
+
+        public void execute(QueueableContext context) { // no Finalizer is attached
+            update usersToUpdate;
+        }
+    }
+]]>
+        </example>
+    </rule>
+
 </ruleset>
