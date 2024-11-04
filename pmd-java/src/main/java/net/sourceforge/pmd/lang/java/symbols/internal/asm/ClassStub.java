@@ -310,9 +310,9 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     }
 
     @Override
-    public boolean isGeneric() {
+    public int getTypeParameterCount() {
         parseLock.ensureParsed();
-        return signature.isGeneric();
+        return signature.getTypeParameterCount();
     }
 
     @Override

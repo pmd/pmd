@@ -81,7 +81,11 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
 
     protected abstract boolean postCondition();
 
-    protected abstract boolean isGeneric();
+    protected abstract int getTypeParameterCount();
+
+    protected boolean isGeneric() {
+        return getTypeParameterCount() > 0;
+    }
 
     public void setTypeParams(List<JTypeVar> tvars) {
         assert this.typeParameters == null : "Type params were already parsed for " + this;
@@ -105,6 +109,7 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
         private static final String OBJECT_BOUND = ":" + OBJECT_SIG;
 
         private final @Nullable String signature;
+        private final int typeParameterCount;
 
         private @Nullable JClassType superType;
         private List<JClassType> superItfs;
@@ -118,6 +123,7 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
                            String[] interfaces) {
             super(ctx, "LazyClassSignature:" + ctx.getInternalName() + "[" + signature + "]");
             this.signature = signature;
+            this.typeParameterCount = GenericTypeParameterCounter.determineTypeParameterCount(this.signature);
 
             this.rawItfs = CollectionUtil.map(interfaces, ctx.getResolver()::resolveFromInternalNameCannotFail);
             this.rawSuper = ctx.getResolver().resolveFromInternalNameCannotFail(superInternalName);
@@ -157,8 +163,9 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
         }
 
         @Override
-        protected boolean isGeneric() {
-            return signature != null && TypeParamsParser.hasTypeParams(signature);
+        protected int getTypeParameterCount() {
+            // note: no ensureParsed() needed, the type parameters are counted eagerly
+            return typeParameterCount;
         }
 
         @Override
@@ -206,6 +213,7 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
     static class LazyMethodType extends GenericSigBase<ExecutableStub> implements TypeAnnotationReceiver {
 
         private final @NonNull String signature;
+        private final int typeParameterCount;
 
         private @Nullable TypeAnnotationSet receiverAnnotations;
         private List<JTypeMirror> parameterTypes;
@@ -235,6 +243,7 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
                        boolean skipFirstParam) {
             super(ctx, "LazyMethodType:" + (genericSig != null ? genericSig : descriptor));
             this.signature = genericSig != null ? genericSig : descriptor;
+            this.typeParameterCount = GenericTypeParameterCounter.determineTypeParameterCount(genericSig);
             // generic signatures already omit the synthetic param
             this.skipFirstParam = skipFirstParam && genericSig == null;
             this.rawExceptions = exceptions;
@@ -288,8 +297,9 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
 
 
         @Override
-        protected boolean isGeneric() {
-            return TypeParamsParser.hasTypeParams(signature);
+        protected int getTypeParameterCount() {
+            // note: no ensureParsed() needed, the type parameters are counted eagerly
+            return typeParameterCount;
         }
 
         void setParameterTypes(List<JTypeMirror> params) {
