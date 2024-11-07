@@ -17,6 +17,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🐛 Fixed Issues
 * ant
   * [#1860](https://github.com/pmd/pmd/issues/1860): \[ant] Reflective access warnings on java > 9 and java < 17
+* java
+  * [#5293](https://github.com/pmd/pmd/issues/5293): \[java] Deadlock when executing PMD in multiple threads
 
 ### 🚨 API Changes
 
