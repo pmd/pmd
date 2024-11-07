@@ -101,7 +101,7 @@
         <surefire.version>3.2.5</surefire.version>
         <checkstyle.version>10.18.1</checkstyle.version>
         <checkstyle.plugin.version>3.5.0</checkstyle.plugin.version>
-        <pmd.plugin.version>3.24.0</pmd.plugin.version>
+        <pmd.plugin.version>3.26.0</pmd.plugin.version>
         <ant.version>1.10.14</ant.version>
         <javadoc.plugin.version>3.6.3</javadoc.plugin.version>
         <antlr.version>4.9.3</antlr.version>
@@ -179,7 +179,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>3.6.0</version>
+                    <version>3.7.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -202,7 +202,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.3.2</version>
+                    <version>3.4.0</version>
                 </plugin>
 
                 <!-- adds kotlin source directories for checkstyle header checks -->
@@ -592,11 +592,11 @@
                             <artifactId>pmd-build-tools-config</artifactId>
                             <version>${pmd.build-tools.version}</version>
                         </dependency>
-                        <!-- Allow to build PMD with Java 23 -->
+                        <!-- Allow to build PMD with Java 24 -->
                         <dependency>
                             <groupId>org.ow2.asm</groupId>
                             <artifactId>asm</artifactId>
-                            <version>9.7</version>
+                            <version>9.7.1</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -828,7 +828,7 @@
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
-                <version>9.7</version>
+                <version>9.7.1</version>
             </dependency>
             <dependency>
                 <groupId>org.pcollections</groupId>

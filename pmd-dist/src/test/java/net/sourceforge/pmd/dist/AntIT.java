@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.dist;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.containsStringIgnoringCase;
+import static org.hamcrest.Matchers.not;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,9 +42,9 @@ class AntIT extends AbstractBinaryDistributionTest {
 
         ExecutionResult result = runAnt(antBasepath, pmdHome, antTestProjectFolder);
         result.assertExitCode(0)
-              .assertStdOut(containsString("BUILD SUCCESSFUL"));
-        // the no package rule
-        result.assertExitCode(0)
+              .assertStdOut(containsString("BUILD SUCCESSFUL"))
+              .assertStdOut(not(containsStringIgnoringCase("Illegal reflective access"))) // #1860
+              // the no package rule
               .assertStdOut(containsString("NoPackage"));
     }
 

@@ -15,10 +15,19 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀 New and noteworthy
 
 ### 🐛 Fixed Issues
+* ant
+  * [#1860](https://github.com/pmd/pmd/issues/1860): \[ant] Reflective access warnings on java > 9 and java < 17
+* java
+  * [#5293](https://github.com/pmd/pmd/issues/5293): \[java] Deadlock when executing PMD in multiple threads
 * java-performance
   * [#5287](https://github.com/pmd/pmd/issues/5287): \[java] TooFewBranchesForSwitch false-positive with switch using list of case constants
 
 ### 🚨 API Changes
+
+#### Deprecations
+* pmd-xml
+  * {%jdoc xml::lang.xml.antlr4.XMLLexer %} is deprecated for removal. Use {%jdoc !!xml::lang.xml.ast.XMLLexer %}
+    instead (note different package `ast` instead of `antlr4`).
 
 ### ✨ External Contributions
 
