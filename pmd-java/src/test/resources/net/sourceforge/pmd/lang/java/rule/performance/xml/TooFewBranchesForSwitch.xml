@@ -180,4 +180,24 @@ class Tester {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>From #5311: Another example for list of case constants</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+  String foo(Bar bar) {
+    return switch (bar) {
+      case A, B, C, D -> "Hello";
+      case E, F, G -> "World";
+    };
+  }
+
+  enum Bar {
+    A, B, C, D, E, F, G
+  }
+}
+]]></code>
+    </test-code>
 </test-data>
