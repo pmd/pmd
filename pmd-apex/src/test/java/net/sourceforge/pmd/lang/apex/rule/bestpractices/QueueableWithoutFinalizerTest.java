@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-class QueueableShouldAttachFinalizerTest extends PmdRuleTst {
+class QueueableWithoutFinalizerTest extends PmdRuleTst {
   // no additional unit tests
 }

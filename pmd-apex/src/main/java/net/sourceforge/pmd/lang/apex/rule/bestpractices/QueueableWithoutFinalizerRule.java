@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
  *
  * @author mitchspano
  */
-public class QueueableShouldAttachFinalizerRule extends AbstractApexRule {
+public class QueueableWithoutFinalizerRule extends AbstractApexRule {
 
   private static final String EXECUTE = "execute";
   private static final String QUEUEABLE = "queueable";
