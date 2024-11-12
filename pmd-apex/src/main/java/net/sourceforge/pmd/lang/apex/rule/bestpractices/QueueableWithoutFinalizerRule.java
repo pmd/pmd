@@ -10,6 +10,8 @@ import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Scans classes which implement the `Queueable` interface. If the `public void
@@ -25,23 +27,19 @@ public class QueueableWithoutFinalizerRule extends AbstractApexRule {
   private static final String QUEUEABLE_CONTEXT = "queueablecontext";
   private static final String SYSTEM_ATTACH_FINALIZER = "system.attachfinalizer";
 
-  /** Scans the top level class and all inner classes. */
   @Override
-  public Object visit(ASTUserClass topLevelClass, Object data) {
-    scanClassForViolation(topLevelClass, data);
-    for (ASTUserClass innerClass : topLevelClass.descendants(ASTUserClass.class).toList()) {
-      scanClassForViolation(innerClass, data);
-    }
-    return data;
+  protected @NonNull RuleTargetSelector buildTargetSelector() {
+    return RuleTargetSelector.forTypes(ASTUserClass.class);
   }
 
   /**
    * If the class implements the `Queueable` interface and the `execute(QueueableContext context)`
    * does not call the `System.attachFinalizer(Finalizer f)` method, then add a violation.
    */
-  private void scanClassForViolation(ASTUserClass theClass, Object data) {
+  @Override
+  public Object visit(ASTUserClass theClass, Object data) {
     if (!implementsTheQueueableInterface(theClass)) {
-      return;
+      return data;
     }
     for (ASTMethod theMethod : theClass.descendants(ASTMethod.class).toList()) {
       if (isTheExecuteMethodOfTheQueueableInterface(theMethod)
@@ -49,6 +47,7 @@ public class QueueableWithoutFinalizerRule extends AbstractApexRule {
         asCtx(data).addViolation(theMethod);
       }
     }
+    return data;
   }
 
   /** Determines if the class implements the Queueable interface. */
