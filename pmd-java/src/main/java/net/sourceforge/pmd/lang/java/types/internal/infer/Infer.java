@@ -602,17 +602,20 @@ public final class Infer {
                 // see: https://docs.oracle.com/javase/specs/jls/se9/html/jls-18.html#jls-18.5.1
                 // as per https://docs.oracle.com/javase/specs/jls/se9/html/jls-18.html#jls-18.5.2
                 // we only test it can reduce, we don't commit inferred types at this stage
-                InferenceContext ctxCopy = infCtx.copy();
-                LOG.applicabilityTest(ctxCopy, m);
-                ctxCopy.solve(/*onlyBoundedVars:*/isPreJava8());
-
+                InferenceContext ctxCopy = infCtx.shallowCopy();
+                LOG.applicabilityTest(ctxCopy);
+                try {
+                    ctxCopy.solve(/*onlyBoundedVars:*/isPreJava8());
+                } finally {
+                    LOG.finishApplicabilityTest();
+                }
                 // if unchecked conversion was needed, update the site for invocation pass
                 if (ctxCopy.needsUncheckedConversion()) {
                     site.setNeedsUncheckedConversion();
                 }
 
                 // don't commit any types
-                return m;
+                return infCtx.mapToIVars(m);
             }
         } finally {
             // Note that even if solve succeeded, listeners checking deferred

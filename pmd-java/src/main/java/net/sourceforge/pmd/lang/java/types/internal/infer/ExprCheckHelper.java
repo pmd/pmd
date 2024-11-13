@@ -552,8 +552,15 @@ final class ExprCheckHelper {
 
         // finally, add bounds
         if (result != ts.NO_TYPE) {
+            Set<InferenceVar> inputIvars = infCtx.freeVarsIn(groundFun.getFormalParameters());
+            // The free vars of the return type depend on the free vars of the parameters.
+            // This explicit dependency is there to prevent solving the variables in the
+            // return type before solving those of the parameters. That is because the variables
+            // mentioned in the return type may be further constrained by adding the return constraints
+            // below (in the listener), which is only triggered when the input ivars have been instantiated.
+            infCtx.addInstantiationDependencies(infCtx.freeVarsIn(groundFun.getReturnType()), inputIvars);
             infCtx.addInstantiationListener(
-                infCtx.freeVarsIn(groundFun.getFormalParameters()),
+                inputIvars,
                 solvedCtx -> {
                     if (mayMutateExpr()) {
                         lambda.setInferredType(solvedCtx.ground(groundTargetType));
@@ -562,8 +569,15 @@ final class ExprCheckHelper {
                         lambda.updateTypingContext(solvedGroundFun);
                     }
                     JTypeMirror groundResult = solvedCtx.ground(result);
+                    // We need to build another checker that uses the solved context.
+                    // This is because the free vars may have been adopted by a parent
+                    // context, so the solvedCtx may be that parent context. The checks
+                    // must use that context so that constraints and listeners are added
+                    // to the parent context, since that one is responsible for solving
+                    // the variables.
+                    ExprCheckHelper newChecker = new ExprCheckHelper(solvedCtx, phase, this.checker, site, infer);
                     for (ExprMirror expr : lambda.getResultExpressions()) {
-                        if (!isCompatible(groundResult, expr)) {
+                        if (!newChecker.isCompatible(groundResult, expr)) {
                             return;
                         }
                     }
