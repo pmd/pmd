@@ -1419,4 +1419,23 @@ public class LiteralExpression {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5314 [java] InsufficientStringBufferDeclarationRule: Lack of handling for char type parameters</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class StringBufferInstantiationWithCharTest {
+    public void example01() {
+        // misleading instantiation, these buffers
+        // are actually sized to 99 characters long
+        StringBuffer  sb1 = new StringBuffer('c');
+        StringBuilder sb2 = new StringBuilder('c');
+
+        // in these forms, just single characters are allocated
+        StringBuffer  sb3 = new StringBuffer("c");
+        StringBuilder sb4 = new StringBuilder("c");
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
