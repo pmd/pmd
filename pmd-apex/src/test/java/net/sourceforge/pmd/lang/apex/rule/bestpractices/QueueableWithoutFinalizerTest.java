@@ -7,5 +7,5 @@ package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 import net.sourceforge.pmd.test.PmdRuleTst;
 
 class QueueableWithoutFinalizerTest extends PmdRuleTst {
-  // no additional unit tests
+    // no additional unit tests
 }
