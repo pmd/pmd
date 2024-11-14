@@ -10,6 +10,7 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ea550046a02344ec850553476c4aa2ca)](https://app.codacy.com/organizations/gh/pmd/dashboard)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](code_of_conduct.md) 
 [![Documentation (latest)](https://img.shields.io/badge/docs-latest-green)](https://docs.pmd-code.org/latest/)
+[![Gurubase](https://img.shields.io/badge/Gurubase-Ask%20PMD%20Guru-006BFF)](https://gurubase.io/g/pmd)
 
 **PMD** is an extensible multilanguage static code analyzer. It finds common programming flaws like unused variables,
 empty catch blocks, unnecessary object creation, and so forth. It's mainly concerned with **Java and
