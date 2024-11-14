@@ -20,6 +20,7 @@ This is a {{ site.pmd.release_type }} release.
 * java
   * [#5293](https://github.com/pmd/pmd/issues/5293): \[java] Deadlock when executing PMD in multiple threads
   * [#5324](https://github.com/pmd/pmd/issues/5324): \[java] Issue with type inference of nested lambdas
+  * [#5329](https://github.com/pmd/pmd/issues/5329): \[java] Type inference issue with unknown method ref in call chain
 
 ### 🚨 API Changes
 
