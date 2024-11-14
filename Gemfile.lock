@@ -75,7 +75,7 @@ GEM
     racc (1.8.1)
     rchardet (1.8.0)
     rexml (3.3.9)
-    rouge (4.4.0)
+    rouge (4.5.0)
     rufus-scheduler (3.9.2)
       fugit (~> 1.1, >= 1.11.1)
     safe_yaml (1.0.5)
