@@ -2135,7 +2135,7 @@ public class ObtainViaTest {
             ]]></code>
     </test-code>
     <test-code>
-        <description>UnusedPrivateMethod with method reference</description>
+        <description>#5324 UnusedPrivateMethod with method reference</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             package org.example.unusedPrivateMethod;
