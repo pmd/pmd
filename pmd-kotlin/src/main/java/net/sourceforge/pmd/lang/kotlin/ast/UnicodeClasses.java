@@ -17,7 +17,7 @@ import org.antlr.v4.runtime.atn.PredictionContextCache;
 import org.antlr.v4.runtime.dfa.DFA;
 
 /**
- * @deprecated This class was never intended to be generated. It will be removed with no replacement.
+ * @deprecated Since 7.8.0. This class was never intended to be generated. It will be removed with no replacement.
  */
 
 @Deprecated
