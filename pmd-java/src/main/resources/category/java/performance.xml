@@ -607,16 +607,20 @@ private String baz() {
         </example>
     </rule>
 
-    <rule name="TooFewBranchesForASwitchStatement"
+    <rule name="TooFewBranchesForASwitchStatement" deprecated="true" ref="TooFewBranchesForSwitch"/>
+
+    <rule name="TooFewBranchesForSwitch"
           language="java"
           since="4.2"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           message="A switch with less than three branches is inefficient, use a 'if statement' instead."
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#toofewbranchesforaswitchstatement">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#toofewbranchesforswitch">
         <description>
 Switch statements are intended to be used to support complex branching behaviour. Using a switch for only a few
 cases is ill-advised, since switches are not as easy to understand as if-else statements. In these cases use the
 if-else statement to increase code readability.
+
+Note: This rule was named TooFewBranchesForASwitchStatement before PMD 7.7.0.
         </description>
         <priority>3</priority>
         <properties>
@@ -624,7 +628,10 @@ if-else statement to increase code readability.
             <property name="xpath">
                 <value>
 <![CDATA[
-//SwitchStatement[ (count(*) - 1) < $minimumNumberCaseForASwitch ]
+//(SwitchStatement | SwitchExpression)
+  [ (count(*) - 1) < $minimumNumberCaseForASwitch ]
+  (: only consider if no pattern matching is used :)
+  [*/SwitchLabel[@PatternLabel = false()]]
 ]]>
                 </value>
             </property>

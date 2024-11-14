@@ -2185,20 +2185,24 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="NonCaseLabelInSwitchStatement"
+    <rule name="NonCaseLabelInSwitchStatement" deprecated="true" ref="NonCaseLabelInSwitch" />
+
+    <rule name="NonCaseLabelInSwitch"
           language="java"
           since="1.5"
-          message="A non-case label was present in a switch statement"
+          message="A non-case label was present in a switch statement or expression"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#noncaselabelinswitchstatement">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#noncaselabelinswitch">
         <description>
-A non-case label (e.g. a named break/continue label) was present in a switch statement.
+A non-case label (e.g. a named break/continue label) was present in a switch statement or switch expression.
 This is legal, but confusing. It is easy to mix up the case labels and the non-case labels.
+
+Note: This rule was renamed from `NonCaseLabelInSwitchStatement` with PMD 7.7.0.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//SwitchStatement//LabeledStatement</value>
+                <value>//(SwitchStatement|SwitchExpression)//LabeledStatement</value>
             </property>
         </properties>
         <example>
@@ -2208,7 +2212,6 @@ public class Foo {
    switch (a) {
      case 1:
        // do something
-       break;
      mylabel: // this is legal, but confusing!
        break;
      default:
@@ -3127,12 +3130,14 @@ public boolean test(String s) {
     <rule name="UselessOperationOnImmutable"
           language="java"
           since="3.5"
-          message="An operation on an Immutable object (String, BigDecimal or BigInteger) won't change the object itself"
+          message="The result of an operation on an immutable object is ignored"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.UselessOperationOnImmutableRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#uselessoperationonimmutable">
         <description>
-An operation on an Immutable object (String, BigDecimal or BigInteger) won't change the object itself
-since the result of the operation is a new object. Therefore, ignoring the operation result is an error.
+An operation on an immutable object will not change the object itself since the result of the operation is a new object.
+Therefore, ignoring the result of such an operation is likely a mistake. The operation can probably be removed.
+
+This rule recognizes the types `String`, `BigDecimal`, `BigInteger` or any type from `java.time.*` as immutable.
         </description>
         <priority>3</priority>
         <example>

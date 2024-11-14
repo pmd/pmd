@@ -17,15 +17,30 @@ abstract class ParseLock {
     private static final Logger LOG = LoggerFactory.getLogger(ParseLock.class);
 
     private volatile ParseStatus status = ParseStatus.NOT_PARSED;
+    private final String name;
+
+    protected ParseLock(String name) {
+        this.name = name;
+    }
 
     public void ensureParsed() {
         getFinalStatus();
     }
 
+    private void logParseLockTrace(String prefix) {
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("{} {}: {}", Thread.currentThread().getName(), String.format("%-15s", prefix), this);
+        }
+    }
+
     private ParseStatus getFinalStatus() {
         ParseStatus status = this.status;
         if (!status.isFinished) {
+            logParseLockTrace("waiting on");
+
             synchronized (this) {
+                logParseLockTrace("locked");
+
                 status = this.status;
                 if (status == ParseStatus.NOT_PARSED) {
                     this.status = ParseStatus.BEING_PARSED;
@@ -54,6 +69,7 @@ abstract class ParseLock {
                     throw new IllegalStateException("Thread is reentering the parse lock");
                 }
             }
+            logParseLockTrace("released");
         }
         return status;
     }
@@ -85,7 +101,7 @@ abstract class ParseLock {
 
     @Override
     public String toString() {
-        return "ParseLock{status=" + status + '}';
+        return "ParseLock{name=" + name + ",status=" + status + '}';
     }
 
     private enum ParseStatus {

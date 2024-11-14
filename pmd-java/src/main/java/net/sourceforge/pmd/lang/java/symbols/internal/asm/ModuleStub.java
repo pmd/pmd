@@ -35,7 +35,7 @@ class ModuleStub implements JModuleSymbol, AsmStub, AnnotationOwner {
         this.resolver = resolver;
         this.moduleName = moduleName;
 
-        this.parseLock = new ParseLock() {
+        this.parseLock = new ParseLock("ModuleStub:" + moduleName) {
             @Override
             protected boolean doParse() throws IOException {
                 try (InputStream instream = loader.getInputStream()) {

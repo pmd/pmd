@@ -5,6 +5,132 @@ permalink: pmd_release_notes_old.html
 
 Previous versions of PMD can be downloaded here: [Releases - pmd/pmd (GitHub)](https://github.com/pmd/pmd/releases)
 
+## 25-October-2024 - 7.7.0
+
+The PMD team is pleased to announce PMD 7.7.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [🚀 New and noteworthy](#new-and-noteworthy)
+    * [CPD can now ignore literals and identifiers in C++ code](#cpd-can-now-ignore-literals-and-identifiers-in-c-code)
+* [🌟 Rule Changes](#rule-changes)
+    * [Changed Rules](#changed-rules)
+    * [Renamed Rules](#renamed-rules)
+* [🐛 Fixed Issues](#fixed-issues)
+* [🚨 API Changes](#api-changes)
+* [✨ Merged pull requests](#merged-pull-requests)
+* [📦 Dependency updates](#dependency-updates)
+* [📈 Stats](#stats)
+
+### 🚀 New and noteworthy
+
+#### CPD can now ignore literals and identifiers in C++ code
+
+When searching for duplicated code in C++ differences in literals or identifiers can be
+ignored now (like in Java). This can be enabled via the command line options `--ignore-literal`
+and `--ignore-identifiers`.  
+See [PR #5040](https://github.com/pmd/pmd/pull/5040) for details.
+
+### 🌟 Rule Changes
+
+#### Changed Rules
+* [`SwitchStmtsShouldHaveDefault`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#switchstmtsshouldhavedefault) (Java Best Practices) doesn't report empty switch statements anymore.
+  To detect these, use [`EmptyControlStatement`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#emptycontrolstatement).
+* [`UnitTestShouldUseAfterAnnotation`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#unittestshoulduseafterannotation) (Java Best Practices) now also considers JUnit 5 and TestNG tests.
+* [`UnitTestShouldUseBeforeAnnotation`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#unittestshouldusebeforeannotation) (Java Best Practices) now also considers JUnit 5 and TestNG tests.
+* [`TooFewBranchesForSwitch`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_performance.html#toofewbranchesforswitch) (Java Performance) doesn't report empty switches anymore.
+  To detect these, use [`EmptyControlStatement`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#emptycontrolstatement).
+
+#### Renamed Rules
+* Several rules for unit testing have been renamed to better reflect their actual scope. Lots of them were called
+  after JUnit / JUnit 4, even when they applied to JUnit 5 and / or TestNG.
+  * [`UnitTestAssertionsShouldIncludeMessage`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#unittestassertionsshouldincludemessage) (Java Best Practices) has been renamed from `JUnitAssertionsShouldIncludeMessage`.
+  * [`UnitTestContainsTooManyAsserts`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#unittestcontainstoomanyasserts) (Java Best Practices) has been renamed from `JUnitTestContainsTooManyAsserts`.
+  * [`UnitTestShouldIncludeAssert`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#unittestshouldincludeassert) (Java Best Practices) has been renamed from `JUnitTestsShouldIncludeAssert`.
+  * [`UnitTestShouldUseAfterAnnotation`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#unittestshoulduseafterannotation) (Java Best Practices) has been renamed from `JUnit4TestShouldUseAfterAnnotation`.
+  * [`UnitTestShouldUseBeforeAnnotation`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#unittestshouldusebeforeannotation) (Java Best Practices) has been renamed from `JUnit4TestShouldUseBeforeAnnotation`.
+  * [`UnitTestShouldUseTestAnnotation`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#unittestshouldusetestannotation) (Java Best Practices) has been renamed from `JUnit4TestShouldUseTestAnnotation`.
+* Several rules about switch statements and switch expression have been renamed, as they apply both to Switch Statements
+  and to Switch Expressions:
+  * [`DefaultLabelNotLastInSwitch`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#defaultlabelnotlastinswitch) (Java Best Practices) has been renamed from `DefaultLabelNotLastInSwitchStmt`.
+  * [`NonCaseLabelInSwitch`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_errorprone.html#noncaselabelinswitch) (Java Error Prone) has been renamed from `NonCaseLabelInSwitchStatement`.
+  * [`TooFewBranchesForSwitch`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_performance.html#toofewbranchesforswitch) (Java Performance) has been renamed from `TooFewBranchesForASwitchStatement`.
+  * [`NonExhaustiveSwitch`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#nonexhaustiveswitch) (Java Best Practices) has been renamed from `SwitchStmtsShouldHaveDefault`.
+
+The old rule names still work but are deprecated.
+
+### 🐛 Fixed Issues
+* apex-performance
+  * [#5270](https://github.com/pmd/pmd/issues/5270): \[apex] AvoidNonRestrictiveQueries when LIMIT is followed by bind expression
+* java
+  * [#4532](https://github.com/pmd/pmd/issues/4532): \[java] Rule misnomer for JUnit* rules
+  * [#5261](https://github.com/pmd/pmd/issues/5261): \[java] Record patterns with empty deconstructor lists lead to NPE
+* java-bestpractices
+  * [#4286](https://github.com/pmd/pmd/issues/4286): \[java] Rename rule SwitchStmtsShouldHaveDefault to NonExhaustiveSwitch
+  * [#4813](https://github.com/pmd/pmd/issues/4813): \[java] SwitchStmtsShouldHaveDefault false positive with pattern matching
+* java-codestyle
+  * [#5253](https://github.com/pmd/pmd/issues/5253): \[java] BooleanGetMethodName: False-negatives with `Boolean` wrapper
+* java-design
+  * [#5030](https://github.com/pmd/pmd/issues/5030): \[java] SwitchDensity false positive with pattern matching
+* java-errorprone
+  * [#3362](https://github.com/pmd/pmd/issues/3362): \[java] ImplicitSwitchFallThrough should consider switch expressions
+  * [#5067](https://github.com/pmd/pmd/issues/5067): \[java] CloseResource: False positive for FileSystems.getDefault()
+  * [#5244](https://github.com/pmd/pmd/issues/5244): \[java] UselessOperationOnImmutable should detect java.time types
+  * [#5257](https://github.com/pmd/pmd/issues/5257): \[java] NonCaseLabelInSwitch should consider switch expressions
+* java-performance
+  * [#5249](https://github.com/pmd/pmd/issues/5249): \[java] TooFewBranchesForASwitchStatement false positive for Pattern Matching
+  * [#5250](https://github.com/pmd/pmd/issues/5250): \[java] TooFewBranchesForASwitchStatement should consider Switch Expressions
+
+### 🚨 API Changes
+* java-bestpractices
+  * The old rule name `JUnit4TestShouldUseAfterAnnotation` has been deprecated. Use the new name [`UnitTestShouldUseAfterAnnotation`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#unittestshoulduseafterannotation) instead.
+  * The old rule name `JUnit4TestShouldUseBeforeAnnotation` has been deprecated. Use the new name [`UnitTestShouldUseBeforeAnnotation`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#unittestshouldusebeforeannotation) instead.
+  * The old rule name `JUnit4TestShouldUseTestAnnotation` has been deprecated. Use the new name [`UnitTestShouldUseTestAnnotation`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#unittestshouldusetestannotation) instead.
+  * The old rule name `JUnitAssertionsShouldIncludeMessage` has been deprecated. Use the new name [`UnitTestAssertionsShouldIncludeMessage`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#unittestassertionsshouldincludemessage) instead.
+  * The old rule name `JUnitTestContainsTooManyAsserts` has been deprecated. Use the new name [`UnitTestContainsTooManyAsserts`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#unittestcontainstoomanyasserts) instead.
+  * The old rule name `JUnitTestsShouldIncludeAssert` has been deprecated. Use the new name [`UnitTestShouldIncludeAssert`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#unittestshouldincludeassert) instead.
+  * The old rule name `DefaultLabelNotLastInSwitchStmt` has been deprecated. Use the new name [`DefaultLabelNotLastInSwitch`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#defaultlabelnotlastinswitch) instead.
+  * The old rule name `SwitchStmtsShouldHaveDefault` has been deprecated. USe the new name [`NonExhaustiveSwitch`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#nonexhaustiveswitch) instead.
+* java-errorprone
+  * The old rule name  `NonCaseLabelInSwitchStatement` has been deprecated. Use the new name [`NonCaseLabelInSwitch`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_errorprone.html#noncaselabelinswitch) instead.
+* java-performance
+  * The old rule name `TooFewBranchesForASwitchStatement` has been deprecated. Use the new name [`TooFewBranchesForSwitch`](https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_performance.html#toofewbranchesforswitch) instead.
+
+### ✨ Merged pull requests
+* [#4965](https://github.com/pmd/pmd/pull/4965): Fix #4532: \[java] Rename JUnit rules with overly restrictive names - [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
+* [#5040](https://github.com/pmd/pmd/pull/5040): \[cpp] Ignore literals and ignore identifiers capability to C++ CPD - [Jakub Dupak](https://github.com/jdupak) (@jdupak)
+* [#5225](https://github.com/pmd/pmd/pull/5225): Fix #5067: \[java] CloseResource: False positive for FileSystems.getDefault() - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
+* [#5241](https://github.com/pmd/pmd/pull/5241): Ignore javacc code in coverage report - [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
+* [#5245](https://github.com/pmd/pmd/pull/5245): \[java] Improve UnitTestShouldUse{After,Before}Annotation rules to support JUnit5 and TestNG - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5247](https://github.com/pmd/pmd/pull/5247): Fix #5030: \[java] SwitchDensity false positive with pattern matching - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5248](https://github.com/pmd/pmd/pull/5248): Fix #3362: \[java] ImplicitSwitchFallThrough should consider switch expressions - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5251](https://github.com/pmd/pmd/pull/5251): Fix #5249 and #5250: \[java] TooFewBranchesForSwitch ignore pattern matching and support switch expressions - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5252](https://github.com/pmd/pmd/pull/5252): Fix #4813: \[java] SwitchStmtsShouldHaveDefault false positive with pattern matching - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5255](https://github.com/pmd/pmd/pull/5255): \[java] Rename rule DefaultLabelNotLastInSwitch - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5256](https://github.com/pmd/pmd/pull/5256): Fix #5257: \[java] NonCaseLabelInSwitch - support switch expressions - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5258](https://github.com/pmd/pmd/pull/5258): Ignore generated antlr classes in coverage reports - [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
+* [#5264](https://github.com/pmd/pmd/pull/5264): Fix #5261: \[java] Fix NPE with empty pattern list - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5267](https://github.com/pmd/pmd/pull/5267): \[java] Rename rule SwitchStmtsShouldHaveDefault to NonExhaustiveSwitch - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5269](https://github.com/pmd/pmd/pull/5269): Fix #5253: \[java] Support Boolean wrapper class for BooleanGetMethodName rule - [Aryant Tripathi](https://github.com/Aryant-Tripathi) (@Aryant-Tripathi)
+* [#5273](https://github.com/pmd/pmd/pull/5273): Fix #5270: \[apex] AvoidNonRestrictiveQueries: Fix regex for detecting LIMIT clause - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5275](https://github.com/pmd/pmd/pull/5275): Use plugin-classpath to simplify javacc-wrapper.xml - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5278](https://github.com/pmd/pmd/pull/5278): \[java] CouplingBetweenObjects: improve violation message - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5279](https://github.com/pmd/pmd/pull/5279): Fix #5244: \[java] UselessOperationOnImmutable: consider java.time.* types - [Andreas Dangel](https://github.com/adangel) (@adangel)
+
+### 📦 Dependency updates
+* [#5234](https://github.com/pmd/pmd/issues/5234): Bump com.google.protobuf:protobuf-java from 3.25.3 to 4.28.2
+* [#5274](https://github.com/pmd/pmd/issues/5274): Bump org.junit from 5.8.2 to 5.11.2
+* [#5276](https://github.com/pmd/pmd/issues/5276): Bump org.checkerframework:checker-qual from 2.11.1 to 3.48.1
+* [#5280](https://github.com/pmd/pmd/issues/5280): Bump danger from 9.5.0 to 9.5.1 in the all-gems group across 1 directory
+* [#5281](https://github.com/pmd/pmd/issues/5281): Bump org.scala-lang:scala-reflect from 2.13.13 to 2.13.15
+
+### 📈 Stats
+* 98 commits
+* 32 closed tickets & PRs
+* Days since last release: 27
+
 ## 27-September-2024 - 7.6.0
 
 The PMD team is pleased to announce PMD 7.6.0.

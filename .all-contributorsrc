@@ -7453,7 +7453,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/16755668?v=4",
       "profile": "https://github.com/emouty",
       "contributions": [
-        "code"
+        "code",
+        "bug"
       ]
     },
     {
@@ -7821,6 +7822,15 @@
       ]
     },
     {
+      "login": "thesunlover",
+      "name": "Iskren Stanislavov",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6734600?v=4",
+      "profile": "https://interop.io/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
       "login": "gudzpoz",
       "name": "gudzpoz",
       "avatar_url": "https://avatars.githubusercontent.com/u/14026120?v=4",
@@ -7843,6 +7853,15 @@
       "name": "Aryant Tripathi",
       "avatar_url": "https://avatars.githubusercontent.com/u/60316716?v=4",
       "profile": "https://github.com/Aryant-Tripathi",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "jdupak",
+      "name": "Jakub Dupak",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22683640?v=4",
+      "profile": "https://github.com/jdupak",
       "contributions": [
         "code"
       ]

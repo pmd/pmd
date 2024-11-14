@@ -45,7 +45,7 @@ GEM
     git (1.19.1)
       addressable (~> 2.8)
       rchardet (~> 1.8)
-    json (2.7.2)
+    json (2.7.5)
     kramdown (2.4.0)
       rexml
     kramdown-parser-gfm (1.1.0)
@@ -74,10 +74,10 @@ GEM
     raabro (1.4.0)
     racc (1.8.1)
     rchardet (1.8.0)
-    rexml (3.3.8)
-    rouge (4.4.0)
-    rufus-scheduler (3.9.1)
-      fugit (~> 1.1, >= 1.1.6)
+    rexml (3.3.9)
+    rouge (4.5.0)
+    rufus-scheduler (3.9.2)
+      fugit (~> 1.1, >= 1.11.1)
     safe_yaml (1.0.5)
     sawyer (0.9.2)
       addressable (>= 2.3.5)
@@ -102,4 +102,4 @@ DEPENDENCIES
   safe_yaml
 
 BUNDLED WITH
-   2.5.3
+   2.5.22
