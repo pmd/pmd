@@ -7865,6 +7865,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "chenguangqi",
+      "name": "天热吃西瓜",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6231010?v=4",
+      "profile": "http://chenguangqi.github.io/",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
