@@ -56,12 +56,9 @@ public class UnitTestShouldIncludeAssertRule extends AbstractJavaRulechainRule {
 
     private boolean usesSoftAssertExtension(ASTTypeDeclaration typeDeclaration) {
         ASTAnnotation extendWith = typeDeclaration.getAnnotation("org.junit.jupiter.api.extension.ExtendWith");
-        if (extendWith == null) {
-            return false;
-        }
-        return extendWith.getFlatValue("value")
-                    .filterIs(ASTClassLiteral.class)
-                    .map(ASTClassLiteral::getTypeNode)
-                    .any(c -> TypeTestUtil.isA("org.assertj.core.api.junit.jupiter.SoftAssertionsExtension", c));
+        return extendWith != null && extendWith.getFlatValue("value")
+                .filterIs(ASTClassLiteral.class)
+                .map(ASTClassLiteral::getTypeNode)
+                .any(c -> TypeTestUtil.isA("org.assertj.core.api.junit.jupiter.SoftAssertionsExtension", c));
     }
 }
