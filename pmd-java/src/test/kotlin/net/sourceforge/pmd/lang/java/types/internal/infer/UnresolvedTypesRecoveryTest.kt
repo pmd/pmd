@@ -664,4 +664,42 @@ class C {
             fooToInt.referencedMethod.symbol shouldBe toIntFun
         }
     }
+
+    parserTest("Type inference should not resolve UNKNOWN bounded types to Object #5329") {
+
+        val (acu, _) = parser.parseWithTypeInferenceSpy(
+            """
+            import java.util.ArrayList;
+            import java.util.List;
+            import java.util.stream.Stream;
+            import java.util.stream.Collectors;
+
+            class Foo {
+                public Item methodA(List<Item> loads) {
+                    List<SummaryDto.ItemDto> items = new ArrayList<>();
+                    loads.stream()
+                         // Here this collect call should have type
+                         //     Map<(*unknown*), List<*Item>>
+                         // ie, key is unknown, not Object.
+                         .collect(Collectors.groupingBy(Item::getValue))
+                         .forEach((a, b) -> items.add(buildItem(a, b)));
+                }
+
+                private SummaryDto.ItemDto buildItem(BigDecimal a, List<Item> b) {
+                    return SummaryDto.ItemDto.builder().build();
+                }
+            }
+                """
+            )
+
+        val collect = acu.firstMethodCall("collect")
+        val buildItem = acu.firstMethodCall("buildItem")
+        val (_, buildItemDecl) = acu.methodDeclarations().toList { it.symbol }
+        val (itemT) = acu.descendants(ASTClassType::class.java).toList { it.typeMirror }
+
+        acu.withTypeDsl {
+            collect shouldHaveType java.util.Map::class[ts.UNKNOWN, java.util.List::class[itemT]]
+            buildItem.methodType.symbol shouldBe buildItemDecl
+        }
+    }
 })
