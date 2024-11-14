@@ -57,6 +57,7 @@ class ApexLexerTest {
     @Test
     void testLexerUnicodeEscapes() {
         String s = "'Fran\\u00E7ois'";
+        // note: with apex-parser 4.3.1, no errors are reported anymore
         assertEquals(2, getLexingErrors(CharStreams.fromString(s)));
         assertEquals(0, getLexingErrors(new CaseInsensitiveInputStream(CharStreams.fromString(s))));
     }
@@ -71,7 +72,7 @@ class ApexLexerTest {
         return errorListener.getErrorCount();
     }
 
-    static class ErrorListener extends BaseErrorListener {
+    private static class ErrorListener extends BaseErrorListener {
         private int errorCount = 0;
 
         @Override
