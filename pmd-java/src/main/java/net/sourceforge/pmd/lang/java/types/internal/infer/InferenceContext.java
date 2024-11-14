@@ -525,6 +525,7 @@ final class InferenceContext {
      * we try again to make progress.
      */
     private boolean solve(VarWalkStrategy walker) {
+        graphWasChanged = false;
         incorporate();
 
         while (walker.hasNext()) {
