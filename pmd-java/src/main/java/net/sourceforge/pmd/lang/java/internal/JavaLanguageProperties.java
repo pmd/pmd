@@ -22,7 +22,7 @@ public class JavaLanguageProperties extends JvmLanguagePropertyBundle {
         PropertyFactory.enumProperty("xTypeInferenceLogging",
                                      EnumUtils.getEnumMap(InferenceLoggingVerbosity.class))
                        .desc("Verbosity of the type inference logging")
-                       .defaultValue(InferenceLoggingVerbosity.VERBOSE)
+                       .defaultValue(InferenceLoggingVerbosity.DISABLED)
                        .build();
 
 
