@@ -7865,6 +7865,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "VitaliiIevtushenko",
+      "name": "Vitalii Yevtushenko",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11145125?v=4",
+      "profile": "https://github.com/VitaliiIevtushenko",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
