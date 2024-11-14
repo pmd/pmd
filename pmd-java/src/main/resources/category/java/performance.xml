@@ -901,6 +901,11 @@ or StringBuffer.toString().length() == ...
   and MethodCall[pmd-java:matchesSig('java.lang.AbstractStringBuilder#toString()')]
   and ArgumentList/VariableAccess[@Name = //VariableDeclarator[StringLiteral[@Image='""']]
                                             /VariableId[pmd-java:modifiers() = 'final']/@Name]]
+|
+(: finds sb.toString().equals("") :)
+//MethodCall[pmd-java:matchesSig('_#equals(_)')
+  and MethodCall[pmd-java:matchesSig('java.lang.AbstractStringBuilder#toString()')]
+  and ArgumentList/StringLiteral[@Image='""']]
 ]]></value>
             </property>
         </properties>
