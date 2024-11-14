@@ -20,6 +20,8 @@ This is a {{ site.pmd.release_type }} release.
 * java
   * [#5293](https://github.com/pmd/pmd/issues/5293): \[java] Deadlock when executing PMD in multiple threads
   * [#5324](https://github.com/pmd/pmd/issues/5324): \[java] Issue with type inference of nested lambdas
+* html
+  * [5322](https://github.com/pmd/pmd/issues/5322): \[html] CPD throws exception on when HTML file is missing closing tag
 
 ### 🚨 API Changes
 
