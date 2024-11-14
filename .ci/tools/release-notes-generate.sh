@@ -30,7 +30,7 @@ ISSUES_JSON=""
 while [ "$HAS_NEXT" = "true" ]; do
     echo "Fetching issues for milestone ${MILESTONE} page ${PAGE}..."
     URL="https://api.github.com/repos/pmd/pmd/issues?state=closed&sort=created&direction=asc&per_page=30&page=${PAGE}&milestone=${MILESTONE}"
-    RESPONSE="$(curl "${CURL_API_HEADER[@]}" "${CURL_AUTH_HEADER[@]}" -s -w "\n%header{link}" "$URL")"
+    RESPONSE="$(curl "${CURL_API_HEADER[@]}" "${CURL_AUTH_HEADER[@]}" -s -w "\nLink: %header{link}" "$URL")"
 
     #DEBUG ONLY
     #echo "$RESPONSE" > issues-response-${PAGE}.txt
@@ -152,6 +152,8 @@ $tailText"
 }
 
 RELEASE_NOTES_FILE="${BASEDIR}/docs/pages/release_notes.md"
+echo "Updating $RELEASE_NOTES_FILE now..."
+
 RELEASE_NOTES=$(cat "$RELEASE_NOTES_FILE")
 #RELEASE_NOTES="$(insert "$RELEASE_NOTES" "### 🐛 Fixed Issues" "### ✨ Merged pull requests" "$FIXED_ISSUES")"
 RELEASE_NOTES="$(insert "$RELEASE_NOTES" "### ✨ Merged pull requests" "### 📦 Dependency updates" "$PULL_REQUESTS")"
