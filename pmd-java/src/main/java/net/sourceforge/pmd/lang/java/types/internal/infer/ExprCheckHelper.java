@@ -335,6 +335,13 @@ final class ExprCheckHelper {
                 checker.checkExprConstraint(infCtx, capture(r2), r);
             }
             completeMethodRefInference(mref, nonWildcard, fun, exactMethod, true);
+        } else if (TypeOps.isUnresolved(mref.getTypeToSearch())) {
+            // Then this is neither an exact nor inexact method ref,
+            // we just don't know what it is.
+
+            // The return values of the mref are assimilated to an (*unknown*) type.
+            checker.checkExprConstraint(infCtx, ts.UNKNOWN, fun.getReturnType());
+            completeMethodRefInference(mref, nonWildcard, fun, ts.UNRESOLVED_METHOD, false);
         } else {
             // Otherwise, the method reference is inexact, and:
 
