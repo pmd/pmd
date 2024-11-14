@@ -180,7 +180,7 @@ public final class TestFrameworksUtil {
             || isExpectExceptionCall(call);
     }
 
-    private static boolean isSoftAssert(ASTMethodCall call) {
+    public static boolean isSoftAssert(ASTMethodCall call) {
         JTypeMirror declaringType = call.getMethodType().getDeclaringType();
         return (TypeTestUtil.isA("org.assertj.core.api.StandardSoftAssertionsProvider", declaringType)
                 || TypeTestUtil.isA("org.assertj.core.api.Java6StandardSoftAssertionsProvider", declaringType)

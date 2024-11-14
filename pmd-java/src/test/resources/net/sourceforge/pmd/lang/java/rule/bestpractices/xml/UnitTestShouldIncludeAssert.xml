@@ -806,4 +806,42 @@ class ShouldIncludeAssertTest {
 
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4113 [java] JUnitTestsShouldIncludeAssert - false positive with SoftAssertionsExtension</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>27</expected-linenumbers>
+        <code><![CDATA[
+import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+@ExtendWith({SoftAssertionsExtension.class})
+class ShouldIncludeAssertTest {
+  @InjectSoftAssertions private SoftAssertions softly;
+
+  @Test
+  void falsePositive1() {
+    softly.assertThat(false).isTrue();
+    softly.assertThat(true).isFalse();
+  }
+
+  @Test
+  void falsePositive2() {
+    SoftAssertions.assertSoftly(
+        softly2 -> {
+          softly2.assertThat(false).isTrue();
+          softly2.assertThat(true).isFalse();
+        });
+  }
+
+  @Test
+  void falseNegative() {
+    // no assertion at all
+  }
+}
+]]></code>
+    </test-code>
 </test-data>
