@@ -704,4 +704,39 @@ class C {
             buildItem.methodType.symbol shouldBe buildItemDecl
         }
     }
+
+    parserTest("Unresolved type should also allow unchecked conversion") {
+        // The problem here is that ConstraintViolation<?> is not convertible to ConstraintViolation,
+        // because ConstraintViolation is not on the classpath.
+
+        val (acu, _) = parser.parseWithTypeInferenceSpy(
+            """
+            import java.util.Set;
+            class Foo {
+                private void foo(ConstraintViolation constraintViolation) {
+                    constraintViolation.toString();
+                }
+
+                public void foos(Set<ConstraintViolation<?>> constraintViolations) {
+                    constraintViolations.forEach(this::foo);
+                }
+
+            }
+                """
+        )
+
+//        val (foreach) = acu.methodCalls().toList()
+        val constraintViolationT = acu.descendants(ASTClassType::class.java)
+            .filter { it.simpleName == "ConstraintViolation" }
+            .firstOrThrow().typeMirror.symbol as JClassSymbol
+        val (fooDecl) = acu.methodDeclarations().toList { it.symbol }
+        val (mref) = acu.descendants(ASTMethodReference::class.java).toList()
+
+        acu.withTypeDsl {
+            mref.referencedMethod.symbol shouldBe fooDecl
+
+            mref shouldHaveType java.util.function.Consumer::class[constraintViolationT[`?`]]
+
+        }
+    }
 })
