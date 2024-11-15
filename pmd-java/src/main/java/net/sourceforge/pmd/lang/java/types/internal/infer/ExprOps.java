@@ -78,6 +78,11 @@ final class ExprOps {
                 //  a type variable if the type variable is a type parameter of the candidate method.
                 return m.getTypeParameters().contains(t);
             }
+            if (TypeOps.isUnresolved(t)) {
+                // Then we will not find a functional interface method.
+                // Treat the argument as potentially compatible though.
+                return true;
+            }
             JMethodSig fun = TypeOps.findFunctionalInterfaceMethod(t);
             if (fun == null) {
                 // t is not a functional interface

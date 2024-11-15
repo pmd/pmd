@@ -702,4 +702,52 @@ class C {
             buildItem.methodType.symbol shouldBe buildItemDecl
         }
     }
+
+    parserTest("Type inference should treat lambda with unresolved target type as UNKNOWN") {
+
+        // here the FunctionalItf is the target type for the lambda
+        // but it is unresolved. It should not prevent type inference from
+        // resolving foo and bar to their respective overloads
+        val (acu, _) = parser.parseWithTypeInferenceSpy(
+            """
+            class Foo {
+                public void methodA() {
+                    foo(() -> "auie");
+                    foo(1, () -> "auie");
+                    var x = bar(() -> "");
+                }
+
+                private void foo(int y, FunctionalItf x) {
+                }
+                private void foo(FunctionalItf x) {
+                    return SummaryDto.ItemDto.builder().build();
+                }
+                private <T extends FunctionalItf> T bar(T x) {
+                    return SummaryDto.ItemDto.builder().build();
+                }
+                // interface FunctionalItf { String x(); }
+            }
+                """
+        )
+
+        val (foo1, foo2, bar) = acu.methodCalls().toList()
+        val functItfT = acu.descendants(ASTClassType::class.java)
+            .filter { it.simpleName == "FunctionalItf" }
+            .firstOrThrow().typeMirror
+        val (_, foo2Decl, fooDecl, barDecl) = acu.methodDeclarations().toList { it.symbol }
+        val lambdas = acu.descendants(ASTLambdaExpression::class.java).toList()
+
+        acu.withTypeDsl {
+            foo1.methodType.symbol shouldBe fooDecl
+            foo2.methodType.symbol shouldBe foo2Decl
+            bar.methodType.symbol shouldBe barDecl
+
+            for (lambda in lambdas) {
+                lambda shouldHaveType functItfT
+                lambda.functionalMethod shouldBe ts.UNRESOLVED_METHOD
+            }
+
+            bar shouldHaveType functItfT
+        }
+    }
 })

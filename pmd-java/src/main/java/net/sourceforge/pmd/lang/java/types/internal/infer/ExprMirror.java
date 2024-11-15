@@ -298,7 +298,8 @@ public interface ExprMirror {
 
         /**
          * Returns the types of the explicit parameters. If the lambda
-         * is implicitly typed, then returns null.
+         * is implicitly typed, then returns null. If some parameters
+         * have a var type, returns {@link TypeSystem#UNKNOWN} for those.
          *
          * <p>Note that a degenerate case of explicitly typed lambda
          * expression is a lambda with zero formal parameters.
@@ -346,7 +347,15 @@ public interface ExprMirror {
          */
         boolean isVoidCompatible();
 
-        void updateTypingContext(JMethodSig groundFun);
+        /**
+         * Set the currently considered type of the parameters.
+         * This may change depending on which target type we are currently
+         * considering. The type of parameters (and therefore the typing context)
+         * may influence the type of the return values of the lambda.
+         *
+         * @param formalParameters formal parameter types of the lambda
+         */
+        void updateTypingContext(List<? extends JTypeMirror> formalParameters);
     }
 
     /**

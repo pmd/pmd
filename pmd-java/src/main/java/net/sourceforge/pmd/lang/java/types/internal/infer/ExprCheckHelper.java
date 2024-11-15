@@ -17,6 +17,7 @@ import static net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.Bo
 import static net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind.UPPER;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -115,7 +116,8 @@ final class ExprCheckHelper {
         }
 
         if (expr instanceof FunctionalExprMirror) { // those are never standalone
-            JClassType funType = getProbablyFunctItfType(targetType, expr);
+
+            JClassType funType = getProbablyFunctItfType(targetType, (FunctionalExprMirror) expr);
             if (funType == null) {
                 /*
                  * The functional expression has an inference variable as a target type,
@@ -158,6 +160,23 @@ final class ExprCheckHelper {
         }
 
         return false;
+    }
+
+    private void handleFunctionalExprWithoutTargetType(FunctionalExprMirror expr, JTypeMirror targetType) {
+        if (expr instanceof LambdaExprMirror) {
+            LambdaExprMirror lambda = (LambdaExprMirror) expr;
+            List<JTypeMirror> paramTypes;
+            List<JTypeMirror> explicit = lambda.getExplicitParameterTypes();
+            paramTypes = explicit != null
+                         ? explicit : Collections.nCopies(lambda.getParamCount(), ts.UNKNOWN);
+            lambda.updateTypingContext(paramTypes);
+            // checker.checkExprConstraint(infCtx, ts.UNKNOWN, fun.getReturnType());
+        }
+        // todo method ref
+        infCtx.addInstantiationListener(infCtx.freeVarsIn(targetType), ctx -> {
+            expr.setInferredType(ctx.ground(targetType));
+            expr.setFunctionalMethod(ts.UNRESOLVED_METHOD);
+        });
     }
 
     private boolean isInvocationCompatible(JTypeMirror targetType, InvocationMirror invoc, boolean isStandalone) {
@@ -210,7 +229,7 @@ final class ExprCheckHelper {
         return true;
     }
 
-    private @Nullable JClassType getProbablyFunctItfType(final JTypeMirror targetType, ExprMirror expr) {
+    private @Nullable JClassType getProbablyFunctItfType(final JTypeMirror targetType, FunctionalExprMirror expr) {
         JClassType asClass;
         if (targetType instanceof InferenceVar && site != null) {
             if (site.isInFinalInvocation()) {
@@ -222,6 +241,15 @@ final class ExprCheckHelper {
             asClass = asClassType(targetType);
         }
 
+        if (asClass == null && TypeOps.isUnresolved(targetType)
+            || asClass != null && TypeOps.isUnresolved(asClass)) {
+            // Then the whole thing will fail because we cannot find
+            // a functional method/ it is not a proper functional interface.
+            JTypeMirror target = asClass != null ? asClass : targetType;
+            handleFunctionalExprWithoutTargetType(expr, target);
+            // We consider it as matching though, just as if the lambda had an (*unknown*) type.
+            return null;
+        }
         if (asClass == null) {
             throw ResolutionFailedException.notAFunctionalInterface(infer.LOG, targetType, expr);
         }
@@ -573,7 +601,7 @@ final class ExprCheckHelper {
                         lambda.setInferredType(solvedCtx.ground(groundTargetType));
                         JMethodSig solvedGroundFun = solvedCtx.ground(groundFun);
                         lambda.setFunctionalMethod(solvedGroundFun);
-                        lambda.updateTypingContext(solvedGroundFun);
+                        lambda.updateTypingContext(solvedGroundFun.getFormalParameters());
                     }
                     JTypeMirror groundResult = solvedCtx.ground(result);
                     // We need to build another checker that uses the solved context.
@@ -592,7 +620,7 @@ final class ExprCheckHelper {
         }
 
         if (mayMutateExpr()) { // we know that the lambda matches now
-            lambda.updateTypingContext(groundFun);
+            lambda.updateTypingContext(groundFun.getFormalParameters());
         }
         return true;
     }
