@@ -2243,4 +2243,24 @@ public class ObtainViaTest {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>UnusedPrivateMethod #5113</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.Optional;
+
+            public class VarTest {
+                public Optional<Boolean> foo(int param) {
+                    var optional = param == 0 ? Optional.of(true) : Optional.of(false);
+                    return optional.flatMap(this::dummy);
+                }
+
+                private Optional<Boolean> dummy(boolean foo) {
+                    return Optional.of(foo);
+                }
+            }
+            ]]></code>
+    </test-code>
+
 </test-data>
