@@ -2218,4 +2218,36 @@ public class ObtainViaTest {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>#5097 UnusedPrivateMethod with unresolved target for method reference</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[package com.mytest;
+
+        import jakarta.validation.ConstraintViolation; //imported from jakarta.validation:jakarta.validation-api:3.0.2
+        import java.util.List;
+        import java.util.Set;
+
+        public class UnusedPrivateMethodFalsePositive {
+            //this does not trigger UnusedPrivateMethod
+            private void doWork(List obj) {
+                obj.toString();
+            }
+
+            public void execute(Set<List<?>> listOfLists) {
+                listOfLists.forEach(this::doWork);
+            }
+
+            //BUT this does???
+            //UnusedPrivateMethod -  this as a false positive - but what is different?
+            private void addValidationError(ConstraintViolation constraintViolation) {
+                constraintViolation.toString();
+            }
+
+            public void addValidationErrors(Set<ConstraintViolation<?>> constraintViolations) {
+                constraintViolations.forEach(this::addValidationError);
+            }
+
+        }
+            ]]></code>
+    </test-code>
 </test-data>
