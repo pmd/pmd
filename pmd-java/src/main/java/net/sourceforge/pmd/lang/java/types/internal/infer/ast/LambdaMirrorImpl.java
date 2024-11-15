@@ -79,7 +79,7 @@ class LambdaMirrorImpl extends BaseFunctionalMirror<ASTLambdaExpression> impleme
         }
 
         if (parameters.toStream().all(ASTLambdaParameter::isTypeInferred)) {
-            return null;
+            return null; // NOPMD ReturnEmptyCollectionRatherThanNull
         }
 
         return parameters.toStream()
