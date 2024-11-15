@@ -530,6 +530,7 @@ class C {
         val (mref) = acu.descendants(ASTMethodReference::class.java).toList()
 
         val (lambdaCall, mrefCall) = acu.descendants(ASTMethodCall::class.java).toList()
+        val (fooDecl) = acu.declaredMethodSignatures().toList()
 
         spy.shouldHaveNoApplicableMethods(lambdaCall)
         spy.shouldHaveNoApplicableMethods(mrefCall)
@@ -540,7 +541,7 @@ class C {
 
             mref shouldHaveType ts.UNKNOWN
             mref.functionalMethod shouldBe ts.UNRESOLVED_METHOD
-            mref.referencedMethod shouldBe ts.UNRESOLVED_METHOD
+            mref.referencedMethod shouldBe fooDecl // still populated because unambiguous
         }
     }
 
@@ -562,6 +563,7 @@ class C {
 
         val (lambda) = acu.descendants(ASTLambdaExpression::class.java).toList()
         val (mref) = acu.descendants(ASTMethodReference::class.java).toList()
+        val (fooDecl) = acu.declaredMethodSignatures().toList()
 
         spy.shouldHaveNoLambdaCtx(lambda)
         spy.shouldHaveNoLambdaCtx(mref)
@@ -572,7 +574,7 @@ class C {
 
             mref shouldHaveType ts.UNKNOWN
             mref.functionalMethod shouldBe ts.UNRESOLVED_METHOD
-            mref.referencedMethod shouldBe ts.UNRESOLVED_METHOD
+            mref.referencedMethod shouldBe fooDecl // still populated because unambiguous
         }
     }
 
