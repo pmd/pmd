@@ -18,6 +18,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  * @deprecated Since 7.8.0. This class was never intended to be generated. It will be removed with no replacement.
  */
 
+@SuppressWarnings("PMD.UncommentedEmptyMethodBody")
 @Deprecated
 @net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")
  public class GherkinBaseListener implements GherkinListener {

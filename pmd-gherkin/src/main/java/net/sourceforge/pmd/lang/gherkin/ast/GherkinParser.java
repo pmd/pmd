@@ -6,6 +6,8 @@
 // Generated from net/sourceforge/pmd/lang/gherkin/ast/Gherkin.g4 by ANTLR 4.9.3
 package net.sourceforge.pmd.lang.gherkin.ast;
 
+// CPD-OFF
+
 import java.util.List;
 
 import org.antlr.v4.runtime.NoViableAltException;
