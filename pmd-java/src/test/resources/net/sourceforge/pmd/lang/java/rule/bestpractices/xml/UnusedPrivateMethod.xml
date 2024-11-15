@@ -2306,7 +2306,7 @@ import java.util.Set;
 public class Foo {
     private void foo(AnotherUnresolvedType baz) {}
     private void foo(UnresolvedType baz) {}
-    public void bar(Set<UnresolvedType> s) {
+    public void bar(Set<SomeOtherUnresolvedType> s) {
         s.forEach(this::foo);  // Not being able to resolve UnresolvedType and AnotherUnresolvedType means we can't tell which foo is being used here…
     }
 }
