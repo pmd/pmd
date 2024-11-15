@@ -2237,5 +2237,80 @@ public class ObtainViaTest {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>UnusedPrivateMethod #5083 - method reference without target type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            @Getter
+            @RequiredArgsConstructor
+            enum GenerationType {
+                APPLE_DESKTOP("https://apps.apple.com/app/id", GenerationType::isAppleType),
+                APPLE_ITUNES("https://itunes.apple.com/app/id", GenerationType::isAppleType),
+                SAMSUNG("https://www.samsung.com/us/appstore/app/", GenerationType::isSamsungType),
+                ROKU("https://channelstore.roku.com/details/", GenerationType::isRokuType),
+                AMAZON("https://www.amazon.com/dp/", GenerationType::isAmazonType),
+                ANDROID("https://play.google.com/store/apps/details?id=", GenerationType::isAndroidType);
+
+                private final String baseUrl;
+                private final Predicate<String> predicate;
+
+                private static boolean isAppleType(String data) {
+                    return "apple".equals(data);
+                }
+
+                private static boolean isRokuType(String data) {
+                    return "roku".equals(data);
+                }
+
+                private static boolean isSamsungType(String data) {
+                    return "samsung".equals(data);
+                }
+
+                private static boolean isAmazonType(String data) {
+                    return "amazon".equals(data);
+                }
+
+                private static boolean isAndroidType(String data) {
+                    return "android".equals(data);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UnusedPrivateMethod #5083 - method reference without target type (2)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class GenerationType {
+                static {
+                    foo(GenerationType::isAndroidType);
+                }
+                {
+                    foo(this::instance);
+                }
+
+                private  boolean instance(String data) {}
+                private static boolean isAndroidType(String data) {
+                    return "android".equals(data);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UnusedPrivateMethod #5083 - method reference without target type (3)</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+import java.util.Set;
+
+public class Foo {
+    private void foo(AnotherUnresolvedType baz) {}
+    private void foo(UnresolvedType baz) {}
+    public void bar(Set<UnresolvedType> s) {
+        s.forEach(this::foo);  // Not being able to resolve UnresolvedType and AnotherUnresolvedType means we can't tell which foo is being used here…
+    }
+}
+            ]]></code>
+    </test-code>
 
 </test-data>
