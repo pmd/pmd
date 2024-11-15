@@ -7865,6 +7865,24 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "chenguangqi",
+      "name": "天热吃西瓜",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6231010?v=4",
+      "profile": "http://chenguangqi.github.io/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "wahajenius",
+      "name": "Willem A. Hajenius",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7836322?v=4",
+      "profile": "https://github.com/wahajenius",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

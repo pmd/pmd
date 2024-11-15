@@ -50,15 +50,14 @@ class LineNumbers {
             nextIndex = determineLocation((AbstractHtmlNode<?>) child, nextIndex);
         }
 
-        // autoclosing element, eg <a />
-        boolean isAutoClose = n.getNumChildren() == 0
-                && n instanceof ASTHtmlElement
-                // nextIndex is up to the closing > at this point
-                && htmlString.startsWith("/>", nextIndex - 2);
+        // explicitly closing element, eg. </a>
+        boolean hasCloseElement = n instanceof ASTHtmlElement
+                // nextIndex is up to the closing tag at this point
+                && htmlString.startsWith("</" + n.getXPathNodeName() + ">", nextIndex);
 
         if (n instanceof ASTHtmlDocument) {
             nextIndex = htmlString.length();
-        } else if (n instanceof ASTHtmlElement && !isAutoClose) {
+        } else if (n instanceof ASTHtmlElement && hasCloseElement) {
             nextIndex += 2 + n.getXPathNodeName().length() + 1; // </nodename>
         } else if (n instanceof ASTHtmlComment) {
             nextIndex += 4 + 3; // <!-- and -->
