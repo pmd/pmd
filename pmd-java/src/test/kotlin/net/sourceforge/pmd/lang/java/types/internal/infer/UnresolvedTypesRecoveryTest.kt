@@ -530,17 +530,21 @@ class C {
         val (mref) = acu.descendants(ASTMethodReference::class.java).toList()
 
         val (lambdaCall, mrefCall) = acu.descendants(ASTMethodCall::class.java).toList()
+        val fooDecl = acu.methodDeclarations()[0]!!
+        val targetTy = acu.descendants(ASTClassType::class.java).firstOrThrow().typeMirror
 
-        spy.shouldHaveNoApplicableMethods(lambdaCall)
-        spy.shouldHaveNoApplicableMethods(mrefCall)
+        spy.shouldHaveUnresolvedLambdaCtx(lambda)
+        spy.shouldHaveUnresolvedLambdaCtx(mref)
 
         acu.withTypeDsl {
-            lambda shouldHaveType ts.UNKNOWN
+            lambda shouldHaveType targetTy
             lambda.functionalMethod shouldBe ts.UNRESOLVED_METHOD
 
-            mref shouldHaveType ts.UNKNOWN
+            mref shouldHaveType targetTy
             mref.functionalMethod shouldBe ts.UNRESOLVED_METHOD
             mref.referencedMethod shouldBe ts.UNRESOLVED_METHOD
+            lambdaCall.methodType.symbol shouldBe fooDecl.symbol
+            mrefCall.methodType.symbol shouldBe fooDecl.symbol
         }
     }
 
@@ -748,6 +752,101 @@ class C {
             }
 
             bar shouldHaveType functItfT
+        }
+    }
+
+    parserTest("Lambda with unresolved target type that has parameters") {
+
+        // here the FunctionalItf is the target type for the lambda
+        // but it is unresolved. It should not prevent type inference from
+        // resolving foo and bar to their respective overloads
+        val (acu, _) = parser.parseWithTypeInferenceSpy(
+            """
+            class Foo {
+                public void methodA() {
+                    foo((a, b) -> a + b);
+                    foo(1, (var a, int b) -> a + b);
+                    var x = bar((int a, int b) -> a + b);
+                }
+
+                private void foo(int y, FunctionalItf x) {
+                }
+                private void foo(FunctionalItf x) {
+                    return SummaryDto.ItemDto.builder().build();
+                }
+                private <T extends FunctionalItf> T bar(T x) {
+                    return SummaryDto.ItemDto.builder().build();
+                }
+                // interface FunctionalItf { String x(int x, int y); }
+            }
+                """
+        )
+
+        val (foo1, foo2, bar) = acu.methodCalls().toList()
+        val functItfT = acu.descendants(ASTClassType::class.java)
+            .filter { it.simpleName == "FunctionalItf" }
+            .firstOrThrow().typeMirror
+        val (_, foo2Decl, fooDecl, barDecl) = acu.methodDeclarations().toList { it.symbol }
+        val lambdas = acu.descendants(ASTLambdaExpression::class.java).toList()
+        val (la, lb, lc) = lambdas
+
+        acu.withTypeDsl {
+            foo1.methodType.symbol shouldBe fooDecl
+            foo2.methodType.symbol shouldBe foo2Decl
+            bar.methodType.symbol shouldBe barDecl
+
+            for (lambda in lambdas) {
+                lambda shouldHaveType functItfT
+                lambda.functionalMethod shouldBe ts.UNRESOLVED_METHOD
+            }
+
+            bar shouldHaveType functItfT
+            la.varAccesses("a").forEach { it shouldHaveType ts.UNKNOWN }
+            lb.varAccesses("a").forEach { it shouldHaveType ts.UNKNOWN }
+            lc.varAccesses("a").forEach { it shouldHaveType int }
+
+            la.varAccesses("b").forEach { it shouldHaveType ts.UNKNOWN }
+            lb.varAccesses("b").forEach { it shouldHaveType int }
+            lc.varAccesses("b").forEach { it shouldHaveType int }
+        }
+    }
+
+    parserTest("Lambda with unresolved target type return type should be unknown") {
+
+        val (acu, _) = parser.logTypeInferenceVerbose().parseWithTypeInferenceSpy(
+            """
+            class Foo {
+                public void methodA() {
+                    // here the type of result is <T> which is an
+                    // argument for the unresolved functional
+                    // interface. result should be unknown, not Object.
+                    var result = foo(2, (a, b) -> a + b);
+                }
+
+                private <T> T foo(int y, FunctionalItf<T, Integer> x) {}
+
+                // interface FunctionalItf<A, B> { A fun(int x, B y); }
+            }
+                """
+        )
+
+        val (foo1) = acu.methodCalls().toList()
+        val functItfT = acu.descendants(ASTClassType::class.java)
+            .filter { it.simpleName == "FunctionalItf" }
+            .firstOrThrow().typeMirror.symbol as JClassSymbol
+        val (_, fooDecl) = acu.methodDeclarations().toList { it.symbol }
+        val (lambda) = acu.descendants(ASTLambdaExpression::class.java).toList()
+
+        acu.withTypeDsl {
+            foo1.methodType.symbol shouldBe fooDecl
+
+            lambda shouldHaveType functItfT[ts.UNKNOWN, int.box()]
+            lambda.functionalMethod shouldBe ts.UNRESOLVED_METHOD
+
+            lambda.varAccesses("a").forEach { it shouldHaveType ts.UNKNOWN }
+            lambda.varAccesses("b").forEach { it shouldHaveType ts.UNKNOWN }
+
+            acu.varId("result") shouldHaveType ts.UNKNOWN
         }
     }
 })

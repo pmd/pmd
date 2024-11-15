@@ -54,6 +54,12 @@ data class TypeInferenceSpy(private val spy: TypeInferenceLogger, val ts: TypeSy
             })
     }
 
+
+    fun shouldHaveUnresolvedLambdaCtx(lambdaOrMref: FunctionalExpression) {
+        verify(spy, times(1))
+            .functionalExprHasUnresolvedTargetType(any(), argThat { it.location == lambdaOrMref })
+    }
+
     fun shouldHaveNoLambdaCtx(lambdaOrMref: FunctionalExpression) {
         verify(spy, times(1))
             .logResolutionFail(argThat {
