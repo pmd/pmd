@@ -209,6 +209,7 @@
       <priority>3</priority>
    </rule>
    <!-- <rule ref="category/apex/bestpractices.xml/UnusedLocalVariable"/> -->
+   <!-- <rule ref="category/apex/bestpractices.xml/QueueableWithoutFinalizer"/> -->
    <!-- <rule ref="category/apex/errorprone.xml/OverrideBothEqualsAndHashcode" /> -->
    <!-- <rule ref="category/apex/errorprone.xml/InaccessibleAuraEnabledGetter" /> -->
 
