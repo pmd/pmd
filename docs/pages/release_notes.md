@@ -55,12 +55,23 @@ This is a {{ site.pmd.release_type }} release.
     to be generated. It will be removed with no replacement.
   * {%jdoc gherkin::lang.gherkin.ast.GherkinVisitor %} is deprecated for removal. This class was never intended
     to be generated. It will be removed with no replacement.
-* pmd-xml
-  * {%jdoc xml::lang.xml.antlr4.XMLLexer %} is deprecated for removal. Use {%jdoc !!xml::lang.xml.ast.XMLLexer %}
-    instead (note different package `ast` instead of `antlr4`).
+* pmd-julia
+  * {%jdoc julia::lang.julia.ast.JuliaBaseListener %} is deprecated for removal. This class was never intended to
+    be generated. It will be removed with no replacement.
+  * {%jdoc julia::lang.julia.ast.JuliaBaseVisitor %} is deprecated for removal. This class was never intended to
+    be generated. It will be removed with no replacement.
+  * {%jdoc julia::lang.julia.ast.JuliaListener %} is deprecated for removal. This class was never intended to
+    be generated. It will be removed with no replacement.
+  * {%jdoc julia::lang.julia.ast.JuliaParser %} is deprecated for removal. This class was never intended to
+    be generated. It will be removed with no replacement.
+  * {%jdoc julia::lang.julia.ast.JuliaVisitor %} is deprecated for removal. This class was never intended to
+    be generated. It will be removed with no replacement.
 * pmd-kotlin
   * {%jdoc kotlin::lang.kotlin.ast.UnicodeClasses %} is deprecated for removal. This class was never intended to
     be generated. It will be removed with no replacement.
+* pmd-xml
+  * {%jdoc xml::lang.xml.antlr4.XMLLexer %} is deprecated for removal. Use {%jdoc !!xml::lang.xml.ast.XMLLexer %}
+    instead (note different package `ast` instead of `antlr4`).
 
 ### ✨ External Contributions
 * [#5284](https://github.com/pmd/pmd/pull/5284): \[apex] Use case-insensitive input stream to avoid choking on Unicode escape sequences - [Willem A. Hajenius](https://github.com/wahajenius) (@wahajenius)
