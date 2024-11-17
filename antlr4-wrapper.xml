@@ -172,8 +172,8 @@ public class ${lexer-name}'/>
         </delete>
     </target>
 
-    <target name="pmd-language" depends="check-up-to-date, annotate-classes, pmd-language-processing, update-stamp-file"/>
-    <target name="pmd-language-processing" description="Adapt Antlr sources for PMD languages" depends="rename-parser"
+    <target name="pmd-language" depends="check-up-to-date, rename-parser, annotate-classes, pmd-language-processing, update-stamp-file"/>
+    <target name="pmd-language-processing" description="Adapt Antlr sources for PMD languages"
             unless="processing-not-required">
 
         <!-- Adapt parser. -->
