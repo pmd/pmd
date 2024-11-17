@@ -31,6 +31,17 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚨 API Changes
 
 #### Deprecations
+* pmd-julia
+  * {%jdoc julia::lang.julia.ast.JuliaBaseListener %} is deprecated for removal. This class was never intended to
+    be generated. It will be removed with no replacement.
+  * {%jdoc julia::lang.julia.ast.JuliaBaseVisitor %} is deprecated for removal. This class was never intended to
+    be generated. It will be removed with no replacement.
+  * {%jdoc julia::lang.julia.ast.JuliaListener %} is deprecated for removal. This class was never intended to
+    be generated. It will be removed with no replacement.
+  * {%jdoc julia::lang.julia.ast.JuliaParser %} is deprecated for removal. This class was never intended to
+    be generated. It will be removed with no replacement.
+  * {%jdoc julia::lang.julia.ast.JuliaVisitor %} is deprecated for removal. This class was never intended to
+    be generated. It will be removed with no replacement.
 * pmd-xml
   * {%jdoc xml::lang.xml.antlr4.XMLLexer %} is deprecated for removal. Use {%jdoc !!xml::lang.xml.ast.XMLLexer %}
     instead (note different package `ast` instead of `antlr4`).
