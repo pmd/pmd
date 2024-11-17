@@ -3,7 +3,7 @@
 //// Reversed engineered by Dimitri van Heesch
 ///////////////////////////////////////////////////////////////////////////////
 
-grammar Coco;
+lexer grammar Coco;
 
 module  : (declaration)* EOF
 	;

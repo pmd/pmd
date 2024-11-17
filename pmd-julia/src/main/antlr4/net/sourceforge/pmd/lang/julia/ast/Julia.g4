@@ -1,4 +1,4 @@
-grammar Julia;
+lexer grammar Julia;
 
 // Parser
 

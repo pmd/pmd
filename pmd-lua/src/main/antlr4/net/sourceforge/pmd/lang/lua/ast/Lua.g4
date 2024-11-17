@@ -65,7 +65,7 @@ Tested by Matt Hargett with:
     - Entire Lua codebase for nmap 7.92 : https://github.com/nmap/nmap
 */
 
-grammar Lua;
+lexer grammar Lua;
 
 chunk
     : block EOF

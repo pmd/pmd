@@ -26,7 +26,7 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-grammar Dart;
+lexer grammar Dart;
 
 compilationUnit: libraryDefinition | partDeclaration;
 

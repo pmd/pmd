@@ -1,4 +1,4 @@
-grammar Gherkin;
+lexer grammar Gherkin;
 
 // PARSER
 

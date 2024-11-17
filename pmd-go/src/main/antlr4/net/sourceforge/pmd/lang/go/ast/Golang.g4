@@ -30,7 +30,7 @@
  * https://golang.org/ref/spec
  *
  */
-grammar Golang;
+lexer grammar Golang;
 
 @parser::members {
 
