@@ -44,6 +44,17 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚨 API Changes
 
 #### Deprecations
+* pmd-coco
+  * {%jdoc coco::lang.coco.ast.CocoBaseListener %} is deprecated for removal. This class was never intended
+     to be generated. It will be removed with no replacement.
+   * {%jdoc coco::lang.coco.ast.CocoBaseVisitor %} is deprecated for removal. This class was never intended
+     to be generated. It will be removed with no replacement.
+   * {%jdoc coco::lang.coco.ast.CocoListener %} is deprecated for removal. This class was never intended
+     to be generated. It will be removed with no replacement.
+   * {%jdoc coco::lang.coco.ast.CocoParser %} is deprecated for removal. This class was never intended
+     to be generated. It will be removed with no replacement.
+   * {%jdoc coco::lang.coco.ast.CocoVisitor %} is deprecated for removal. This class was never intended
+     to be generated. It will be removed with no replacement.
 * pmd-gherkin
   * {%jdoc gherkin::lang.gherkin.ast.GherkinBaseListener %} is deprecated for removal. This class was never intended
     to be generated. It will be removed with no replacement.
