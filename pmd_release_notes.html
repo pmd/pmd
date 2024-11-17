@@ -1909,6 +1909,15 @@
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
+<h3 id="-new-and-changed-rules">🌟 New and changed rules</h3>
+
+<h4 id="new-rules">New Rules</h4>
+<ul>
+  <li>The new Apex rule <a href="pmd_rules_apex_bestpractices.html#queueablewithoutfinalizer"><code class="language-plaintext highlighter-rouge">QueueableWithoutFinalizer</code></a> detects when the Queueable interface
+is used but a Finalizer is not attached. Without attaching a Finalizer, there is no way of designing error
+recovery actions should the Queueable action fail.</li>
+</ul>
+
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
 <ul>
   <li>ant
@@ -1918,12 +1927,13 @@
   </li>
   <li>apex
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/5302">#5302</a>: [apex] New Rule: Queueable Should Attach Finalizer</li>
       <li><a href="https://github.com/pmd/pmd/issues/5333">#5333</a>: [apex] Token recognition errors for string containing unicode escape sequence</li>
     </ul>
   </li>
   <li>html
     <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5322">5322</a>: [html] CPD throws exception on when HTML file is missing closing tag</li>
+      <li><a href="https://github.com/pmd/pmd/issues/5322">#5322</a>: [html] CPD throws exception on when HTML file is missing closing tag</li>
     </ul>
   </li>
   <li>java
@@ -1963,6 +1973,7 @@ instead (note different package <code class="language-plaintext highlighter-roug
 <h3 id="-external-contributions">✨ External Contributions</h3>
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/5284">#5284</a>: [apex] Use case-insensitive input stream to avoid choking on Unicode escape sequences - <a href="https://github.com/wahajenius">Willem A. Hajenius</a> (@wahajenius)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5303">#5303</a>: [apex] New Rule: Queueable Should Attach Finalizer - <a href="https://github.com/mitchspano">Mitch Spano</a> (@mitchspano)</li>
 </ul>
 
 
@@ -1994,7 +2005,7 @@ instead (note different package <code class="language-plaintext highlighter-roug
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Nov 15, 2024 <br />
+             Site last generated: Nov 17, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

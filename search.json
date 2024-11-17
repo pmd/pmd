@@ -1156,6 +1156,15 @@
 "url": "pmd_rules_apex_bestpractices.html#unusedlocalvariable",
 "summary": "Rules which enforce generally accepted best practices."
 }
+,
+
+{
+"title": "QueueableWithoutFinalizer (Apex, Best Practices)",
+"tags": "",
+"keywords": "QueueableWithoutFinalizer",
+"url": "pmd_rules_apex_bestpractices.html#queueablewithoutfinalizer",
+"summary": "Rules which enforce generally accepted best practices."
+}
 
 
 

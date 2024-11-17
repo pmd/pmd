@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce generally accepted best practices.">
-<meta name="keywords" content=" Best Practices, ApexAssertionsShouldIncludeMessage, ApexUnitTestClassShouldHaveAsserts, ApexUnitTestClassShouldHaveRunAs, ApexUnitTestMethodShouldHaveIsTestAnnotation, ApexUnitTestShouldNotUseSeeAllDataTrue, AvoidGlobalModifier, AvoidLogicInTrigger, DebugsShouldUseLoggingLevel, UnusedLocalVariable">
+<meta name="keywords" content=" Best Practices, ApexAssertionsShouldIncludeMessage, ApexUnitTestClassShouldHaveAsserts, ApexUnitTestClassShouldHaveRunAs, ApexUnitTestMethodShouldHaveIsTestAnnotation, ApexUnitTestShouldNotUseSeeAllDataTrue, AvoidGlobalModifier, AvoidLogicInTrigger, DebugsShouldUseLoggingLevel, UnusedLocalVariable, QueueableWithoutFinalizer">
 <title>Best Practices | PMD Source Code Analyzer</title>
 
 
@@ -2213,6 +2213,60 @@ Therefore delegate the triggers work to a regular class (often called Trigger ha
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
+<h2 id="queueablewithoutfinalizer">QueueableWithoutFinalizer</h2>
+
+<p><strong>Since:</strong> PMD 7.8.0</p>
+
+<p><strong>Priority:</strong> Low (5)</p>
+
+<p>Detects when the Queueable interface is used but a Finalizer is not attached.
+It is best practice to call the <code class="language-plaintext highlighter-rouge">System.attachFinalizer(Finalizer f)</code> method within the <code class="language-plaintext highlighter-rouge">execute</code> method of a class which implements the <code class="language-plaintext highlighter-rouge">Queueable</code> interface.
+Without attaching a Finalizer, there is no way of designing error recovery actions should the Queueable action fail.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/bestpractices/QueueableWithoutFinalizerRule.java">net.sourceforge.pmd.lang.apex.rule.bestpractices.QueueableWithoutFinalizerRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Incorrect code, does not attach a finalizer.</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserUpdater</span> <span class="kd">implements</span> <span class="nc">Queueable</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">User</span><span class="o">&gt;</span> <span class="n">usersToUpdate</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">UserUpdater</span><span class="o">(</span><span class="nc">List</span><span class="o">&lt;</span><span class="nc">User</span><span class="o">&gt;</span> <span class="n">usersToUpdate</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">usersToUpdate</span> <span class="o">=</span> <span class="n">usersToUpdate</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">execute</span><span class="o">(</span><span class="nc">QueueableContext</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// no Finalizer is attached</span>
+        <span class="n">update</span> <span class="n">usersToUpdate</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// Proper code, attaches a finalizer.</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserUpdater</span> <span class="kd">implements</span> <span class="nc">Queueable</span><span class="o">,</span> <span class="nc">Finalizer</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">User</span><span class="o">&gt;</span> <span class="n">usersToUpdate</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">UserUpdater</span><span class="o">(</span><span class="nc">List</span><span class="o">&lt;</span><span class="nc">User</span><span class="o">&gt;</span> <span class="n">usersToUpdate</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">usersToUpdate</span> <span class="o">=</span> <span class="n">usersToUpdate</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">execute</span><span class="o">(</span><span class="nc">QueueableContext</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">attachFinalizer</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+        <span class="n">update</span> <span class="n">usersToUpdate</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">execute</span><span class="o">(</span><span class="nc">FinalizerContext</span> <span class="n">ctx</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">ctx</span><span class="o">.</span><span class="na">getResult</span><span class="o">()</span> <span class="o">==</span> <span class="nc">ParentJobResult</span><span class="o">.</span><span class="na">SUCCESS</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// Handle success</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="c1">// Handle failure</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/bestpractices.xml/QueueableWithoutFinalizer"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="unusedlocalvariable">UnusedLocalVariable</h2>
 
 <p><strong>Since:</strong> PMD 6.23.0</p>
@@ -2266,7 +2320,7 @@ Therefore delegate the triggers work to a regular class (often called Trigger ha
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Nov 15, 2024 <br />
+             Site last generated: Nov 17, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
