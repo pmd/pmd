@@ -14,10 +14,18 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+### 🌟 New and changed rules
+
+#### New Rules
+* The new Apex rule {% rule apex/bestpractices/QueueableWithoutFinalizer %} detects when the Queueable interface
+  is used but a Finalizer is not attached. Without attaching a Finalizer, there is no way of designing error
+  recovery actions should the Queueable action fail.
+
 ### 🐛 Fixed Issues
 * ant
   * [#1860](https://github.com/pmd/pmd/issues/1860): \[ant] Reflective access warnings on java > 9 and java < 17
 * apex
+  * [#5302](https://github.com/pmd/pmd/issues/5302): \[apex] New Rule: Queueable Should Attach Finalizer
   * [#5333](https://github.com/pmd/pmd/issues/5333): \[apex] Token recognition errors for string containing unicode escape sequence
 * html
   * [#5322](https://github.com/pmd/pmd/issues/5322): \[html] CPD throws exception on when HTML file is missing closing tag
@@ -42,6 +50,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### ✨ External Contributions
 * [#5284](https://github.com/pmd/pmd/pull/5284): \[apex] Use case-insensitive input stream to avoid choking on Unicode escape sequences - [Willem A. Hajenius](https://github.com/wahajenius) (@wahajenius)
+* [#5303](https://github.com/pmd/pmd/pull/5303): \[apex] New Rule: Queueable Should Attach Finalizer - [Mitch Spano](https://github.com/mitchspano) (@mitchspano)
 
 {% endtocmaker %}
 
