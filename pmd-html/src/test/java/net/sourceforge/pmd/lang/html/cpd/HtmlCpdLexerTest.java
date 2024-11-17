@@ -21,4 +21,13 @@ class HtmlCpdLexerTest extends CpdTextComparisonTest {
         doTest("SimpleHtmlFile");
     }
 
+    @Test
+    void invalidHtml() {
+        doTest("InvalidHtml");
+    }
+
+    @Test
+    void metaTag() {
+        doTest("MetaTag");
+    }
 }

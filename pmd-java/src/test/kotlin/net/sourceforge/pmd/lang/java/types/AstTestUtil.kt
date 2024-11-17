@@ -21,6 +21,7 @@ fun JavaNode.declaredMethodSignatures(): List<JMethodSig> = methodDeclarations()
 
 fun JavaNode.methodCalls(): DescendantNodeStream<ASTMethodCall> = descendants(ASTMethodCall::class.java)
 fun JavaNode.firstMethodCall() = methodCalls().crossFindBoundaries().firstOrThrow()
+fun JavaNode.firstMethodCall(name: String) = methodCalls().crossFindBoundaries().filter { it.methodName == name }.firstOrThrow()
 
 fun JavaNode.ctorCalls(): DescendantNodeStream<ASTConstructorCall> = descendants(ASTConstructorCall::class.java)
 fun JavaNode.firstCtorCall() = ctorCalls().crossFindBoundaries().firstOrThrow()

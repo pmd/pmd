@@ -138,4 +138,66 @@ public class SwitchWithRecordPattern {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5287 [java] TooFewBranchesForSwitch false-positive with switch using list of case constants</description>
+        <rule-property name="minimumNumberCaseForASwitch">3</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+enum SomeEnum { A, B, C, D }
+class Tester {
+    int checkSwitchExpression(SomeEnum someEnumValue) {
+        return switch(someEnumValue) {
+            case A, B, C -> 1;
+            default -> 0;
+        };
+    }
+
+    int checkSwitchStatement(SomeEnum someEnumValue) {
+        int result;
+        switch(someEnumValue) {
+            case A, B, C -> { result = 1; }
+            default -> { result = 0; }
+        }
+        return result;
+    }
+
+    int checkSwitchExpressionGroup(SomeEnum someEnumValue) {
+        return switch(someEnumValue) {
+            case A, B, C: yield 1;
+            default: yield 0;
+        };
+    }
+
+    int checkSwitchStatementGroup(SomeEnum someEnumValue) {
+        int result;
+        switch(someEnumValue) {
+            case A, B, C: result = 1; break;
+            default: result = 0; break;
+        }
+        return result;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>From #5311: Another example for list of case constants</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+  String foo(Bar bar) {
+    return switch (bar) {
+      case A, B, C, D -> "Hello";
+      case E, F, G -> "World";
+    };
+  }
+
+  enum Bar {
+    A, B, C, D, E, F, G
+  }
+}
+]]></code>
+    </test-code>
 </test-data>

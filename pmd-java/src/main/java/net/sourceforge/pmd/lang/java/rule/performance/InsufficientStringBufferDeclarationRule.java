@@ -240,6 +240,12 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
 
     private int calculateExpression(ASTExpression expression) {
         Object value = expression.getConstValue();
-        return value == null ? State.UNKNOWN_CAPACITY : (Integer) value;
+        if (value == null) {
+            return State.UNKNOWN_CAPACITY;
+        }
+        if (value instanceof Character) {
+            return (Character) value;
+        }
+        return (Integer) value;
     }
 }

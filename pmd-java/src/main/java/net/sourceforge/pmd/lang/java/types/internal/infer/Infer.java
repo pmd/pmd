@@ -36,7 +36,6 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.CtorInvocat
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
-import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.PolyExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
@@ -145,13 +144,19 @@ public final class Infer {
             LOG.logResolutionFail(rfe.getFailure());
             // here we set expected if not null, the lambda will have the target type
             expr.setInferredType(expected == null ? ts.UNKNOWN : expected);
+            expr.setFunctionalMethod(ts.UNRESOLVED_METHOD);
             if (expr instanceof MethodRefMirror) {
                 MethodRefMirror mref = (MethodRefMirror) expr;
-                mref.setFunctionalMethod(ts.UNRESOLVED_METHOD);
+                if (!TypeOps.isUnresolved(mref.getTypeToSearch())) {
+                    JMethodSig exactMethod = ExprOps.getExactMethod(mref);
+                    if (exactMethod != null) {
+                        // as a fallback, if the method reference is exact,
+                        // we populate the compile time decl anyway.
+                        mref.setCompileTimeDecl(exactMethod);
+                        return;
+                    }
+                }
                 mref.setCompileTimeDecl(ts.UNRESOLVED_METHOD);
-            } else {
-                LambdaExprMirror lambda = (LambdaExprMirror) expr;
-                lambda.setFunctionalMethod(ts.UNRESOLVED_METHOD);
             }
         }
     }
@@ -602,17 +607,20 @@ public final class Infer {
                 // see: https://docs.oracle.com/javase/specs/jls/se9/html/jls-18.html#jls-18.5.1
                 // as per https://docs.oracle.com/javase/specs/jls/se9/html/jls-18.html#jls-18.5.2
                 // we only test it can reduce, we don't commit inferred types at this stage
-                InferenceContext ctxCopy = infCtx.copy();
-                LOG.applicabilityTest(ctxCopy, m);
-                ctxCopy.solve(/*onlyBoundedVars:*/isPreJava8());
-
+                InferenceContext ctxCopy = infCtx.shallowCopy();
+                LOG.applicabilityTest(ctxCopy);
+                try {
+                    ctxCopy.solve(/*onlyBoundedVars:*/isPreJava8());
+                } finally {
+                    LOG.finishApplicabilityTest();
+                }
                 // if unchecked conversion was needed, update the site for invocation pass
                 if (ctxCopy.needsUncheckedConversion()) {
                     site.setNeedsUncheckedConversion();
                 }
 
                 // don't commit any types
-                return m;
+                return infCtx.mapToIVars(m);
             }
         } finally {
             // Note that even if solve succeeded, listeners checking deferred
