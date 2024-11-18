@@ -92,7 +92,7 @@
 
 
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
-        <kotlin.version>1.9.24</kotlin.version>
+        <kotlin.version>2.0.21</kotlin.version>
         <kotest.version>5.9.1</kotest.version>
         <junit5.version>5.11.2</junit5.version>
         <dokka.version>1.9.20</dokka.version>
