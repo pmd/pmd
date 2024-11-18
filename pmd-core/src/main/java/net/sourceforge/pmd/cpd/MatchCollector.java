@@ -23,7 +23,6 @@ class MatchCollector {
     private final TokenFileSet tokens;
     private final int minTileSize;
 
-    // todo add a tree data structure to represent containment of matches
 
     MatchCollector(SourceManager sourceManager, TokenFileSet tokens, int minTileSize) {
         this.sourceManager = sourceManager;
@@ -46,18 +45,20 @@ class MatchCollector {
             return;
         }
 
+        marks.sort(Comparator.naturalOrder());
+
         if (marks.size() == 2) {
             // common happy path
             SmallTokenEntry fst = marks.get(0);
             SmallTokenEntry snd = marks.get(1);
             int dupes = tokens.countDupTokens(fst, snd, 0);
-            if (isDuplicate(fst, snd, dupes)) {
-                recordMatch(Match.of(makeMark(fst, dupes), makeMark(snd, dupes)));
+            SmallTokenEntry bestMark = bestDuplicate(fst, snd, dupes);
+            if (bestMark != null) {
+                dupes = bestMark.prevToken;
+                recordMatch(Match.of(makeMark(fst, dupes), makeMark(bestMark, dupes)));
             }
             return;
         }
-
-        marks.sort(Comparator.naturalOrder());
 
         /*
             Compute the common prefix length of each token (=mark) with all other tokens in the list.
@@ -168,24 +169,87 @@ class MatchCollector {
         return new Mark(token, endToken);
     }
 
-    private boolean isDuplicate(SmallTokenEntry mark1, SmallTokenEntry mark2, int dupes) {
-        // "match too small" check
+
+    /*
+   One optimization we do is to prune marks that have same hash, but have the same preceding token.
+   This is because the preceding token necessarily also hos the same hash, and will yield a longer
+   match. However, the final, leftmost tokens that have the same sequence may overlap. For instance
+   in
+       A B C;   // 1
+       A B C;   // 2
+       A B C;   // 3
+       A B C;   // 4
+       A B C;   // 5
+       A B C;   // 6
+    with a tile size of 5. The hashes of A1, A2, A3, A4 will be equal, but we will only
+    have A1 and A2 in the mark set. That is because we first add A4, then A3, notice they
+    both are preceded by ;, so we remove them. Then we add A2 and A1, which are kept.
+    A1 and A2 have 4x4 tokens in common (4 lines of A B C;), but 3 of those lines are shared.
+
+    Ideally in this situation we want to report A1-A2 and A3-A4 as non-overlapping
+    maximal marks in one match.
+
+    We start by checking that A1 and A2 are in the same file and follow each other.
+    Then we compute their prefix length, which is 16. This is greater than the distance
+    between A1 and A2 (=4). That means that their common token sequence overlaps.
+    In this case we try to look 4 tokens away from A2 (=A3) and again compare with A1.
+    We find they have 12 tokens in common, and still overlap. But the non-overlapping
+    match part is 12-4=8 which is greater than our previous candidate, and greater than
+    the tile size (=5). (A1,A3) is therefore a better candidate than (A1,A2).
+    Next we check 4 tokens away from A3, ie we check (A1,A4). This still has 8
+    non-overlapping tokens so is not better. We stop and report (A1,A3).
+
+
+
+    */
+    private SmallTokenEntry bestDuplicate(final SmallTokenEntry mark1, final SmallTokenEntry mark2, final int dupes) {
         if (dupes < minTileSize) {
+            // not a good enough duplicate
+            return null;
+        }
+        if (mark1.fileId == mark2.fileId) {
+            assert mark1.indexInFile < mark2.indexInFile : mark1 + " should come before " + mark2;
+            final int distance = mark2.indexInFile - mark1.indexInFile;
+            if (distance + dupes < minTileSize * 2) {
+                // There are no non-overlapping marks that
+                // are bigger than the tile size.
+                return null;
+            }
+            if (distance < dupes && dupes % distance == 0) {
+                // Then probably cyclic repetition of length "distance"
+                // To report a non-overlapping match we take half of the
+                // total duplicated range.
+                int probableBest = (distance + dupes) / 2;
+                SmallTokenEntry best = mark1.getNext(probableBest);
+                int bestDups = tokens.countDupTokens(mark1, best, 0);
+                if (bestDups == probableBest) {
+                    best.prevToken = bestDups;
+                    return best;
+                }
+            }
+        }
+        mark2.prevToken = dupes;
+        return mark2;
+    }
+
+
+    private boolean isDuplicate(SmallTokenEntry mark1, SmallTokenEntry mark2, int dupes) { // NOPMD
+        // "match too small" check
+        if (dupes < minTileSize) { // NOPMD
             return false;
         }
         return true;
-//
-//        boolean sameFile = mark1.fileId == mark2.fileId;
-//        if (!sameFile) {
-//            return true;
-//        }
-//
-//
-//        // todo I believe this is always true
-//        int distance = mark2.indexInFile - mark1.indexInFile;
-//        // check that they do not overlap
-//        return distance >= minTileSize
-//            && dupes < distance + 1;
+
+        //        boolean sameFile = mark1.fileId == mark2.fileId;
+        //        if (!sameFile) {
+        //            return true;
+        //        }
+        //
+        ////
+        //        int distance = Math.abs(mark2.indexInFile - mark1.indexInFile);
+        //        // check that they do not overlap
+        //        return distance >= minTileSize
+        //            && dupes < distance + 1;
     }
 
     private void recordMatch(Match match) {

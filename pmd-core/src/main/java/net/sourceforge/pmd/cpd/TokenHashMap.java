@@ -19,10 +19,12 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 class TokenHashMap {
 
     private final Int2ObjectMap<Object> markGroups;
+    //    private final Map<Integer, Object> markGroups;
     private final List<List<SmallTokenEntry>> listSink;
 
     TokenHashMap(int size) {
         markGroups = new Int2ObjectOpenHashMap<>(size);
+        //        markGroups = new HashMap<>(size);
         listSink = new ArrayList<>();
     }
 

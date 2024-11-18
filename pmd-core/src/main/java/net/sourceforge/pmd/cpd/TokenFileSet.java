@@ -442,7 +442,7 @@ final class TokenFileSet {
         final int fileId;
         final int indexInFile;
         /** This is here to do quick checks for containment in another match during hashing. */
-        final int prevToken;
+        int prevToken;
 
         SmallTokenEntry(int fileId, int indexInFile, int prevToken) {
             this.fileId = fileId;
@@ -459,6 +459,10 @@ final class TokenFileSet {
             int cmp = Integer.compare(fileId, o.fileId);
             cmp = cmp != 0 ? cmp : Integer.compare(indexInFile, o.indexInFile);
             return cmp;
+        }
+
+        SmallTokenEntry getNext(int distance) {
+            return new SmallTokenEntry(fileId, indexInFile + distance, 0);
         }
 
         @Override

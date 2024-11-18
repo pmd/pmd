@@ -145,7 +145,7 @@
         <dependency>
             <groupId>it.unimi.dsi</groupId>
             <artifactId>fastutil-core</artifactId>
-            <version>8.5.13</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
