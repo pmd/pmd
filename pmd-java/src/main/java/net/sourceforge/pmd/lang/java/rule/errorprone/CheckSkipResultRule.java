@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 
 public class CheckSkipResultRule extends AbstractJavaRulechainRule {
 
-    private static final InvocationMatcher SKIP_METHOD = InvocationMatcher.parse("java.io.InputStream#skip(_*)");
+    private static final InvocationMatcher SKIP_METHOD = InvocationMatcher.parse("java.io.InputStream#skip(long)");
 
     public CheckSkipResultRule() {
         super(ASTMethodCall.class);

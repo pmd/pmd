@@ -7,10 +7,10 @@ package net.sourceforge.pmd.lang.apex.rule.design;
 import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTIfBlockStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 public class AvoidDeeplyNestedIfStmtsRule extends AbstractApexRule {
@@ -28,11 +28,9 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTUserClass node, Object data) {
+    public void start(RuleContext ctx) {
         depth = 0;
         depthLimit = getProperty(PROBLEM_DEPTH_DESCRIPTOR);
-
-        return super.visit(node, data);
     }
 
     @Override

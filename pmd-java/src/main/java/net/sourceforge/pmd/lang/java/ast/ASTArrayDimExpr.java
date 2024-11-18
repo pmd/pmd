@@ -17,7 +17,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTArrayDimExpr extends ASTArrayTypeDim implements Annotatable {
+public final class ASTArrayDimExpr extends ASTArrayTypeDim {
 
     ASTArrayDimExpr(int id) {
         super(id);

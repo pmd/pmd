@@ -10,15 +10,17 @@ import org.junit.platform.suite.api.Suite;
 @Suite
 @SelectClasses({
     ParserCornersTest.class,
+    Java8TreeDumpTest.class,
     Java9TreeDumpTest.class,
     Java14TreeDumpTest.class,
     Java15TreeDumpTest.class,
     Java16TreeDumpTest.class,
     Java17TreeDumpTest.class,
     Java21TreeDumpTest.class,
-    Java21PreviewTreeDumpTest.class,
     Java22TreeDumpTest.class,
-    Java22PreviewTreeDumpTest.class
+    Java22PreviewTreeDumpTest.class,
+    Java23TreeDumpTest.class,
+    Java23PreviewTreeDumpTest.class
 })
 class AllJavaAstTreeDumpTest {
 

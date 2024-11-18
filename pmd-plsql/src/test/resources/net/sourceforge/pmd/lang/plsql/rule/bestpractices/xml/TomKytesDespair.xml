@@ -7,7 +7,7 @@
     <test-code>
         <description>Example code</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>34</expected-linenumbers>
+        <expected-linenumbers>35</expected-linenumbers>
         <code><![CDATA[
 CREATE OR REPLACE PACKAGE BODY update_planned_hrs
 IS
@@ -43,7 +43,7 @@ BEGIN
    RETURN (existing_hours);
 
    EXCEPTION
-          WHEN OTHERS THEN NULL;
+          WHEN OTHERS THEN NULL; -- rule violation
 
    END existing_planned;
 
@@ -97,5 +97,27 @@ BEGIN
 END update_planned_hrs;
 /
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5132 [plsql] TomKytesDespair - exception for more complex exception handler</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+create or replace procedure x
+is
+  v_cursor number;
+begin
+  v_cursor  := DBMS_SQL.open_cursor;
+  dbms_output.put_line('Blah');
+exception
+  WHEN OTHERS THEN
+        IF DBMS_SQL.is_open(v_cursor) THEN
+          DBMS_SQL.close_cursor(v_cursor);
+        END IF;
+        DBMS_OUTPUT.Put_Line('Blah');
+        DBMS_OUTPUT.Put_Line(SQLERRM);
+end;
+/
+]]></code>
     </test-code>
 </test-data>

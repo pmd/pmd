@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -14,6 +15,7 @@ import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
@@ -35,26 +37,35 @@ final class CommentAssignmentPass {
     }
 
     public static void assignCommentsToDeclarations(ASTCompilationUnit root) {
-        final List<JavaComment> comments = root.getComments();
+        final List<JavadocComment> comments = root.getComments()
+                .stream()
+                .filter(JavadocComment.class::isInstance)
+                .map(JavadocComment.class::cast)
+                .collect(Collectors.toList());
         if (comments.isEmpty()) {
             return;
         }
 
-        outer:
         for (JavadocCommentOwner commentableNode : javadocOwners(root)) {
             JavaccToken firstToken = commentableNode.getFirstToken();
 
             for (JavaccToken maybeComment : GenericToken.previousSpecials(firstToken)) {
-                if (maybeComment.kind == JavaTokenKinds.FORMAL_COMMENT) {
-                    JavadocComment comment = new JavadocComment(maybeComment);
-                    // deduplicate the comment
-                    int idx = Collections.binarySearch(comments, comment, Comparator.comparing(JavaComment::getReportLocation, FileLocation.COORDS_COMPARATOR));
-                    assert idx >= 0 : "Formal comment not found? " + comment;
-                    comment = (JavadocComment) comments.get(idx);
-
-                    setComment(commentableNode, comment);
-                    continue outer;
+                boolean formalComment = maybeComment.kind == JavaTokenKinds.FORMAL_COMMENT;
+                boolean isJavadoc = formalComment || JavaAstUtils.isMarkdownComment(maybeComment);
+                if (!isJavadoc) {
+                    continue;
                 }
+
+                JavadocComment searcher = new JavadocComment(maybeComment);
+                // we only search for the start of the first token of the comment
+                int index = Collections.binarySearch(comments, searcher, Comparator.comparing(JavaComment::getReportLocation, Comparator.comparing(FileLocation::getStartPos)));
+                if (index >= 0) {
+                    setComment(commentableNode, comments.get(index));
+                    break;
+                }
+
+                // in case of markdown comments, we see each line as a separate token. We continue the search with
+                // the previous special token until we find the first token that starts the javadoc comment.
             }
         }
     }

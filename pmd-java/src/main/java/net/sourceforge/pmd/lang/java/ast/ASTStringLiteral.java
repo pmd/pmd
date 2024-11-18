@@ -36,6 +36,11 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
         return getText().toString();
     }
 
+    @Override
+    public Chars getLiteralText() {
+        return super.getLiteralText();
+    }
+
     void setTextBlock() {
         this.isTextBlock = true;
     }

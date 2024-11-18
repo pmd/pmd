@@ -16,7 +16,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
@@ -24,7 +23,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTGuard;
+import net.sourceforge.pmd.lang.java.ast.ASTImplicitClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIntersectionType;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -33,6 +34,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTModuleDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPattern;
+import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTReceiverParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordPattern;
@@ -46,11 +49,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTTypePattern;
 import net.sourceforge.pmd.lang.java.ast.ASTUnnamedPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
+import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
@@ -125,31 +130,39 @@ public class LanguageLevelChecker<T> {
      */
     private enum PreviewFeature implements LanguageFeature {
         /**
-         * String Templates.
+         * String Templates. Only support with Java 22 Preview now.
          * @see <a href="https://openjdk.org/jeps/430">JEP 430: String Templates (Preview)</a> (Java 21)
          * @see <a href="https://openjdk.org/jeps/459">JEP 459: String Templates (Second Preview)</a> (Java 22)
+         * @see <a href="https://bugs.openjdk.org/browse/JDK-8329949">JDK-8329949 Remove the String Templates preview feature</a> (Java 23)
          */
-        STRING_TEMPLATES(21, 22, false),
-
-        /**
-         * Unnamed variables and patterns.
-         * @see <a href="https://openjdk.org/jeps/443">JEP 443: Unnamed patterns and variables (Preview)</a> (Java 21)
-         * @see <a href="https://openjdk.org/jeps/456">JEP 456: Unnamed Variables & Patterns</a> (Java 22)
-         */
-        UNNAMED_VARIABLES_AND_PATTERNS(21, 21, true),
+        STRING_TEMPLATES(22, 22, false),
 
         /**
          * Unnamed Classes and Instance Main Methods
          * @see <a href="https://openjdk.org/jeps/445">JEP 445: Unnamed Classes and Instance Main Methods (Preview)</a> (Java 21)
          * @see <a href="https://openjdk.org/jeps/463">JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)</a> (Java 22)
+         * @see <a href="https://openjdk.org/jeps/477">JEP 477: Implicitly Declared Classes and Instance Main Methods (Third Preview)</a> (Java 23)
          */
-        UNNAMED_CLASSES(21, 22, false),
+        IMPLICITLY_DECLARED_CLASSES_AND_INSTANCE_MAIN_METHODS(22, 23, false),
 
         /**
          * Statements before super
          * @see <a href="https://openjdk.org/jeps/447">JEP 447: Statements before super(...) (Preview)</a> (Java 22)
+         * @see <a href="https://openjdk.org/jeps/482">JEP 482: Flexible Constructor Bodies (Second Preview)</a> (Java 23)
          */
-        STATEMENTS_BEFORE_SUPER(22, 22, false),
+        FLEXIBLE_CONSTRUCTOR_BODIES(22, 23, false),
+
+        /**
+         * Module import declarations
+         * @see <a href="https://openjdk.org/jeps/476">JEP 476: Module Import Declarations (Preview)</a> (Java 23)
+         */
+        MODULE_IMPORT_DECLARATIONS(23, 23, false),
+
+        /**
+         * Primitive types in patterns, instanceof, and switch
+         * @see <a href="https://openjdk.org/jeps/455">JEP 455: Primitive Types in Patterns, instanceof, and switch (Preview)</a> (Java 23)
+         */
+        PRIMITIVE_TYPES_IN_PATTERNS_INSTANCEOF_AND_SWITCH(23, 23, false),
 
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
@@ -381,6 +394,13 @@ public class LanguageLevelChecker<T> {
          */
         RECORD_PATTERNS(21),
 
+        /**
+         * Unnamed variables and patterns.
+         * @see <a href="https://openjdk.org/jeps/443">JEP 443: Unnamed patterns and variables (Preview)</a> (Java 21)
+         * @see <a href="https://openjdk.org/jeps/456">JEP 456: Unnamed Variables & Patterns</a> (Java 22)
+         */
+        UNNAMED_VARIABLES_AND_PATTERNS(22),
+
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
         private final int minJdkLevel;
@@ -421,10 +441,8 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
-        public Void visit(ASTCompilationUnit node, T data) {
-            if (node.isUnnamedClass()) {
-                check(node, PreviewFeature.UNNAMED_CLASSES, data);
-            }
+        public Void visit(ASTImplicitClassDeclaration node, T data) {
+            check(node, PreviewFeature.IMPLICITLY_DECLARED_CLASSES_AND_INSTANCE_MAIN_METHODS, data);
             return null;
         }
 
@@ -443,6 +461,9 @@ public class LanguageLevelChecker<T> {
         public Void visit(ASTImportDeclaration node, T data) {
             if (node.isStatic()) {
                 check(node, RegularLanguageFeature.STATIC_IMPORT, data);
+            }
+            if (node.isModuleImport()) {
+                check(node, PreviewFeature.MODULE_IMPORT_DECLARATIONS, data);
             }
             return null;
         }
@@ -635,6 +656,10 @@ public class LanguageLevelChecker<T> {
             if (node.getFirstChild() instanceof ASTPattern) {
                 check(node, RegularLanguageFeature.PATTERNS_IN_SWITCH_STATEMENTS, data);
             }
+            if (node.getFirstChild() instanceof ASTTypePattern
+                    && ((ASTTypePattern) node.getFirstChild()).getTypeNode() instanceof ASTPrimitiveType) {
+                check(node, PreviewFeature.PRIMITIVE_TYPES_IN_PATTERNS_INSTANCEOF_AND_SWITCH, data);
+            }
             return null;
         }
 
@@ -664,7 +689,7 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTUnnamedPattern node, T data) {
-            check(node, PreviewFeature.UNNAMED_VARIABLES_AND_PATTERNS, data);
+            check(node, RegularLanguageFeature.UNNAMED_VARIABLES_AND_PATTERNS, data);
             return null;
         }
 
@@ -696,10 +721,28 @@ public class LanguageLevelChecker<T> {
             super.visit(node, data);
             if (node.getBody().descendants(ASTExplicitConstructorInvocation.class).nonEmpty()) {
                 if (!(node.getBody().getFirstChild() instanceof ASTExplicitConstructorInvocation)) {
-                    check(node, PreviewFeature.STATEMENTS_BEFORE_SUPER, data);
+                    check(node, PreviewFeature.FLEXIBLE_CONSTRUCTOR_BODIES, data);
                 }
             }
             return null;
+        }
+
+        @Override
+        public Void visit(ASTInfixExpression node, T data) {
+            if (node.getOperator() == BinaryOp.INSTANCEOF) {
+                if (node.getRightOperand() instanceof ASTPatternExpression && node.getRightOperand().getFirstChild() instanceof ASTTypePattern) {
+                    ASTTypePattern typePattern = (ASTTypePattern) node.getRightOperand().getFirstChild();
+                    if (typePattern.getTypeNode() instanceof ASTPrimitiveType) {
+                        check(node, PreviewFeature.PRIMITIVE_TYPES_IN_PATTERNS_INSTANCEOF_AND_SWITCH, data);
+                    }
+                } else if (node.getRightOperand() instanceof ASTTypeExpression) {
+                    ASTTypeExpression typeExpression = (ASTTypeExpression) node.getRightOperand();
+                    if (typeExpression.getTypeNode() instanceof ASTPrimitiveType) {
+                        check(node, PreviewFeature.PRIMITIVE_TYPES_IN_PATTERNS_INSTANCEOF_AND_SWITCH, data);
+                    }
+                }
+            }
+            return super.visit(node, data);
         }
 
         private void checkIdent(JavaNode node, String simpleName, T acc) {
@@ -708,8 +751,16 @@ public class LanguageLevelChecker<T> {
             } else if ("assert".equals(simpleName)) {
                 check(node, Keywords.ASSERT_AS_AN_IDENTIFIER, acc);
             } else if ("_".equals(simpleName)) {
+                // see ASTVariableId#isUnnamed()
+                // java 1-8: "_" is a valid name for an identifier
+                // java 9-21: "_" is a restricted keyword and cannot be used anymore as an identifier
+                // java 22+: "_" denotes an unnamed variable
+
+                // in order to display a nicer message, we tell beginning with java 21,
+                // (which brings record patterns, where unnamed patterns might be interesting)
+                // that with java 22+ "_" can be used for unnamed variables
                 if (LanguageLevelChecker.this.jdkVersion >= 21) {
-                    check(node, PreviewFeature.UNNAMED_VARIABLES_AND_PATTERNS, acc);
+                    check(node, RegularLanguageFeature.UNNAMED_VARIABLES_AND_PATTERNS, acc);
                 } else {
                     check(node, Keywords.UNDERSCORE_AS_AN_IDENTIFIER, acc);
                 }

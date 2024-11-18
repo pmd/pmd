@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Ok integer</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+var x = 1;
+var a = 9; // Ok
+var b = 999999999999999; // Ok
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Bad integer</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The numeric literal '999999999999999999999999' will have at different value at runtime.</message>
+        </expected-messages>
+        <code>var x = 999999999999999999999999;</code>
+    </test-code>
+
+    <test-code>
+        <description>Ok float</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+var x = 1.1234567890123;
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Bad float</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+var z = 1.12345678901234567;
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok float w/ exponent</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+var x = 1.12e-4;
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Bad float w/ exponent</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The numeric literal '1.12345678901234567e-4' will have at different value at runtime.</message>
+        </expected-messages>
+        <code><![CDATA[
+var x = 1.12345678901234567e-4;
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#861 [ecmascript] InnaccurateNumericLiteral false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+var hex1 = 0x20;
+var hex2 = 0X20;
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[javascript] InaccurateNumericLiteral underscore separator notation false positive #4165</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+const value1a = 1_000_000; // number
+const value1b = 1_000.12_34; // decimal
+const value2 = 0b1010_0001_1000_0101; // binary
+const value3 = 0xA0_B0; // hex
+const value4 = 9_223_372_036_854_775_807n; // big int
+const value5 = 0o1234_5670; // octal
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4716 [javascript] InaccurateNumericLiteral with number 259200000</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+const USER_LIST_TRANSACTION_EXP_MS_1 = 259200000;
+var USER_LIST_TRANSACTION_EXP_MS_2 = 259200000;
+
+// big int primitives: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt
+const hugeBigInt = 129007199254740991n;
+]]></code>
+    </test-code>
+</test-data>

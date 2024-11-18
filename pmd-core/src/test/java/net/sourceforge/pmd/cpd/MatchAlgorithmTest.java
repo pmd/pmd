@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.cpd;
 
+import static net.sourceforge.pmd.util.CollectionUtil.emptyList;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
@@ -89,7 +90,7 @@ class MatchAlgorithmTest {
         tokens.tokenize(sourceCode, cpdLexer);
 
         List<Match> matches = CpdAnalysis.findMatches(sourceManager, new CPDNullListener(), tokens, 15);
-        SimpleRenderer.printlnReport(System.out, new CPDReport(sourceManager, matches, Collections.emptyMap()));
+        SimpleRenderer.printlnReport(System.out, new CPDReport(sourceManager, matches, Collections.emptyMap(), emptyList()));
         assertEquals(1, matches.size());
         Match match = matches.get(0);
         assertEquals(match.getMinTokenCount(), 17);

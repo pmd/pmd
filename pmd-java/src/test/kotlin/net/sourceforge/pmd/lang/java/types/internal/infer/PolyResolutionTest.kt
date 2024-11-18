@@ -5,26 +5,21 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
-import net.sourceforge.pmd.lang.test.ast.shouldBe
-import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import java.io.BufferedOutputStream
 import java.io.DataOutputStream
 import java.io.OutputStream
 
 /**
  * Expensive test cases for the overload resolution phase.
- *
- * Edit: So those used to be very expensive (think minutes of execution),
- * but optimisations made them very fast.
  */
 class PolyResolutionTest : ProcessorTestSpec({
-
-
     parserTest("Test context passing overcomes null lower bound") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             class Foo {
 
                 <T> java.util.List<T> asList(T[] arr) { return null; }
@@ -33,7 +28,8 @@ class PolyResolutionTest : ProcessorTestSpec({
                     java.util.List<Integer> c = asList(null);
                 }
             }
-        """)
+            """
+        )
 
         val call = acu.firstMethodCall()
 
@@ -43,19 +39,20 @@ class PolyResolutionTest : ProcessorTestSpec({
     }
 
     parserTest("Test nested ternaries in invoc ctx") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             class Foo {
 
                 static <T> T id(T t) { return t; }
 
-                {
+                void foo(int x) {
                     id(x > 0 ? Double.POSITIVE_INFINITY
                              : x < 0 ? Double.NEGATIVE_INFINITY
                                      : Double.NaN);
                 }
             }
-        """)
+            """
+        )
 
         val call = acu.firstMethodCall()
 
@@ -82,8 +79,8 @@ class PolyResolutionTest : ProcessorTestSpec({
     }
 
     parserTest("Test standalonable ternary in invoc ctx") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             class Foo {{
                 String packageName = "", className = "";
                 String.format("L%s%s%s;",
@@ -91,7 +88,8 @@ class PolyResolutionTest : ProcessorTestSpec({
                               (packageName.length() > 0 ? "/" : ""),
                               className);
             }}
-        """)
+            """
+        )
 
         val ternary = acu.descendants(ASTConditionalExpression::class.java).firstOrThrow()
 
@@ -101,19 +99,16 @@ class PolyResolutionTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("Ternary condition does not let context flow") {
+    parserTestContainer("Ternary condition does not let context flow") {
 
         suspend fun doTest(askOuterFirst: Boolean) {
-
             val acu = parser.parse("""
-
 class O {
     public static double copySign(double magnitude, double sign) {
         return Math.copySign(magnitude, (Double.isNaN(sign) ? 1.0d : sign));
     }
 }
         """.trimIndent())
-
 
             val (copySignCall) =
                     acu.descendants(ASTMethodCall::class.java).toList()
@@ -156,13 +151,11 @@ class O {
 
         doTest(askOuterFirst = true)
         doTest(askOuterFirst = false)
-
     }
 
-
     parserTest("Ternaries with an additive expr as context") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             class O {
 
                 public static String toString(Class c) {
@@ -170,7 +163,8 @@ class O {
                         + c.getName();
                 }
             }
-            """.trimIndent())
+            """.trimIndent()
+        )
 
 
         val additive = acu.descendants(ASTReturnStatement::class.java).firstOrThrow().expr!!
@@ -180,11 +174,9 @@ class O {
         }
     }
 
-
-
     parserTest("Standalone ctor in invocation ctx") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 import java.io.*;
 
 class O {
@@ -192,7 +184,8 @@ class O {
         new DataOutputStream(new BufferedOutputStream(out));
     }
 }
-        """.trimIndent())
+        """.trimIndent()
+        )
 
 
         val (outerCtor, innerCtor) = acu.ctorCalls().toList()
@@ -208,10 +201,9 @@ class O {
         }
     }
 
-
     parserTest("Method call in invocation ctx of standalone ctor") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 import java.io.*;
 
 class O {
@@ -223,7 +215,8 @@ class O {
     static OutputStream wrap(OutputStream out) { return out; }
 
 }
-        """.trimIndent())
+        """.trimIndent()
+        )
 
 
         val (outerCtor, wrapCall) = acu.descendants(InvocationNode::class.java).toList()
@@ -239,11 +232,9 @@ class O {
         }
     }
 
-
     parserTest("Method call in some ternary bug") {
-
-        val acu = parser.parse("""
-
+        val acu = parser.parse(
+            """
 class O {
 
      public static String getConnectPermission(Object url) {
@@ -252,13 +243,13 @@ class O {
         urlString = urlString.substring(4, bangPos > -1 ? bangPos : urlString.length()); // <- HERE the call to length is bugged
         return urlString;
     }
-
 }
-        """.trimIndent())
+            """.trimIndent()
+        )
 
 
         val ternary =
-                acu.descendants(ASTConditionalExpression::class.java).firstOrThrow()
+            acu.descendants(ASTConditionalExpression::class.java).firstOrThrow()
 
         ternary.shouldMatchN {
             ternaryExpr {
@@ -272,14 +263,11 @@ class O {
                 }
             }
         }
-
     }
 
-
-
     parserTest("Cast context doesn't constrain invocation type") {
-
-        val acu = parser.parse("""
+        val acu = parser.parse(
+            """
 class Scratch {
 
     static <T> T id(T t) {
@@ -293,7 +281,8 @@ class Scratch {
     }
 }
 
-        """.trimIndent())
+            """.trimIndent()
+        )
 
         val (t_Scratch) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
@@ -303,10 +292,10 @@ class Scratch {
             methodCall("id") {
                 with(it.typeDsl) {
                     it.methodType.shouldMatchMethod(
-                            named = "id",
-                            declaredIn = t_Scratch,
-                            withFormals = listOf(gen.t_Comparable),
-                            returning = gen.t_Comparable
+                        named = "id",
+                        declaredIn = t_Scratch,
+                        withFormals = listOf(gen.t_Comparable),
+                        returning = gen.t_Comparable
                     )
                 }
 
@@ -315,10 +304,9 @@ class Scratch {
         }
     }
 
-
     parserTest("Test C-style array dimensions as target type") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 import java.util.Iterator;
 import java.util.Map;
 
@@ -331,24 +319,24 @@ class Scratch {
     }
 }
 
-        """.trimIndent())
+            """.trimIndent()
+        )
 
         val t_Scratch = acu.firstTypeSignature()
 
         spy.shouldBeOk {
             acu.firstMethodCall().methodType.shouldMatchMethod(
-                    named = "getArr",
-                    declaredIn = t_Scratch,
-                    withFormals = listOf(ts.STRING.toArray()),
-                    returning = ts.STRING.toArray()
+                named = "getArr",
+                declaredIn = t_Scratch,
+                withFormals = listOf(ts.STRING.toArray()),
+                returning = ts.STRING.toArray()
             )
         }
     }
 
     parserTest("Array initializer is an assignment context") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
-
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
     class Scratch {
         {
             Runnable[] r = {
@@ -362,8 +350,8 @@ class Scratch {
             r = new Runnable[] { () -> { } }; // in array alloc
         }
     }
-
-        """.trimIndent())
+            """.trimIndent()
+        )
 
         val (lambda1, lambda2, lambda3) = acu.descendants(ASTLambdaExpression::class.java).toList()
 
@@ -371,6 +359,52 @@ class Scratch {
             lambda1 shouldHaveType Runnable::class.decl
             lambda2 shouldHaveType Runnable::class.decl
             lambda3 shouldHaveType Runnable::class.decl
+        }
+    }
+
+    parserTest("Test inference with varargs - bug #4980") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            import java.util.stream.Stream;
+            
+            class Foo {
+                public <T extends Number> T foo() {
+                    return null;
+                }
+                
+                public Stream<Number> bar() {
+                    return Stream.of(foo());
+                }
+            }
+            """
+        )
+
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call shouldHaveType gen.`t_Stream{Number}`
+        }
+    }
+
+    parserTest("Test bound checks does not throw concurrent mod exception") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            import java.util.stream.Stream;
+            class Enum<T extends Enum<T>> {}
+            class EnumSet<E extends Enum<E>> {
+                    public static <X extends Enum<X>> EnumSet<X> noneOf(Class<X> elementType) {
+                       Enum<?>[] universe = getUniverse(elementType);
+                    }
+                    private static <U extends Enum<U>> U[] getUniverse(Class<U> elementType) {}
+           }
+            """
+        )
+
+        val call = acu.firstMethodCall()
+        val xVar = acu.typeVar("X")
+
+        spy.shouldBeOk {
+            call shouldHaveType xVar.toArray()
         }
     }
 })

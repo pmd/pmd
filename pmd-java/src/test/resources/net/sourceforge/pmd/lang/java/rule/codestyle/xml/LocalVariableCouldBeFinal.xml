@@ -311,4 +311,102 @@ public class ClassWithLambda {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1619 FP with loop variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class ClassWithLambda {
+    void method() {
+        for (int i = 0, size = loaders.size(); i < size; ++i);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#3122 should consider blank variables</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>12,24</expected-linenumbers>
+        <code><![CDATA[
+public class ClassWithLambda {
+    void method() {
+        int a = 2; // nowarn
+        a = 4;
+        System.out.println(a);
+
+        int b; // nowarn
+        b = 1 + 2;
+        b = 4;
+        System.out.println(b);
+
+        int c; // warn
+        c = 1 + 2;
+        System.out.println(c);
+
+        int x;
+        if (getClass().isAnonymousClass()) {
+            x = 2;
+        } else {
+            x = 4;
+        }
+        // x is unused
+
+        int y; // warn
+        if (getClass().isAnonymousClass()) {
+            y = 2;
+        } else {
+            y = 4;
+        }
+        System.out.println(y);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#3122 should consider blank variables</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class ClassWithLambda {
+
+    void expandKey(byte key[]) {
+        int octet;
+        byte ek[] = new byte[128];
+
+        octet = key[0];
+        if ((octet & 0x80) != 0) {
+            ek[104] |=  4; ek[122] |= 32;
+        }
+
+        octet = key[1];
+        if ((octet & 0x80) != 0) {
+            ek[  1] |=  8; ek[  8] |= 32; ek[ 17] |=  1;
+            ek[ 24] |= 16; ek[ 35] |=  4; ek[ 50] |=  1;
+            ek[ 57] |= 16; ek[ 67] |=  8; ek[ 83] |=  1;
+            ek[ 88] |=  1; ek[ 98] |=  4; ek[105] |= 32;
+            ek[114] |= 32; ek[123] |=  2;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description> [java] LocalVariableCouldBeFinal false positive with try/catch #5046 </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Optional;
+import foo.FileWatcher;
+public class ClassWithLambda {
+    private Optional<FileWatcher> createFileWatcher() {
+        Optional<FileWatcher> optionalFileWatcher;  // false positive in PMD 7.2.0, cannot be final
+        try {
+            optionalFileWatcher = Optional.of(new FileWatcher());
+        } catch (final IOException e) {
+            optionalFileWatcher = Optional.empty();
+        }
+        return optionalFileWatcher;
+    }
+
+}
+        ]]></code>
+    </test-code>
 </test-data>

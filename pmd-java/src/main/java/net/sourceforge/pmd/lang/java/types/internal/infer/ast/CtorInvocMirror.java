@@ -29,8 +29,9 @@ import net.sourceforge.pmd.util.IteratorUtil;
 
 class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements CtorInvocationMirror {
 
-    CtorInvocMirror(JavaExprMirrors mirrors, ASTConstructorCall call, ExprMirror parent, MirrorMaker subexprMaker) {
-        super(mirrors, call, parent, subexprMaker);
+    CtorInvocMirror(JavaExprMirrors mirrors, ASTConstructorCall call,
+                    boolean mustBeStandalone, ExprMirror parent, MirrorMaker subexprMaker) {
+        super(mirrors, call, mustBeStandalone, parent, subexprMaker);
     }
 
     @Override
@@ -47,6 +48,8 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
     @Override
     public JTypeMirror getStandaloneType() {
         if (isDiamond()) {
+            // todo if the expr must be standalone then we
+            // should infer this from the provided arguments.
             return null;
         }
         return getNewType();
@@ -130,7 +133,7 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
 
 
         EnumCtorInvocMirror(JavaExprMirrors mirrors, ASTEnumConstant call, ExprMirror parent, MirrorMaker subexprMaker) {
-            super(mirrors, call, parent, subexprMaker);
+            super(mirrors, call, false, parent, subexprMaker);
         }
 
         @Override
@@ -163,7 +166,7 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
 
 
         ExplicitCtorInvocMirror(JavaExprMirrors mirrors, ASTExplicitConstructorInvocation call, ExprMirror parent, MirrorMaker subexprMaker) {
-            super(mirrors, call, parent, subexprMaker);
+            super(mirrors, call, false, parent, subexprMaker);
         }
 
         @Override

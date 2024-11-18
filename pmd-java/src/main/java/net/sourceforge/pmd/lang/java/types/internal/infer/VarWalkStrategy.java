@@ -90,6 +90,14 @@ interface VarWalkStrategy extends Iterator<Set<InferenceVar>> {
                 }
             }
 
+            ctx.getInstantiationDependencies().forEach((ivar, deps) -> {
+                Vertex<InferenceVar> vertex = graph.addLeaf(ivar);
+                for (InferenceVar dep : deps) {
+                    Vertex<InferenceVar> target = graph.addLeaf(dep);
+                    graph.addEdge(vertex, target);
+                }
+            });
+
             // Here, "α depends on β" is modelled by an edge α -> β
 
             // Merge strongly connected components into a "super node".

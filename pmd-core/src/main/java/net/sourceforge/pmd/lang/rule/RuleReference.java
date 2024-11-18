@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.rule;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -237,8 +236,7 @@ public class RuleReference implements Rule {
 
     @Override
     public List<PropertyDescriptor<?>> getOverriddenPropertyDescriptors() {
-        return propertyDescriptors == null ? Collections.<PropertyDescriptor<?>>emptyList()
-                                           : new ArrayList<>(propertyDescriptors);
+        return new ArrayList<>(getOverriddenPropertiesByPropertyDescriptor().keySet());
     }
 
     @Override

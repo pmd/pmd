@@ -9,9 +9,7 @@ import net.sourceforge.pmd.lang.java.ast.UnaryOp.UNARY_MINUS
 
 
 class ASTMultiplicativeExpressionTest : ParserTestSpec({
-
-    parserTest("Simple multiplicative expression should be flat") {
-
+    parserTestContainer("Simple multiplicative expression should be flat") {
         inContext(ExpressionParsingCtx) {
             "1 * 2 * 3" should parseAs {
                 infixExpr(MUL) {
@@ -47,9 +45,8 @@ class ASTMultiplicativeExpressionTest : ParserTestSpec({
         }
     }
 
-    parserTest("Changing operators should push a new node") {
+    parserTestContainer("Changing operators should push a new node") {
         inContext(ExpressionParsingCtx) {
-
             "1 * 2 / 3 % 2" should parseAs {
                 infixExpr(MOD) {
                     infixExpr(DIV) {
@@ -64,5 +61,4 @@ class ASTMultiplicativeExpressionTest : ParserTestSpec({
             }
         }
     }
-
 })

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.internal;
 
+import static java.util.Collections.emptySet;
 import static net.sourceforge.pmd.util.CollectionUtil.asSingle;
 
 import java.util.ArrayDeque;
@@ -177,12 +178,21 @@ public final class DataflowPass {
      */
     public static final class ReachingDefinitionSet {
 
+        static final ReachingDefinitionSet UNKNOWN = new ReachingDefinitionSet();
+        static final ReachingDefinitionSet EMPTY_KNOWN = new ReachingDefinitionSet(emptySet());
+
         private Set<AssignmentEntry> reaching;
         private boolean isNotFullyKnown;
         private boolean containsInitialFieldValue;
 
+
+        static {
+            assert !EMPTY_KNOWN.isNotFullyKnown();
+            assert UNKNOWN.isNotFullyKnown();
+        }
+
         private ReachingDefinitionSet() {
-            this.reaching = Collections.emptySet();
+            this.reaching = emptySet();
             this.containsInitialFieldValue = false;
             this.isNotFullyKnown = true;
         }
@@ -228,6 +238,10 @@ public final class DataflowPass {
         public static ReachingDefinitionSet unknown() {
             return new ReachingDefinitionSet();
         }
+
+        public static ReachingDefinitionSet blank() {
+            return new ReachingDefinitionSet(emptySet());
+        }
     }
 
     /**
@@ -256,7 +270,7 @@ public final class DataflowPass {
          * May be useful to check for reassignment.
          */
         public @NonNull Set<AssignmentEntry> getKillers(AssignmentEntry assignment) {
-            return killRecord.getOrDefault(assignment, Collections.emptySet());
+            return killRecord.getOrDefault(assignment, emptySet());
         }
 
         // These methods are only valid to be called if the dataflow pass has run.
@@ -278,14 +292,25 @@ public final class DataflowPass {
             return expr.getUserMap().computeIfAbsent(REACHING_DEFS, () -> reachingFallback(expr));
         }
 
-        // Fallback, to compute reaching definitions for some fields
+        // Fallback, to compute reaching definitions for some nodes
         // that are not tracked by the tree exploration. Final fields
         // indeed have a fully known set of reaching definitions.
-        // TODO maybe they should actually be tracked?
         private @NonNull ReachingDefinitionSet reachingFallback(ASTNamedReferenceExpr expr) {
             JVariableSymbol sym = expr.getReferencedSym();
-            if (sym == null || !sym.isField() || !sym.isFinal()) {
+            if (sym == null || sym.isField() && !sym.isFinal()) {
                 return ReachingDefinitionSet.unknown();
+            } else if (!sym.isField()) {
+                ASTVariableId node = sym.tryGetNode();
+                assert node != null
+                    : "Not a field, and symbol is known, so should be a local which has a node";
+                if (node.isLocalVariable()) {
+                    assert node.getInitializer() == null : "Should be a blank local variable";
+                    return ReachingDefinitionSet.blank();
+                } else {
+                    // Formal parameter or other kind of def which has
+                    // an implicit initializer.
+                    return ReachingDefinitionSet.unknown();
+                }
             }
 
             ASTVariableId node = sym.tryGetNode();
@@ -611,7 +636,16 @@ public final class DataflowPass {
                 SpanInfo exceptionalState = null;
                 int i = 0;
                 for (ASTCatchClause catchClause : node.getCatchClauses()) {
-                    SpanInfo current = acceptOpt(catchClause, catchSpans.get(i));
+                    /*
+                        Note: here we absorb the end state of the body, which is not necessary.
+                        We do that to conform to the language's definition of "effective-finality",
+                        which is more conservative than needed. Doing this fixes FPs in LocalVariableCouldBeFinal
+                        at the cost of some FNs in UnusedAssignment.
+                     */
+                    SpanInfo catchSpan = catchSpans.get(i);
+                    catchSpan.absorb(bodyState);
+
+                    SpanInfo current = acceptOpt(catchClause, catchSpan);
                     exceptionalState = current.absorb(exceptionalState);
                     i++;
                 }
@@ -965,23 +999,25 @@ public final class DataflowPass {
 
         }
 
-        private SpanInfo processAssignment(ASTExpression lhs, // LHS or unary operand
+        private SpanInfo processAssignment(ASTExpression lhs0, // LHS or unary operand
                                            ASTExpression rhs,  // RHS or unary
                                            boolean useBeforeAssigning,
                                            SpanInfo result) {
 
-            if (lhs instanceof ASTNamedReferenceExpr) {
-                JVariableSymbol lhsVar = ((ASTNamedReferenceExpr) lhs).getReferencedSym();
+            if (lhs0 instanceof ASTNamedReferenceExpr) {
+                ASTNamedReferenceExpr lhs = (ASTNamedReferenceExpr) lhs0;
+                JVariableSymbol lhsVar = lhs.getReferencedSym();
                 if (lhsVar != null
                     && (lhsVar instanceof JLocalVariableSymbol
                     || isRelevantField(lhs))) {
 
                     if (useBeforeAssigning) {
                         // compound assignment, to use BEFORE assigning
-                        result.use(lhsVar, (ASTNamedReferenceExpr) lhs);
+                        result.use(lhsVar, lhs);
                     }
 
-                    result.assign(lhsVar, rhs);
+                    VarLocalInfo oldVar = result.assign(lhsVar, rhs);
+                    SpanInfo.updateReachingDefs(lhs, lhsVar, oldVar);
                 }
             }
             return result;
@@ -1027,10 +1063,16 @@ public final class DataflowPass {
 
         @Override
         public SpanInfo visit(ASTThisExpression node, SpanInfo data) {
-            if (trackThisInstance() && !(node.getParent() instanceof ASTFieldAccess)) {
+            if (trackThisInstance() && isThisExprLeaking(node)) {
                 data.recordThisLeak(enclosingClassScope, node);
             }
             return data;
+        }
+
+        private static boolean isThisExprLeaking(ASTThisExpression node) {
+            boolean isAllowed = node.getParent() instanceof ASTFieldAccess
+                || node.getParent() instanceof ASTSynchronizedStatement;
+            return !isAllowed;
         }
 
         @Override
@@ -1175,7 +1217,7 @@ public final class DataflowPass {
             for (JFieldSymbol field : enclosingSym.getDeclaredFields()) {
                 if (!inStaticCtx || field.isStatic()) {
                     JavaNode escapingNode = enclosingSym.tryGetNode();
-                    state.assignOutOfScope(field, escapingNode, SpecialAssignmentKind.END_OF_CTOR);
+                    state.assignOutOfScope(field, escapingNode, SpecialAssignmentKind.INITIAL_FIELD_VALUE);
                 }
             }
         }
@@ -1321,11 +1363,12 @@ public final class DataflowPass {
             assign(id.getSymbol(), id);
         }
 
-        void assign(JVariableSymbol var, JavaNode rhs) {
-            assign(var, rhs, SpecialAssignmentKind.NOT_SPECIAL);
+        VarLocalInfo assign(JVariableSymbol var, JavaNode rhs) {
+            return assign(var, rhs, SpecialAssignmentKind.NOT_SPECIAL);
         }
 
-        @Nullable AssignmentEntry assign(JVariableSymbol var, JavaNode rhs, SpecialAssignmentKind kind) {
+        @Nullable
+        VarLocalInfo assign(JVariableSymbol var, JavaNode rhs, SpecialAssignmentKind kind) {
             ASTVariableId node = var.tryGetNode();
             if (node == null) {
                 return null; // we don't care about non-local declarations
@@ -1355,7 +1398,7 @@ public final class DataflowPass {
                 }
             }
             global.allAssignments.add(entry);
-            return entry;
+            return previous;
         }
 
         void declareSpecialFieldValues(JClassSymbol sym, boolean onlyStatic) {
@@ -1369,11 +1412,7 @@ public final class DataflowPass {
                     continue;
                 }
 
-                // Final fields definitions are fully known since they
-                // have to occur in a ctor.
-                if (!field.isFinal()) {
-                    assign(field, id, SpecialAssignmentKind.INITIAL_FIELD_VALUE);
-                }
+                assign(field, id, SpecialAssignmentKind.INITIAL_FIELD_VALUE);
             }
         }
 
@@ -1399,18 +1438,23 @@ public final class DataflowPass {
             if (info != null) {
                 global.usedAssignments.addAll(info.reachingDefs);
                 if (reachingDefSink != null) {
-                    ReachingDefinitionSet reaching = new ReachingDefinitionSet(new LinkedHashSet<>(info.reachingDefs));
-                    // need to merge into previous to account for cyclic control flow
-                    reachingDefSink.getUserMap().compute(REACHING_DEFS, current -> {
-                        if (current != null) {
-                            current.absorb(reaching);
-                            return current;
-                        } else {
-                            return reaching;
-                        }
-                    });
+                    updateReachingDefs(reachingDefSink, var, info);
                 }
             }
+        }
+
+        private static void updateReachingDefs(@NonNull ASTNamedReferenceExpr reachingDefSink, JVariableSymbol var, VarLocalInfo info) {
+            ReachingDefinitionSet reaching;
+            if (info == null || var.isField() && var.isFinal()) {
+                return;
+            } else {
+                reaching = new ReachingDefinitionSet(new LinkedHashSet<>(info.reachingDefs));
+            }
+            // need to merge into previous to account for cyclic control flow
+            reachingDefSink.getUserMap().merge(REACHING_DEFS, reaching, (current, newer) -> {
+                current.absorb(newer);
+                return current;
+            });
         }
 
         void deleteVar(JVariableSymbol var) {
@@ -1811,8 +1855,7 @@ public final class DataflowPass {
     enum SpecialAssignmentKind {
         NOT_SPECIAL,
         UNKNOWN_METHOD_CALL,
-        INITIAL_FIELD_VALUE,
-        END_OF_CTOR;
+        INITIAL_FIELD_VALUE;
 
         boolean shouldJoinWithPreviousAssignment() {
             return this == UNKNOWN_METHOD_CALL;

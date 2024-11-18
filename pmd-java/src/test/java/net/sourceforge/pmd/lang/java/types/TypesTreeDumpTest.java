@@ -32,12 +32,32 @@ class TypesTreeDumpTest extends BaseTreeDumpTest {
 
     @Override
     public @NonNull BaseParsingHelper<?, ?> getParser() {
-        return JavaParsingHelper.DEFAULT.withResourceContext(getClass());
+        return JavaParsingHelper.DEFAULT.withResourceContext(getClass(), "dumptests");
     }
 
     @Test
     void testIteratorUtilCopy() {
         doTest("IteratorUtilCopy");
+    }
+
+    @Test
+    void testSwitchExpressionWithPatterns() {
+        doTest("SwitchExpressionWithPatterns");
+    }
+
+    @Test
+    void testUnnamedPatterns() {
+        doTest("UnnamedPatterns");
+    }
+
+    @Test
+    void testNestedLambdasAndMethodCalls() {
+        doTest("NestedLambdasAndMethodCalls");
+    }
+
+    @Test
+    void testUnresolvedThings() {
+        doTest("UnresolvedThings");
     }
 
     @Override

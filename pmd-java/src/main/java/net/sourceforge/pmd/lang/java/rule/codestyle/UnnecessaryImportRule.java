@@ -32,6 +32,8 @@ import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JModuleSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainIterator;
@@ -67,6 +69,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
     private final Set<ImportWrapper> allSingleNameImports = new HashSet<>();
     private final Set<ImportWrapper> allImportsOnDemand = new HashSet<>();
+    private final Set<ImportWrapper> moduleImports = new HashSet<>();
     private final Set<ImportWrapper> unnecessaryJavaLangImports = new HashSet<>();
     private final Set<ImportWrapper> unnecessaryImportsFromSamePackage = new HashSet<>();
 
@@ -101,10 +104,22 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
     private static final Pattern LINK_IN_SNIPPET = Pattern
         .compile("//\\s*@link\\s+(?:.*?)?target=[\"']?" + TYPE_PART_GROUP + "[\"']?");
 
-    private static final Pattern[] PATTERNS = { SEE_PATTERN, LINK_PATTERNS, VALUE_PATTERN, THROWS_PATTERN, EXCEPTION_PATTERN, LINK_IN_SNIPPET };
+    /*
+     * Java 23, JEP 467: Markdown Documentation Comments
+     *
+     * [Type#method()]
+     * [Type]
+     * [alternative Text][Type#method()]
+     * [alternative Text][Type]
+     */
+    private static final Pattern MARKDOWN_PATTERN = Pattern.compile("\\[" + TYPE_PART_GROUP + "]");
+
+    private static final Pattern[] PATTERNS = { SEE_PATTERN, LINK_PATTERNS, VALUE_PATTERN, THROWS_PATTERN,
+                                                EXCEPTION_PATTERN, LINK_IN_SNIPPET, MARKDOWN_PATTERN };
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
+        this.moduleImports.clear();
         this.allSingleNameImports.clear();
         this.allImportsOnDemand.clear();
         this.unnecessaryJavaLangImports.clear();
@@ -140,6 +155,9 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         for (ImportWrapper wrapper : allImportsOnDemand) {
             String message = wrapper.isStatic() ? UNUSED_STATIC_IMPORT_MESSAGE : UNUSED_IMPORT_MESSAGE;
             reportWithMessage(wrapper.node, data, message);
+        }
+        for (ImportWrapper wrapper : moduleImports) {
+            reportWithMessage(wrapper.node, data, "Unused module import ''{0}''");
         }
 
         // remove unused ones, they have already been reported
@@ -209,8 +227,9 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         }
 
         Set<ImportWrapper> container =
-            node.isImportOnDemand() ? allImportsOnDemand
-                                    : allSingleNameImports;
+            node.isModuleImport() ? moduleImports
+                                  : node.isImportOnDemand() ? allImportsOnDemand
+                                                            : allSingleNameImports;
 
 
         if (!container.add(new ImportWrapper(node))) {
@@ -351,6 +370,29 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
                             return importedContainer == null // insufficient classpath, err towards FNs
                                     || TypeTestUtil.isA(ts.rawType(symbolOwner), ts.rawType(importedContainer));
                         }
+                    });
+                } else if (scopeIter.getScopeTag() == ScopeInfo.MODULE_IMPORT) {
+                    moduleImports.removeIf(it -> {
+                        if (!(symbol instanceof JTypeDeclSymbol)) {
+                            return false;
+                        }
+
+                        JTypeDeclSymbol typeSymbol = (JTypeDeclSymbol) symbol;
+                        String moduleName = it.node.getImportedName();
+                        String simpleName = typeSymbol.getSimpleName();
+                        TypeSystem typeSystem = typeSymbol.getTypeSystem();
+                        JModuleSymbol moduleSymbol = typeSystem.getModuleSymbol(moduleName);
+                        boolean found = false;
+                        for (String packageName : moduleSymbol.getExportedPackages()) {
+                            JClassSymbol classSymbol = typeSystem.getClassSymbol(packageName + "." + simpleName);
+                            if (classSymbol != null) {
+                                found = TypeTestUtil.isA(typeSystem.rawType(typeSymbol), typeSystem.rawType(classSymbol));
+                            }
+                            if (found) {
+                                break;
+                            }
+                        }
+                        return found;
                     });
                 }
                 return;

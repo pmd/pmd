@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.impl;
 
-import static net.sourceforge.pmd.util.CollectionUtil.emptyList;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.lang.invoke.MethodHandle;
@@ -13,7 +12,11 @@ import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -87,7 +90,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
                      .filter(m -> isAttributeAccessor(nodeClass, m))
                      .map(m -> {
                          try {
-                             return new MethodWrapper(m, nodeClass);
+                             return new MethodWrapper(m);
                          } catch (ReflectiveOperationException e) {
                              throw AssertionUtil.shouldNotReachHere("Method '" + m + "' should be accessible, but: " + e, e);
                          }
@@ -119,7 +122,27 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
 
     private boolean isConsideredReturnType(Method method) {
         Class<?> klass = method.getReturnType();
-        return CONSIDERED_RETURN_TYPES.contains(klass) || klass.isEnum();
+        if (CONSIDERED_RETURN_TYPES.contains(klass) || klass.isEnum()) {
+            return true;
+        }
+
+        if (Collection.class.isAssignableFrom(klass)) {
+            Type t = method.getGenericReturnType();
+            if (t instanceof ParameterizedType) {
+                try {
+                    // ignore type variables, such as List<N>… we could check all bounds, but probably it's overkill
+                    Type actualTypeArgument = ((ParameterizedType) t).getActualTypeArguments()[0];
+                    if (!TypeVariable.class.isAssignableFrom(actualTypeArgument.getClass())) {
+                        Class<?> elementKlass = Class.forName(actualTypeArgument.getTypeName());
+                        return CONSIDERED_RETURN_TYPES.contains(elementKlass) || elementKlass.isEnum();
+                    }
+                } catch (ClassNotFoundException e) {
+                    throw AssertionUtil.shouldNotReachHere("Method '" + method + "' should return a known type, but: " + e, e);
+                }
+            }
+        }
+
+        return false;
     }
 
     private boolean isIgnored(Class<?> nodeClass, Method method) {
@@ -186,19 +209,13 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
         public final String name;
 
 
-        MethodWrapper(Method m, Class<?> nodeClass) throws IllegalAccessException, NoSuchMethodException {
+        MethodWrapper(Method m) throws IllegalAccessException {
             this.method = m;
             this.name = truncateMethodName(m.getName());
-
-            if (!Modifier.isPublic(m.getDeclaringClass().getModifiers())) {
-                // This is a public method of a non-public class.
-                // To call it from reflection we need to call it via invokevirtual,
-                // whereas the default handle would use invokespecial.
-                MethodType methodType = MethodType.methodType(m.getReturnType(), emptyList());
-                this.methodHandle = MethodWrapper.LOOKUP.findVirtual(nodeClass, m.getName(), methodType).asType(GETTER_TYPE);
-            } else {
-                this.methodHandle = LOOKUP.unreflect(m).asType(GETTER_TYPE);
-            }
+            // Note: We only support public methods on public types. If the method being called is implemented
+            // in a package-private class, this won't work.
+            // See git history here and https://github.com/pmd/pmd/issues/4885
+            this.methodHandle = LOOKUP.unreflect(m).asType(GETTER_TYPE);
         }
 
 

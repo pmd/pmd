@@ -274,4 +274,29 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>FN within lambda #1160</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import java.util.stream.Stream;
+            public class Foo {
+                private final StringBuilder sb = new StringBuilder();
+
+                public String bar(Stream<String> stream) {
+                 return    stream.reduce(new StringBuilder(1_000), (builder, string) -> {
+                        switch (string) {
+                        case "asd":
+                            builder.append("asd");
+                            builder.append("qwe");
+                            break;
+                        }
+                        return builder;
+                    }, (t, s) -> {
+                     t.append(s);
+                     return t;
+                 }).toString();
+                }
+            }
+        ]]></code>
+    </test-code>
 </test-data>

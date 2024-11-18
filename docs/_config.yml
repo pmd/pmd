@@ -1,15 +1,16 @@
 repository: pmd/pmd
 
 pmd:
-    version: 7.2.0-SNAPSHOT
-    previous_version: 7.1.0
-    date: 31-May-2024
+    version: 7.8.0-SNAPSHOT
+    previous_version: 7.7.0
+    date: 2024-11-29
+    # release types: major, minor, bugfix
     release_type: minor
-
-# release types: major, minor, bugfix
 
 output: web
 # this property is useful for conditional filtering of content that is separate from the PDF.
+
+sidebar_title: PMD
 
 topnav_title: PMD Source Code Analyzer Project
 # this appears on the top navigation bar next to the home button
@@ -20,7 +21,7 @@ site_title: PMD Source Code Analyzer
 company_name: PMD Open Source Project
 # this appears in the footer
 
-github_editme_path: pmd/pmd/blob/master/docs/
+github_editme_path: pmd/pmd/blob/main/docs/
 # if you're using Github, provide the basepath to the branch you've created for reviews, following the sample here. if not, leave this value blank.
 
 host: 127.0.0.1

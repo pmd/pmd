@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cpd;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,8 @@ import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.PSortedSet;
+import org.pcollections.TreePSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +35,7 @@ import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.InternalApiBridge;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
@@ -166,7 +170,6 @@ public final class CpdAnalysis implements AutoCloseable {
 
     @SuppressWarnings("PMD.CloseResource")
     public void performAnalysis(Consumer<CPDReport> consumer) {
-
         try (SourceManager sourceManager = new SourceManager(files.getCollectedFiles())) {
             Map<Language, CpdLexer> tokenizers =
                 sourceManager.getTextFiles().stream()
@@ -178,31 +181,38 @@ public final class CpdAnalysis implements AutoCloseable {
             Map<FileId, Integer> numberOfTokensPerFile = new HashMap<>();
 
             final List<Match> matches;
+            PSortedSet<Report.ProcessingError> processingErrors;
             {
                 TokenFileSet tokens = new TokenFileSet(sourceManager);
 
                 ForkJoinPool forkJoinPool = new ForkJoinPool(configuration.getThreads());
                 try {
-                    boolean hasErrors = forkJoinPool.submit(() -> sourceManager.getTextFiles().parallelStream().reduce(false, (hasErrorSoFar, textFile) -> {
-                        try (TextDocument textDocument = sourceManager.load(textFile)) {
-                            CpdLexer lexer = tokenizers.get(textFile.getLanguageVersion().getLanguage());
-                            int newTokens = doTokenize(textDocument, lexer, tokens);
-                            synchronized (this) {
-                                numberOfTokensPerFile.put(textDocument.getFileId(), newTokens);
-                                listener.addedFile(1);
-                            }
-                        } catch (IOException | FileAnalysisException e) {
-                            if (e instanceof FileAnalysisException) { // NOPMD
-                                ((FileAnalysisException) e).setFileId(textFile.getFileId());
-                            }
-                            String message = configuration.isSkipLexicalErrors() ? "Skipping file" : "Error while tokenizing";
-                            reporter.errorEx(message, e);
-                            hasErrorSoFar = true;
-                        }
-                        return hasErrorSoFar;
-                    }, Boolean::logicalOr)).get();
+                    processingErrors = forkJoinPool.submit(
+                        () -> sourceManager.getTextFiles()
+                                           .parallelStream()
+                                           .<PSortedSet<Report.ProcessingError>>reduce(
+                                               TreePSet.empty(),
+                                               (currentErrors, textFile) -> {
+                                                   try (TextDocument textDocument = sourceManager.load(textFile)) {
+                                                       CpdLexer lexer = tokenizers.get(textFile.getLanguageVersion().getLanguage());
+                                                       int newTokens = doTokenize(textDocument, lexer, tokens);
+                                                       synchronized (this) {
+                                                           numberOfTokensPerFile.put(textDocument.getFileId(), newTokens);
+                                                           listener.addedFile(1);
+                                                       }
+                                                   } catch (IOException | FileAnalysisException e) {
+                                                       if (e instanceof FileAnalysisException) { // NOPMD
+                                                           ((FileAnalysisException) e).setFileId(textFile.getFileId());
+                                                       }
+                                                       String message = configuration.isFailOnError() ? "Skipping file" : "Error while tokenizing";
+                                                       reporter.errorEx(message, e);
+                                                       Report.ProcessingError error = new Report.ProcessingError(e, textFile.getFileId());
+                                                       return currentErrors.plus(error);
+                                                   }
+                                                   return currentErrors;
+                                               }, PSortedSet::plusAll)).get();
 
-                    if (hasErrors && !configuration.isSkipLexicalErrors()) {
+                    if (!processingErrors.isEmpty() && !configuration.isFailOnError()) {
                         // will be caught by CPD command
                         throw new IllegalStateException("Errors were detected while lexing source, exiting because --skip-lexical-errors is unset.");
                     }
@@ -215,7 +225,7 @@ public final class CpdAnalysis implements AutoCloseable {
             }
             LOGGER.debug("Finished: {} duplicates found", matches.size());
 
-            CPDReport cpdReport = new CPDReport(sourceManager, matches, numberOfTokensPerFile);
+            CPDReport cpdReport = new CPDReport(sourceManager, matches, numberOfTokensPerFile, new ArrayList<>(processingErrors));
 
             if (renderer != null) {
                 try (Writer writer = IOUtil.createWriter(Charset.defaultCharset(), null)) {

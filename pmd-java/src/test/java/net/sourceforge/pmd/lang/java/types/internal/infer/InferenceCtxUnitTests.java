@@ -8,7 +8,10 @@ import static net.sourceforge.pmd.lang.java.types.TestUtilitiesForTypesKt.captur
 import static net.sourceforge.pmd.lang.java.types.internal.infer.BaseTypeInferenceUnitTest.Bound.eqBound;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.BaseTypeInferenceUnitTest.Bound.lower;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.BaseTypeInferenceUnitTest.Bound.upper;
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -19,11 +22,17 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.List;
+import java.util.Set;
+
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
+import net.sourceforge.pmd.lang.java.types.internal.infer.VarWalkStrategy.GraphWalk;
+import net.sourceforge.pmd.util.IteratorUtil;
 
 /**
  *
@@ -72,6 +81,22 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         assertThat(v2, hasBoundsExactly(upper(listOfV1), upper(ts.OBJECT)));
 
         verify(log).boundAdded(ctx, v2, BoundKind.UPPER, listOfV1, false);
+    }
+
+
+    @Test
+    void testNullTypeCannotBeLowerBound() {
+        TypeInferenceLogger log = spy(TypeInferenceLogger.noop());
+        InferenceContext ctx = emptyCtx(log);
+
+        InferenceVar v1 = newIvar(ctx);
+
+        addSubtypeConstraint(ctx, ts.NULL_TYPE, v1);
+
+
+        assertThat(v1, hasBoundsExactly(upper(ts.OBJECT)));
+
+        verify(log, never()).boundAdded(ctx, v1, BoundKind.LOWER, ts.NULL_TYPE, false);
     }
 
     @Test
@@ -313,6 +338,90 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
                              ts.arrayType(ts.BOOLEAN.box()));
 
         assertThat(a, hasBoundsExactly(upper(ts.BOOLEAN.box())));
+    }
+
+
+    private static @NotNull List<Set<InferenceVar>> createBatchSetsFromGraph(InferenceContext ctx) {
+        GraphWalk graphWalk = new GraphWalk(ctx, false);
+        List<Set<InferenceVar>> batches = IteratorUtil.toList(graphWalk);
+        return batches;
+    }
+
+    @Test
+    void testGraphBuilding() {
+        InferenceContext ctx = emptyCtx();
+        InferenceVar a = newIvar(ctx);
+        InferenceVar b = newIvar(ctx);
+
+        List<Set<InferenceVar>> batches = createBatchSetsFromGraph(ctx);
+        // no dependency: unordered
+        assertThat(batches, containsInAnyOrder(setOf(a), setOf(b)));
+    }
+
+    @Test
+    void testGraphBuildingWithDependency() {
+        InferenceContext ctx = emptyCtx();
+        InferenceVar a = newIvar(ctx);
+        InferenceVar b = newIvar(ctx);
+
+        // a -> b
+        addSubtypeConstraint(ctx, a, ts.arrayType(b));
+
+        List<Set<InferenceVar>> batches = createBatchSetsFromGraph(ctx);
+
+        assertThat(batches, contains(setOf(b), setOf(a)));
+    }
+
+    @Test
+    void testGraphBuildingWithDependency2() {
+        InferenceContext ctx = emptyCtx();
+        InferenceVar a = newIvar(ctx);
+        InferenceVar b = newIvar(ctx);
+
+        // a -> b
+        // b -> a (because of propagation)
+        addSubtypeConstraint(ctx, a, b);
+
+        List<Set<InferenceVar>> batches = createBatchSetsFromGraph(ctx);
+
+        assertThat(batches, contains(setOf(b, a)));
+    }
+
+
+
+
+    @Test
+    void testGraphBuildingWithExtraDependency() {
+        InferenceContext ctx = emptyCtx();
+        InferenceVar a = newIvar(ctx);
+        InferenceVar b = newIvar(ctx);
+
+        // b -> a
+        ctx.addInstantiationDependencies(setOf(b), setOf(a));
+
+        List<Set<InferenceVar>> batches = createBatchSetsFromGraph(ctx);
+
+        assertThat(batches, contains(setOf(a), setOf(b)));
+    }
+
+    @Test
+    void testGraphBuildingWithDependencyCycle() {
+        InferenceContext ctx = emptyCtx();
+        InferenceVar a = newIvar(ctx);
+        InferenceVar b = newIvar(ctx);
+        InferenceVar c = newIvar(ctx);
+
+        // a -> b, b -> a,
+        // a -> c, b -> c
+        a.addBound(BoundKind.UPPER, b);
+        a.addBound(BoundKind.EQ, listType(c));
+        b.addBound(BoundKind.LOWER, a);
+        b.addBound(BoundKind.LOWER, listType(c));
+
+
+        List<Set<InferenceVar>> batches = createBatchSetsFromGraph(ctx);
+
+        assertThat(batches, contains(setOf(c), setOf(b, a)));
     }
 
 }

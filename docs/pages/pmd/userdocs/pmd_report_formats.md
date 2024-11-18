@@ -5,6 +5,7 @@ keywords: [formats, renderers]
 summary: "Overview of the built-in report formats for PMD"
 permalink: pmd_userdocs_report_formats.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
+last_updated: September 2024 (7.6.0)
 ---
 
 ## Overview
@@ -17,14 +18,16 @@ The header of the sections below are used to select the format on the command li
 arguments to the `--format` option. When a format accepts *properties*,
 those can be specified with the `--property` / `-P` option on the command-line.
 
-{% include note.html content="Suppressed violations are only reported, if the CLI parameter `--show-suppressed` is set." %}
+{% include note.html content="Suppressed violations are only reported, if the CLI parameter `--show-suppressed` is set and if the format supports showing suppressed violations. Currently only html, summaryhtml and xml show suppressed violations." %}
 
 ## sarif
 
 "SARIF, the Static Analysis Results Interchange Format, is a standard, JSON-based format for the output of static
 analysis tools. It has been approved as an OASIS standard" - <https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html>.
 
-SARIF schema can be found here: <https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json>.
+SARIF schema can be found here: <https://github.com/oasis-tcs/sarif-spec/tree/main/sarif-2.1/schema>.
+In the generated report, we refer to the schema on [schemastore.org/json](https://www.schemastore.org/json/):
+<https://json.schemastore.org/sarif-2.1.0.json>.
 
 PMD holds an initial implementation version of SARIF rendering. This means SARIF allows for more complexity and the
 current implementation can be extended.
@@ -95,7 +98,7 @@ Example:
 HTML format.
 
 This renderer provides two properties to render a link to the source where the violations
-have been found. The following example has been created with `-property linkPrefix=https://github.com/pmd/pmd/blob/master/ -property linePrefix=L -shortnames -d pmd`.
+have been found. The following example has been created with `-property linkPrefix=https://github.com/pmd/pmd/blob/main/ -property linePrefix=L -shortnames -d pmd`.
 If "linkPrefix" is not set, then "linePrefix" has no effect anyway: just the filename will
 be rendered, with no html link. Otherwise if "linePrefix" is not set, then the link will
 not contain a line number.
@@ -274,7 +277,7 @@ Vladimir Bossicard HTML format.
 
 XML format.
 
-This format is a XML document, that can be validated by a XSD schema. The schema is [report_2_0_0.xsd](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/resources/report_2_0_0.xsd).
+This format is a XML document, that can be validated by a XSD schema. The schema is [report_2_0_0.xsd](https://github.com/pmd/pmd/blob/main/pmd-core/src/main/resources/report_2_0_0.xsd).
 
 Example:
 
@@ -282,7 +285,7 @@ Example:
 <?xml version="1.0" encoding="UTF-8"?>
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 https://pmd.sourceforge.io/report_2_0_0.xsd"
+    xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 https://pmd.github.io/schema/report_2_0_0.xsd"
     version="6.22.0" timestamp="2020-04-11T19:17:03.207">
 <file name="/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/RuleContext.java">
 <violation beginline="124" endline="125" begincolumn="9" endcolumn="111" rule="GuardLogStatement" ruleset="Best Practices" package="net.sourceforge.pmd" class="RuleContext" method="setSourceCodeFilename" externalInfoUrl="https://pmd.github.io/pmd-6.22.0/pmd_rules_java_bestpractices.html#guardlogstatement" priority="2">
@@ -342,15 +345,15 @@ XML with a XSL transformation applied.
 
 PMD provides one built-in stylesheet, that is used by default, if no other
 stylesheet with the property "xsltFilename" is specified. It is called
-[pmd-nicerhtml.xsl](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/resources/pmd-nicerhtml.xsl)
+[pmd-nicerhtml.xsl](https://github.com/pmd/pmd/blob/main/pmd-core/src/main/resources/pmd-nicerhtml.xsl)
 and can be used for customization.
 
-There are many other stylesheets available online: <https://github.com/pmd/pmd/tree/master/pmd-core/etc/xslt>.
+There are many other stylesheets available online: <https://github.com/pmd/pmd/tree/main/pmd-core/etc/xslt>.
 
 Examples:
 * [Example with pmd-nicerhtml.xsl](report-examples/pmd-report-pmd-nicerhtml.html)
 * [Example with html-report-v2.xslt](report-examples/html-report-v2.html) - includes charts. It requires javascript enabled and uses
-  [jQuery](https://jquery.com/), [DataTables](https://datatables.net/), and [Vega](https://vega.github.io/vega/) for charting. 
+  [jQuery](https://jquery.com/), [DataTables](https://datatables.net/), and [Vega](https://vega.github.io/vega/) for charting.
 
 **Properties:**
 

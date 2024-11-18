@@ -17,11 +17,9 @@ class ExplicitTypesTest : ProcessorTestSpec({
 
     // todo test explicit type args on ctor call
 
-
     parserTest("Test explicit type arguments") {
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
-            """
+           """
 
            import java.util.Collection;
 
@@ -33,7 +31,7 @@ class ExplicitTypesTest : ProcessorTestSpec({
                <T> void foreach(Collection<? super T> action) {}
            }
 
-        """.trimIndent()
+           """.trimIndent()
         )
 
 
@@ -52,11 +50,9 @@ class ExplicitTypesTest : ProcessorTestSpec({
         }
     }
 
-
-
     parserTest("Explicitly typed lambda") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 
 interface Function<U,V> { 
     V apply(U u);
@@ -73,7 +69,8 @@ class NodeStream {
     }
 
 }
-            """)
+            """
+        )
 
         val (t_Function, _, _, t_Foo) = acu.declaredTypeSignatures()
         val (lambda) = acu.descendants(ASTLambdaExpression::class.java).crossFindBoundaries().toList()
@@ -85,11 +82,9 @@ class NodeStream {
         }
     }
 
-
-
     parserTest("Explicitly typed lambda with wildcard") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 
 interface Number {}
 interface Integer extends Number {}
@@ -102,7 +97,8 @@ class NodeStream {
     }
 
 }
-            """)
+            """
+        )
 
         val (t_Number, _, t_Predicate) = acu.declaredTypeSignatures()
         val (lambda) = acu.descendants(ASTLambdaExpression::class.java).crossFindBoundaries().toList()
@@ -111,6 +107,4 @@ class NodeStream {
             lambda shouldHaveType t_Predicate[t_Number]
         }
     }
-
-
 })

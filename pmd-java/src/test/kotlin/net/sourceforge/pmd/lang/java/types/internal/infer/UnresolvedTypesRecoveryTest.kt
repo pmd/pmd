@@ -16,11 +16,9 @@ import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 /**
  */
 class UnresolvedTypesRecoveryTest : ProcessorTestSpec({
-
     parserTest("Test failed invoc context lets args be inferred as standalones") {
-
         val acu = parser.parse(
-                """
+            """
 import java.io.IOException;
 import ooo.Unresolved;
 
@@ -32,10 +30,8 @@ class C {
         }
     }
 }
-
-                """.trimIndent()
+            """.trimIndent()
         )
-
 
         val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
 
@@ -63,11 +59,9 @@ class C {
         }
     }
 
-
     parserTest("Test constructor call fallback") {
-
         val acu = parser.parse(
-                """
+            """
 import java.io.IOException;
 import ooo.Unresolved;
 
@@ -78,9 +72,8 @@ class C {
     }
 }
 
-                """.trimIndent()
+            """.trimIndent()
         )
-
 
         val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
 
@@ -102,9 +95,8 @@ class C {
     }
 
     parserTest("Test ctor fallback in invoc ctx") {
-
         val acu = parser.parse(
-                """
+            """
 import java.io.IOException;
 import ooo.Unresolved;
 
@@ -118,12 +110,11 @@ class C {
         id(new Unresolved());
     }
 }
-
-                """.trimIndent()
+            """.trimIndent()
         )
 
-
-        val t_Unresolved = acu.descendants(ASTConstructorCall::class.java).firstOrThrow().typeNode.typeMirror as JClassType
+        val t_Unresolved =
+            acu.descendants(ASTConstructorCall::class.java).firstOrThrow().typeNode.typeMirror as JClassType
 
         TypeOps.isUnresolved(t_Unresolved) shouldBe true
 
@@ -149,9 +140,8 @@ class C {
     }
 
     parserTest("Test diamond ctor for unresolved") {
-
         val acu = parser.parse(
-                """
+            """
 import java.io.IOException;
 import ooo.Unresolved;
 
@@ -161,19 +151,16 @@ class C {
         Unresolved<String> s = new Unresolved<>();
     }
 }
-
-                """.trimIndent()
+            """.trimIndent()
         )
 
-
         val t_UnresolvedOfString = acu.descendants(ASTClassType::class.java)
-                .first { it.simpleName == "Unresolved" }!!.typeMirror.shouldBeA<JClassType> {
-                    it.isParameterizedType shouldBe true
-                    it.typeArgs shouldBe listOf(it.typeSystem.STRING)
-                }
+            .first { it.simpleName == "Unresolved" }!!.typeMirror.shouldBeA<JClassType> {
+                it.isParameterizedType shouldBe true
+                it.typeArgs shouldBe listOf(it.typeSystem.STRING)
+            }
 
         TypeOps.isUnresolved(t_UnresolvedOfString) shouldBe true
-
 
         val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
 
@@ -192,11 +179,9 @@ class C {
         }
     }
 
-
     parserTest("Recovery for primitives in strict invoc") {
-
         val acu = parser.parse(
-                """
+            """
 import ooo.Unresolved;
 
 class C {
@@ -207,13 +192,10 @@ class C {
         id(Unresolved.SOME_INT);
     }
 }
-
-                """.trimIndent()
+            """.trimIndent()
         )
 
-
         val idMethod = acu.descendants(ASTMethodDeclaration::class.java).firstOrThrow().symbol
-
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
         call.shouldMatchN {
@@ -238,10 +220,8 @@ class C {
     }
 
     parserTest("Unresolved types are compatible in type variable bounds") {
-
         val acu = parser.parse(
-                """
-
+            """
 class C {
 
     static ooo.Foo foo() { return null; }
@@ -253,16 +233,12 @@ class C {
         id(foo()); 
     }
 }
-
-                """.trimIndent()
+            """.trimIndent()
         )
 
-
         val (fooM, idM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.symbol }
-
         val t_Foo = fooM.getReturnType(Substitution.EMPTY).shouldBeUnresolvedClass("ooo.Foo")
         idM.typeParameters[0].upperBound.shouldBeUnresolvedClass("ooo.Bound")
-
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
         call.shouldMatchN {
@@ -272,7 +248,6 @@ class C {
                 it.overloadSelectionInfo.isFailed shouldBe false // it succeeded
                 it.methodType.symbol shouldBe idM
 
-
                 argList(1)
             }
         }
@@ -280,8 +255,7 @@ class C {
 
     parserTest("Unresolved types are used in overload specificity tests") {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
-
+            """
 class C {
 
     static void foo(U1 u) { }
@@ -292,10 +266,8 @@ class C {
         foo(u);
     }
 }
-
-                """.trimIndent()
+            """.trimIndent()
         )
-
 
         val (foo1) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.symbol }
         val (t_U1, t_U2) = acu.descendants(ASTClassType::class.java).toList { it.typeMirror }
@@ -309,7 +281,11 @@ class C {
             call.shouldMatchN {
                 methodCall("foo") {
 
-                    it.methodType.shouldMatchMethod("foo", withFormals = listOf(t_U1), returning = it.typeSystem.NO_TYPE)
+                    it.methodType.shouldMatchMethod(
+                        "foo",
+                        withFormals = listOf(t_U1),
+                        returning = it.typeSystem.NO_TYPE
+                    )
                     it.overloadSelectionInfo.isFailed shouldBe false // it succeeded
                     it.methodType.symbol shouldBe foo1
 
@@ -317,13 +293,11 @@ class C {
                 }
             }
         }
-
     }
 
     parserTest("Superclass type is known in the subclass") {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
-
+            """
 class C extends U1 {
 
     static void foo(U1 u) { }
@@ -333,10 +307,8 @@ class C extends U1 {
         foo(this);
     }
 }
-
-                """.trimIndent()
+            """.trimIndent()
         )
-
 
         val (foo1) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.symbol }
         val (t_U1) = acu.descendants(ASTClassType::class.java).toList { it.typeMirror }
@@ -349,7 +321,11 @@ class C extends U1 {
             call.shouldMatchN {
                 methodCall("foo") {
 
-                    it.methodType.shouldMatchMethod("foo", withFormals = listOf(t_U1), returning = it.typeSystem.NO_TYPE)
+                    it.methodType.shouldMatchMethod(
+                        "foo",
+                        withFormals = listOf(t_U1),
+                        returning = it.typeSystem.NO_TYPE
+                    )
                     it.overloadSelectionInfo.isFailed shouldBe false // it succeeded
                     it.methodType.symbol shouldBe foo1
 
@@ -357,13 +333,11 @@ class C extends U1 {
                 }
             }
         }
-
     }
 
     parserTest("Recovery when there are several applicable overloads") {
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+            """
 import ooo.Unresolved;
 
 class C {
@@ -380,8 +354,7 @@ class C {
         new StringBuilder().append(Unresolved.SOMETHING);
     }
 }
-
-                """.trimIndent()
+            """.trimIndent()
         )
 
         val call = acu.firstMethodCall()
@@ -419,7 +392,7 @@ class C {
         // into a top-down only and a user-facing one.
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+            """
 import ooo.Unresolved;
 
 class C {
@@ -431,7 +404,7 @@ class C {
     }
 }
 
-                """.trimIndent()
+            """.trimIndent()
         )
 
         val call = acu.firstMethodCall()
@@ -462,9 +435,8 @@ class C {
     }
 
     parserTest("Recovery of unknown field/var using assignment context") {
-
         val acu = parser.parse(
-                """
+            """
 import ooo.Unresolved;
 
 class C {
@@ -476,8 +448,7 @@ class C {
         String k = SOMETHING;
     }
 }
-
-                """.trimIndent()
+            """.trimIndent()
         )
 
         val (field, unqual) = acu.descendants(ASTAssignableExpr.ASTNamedReferenceExpr::class.java).toList()
@@ -504,9 +475,8 @@ class C {
     }
 
     parserTest("Unresolved type in primitive switch label") {
-
         val acu = parser.parse(
-                """
+            """
 import ooo.Opcodes.*;
 
 class C {
@@ -517,8 +487,7 @@ class C {
         }
     }
 }
-
-                """.trimIndent()
+            """.trimIndent()
         )
 
         val (_, a, b) = acu.descendants(ASTVariableAccess::class.java).toList()
@@ -542,26 +511,26 @@ class C {
     }
 
     parserTest("Unresolved lambda/mref target type has non-null functional method") {
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
-                class Foo {
+            """
+            class Foo {
 
-                    void foo(UnresolvedLambdaTarget lambda) { }
+                void foo(UnresolvedLambdaTarget lambda) { }
 
-                    void bar() {
-                        foo(() -> null); // the target type is unresolved
-                        foo(this::foo);  // same
-                    }
-
+                void bar() {
+                    foo(() -> null); // the target type is unresolved
+                    foo(this::foo);  // same
                 }
-                """.trimIndent()
+
+            }
+            """.trimIndent()
         )
 
         val (lambda) = acu.descendants(ASTLambdaExpression::class.java).toList()
         val (mref) = acu.descendants(ASTMethodReference::class.java).toList()
 
         val (lambdaCall, mrefCall) = acu.descendants(ASTMethodCall::class.java).toList()
+        val (fooDecl) = acu.declaredMethodSignatures().toList()
 
         spy.shouldHaveNoApplicableMethods(lambdaCall)
         spy.shouldHaveNoApplicableMethods(mrefCall)
@@ -572,29 +541,29 @@ class C {
 
             mref shouldHaveType ts.UNKNOWN
             mref.functionalMethod shouldBe ts.UNRESOLVED_METHOD
-            mref.referencedMethod shouldBe ts.UNRESOLVED_METHOD
+            mref.referencedMethod shouldBe fooDecl // still populated because unambiguous
         }
     }
 
     parserTest("No context for lambda/mref") {
-
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
-                class Foo {
+            """
+            class Foo {
 
-                    void foo(UnresolvedLambdaTarget lambda) { }
+                void foo(UnresolvedLambdaTarget lambda) { }
 
-                    void bar() {
-                        () -> null;
-                        return this::foo; // return onto void
-                    }
-
+                void bar() {
+                    () -> null;
+                    return this::foo; // return onto void
                 }
-                """.trimIndent()
+
+            }
+            """.trimIndent()
         )
 
         val (lambda) = acu.descendants(ASTLambdaExpression::class.java).toList()
         val (mref) = acu.descendants(ASTMethodReference::class.java).toList()
+        val (fooDecl) = acu.declaredMethodSignatures().toList()
 
         spy.shouldHaveNoLambdaCtx(lambda)
         spy.shouldHaveNoLambdaCtx(mref)
@@ -605,20 +574,21 @@ class C {
 
             mref shouldHaveType ts.UNKNOWN
             mref.functionalMethod shouldBe ts.UNRESOLVED_METHOD
-            mref.referencedMethod shouldBe ts.UNRESOLVED_METHOD
+            mref.referencedMethod shouldBe fooDecl // still populated because unambiguous
         }
     }
 
 
     parserTest("Wrong syntax, return with expr in void method") {
-
-        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
-                class Foo {
-                    void foo() { return foo; }
-                    static { return p1; }
-                    Foo() { return p2; }
-                }
-        """)
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Foo {
+                void foo() { return foo; }
+                static { return p1; }
+                Foo() { return p2; }
+            }
+            """
+        )
 
         for (vaccess in acu.descendants(ASTVariableAccess::class.java)) {
             spy.shouldBeOk {
@@ -628,18 +598,19 @@ class C {
     }
 
     parserTest("Lambda with wrong form") {
-
-        val (acu, _) = parser.parseWithTypeInferenceSpy("""
-                interface Lambda {
-                    void call();
+        val (acu, _) = parser.parseWithTypeInferenceSpy(
+            """
+            interface Lambda {
+                void call();
+            }
+            class Foo {
+                {
+                    Lambda l = () -> {}; // ok
+                    Lambda l = x -> {};  // wrong form!
                 }
-                class Foo {
-                    {
-                        Lambda l = () -> {}; // ok
-                        Lambda l = x -> {};  // wrong form!
-                    }
-                }
-        """)
+            }
+            """
+        )
 
         val (ok, wrong) = acu.descendants(ASTLambdaExpression::class.java).toList()
         val t_Lambda = acu.typeDeclarations.firstOrThrow().typeMirror
@@ -653,37 +624,39 @@ class C {
 
     parserTest("Method ref in unresolved call chain") {
         /*
-            In this test we have Stream.of(/*some expr with unresolved type*/)
+        In this test we have Stream.of(/*some expr with unresolved type*/)
 
-            The difficult thing is that Stream.of has two overloads: of(U) and of(U...),
-            and the argument is unknown. This makes both methods match. Whichever method is matched,
-            we want the U to be inferred to (*unknown*) and not Object.
-         */
+        The difficult thing is that Stream.of has two overloads: of(U) and of(U...),
+        and the argument is unknown. This makes both methods match. Whichever method is matched,
+        we want the U to be inferred to (*unknown*) and not Object.
+        */
 
-        val (acu, _) = parser.parseWithTypeInferenceSpy("""
-                interface Function<T, R> {
-                    R call(T parm);
+        val (acu, _) = parser.parseWithTypeInferenceSpy(
+            """
+            interface Function<T, R> {
+                R call(T parm);
+            }
+            interface Stream<T> {
+                <U> Stream<U> map(Function<? super T, ? extends U> fun);
+                
+                // the point of this test is there is an ambiguity between both of these overloads
+                static <U> Stream<U> of(U u) {}
+                static <U> Stream<U> of(U... u) {}
+            }
+            class Foo {
+                {
+                    // var i = Stream.of("").map(Foo::toInt);
+                    var x = Stream.of(new Unresolved().getString())
+                                  .map(Foo::toInt);
                 }
-                interface Stream<T> {
-                    <U> Stream<U> map(Function<? super T, ? extends U> fun);
-                    
-                    // the point of this test is there is an ambiguity between both of these overloads
-                    static <U> Stream<U> of(U u) {}
-                    static <U> Stream<U> of(U... u) {}
-                }
-                class Foo {
-                    {
-                        // var i = Stream.of("").map(Foo::toInt);
-                        var x = Stream.of(new Unresolved().getString())
-                                      .map(Foo::toInt);
-                    }
-                   private static Integer toInt(String s) {}
-                }
-        """)
+               private static Integer toInt(String s) {}
+            }
+            """
+        )
 
         val (fooToInt) = acu.descendants(ASTMethodReference::class.java).toList()
-        val (map, streamOf, getString) = acu.methodCalls().toList()
-        val (t_Function, t_Stream, t_Foo) = acu.declaredTypeSignatures()
+        val (map, streamOf, _) = acu.methodCalls().toList()
+        val (t_Function, t_Stream, _) = acu.declaredTypeSignatures()
         val (_, _, _, _, toIntFun) = acu.methodDeclarations().toList { it.symbol }
 
         acu.withTypeDsl {
@@ -694,4 +667,76 @@ class C {
         }
     }
 
+    parserTest("Type inference should not resolve UNKNOWN bounded types to Object #5329") {
+
+        val (acu, _) = parser.parseWithTypeInferenceSpy(
+            """
+            import java.util.ArrayList;
+            import java.util.List;
+            import java.util.stream.Stream;
+            import java.util.stream.Collectors;
+
+            class Foo {
+                public Item methodA(List<Item> loads) {
+                    List<SummaryDto.ItemDto> items = new ArrayList<>();
+                    loads.stream()
+                         // Here this collect call should have type
+                         //     Map<(*unknown*), List<*Item>>
+                         // ie, key is unknown, not Object.
+                         .collect(Collectors.groupingBy(Item::getValue))
+                         .forEach((a, b) -> items.add(buildItem(a, b)));
+                }
+
+                private SummaryDto.ItemDto buildItem(BigDecimal a, List<Item> b) {
+                    return SummaryDto.ItemDto.builder().build();
+                }
+            }
+                """
+            )
+
+        val collect = acu.firstMethodCall("collect")
+        val buildItem = acu.firstMethodCall("buildItem")
+        val (_, buildItemDecl) = acu.methodDeclarations().toList { it.symbol }
+        val (itemT) = acu.descendants(ASTClassType::class.java).toList { it.typeMirror }
+
+        acu.withTypeDsl {
+            collect shouldHaveType java.util.Map::class[ts.UNKNOWN, java.util.List::class[itemT]]
+            buildItem.methodType.symbol shouldBe buildItemDecl
+        }
+    }
+
+    parserTest("Unresolved type should also allow unchecked conversion") {
+        // The problem here is that ConstraintViolation<?> is not convertible to ConstraintViolation,
+        // because ConstraintViolation is not on the classpath.
+
+        val (acu, _) = parser.parseWithTypeInferenceSpy(
+            """
+            import java.util.Set;
+            class Foo {
+                private void foo(ConstraintViolation constraintViolation) {
+                    constraintViolation.toString();
+                }
+
+                public void foos(Set<ConstraintViolation<?>> constraintViolations) {
+                    constraintViolations.forEach(this::foo);
+                }
+
+            }
+                """
+        )
+
+//        val (foreach) = acu.methodCalls().toList()
+        val constraintViolationT = acu.descendants(ASTClassType::class.java)
+            .filter { it.simpleName == "ConstraintViolation" }
+            .firstOrThrow().typeMirror.symbol as JClassSymbol
+        val (fooDecl) = acu.methodDeclarations().toList { it.symbol }
+        val (mref) = acu.descendants(ASTMethodReference::class.java).toList()
+
+        acu.withTypeDsl {
+            mref.referencedMethod.symbol shouldBe fooDecl
+
+            mref shouldHaveType java.util.function.Consumer::class[constraintViolationT[`?`]]
+
+        }
+    }
 })

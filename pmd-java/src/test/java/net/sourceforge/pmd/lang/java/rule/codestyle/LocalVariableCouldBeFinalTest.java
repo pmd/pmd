@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-class LocalVariableCouldBeFinalTest extends PmdRuleTst {
+public class LocalVariableCouldBeFinalTest extends PmdRuleTst {
     // no additional unit tests
 }

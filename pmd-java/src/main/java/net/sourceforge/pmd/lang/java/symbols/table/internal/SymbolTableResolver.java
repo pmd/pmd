@@ -7,13 +7,14 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.AbruptCompletionAnalysis.canCompleteNormally;
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.PatternBindingsUtil.bindersOfExpr;
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.PatternBindingsUtil.bindersOfPattern;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -50,6 +51,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLocalClassStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
+import net.sourceforge.pmd.lang.java.ast.ASTPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
@@ -138,7 +140,7 @@ public final class SymbolTableResolver {
         private final SymTableFactory f;
         private final Deque<JSymbolTable> stack = new ArrayDeque<>();
 
-        private final Deque<ASTTypeDeclaration> enclosingType = new ArrayDeque<>();
+        private final Deque<JClassType> enclosingType = new ArrayDeque<>();
 
         private final Set<DeferredNode> deferredInPrevRound;
         private final Set<DeferredNode> newDeferred;
@@ -202,14 +204,32 @@ public final class SymbolTableResolver {
 
         @Override
         public Void visit(ASTCompilationUnit node, @NonNull ReferenceCtx ctx) {
-            Map<Boolean, List<ASTImportDeclaration>> isImportOnDemand = node.children(ASTImportDeclaration.class)
-                                                                            .collect(Collectors.partitioningBy(ASTImportDeclaration::isImportOnDemand));
+            List<ASTImportDeclaration> importsOnDemand = new ArrayList<>();
+            List<ASTImportDeclaration> singleImports = new ArrayList<>();
+            List<ASTImportDeclaration> moduleImports = new ArrayList<>();
+
+            node.children(ASTImportDeclaration.class).forEach(i -> {
+                if (i.isModuleImport()) {
+                    moduleImports.add(i);
+                } else if (i.isImportOnDemand()) {
+                    importsOnDemand.add(i);
+                } else {
+                    singleImports.add(i);
+                }
+            });
 
             int pushed = 0;
-            pushed += pushOnStack(f.importsOnDemand(top(), isImportOnDemand.get(true)));
+
+            // Java 23 Preview
+            if (node.isSimpleCompilationUnit()) {
+                pushed += pushOnStack(f.moduleImportJavaBase(top()));
+                pushed += pushOnStack(f.importsOnDemandJavaIo(top()));
+            }
+            pushed += pushOnStack(f.moduleImports(top(), moduleImports)); // Java 23 preview
+            pushed += pushOnStack(f.importsOnDemand(top(), importsOnDemand));
             pushed += pushOnStack(f.javaLangSymTable(top()));
             pushed += pushOnStack(f.samePackageSymTable(top()));
-            pushed += pushOnStack(f.singleImportsSymbolTable(top(), isImportOnDemand.get(false)));
+            pushed += pushOnStack(f.singleImportsSymbolTable(top(), singleImports));
 
             NodeStream<ASTTypeDeclaration> typeDecls = node.getTypeDeclarations();
 
@@ -256,7 +276,7 @@ public final class SymbolTableResolver {
         public Void visitTypeDecl(ASTTypeDeclaration node, @NonNull ReferenceCtx ctx) {
             int pushed = 0;
 
-            enclosingType.push(node);
+            enclosingType.push(node.getTypeMirror());
             ReferenceCtx bodyCtx = ctx.scopeDownToNested(node.getSymbol());
 
             // the following is just for the body
@@ -363,8 +383,8 @@ public final class SymbolTableResolver {
                 ASTSwitchLabel label = branch.getLabel();
                 // collect all bindings. Maybe it's illegal to use composite label with bindings, idk
                 BindSet bindings =
-                    label.getExprList().reduce(BindSet.EMPTY,
-                                               (bindSet, expr) -> bindSet.union(bindersOfExpr(expr)));
+                    label.children(ASTPattern.class)
+                         .reduce(BindSet.EMPTY, (bindSet, pat) -> bindSet.union(bindersOfPattern(pat)));
 
                 // visit guarded patterns in label
                 setTopSymbolTableAndVisit(label, ctx);
@@ -428,7 +448,7 @@ public final class SymbolTableResolver {
             int pushed = 0;
             for (ASTVariableDeclarator declarator : st.children(ASTVariableDeclarator.class)) {
                 ASTVariableId varId = declarator.getVarId();
-                pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), varId.getSymbol()));
+                pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), varId));
                 // visit initializer
                 setTopSymbolTableAndVisit(declarator.getInitializer(), ctx);
             }
@@ -443,7 +463,7 @@ public final class SymbolTableResolver {
             ASTVariableId varId = node.getVarId();
             setTopSymbolTableAndVisit(varId.getTypeNode(), ctx);
 
-            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varId.getSymbol()));
+            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varId));
             ASTStatement body = node.getBody();
             // unless it's a block the body statement may never set a
             // symbol table that would have this table as parent,
@@ -479,7 +499,7 @@ public final class SymbolTableResolver {
 
         @Override
         public Void visit(ASTCatchClause node, @NonNull ReferenceCtx ctx) {
-            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), node.getParameter().getVarId().getSymbol()));
+            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), node.getParameter().getVarId()));
             setTopSymbolTableAndVisitAllChildren(node, ctx);
             popStack(pushed);
             return null;
@@ -709,7 +729,7 @@ public final class SymbolTableResolver {
             if (enclosingType.isEmpty()) {
                 return null;
             }
-            return enclosingType.getFirst().getTypeMirror();
+            return enclosingType.getFirst();
         }
 
         // this does not visit the given node, only its children

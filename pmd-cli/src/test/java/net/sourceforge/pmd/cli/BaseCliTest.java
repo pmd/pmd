@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.cli;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.emptyString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayOutputStream;
@@ -146,7 +146,7 @@ abstract class BaseCliTest {
         }
 
         public void checkNoErrorOutput() {
-            checkStdErr(equalTo(""));
+            checkStdErr(emptyString());
         }
 
         public void checkStdOut(Matcher<? super String> matcher) {

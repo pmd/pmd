@@ -3415,7 +3415,7 @@ public class SarifLog {
 
     @java.lang.SuppressWarnings("all")
     private static String defaultSchema() {
-        return "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json";
+        return "https://json.schemastore.org/sarif-2.1.0.json";
     }
 
     @java.lang.SuppressWarnings("all")

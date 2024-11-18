@@ -5,12 +5,12 @@
 package net.sourceforge.pmd.cli;
 
 import static net.sourceforge.pmd.cli.internal.CliExitCode.OK;
+import static net.sourceforge.pmd.cli.internal.CliExitCode.RECOVERED_ERRORS_OR_VIOLATIONS;
 import static net.sourceforge.pmd.cli.internal.CliExitCode.VIOLATIONS_FOUND;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.emptyString;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 
 import java.nio.charset.StandardCharsets;
@@ -37,6 +37,14 @@ class CpdCliTest extends BaseCliTest {
     private static final String BASE_RES_PATH = "src/test/resources/net/sourceforge/pmd/cli/cpd/";
     private static final String SRC_DIR = BASE_RES_PATH + "files/";
     private static final Path SRC_PATH = Paths.get(SRC_DIR).toAbsolutePath();
+
+    private static final String CPD_REPORT_HEADER_PATTERN = "<\\?xml version=\"1.0\" encoding=\"UTF-8\"\\?>\n"
+            + "<pmd-cpd xmlns=\"https://pmd-code.org/schema/cpd-report\"\n"
+            + "         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+            + "         pmdVersion=\".+?\"\n"
+            + "         timestamp=\".+?\"\n"
+            + "         version=\"1.0.0\"\n"
+            + "         xsi:schemaLocation=\"https://pmd-code.org/schema/cpd-report https://pmd.github.io/schema/cpd-report_1_0_0.xsd\">\n";
 
     private static final Map<String, Integer> NUMBER_OF_TOKENS;
 
@@ -68,8 +76,11 @@ class CpdCliTest extends BaseCliTest {
     void testEmptyResultRendering() throws Exception {
         final String expectedFilesXml = getExpectedFileEntriesXml(NUMBER_OF_TOKENS.keySet());
         runCliSuccessfully("--minimum-tokens", "340", "--language", "java", "--dir", SRC_DIR, "--format", "xml")
-                .verify(result -> result.checkStdOut(equalTo(
-                        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" + "<pmd-cpd>\n" + expectedFilesXml + "</pmd-cpd>\n"
+                .verify(result -> result.checkStdOut(containsPattern(CPD_REPORT_HEADER_PATTERN
+                        + "\\Q" // quote start
+                        + expectedFilesXml
+                        + "</pmd-cpd>\n"
+                        + "\\E" // quote end
                 )));
     }
 
@@ -128,14 +139,14 @@ class CpdCliTest extends BaseCliTest {
     @Test
     void testWrongCliOptionResultsInErrorLoggingAfterDir() throws Exception {
         // --ignore-identifiers doesn't take an argument anymore - it is interpreted as a file for inputPaths
-        final CliExecutionResult result = runCli(VIOLATIONS_FOUND, "--minimum-tokens", "34", "--dir", SRC_DIR, "--ignore-identifiers", "false");
+        final CliExecutionResult result = runCli(RECOVERED_ERRORS_OR_VIOLATIONS, "--minimum-tokens", "34", "--dir", SRC_DIR, "--ignore-identifiers", "false");
         result.checkStdErr(containsString("No such file false"));
     }
 
     @Test
     void testWrongCliOptionResultsInErrorLoggingBeforeDir() throws Exception {
         // --ignore-identifiers doesn't take an argument anymore - it is interpreted as a file for inputPaths
-        final CliExecutionResult result = runCli(VIOLATIONS_FOUND, "--minimum-tokens", "34", "--ignore-identifiers", "false", "--dir", SRC_DIR);
+        final CliExecutionResult result = runCli(RECOVERED_ERRORS_OR_VIOLATIONS, "--minimum-tokens", "34", "--ignore-identifiers", "false", "--dir", SRC_DIR);
         result.checkStdErr(containsString("No such file false"));
     }
 
@@ -152,7 +163,7 @@ class CpdCliTest extends BaseCliTest {
      */
     @Test
     void testIgnoreIdentifiers() throws Exception {
-        runCli(VIOLATIONS_FOUND, "--minimum-tokens", "34", "--dir", SRC_DIR, "--ignore-identifiers", "false", "--debug")
+        runCli(VIOLATIONS_FOUND, "--minimum-tokens", "34", "--dir", SRC_DIR, "--ignore-identifiers", "--debug")
             .verify(result -> result.checkStdOut(containsString(
                     "Found a 14 line (89 tokens) duplication"
         )));
@@ -176,8 +187,8 @@ class CpdCliTest extends BaseCliTest {
 
     @Test
     void testNoDuplicatesResultRendering() throws Exception {
-        String expectedReport = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            + "<pmd-cpd>\n"
+        String expectedReportPattern = CPD_REPORT_HEADER_PATTERN
+            + "\\Q" // quote start
             + "   <file path=\"" + SRC_PATH.resolve("dup1.java") + "\"\n"
             + "         totalNumberOfTokens=\"89\"/>\n"
             + "   <file path=\"" + SRC_PATH.resolve("dup2.java") + "\"\n"
@@ -186,10 +197,11 @@ class CpdCliTest extends BaseCliTest {
             + "         totalNumberOfTokens=\"5\"/>\n"
             + "   <file path=\"" + SRC_PATH.resolve("fileWith_UTF_8_BOM_Encoding.java") + "\"\n"
             + "         totalNumberOfTokens=\"5\"/>\n"
-            + "</pmd-cpd>\n";
+            + "</pmd-cpd>\n"
+            + "\\E"; // quote end
 
         runCliSuccessfully("--minimum-tokens", "340", "--language", "java", "--dir", SRC_DIR, "--format", "xml")
-                .verify(result -> result.checkStdOut(equalTo(expectedReport)));
+                .verify(result -> result.checkStdOut(containsPattern(expectedReportPattern)));
     }
 
     /**
@@ -227,10 +239,61 @@ class CpdCliTest extends BaseCliTest {
                "--skip-lexical-errors")
             .verify(r -> {
                 r.checkStdErr(containsPattern("Skipping file: Lexical error in file .*?BadFile\\.java"));
+                r.checkStdErr(containsString("--skip-lexical-errors is deprecated. Use --no-fail-on-error instead."));
                 r.checkStdOut(containsString("Found a 5 line (13 tokens) duplication"));
             });
     }
 
+    /**
+     * @see <a href="https://github.com/pmd/pmd/issues/5091">[core] PMD CPD v7.3.0 gives deprecation warning for skipLexicalErrors even when not used #5091</a>
+     * @throws Exception
+     */
+    @Test
+    void noWarningsWithoutSkipLexicalErrors() throws Exception {
+        runCliSuccessfully("--minimum-tokens", "340", "--language", "java", "--dir", SRC_DIR, "--format", "text")
+                .verify(r -> {
+                    r.checkNoErrorOutput();
+                    r.checkStdOut(emptyString());
+                });
+    }
+
+    @Test
+    void testExitCodeWithLexicalErrors() throws Exception {
+        runCli(RECOVERED_ERRORS_OR_VIOLATIONS,
+                "--minimum-tokens", "10",
+                "-d", Paths.get(BASE_RES_PATH, "badandgood", "BadFile.java").toString(),
+                "--format", "text")
+                .verify(r -> {
+                    r.checkStdErr(containsPattern("Skipping file: Lexical error in file '.*?BadFile\\.java'"));
+                    r.checkStdOut(emptyString());
+                });
+    }
+
+    @Test
+    void testExitCodeWithLexicalErrorsNoFail() throws Exception {
+        runCli(OK,
+                "--minimum-tokens", "10",
+                "-d", Paths.get(BASE_RES_PATH, "badandgood", "BadFile.java").toString(),
+                "--format", "text",
+                "--no-fail-on-error")
+                .verify(r -> {
+                    r.checkStdErr(containsPattern("Skipping file: Lexical error in file '.*?BadFile\\.java'"));
+                    r.checkStdOut(emptyString());
+                });
+    }
+
+    @Test
+    void testExitCodeWithLexicalErrorsAndSkipLexical() throws Exception {
+        runCli(OK,
+                "--minimum-tokens", "10",
+                "-d", Paths.get(BASE_RES_PATH, "badandgood", "BadFile.java").toString(),
+                "--format", "text",
+                "--skip-lexical-errors")
+                .verify(r -> {
+                    r.checkStdErr(containsPattern("Skipping file: Lexical error in file .*?BadFile\\.java"));
+                    r.checkStdOut(emptyString());
+                });
+    }
 
     @Test
     void jsShouldFindDuplicatesWithDifferentFileExtensions() throws Exception {
@@ -251,9 +314,7 @@ class CpdCliTest extends BaseCliTest {
         runCli(OK, "--minimum-tokens", "5", "--language", "ecmascript",
                "-f", "xml",
                "-d", BASE_RES_PATH + "tsFiles/")
-            .checkStdOut(equalTo(
-                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<pmd-cpd/>\n"
-            ));
+            .checkStdOut(containsPattern(CPD_REPORT_HEADER_PATTERN.substring(0, CPD_REPORT_HEADER_PATTERN.length() - 2) + "/>"));
     }
 
     @Test

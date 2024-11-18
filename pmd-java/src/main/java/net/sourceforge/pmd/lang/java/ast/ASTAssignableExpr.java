@@ -36,6 +36,9 @@ public interface ASTAssignableExpr extends ASTPrimaryExpression {
      * If this expression occurs as the left-hand-side of an {@linkplain ASTAssignmentExpression assignment},
      * or as the target of an {@linkplain ASTUnaryExpression increment or decrement expression},
      * this method returns {@link AccessType#WRITE}. Otherwise the value is just {@linkplain AccessType#READ read}.
+     *
+     * @see JavaAstUtils#isVarAccessReadAndWrite(ASTNamedReferenceExpr)
+     * @see JavaAstUtils#isVarAccessStrictlyWrite(ASTNamedReferenceExpr)
      */
     default @NonNull AccessType getAccessType() {
 

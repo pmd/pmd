@@ -108,11 +108,11 @@ if [ "${BUILD_TOOLS_VERSION}" != "${BUILD_TOOLS_VERSION_RELEASE}" ]; then
   exit 1
 fi
 
-echo "*   Update date info in **docs/_config.yml**."
-echo "    date: $(date -u +%d-%B-%Y)"
-echo
 echo "*   Update version info in **docs/_config.yml**."
 echo "    remove the SNAPSHOT from site.pmd.version"
+echo
+echo "*   Update date info in **docs/_config.yml**."
+echo "    date: $(date -u +%Y-%m-%d)"
 echo
 echo "*   Update **pmd-apex/src/main/resources/rulesets/apex/quickstart.xml** and"
 echo "    **pmd-java/src/main/resources/rulesets/java/quickstart.xml** with the new rules."
@@ -126,21 +126,43 @@ echo "Press enter to continue..."
 read -r
 
 
-# calculating stats for release notes
+# determine current milestone
+MILESTONE_JSON=$(curl -s "https://api.github.com/repos/pmd/pmd/milestones?state=all&direction=desc&per_page=5"|jq ".[] | select(.title == \"$RELEASE_VERSION\")")
+MILESTONE=$(echo "$MILESTONE_JSON" | jq .number)
 
+# determine dependency updates
+DEPENDENCIES_JSON=$(curl -s "https://api.github.com/repos/pmd/pmd/issues?labels=dependencies&state=closed&direction=asc&per_page=50&page=1&milestone=${MILESTONE}")
+DEPENDENCIES_COUNT=$(echo "$DEPENDENCIES_JSON" | jq length)
+DEPENDENCIES=""
+if [ $DEPENDENCIES_COUNT -gt 0 ]; then
+  DEPENDENCIES=$(
+    echo "### 📦 Dependency updates"
+    echo "$DEPENDENCIES_JSON" | jq --raw-output '.[] | "* [#\(.number)](https://github.com/pmd/pmd/issues/\(.number)): \(.title)"'
+  )
+else
+  DEPENDENCIES=$(
+    echo "### 📦 Dependency updates"
+    echo "No dependency updates"
+  )
+fi
+
+# calculating stats for release notes (excluding dependency updates)
+STATS_CLOSED_ISSUES=$(echo "$MILESTONE_JSON" | jq .closed_issues)
 STATS=$(
 echo "### 📈 Stats"
 echo "* $(git log pmd_releases/"${LAST_VERSION}"..HEAD --oneline --no-merges |wc -l) commits"
-echo "* $(curl -s "https://api.github.com/repos/pmd/pmd/milestones?state=all&direction=desc&per_page=5"|jq ".[] | select(.title == \"$RELEASE_VERSION\") | .closed_issues") closed tickets & PRs"
+echo "* $(($STATS_CLOSED_ISSUES - $DEPENDENCIES_COUNT)) closed tickets & PRs"
 echo "* Days since last release: $(( ( $(date +%s) - $(git log --max-count=1 --format="%at" pmd_releases/"${LAST_VERSION}") ) / 86400))"
 )
 
+
 TEMP_RELEASE_NOTES=$(cat docs/pages/release_notes.md)
-TEMP_RELEASE_NOTES=${TEMP_RELEASE_NOTES/\{\% endtocmaker \%\}/${STATS//\&/\\\&}$'\n'$'\n'\{\% endtocmaker \%\}}
+TEMP_RELEASE_NOTES=${TEMP_RELEASE_NOTES/\{\% endtocmaker \%\}/${DEPENDENCIES//\&/\\\&}$'\n'$'\n'${STATS//\&/\\\&}$'\n'$'\n'\{\% endtocmaker \%\}}
 echo "${TEMP_RELEASE_NOTES}" > docs/pages/release_notes.md
 
 echo
-echo "Updated stats in release notes:"
+echo "Updated dependencies and stats in release notes:"
+echo "$DEPENDENCIES"
 echo "$STATS"
 echo
 echo "Please verify docs/pages/release_notes.md"
@@ -204,7 +226,7 @@ echo
 echo "Tag has been pushed.... now check github actions: <https://github.com/pmd/pmd/actions>"
 echo
 echo "Now wait, until first stage of the release is finished successfully..."
-echo "You don't need to wait until artifacts are in maven central, just the github action must be successful."
+echo "You don't need to wait until artifacts are in maven central, just the GitHub Action must be successful."
 echo
 echo "If it is failing, you can fix the code/scripts and force push the tag via"
 echo
@@ -214,7 +236,7 @@ echo "    git push origin tag \"pmd_releases/${RELEASE_VERSION}\" --force"
 echo
 echo "However: This is only possible, if the artefacts have not been pushed to maven central yet..."
 echo
-echo "Press enter to continue..."
+echo "Press enter to continue, once the GitHub Action finished successfully..."
 read -r
 
 echo
@@ -254,7 +276,7 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
-## {{ site.pmd.date }} - {{ site.pmd.version }}
+## {{ site.pmd.date | date: "%d-%B-%Y" }} - {{ site.pmd.version }}
 
 The PMD team is pleased to announce PMD {{ site.pmd.version }}.
 
@@ -289,7 +311,7 @@ echo "    <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/maven-me
 echo
 echo
 echo "Then proceed with releasing pmd-designer..."
-echo "<https://github.com/pmd/pmd-designer/blob/master/releasing.md>"
+echo "<https://github.com/pmd/pmd-designer/blob/main/releasing.md>"
 echo
 echo "Press enter to continue when pmd-designer is available in maven-central..."
 echo "<https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-designer/maven-metadata.xml>."
@@ -344,8 +366,8 @@ tweet="${tweet//#/%23}"
 tweet="${tweet//\//%2F}"
 tweet="${tweet//$'\r'/}"
 tweet="${tweet//$'\n'/%0A}"
-echo "*   Tweet about this release on https://twitter.com/pmd_analyzer:"
-echo "        <https://twitter.com/intent/tweet?text=$tweet>"
+echo "*   Tweet about this release on https://x.com/pmd_analyzer:"
+echo "        <https://x.com/intent/post?text=$tweet>"
 echo "*   Post this also into <https://matrix.to/#/#pmd_pmd:gitter.im>:"
 echo "        PMD ${RELEASE_VERSION} released: https://github.com/pmd/pmd/releases/tag/pmd_releases/${RELEASE_VERSION} #PMD"
 echo

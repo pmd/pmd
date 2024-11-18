@@ -15,6 +15,7 @@ import java.util.Set;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.reporting.Report;
 
 final class CpdTestUtils {
 
@@ -26,10 +27,10 @@ final class CpdTestUtils {
     }
 
     static CPDReport makeReport(List<Match> matches) {
-        return makeReport(matches, Collections.emptyMap());
+        return makeReport(matches, Collections.emptyMap(), Collections.emptyList());
     }
 
-    static CPDReport makeReport(List<Match> matches, Map<FileId, Integer> numTokensPerFile) {
+    static CPDReport makeReport(List<Match> matches, Map<FileId, Integer> numTokensPerFile, List<Report.ProcessingError> processingErrors) {
         Set<TextFile> textFiles = new HashSet<>();
         for (Match match : matches) {
             match.iterator().forEachRemaining(
@@ -41,7 +42,8 @@ final class CpdTestUtils {
         return new CPDReport(
             new SourceManager(new ArrayList<>(textFiles)),
             matches,
-            numTokensPerFile
+            numTokensPerFile,
+            processingErrors
         );
     }
 
@@ -91,7 +93,8 @@ final class CpdTestUtils {
             return new CPDReport(
                 sources.build(),
                 matches,
-                numTokensPerFile
+                numTokensPerFile,
+                Collections.emptyList()
             );
 
         }

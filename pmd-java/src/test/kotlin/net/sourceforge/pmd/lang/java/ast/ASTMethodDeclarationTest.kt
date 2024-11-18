@@ -19,13 +19,10 @@ import net.sourceforge.pmd.lang.java.ast.JavaVersion.J9
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
 
 class ASTMethodDeclarationTest : ParserTestSpec({
-
-    parserTest("Non-private interfaces members should be public", javaVersions = Earliest..Latest) {
-
+    parserTestContainer("Non-private interfaces members should be public", javaVersions = Earliest..Latest) {
         genClassHeader = "interface Bar"
 
         inContext(TypeBodyParsingCtx) {
-
             "int foo();" should parseAs {
                 methodDecl {
                     it should haveVisibility(V_PUBLIC)
@@ -74,8 +71,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
         }
     }
 
-    parserTest("Private methods in interface should be private", J9..Latest) {
-
+    parserTestContainer("Private methods in interface should be private", J9..Latest) {
         inContext(TypeBodyParsingCtx) {
             "private int de() { return 1; }" should parseAs {
                 methodDecl {
@@ -86,24 +82,20 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                     it should haveModifier(PRIVATE)
                     it.textOfReportLocation() shouldBe "de"
 
-
                     unspecifiedChildren(4)
                 }
             }
         }
     }
 
-    parserTest("Non-default methods in interfaces should be abstract", javaVersions = J1_8..Latest) {
-
+    parserTestContainer("Non-default methods in interfaces should be abstract", javaVersions = J1_8..Latest) {
         genClassHeader = "interface Bar"
 
         inContext(TypeBodyParsingCtx) {
-
             "int bar();" should parseAs {
                 methodDecl {
                     it shouldNot haveModifier(DEFAULT)
                     it should haveModifier(ABSTRACT)
-
 
                     unspecifiedChildren(3)
                 }
@@ -114,16 +106,13 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                     it shouldNot haveModifier(DEFAULT)
                     it should haveModifier(ABSTRACT)
 
-
                     unspecifiedChildren(3)
                 }
             }
-
         }
     }
 
-    parserTest("Default methods in interfaces should not be abstract", javaVersions = J1_8..Latest) {
-
+    parserTestContainer("Default methods in interfaces should not be abstract", javaVersions = J1_8..Latest) {
         genClassHeader = "interface Bar"
 
         inContext(TypeBodyParsingCtx) {
@@ -131,7 +120,6 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                 methodDecl {
                     it should haveModifier(DEFAULT)
                     it shouldNot haveModifier(ABSTRACT)
-
 
                     unspecifiedChildren(4)
                 }
@@ -141,10 +129,8 @@ class ASTMethodDeclarationTest : ParserTestSpec({
         // default abstract is an invalid combination of modifiers, so we won't encounter it in real analysis
     }
 
-    parserTest("Throws list") {
-
+    parserTestContainer("Throws list") {
         inContext(TypeBodyParsingCtx) {
-
             "void bar() throws IOException, java.io.Bar { }" should parseAs {
                 methodDecl {
                     it::isAbstract shouldBe false
@@ -156,7 +142,6 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                     it::getModifiers shouldBe modifiers { }
 
                     it::getResultTypeNode shouldBe voidType()
-
 
                     it::getFormalParameters shouldBe formalsList(0)
 
@@ -173,13 +158,10 @@ class ASTMethodDeclarationTest : ParserTestSpec({
         }
     }
 
-    parserTest("Throws list can be annotated") {
-
+    parserTestContainer("Throws list can be annotated") {
         inContext(TypeBodyParsingCtx) {
-
             "void bar() throws @Oha IOException, @Aha java.io.@Oha Bar { }" should parseAs {
                 methodDecl {
-
                     it::getModifiers shouldBe modifiers { }
 
                     it::getResultTypeNode shouldBe voidType()
@@ -207,13 +189,10 @@ class ASTMethodDeclarationTest : ParserTestSpec({
         }
     }
 
-    parserTest("Varargs can be annotated") {
-
+    parserTestContainer("Varargs can be annotated") {
         inContext(TypeBodyParsingCtx) {
             "void bar(@Oha IOException @Aha ... java) { }" should parseAs {
-
                 methodDecl {
-
                     it::getModifiers shouldBe modifiers { }
 
                     it::getResultTypeNode shouldBe voidType()
@@ -243,9 +222,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
 
             "void bar(@Oha IOException []@O[] @Aha ... java) { }" should parseAs {
-
                 methodDecl {
-
                     it::getModifiers shouldBe modifiers { }
 
                     it::getResultTypeNode shouldBe voidType()
@@ -278,13 +255,10 @@ class ASTMethodDeclarationTest : ParserTestSpec({
         }
     }
 
-    parserTest("Extra dimensions can be annotated") {
-
+    parserTestContainer("Extra dimensions can be annotated") {
         inContext(TypeBodyParsingCtx) {
             "void bar() [] @O[] { }" should parseAs {
-
                 methodDecl {
-
                     it::getModifiers shouldBe modifiers { }
 
                     it::getResultTypeNode shouldBe voidType()
@@ -304,12 +278,10 @@ class ASTMethodDeclarationTest : ParserTestSpec({
         }
     }
 
-    parserTest("Annotation methods") {
-
+    parserTestContainer("Annotation methods") {
         genClassHeader = "@interface Foo"
 
         inContext(TypeBodyParsingCtx) {
-
             "Bar bar() throws IOException;" shouldNot parse()
             "void bar();" shouldNot parse()
             "default int bar() { return 1; }" shouldNot parse()
@@ -332,7 +304,6 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                     it::getDefaultClause shouldBe defaultValue { int(2) }
                 }
             }
-
             "int bar() @NonZero [];" should parseAs {
                 annotationMethod {
                     it::getModifiers shouldBe modifiers { }
@@ -379,8 +350,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
         }
     }
 
-    parserTest("Receiver parameters") {
-
+    parserTestContainer("Receiver parameters") {
         /*
             Notice the parameterCount is 0 - receiver parameters don't affect arity.
          */
@@ -435,16 +405,14 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                             }
                         }
 
-                    it.toList() shouldBe listOf(
-                            child {
-                                localVarModifiers {  }
-                            primitiveType(INT)
-                                variableId("other")
-                            }
-                    )
-
-
-            }
+                        it.toList() shouldBe listOf(
+                                child {
+                                    localVarModifiers {  }
+                                    primitiveType(INT)
+                                    variableId("other")
+                                }
+                        )
+                    }
 
                     it::getThrowsList shouldBe null
                     it::getBody shouldBe null
@@ -453,12 +421,10 @@ class ASTMethodDeclarationTest : ParserTestSpec({
         }
     }
 
-    parserTest("Annotation placement") {
+    parserTestContainer("Annotation placement") {
         inContext(TypeBodyParsingCtx) {
-
             "@OnDecl <T extends K> @OnType Ret bar() { return; }" should parseAs {
                 methodDecl {
-
                     it::getName shouldBe "bar"
 
                     it::getModifiers shouldBe modifiers {
@@ -474,7 +440,6 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                     it::getResultTypeNode shouldBe classType("Ret") {
                         annotation("OnType")
                     }
-
 
                     formalsList(0)
                     block()

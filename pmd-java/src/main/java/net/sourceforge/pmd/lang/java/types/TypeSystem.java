@@ -29,6 +29,7 @@ import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JModuleSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
@@ -395,6 +396,13 @@ public final class TypeSystem {
 
         return isCanonical ? resolver.resolveClassFromCanonicalName(name)
                            : resolver.resolveClassFromBinaryName(name);
+    }
+
+    /**
+     * @since 7.5.0
+     */
+    public @Nullable JModuleSymbol getModuleSymbol(String moduleName) {
+        return resolver.resolveModule(moduleName);
     }
 
     /**
@@ -788,6 +796,11 @@ public final class TypeSystem {
         @Override
         public @Nullable JClassSymbol getSymbol() {
             return null;
+        }
+
+        @Override
+        public @Nullable JTypeMirror getAsSuper(@NonNull JClassSymbol symbol) {
+            throw new UnsupportedOperationException("Null type cannot call asSuper, will return null always");
         }
 
         @Override

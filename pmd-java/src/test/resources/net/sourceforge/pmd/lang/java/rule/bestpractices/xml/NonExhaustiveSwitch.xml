@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>simple failure case</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int x = 2;
+        switch (x) {
+            case 2: int y=8;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>empty switch is ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int x = 2;
+        switch (x) { } // this is ok. The empty switch is detected by EmptyControlStatement
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>simple ok case</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int x = 2;
+        switch (x) {
+            case 2: int y=8;
+            default: int j=8;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#651 Enum type, not ok</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.bestpractices.switchstmtsshouldhavedefault.SimpleEnum;
+
+public class Foo {
+    void bar() {
+        SimpleEnum a;
+
+        // This switch is NOT exhaustive
+        switch (a) {
+        case BZAZ:
+            int y = 8;
+            break;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#651 Enum type, ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.bestpractices.switchstmtsshouldhavedefault.SimpleEnum;
+
+public class Foo {
+    void bar() {
+        SimpleEnum x;
+
+        // This switch is exhaustive
+        switch (x) {
+        case BZAZ:
+            int y = 8;
+            break;
+        case FOO:
+            break;
+        case BAR:
+            int w = 8;
+            break;
+        }
+    }
+}
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#3605 switch on enum with default</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import net.sourceforge.pmd.lang.java.rule.bestpractices.switchstmtsshouldhavedefault.SimpleEnum;
+
+            public class Foo {
+
+                void bar(SimpleEnum x) {
+                    switch (x) {
+                    case BZAZ:
+                        int y = 8;
+                        break;
+                    case FOO:
+                        break;
+                    case BAR:
+                        int w = 8;
+                        break;
+                    default:
+                        break;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#3605 switch on enum with default, nonexhaustive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import net.sourceforge.pmd.lang.java.rule.bestpractices.switchstmtsshouldhavedefault.SimpleEnum;
+
+            public class Foo {
+
+                void bar(SimpleEnum x) {
+                    switch (x) {
+                    case BZAZ:
+                        int y = 8;
+                        break;
+                    case FOO:
+                        break;
+                    default:
+                        break;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#3605 switch on enum with default, nonexhaustive, arrow</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import net.sourceforge.pmd.lang.java.rule.bestpractices.switchstmtsshouldhavedefault.SimpleEnum;
+
+            public class Foo {
+                void bar(SimpleEnum x) {
+                    switch (x) {
+                    case FOO -> System.out.println("it is on");
+                    case BAR -> System.out.println("it is off");
+                    default -> System.out.println("it is neither on nor off - should not happen? maybe null?");
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#3605 switch on enum with default, exhaustive, arrow</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import net.sourceforge.pmd.lang.java.rule.bestpractices.switchstmtsshouldhavedefault.SimpleEnum;
+
+            public class Foo {
+                void bar(SimpleEnum x) {
+                    switch (x) {
+                    case FOO -> System.out.println("it is on");
+                    case BAR -> System.out.println("it is off");
+                    case BZAZ -> System.out.println("it is bzaz");
+                    default -> System.out.println("it is neither on nor off - should not happen? maybe null?");
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Enum type, not ok</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+
+public class Foo {
+    enum MyEnum { A, B, C }
+    void bar(MyEnum x) {
+        // This switch is not exhaustive
+        switch (x) {
+        case A:
+            int y = 8;
+            break;
+        case B:
+            break;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Enum type, not ok (arrow branches)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+
+public class Foo {
+    enum MyEnum { A, B, C }
+    void bar(MyEnum x) {
+        // This switch is not exhaustive
+        switch (x) {
+        case A -> {
+            int y = 8;
+        }
+        case B -> throw new IllegalStateException();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2806 [java] SwitchStmtsShouldHaveDefault false-positive with Java 14 non-fallthrough branches</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.bestpractices.switchstmtsshouldhavedefault.SimpleEnum;
+
+public class Foo {
+    public String foo(String foo) {
+        switch (foo) {
+        case "=" -> foo = "eq";
+        case "!=" -> foo = "ne";
+        default -> throw new IllegalArgumentException();
+        }
+        return foo + 'a';
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] SwitchStmtsShouldHaveDefault false positive on enum inside enums #2946</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum GradeSystem {
+    SysA, SysB;
+
+    public boolean isValid() {
+        switch (this) { // false-positive
+        case SysA:
+        case SysB:
+            return true;
+        }
+
+        return false;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] SwitchStmtsShouldHaveDefault false positive with pattern matching #4813</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public sealed interface AcceptableResult permits Success, Warning {
+    public String message();
+}
+public final class Success implements AcceptableResult {
+    @Override
+    public String message() {
+        return "Success!";
+    }
+}
+public abstract class Failure {
+    abstract public String message();
+}
+public non-sealed class Warning extends Failure implements AcceptableResult {
+    @Override
+    public String message() {
+        return "Oopsie";
+    }
+}
+public class ProviderWarning extends Warning {
+    @Override
+    public String message() {
+        return "Ohoh";
+    }
+}
+public class Example {
+    public void test(AcceptableResult result) {
+        switch (result) {
+            case Warning failure -> System.out.println("WARNING " + failure.message());
+            case Success success -> System.out.println(success.message());
+        }
+    }
+    public void test2(AcceptableResult result) {
+        switch (result) {
+            case ProviderWarning failure: System.out.println("Provider WARNING " + failure.message()); break;
+            case Warning failure: System.out.println("WARNING " + failure.message()); break;
+            case Success success: System.out.println(success.message()); break;
+        }
+    }
+    public void test3(AcceptableResult result) {
+        switch (result) {
+            case ProviderWarning failure -> System.out.println("Provider WARNING " + failure.message());
+            case Success success -> System.out.println(success.message());
+            default -> System.out.println("default case");
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] SwitchStmtsShouldHaveDefault false positive with pattern matching #4813, example 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+sealed interface S permits A, B {}
+final class A implements S {}
+sealed abstract class B implements S permits C, D {}
+final class C extends B {}
+final class D extends B {}
+public class Example2 {
+    static int testSealedExhaustive(S s) {
+        switch(s) {
+            case A a -> { return 1; }
+            case C c -> { return 2; }
+            case D d -> { return 3; }
+            // case B b -> { return 4; } // not explicitly necessary, but possible
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>With Record Patterns #4813</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+record R(int i) {}
+
+public class SwitchWithRecordPattern {
+    public void check(R r) {
+        switch(r) {
+            case R(int a) -> System.out.println(a);
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Multiple Case Constants</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+enum MyEnum { A, B, C }
+
+public class SwitchMultipleCaseConstants {
+    public void switchLabels(MyEnum e) {
+        switch(e) {
+            case A,B: System.out.println("a or b"); break;
+            case C: System.out.println("c");
+        }
+        String s = switch(e) {
+            case A,B: yield "a or b";
+            case C: yield "c";
+        };
+        System.out.println(s);
+    }
+    public void switchRules(MyEnum e) {
+        switch(e) {
+            case A,B -> System.out.println("a or b");
+            case C -> System.out.println("c");
+        }
+        String s = switch(e) {
+            case A,B -> "a or b";
+            case C -> "c";
+        };
+        System.out.println(s);
+    }
+}
+]]></code>
+    </test-code>
+</test-data>

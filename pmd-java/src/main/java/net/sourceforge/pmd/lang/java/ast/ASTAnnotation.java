@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.types.JClassType;
  *
  * </pre>
  */
-public final class ASTAnnotation extends AbstractJavaTypeNode implements TypeNode, ASTMemberValue, Iterable<ASTMemberValuePair> {
+public final class ASTAnnotation extends AbstractJavaTypeNode implements ASTMemberValue, Iterable<ASTMemberValuePair> {
 
     ASTAnnotation(int id) {
         super(id);
@@ -81,8 +81,29 @@ public final class ASTAnnotation extends AbstractJavaTypeNode implements TypeNod
      */
     public NodeStream<ASTMemberValue> getFlatValue(String attrName) {
         return NodeStream.of(getAttribute(attrName))
-                         .flatMap(v -> v instanceof ASTMemberValueArrayInitializer ? v.children(ASTMemberValue.class)
-                                                                                   : NodeStream.of(v));
+                         .flatMap(ASTAnnotation::flatValue);
+    }
+
+    /**
+     * Return expression values for all attributes.
+     * This may flatten an array initializer. For example, for the attribute
+     * named "value":
+     * <pre>{@code
+     * - @SuppressWarnings -> returns empty node stream
+     * - @SuppressWarning("fallthrough") -> returns ["fallthrough"]
+     * - @SuppressWarning(value={"fallthrough"}) -> returns ["fallthrough"]
+     * - @SuppressWarning({"fallthrough", "rawtypes"}) -> returns ["fallthrough", "rawtypes"]
+     * }</pre>
+     */
+    public NodeStream<ASTMemberValue> getFlatValues() {
+        return getMembers().map(ASTMemberValuePair::getValue)
+                           .flatMap(ASTAnnotation::flatValue);
+    }
+
+    private static NodeStream<ASTMemberValue> flatValue(ASTMemberValue value) {
+        return value instanceof ASTMemberValueArrayInitializer
+            ? value.children(ASTMemberValue.class)
+            : NodeStream.of(value);
     }
 
     /**

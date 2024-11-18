@@ -163,6 +163,7 @@ class ApexTreeBuilder(private val task: ParserTask, private val proc: ApexLangua
             is DmlStatement -> buildDmlStatement(node)
             is IfStatement -> buildIfStatement(node)
             is VariableDeclarationStatement -> buildVariableDeclarationGroup(node.group)
+            is VariableDeclarationGroup -> buildVariableDeclarationGroup(node)
             is VariableDeclaration -> buildVariableDeclaration(node)
             is EnhancedForLoopStatement -> buildEnhancedForLoopStatement(node)
             is DoWhileLoopStatement -> buildDoWhileLoopStatement(node)
@@ -187,9 +188,7 @@ class ApexTreeBuilder(private val task: ParserTask, private val proc: ApexLangua
             is KeywordModifier,
             is TypeRef -> null
             else -> {
-                println("No adapter exists for type ${node::class.qualifiedName}")
-                // TODO(b/239648780): temporary print
-                null
+                throw ParseException("No adapter exists for type ${node::class.qualifiedName}")
             }
         }
 
@@ -219,7 +218,11 @@ class ApexTreeBuilder(private val task: ParserTask, private val proc: ApexLangua
         }.apply {
             buildModifiers(node.modifiers).also { it.setParent(this) }
             if (node is TriggerDeclaration) {
-                // 1. Create a synthetic "invoke" ASTMethod for the trigger body
+                // 1. Add all extra methods that are defined in the trigger
+                node.body.filterIsInstance<MethodDeclaration>().forEach { it ->
+                    buildMethodDeclaration(it, this)?.also { it.setParent(this) }
+                }
+                // 2. Create a synthetic "invoke" ASTMethod for the trigger body
                 val invokeMethod = ASTMethod(
                   /* name= */ "invoke",
                   /* internalName= */ "<invoke>",
@@ -227,10 +230,11 @@ class ApexTreeBuilder(private val task: ParserTask, private val proc: ApexLangua
                   /* returnType= */ "void",
                  SourceLocation.UNKNOWN,
                 ).also{ it.setParent(this) }
-                // 2. Add the expected ASTModifier child node
+                // 3. Add the expected ASTModifier child node
                 buildModifiers(emptyList()).also { it.setParent(invokeMethod) }
-                // 3. Elide the body CompoundStatement->ASTBlockStatement
-                buildChildren(node.body, parent = invokeMethod as AbstractApexNode)
+                // 4. Elide the remaining body CompoundStatement->ASTBlockStatement
+                node.body.filterNot { it is MethodDeclaration }
+                    .forEach { buildAndSetParent(it, parent = invokeMethod as AbstractApexNode) }
             } else {
                 buildChildren(node, parent = this, exclude = { it in node.modifiers })
             }
@@ -738,18 +742,18 @@ class ApexTreeBuilder(private val task: ParserTask, private val proc: ApexLangua
         findDescendants(root, nodeType = ASTProperty::class).forEach { node -> generateFields(node) }
 
         // Sort resulting nodes
-        findDescendants(root, nodeType = ASTUserClass::class).forEach { node ->
+        findDescendants(root, nodeType = BaseApexClass::class).forEach { node ->
             sortUserClassChildren(node)
         }
     }
 
     /**
-      * Sort children of [ASTUserClass] in historical order.
+      * Sort children of [BaseApexClass] (ASTUserClass, ASTUserTrigger, ...) in historical order.
       *
       * This sorts [ASTField] nodes immediately after [ASTModifierNode] nodes at
       * the start of the ordered children.
       */
-    private fun sortUserClassChildren(node: ASTUserClass) {
+    private fun sortUserClassChildren(node: BaseApexClass<*>) {
       val children = ArrayList(node.children().toList())
 
       children.sortBy{ when (it) {
@@ -773,7 +777,13 @@ class ApexTreeBuilder(private val task: ParserTask, private val proc: ApexLangua
 
     /** Generates [ASTField] nodes for the [ASTFieldDeclarationStatements]. */
     private fun generateFields(node: ASTFieldDeclarationStatements) {
-        val parent = node.parent as BaseApexClass<*>
+        val parent = if (node.parent is BaseApexClass<*>) {
+            node.parent as BaseApexClass<*>
+        } else if (node.parent is ASTMethod && (node.parent as ASTMethod).isTriggerBlock) {
+            node.parent.parent as BaseApexClass<*>
+        } else {
+            throw IllegalStateException("Unexpected apex tree - field declaration $node cannot appear hear")
+        }
 
         node.node.declarations
             .map { decl ->

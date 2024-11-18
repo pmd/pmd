@@ -792,7 +792,7 @@
                   |     |                    |     +- Name
                   |     |                    +- CatchClause
                   |     |                    |  +- Name
-                  |     |                    |  +- Block
+                  |     |                    |  +- Scope
                   |     |                    |     +- ExpressionStatement
                   |     |                    |        +- FunctionCall
                   |     |                    |           +- Name
@@ -1265,7 +1265,7 @@
                   |           |        |        +- Name
                   |           |        +- CatchClause
                   |           |           +- Name
-                  |           |           +- Block
+                  |           |           +- Scope
                   |           |              +- ExpressionStatement
                   |           |                 +- FunctionCall
                   |           |                    +- Name

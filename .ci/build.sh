@@ -83,6 +83,16 @@ function build() {
                 ./mvnw clean verify -Dskip-cli-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
             else
                 # b) only pmd-cli and pmd-dist
+                #
+                # In the first stage build (without pmd-cli and pmd-dist), cyclonedx:makeAggregateBom tries to
+                # fetch the jars of the to-be-released modules, which don't exist yet. This is recorded in *.lastUpdated
+                # files in the local repo and might end up in the cache, that is used for this 2nd stage build.
+                # Trying to delete the files now, if they exist.
+                # Alternatively, we could run maven with flag "-U" to force update all dependencies...
+                pmd_ci_log_info "Cleanup local maven repo..."
+                find ~/.m2/repository -wholename "*/net/sourceforge/pmd/*/${PMD_CI_MAVEN_PROJECT_VERSION}/*.lastUpdated" | xargs rm -v
+                pmd_ci_log_info "Cleanup local maven repo finished."
+
                 ./mvnw clean verify -pl pmd-cli,pmd-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
             fi
         else
@@ -270,9 +280,9 @@ function pmd_ci_deploy_build_artifacts() {
 # Renders release notes and uploads them as ReadMe.md to sourceforge
 #
 function pmd_ci_build_and_upload_doc() {
-    # generate the site only for snapshots from master and for release builds for case a) (everything without cli/dist)
+    # generate the site only for snapshots from main and for release builds for case a) (everything without cli/dist)
     # to avoid building it twice during a release...
-    if pmd_ci_maven_isSnapshotBuild && [ "${PMD_CI_BRANCH}" = "master" ] || [ "${BUILD_CLI_DIST_ONLY}" = "false" ]; then
+    if pmd_ci_maven_isSnapshotBuild && [ "${PMD_CI_BRANCH}" = "main" ] || [ "${BUILD_CLI_DIST_ONLY}" = "false" ]; then
         pmd_doc_generate_jekyll_site
         pmd_doc_create_archive
 
@@ -302,8 +312,8 @@ function pmd_ci_build_and_upload_doc() {
         pmd_ci_sourceforge_uploadReleaseNotes "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "${rendered_release_notes}"
     fi
 
-    if pmd_ci_maven_isSnapshotBuild && [ "${PMD_CI_BRANCH}" = "master" ]; then
-        # only for snapshot builds from branch master: https://docs.pmd-code.org/snapshot -> pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}
+    if pmd_ci_maven_isSnapshotBuild && [ "${PMD_CI_BRANCH}" = "main" ]; then
+        # only for snapshot builds from branch main: https://docs.pmd-code.org/snapshot -> pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}
         pmd_code_createSymlink "${PMD_CI_MAVEN_PROJECT_VERSION}" "snapshot"
 
         # update github pages https://pmd.github.io/pmd/
