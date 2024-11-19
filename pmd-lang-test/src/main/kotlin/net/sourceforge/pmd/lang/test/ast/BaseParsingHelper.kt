@@ -184,7 +184,11 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      */
     @JvmOverloads
     open fun parseClass(clazz: Class<*>, version: String? = null): T =
-            parse(readClassSource(clazz), version)
+        parseClass(clazz.name, version)
+
+    @JvmOverloads
+    open fun parseClass(binaryName: String, version: String? = null): T =
+        parse(readClassSource(binaryName), version)
 
     fun readResource(resourceName: String): String {
 
@@ -210,14 +214,15 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      *
      * @throws IllegalArgumentException if the source file wasn't found
      */
-    fun readClassSource(clazz: Class<*>): String {
-        var sourceFile = clazz.name.replace('.', '/') + ".java"
+    fun readClassSource(clazz: Class<*>): String = readClassSource(clazz.name)
+
+    fun readClassSource(binaryName: String): String {
         // Consider nested classes
-        if (clazz.name.contains("$")) {
-            sourceFile = sourceFile.substring(0, clazz.name.indexOf('$')) + ".java"
-        }
-        val input = (params.resourceLoader ?: javaClass).classLoader.getResourceAsStream(sourceFile)
-                ?: throw IllegalArgumentException("Unable to find source file $sourceFile for $clazz")
+        val outerName = binaryName.substringBefore('$')
+        val sourceFile = outerName.replace('.', '/') + ".java"
+
+        val input = resourceLoader.classLoader.getResourceAsStream(sourceFile)
+            ?: throw IllegalArgumentException("Unable to find source file $sourceFile for $binaryName")
 
         input.use {
             return consume(input)

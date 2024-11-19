@@ -305,7 +305,13 @@ public interface ASTTypeDeclaration
         return ASTList.singleOrNull(firstChild(ASTExtendsList.class));
     }
 
-    /** Return the permits list if this is a sealed type, null otherwise. */
+    /**
+     * Return the explicit permits list if there is one. Note
+     * that the permitted subtypes list may be implicit and inferred
+     * from subtypes found in the current compilation unit. Use
+     * {@link JClassSymbol#getPermittedSubtypes()} for an API
+     * that works in all cases.
+     */
     default @Nullable ASTPermitsList getPermitsClause() {
         return firstChild(ASTPermitsList.class);
     }
