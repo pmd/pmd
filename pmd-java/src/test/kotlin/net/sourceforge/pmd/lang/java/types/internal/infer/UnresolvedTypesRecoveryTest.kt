@@ -530,8 +530,8 @@ class C {
         val (mref) = acu.descendants(ASTMethodReference::class.java).toList()
 
         val (lambdaCall, mrefCall) = acu.descendants(ASTMethodCall::class.java).toList()
-        val fooDecl = acu.methodDeclarations()[0]!!
         val targetTy = acu.descendants(ASTClassType::class.java).firstOrThrow().typeMirror
+        val (fooDecl) = acu.declaredMethodSignatures().toList()
 
         spy.shouldHaveUnresolvedLambdaCtx(lambda)
         spy.shouldHaveUnresolvedLambdaCtx(mref)
@@ -542,9 +542,9 @@ class C {
 
             mref shouldHaveType targetTy
             mref.functionalMethod shouldBe ts.UNRESOLVED_METHOD
-            mref.referencedMethod shouldBe ts.UNRESOLVED_METHOD
-            lambdaCall.methodType.symbol shouldBe fooDecl.symbol
-            mrefCall.methodType.symbol shouldBe fooDecl.symbol
+            mref.referencedMethod shouldBe fooDecl // still populated because unambiguous
+            lambdaCall.methodType.symbol shouldBe fooDecl
+            mrefCall.methodType.symbol shouldBe fooDecl
         }
     }
 
@@ -566,6 +566,7 @@ class C {
 
         val (lambda) = acu.descendants(ASTLambdaExpression::class.java).toList()
         val (mref) = acu.descendants(ASTMethodReference::class.java).toList()
+        val (fooDecl) = acu.declaredMethodSignatures().toList()
 
         spy.shouldHaveNoLambdaCtx(lambda)
         spy.shouldHaveNoLambdaCtx(mref)
@@ -576,7 +577,7 @@ class C {
 
             mref shouldHaveType ts.UNKNOWN
             mref.functionalMethod shouldBe ts.UNRESOLVED_METHOD
-            mref.referencedMethod shouldBe ts.UNRESOLVED_METHOD
+            mref.referencedMethod shouldBe fooDecl // still populated because unambiguous
         }
     }
 
@@ -704,6 +705,41 @@ class C {
         acu.withTypeDsl {
             collect shouldHaveType java.util.Map::class[ts.UNKNOWN, java.util.List::class[itemT]]
             buildItem.methodType.symbol shouldBe buildItemDecl
+        }
+    }
+
+    parserTest("Unresolved type should also allow unchecked conversion") {
+        // The problem here is that ConstraintViolation<?> is not convertible to ConstraintViolation,
+        // because ConstraintViolation is not on the classpath.
+
+        val (acu, _) = parser.parseWithTypeInferenceSpy(
+            """
+            import java.util.Set;
+            class Foo {
+                private void foo(ConstraintViolation constraintViolation) {
+                    constraintViolation.toString();
+                }
+
+                public void foos(Set<ConstraintViolation<?>> constraintViolations) {
+                    constraintViolations.forEach(this::foo);
+                }
+
+            }
+                """
+        )
+
+//        val (foreach) = acu.methodCalls().toList()
+        val constraintViolationT = acu.descendants(ASTClassType::class.java)
+            .filter { it.simpleName == "ConstraintViolation" }
+            .firstOrThrow().typeMirror.symbol as JClassSymbol
+        val (fooDecl) = acu.methodDeclarations().toList { it.symbol }
+        val (mref) = acu.descendants(ASTMethodReference::class.java).toList()
+
+        acu.withTypeDsl {
+            mref.referencedMethod.symbol shouldBe fooDecl
+
+            mref shouldHaveType java.util.function.Consumer::class[constraintViolationT[`?`]]
+
         }
     }
 

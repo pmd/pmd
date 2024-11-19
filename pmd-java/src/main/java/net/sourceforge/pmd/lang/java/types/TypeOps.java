@@ -709,6 +709,12 @@ public final class TypeOps {
                 // no unchecked warning.
                 return allArgsAreUnboundedWildcards(sargs) ? Convertibility.UNCHECKED_NO_WARNING
                                                            : Convertibility.UNCHECKED_WARNING;
+            } else if (sargs.isEmpty()) {
+                // C<T1...TN> <: |C|
+                // JLS 4.10.2
+                // unchecked conversion converts a raw type to a generic type
+                // subtyping converts a generic type to its raw type
+                return Convertibility.SUBTYPING;
             }
 
             if (targs.size() != sargs.size()) {
