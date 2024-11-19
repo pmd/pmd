@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
@@ -21,8 +22,6 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.reflect.FieldUtils;
-import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Parameter;
@@ -200,10 +199,12 @@ public class Formatter {
         if (console != null) {
             // Since Java 22, this returns a console even for redirected streams.
             // In that case, we need to check Console.isTerminal()
+            // https://docs.oracle.com/en/java/javase/22/docs/api/java.base/java/io/Console.html#isTerminal()
             // See: JLine As The Default Console Provider (JDK-8308591)
             try {
-                Boolean isTerminal = (Boolean) MethodUtils.invokeMethod(console, "isTerminal");
-                if (!isTerminal) {
+                Method method = Console.class.getMethod("isTerminal");
+                Object isTerminal = method.invoke(console);
+                if (isTerminal instanceof Boolean && !(Boolean) isTerminal) {
                     // stop here, we don't have an interactive console.
                     return null;
                 }
@@ -211,39 +212,58 @@ public class Formatter {
                 // fall-through - we use a Java Runtime < 22.
             }
 
+            // Maybe this is Java17+? Then there will be a public method charset()
+            // https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Console.html#charset()
             try {
-                Object res = FieldUtils.readDeclaredField(console, "cs", true);
-                if (res instanceof Charset) {
-                    return ((Charset) res).name();
+                Method method = Console.class.getMethod("charset");
+                Object charset = method.invoke(console);
+                if (charset instanceof Charset) {
+                    return ((Charset) charset).name();
+                }
+            } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException ignored) {
+                // fall-through
+            }
+
+            {
+                // try to use the system property "sun.jnu.encoding", which is the platform encoding.
+                // this property is not specified and might not always be available, but it is for
+                // openjdk 11: https://github.com/openjdk/jdk11u/blob/cee8535a9d3de8558b4b5028d68e397e508bef71/src/java.base/share/native/libjava/System.c#L384
+                // if it exists, we use it - this avoids illegal reflective access below.
+                String jnuEncoding = System.getProperty("sun.jnu.encoding");
+                if (jnuEncoding != null) {
+                    return jnuEncoding;
+                }
+            }
+
+            // the following parts are accessing private/protected fields via reflection
+            // this should work with Java 8 and 11. With Java 11, you'll see warnings abouts
+            // illegal reflective access, see #1860. However, the access still works.
+
+            // Fall-Back 1: private field "cs" in java.io.Console
+            try {
+                Field field = Console.class.getDeclaredField("cs");
+                field.setAccessible(true);
+                Object csField = field.get(console);
+                if (csField instanceof Charset) {
+                    return ((Charset) csField).name();
                 }
             } catch (IllegalArgumentException | ReflectiveOperationException ignored) {
                 // fall-through
             }
 
-            // Maybe this is Java17+? Then there will be
-            // https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Console.html#charset()
-            // instead of the field "cs".
+            // Fall-Back 2: private native method "encoding()" in java.io.Console
             try {
-                Method charsetMethod = Console.class.getDeclaredMethod("charset");
-                Charset charset = (Charset) charsetMethod.invoke(console);
-                return charset.name();
-            } catch (IllegalArgumentException | ReflectiveOperationException ignored) {
+                Method method = Console.class.getDeclaredMethod("encoding");
+                method.setAccessible(true);
+                Object encoding = method.invoke(console);
+                if (encoding instanceof String) {
+                    return (String) encoding;
+                }
+            } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException ignored) {
                 // fall-through
             }
-            return getNativeConsoleEncoding();
         }
-        return null;
-    }
-
-    private static String getNativeConsoleEncoding() {
-        try {
-            Object res = MethodUtils.invokeStaticMethod(Console.class, "encoding");
-            if (res instanceof String) {
-                return (String) res;
-            }
-        } catch (IllegalArgumentException | ReflectiveOperationException ignored) {
-            // fall-through
-        }
+        // we couldn't determine the correct platform console encoding
         return null;
     }
 

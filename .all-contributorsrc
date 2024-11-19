@@ -7453,7 +7453,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/16755668?v=4",
       "profile": "https://github.com/emouty",
       "contributions": [
-        "code"
+        "code",
+        "bug"
       ]
     },
     {
@@ -7516,6 +7517,7 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/18402464?v=4",
       "profile": "https://github.com/mitchspano",
       "contributions": [
+        "code",
         "bug"
       ]
     },
@@ -7816,6 +7818,78 @@
       "name": "Matthew Rossner",
       "avatar_url": "https://avatars.githubusercontent.com/u/8940608?v=4",
       "profile": "https://github.com/mattr9124",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "thesunlover",
+      "name": "Iskren Stanislavov",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6734600?v=4",
+      "profile": "https://interop.io/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "gudzpoz",
+      "name": "gudzpoz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14026120?v=4",
+      "profile": "https://kyo.iroiro.party/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "phansys",
+      "name": "Javier Spagnoletti",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1231441?v=4",
+      "profile": "https://github.com/phansys",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "Aryant-Tripathi",
+      "name": "Aryant Tripathi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/60316716?v=4",
+      "profile": "https://github.com/Aryant-Tripathi",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "jdupak",
+      "name": "Jakub Dupak",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22683640?v=4",
+      "profile": "https://github.com/jdupak",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "chenguangqi",
+      "name": "天热吃西瓜",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6231010?v=4",
+      "profile": "http://chenguangqi.github.io/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "wahajenius",
+      "name": "Willem A. Hajenius",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7836322?v=4",
+      "profile": "https://github.com/wahajenius",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "VitaliiIevtushenko",
+      "name": "Vitalii Yevtushenko",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11145125?v=4",
+      "profile": "https://github.com/VitaliiIevtushenko",
       "contributions": [
         "bug"
       ]

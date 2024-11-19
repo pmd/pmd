@@ -50,6 +50,16 @@ class TypesTreeDumpTest extends BaseTreeDumpTest {
         doTest("UnnamedPatterns");
     }
 
+    @Test
+    void testNestedLambdasAndMethodCalls() {
+        doTest("NestedLambdasAndMethodCalls");
+    }
+
+    @Test
+    void testUnresolvedThings() {
+        doTest("UnresolvedThings");
+    }
+
     @Override
     protected @NonNull String normalize(@NonNull String str) {
         return super.normalize(str)
