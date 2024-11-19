@@ -247,7 +247,7 @@ class AsmLoaderTest : IntelliMarker, FunSpec({
         // sealed interface SealedTypesTestData permits A, B, C
         sealedInterface::getSimpleName shouldBe "SealedTypesTestData"
         sealedInterface::isSealed shouldBe true
-        sealedInterface.permittedSubclasses.let {
+        sealedInterface.permittedSubtypes.let {
             it.shouldHaveSize(3)
             it[0].shouldBeA<JClassSymbol> {
                 // sealed interface A extends SealedTypesTestData permits X
@@ -255,7 +255,7 @@ class AsmLoaderTest : IntelliMarker, FunSpec({
                 it::isSealed shouldBe true
                 it::isInterface shouldBe true
                 it::isFinal shouldBe false
-                it.permittedSubclasses.shouldBeSingleton {
+                it.permittedSubtypes.shouldBeSingleton {
                     // final class X implements A {}
                     it::getSimpleName shouldBe "X"
                     it::isFinal shouldBe true
@@ -267,7 +267,7 @@ class AsmLoaderTest : IntelliMarker, FunSpec({
                 it::isInterface shouldBe true
                 it::isSealed shouldBe false
                 it::isFinal shouldBe false
-                it::getPermittedSubclasses shouldBe emptyList()
+                it::getPermittedSubtypes shouldBe emptyList()
             }
             it[2].shouldBeA<JClassSymbol> {
                 // final class C implements SealedTypesTestData
@@ -275,7 +275,7 @@ class AsmLoaderTest : IntelliMarker, FunSpec({
                 it::isInterface shouldBe false
                 it::isSealed shouldBe false
                 it::isFinal shouldBe true
-                it::getPermittedSubclasses shouldBe emptyList()
+                it::getPermittedSubtypes shouldBe emptyList()
             }
         }
     }

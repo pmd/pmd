@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 
 
 /**
@@ -59,22 +60,9 @@ public final class ASTClassDeclaration extends AbstractTypeDeclaration {
 
 
     /**
-     * Returns the superclass type node if this node is a class
-     * declaration and explicitly declares an {@code extends}
-     * clause. Superinterfaces of an interface are not considered.
-     *
-     * <p>Returns {@code null} otherwise.
+     * @deprecated Use {@link #getPermitsClause()} or {@link JClassSymbol#getPermittedSubtypes()}
      */
-    public ASTClassType getSuperClassTypeNode() {
-        if (isInterface()) {
-            return null;
-        }
-
-        ASTExtendsList extendsList = firstChild(ASTExtendsList.class);
-        return extendsList == null ? null : extendsList.iterator().next();
-    }
-
-
+    @Deprecated
     public List<ASTClassType> getPermittedSubclasses() {
         return ASTList.orEmpty(children(ASTPermitsList.class).first());
     }

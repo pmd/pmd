@@ -119,6 +119,9 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
                 memberClasses = Collections.unmodifiableList(memberClasses);
                 enumConstants = CollectionUtil.makeUnmodifiableAndNonNull(enumConstants);
                 recordComponents = CollectionUtil.makeUnmodifiableAndNonNull(recordComponents);
+                if (isEnum()) {
+                    permittedSubclasses = Collections.emptyList();
+                }
                 permittedSubclasses = CollectionUtil.makeUnmodifiableAndNonNull(permittedSubclasses);
 
                 if (EnclosingInfo.NO_ENCLOSING.equals(enclosingInfo)) {
@@ -405,7 +408,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
 
     @Override
-    public List<JClassSymbol> getPermittedSubclasses() {
+    public List<JClassSymbol> getPermittedSubtypes() {
         parseLock.ensureParsed();
         return permittedSubclasses;
     }

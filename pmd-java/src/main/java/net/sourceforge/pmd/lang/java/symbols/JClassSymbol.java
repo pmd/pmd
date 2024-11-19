@@ -238,30 +238,43 @@ public interface JClassSymbol extends JTypeDeclSymbol,
     boolean isAnonymousClass();
 
     /**
-     * Return the list of permitted subclasses, as defined in the {@code permits}
-     * clause of a sealed class or interface.
+     * Return the list of permitted subclasses or subinterfaces, as defined in the
+     * {@code permits} clause of a sealed class or interface. If this class is sealed
+     * but has no permits clause, the permitted subtypes are inferred from the types
+     * in the compilation unit. If the class is not sealed, returns an empty list.
+     *
+     * <p>Note that an enum class for which some constants declare a body is technically
+     * implicitly sealed, and implicitly permits only the anonymous classes for those enum
+     * constants. For consistency, this method will return only symbols that have a canonical
+     * name, and therefore always return an empty list for enums.
      *
      * @see #isSealed()
      */
-    default List<JClassSymbol> getPermittedSubclasses() {
+    default List<JClassSymbol> getPermittedSubtypes() {
         return Collections.emptyList();
     }
 
     /**
      * Return true if this type is sealed. Then it has a non-empty list of permitted
-     * subclasses. Note that there is no trace of the non-sealed modifier in class files.
-     * A class must have the {@code non-sealed} modifier if it is not sealed, not final,
-     * and has a sealed supertype.
+     * subclasses (or it is a compile-time error). Note that there is no trace of the
+     * non-sealed modifier in class files. A class must have the {@code non-sealed}
+     * modifier if it is not sealed, not final, and has a sealed supertype.
      *
-     * @see #getPermittedSubclasses()
+     * <p>Note that an enum class for which some constants declare a body is technically
+     * implicitly sealed, and implicitly permits only the anonymous classes for those enum
+     * constants. For consistency with {@link #getPermittedSubtypes()}, we treat such enums
+     * as not sealed.
+     *
+     * @see #getPermittedSubtypes()
      */
     default boolean isSealed() {
-        return !getPermittedSubclasses().isEmpty();
+        return !getPermittedSubtypes().isEmpty();
     }
 
     /**
      * Return true if this type is final, that is, does not admit subtypes. Note that
-     * array types have both modifiers final and abstract.
+     * array types have both modifiers final and abstract. Note also that enum classes
+     * may be non-final if they have constants that declare an anonymous body.
      */
     default boolean isFinal() {
         return Modifier.isFinal(getModifiers());
@@ -331,11 +344,9 @@ public interface JClassSymbol extends JTypeDeclSymbol,
         return target.attributeContains("value", elementType).isTrue();
     }
 
-    // todo isSealed + getPermittedSubclasses
-    //  (isNonSealed is not so useful I think)
-
     /**
      * This returns true if this is not an interface, primitive or array.
+     * Note that this includes in particular records and enums.
      */
     default boolean isClass() {
         return !isInterface() && !isArray() && !isPrimitive();

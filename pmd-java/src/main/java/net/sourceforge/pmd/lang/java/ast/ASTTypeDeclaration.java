@@ -287,6 +287,24 @@ public interface ASTTypeDeclaration
                                                    : firstChild(ASTImplementsList.class));
     }
 
+    /**
+     * Returns the superclass type node if this node is a class
+     * declaration and explicitly declares an {@code extends}
+     * clause. Superinterfaces of an interface are not considered.
+     * Note that enum or record declarations never have an explicit
+     * superclass type node. Anonymous class declarations have such
+     * a type node if the class being created is a class, otherwise,
+     * it is an interface, and the superclass is implicitly object,
+     * so this method returns null. Enum constants with a subclass
+     * body will return null.
+     */
+    default @Nullable ASTClassType getSuperClassTypeNode() {
+        if (isInterface()) {
+            return null;
+        }
+        return ASTList.singleOrNull(firstChild(ASTExtendsList.class));
+    }
+
     /** Return the permits list if this is a sealed type, null otherwise. */
     default @Nullable ASTPermitsList getPermitsClause() {
         return firstChild(ASTPermitsList.class);
