@@ -18,8 +18,10 @@ import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprOps;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors.MirrorMaker;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
@@ -43,6 +45,20 @@ final class MethodRefMirrorImpl extends BaseFunctionalMirror<ASTMethodReference>
         // setInferredType(mirrors.ts.UNKNOWN);
     }
 
+    @Override
+    public void finishFailedInference(@Nullable JTypeMirror targetType) {
+        super.finishFailedInference(targetType);
+        if (!TypeOps.isUnresolved(getTypeToSearch())) {
+            JMethodSig exactMethod = ExprOps.getExactMethod(this);
+            if (exactMethod != null) {
+                // as a fallback, if the method reference is exact,
+                // we populate the compile time decl anyway.
+                setCompileTimeDecl(exactMethod);
+                return;
+            }
+        }
+        setCompileTimeDecl(factory.ts.UNRESOLVED_METHOD);
+    }
 
     @Override
     public boolean isEquivalentToUnderlyingAst() {
@@ -78,7 +94,9 @@ final class MethodRefMirrorImpl extends BaseFunctionalMirror<ASTMethodReference>
     @Override
     public void setCompileTimeDecl(JMethodSig methodType) {
         this.ctdecl = methodType;
-        InternalApiBridge.setCompileTimeDecl(myNode, methodType);
+        if (mayMutateAst()) {
+            InternalApiBridge.setCompileTimeDecl(myNode, methodType);
+        }
     }
 
     @Override

@@ -230,6 +230,14 @@ public interface ExprMirror {
          */
         void setFunctionalMethod(@Nullable JMethodSig methodType);
 
+        /**
+         * If the matching between this expr and its target type failed,
+         * finish the inference by setting the data to UNKNOWN, or likely
+         * values. This is used as a fallback.
+         *
+         * @param targetType Target type for the expression, null if there is none
+         */
+        void finishFailedInference(@Nullable JTypeMirror targetType);
     }
 
     /**

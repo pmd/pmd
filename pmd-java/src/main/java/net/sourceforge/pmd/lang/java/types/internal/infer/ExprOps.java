@@ -39,7 +39,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMi
 import net.sourceforge.pmd.util.CollectionUtil;
 
 @SuppressWarnings("PMD.CompareObjectsWithEquals")
-final class ExprOps {
+public final class ExprOps {
 
     private final Infer infer;
     private final TypeSystem ts;
@@ -181,7 +181,7 @@ final class ExprOps {
     /**
      * Returns null if the method reference is inexact.
      */
-    static @Nullable JMethodSig getExactMethod(MethodRefMirror mref) {
+    public static @Nullable JMethodSig getExactMethod(MethodRefMirror mref) {
         JMethodSig cached = mref.getCachedExactMethod();
 
         if (cached == null) { // inexact

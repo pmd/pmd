@@ -158,4 +158,5 @@ class LambdaMirrorImpl extends BaseFunctionalMirror<ASTLambdaExpression> impleme
             || body instanceof ASTUnaryExpression && !((ASTUnaryExpression) body).getOperator().isPure();
 
     }
+
 }

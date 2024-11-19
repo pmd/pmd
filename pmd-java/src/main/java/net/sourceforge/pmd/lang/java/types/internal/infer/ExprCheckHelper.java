@@ -260,22 +260,9 @@ final class ExprCheckHelper {
             checker.checkExprConstraint(infCtx, ts.UNKNOWN, targetType);
         }
         if (mayMutateExpr()) {
-            infCtx.addInstantiationListener(infCtx.freeVarsIn(targetType), ctx -> {
-                expr.setInferredType(ctx.ground(targetType));
-                if (expr instanceof LambdaExprMirror) {
-                    expr.setFunctionalMethod(ts.UNRESOLVED_METHOD);
-                } else {
-                    MethodRefMirror mref = (MethodRefMirror) expr;
-                    if (!TypeOps.isUnresolved(mref.getTypeToSearch())) {
-                        JMethodSig exactMethod = ExprOps.getExactMethod(mref);
-                        if (exactMethod != null) {
-                            // as a fallback, if the method reference is exact,
-                            // we populate the compile time decl anyway.
-                            mref.setCompileTimeDecl(exactMethod);
-                        }
-                    }
-                }
-            });
+            infCtx.addInstantiationListener(
+                infCtx.freeVarsIn(targetType),
+                ctx -> expr.finishFailedInference(ctx.ground(targetType)));
         }
     }
 
