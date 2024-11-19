@@ -259,10 +259,24 @@ final class ExprCheckHelper {
             // Object.
             checker.checkExprConstraint(infCtx, ts.UNKNOWN, targetType);
         }
-        infCtx.addInstantiationListener(infCtx.freeVarsIn(targetType), ctx -> {
-            expr.setInferredType(ctx.ground(targetType));
-            expr.setFunctionalMethod(ts.UNRESOLVED_METHOD);
-        });
+        if (mayMutateExpr()) {
+            infCtx.addInstantiationListener(infCtx.freeVarsIn(targetType), ctx -> {
+                expr.setInferredType(ctx.ground(targetType));
+                if (expr instanceof LambdaExprMirror) {
+                    expr.setFunctionalMethod(ts.UNRESOLVED_METHOD);
+                } else {
+                    MethodRefMirror mref = (MethodRefMirror) expr;
+                    if (!TypeOps.isUnresolved(mref.getTypeToSearch())) {
+                        JMethodSig exactMethod = ExprOps.getExactMethod(mref);
+                        if (exactMethod != null) {
+                            // as a fallback, if the method reference is exact,
+                            // we populate the compile time decl anyway.
+                            mref.setCompileTimeDecl(exactMethod);
+                        }
+                    }
+                }
+            });
+        }
     }
 
     // we can't ask the infctx to solve the ivar, as that would require all bounds to be ground

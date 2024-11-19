@@ -543,8 +543,8 @@ class C {
             mref shouldHaveType targetTy
             mref.functionalMethod shouldBe ts.UNRESOLVED_METHOD
             mref.referencedMethod shouldBe fooDecl // still populated because unambiguous
-            lambdaCall.methodType.symbol shouldBe fooDecl
-            mrefCall.methodType.symbol shouldBe fooDecl
+            lambdaCall.methodType shouldBe fooDecl
+            mrefCall.methodType shouldBe fooDecl
         }
     }
 
@@ -849,7 +849,7 @@ class C {
 
     parserTest("Lambda with unresolved target type return type should be unknown") {
 
-        val (acu, _) = parser.logTypeInferenceVerbose().parseWithTypeInferenceSpy(
+        val (acu, _) = parser.parseWithTypeInferenceSpy(
             """
             class Foo {
                 public void methodA() {
