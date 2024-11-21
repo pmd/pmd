@@ -1173,7 +1173,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description>#5263 not forward references</description>
-        <expected-problems>4</expected-problems>
+        <expected-problems>5</expected-problems>
         <code><![CDATA[
 
             public class EnumX {
@@ -1190,6 +1190,10 @@ public class Foo {
                 }
 
                 void foo() {
+                    System.out.println(EnumX.X); // not FWR
+                }
+
+                static void bar() {
                     System.out.println(EnumX.X); // not FWR
                 }
 

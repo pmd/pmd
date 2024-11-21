@@ -15,7 +15,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeBody;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
@@ -257,6 +260,12 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
         }
     }
 
+    private static boolean isPartOfStaticInitialization(ASTBodyDeclaration decl) {
+        return decl instanceof ASTFieldDeclaration && ((ASTFieldDeclaration) decl).isStatic()
+            || decl instanceof ASTInitializer && ((ASTInitializer) decl).isStatic()
+            || decl instanceof ASTEnumConstant;
+    }
+
     /**
      * Return true if removing the qualification from this field access
      * would produce an "Illegal forward reference" compiler error. This
@@ -275,12 +284,12 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
         // The field must be declared in the same compilation unit
         // to be a forward reference.
         ASTVariableId fieldDecl = referencedSym.tryGetNode();
-        if (fieldDecl == null) {
+        if (fieldDecl == null || !fieldDecl.isStatic()) {
             return false;
         }
         ASTBodyDeclaration enclosing = fieldAccess.ancestors(ASTBodyDeclaration.class)
                                                   .first();
-        if (enclosing != null
+        if (isPartOfStaticInitialization(enclosing)
             && enclosing.getParent().getParent() == fieldDecl.getEnclosingType()) {
             // the access is made in the same class
 
