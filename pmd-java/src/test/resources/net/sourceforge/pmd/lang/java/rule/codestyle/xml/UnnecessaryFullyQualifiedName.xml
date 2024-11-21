@@ -1125,4 +1125,76 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>#5263 FP when forward reference is illegal</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+            public enum EnumX {
+
+                VALUE_X(EnumX.X); // MUST qualify the name or the file won't compile
+
+                static final String X = "X";
+
+                private final String v;
+
+                EnumX(final String v) {
+                    this.v = v;
+                }
+
+                public String getV() {
+                    return v;
+                }
+            }
+]]></code>
+    </test-code>
+    <test-code>
+        <description>#5263 FP when forward reference is illegal (class)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+            public class EnumX {
+
+                static final String Y = EnumX.X; // MUST qualify the name or the file won't compile
+
+                static final String X = "X";
+
+                private final String v;
+
+                EnumX(final String v) {
+                    this.v = v;
+                }
+
+                public String getV() {
+                    return v;
+                }
+            }
+]]></code>
+    </test-code>
+    <test-code>
+        <description>#5263 not forward references</description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+
+            public class EnumX {
+
+                static final Object Y = new Object() {
+                    String q = EnumX.X; // not FWR
+                };
+
+
+                private final String v = EnumX.X; // not FWR bc not static
+
+                EnumX() {
+                    this.v = EnumX.X; // not FWR
+                }
+
+                void foo() {
+                    System.out.println(EnumX.X); // not FWR
+                }
+
+                static final String X = "X";
+            }
+            ]]></code>
+    </test-code>
 </test-data>
