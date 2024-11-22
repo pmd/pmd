@@ -1938,9 +1938,11 @@ recovery actions should the Queueable action fail.</li>
   </li>
   <li>java
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/5283">#5283</a>: [java] AssertionError “this should be unreachable” with scala library</li>
       <li><a href="https://github.com/pmd/pmd/issues/5293">#5293</a>: [java] Deadlock when executing PMD in multiple threads</li>
       <li><a href="https://github.com/pmd/pmd/issues/5324">#5324</a>: [java] Issue with type inference of nested lambdas</li>
       <li><a href="https://github.com/pmd/pmd/issues/5329">#5329</a>: [java] Type inference issue with unknown method ref in call chain</li>
+      <li><a href="https://github.com/pmd/pmd/issues/5338">#5338</a>: [java] Unresolved target type for lambdas make overload resolution fail</li>
     </ul>
   </li>
   <li>java-bestpractices
@@ -1967,6 +1969,20 @@ recovery actions should the Queueable action fail.</li>
 
 <h4 id="deprecations">Deprecations</h4>
 <ul>
+  <li>pmd-coco
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-coco/7.8.0-SNAPSHOT/net/sourceforge/pmd/lang/coco/ast/CocoBaseListener.html#"><code>CocoBaseListener</code></a> is deprecated for removal. This class was never intended
+ to be generated. It will be removed with no replacement.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-coco/7.8.0-SNAPSHOT/net/sourceforge/pmd/lang/coco/ast/CocoBaseVisitor.html#"><code>CocoBaseVisitor</code></a> is deprecated for removal. This class was never intended
+to be generated. It will be removed with no replacement.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-coco/7.8.0-SNAPSHOT/net/sourceforge/pmd/lang/coco/ast/CocoListener.html#"><code>CocoListener</code></a> is deprecated for removal. This class was never intended
+to be generated. It will be removed with no replacement.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-coco/7.8.0-SNAPSHOT/net/sourceforge/pmd/lang/coco/ast/CocoParser.html#"><code>CocoParser</code></a> is deprecated for removal. This class was never intended
+to be generated. It will be removed with no replacement.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-coco/7.8.0-SNAPSHOT/net/sourceforge/pmd/lang/coco/ast/CocoVisitor.html#"><code>CocoVisitor</code></a> is deprecated for removal. This class was never intended
+to be generated. It will be removed with no replacement.</li>
+    </ul>
+  </li>
   <li>pmd-gherkin
     <ul>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-gherkin/7.8.0-SNAPSHOT/net/sourceforge/pmd/lang/gherkin/ast/GherkinBaseListener.html#"><code>GherkinBaseListener</code></a> is deprecated for removal. This class was never intended
@@ -2013,6 +2029,7 @@ instead (note different package <code class="language-plaintext highlighter-roug
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/5284">#5284</a>: [apex] Use case-insensitive input stream to avoid choking on Unicode escape sequences - <a href="https://github.com/wahajenius">Willem A. Hajenius</a> (@wahajenius)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5303">#5303</a>: [apex] New Rule: Queueable Should Attach Finalizer - <a href="https://github.com/mitchspano">Mitch Spano</a> (@mitchspano)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5354">#5354</a>: [apex] Updated the docs for UnusedMethod as per discussion #5200 - <a href="https://github.com/sam-gearset">samc-gearset</a> (@sam-gearset)</li>
 </ul>
 
 

@@ -2661,7 +2661,10 @@ city/state/zip fields could park them within a single Address field.</p>
 
 <p>Avoid having unused methods since they make understanding and maintaining code harder.</p>
 
-<p>This rule finds not only unused private methods, but public methods as well.</p>
+<p>This rule finds not only unused private methods, but public methods as well, as long as
+the class itself is not entirely unused. A class is considered used, if it contains at
+least one other method/variable declaration that is used, as shown in the
+<a href="https://github.com/pmd/pmd/blob/469b2a67ae375bde52bb33ccd4fb69e3c2993948/pmd-apex/src/test/resources/net/sourceforge/pmd/lang/apex/rule/design/UnusedMethod/project1/src/Foo.cls#L6-L8">test project file Foo.cls</a>.</p>
 
 <p><a href="https://github.com/nawforce/ApexLink">ApexLink</a> is used to make this possible and this needs
 additional configuration. The environment variable <code class="language-plaintext highlighter-rouge">PMD_APEX_ROOT_DIRECTORY</code> needs to be set prior to executing
