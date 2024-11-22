@@ -1942,7 +1942,8 @@ git fetch origin pull/123/head:pr-123 &amp;&amp; git checkout pr-123     # creat
       <li>If the PR fixes a bug, make sure, it is listed under the section “Fixed Issues”.
 Also make sure, that the PR description mentions this (e.g. “- fixes #issue-number”) and
 the this PR is linked with the issue. Merging this PR will then automatically close the issue.</li>
-      <li>In any case, add the PR to the section “External Contributions”.</li>
+      <li>In any case, add the PR to the section “Merged pull requests”. You can add it by calling
+<code class="language-plaintext highlighter-rouge">.ci/tools/release-notes-add-pr.sh prnumber</code>.</li>
       <li>
         <p>Commit these changes with the message:</p>
 
