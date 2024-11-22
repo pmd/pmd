@@ -50,7 +50,7 @@ abstract class ParseLock {
                         finishParse(!success);
                     } catch (Throwable t) {
                         status = ParseStatus.FAILED;
-                        LOG.error("Parsing failed in ParseLock#doParse()", t);
+                        LOG.error("Parsing failed in ParseLock#doParse() of {}", name, t);
                         finishParse(true);
                     }
 
