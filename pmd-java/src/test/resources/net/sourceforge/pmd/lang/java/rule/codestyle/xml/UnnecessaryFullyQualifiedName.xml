@@ -1125,4 +1125,73 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>#5263 FP when forward reference is illegal</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public enum EnumX {
+                VALUE_X(EnumX.X); // MUST qualify the name or the file won't compile
+
+                static final String X = "X";
+
+                private final String v;
+
+                EnumX(final String v) {
+                    this.v = v;
+                }
+
+                public String getV() {
+                    return v;
+                }
+            }
+]]></code>
+    </test-code>
+    <test-code>
+        <description>#5263 FP when forward reference is illegal (class)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class ClassX {
+                static final String Y = ClassX.X; // MUST qualify the name or the file won't compile
+                static final String X = "X";
+
+                private final String v;
+
+                ClassX(final String v) {
+                    this.v = v;
+                }
+
+                public String getV() {
+                    return v;
+                }
+            }
+]]></code>
+    </test-code>
+    <test-code>
+        <description>#5263 not forward references</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>3,6,9,13,17</expected-linenumbers>
+        <code><![CDATA[
+            public class ClassX {
+                static final Object Y = new Object() {
+                    String q = ClassX.X; // not FWR
+                };
+
+                private final String v = ClassX.X; // not FWR bc not static
+
+                ClassX() {
+                    this.v = ClassX.X; // not FWR
+                }
+
+                void foo() {
+                    System.out.println(ClassX.X); // not FWR
+                }
+
+                static void bar() {
+                    System.out.println(ClassX.X); // not FWR
+                }
+
+                static final String X = "X";
+            }
+            ]]></code>
+    </test-code>
 </test-data>
