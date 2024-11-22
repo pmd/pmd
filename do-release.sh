@@ -95,18 +95,20 @@ echo
 echo "Press enter to continue... (or CTRL+C to cancel)"
 read -r
 
-echo
-echo "Please enter a GITHUB_TOKEN (https://github.com/settings/tokens) that can be used to query github"
-echo "when generating release notes. If you don't have one, you can just press enter, then anonymous access"
-echo "will be used, but access might be rate limited (https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2022-11-28)."
-echo
-echo -n "GITHUB_TOKEN="
-read GITHUB_TOKEN
-if [ -n "$GITHUB_TOKEN" ]; then
-  export GITHUB_TOKEN
-  echo "Using GITHUB_TOKEN..."
-else
-  echo "Not using GITHUB_TOKEN"
+if [ -z "$GITHUB_TOKEN" ]; then
+  echo
+  echo "Please enter a GITHUB_TOKEN (https://github.com/settings/tokens) that can be used to query github"
+  echo "when generating release notes. If you don't have one, you can just press enter, then anonymous access"
+  echo "will be used, but access might be rate limited (https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2022-11-28)."
+  echo
+  echo -n "GITHUB_TOKEN="
+  IFS= read -r GITHUB_TOKEN
+  if [ -n "$GITHUB_TOKEN" ]; then
+    export GITHUB_TOKEN
+    echo "Using provided GITHUB_TOKEN..."
+  else
+    echo "Not using GITHUB_TOKEN"
+  fi
 fi
 
 export LAST_VERSION
