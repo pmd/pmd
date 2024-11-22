@@ -2177,4 +2177,180 @@ public class ObtainViaTest {
             record Library(Collection<Book> books) {}
             ]]></code>
     </test-code>
+    <test-code>
+        <description>#5324 UnusedPrivateMethod with unresolved types</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                public User methodA() {
+                    val user = userOpt.orElseGet(() -> {
+                        try {
+                            return registerUser(email, firstName, lastName);
+                        } catch (Exception e) {
+                            throw new IllegalStateException("Failed to register user for " + email, e);
+                        }
+                    });
+                    // ...
+                    return user;
+                }
+
+                private User registerUser(String email, String firstName, String lastName) throws Exception {
+                    // register user logic here...
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#5329 UnusedPrivateMethod with unresolved types</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                public User methodA() {
+                    List<SummaryDto.ItemDto> items = new ArrayList<>();
+                    loads.stream()
+                         .collect(Collectors.groupingBy(Item::getValue))
+                         .forEach((a, b) -> items.add(buildItem(a, b)));
+                }
+
+                private SummaryDto.ItemDto buildItem(BigDecimal a, List<Item> b) {
+                    return SummaryDto.ItemDto.builder().build();
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#5097 UnusedPrivateMethod with unresolved target for method reference</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[package com.mytest;
+
+        import jakarta.validation.ConstraintViolation; //imported from jakarta.validation:jakarta.validation-api:3.0.2
+        import java.util.List;
+        import java.util.Set;
+
+        public class UnusedPrivateMethodFalsePositive {
+            //this does not trigger UnusedPrivateMethod
+            private void doWork(List obj) {
+                obj.toString();
+            }
+
+            public void execute(Set<List<?>> listOfLists) {
+                listOfLists.forEach(this::doWork);
+            }
+
+            //BUT this does???
+            //UnusedPrivateMethod -  this as a false positive - but what is different?
+            private void addValidationError(ConstraintViolation constraintViolation) {
+                constraintViolation.toString();
+            }
+
+            public void addValidationErrors(Set<ConstraintViolation<?>> constraintViolations) {
+                constraintViolations.forEach(this::addValidationError);
+            }
+
+        }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#5338 UnusedPrivateMethod with unresolved target for lambda</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.concurrent.CompletableFuture;
+            class SomeTest {
+
+                @Test
+                void test() {
+                    final BytesListener listener = createListener(
+                            (bytes) -> CompletableFuture.completedFuture("HI!")
+                    );
+                    Assertions.assertNotNull(listener.onRecord(new byte[0]));
+                }
+
+                private static BytesListener createListener(
+                        BytesParser<String> parser
+                ) {
+                    return bytes -> parser
+                            .parse(bytes)
+                            .thenAccept(System.out::println);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UnusedPrivateMethod #5113</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.Optional;
+
+            public class VarTest {
+                public Optional<Boolean> foo(int param) {
+                    var optional = param == 0 ? Optional.of(true) : Optional.of(false);
+                    return optional.flatMap(this::dummy);
+                }
+
+                private Optional<Boolean> dummy(boolean foo) {
+                    return Optional.of(foo);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>UnusedPrivateMethod #5083 - method reference without target type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            @Getter
+            @RequiredArgsConstructor
+            enum GenerationType {
+                APPLE_DESKTOP("https://apps.apple.com/app/id", GenerationType::isAppleType),
+                APPLE_ITUNES("https://itunes.apple.com/app/id", GenerationType::isAppleType),
+                SAMSUNG("https://www.samsung.com/us/appstore/app/", GenerationType::isSamsungType),
+                ROKU("https://channelstore.roku.com/details/", GenerationType::isRokuType),
+                AMAZON("https://www.amazon.com/dp/", GenerationType::isAmazonType),
+                ANDROID("https://play.google.com/store/apps/details?id=", GenerationType::isAndroidType);
+
+                private final String baseUrl;
+                private final Predicate<String> predicate;
+
+                private static boolean isAppleType(String data) {
+                    return "apple".equals(data);
+                }
+
+                private static boolean isRokuType(String data) {
+                    return "roku".equals(data);
+                }
+
+                private static boolean isSamsungType(String data) {
+                    return "samsung".equals(data);
+                }
+
+                private static boolean isAmazonType(String data) {
+                    return "amazon".equals(data);
+                }
+
+                private static boolean isAndroidType(String data) {
+                    return "android".equals(data);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UnusedPrivateMethod #5083 - method reference without target type (2)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class GenerationType {
+                static {
+                    foo(GenerationType::isAndroidType);
+                }
+                {
+                    foo(this::instance);
+                }
+
+                private  boolean instance(String data) {}
+                private static boolean isAndroidType(String data) {
+                    return "android".equals(data);
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

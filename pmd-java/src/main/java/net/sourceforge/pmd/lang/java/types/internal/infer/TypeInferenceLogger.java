@@ -22,18 +22,26 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint.TypePrettyPrinter;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.CtorInvocationMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * A strategy to log the execution traces of {@link Infer}.
+ * The default does nothing, so the logger calls can be optimized out
+ * at runtime, while not having to check that logging is enabled at the
+ * call sites.
+ *
+ * <p>To enable logging for the CLI, use the language property ({@link JavaLanguageProperties})
+ * {@code xTypeInferenceLogging}. From tests, see {@code JavaParsingHelper#logTypeInferenceVerbose()}.
  */
 @SuppressWarnings("PMD.UncommentedEmptyMethodBody")
 public interface TypeInferenceLogger {
@@ -64,8 +72,7 @@ public interface TypeInferenceLogger {
 
     default void applicabilityTest(InferenceContext ctx) { }
 
-    default void finishApplicabilityTest() {
-    }
+    default void finishApplicabilityTest() { }
 
     default void startArgsChecks() { }
 
@@ -74,6 +81,8 @@ public interface TypeInferenceLogger {
     default void skipArgAsNonPertinent(int i, ExprMirror expr) { }
 
     default void functionalExprNeedsInvocationCtx(JTypeMirror targetT, ExprMirror expr) { }
+
+    default void functionalExprHasUnresolvedTargetType(JTypeMirror targetT, FunctionalExprMirror expr) { }
 
     default void endArg() { }
 
@@ -298,6 +307,12 @@ public interface TypeInferenceLogger {
         }
 
         @Override
+        public void functionalExprHasUnresolvedTargetType(JTypeMirror targetT, FunctionalExprMirror expr) {
+            println("[WARNING] Target type for functional expression is unresolved: " + targetT);
+            println("Will treat the expression as matching (this may cause future mistakes)");
+        }
+
+        @Override
         public void ambiguityError(MethodCallSite site, @Nullable MethodCtDecl selected, List<MethodCtDecl> methods) {
             println("");
             printExpr(site.getExpr());
@@ -444,6 +459,7 @@ public interface TypeInferenceLogger {
             println("Target type is not a functional interface yet: " + targetT);
             println("Will wait for invocation phase before discarding.");
         }
+
 
         @Override
         public void endArgsChecks() {

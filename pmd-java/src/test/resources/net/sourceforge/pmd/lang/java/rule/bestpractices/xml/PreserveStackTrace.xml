@@ -1168,4 +1168,35 @@ public class Foo {
             ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#5318 [java] PreserveStackTraceRule: false-positive on Pattern Matching with instanceof</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.function.Consumer;
+
+public class Foo {
+    public void withPatternMatching(String a) {
+        try {
+            int i = Integer.parseInt(a);
+        } catch (RuntimeException e) {
+            throw e instanceof NumberFormatException numberFormatException
+                    ? formatExceptionHandler.accept(numberFormatException)
+                    : e;
+        }
+    }
+
+    public void withExplicitCast(String a) {
+        try {
+            int i = Integer.parseInt(a);
+        } catch (RuntimeException e) {
+            throw e instanceof NumberFormatException
+                    ? formatExceptionHandler.accept((NumberFormatException) e)
+                    : e;
+        }
+    }
+
+    private Consumer<NumberFormatException> formatExceptionHandler = e -> { e.printStackTrace(); };
+}
+]]></code>
+    </test-code>
 </test-data>
