@@ -64,6 +64,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     private List<JConstructorSymbol> ctors = new ArrayList<>();
     private List<JRecordComponentSymbol> recordComponents = null;
     private List<JFieldSymbol> enumConstants = null;
+    private List<JClassSymbol> permittedSubclasses = null;
 
     private PSet<SymAnnot> annotations = HashTreePSet.empty();
 
@@ -118,6 +119,10 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
                 memberClasses = Collections.unmodifiableList(memberClasses);
                 enumConstants = CollectionUtil.makeUnmodifiableAndNonNull(enumConstants);
                 recordComponents = CollectionUtil.makeUnmodifiableAndNonNull(recordComponents);
+                if (isEnum()) {
+                    permittedSubclasses = Collections.emptyList();
+                }
+                permittedSubclasses = CollectionUtil.makeUnmodifiableAndNonNull(permittedSubclasses);
 
                 if (EnclosingInfo.NO_ENCLOSING.equals(enclosingInfo)) {
                     if (names.canonicalName == null || names.simpleName == null) {
@@ -270,6 +275,13 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         recordComponents.add(recordComponentStub);
     }
 
+    void addPermittedSubclass(ClassStub permittedSubclass) {
+        if (this.permittedSubclasses == null) {
+            this.permittedSubclasses = new ArrayList<>(2);
+        }
+        this.permittedSubclasses.add(permittedSubclass);
+    }
+
     @Override
     public void addAnnotation(SymAnnot annot) {
         annotations = annotations.plus(annot);
@@ -394,6 +406,12 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         return recordComponents;
     }
 
+
+    @Override
+    public List<JClassSymbol> getPermittedSubtypes() {
+        parseLock.ensureParsed();
+        return permittedSubclasses;
+    }
 
     @Override
     public JTypeParameterOwnerSymbol getEnclosingTypeParameterOwner() {

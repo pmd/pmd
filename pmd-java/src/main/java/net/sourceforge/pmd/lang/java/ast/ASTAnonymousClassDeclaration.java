@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -51,6 +52,18 @@ public final class ASTAnonymousClassDeclaration extends AbstractTypeDeclaration 
             }
         }
         return NodeStream.empty();
+    }
+
+    @Override
+    public @Nullable ASTClassType getSuperClassTypeNode() {
+        if (getParent() instanceof ASTConstructorCall) {
+            ASTConstructorCall ctor = (ASTConstructorCall) getParent();
+            @NonNull JTypeMirror type = ctor.getTypeMirror();
+            if (!type.isInterface()) {
+                return ctor.getTypeNode();
+            }
+        }
+        return null;
     }
 
     @Override
