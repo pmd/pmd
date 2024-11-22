@@ -9,6 +9,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.ast.FunctionalExpression;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors.MirrorMaker;
@@ -33,5 +34,11 @@ abstract class BaseFunctionalMirror<N extends FunctionalExpression> extends Base
 
     protected JMethodSig getInferredMethod() {
         return inferredMethod;
+    }
+
+    @Override
+    public void finishFailedInference(@Nullable JTypeMirror targetType) {
+        setInferredType(targetType == null ? factory.ts.UNKNOWN : targetType);
+        setFunctionalMethod(factory.ts.UNRESOLVED_METHOD);
     }
 }

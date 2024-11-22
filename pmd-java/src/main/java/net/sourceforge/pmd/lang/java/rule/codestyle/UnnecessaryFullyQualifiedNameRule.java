@@ -13,11 +13,18 @@ import java.util.function.Function;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeBody;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -94,7 +101,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
             } else if (getProperty(REPORT_FIELDS) && opa instanceof ASTFieldAccess) {
                 ASTFieldAccess fieldAccess = (ASTFieldAccess) opa;
                 ScopeInfo reasonForFieldInScope = fieldMeansSame(fieldAccess);
-                if (reasonForFieldInScope != null) {
+                if (reasonForFieldInScope != null && !isForwardReference(fieldAccess)) {
                     String simpleName = formatMemberName(next, fieldAccess.getReferencedSym());
                     String reasonToString = unnecessaryReasonWrapper(reasonForFieldInScope);
                     String unnecessary = produceQualifier(deepest, next, true);
@@ -251,5 +258,51 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
         default:
             throw AssertionUtil.shouldNotReachHere("unknown constant ScopeInfo: " + scopeInfo);
         }
+    }
+
+    private static boolean isPartOfStaticInitialization(ASTBodyDeclaration decl) {
+        return decl instanceof ASTFieldDeclaration && ((ASTFieldDeclaration) decl).isStatic()
+            || decl instanceof ASTInitializer && ((ASTInitializer) decl).isStatic()
+            || decl instanceof ASTEnumConstant;
+    }
+
+    /**
+     * Return true if removing the qualification from this field access
+     * would produce an "Illegal forward reference" compiler error. This
+     * would happen if the referenced field is defined after the reference,
+     * in the same class. Note that the java compiler uses definite assignment
+     * to find forward references. Here we over-approximate this, to avoid
+     * depending on the dataflow pass. We could fix this later though.
+     *
+     * @param fieldAccess A field access
+     */
+    private static boolean isForwardReference(ASTFieldAccess fieldAccess) {
+        JFieldSymbol referencedSym = fieldAccess.getReferencedSym();
+        if (referencedSym == null || referencedSym.isUnresolved()) {
+            return false;
+        }
+        // The field must be declared in the same compilation unit
+        // to be a forward reference.
+        ASTVariableId fieldDecl = referencedSym.tryGetNode();
+        if (fieldDecl == null || !fieldDecl.isStatic()) {
+            return false;
+        }
+        ASTBodyDeclaration enclosing = fieldAccess.ancestors(ASTBodyDeclaration.class)
+                                                  .first();
+        if (isPartOfStaticInitialization(enclosing)
+            && enclosing.getParent().getParent() == fieldDecl.getEnclosingType()) {
+            // the access is made in the same class
+
+            if (JavaAstUtils.isInStaticCtx(fieldDecl)
+                && !JavaAstUtils.isInStaticCtx(fieldAccess)) {
+                // field is static but access is non-static: no problem
+                return false;
+            }
+            // else compare position: if access is before definition, we have a problem
+            int declIndex = fieldDecl.ancestors().filter(it -> it.getParent() instanceof ASTTypeBody).firstOrThrow().getIndexInParent();
+            int accessIndex = enclosing.getIndexInParent();
+            return accessIndex <= declIndex;
+        }
+        return false;
     }
 }

@@ -101,7 +101,7 @@
         <surefire.version>3.2.5</surefire.version>
         <checkstyle.version>10.18.1</checkstyle.version>
         <checkstyle.plugin.version>3.5.0</checkstyle.plugin.version>
-        <pmd.plugin.version>3.24.0</pmd.plugin.version>
+        <pmd.plugin.version>3.26.0</pmd.plugin.version>
         <ant.version>1.10.14</ant.version>
         <javadoc.plugin.version>3.6.3</javadoc.plugin.version>
         <antlr.version>4.9.3</antlr.version>
@@ -115,7 +115,7 @@
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding} ${extraArgLine}</argLine>
         <extraArgLine /> <!-- empty by default, profiles set it as needed -->
 
-        <pmd.build-tools.version>28-SNAPSHOT</pmd.build-tools.version>
+        <pmd.build-tools.version>28</pmd.build-tools.version>
 
         <pmd-designer.version>7.2.0</pmd-designer.version>
 
@@ -202,7 +202,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.3.2</version>
+                    <version>3.4.0</version>
                 </plugin>
 
                 <!-- adds kotlin source directories for checkstyle header checks -->
@@ -863,7 +863,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.14.0</version>
+                <version>3.17.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>

@@ -5,6 +5,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    # Allow up to 10 open pull requests for maven dependencies
+    open-pull-requests-limit: 10
   - package-ecosystem: "bundler"
     directories:
       - "/"

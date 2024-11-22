@@ -64,6 +64,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     private List<JConstructorSymbol> ctors = new ArrayList<>();
     private List<JRecordComponentSymbol> recordComponents = null;
     private List<JFieldSymbol> enumConstants = null;
+    private List<JClassSymbol> permittedSubclasses = null;
 
     private PSet<SymAnnot> annotations = HashTreePSet.empty();
 
@@ -84,12 +85,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         this.resolver = resolver;
         this.names = new Names(internalName);
 
-        this.parseLock = new ParseLock() {
-            // note to devs: to debug the parsing logic you might have
-            // to replace the implementation of toString temporarily,
-            // otherwise an IDE could call toString just to show the item
-            // in the debugger view (which could cause parsing of the class file).
-
+        this.parseLock = new ParseLock("ClassStub:" + internalName) {
             @Override
             protected boolean doParse() throws IOException {
                 try (InputStream instream = loader.getInputStream()) {
@@ -123,6 +119,10 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
                 memberClasses = Collections.unmodifiableList(memberClasses);
                 enumConstants = CollectionUtil.makeUnmodifiableAndNonNull(enumConstants);
                 recordComponents = CollectionUtil.makeUnmodifiableAndNonNull(recordComponents);
+                if (isEnum()) {
+                    permittedSubclasses = Collections.emptyList();
+                }
+                permittedSubclasses = CollectionUtil.makeUnmodifiableAndNonNull(permittedSubclasses);
 
                 if (EnclosingInfo.NO_ENCLOSING.equals(enclosingInfo)) {
                     if (names.canonicalName == null || names.simpleName == null) {
@@ -212,17 +212,17 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
             Since the differences are disjoint we can just OR the two
             sets of flags.
          */
-
+        final int visibilityMask = Opcodes.ACC_PUBLIC | Opcodes.ACC_PROTECTED | Opcodes.ACC_PRIVATE;
         int myAccess = this.accessFlags;
         if (fromClassInfo) {
             // we don't care about ACC_SUPER and it conflicts
             // with ACC_SYNCHRONIZED
             accessFlags = accessFlags & ~Opcodes.ACC_SUPER;
         } else if ((myAccess & Opcodes.ACC_PUBLIC) != 0
-            && (accessFlags & Opcodes.ACC_PROTECTED) != 0) {
+            && (accessFlags & visibilityMask) != Opcodes.ACC_PUBLIC) {
             // ClassInfo mentions ACC_PUBLIC even if the real
-            // visibility is protected
-            // We remove the public to avoid a "public protected" combination
+            // visibility is protected or private
+            // We remove the public to avoid a "public protected" or "public private" combination
             myAccess = myAccess & ~Opcodes.ACC_PUBLIC;
         }
         this.accessFlags = myAccess | accessFlags;
@@ -275,6 +275,13 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         recordComponents.add(recordComponentStub);
     }
 
+    void addPermittedSubclass(ClassStub permittedSubclass) {
+        if (this.permittedSubclasses == null) {
+            this.permittedSubclasses = new ArrayList<>(2);
+        }
+        this.permittedSubclasses.add(permittedSubclass);
+    }
+
     @Override
     public void addAnnotation(SymAnnot annot) {
         annotations = annotations.plus(annot);
@@ -315,9 +322,9 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     }
 
     @Override
-    public boolean isGeneric() {
+    public int getTypeParameterCount() {
         parseLock.ensureParsed();
-        return signature.isGeneric();
+        return signature.getTypeParameterCount();
     }
 
     @Override
@@ -399,6 +406,12 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         return recordComponents;
     }
 
+
+    @Override
+    public List<JClassSymbol> getPermittedSubtypes() {
+        parseLock.ensureParsed();
+        return permittedSubclasses;
+    }
 
     @Override
     public JTypeParameterOwnerSymbol getEnclosingTypeParameterOwner() {

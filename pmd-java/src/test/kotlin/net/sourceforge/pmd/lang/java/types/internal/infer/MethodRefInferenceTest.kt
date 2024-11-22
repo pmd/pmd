@@ -5,12 +5,12 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
+import net.sourceforge.pmd.lang.java.ast.*
+import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.test.ast.component6
 import net.sourceforge.pmd.lang.test.ast.component7
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.test.ast.shouldMatchN
-import net.sourceforge.pmd.lang.java.ast.*
-import net.sourceforge.pmd.lang.java.types.*
 import java.util.*
 import java.util.function.*
 import java.util.stream.Collector
@@ -331,12 +331,13 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
         val t_Archive = acu.firstTypeSignature()
         val mref = acu.descendants(ASTMethodReference::class.java).firstOrThrow()
+        val (getName) = acu.declaredMethodSignatures().toList()
         val call = acu.firstMethodCall()
 
         spy.shouldHaveMissingCtDecl(call)
 
         acu.withTypeDsl {
-            mref.referencedMethod shouldBe ts.UNRESOLVED_METHOD
+            mref.referencedMethod shouldBe getName
             mref shouldHaveType ts.UNKNOWN
             call.methodType shouldBe ts.UNRESOLVED_METHOD
             call.overloadSelectionInfo.apply {
@@ -1091,6 +1092,40 @@ class Scratch {
             val rvar = plus.typeParameters[0]!!
             mref.referencedMethod shouldBe abstractColl[rvar].getDeclaredMethod(inAbstractColl.symbol)
             mref shouldHaveType t_Additioner
+        }
+    }
+
+    parserTest("Method ref without target type still populates CTDecl if exact") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class GenerationType {
+                static {
+                    foo(GenerationType::isAndroidType);
+                }
+                {
+                    foo(this::instance);
+                }
+
+                private boolean instance(String data) {}
+                private static boolean isAndroidType(String data) {
+                    return "android".equals(data);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (instance, static) = acu.declaredMethodSignatures()
+
+        val mrefs = acu.descendants(ASTMethodReference::class.java).toList()
+        val (staticMref, instanceMref) = mrefs
+
+        spy.shouldBeOk {
+            mrefs.forEach {
+                it shouldHaveType ts.UNKNOWN
+                it.functionalMethod shouldBe ts.UNRESOLVED_METHOD
+            }
+            instanceMref.referencedMethod shouldBe instance
+            staticMref.referencedMethod shouldBe static
         }
     }
 })

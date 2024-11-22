@@ -66,4 +66,12 @@ class ApexCommentTest extends ApexParserTestBase {
         ASTFormalComment comment = file.descendants(ASTUserClass.class).children(ASTFormalComment.class).first();
         assertEquals(FORMAL_COMMENT_CONTENT, comment.getImage());
     }
+
+    @Test
+    void fileWithUnicodeEscapes() {
+        ASTApexFile file = apex.parse(FORMAL_COMMENT_CONTENT + "\n"
+                + "class MyClass { String s = 'Fran\\u00E7ois'; }");
+        ASTFormalComment comment = file.descendants(ASTUserClass.class).children(ASTFormalComment.class).first();
+        assertEquals(FORMAL_COMMENT_CONTENT, comment.getImage());
+    }
 }

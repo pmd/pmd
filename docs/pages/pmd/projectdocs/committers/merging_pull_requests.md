@@ -39,7 +39,8 @@ author: Andreas Dangel <andreas.dangel@adangel.org>
     *   If the PR fixes a bug, make sure, it is listed under the section "Fixed Issues".
         Also make sure, that the PR description mentions this (e.g. "- fixes #issue-number") and
         the this PR is linked with the issue. Merging this PR will then automatically close the issue.
-    *   In any case, add the PR to the section "External Contributions".
+    *   In any case, add the PR to the section "Merged pull requests". You can add it by calling
+        `.ci/tools/release-notes-add-pr.sh prnumber`.
     *   Commit these changes with the message:
         
         ```
