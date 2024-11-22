@@ -28,9 +28,8 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <!-- Note: this changed in PMD 7. -->
-        <description>StringBuffer.toString.equals(""), bad</description>
-        <expected-problems>0</expected-problems>
+        <description>#5320 StringBuffer.toString.equals(""), bad</description>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
     void bar() {
@@ -213,5 +212,25 @@ public class Foo {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5320 [java] UseStringBufferLength: false-negative on StringBuffer of sb.toString().equals("")</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>6,7,9</expected-linenumbers>
+        <code><![CDATA[
+public class UseStringBufferLengthTest {
+    public void example1() {
+        StringBuffer sb = new StringBuffer();
+        final String empty = "";
+
+        if (sb.toString().equals("")) {System.out.println();}        // line 6, inefficient
+        if (sb.toString().equals(empty)) {System.out.println();}     // line 7, inefficient
+        if (sb.length() == 0) {System.out.println();}                // line 8, preferred
+        if (sb.toString().length() == 2) {System.out.println();}     // line 9, inefficient
+        if (sb.length() == 2) {System.out.println();}                // line 10, preferred
+    }
+}
+]]></code>
     </test-code>
 </test-data>

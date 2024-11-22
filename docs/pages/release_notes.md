@@ -45,6 +45,7 @@ This is a {{ site.pmd.release_type }} release.
 * java-performance
   * [#5287](https://github.com/pmd/pmd/issues/5287): \[java] TooFewBranchesForSwitch false-positive with switch using list of case constants
   * [#5314](https://github.com/pmd/pmd/issues/5314): \[java] InsufficientStringBufferDeclarationRule: Lack of handling for char type parameters
+  * [#5320](https://github.com/pmd/pmd/issues/5320): \[java] UseStringBufferLength: false-negative on StringBuffer of sb.toString().equals("")
 
 ### 🚨 API Changes
 
