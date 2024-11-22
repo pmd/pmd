@@ -96,6 +96,12 @@ class ClassStubBuilder extends ClassVisitor {
         };
     }
 
+    @Override
+    public void visitPermittedSubclass(String permittedSubclass) {
+        ClassStub permitted = resolver.resolveFromInternalNameCannotFail(permittedSubclass);
+        myStub.addPermittedSubclass(permitted);
+    }
+
     /**
      * Visits information about an inner class. This inner class is not necessarily a member of the
      * class being visited.

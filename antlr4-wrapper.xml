@@ -15,7 +15,7 @@
     <taskdef resource="net/sf/antcontrib/antcontrib.properties" />
 
     <property name="target-package-dir" value="${antlr4.outputDirectory}/net/sourceforge/pmd/lang/${lang-id}/ast"/>
-    <property name="stamp-file" value="${project.build.directory}/last-generated-timestamp" />
+    <property name="stamp-file" value="${project.build.directory}/last-generated-timestamp-antlr4" />
 
 
     <property name="lang-ast-package" value="net.sourceforge.pmd.lang.${lang-id}.ast" />
@@ -172,8 +172,8 @@ public class ${lexer-name}'/>
         </delete>
     </target>
 
-    <target name="pmd-language" depends="check-up-to-date, annotate-classes, pmd-language-processing, update-stamp-file"/>
-    <target name="pmd-language-processing" description="Adapt Antlr sources for PMD languages" depends="rename-parser"
+    <target name="pmd-language" depends="check-up-to-date, rename-parser, annotate-classes, pmd-language-processing, update-stamp-file"/>
+    <target name="pmd-language-processing" description="Adapt Antlr sources for PMD languages"
             unless="processing-not-required">
 
         <!-- Adapt parser. -->

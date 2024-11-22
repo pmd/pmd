@@ -18,11 +18,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
@@ -41,22 +43,31 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
 public enum SymImplementation {
     ASM {
         @Override
-        public @NonNull JClassSymbol getSymbol(Class<?> aClass) {
-            return Objects.requireNonNull(JavaParsingHelper.TEST_TYPE_SYSTEM.getClassSymbol(aClass), aClass.getName());
+        public Fixture findClass(String binaryName) {
+            int idx = binaryName.lastIndexOf('.');
+            String packageName = idx == -1 ? "" : binaryName.substring(0, idx);
+            return new Fixture(packageName) {
+                @Override
+                public @NotNull JClassSymbol getByBinaryName(String binaryName) {
+                    JClassSymbol sym = JavaParsingHelper.TEST_TYPE_SYSTEM.getClassSymbol(binaryName);
+                    return Objects.requireNonNull(sym, binaryName);
+                }
+            };
         }
     },
     AST {
         @Override
-        public @NonNull JClassSymbol getSymbol(Class<?> aClass) {
-            ASTCompilationUnit ast = JavaParsingHelper.DEFAULT.parseClass(aClass);
-            JClassSymbol symbol = ast.getTypeDeclarations().first(it -> it.getSimpleName().equals(aClass.getSimpleName())).getSymbol();
-            return Objects.requireNonNull(symbol, aClass.getName());
-        }
+        public Fixture findClass(String binaryName) {
+            ASTCompilationUnit ast = JavaParsingHelper.DEFAULT.parseClass(binaryName);
+            return new Fixture(ast.getPackageName()) {
+                @Override
+                public @NotNull JClassSymbol getByBinaryName(String binaryName) {
+                    return ast.descendants(ASTTypeDeclaration.class).crossFindBoundaries()
+                              .filter(it -> it.getBinaryName().equals(binaryName))
+                              .firstOrThrow().getSymbol();
+                }
 
-        @Override
-        public JClassType getDeclaration(Class<?> aClass) {
-            ASTCompilationUnit ast = JavaParsingHelper.DEFAULT.parseClass(aClass);
-            return ast.getTypeDeclarations().first(it -> it.getSimpleName().equals(aClass.getSimpleName())).getTypeMirror();
+            };
         }
 
         @Override
@@ -69,11 +80,17 @@ public enum SymImplementation {
         return false;
     }
 
-    public abstract @NonNull JClassSymbol getSymbol(Class<?> aClass);
+    /**
+     * Find the source file identified by the given binary name and parse it into the fixture.
+     */
+    public abstract Fixture findClass(String binaryName);
+
+    public @NonNull JClassSymbol getSymbol(Class<?> aClass) {
+        return findClass(aClass.getName()).getByBinaryName(aClass.getName());
+    }
 
     public JClassType getDeclaration(Class<?> aClass) {
-        JClassSymbol symbol = getSymbol(aClass);
-        return (JClassType) symbol.getTypeSystem().declaration(symbol);
+        return findClass(aClass.getName()).getDeclaration(aClass);
     }
 
 
@@ -144,5 +161,41 @@ public enum SymImplementation {
 
         assertEquals(expectedType, pSym.getTypeMirror(Substitution.EMPTY));
     }
+
+    /**
+     * In order to test simultaneously types defined in the same compilation unit,
+     * we must store them somewhere. The fixture stores the parsed AST and allows
+     * convenient access to the parsed types. This makes sure that we don't parse
+     * the file once per lookup.
+     */
+    public abstract static class Fixture {
+        private final String packageName;
+
+        Fixture(String packageName) {
+            this.packageName = packageName;
+        }
+
+        /**
+         * Return a symbol found in the package with the given simple name.
+         */
+        public @NonNull JClassSymbol getSymbol(String simpleName) {
+            return getByBinaryName(packageName + "." + simpleName);
+        }
+
+        /**
+         * Return a symbol found in the package with the given binary name.
+         */
+        public abstract @NonNull JClassSymbol getByBinaryName(String binaryName);
+
+        public @NonNull JClassSymbol getByBinaryName(Class<?> klass) {
+            return getByBinaryName(klass.getName());
+        }
+
+        public JClassType getDeclaration(Class<?> aClass) {
+            JClassSymbol symbol = getByBinaryName(aClass);
+            return (JClassType) symbol.getTypeSystem().declaration(symbol);
+        }
+    }
+
 
 }

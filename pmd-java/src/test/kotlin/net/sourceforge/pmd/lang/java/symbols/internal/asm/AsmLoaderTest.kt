@@ -20,9 +20,9 @@ import javasymbols.testdata.deep.AClassWithLocals
 import javasymbols.testdata.deep.`Another$ClassWith$Dollar`
 import javasymbols.testdata.deep.OuterWithoutDollar
 import javasymbols.testdata.impls.GenericClass
+import net.sourceforge.pmd.lang.java.types.testTypeSystem
 import net.sourceforge.pmd.lang.test.ast.IntelliMarker
 import net.sourceforge.pmd.lang.test.ast.shouldBe
-import net.sourceforge.pmd.lang.java.types.testTypeSystem
 import org.objectweb.asm.Opcodes
 import kotlin.test.assertSame
 
@@ -234,4 +234,5 @@ class AsmLoaderTest : IntelliMarker, FunSpec({
         val notAnEnum = symLoader().resolveClassFromBinaryName(outerName)!!
         notAnEnum::getEnumConstants shouldBe emptyList()
     }
+
 })
