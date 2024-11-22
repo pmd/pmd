@@ -172,7 +172,10 @@ public final class TestFrameworksUtil {
 
     public static boolean isProbableAssertCall(ASTMethodCall call) {
         String name = call.getMethodName();
-        return name.startsWith("assert") && !isSoftAssert(call)
+        boolean isSoftAssertType = isSoftAssert(call);
+        return name.startsWith("assert") && !isSoftAssertType
+            || "assertAll".equals(name) && isSoftAssertType
+            || "assertSoftly".equals(name) && isSoftAssertType
             || name.startsWith("check")
             || name.startsWith("verify")
             || "fail".equals(name)
@@ -182,10 +185,9 @@ public final class TestFrameworksUtil {
 
     public static boolean isSoftAssert(ASTMethodCall call) {
         JTypeMirror declaringType = call.getMethodType().getDeclaringType();
-        return (TypeTestUtil.isA("org.assertj.core.api.StandardSoftAssertionsProvider", declaringType)
+        return TypeTestUtil.isA("org.assertj.core.api.StandardSoftAssertionsProvider", declaringType)
                 || TypeTestUtil.isA("org.assertj.core.api.Java6StandardSoftAssertionsProvider", declaringType)
-                || TypeTestUtil.isA("org.assertj.core.api.AbstractSoftAssertions", declaringType))
-            && !"assertAll".equals(call.getMethodName());
+                || TypeTestUtil.isA("org.assertj.core.api.AbstractSoftAssertions", declaringType);
     }
 
     /**

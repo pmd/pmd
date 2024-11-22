@@ -38,9 +38,10 @@ public class UnitTestShouldIncludeAssertRule extends AbstractJavaRulechainRule {
     public Object visit(ASTMethodDeclaration method, Object data) {
         boolean usesSoftAssertExtension = usesSoftAssertExtension(method.getEnclosingType());
         Set<String> extraAsserts = getProperty(EXTRA_ASSERT_METHOD_NAMES);
-        Predicate<ASTMethodCall> isAssertCall = usesSoftAssertExtension
-                ? TestFrameworksUtil::isSoftAssert
-                : TestFrameworksUtil::isProbableAssertCall;
+        Predicate<ASTMethodCall> isAssertCall = TestFrameworksUtil::isProbableAssertCall;
+        if (usesSoftAssertExtension) {
+            isAssertCall = isAssertCall.or(TestFrameworksUtil::isSoftAssert);
+        }
 
         ASTBlock body = method.getBody();
         if (body != null

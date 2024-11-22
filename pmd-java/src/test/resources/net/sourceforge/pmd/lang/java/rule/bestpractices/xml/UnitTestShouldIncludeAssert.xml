@@ -810,13 +810,14 @@ class ShouldIncludeAssertTest {
     <test-code>
         <description>#4113 [java] JUnitTestsShouldIncludeAssert - false positive with SoftAssertionsExtension</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>27</expected-linenumbers>
+        <expected-linenumbers>19</expected-linenumbers>
         <code><![CDATA[
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.Assertions;
 
 @ExtendWith({SoftAssertionsExtension.class})
 class ShouldIncludeAssertTest {
@@ -829,6 +830,30 @@ class ShouldIncludeAssertTest {
   }
 
   @Test
+  void falseNegative() { // line 19
+    // no assertion at all
+  }
+
+  @Test
+  void otherTestNotUsingSoftAssertions() {
+    Assertions.assertTrue(true);
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4113 [java] JUnitTestsShouldIncludeAssert - false positive with assertSoftly</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>17</expected-linenumbers>
+        <code><![CDATA[
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
+
+class ShouldIncludeAssertTest {
+
+  @Test
   void falsePositive2() {
     SoftAssertions.assertSoftly(
         softly2 -> {
@@ -838,8 +863,13 @@ class ShouldIncludeAssertTest {
   }
 
   @Test
-  void falseNegative() {
+  void falseNegative() { // line 17
     // no assertion at all
+  }
+
+  @Test
+  void otherTestNotUsingSoftAssertions() {
+    Assertions.assertTrue(true);
   }
 }
 ]]></code>
