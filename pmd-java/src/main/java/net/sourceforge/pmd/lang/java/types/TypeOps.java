@@ -634,14 +634,6 @@ public final class TypeOps {
                     return isConvertible(t, lower);
                 }
                 // otherwise fallthrough
-            } else if (isSpecialUnresolved(t)) {
-                // error type or unresolved type is subtype of everything
-                if (s instanceof JArrayType) {
-                    // In case the array has an ivar 'a as element type, a bound will be added 'a >: (*unknown*)
-                    // This helps inference recover in call chains and propagate the (*unknown*) types gracefully.
-                    return TypeOps.isConvertible(t, ((JArrayType) s).getElementType());
-                }
-                return Convertibility.SUBTYPING;
             } else if (hasUnresolvedSymbol(t) && t instanceof JClassType) {
                 // This also considers types with an unresolved symbol
                 // subtypes of (nearly) anything. This allows them to
@@ -823,9 +815,17 @@ public final class TypeOps {
 
         @Override
         public Convertibility visitSentinel(JTypeMirror t, JTypeMirror s) {
+            // t may be (*unknown*), (*error*) or void
             // we know t != s
-            return t.isVoid() ? Convertibility.NEVER
-                              : Convertibility.SUBTYPING;
+            if (t.isVoid()) {
+                return Convertibility.NEVER;
+            }
+            // unknown and error are subtypes of everything.
+            // however we want them to add constrains on unknown
+            if (!pure && !(s instanceof SentinelType)) {
+                s.acceptVisitor(this, t);
+            }
+            return Convertibility.SUBTYPING;
         }
 
         @Override
@@ -848,6 +848,14 @@ public final class TypeOps {
 
         @Override
         public Convertibility visitClass(JClassType t, JTypeMirror s) {
+            if (isSpecialUnresolved(s)) {
+                if (!pure) {
+                    for (JTypeMirror arg : t.getTypeArgs()) {
+                        typeArgContains(arg, s);
+                    }
+                }
+                return Convertibility.SUBTYPING;
+            }
             if (!(s instanceof JClassType)) {
                 // note, that this ignores wildcard types,
                 // because they're only compared through
@@ -896,6 +904,12 @@ public final class TypeOps {
         public Convertibility visitArray(JArrayType t, JTypeMirror s) {
             TypeSystem ts = t.getTypeSystem();
             if (s == ts.OBJECT || s.equals(ts.CLONEABLE) || s.equals(ts.SERIALIZABLE)) {
+                return Convertibility.SUBTYPING;
+            }
+            if (isSpecialUnresolved(s)) {
+                if (!pure) {
+                    t.getElementType().acceptVisitor(this, s);
+                }
                 return Convertibility.SUBTYPING;
             }
 

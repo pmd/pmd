@@ -2250,6 +2250,31 @@ public class ObtainViaTest {
         }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>#5338 UnusedPrivateMethod with unresolved target for lambda</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.concurrent.CompletableFuture;
+            class SomeTest {
+
+                @Test
+                void test() {
+                    final BytesListener listener = createListener(
+                            (bytes) -> CompletableFuture.completedFuture("HI!")
+                    );
+                    Assertions.assertNotNull(listener.onRecord(new byte[0]));
+                }
+
+                private static BytesListener createListener(
+                        BytesParser<String> parser
+                ) {
+                    return bytes -> parser
+                            .parse(bytes)
+                            .thenAccept(System.out::println);
+                }
+            }
+            ]]></code>
+    </test-code>
 
     <test-code>
         <description>UnusedPrivateMethod #5113</description>
