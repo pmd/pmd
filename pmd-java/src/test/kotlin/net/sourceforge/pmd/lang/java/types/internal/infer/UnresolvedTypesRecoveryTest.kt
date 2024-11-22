@@ -760,10 +760,9 @@ class C {
                 private void foo(int y, FunctionalItf x) {
                 }
                 private void foo(FunctionalItf x) {
-                    return SummaryDto.ItemDto.builder().build();
                 }
                 private <T extends FunctionalItf> T bar(T x) {
-                    return SummaryDto.ItemDto.builder().build();
+                    return x;
                 }
                 // interface FunctionalItf { String x(); }
             }
@@ -808,10 +807,9 @@ class C {
                 private void foo(int y, FunctionalItf x) {
                 }
                 private void foo(FunctionalItf x) {
-                    return SummaryDto.ItemDto.builder().build();
                 }
                 private <T extends FunctionalItf> T bar(T x) {
-                    return SummaryDto.ItemDto.builder().build();
+                    return x;
                 }
                 // interface FunctionalItf { String x(int x, int y); }
             }
@@ -859,7 +857,9 @@ class C {
                     var result = foo(2, (a, b) -> a + b);
                 }
 
-                private <T> T foo(int y, FunctionalItf<T, Integer> x) {}
+                private <T> T foo(int y, FunctionalItf<T, Integer> x) {
+                    return x.fun(y, y);
+                }
 
                 // interface FunctionalItf<A, B> { A fun(int x, B y); }
             }
