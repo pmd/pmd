@@ -38,7 +38,7 @@
     </condition>
 
     <property name="target-package-dir" value="${javacc.outputDirectory}/net/sourceforge/pmd/lang/${lang-id}/ast" />
-    <property name="stamp-file" value="${project.build.directory}/last-generated-timestamp" />
+    <property name="stamp-file" value="${project.build.directory}/last-generated-timestamp-javacc" />
 
     <property name="lang-ast-package" value="net.sourceforge.pmd.lang.${lang-id}.ast" />
     <property name="ast-api-package" value="net.sourceforge.pmd.lang.ast" />

@@ -15,7 +15,7 @@
     <taskdef resource="net/sf/antcontrib/antcontrib.properties" />
 
     <property name="target-package-dir" value="${antlr4.outputDirectory}/net/sourceforge/pmd/lang/${lang-id}/ast"/>
-    <property name="stamp-file" value="${project.build.directory}/last-generated-timestamp" />
+    <property name="stamp-file" value="${project.build.directory}/last-generated-timestamp-antlr4" />
 
 
     <property name="lang-ast-package" value="net.sourceforge.pmd.lang.${lang-id}.ast" />
