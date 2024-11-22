@@ -36,6 +36,7 @@ This is a {{ site.pmd.release_type }} release.
   * [#5329](https://github.com/pmd/pmd/issues/5329): \[java] Type inference issue with unknown method ref in call chain
   * [#5338](https://github.com/pmd/pmd/issues/5338): \[java] Unresolved target type for lambdas make overload resolution fail
 * java-bestpractices
+  * [#4113](https://github.com/pmd/pmd/issues/4113): \[java] JUnitTestsShouldIncludeAssert - false positive with SoftAssertionsExtension
   * [#5083](https://github.com/pmd/pmd/issues/5083): \[java] UnusedPrivateMethod false positive when method reference has no target type
   * [#5097](https://github.com/pmd/pmd/issues/5097): \[java] UnusedPrivateMethod FP with raw type missing from the classpath
   * [#5318](https://github.com/pmd/pmd/issues/5318): \[java] PreserveStackTraceRule: false-positive on Pattern Matching with instanceof
