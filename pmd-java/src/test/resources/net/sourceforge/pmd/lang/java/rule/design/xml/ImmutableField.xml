@@ -958,6 +958,11 @@ public class D {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class NotSoImmutableField {
+    /* Note: field "foo" can be made final, when using constructor chaining. For now, the rule won't report this,
+     * as it is not a simple change anymore (e.g. just adding the final keyword).
+     * In the future, either this rule or a new rule can report even such more complicated cases.
+     * See [[java] ImmutableField: false-negative for field with a default + constructor assignment #4869](https://github.com/pmd/pmd/issues/4869)
+     */
     private int foo = 2;
 
     NotSoImmutableField() {
