@@ -1276,7 +1276,7 @@
                     <plugin>
                         <groupId>com.github.hazendaz.maven</groupId>
                         <artifactId>coveralls-maven-plugin</artifactId>
-                        <version>4.5.0-M3</version>
+                        <version>4.5.0-M5</version>
                     </plugin>
                 </plugins>
             </build>
