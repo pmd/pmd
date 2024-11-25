@@ -98,7 +98,7 @@
         <dokka.version>1.9.20</dokka.version>
 
         <javacc.version>5.0</javacc.version>
-        <surefire.version>3.2.5</surefire.version>
+        <surefire.version>3.5.2</surefire.version>
         <checkstyle.version>10.20.1</checkstyle.version>
         <checkstyle.plugin.version>3.5.0</checkstyle.plugin.version>
         <pmd.plugin.version>3.26.0</pmd.plugin.version>
