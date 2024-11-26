@@ -118,6 +118,7 @@ This is a {{ site.pmd.release_type }} release.
 * [#5352](https://github.com/pmd/pmd/pull/5352): \[java] Add permitted subtypes to symbol API - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#5353](https://github.com/pmd/pmd/pull/5353): \[java] Fix #5263 - UnnecessaryFullyQualifiedName FP with forward references - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#5354](https://github.com/pmd/pmd/pull/5354): \[apex] Updated the docs for UnusedMethod as per discussion #5200 - [samc-gearset](https://github.com/sam-gearset) (@sam-gearset)
+* [#5371](https://github.com/pmd/pmd/pull/5371): \[doc] Improve docs on adding Antlr languages - [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
