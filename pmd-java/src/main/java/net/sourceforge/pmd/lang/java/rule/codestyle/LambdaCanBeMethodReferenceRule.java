@@ -19,13 +19,18 @@ import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.java.types.JClassType;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
@@ -90,17 +95,26 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
         OverloadSelectionResult info = call.getOverloadSelectionInfo();
         assert !info.isFailed() : "should not be failed: " + call;
 
+        JTypeMirror methodSource = info.getMethodType().getDeclaringType();
+        JTypeDeclSymbol classSym = methodSource.getSymbol();
+        assert classSym != null
+            : "null symbol for " + methodSource + ", method " + info.getMethodType();
         if (qualifier == null && info.getMethodType().isStatic()
             || lambda.getParameters().size() != call.getArguments().size()) {
             // this second condition corresponds to the case the first lambda
             // param is the receiver of the method call
-
-            JTypeDeclSymbol symbol = info.getMethodType().getDeclaringType().getSymbol();
-            assert symbol != null
-                : "null symbol for " + info.getMethodType().getDeclaringType() + ", method " + info.getMethodType();
-            sb.append(symbol.getSimpleName());
+            sb.append(classSym.getSimpleName());
         } else if (qualifier == null) {
-            sb.append("this");
+            // non-static method with null qualifier
+            ASTTypeDeclaration enclosing = call.getEnclosingType();
+            JClassType receiver = TypeOps.getReceiverType(enclosing.getTypeMirror(), (JClassSymbol) classSym);
+            if (receiver != null && !receiver.getSymbol().equals(enclosing.getSymbol())) {
+                // method is declared in an enclosing type and receiver
+                // needs qualification
+                sb.append(receiver.getSymbol().getSimpleName()).append(".this");
+            } else {
+                sb.append("this");
+            }
         } else {
             boolean needsParentheses = !(qualifier instanceof ASTPrimaryExpression);
             if (needsParentheses) {

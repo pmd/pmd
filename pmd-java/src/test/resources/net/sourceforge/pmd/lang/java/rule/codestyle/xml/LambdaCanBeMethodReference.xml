@@ -336,5 +336,43 @@
 
 
 
+    <test-code>
+        <description>#5214 message when method is in outer class</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>Lambda expression could be written as a method reference: `Outer.this::correct`</message>
+            <message>Lambda expression could be written as a method reference: `Inner.this::something`</message>
+        </expected-messages>
+        <code><![CDATA[
+            public final class Outer {
+
+                class Inner {
+
+                    {
+                        iTakeLambda(i -> correct(i));
+                    }
+
+                    boolean something(int x) { return true; }
+                    class Deeper {
+
+                        {
+                            iTakeLambda(i -> something(i));
+                        }
+                    }
+                }
+
+                static void iTakeLambda(ALambda2 l) {
+                }
+
+                public boolean correct(int a) {
+                    return false;
+                }
+            }
+            interface ALambda2 {
+                boolean doSomething(int a);
+            }
+            ]]></code>
+    </test-code>
+
 
 </test-data>
