@@ -1681,7 +1681,7 @@ public final class TypeOps {
      * Return the base type of t or any of its outer types that starts
      * with the given type.  If none exists, return null.
      */
-    public static JClassType asOuterSuper(JTypeMirror t, JClassSymbol sym) {
+    public static @Nullable JClassType asOuterSuper(JTypeMirror t, JClassSymbol sym) {
         if (t instanceof JClassType) {
             JClassType ct = (JClassType) t;
             do {
@@ -1694,6 +1694,23 @@ public final class TypeOps {
         } else if (t instanceof JTypeVar || t instanceof JArrayType) {
             return (JClassType) t.getAsSuper(sym);
         }
+        return null;
+    }
+
+    /**
+     * Return the first enclosing type of the container type
+     * that has the given symbol in its supertypes. Return null
+     * if this is not found.
+     */
+    public static @Nullable JClassType getReceiverType(@NonNull JClassType containerType, JClassSymbol sym) {
+        JClassType ct = containerType;
+        do {
+            JClassType sup = ct.getAsSuper(sym);
+            if (sup != null) {
+                return ct;
+            }
+            ct = ct.getEnclosingType();
+        } while (ct != null);
         return null;
     }
 
