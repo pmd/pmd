@@ -41,6 +41,7 @@ This is a {{ site.pmd.release_type }} release.
   * [#5097](https://github.com/pmd/pmd/issues/5097): \[java] UnusedPrivateMethod FP with raw type missing from the classpath
   * [#5318](https://github.com/pmd/pmd/issues/5318): \[java] PreserveStackTraceRule: false-positive on Pattern Matching with instanceof
 * java-codestyle
+  * [#5214](https://github.com/pmd/pmd/issues/5214): \[java] Wrong message for LambdaCanBeMethodReference with method of enclosing class
   * [#5263](https://github.com/pmd/pmd/issues/5263): \[java] UnnecessaryFullyQualifiedName: false-positive in an enum that uses its own static variables
 * java-performance
   * [#5287](https://github.com/pmd/pmd/issues/5287): \[java] TooFewBranchesForSwitch false-positive with switch using list of case constants
@@ -118,6 +119,7 @@ This is a {{ site.pmd.release_type }} release.
 * [#5352](https://github.com/pmd/pmd/pull/5352): \[java] Add permitted subtypes to symbol API - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#5353](https://github.com/pmd/pmd/pull/5353): \[java] Fix #5263 - UnnecessaryFullyQualifiedName FP with forward references - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#5354](https://github.com/pmd/pmd/pull/5354): \[apex] Updated the docs for UnusedMethod as per discussion #5200 - [samc-gearset](https://github.com/sam-gearset) (@sam-gearset)
+* [#5370](https://github.com/pmd/pmd/pull/5370): \[java] Fix #5214 - LambdaCanBeMethodReference issue with method of enclosing class - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
