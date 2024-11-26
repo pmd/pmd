@@ -2016,6 +2016,8 @@ But on most cases you won’t need to do anything.</li>
 <h3 id="4--generate-your-parser-using-antlr">4.  Generate your parser (using ANTLR)</h3>
 <ul>
   <li>Make sure, you have the property <code class="language-plaintext highlighter-rouge">&lt;antlr4.visitor&gt;true&lt;/antlr4.visitor&gt;</code> in your <code class="language-plaintext highlighter-rouge">pom.xml</code> file.</li>
+  <li>Include the antlr and antrun plugins to the module <code class="language-plaintext highlighter-rouge">pom.xml</code>. Antlr needs to be first, to ensure it runs first.
+The antrun plugin should execute the <code class="language-plaintext highlighter-rouge">pmd-language</code> target using the <code class="language-plaintext highlighter-rouge">${antlr4.ant.wrapper}</code> antfile.</li>
   <li>This is just a matter of building the language module. ANTLR is called via ant, and this step is added
 to the phase <code class="language-plaintext highlighter-rouge">generate-sources</code>. So you can just call e.g. <code class="language-plaintext highlighter-rouge">./mvnw generate-sources -pl pmd-swift</code> to
 have the parser generated.</li>
@@ -2084,6 +2086,7 @@ as an example.</li>
 <ul>
   <li>Create your own subclass of <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase</code>, see Swift as an example:
   <a href="https://github.com/pmd/pmd/blob/main/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/SwiftLanguageModule.java"><code class="language-plaintext highlighter-rouge">SwiftLanguageModule</code></a>.</li>
+  <li>Ensure the language name and language id used, match those set as properties when running <code class="language-plaintext highlighter-rouge">ant</code> in step #4.</li>
   <li>Add for each version of your language a call to <code class="language-plaintext highlighter-rouge">addVersion</code> in your language module’s constructor.
 Use <code class="language-plaintext highlighter-rouge">addDefaultVersion</code> for defining the default version.</li>
   <li>You’ll need to refer the language version handler created in step #7.</li>
@@ -2240,7 +2243,7 @@ syntax tree) is not suitable to add methods such as <code class="language-plaint
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            December 2023 (7.0.0)<br /> Site last generated: Nov 25, 2024 <br />
+            December 2023 (7.0.0)<br /> Site last generated: Nov 26, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
