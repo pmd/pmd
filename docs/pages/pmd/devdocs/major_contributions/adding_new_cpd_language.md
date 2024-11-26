@@ -27,11 +27,12 @@ Use the following guide to set up a new language module that supports CPD.
      is automatically available in the binary distribution (pmd-dist).
 
 2. Implement a {% jdoc core::cpd.CpdLexer %}.
-    - For Antlr grammars you can take the grammar from [antlr/grammars-v4](https://github.com/antlr/grammars-v4) and place it in `src/main/antlr4` followed by the package name of the language. You then need to call the appropriate ant wrapper to generate
+    - For Antlr grammars you can take the grammar from [antlr/grammars-v4](https://github.com/antlr/grammars-v4) and place it in `src/main/antlr4` followed by the package name of the language. You then need to call the antlr4 plugin and the appropriate ant wrapper with target `cpd-language` to generate
     the lexer from the grammar. To do so, edit `pom.xml` (eg like [the Golang module](https://github.com/pmd/pmd/tree/main/pmd-go/pom.xml)).
       Once that is done, `mvn generate-sources` should generate the lexer sources for you.
 
       You can now implement a CpdLexer, for instance by extending {% jdoc core::cpd.impl.AntlrCpdLexer %}. The following reproduces the Go implementation:
+
     ```java
     // mind the package convention if you are going to make a PR
     package net.sourceforge.pmd.lang.go.cpd;

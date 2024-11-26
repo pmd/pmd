@@ -110,6 +110,8 @@ definitely don't come for free. It is much effort and requires perseverance to i
 
 ### 4.  Generate your parser (using ANTLR)
 *   Make sure, you have the property `<antlr4.visitor>true</antlr4.visitor>` in your `pom.xml` file.
+*   Include the antlr and antrun plugins to the module `pom.xml`. Antlr needs to be first, to ensure it runs first.
+    The antrun plugin should execute the `pmd-language` target using the `${antlr4.ant.wrapper}` antfile.
 *   This is just a matter of building the language module. ANTLR is called via ant, and this step is added
     to the phase `generate-sources`. So you can just call e.g. `./mvnw generate-sources -pl pmd-swift` to
     have the parser generated.
@@ -163,6 +165,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
 ### 9. Make PMD recognize your language
 * Create your own subclass of `net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase`, see Swift as an example:
     [`SwiftLanguageModule`](https://github.com/pmd/pmd/blob/main/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/SwiftLanguageModule.java).
+*   Ensure the language name and language id used, match those set as properties when running `ant` in step #4. 
 *   Add for each version of your language a call to `addVersion` in your language module’s constructor.
     Use `addDefaultVersion` for defining the default version.
 *   You’ll need to refer the language version handler created in step #7.
