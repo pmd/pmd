@@ -43,6 +43,7 @@ This is a {{ site.pmd.release_type }} release.
 * java-codestyle
   * [#5214](https://github.com/pmd/pmd/issues/5214): \[java] Wrong message for LambdaCanBeMethodReference with method of enclosing class
   * [#5263](https://github.com/pmd/pmd/issues/5263): \[java] UnnecessaryFullyQualifiedName: false-positive in an enum that uses its own static variables
+  * [#5315](https://github.com/pmd/pmd/issues/5315): \[java] UnnecessaryImport false positive for on-demand imports
 * java-performance
   * [#5287](https://github.com/pmd/pmd/issues/5287): \[java] TooFewBranchesForSwitch false-positive with switch using list of case constants
   * [#5314](https://github.com/pmd/pmd/issues/5314): \[java] InsufficientStringBufferDeclarationRule: Lack of handling for char type parameters
