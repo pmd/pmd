@@ -53,7 +53,8 @@ See [Tools / Integrations](https://docs.pmd-code.org/latest/pmd_userdocs_tools.h
     or on [discussions](https://github.com/pmd/pmd/discussions).
 *   I got this error and I'm sure it's a bug -- file an [issue](https://github.com/pmd/pmd/issues).
 *   I have an idea/request/question -- create a new [discussion](https://github.com/pmd/pmd/discussions).
-*   I have a quick question -- ask in our [Gitter room](https://app.gitter.im/#/room/#pmd_pmd:gitter.im).
+*   I have a quick question -- ask in our [Gitter room](https://app.gitter.im/#/room/#pmd_pmd:gitter.im)
+    or our [PMD Guru at Gurubase](https://gurubase.io/g/pmd).
 *   Where's your documentation? -- <https://docs.pmd-code.org/latest/>
 
 ## 🤝 Contributing
