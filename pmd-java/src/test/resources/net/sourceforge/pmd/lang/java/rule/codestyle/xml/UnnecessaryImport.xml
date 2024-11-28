@@ -773,14 +773,18 @@ class NPEImport {}
     <test-code>
         <description>[java] #2546 -- similar imports static/nonstatic - static is used</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>2</expected-linenumbers>
+        <expected-linenumbers>8</expected-linenumbers>
         <expected-messages>
-            <message>Unused import 'net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*'</message>
+            <message>Unused static import 'net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*'</message>
         </expected-messages>
         <code><![CDATA[
-            // imports NonStatic -- unused
+            // The imports are actually duplicates, either could be removed.
+            // We always elect to report the static import as it is longer and may import
+            // methods or fields
+
+            // imports static and non-static (=used)
             import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
-            // imports Static
+            // imports static (=used)
             import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
 
             public class DuplicateImports {
@@ -798,9 +802,9 @@ class NPEImport {}
             <message>Unused static import 'net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*'</message>
         </expected-messages>
         <code><![CDATA[
-            // imports NonStatic
+            // imports static and non-static (=used)
             import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
-            // imports Static -- unused
+            // imports static (=unused)
             import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
 
             public class DuplicateImports {
@@ -1317,4 +1321,26 @@ public class Foo {
 ]]></code>
         <source-type>java 23-preview</source-type>
     </test-code>
+
+    <test-code>
+        <description>#5315 [java] UnnecessaryImport false positive for on-demand imports</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package org.example;
+
+            import java.util.Map;
+            import java.util.Map.*; // this import is reported as unnecessary. However, class Entry is a nested class of Map and requires that import
+
+            import static java.util.stream.Collectors.toMap;
+
+            public class Main {
+                public static void main(String[] args) {
+                    Map<String, String> map = Map.of("key1", "value1");
+                    var weirdCopy = map.entrySet().stream().collect(toMap(Entry::getKey, Entry::getValue));
+                    System.out.println(weirdCopy);
+                }
+            }
+            ]]></code>
+    </test-code>
+
 </test-data>
