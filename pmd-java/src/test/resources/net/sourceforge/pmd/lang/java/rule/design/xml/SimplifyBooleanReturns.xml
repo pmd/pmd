@@ -185,8 +185,8 @@ public class SimplifyBooleanReturns {
         <expected-problems>2</expected-problems>
         <expected-linenumbers>3,8</expected-linenumbers>
         <expected-messages>
-            <message>This if statement can be replaced by `return !{condition} &amp;&amp; {thenBranch};`</message>
-            <message>This if statement can be replaced by `return !{condition} &amp;&amp; {thenBranch};`</message>
+            <message>This if statement can be replaced by `return !{condition} || {thenBranch};`</message>
+            <message>This if statement can be replaced by `return !{condition} || {thenBranch};`</message>
         </expected-messages>
         <code><![CDATA[
             public class Foo {
@@ -248,7 +248,7 @@ public class SimplifyBooleanReturns {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
-            <message>This if statement can be replaced by `return !{condition} &amp;&amp; {thenBranch};`</message>
+            <message>This if statement can be replaced by `return !{condition} || {thenBranch};`</message>
         </expected-messages>
         <code><![CDATA[
             public class Foo {
@@ -261,6 +261,32 @@ public class SimplifyBooleanReturns {
                     } else {
                         return true;
                     }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description> [java] SimplifyBooleanReturns - wrong suggested solution #4763 </description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>This if statement can be replaced by `return !{condition} &amp;&amp; {elseBranch};`</message>
+            <message>This if statement can be replaced by `return !{condition} &amp;&amp; {elseBranch};`</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+
+                public boolean foo(Object a) {
+                    if (a == null) {
+                        return false;
+                    }
+                    return "FOO".equals(a.toString());
+                }
+
+                public boolean bar(String stringA, String stringB) {
+                    if (StringUtils.isAnyBlank(stringA, stringB)) {
+                        return false;
+                    }
+                    return Objects.equals(stringA, stringB);
                 }
             }
             ]]></code>

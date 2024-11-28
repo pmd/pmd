@@ -139,9 +139,9 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
             if (thenTrue) {
                 return "return {condition} || {elseBranch};";
             } else if (thenFalse) {
-                return "return !{condition} || {elseBranch};";
+                return "return !{condition} && {elseBranch};";
             } else if (elseTrue) {
-                return "return !{condition} && {thenBranch};";
+                return "return !{condition} || {thenBranch};";
             } else {
                 return "return {condition} && {thenBranch};";
             }
