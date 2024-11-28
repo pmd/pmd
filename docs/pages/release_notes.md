@@ -109,6 +109,7 @@ This is a {{ site.pmd.release_type }} release.
 * [#5334](https://github.com/pmd/pmd/pull/5334): \[java] UnitTestShouldIncludeAssert - consider SoftAssertionsExtension - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5335](https://github.com/pmd/pmd/pull/5335): \[kotlin] Prevent auxiliary grammars from generating lexers - [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
 * [#5336](https://github.com/pmd/pmd/pull/5336): \[gherkin] Remove generated gherkin code from coverage report - [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
+* [#5337](https://github.com/pmd/pmd/pull/5337): \[doc] Introducing PMD Guru on Gurubase.io - [Kursat Aktas](https://github.com/kursataktas) (@kursataktas)
 * [#5339](https://github.com/pmd/pmd/pull/5339): \[java] Allow lambdas with unresolved target types to succeed inference - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#5340](https://github.com/pmd/pmd/pull/5340): \[java] Fix #5097 - problem with unchecked conversion - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#5341](https://github.com/pmd/pmd/pull/5341): \[java] Fix #5083 - UnusedPrivateMethod false positive with mref without target type but with exact method - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)

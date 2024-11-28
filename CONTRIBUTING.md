@@ -49,6 +49,8 @@ There are various channels, on which you can ask questions:
 
 *   Ask your question in our [Gitter room](https://app.gitter.im/#/room/#pmd_pmd:gitter.im).
 
+*   Ask your question our [PMD Guru at Gurubase](https://gurubase.io/g/pmd).
+
 ## Code Style
 
 PMD uses [checkstyle](http://checkstyle.sourceforge.net/) to enforce a common code style.

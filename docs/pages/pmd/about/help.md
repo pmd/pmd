@@ -2,7 +2,7 @@
 title: Getting Help
 permalink: pmd_about_help.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: January 2021
+last_updated: November 2024
 ---
 
 There are numerous ways of getting help:
@@ -17,5 +17,9 @@ There are numerous ways of getting help:
 
 *   Or you can join the [Mailing List](https://lists.sourceforge.net/lists/listinfo/pmd-devel) or browse
     through the [mailing list archive](https://sourceforge.net/p/pmd/mailman/pmd-devel/).
+
+*   Ask your question in our [Gitter room](https://app.gitter.im/#/room/#pmd_pmd:gitter.im).
+
+*   Ask your question our [PMD Guru at Gurubase](https://gurubase.io/g/pmd).
 
 *   Of course, you can also directly jump to our [source code on github](https://github.com/pmd/pmd).
