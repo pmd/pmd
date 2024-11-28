@@ -106,4 +106,24 @@
             ]]></code>
     </test-code>
 
+
+    <test-code>
+        <description>Types of args are unresolved</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+            public class Foo {
+                static {
+                    // if we don't know the type of ARRAY we should not report a violation
+                    foo(Somewhere.ARRAY);
+                    // here we know the type is Unknown[] even if Unknown is unresolved,
+                    // we know it's not Object[] so we report
+                    foo(UNKNOWN);
+                }
+                static Unknown[] UNKNOWN;
+                static void foo(Object... args) {}
+            }
+            ]]></code>
+    </test-code>
+
 </test-data>
