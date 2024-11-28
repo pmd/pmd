@@ -808,6 +808,26 @@ class ShouldIncludeAssertTest {
     </test-code>
 
     <test-code>
+        <description>#4765 [java] JUnitTestsShouldIncludeAssert does not detect assertThat() when saving in variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
+import jakarta.xml.bind.JAXBElement;
+
+public class Foo {
+    @Test
+    public void myTestMethod() {
+        JAXBElement<?> jaxb = null;
+        final var dataArea = assertThat(jaxb).isNotNull()
+                .extracting(JAXBElement::getValue)
+                .isNotNull();
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
         <description>#4113 [java] JUnitTestsShouldIncludeAssert - false positive with SoftAssertionsExtension</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>19</expected-linenumbers>

@@ -56,4 +56,24 @@ public class UseProperClassLoaderFP {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] False-positive UseProperClassLoader #4711</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Tester {
+    public Object dataSource(final DataSourceProperties properties) {
+      return DataSourceBuilder.create(properties.getClassLoader())
+          .build();
+    }
+}
+interface DataSourceProperties {
+    ClassLoader getClassLoader();
+}
+interface DataSourceBuilder {
+    static DataSourceBuilder create(ClassLoader classLoader);
+    Object build();
+}
+]]></code>
+    </test-code>
 </test-data>

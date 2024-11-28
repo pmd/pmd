@@ -1318,6 +1318,27 @@ public class CloseResourceStream {
     </test-code>
 
     <test-code>
+        <description>#2835 [java] CloseResource false positive with Stream and ternary</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.stream.*;
+import java.util.*;
+
+public class Foo {
+    public List<String> getContainers() {
+        return null;
+    }
+
+    public void bar() {
+        Foo foo = new Foo();
+        final Stream<String> containers = foo.getContainers() != null ? foo.getContainers().stream() : Stream.empty();
+        System.out.println("count: " + containers.count());
+    }
+}
+]]></code>
+    </test-code>
+    
+    <test-code>
         <description>#2402 [java] CloseResource possible false positive with primitive  Streams</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

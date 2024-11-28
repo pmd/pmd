@@ -1125,6 +1125,115 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UnnecessaryFullyQualifiedName: False positive with shadowed static method import #3083</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package ds;
+
+import static java.util.Objects.requireNonNull;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static java.util.Objects.toString;
+
+import java.util.Objects;
+import java.util.Iterator;
+
+public class BinaryTree<E extends Comparable<E>> implements Tree<E> {
+    private TreeNode<E> root;
+
+    public BinaryTree() {
+        root = null;
+    }
+
+    @Override
+    public void add(E obj) {
+        requireNonNull(obj);
+        if (isNull(root))
+            root = new TreeNode<>(obj, null, null);
+        else
+            root.insert(obj);
+    }
+
+    @Override
+    public boolean contains(E obj) {
+        requireNonNull(obj);
+        return nonNull(root) ? nonNull(root.find(obj)) : false;
+    }
+
+    @Override
+    public void remove(E obj) {
+        if (nonNull(root))
+            root = root.remove(obj, root);
+    }
+
+    @Override
+    public Iterator<E> iterator(TraversalOrder order) {
+        return null;
+    }
+
+    private static class TreeNode<T extends Comparable<T>> {
+        T val;
+        TreeNode<T> left;
+        TreeNode<T> right;
+
+        TreeNode(T val, TreeNode<T> left, TreeNode<T> right) {
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
+
+        public void insert(T obj) {
+            requireNonNull(obj);
+            if (val.compareTo(obj) < 0) {
+                if (isNull(right)) right = new TreeNode<>(obj, null, null);
+                else right.insert(obj);
+            }
+            else {
+                if (isNull(left))
+                    left = new TreeNode<>(obj, null, null);
+                else left.insert(obj);
+            }
+        }
+
+        public TreeNode<T> find(T obj) {
+            int temp = val.compareTo(obj);
+            if (temp == 0) return this;
+            if (temp < 0) return isNull(right) ? null : right.find(obj);
+            return isNull(left) ? null : left.find(obj);
+        }
+
+        private TreeNode<T> remove(T obj, TreeNode<T> node) {
+            requireNonNull(obj);
+            TreeNode<T> t = node;
+            if (isNull(t)) return t;
+            if (obj.compareTo(t.val) < 0) t.left = remove(obj, t.left);
+            else if (obj.compareTo(t.val) > 0) t.right = remove(obj, t.right);
+            else if (isNull(t.left) || isNull(t.right)) t = isNull(t.left) ? t.right : t.left;
+            else {
+                t.val = findMin(t.right).val; t.right = remove(t.val, t.right);
+            }
+            return t;
+        }
+
+        private TreeNode<T> findMin(TreeNode<T> node) {
+            TreeNode<T> t = node;
+            if (isNull(t)) return null;
+            while (nonNull(t.left))
+                t = t.left;
+            return t;
+        }
+
+        @Override
+        public String toString() {
+            return Objects.toString(val); // False-positive here for UnnecessaryFullyQualifiedName
+        }
+    }
+}
+]]></code>
+    </test-code>
+
     <test-code>
         <description>#5263 FP when forward reference is illegal</description>
         <expected-problems>0</expected-problems>

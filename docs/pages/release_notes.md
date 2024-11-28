@@ -98,6 +98,7 @@ This is a {{ site.pmd.release_type }} release.
 * [#5286](https://github.com/pmd/pmd/pull/5286): \[ant] Formatter: avoid reflective access to determine console encoding - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5289](https://github.com/pmd/pmd/pull/5289): \[java] TooFewBranchesForSwitch - allow list of case constants - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5296](https://github.com/pmd/pmd/pull/5296): \[xml] Have pmd-xml Lexer in line with other antlr grammars - [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
+* [#5300](https://github.com/pmd/pmd/pull/5300): Add rule test cases for issues fixed with PMD 7.0.0 - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5303](https://github.com/pmd/pmd/pull/5303): \[apex] New Rule: Queueable Should Attach Finalizer - [Mitch Spano](https://github.com/mitchspano) (@mitchspano)
 * [#5309](https://github.com/pmd/pmd/pull/5309): \[java] Fix #5293: Parse number of type parameters eagerly - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5310](https://github.com/pmd/pmd/pull/5310): \[java] Fix #5283 - inner class has public private modifiers - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)

@@ -64,4 +64,9 @@ class SwiftCpdLexerTest extends CpdTextComparisonTest {
     void testTabWidth() {
         doTest("tabWidth");
     }
+
+    @Test
+    void emojiParsingError() {
+        doTest("Issue2698_Emoji");
+    }
 }

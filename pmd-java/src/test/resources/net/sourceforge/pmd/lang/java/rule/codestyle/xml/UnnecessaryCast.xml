@@ -888,4 +888,25 @@ class MyClass {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4620 [java] UnnecessaryCast reports false-positive for ByteBuffer methods when targeting Java 8</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,9</expected-linenumbers>
+        <code><![CDATA[
+import java.nio.ByteBuffer;
+class Tester {
+    public byte[] getArray() {
+        ByteBuffer bb = ByteBuffer.allocate(5 * 4);
+        return (byte[])bb.flip().array(); // cast is unnecessary since Java 9: ByteBuffer.flip() returns a ByteBuffer (and not a Buffer)
+    }
+    ByteBuffer nativeAddress;
+    public void foo(ByteBuffer nativeAddress) {
+        this.nativeAddress = nativeAddress == null ? null : (ByteBuffer) (Object) nativeAddress // casts are unnecessary
+            .duplicate().rewind();
+        // since Java 9: ByteBuffer.rewind() returns a ByteBuffer (and not a Buffer)
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

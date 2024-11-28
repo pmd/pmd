@@ -377,4 +377,69 @@ public class SwitchMultipleCaseConstants {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] False positive violation of SwitchStmtsShouldHaveDefault when using local variable inference #2743</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+import net.sourceforge.pmd.lang.java.rule.bestpractices.switchstmtsshouldhavedefault.Animal;
+import net.sourceforge.pmd.lang.java.rule.bestpractices.switchstmtsshouldhavedefault.SimpleEnum;
+
+public class Foo {
+    List<Animal> getAnimals() { return null; }
+
+    void check() {
+        for (var animal : getAnimals()) {
+            switch (animal.getType()) { // false violation
+                case FOO:
+                    // do something
+                    break;
+                case BAR:
+                    // do something
+                    break;
+                case BZAZ:
+                    // do something
+                    break;
+            }
+        }
+    }
+
+    void setValue(List<SimpleEnum> list) {
+        list.forEach(eIn -> {
+            switch (eIn) {
+                case FOO:
+                    // do something
+                    break;
+                case BAR:
+                    // do something
+                    break;
+                case BZAZ:
+                    // do something
+                    break;
+            }
+        });
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] SwitchStmtsShouldHaveDefault and implicit default #3346</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+enum State { ON, OFF }
+
+class Tester {
+    boolean isOn(State state) {
+        switch (state) {
+            case ON:
+                return true;
+            case OFF:
+                return false;
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

@@ -1323,6 +1323,20 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>[java] UnusedImports: False positive if nested interface is referenced in javadoc #2001</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.Issue2001;
+
+/**
+ * Foobedoo {@link Issue2001.B}
+ */
+public class C {
+}
+]]></code>
+    </test-code>
+
+    <test-code>
         <description>#5315 [java] UnnecessaryImport false positive for on-demand imports</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

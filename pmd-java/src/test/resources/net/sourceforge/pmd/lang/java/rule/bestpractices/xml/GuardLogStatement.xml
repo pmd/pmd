@@ -771,4 +771,24 @@ public class MyClass {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4703 [java] GuardLogStatement reports violation for Log4j parameterized logs</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+class Test {
+    private static final Logger LOGGER = LogManager.getLogger(Test.class);
+
+    public static void main() {
+        LOGGER.info("Info : {} : Request received", LOGGER.getName()); // one violation here, because of LOGGER.getName() method call
+        String s = "Hello World";
+        LOGGER.debug("Logging string {}", s); // this is ok
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

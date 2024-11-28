@@ -1862,4 +1862,22 @@ trigger WidgetTrigger on Widget__c (before insert) {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4897 [apex] ApexCRUDViolation incorrectly cleared when WITH SECURITY_ENFORCED is commented out</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public List<Account> myMethod2()
+    {
+        List<Account> accounts = [
+            SELECT Id, Name
+            FROM Account
+            // WITH SECURITY_ENFORCED
+        ];
+        return accounts;
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
