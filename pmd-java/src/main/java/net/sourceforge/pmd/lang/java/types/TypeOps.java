@@ -634,7 +634,7 @@ public final class TypeOps {
                     return isConvertible(t, lower);
                 }
                 // otherwise fallthrough
-            } else if (hasUnresolvedSymbol(t) && t instanceof JClassType) {
+            } else if (hasUnresolvedSymbol(t)) {
                 // This also considers types with an unresolved symbol
                 // subtypes of (nearly) anything. This allows them to
                 // pass bound checks on type variables.
@@ -1797,7 +1797,7 @@ public final class TypeOps {
         vLoop:
         for (JTypeMirror v : set) {
             for (JTypeMirror w : set) {
-                if (!w.equals(v) && !hasUnresolvedSymbol(w)) {
+                if (!w.equals(v) && !hasUnresolvedSymbolOrArray(w)) {
                     Convertibility isConvertible = isConvertiblePure(w, v);
                     if (isConvertible.bySubtyping()
                         // This last case covers unchecked conversion. It is made antisymmetric by the
@@ -2079,7 +2079,8 @@ public final class TypeOps {
 
     /**
      * Returns true if the type is {@link TypeSystem#UNKNOWN},
-     * {@link TypeSystem#ERROR}, or its symbol is unresolved.
+     * {@link TypeSystem#ERROR}, or a class type with unresolved
+     * symbol.
      *
      * @param t Non-null type
      *
@@ -2089,30 +2090,39 @@ public final class TypeOps {
         return isSpecialUnresolved(t) || hasUnresolvedSymbol(t);
     }
 
+    /**
+     * Returns true if the type is {@link TypeSystem#UNKNOWN},
+     * or {@link TypeSystem#ERROR}, or a class type with unresolved
+     * symbol, or an array of such types.
+     *
+     * @param t Non-null type
+     *
+     * @throws NullPointerException if the parameter is null
+     */
+    public static boolean isUnresolvedOrArray(@NonNull JTypeMirror t) {
+        return isSpecialUnresolvedOrArray(t) || hasUnresolvedSymbolOrArray(t);
+    }
+
+    /**
+     * Returns true if the type is {@link TypeSystem#UNKNOWN},
+     * or {@link TypeSystem#ERROR}.
+     *
+     * @param t Non-null type
+     *
+     * @throws NullPointerException if the parameter is null
+     */
     public static boolean isSpecialUnresolved(@NonNull JTypeMirror t) {
         TypeSystem ts = t.getTypeSystem();
         return t == ts.UNKNOWN || t == ts.ERROR;
     }
 
     /**
-     * Return true if the argument is a {@link JClassType} with
-     * {@linkplain JClassSymbol#isUnresolved() an unresolved symbol} or
-     * a {@link JArrayType} whose element type matches the first criterion.
-     */
-    public static boolean hasUnresolvedSymbol(@Nullable JTypeMirror t) {
-        if (!(t instanceof JClassType)) {
-            return t instanceof JArrayType && hasUnresolvedSymbol(((JArrayType) t).getElementType());
-        }
-        return t.getSymbol() != null && t.getSymbol().isUnresolved();
-    }
-
-    public static boolean isUnresolvedOrNull(@Nullable JTypeMirror t) {
-        return t == null || isUnresolved(t);
-    }
-
-    /**
-     * Return true if the type is null, (*unknown*), (*error*), or an array
-     * of unknown or error type.
+     * Returns true if the type is {@link TypeSystem#UNKNOWN},
+     * or {@link TypeSystem#ERROR}, or an array of such types.
+     *
+     * @param t Non-null type
+     *
+     * @throws NullPointerException if the parameter is null
      */
     public static boolean isSpecialUnresolvedOrArray(@Nullable JTypeMirror t) {
         return t == null
@@ -2120,6 +2130,29 @@ public final class TypeOps {
             || t instanceof JArrayType && isSpecialUnresolved(((JArrayType) t).getElementType());
     }
 
+    /**
+     * Return true if the argument is a {@link JClassType} with
+     * {@linkplain JClassSymbol#isUnresolved() an unresolved symbol}.
+     */
+    public static boolean hasUnresolvedSymbol(@Nullable JTypeMirror t) {
+        return t instanceof JClassType && t.getSymbol().isUnresolved();
+    }
+
+    /**
+     * Return true if the argument is a {@link JClassType} with
+     * {@linkplain JClassSymbol#isUnresolved() an unresolved symbol},
+     * or an array whose element type has an unresolved symbol.
+     */
+    public static boolean hasUnresolvedSymbolOrArray(@Nullable JTypeMirror t) {
+        if (!(t instanceof JClassType)) {
+            return t instanceof JArrayType && hasUnresolvedSymbol(((JArrayType) t).getElementType());
+        }
+        return hasUnresolvedSymbol(t);
+    }
+
+    public static boolean isUnresolvedOrNull(@Nullable JTypeMirror t) {
+        return t == null || isUnresolved(t);
+    }
 
     public static @Nullable JTypeMirror getArrayComponent(@Nullable JTypeMirror t) {
         return t instanceof JArrayType ? ((JArrayType) t).getComponentType() : null;

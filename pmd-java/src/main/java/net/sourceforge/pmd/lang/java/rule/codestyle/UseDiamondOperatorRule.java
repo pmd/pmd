@@ -71,7 +71,7 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         ASTTypeArguments targs = newTypeNode.getTypeArguments();
         if (targs != null && targs.isDiamond()
             // if unresolved we can't know whether the class is generic or not
-            || TypeOps.isUnresolved(newType)) {
+            || TypeOps.hasUnresolvedSymbol(newType)) {
             return null;
         }
 

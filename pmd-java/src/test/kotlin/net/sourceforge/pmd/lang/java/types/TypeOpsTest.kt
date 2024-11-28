@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.types
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.shuffle
 import io.kotest.property.checkAll
@@ -129,6 +130,86 @@ class Foo {
 
                 spy.shouldBeOk {
                     methodId shouldHaveType barT[`?`]
+                }
+            }
+
+            test("isSpecialUnresolved") {
+                val unresolved = ts.declaration(ts.createUnresolvedAsmSymbol("Unknown"))
+                TypeOps.isSpecialUnresolved(unresolved) shouldBe false
+                TypeOps.isSpecialUnresolved(unresolved.toArray()) shouldBe false
+                TypeOps.isSpecialUnresolved(unresolved.toArray(3)) shouldBe false
+
+                for (ty in listOf(ts.UNKNOWN, ts.ERROR)) {
+                    TypeOps.isSpecialUnresolved(ty) shouldBe true
+                    TypeOps.isSpecialUnresolved(ty.toArray()) shouldBe false
+                    TypeOps.isSpecialUnresolved(ty.toArray(3)) shouldBe false
+                }
+            }
+
+            test("isSpecialUnresolvedOrArray") {
+                val unresolved = ts.declaration(ts.createUnresolvedAsmSymbol("Unknown"))
+                TypeOps.isSpecialUnresolvedOrArray(unresolved) shouldBe false
+                TypeOps.isSpecialUnresolvedOrArray(unresolved.toArray()) shouldBe false
+                TypeOps.isSpecialUnresolvedOrArray(unresolved.toArray(3)) shouldBe false
+
+                for (ty in listOf(ts.UNKNOWN, ts.ERROR)) {
+                    TypeOps.isSpecialUnresolvedOrArray(ty) shouldBe true
+                    TypeOps.isSpecialUnresolvedOrArray(ty.toArray()) shouldBe true
+                    TypeOps.isSpecialUnresolvedOrArray(ty.toArray(3)) shouldBe true
+                }
+            }
+
+            test("hasUnresolvedSymbol") {
+                val unresolved = ts.declaration(ts.createUnresolvedAsmSymbol("Unknown"))
+                TypeOps.hasUnresolvedSymbol(unresolved) shouldBe true
+                TypeOps.hasUnresolvedSymbol(unresolved.toArray()) shouldBe false
+                TypeOps.hasUnresolvedSymbol(unresolved.toArray(3)) shouldBe false
+
+                for (ty in listOf(ts.UNKNOWN, ts.ERROR)) {
+                    TypeOps.hasUnresolvedSymbol(ty) shouldBe false
+                    TypeOps.hasUnresolvedSymbol(ty.toArray()) shouldBe false
+                    TypeOps.hasUnresolvedSymbol(ty.toArray(3)) shouldBe false
+                }
+            }
+
+
+            test("hasUnresolvedSymbolOrArray") {
+                val unresolved = ts.declaration(ts.createUnresolvedAsmSymbol("Unknown"))
+                TypeOps.hasUnresolvedSymbolOrArray(unresolved) shouldBe true
+                TypeOps.hasUnresolvedSymbolOrArray(unresolved.toArray()) shouldBe true
+                TypeOps.hasUnresolvedSymbolOrArray(unresolved.toArray(3)) shouldBe true
+
+                for (ty in listOf(ts.UNKNOWN, ts.ERROR)) {
+                    TypeOps.hasUnresolvedSymbolOrArray(ty) shouldBe false
+                    TypeOps.hasUnresolvedSymbolOrArray(ty.toArray()) shouldBe false
+                    TypeOps.hasUnresolvedSymbolOrArray(ty.toArray(3)) shouldBe false
+                }
+            }
+
+
+            test("isUnresolved") {
+                val unresolved = ts.declaration(ts.createUnresolvedAsmSymbol("Unknown"))
+                TypeOps.isUnresolved(unresolved) shouldBe true
+                TypeOps.isUnresolved(unresolved.toArray()) shouldBe false
+                TypeOps.isUnresolved(unresolved.toArray(3)) shouldBe false
+
+                for (ty in listOf(ts.UNKNOWN, ts.ERROR)) {
+                    TypeOps.isUnresolved(ty) shouldBe true
+                    TypeOps.isUnresolved(ty.toArray()) shouldBe false
+                    TypeOps.isUnresolved(ty.toArray(3)) shouldBe false
+                }
+            }
+
+            test("isUnresolvedOrArray") {
+                val unresolved = ts.declaration(ts.createUnresolvedAsmSymbol("Unknown"))
+                TypeOps.isUnresolvedOrArray(unresolved) shouldBe true
+                TypeOps.isUnresolvedOrArray(unresolved.toArray()) shouldBe true
+                TypeOps.isUnresolvedOrArray(unresolved.toArray(3)) shouldBe true
+
+                for (ty in listOf(ts.UNKNOWN, ts.ERROR)) {
+                    TypeOps.isUnresolvedOrArray(ty) shouldBe true
+                    TypeOps.isUnresolvedOrArray(ty.toArray()) shouldBe true
+                    TypeOps.isUnresolvedOrArray(ty.toArray(3)) shouldBe true
                 }
             }
         }
