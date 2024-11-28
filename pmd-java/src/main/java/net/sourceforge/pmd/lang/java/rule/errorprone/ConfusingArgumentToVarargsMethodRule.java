@@ -47,7 +47,7 @@ public class ConfusingArgumentToVarargsMethodRule extends AbstractJavaRulechainR
         assert varargsArg != null;
         if (varargsArg.getTypeMirror().isSubtypeOf(expectedComponent)
             && !varargsArg.getTypeMirror().equals(lastFormal)
-            && !TypeOps.isSpecialUnresolved(varargsArg.getTypeMirror())) {
+            && !TypeOps.isSpecialUnresolvedOrArray(varargsArg.getTypeMirror())) {
             // confusing
 
             String message;

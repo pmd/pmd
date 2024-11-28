@@ -2110,6 +2110,16 @@ public final class TypeOps {
         return t == null || isUnresolved(t);
     }
 
+    /**
+     * Return true if the type is null, (*unknown*), (*error*), or an array
+     * of unknown or error type.
+     */
+    public static boolean isSpecialUnresolvedOrArray(@Nullable JTypeMirror t) {
+        return t == null
+            || isSpecialUnresolved(t)
+            || t instanceof JArrayType && isSpecialUnresolved(((JArrayType) t).getElementType());
+    }
+
 
     public static @Nullable JTypeMirror getArrayComponent(@Nullable JTypeMirror t) {
         return t instanceof JArrayType ? ((JArrayType) t).getComponentType() : null;
