@@ -33,6 +33,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### ✨ External Contributions
 * [#5284](https://github.com/pmd/pmd/pull/5284): \[apex] Use case-insensitive input stream to avoid choking on Unicode escape sequences - [Willem A. Hajenius](https://github.com/wahajenius) (@wahajenius)
+* [#5337](https://github.com/pmd/pmd/pull/5337): \[doc] Introducing PMD Guru on Gurubase.io - [Kursat Aktas](https://github.com/kursataktas) (@kursataktas)
 
 {% endtocmaker %}
 
