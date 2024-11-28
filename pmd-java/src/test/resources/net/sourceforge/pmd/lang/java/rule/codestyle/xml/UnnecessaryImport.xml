@@ -1323,7 +1323,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>imports used in markdown javadoc comment (since java 23, JEP 467)</description>
+        <description>#5315 [java] UnnecessaryImport false positive for on-demand imports</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             package org.example;
