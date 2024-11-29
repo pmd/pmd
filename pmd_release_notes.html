@@ -85,8 +85,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.8.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 29-November-2024</div>
+    <li class="sidebarTitle">PMD 7.9.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 27-December-2024</div>
     
     
     
@@ -1901,197 +1901,23 @@
         <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
     </details>
 
-  <h2 id="29-november-2024---780-snapshot">29-November-2024 - 7.8.0-SNAPSHOT</h2>
+  <h2 id="27-december-2024---790-snapshot">27-December-2024 - 7.9.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 7.8.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 7.9.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
-<h3 id="-new-and-changed-rules">🌟 New and changed rules</h3>
-
-<h4 id="new-rules">New Rules</h4>
-<ul>
-  <li>The new Apex rule <a href="pmd_rules_apex_bestpractices.html#queueablewithoutfinalizer"><code class="language-plaintext highlighter-rouge">QueueableWithoutFinalizer</code></a> detects when the Queueable interface
-is used but a Finalizer is not attached. Without attaching a Finalizer, there is no way of designing error
-recovery actions should the Queueable action fail.</li>
-</ul>
-
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
-<ul>
-  <li>ant
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1860">#1860</a>: [ant] Reflective access warnings on java &gt; 9 and java &lt; 17</li>
-    </ul>
-  </li>
-  <li>apex
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5302">#5302</a>: [apex] New Rule: Queueable Should Attach Finalizer</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5333">#5333</a>: [apex] Token recognition errors for string containing unicode escape sequence</li>
-    </ul>
-  </li>
-  <li>html
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5322">#5322</a>: [html] CPD throws exception on when HTML file is missing closing tag</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5283">#5283</a>: [java] AssertionError “this should be unreachable” with scala library</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5293">#5293</a>: [java] Deadlock when executing PMD in multiple threads</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5324">#5324</a>: [java] Issue with type inference of nested lambdas</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5329">#5329</a>: [java] Type inference issue with unknown method ref in call chain</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5338">#5338</a>: [java] Unresolved target type for lambdas make overload resolution fail</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4113">#4113</a>: [java] JUnitTestsShouldIncludeAssert - false positive with SoftAssertionsExtension</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5083">#5083</a>: [java] UnusedPrivateMethod false positive when method reference has no target type</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5097">#5097</a>: [java] UnusedPrivateMethod FP with raw type missing from the classpath</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5318">#5318</a>: [java] PreserveStackTraceRule: false-positive on Pattern Matching with instanceof</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5214">#5214</a>: [java] Wrong message for LambdaCanBeMethodReference with method of enclosing class</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5263">#5263</a>: [java] UnnecessaryFullyQualifiedName: false-positive in an enum that uses its own static variables</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5315">#5315</a>: [java] UnnecessaryImport false positive for on-demand imports</li>
-    </ul>
-  </li>
-  <li>java-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4763">#4763</a>: [java] SimplifyBooleanReturns - wrong suggested solution</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5070">#5070</a>: [java] ConfusingArgumentToVarargsMethod FP when types are unresolved</li>
-    </ul>
-  </li>
-  <li>java-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5287">#5287</a>: [java] TooFewBranchesForSwitch false-positive with switch using list of case constants</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5314">#5314</a>: [java] InsufficientStringBufferDeclarationRule: Lack of handling for char type parameters</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5320">#5320</a>: [java] UseStringBufferLength: false-negative on StringBuffer of sb.toString().equals(“”)</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="-api-changes">🚨 API Changes</h3>
 
-<h4 id="deprecations">Deprecations</h4>
-<ul>
-  <li>pmd-coco
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-coco/7.8.0-SNAPSHOT/net/sourceforge/pmd/lang/coco/ast/CocoBaseListener.html#"><code>CocoBaseListener</code></a> is deprecated for removal. This class was never intended
- to be generated. It will be removed with no replacement.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-coco/7.8.0-SNAPSHOT/net/sourceforge/pmd/lang/coco/ast/CocoBaseVisitor.html#"><code>CocoBaseVisitor</code></a> is deprecated for removal. This class was never intended
-to be generated. It will be removed with no replacement.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-coco/7.8.0-SNAPSHOT/net/sourceforge/pmd/lang/coco/ast/CocoListener.html#"><code>CocoListener</code></a> is deprecated for removal. This class was never intended
-to be generated. It will be removed with no replacement.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-coco/7.8.0-SNAPSHOT/net/sourceforge/pmd/lang/coco/ast/CocoParser.html#"><code>CocoParser</code></a> is deprecated for removal. This class was never intended
-to be generated. It will be removed with no replacement.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-coco/7.8.0-SNAPSHOT/net/sourceforge/pmd/lang/coco/ast/CocoVisitor.html#"><code>CocoVisitor</code></a> is deprecated for removal. This class was never intended
-to be generated. It will be removed with no replacement.</li>
-    </ul>
-  </li>
-  <li>pmd-gherkin
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-gherkin/7.8.0-SNAPSHOT/net/sourceforge/pmd/lang/gherkin/ast/GherkinBaseListener.html#"><code>GherkinBaseListener</code></a> is deprecated for removal. This class was never intended
-to be generated. It will be removed with no replacement.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-gherkin/7.8.0-SNAPSHOT/net/sourceforge/pmd/lang/gherkin/ast/GherkinBaseVisitor.html#"><code>GherkinBaseVisitor</code></a> is deprecated for removal. This class was never intended
-to be generated. It will be removed with no replacement.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-gherkin/7.8.0-SNAPSHOT/net/sourceforge/pmd/lang/gherkin/ast/GherkinListener.html#"><code>GherkinListener</code></a> is deprecated for removal. This class was never intended
-to be generated. It will be removed with no replacement.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-gherkin/7.8.0-SNAPSHOT/net/sourceforge/pmd/lang/gherkin/ast/GherkinParser.html#"><code>GherkinParser</code></a> is deprecated for removal. This class was never intended
-to be generated. It will be removed with no replacement.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-gherkin/7.8.0-SNAPSHOT/net/sourceforge/pmd/lang/gherkin/ast/GherkinVisitor.html#"><code>GherkinVisitor</code></a> is deprecated for removal. This class was never intended
-to be generated. It will be removed with no replacement.</li>
-    </ul>
-  </li>
-  <li>pmd-julia
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-julia/7.8.0-SNAPSHOT/net/sourceforge/pmd/lang/julia/ast/JuliaBaseListener.html#"><code>JuliaBaseListener</code></a> is deprecated for removal. This class was never intended to
-be generated. It will be removed with no replacement.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-julia/7.8.0-SNAPSHOT/net/sourceforge/pmd/lang/julia/ast/JuliaBaseVisitor.html#"><code>JuliaBaseVisitor</code></a> is deprecated for removal. This class was never intended to
-be generated. It will be removed with no replacement.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-julia/7.8.0-SNAPSHOT/net/sourceforge/pmd/lang/julia/ast/JuliaListener.html#"><code>JuliaListener</code></a> is deprecated for removal. This class was never intended to
-be generated. It will be removed with no replacement.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-julia/7.8.0-SNAPSHOT/net/sourceforge/pmd/lang/julia/ast/JuliaParser.html#"><code>JuliaParser</code></a> is deprecated for removal. This class was never intended to
-be generated. It will be removed with no replacement.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-julia/7.8.0-SNAPSHOT/net/sourceforge/pmd/lang/julia/ast/JuliaVisitor.html#"><code>JuliaVisitor</code></a> is deprecated for removal. This class was never intended to
-be generated. It will be removed with no replacement.</li>
-    </ul>
-  </li>
-  <li>pmd-kotlin
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.8.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/UnicodeClasses.html#"><code>UnicodeClasses</code></a> is deprecated for removal. This class was never intended to
-be generated. It will be removed with no replacement.</li>
-    </ul>
-  </li>
-  <li>pmd-xml
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.8.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/antlr4/XMLLexer.html#"><code>XMLLexer</code></a> is deprecated for removal. Use <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.8.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/ast/XMLLexer.html#"><code>net.sourceforge.pmd.lang.xml.ast.XMLLexer</code></a>
-instead (note different package <code class="language-plaintext highlighter-rouge">ast</code> instead of <code class="language-plaintext highlighter-rouge">antlr4</code>).</li>
-    </ul>
-  </li>
-</ul>
-
 <h3 id="-merged-pull-requests">✨ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/5284">#5284</a>: [apex] Use case-insensitive input stream to avoid choking on Unicode escape sequences - <a href="https://github.com/wahajenius">Willem A. Hajenius</a> (@wahajenius)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5286">#5286</a>: [ant] Formatter: avoid reflective access to determine console encoding - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5289">#5289</a>: [java] TooFewBranchesForSwitch - allow list of case constants - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5296">#5296</a>: [xml] Have pmd-xml Lexer in line with other antlr grammars - <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5300">#5300</a>: Add rule test cases for issues fixed with PMD 7.0.0 - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5303">#5303</a>: [apex] New Rule: Queueable Should Attach Finalizer - <a href="https://github.com/mitchspano">Mitch Spano</a> (@mitchspano)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5309">#5309</a>: [java] Fix #5293: Parse number of type parameters eagerly - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5310">#5310</a>: [java] Fix #5283 - inner class has public private modifiers - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5325">#5325</a>: [java] Fix inference dependency issue with nested lambdas - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5326">#5326</a>: [java] UseStringBufferLength - consider sb.toString().equals(“”) - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5328">#5328</a>: [html] Test for a closing tag when determining node positions - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5330">#5330</a>: [java] Propagate unknown type better when mref is unresolved - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5331">#5331</a>: [java] PreserveStackTrace - consider instance type patterns - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5332">#5332</a>: [java] InsufficientStringBufferDeclaration: Fix CCE for Character - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5334">#5334</a>: [java] UnitTestShouldIncludeAssert - consider SoftAssertionsExtension - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5335">#5335</a>: [kotlin] Prevent auxiliary grammars from generating lexers - <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5336">#5336</a>: [gherkin] Remove generated gherkin code from coverage report - <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5337">#5337</a>: [doc] Introducing PMD Guru on Gurubase.io - <a href="https://github.com/kursataktas">Kursat Aktas</a> (@kursataktas)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5339">#5339</a>: [java] Allow lambdas with unresolved target types to succeed inference - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5340">#5340</a>: [java] Fix #5097 - problem with unchecked conversion - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5341">#5341</a>: [java] Fix #5083 - UnusedPrivateMethod false positive with mref without target type but with exact method - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5342">#5342</a>: [julia] Ignore generated code in Julia module - <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5345">#5345</a>: [coco] Remove generated coco files form coverage - <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5346">#5346</a>: [typescript] Add cleanup after generating ts lexer - <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5347">#5347</a>: [tsql] Flag generated lexer as generated - <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5352">#5352</a>: [java] Add permitted subtypes to symbol API - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5353">#5353</a>: [java] Fix #5263 - UnnecessaryFullyQualifiedName FP with forward references - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5354">#5354</a>: [apex] Updated the docs for UnusedMethod as per discussion #5200 - <a href="https://github.com/sam-gearset">samc-gearset</a> (@sam-gearset)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5370">#5370</a>: [java] Fix #5214 - LambdaCanBeMethodReference issue with method of enclosing class - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5371">#5371</a>: [doc] Improve docs on adding Antlr languages - <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5372">#5372</a>: [java] Fix #5315 - UnusedImport FP with import on demand - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5373">#5373</a>: [java] Fix #4763 - wrong message for SimplifyBooleanReturns - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5374">#5374</a>: [java] Fix #5070 - confusing argument to varargs method FP when types are unknown - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
-</ul>
 
 <h3 id="-dependency-updates">📦 Dependency updates</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/5285">#5285</a>: Bump pmd from 7.5.0 to 7.7.0</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5288">#5288</a>: Bump asm from 9.7 to 9.7.1</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5290">#5290</a>: Bump org.apache.maven.plugins:maven-assembly-plugin from 3.6.0 to 3.7.1</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5301">#5301</a>: Bump gems and bundler</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5307">#5307</a>: Bump org.apache.maven.plugins:maven-clean-plugin from 3.3.2 to 3.4.0</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5308">#5308</a>: Bump webrick from 1.8.2 to 1.9.0 in /docs in the all-gems group across 1 directory</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5312">#5312</a>: Bump maven-pmd-plugin from 3.24.0 to 3.26.0</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5316">#5316</a>: Bump rouge from 4.4.0 to 4.5.0 in the all-gems group across 1 directory</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5317">#5317</a>: Bump org.apache.commons:commons-compress from 1.26.0 to 1.27.1</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5348">#5348</a>: Bump rouge from 4.5.0 to 4.5.1 in the all-gems group across 1 directory</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5350">#5350</a>: Bump org.apache.commons:commons-lang3 from 3.14.0 to 3.17.0</li>
-</ul>
 
 <h3 id="-stats">📈 Stats</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
