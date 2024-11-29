@@ -98,6 +98,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#5240](https://github.com/pmd/pmd/pull/5240): Release notes improvements - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5284](https://github.com/pmd/pmd/pull/5284): \[apex] Use case-insensitive input stream to avoid choking on Unicode escape sequences - [Willem A. Hajenius](https://github.com/wahajenius) (@wahajenius)
 * [#5286](https://github.com/pmd/pmd/pull/5286): \[ant] Formatter: avoid reflective access to determine console encoding - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5289](https://github.com/pmd/pmd/pull/5289): \[java] TooFewBranchesForSwitch - allow list of case constants - [Andreas Dangel](https://github.com/adangel) (@adangel)
@@ -145,9 +146,24 @@ This is a {{ site.pmd.release_type }} release.
 * [#5317](https://github.com/pmd/pmd/pull/5317): Bump org.apache.commons:commons-compress from 1.26.0 to 1.27.1
 * [#5348](https://github.com/pmd/pmd/pull/5348): Bump rouge from 4.5.0 to 4.5.1 in the all-gems group across 1 directory
 * [#5350](https://github.com/pmd/pmd/pull/5350): Bump org.apache.commons:commons-lang3 from 3.14.0 to 3.17.0
+* [#5356](https://github.com/pmd/pmd/pull/5356): Bump build-tools to 28
+* [#5357](https://github.com/pmd/pmd/pull/5357): Bump log4j.version from 2.23.0 to 2.24.2
+* [#5358](https://github.com/pmd/pmd/pull/5358): Bump org.apache.maven.plugins:maven-dependency-plugin from 3.7.1 to 3.8.1
+* [#5359](https://github.com/pmd/pmd/pull/5359): Bump org.apache.maven.plugins:maven-release-plugin from 3.0.1 to 3.1.1
+* [#5360](https://github.com/pmd/pmd/pull/5360): Bump io.github.apex-dev-tools:apex-ls_2.13 from 5.2.0 to 5.5.0
+* [#5361](https://github.com/pmd/pmd/pull/5361): Bump ant.version from 1.10.14 to 1.10.15
+* [#5362](https://github.com/pmd/pmd/pull/5362): Bump org.jetbrains:annotations from 24.1.0 to 26.0.1
+* [#5363](https://github.com/pmd/pmd/pull/5363): Bump com.puppycrawl.tools:checkstyle from 10.18.1 to 10.20.1
+* [#5364](https://github.com/pmd/pmd/pull/5364): Bump info.picocli:picocli from 4.7.5 to 4.7.6
+* [#5365](https://github.com/pmd/pmd/pull/5365): Bump com.github.hazendaz.maven:coveralls-maven-plugin from 4.5.0-M3 to 4.5.0-M5
+* [#5366](https://github.com/pmd/pmd/pull/5366): Bump org.mockito:mockito-core from 4.11.0 to 5.14.2
+* [#5367](https://github.com/pmd/pmd/pull/5367): Bump surefire.version from 3.2.5 to 3.5.2
+* [#5368](https://github.com/pmd/pmd/pull/5368): Bump org.junit.platform:junit-platform-suite from 1.11.2 to 1.11.3
 
 ### 📈 Stats
 <!-- content will be automatically generated, see /do-release.sh -->
+* 216 commits
+* 55 closed tickets & PRs
+* Days since last release: 35
 
 {% endtocmaker %}
-
