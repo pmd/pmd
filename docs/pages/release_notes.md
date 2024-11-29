@@ -44,6 +44,8 @@ This is a {{ site.pmd.release_type }} release.
   * [#5214](https://github.com/pmd/pmd/issues/5214): \[java] Wrong message for LambdaCanBeMethodReference with method of enclosing class
   * [#5263](https://github.com/pmd/pmd/issues/5263): \[java] UnnecessaryFullyQualifiedName: false-positive in an enum that uses its own static variables
   * [#5315](https://github.com/pmd/pmd/issues/5315): \[java] UnnecessaryImport false positive for on-demand imports
+* java-errorprone
+  * [#5070](https://github.com/pmd/pmd/issues/5070): \[java] ConfusingArgumentToVarargsMethod FP when types are unresolved
 * java-performance
   * [#5287](https://github.com/pmd/pmd/issues/5287): \[java] TooFewBranchesForSwitch false-positive with switch using list of case constants
   * [#5314](https://github.com/pmd/pmd/issues/5314): \[java] InsufficientStringBufferDeclarationRule: Lack of handling for char type parameters
@@ -124,6 +126,7 @@ This is a {{ site.pmd.release_type }} release.
 * [#5370](https://github.com/pmd/pmd/pull/5370): \[java] Fix #5214 - LambdaCanBeMethodReference issue with method of enclosing class - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#5371](https://github.com/pmd/pmd/pull/5371): \[doc] Improve docs on adding Antlr languages - [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
 * [#5372](https://github.com/pmd/pmd/pull/5372): \[java] Fix #5315 - UnusedImport FP with import on demand - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5374](https://github.com/pmd/pmd/pull/5374): \[java] Fix #5070 - confusing argument to varargs method FP when types are unknown - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->

@@ -108,7 +108,7 @@
 
 
     <test-code>
-        <description>Types of args are unresolved</description>
+        <description>#5070 Types of args are unresolved</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
@@ -128,7 +128,7 @@
 
 
     <test-code>
-        <description>Types of args is array of unknown</description>
+        <description>#5070 Types of args is array of unknown</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             public class Foo {
