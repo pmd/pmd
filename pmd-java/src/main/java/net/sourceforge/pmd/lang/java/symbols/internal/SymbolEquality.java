@@ -9,6 +9,7 @@ import java.util.Objects;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
@@ -17,6 +18,7 @@ import net.sourceforge.pmd.lang.java.symbols.JRecordComponentSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolVisitor;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import net.sourceforge.pmd.lang.java.types.Substitution;
 
 /**
  * Routines to share logic for equality, respecting the contract of
@@ -71,13 +73,18 @@ public final class SymbolEquality {
             }
             JMethodSymbol m2 = (JMethodSymbol) o;
 
-            // FIXME arity check is not enough for overloads
-            return m1.getModifiers() == m2.getModifiers()
-                && m1.getArity() == m2.getArity()
-                && Objects.equals(m1.getSimpleName(), m2.getSimpleName())
-                && m1.getEnclosingClass().equals(m2.getEnclosingClass());
+            return executableSymsAreEqual(m1, m2);
         }
     };
+
+    private static boolean executableSymsAreEqual(JExecutableSymbol m1, JExecutableSymbol m2) {
+        return m1.getModifiers() == m2.getModifiers()
+            && m1.getArity() == m2.getArity()
+            && Objects.equals(m1.getSimpleName(), m2.getSimpleName())
+            && m1.getEnclosingClass().equals(m2.getEnclosingClass())
+            && m1.getFormalParameterTypes(Substitution.erasing(m1.getTypeParameters()))
+                 .equals(m2.getFormalParameterTypes(Substitution.erasing(m2.getTypeParameters())));
+    }
 
     public static final EqAndHash<JConstructorSymbol> CONSTRUCTOR = new EqAndHash<JConstructorSymbol>() {
         @Override
@@ -95,11 +102,7 @@ public final class SymbolEquality {
             }
             JConstructorSymbol m2 = (JConstructorSymbol) o;
 
-            // FIXME arity check is not enough for overloads
-            return m1.getModifiers() == m2.getModifiers()
-                && m1.getArity() == m2.getArity()
-                && Objects.equals(m1.getSimpleName(), m2.getSimpleName())
-                && m1.getEnclosingClass().equals(m2.getEnclosingClass());
+            return executableSymsAreEqual(m1, m2);
         }
     };
 
