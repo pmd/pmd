@@ -398,7 +398,7 @@ public final class TypeOps {
 
 
     public static Convertibility isConvertible(@NonNull JTypeMirror t, @NonNull JTypeMirror s) {
-        return SubtypeVisitor.INFERENCE.isConvertible(t, s);
+        return SubtypeVisitor.INFERENCE.isConvertible(t, s, true);
     }
 
     @Deprecated // unused
@@ -595,7 +595,7 @@ public final class TypeOps {
 
 
         Convertibility isConvertible(@NonNull JTypeMirror t, @NonNull JTypeMirror s) {
-            return isConvertible(t, s, true);
+            return isConvertible(t, s, false);
         }
 
         /**
@@ -1798,7 +1798,7 @@ public final class TypeOps {
         for (JTypeMirror v : set) {
             for (JTypeMirror w : set) {
                 if (!w.equals(v) && !hasUnresolvedSymbolOrArray(w)) {
-                    Convertibility isConvertible = isConvertiblePure(w, v);
+                    Convertibility isConvertible = isConvertibleNoCapture(w, v);
                     if (isConvertible.bySubtyping()
                         // This last case covers unchecked conversion. It is made antisymmetric by the
                         // test for a symbol. eg |G| <~> G<?> so it would fail.

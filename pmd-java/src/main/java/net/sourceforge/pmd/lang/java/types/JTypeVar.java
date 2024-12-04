@@ -14,6 +14,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.PSet;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
@@ -112,17 +113,26 @@ public interface JTypeVar extends SubstVar {
 
     /**
      * @throws UnsupportedOperationException If this is not a capture var
+     *
+     * <p>Note that this is only supposed to be used internally.
      */
+    @InternalApi
     JTypeVar cloneWithBounds(JTypeMirror lower, JTypeMirror upper);
 
     /**
      * Return a new type variable with the same underlying symbol or
      * capture variable, but the upper bound is now the given type.
      *
+     * <p>Note that this is only supposed to be used internally. For
+     * now it only serves to apply type annotations to the upper bound
+     * when parsing class files. Some implementations may therefore throw
+     * {@link UnsupportedOperationException}.
+     *
      * @param newUB New upper bound
      *
      * @return a new tvar
      */
+    @InternalApi
     JTypeVar withUpperBound(@NonNull JTypeMirror newUB);
 
     @Override // refine return type
