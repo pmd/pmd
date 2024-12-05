@@ -14,7 +14,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.PSet;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
@@ -116,7 +115,6 @@ public interface JTypeVar extends SubstVar {
      *
      * <p>Note that this is only supposed to be used internally.
      */
-    @InternalApi
     JTypeVar cloneWithBounds(JTypeMirror lower, JTypeMirror upper);
 
     /**
@@ -132,7 +130,6 @@ public interface JTypeVar extends SubstVar {
      *
      * @return a new tvar
      */
-    @InternalApi
     JTypeVar withUpperBound(@NonNull JTypeMirror newUB);
 
     @Override // refine return type
