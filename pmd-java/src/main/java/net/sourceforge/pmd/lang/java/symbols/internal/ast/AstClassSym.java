@@ -14,6 +14,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
@@ -22,11 +23,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTPermitsList;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponentList;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
+import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
@@ -57,6 +60,8 @@ final class AstClassSym
     private final List<JFieldSymbol> enumConstants; // subset of declaredFields
     private final List<JRecordComponentSymbol> recordComponents;
     private final PSet<String> annotAttributes;
+
+    private List<JClassSymbol> permittedSubclasses;
 
     AstClassSym(ASTTypeDeclaration node,
                 AstSymFactory factory,
@@ -98,7 +103,6 @@ final class AstClassSym
         } else {
             enumConstants = null;
         }
-
 
         for (ASTBodyDeclaration dnode : node.getDeclarations()) {
 
@@ -148,6 +152,7 @@ final class AstClassSym
                                ? getDeclaredMethods().stream().filter(JMethodSymbol::isAnnotationAttribute).map(JElementSymbol::getSimpleName).collect(CollectionUtil.toPersistentSet())
                                : HashTreePSet.empty();
     }
+
 
     private List<JRecordComponentSymbol> mapComponentsToMutableList(AstSymFactory factory,
                                                           ASTRecordComponentList components,
@@ -227,6 +232,73 @@ final class AstClassSym
         return recordComponents;
     }
 
+
+    @Override
+    public List<JClassSymbol> getPermittedSubtypes() {
+        // permitted subclasses are populated lazily because they require
+        // symbol and type resolution to determine which types are sealed.
+        if (permittedSubclasses == null) {
+            ASTPermitsList permits = node.getPermitsClause();
+            if (permits != null) {
+                this.permittedSubclasses = permits.toList().stream().map(it -> {
+                    JTypeDeclSymbol symbol = it.getTypeMirror().getSymbol();
+                    if (symbol instanceof JClassSymbol) {
+                        return (JClassSymbol) symbol;
+                    } else {
+                        return null;
+                    }
+                }).filter(Objects::nonNull).collect(CollectionUtil.toUnmodifiableList());
+            } else if (isSealed()) {
+                // sealed with no permits clause: infer permitted
+                this.permittedSubclasses = inferPermittedSubclasses();
+            } else {
+                this.permittedSubclasses = Collections.emptyList();
+            }
+        }
+        return permittedSubclasses;
+    }
+
+    private List<JClassSymbol> inferPermittedSubclasses() {
+        /*
+         *  If the declaration of a sealed class C lacks a permits clause,
+         * then the permitted direct subclasses of C are as follows:
+         *
+         *  1. If C is not an enum class, then its permitted direct subclasses
+         *     are those classes declared in the same compilation unit as C (§7.3)
+         *     which have a canonical name (§6.7) and whose direct superclass is C.
+         *
+         *     That is, the permitted direct subclasses are inferred as the classes
+         *     in the same compilation unit that specify C as their direct superclass.
+         *     The requirement for a canonical name means that no local classes or
+         *     anonymous classes will be considered.
+         *
+         *     It is a compile-time error if the declaration of a sealed class C lacks
+         *     a permits clause and C has no permitted direct subclasses.
+         *
+         *  2. If C is an enum class, then its permitted direct subclasses, if any,
+         *     are specified in §8.9.
+         */
+        if (!isEnum()) {
+            boolean isInterface = isInterface();
+            List<JClassSymbol> list = node
+                .getRoot().descendants(ASTTypeDeclaration.class).crossFindBoundaries()
+                .filter(it -> it.getCanonicalName() != null)
+                .filter(it -> {
+                    if (isInterface) {
+                        return it.getSuperInterfaceTypeNodes().any(ty -> Objects.equals(ty.getTypeMirror().getSymbol(), this));
+                    }
+                    return NodeStream.of(it.getSuperClassTypeNode()).any(ty -> Objects.equals(ty.getTypeMirror().getSymbol(), this));
+                }).toList(ASTTypeDeclaration::getSymbol);
+            return Collections.unmodifiableList(list);
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean isSealed() {
+        return node.hasModifiers(JModifier.SEALED);
+    }
+
     @Override
     public @Nullable JClassType getSuperclassType(Substitution substitution) {
         TypeSystem ts = getTypeSystem();
@@ -237,7 +309,7 @@ final class AstClassSym
 
         } else if (node instanceof ASTClassDeclaration) {
 
-            ASTClassType superClass = ((ASTClassDeclaration) node).getSuperClassTypeNode();
+            ASTClassType superClass = node.getSuperClassTypeNode();
             return superClass == null
                    ? ts.OBJECT
                    // this cast relies on the fact that the superclass is not a type variable

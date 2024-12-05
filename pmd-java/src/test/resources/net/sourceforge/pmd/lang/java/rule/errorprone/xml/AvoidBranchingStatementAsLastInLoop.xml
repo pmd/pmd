@@ -378,4 +378,38 @@ class A {
 }
 ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>[java] A false positive negative by AvoidBranchingStatementAsLastInLoop when in a nested switch #3438</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class AvoidBranchingStatement{
+    public void test1(){
+        //this source code is from apache/netbeans/java/.../data/BreakOrContinue.java
+        A: while (1 == 1)
+              B: for (int c = 0; c < 100; c++)
+                  switch (c) {
+                      case 0: break;
+                      case 1: break B;
+                      case 2: break A;
+                      case 3: continue;
+                      case 4: continue A;
+                      case 5: continue B;
+                  }
+    }
+
+    public void test2(){
+          for (int c = 0; c < 100; c++)
+              switch (c) {
+                  case 0: break;
+                  case 1: break;
+                  case 2: break;
+                  case 3: continue;
+                  case 4: continue;
+                  case 5: continue;
+              }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

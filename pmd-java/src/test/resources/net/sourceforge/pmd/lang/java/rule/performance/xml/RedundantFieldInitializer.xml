@@ -1493,4 +1493,26 @@ public class Test {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>[java] RedundantFieldInitializer FN with constant expressions #3684</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,3</expected-linenumbers>
+        <code><![CDATA[
+class Impl {
+    int a = 1 + 0 - 1; // should report a warning
+    int b = 0 + 1 - 1; // can be detected
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] RedundantFieldInitializer FP with expressions that start with zero #3743</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Impl {
+    int b = 0 + 1; // FP
+}
+]]></code>
+    </test-code>
 </test-data>

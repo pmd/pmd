@@ -31,6 +31,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.LexicalScope;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
+import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
@@ -51,8 +52,18 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
         this.lock = new ParseLock(parseLockName) {
             @Override
             protected boolean doParse() {
-                GenericSigBase.this.doParse();
-                return true;
+                try {
+                    GenericSigBase.this.doParse();
+                    return true;
+                } catch (RuntimeException e) {
+                    throw AssertionUtil.contexted(e)
+                                       .addContextValue("signature", GenericSigBase.this)
+                                       // Here we don't use the toString of the ctx directly because
+                                       // it could be using the signature indirectly, which would fail
+                                       .addContextValue("owner class", ctx.getEnclosingClass())
+                                       .addContextValue("owner name", ctx.getSimpleName())
+                                       .addContextValue("owner package", ctx.getPackageName());
+                }
             }
 
             @Override

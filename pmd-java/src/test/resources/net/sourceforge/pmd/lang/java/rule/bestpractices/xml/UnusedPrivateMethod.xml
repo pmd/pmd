@@ -2134,6 +2134,151 @@ public class ObtainViaTest {
 }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UnusedPrivateMethod false positive when .class files missing from classpath #819</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package com.bumptech.glide.load.engine;
+
+import com.bumptech.glide.load.Key; // key can't be resolved
+
+class Engine {
+
+  void load(EngineKey key) {
+    logWithTimeAndKey("", key);
+    loadFromActiveResources(key, true);
+  }
+
+  private static void logWithTimeAndKey(String log, Key key) { // false positive: not unused
+  }
+
+  private void loadFromActiveResources(Key key, boolean isMemoryCacheable) { // false positive: not unused
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3633 [java] Make UnusedPrivateMethod consider enum classes</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+class Impl {
+  enum EnumClass {
+      FOO;
+      EnumClass() {}
+      private void func(){};  // should report a warning here
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3633 [java] Make UnusedPrivateMethod consider enum classes (top-level)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+enum EnumClass {
+  FOO;
+  EnumClass() {}
+  private void func(){};  // should report a warning here
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedPrivateMethod: false positive with inner class instance method passed as a function reference parameter #3292</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package com.example;
+
+import java.util.function.BiFunction;
+
+public class TestUnusedPrivateMethodWithFunctionReference {
+
+  private final String separator;
+
+  public TestUnusedPrivateMethodWithFunctionReference(String separator) {
+    this.separator = separator;
+  }
+
+  public static void main(String[] args) {
+    new TestUnusedPrivateMethodWithFunctionReference("|").test();
+  }
+
+  private void test() {
+    System.out.println(makeValue(Holder::combine));
+  }
+
+  private String makeValue(BiFunction<Holder, Holder, Holder> combiner) {
+    return combiner.apply(new Holder("t1"), new Holder("t2")).value;
+  }
+
+  private class Holder {
+
+    private final String value;
+
+    public Holder(String value) {
+      this.value = value;
+    }
+
+    private Holder combine(Holder other) { // false positive - not unused, used as Holder::combine
+      return new Holder(value + separator + other.value);
+    }
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedPrivateMethod false-positive when a private method defined in an inner private class is called. #4016</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class OuterClass {
+    private final class InnerClass {
+        private String readLine() { return ""; }
+    }
+
+    private InnerClass currentInner;
+
+    public String readLine() {
+        String line = currentInner.readLine();
+        return line;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3899 [java] UnusedPrivateMethod - false positive with JDK 17</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedprivatemethod.issue3899;
+
+public class PmdTestCase {
+    public void check() {
+        Child child = new Child();
+
+        checkChild(child);
+        checkParent(child);
+    }
+
+    // OK
+    private void checkChild(Child child) {
+    }
+
+    // This method results in "UnusedPrivateMethod: Avoid unused private methods such as 'checkParent(Parent)'"
+    private void checkParent(Parent parent) { // false positive
+    }
+}
+]]></code>
+    </test-code>
+
     <test-code>
         <description>#5324 UnusedPrivateMethod with method reference</description>
         <expected-problems>0</expected-problems>
@@ -2248,6 +2393,31 @@ public class ObtainViaTest {
             }
 
         }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#5338 UnusedPrivateMethod with unresolved target for lambda</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.concurrent.CompletableFuture;
+            class SomeTest {
+
+                @Test
+                void test() {
+                    final BytesListener listener = createListener(
+                            (bytes) -> CompletableFuture.completedFuture("HI!")
+                    );
+                    Assertions.assertNotNull(listener.onRecord(new byte[0]));
+                }
+
+                private static BytesListener createListener(
+                        BytesParser<String> parser
+                ) {
+                    return bytes -> parser
+                            .parse(bytes)
+                            .thenAccept(System.out::println);
+                }
+            }
             ]]></code>
     </test-code>
 

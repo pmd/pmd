@@ -320,4 +320,23 @@ public class StringTrimMethodArgument {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] InefficientEmptyStringCheck false negatives #4013</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,7</expected-linenumbers>
+        <code><![CDATA[
+public class MyClass {
+  public MyClass(String var) {
+    if( var.trim().length() > 0 ) { // false negative
+      config.set( var, true );
+      var = token;
+    }
+    if( var != null && var.trim().length() > 0 ) { // false negative
+      config.set( var, true );
+    }
+  }
+}
+]]></code>
+    </test-code>
 </test-data>

@@ -924,4 +924,58 @@ class Foo {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] ImmutableField should consider fields in anonymous classes #3956</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,4</expected-linenumbers>
+        <code><![CDATA[
+public class C {
+    private int g = 0;  // can report a warning in this line
+    public Object o = new Object() {
+        private int f = 0;  // should report a warning in this line
+    };
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ImmutableField should consider enum class #3957</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class D {
+    enum E {
+        R;
+        private int y = 42;  // should have a warning in this line
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4046 [java] Incorrect ImmutableField error on field with both declaration and constructor initializer</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class NotSoImmutableField {
+    /* Note: field "foo" can be made final, when using constructor chaining. For now, the rule won't report this,
+     * as it is not a simple change anymore (e.g. just adding the final keyword).
+     * In the future, either this rule or a new rule can report even such more complicated cases.
+     * See [[java] ImmutableField: false-negative for field with a default + constructor assignment #4869](https://github.com/pmd/pmd/issues/4869)
+     */
+    private int foo = 2;
+
+    NotSoImmutableField() {
+    }
+
+    NotSoImmutableField(final int foo) {
+        this.foo = foo;
+    }
+
+    public int getFoo() {
+        return foo;
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

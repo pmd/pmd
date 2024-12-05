@@ -128,4 +128,21 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>[java] SimplifyConditional can not detect the case if(foo != null &amp;&amp; (foo instanceof Bar)) #2541</description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+    public void bar(Object temp) {
+        if (temp != null && (temp instanceof List<?>)) {}
+        if (temp != null && temp instanceof List<?>) {}
+
+        if (temp != null && (temp instanceof List)) {}
+        if (temp != null && temp instanceof List) {}
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

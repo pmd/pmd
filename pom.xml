@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>7.8.0-SNAPSHOT</version>
+    <version>7.9.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
@@ -83,7 +83,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2024-10-25T06:47:53Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2024-11-29T09:58:44Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -98,11 +98,11 @@
         <dokka.version>1.9.20</dokka.version>
 
         <javacc.version>5.0</javacc.version>
-        <surefire.version>3.2.5</surefire.version>
-        <checkstyle.version>10.18.1</checkstyle.version>
+        <surefire.version>3.5.2</surefire.version>
+        <checkstyle.version>10.20.2</checkstyle.version>
         <checkstyle.plugin.version>3.5.0</checkstyle.plugin.version>
         <pmd.plugin.version>3.26.0</pmd.plugin.version>
-        <ant.version>1.10.14</ant.version>
+        <ant.version>1.10.15</ant.version>
         <javadoc.plugin.version>3.6.3</javadoc.plugin.version>
         <antlr.version>4.9.3</antlr.version>
         <slf4j.version>1.7.36</slf4j.version>
@@ -115,7 +115,7 @@
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding} ${extraArgLine}</argLine>
         <extraArgLine /> <!-- empty by default, profiles set it as needed -->
 
-        <pmd.build-tools.version>28-SNAPSHOT</pmd.build-tools.version>
+        <pmd.build-tools.version>28</pmd.build-tools.version>
 
         <pmd-designer.version>7.2.0</pmd-designer.version>
 
@@ -184,12 +184,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.7.1</version>
+                    <version>3.8.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>3.0.1</version>
+                    <version>3.1.1</version>
                     <configuration>
                         <releaseProfiles>pmd-release,sign</releaseProfiles>
                         <pushChanges>true</pushChanges>
@@ -333,7 +333,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-shade-plugin</artifactId>
-                    <version>3.5.2</version>
+                    <version>3.6.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -569,34 +569,28 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>7.7.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.8.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>7.7.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.8.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-jsp</artifactId>
-                            <version>7.7.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.8.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-javascript</artifactId>
-                            <version>7.7.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.8.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-build-tools-config</artifactId>
                             <version>${pmd.build-tools.version}</version>
-                        </dependency>
-                        <!-- Allow to build PMD with Java 24 -->
-                        <dependency>
-                            <groupId>org.ow2.asm</groupId>
-                            <artifactId>asm</artifactId>
-                            <version>9.7.1</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -818,7 +812,7 @@
             <dependency>
                 <groupId>info.picocli</groupId>
                 <artifactId>picocli</artifactId>
-                <version>4.7.5</version>
+                <version>4.7.6</version>
             </dependency>
             <dependency>
                 <groupId>me.tongfei</groupId>
@@ -869,7 +863,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.14.0</version>
+                <version>3.17.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -894,7 +888,7 @@
             <dependency>
                 <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy</artifactId>
-                <version>4.0.19</version>
+                <version>4.0.24</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
@@ -976,7 +970,7 @@
             <dependency>
                 <groupId>org.junit.platform</groupId>
                 <artifactId>junit-platform-suite</artifactId>
-                <version>1.11.2</version>
+                <version>1.11.3</version>
                 <scope>test</scope>
             </dependency>
 
@@ -990,7 +984,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>4.11.0</version>
+                <version>5.14.2</version>
                 <scope>test</scope>
             </dependency>
 
@@ -1001,7 +995,7 @@
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy</artifactId>
-                <version>1.14.12</version>
+                <version>1.15.10</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -1089,7 +1083,7 @@
             <dependency>
                 <groupId>org.jetbrains</groupId>
                 <artifactId>annotations</artifactId>
-                <version>24.1.0</version>
+                <version>26.0.1</version>
                 <scope>test</scope>
             </dependency>
 
@@ -1282,7 +1276,7 @@
                     <plugin>
                         <groupId>com.github.hazendaz.maven</groupId>
                         <artifactId>coveralls-maven-plugin</artifactId>
-                        <version>4.5.0-M3</version>
+                        <version>4.5.0-M5</version>
                     </plugin>
                 </plugins>
             </build>

@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.JArrayType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 
 public class ConfusingArgumentToVarargsMethodRule extends AbstractJavaRulechainRule {
@@ -45,7 +46,8 @@ public class ConfusingArgumentToVarargsMethodRule extends AbstractJavaRulechainR
         ASTExpression varargsArg = argList.getLastChild();
         assert varargsArg != null;
         if (varargsArg.getTypeMirror().isSubtypeOf(expectedComponent)
-            && !varargsArg.getTypeMirror().equals(lastFormal)) {
+            && !varargsArg.getTypeMirror().equals(lastFormal)
+            && !TypeOps.isSpecialUnresolvedOrArray(varargsArg.getTypeMirror())) {
             // confusing
 
             String message;
