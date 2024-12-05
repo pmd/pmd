@@ -47,6 +47,10 @@ public class CPDConfiguration extends AbstractConfiguration {
         RENDERERS.put("none", EmptyRenderer.class);
     }
 
+    /**
+     * A renderer that outputs nothing. This can be used to benchmark
+     * CPD's performance, to remove the overhead of rendering.
+     */
     static final class EmptyRenderer implements CPDReportRenderer {
 
         @Override

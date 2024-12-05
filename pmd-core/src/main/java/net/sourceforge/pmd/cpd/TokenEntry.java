@@ -70,12 +70,12 @@ public class TokenEntry implements Comparable<TokenEntry> {
         return FileLocation.range(fileId, TextRange2d.range2d(beginLine, beginColumn, endLine, endColumn));
     }
 
-    /** The line number where this token starts. */
+    /** The line number where this token starts, inclusive. */
     public int getBeginLine() {
         return beginLine;
     }
 
-    /** The line number where this token ends. */
+    /** The line number where this token ends, inclusive. */
     public int getEndLine() {
         return endLine;
     }
@@ -136,7 +136,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
         return "Token(file=" + fileIdInternal + ", index=" + index + ")";
     }
 
-    public int getLocalIndex() {
+    int getLocalIndex() {
         return index;
     }
 }
