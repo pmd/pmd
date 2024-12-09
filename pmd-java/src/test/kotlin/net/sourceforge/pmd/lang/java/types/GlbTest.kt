@@ -186,6 +186,29 @@ class GlbTest : FunSpec({
                     it.components.shouldContainExactly(tA, tB)
                 }
             }
+
+            test("Test GLB of recursive types #5096") {
+                val (acu, _) = javaParser.parseWithTypeInferenceSpy(
+                    """
+                        abstract class Settings<Q extends Settings<? extends Q, B>, B extends Settings.Builder<? extends B, Q>> implements Serializable {
+
+                            abstract static class Builder<B extends Builder<? extends B, S>, S extends Settings<? extends S, B>> extends DomainObjectBuilder<S, Modification<S>> {
+
+                                protected Builder(S bound, boolean boundToInstance) {
+                                    super(bound, boundToInstance);
+                                }
+                            }
+
+                            static class Modification<K extends Settings<? extends K, ?>> implements DomainObjectModification<K> {
+                            }
+                        }
+                    """.trimIndent()
+                )
+
+                acu.varAccesses("bound").firstOrThrow().typeMirror.shouldBeA<JTypeVar> {
+                    it.symbol shouldBe acu.typeVar("S").symbol
+                }
+            }
         }
     }
 
