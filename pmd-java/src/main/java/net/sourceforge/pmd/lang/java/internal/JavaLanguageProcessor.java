@@ -11,6 +11,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.impl.BatchLanguageProcessor;
@@ -44,19 +45,25 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     private final JavaParser parser;
     private final JavaParser parserWithoutProcessing;
     private TypeSystem typeSystem;
+    private final int jdkVersionAuxclasspath;
 
-    public JavaLanguageProcessor(JavaLanguageProperties properties, TypeSystem typeSystem) {
+    public JavaLanguageProcessor(JavaLanguageProperties properties) {
         super(properties);
-        this.typeSystem = typeSystem;
-
+        this.typeSystem = TypeSystem.usingClassLoaderClasspath(properties.getAnalysisClassLoader());
         String suppressMarker = properties.getSuppressMarker();
         this.parser = new JavaParser(suppressMarker, this, true);
         this.parserWithoutProcessing = new JavaParser(suppressMarker, this, false);
+
+        LOG.debug("Using analysis classloader: {}", properties.getAnalysisClassLoader());
+        if (properties.getAnalysisClassLoader() instanceof ClasspathClassLoader) {
+            jdkVersionAuxclasspath = ((ClasspathClassLoader) properties.getAnalysisClassLoader()).getJdkVersion();
+        } else {
+            jdkVersionAuxclasspath = -1;
+        }
     }
 
-    public JavaLanguageProcessor(JavaLanguageProperties properties) {
-        this(properties, TypeSystem.usingClassLoaderClasspath(properties.getAnalysisClassLoader()));
-        LOG.debug("Using analysis classloader: {}", properties.getAnalysisClassLoader());
+    public int getJdkVersionAuxclasspath() {
+        return jdkVersionAuxclasspath;
     }
 
     @Override
