@@ -11,13 +11,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTStatementExpressionList;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
@@ -71,28 +71,25 @@ public class AssignmentInOperandRule extends AbstractJavaRulechainRule {
     private void checkAssignment(ASTExpression impureExpr, RuleContext ctx) {
         ASTExpression toplevel = JavaAstUtils.getTopLevelExpr(impureExpr);
         JavaNode parent = toplevel.getParent();
-        if (parent instanceof ASTExpressionStatement) {
+        if (toplevel == impureExpr
+            && (parent instanceof ASTExpressionStatement
+            || parent instanceof ASTStatementExpressionList)) {
             // that's ok
             return;
         }
-        if (parent instanceof ASTIfStatement && !getProperty(ALLOW_IF_DESCRIPTOR)
-            || parent instanceof ASTWhileStatement && !getProperty(ALLOW_WHILE_DESCRIPTOR)
-            || parent instanceof ASTForStatement && ((ASTForStatement) parent).getCondition() == toplevel && !getProperty(ALLOW_FOR_DESCRIPTOR)) {
-
-            ctx.addViolation(impureExpr);
+        if (parent instanceof ASTIfStatement && getProperty(ALLOW_IF_DESCRIPTOR)
+            || parent instanceof ASTWhileStatement && getProperty(ALLOW_WHILE_DESCRIPTOR)
+            || parent instanceof ASTForStatement && ((ASTForStatement) parent).getCondition() == toplevel && getProperty(ALLOW_FOR_DESCRIPTOR)) {
+            return;
         }
+        // report everything else
+        ctx.addViolation(impureExpr);
     }
 
+    @Deprecated
     public boolean allowsAllAssignments() {
         return getProperty(ALLOW_IF_DESCRIPTOR) && getProperty(ALLOW_FOR_DESCRIPTOR)
                 && getProperty(ALLOW_WHILE_DESCRIPTOR) && getProperty(ALLOW_INCREMENT_DECREMENT_DESCRIPTOR);
     }
 
-    /**
-     * @see PropertySource#dysfunctionReason()
-     */
-    @Override
-    public String dysfunctionReason() {
-        return allowsAllAssignments() ? "All assignment types allowed, no checks performed" : null;
-    }
 }
