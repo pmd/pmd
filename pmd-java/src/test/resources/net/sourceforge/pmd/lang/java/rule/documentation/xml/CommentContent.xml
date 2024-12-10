@@ -57,4 +57,35 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Suppression</description>
+        <rule-property name="forbiddenRegex">idiot|jerk</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ *  This header method is ok
+ */
+public class Foo {
+    public Foo() {
+    }
+
+
+    /**
+     * The first line is ok
+     *
+     * this method is a jerk
+     */
+    @SuppressWarnings("PMD.CommentContent")
+    public void doNothing() {
+    }
+
+    @SuppressWarnings("PMD.CommentContent")
+    class bar {
+     /** idiot */
+    public void doNothing() {
+    }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
