@@ -47,7 +47,7 @@ public class JavaComment implements Reportable {
     }
 
     public boolean hasJavadocContent() {
-        return token.kind == JavaTokenKinds.FORMAL_COMMENT;
+        return token.kind == JavaTokenKinds.FORMAL_COMMENT || JavaAstUtils.isMarkdownComment(token);
     }
 
     /** Returns the full text of the comment. */
@@ -65,7 +65,7 @@ public class JavaComment implements Reportable {
 
     /**
      * Removes the leading comment marker (like {@code *}) of each line
-     * of the comment as well as the start marker ({@code //}, {@code /*} or {@code /**}
+     * of the comment as well as the start marker ({@code //}, {@code /*}, {@code /**} or {@code ///}
      * and the end markers (<code>&#x2a;/</code>).
      *
      * <p>Empty lines are removed.
@@ -99,6 +99,7 @@ public class JavaComment implements Reportable {
         return word.length() <= 3
             && (word.contentEquals("*")
             || word.contentEquals("//")
+            || word.contentEquals("///")
             || word.contentEquals("/*")
             || word.contentEquals("*/")
             || word.contentEquals("/**"));
@@ -106,13 +107,14 @@ public class JavaComment implements Reportable {
 
     /**
      * Trim the start of the provided line to remove a comment
-     * markup opener ({@code //, /*, /**, *}) or closer {@code * /}.
+     * markup opener ({@code //, ///, /*, /**, *}) or closer <code>&#x2a;/</code>.
      */
     public static Chars removeCommentMarkup(Chars line) {
         line = line.trim().removeSuffix("*/");
         int subseqFrom = 0;
         if (line.startsWith('/', 0)) {
-            if (line.startsWith("**", 1)) {
+            if (line.startsWith("**", 1)
+                || line.startsWith("//", 1)) {
                 subseqFrom = 3;
             } else if (line.startsWith('/', 1)
                 || line.startsWith('*', 1)) {

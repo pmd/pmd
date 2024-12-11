@@ -1,5 +1,5 @@
 +- CompilationUnit[@PackageName = ""]
-   +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "UnnamedVariable", @CanonicalName = "UnnamedVariable", @EffectiveVisibility = Visibility.V_PACKAGE, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "UnnamedVariable", @Static = false, @TopLevel = true, @Visibility = Visibility.V_PACKAGE]
+   +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "UnnamedVariable", @CanonicalName = "UnnamedVariable", @EffectiveVisibility = Visibility.V_PACKAGE, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "UnnamedVariable", @Static = false, @TopLevel = true, @UnnamedToplevelClass = false, @Visibility = Visibility.V_PACKAGE]
       +- ModifierList[@EffectiveModifiers = (), @ExplicitModifiers = ()]
       +- ClassBody[@Empty = false, @Size = 2]
          +- MethodDeclaration[@Abstract = false, @Arity = 0, @EffectiveVisibility = Visibility.V_PACKAGE, @Final = false, @Name = "method", @Overridden = false, @Static = false, @Varargs = false, @Visibility = Visibility.V_PACKAGE, @Void = true]

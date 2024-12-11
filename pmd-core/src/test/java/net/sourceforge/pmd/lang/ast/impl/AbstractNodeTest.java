@@ -48,7 +48,7 @@ class AbstractNodeTest {
         return childIndexes;
     }
 
-    static Object childrenAndGrandChildrenIndexes() {
+    static Object[] childrenAndGrandChildrenIndexes() {
         final Integer[] childrenIndexes = childrenIndexes();
         final Integer[] grandChildrenIndexes = grandChildrenIndexes();
         final Object[] indexes = new Object[childrenIndexes.length * grandChildrenIndexes.length];

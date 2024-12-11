@@ -1,5 +1,5 @@
 +- CompilationUnit[@PackageName = ""]
-   +- RecordDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "Point", @CanonicalName = "Point", @EffectiveVisibility = Visibility.V_PUBLIC, @Enum = false, @Final = true, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = true, @RegularClass = false, @RegularInterface = false, @SimpleName = "Point", @Static = false, @TopLevel = true, @Visibility = Visibility.V_PUBLIC]
+   +- RecordDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "Point", @CanonicalName = "Point", @EffectiveVisibility = Visibility.V_PUBLIC, @Enum = false, @Final = true, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = true, @RegularClass = false, @RegularInterface = false, @SimpleName = "Point", @Static = false, @TopLevel = true, @UnnamedToplevelClass = false, @Visibility = Visibility.V_PUBLIC]
       +- ModifierList[@EffectiveModifiers = (JModifier.PUBLIC, JModifier.FINAL), @ExplicitModifiers = (JModifier.PUBLIC)]
       +- RecordComponentList[@Empty = false, @Size = 2, @Varargs = false]
       |  +- RecordComponent[@EffectiveVisibility = Visibility.V_PRIVATE, @Varargs = false, @Visibility = Visibility.V_PRIVATE]

@@ -116,4 +116,22 @@ public class Foo {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5207 FP with skip overload on custom FileInputStream class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.FileInputStream;
+import java.io.IOException;
+
+public class Foo extends FileInputStream {
+    public void bar() {
+        skip(1);
+    }
+
+    public void skip(int n) throws IOException {
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

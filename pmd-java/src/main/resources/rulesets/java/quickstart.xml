@@ -18,24 +18,19 @@
     <rule ref="category/java/bestpractices.xml/AvoidUsingHardCodedIP"/>
     <rule ref="category/java/bestpractices.xml/CheckResultSet"/>
     <rule ref="category/java/bestpractices.xml/ConstantsInInterface"/>
-    <rule ref="category/java/bestpractices.xml/DefaultLabelNotLastInSwitchStmt"/>
+    <rule ref="category/java/bestpractices.xml/DefaultLabelNotLastInSwitch"/>
     <rule ref="category/java/bestpractices.xml/DoubleBraceInitialization"/>
     <rule ref="category/java/bestpractices.xml/ForLoopCanBeForeach"/>
     <!-- <rule ref="category/java/bestpractices.xml/ForLoopVariableCount" /> -->
     <rule ref="category/java/bestpractices.xml/GuardLogStatement"/>
     <!-- <rule ref="category/java/bestpractices.xml/JUnit4SuitesShouldUseSuiteAnnotation" /> -->
-    <!-- <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseAfterAnnotation" /> -->
-    <!-- <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseBeforeAnnotation" /> -->
-    <!-- <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseTestAnnotation" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnit5TestShouldBePackagePrivate" /> -->
-    <!-- <rule ref="category/java/bestpractices.xml/JUnitAssertionsShouldIncludeMessage" /> -->
-    <!-- <rule ref="category/java/bestpractices.xml/JUnitTestContainsTooManyAsserts" /> -->
-    <!-- <rule ref="category/java/bestpractices.xml/JUnitTestsShouldIncludeAssert" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnitUseExpected" /> -->
     <rule ref="category/java/bestpractices.xml/LiteralsFirstInComparisons" />
     <rule ref="category/java/bestpractices.xml/LooseCoupling"/>
     <!-- <rule ref="category/java/bestpractices.xml/MethodReturnsInternalArray" /> -->
     <rule ref="category/java/bestpractices.xml/MissingOverride"/>
+    <rule ref="category/java/bestpractices.xml/NonExhaustiveSwitch"/>
     <rule ref="category/java/bestpractices.xml/OneDeclarationPerLine"/>
     <rule ref="category/java/bestpractices.xml/PrimitiveWrapperInstantiation"/>
     <rule ref="category/java/bestpractices.xml/PreserveStackTrace"/>
@@ -43,8 +38,13 @@
     <!-- <rule ref="category/java/bestpractices.xml/ReplaceHashtableWithMap" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/ReplaceVectorWithList" /> -->
     <rule ref="category/java/bestpractices.xml/SimplifiableTestAssertion"/>
-    <rule ref="category/java/bestpractices.xml/SwitchStmtsShouldHaveDefault"/>
     <!-- <rule ref="category/java/bestpractices.xml/SystemPrintln" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/UnitTestAssertionsShouldIncludeMessage" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/UnitTestContainsTooManyAsserts" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/UnitTestShouldIncludeAssert" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/UnitTestShouldUseAfterAnnotation" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/UnitTestShouldUseBeforeAnnotation" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/UnitTestShouldUseTestAnnotation" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/UnnecessaryVarargsArrayCreation" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/UnusedAssignment"/> -->
     <rule ref="category/java/bestpractices.xml/UnusedFormalParameter"/>
@@ -52,6 +52,7 @@
     <rule ref="category/java/bestpractices.xml/UnusedPrivateField"/>
     <rule ref="category/java/bestpractices.xml/UnusedPrivateMethod"/>
     <rule ref="category/java/bestpractices.xml/UseCollectionIsEmpty"/>
+    <!-- <rule ref="category/java/bestpractices.xml/UseEnumCollections"/> -->
     <rule ref="category/java/bestpractices.xml/UseStandardCharsets" />
     <!-- <rule ref="category/java/bestpractices.xml/UseTryWithResources" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/UseVarargs" /> -->
@@ -242,7 +243,7 @@
     <!-- <rule ref="category/java/errorprone.xml/MissingSerialVersionUID" /> -->
     <rule ref="category/java/errorprone.xml/MissingStaticMethodInNonInstantiatableClass"/>
     <!-- <rule ref="category/java/errorprone.xml/MoreThanOneLogger" /> -->
-    <rule ref="category/java/errorprone.xml/NonCaseLabelInSwitchStatement"/>
+    <rule ref="category/java/errorprone.xml/NonCaseLabelInSwitch"/>
     <rule ref="category/java/errorprone.xml/NonStaticInitializer"/>
     <!-- <rule ref="category/java/errorprone.xml/NullAssignment" /> -->
     <rule ref="category/java/errorprone.xml/OverrideBothEqualsAndHashcode"/>
@@ -278,6 +279,7 @@
 
 
     <!-- <rule ref="category/java/multithreading.xml/AvoidSynchronizedAtMethodLevel" /> -->
+    <!-- <rule ref="category/java/multithreading.xml/AvoidSynchronizedStatement" /> -->
     <rule ref="category/java/multithreading.xml/AvoidThreadGroup"/>
     <rule ref="category/java/multithreading.xml/AvoidUsingVolatile"/>
     <!-- <rule ref="category/java/multithreading.xml/DoNotUseThreads" /> -->
@@ -305,7 +307,7 @@
     <!--<rule ref="category/java/performance.xml/RedundantFieldInitializer"/>-->
     <!-- <rule ref="category/java/performance.xml/StringInstantiation" /> -->
     <!-- <rule ref="category/java/performance.xml/StringToString" /> -->
-    <!--<rule ref="category/java/performance.xml/TooFewBranchesForASwitchStatement"/>-->
+    <!-- <rule ref="category/java/performance.xml/TooFewBranchesForSwitch"/> -->
     <!-- <rule ref="category/java/performance.xml/UseArrayListInsteadOfVector" /> -->
     <!-- <rule ref="category/java/performance.xml/UseArraysAsList" /> -->
     <!-- <rule ref="category/java/performance.xml/UseIndexOfChar" /> -->

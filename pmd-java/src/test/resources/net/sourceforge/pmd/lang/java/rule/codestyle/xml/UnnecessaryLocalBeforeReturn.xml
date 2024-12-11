@@ -339,4 +339,21 @@ public class Example {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UnnecessaryLocalBeforeReturn false positive when negating variable #2206</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Example {
+    public boolean isOk() {
+        boolean isWrong = foo();
+        return !isWrong;
+    }
+
+    private boolean foo() {
+        return false;
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

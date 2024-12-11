@@ -6,7 +6,7 @@
 
 <!-- PR relates to issues in the `pmd` repo: -->
 
-- Fixes #
+- Fix #
 
 ## Ready?
 

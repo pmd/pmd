@@ -830,4 +830,51 @@ public class Tester {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3632 [java] Make UnusedPrivateField consider enum classes</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+class Test {
+  enum EnumClass {
+      subClass();
+      EnumClass() {}
+      private int a;  // should report a warning here
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3632 [java] Make UnusedPrivateField consider enum classes (top-level)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+enum EnumClass {
+  subClass();
+  EnumClass() {}
+  private int a;  // should report a warning here
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1433 [java] UnusedPrivateField: false positive when field has the same name as the class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Board {
+    private int[] Board;
+
+    public Board(int[] b) {
+        for (int i = 0; i < b.length; i++)
+            Board[i] = b[i];
+    }
+
+    public int size() {
+        return Board.length;
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

@@ -58,7 +58,10 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @author <a href="hps@intermeta.de">Henning P. Schmiedehausen</a>
  * @version $Id$
-*/
+ * @deprecated Since 7.5.0. VtlParserImpl should have been package private because this is an implementation class
+ * that should not be used directly.
+ */
+@Deprecated
 public class VtlParserImpl
 {
   private void throwParseException(String message) {

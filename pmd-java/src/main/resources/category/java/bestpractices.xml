@@ -457,14 +457,18 @@ public interface YetAnotherConstantInterface {
         </example>
     </rule>
 
-    <rule name="DefaultLabelNotLastInSwitchStmt"
+    <rule name="DefaultLabelNotLastInSwitchStmt" deprecated="true" ref="DefaultLabelNotLastInSwitch" />
+
+    <rule name="DefaultLabelNotLastInSwitch"
           language="java"
           since="1.5"
-          message="The default label should be the last label in a switch statement"
+          message="The default label should be the last label in a switch statement or expression"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#defaultlabelnotlastinswitchstmt">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#defaultlabelnotlastinswitch">
         <description>
-By convention, the default label should be the last label in a switch statement.
+By convention, the default label should be the last label in a switch statement or switch expression.
+
+Note: This rule has been renamed from "DefaultLabelNotLastInSwitchStmt" with PMD 7.7.0.
         </description>
         <priority>3</priority>
         <properties>
@@ -602,8 +606,8 @@ for (int i = 0, j = 0; i < 10; i++, j += 2) {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.GuardLogStatementRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#guardlogstatement">
         <description>
-Whenever using a log level, one should check if the loglevel is actually enabled, or
-otherwise skip the associate String creation and manipulation.
+Whenever using a log level, one should check if it is actually enabled, or
+otherwise skip the associate String creation and manipulation, as well as any method calls.
 
 An alternative to checking the log level are substituting parameters, formatters or lazy logging
 with lambdas. The available alternatives depend on the actual logging framework.
@@ -611,7 +615,7 @@ with lambdas. The available alternatives depend on the actual logging framework.
         <priority>2</priority>
         <example>
 <![CDATA[
-// Add this for performance
+// Add this for performance - avoid manipulating strings if the logger may drop it
 if (log.isDebugEnabled()) {
     log.debug("log something" + param1 + " and " + param2 + "concat strings");
 }
@@ -622,8 +626,14 @@ log.debug("log something {} and {}", param1, param2);
 // Avoid the guarding if statement with formatters
 log.debug("log something %s and %s", param1, param2);
 
+// This is still an issue, method invocations may be expensive / have side-effects
+log.debug("log something expensive: {}", calculateExpensiveLoggingText());
+
 // Avoid the guarding if statement with lazy logging and lambdas
 log.debug("log something expensive: {}", () -> calculateExpensiveLoggingText());
+
+// … alternatively use method references
+log.debug("log something expensive: {}", this::calculateExpensiveLoggingText);
 ]]>
         </example>
     </rule>
@@ -666,148 +676,11 @@ public class GoodTest {
         </example>
     </rule>
 
-    <rule name="JUnit4TestShouldUseAfterAnnotation"
-          language="java"
-          since="4.0"
-          message="JUnit 4 tests that clean up tests should use the @After annotation, JUnit5 tests should use @AfterEach or @AfterAll"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4testshoulduseafterannotation">
-        <description>
-In JUnit 3, the tearDown method was used to clean up all data entities required in running tests.
-JUnit 4 skips the tearDown method and executes all methods annotated with @After after running each test.
-JUnit 5 introduced @AfterEach and @AfterAll annotations to execute methods after each test or after all tests in the class, respectively.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//MethodDeclaration[@Name='tearDown' and @Arity=0]
-    [not(ModifierList/Annotation[
-           pmd-java:typeIs('org.junit.After')
-        or pmd-java:typeIs('org.junit.jupiter.api.AfterEach')
-        or pmd-java:typeIs('org.junit.jupiter.api.AfterAll')
-        or pmd-java:typeIs('org.testng.annotations.AfterMethod')])]
-    (: Make sure this is a junit 4 class :)
-    [../MethodDeclaration[pmd-java:hasAnnotation('org.junit.Test')]]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public class MyTest {
-    public void tearDown() {
-        bad();
-    }
-}
-public class MyTest2 {
-    @After public void tearDown() {
-        good();
-    }
-}
-]]>
-        </example>
-    </rule>
+    <rule name="JUnit4TestShouldUseAfterAnnotation" deprecated="true" ref="UnitTestShouldUseAfterAnnotation" />
 
-    <rule name="JUnit4TestShouldUseBeforeAnnotation"
-          language="java"
-          since="4.0"
-          message="JUnit 4 tests that set up tests should use the @Before annotation, JUnit5 tests should use @BeforeEach or @BeforeAll"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4testshouldusebeforeannotation">
-        <description>
-In JUnit 3, the setUp method was used to set up all data entities required in running tests.
-JUnit 4 skips the setUp method and executes all methods annotated with @Before before all tests.
-JUnit 5 introduced @BeforeEach and @BeforeAll annotations to execute methods before each test or before all tests in the class, respectively.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//MethodDeclaration[@Name='setUp' and @Arity=0]
-    [not(ModifierList/Annotation[
-           pmd-java:typeIs('org.junit.Before')
-        or pmd-java:typeIs('org.junit.jupiter.api.BeforeEach')
-        or pmd-java:typeIs('org.junit.jupiter.api.BeforeAll')
-        or pmd-java:typeIs('org.testng.annotations.BeforeMethod')])]
-    (: Make sure this is a junit 4 class :)
-    [../MethodDeclaration[pmd-java:hasAnnotation('org.junit.Test')]]
+    <rule name="JUnit4TestShouldUseBeforeAnnotation" deprecated="true" ref="UnitTestShouldUseBeforeAnnotation"/>
 
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public class MyTest {
-    public void setUp() {
-        bad();
-    }
-}
-public class MyTest2 {
-    @Before public void setUp() {
-        good();
-    }
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="JUnit4TestShouldUseTestAnnotation"
-          language="java"
-          since="4.0"
-          message="Unit tests that execute tests should use the @Test annotation. In case of JUnit 5, test methods might use @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest annotations instead."
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4testshouldusetestannotation">
-        <description>
-In JUnit 3, the framework executed all methods which started with the word test as a unit test.
-In JUnit 4, only methods annotated with the @Test annotation are executed.
-In JUnit 5, one of the following annotations should be used for tests: @Test, @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest.
-In TestNG, only methods annotated with the @Test annotation are executed.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//ClassDeclaration[matches(@SimpleName, $testClassPattern) or pmd-java:typeIs('junit.framework.TestCase')]
-    (: a junit 3 method :)
-    /ClassBody/MethodDeclaration[
-        @Visibility="public"
-        and starts-with(@Name, 'test')
-        and not(ModifierList/Annotation[
-          pmd-java:typeIs('org.junit.Test')
-          or pmd-java:typeIs('org.junit.jupiter.api.Test')
-          or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-          or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
-          or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-          or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
-          or pmd-java:typeIs('org.testng.annotations.Test')
-          ]
-        )
-    ]
-]]>
-                </value>
-            </property>
-            <property name="testClassPattern" type="Regex" description="The regex pattern used to identify test classes" value="Test" />
-        </properties>
-        <example>
-<![CDATA[
-public class MyTest {
-    public void testBad() {
-        doSomething();
-    }
-
-    @Test
-    public void testGood() {
-        doSomething();
-    }
-}
-]]>
-        </example>
-    </rule>
+    <rule name="JUnit4TestShouldUseTestAnnotation" deprecated="true" ref="UnitTestShouldUseTestAnnotation" />
 
     <rule name="JUnit5TestShouldBePackagePrivate"
           language="java"
@@ -875,89 +748,11 @@ class MyTest { // not public, that's fine
         </example>
     </rule>
 
-    <rule name="JUnitAssertionsShouldIncludeMessage"
-          language="java"
-          since="1.04"
-          message="JUnit assertions should include a message"
-          class="net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitAssertionsShouldIncludeMessageRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junitassertionsshouldincludemessage">
-        <description>
-JUnit assertions should include an informative message - i.e., use the three-argument version of
-assertEquals(), not the two-argument version.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public class Foo extends TestCase {
-    public void testSomething() {
-        assertEquals("foo", "bar");
-        // Use the form:
-        // assertEquals("Foo does not equals bar", "foo", "bar");
-        // instead
-    }
-}
-]]>
-        </example>
-    </rule>
+    <rule name="JUnitAssertionsShouldIncludeMessage" deprecated="true" ref="UnitTestAssertionsShouldIncludeMessage" />
 
-    <rule name="JUnitTestContainsTooManyAsserts"
-          language="java"
-          since="5.0"
-          message="Unit tests should not contain more than ${maximumAsserts} assert(s)."
-          class="net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitTestContainsTooManyAssertsRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junittestcontainstoomanyasserts">
-        <description>
-Unit tests should not contain too many asserts. Many asserts are indicative of a complex test, for which
-it is harder to verify correctness.  Consider breaking the test scenario into multiple, shorter test scenarios.
-Customize the maximum number of assertions used by this Rule to suit your needs.
+    <rule name="JUnitTestContainsTooManyAsserts" deprecated="true" ref="UnitTestContainsTooManyAsserts"/>
 
-This rule checks for JUnit4, JUnit5 and TestNG Tests, as well as methods starting with "test".
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public class MyTestCase extends TestCase {
-    // Ok
-    public void testMyCaseWithOneAssert() {
-        boolean myVar = false;
-        assertFalse("should be false", myVar);
-    }
-
-    // Bad, too many asserts (assuming max=1)
-    public void testMyCaseWithMoreAsserts() {
-        boolean myVar = false;
-        assertFalse("myVar should be false", myVar);
-        assertEquals("should equals false", false, myVar);
-    }
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="JUnitTestsShouldIncludeAssert"
-          language="java"
-          since="2.0"
-          message="JUnit tests should include assert() or fail()"
-          class="net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitTestsShouldIncludeAssertRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junittestsshouldincludeassert">
-        <description>
-JUnit tests should include at least one assertion.  This makes the tests more robust, and using assert
-with messages provide the developer a clearer idea of what the test does.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public class Foo extends TestCase {
-   public void testSomething() {
-      Bar b = findBar();
-   // This is better than having a NullPointerException
-   // assertNotNull("bar not found", b);
-   b.work();
-   }
-}
-]]>
-        </example>
-    </rule>
+    <rule name="JUnitTestsShouldIncludeAssert" deprecated="true" ref="UnitTestShouldIncludeAssert" />
 
     <rule name="JUnitUseExpected"
           language="java"
@@ -1110,6 +905,48 @@ public class SecureSystem {
                 }
             }
             ]]>
+        </example>
+    </rule>
+
+    <rule name="NonExhaustiveSwitch"
+          language="java"
+          since="1.0"
+          message="Switch statements or expressions should be exhaustive, add a default case (or missing enum branches)"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#nonexhaustiveswitch">
+        <description>
+            Switch statements should be exhaustive, to make their control flow
+            easier to follow. This can be achieved by adding a `default` case, or,
+            if the switch is on an enum type, by ensuring there is one switch branch
+            for each enum constant.
+
+            This rule doesn't consider Switch Statements, that use Pattern Matching, since for these the
+            compiler already ensures that all cases are covered. The same is true for Switch Expressions,
+            which are also not considered by this rule.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                //SwitchStatement
+                    [@DefaultCase = false()]
+                    [@ExhaustiveEnumSwitch = false()]
+                    (: exclude pattern tests - for these, the compiler will ensure exhaustiveness :)
+                    [*/SwitchLabel[@PatternLabel = false()]]
+            ]]></value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+class Foo {{
+    int x = 2;
+    switch (x) {
+      case 1: int j = 6;
+      case 2: int j = 8;
+      // missing default: here
+    }
+}}
+]]>
         </example>
     </rule>
 
@@ -1366,39 +1203,7 @@ class SomeTestClass {
         </example>
     </rule>
 
-    <rule name="SwitchStmtsShouldHaveDefault"
-          language="java"
-          since="1.0"
-          message="Switch statements should be exhaustive, add a default case (or missing enum branches)"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#switchstmtsshouldhavedefault">
-        <description>
-            Switch statements should be exhaustive, to make their control flow
-            easier to follow. This can be achieved by adding a `default` case, or,
-            if the switch is on an enum type, by ensuring there is one switch branch
-            for each enum constant.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value><![CDATA[
-                //SwitchStatement[@DefaultCase = false() and @ExhaustiveEnumSwitch = false()]
-            ]]></value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-class Foo {{
-    int x = 2;
-    switch (x) {
-      case 1: int j = 6;
-      case 2: int j = 8;
-      // missing default: here
-    }
-}}
-]]>
-        </example>
-    </rule>
+    <rule name="SwitchStmtsShouldHaveDefault" deprecated="true" ref="NonExhaustiveSwitch"/>
 
     <rule name="SystemPrintln"
           language="java"
@@ -1436,6 +1241,280 @@ class Foo{
 ]]>
         </example>
     </rule>
+
+    <rule name="UnitTestAssertionsShouldIncludeMessage"
+          language="java"
+          since="1.04"
+          message="Unit test assertions should include a message"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestAssertionsShouldIncludeMessageRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestassertionsshouldincludemessage">
+        <description>
+Unit assertions should include an informative message - i.e., use the three-argument version of
+`assertEquals()`, not the two-argument version.
+
+This rule supports tests using JUnit (3, 4 and 5) and TestNG.
+
+Note: This rule was named JUnitAssertionsShouldIncludeMessage before PMD 7.7.0.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Foo {
+    @Test
+    public void testSomething() {
+        assertEquals("foo", "bar");
+        // Use the form:
+        // assertEquals("Foo does not equals bar", "foo", "bar");
+        // instead
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnitTestContainsTooManyAsserts"
+          language="java"
+          since="5.0"
+          message="Unit tests should not contain more than ${maximumAsserts} assert(s)."
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestContainsTooManyAssertsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestcontainstoomanyasserts">
+        <description>
+            Unit tests should not contain too many asserts. Many asserts are indicative of a complex test, for which
+            it is harder to verify correctness.  Consider breaking the test scenario into multiple, shorter test scenarios.
+            Customize the maximum number of assertions used by this Rule to suit your needs.
+
+            This rule checks for JUnit (3, 4 and 5) and TestNG Tests.
+
+            Note: This rule was named JUnitTestContainsTooManyAsserts before PMD 7.7.0.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class MyTestCase {
+    // Ok
+    @Test
+    public void testMyCaseWithOneAssert() {
+        boolean myVar = false;
+        assertFalse("should be false", myVar);
+    }
+
+    // Bad, too many asserts (assuming max=1)
+    @Test
+    public void testMyCaseWithMoreAsserts() {
+        boolean myVar = false;
+        assertFalse("myVar should be false", myVar);
+        assertEquals("should equals false", false, myVar);
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnitTestShouldIncludeAssert"
+          language="java"
+          since="2.0"
+          message="This unit test should include assert() or fail()"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnitTestShouldIncludeAssertRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestshouldincludeassert">
+        <description>
+            Unit tests should include at least one assertion. This makes the tests more robust, and using assert
+            with messages provide the developer a clearer idea of what the test does.
+
+            This rule checks for JUnit (3, 4 and 5) and TestNG Tests.
+
+            Note: This rule was named JUnitTestsShouldIncludeAssert before PMD 7.7.0.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Foo {
+   @Test
+   public void testSomething() {
+      Bar b = findBar();
+      // This is better than having a NullPointerException
+      // assertNotNull("bar not found", b);
+      b.work();
+   }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnitTestShouldUseAfterAnnotation"
+          language="java"
+          since="4.0"
+          message="Apply the correct annotation if this method is used to clean up the tests"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestshoulduseafterannotation">
+        <description>
+This rule detects methods called `tearDown()` that are not properly annotated as a cleanup method.
+This is primarily intended to assist in upgrading from JUnit 3, where tear down methods were required to be called `tearDown()`.
+To a lesser extent, this may help detect omissions even under newer JUnit versions or under TestNG,
+as long as you are following this convention to name the methods.
+
+* JUnit 4 will only execute methods annotated with `@After` after running each test.
+* JUnit 5 introduced `@AfterEach` and `@AfterAll` annotations to execute methods after each test or after
+  all tests in the class, respectively.
+* TestNG provides the annotations `@AfterMethod` and `@AfterClass` to execute methods after each test or after
+  tests in the class, respectively.
+
+Note: This rule was named JUnit4TestShouldUseAfterAnnotation before PMD 7.7.0.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodDeclaration[@Name='tearDown' and @Arity=0]
+    [not(ModifierList/Annotation[
+           pmd-java:typeIs('org.junit.After')
+        or pmd-java:typeIs('org.junit.jupiter.api.AfterEach')
+        or pmd-java:typeIs('org.junit.jupiter.api.AfterAll')
+        or pmd-java:typeIs('org.testng.annotations.AfterClass')
+        or pmd-java:typeIs('org.testng.annotations.AfterMethod')
+    ])]
+    (: Make sure this is a JUnit 4/5 or TestNG class :)
+    [../MethodDeclaration[
+            pmd-java:hasAnnotation('org.junit.Test')
+         or pmd-java:hasAnnotation('org.junit.jupiter.api.Test')
+         or pmd-java:hasAnnotation('org.testng.annotations.Test')
+    ]]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class MyTest {
+    public void tearDown() {
+        bad();
+    }
+}
+public class MyTest2 {
+    @After public void tearDown() {
+        good();
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnitTestShouldUseBeforeAnnotation"
+          language="java"
+          since="4.0"
+          message="Apply the correct annotation if this method is used to set up the tests"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestshouldusebeforeannotation">
+        <description>
+This rule detects methods called `setUp()` that are not properly annotated as a setup method.
+This is primarily intended to assist in upgrading from JUnit 3, where setup methods were required to be called `setUp()`.
+To a lesser extent, this may help detect omissions even under newer JUnit versions or under TestNG,
+as long as you are following this convention to name the methods.
+
+* JUnit 4 will only execute methods annotated with `@Before` before all tests.
+* JUnit 5 introduced `@BeforeEach` and `@BeforeAll` annotations to execute methods before each test or before all
+  tests in the class, respectively.
+* TestNG provides the annotations `@BeforeMethod` and `@BeforeClass` to execute methods before each test or before
+  tests in the class, respectively.
+
+Note: This rule was named JUnit4TestShouldUseBeforeAnnotation before PMD 7.7.0.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//MethodDeclaration[@Name='setUp' and @Arity=0]
+    [not(ModifierList/Annotation[
+           pmd-java:typeIs('org.junit.Before')
+        or pmd-java:typeIs('org.junit.jupiter.api.BeforeEach')
+        or pmd-java:typeIs('org.junit.jupiter.api.BeforeAll')
+        or pmd-java:typeIs('org.testng.annotations.BeforeMethod')
+        or pmd-java:typeIs('org.testng.annotations.BeforeClass')
+    ])]
+    (: Make sure this is a JUnit 4/5 or TestNG class :)
+    [../MethodDeclaration[
+               pmd-java:hasAnnotation('org.junit.Test')
+            or pmd-java:hasAnnotation('org.junit.jupiter.api.Test')
+            or pmd-java:hasAnnotation('org.testng.annotations.Test')
+    ]]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public class MyTest {
+    public void setUp() {
+        bad();
+    }
+}
+public class MyTest2 {
+    @Before public void setUp() {
+        good();
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnitTestShouldUseTestAnnotation"
+          language="java"
+          since="4.0"
+          message="Unit tests should use the @Test annotation or won't be run. In case of JUnit 5, test methods might use @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest annotations instead."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unittestshouldusetestannotation">
+        <description>
+            The rule will detect any test method starting with "test" that is not properly annotated, and will therefore not be run.
+
+            In JUnit 4, only methods annotated with the `@Test` annotation are executed.
+            In JUnit 5, one of the following annotations should be used for tests: `@Test`, `@RepeatedTest`, `@TestFactory`, `@TestTemplate` or `@ParameterizedTest`.
+            In TestNG, only methods annotated with the `@Test` annotation are executed.
+
+            Note: This rule was named JUnit4TestShouldUseTestAnnotation before PMD 7.7.0.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ClassDeclaration[matches(@SimpleName, $testClassPattern) or pmd-java:typeIs('junit.framework.TestCase')]
+    (: a junit 3 method :)
+    /ClassBody/MethodDeclaration[
+        @Visibility="public"
+        and starts-with(@Name, 'test')
+        and not(ModifierList/Annotation[
+          pmd-java:typeIs('org.junit.Test')
+          or pmd-java:typeIs('org.junit.jupiter.api.Test')
+          or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+          or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
+          or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+          or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+          or pmd-java:typeIs('org.testng.annotations.Test')
+          ]
+        )
+    ]
+]]>
+                </value>
+            </property>
+            <property name="testClassPattern" type="Regex" description="The regex pattern used to identify test classes" value="Test" />
+        </properties>
+        <example>
+            <![CDATA[
+public class MyTest {
+    public void testBad() {
+        doSomething();
+    }
+
+    @Test
+    public void testGood() {
+        doSomething();
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="UnnecessaryVarargsArrayCreation"
           language="java"
           since="7.1.0"
@@ -1720,6 +1799,40 @@ public class Foo {
     }
 }
 ]]>
+        </example>
+    </rule>
+
+
+    <rule name="UseEnumCollections"
+          language="java"
+          since="7.3.0"
+          message="This collection could be an {0}"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UseEnumCollectionsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#useenumcollections">
+        <description>
+            Wherever possible, use `EnumSet` or `EnumMap` instead of `HashSet` and `HashMap` when the keys
+            are of an enum type. The specialized enum collections are more space- and time-efficient.
+            This rule reports constructor expressions for hash sets or maps whose key
+            type is an enum type.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+            import java.util.EnumMap;
+            import java.util.HashSet;
+
+            enum Example {
+                A, B, C;
+
+                public static Set<Example> newSet() {
+                    return new HashSet<>(); // Could be EnumSet.noneOf(Example.class)
+                }
+
+                public static <V> Map<Example, V> newMap() {
+                    return new HashMap<>(); // Could be new EnumMap<>(Example.class)
+                }
+            }
+            ]]>
         </example>
     </rule>
 

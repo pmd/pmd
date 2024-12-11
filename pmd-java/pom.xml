@@ -7,12 +7,12 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>7.3.0-SNAPSHOT</version>
+        <version>7.9.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <properties>
-        <log4j.version>2.23.0</log4j.version>
+        <log4j.version>2.24.2</log4j.version>
     </properties>
 
     <build>
@@ -105,7 +105,7 @@
                         <configuration>
                             <target>
                                 <ant antfile="${javacc.ant.wrapper}" target="alljavacc">
-                                    <property name="javacc.jar" value="${javacc.jar}" />
+                                    <property name="plugin-classpath" refid="maven.plugin.classpath"/>
                                     <property name="lang-name" value="Java" />
                                     <property name="lang-id" value="java" />
                                 </ant>

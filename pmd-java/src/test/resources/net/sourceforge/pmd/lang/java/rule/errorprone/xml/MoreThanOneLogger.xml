@@ -117,4 +117,19 @@ public record Reproducer(List<String> smsIds) {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3860 [java] MoreThanOneLogger is reported on mocked Logger field</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package com.kodekonveyor.authentication;
+
+import org.mockito.Mockito;
+import org.slf4j.Logger;
+
+class PMDErrorDemonstrationTestBase {
+  Logger loggerService = Mockito.mock(Logger.class);
+}
+]]></code>
+    </test-code>
 </test-data>

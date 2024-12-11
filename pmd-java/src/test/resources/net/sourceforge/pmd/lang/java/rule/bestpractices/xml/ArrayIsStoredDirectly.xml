@@ -347,4 +347,18 @@ public enum DemoEnum {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] ArrayIsStoredDirectly false negative when parenthesized #3933</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class Tester {
+    String [] arr;
+    void foo (String[] x) {
+        arr = (x);  // should report a warning here
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

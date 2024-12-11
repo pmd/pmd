@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>assertArrayEquals ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static org.junit.Assert.assertArrayEquals;
+public class Foo {
+    public void test1() {
+        assertArrayEquals("[1] != [1]", new int[] {1}, new int[] {1});
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assertArrayEquals bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import static org.junit.Assert.assertArrayEquals;
+public class Foo {
+    public void test1() {
+        assertArrayEquals(new int[] {1}, new int[] {1});
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assertEquals ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void test1() {
+        assertEquals("1 != 1", 1, 1);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assertEquals with string variable as message ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void test1() {
+        String s = "1 != 1";
+        assertEquals(s, 1, 1);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assertEquals with delta ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void test1() {
+        assertEquals("foo", 1, 2, 3);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assertEquals bad</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void test1() {
+        assertEquals(1, 1);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assertEquals bad, without import</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo extends junit.framework.TestCase {
+    public void test1() {
+        assertEquals(1, 1);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assertEquals with delta bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void test1() {
+        assertEquals(1, 2, 3);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assertEquals with delta but missing assertion message not ok</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void test1() {
+        double d = 1;
+        assertEquals(d, 1, 1);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assertFalse ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void testBar() {
+        assertFalse("foo!", "foo".equals("foo"));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assertFalse bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void testBar() {
+        assertFalse("foo".equals("foo"));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assertNotNull OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void test1() {
+        assertNotNull("foo", null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assertNotNull bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void test1() {
+        assertNotNull(null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assertNotSame ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void test1() {
+        assertNotSame("1 == 2", 1, 2);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assertNotSame bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void test1() {
+        assertNotSame(1, 2);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assertNull OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void test1() {
+        assertNull("it's not null", null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assertNull bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void test1() {
+        assertNull(null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assertSame OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void test1() {
+        assertSame("not same!", null, null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assertSame bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void test1() {
+        assertSame(null, null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assertThat ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+import static org.hamcrest.CoreMatchers.*;
+public class Foo extends TestCase {
+    public void test1() {
+        assertThat("Zero is one", 0, is(not(1)));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assertThat bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+public class Foo {
+    public void test1() {
+        assertThat(0, is(not(1)));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assertTrue ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void test1() {
+        assertTrue("foo", "foo".equals("foo"));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assertTrue bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void test1() {
+        assertTrue("foo".equals("foo"));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>fail ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void test1() {
+        fail("foo");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>fail bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void test1() {
+        fail();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>find that pesky bug</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void test1() {
+        this.test1("foo");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Not a JUnit test - assertEquals bad</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        assertEquals(1, 1);
+    }
+    private void assertEquals(int x, int y) {
+        if (x != y) throw new AssertionError();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit 4 - assertEquals</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.Test;
+import org.junit.Assert;
+public class Foo {
+    @Test
+    public void foo() {
+        Assert.assertEquals(1, 1);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit 4 - assertEquals - without imports</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    @org.junit.Test
+    public void foo() {
+        org.junit.Assert.assertEquals(1, 1);
+        Foo.fail();
+    }
+    private static void fail() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1374 JUnitAssertionsShouldIncludeMessage does not work</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>10,11,12,13</expected-linenumbers>
+        <code><![CDATA[
+import static org.hamcrest.Matchers.containsString;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+public class TestClass extends Assert {
+
+    @Test
+    public void test() {
+        assertTrue(true);
+        assertEquals("", "");
+        assertNull(null);
+        assertThat("", containsString(""));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1373 JUnitAssertionsShouldIncludeMessage is no longer compatible with TestNG</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.testng.annotations.Test;
+import static org.testng.Assert.*;
+
+public class TestNgTestCase {
+    @Test
+    public void testAssert() {
+        assertEquals("a", "b", "message");
+        assertEquals(1, 2, "message");
+        assertFalse(true, "message");
+        assertTrue(false, "message");
+        assertNotEquals(new Object(), new Object(), "message");
+        assertNotNull(null, "message");
+        assertNull(null, "message");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Issue #1009: JUnitAssertionsShouldIncludeMessage - False positive with assertEquals and JUnit5</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+
+class SimpleTest {
+    @Test
+    public void simpleMethod() {
+        assertEquals(0, 1, "Not equals 0 != 1");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2149 [java] JUnitAssertionsShouldIncludeMessage - False positive with assertEquals and JUnit5</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+
+class SimpleTest {
+    @Test
+    public void simpleMethod() {
+        assertEquals(0, Integer.compare(0, 0), "Not equals 0 != 1");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] JUnitAssertionsShouldIncludeMessage false positive with method call #2883</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static org.junit.Assert.assertEquals;
+
+public class AssertionMessageTest {
+    public void bar(int expectedLength) {
+        try {
+            Integer.parseInt("a");
+        } catch (RuntimeException e) {
+            assertEquals(e.toString(), expectedLength, e.getMessage().length()); // no warning expected
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnitAssertionsShouldIncludeMessage false positive with AssertJ #1565</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static org.assertj.core.api.Assertions.assertThat;
+import java.util.HashMap;
+
+public class AssertionMessageTest {
+    public void bar(int expectedLength) {
+        assertThat(new HashMap<>()).as("Should return database entries as map")
+         .hasSize(3)
+         .containsEntry(3, 4);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] JUnitAssertionsShouldIncludeMessage - False positive with AssertJ assertThat and JUnit5 #3350</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Map;
+import org.junit.jupiter.api.Test;
+
+class SimpleTest {
+    @Test
+    public void simpleMethod() {
+        assertThat(Map.of("foo", "FOO"))
+            .containsEntry("foo", "FOO")
+            .containsOnlyKeys("foo");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Assert calls should be considered in the whole file that contains at least one test case</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>14</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class SimpleTest {
+    @Test
+    public void myTest() {
+        Bean bean = new Bean();
+        bean.doSomething("foo");
+    }
+}
+
+class Bean {
+    public void doSomething(String name) {
+        assertEquals("foo", name);
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

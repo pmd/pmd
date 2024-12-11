@@ -1,0 +1,21 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L3
+    [if]                                    1         3
+    [let]                                   4         7
+    [userToken]                             8         17
+    [=]                                     18        19
+    [userToken]                             20        29
+    [{]                                     30        31
+L4
+    [print]                                 6         11
+    [(]                                     11        12
+    ["👤 | User > Token: \\(userToken)"]    12        44
+    [)]                                     44        45
+    [}]                                     46        47
+L6
+    [var]                                   1         3
+L7
+    [baseCommand]                           4         15
+    [=]                                     16        17
+    [#"curl "\\#(url.absoluteURL)""#]       18        48
+EOF

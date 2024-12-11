@@ -1,6 +1,6 @@
 +- CompilationUnit[@PackageName = ""]
-   +- ImportDeclaration[@ImportOnDemand = true, @ImportedName = "java.util", @ImportedSimpleName = null, @PackageName = "java.util", @Static = false]
-   +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "GitHubBug309", @CanonicalName = "GitHubBug309", @EffectiveVisibility = Visibility.V_PUBLIC, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "GitHubBug309", @Static = false, @TopLevel = true, @Visibility = Visibility.V_PUBLIC]
+   +- ImportDeclaration[@ImportOnDemand = true, @ImportedName = "java.util", @ImportedSimpleName = null, @ModuleImport = false, @PackageName = "java.util", @Static = false]
+   +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "GitHubBug309", @CanonicalName = "GitHubBug309", @EffectiveVisibility = Visibility.V_PUBLIC, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "GitHubBug309", @Static = false, @TopLevel = true, @UnnamedToplevelClass = false, @Visibility = Visibility.V_PUBLIC]
       +- ModifierList[@EffectiveModifiers = (JModifier.PUBLIC), @ExplicitModifiers = (JModifier.PUBLIC)]
       +- ClassBody[@Empty = false, @Size = 1]
          +- MethodDeclaration[@Abstract = false, @Arity = 1, @EffectiveVisibility = Visibility.V_PUBLIC, @Final = false, @MainMethod = true, @Name = "main", @Overridden = false, @Static = true, @Varargs = false, @Visibility = Visibility.V_PUBLIC, @Void = true]

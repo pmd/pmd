@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextPos2d;
 import net.sourceforge.pmd.lang.document.TextRegion;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 import com.google.summit.ast.SourceLocation;
 import com.google.summit.ast.declaration.MethodDeclaration;
@@ -26,6 +27,12 @@ public final class ASTMethod extends AbstractApexNode implements ApexQualifiable
      * @see #isStaticInitializer()
      */
     private static final String STATIC_INIT_ID = "<clinit>";
+
+    /**
+     * Internal name used by the synthetic trigger method.
+     * @see #isTriggerBlock()
+     */
+    private static final String TRIGGER_INVOKE_ID = "<invoke>";
 
     // Store the details instead of wrapping a com.google.summit.ast.Node.
     // This is to allow synthetic ASTMethod nodes.
@@ -149,5 +156,15 @@ public final class ASTMethod extends AbstractApexNode implements ApexQualifiable
 
     public int getArity() {
         return parameterTypes.size();
+    }
+
+    /**
+     * Checks whether this method is the synthetic trigger method.
+     * @return true if this method is the synthetic trigger method
+     * @since 7.5.0
+     */
+    @NoAttribute
+    public boolean isTriggerBlock() {
+        return TRIGGER_INVOKE_ID.equals(internalName);
     }
 }

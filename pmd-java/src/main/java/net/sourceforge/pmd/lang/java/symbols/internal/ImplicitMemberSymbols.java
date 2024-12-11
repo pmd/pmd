@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JRecordComponentSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.Substitution;
@@ -105,7 +106,7 @@ public final class ImplicitMemberSymbols {
 
     /** Symbol for the canonical record constructor. */
     public static JConstructorSymbol recordConstructor(JClassSymbol recordSym,
-                                                       List<JFieldSymbol> recordComponents,
+                                                       List<JRecordComponentSymbol> recordComponents,
                                                        boolean isVarargs) {
         assert recordSym.isRecord() : "Not a record symbol " + recordSym;
 
@@ -117,7 +118,7 @@ public final class ImplicitMemberSymbols {
             modifiers,
             CollectionUtil.map(
                 recordComponents,
-                f -> c -> new FakeFormalParamSym(c, f.getSimpleName(), f.tryGetNode(), (ts, sym) -> f.getTypeMirror(Substitution.EMPTY))
+                f -> c -> new FakeFormalParamSym(c, f.getSimpleName(), f.tryGetNode().getVarId(), (ts, sym) -> f.getTypeMirror(Substitution.EMPTY))
             )
         );
     }
@@ -126,7 +127,7 @@ public final class ImplicitMemberSymbols {
      * Symbol for a record component accessor.
      * Only synthesized if it is not explicitly declared.
      */
-    public static JMethodSymbol recordAccessor(JClassSymbol recordSym, JFieldSymbol recordComponent) {
+    public static JMethodSymbol recordAccessor(JClassSymbol recordSym, JRecordComponentSymbol recordComponent) {
         // See https://cr.openjdk.java.net/~gbierman/jep359/jep359-20200115/specs/records-jls.html#jls-8.10.3
 
         assert recordSym.isRecord() : "Not a record symbol " + recordSym;

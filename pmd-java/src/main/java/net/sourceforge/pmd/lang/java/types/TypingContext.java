@@ -49,7 +49,7 @@ public final class TypingContext extends MapFunction<JVariableSymbol, @Nullable 
         return new TypingContext(this, map);
     }
 
-    public TypingContext andThenZip(List<JVariableSymbol> symbols, List<JTypeMirror> types) {
+    public TypingContext andThenZip(List<JVariableSymbol> symbols, List<? extends JTypeMirror> types) {
         AssertionUtil.requireParamNotNull("symbols", symbols);
         AssertionUtil.requireParamNotNull("types", types);
         if (symbols.size() != types.size()) {

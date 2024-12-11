@@ -12,36 +12,50 @@ author: David Dixon-Peugh <dpeugh@users.sourceforge.net>
 ### Codacy
 
 [Codacy](https://www.codacy.com/) automates code reviews and monitors code quality on every commit and pull request.
-It gives visibility into the technical debt and it can track code style and security issues, code coverage, code duplication, cyclomatic complexity and enforce best practices.
+It gives visibility into the technical debt and can track code style and security issues, code coverage, code
+duplication, cyclomatic complexity and enforce best practices.
 Codacy is static analysis without the hassle.
 
 With Codacy you have PMDJava analysis out-of-the-box, and it is free for open source projects.
 
-* Homepage: [https://www.codacy.com/](https://www.codacy.com/)
-* Source code: [https://github.com/codacy/codacy-pmdjava](https://github.com/codacy/codacy-pmdjava)
+* Homepage: <https://www.codacy.com/>
+* Source code: <https://github.com/codacy/codacy-pmdjava>
 * Maintainer: Codacy
+
+### Codety
+
+[Codety](https://www.codety.io/) provides comprehensive code scanning solution designed to detect code issues for
+30+ programming languages and IaC frameworks. It embeds more than 6,000 code analysis rules (including pmd rules)
+and can detect code smells, vulnerable code, secrets in the code, performance issues, style violations, and more.
+
+Codety Scanner provides out-of-the-box PMD integration, it is free for personal and commercial use.
+
+* Homepage: <https://www.codety.io/>
+* Source code: <https://github.com/codetyio/codety-scanner>
 
 ### Codiga
 
-[Codiga](https://www.codiga.io) automates code review, check your code quality and helps you manage your technical debt.
-It is integrated with GitHub, GitLab and Bitbucket. The platform also analyzes code directly in your IDE using its integration
-plugins for VS Code and IntelliJ, providing a consistent analysis along your development cycle (from the IDE to the CI/CD pipeline).
+[Codiga](https://www.codiga.io) automates code review, check your code quality and helps you manage your
+technical debt. It is integrated with GitHub, GitLab and Bitbucket. The platform also analyzes code directly in
+your IDE using its integration plugins for VS Code and IntelliJ, providing a consistent analysis along your
+development cycle (from the IDE to the CI/CD pipeline).
 
 Codiga uses PMD to check Java and Apex code.
 
-* Homepage: [https://www.codiga.io](https://www.codiga.io)
-* Documentation: [https://doc.codiga.io](https://doc.codiga.io)
+* Homepage: <https://www.codiga.io>
+* Documentation: <https://doc.codiga.io>
 
 ### GitHub Actions
 
 PMD provides its own GitHub Action, that can be integrated in custom workflows.
 
-It can execute PMD with your own ruleset against your project. It creates a [SARIF](https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html)
-report which is uploaded as a build artifact. Furthermore the build can be failed based on the number of violations.
+It can execute PMD with your own ruleset against your project. It creates a
+[SARIF](https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html) report which is uploaded as a
+build artifact. Furthermore, the build can be failed based on the number of violations.
 
 The action can also be used as a code scanner to create "Code scanning alerts".
 
-* Homepage: [pmd/pmd-github-action](https://github.com/pmd/pmd-github-action)
+* Homepage: <https://github.com/pmd/pmd-github-action>
 
 ### TCA
 
@@ -57,9 +71,9 @@ code quality, and be more conducive to inheriting an excellent team code culture
 
 With TCA you have PMD analysis out-of-the-box, and it is open source under the MIT license.
 
-* Homepage: [http://tca.tencent.com/](http://tca.tencent.com/)
-* Source code: [https://github.com/Tencent/CodeAnalysis](https://github.com/Tencent/CodeAnalysis)
-* Documentation: [https://tencent.github.io/CodeAnalysis](https://tencent.github.io/CodeAnalysis)
+* Homepage: <https://tca.tencent.com/>
+* Source code: <https://github.com/Tencent/CodeAnalysis>
+* Documentation: <https://tencent.github.io/CodeAnalysis>
 * Maintainer: TCA
 
 ## IDE Integrations
@@ -77,7 +91,7 @@ With TCA you have PMD analysis out-of-the-box, and it is open source under the M
     <tr>
         <td><a href="#bluej">BlueJ</a></td>
         <td></td>
-        <td><a href="https://github.com/pmd/pmd-misc/tree/master/pmd-bluej/">pmd-bluej</a></td>
+        <td><a href="https://github.com/pmd/pmd-misc/tree/main/pmd-bluej/">pmd-bluej</a></td>
         <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
     </tr>
 
@@ -119,7 +133,7 @@ With TCA you have PMD analysis out-of-the-box, and it is open source under the M
     <tr>
         <td><a href="#gel">Gel</a></td>
         <td></td>
-        <td><a href="https://github.com/pmd/pmd-misc/tree/master/pmd-gel/">github: pmd/pmd-misc/pmd-gel</a></td>
+        <td><a href="https://github.com/pmd/pmd-misc/tree/main/pmd-gel/">github: pmd/pmd-misc/pmd-gel</a></td>
         <td>Andrei Lumianski</td>
     </tr>
 
@@ -147,7 +161,7 @@ With TCA you have PMD analysis out-of-the-box, and it is open source under the M
     <tr>
         <td><a href="#jbuilder">JBuilder</a></td>
         <td></td>
-        <td><a href="https://github.com/pmd/pmd-misc/tree/master/pmd-jbuilder/">github: pmd/pmd-misc/pmd-jbuilder</a></td>
+        <td><a href="https://github.com/pmd/pmd-misc/tree/main/pmd-jbuilder/">github: pmd/pmd-misc/pmd-jbuilder</a></td>
         <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
     </tr>
 

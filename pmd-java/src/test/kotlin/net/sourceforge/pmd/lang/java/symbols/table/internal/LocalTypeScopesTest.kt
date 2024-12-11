@@ -5,11 +5,11 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.JClassType
 import net.sourceforge.pmd.lang.java.types.shouldHaveType
 import net.sourceforge.pmd.lang.java.types.typeDsl
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 
 class LocalTypeScopesTest : ParserTestSpec({
     parserTestContainer("Scoping of types in a compilation unit") {
@@ -112,7 +112,7 @@ class LocalTypeScopesTest : ParserTestSpec({
         }
 
         doTest("Inside extends clause: Inner is the import") {
-            foo.superClassTypeNode.symbolTable.shouldResolveTypeTo<JClassType>("Inner").let {
+            foo.superClassTypeNode!!.symbolTable.shouldResolveTypeTo<JClassType>("Inner").let {
                 it.symbol::getCanonicalName shouldBe "somewhere.Inner"
             }
         }

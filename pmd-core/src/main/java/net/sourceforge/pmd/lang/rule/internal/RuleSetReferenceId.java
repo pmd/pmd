@@ -70,8 +70,8 @@ import net.sourceforge.pmd.util.internal.ResourceLoader;
  *     <td>EmptyCatchBlock</td>
  * </tr>
  * <tr>
- *     <td>https://raw.githubusercontent.com/pmd/pmd/master/<wbr />pmd-java/src/main/resources/<wbr />rulesets/java/quickstart.xml/ConstantsInInterface</td>
- *     <td>https://raw.githubusercontent.com/pmd/pmd/master/<wbr />pmd-java/src/main/resources/<wbr />rulesets/java/quickstart.xml</td>
+ *     <td>https://raw.githubusercontent.com/pmd/pmd/main/<wbr />pmd-java/src/main/resources/<wbr />rulesets/java/quickstart.xml/ConstantsInInterface</td>
+ *     <td>https://raw.githubusercontent.com/pmd/pmd/main/<wbr />pmd-java/src/main/resources/<wbr />rulesets/java/quickstart.xml</td>
  *     <td>ConstantsInInterface</td>
  * </tr>
  * <tr>

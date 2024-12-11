@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -13,6 +14,7 @@ import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.ast.internal.LazyTypeResolver;
@@ -25,28 +27,23 @@ import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
  * <pre class="grammar">
  *
  * CompilationUnit ::= OrdinaryCompilationUnit
- *                   | UnnamedClassCompilationUnit
+ *                   | SimpleCompilationUnit
  *                   | ModularCompilationUnit
  *
- * RegularCompilationUnit ::=
+ * OrdinaryCompilationUnit ::=
  *   {@linkplain ASTPackageDeclaration PackageDeclaration}?
  *   {@linkplain ASTImportDeclaration ImportDeclaration}*
  *   {@linkplain ASTTypeDeclaration TypeDeclaration}*
  *
- * UnnamedClassCompilationUnit ::=
+ * SimpleCompilationUnit ::=
  *   {@linkplain ASTImportDeclaration ImportDeclaration}*
- *   {@linkplain ASTFieldDeclaration FieldDeclaration}*
- *   {@linkplain ASTMethodDeclaration MethodDeclaration}
- *   {@linkplain ASTBodyDeclaration BodyDeclaration}*
+ *   {@linkplain ASTImplicitClassDeclaration ImplicitClassDeclaration}
  *
  * ModularCompilationUnit ::=
  *   {@linkplain ASTImportDeclaration ImportDeclaration}*
  *   {@linkplain ASTModuleDeclaration ModuleDeclaration}
  *
  * </pre>
- *
- * @see <a href="https://openjdk.org/jeps/445">JEP 445: Unnamed Classes and Instance Main Methods (Preview)</a> (Java 21)
- * @see #isUnnamedClass()
  */
 public final class ASTCompilationUnit extends AbstractJavaNode implements RootNode {
 
@@ -73,7 +70,37 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements RootNo
     }
 
     void setComments(List<JavaComment> comments) {
-        this.comments = comments;
+        List<JavaComment> result = new ArrayList<>();
+
+        // collapses single line markdown comments into consecutive JavadocComments
+        List<JavaComment> currentMarkdownBlock = null;
+
+        for (JavaComment comment : comments) {
+            if (JavaAstUtils.isMarkdownComment(comment.getToken())) {
+                if (currentMarkdownBlock == null) {
+                    currentMarkdownBlock = new ArrayList<>();
+                } else {
+                    JavaComment lastComment = currentMarkdownBlock.get(currentMarkdownBlock.size() - 1);
+                    int lastCommentLine = lastComment.getReportLocation().getStartLine();
+                    if (comment.getReportLocation().getStartLine() - lastCommentLine > 1) {
+                        result.add(new JavadocComment(currentMarkdownBlock));
+                        currentMarkdownBlock = new ArrayList<>();
+                    }
+                }
+                currentMarkdownBlock.add(comment);
+            } else {
+                if (currentMarkdownBlock != null) {
+                    result.add(new JavadocComment(currentMarkdownBlock));
+                    currentMarkdownBlock = null;
+                }
+                result.add(comment);
+            }
+        }
+        if (currentMarkdownBlock != null) {
+            result.add(new JavadocComment(currentMarkdownBlock));
+        }
+
+        this.comments = result;
     }
 
 
@@ -137,9 +164,9 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements RootNo
         return lazyTypeResolver;
     }
 
-    @Experimental("Unnamed classes is a Java 21 Preview feature")
+    @Experimental("Implicitly Declared Classes and Instance Main Methods is a Java 22 / Java 23 Preview feature")
     @NoAttribute
-    public boolean isUnnamedClass() {
-        return children(ASTMethodDeclaration.class).nonEmpty();
+    public boolean isSimpleCompilationUnit() {
+        return children(ASTImplicitClassDeclaration.class).nonEmpty();
     }
 }

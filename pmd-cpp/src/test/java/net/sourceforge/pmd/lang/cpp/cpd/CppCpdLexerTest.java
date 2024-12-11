@@ -60,6 +60,16 @@ class CppCpdLexerTest extends CpdTextComparisonTest {
     }
 
     @Test
+    void testIgnoreLiterals() {
+        doTest("ignoreLiterals", "", ignoreLiterals());
+    }
+
+    @Test
+    void testIgnoreIdents() {
+        doTest("ignoreIdents", "", ignoreIdents());
+    }
+
+    @Test
     void testMultiLineMacros() {
         doTest("multilineMacros");
     }
@@ -142,7 +152,7 @@ class CppCpdLexerTest extends CpdTextComparisonTest {
     }
 
     private static LanguagePropertyConfig skipBlocks(String skipPattern) {
-        return properties(true, skipPattern, false, false);
+        return properties(true, skipPattern, false, false, false, false);
     }
 
     private static LanguagePropertyConfig skipBlocks() {
@@ -150,22 +160,31 @@ class CppCpdLexerTest extends CpdTextComparisonTest {
     }
 
     private static LanguagePropertyConfig dontSkipBlocks() {
-        return properties(false, null, false, false);
+        return properties(false, null, false, false, false, false);
     }
 
     private static LanguagePropertyConfig skipLiteralSequences() {
-        return properties(false, null, true, false);
+        return properties(false, null, true, false, false, false);
     }
 
     private static LanguagePropertyConfig skipIdentifierAndLiteralsSequences() {
-        return properties(false, null, true, true);
+        return properties(false, null, true, true, false, false);
     }
 
     private static LanguagePropertyConfig skipIdentifierSequences() {
-        return properties(false, null, false, true);
+        return properties(false, null, false, true, false, false);
     }
 
-    private static LanguagePropertyConfig properties(boolean skipBlocks, String skipPattern, boolean skipLiteralSequences, boolean skipSequences) {
+    private static LanguagePropertyConfig ignoreIdents() {
+        return properties(false, null, false, false, false, true);
+    }
+
+    private static LanguagePropertyConfig ignoreLiterals() {
+        return properties(false, null, false, false, true, false);
+    }
+
+
+    private static LanguagePropertyConfig properties(boolean skipBlocks, String skipPattern, boolean skipLiteralSequences, boolean skipSequences, boolean ignoreLiterals, boolean ignoreIdents) {
         return properties -> {
             if (!skipBlocks) {
                 properties.setProperty(CppLanguageModule.CPD_SKIP_BLOCKS, "");
@@ -174,6 +193,8 @@ class CppCpdLexerTest extends CpdTextComparisonTest {
             }
             properties.setProperty(CpdLanguageProperties.CPD_IGNORE_LITERAL_SEQUENCES, skipLiteralSequences);
             properties.setProperty(CpdLanguageProperties.CPD_IGNORE_LITERAL_AND_IDENTIFIER_SEQUENCES, skipSequences);
+            properties.setProperty(CpdLanguageProperties.CPD_ANONYMIZE_LITERALS, ignoreLiterals);
+            properties.setProperty(CpdLanguageProperties.CPD_ANONYMIZE_IDENTIFIERS, ignoreIdents);
         };
     }
 }

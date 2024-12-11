@@ -210,7 +210,7 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
 
     private @NonNull OptionalBool unresolvedTypeFallback(JTypeMirror si, JTypeMirror ti, ExprMirror argExpr) {
         JTypeMirror standalone = argExpr.getStandaloneType();
-        if (standalone != null && TypeOps.isUnresolved(standalone)) {
+        if (TypeOps.hasUnresolvedSymbolOrArray(standalone)) {
             if (standalone.equals(si)) {
                 return YES;
             } else if (standalone.equals(ti)) {

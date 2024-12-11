@@ -21,7 +21,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @see <a href="https://openjdk.org/jeps/394">JEP 394: Pattern Matching for instanceof</a> (Java 16)
 */
-public final class ASTTypePattern extends AbstractJavaNode implements ASTPattern, ModifierOwner {
+public final class ASTTypePattern extends AbstractJavaPattern implements ModifierOwner {
 
     ASTTypePattern(int id) {
         super(id);

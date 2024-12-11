@@ -3,7 +3,7 @@ title: How to add a new CPD language
 short_title: Adding a new CPD language
 tags: [devdocs, extending]
 summary: How to add a new language module with CPD support.
-last_updated: April 2023 (7.0.0)
+last_updated: June 2024 (7.3.0)
 permalink: pmd_devdocs_major_adding_new_cpd_language.html
 author: Matías Fraga, Clément Fournier
 ---
@@ -20,18 +20,19 @@ easy to implement the Tokenizer interface.
 
 Use the following guide to set up a new language module that supports CPD.
 
-1. Create a new Maven module for your language. You can take [the Golang module](https://github.com/pmd/pmd/tree/master/pmd-go/pom.xml) as an example.
+1. Create a new Maven module for your language. You can take [the Golang module](https://github.com/pmd/pmd/tree/main/pmd-go/pom.xml) as an example.
    - Make sure to add your new module to the parent pom as `<module>` entry, so that it is built alongside the
      other languages.
    - Also add your new module to the dependencies list in "pmd-languages-deps/pom.xml", so that the new language
      is automatically available in the binary distribution (pmd-dist).
 
 2. Implement a {% jdoc core::cpd.CpdLexer %}.
-    - For Antlr grammars you can take the grammar from [antlr/grammars-v4](https://github.com/antlr/grammars-v4) and place it in `src/main/antlr4` followed by the package name of the language. You then need to call the appropriate ant wrapper to generate
-    the lexer from the grammar. To do so, edit `pom.xml` (eg like [the Golang module](https://github.com/pmd/pmd/tree/master/pmd-go/pom.xml)).
+    - For Antlr grammars you can take the grammar from [antlr/grammars-v4](https://github.com/antlr/grammars-v4) and place it in `src/main/antlr4` followed by the package name of the language. You then need to call the antlr4 plugin and the appropriate ant wrapper with target `cpd-language` to generate
+    the lexer from the grammar. To do so, edit `pom.xml` (eg like [the Golang module](https://github.com/pmd/pmd/tree/main/pmd-go/pom.xml)).
       Once that is done, `mvn generate-sources` should generate the lexer sources for you.
 
       You can now implement a CpdLexer, for instance by extending {% jdoc core::cpd.impl.AntlrCpdLexer %}. The following reproduces the Go implementation:
+
     ```java
     // mind the package convention if you are going to make a PR
     package net.sourceforge.pmd.lang.go.cpd;
@@ -45,8 +46,15 @@ Use the following guide to set up a new language module that supports CPD.
     }
     ```
     
-    - For JavaCC grammars, place your grammar in `etc/grammar` and edit the `pom.xml` like the [Python implementation](https://github.com/pmd/pmd/blob/master/pmd-python/pom.xml) does.
+    - If your language is case-insensitive, then you might want to overwrite `getImage(AntlrToken)`. There you can
+      change each token e.g. into uppercase, so that CPD sees the same strings and can find duplicates even when
+      the casing differs. See {% jdoc tsql::lang.tsql.cpd.TSqlCpdLexer %} for an example. You will also need a
+      "CaseChangingCharStream", so that antlr itself is case-insensitive.
+    - For JavaCC grammars, place your grammar in `etc/grammar` and edit the `pom.xml` like the [Python implementation](https://github.com/pmd/pmd/blob/main/pmd-python/pom.xml) does.
       You can then subclass {% jdoc core::cpd.impl.JavaccCpdLexer %} instead of AntlrCpdLexer.
+    - If your JavaCC based language is case-insensitive (option `IGNORE_CASE=true`), then you need to implement
+      {%jdoc core::lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior %}, which can change each token
+      e.g. into uppercase. See {%jdoc plsql::lang.plsql.ast.PLSQLParser %} for an example.
     - For any other scenario just implement the interface however you can. Look at the Scala or Apex module for existing implementations.
 
 3. Create a {% jdoc core::lang.Language %} implementation, and make it implement {% jdoc core::cpd.CpdCapableLanguage %}.
@@ -75,7 +83,7 @@ If your language only supports CPD, then you can subclass {% jdoc core::lang.imp
 
    At this point the new language module should be available in {% jdoc core::lang.LanguageRegistry#CPD %} and usable by CPD like any other language.
 
-4. Update the test that asserts the list of supported languages by updating the `SUPPORTED_LANGUAGES` constant in [BinaryDistributionIT](https://github.com/pmd/pmd/blob/master/pmd-dist/src/test/java/net/sourceforge/pmd/dist/BinaryDistributionIT.java).
+4. Update the test that asserts the list of supported languages by updating the `SUPPORTED_LANGUAGES` constant in [BinaryDistributionIT](https://github.com/pmd/pmd/blob/main/pmd-dist/src/test/java/net/sourceforge/pmd/dist/BinaryDistributionIT.java).
 
 5. Add some tests for your CpdLexer by following the [section below](#testing-your-implementation).
 
@@ -112,7 +120,7 @@ of {% jdoc core::cpd.CpdCapableLanguage#createCpdTokenizer(core::lang.LanguagePr
 
 To implement simple token filtering, you can use {% jdoc core::cpd.impl.BaseTokenFilter %}
 as a base class, or another base class in {% jdoc_package core::cpd.impl %}.
-Take a look at the [Kotlin token filter implementation](https://github.com/pmd/pmd/blob/master/pmd-kotlin/src/main/java/net/sourceforge/pmd/lang/kotlin/cpd/KotlinCpdLexer.java), or the [Java one](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/cpd/JavaCpdLexer.java).
+Take a look at the [Kotlin token filter implementation](https://github.com/pmd/pmd/blob/main/pmd-kotlin/src/main/java/net/sourceforge/pmd/lang/kotlin/cpd/KotlinCpdLexer.java), or the [Java one](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/cpd/JavaCpdLexer.java).
 
 
 ### Testing your implementation

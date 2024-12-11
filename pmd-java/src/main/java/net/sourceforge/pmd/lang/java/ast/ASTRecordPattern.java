@@ -17,7 +17,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * @see ASTRecordDeclaration
  * @see <a href="https://openjdk.org/jeps/440">JEP 440: Record Patterns</a> (Java 21)
 */
-public final class ASTRecordPattern extends AbstractJavaNode implements ASTPattern {
+public final class ASTRecordPattern extends AbstractJavaPattern {
 
     ASTRecordPattern(int id) {
         super(id);
@@ -29,13 +29,31 @@ public final class ASTRecordPattern extends AbstractJavaNode implements ASTPatte
     }
 
     /**
-     * Gets the type against which the expression is tested.
+     * Return the type of the record.
      */
     public ASTReferenceType getTypeNode() {
         return firstChild(ASTReferenceType.class);
     }
 
-    /** Returns the declared variable. */
+
+    /**
+     * Return the patterns for each record component.
+     *
+     * @since 7.3.0
+     */
+    public ASTPatternList getComponentPatterns() {
+        return firstChild(ASTPatternList.class);
+    }
+
+
+    /**
+     * Returns the declared variable.
+     *
+     * @deprecated This method was added here by mistake. Record patterns don't declare a pattern variable
+     * for the whole pattern, but rather for individual record components, which can be accessed via
+     * {@link #getComponentPatterns()}.
+     */
+    @Deprecated
     public ASTVariableId getVarId() {
         return firstChild(ASTVariableId.class);
     }

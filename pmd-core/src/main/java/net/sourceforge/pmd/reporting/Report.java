@@ -22,8 +22,8 @@ import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.util.BaseResultProducingCloseable;
 
 /**
- * A {@link Report} collects all information during a PMD execution. This
- * includes violations, suppressed violations, metrics, error during processing
+ * A {@link Report} collects all information during a PMD execution. This includes violations,
+ * suppressed violations, metrics, recoverable errors (that occurred during processing)
  * and configuration errors.
  *
  * <p>A report may be created by a {@link GlobalReportBuilderListener} that you
@@ -50,7 +50,10 @@ public final class Report {
     }
 
     /**
-     * Represents a configuration error.
+     * Represents a configuration error for a specific rule.
+     *
+     * <p>This might be a missing rule property
+     * or rule property with pointless values.
      */
     public static class ConfigurationError {
 
@@ -90,7 +93,15 @@ public final class Report {
     }
 
     /**
-     * Represents a processing error, such as a parse error.
+     * Represents a recovered error that occurred during analysis.
+     *
+     * <p>This might be a parse error or an unexpected error originating from a rule.
+     * Such errors are called recoverable, because PMD can just skip
+     * the problematic file, continue the analysis with the other files and still create a report.
+     * However, due to these errors, the report might be incomplete.
+     *
+     * <p>Some report formats, such as {@link net.sourceforge.pmd.renderers.XMLRenderer}, include these
+     * errors for further investigation.
      */
     public static class ProcessingError {
 
@@ -98,7 +109,7 @@ public final class Report {
         private final FileId file;
 
         /**
-         * Creates a new processing error
+         * Creates a new processing error.
          *
          * @param error
          *            the error

@@ -12,8 +12,11 @@ import static net.sourceforge.pmd.util.AssertionUtil.isValidJavaPackageName;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BinaryOperator;
 
@@ -188,33 +191,68 @@ final class SymTableFactory {
             assert anImport.isImportOnDemand() : "Expected import on demand: " + anImport;
 
             if (anImport.isStatic()) {
-                // Static-Import-on-Demand Declaration
-                // A static-import-on-demand declaration allows all accessible static members of a named type to be imported as needed.
-                // includes types members, methods & fields
-
-                @Nullable JClassSymbol containerClass = loadClassReportFailure(anImport, anImport.getImportedName());
-                if (containerClass != null) {
-                    // populate the inherited state
-
-                    JClassType containerType = (JClassType) containerClass.getTypeSystem().typeOf(containerClass, false);
-
-                    Pair<ShadowChainBuilder<JTypeMirror, ?>.ResolverBuilder, ShadowChainBuilder<JVariableSig, ?>.ResolverBuilder> pair =
-                        JavaResolvers.importOnDemandMembersResolvers(containerType, thisPackage);
-
-                    importedTypes.absorb(pair.getLeft());
-                    importedFields.absorb(pair.getRight());
-
-                    importedMethodContainers.add(containerType);
-                }
-
-                // can't be resolved sorry
-
+                fillStaticImportOnDemand(Optional.of(anImport), anImport.getImportedName(),
+                        importedTypes, importedFields, importedMethodContainers);
             } else {
                 // Type-Import-on-Demand Declaration
                 // This is of the kind <packageName>.*;
                 importedPackagesAndTypes.add(anImport.getPackageName());
             }
         }
+    }
+
+    private void fillStaticImportOnDemand(Optional<JavaNode> reportLocation, String importedName,
+                                          ShadowChainBuilder<JTypeMirror, ?>.ResolverBuilder importedTypes,
+                                          ShadowChainBuilder<JVariableSig, ?>.ResolverBuilder importedFields,
+                                          List<JClassType> importedMethodContainers) {
+        // Static-Import-on-Demand Declaration
+        // A static-import-on-demand declaration allows all accessible static members of a named type to be imported as needed.
+        // includes types members, methods & fields
+
+        @Nullable JClassSymbol containerClass;
+        if (reportLocation.isPresent()) {
+            containerClass = loadClassReportFailure(reportLocation.get(), importedName);
+        } else {
+            containerClass = loadClassOrFail(importedName);
+        }
+        if (containerClass != null) {
+            // populate the inherited state
+
+            JClassType containerType = (JClassType) containerClass.getTypeSystem().typeOf(containerClass, false);
+
+            Pair<ShadowChainBuilder<JTypeMirror, ?>.ResolverBuilder, ShadowChainBuilder<JVariableSig, ?>.ResolverBuilder> pair =
+                    JavaResolvers.importOnDemandMembersResolvers(containerType, thisPackage);
+
+            importedTypes.absorb(pair.getLeft());
+            importedFields.absorb(pair.getRight());
+
+            importedMethodContainers.add(containerType);
+        }
+
+        // can't be resolved sorry
+    }
+
+    JSymbolTable moduleImports(JSymbolTable parent, Collection<ASTImportDeclaration> moduleImports) {
+        if (moduleImports.isEmpty()) {
+            return parent;
+        }
+
+        Set<String> lazyImportedModules = new HashSet<>();
+        for (ASTImportDeclaration anImport : moduleImports) {
+            assert anImport.isModuleImport() : "Expected module import: " + anImport;
+            lazyImportedModules.add(anImport.getImportedName());
+        }
+
+        ShadowChainBuilder<JTypeMirror, ScopeInfo>.ResolverBuilder importedTypes = TYPES.new ResolverBuilder();
+
+        ShadowChainNode<JTypeMirror, ScopeInfo> types = TYPES.shadowWithCache(
+                typeNode(parent),
+                ScopeInfo.MODULE_IMPORT,
+                importedTypes.getMutableMap(),
+                JavaResolvers.moduleImport(lazyImportedModules, processor.getSymResolver(), thisPackage)
+        );
+
+        return SymbolTableImpl.withTypes(parent, types);
     }
 
 
@@ -305,6 +343,37 @@ final class SymTableFactory {
 
     JSymbolTable javaLangSymTable(JSymbolTable parent) {
         return typesInPackage(parent, "java.lang", ScopeInfo.JAVA_LANG);
+    }
+
+    JSymbolTable moduleImportJavaBase(JSymbolTable parent) {
+        ShadowChainBuilder<JTypeMirror, ScopeInfo>.ResolverBuilder importedTypes = TYPES.new ResolverBuilder();
+
+        ShadowChainNode<JTypeMirror, ScopeInfo> types = TYPES.shadowWithCache(
+                typeNode(parent),
+                ScopeInfo.SIMPLE_COMPILATION_UNIT,
+                importedTypes.getMutableMap(),
+                JavaResolvers.moduleImport(Collections.singleton("java.base"), processor.getSymResolver(), thisPackage)
+        );
+
+        return SymbolTableImpl.withTypes(parent, types);
+    }
+
+    JSymbolTable importsOnDemandJavaIo(JSymbolTable parent) {
+        ShadowChainBuilder<JTypeMirror, ScopeInfo>.ResolverBuilder importedTypes = TYPES.new ResolverBuilder();
+        ShadowChainBuilder<JVariableSig, ScopeInfo>.ResolverBuilder importedFields = VARS.new ResolverBuilder();
+        List<JClassType> importedMethodContainers = new ArrayList<>();
+
+        fillStaticImportOnDemand(Optional.empty(), "java.io.IO", importedTypes, importedFields, importedMethodContainers);
+
+        NameResolver<JMethodSig> methodResolver =
+                NameResolver.composite(CollectionUtil.map(importedMethodContainers, c -> JavaResolvers.staticImportOnDemandMethodResolver(c, thisPackage)));
+
+        ShadowChainNode<JVariableSig, ScopeInfo> vars = VARS.shadow(varNode(parent), ScopeInfo.SIMPLE_COMPILATION_UNIT, importedFields);
+        ShadowChainNode<JMethodSig, ScopeInfo> methods = METHODS.shadow(methodNode(parent), ScopeInfo.SIMPLE_COMPILATION_UNIT, methodResolver);
+        // then we don't need to use the lazy impl
+        ShadowChainNode<JTypeMirror, ScopeInfo> types = TYPES.shadow(typeNode(parent), ScopeInfo.SIMPLE_COMPILATION_UNIT, importedTypes);
+
+        return buildTable(parent, vars, methods, types);
     }
 
     JSymbolTable samePackageSymTable(JSymbolTable parent) {

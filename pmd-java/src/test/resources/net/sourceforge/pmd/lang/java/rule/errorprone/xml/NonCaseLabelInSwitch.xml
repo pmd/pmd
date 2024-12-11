@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>label inside switch statement, not ok</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void bar(int x) {
+        switch (x) {
+            case 2: int y=8;
+            somelabel:
+                break;
+            default:
+                int j=8;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>label inside switch expression, not ok</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void bar(int x) {
+        x = switch (x) {
+            case 2: int y=8;
+            somelabel:
+                yield y;
+            default:
+                int j=8;
+                yield j;
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>only cases in switch statement, ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(int x) {
+        switch (x) {
+            case 2: int y=8;
+                break;
+            default:
+                int j=8;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>only cases in switch expression, ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(int x) {
+        x = switch (x) {
+            case 2: int y=8;
+                yield y;
+            default:
+                int j=8;
+                yield j;
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>label in switch statement with arrow syntax, not ok</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void bar(int x) {
+        switch (x) {
+            case 2 -> {
+                int y=8;
+            somelabel:
+                break;
+            }
+            default -> {
+                int j=8;
+            }
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>label in switch expression with arrow syntax, not ok</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void bar(int x) {
+        x = switch (x) {
+            case 2 -> { int y=8;
+            somelabel:
+                yield y;
+            }
+            default -> {
+                int j=8;
+                yield j;
+            }
+        };
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>only cases in switch stmt/expr with arrow syntax, ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(int x) {
+        switch (x) {
+            case 2 -> {
+                int y=8;
+                break;
+            }
+            default -> {
+                int j=8;
+            }
+        }
+    }
+    void barArrow(int x) {
+        x = switch (x) {
+            case 2 -> { int y=8;
+                yield y;
+            }
+            default -> {
+                int j=8;
+                yield j;
+            }
+        };
+    }
+}
+]]></code>
+    </test-code>
+</test-data>

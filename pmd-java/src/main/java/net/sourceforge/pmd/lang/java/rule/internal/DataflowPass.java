@@ -636,7 +636,16 @@ public final class DataflowPass {
                 SpanInfo exceptionalState = null;
                 int i = 0;
                 for (ASTCatchClause catchClause : node.getCatchClauses()) {
-                    SpanInfo current = acceptOpt(catchClause, catchSpans.get(i));
+                    /*
+                        Note: here we absorb the end state of the body, which is not necessary.
+                        We do that to conform to the language's definition of "effective-finality",
+                        which is more conservative than needed. Doing this fixes FPs in LocalVariableCouldBeFinal
+                        at the cost of some FNs in UnusedAssignment.
+                     */
+                    SpanInfo catchSpan = catchSpans.get(i);
+                    catchSpan.absorb(bodyState);
+
+                    SpanInfo current = acceptOpt(catchClause, catchSpan);
                     exceptionalState = current.absorb(exceptionalState);
                     i++;
                 }
@@ -1054,10 +1063,16 @@ public final class DataflowPass {
 
         @Override
         public SpanInfo visit(ASTThisExpression node, SpanInfo data) {
-            if (trackThisInstance() && !(node.getParent() instanceof ASTFieldAccess)) {
+            if (trackThisInstance() && isThisExprLeaking(node)) {
                 data.recordThisLeak(enclosingClassScope, node);
             }
             return data;
+        }
+
+        private static boolean isThisExprLeaking(ASTThisExpression node) {
+            boolean isAllowed = node.getParent() instanceof ASTFieldAccess
+                || node.getParent() instanceof ASTSynchronizedStatement;
+            return !isAllowed;
         }
 
         @Override
@@ -1202,7 +1217,7 @@ public final class DataflowPass {
             for (JFieldSymbol field : enclosingSym.getDeclaredFields()) {
                 if (!inStaticCtx || field.isStatic()) {
                     JavaNode escapingNode = enclosingSym.tryGetNode();
-                    state.assignOutOfScope(field, escapingNode, SpecialAssignmentKind.END_OF_CTOR);
+                    state.assignOutOfScope(field, escapingNode, SpecialAssignmentKind.INITIAL_FIELD_VALUE);
                 }
             }
         }
@@ -1397,11 +1412,7 @@ public final class DataflowPass {
                     continue;
                 }
 
-                // Final fields definitions are fully known since they
-                // have to occur in a ctor.
-                if (!field.isFinal()) {
-                    assign(field, id, SpecialAssignmentKind.INITIAL_FIELD_VALUE);
-                }
+                assign(field, id, SpecialAssignmentKind.INITIAL_FIELD_VALUE);
             }
         }
 
@@ -1844,8 +1855,7 @@ public final class DataflowPass {
     enum SpecialAssignmentKind {
         NOT_SPECIAL,
         UNKNOWN_METHOD_CALL,
-        INITIAL_FIELD_VALUE,
-        END_OF_CTOR;
+        INITIAL_FIELD_VALUE;
 
         boolean shouldJoinWithPreviousAssignment() {
             return this == UNKNOWN_METHOD_CALL;

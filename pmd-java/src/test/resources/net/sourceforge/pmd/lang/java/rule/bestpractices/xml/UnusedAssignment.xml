@@ -1198,21 +1198,23 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Definitions in try block reach catch blocks through method calls</description>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>4,7</expected-linenumbers>
+        <description>Definitions in try block reach catch blocks through method calls (#3975)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+<!--        <expected-linenumbers>4,7</expected-linenumbers>-->
         <expected-messages>
             <message>The initializer for variable 'halfway' is never used (overwritten on line 7)</message>
-            <message>The value assigned to variable 'halfway' is never used</message>
+            <!-- Violation on line 7 was disabled because it causes FPs in LocalVariableCouldBeFinal. - see PR #5191 -->
+            <!-- <message>The value assigned to variable 'halfway' is never used</message>-->
         </expected-messages>
         <code><![CDATA[
 public class Foo {
 
     void method() {
-        boolean halfway = false;
+        boolean halfway = false; // (line 4)
 
         try {
-            halfway = true; // this may not fail so the catch block is unreachable
+            halfway = true; // this may not fail so the catch block is unreachable (line 7)
         } catch(Exception e) {
             System.out.println(halfway);
         }
@@ -1224,7 +1226,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Definitions in try block reach catch blocks through method calls 2</description>
+        <description>Definitions in try block reach catch blocks through method calls 2 (#3975)</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
         <expected-messages>
@@ -1250,12 +1252,14 @@ public class Foo {
 ]]></code>
     </test-code>
     <test-code>
-        <description>Definitions in try block reach catch blocks through method calls 3</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
-        <expected-messages>
-            <message>The value assigned to variable 'halfway' is never used</message>
-        </expected-messages>
+        <description>Definitions in try block reach catch blocks through method calls 3 (#3975)</description>
+        <!-- This was disabled because it causes FPs in LocalVariableCouldBeFinal. - see PR #5191 -->
+        <expected-problems>0</expected-problems>
+<!--        <expected-problems>1</expected-problems>-->
+<!--        <expected-linenumbers>8</expected-linenumbers>-->
+<!--        <expected-messages>-->
+<!--            <message>The value assigned to variable 'halfway' is never used</message>-->
+<!--        </expected-messages>-->
         <code><![CDATA[
 public class Foo {
 
@@ -1328,7 +1332,7 @@ public class Foo {
         <expected-linenumbers>5,7,9</expected-linenumbers>
         <expected-messages>
             <message>The initializer for variable 'a' is never used (overwritten on lines 7, 9 and 11)</message>
-            <message>The value assigned to variable 'a' is never used (overwritten on line 11)</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on lines 9 and 11)</message>
             <message>The value assigned to variable 'a' is never used (overwritten on line 11)</message>
         </expected-messages>
         <code><![CDATA[
@@ -3923,6 +3927,29 @@ public class Main {
             break;
         }
         return r;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedAssignment false-positive with try-with-resources #4127</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.function.Function;
+
+class Lock implements Autocloseable {
+    public close() { }
+
+    private static Function<Integer, Lock> locks;
+    public static void foo() {
+        Lock lock;
+        synchronized (locks) {
+            lock = locks.get(0);
+        }
+        try (lock) {
+            // ...
+        }
     }
 }
 ]]></code>

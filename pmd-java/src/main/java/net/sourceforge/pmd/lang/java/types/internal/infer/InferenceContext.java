@@ -13,11 +13,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -38,6 +40,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.IncorporationAction.Pr
 import net.sourceforge.pmd.lang.java.types.internal.infer.IncorporationAction.SubstituteInst;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 import net.sourceforge.pmd.lang.java.types.internal.infer.VarWalkStrategy.GraphWalk;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Context of a type inference process. This object maintains a set of
@@ -51,6 +54,13 @@ final class InferenceContext {
     private static int ctxId = 0;
 
     private final Map<InstantiationListener, Set<InferenceVar>> instantiationListeners = new HashMap<>();
+    // explicit dependencies between variables for graph building
+    private final Map<InferenceVar, Set<InferenceVar>> instantiationConstraints = new HashMap<>();
+    // This flag is set to true when the explicit dependencies are changed,
+    // or when this context adopted new ivars. This means we should interrupt
+    // resolution and recompute the dependency graph between ivars, because
+    // the new variables may have dependencies on existing variables, and vice versa.
+    private boolean graphWasChanged = false;
 
     private final Set<InferenceVar> freeVars = new LinkedHashSet<>();
     private final Set<InferenceVar> inferenceVars = new LinkedHashSet<>();
@@ -127,17 +137,18 @@ final class InferenceContext {
         }
     }
 
-    public InferenceContext copy() {
+    /**
+     * Performs a shallow copy of this context, which would allow solving
+     * the variables without executing listeners. Instantiation listeners
+     * are not copied, and parent contexts are not copied.
+     */
+    public InferenceContext shallowCopy() {
         final InferenceContext copy = new InferenceContext(ts, supertypeCheckCache, Collections.emptyList(), logger);
         copy.freeVars.addAll(this.freeVars);
         copy.inferenceVars.addAll(this.inferenceVars);
         copy.incorporationActions.addAll(this.incorporationActions);
+        copy.instantiationConstraints.putAll(this.instantiationConstraints);
         copy.mapping = mapping; // mapping is immutable, so we can share it safely
-
-        // recursively copy parents…
-        if (this.parent != null) {
-            copy.parent = this.parent.copy();
-        }
 
         return copy;
     }
@@ -290,14 +301,40 @@ final class InferenceContext {
         });
     }
 
+
+    /**
+     * Replace instantiated inference vars with their instantiation in the given type,
+     * or else replace them with a wildcard.
+     */
+    static JTypeMirror groundOrWildcard(JTypeMirror t) {
+        return t.subst(s -> {
+            if (!(s instanceof InferenceVar)) {
+                return s;
+            } else {
+                InferenceVar ivar = (InferenceVar) s;
+                return ivar.getInst() != null ? ivar.getInst() : s.getTypeSystem().UNBOUNDED_WILD;
+            }
+        });
+    }
+
     /**
      * Copy variable in this inference context to the given context
      */
     void duplicateInto(final InferenceContext that) {
+        boolean changedGraph = !that.freeVars.containsAll(this.freeVars)
+            || !this.instantiationConstraints.isEmpty();
+        that.graphWasChanged |= changedGraph;
         that.inferenceVars.addAll(this.inferenceVars);
         that.freeVars.addAll(this.freeVars);
         that.incorporationActions.addAll(this.incorporationActions);
         that.instantiationListeners.putAll(this.instantiationListeners);
+        CollectionUtil.mergeMaps(
+            that.instantiationConstraints,
+            this.instantiationConstraints,
+            (set1, set2) -> {
+                set1.addAll(set2);
+                return set1;
+            });
 
         this.parent = that;
 
@@ -307,6 +344,30 @@ final class InferenceContext {
         }
     }
 
+
+    // The `from` ivars depend on the `dependencies` ivars for resolution.
+    void addInstantiationDependencies(Set<? extends InferenceVar> from, Set<? extends InferenceVar> dependencies) {
+        if (from.isEmpty()) {
+            return;
+        }
+        Set<InferenceVar> outputVars = new HashSet<>(dependencies);
+        outputVars.removeAll(from);
+        if (outputVars.isEmpty()) {
+            return;
+        }
+        for (InferenceVar inputVar : from) {
+            logger.ivarDependencyRegistered(this, inputVar, outputVars);
+            instantiationConstraints.merge(inputVar, outputVars, (o1, o2) -> {
+                o2 = new LinkedHashSet<>(o2);
+                o2.addAll(o1);
+                return o2;
+            });
+        }
+    }
+
+    Map<InferenceVar, Set<InferenceVar>> getInstantiationDependencies() {
+        return instantiationConstraints;
+    }
 
     void addInstantiationListener(Set<? extends JTypeMirror> relevantTypes, InstantiationListener listener) {
         Set<InferenceVar> free = freeVarsIn(relevantTypes);
@@ -432,7 +493,7 @@ final class InferenceContext {
     }
 
     boolean solve(boolean onlyBoundedVars) {
-        return solve(new GraphWalk(this, onlyBoundedVars));
+        return solve(() -> new GraphWalk(this, onlyBoundedVars));
     }
 
     /**
@@ -443,7 +504,28 @@ final class InferenceContext {
         solve(new GraphWalk(var));
     }
 
+
+    private boolean solve(Supplier<VarWalkStrategy> newWalker) {
+        VarWalkStrategy strategy = newWalker.get();
+        while (strategy != null) {
+            if (solve(strategy)) {
+                break;
+            }
+            strategy = newWalker.get();
+        }
+        return freeVars.isEmpty();
+    }
+
+
+    /**
+     * This returns true if solving the VarWalkStrategy succeeded entirely.
+     * Resolution can be interrupted early to account for new ivars and dependencies,
+     * which may change the graph dependencies. In this case this method returns
+     * false, we recompute the graph with the new ivars and dependencies, and
+     * we try again to make progress.
+     */
     private boolean solve(VarWalkStrategy walker) {
+        graphWasChanged = false;
         incorporate();
 
         while (walker.hasNext()) {
@@ -454,6 +536,12 @@ final class InferenceContext {
             //repeat until all variables are solved
             outer:
             while (!intersect(freeVars, varsToSolve).isEmpty() && progress) {
+                if (graphWasChanged) {
+                    graphWasChanged = false;
+                    logger.contextDependenciesChanged(this);
+                    return false;
+                }
+
                 progress = false;
                 for (List<ReductionStep> wave : ReductionStep.WAVES) {
                     if (solveBatchProgressed(varsToSolve, wave)) {
@@ -465,7 +553,7 @@ final class InferenceContext {
                 }
             }
         }
-        return freeVars.isEmpty();
+        return true;
     }
 
     /**

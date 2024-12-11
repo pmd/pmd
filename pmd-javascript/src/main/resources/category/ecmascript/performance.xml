@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <ruleset name="Performance"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -9,4 +8,42 @@
 Rules that flag suboptimal code.
     </description>
 
+    <rule name="AvoidConsoleStatements"
+          language="ecmascript"
+          since="7.5.0"
+          message="Avoid console statements since they negatively impact performance"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_performance.html#avoidconsolestatements">
+        <description>
+Using the console for logging in production might negatively impact performance.
+In addition, logging could expose sensitive data.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//FunctionCall[PropertyGet
+    [Name[1][@Identifier = 'console']]
+    [Name[2][@Identifier]]
+  ]
+|
+//FunctionCall[PropertyGet
+    [PropertyGet[1]
+        [Name[1][@Identifier = 'window']]
+        [Name[2][@Identifier = 'console']]
+    ]
+    [Name[1][@Identifier]]
+  ]
+
+]]>
+                </value>
+            </property>
+        </properties>
+        <example><![CDATA[
+var myObj = getData();
+console.log(myObj); // bad
+console.debug("myObj:", myObj); // bad
+]]></example>
+    </rule>
 </ruleset>

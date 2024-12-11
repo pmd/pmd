@@ -85,6 +85,10 @@ final class Lub {
                 list.add((JClassType) it);
             }
         }
+        if (list.isEmpty()) {
+            // there might be only the raw g type.
+            return null;
+        }
         return list;
     }
 

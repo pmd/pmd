@@ -28,6 +28,18 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>simple unused annotated private method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.symbols.testdata.MethodAnnotation;
+public class Foo {
+    @MethodAnnotation
+    private void foo() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>anonymous inner class calls private method</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -1497,7 +1509,33 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     @Deprecated
-    private bar() {
+    private void bar() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5117 Ignore methods with jakarta.annotation.PostConstruct in UnusedPrivateMethod rule</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import jakarta.annotation.PostConstruct;
+public class Foo {
+    @PostConstruct
+    private void bar() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5117 Ignore methods with jakarta.annotation.PreDestroy in UnusedPrivateMethod rule</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import jakarta.annotation.PreDestroy;
+public class Foo {
+    @PreDestroy
+    private void bar() {
     }
 }
         ]]></code>
@@ -1999,6 +2037,464 @@ class FooTest{
                     return s.length();
                 }
 
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>UnusedPrivateMethod for Generics and Overloads #5047</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.function.Function;
+
+            public class Main {
+                public static void main(String[] args) {
+                    new Utils().printValue();
+                }
+
+                public enum ConsentStatus {
+                    NOT_APPLICABLE(0L),
+                    NO_CONSENT(1L),
+                    CONSENT(2L),
+                    UNKNOWN_STATUS(3L);
+
+                    private final long id;
+
+                    ConsentStatus(long id) {
+                        this.id = id;
+                    }
+
+                    public long id() {
+                        return this.id;
+                    }
+                }
+
+                public enum OptOutStatus {
+                    NOT_APPLICABLE(0L),
+                    OPTED_OUT(1L),
+                    DID_NOT_OPT_OUT(2L),
+                    UNKNOWN_STATUS(3L);
+
+                    private final long id;
+
+                    OptOutStatus(long id) {
+                        this.id = id;
+                    }
+
+                    public long id() {
+                        return this.id;
+                    }
+                }
+
+                static class Utils {
+                    public void printValue() {
+                        System.out.println(getValue(ConsentStatus.CONSENT));
+                        System.out.println(getValue(ConsentStatus.NO_CONSENT));
+
+                        System.out.println(getValue(OptOutStatus.DID_NOT_OPT_OUT));
+                        System.out.println(getValue(OptOutStatus.OPTED_OUT));
+                    }
+
+                    private Long getValue(ConsentStatus val) {
+                        return getValue(val, ConsentStatus::id);
+                    }
+
+                    private Long getValue(OptOutStatus val) {
+                        return getValue(val, OptOutStatus::id);
+                    }
+
+                    private <T extends Enum<T>> Long getValue(T enumValue, Function<T, Long> fn) {
+                        if (enumValue == null) {
+                            return null;
+                        }
+                        return fn.apply(enumValue);
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>UnusedPrivateMethod for Lombok ObtainVia #5110</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Builder;
+import lombok.Builder.ObtainVia;
+
+import java.util.Collections;
+import java.util.List;
+
+@Builder(toBuilder = true)
+public class ObtainViaTest {
+
+    @ObtainVia(method = "fooProvider")
+    private List<String> foo;
+
+    private List<String> fooProvider() {
+        return Collections.emptyList();
+    }
+}
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedPrivateMethod false positive when .class files missing from classpath #819</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package com.bumptech.glide.load.engine;
+
+import com.bumptech.glide.load.Key; // key can't be resolved
+
+class Engine {
+
+  void load(EngineKey key) {
+    logWithTimeAndKey("", key);
+    loadFromActiveResources(key, true);
+  }
+
+  private static void logWithTimeAndKey(String log, Key key) { // false positive: not unused
+  }
+
+  private void loadFromActiveResources(Key key, boolean isMemoryCacheable) { // false positive: not unused
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3633 [java] Make UnusedPrivateMethod consider enum classes</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+class Impl {
+  enum EnumClass {
+      FOO;
+      EnumClass() {}
+      private void func(){};  // should report a warning here
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3633 [java] Make UnusedPrivateMethod consider enum classes (top-level)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+enum EnumClass {
+  FOO;
+  EnumClass() {}
+  private void func(){};  // should report a warning here
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedPrivateMethod: false positive with inner class instance method passed as a function reference parameter #3292</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package com.example;
+
+import java.util.function.BiFunction;
+
+public class TestUnusedPrivateMethodWithFunctionReference {
+
+  private final String separator;
+
+  public TestUnusedPrivateMethodWithFunctionReference(String separator) {
+    this.separator = separator;
+  }
+
+  public static void main(String[] args) {
+    new TestUnusedPrivateMethodWithFunctionReference("|").test();
+  }
+
+  private void test() {
+    System.out.println(makeValue(Holder::combine));
+  }
+
+  private String makeValue(BiFunction<Holder, Holder, Holder> combiner) {
+    return combiner.apply(new Holder("t1"), new Holder("t2")).value;
+  }
+
+  private class Holder {
+
+    private final String value;
+
+    public Holder(String value) {
+      this.value = value;
+    }
+
+    private Holder combine(Holder other) { // false positive - not unused, used as Holder::combine
+      return new Holder(value + separator + other.value);
+    }
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedPrivateMethod false-positive when a private method defined in an inner private class is called. #4016</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class OuterClass {
+    private final class InnerClass {
+        private String readLine() { return ""; }
+    }
+
+    private InnerClass currentInner;
+
+    public String readLine() {
+        String line = currentInner.readLine();
+        return line;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3899 [java] UnusedPrivateMethod - false positive with JDK 17</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedprivatemethod.issue3899;
+
+public class PmdTestCase {
+    public void check() {
+        Child child = new Child();
+
+        checkChild(child);
+        checkParent(child);
+    }
+
+    // OK
+    private void checkChild(Child child) {
+    }
+
+    // This method results in "UnusedPrivateMethod: Avoid unused private methods such as 'checkParent(Parent)'"
+    private void checkParent(Parent parent) { // false positive
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5324 UnusedPrivateMethod with method reference</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package org.example.unusedPrivateMethod;
+
+            import static java.util.Collections.emptySet;
+
+            import java.util.*;
+            import java.util.stream.*;
+
+            public class Main {
+
+                public static void main(String[] args) {
+                    Library library = new Library(emptySet());
+                    Map<String, Map<String, String>> map = new Main().run(library);
+                    System.out.println(map);
+                }
+
+                private Map<String, Map<String, String>> run(Library library) {
+                    return library
+                            .books()
+                            .stream()
+                            .map(book -> book.lenders().stream().collect(Collectors.toMap(Lender::name, lender -> Map.of(book.title(), lender.status()))))
+                            .reduce(this::reduceBooksAndLenderStatusByLender)
+                            .orElse(null);
+                }
+
+                private Map<String, Map<String, String>> reduceBooksAndLenderStatusByLender(
+                        Map<String, Map<String, String>> previousMap,
+                        Map<String, Map<String, String>> nextMap
+                ) {
+                    previousMap.putAll(nextMap);
+                    return previousMap;
+                }
+            }
+
+
+            record Lender(String name, String status) {}
+            record Book(String title, Collection<Lender> lenders) {}
+            record Library(Collection<Book> books) {}
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#5324 UnusedPrivateMethod with unresolved types</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                public User methodA() {
+                    val user = userOpt.orElseGet(() -> {
+                        try {
+                            return registerUser(email, firstName, lastName);
+                        } catch (Exception e) {
+                            throw new IllegalStateException("Failed to register user for " + email, e);
+                        }
+                    });
+                    // ...
+                    return user;
+                }
+
+                private User registerUser(String email, String firstName, String lastName) throws Exception {
+                    // register user logic here...
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#5329 UnusedPrivateMethod with unresolved types</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                public User methodA() {
+                    List<SummaryDto.ItemDto> items = new ArrayList<>();
+                    loads.stream()
+                         .collect(Collectors.groupingBy(Item::getValue))
+                         .forEach((a, b) -> items.add(buildItem(a, b)));
+                }
+
+                private SummaryDto.ItemDto buildItem(BigDecimal a, List<Item> b) {
+                    return SummaryDto.ItemDto.builder().build();
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#5097 UnusedPrivateMethod with unresolved target for method reference</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[package com.mytest;
+
+        import jakarta.validation.ConstraintViolation; //imported from jakarta.validation:jakarta.validation-api:3.0.2
+        import java.util.List;
+        import java.util.Set;
+
+        public class UnusedPrivateMethodFalsePositive {
+            //this does not trigger UnusedPrivateMethod
+            private void doWork(List obj) {
+                obj.toString();
+            }
+
+            public void execute(Set<List<?>> listOfLists) {
+                listOfLists.forEach(this::doWork);
+            }
+
+            //BUT this does???
+            //UnusedPrivateMethod -  this as a false positive - but what is different?
+            private void addValidationError(ConstraintViolation constraintViolation) {
+                constraintViolation.toString();
+            }
+
+            public void addValidationErrors(Set<ConstraintViolation<?>> constraintViolations) {
+                constraintViolations.forEach(this::addValidationError);
+            }
+
+        }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#5338 UnusedPrivateMethod with unresolved target for lambda</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.concurrent.CompletableFuture;
+            class SomeTest {
+
+                @Test
+                void test() {
+                    final BytesListener listener = createListener(
+                            (bytes) -> CompletableFuture.completedFuture("HI!")
+                    );
+                    Assertions.assertNotNull(listener.onRecord(new byte[0]));
+                }
+
+                private static BytesListener createListener(
+                        BytesParser<String> parser
+                ) {
+                    return bytes -> parser
+                            .parse(bytes)
+                            .thenAccept(System.out::println);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UnusedPrivateMethod #5113</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.Optional;
+
+            public class VarTest {
+                public Optional<Boolean> foo(int param) {
+                    var optional = param == 0 ? Optional.of(true) : Optional.of(false);
+                    return optional.flatMap(this::dummy);
+                }
+
+                private Optional<Boolean> dummy(boolean foo) {
+                    return Optional.of(foo);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>UnusedPrivateMethod #5083 - method reference without target type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            @Getter
+            @RequiredArgsConstructor
+            enum GenerationType {
+                APPLE_DESKTOP("https://apps.apple.com/app/id", GenerationType::isAppleType),
+                APPLE_ITUNES("https://itunes.apple.com/app/id", GenerationType::isAppleType),
+                SAMSUNG("https://www.samsung.com/us/appstore/app/", GenerationType::isSamsungType),
+                ROKU("https://channelstore.roku.com/details/", GenerationType::isRokuType),
+                AMAZON("https://www.amazon.com/dp/", GenerationType::isAmazonType),
+                ANDROID("https://play.google.com/store/apps/details?id=", GenerationType::isAndroidType);
+
+                private final String baseUrl;
+                private final Predicate<String> predicate;
+
+                private static boolean isAppleType(String data) {
+                    return "apple".equals(data);
+                }
+
+                private static boolean isRokuType(String data) {
+                    return "roku".equals(data);
+                }
+
+                private static boolean isSamsungType(String data) {
+                    return "samsung".equals(data);
+                }
+
+                private static boolean isAmazonType(String data) {
+                    return "amazon".equals(data);
+                }
+
+                private static boolean isAndroidType(String data) {
+                    return "android".equals(data);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UnusedPrivateMethod #5083 - method reference without target type (2)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class GenerationType {
+                static {
+                    foo(GenerationType::isAndroidType);
+                }
+                {
+                    foo(this::instance);
+                }
+
+                private  boolean instance(String data) {}
+                private static boolean isAndroidType(String data) {
+                    return "android".equals(data);
+                }
             }
             ]]></code>
     </test-code>

@@ -14,6 +14,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
@@ -22,17 +23,20 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTPermitsList;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponentList;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
+import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JRecordComponentSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.ImplicitMemberSymbols;
@@ -54,7 +58,10 @@ final class AstClassSym
     private final List<JConstructorSymbol> declaredCtors;
     private final List<JFieldSymbol> declaredFields;
     private final List<JFieldSymbol> enumConstants; // subset of declaredFields
+    private final List<JRecordComponentSymbol> recordComponents;
     private final PSet<String> annotAttributes;
+
+    private List<JClassSymbol> permittedSubclasses;
 
     AstClassSym(ASTTypeDeclaration node,
                 AstSymFactory factory,
@@ -70,13 +77,12 @@ final class AstClassSym
         final List<JConstructorSymbol> myCtors = new ArrayList<>();
         final List<JFieldSymbol> myFields = new ArrayList<>();
         final List<JFieldSymbol> enumConstants;
-        final List<JFieldSymbol> recordComponents;
+        final List<JRecordComponentSymbol> recordComponents;
 
         if (isRecord()) {
             ASTRecordComponentList components = Objects.requireNonNull(node.getRecordComponents(),
                                                                        "Null component list for " + node);
-            recordComponents = mapComponentsToMutableList(factory, components);
-            myFields.addAll(recordComponents);
+            recordComponents = mapComponentsToMutableList(factory, components, myFields);
 
             JConstructorSymbol canonicalRecordCtor = ImplicitMemberSymbols.recordConstructor(this, recordComponents, components.isVarargs());
             myCtors.add(canonicalRecordCtor);
@@ -97,7 +103,6 @@ final class AstClassSym
         } else {
             enumConstants = null;
         }
-
 
         for (ASTBodyDeclaration dnode : node.getDeclarations()) {
 
@@ -123,7 +128,7 @@ final class AstClassSym
             // then the recordsComponents contains all record components
             // for which we must synthesize an accessor (explicitly declared
             // accessors have been filtered out)
-            for (JFieldSymbol component : recordComponents) {
+            for (JRecordComponentSymbol component : recordComponents) {
                 myMethods.add(ImplicitMemberSymbols.recordAccessor(this, component));
             }
         }
@@ -142,15 +147,20 @@ final class AstClassSym
         this.declaredCtors = Collections.unmodifiableList(myCtors);
         this.declaredFields = Collections.unmodifiableList(myFields);
         this.enumConstants = CollectionUtil.makeUnmodifiableAndNonNull(enumConstants);
+        this.recordComponents = CollectionUtil.makeUnmodifiableAndNonNull(recordComponents);
         this.annotAttributes = isAnnotation()
                                ? getDeclaredMethods().stream().filter(JMethodSymbol::isAnnotationAttribute).map(JElementSymbol::getSimpleName).collect(CollectionUtil.toPersistentSet())
                                : HashTreePSet.empty();
     }
 
-    private List<JFieldSymbol> mapComponentsToMutableList(AstSymFactory factory, ASTRecordComponentList components) {
-        List<JFieldSymbol> list = new ArrayList<>();
+
+    private List<JRecordComponentSymbol> mapComponentsToMutableList(AstSymFactory factory,
+                                                          ASTRecordComponentList components,
+                                                          List<JFieldSymbol> fieldSyms) {
+        List<JRecordComponentSymbol> list = new ArrayList<>();
         for (ASTRecordComponent comp : components) {
-            list.add(new AstFieldSym(comp.getVarId(), factory, this));
+            list.add(new AstRecordComponentSym(comp, factory, this));
+            fieldSyms.add(new AstFieldSym(comp.getVarId(), factory, this));
         }
         return list;
     }
@@ -216,7 +226,79 @@ final class AstClassSym
     public @NonNull List<JFieldSymbol> getEnumConstants() {
         return enumConstants;
     }
-    
+
+    @Override
+    public @NonNull List<JRecordComponentSymbol> getRecordComponents() {
+        return recordComponents;
+    }
+
+
+    @Override
+    public List<JClassSymbol> getPermittedSubtypes() {
+        // permitted subclasses are populated lazily because they require
+        // symbol and type resolution to determine which types are sealed.
+        if (permittedSubclasses == null) {
+            ASTPermitsList permits = node.getPermitsClause();
+            if (permits != null) {
+                this.permittedSubclasses = permits.toList().stream().map(it -> {
+                    JTypeDeclSymbol symbol = it.getTypeMirror().getSymbol();
+                    if (symbol instanceof JClassSymbol) {
+                        return (JClassSymbol) symbol;
+                    } else {
+                        return null;
+                    }
+                }).filter(Objects::nonNull).collect(CollectionUtil.toUnmodifiableList());
+            } else if (isSealed()) {
+                // sealed with no permits clause: infer permitted
+                this.permittedSubclasses = inferPermittedSubclasses();
+            } else {
+                this.permittedSubclasses = Collections.emptyList();
+            }
+        }
+        return permittedSubclasses;
+    }
+
+    private List<JClassSymbol> inferPermittedSubclasses() {
+        /*
+         *  If the declaration of a sealed class C lacks a permits clause,
+         * then the permitted direct subclasses of C are as follows:
+         *
+         *  1. If C is not an enum class, then its permitted direct subclasses
+         *     are those classes declared in the same compilation unit as C (§7.3)
+         *     which have a canonical name (§6.7) and whose direct superclass is C.
+         *
+         *     That is, the permitted direct subclasses are inferred as the classes
+         *     in the same compilation unit that specify C as their direct superclass.
+         *     The requirement for a canonical name means that no local classes or
+         *     anonymous classes will be considered.
+         *
+         *     It is a compile-time error if the declaration of a sealed class C lacks
+         *     a permits clause and C has no permitted direct subclasses.
+         *
+         *  2. If C is an enum class, then its permitted direct subclasses, if any,
+         *     are specified in §8.9.
+         */
+        if (!isEnum()) {
+            boolean isInterface = isInterface();
+            List<JClassSymbol> list = node
+                .getRoot().descendants(ASTTypeDeclaration.class).crossFindBoundaries()
+                .filter(it -> it.getCanonicalName() != null)
+                .filter(it -> {
+                    if (isInterface) {
+                        return it.getSuperInterfaceTypeNodes().any(ty -> Objects.equals(ty.getTypeMirror().getSymbol(), this));
+                    }
+                    return NodeStream.of(it.getSuperClassTypeNode()).any(ty -> Objects.equals(ty.getTypeMirror().getSymbol(), this));
+                }).toList(ASTTypeDeclaration::getSymbol);
+            return Collections.unmodifiableList(list);
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean isSealed() {
+        return node.hasModifiers(JModifier.SEALED);
+    }
+
     @Override
     public @Nullable JClassType getSuperclassType(Substitution substitution) {
         TypeSystem ts = getTypeSystem();
@@ -227,7 +309,7 @@ final class AstClassSym
 
         } else if (node instanceof ASTClassDeclaration) {
 
-            ASTClassType superClass = ((ASTClassDeclaration) node).getSuperClassTypeNode();
+            ASTClassType superClass = node.getSuperClassTypeNode();
             return superClass == null
                    ? ts.OBJECT
                    // this cast relies on the fact that the superclass is not a type variable

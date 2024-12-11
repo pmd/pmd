@@ -203,8 +203,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.LinkedList;
-import java.util.File;
 import java.util.NoSuchElementException;
+import java.io.File;
 import java.io.IOException;
 
 public class Foo {
@@ -773,14 +773,18 @@ class NPEImport {}
     <test-code>
         <description>[java] #2546 -- similar imports static/nonstatic - static is used</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>2</expected-linenumbers>
+        <expected-linenumbers>8</expected-linenumbers>
         <expected-messages>
-            <message>Unused import 'net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*'</message>
+            <message>Unused static import 'net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*'</message>
         </expected-messages>
         <code><![CDATA[
-            // imports NonStatic -- unused
+            // The imports are actually duplicates, either could be removed.
+            // We always elect to report the static import as it is longer and may import
+            // methods or fields
+
+            // imports static and non-static (=used)
             import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
-            // imports Static
+            // imports static (=used)
             import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
 
             public class DuplicateImports {
@@ -798,9 +802,9 @@ class NPEImport {}
             <message>Unused static import 'net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*'</message>
         </expected-messages>
         <code><![CDATA[
-            // imports NonStatic
+            // imports static and non-static (=used)
             import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
-            // imports Static -- unused
+            // imports static (=unused)
             import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
 
             public class DuplicateImports {
@@ -1237,4 +1241,120 @@ public class Example {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>imports used in markdown javadoc comment (since java 23, JEP 467)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.LinkedList;
+import java.io.File;
+
+public class Foo {
+    ///
+    /// [`List`][List]
+    /// [arrayList][ArrayList]
+    /// [LinkedList]
+    /// [Calendar#DATE]
+    /// [File#exists()]
+    public void test() {}
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>module import declarations (since java 23 preview, JEP 476)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import module java.base;
+public class Foo {
+    private File file; // imported via module import from java.base
+}
+]]></code>
+        <source-type>java 23-preview</source-type>
+    </test-code>
+
+    <test-code>
+        <description>module import declarations - unnecessary (since java 23 preview, JEP 476)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>Unused module import 'java.base'</message>
+        </expected-messages>
+        <code><![CDATA[
+import module java.base; // unnecessary
+public class Foo {
+}
+]]></code>
+        <source-type>java 23-preview</source-type>
+    </test-code>
+
+    <test-code>
+        <description>module import declarations - duplicate 1 (since java 23 preview, JEP 476)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+import module java.base;
+import module java.base; // plain duplicate
+public class Foo {
+    private File file;
+}
+]]></code>
+        <source-type>java 23-preview</source-type>
+    </test-code>
+
+    <test-code>
+        <description>module import declarations - duplicate 2 (since java 23 preview, JEP 476)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>Unused module import 'java.base'</message>
+        </expected-messages>
+        <code><![CDATA[
+import module java.base; // unnecessary since there is a single import for java.io.File
+import java.io.File;
+public class Foo {
+    private File file;
+}
+]]></code>
+        <source-type>java 23-preview</source-type>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedImports: False positive if nested interface is referenced in javadoc #2001</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.Issue2001;
+
+/**
+ * Foobedoo {@link Issue2001.B}
+ */
+public class C {
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5315 [java] UnnecessaryImport false positive for on-demand imports</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package org.example;
+
+            import java.util.Map;
+            import java.util.Map.*; // this import is reported as unnecessary. However, class Entry is a nested class of Map and requires that import
+
+            import static java.util.stream.Collectors.toMap;
+
+            public class Main {
+                public static void main(String[] args) {
+                    Map<String, String> map = Map.of("key1", "value1");
+                    var weirdCopy = map.entrySet().stream().collect(toMap(Entry::getKey, Entry::getValue));
+                    System.out.println(weirdCopy);
+                }
+            }
+            ]]></code>
+    </test-code>
+
 </test-data>

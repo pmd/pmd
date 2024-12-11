@@ -9,6 +9,9 @@
         <rule-property name="threshold">2</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>A value of 3 may denote a high amount of coupling within the class (threshold: 2)</message>
+        </expected-messages>
         <code><![CDATA[
 import java.util.*;
 public class Foo {
@@ -51,6 +54,9 @@ public interface Foo {
         <rule-property name="threshold">2</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>A value of 3 may denote a high amount of coupling within the class (threshold: 2)</message>
+        </expected-messages>
         <code><![CDATA[
 import java.util.*;
 public interface Foo {
@@ -61,5 +67,33 @@ public interface Foo {
     }
 }
         ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>[java] CouplingBetweenObjectsRule does not count attribute and local variable couplings properly #2818</description>
+        <rule-property name="threshold">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>A value of 4 may denote a high amount of coupling within the class (threshold: 2)</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.Vector;
+import org.A;
+import org.B;
+
+public class Foo {
+
+  public static final ArrayList arrayList = new ArrayList();
+  public static final Vector vector = new Vector();
+
+  public void doWork() {
+    A a = new A();
+    B b = new B();
+  }
+
+}
+]]></code>
     </test-code>
 </test-data>

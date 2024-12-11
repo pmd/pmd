@@ -173,11 +173,21 @@ public interface JClassSymbol extends JTypeDeclSymbol,
 
     /**
      * Returns a list with all enum constants. If this symbol does
-     * not represent an enum, returns an empty set. The returned list
+     * not represent an enum, returns an empty list. The returned list
      * is a subset of {@link #getDeclaredFields()}. The order of fields
      * denotes the normal order of enum constants.
      */
     default @NonNull List<JFieldSymbol> getEnumConstants() {
+        return Collections.emptyList();
+    }
+
+
+    /**
+     * Returns a list with all record components. If this symbol does
+     * not represent a record, returns an empty list. The order of values
+     * denotes the normal order of components.
+     */
+    default @NonNull List<JRecordComponentSymbol> getRecordComponents() {
         return Collections.emptyList();
     }
 
@@ -226,6 +236,49 @@ public interface JClassSymbol extends JTypeDeclSymbol,
     boolean isLocalClass();
 
     boolean isAnonymousClass();
+
+    /**
+     * Return the list of permitted subclasses or subinterfaces, as defined in the
+     * {@code permits} clause of a sealed class or interface. If this class is sealed
+     * but has no permits clause, the permitted subtypes are inferred from the types
+     * in the compilation unit. If the class is not sealed, returns an empty list.
+     *
+     * <p>Note that an enum class for which some constants declare a body is technically
+     * implicitly sealed, and implicitly permits only the anonymous classes for those enum
+     * constants. For consistency, this method will return only symbols that have a canonical
+     * name, and therefore always return an empty list for enums.
+     *
+     * @see #isSealed()
+     */
+    default List<JClassSymbol> getPermittedSubtypes() {
+        return Collections.emptyList();
+    }
+
+    /**
+     * Return true if this type is sealed. Then it has a non-empty list of permitted
+     * subclasses (or it is a compile-time error). Note that there is no trace of the
+     * non-sealed modifier in class files. A class must have the {@code non-sealed}
+     * modifier if it is not sealed, not final, and has a sealed supertype.
+     *
+     * <p>Note that an enum class for which some constants declare a body is technically
+     * implicitly sealed, and implicitly permits only the anonymous classes for those enum
+     * constants. For consistency with {@link #getPermittedSubtypes()}, we treat such enums
+     * as not sealed.
+     *
+     * @see #getPermittedSubtypes()
+     */
+    default boolean isSealed() {
+        return !getPermittedSubtypes().isEmpty();
+    }
+
+    /**
+     * Return true if this type is final, that is, does not admit subtypes. Note that
+     * array types have both modifiers final and abstract. Note also that enum classes
+     * may be non-final if they have constants that declare an anonymous body.
+     */
+    default boolean isFinal() {
+        return Modifier.isFinal(getModifiers());
+    }
 
     /**
      * Return the simple names of all annotation attributes. If this
@@ -291,11 +344,9 @@ public interface JClassSymbol extends JTypeDeclSymbol,
         return target.attributeContains("value", elementType).isTrue();
     }
 
-    // todo isSealed + getPermittedSubclasses
-    //  (isNonSealed is not so useful I think)
-
     /**
      * This returns true if this is not an interface, primitive or array.
+     * Note that this includes in particular records and enums.
      */
     default boolean isClass() {
         return !isInterface() && !isArray() && !isPrimitive();

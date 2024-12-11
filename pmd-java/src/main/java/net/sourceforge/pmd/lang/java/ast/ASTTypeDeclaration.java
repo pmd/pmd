@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.java.types.JClassType;
  *                   | {@link ASTEnumDeclaration EnumDeclaration}
  *                   | {@link ASTAnnotationTypeDeclaration AnnotationTypeDeclaration}
  *                   | {@link ASTRecordDeclaration RecordDeclaration}
+ *                   | {@link ASTImplicitClassDeclaration ImplicitClassDeclaration}
  *
  * </pre>
  *
@@ -222,6 +223,12 @@ public interface ASTTypeDeclaration
         return this instanceof ASTAnonymousClassDeclaration;
     }
 
+    /**
+     * Returns true if this is an {@linkplain ASTImplicitClassDeclaration implicit class declaration}.
+     */
+    default boolean isUnnamedToplevelClass() {
+        return this instanceof ASTImplicitClassDeclaration;
+    }
 
     /**
      * Returns true if this is an {@linkplain ASTEnumDeclaration enum class declaration}.
@@ -247,8 +254,8 @@ public interface ASTTypeDeclaration
 
     /**
      * Returns true if this is a regular class declaration (not an enum,
-     * not a record, not an interface or annotation). Note that eg
-     * {@link JClassSymbol#isClass()} counts records and enums in, just
+     * not a record, not an interface or annotation, not an implicit class).
+     * Note that eg {@link JClassSymbol#isClass()} counts records and enums in, just
      * like {@link #isInterface()} counts annotations in.
      */
     default boolean isRegularClass() {
@@ -278,5 +285,34 @@ public interface ASTTypeDeclaration
     default @NonNull NodeStream<ASTClassType> getSuperInterfaceTypeNodes() {
         return ASTList.orEmptyStream(isInterface() ? firstChild(ASTExtendsList.class)
                                                    : firstChild(ASTImplementsList.class));
+    }
+
+    /**
+     * Returns the superclass type node if this node is a class
+     * declaration and explicitly declares an {@code extends}
+     * clause. Superinterfaces of an interface are not considered.
+     * Note that enum or record declarations never have an explicit
+     * superclass type node. Anonymous class declarations have such
+     * a type node if the class being created is a class, otherwise,
+     * it is an interface, and the superclass is implicitly object,
+     * so this method returns null. Enum constants with a subclass
+     * body will return null.
+     */
+    default @Nullable ASTClassType getSuperClassTypeNode() {
+        if (isInterface()) {
+            return null;
+        }
+        return ASTList.singleOrNull(firstChild(ASTExtendsList.class));
+    }
+
+    /**
+     * Return the explicit permits list if there is one. Note
+     * that the permitted subtypes list may be implicit and inferred
+     * from subtypes found in the current compilation unit. Use
+     * {@link JClassSymbol#getPermittedSubtypes()} for an API
+     * that works in all cases.
+     */
+    default @Nullable ASTPermitsList getPermitsClause() {
+        return firstChild(ASTPermitsList.class);
     }
 }
