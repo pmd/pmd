@@ -204,17 +204,20 @@ public final class CpdAnalysis implements AutoCloseable {
                                                        if (e instanceof FileAnalysisException) { // NOPMD
                                                            ((FileAnalysisException) e).setFileId(textFile.getFileId());
                                                        }
-                                                       String message = configuration.isFailOnError() ? "Skipping file" : "Error while tokenizing";
-                                                       reporter.errorEx(message, e);
+                                                       if (configuration.isFailOnError()) {
+                                                           reporter.errorEx("Error while tokenizing", e);
+                                                       } else {
+                                                           reporter.warnEx("Skipping file", e);
+                                                       }
                                                        Report.ProcessingError error = new Report.ProcessingError(e, textFile.getFileId());
                                                        return currentErrors.plus(error);
                                                    }
                                                    return currentErrors;
                                                }, PSortedSet::plusAll)).get();
 
-                    if (!processingErrors.isEmpty() && !configuration.isFailOnError()) {
+                    if (!processingErrors.isEmpty() && configuration.isFailOnError()) {
                         // will be caught by CPD command
-                        throw new IllegalStateException("Errors were detected while lexing source, exiting because --skip-lexical-errors is unset.");
+                        throw new IllegalStateException("Errors were detected while lexing source, exiting because --no-fail-on-error was not set.");
                     }
                 } finally {
                     forkJoinPool.shutdown();

@@ -264,7 +264,7 @@ class CpdCliTest extends BaseCliTest {
                 "-d", Paths.get(BASE_RES_PATH, "badandgood", "BadFile.java").toString(),
                 "--format", "text")
                 .verify(r -> {
-                    r.checkStdErr(containsPattern("Skipping file: Lexical error in file '.*?BadFile\\.java'"));
+                    r.checkStdErr(containsPattern("Errors were detected while lexing source, exiting because --no-fail-on-error was not set."));
                     r.checkStdOut(emptyString());
                 });
     }
