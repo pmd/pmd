@@ -21,6 +21,7 @@ import org.pcollections.PSortedSet;
 import org.pcollections.TreePSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.cpd.TokenFileSet.CpdState;
 import net.sourceforge.pmd.cpd.TokenFileSet.TokenFile;
@@ -204,21 +205,13 @@ public final class CpdAnalysis implements AutoCloseable {
                                                        if (e instanceof FileAnalysisException) { // NOPMD
                                                            ((FileAnalysisException) e).setFileId(textFile.getFileId());
                                                        }
-                                                       if (configuration.isFailOnError()) {
-                                                           reporter.errorEx("Error while tokenizing", e);
-                                                       } else {
-                                                           reporter.warnEx("Skipping file", e);
-                                                       }
+                                                       Level level = configuration.isFailOnError() ? Level.ERROR : Level.WARN;
+                                                       reporter.logEx(level, "Skipping file", new Object[0], e);
                                                        Report.ProcessingError error = new Report.ProcessingError(e, textFile.getFileId());
                                                        return currentErrors.plus(error);
                                                    }
                                                    return currentErrors;
                                                }, PSortedSet::plusAll)).get();
-
-                    if (!processingErrors.isEmpty() && configuration.isFailOnError()) {
-                        // will be caught by CPD command
-                        throw new IllegalStateException("Errors were detected while lexing source, exiting because --no-fail-on-error was not set.");
-                    }
                 } finally {
                     forkJoinPool.shutdown();
                 }

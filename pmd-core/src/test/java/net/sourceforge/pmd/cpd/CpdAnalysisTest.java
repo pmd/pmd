@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
+import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.LexException;
@@ -211,9 +212,8 @@ class CpdAnalysisTest {
             assertTrue(cpd.files().addSourceFile(FileId.fromPathLikeString("foo2.dummy"), DummyLanguageModule.CPD_THROW_MALFORMED_SOURCE_EXCEPTION));
             cpd.performAnalysis();
         }
-        verify(reporter).errorEx(eq("Error while tokenizing"), any(LexException.class));
-        verify(reporter).errorEx(eq("Error while tokenizing"), any(MalformedSourceException.class));
-        verify(reporter).errorEx(eq("Exception while running CPD"), any(IllegalStateException.class));
+        verify(reporter).logEx(eq(Level.WARN), eq("Skipping file"), any(), any(LexException.class));
+        verify(reporter).logEx(eq(Level.WARN), eq("Skipping file"), any(), any(MalformedSourceException.class));
         verifyNoMoreInteractions(reporter);
     }
 
@@ -241,8 +241,8 @@ class CpdAnalysisTest {
         assertEquals("foo2.dummy", error2.getFileId().getFileName());
         assertThat(error2.getDetail(), containsString(MalformedSourceException.class.getSimpleName()));
 
-        verify(reporter).errorEx(eq("Skipping file"), any(LexException.class));
-        verify(reporter).errorEx(eq("Skipping file"), any(MalformedSourceException.class));
+        verify(reporter).logEx(eq(Level.ERROR), eq("Skipping file"), any(), any(LexException.class));
+        verify(reporter).logEx(eq(Level.ERROR), eq("Skipping file"), any(), any(MalformedSourceException.class));
         verifyNoMoreInteractions(reporter);
     }
 
@@ -256,8 +256,8 @@ class CpdAnalysisTest {
             assertTrue(cpd.files().addSourceFile(FileId.fromPathLikeString("foo2.dummy"), DummyLanguageModule.CPD_THROW_MALFORMED_SOURCE_EXCEPTION));
             cpd.performAnalysis();
         }
-        verify(reporter).errorEx(eq("Skipping file"), any(LexException.class));
-        verify(reporter).errorEx(eq("Skipping file"), any(MalformedSourceException.class));
+        verify(reporter).logEx(eq(Level.ERROR), eq("Skipping file"), any(), any(LexException.class));
+        verify(reporter).logEx(eq(Level.ERROR), eq("Skipping file"), any(), any(MalformedSourceException.class));
         verifyNoMoreInteractions(reporter);
     }
 
