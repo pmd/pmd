@@ -11,8 +11,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -35,8 +37,10 @@ import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.InternalApiBridge;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
@@ -182,46 +186,37 @@ public final class CpdAnalysis implements AutoCloseable {
             Map<FileId, Integer> numberOfTokensPerFile = new HashMap<>();
 
             final List<Match> matches;
-            PSortedSet<Report.ProcessingError> processingErrors;
+            List<Report.ProcessingError> processingErrors;
             {
                 TokenFileSet tokens = new TokenFileSet(sourceManager);
-
-                ForkJoinPool forkJoinPool = new ForkJoinPool(configuration.getThreads());
-                try {
-                    processingErrors = forkJoinPool.submit(
-                        () -> sourceManager.getTextFiles()
-                                           .parallelStream()
-                                           .<PSortedSet<Report.ProcessingError>>reduce(
-                                               TreePSet.empty(),
-                                               (currentErrors, textFile) -> {
-                                                   try (TextDocument textDocument = sourceManager.load(textFile)) {
-                                                       CpdLexer lexer = tokenizers.get(textFile.getLanguageVersion().getLanguage());
-                                                       int newTokens = doTokenize(textDocument, lexer, tokens);
-                                                       synchronized (this) {
-                                                           numberOfTokensPerFile.put(textDocument.getFileId(), newTokens);
-                                                           listener.addedFile(1);
-                                                       }
-                                                   } catch (IOException | FileAnalysisException e) {
-                                                       if (e instanceof FileAnalysisException) { // NOPMD
-                                                           ((FileAnalysisException) e).setFileId(textFile.getFileId());
-                                                       }
-                                                       Level level = configuration.isFailOnError() ? Level.ERROR : Level.WARN;
-                                                       reporter.logEx(level, "Skipping file", new Object[0], e);
-                                                       Report.ProcessingError error = new Report.ProcessingError(e, textFile.getFileId());
-                                                       return currentErrors.plus(error);
-                                                   }
-                                                   return currentErrors;
-                                               }, PSortedSet::plusAll)).get();
-                } finally {
-                    forkJoinPool.shutdown();
-                }
+                processingErrors = executeInParallel(
+                    configuration.getThreads(),
+                    sourceManager,
+                    textFile -> {
+                        try (TextDocument textDocument = sourceManager.load(textFile)) {
+                            CpdLexer lexer = tokenizers.get(textFile.getLanguageVersion().getLanguage());
+                            int newTokens = doTokenize(textDocument, lexer, tokens);
+                            synchronized (this) {
+                                numberOfTokensPerFile.put(textDocument.getFileId(), newTokens);
+                                listener.addedFile(1);
+                            }
+                            return null;
+                        } catch (IOException | FileAnalysisException e) {
+                            if (e instanceof FileAnalysisException) { // NOPMD
+                                ((FileAnalysisException) e).setFileId(textFile.getFileId());
+                            }
+                            Level level = configuration.isFailOnError() ? Level.ERROR : Level.WARN;
+                            reporter.logEx(level, "Skipping file", new Object[0], e);
+                            return new Report.ProcessingError(e, textFile.getFileId());
+                        }
+                    });
 
                 LOGGER.debug("Running match algorithm on {} files...", sourceManager.size());
                 matches = findMatches(sourceManager, listener, tokens, configuration.getMinimumTileSize());
             }
             LOGGER.debug("Finished: {} duplicates found", matches.size());
 
-            CPDReport cpdReport = new CPDReport(sourceManager, matches, numberOfTokensPerFile, new ArrayList<>(processingErrors));
+            CPDReport cpdReport = new CPDReport(sourceManager, matches, numberOfTokensPerFile, processingErrors);
 
             if (renderer != null) {
                 try (Writer writer = IOUtil.createWriter(Charset.defaultCharset(), null)) {
@@ -236,6 +231,41 @@ public final class CpdAnalysis implements AutoCloseable {
         // source manager is closed and closes all text files now.
     }
 
+    /**
+     * Execute a callback on all the files in the source manager.
+     * Errors are returned by the callback, not thrown.
+     */
+    private static List<ProcessingError> executeInParallel(int threads,
+                                                           SourceManager sourceManager,
+                                                           Function<TextFile, @Nullable ProcessingError> processFile)
+        throws InterruptedException, ExecutionException {
+
+        ForkJoinPool forkJoinPool = new ForkJoinPool(threads);
+        try {
+            PSortedSet<Report.ProcessingError> processingErrors =
+                forkJoinPool
+                    .submit(
+                        () ->
+                            sourceManager
+                                .getTextFiles()
+                                .parallelStream()
+                                .<PSortedSet<ProcessingError>>reduce(
+                                    TreePSet.empty(),
+                                    (currentErrors, textFile) -> {
+                                        ProcessingError err = processFile.apply(textFile);
+                                        if (err != null) {
+                                            return currentErrors.plus(err);
+                                        }
+                                        return currentErrors;
+                                    }, PSortedSet::plusAll))
+                    .get();
+            return new ArrayList<>(processingErrors);
+        } finally {
+            forkJoinPool.shutdown();
+        }
+
+
+    }
 
     @Override
     public void close() throws IOException {
