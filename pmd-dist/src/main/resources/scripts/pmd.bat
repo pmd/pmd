@@ -1,4 +1,8 @@
 @echo off
+
+rem use unicode codepage to properly support UTF-8
+chcp 65001>nul
+
 rem make all variables local to not add new global environment variables to the current cmd session
 setlocal
 set "TOPDIR=%~dp0.."
