@@ -19,11 +19,6 @@ PMD among many other linting tools.
 * Homepage: <https://plugins.jenkins.io/warnings-ng/>
 * Source: <https://github.com/jenkinsci/warnings-ng-plugin> and <https://github.com/jenkinsci/analysis-model>
 
-## Continuum
-
-Continuum does not have a plugin for PMD per see, but can fail the build according to the
-result of the PMD maven plugin.
-
 ## GitHub Action
 
 See [Other Tools / Integrations](pmd_userdocs_tools.html#github-actions)
