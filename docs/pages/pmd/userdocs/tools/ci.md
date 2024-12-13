@@ -3,7 +3,7 @@ title: Continuous Integrations plugins
 tags: [userdocs, tools]
 permalink: pmd_userdocs_tools_ci.html
 author: Romain PELISSE <belaran@gmail.com>, Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: December 2024
+last_updated: December 2024 (7.9.0)
 ---
 
 ## Introduction
@@ -45,6 +45,7 @@ build artifact. Furthermore, the build can be failed based on the number of viol
 The action can also be used as a code scanner to create "Code scanning alerts".
 
 * Homepage: <https://github.com/pmd/pmd-github-action>
+* Marketplace: <https://github.com/marketplace/actions/pmd>
 
 ## GitLab
 
@@ -69,15 +70,3 @@ PMD among many other linting tools.
 
 * Homepage: <https://plugins.jenkins.io/warnings-ng/>
 * Source: <https://github.com/jenkinsci/warnings-ng-plugin> and <https://github.com/jenkinsci/analysis-model>
-
-
-
-## MegaLinter
-
-[🦙 Mega-Linter](https://oxsecurity.github.io/megalinter/latest/) analyzes 50 languages, 22 formats, 21 tooling
-formats, excessive copy-pastes, spelling mistakes and security issues in your repository sources with a
-GitHub Action, other CI tools or locally. 
-
-It [natively embeds PMD](https://oxsecurity.github.io/megalinter/latest/descriptors/java_pmd/).
-
-

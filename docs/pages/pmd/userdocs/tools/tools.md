@@ -3,11 +3,21 @@ title: Tools / Integrations
 tags: [userdocs, tools]
 permalink: pmd_userdocs_tools.html
 author: David Dixon-Peugh <dpeugh@users.sourceforge.net>
+last_updated: December 2024 (7.9.0)
 ---
 
 ## Automated Code Review
 
 {% include note.html content="The tools are listed in alphabetical order without rating." %}
+
+### CodeClimate Quality
+
+[CodeClimate Quality](https://codeclimate.com/quality) provides automatic code reviews and quality
+monitoring of your projects. Among many SCA tools, it integrates [PMD as a plugin](https://docs.codeclimate.com/docs/pmd).
+It integrates into your project via GitHub.
+
+* Homepage: <https://codeclimate.com/quality>
+* Documentation: <https://docs.codeclimate.com/docs>
 
 ### Codacy
 
@@ -19,6 +29,7 @@ Codacy is static analysis without the hassle.
 With Codacy you have PMDJava analysis out-of-the-box, and it is free for open source projects.
 
 * Homepage: <https://www.codacy.com/>
+* Documentation: <https://docs.codacy.com/>
 * Source code: <https://github.com/codacy/codacy-pmdjava>
 * Maintainer: Codacy
 
@@ -67,3 +78,19 @@ With TCA you have PMD analysis out-of-the-box, and it is open source under the M
 * Source code: <https://github.com/Tencent/CodeAnalysis>
 * Documentation: <https://tencent.github.io/CodeAnalysis>
 * Maintainer: TCA
+
+## Others
+
+### MegaLinter
+
+[🦙 Mega-Linter](https://megalinter.io/latest/) analyzes 50 languages, 22 formats, 21 tooling
+formats, excessive copy-pastes, spelling mistakes and security issues in your repository sources with a
+GitHub Action, other CI tools or locally.
+
+It [natively embeds PMD](https://megalinter.io/latest/descriptors/java_pmd/).
+
+### SonarQube PMD Plugin
+
+[sonar-pmd](https://github.com/jborgers/sonar-pmd) is a plugin for [SonarQube](https://www.sonarsource.com/products/sonarqube/),
+that provides coding rules from PMD.
+
