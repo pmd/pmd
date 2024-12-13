@@ -2,12 +2,16 @@
 title: PMD in the press
 permalink: pmd_projectdocs_trivia_news.html
 author: Tom Copeland <tom@infoether.org>
+last_updated: December 2024 (7.9.0)
 ---
 
 ## Sites/Articles about PMD
 
 
 ### Salesforce / Apex Language Module
+
+*   January 2022 - [Writing Clean and Consistent Code with Static Analysis using PMD and Apex](https://dzone.com/articles/static-analysis-with-pmd-and-apex)
+    by [Michael Bogan](https://dzone.com/authors/mbogan)
 
 *   October 2020 - [Salesforce CLI Scanner Custom XPath Rules - Part 1](https://bobbuzzard.blogspot.com/2020/10/salesforce-cli-scanner-custom-xpath.html),
     [Salesforce CLI Scanner Custom XPath Rules - Part 2](http://bobbuzzard.blogspot.com/2020/10/salesforce-cli-scanner-custom-xpath_11.html)
@@ -24,6 +28,9 @@ author: Tom Copeland <tom@infoether.org>
 *   June 2018 - [Salesforce Way Podcast](https://salesforceway.com/podcast/podcast/) with
     [Robert Sösemann](https://github.com/rsoesemann) [Static Code Analysis with PMD for Apex](https://salesforceway.com/podcast/podcast/static-code-analysis-with-pmd-for-apex/)
 
+*   February 2018 - [Integrating Static Analysis with PMD in the Salesforce Development Lifecycle](https://ktema.org/articles/static-analysis-pmd-salesforce/)
+    by [David Reed](https://ktema.org/)
+
 *   January 2018 - [Webinar: How to contribute Apex rules to PMD with Robert Sösemann](https://www.youtube.com/watch?v=7_Ex9WWS_3Q)
 
 *   August 2017 - Webinar about how to use PMD with The Welkin Suite Salesforce IDE - Author
@@ -36,6 +43,9 @@ author: Tom Copeland <tom@infoether.org>
 
 ### PMD in general and other Language Modules
 
+*   October 2024 - Presentation at [Java User Group Munich](https://jugm.de/): [Journey to PMD 7](https://youtu.be/N9b4jobKieQ)
+    by [Andreas Dangel](https://adangel.org)
+
 *   April 2022 - Prediction of who should refactor the code, research available at
     <https://github.com/rkipp/DSCI644-2022-RefactoringRanking>.
 
@@ -47,8 +57,10 @@ author: Tom Copeland <tom@infoether.org>
     [J-Fall Virtual 2020: Jeroen Borgers - Fixing your performance and concurrency bugs before they bite you](
     https://www.youtube.com/watch?v=Z_sT38KTRNk)
 
-*   May 2019 - [Code quality assurance with PMD – An extensible static code analyser for Java and other languages](
-    https://www.datarespons.com/code-quality-assurance-with-pmd/)
+*   April 2019 - [Code quality assurance with PMD – An extensible static code analyser for Java and other languages](https://adangel.org/2019/04/30/code-quality-assurance-with-pmd/)
+    by [Andreas Dangel](https://adangel.org)
+
+*   September 2018 - [Setting Up Static Code Analysis for Java](https://medium.com/@mladen.bolic/setting-up-static-code-analysis-for-java-3428dc79f7f9)
 
 *   February 2012 - Romain Pelisse's lightning talk at FOSDEM 2012 about "PMD5: What can it do for you?".
     [Video recording is available](http://video.fosdem.org/2012/lightningtalks/PMD5.webm).
