@@ -137,6 +137,9 @@ entries:
         - title: CI integrations
           output: web, pdf
           url: /pmd_userdocs_tools_ci.html
+        - title: IDE Plugins
+          output: web, pdf
+          url: /pmd_userdocs_tools_ide_plugins.html
         - title: Other Tools / Integrations
           output: web, pdf
           url: /pmd_userdocs_tools.html
