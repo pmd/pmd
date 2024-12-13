@@ -3,6 +3,7 @@ title: IDE Plugins
 tags: [userdocs, tools]
 permalink: pmd_userdocs_tools_ide_plugins.html
 author: David Dixon-Peugh <dpeugh@users.sourceforge.net>, Andreas Dangel <andreas.dangel@pmd-code.org>
+last_updated: December 2024 (7.9.0)
 ---
 
 ## IDE Integrations
@@ -16,143 +17,40 @@ being used by a getResourceAsStream() call to load it out of the PMD jar files.
 
 ### Summary
 
-<table>
-    <tr>
-        <th>IDE</th>
-        <th>Homepage</th>
-        <th>Source Code</th>
-        <th>Maintainers</th>
-    </tr>
+Status column:
+* 🟢 = Supports at least PMD 7, latest release not older than 12 months.
+* 🔴 = Doesn't support PMD 7 or the latest release is older than 12 months, indicating that this plugin is not actively maintained anymore.
 
-    <tr>
-        <td><a href="#bluej">BlueJ</a></td>
-        <td></td>
-        <td><a href="https://github.com/pmd/pmd-misc/tree/main/pmd-bluej/">pmd-bluej</a></td>
-        <td><a href="https://thomasleecopeland.com/">Tom Copeland</a></td>
-    </tr>
-
-    <tr>
-        <td><a href="#code-guide">CodeGuide</a></td>
-        <td></td>
-        <td>N/A</td>
-        <td>Austin Moore</td>
-    </tr>
-
-    <tr>
-        <td><a href="#eclipse">Eclipse</a></td>
-        <td></td>
-        <td><a href="https://github.com/pmd/pmd-eclipse-plugin">github: pmd/pmd-eclipse</a></td>
-        <td>Philippe Herlin</td>
-    </tr>
-    
-    <tr>
-        <td>qa-Eclipse</td>
-        <td></td>
-        <td><a href="https://github.com/ChristianWulf/qa-eclipse-plugin">qa-Eclipse</a></td>
-        <td>Christian Wulf</td>       
-    </tr>
-
-    <tr>
-        <td>eclipse-pmd</td>
-        <td><a href="http://acanda.github.io/eclipse-pmd/">http://acanda.github.io/eclipse-pmd/</a></td>
-        <td><a href="https://github.com/acanda/eclipse-pmd/">github: acanda/eclipse-pmd</a></td>
-        <td>Philip Graf</td>
-    </tr>
-
-    <tr>
-        <td><a href="#emacs">Emacs</a></td>
-        <td></td>
-        <td><a href="https://github.com/pmd/pmd-emacs/">github: pmd/pmd-emacs</a></td>
-        <td>Nascif Abousalh Neto</td>
-    </tr>
-
-    <tr>
-        <td><a href="#gel">Gel</a></td>
-        <td></td>
-        <td><a href="https://github.com/pmd/pmd-misc/tree/main/pmd-gel/">github: pmd/pmd-misc/pmd-gel</a></td>
-        <td>Andrei Lumianski</td>
-    </tr>
-
-    <tr>
-        <td>Gradle</td>
-        <td><a href="https://docs.gradle.org/current/userguide/pmd_plugin.html">Gradle: The PMD Plugin</a></td>
-        <td><a href="https://github.com/gradle/gradle/tree/master/subprojects/code-quality">github: gradle/gradle</a></td>
-        <td><a href="https://gradle.org/">Gradle.org</a></td>
-    </tr>
-
-    <tr>
-        <td><a href="#idea">IntelliJ IDEA</a></td>
-        <td></td>
-        <td><a href="https://github.com/amitdev/PMD-Intellij">github: amitdev/PMD-Intellij</a></td>
-        <td>Amit Dev</td>
-    </tr>
-
-    <tr>
-        <td><a href="#idea---qaplug">IntelliJ IDEA - QAPlug</a></td>
-        <td><a href="http://qaplug.com/">http://qaplug.com/</a></td>
-        <td>N/A</td>
-        <td>Jakub Sławiński</td>
-    </tr>
-
-    <tr>
-        <td><a href="#jbuilder">JBuilder</a></td>
-        <td></td>
-        <td><a href="https://github.com/pmd/pmd-misc/tree/main/pmd-jbuilder/">github: pmd/pmd-misc/pmd-jbuilder</a></td>
-        <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
-    </tr>
-
-    <tr>
-        <td><a href="#jcreator">JCreator</a></td>
-        <td></td>
-        <td>N/A</td>
-        <td>Brant Gurganus</td>
-    </tr>
-
-    <tr>
-        <td><a href="#jdeveloper">JDeveloper</a></td>
-        <td></td>
-        <td><a href="https://github.com/pmd/pmd-jdeveloper">github: pmd/pmd-jdeveloper</a></td>
-        <td><a href="http://develishdevelopment.wordpress.com/">Torsten Kleiber</a></td>
-    </tr>
-
-    <tr>
-        <td><a href="#jedit">JEdit</a></td>
-        <td><a href="http://plugins.jedit.org/plugins/?PMDPlugin">jEdit - PMD Plugin</a></td>
-        <td><a href="https://sourceforge.net/p/jedit/PMDPlugin/ci/master/tree/">sourceforge: jedit/PMDPlugin</a></td>
-        <td>Jiger Patel, Dale Anson</td>
-    </tr>
-
-    <tr>
-        <td><a href="#netbeans">NetBeans</a></td>
-        <td><a href="http://kenai.com/projects/sqe/">SQE</a></td>
-        <td><a href="https://github.com/sqe-team/sqe">github: sqe-team/sqe</a></td>
-        <td>N/A</td>
-    </tr>
-
-    <tr>
-        <td><a href="#textpad">TextPad</a></td>
-        <td></td>
-        <td>N/A</td>
-        <td>Jeff Epstein</td>
-    </tr>
-
-    <tr>
-        <td><a href="#weblogic-workshop-81x">WebLogic Workshop 8.1.x</a></td>
-        <td></td>
-        <td>N/A</td>
-        <td>Kevin Conaway</td>
-    </tr>
-</table>
-
-
+| IDE                                                                                              | Plugin Name / Marketplace Link                                                                                   | Status | Homepage                                                  | Source Code                                                                                         | More Info                                   |
+|--------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|:-------|-----------------------------------------------------------|-----------------------------------------------------------------------------------------------------|---------------------------------------------|
+| [Apache NetBeans](https://netbeans.apache.org/index.html)                                        | SQE - Software Quality Environment                                                                               | 🔴     | [sqe-team](https://sqe-team.github.io/)                   | [github: sqe-team/sqe](https://github.com/sqe-team/sqe)                                             |                                             | 
+| [Apache NetBeans](https://netbeans.apache.org/index.html)                                        | EasyPmd                                                                                                          | 🔴     |                                                           | [github: giancosta86/EasyPmd](https://github.com/giancosta86/EasyPmd)                               |                                             | 
+| [BlueJ](https://bluej.org/)                                                                      | pmd-bluej                                                                                                        | 🔴     |                                                           | [github: pmd/bluej](https://github.com/pmd/pmd-bluej)                                               | [↓ see below](#bluej)                       |
+| [Eclipse IDE](https://eclipseide.org/)                                                           | [eclipse-pmd](https://marketplace.eclipse.org/content/eclipse-pmd)                                               | 🟢     | [eclipse-pmd](https://eclipse-pmd.acanda.ch/)             | [github: eclipse-pmd/eclipse-pmd](https://github.com/eclipse-pmd/eclipse-pmd)                       |                                             |
+| [Eclipse IDE](https://eclipseide.org/)                                                           | [pmd-eclipse-plugin](https://marketplace.eclipse.org/content/pmd-eclipse-plugin)                                 | 🟢     |                                                           | [github: pmd/pmd-eclipse-plugin](https://github.com/pmd/pmd-eclipse-plugin)                         | [↓ see below](#pmd-eclipse-plugin)          |
+| [Eclipse IDE](https://eclipseide.org/)                                                           | qa-eclipse-plugin                                                                                                | 🔴     |                                                           | [github: ChristianWulf/qa-eclipse-plugin](https://github.com/ChristianWulf/qa-eclipse-plugin)       |                                             |
+| [Emacs](https://www.gnu.org/software/emacs/)                                                     | pmd-emacs                                                                                                        | 🔴     |                                                           | [github: pmd/pmd-emacs](https://github.com/pmd/pmd-emacs/)                                          |                                             |
+| [Emacs](https://www.gnu.org/software/emacs/)                                                     | emacs-pmd                                                                                                        | 🔴     | [emacs-pmd](http://yrk.nfshost.com/projects/emacs-pmd/)   | [yrk.nfshost.com/projects/emacs-pmd/](http://yrk.nfshost.com/projects/emacs-pmd/)                   | [↓ see below](#emacs)                       |
+| [IntelliJ IDEA](https://www.jetbrains.com/idea/)                                                 | [PMD](https://plugins.jetbrains.com/plugin/1137-pmd)                                                             | 🟢     |                                                           | [github: amitdev/PMD-Intellij](https://github.com/amitdev/PMD-Intellij)                             |                                             |
+| [IntelliJ IDEA](https://www.jetbrains.com/idea/)                                                 | [QAPlug - PMD](https://plugins.jetbrains.com/plugin/4596-qaplug--pmd)                                            | 🔴     | [QA Plug – quality assurance plugin](https://qaplug.com/) |                                                                                                     | [↓ see below](#intellij-idea---qaplug)      |
+| [IntelliJ IDEA](https://www.jetbrains.com/idea/)                                                 | none - external tool                                                                                             |        |                                                           |                                                                                                     | [↓ see below](#intellij-idea-external-tool) |
+| [Oracle JDeveloper](https://www.oracle.com/application-development/technologies/jdeveloper.html) | pmd-jdeveloper                                                                                                   | 🔴     |                                                           | [github: pmd/pmd-jdeveloper](https://github.com/pmd/pmd-jdeveloper)                                 | [↓ see below](#jdeveloper)                  |
+| [jEdit](https://www.jedit.org/)                                                                  | [PMDPlugin](https://plugins.jedit.org/plugins/?PMDPlugin)                                                        | 🔴     |                                                           | [sourceforge: jedit/PMDPlugin](https://sourceforge.net/p/jedit/PMDPlugin/ci/master/tree/)           | [↓ see below](#jedit)                       |
+| [TextPad](https://www.textpad.com/home)                                                          | none - external tool                                                                                             |        |                                                           |                                                                                                     | [↓ see below](#textpad)                     |
+| [Visual Studio Code](https://code.visualstudio.com/)                                             | [Apex PMD](https://marketplace.visualstudio.com/items?itemName=chuckjonas.apex-pmd)                              | 🟢     |                                                           | [github: ChuckJonas/vscode-apex-pmd](https://github.com/ChuckJonas/vscode-apex-pmd)                 |                                             |
+| [Visual Studio Code](https://code.visualstudio.com/)                                             | [VSCode Apex PMD](https://marketplace.visualstudio.com/items?itemName=mohanChinnappan.apex-pmd-code-scanner)     | 🔴     |                                                           | [github: mohan-chinnappan-n/vscode-apex-pmd](https://github.com/mohan-chinnappan-n/vscode-apex-pmd) |                                             |
+| [Visual Studio Code](https://code.visualstudio.com/)                                             | [PMD CPD](https://marketplace.visualstudio.com/items?itemName=nwcm.pmd-cpd)                                      | 🟢     |                                                           | [github: nwcm/vscode-pmd-cpd](https://github.com/nwcm/vscode-pmd-cpd)                               |                                             |
+| [Visual Studio Code](https://code.visualstudio.com/)                                             | [PMD for Java](https://marketplace.visualstudio.com/items?itemName=cracrayol.pmd-java)                           | 🟢     |                                                           | [github: cracrayol/vscode-java-pmd](https://github.com/cracrayol/vscode-java-pmd)                   |                                             |
+| [Visual Studio Code](https://code.visualstudio.com/)                                             | [Alibaba Java Coding Guidelines](https://marketplace.visualstudio.com/items?itemName=yangbaopan.vscode-java-p3c) | 🔴     |                                                           |                                                                                                     |                                             |
+| [Visual Studio Code](https://code.visualstudio.com/)                                             | vscode-pmd-daemon                                                                                                |        |                                                           | [github: hvbargen/vscode-pmd-daemon](https://github.com/hvbargen/vscode-pmd-daemon)                 |                                             |
 
 ### BlueJ
 
-[BlueJ](http://bluej.org/) is a teaching IDE. To install the PMD extension for BlueJ, download
-the [PMDExtension jar file](http://sourceforge.net/projects/pmd/files/pmd-bluej/pmd-bluej-1.0/)
+[BlueJ](https://bluej.org/) is a teaching IDE. To install the PMD extension for BlueJ, download
+the [PMDExecExt.jar file](https://github.com/pmd/pmd-bluej/releases/latest)
 and place it in your `bluej/lib/extensions/` directory.
 
-### Eclipse
+### PMD Eclipse Plugin
 
 To install the PMD plugin for Eclipse:
 
@@ -192,32 +90,9 @@ The output is captured in a compilation buffer which allows the user to "jump"
 directly to the source code position associated with the PMD warnings.
 
 
-### Gel
-
-Here's how to set up the Gel plugin:
-
-*   Download the pmd-gel-[version].zip file
-*   Close Gel
-*   Remove any old plugin versions from your gel\plugins directory
-*   Unzip the new zip file into your gel\plugins directory
-*   Start Gel
-*   Go to Tools->Options->Plugin
-*   Select the PMD plugin and click "Remove"
-*   Click "Add" and select "net.sourceforge.pmd.gel.PMDPlugin"
-*   Restart Gel
-
-That's pretty much it.  Now you can open a Java project and click on Plugins->PMD and
-a configuration panel will pop up.  You can pick which ruleset you want to run and
-you can also pick whether you want to run PMD on the current file or on every
-source file in your project.
-
-
-### IDEA
+### IntelliJ IDEA External Tool
 
 You can use an integrated plugin or just use it as an IDEA "External Tool".
-
-Amit Dev wrote an integrated plugin for IDEA; you can download that
-[from the IntelliJ plugins site](http://plugins.jetbrains.com/idea/plugin/1137-pmdplugin).
 
 Here's how to set it up as an "External Tool":
 
@@ -241,55 +116,14 @@ right-click on the message window title bar and unselect "autohide" so the windo
 away every time I fix something in the code window.
 
 
-### IDEA - QAPlug
+### IntelliJ IDEA - QAPlug
 
 QAPlug is an Intellij IDEA plugin to manage code quality.  It integrates no less than Checkstyle, FindBugs, and PMD.
 
-The plugin is available at <http://www.qaplug.com/>.
+The plugin is available at <https://qaplug.com/>.
 
 Also available at the JetBrains site, [QAPlug-PMD](http://plugins.jetbrains.com/idea/plugin/4596-qaplug--pmd)
 and [QAPlug](http://plugins.jetbrains.com/idea/plugin/4594-qaplug).
-
-
-### JBuilder
-
-To enable this OpenTool in JBuilder:
-
-*   Download the [latest binary release](https://sourceforge.net/projects/pmd/files/pmd-jbuilder/)
-*   Unzip it into your `jbuilder/lib/ext/` directory
-*   Restart JBuilder
-
-What you can do:
-
-*   Check a single file by bringing up the context menu from the file tab and selecting PMDCheck
-*   Configure the rulesets that the PMD OpenTool will use by selecting Tools->PMD->Configure PMD
-*   Check all the files in a project by bringing up the context menu for
-    the project node and selecting PMD Check Project
-*   Locate duplicate code by right clicking on a package and selection "Check with CPD"
-
-When running PMD, the results will be displayed in the MessageView under a tab called PMD Results.  If you click on a
-violation message within this view, you will be taken to the line in the source code where the violation was detected.
-
-Things still to do:
-
-*   Enable selection of individual rules within a rule set (maybe)
-*   Optional insertion of @todo comments at the point of a violation
-*   Possibly provide configurable ability to limit the number of violations per rule per file
-
-
-### JCreator
-
-1.  Open Configure > Options
-2.  Go to the Tools panel
-3.  Click New > Program
-4.  Browse for PMD's pmd.bat
-5.  Put quotations around the path if it has spaces.
-6.  Set the initial directory to PMD's \bin directory
-7.  Check capture output
-8.  Put '"$[PrjDir]" emacs' followed by desired rulesets in the arguments
-
-To run PMD on a project, just pick pmd from the Tools menu.
-
 
 ### JDeveloper
 
@@ -329,11 +163,6 @@ The way I use the JEdit plugin is:
 Note that you can select individual rules by going to Utilities->Global Options->Plugin Options->PMD.
 Also, you can change the plugin to prompt you for a directory to check by going to that same menu and
 selecting the "Ask for Directory" checkbox.
-
-
-### NetBeans
-
-The [SQE](http://kenai.com/projects/sqe/) project includes PMD integration for NetBeans.
 
 
 ### TextPad
@@ -411,6 +240,87 @@ The [SQE](http://kenai.com/projects/sqe/) project includes PMD integration for N
 the (blank Command Results) document, and then confirming that, "yes, I do really want to exit the tool".</em>
 
 
+
+
+## Archived Integrations
+
+These are integrations that are no longer maintained or for IDEs that no longer exist.
+
+### CodeGuide
+
+CodeGuide was a Java IDE by omnicore: <https://web.archive.org/web/20081210063520/http://www.omnicore.com:80/en/codeguide.htm>
+
+### Gel
+
+Gel was once an IDE: <https://archive.org/details/tucows_246670_Gel>
+
+Source code for the PMD plugin is here: <https://github.com/pmd/pmd-misc/tree/main/pmd-gel/>
+
+Here's how to set up the Gel plugin:
+
+*   Download the pmd-gel-[version].zip file
+*   Close Gel
+*   Remove any old plugin versions from your gel\plugins directory
+*   Unzip the new zip file into your gel\plugins directory
+*   Start Gel
+*   Go to Tools->Options->Plugin
+*   Select the PMD plugin and click "Remove"
+*   Click "Add" and select "net.sourceforge.pmd.gel.PMDPlugin"
+*   Restart Gel
+
+That's pretty much it.  Now you can open a Java project and click on Plugins->PMD and
+a configuration panel will pop up.  You can pick which ruleset you want to run and
+you can also pick whether you want to run PMD on the current file or on every
+source file in your project.
+
+### JBuilder
+
+Was once a IDE by Borland (later Embarcadero): see <https://en.wikipedia.org/wiki/JBuilder> and
+<https://web.archive.org/web/20090228184200/http://www.embarcadero.com/products/jbuilder/>
+
+Source code for the plugin is here: <https://github.com/pmd/pmd-misc/tree/main/pmd-jbuilder/>
+
+To enable this OpenTool in JBuilder:
+
+*   Download the [latest binary release](https://sourceforge.net/projects/pmd/files/pmd-jbuilder/)
+*   Unzip it into your `jbuilder/lib/ext/` directory
+*   Restart JBuilder
+
+What you can do:
+
+*   Check a single file by bringing up the context menu from the file tab and selecting PMDCheck
+*   Configure the rulesets that the PMD OpenTool will use by selecting Tools->PMD->Configure PMD
+*   Check all the files in a project by bringing up the context menu for
+    the project node and selecting PMD Check Project
+*   Locate duplicate code by right clicking on a package and selection "Check with CPD"
+
+When running PMD, the results will be displayed in the MessageView under a tab called PMD Results.  If you click on a
+violation message within this view, you will be taken to the line in the source code where the violation was detected.
+
+Things still to do:
+
+*   Enable selection of individual rules within a rule set (maybe)
+*   Optional insertion of @todo comments at the point of a violation
+*   Possibly provide configurable ability to limit the number of violations per rule per file
+
+### JCreator
+
+Was once a IDE: <https://web.archive.org/web/20211018201200/http://www.jcreator.com/>
+
+1.  Open Configure > Options
+2.  Go to the Tools panel
+3.  Click New > Program
+4.  Browse for PMD's pmd.bat
+5.  Put quotations around the path if it has spaces.
+6.  Set the initial directory to PMD's \bin directory
+7.  Check capture output
+8.  Put '"$[PrjDir]" emacs' followed by desired rulesets in the arguments
+
+To run PMD on a project, just pick pmd from the Tools menu.
+
 ### WebLogic Workshop 8.1.x
+
+That's a plugin for an old version of Bea WebLogic Workshop 8.1.x (which is now available from Oracle).
+The new versions are based on Eclipse and don't require this plugin anymore.
 
 Please see [the WebLogic Workshop plugin project home page](http://pmdwlw.sf.net/) for more information.
