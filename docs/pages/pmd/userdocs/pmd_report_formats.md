@@ -119,7 +119,7 @@ normal source file extensions (e.g. ".java") with ".html", so that the generated
 
 IntelliJ IDEA integration.
 
-{% include warning.html content="This format can only be used as described in [Tools: IDEA](pmd_userdocs_tools.html#idea)." %}
+{% include warning.html content="This format can only be used as described in [Tools: IntelliJ IDEA External Tool](pmd_userdocs_tools_ide_plugins.html#intellij-idea-external-tool)." %}
 
 It has two ways of calling:
 
