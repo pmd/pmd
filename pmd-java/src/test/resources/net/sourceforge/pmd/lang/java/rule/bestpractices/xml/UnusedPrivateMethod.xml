@@ -2500,8 +2500,7 @@ public class PmdTestCase {
     </test-code>
 
     <test-code>
-        <description>
-            [java] UnusedPrivateMethod - false positive with static methods in core JDK classes #4861 </description>
+        <description>#4861 [java] UnusedPrivateMethod - false positive with static methods in core JDK classes</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             package java.lang;

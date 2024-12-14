@@ -150,9 +150,12 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
      * java.lang types (like Object, or primitive boxes) are
      * treated specially by the type resolution framework, and
      * for those the preexisting ASM symbol is preferred over
-     * the AST symbol. Since it only applies to these types we
+     * the AST symbol - symbol.tryGetNode() returns null in that
+     * case. Since it only applies to these types we
      * check that the package name is java.lang, to avoid doing
      * that for other types.
+     * This is only relevant, when PMD is used to analyze OpenJDK
+     * sources, like with the regression tester.
      */
     private static @Nullable ASTMethodDeclaration findDeclarationInCompilationUnit(ASTCompilationUnit acu, JExecutableSymbol symbol) {
         if (!"java.lang".equals(acu.getPackageName())
