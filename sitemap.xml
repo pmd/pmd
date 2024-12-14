@@ -684,6 +684,15 @@
   
   
   <url>
+    <loc>https://docs.pmd-code.org/latest/pmd_userdocs_tools_ide_plugins.html</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+    <lastmod>2024-12-14</lastmod>
+  </url>
+  
+  
+  
+  <url>
     <loc>https://docs.pmd-code.org/latest/pmd_userdocs_incremental_analysis.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>

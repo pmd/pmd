@@ -5,8 +5,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="">
-<meta name="keywords" content=" ">
-<title>ADR 3 - API evolution principles | PMD Source Code Analyzer</title>
+<meta name="keywords" content="userdocstools,  ">
+<title>IDE Plugins | PMD Source Code Analyzer</title>
 
 
 <link rel="stylesheet" type="text/css" href="assets/fontawesome-free-5.15.4-web/css/all.min.css">
@@ -453,7 +453,7 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_tools_ide_plugins.html">IDE Plugins</a></li>
+                        <li class="active"><a href="pmd_userdocs_tools_ide_plugins.html">IDE Plugins</a></li>
                         
                         
                         
@@ -1810,7 +1810,7 @@
             
 
                 
-                <li class="active"><a href="pmd_projectdocs_decisions.html">Decisions</a></li>
+                <li><a href="pmd_projectdocs_decisions.html">Decisions</a></li>
                 
 
             
@@ -1879,10 +1879,10 @@
             <a href="./" role="button"
                 ><i class="fa fa-home fa-lg"></i
             ></a>
-            » ADR 3 - API evolution principles   
+            » IDE Plugins   
             <a
                 target="_blank"
-                href="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/projectdocs/decisions/adr-3.md"
+                href="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/userdocs/tools/ide-plugins.md"
                 class="float-right"
                 role="button"
                 ><i class="fab fa-github fa-lg"></i> Edit on GitHub</a
@@ -1896,10 +1896,10 @@
 
 
 <div class="post-header">
-   <h1 class="post-title-main">ADR 3 - API evolution principles</h1>
+   <h1 class="post-title-main">IDE Plugins</h1>
 </div>
 
-<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/projectdocs/decisions/adr-3.md">
+<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/userdocs/tools/ide-plugins.md">
 
    
     <details id="inline-toc-details">
@@ -1907,222 +1907,523 @@
         <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
     </details>
 
-  <!-- https://github.com/joelparkerhenderson/architecture-decision-record/blob/main/templates/decision-record-template-by-michael-nygard/index.md -->
+  <h2 id="ide-integrations">IDE Integrations</h2>
 
-<h2 id="context">Context</h2>
+<h3 id="general-comments">General comments</h3>
 
-<p>The API of PMD has been growing over the years and needed some cleanup. The goal is, to
-have a clear separation between a well-defined API and the implementation, which is internal.
-This should help us in future development.</p>
+<p>A general note - most plugins include the PMD jar files, which has the rulesets
+inside it.  So even though the rulesets parameter that some plugins
+use (i.e., “category/java/bestpractices.xml”) looks like a filesystem reference, it’s really
+being used by a getResourceAsStream() call to load it out of the PMD jar files.</p>
 
-<p>Until PMD 7.0.0, all released public members and types were implicitly considered part
-of public PMD API, including inheritance-specific members (protected members, abstract methods).
-We have maintained those APIs with the goal to preserve full binary compatibility between minor releases,
-only breaking those APIs infrequently, for major releases.</p>
+<h3 id="summary">Summary</h3>
 
-<p>PMD is used and integrated in many different tools such as IDE plugins or build plugins. These plugins
-use our public API and rely on it being stable, hence we tried to break it only infrequently.</p>
-
-<p>In order to allow PMD to move forward at a faster pace, this implicit contract will
-be invalidated with PMD 7.0.0 and onwards. We now introduce more fine-grained distinctions between
-the type of compatibility support we guarantee for our libraries, and ways to make
-them explicit to clients of PMD.</p>
-
-<p>The actual API development and marking some part of the API as internal or add new API is an ongoing task,
-that will need to be done everytime. We won’t just define an API and then are done with it.
-The API will change as new features want to be implemented.</p>
-
-<p>This decision document aims to document principles and guidelines that are used for PMD development.</p>
-
-<h2 id="decision">Decision</h2>
-
-<h3 id="semantic-versioning">Semantic Versioning</h3>
-
-<p>PMD and all its modules are versioned together. PMD uses <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning 2.0.0</a>.
-This means, that each PMD version consists of MAJOR.MINOR.PATCH components:</p>
-
+<p>Status column:</p>
 <ul>
-  <li>MAJOR version is incremented for incompatible API changes</li>
-  <li>MINOR version is incremented for added functionality in a backwards compatible way</li>
-  <li>PATCH version is incremented for backward compatible bug fixes</li>
+  <li>🟢 = Supports at least PMD 7, latest release not older than 12 months.</li>
+  <li>🔴 = Doesn’t support PMD 7 or the latest release is older than 12 months, indicating that this plugin is not actively maintained anymore.</li>
 </ul>
 
-<p>Additional labels for release candidates might be used.</p>
+<table>
+  <thead>
+    <tr>
+      <th>IDE</th>
+      <th>Plugin Name / Marketplace Link</th>
+      <th style="text-align: left">Status</th>
+      <th>Homepage</th>
+      <th>Source Code</th>
+      <th>More Info</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="https://netbeans.apache.org/index.html">Apache NetBeans</a></td>
+      <td>SQE - Software Quality Environment</td>
+      <td style="text-align: left">🔴</td>
+      <td><a href="https://sqe-team.github.io/">sqe-team</a></td>
+      <td><a href="https://github.com/sqe-team/sqe">github: sqe-team/sqe</a></td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><a href="https://netbeans.apache.org/index.html">Apache NetBeans</a></td>
+      <td>EasyPmd</td>
+      <td style="text-align: left">🔴</td>
+      <td> </td>
+      <td><a href="https://github.com/giancosta86/EasyPmd">github: giancosta86/EasyPmd</a></td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><a href="https://bluej.org/">BlueJ</a></td>
+      <td>pmd-bluej</td>
+      <td style="text-align: left">🔴</td>
+      <td> </td>
+      <td><a href="https://github.com/pmd/pmd-bluej">github: pmd/bluej</a></td>
+      <td><a href="#bluej">↓ see below</a></td>
+    </tr>
+    <tr>
+      <td><a href="https://eclipseide.org/">Eclipse IDE</a></td>
+      <td><a href="https://marketplace.eclipse.org/content/eclipse-pmd">eclipse-pmd</a></td>
+      <td style="text-align: left">🟢</td>
+      <td><a href="https://eclipse-pmd.acanda.ch/">eclipse-pmd</a></td>
+      <td><a href="https://github.com/eclipse-pmd/eclipse-pmd">github: eclipse-pmd/eclipse-pmd</a></td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><a href="https://eclipseide.org/">Eclipse IDE</a></td>
+      <td><a href="https://marketplace.eclipse.org/content/pmd-eclipse-plugin">pmd-eclipse-plugin</a></td>
+      <td style="text-align: left">🟢</td>
+      <td> </td>
+      <td><a href="https://github.com/pmd/pmd-eclipse-plugin">github: pmd/pmd-eclipse-plugin</a></td>
+      <td><a href="#pmd-eclipse-plugin">↓ see below</a></td>
+    </tr>
+    <tr>
+      <td><a href="https://eclipseide.org/">Eclipse IDE</a></td>
+      <td>qa-eclipse-plugin</td>
+      <td style="text-align: left">🔴</td>
+      <td> </td>
+      <td><a href="https://github.com/ChristianWulf/qa-eclipse-plugin">github: ChristianWulf/qa-eclipse-plugin</a></td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><a href="https://www.gnu.org/software/emacs/">Emacs</a></td>
+      <td>pmd-emacs</td>
+      <td style="text-align: left">🔴</td>
+      <td> </td>
+      <td><a href="https://github.com/pmd/pmd-emacs/">github: pmd/pmd-emacs</a></td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><a href="https://www.gnu.org/software/emacs/">Emacs</a></td>
+      <td>emacs-pmd</td>
+      <td style="text-align: left">🔴</td>
+      <td><a href="http://yrk.nfshost.com/projects/emacs-pmd/">emacs-pmd</a></td>
+      <td><a href="http://yrk.nfshost.com/projects/emacs-pmd/">yrk.nfshost.com/projects/emacs-pmd/</a></td>
+      <td><a href="#emacs">↓ see below</a></td>
+    </tr>
+    <tr>
+      <td><a href="https://www.jetbrains.com/idea/">IntelliJ IDEA</a></td>
+      <td><a href="https://plugins.jetbrains.com/plugin/1137-pmd">PMD</a></td>
+      <td style="text-align: left">🟢</td>
+      <td> </td>
+      <td><a href="https://github.com/amitdev/PMD-Intellij">github: amitdev/PMD-Intellij</a></td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><a href="https://www.jetbrains.com/idea/">IntelliJ IDEA</a></td>
+      <td><a href="https://plugins.jetbrains.com/plugin/4596-qaplug--pmd">QAPlug - PMD</a></td>
+      <td style="text-align: left">🔴</td>
+      <td><a href="https://qaplug.com/">QA Plug – quality assurance plugin</a></td>
+      <td> </td>
+      <td><a href="#intellij-idea---qaplug">↓ see below</a></td>
+    </tr>
+    <tr>
+      <td><a href="https://www.jetbrains.com/idea/">IntelliJ IDEA</a></td>
+      <td>none - external tool</td>
+      <td style="text-align: left"> </td>
+      <td> </td>
+      <td> </td>
+      <td><a href="#intellij-idea-external-tool">↓ see below</a></td>
+    </tr>
+    <tr>
+      <td><a href="https://www.oracle.com/application-development/technologies/jdeveloper.html">Oracle JDeveloper</a></td>
+      <td>pmd-jdeveloper</td>
+      <td style="text-align: left">🔴</td>
+      <td> </td>
+      <td><a href="https://github.com/pmd/pmd-jdeveloper">github: pmd/pmd-jdeveloper</a></td>
+      <td><a href="#jdeveloper">↓ see below</a></td>
+    </tr>
+    <tr>
+      <td><a href="https://www.jedit.org/">jEdit</a></td>
+      <td><a href="https://plugins.jedit.org/plugins/?PMDPlugin">PMDPlugin</a></td>
+      <td style="text-align: left">🔴</td>
+      <td> </td>
+      <td><a href="https://sourceforge.net/p/jedit/PMDPlugin/ci/master/tree/">sourceforge: jedit/PMDPlugin</a></td>
+      <td><a href="#jedit">↓ see below</a></td>
+    </tr>
+    <tr>
+      <td><a href="https://www.textpad.com/home">TextPad</a></td>
+      <td>none - external tool</td>
+      <td style="text-align: left"> </td>
+      <td> </td>
+      <td> </td>
+      <td><a href="#textpad">↓ see below</a></td>
+    </tr>
+    <tr>
+      <td><a href="https://code.visualstudio.com/">Visual Studio Code</a></td>
+      <td><a href="https://marketplace.visualstudio.com/items?itemName=chuckjonas.apex-pmd">Apex PMD</a></td>
+      <td style="text-align: left">🟢</td>
+      <td> </td>
+      <td><a href="https://github.com/ChuckJonas/vscode-apex-pmd">github: ChuckJonas/vscode-apex-pmd</a></td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><a href="https://code.visualstudio.com/">Visual Studio Code</a></td>
+      <td><a href="https://marketplace.visualstudio.com/items?itemName=mohanChinnappan.apex-pmd-code-scanner">VSCode Apex PMD</a></td>
+      <td style="text-align: left">🔴</td>
+      <td> </td>
+      <td><a href="https://github.com/mohan-chinnappan-n/vscode-apex-pmd">github: mohan-chinnappan-n/vscode-apex-pmd</a></td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><a href="https://code.visualstudio.com/">Visual Studio Code</a></td>
+      <td><a href="https://marketplace.visualstudio.com/items?itemName=nwcm.pmd-cpd">PMD CPD</a></td>
+      <td style="text-align: left">🟢</td>
+      <td> </td>
+      <td><a href="https://github.com/nwcm/vscode-pmd-cpd">github: nwcm/vscode-pmd-cpd</a></td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><a href="https://code.visualstudio.com/">Visual Studio Code</a></td>
+      <td><a href="https://marketplace.visualstudio.com/items?itemName=cracrayol.pmd-java">PMD for Java</a></td>
+      <td style="text-align: left">🟢</td>
+      <td> </td>
+      <td><a href="https://github.com/cracrayol/vscode-java-pmd">github: cracrayol/vscode-java-pmd</a></td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><a href="https://code.visualstudio.com/">Visual Studio Code</a></td>
+      <td><a href="https://marketplace.visualstudio.com/items?itemName=yangbaopan.vscode-java-p3c">Alibaba Java Coding Guidelines</a></td>
+      <td style="text-align: left">🔴</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><a href="https://code.visualstudio.com/">Visual Studio Code</a></td>
+      <td>vscode-pmd-daemon</td>
+      <td style="text-align: left"> </td>
+      <td> </td>
+      <td><a href="https://github.com/hvbargen/vscode-pmd-daemon">github: hvbargen/vscode-pmd-daemon</a></td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
 
-<p>Incompatible API changes shouldn’t be introduced lightly. See
-<a href="https://semver.org/spec/v2.0.0.html#if-even-the-tiniest-backward-incompatible-changes-to-the-public-api-require-a-major-version-bump-wont-i-end-up-at-version-4200-very-rapidly">FAQ: If even the tiniest backward incompatible changes to the public API require a major version bump, won’t I end up at version 42.0.0 very rapidly?</a>.</p>
+<h3 id="bluej">BlueJ</h3>
 
-<h3 id="project-structure-and-java-base-packages-names">Project structure and Java base packages names</h3>
+<p><a href="https://bluej.org/">BlueJ</a> is a teaching IDE. To install the PMD extension for BlueJ, download
+the <a href="https://github.com/pmd/pmd-bluej/releases/latest">PMDExecExt.jar file</a>
+and place it in your <code class="language-plaintext highlighter-rouge">bluej/lib/extensions/</code> directory.</p>
 
-<p>PMD is mainly developed in the Java programming language. The build tool is Maven and the PMD build consists
-of several maven modules.</p>
+<h3 id="pmd-eclipse-plugin">PMD Eclipse Plugin</h3>
+
+<p>To install the PMD plugin for Eclipse:</p>
 
 <ul>
-  <li>All packages belonging to a given module should have a common package prefix.</li>
-  <li>Given a package name, it should be easy to figure out to which module this package belongs. There is a 1:1 mapping
-between maven module and package. This rule helps to find the source code for any fully qualified (Java) class name.</li>
-  <li>Two modules must not define the same packages. That means, it is not allowed that any given package spans more than
-one module. Otherwise, the mapping between module and package wouldn’t be unambiguous.</li>
-  <li>The base package for all PMD source code is <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd</code>. There are many different sub packages.</li>
-  <li>The core module <code class="language-plaintext highlighter-rouge">pmd-core</code> uses directly the base package as the only module. All other modules must use
-specific sub packages.</li>
-  <li>Language modules use the base package <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.&lt;language id&gt;</code>.
-E.g. <code class="language-plaintext highlighter-rouge">pmd-java</code> uses the package <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.java</code>.</li>
-  <li>All other modules use the base package <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.&lt;module&gt;</code>,
-E.g. <code class="language-plaintext highlighter-rouge">pmd-cli</code> uses the package <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cli</code>.</li>
+  <li>Start Eclipse and open a project</li>
+  <li>Select “Help”-&gt;”Software Updates”-&gt;”Find and Install”</li>
+  <li>Click “Next”, then click “New remote site”</li>
+  <li>Enter “PMD” into the Name field and <a href="https://pmd.github.io/pmd-eclipse-plugin-p2-site/">https://pmd.github.io/pmd-eclipse-plugin-p2-site/</a> into the URL field</li>
+  <li>Click through the rest of the dialog boxes to install the plugin</li>
 </ul>
 
-<h3 id="criteria-for-public-api">Criteria for public API</h3>
+<p>Alternatively, you can download the latest zip file and follow the above procedures
+except for using “New local site” and browsing to the downloaded zip file.</p>
 
-<p>Public API is</p>
+<p>To configure PMD, select “Windows”-&gt;”Preferences”, then select PMD.</p>
+
+<p>To run PMD, right-click on a project node and select “PMD”-&gt;”Check code with PMD”.</p>
+
+<p>To run the duplicate code detector, right-click on a project node and
+select “PMD”-&gt;”Find suspect cut and paste”.  The report will be placed in a “reports” directory
+in a file called “cpd-report.txt”.</p>
+
+<p>To find additional help for other features, please read included help by selecting
+Help-&gt;Help Contents and browse the “How to…” section in the “PMD Plugin Documentation” book.</p>
+
+<p>After installing an update, if you get an Exception such as
+“java.lang.RuntimeException: Couldn’t find that class xxxxx”,
+try deleting the ruleset.xml file in the .metadata/plugins/net.sourceforge.pmd.eclipse directory in your workspace.</p>
+
+<p>To get Eclipse to not flag the @SuppressWarnings(“PMD”) annotation, look
+under the menu headings Java -&gt; Compiler -&gt; Errors/Warnings -&gt; Annotations -&gt; Unhandled Warning Token.</p>
+
+<h3 id="emacs">Emacs</h3>
+
+<p>Integration with GNU Emacs is performed through an ELisp package, pmd.el.
+It supports two commands, “pmd-current-buffer” and “pmd-current-dir”.
+The output is captured in a compilation buffer which allows the user to “jump”
+directly to the source code position associated with the PMD warnings.</p>
+
+<h3 id="intellij-idea-external-tool">IntelliJ IDEA External Tool</h3>
+
+<p>You can use an integrated plugin or just use it as an IDEA “External Tool”.</p>
+
+<p>Here’s how to set it up as an “External Tool”:</p>
 
 <ul>
-  <li>API needed to execute PMD analysis
+  <li>Open IDEA and go to File-&gt;Settings</li>
+  <li>Click on the “External Tools” icon</li>
+  <li>Click on the Add button</li>
+  <li>Fill in the blocks
     <ul>
-      <li>Renderers</li>
-      <li>RuleSet XML Schema</li>
-      <li>Configuration</li>
-      <li>Ant Tasks</li>
+      <li>Name: PMD</li>
+      <li>Description: PMD, good for what ails you.</li>
+      <li>Menu: Select the “Main menu”, “Project views”, “Editor menu”, and “Search results” checkboxes.</li>
+      <li>Program: <code class="language-plaintext highlighter-rouge">c:\pmd\bin\pmd.bat</code></li>
+      <li>For the next parameter you’ll need to plug in the location of your PMD installation
+and the rulesets you want to use</li>
+      <li>Parameters:
+<code class="language-plaintext highlighter-rouge">-d "$FilePath$" -f ideaj -R rulesets/java/quickstart.xml -P sourcePath="$Sourcepath$" -P classAndMethodName=$FileClass$.method -P fileName=$FileName$</code></li>
     </ul>
   </li>
-  <li>API needed to implement custom rules
+</ul>
+
+<p>That’s pretty much it. Now you can right click on a source directory and select PMD,
+it’ll run recursively on the source files, and the results should
+be displayed in a window and hyperlinked into the correct file and line of code.  I usually
+right-click on the message window title bar and unselect “autohide” so the window doesn’t go
+away every time I fix something in the code window.</p>
+
+<h3 id="intellij-idea---qaplug">IntelliJ IDEA - QAPlug</h3>
+
+<p>QAPlug is an Intellij IDEA plugin to manage code quality.  It integrates no less than Checkstyle, FindBugs, and PMD.</p>
+
+<p>The plugin is available at <a href="https://qaplug.com/">https://qaplug.com/</a>.</p>
+
+<p>Also available at the JetBrains site, <a href="http://plugins.jetbrains.com/idea/plugin/4596-qaplug--pmd">QAPlug-PMD</a>
+and <a href="http://plugins.jetbrains.com/idea/plugin/4594-qaplug">QAPlug</a>.</p>
+
+<h3 id="jdeveloper">JDeveloper</h3>
+
+<p>To install the PMD plugin for JDeveloper:</p>
+
+<ul>
+  <li>JDeveloper 10.1.2: Download the binary release and unzip it into your jdev/lib/ext directory</li>
+  <li>JDeveloper 10.1.3 upwards: Click “Help”, click “Check for Updates”
     <ul>
-      <li>AST structure and classes of languages (incl. AST structure for XPath rules)</li>
-      <li>XPath functions</li>
-      <li>Language Symbol Table / Metrics / Type Resolution (Not the implementation)</li>
+      <li>JDeveloper 10.1.3:
+        <ul>
+          <li>Press “Add” to add a new update center</li>
+          <li>Name: PMD Update Center</li>
+          <li>Location: <a href="http://pmd.sourceforge.net/center.xml">http://pmd.sourceforge.net/center.xml</a></li>
+          <li>Select Update Center: PMD Update Center</li>
+        </ul>
+      </li>
+      <li>JDeveloper 11 upwards: Select Update Center: Open Source and Partner Extensions</li>
+      <li>Press Next and select the actual PMD Plugin and install it</li>
     </ul>
   </li>
+  <li>Restart JDeveloper</li>
 </ul>
 
-<p><strong>Not</strong> public API is</p>
+<p>To run the PMD plugin for JDeveloper:</p>
 
 <ul>
-  <li>Anything in packages <code class="language-plaintext highlighter-rouge">internal</code> and <code class="language-plaintext highlighter-rouge">impl</code></li>
-  <li>Inheritance-specific members of AST related classes and interfaces. E.g. adding a member to an
-interface shouldn’t be considered API breaking</li>
-  <li>Setters in AST classes are private. They are only used in the parser.</li>
+  <li>Open the Tools-&amp;Preferences menu</li>
+  <li>Click on the PMD option</li>
+  <li>Select a couple of rules to try</li>
+  <li>To run PMD, right click on either a file, folder, package, project or workspace and select PMD via
+Toolbar Icon, Context Menu or File Menu</li>
+  <li>Any rule violations should show up in a LogWindow tab at the bottom of the screen</li>
 </ul>
 
-<h3 id="separation-between-public-api-internal-and-implementation">Separation between public API, internal and implementation</h3>
+<h3 id="jedit">JEdit</h3>
 
-<p>All packages are considered to be public API by default, with <strong>two exceptions</strong>:</p>
+<p>The way I use the JEdit plugin is:</p>
 
 <ul>
-  <li>
-    <p>Any package that contains an <code class="language-plaintext highlighter-rouge">internal</code> segment is considered internal. E.g. <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.internal</code>.
-<em>Internal API</em> is meant for use <em>only</em> by the main PMD codebase. Internal types and methods
-may be modified in any way, or even removed, at any time without a MAJOR version change.</p>
+  <li>Dock the ErrorList by going to Utilities-&gt;Global Options-&gt;Docking and
+putting ErrorList at the bottom of the screen</li>
+  <li>Open the File Browser if it isn’t already open</li>
+  <li>Double-click on a source directory</li>
+  <li>Select Plugins-&gt;PMD-&gt;Check directory recursively</li>
+</ul>
 
-    <p>The <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation will be used for types that have to live outside of
-these packages, e.g. methods of a public type that shouldn’t be used outside PMD (again,
-these can be removed anytime).</p>
+<p>Note that you can select individual rules by going to Utilities-&gt;Global Options-&gt;Plugin Options-&gt;PMD.
+Also, you can change the plugin to prompt you for a directory to check by going to that same menu and
+selecting the “Ask for Directory” checkbox.</p>
+
+<h3 id="textpad">TextPad</h3>
+
+<p><strong>Assumptions</strong></p>
+
+<ul>
+  <li>The Java Development Kit, version 1.4.2 (versions 1.4 and higher are acceptable) is properly installed
+into your machine, and exists in <code class="language-plaintext highlighter-rouge">D:\java\jdk\_142\</code>. This means that <code class="language-plaintext highlighter-rouge">D:\java\jdk\_142\bin\java.exe</code> exists.</li>
+  <li>PMD version 5.0 exists in <code class="language-plaintext highlighter-rouge">D:\java\pmd-bin-\</code>.
+This means that <code class="language-plaintext highlighter-rouge">D:\java\pmd-bin-\lib\pmd-.jar</code> (among other jar files
+in the same directory) exist.</li>
+</ul>
+
+<p><strong>To integrate into TextPad</strong></p>
+
+<ol>
+  <li>In the <strong>Configure</strong> menu, choose <strong>Preferences…</strong>. This opens the Preferences dialog</li>
+  <li>In the left pane of the Preferences dialog, choose the <strong>Tools</strong> branch by clicking on the <em>word</em> “Tools”.</li>
+  <li>On the far right of the dialog, click on the <strong>Add</strong> button, and then select <strong>Program…</strong> from the drop-down.
+This opens the standard Windows Open File dialog.</li>
+  <li>Type <code class="language-plaintext highlighter-rouge">D:\java\jdk_142\bin\java.exe</code> and click the <strong>Open</strong> button.  In the center pane of the Preferences dialog,
+an item “Java” has now been added, and is currently selected.</li>
+  <li>Click the word Java, which makes the word editable. Select the entire word, and type “PMD directory”. Press Return.</li>
+  <li>Repeat steps three through five, but type “PMD file”, instead of “PMD directory”.</li>
+  <li>Click <strong>Apply</strong>.</li>
+  <li>Expand the <strong>Tools</strong> branch (if not already) by clicking on the ‘<code class="language-plaintext highlighter-rouge">+</code>’ directly to its left.</li>
+  <li>In the expanded list, select <strong>PMD directory</strong>. This changes the right side of this dialog to the “tool” form.</li>
+  <li>In the “tool” form, enter these parameters:
+    <ul>
+      <li><strong>Parameters:</strong>  <code class="language-plaintext highlighter-rouge">-classpath D:\java\pmd-bin-\lib\pmd-.jar;D:\java\pmd-bin-\lib\asm-3.2.jar;D:\java\pmd-bin-\lib\jaxen-1.1.1.jar net.sourceforge.pmd.PMD -d &lt;i&gt;&lt;b&gt;$FileDir&lt;/b&gt;&lt;/i&gt; -f net.sourceforge.pmd.renderers.TextPadRenderer -R E:\directory\my_pmd_ruleset.xml -debug</code></li>
+      <li><strong>Initial Folder:</strong>  <code class="language-plaintext highlighter-rouge">$FileDir</code></li>
+      <li><strong>Save all documents first:</strong>  <code class="language-plaintext highlighter-rouge">Checked</code></li>
+      <li><strong>Capture output:</strong>  <code class="language-plaintext highlighter-rouge">Checked</code></li>
+      <li><strong><em>All other checkboxes</em>:</strong>  Unchecked</li>
+      <li><strong>Regular expression to match output:</strong>  <code class="language-plaintext highlighter-rouge">^\([^(]+\)(\([0-9]+\),</code></li>
+      <li><strong>Registers/File:</strong> <code class="language-plaintext highlighter-rouge">1</code></li>
+      <li><strong>Registers/Line:</strong> <code class="language-plaintext highlighter-rouge">2</code></li>
+    </ul>
   </li>
-  <li>
-    <p>Any package that contains an <code class="language-plaintext highlighter-rouge">impl</code> segment is considered internal. E.g. <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.impl</code>.
-These packages contain base classes that are needed for extending PMD (like adding a new language).
-These can change at any time without a MAJOR version change.</p>
+  <li>In the expanded list, select <strong>PMD file</strong>.</li>
+  <li>In the “tool” form, enter the same parameters as above, except replace ‘<code class="language-plaintext highlighter-rouge">$FileDir</code>’ with ‘<code class="language-plaintext highlighter-rouge">$File</code>’,
+in the Parameters textbox.</li>
+  <li>To save your work (truly, given a quirk of TextPad), click on <strong>OK</strong>, which closes the Preferences dialog.
+Restart TextPad and re-open the Preferences dialog.</li>
+  <li>Go back to both the “PMD directory” and “PMD file” Tools branches, and replace ‘<code class="language-plaintext highlighter-rouge">E:\directory\my_pmd_ruleset.xml</code>’
+with the ruleset of your choice.  For example, <code class="language-plaintext highlighter-rouge">basic</code>.</li>
+  <li>Go to the <strong>Keyboard</strong> branch in the left pane (above <strong>Tools</strong>), which changes the right side to
+the “keyboard configuration” form.</li>
+  <li>In the <strong>Categories</strong> list box, select <strong>Tools</strong>.</li>
+  <li>In the <strong>Command</strong> list box, select <strong>PMD directory</strong>.</li>
+  <li>Put your cursor into the <strong>Press new shortcut key</strong>, and type your desired key command.
+For example <code class="language-plaintext highlighter-rouge">Ctrl+Page Up</code></li>
+  <li>Click <strong>Assign</strong>.</li>
+  <li>In the <strong>Command</strong> list box, select <strong>PMD file</strong>.</li>
+  <li>Put your cursor into the <strong>Press new shortcut key</strong>, and type your desired key command.
+For example <code class="language-plaintext highlighter-rouge">Ctrl+Page Down</code></li>
+  <li>Click <strong>Assign</strong>.</li>
+  <li>Save your work again: Click on <strong>OK</strong>, which closes the Preferences dialog, and then restart TextPad.</li>
+</ol>
 
-    <p>In a later version, the <code class="language-plaintext highlighter-rouge">impl</code> packages could be promoted as a public API for implementing new
-languages for PMD outside the main monorepo. In that sense, e.g. the module <code class="language-plaintext highlighter-rouge">pmd-java</code> is allowed
-to depend on <code class="language-plaintext highlighter-rouge">impl</code> packages of <code class="language-plaintext highlighter-rouge">pmd-core</code>, but ideally it doesn’t depend on <code class="language-plaintext highlighter-rouge">internal</code> packages of
-<code class="language-plaintext highlighter-rouge">pmd-core</code> (or any other module). However, for now, the <code class="language-plaintext highlighter-rouge">impl</code> packages are <strong>explicitly considered
-internal</strong> until this decision is revised.</p>
-  </li>
-</ul>
+<p><strong>To run PMD against a single Java file</strong></p>
 
-<h3 id="deprecation-and-removing-of-old-apis">Deprecation and removing of old APIs</h3>
+<ol>
+  <li>In TextPad, open any Java file.</li>
+  <li>Click <code class="language-plaintext highlighter-rouge">Ctrl+Page Down</code>. This opens an empty, read-only text document (titled “Command Results”).
+When PMD completes its analysis, this document will be populated with a listing of violated rules
+(or “Command completed successfully” indicating no violations).</li>
+  <li>Double click any line to go to it.</li>
+</ol>
 
-<ul>
-  <li>APIs can be deprecated at any time (even in PATCH versions). Deprecated APIs are marked with the
-<code class="language-plaintext highlighter-rouge">@Deprecated</code> annotation.</li>
-  <li>Deprecations should be listed in the release notes.</li>
-  <li>Deprecated APIs can only be removed with a MAJOR version change.</li>
-</ul>
+<p><strong>To run PMD against a directory of Java files</strong></p>
 
-<h3 id="experimental-apis">Experimental APIs</h3>
+<ol>
+  <li>In TextPad, open <em>any</em> file in the <em>root</em> directory you wish to analyze. Unfortunately, you’ll need to
+create a dummy file, if no file exists there.</li>
+  <li>Click <code class="language-plaintext highlighter-rouge">Ctrl+Page Up</code>. This opens an empty, read-only text document (titled “Command Results”).
+When PMD completes its analysis, this document will be populated with a listing of violated rules
+(or “Command completed successfully” indicating no violations).</li>
+  <li>Double click any line to go to it.</li>
+</ol>
 
-<ul>
-  <li>New features often introduce new APIs. These new APIs can be marked with the annotation <code class="language-plaintext highlighter-rouge">@Experimental</code> at
-the class or method level.</li>
-  <li>APIs marked with the <code class="language-plaintext highlighter-rouge">@Experimental</code> annotation are subject to change and are considered <strong>not stable</strong>.
-They can be modified in any way, or even removed, at any time. You should not use or rely
-on them in any production code. They are purely to allow broad testing and feedback.</li>
-  <li>Experimental APIs can be introduced or removed with at least a MINOR version change.
-These experimental APIs should be listed in the release notes.</li>
-  <li>Experimental APIs can be promoted to Public APIs with at least a MINOR version change.</li>
-</ul>
+<p><em>Because directory analysis may take a while, you may choose to cancel this operation. Do so by closing
+the (blank Command Results) document, and then confirming that, “yes, I do really want to exit the tool”.</em></p>
 
-<h3 id="guidelines-for-ast-classes">Guidelines for AST classes</h3>
+<h2 id="archived-integrations">Archived Integrations</h2>
 
-<p>AST classes of the individual language modules are used by custom rule implementations and are considered
-Public API in general. Rules only read the AST and do not need to modify it.</p>
+<p>These are integrations that are no longer maintained or for IDEs that no longer exist.</p>
 
-<p>In order to minimize the public API surface of AST classes, the following guidelines apply:</p>
+<h3 id="codeguide">CodeGuide</h3>
 
-<ul>
-  <li>Concrete AST classes should be final, to avoid custom subclasses.</li>
-  <li>Concrete AST classes should only have a package private constructor to avoid manual instantiation.
-Only the parser of the language (which lives in the same package) should be able to create new instances
-of AST classes.</li>
-  <li>Concrete AST classes should not have public setters. All setters should be package private, so that
-only the parser of the language can call the setters during AST construction.</li>
-</ul>
+<p>CodeGuide was a Java IDE by omnicore: <a href="https://web.archive.org/web/20081210063520/http://www.omnicore.com:80/en/codeguide.htm">https://web.archive.org/web/20081210063520/http://www.omnicore.com:80/en/codeguide.htm</a></p>
 
-<p>Non-concrete AST classes (like base classes or common interfaces) should follow similar guidelines:</p>
-<ul>
-  <li>Only package private constructor</li>
-  <li>Only package private setters</li>
-</ul>
+<h3 id="gel">Gel</h3>
 
-<h3 id="summary-of-the-annotations">Summary of the annotations</h3>
+<p>Gel was once an IDE: <a href="https://archive.org/details/tucows_246670_Gel">https://archive.org/details/tucows_246670_Gel</a></p>
 
-<ul>
-  <li>
-    <p><code class="language-plaintext highlighter-rouge">@InternalApi</code> (<code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.annotation.InternalApi</code>)</p>
+<p>Source code for the PMD plugin is here: <a href="https://github.com/pmd/pmd-misc/tree/main/pmd-gel/">https://github.com/pmd/pmd-misc/tree/main/pmd-gel/</a></p>
 
-    <p>This annotation is used for API members that are not publicly supported API but have to live in
-public packages (outside <code class="language-plaintext highlighter-rouge">internal</code> packages).
-Such members may be removed, renamed, moved, or otherwise broken at any time and should not be
-relied upon outside the main PMD codebase.</p>
-  </li>
-  <li>
-    <p><code class="language-plaintext highlighter-rouge">@Experimental</code> (<code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.annotation.Experimental</code>)</p>
-
-    <p>API members marked with the <code class="language-plaintext highlighter-rouge">@Experimental</code> annotation at the class or method level are subject to change.
-It is an indication that the feature is in experimental, unstable state.
-The API members can be modified in any way, or even removed, at any time, without warning.
-You should not use or rely on them in any production code. They are purely to allow broad testing and feedback.</p>
-  </li>
-  <li>
-    <p><code class="language-plaintext highlighter-rouge">@Deprecated</code> (<code class="language-plaintext highlighter-rouge">java.lang.Deprecated</code>)</p>
-
-    <p>API members marked with the <code class="language-plaintext highlighter-rouge">@Deprecated</code> annotation at the class or method level will remain supported
-until the next major release, but it is recommended to stop using them. These members might be
-removed with the next MAJOR release.</p>
-  </li>
-</ul>
-
-<h2 id="status">Status</h2>
-
-<p>Accepted (Last updated: February 2024)</p>
-
-<h2 id="consequences">Consequences</h2>
+<p>Here’s how to set up the Gel plugin:</p>
 
 <ul>
-  <li>Clearly defining the API PMD provides will help to further modularize PMD using the
-Java <a href="https://openjdk.org/jeps/261">Module System</a>.</li>
-  <li>Simpler decisions when to increase MAJOR, MINOR of PATCH version.</li>
-  <li>Refactoring of the implementation is possible without affecting public API.</li>
+  <li>Download the pmd-gel-[version].zip file</li>
+  <li>Close Gel</li>
+  <li>Remove any old plugin versions from your gel\plugins directory</li>
+  <li>Unzip the new zip file into your gel\plugins directory</li>
+  <li>Start Gel</li>
+  <li>Go to Tools-&gt;Options-&gt;Plugin</li>
+  <li>Select the PMD plugin and click “Remove”</li>
+  <li>Click “Add” and select “net.sourceforge.pmd.gel.PMDPlugin”</li>
+  <li>Restart Gel</li>
 </ul>
 
-<h2 id="change-history">Change History</h2>
+<p>That’s pretty much it.  Now you can open a Java project and click on Plugins-&gt;PMD and
+a configuration panel will pop up.  You can pick which ruleset you want to run and
+you can also pick whether you want to run PMD on the current file or on every
+source file in your project.</p>
 
-<p>2024-02-01: Changed status to “Accepted”. (<a href="https://github.com/pmd/pmd/pull/4756">#4756</a>)</p>
+<h3 id="jbuilder">JBuilder</h3>
 
-<p>2023-12-01: Proposed initial version.</p>
+<p>Was once a IDE by Borland (later Embarcadero): see <a href="https://en.wikipedia.org/wiki/JBuilder">https://en.wikipedia.org/wiki/JBuilder</a> and
+<a href="https://web.archive.org/web/20090228184200/http://www.embarcadero.com/products/jbuilder/">https://web.archive.org/web/20090228184200/http://www.embarcadero.com/products/jbuilder/</a></p>
+
+<p>Source code for the plugin is here: <a href="https://github.com/pmd/pmd-misc/tree/main/pmd-jbuilder/">https://github.com/pmd/pmd-misc/tree/main/pmd-jbuilder/</a></p>
+
+<p>To enable this OpenTool in JBuilder:</p>
+
+<ul>
+  <li>Download the <a href="https://sourceforge.net/projects/pmd/files/pmd-jbuilder/">latest binary release</a></li>
+  <li>Unzip it into your <code class="language-plaintext highlighter-rouge">jbuilder/lib/ext/</code> directory</li>
+  <li>Restart JBuilder</li>
+</ul>
+
+<p>What you can do:</p>
+
+<ul>
+  <li>Check a single file by bringing up the context menu from the file tab and selecting PMDCheck</li>
+  <li>Configure the rulesets that the PMD OpenTool will use by selecting Tools-&gt;PMD-&gt;Configure PMD</li>
+  <li>Check all the files in a project by bringing up the context menu for
+the project node and selecting PMD Check Project</li>
+  <li>Locate duplicate code by right clicking on a package and selection “Check with CPD”</li>
+</ul>
+
+<p>When running PMD, the results will be displayed in the MessageView under a tab called PMD Results.  If you click on a
+violation message within this view, you will be taken to the line in the source code where the violation was detected.</p>
+
+<p>Things still to do:</p>
+
+<ul>
+  <li>Enable selection of individual rules within a rule set (maybe)</li>
+  <li>Optional insertion of @todo comments at the point of a violation</li>
+  <li>Possibly provide configurable ability to limit the number of violations per rule per file</li>
+</ul>
+
+<h3 id="jcreator">JCreator</h3>
+
+<p>Was once a IDE: <a href="https://web.archive.org/web/20211018201200/http://www.jcreator.com/">https://web.archive.org/web/20211018201200/http://www.jcreator.com/</a></p>
+
+<ol>
+  <li>Open Configure &gt; Options</li>
+  <li>Go to the Tools panel</li>
+  <li>Click New &gt; Program</li>
+  <li>Browse for PMD’s pmd.bat</li>
+  <li>Put quotations around the path if it has spaces.</li>
+  <li>Set the initial directory to PMD’s \bin directory</li>
+  <li>Check capture output</li>
+  <li>Put ‘”$[PrjDir]” emacs’ followed by desired rulesets in the arguments</li>
+</ol>
+
+<p>To run PMD on a project, just pick pmd from the Tools menu.</p>
+
+<h3 id="weblogic-workshop-81x">WebLogic Workshop 8.1.x</h3>
+
+<p>That’s a plugin for an old version of Bea WebLogic Workshop 8.1.x (which is now available from Oracle).
+The new versions are based on Eclipse and don’t require this plugin anymore.</p>
+
+<p>Please see <a href="http://pmdwlw.sf.net/">the WebLogic Workshop plugin project home page</a> for more information.</p>
 
 
     <div class="tags">
+        
+        <b>Tags: </b>
+        
+        
+        
+        <a href="tag_userdocs.html" class="btn btn-outline-secondary navbar-btn cursorNorm" role="button">userdocs</a>
+        
+        
+        
+        <a href="tag_tools.html" class="btn btn-outline-secondary navbar-btn cursorNorm" role="button">tools</a>
+        
+        
         
     </div>
 
@@ -2138,7 +2439,7 @@ Java <a href="https://openjdk.org/jeps/261">Module System</a>.</li>
         github and create a PR:
         <a
             target="_blank"
-            href="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/projectdocs/decisions/adr-3.md"
+            href="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/userdocs/tools/ide-plugins.md"
             role="button"
             ><i class="fab fa-github fa-lg"></i> Edit on GitHub</a
         >
@@ -2150,7 +2451,7 @@ Java <a href="https://openjdk.org/jeps/261">Module System</a>.</li>
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            February 2024<br /> Site last generated: Dec 14, 2024 <br />
+            December 2024 (7.9.0)<br /> Site last generated: Dec 14, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

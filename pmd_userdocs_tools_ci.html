@@ -453,6 +453,12 @@
                         
                         
                         
+                        <li><a href="pmd_userdocs_tools_ide_plugins.html">IDE Plugins</a></li>
+                        
+                        
+                        
+                        
+                        
                         <li><a href="pmd_userdocs_tools.html">Other Tools / Integrations</a></li>
                         
                         
@@ -1904,7 +1910,64 @@
   <h2 id="introduction">Introduction</h2>
 
 <p>PMD can be integrated through some of the Continuous Integration tools that exist now.
-Here is a list of known (to us) plugin to do so.</p>
+This page lists some plugins to do so. If you think, something is missing here, please
+let us know.</p>
+
+<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> The tools are listed in alphabetical order without rating.</div>
+
+<p>In general, if PMD is integrated via build tools like <a href="pmd_userdocs_tools_maven.html">Maven</a> or
+<a href="pmd_userdocs_tools_gradle.html">Gradle</a> you can configure your build to fail if there are violations.
+This will also mark your CI pipeline as failed. That means, PMD can be used even without a
+special plugin for your CI solution.</p>
+
+<p>However, having an extra plugin can provide better developer experience: Some plugins provide
+a nice graph over the found violations, so that you can see immediately the status of your build
+concerning rule violations. Or it provides access to PMD’s report in an easier way by integrating
+the report into the CI interface.
+Other plugins display rule violations directly inline in your codebase as annotations
+or provide automated code review by adding comments to pull/merge requests.</p>
+
+<h2 id="atlassian-bamboo">Atlassian Bamboo</h2>
+
+<p>There are two apps for <a href="https://www.atlassian.com/software/bamboo">Atlassian Bamboo</a> in the marketplace.
+These display violations found by PMD and duplications found by CPD directly in job-build view.</p>
+
+<ul>
+  <li><a href="https://marketplace.atlassian.com/apps/1215327/view-pmd-phpmd-mess-detector">View PMD/PHPMD (mess detector)</a></li>
+  <li><a href="https://marketplace.atlassian.com/apps/1215890/view-cpd-copy-paste-detector">View CPD (copy/paste detector)</a></li>
+</ul>
+
+<h2 id="github-action">GitHub Action</h2>
+
+<p>PMD provides its own GitHub Action, that can be integrated in custom workflows.</p>
+
+<p>It can execute PMD with your own ruleset against your project. It creates a
+<a href="https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html">SARIF</a> report which is uploaded as a
+build artifact. Furthermore, the build can be failed based on the number of violations.</p>
+
+<p>The action can also be used as a code scanner to create “Code scanning alerts”.</p>
+
+<ul>
+  <li>Homepage: <a href="https://github.com/pmd/pmd-github-action">https://github.com/pmd/pmd-github-action</a></li>
+  <li>Marketplace: <a href="https://github.com/marketplace/actions/pmd">https://github.com/marketplace/actions/pmd</a></li>
+</ul>
+
+<h2 id="gitlab">GitLab</h2>
+
+<p><a href="https://about.gitlab.com/">GitLab</a> provides support for various code scanning tools. The results
+(e.g. number of violations) are displayed for merge requests, pipeline runs and for the entire project as
+code quality.</p>
+
+<p>GitLab requires a specific report format, which PMD doesn’t support natively. Therefore, there is a
+component required to convert a PMD report into GitLab’s <a href="https://docs.gitlab.com/ee/ci/testing/code_quality.html#code-quality-report-format">Code Quality report format</a>.</p>
+
+<ul>
+  <li>Documentation: <a href="https://docs.gitlab.com/ee/ci/testing/code_quality.html">https://docs.gitlab.com/ee/ci/testing/code_quality.html</a></li>
+  <li><a href="https://gitlab.com/explore/catalog/eakca1/codequality-os-scanners-integration">PMD CI/CD component</a></li>
+</ul>
+
+<p>Additionally, GitLab supports various analyzers for <a href="https://docs.gitlab.com/ee/user/application_security/sast/analyzers.html">Static Application Security Testing (SAST)</a>.
+Among these analyzers is also <a href="https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex">pmd-apex analyzer</a>.</p>
 
 <h2 id="jenkins-plugin">Jenkins Plugin</h2>
 
@@ -1916,25 +1979,6 @@ PMD among many other linting tools.</p>
   <li>Homepage: <a href="https://plugins.jenkins.io/warnings-ng/">https://plugins.jenkins.io/warnings-ng/</a></li>
   <li>Source: <a href="https://github.com/jenkinsci/warnings-ng-plugin">https://github.com/jenkinsci/warnings-ng-plugin</a> and <a href="https://github.com/jenkinsci/analysis-model">https://github.com/jenkinsci/analysis-model</a></li>
 </ul>
-
-<h2 id="continuum">Continuum</h2>
-
-<p>Continuum does not have a plugin for PMD per see, but can fail the build according to the
-result of the PMD maven plugin.</p>
-
-<h2 id="github-action">GitHub Action</h2>
-
-<p>See <a href="pmd_userdocs_tools.html#github-actions">Other Tools / Integrations</a></p>
-
-<h2 id="megalinter">MegaLinter</h2>
-
-<p><a href="https://oxsecurity.github.io/megalinter/latest/">🦙 Mega-Linter</a> analyzes 50 languages, 22 formats, 21 tooling
-formats, excessive copy-pastes, spelling mistakes and security issues in your repository sources with a
-GitHub Action, other CI tools or locally.</p>
-
-<p>It <a href="https://oxsecurity.github.io/megalinter/latest/descriptors/java_pmd/">natively embeds PMD</a>.</p>
-
-<!-- TODO: Find out about other plugins ? -->
 
 
     <div class="tags">
@@ -1976,7 +2020,8 @@ GitHub Action, other CI tools or locally.</p>
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Dec 14, 2024 <br />
+            <span>Page last updated:</span>
+            December 2024 (7.9.0)<br /> Site last generated: Dec 14, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
