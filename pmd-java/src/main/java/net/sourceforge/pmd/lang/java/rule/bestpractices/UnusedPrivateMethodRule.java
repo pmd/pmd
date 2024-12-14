@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
@@ -23,6 +24,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.MethodUsage;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
@@ -112,6 +114,9 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
                 }
 
                 JavaNode reffed = sym.tryGetNode();
+                if (reffed == null) {
+                    reffed = findDeclarationInCompilationUnit(file, sym);
+                }
                 if (reffed instanceof ASTMethodDeclaration
                     && ref.ancestors(ASTMethodDeclaration.class).first() != reffed) {
                     // remove from set, but only if it is called outside of itself
@@ -136,5 +141,32 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
 
     private boolean hasExcludedName(ASTMethodDeclaration node) {
         return SERIALIZATION_METHODS.contains(node.getName());
+    }
+
+    /**
+     * Find the method in the compilation unit. Note that this
+     * is a patch to fix some incorrect behavior of the rule in
+     * the java.lang package. This is due to the fact that some
+     * java.lang types (like Object, or primitive boxes) are
+     * treated specially by the type resolution framework, and
+     * for those the preexisting ASM symbol is preferred over
+     * the AST symbol - symbol.tryGetNode() returns null in that
+     * case. Since it only applies to these types we
+     * check that the package name is java.lang, to avoid doing
+     * that for other types.
+     * This is only relevant, when PMD is used to analyze OpenJDK
+     * sources, like with the regression tester.
+     */
+    private static @Nullable ASTMethodDeclaration findDeclarationInCompilationUnit(ASTCompilationUnit acu, JExecutableSymbol symbol) {
+        if (!"java.lang".equals(acu.getPackageName())
+            || !"java.lang".equals(symbol.getPackageName())) {
+            return null;
+        }
+        return acu.descendants(ASTTypeDeclaration.class)
+                  .crossFindBoundaries()
+                  .filter(it -> it.getSymbol().equals(symbol.getEnclosingClass()))
+                  .take(1)
+                  .flatMap(it -> it.getDeclarations(ASTMethodDeclaration.class))
+                  .first(m -> m.getSymbol().equals(symbol));
     }
 }
