@@ -499,4 +499,22 @@ public class EnumTest {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>[java] A false negative about the rule CompareObjectsWithEquals #3947</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,9</expected-linenumbers>
+        <code><![CDATA[
+class Tester {
+    int get() {
+        return 1;
+    }
+    void array1(String[] a, String[] b) {
+        if (a[1] == b[get()]) {} // should report a warning
+    }
+    void array2(String[] a, String[] b) {
+        if (a[1] == b[1]) {} // can detect
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

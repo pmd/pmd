@@ -568,4 +568,23 @@ public class Example {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3685 [java] Make UseCollectionIsEmpty can detect collection of other class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+class Class1 {
+    public static List<Integer> list1 = new ArrayList<>();
+}
+class Class2 {
+    public void foo() {
+        if(Class1.list1.size() == 0) {}  // should report a warning here, but no warning
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

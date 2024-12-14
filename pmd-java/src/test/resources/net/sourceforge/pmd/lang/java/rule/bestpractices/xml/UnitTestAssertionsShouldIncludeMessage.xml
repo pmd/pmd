@@ -507,6 +507,24 @@ public class AssertionMessageTest {
     </test-code>
 
     <test-code>
+        <description>[java] JUnitAssertionsShouldIncludeMessage - False positive with AssertJ assertThat and JUnit5 #3350</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Map;
+import org.junit.jupiter.api.Test;
+
+class SimpleTest {
+    @Test
+    public void simpleMethod() {
+        assertThat(Map.of("foo", "FOO"))
+            .containsEntry("foo", "FOO")
+            .containsOnlyKeys("foo");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>Assert calls should be considered in the whole file that contains at least one test case</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>14</expected-linenumbers>

@@ -232,4 +232,43 @@ public class Foo {
 }
     ]]></code>
   </test-code>
+
+    <test-code>
+        <description>[java] Array: ReturnEmptyArrayRatherThanNull can not detect return null surrounded by if statement #2540</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.io.IOException;
+
+public class Example {
+    public byte[] readBytes() throws IOException {
+        int tag = is.read();
+        if (tag == 'N')
+            return null; // violation
+        return new byte[0];
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Collection: ReturnEmptyArrayRatherThanNull can not detect return null surrounded by if statement #2540</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+import java.io.IOException;
+import java.util.List;
+import java.util.ArrayList;
+
+public class Example {
+    public List<Byte> readBytes() throws IOException {
+        int tag = is.read();
+        if (tag == 'N')
+            return null; // violation
+        return new ArrayList<>();
+    }
+}
+]]></code>
+    </test-code>
+
 </test-data>

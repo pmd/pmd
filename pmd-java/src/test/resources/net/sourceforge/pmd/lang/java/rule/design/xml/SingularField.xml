@@ -1116,5 +1116,20 @@ public class AFTIPCTopologyWatcher {
             ]]></code>
     </test-code>
 
-
+    <test-code>
+        <description>[java] Make SingularField consider nested classes by default #3629</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Tester {
+  class nestedClass {
+      private int a;
+      public int func(int b) {
+          a = b + 5;
+          return a;
+      }
+  }
+}
+]]></code>
+    </test-code>
 </test-data>

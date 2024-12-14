@@ -157,4 +157,63 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>[java] UnusedNullCheckInEquals: various false positives #3432</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>22</expected-linenumbers>
+        <code><![CDATA[
+public class UnusedNullCheckInEquals {
+    // Arrays.equals... note: this is actually a false negative, see https://github.com/pmd/pmd/issues/4907
+    void case1(char[] name, Other other) {
+        if (other.name != null && java.util.Arrays.equals(other.name, name));
+    }
+
+    // Bytes.equals... note: this is actually a false negative, see https://github.com/pmd/pmd/issues/4907
+    void case2(byte[] startRow, byte[] stopRow) {
+        if (startRow != null && startRow.length > 0 && Bytes.equals(startRow,stopRow));
+    }
+
+    // overridden equals() that has more than two arguments - actual false positive, should not be reported
+    void case3a(HashingStrategy hashingStrategy, String k1, String k2) {
+        if (k1 == k2 || (k1 != null && hashingStrategy.equals(k1, k2)));
+    }
+    void case3b(String passthroughNsPrefix, Attribute attribute) {
+        if (passthroughNsPrefix != null && LexerUtils.equals(passthroughNsPrefix, attribute.namespacePrefix(), true, true));
+    }
+
+    // .class.getName() cannot return null - this should be reported, as the null check is indeed unused
+    void case4(String driverDelegate) {
+        if (driverDelegate != null && StdJDBCDelegate.class.getName().equals(driverDelegate)); // line 22
+        if (driverDelegate != null && driverDelegate.equals(StdJDBCDelegate.class.getName())); // corrected version
+    }
+
+    // null checked in condition of conditional expression
+    private int start;
+    private int length;
+    private String file;
+    void case5(UnusedNullCheckInEquals other) {
+        if (this.start == other.start && this.length == other.length &&
+            (this.file == null ? other.file == null : (other.file != null && this.file.equals(other.file))));
+            // note: the last check "other.file != null" is actually unnecessary, as we use this.file.equals(...)
+            // to compare with and this.file we already verified, cannot be null
+    }
+}
+class Other {
+    char[] name;
+}
+interface HashingStrategy {
+    boolean equals(String s1, String s2);
+}
+interface Attribute {
+    String namespacePrefix();
+}
+class LexerUtils {
+    static boolean equals(String prefix1, String prefix2, boolean flag1, boolean flag2) {
+        return false;
+    }
+}
+class StdJDBCDelegate {}
+]]></code>
+    </test-code>
 </test-data>

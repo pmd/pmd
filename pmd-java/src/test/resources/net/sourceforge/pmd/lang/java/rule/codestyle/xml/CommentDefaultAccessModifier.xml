@@ -490,11 +490,11 @@ class SomeTest {
     </test-code>
 
     <test-code>
-        <description>[java] CommentDefaultAccessModifier should consider lombok's @Value #4201</description>
+        <description>[java] CommentDefaultAccessModifier should consider lombok's @Value #4201 #2458</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-
 import lombok.Value;
+
 @Value
 public class Test {
     int foo;

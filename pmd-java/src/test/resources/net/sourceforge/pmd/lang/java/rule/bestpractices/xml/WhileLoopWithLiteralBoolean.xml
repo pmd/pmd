@@ -80,6 +80,22 @@ class Foo {
     </test-code>
 
     <test-code>
+        <description>[java] WhileLoopWithLiteralBoolean misses constant expression #3370</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class Test {
+    public void whileLoopWithLiteralBoolean() {
+        boolean var = true;
+        do {
+            System.out.println("test");
+        } while(false | false);  // should report a warning
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
         <description>do while false &amp; false</description>
         <expected-problems>8</expected-problems>
         <expected-linenumbers>3,5,7,9,13,15,17,19</expected-linenumbers>
