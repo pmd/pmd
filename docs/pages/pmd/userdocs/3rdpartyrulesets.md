@@ -5,7 +5,7 @@ language_name: 3rd party rulesets
 tags: [rule_references, userdocs]
 summary: Lists rulesets and rules from the community
 permalink: pmd_userdocs_3rdpartyrulesets.html
-last_updated: September 2022
+last_updated: December 2024 (7.9.0)
 ---
 
 ## For Java
@@ -21,7 +21,8 @@ last_updated: September 2022
 * Sample ruleset from **geotools**, an open source Java library that provides tools for geospatial data.
   * <https://github.com/geotools/geotools/blob/main/build/qa/pmd-ruleset.xml>
   * <https://github.com/geotools/geotools/blob/main/build/qa/pmd-junit-ruleset.xml>
-
+* **Alibaba p3c**: Implementation of [Alibaba Java Coding Guidelines](https://alibaba.github.io/Alibaba-Java-Coding-Guidelines)
+  as PMD rules: <https://github.com/alibaba/p3c>
 
 ## For Apex
 * **unhappy-soup**, a repository with problematic Salesforce code to showcase PMD, the SFDX Scanner CLI
