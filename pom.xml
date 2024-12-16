@@ -103,7 +103,7 @@
         <checkstyle.plugin.version>3.5.0</checkstyle.plugin.version>
         <pmd.plugin.version>3.26.0</pmd.plugin.version>
         <ant.version>1.10.15</ant.version>
-        <javadoc.plugin.version>3.6.3</javadoc.plugin.version>
+        <javadoc.plugin.version>3.11.2</javadoc.plugin.version>
         <antlr.version>4.9.3</antlr.version>
         <slf4j.version>1.7.36</slf4j.version>
         <saxon.version>12.5</saxon.version>
