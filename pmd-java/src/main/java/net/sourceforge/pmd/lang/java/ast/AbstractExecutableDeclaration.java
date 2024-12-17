@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 
@@ -15,11 +17,15 @@ abstract class AbstractExecutableDeclaration<T extends JExecutableSymbol>
 
     private T symbol;
     private JMethodSig sig;
+    private JavaccToken identToken;
 
     AbstractExecutableDeclaration(int i) {
         super(i);
     }
 
+    void setIdentToken(JavaccToken identToken) {
+        this.identToken = identToken;
+    }
 
     void setSymbol(T symbol) {
         AbstractTypedSymbolDeclarator.assertSymbolNull(this.symbol, this);
@@ -38,5 +44,16 @@ abstract class AbstractExecutableDeclaration<T extends JExecutableSymbol>
             sig = getTypeSystem().sigOf(getSymbol());
         }
         return sig;
+    }
+
+
+    @Override
+    public FileLocation getReportLocation() {
+        return identToken.getReportLocation();
+    }
+
+    @Override
+    public String getName() {
+        return identToken.getImage();
     }
 }
