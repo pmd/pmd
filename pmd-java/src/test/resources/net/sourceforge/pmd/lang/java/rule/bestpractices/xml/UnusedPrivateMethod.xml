@@ -2498,4 +2498,18 @@ public class PmdTestCase {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4861 [java] UnusedPrivateMethod - false positive with static methods in core JDK classes</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package java.lang;
+            class Integer {
+                static {
+                    toStringUTF16(1, 2);
+                }
+                private static String toStringUTF16(int i, int j) {}
+            }
+            ]]></code>
+    </test-code>
 </test-data>
