@@ -152,14 +152,14 @@ public final class RuleContext {
      * as a format string for a {@link MessageFormat} and should hence use
      * appropriate escapes. The given formatting arguments are used.
      *
-     * @param reportable Location of the violation (node or token)
+     * @param reportable Location of the violation (node or token) - only used to determine suppression
      * @param astInfo    Info about the root of the tree ({@link Node#getAstInfo()})
+     * @param location   Report location of the violation
      * @param message    Violation message
      * @param formatArgs Format arguments for the message
-     *
      * @experimental This will probably never be stabilized, will instead be
-     * replaced by a fluent API or something to report violations. Do not use
-     * this outside of the PMD codebase. See https://github.com/pmd/pmd/issues/5039.
+     *      replaced by a fluent API or something to report violations. Do not use
+     *      this outside of the PMD codebase. See <a href="https://github.com/pmd/pmd/issues/5039">[core] Add fluent API to report violations #5039</a>.
      */
     @Experimental
     public void addViolationWithPosition(Reportable reportable, AstInfo<?> astInfo, FileLocation location,
