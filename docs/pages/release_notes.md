@@ -14,6 +14,14 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+### 🌟 New and changed rules
+
+#### New Rules
+
+* The new Java rule {%rule java/bestpractices/ExhaustiveSwitchHasDefault %} finds switch statements and
+  expressions, that cover already all cases but still have a default case. This default case is unnecessary
+  and prevents getting compiler errors when e.g. new enum constants are added without extending the switch.
+
 ### 🐛 Fixed Issues
 * cli
   * [#5399](https://github.com/pmd/pmd/issues/5399): \[cli] Windows: PMD fails to start with special characters in path names
@@ -22,6 +30,8 @@ This is a {{ site.pmd.release_type }} release.
   * [#5096](https://github.com/pmd/pmd/issues/5096): \[java] StackOverflowError with recursively bound type variable
 * java-bestpractices
   * [#4861](https://github.com/pmd/pmd/issues/4861): \[java] UnusedPrivateMethod - false positive with static methods in core JDK classes
+* java-performance
+  * [#5311](https://github.com/pmd/pmd/issues/5311): \[java] TooFewBranchesForSwitch false positive for exhaustive switches over enums without default case
 * java-documentation
   * [#2996](https://github.com/pmd/pmd/issues/2996): \[java] CommentSize rule violation is not suppressed at method level
 

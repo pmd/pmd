@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Exhaustive Enum Switch - no default: ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    enum MyEnum { A, B };
+
+    void doSomething(MyEnum e) {
+        switch(e) {
+            case A -> System.out.println("a");
+            case B -> System.out.println("b");
+        };
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Exhaustive Enum Switch - with default: nok</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    enum MyEnum { A, B };
+
+    void doSomething(MyEnum e) {
+        switch(e) {
+            case A -> System.out.println("a");
+            case B -> System.out.println("b");
+            default -> System.out.println("unnecessary default");
+        };
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Exhaustive Switch with sealed classes - without default: ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+sealed interface Foo {
+    final class A implements Foo {}
+    record B() implements Foo {}
+
+    default void doSomething(Foo foo) {
+        switch (foo) {
+            case A a -> System.out.println("a");
+            case B b -> System.out.println("b");
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Exhaustive Switch with sealed classes - with default: nok</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+sealed interface Foo {
+    final class A implements Foo {}
+    record B() implements Foo {}
+
+    default void doSomething(Foo foo) {
+        switch (foo) {
+            case A a -> System.out.println("a");
+            case B b -> System.out.println("b");
+            default -> System.out.println("unnecessary default");
+        }
+    }
+}
+]]></code>
+    </test-code>
+</test-data>
