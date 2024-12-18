@@ -89,7 +89,9 @@ class ASTSwitchLikeTest extends BaseParserTest {
         assertAll(
                 () -> assertSwitch(switchStatements.get("exhaustiveSealed"), false, true, false),
                 () -> assertSwitch(switchStatements.get("exhaustiveSealedWithDefault"), false, true, true),
-                () -> assertSwitch(switchStatements.get("notExhaustiveSealed"), false, false, false),
+                // Note: the method "notExhaustiveSealed" doesn't actually compile - it is not exhaustive and doesn't have a default
+                // the implementation of #isExhaustive uses a shortcut by assuming, the code it sees compiles and assumes it is exhausive...
+                //() -> assertSwitch(switchStatements.get("notExhaustiveSealed"), false, false, false),
                 () -> assertSwitch(switchStatements.get("notExhaustiveSealedWithDefault"), false, false, true),
                 () -> assertSwitch(switchStatements.get("exhaustiveEnum"), true, true, false),
                 () -> assertSwitch(switchStatements.get("exhaustiveEnumWithDefault"), true, true, true),

@@ -99,8 +99,27 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
      */
     default boolean isExhaustive() {
         JTypeDeclSymbol symbol = getTestedExpression().getTypeMirror().getSymbol();
+
+        // shortcut1 - if we have any type patterns and there is no default case,
+        // then the compiler already ensured that the switch is exhaustive.
+        // This assumes, we only analyze valid, compiled source code.
+        boolean hasPatterns = getBranches().map(ASTSwitchBranch::getLabel)
+                .any(ASTSwitchLabel::isPatternLabel);
+        if (hasPatterns && !hasDefaultCase()) {
+            return true;
+        }
+
         if (symbol instanceof JClassSymbol) {
             JClassSymbol classSymbol = (JClassSymbol) symbol;
+
+            // shortcut2 - if we are dealing with a sealed type or a boolean (java 23 preview, JEP 455)
+            // and there is no default case then the compiler already checked for exhaustiveness
+            if (classSymbol.isSealed() || classSymbol.equals(getTypeSystem().BOOLEAN.getSymbol())) {
+                if (!hasDefaultCase()) {
+                    return true;
+                }
+            }
+
             if (classSymbol.isSealed()) {
                 Set<JClassSymbol> checkedSubtypes = getBranches()
                         .map(ASTSwitchBranch::getLabel)
