@@ -14,6 +14,14 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+### 🌟 New and changed rules
+
+#### New Rules
+
+* The new Java rule {%rule java/bestpractices/ExhaustiveSwitchHasDefault %} finds switch statements and
+  expressions, that cover already all cases but still have a default case. This default case is unnecessary
+  and prevents getting compiler errors when e.g. new enum constants are added without extending the switch.
+
 ### 🐛 Fixed Issues
 * cli
   * [#5399](https://github.com/pmd/pmd/issues/5399): \[cli] Windows: PMD fails to start with special characters in path names
