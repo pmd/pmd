@@ -8,14 +8,14 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 
-public class RustCpdLexerTest extends CpdTextComparisonTest {
+class RustCpdLexerTest extends CpdTextComparisonTest {
 
-    public RustCpdLexerTest() {
+    RustCpdLexerTest() {
         super("rust", ".rs");
     }
 
     @Test
-    public void testHelloWorld() {
+    void testHelloWorld() {
         doTest("helloworld");
     }
 

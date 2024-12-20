@@ -7,8 +7,8 @@ package net.sourceforge.pmd.lang.rust;
 import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.rust.cpd.RustCpdLexer;
 import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
+import net.sourceforge.pmd.lang.rust.cpd.RustCpdLexer;
 
 public class RustLanguageModule extends CpdOnlyLanguageModuleBase {
     private static final String ID = "rust";

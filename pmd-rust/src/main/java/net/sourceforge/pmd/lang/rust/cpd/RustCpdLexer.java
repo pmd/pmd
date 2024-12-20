@@ -14,6 +14,6 @@ public class RustCpdLexer extends AntlrCpdLexer {
   
     @Override
     protected Lexer getLexerForSource(CharStream charStream) {
-        return new RustCpdLexer(charStream);
+        return new RustLexer(charStream);
     }
 }
