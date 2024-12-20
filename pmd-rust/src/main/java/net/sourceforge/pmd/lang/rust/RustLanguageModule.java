@@ -14,7 +14,7 @@ public class RustLanguageModule extends CpdOnlyLanguageModuleBase {
     private static final String ID = "rust";
 
     public RustLanguageModule() {
-        super(LanguageMetadata.withId(ID).name("Rust").extensions("rust"));
+        super(LanguageMetadata.withId(ID).name("Rust").extensions("rs"));
     }
 
     public static RustLanguageModule getInstance() {
