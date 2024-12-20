@@ -47,6 +47,19 @@
                     </delimiters>
                 </configuration>
             </plugin>
+	    <plugin>
+                <groupId>com.github.siom79.japicmp</groupId>
+                <artifactId>japicmp-maven-plugin</artifactId>
+		<version>0.23.0</version>
+                <configuration>
+		    <oldVersion>
+			<file>
+			    <path>${project.build.directory}/${project.artifactId}-${project.version}.jar</path>
+			</file>
+		    </oldVersion>
+		    <ignoreMissingOldVersion>true</ignoreMissingOldVersion>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
