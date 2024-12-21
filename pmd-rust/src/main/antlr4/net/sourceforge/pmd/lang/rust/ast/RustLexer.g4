@@ -338,7 +338,7 @@ FATARROW   : '=>';
 POUND      : '#';
 DOLLAR     : '$';
 QUESTION   : '?';
-
+BACKTICK   : '`';
 LCURLYBRACE    : '{';
 RCURLYBRACE    : '}';
 LSQUAREBRACKET : '[';

@@ -28,4 +28,6 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 ## Modifications
 
 The custom functions defined [here](https://github.com/antlr/grammars-v4/blob/master/rust/Java/RustLexerBase.java) 
-have been inlined in and the dependency on `RustLexerBase` has been removed.
+have been inlined and the dependency on `RustLexerBase` has been removed.
+
+Support for backticks ("`") has been added.
