@@ -24,3 +24,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 ## Currently used version
 
 * Source: <https://github.com/antlr/grammars-v4/blob/32973cac195de0b4a0e796554d7566db5d1115ca/rust/RustLexer.g4>
+
+## Modifications
+
+The custom functions defined [here](https://github.com/antlr/grammars-v4/blob/master/rust/Java/RustLexerBase.java) 
+have been inlined in and the dependency on `RustLexerBase` has been removed.
