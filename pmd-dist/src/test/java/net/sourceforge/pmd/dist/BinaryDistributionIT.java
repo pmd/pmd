@@ -33,7 +33,7 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         "fortran", "gherkin", "go", "groovy", "html", "java", "jsp",
         "julia",
         "kotlin", "lua", "matlab", "modelica", "objectivec", "perl",
-        "php", "plsql", "pom", "python", "ruby", "scala", "swift",
+        "php", "plsql", "pom", "python", "ruby", "rust", "scala", "swift",
         "tsql", "typescript", "velocity", "visualforce", "wsdl", "xml", "xsl"
     );
 
