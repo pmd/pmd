@@ -20,7 +20,7 @@
 
         Additionally, it includes CPD, the copy-paste-detector. CPD finds duplicated code in
         Coco, C/C++, C#, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Julia, Kotlin,
-        Lua, Matlab, Modelica, Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex and
+        Lua, Matlab, Modelica, Objective-C, Perl, PHP, PLSQL, Python, Ruby, Rust, Salesforce.com Apex and
         Visualforce, Scala, Swift, T-SQL, Typescript, Apache Velocity, WSDL, XML and XSL.
     </description>
 
@@ -1361,6 +1361,7 @@
         <module>pmd-plsql</module>
         <module>pmd-python</module>
         <module>pmd-ruby</module>
+        <module>pmd-rust</module>
         <module>pmd-scala-modules/pmd-scala-common</module>
         <module>pmd-scala-modules/pmd-scala_2.13</module>
         <module>pmd-scala-modules/pmd-scala_2.12</module>

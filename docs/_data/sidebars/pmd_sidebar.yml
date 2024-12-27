@@ -499,6 +499,9 @@ entries:
     - title: Ruby
       url: /pmd_languages_ruby.html
       output: web, pdf
+    - title: Rust
+      url: /pmd_languages_rust.html
+      output: web, pdf
     - title: Scala
       url: /pmd_languages_scala.html
       output: web, pdf
