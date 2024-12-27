@@ -47,15 +47,6 @@
                     </delimiters>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>com.github.siom79.japicmp</groupId>
-                <artifactId>japicmp-maven-plugin</artifactId>
-                <configuration>
-                    <parameter>
-                        <ignoreMissingOldVersion>true</ignoreMissingOldVersion>
-                    </parameter>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
     <dependencies>
