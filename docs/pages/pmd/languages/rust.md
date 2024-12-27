@@ -10,4 +10,4 @@ summary: "Rust features and guidance"
 > or garbage collector, it can power performance-critical services, run on embedded devices, 
 > and easily integrate with other languages.
 
-{% include language_info.html name='Rust' id='rust' implementation='rust::lang.rust.RustLanguageModule' supports_cpd=true %}
+{% include language_info.html name='Rust' id='rust' implementation='rust::lang.rust.RustLanguageModule' supports_cpd=true since='7.9.0' %}
