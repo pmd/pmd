@@ -14,6 +14,11 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+#### New: CPD support for Rust
+
+CPD now supports Rust, a blazingly fast and memory-efficient programming language.
+It is shipped in the new module `pmd-rust`.
+
 ### 🐛 Fixed Issues
 * cli
   * [#5399](https://github.com/pmd/pmd/issues/5399): \[cli] Windows: PMD fails to start with special characters in path names
@@ -33,6 +38,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#5414](https://github.com/pmd/pmd/pull/5414): Add Rust CPD - [Julia Paluch](https://github.com/juliapaluch) (@juliapaluch)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
