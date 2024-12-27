@@ -6004,6 +6004,22 @@
 
 
 {
+"title": "Rust",
+"tags": "languagesCpdCapableLanguage",
+"keywords": "",
+"url": "pmd_languages_rust.html",
+"summary": "Rust features and guidance"
+}
+
+
+
+,
+
+
+
+
+
+{
 "title": "Scala Rules",
 "tags": "rule_referencesscala",
 "keywords": "",
