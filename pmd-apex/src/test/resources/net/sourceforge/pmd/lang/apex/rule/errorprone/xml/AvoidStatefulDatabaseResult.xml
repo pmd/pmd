@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>SaveResult array.</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Example implements Database.Batchable, Database.Stateful {
+  Database.SaveResult[] results = new Database.SaveResult[]; // this can cause failures
+
+  public Database.Querylocator start(Database.BatchableContext context){
+    return Database.getQueryLocator('SELECT Id FROM Account');
+  }
+
+  public void execute(Database.BatchableContext context, List<SObject> scope){
+    Database.SaveResult[] saveResults = Database.update(scope, false);
+    results.addAll(saveResults);
+  }
+
+  public void finish(database.BatchableContext context){
+  }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>
