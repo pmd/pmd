@@ -1,29 +1,189 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-    xmlns="http://pmd.sourceforge.net/rule-tests"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
-
-    <test-code>
-        <description>SaveResult array.</description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Example implements Database.Batchable, Database.Stateful {
-  Database.SaveResult[] results = new Database.SaveResult[]; // this can cause failures
+  xmlns="http://pmd.sourceforge.net/rule-tests"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+  
+  <test-code>
+    <description>Result instances in stateful class</description>
+    <expected-problems>7</expected-problems>
+    <code><![CDATA[
+public class Example implements Database.Batchable<SObject>, Database.Stateful {
+  private Database.DeleteResult deleteResult;
+  private Database.EmptyRecycleBinResult emptyRecycleBinResult;
+  private Database.LeadConvertResult leadConvertResult;
+  private Database.MergeResult mergeResult;
+  private Database.SaveResult saveResult;
+  private Database.UndeleteResult undeleteResult;
+  private Database.UpsertResult upsertResult;
 
   public Database.Querylocator start(Database.BatchableContext context){
     return Database.getQueryLocator('SELECT Id FROM Account');
   }
 
   public void execute(Database.BatchableContext context, List<SObject> scope){
-    Database.SaveResult[] saveResults = Database.update(scope, false);
-    results.addAll(saveResults);
   }
 
   public void finish(database.BatchableContext context){
   }
 }
         ]]></code>
-    </test-code>
+  </test-code>
+  
+  <test-code>
+    <description>Result lists in stateful class</description>
+    <expected-problems>7</expected-problems>
+    <code><![CDATA[
+public class Example implements Database.Batchable<SObject>, Database.Stateful {
+  private List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>();
+  private List<Database.EmptyRecycleBinResult> emptyRecycleBinResults = new List<Database.EmptyRecycleBinResult>();
+  private List<Database.LeadConvertResult> leadConvertResults = new List<Database.LeadConvertResult>();
+  private List<Database.MergeResult> mergeResults = new List<Database.MergeResult>();
+  private List<Database.SaveResult> saveResults = new List<Database.SaveResult>();
+  private List<Database.UndeleteResult> undeleteResults = new List<Database.UndeleteResult>();
+  private List<Database.UpsertResult> upsertResults = new List<Database.UpsertResult>();
 
+  public Database.Querylocator start(Database.BatchableContext context){
+    return Database.getQueryLocator('SELECT Id FROM Account');
+  }
+
+  public void execute(Database.BatchableContext context, List<SObject> scope){
+  }
+
+  public void finish(database.BatchableContext context){
+  }
+}
+        ]]></code>
+  </test-code>
+  
+  <test-code>
+    <description>Result sets in stateful class</description>
+    <expected-problems>7</expected-problems>
+    <code><![CDATA[
+public class Example implements Database.Batchable<SObject>, Database.Stateful {
+  private Set<Database.DeleteResult> deleteResults = new Set<Database.DeleteResult>();
+  private Set<Database.EmptyRecycleBinResult> emptyRecycleBinResults = new Set<Database.EmptyRecycleBinResult>();
+  private Set<Database.LeadConvertResult> leadConvertResults = new Set<Database.LeadConvertResult>();
+  private Set<Database.MergeResult> mergeResults = new Set<Database.MergeResult>();
+  private Set<Database.SaveResult> saveResults = new Set<Database.SaveResult>();
+  private Set<Database.UndeleteResult> undeleteResults = new Set<Database.UndeleteResult>();
+  private Set<Database.UpsertResult> upsertResults = new Set<Database.UpsertResult>();
+
+  public Database.Querylocator start(Database.BatchableContext context){
+    return Database.getQueryLocator('SELECT Id FROM Account');
+  }
+
+  public void execute(Database.BatchableContext context, List<SObject> scope){
+  }
+
+  public void finish(database.BatchableContext context){
+  }
+}
+        ]]></code>
+  </test-code>
+  
+  <test-code>
+    <description>Result maps in stateful class</description>
+    <expected-problems>7</expected-problems>
+    <code><![CDATA[
+public class Example implements Database.Batchable<SObject>, Database.Stateful {
+  private Map<Id, Database.DeleteResult> deleteResults = new Map<Id, Database.DeleteResult>();
+  private Map<Id, Database.EmptyRecycleBinResult> emptyRecycleBinResults = new Map<Id, Database.EmptyRecycleBinResult>();
+  private Map<Id, Database.LeadConvertResult> leadConvertResults = new Map<Id, Database.LeadConvertResult>();
+  private Map<Id, Database.MergeResult> mergeResults = new Map<Id, Database.MergeResult>();
+  private Map<Id, Database.SaveResult> saveResults = new Map<Id, Database.SaveResult>();
+  private Map<Id, Database.UndeleteResult> undeleteResults = new Map<Id, Database.UndeleteResult>();
+  private Map<Id, Database.UpsertResult> upsertResults = new Map<Id, Database.UpsertResult>();
+
+  public Database.Querylocator start(Database.BatchableContext context){
+    return Database.getQueryLocator('SELECT Id FROM Account');
+  }
+
+  public void execute(Database.BatchableContext context, List<SObject> scope){
+  }
+
+  public void finish(database.BatchableContext context){
+  }
+}
+        ]]></code>
+  </test-code>
+  
+  <test-code>
+    <description>Transient result in stateful class</description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class Example implements Database.Batchable<SObject>, Database.Stateful {
+  private transient Database.DeleteResult deleteResult;
+  private transient Database.EmptyRecycleBinResult emptyRecycleBinResult;
+  private transient Database.LeadConvertResult leadConvertResult;
+  private transient Database.MergeResult mergeResult;
+  private transient Database.SaveResult saveResult;
+  private transient Database.UndeleteResult undeleteResult;
+  private transient Database.UpsertResult upsertResult;
+
+  public Database.Querylocator start(Database.BatchableContext context){
+    return Database.getQueryLocator('SELECT Id FROM Account');
+  }
+
+  public void execute(Database.BatchableContext context, List<SObject> scope){
+  }
+
+  public void finish(database.BatchableContext context){
+  }
+}
+        ]]></code>
+  </test-code>
+  
+  <test-code>
+    <description>Static results in stateful class</description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class Example implements Database.Batchable<SObject>, Database.Stateful {
+  private static Database.DeleteResult deleteResult;
+  private static Database.EmptyRecycleBinResult emptyRecycleBinResult;
+  private static Database.LeadConvertResult leadConvertResult;
+  private static Database.MergeResult mergeResult;
+  private static Database.SaveResult saveResult;
+  private static Database.UndeleteResult undeleteResult;
+  private static Database.UpsertResult upsertResult;
+
+  public Database.Querylocator start(Database.BatchableContext context){
+    return Database.getQueryLocator('SELECT Id FROM Account');
+  }
+
+  public void execute(Database.BatchableContext context, List<SObject> scope){
+  }
+
+  public void finish(database.BatchableContext context){
+  }
+}
+        ]]></code>
+  </test-code>
+  
+  <test-code>
+    <description>Results in non-stateful class.</description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class Example implements Database.Batchable<SObject> {
+  private Database.DeleteResult deleteResult;
+  private Database.EmptyRecycleBinResult emptyRecycleBinResult;
+  private Database.LeadConvertResult leadConvertResult;
+  private Database.MergeResult mergeResult;
+  private Database.SaveResult saveResult;
+  private Database.UndeleteResult undeleteResult;
+  private Database.UpsertResult upsertResult;
+
+  public Database.Querylocator start(Database.BatchableContext context){
+    return Database.getQueryLocator('SELECT Id FROM Account');
+  }
+
+  public void execute(Database.BatchableContext context, List<SObject> scope){
+  }
+
+  public void finish(database.BatchableContext context){
+  }
+}
+        ]]></code>
+  </test-code>
+  
 </test-data>

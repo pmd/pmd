@@ -4,11 +4,13 @@
 
 package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
-import com.google.common.base.Ascii;
-import com.google.common.collect.ImmutableSet;
+import java.util.Locale;
+import java.util.Set;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Using stateful `Database.[x]Result` instance variables can cause odd
@@ -22,14 +24,9 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
  */
 public final class AvoidStatefulDatabaseResultRule extends AbstractApexRule {
 
-    private static final ImmutableSet<String> DATABASE_RESULT_TYPES = ImmutableSet.of(
-            "database.convertleadresult",
-            "database.deleteresult",
-            "database.emptyrecyclebinresult",
-            "database.mergeresult",
-            "database.saveresult",
-            "database.undeleteresult",
-            "database.upsertresult");
+    private static final Set<String> DATABASE_RESULT_TYPES = CollectionUtil.immutableSetOf("database.leadconvertresult",
+            "database.deleteresult", "database.emptyrecyclebinresult", "database.mergeresult", "database.saveresult",
+            "database.undeleteresult", "database.upsertresult");
 
     @Override
     public Object visit(ASTUserClass theClass, Object data) {
@@ -49,7 +46,7 @@ public final class AvoidStatefulDatabaseResultRule extends AbstractApexRule {
     /** Determines if the class implements the `Database.Stateful` interface */
     private boolean implementsDatabaseStateful(ASTUserClass theClass) {
         for (String interfaceName : theClass.getInterfaceNames()) {
-            if (Ascii.equalsIgnoreCase(interfaceName, "database.stateful")) {
+            if ("database.stateful".equalsIgnoreCase(interfaceName)) {
                 return true;
             }
         }
@@ -62,8 +59,7 @@ public final class AvoidStatefulDatabaseResultRule extends AbstractApexRule {
      * of `Database.[x]Result` (or collection of them).
      */
     private boolean isNonTransientInstanceDatabaseResultField(ASTField theField) {
-        return !theField.getModifiers().isStatic()
-                && !theField.getModifiers().isTransient()
+        return !theField.getModifiers().isStatic() && !theField.getModifiers().isTransient()
                 && isDatabaseResultOrCollection(theField.getType());
     }
 
@@ -74,7 +70,7 @@ public final class AvoidStatefulDatabaseResultRule extends AbstractApexRule {
      */
     private boolean isDatabaseResultOrCollection(String type) {
         for (String databaseResultType : DATABASE_RESULT_TYPES) {
-            if (Ascii.toLowerCase(type).contains(databaseResultType)) {
+            if (type.toLowerCase(Locale.ROOT).contains(databaseResultType)) {
                 return true;
             }
         }
