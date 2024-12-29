@@ -520,50 +520,56 @@ private class TestClass {
         class="net.sourceforge.pmd.lang.apex.rule.errorprone.AvoidStatefulDatabaseResultRule"
         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#avoidstatefuldatabaseresult">
     <description>
-      Storing Database.insertResult, Database.updateResult, etc. in instance variables
-      of a stateful batch class can cause serialization errors between batch iterations.
-      When this occurs, it is often inconsistent and challenging to troubleshoot.
+      Using instance variables of the following types (or collections of these types) within a stateful batch class can cause serialization errors between batch iterations:
       
-      See https://issues.salesforce.com/issue/a028c00000qPwlqAAC/stateful-batch-job-that-stores-databasesaveresult-failed-after-validation-errors-throws-error-during-deserialization for more details.
+      - `Database.DeleteResult`
+      - `Database.EmptyRecycleBinResult`
+      - `Database.MergeResult`
+      - `Database.SaveResult`
+      - `Database.UndeleteResult`
+      - `Database.UpsertResult`
       
-      This issue can be avoided by marking the variable as transient, or using a different
+      This error occurs inconsistently and asynchronously with an obscure error message - making it particularly challenging to troubleshoot.
+      See [this issue](https://issues.salesforce.com/issue/a028c00000qPwlqAAC/stateful-batch-job-that-stores-databasesaveresult-failed-after-validation-errors-throws-error-during-deserialization) for more details.
+      
+      These errors can be avoided by marking the variable as static, transient, or using a different
       data type that is safe to serialize.
     </description>
-    <priority>3</priority>
+    <priority>2</priority>
     <example>
       <![CDATA[// Violating
-public class Example implements Database.Batchable, Database.Stateful {
-  List<Database.SaveResult> results = new List<Database.SaveResult>(); // this can cause failures
+public class Example implements Database.Batchable<SObject>, Database.Stateful {
+  List<Database.SaveResult> results = new List<Database.SaveResult>(); // This can cause failures
 
-  public Database.Querylocator start(Database.BatchableContext context){
+  public Database.Querylocator start(Database.BatchableContext context) {
     return Database.getQueryLocator('SELECT Id FROM Account');
   }
 
-  public void execute(Database.BatchableContext context, List<SObject> scope){
+  public void execute(Database.BatchableContext context, List<SObject> scope) {
     Database.SaveResult[] saveResults = Database.update(scope, false);
     results.addAll(saveResults);
   }
 
-  public void finish(database.BatchableContext context){
+  public void finish(database.BatchableContext context) {
   }
 }
 
 // Compliant
-public class Example implements Database.Batchable, Database.Stateful {
+public class Example implements Database.Batchable<SObject>, Database.Stateful {
   List<StatefulResult> results = new List<StatefulResult>(); // Use a different custom type to persist state
 
-  public Database.Querylocator start(Database.BatchableContext context){
+  public Database.Querylocator start(Database.BatchableContext context) {
     return Database.getQueryLocator('SELECT Id FROM Account');
   }
 
-  public void execute(Database.BatchableContext context, List<SObject> scope){
+  public void execute(Database.BatchableContext context, List<SObject> scope) {
     Database.SaveResult[] saveResults = Database.update(scope, false);
     for (Database.SaveResult result : saveResults) {
       results.add(new StatefulResult(result));
     }
   }
 
-  public void finish(database.BatchableContext context){
+  public void finish(database.BatchableContext context) {
   }
 
 }
@@ -573,21 +579,21 @@ public class StatefulResult {
   private Id id;
   private Database.Error[] errors;
 
-  public StatefulResult(Database.SaveResult result){
+  public StatefulResult(Database.SaveResult result) {
     isSuccess = result.isSuccess();
     id = result.getId();
     errors = result.getErrors();
   }
 
-  public Boolean isSuccess(){
+  public Boolean isSuccess() {
     return isSuccess;
   }
 
-  public Id getId(){
+  public Id getId() {
     return id;
   }
 
-  public Database.Error[] getErrors(){
+  public Database.Error[] getErrors() {
     return errors;
   }
 }

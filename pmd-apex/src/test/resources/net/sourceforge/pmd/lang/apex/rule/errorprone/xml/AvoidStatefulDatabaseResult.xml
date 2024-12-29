@@ -17,14 +17,14 @@ public class Example implements Database.Batchable<SObject>, Database.Stateful {
   private Database.UndeleteResult undeleteResult;
   private Database.UpsertResult upsertResult;
 
-  public Database.Querylocator start(Database.BatchableContext context){
+  public Database.Querylocator start(Database.BatchableContext context) {
     return Database.getQueryLocator('SELECT Id FROM Account');
   }
 
-  public void execute(Database.BatchableContext context, List<SObject> scope){
+  public void execute(Database.BatchableContext context, List<SObject> scope) {
   }
 
-  public void finish(database.BatchableContext context){
+  public void finish(database.BatchableContext context) {
   }
 }
         ]]></code>
@@ -43,14 +43,14 @@ public class Example implements Database.Batchable<SObject>, Database.Stateful {
   private List<Database.UndeleteResult> undeleteResults = new List<Database.UndeleteResult>();
   private List<Database.UpsertResult> upsertResults = new List<Database.UpsertResult>();
 
-  public Database.Querylocator start(Database.BatchableContext context){
+  public Database.Querylocator start(Database.BatchableContext context) {
     return Database.getQueryLocator('SELECT Id FROM Account');
   }
 
-  public void execute(Database.BatchableContext context, List<SObject> scope){
+  public void execute(Database.BatchableContext context, List<SObject> scope) {
   }
 
-  public void finish(database.BatchableContext context){
+  public void finish(database.BatchableContext context) {
   }
 }
         ]]></code>
@@ -69,14 +69,14 @@ public class Example implements Database.Batchable<SObject>, Database.Stateful {
   private Set<Database.UndeleteResult> undeleteResults = new Set<Database.UndeleteResult>();
   private Set<Database.UpsertResult> upsertResults = new Set<Database.UpsertResult>();
 
-  public Database.Querylocator start(Database.BatchableContext context){
+  public Database.Querylocator start(Database.BatchableContext context) {
     return Database.getQueryLocator('SELECT Id FROM Account');
   }
 
-  public void execute(Database.BatchableContext context, List<SObject> scope){
+  public void execute(Database.BatchableContext context, List<SObject> scope) {
   }
 
-  public void finish(database.BatchableContext context){
+  public void finish(database.BatchableContext context) {
   }
 }
         ]]></code>
@@ -95,14 +95,14 @@ public class Example implements Database.Batchable<SObject>, Database.Stateful {
   private Map<Id, Database.UndeleteResult> undeleteResults = new Map<Id, Database.UndeleteResult>();
   private Map<Id, Database.UpsertResult> upsertResults = new Map<Id, Database.UpsertResult>();
 
-  public Database.Querylocator start(Database.BatchableContext context){
+  public Database.Querylocator start(Database.BatchableContext context) {
     return Database.getQueryLocator('SELECT Id FROM Account');
   }
 
-  public void execute(Database.BatchableContext context, List<SObject> scope){
+  public void execute(Database.BatchableContext context, List<SObject> scope) {
   }
 
-  public void finish(database.BatchableContext context){
+  public void finish(database.BatchableContext context) {
   }
 }
         ]]></code>
@@ -121,14 +121,14 @@ public class Example implements Database.Batchable<SObject>, Database.Stateful {
   private transient Database.UndeleteResult undeleteResult;
   private transient Database.UpsertResult upsertResult;
 
-  public Database.Querylocator start(Database.BatchableContext context){
+  public Database.Querylocator start(Database.BatchableContext context) {
     return Database.getQueryLocator('SELECT Id FROM Account');
   }
 
-  public void execute(Database.BatchableContext context, List<SObject> scope){
+  public void execute(Database.BatchableContext context, List<SObject> scope) {
   }
 
-  public void finish(database.BatchableContext context){
+  public void finish(database.BatchableContext context) {
   }
 }
         ]]></code>
@@ -147,14 +147,14 @@ public class Example implements Database.Batchable<SObject>, Database.Stateful {
   private static Database.UndeleteResult undeleteResult;
   private static Database.UpsertResult upsertResult;
 
-  public Database.Querylocator start(Database.BatchableContext context){
+  public Database.Querylocator start(Database.BatchableContext context) {
     return Database.getQueryLocator('SELECT Id FROM Account');
   }
 
-  public void execute(Database.BatchableContext context, List<SObject> scope){
+  public void execute(Database.BatchableContext context, List<SObject> scope) {
   }
 
-  public void finish(database.BatchableContext context){
+  public void finish(database.BatchableContext context) {
   }
 }
         ]]></code>
@@ -173,14 +173,14 @@ public class Example implements Database.Batchable<SObject> {
   private Database.UndeleteResult undeleteResult;
   private Database.UpsertResult upsertResult;
 
-  public Database.Querylocator start(Database.BatchableContext context){
+  public Database.Querylocator start(Database.BatchableContext context) {
     return Database.getQueryLocator('SELECT Id FROM Account');
   }
 
-  public void execute(Database.BatchableContext context, List<SObject> scope){
+  public void execute(Database.BatchableContext context, List<SObject> scope) {
   }
 
-  public void finish(database.BatchableContext context){
+  public void finish(database.BatchableContext context) {
   }
 }
         ]]></code>
