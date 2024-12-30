@@ -4,7 +4,7 @@ GEM
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
     base64 (0.2.0)
-    bigdecimal (3.1.8)
+    bigdecimal (3.1.9)
     claide (1.1.0)
     claide-plugins (0.9.2)
       cork
