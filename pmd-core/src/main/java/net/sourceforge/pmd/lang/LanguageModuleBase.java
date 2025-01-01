@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageModuleBase.LanguageMetadata.LangVersionMetadata;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.StringUtil;
@@ -50,10 +51,14 @@ public abstract class LanguageModuleBase implements Language {
      * @throws IllegalStateException If the metadata is invalid (eg missing extensions or name or no versions)
      */
     protected LanguageModuleBase(LanguageMetadata metadata) {
+        this(metadata, null);
+    }
+
+    private LanguageModuleBase(LanguageMetadata metadata, String baseLanguageId) {
         this.meta = metadata;
         metadata.validate();
         this.dependencies = Collections.unmodifiableSet(metadata.dependencies);
-        this.baseLanguageId = meta.baseLanguageId;
+        this.baseLanguageId = baseLanguageId;
 
         List<LanguageVersion> versions = new ArrayList<>();
         Map<String, LanguageVersion> byName = new HashMap<>();
@@ -95,9 +100,12 @@ public abstract class LanguageModuleBase implements Language {
         this.byName = Collections.unmodifiableMap(byName);
         this.distinctVersions = Collections.unmodifiableList(versions);
         this.defaultVersion = Objects.requireNonNull(defaultVersion, "No default version for " + getId());
-
     }
 
+    @Experimental
+    protected LanguageModuleBase(DialectLanguageMetadata metadata) {
+        this(metadata.metadata, metadata.baseLanguageId);
+    }
 
     private static void checkNotPresent(Map<String, ?> map, String alias) {
         if (map.containsKey(alias)) {
@@ -195,7 +203,6 @@ public abstract class LanguageModuleBase implements Language {
      * <li>The display name ({@link #name(String)})
      * <li>The file extensions ({@link #extensions(String, String...)}
      * </ul>
-     *
      */
     public static final class LanguageMetadata {
 
@@ -207,7 +214,6 @@ public abstract class LanguageModuleBase implements Language {
         private String name;
         private @Nullable String shortName;
         private final @NonNull String id;
-        private @Nullable String baseLanguageId;
         private List<String> extensions;
         private final List<LangVersionMetadata> versionMetadata = new ArrayList<>();
 
@@ -361,10 +367,17 @@ public abstract class LanguageModuleBase implements Language {
             return this;
         }
 
-        public LanguageMetadata dialectOf(String id) {
+        /**
+         * Defines the language as a dialect of another language.
+         *
+         * @param id The id of the base language this is a dialect of.
+         * @return A new dialect language metadata model.
+         */
+        @Experimental
+        public DialectLanguageMetadata asDialectOf(String id) {
             checkValidLangId(id);
-            this.baseLanguageId = id;
-            return this;
+            dependsOnLanguage(id); // a dialect automatically depends on it's base language at runtime
+            return new DialectLanguageMetadata(this, id);
         }
 
         private static void checkValidLangId(String id) {
@@ -420,6 +433,20 @@ public abstract class LanguageModuleBase implements Language {
                     throw new IllegalArgumentException("Invalid version name: " + StringUtil.inSingleQuotes(name));
                 }
             }
+        }
+    }
+
+    /**
+     * Expresses the language as a dialect of another language.
+     */
+    @Experimental
+    public static final class DialectLanguageMetadata {
+        private final @NonNull LanguageMetadata metadata;
+        private final @NonNull String baseLanguageId;
+
+        private DialectLanguageMetadata(LanguageMetadata metadata, String baseLanguageId) {
+            this.metadata = metadata;
+            this.baseLanguageId = baseLanguageId;
         }
     }
 }
