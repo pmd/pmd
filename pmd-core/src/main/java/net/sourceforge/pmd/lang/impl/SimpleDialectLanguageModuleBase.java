@@ -115,7 +115,7 @@ public class SimpleDialectLanguageModuleBase extends LanguageModuleBase implemen
      * A Language processor for dialects. It delegates everything to the base language, but extends
      * the {@link LanguageVersionHandler} with any dialect-specific options.
      */
-    private final static class DialectLanguageProcessor extends BatchLanguageProcessor<LanguagePropertyBundle> {
+    private static final class DialectLanguageProcessor extends BatchLanguageProcessor<LanguagePropertyBundle> {
         private final LanguageProcessor baseLanguageProcessor;
         private final LanguageVersionHandler combinedHandler;
 
@@ -150,7 +150,7 @@ public class SimpleDialectLanguageModuleBase extends LanguageModuleBase implemen
         private final LanguageVersionHandler baseLanguageVersionHandler;
         private final LanguageVersionHandler dialectLanguageVersionHandler;
 
-        public SimpleDialectLanguageVersionHandler(LanguageVersionHandler baseLanguageVersionHandler, LanguageVersionHandler dialectLanguageVersionHandler) {
+        SimpleDialectLanguageVersionHandler(LanguageVersionHandler baseLanguageVersionHandler, LanguageVersionHandler dialectLanguageVersionHandler) {
             this.baseLanguageVersionHandler = baseLanguageVersionHandler;
             this.dialectLanguageVersionHandler = dialectLanguageVersionHandler;
         }
