@@ -5,22 +5,21 @@
 package net.sourceforge.pmd.lang.xml.xsl;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.xml.XmlHandler;
-import net.sourceforge.pmd.lang.xml.XmlLanguageModule;
+import net.sourceforge.pmd.lang.impl.SimpleDialectLanguageModuleBase;
 
 /**
  * Created by christoferdutz on 20.09.14.
  */
-public class XslLanguageModule extends XmlLanguageModule {
+public class XslLanguageModule extends SimpleDialectLanguageModuleBase {
     private static final String ID = "xsl";
 
     public XslLanguageModule() {
-        super(LanguageMetadata.withId(ID).name("XSL").dialectOf("xml")
+        super(LanguageMetadata.withId(ID).name("XSL")
                               .extensions("xsl", "xslt")
                               .addVersion("1.0")
                               .addVersion("2.0")
-                              .addDefaultVersion("3.0"),
-              new XmlHandler());
+                              .addDefaultVersion("3.0")
+                              .asDialectOf("xml"));
     }
 
     public static XslLanguageModule getInstance() {
