@@ -25,5 +25,4 @@ public class XslLanguageModule extends SimpleDialectLanguageModuleBase {
     public static XslLanguageModule getInstance() {
         return (XslLanguageModule) LanguageRegistry.PMD.getLanguageById(ID);
     }
-
 }
