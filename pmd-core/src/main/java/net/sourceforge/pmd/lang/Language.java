@@ -11,6 +11,7 @@ import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.cpd.CpdCapableLanguage;
 import net.sourceforge.pmd.util.AssertionUtil;
 
@@ -69,6 +70,7 @@ public interface Language extends Comparable<Language> {
      * the same AST as their base language. This makes it so that rules written
      * for the base language can be applied files of all dialects uniformly.
      */
+    @Experimental
     default @Nullable String getBaseLanguageId() {
         return null;
     }
@@ -78,6 +80,8 @@ public interface Language extends Comparable<Language> {
      *
      * @param language A language (not null)
      */
+    @Experimental
+    @SuppressWarnings("PMD.SimplifyBooleanReturns")
     default boolean isDialectOf(Language language) {
         AssertionUtil.requireParamNotNull("language", language);
         if (this.equals(language)) {
