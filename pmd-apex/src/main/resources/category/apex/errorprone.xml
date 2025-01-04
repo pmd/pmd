@@ -516,10 +516,10 @@ private class TestClass {
     
     <rule name="SystemNamespaceCollision"
           language="apex"
+          since="7.10.0"
           message="This name causes a collision with a class, enum, or interface used in the `System` namespace. Please choose a different name."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#systemnamespacecollision"
-        >
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#systemnamespacecollision">
         <description>
             This rule finds Apex classes, enums, and interfaces that have the same name as a class, enum, or interface in the `System` namespace.
             Shadowing the `System` namespace in this way can lead to confusion and unexpected behavior.
@@ -547,8 +547,7 @@ private class TestClass {
                 description="Comma-separated list of interfaces in the `System` namespace."
                 value="callable,comparable,comparator,httpcalloutmock,installhandler,queueable,queueablecontext,sandboxpostcopy,schedulable,schedulablecontext,stubprovider,uninstallhandler,webservicemock"
                 />
-            <property
-                name="xpath">
+            <property name="xpath">
                 <value>
                     <![CDATA[
 //UserClass[
