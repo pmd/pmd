@@ -59,7 +59,7 @@ jobs:
       run: |
         echo "LANG=en_US.UTF-8" >> $GITHUB_ENV
         echo "MAVEN_OPTS=-Daether.connector.http.connectionMaxTtl=180 -DautoReleaseAfterClose=true -DstagingProgressTimeoutMinutes=30" >> $GITHUB_ENV
-        echo "PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/28/scripts" >> $GITHUB_ENV
+        echo "PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/main/scripts" >> $GITHUB_ENV
     - name: Check Environment
       shell: bash
       run: |
@@ -75,6 +75,8 @@ jobs:
         BUILD_CLI_DIST_ONLY: ${{ inputs.build_cli_dist_only }}
         PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PMD_CI_GPG_PRIVATE_KEY: ${{ secrets.PMD_CI_GPG_PRIVATE_KEY }}
+        MAVEN_GPG_PASSPHRASE: ${{ secrets.PMD_CI_GPG_PASSPHRASE }}
     - name: Workaround actions/upload-artifact#176
       run: |
         echo "artifacts_path=$(realpath ..)" >> $GITHUB_ENV
