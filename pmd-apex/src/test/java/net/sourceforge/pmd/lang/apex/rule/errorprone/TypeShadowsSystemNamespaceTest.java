@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-class SystemNamespaceCollisionTest extends PmdRuleTst {
+class TypeShadowsSystemNamespaceTest extends PmdRuleTst {
     // no additional unit tests
 }

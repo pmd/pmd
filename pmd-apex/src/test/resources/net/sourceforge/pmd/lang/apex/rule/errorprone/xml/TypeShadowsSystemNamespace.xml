@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data xmlns="http://pmd.sourceforge.net/rule-tests"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
-    
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>Shadows a class in the System namespace</description>
         <expected-problems>1</expected-problems>
@@ -12,7 +12,7 @@ public class Database {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>Shadows an enum in the System namespace</description>
         <expected-problems>1</expected-problems>
@@ -22,7 +22,7 @@ public class CallbackStatus {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>Shadows an interface in the System namespace</description>
         <expected-problems>1</expected-problems>
@@ -32,7 +32,7 @@ public class Callable {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>No shadowing</description>
         <expected-problems>0</expected-problems>
