@@ -526,9 +526,24 @@ entries:
     - title: Developer resources
       url: /pmd_devdocs_development.html
       output: web, pdf
-    - title: Building PMD from source
-      url: /pmd_devdocs_building.html
+    - title: null
       output: web, pdf
+      subfolders:
+      - title: Building PMD
+        output: web, pdf
+        subfolderitems:
+        - title: General Info
+          url: /pmd_devdocs_building_general.html
+          output: web, pdf
+        - title: Building PMD from source
+          url: /pmd_devdocs_building.html
+          output: web, pdf
+        - title: Building PMD with IntelliJ IDEA
+          url: /pmd_devdocs_building_intellij.html
+          output: web, pdf
+        - title: Building PMD with Eclipse IDE
+          url: /pmd_devdocs_building_eclipse.html
+          output: web, pdf
     - title: Contributing
       external_url: https://github.com/pmd/pmd/blob/main/CONTRIBUTING.md
       output: web, pdf
