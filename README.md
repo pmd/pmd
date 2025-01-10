@@ -64,7 +64,7 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 Our latest source of PMD can be found on [GitHub](https://github.com/pmd/pmd). Fork us!
 
 *   [How to build PMD](BUILDING.md)
-*   [How to contribute to PMD](CONTRIBUTING.md)
+*   [How to contribute to PMD](https://docs.pmd-code.org/latest/pmd_devdocs_contributing.html)
 
 The rule designer is developed over at [pmd/pmd-designer](https://github.com/pmd/pmd-designer).
 Please see [its README](https://github.com/pmd/pmd-designer#contributing) for
