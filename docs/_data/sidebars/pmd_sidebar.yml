@@ -544,6 +544,9 @@ entries:
         - title: Building PMD with Eclipse IDE
           url: /pmd_devdocs_building_eclipse.html
           output: web, pdf
+        - title: Building PMD with VS Code IDE
+          url: /pmd_devdocs_building_vscode.html
+          output: web, pdf
         - title: Building PMD with Netbeans IDE
           url: /pmd_devdocs_building_netbeans.html
           output: web, pdf
