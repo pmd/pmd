@@ -66,7 +66,34 @@ You'll find the built site in the directory `_site/`.
 
 For more info, see [README in docs directory](https://github.com/pmd/pmd/tree/main/docs#readme).
 
-## General Development
+## How to test SNAPSHOT builds?
+
+Every push to our main branch creates a new SNAPSHOT build. You can download the binary distribution
+from <https://sourceforge.net/projects/pmd/files/pmd/>. The binary distribution ZIP file behaves exactly
+the same as the real release: Just unzip it and execute PMD.
+
+If you integrate PMD as a dependency in your own project, you can also reference the latest SNAPSHOT
+version. However, you also need to configure an additional Maven Repository, as the SNAPSHOTS are not published
+in Maven Central.
+
+Use the OSSRH snapshot repository url: `https://oss.sonatype.org/content/repositories/snapshots`. For Maven
+projects, this can be configured like:
+```xml
+<repositories>
+ <repository>
+   <id>sonatype-nexus-snapshots</id>
+   <name>Sonatype Nexus Snapshots</name>
+   <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+   <releases><enabled>false</enabled></releases>
+   <snapshots><enabled>true</enabled></snapshots>
+ </repository>
+</repositories>
+```
+
+Have a look at <https://oss.sonatype.org/content/repositories/snapshots/net/sourceforge/pmd/pmd/> to see which
+SNAPSHOT versions are available. Note that old SNAPSHOT versions might be removed without prior notice.
+
+## General Development Tips
 
 * Use a IDE, see one of the other guides
   * [Building PMD with IntelliJ IDEA](pmd_devdocs_building_intellij.html)
@@ -86,3 +113,12 @@ For more info, see [README in docs directory](https://github.com/pmd/pmd/tree/ma
   * See also [Newcomers' Guide](pmd_devdocs_contributing_newcomers_guide.html)
 * Always create a dev branch when you are going to commit something,
   so that you can easily create a PR later on.
+* Build a single module only: Always (re)building the complete PMD source takes quite a while. If you only
+  change one module, you build and test just this single module to speed up development. Eg. if you changed
+  a rule in pmd-apex only, you can just build this:
+  ```shell
+  ./mvnw verify -pl pmd-apex
+  ```
+  **Caveats:** We have some integration tests, that run only after all modules have been built. You could
+  break these without noticing.  
+  **Note:** In our CI (via GitHub Actions) we always build the complete project.
