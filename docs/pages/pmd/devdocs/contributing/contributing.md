@@ -50,6 +50,9 @@ When filing a bug report, please provide as much information as possible, so tha
 *   A code snippet, which triggers a false positive/negative or crash
 *   How do you execute PMD? (command line, ant, maven, gradle, other)
 
+## Reporting Security Issues
+
+See [SECURITY.md](https://github.com/pmd/pmd/blob/main/SECURITY.md)
 
 ## Documentation
 

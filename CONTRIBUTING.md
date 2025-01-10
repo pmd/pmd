@@ -13,6 +13,8 @@ Guides for using various IDEs are available at <https://docs.pmd-code.org/latest
 
 **Bug Reports / Features:** We use the issue tracker on GitHub. Please report new bugs and feature requests at <https://github.com/pmd/pmd/issues>.
 
+**Reporting Security Issues:** <https://github.com/pmd/pmd/security/advisories/new>
+
 **Main Documentation:** <https://docs.pmd-code.org/latest>
 
 **Questions:**
