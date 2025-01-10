@@ -550,6 +550,15 @@ entries:
         - title: Building PMD with Netbeans IDE
           url: /pmd_devdocs_building_netbeans.html
           output: web, pdf
+    - title: null
+      output: web, pdf
+      subfolders:
+        - title: Contributing
+          output: web, pdf
+          subfolderitems:
+          - title: Newcomers' Guide
+            url: /pmd_devdocs_contributing_newcomers_guide.html
+            output: web, pdf
     - title: Contributing
       external_url: https://github.com/pmd/pmd/blob/main/CONTRIBUTING.md
       output: web, pdf
