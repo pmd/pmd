@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+
+    <test-code>
+        <description>Repeated Strings</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Example {
+  public void myMethod() {
+    String a = 'hello';
+    String b = 'hello';
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Repeated Integers</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Example {
+  public void myMethod() {
+    Integer age1 = 5;
+    Integer age2 = 5;
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Repeated Longs</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Example {
+  public void myMethod() {
+    Long age1 = 5;
+    Long age2 = 5;
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Repeated Decimals</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Example {
+  public void myMethod() {
+    Decimal age1 = 5.1;
+    Decimal age2 = 5.1;
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Repeated Doubles</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Example {
+  public void myMethod() {
+    Decimal age1 = 5.1;
+    Decimal age2 = 5.1;
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Repeated value across Long and Integer</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Example {
+  public void myMethod() {
+    Integer age1 = 5;
+    Long age2 = 5;
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Repeated value across Double and Decimal</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Example {
+  public void myMethod() {
+    Double age1 = 5.1;
+    Decimal age2 = 5.1;
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Values in if statements are checked</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Example {
+  public void myMethod(String bar) {
+    String foo = 'foo';
+    if (bar == 'foo') {
+    }
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Values in for loops are checked</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Example {
+  public void myMethod() {
+    Integer y = 5;
+    for (Integer i = 0; i < 5; i++) {
+    }
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Values in while statements are checked</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Example {
+  public void myMethod(Integer x) {
+    Integer y = 5;
+    while (x < 5) {
+    }
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Values defined in different scopes count as repetition</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Example {
+  private String bar = 'foo';
+
+  public void myMethod(String bar) {
+    String foo = 'foo';
+  }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Values in inner classes count as repetition</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Example {
+  public void myMethod(String bar) {
+    String foo = 'foo';
+  }
+
+  private class Demo {
+    public void myMethod(String bar) {
+      String foo = 'foo';
+    }
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Same value but different semantically identical representation is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Example {
+  public void myMethod() {
+    Integer age1 = 5;
+    Decimal age2 = 5.0;
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>String and number are fundamentally different</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Example {
+  public void myMethod() {
+    String age1 = '5';
+    Integer age2 = 5;
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Repeated empty String is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Example {
+  public void myMethod() {
+    String age1 = '';
+    String age2 = '';
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Commonly used numbers are not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Example {
+  public void myMethod() {
+    Integer age1 = 0;
+    Integer age2 = 0;
+
+    Integer age3 = -1;
+    Integer age4 = -1;
+
+    Integer age5 = 1;
+    Integer age6 = 1;
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Number used in Integer and in Date construction is not violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Example {
+  public void myMethod() {
+    Integer age1 = 2;
+    Date theDate = Date.newInstance(2024, 2, 15);
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Number used in Integer and in DateTime construction is not violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Example {
+  public void myMethod() {
+    Integer age1 = 2;
+    DateTime myDateTime = DateTime.newInstance(2024, 2, 15, 10, 30, 0);
+  }
+}
+        ]]></code>
+    </test-code>
+
+
+</test-data>
