@@ -281,5 +281,27 @@ public class Example {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Number used twice in the same constant is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Example {
+  private static final Long MILLISECONDS = 555550000;
+  private static final Decimal HOURS = MILLISECONDS / (1000 * 60 * 60);
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Composition of constants which use the same number is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Example {
+  private static final Integer TEST = 2;
+  private static final Decimal HOURS = Math.pow(TEST, 2);
+}
+        ]]></code>
+    </test-code>
+
 
 </test-data>

@@ -5,29 +5,30 @@
 package net.sourceforge.pmd.lang.apex.rule.design;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclarationStatements;
 import net.sourceforge.pmd.lang.apex.ast.ASTLiteralExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
-import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
-import scala.collection.mutable.HashSet;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTReferenceExpression;
 
 public class RepeatedPrimitiveValueRule extends AbstractApexRule {
 
+    private static final String NEW_INSTANCE = "newinstance";
     private static final ImmutableSet<String> OMITTED_VALUES = ImmutableSet.of("0", "1", "-1", "");
+    private static final ImmutableSet<String> DATE_AND_DATETIME_CLASSES = ImmutableSet.of("date", "datetime");
 
     private Map<String, Integer> numberCount = new HashMap<String, Integer>();
     private Map<String, Integer> stringCount = new HashMap<String, Integer>();
-    private HashSet<String> constantNumbers = new HashSet<String>();
+    private Set<String> constantNumbers = new HashSet<String>();
 
     @Override
     public Object visit(ASTUserClass topLevelClass, Object data) {
@@ -60,24 +61,6 @@ public class RepeatedPrimitiveValueRule extends AbstractApexRule {
         }
     }
 
-    private boolean isAConstantNumber(ASTLiteralExpression expression) {
-        if (expression.isString()) {
-            return false;
-        }
-        ApexNode parent = expression.getParent();
-        if (!(parent instanceof ASTFieldDeclaration)) {
-            return false;
-        }
-        ASTFieldDeclaration fieldDeclaration = (ASTFieldDeclaration) parent;
-        parent = fieldDeclaration.getParent();
-        if (!(parent instanceof ASTFieldDeclarationStatements)) {
-            return false;
-        }
-        ASTFieldDeclarationStatements fieldDeclarationStatements = (ASTFieldDeclarationStatements) parent;
-        ASTModifierNode modifiers = fieldDeclarationStatements.getModifiers();
-        return modifiers.isFinal() && modifiers.isStatic();
-    }
-
     private void markDuplicates(ASTUserClass topLevelClass, Object data) {
         addViolationToRepeatedValues(topLevelClass, data);
         for (ASTUserClass innerClass : topLevelClass.descendants(ASTUserClass.class)) {
@@ -97,6 +80,19 @@ public class RepeatedPrimitiveValueRule extends AbstractApexRule {
         }
     }
 
+    private boolean isAConstantNumber(ASTLiteralExpression expression) {
+        if (expression.isString()) {
+            return false;
+        }
+        List<ASTFieldDeclarationStatements> ancestors = expression.ancestors(ASTFieldDeclarationStatements.class)
+                .toList();
+        if (ancestors.isEmpty()) {
+            return false;
+        }
+        ASTModifierNode modifiers = ancestors.get(0).getModifiers();
+        return modifiers.isFinal() && modifiers.isStatic();
+    }
+
     private boolean shouldSkip(ASTLiteralExpression expression, String value) {
         return expression.isNull() || OMITTED_VALUES.contains(value)
                 || isNumberUsedInDateOrDateTimeConstruction(expression)
@@ -104,15 +100,27 @@ public class RepeatedPrimitiveValueRule extends AbstractApexRule {
     }
 
     private boolean hasBeenObservedBefore(ASTLiteralExpression expression, String value) {
-        return (expression.isString() && stringCount.get(value) > 1) || numberCount.get(value) > 1;
+        return isObservedString(expression, value) || isObservedNumber(expression, value);
+    }
+
+    private boolean isObservedString(ASTLiteralExpression expression, String value) {
+        return expression.isString() && stringCount.containsKey(value) && stringCount.get(value) > 1;
+    }
+
+    private boolean isObservedNumber(ASTLiteralExpression expression, String value) {
+        return !expression.isString() && numberCount.containsKey(value) && numberCount.get(value) > 1;
     }
 
     private boolean isNumberUsedInDateOrDateTimeConstruction(ASTLiteralExpression expression) {
-        ApexNode parent = expression.getParent();
-        if (!(parent instanceof ASTMethodCallExpression)) {
+        if (expression.isString()) {
             return false;
         }
-        ASTMethodCallExpression methodCallExpression = (ASTMethodCallExpression) parent;
+        List<ASTMethodCallExpression> methodCallExpressions = expression.ancestors(ASTMethodCallExpression.class)
+                .toList();
+        if (methodCallExpressions.isEmpty()) {
+            return false;
+        }
+        ASTMethodCallExpression methodCallExpression = methodCallExpressions.get(0);
         if (!isTheNewInstanceMethod(methodCallExpression)) {
             return false;
         }
@@ -121,7 +129,7 @@ public class RepeatedPrimitiveValueRule extends AbstractApexRule {
 
     private boolean isTheNewInstanceMethod(ASTMethodCallExpression methodCallExpression) {
         String methodName = methodCallExpression.getMethodName();
-        return methodName != null && methodName.equalsIgnoreCase("newInstance");
+        return methodName != null && NEW_INSTANCE.equalsIgnoreCase(methodName);
     }
 
     private boolean isReferencedByDateOrDateTimeClass(ASTMethodCallExpression methodCallExpression) {
@@ -130,7 +138,7 @@ public class RepeatedPrimitiveValueRule extends AbstractApexRule {
         if (references.size() != 1) {
             return false;
         }
-        return ImmutableSet.of("date", "datetime").contains(references.get(0).getImage().toLowerCase());
+        return DATE_AND_DATETIME_CLASSES.contains(references.get(0).getImage().toLowerCase());
     }
 
     private boolean isAConstantNumberWhichHasAlreadyBeenDefined(ASTLiteralExpression expression, String value) {
