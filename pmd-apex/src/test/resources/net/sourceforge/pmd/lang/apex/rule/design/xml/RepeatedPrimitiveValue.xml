@@ -255,5 +255,31 @@ public class Example {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Number used across multiple constants is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Example {
+  private static final Integer NUMBER_OF_DAYS = 10;
+  private static final Integer NUMBER_OF_HOURS = 10;
+  public void myMethod() {
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Number used in constant and in elsewhere is a violation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Example {
+  private static final Integer NUMBER_OF_DAYS = 10;
+  public void myMethod() {
+    Integer numberOfMinutes = 10;
+  }
+}
+        ]]></code>
+    </test-code>
+
 
 </test-data>
