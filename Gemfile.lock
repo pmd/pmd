@@ -68,7 +68,7 @@ GEM
     raabro (1.4.0)
     racc (1.8.1)
     rchardet (1.8.0)
-    rexml (3.3.6)
+    rexml (3.3.9)
       strscan
     rouge (4.4.0)
     rufus-scheduler (3.9.1)
