@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
-import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
@@ -42,8 +40,6 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
  * </pre>
  */
 public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JMethodSymbol> {
-
-    private String name;
 
     /**
      * Populated by {@link OverrideResolutionPass}.
@@ -81,23 +77,6 @@ public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JM
 
     void setOverriddenMethod(JMethodSig overriddenMethod) {
         this.overriddenMethod = overriddenMethod;
-    }
-
-    @Override
-    public FileLocation getReportLocation() {
-        // the method identifier
-        JavaccToken ident = TokenUtils.nthPrevious(getModifiers().getLastToken(), getFormalParameters().getFirstToken(), 1);
-        return ident.getReportLocation();
-    }
-
-    /** Returns the simple name of the method. */
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    void setName(String name) {
-        this.name = name;
     }
 
     /**

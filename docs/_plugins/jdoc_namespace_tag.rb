@@ -102,7 +102,7 @@ class JDocNamespaceDeclaration < Liquid::Tag
   RESERVED_NSPACES = ['ant', 'apex', 'cli', 'coco', 'core', 'cpp', 'cs', 'dart', 'dist', 'doc',
     'fortran', 'gherkin', 'go', 'groovy', 'html', 'java',
     'javascript', 'jsp', 'julia',
-    'kotlin', 'lang-test', 'lua', 'matlab', 'objectivec', 'perl', 'php', 'plsql', 'python', 'ruby', 'scala', 'swift',
+    'kotlin', 'lang-test', 'lua', 'matlab', 'objectivec', 'perl', 'php', 'plsql', 'python', 'ruby', 'rust', 'scala', 'swift',
     'test', 'test-schema', 'tsql', 'ui',
     'modelica', 'visualforce', 'velocity', 'xml',
     'vm', # pre-pmd7 name for velocity, only useful for jdoc_old or jdoc_package_old

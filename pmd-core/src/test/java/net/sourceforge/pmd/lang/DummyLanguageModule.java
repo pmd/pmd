@@ -159,7 +159,7 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase implements Cpd
                     throw new ParseException("Unbalanced parentheses: " + text);
                 }
 
-                top.setRegion(TextRegion.fromBothOffsets(top.getTextRegion().getStartOffset(), i));
+                top.setRegion(TextRegion.fromBothOffsets(top.getTextRegion().getStartOffset(), i + 1));
 
                 if (top.getImage() == null) {
                     // cut out image (if node doesn't have children it hasn't been populated yet)

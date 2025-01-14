@@ -10,13 +10,18 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.ast.internal.NodeFindingUtil;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
@@ -29,7 +34,7 @@ import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
  * This forwards events to a {@link FileAnalysisListener}. It implements
  * violation suppression by filtering some violations out, according to
  * the {@link ViolationSuppressor}s for the language.
- *
+ * <p>
  * A RuleContext contains a Rule instance and violation reporting methods
  * implicitly report only for that rule. Contrary to PMD 6, RuleContext is
  * not unique throughout the analysis, a separate one is used per file and rule.
@@ -130,28 +135,72 @@ public final class RuleContext {
      * @param formatArgs Format arguments for the message
      */
     public void addViolationWithPosition(Node node, int beginLine, int endLine, String message, Object... formatArgs) {
-        Objects.requireNonNull(node, "Node was null");
+        FileLocation location;
+        if (beginLine != -1 && endLine != -1) {
+            location = FileLocation.range(node.getTextDocument().getFileId(),
+                                          TextRange2d.range2d(beginLine, 1, endLine, 1));
+        } else {
+            location = node.getReportLocation();
+        }
+        addViolationWithPosition(node, node.getAstInfo(), location, message, formatArgs);
+    }
+
+    /**
+     * Record a new violation of the contextual rule, at the given location (node or token).
+     * The position is refined using the given begin and end line numbers.
+     * The given violation message ({@link Rule#getMessage()}) is treated
+     * as a format string for a {@link MessageFormat} and should hence use
+     * appropriate escapes. The given formatting arguments are used.
+     *
+     * @param reportable Location of the violation (node or token) - only used to determine suppression
+     * @param astInfo    Info about the root of the tree ({@link Node#getAstInfo()})
+     * @param location   Report location of the violation
+     * @param message    Violation message
+     * @param formatArgs Format arguments for the message
+     * @experimental This will probably never be stabilized, will instead be
+     *      replaced by a fluent API or something to report violations. Do not use
+     *      this outside of the PMD codebase. See <a href="https://github.com/pmd/pmd/issues/5039">[core] Add fluent API to report violations #5039</a>.
+     */
+    @Experimental
+    public void addViolationWithPosition(Reportable reportable, AstInfo<?> astInfo, FileLocation location,
+                                         String message, Object... formatArgs) {
+        Objects.requireNonNull(reportable, "Node was null");
         Objects.requireNonNull(message, "Message was null");
         Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
 
-        LanguageVersionHandler handler = node.getAstInfo().getLanguageProcessor().services();
+        LanguageVersionHandler handler = astInfo.getLanguageProcessor().services();
 
-        FileLocation location = node.getReportLocation();
-        if (beginLine != -1 && endLine != -1) {
-            location = FileLocation.range(location.getFileId(), TextRange2d.range2d(beginLine, 1, endLine, 1));
-        }
+        Node suppressionNode = getNearestNode(reportable, astInfo);
 
-        final Map<String, String> extraVariables = ViolationDecorator.apply(handler.getViolationDecorator(), node);
-        final String description = makeMessage(message, formatArgs, extraVariables);
-        final RuleViolation violation = new ParametricRuleViolation(rule, location, description, extraVariables);
+        Map<String, String> extraVariables = ViolationDecorator.apply(handler.getViolationDecorator(), suppressionNode);
+        String description = makeMessage(message, formatArgs, extraVariables);
+        RuleViolation violation = new ParametricRuleViolation(rule, location, description, extraVariables);
 
-        final SuppressedViolation suppressed = suppressOrNull(node, violation, handler);
+        SuppressedViolation suppressed = suppressOrNull(suppressionNode, violation, handler);
 
         if (suppressed != null) {
             listener.onSuppressedRuleViolation(suppressed);
         } else {
             listener.onRuleViolation(violation);
         }
+    }
+
+    private Node getNearestNode(Reportable reportable, AstInfo<?> astInfo) {
+        if (reportable instanceof Node) {
+            return (Node) reportable;
+        }
+        int startOffset = getStartOffset(reportable, astInfo);
+        Optional<Node> foundNode = NodeFindingUtil.findNodeAt(astInfo.getRootNode(), startOffset);
+        // default to the root node
+        return foundNode.orElse(astInfo.getRootNode());
+    }
+
+    private static int getStartOffset(Reportable reportable, AstInfo<?> astInfo) {
+        if (reportable instanceof JavaccToken) {
+            return ((JavaccToken) reportable).getRegion().getStartOffset();
+        }
+        FileLocation loc = reportable.getReportLocation();
+        return astInfo.getTextDocument().offsetAtLineColumn(loc.getStartPos());
     }
 
     private static @Nullable SuppressedViolation suppressOrNull(Node location, RuleViolation rv, LanguageVersionHandler handler) {

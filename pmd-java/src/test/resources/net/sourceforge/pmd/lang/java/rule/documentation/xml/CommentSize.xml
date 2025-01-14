@@ -49,4 +49,46 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#2996 Test Suppression</description>
+        <rule-property name="maxLines">2</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+    }
+
+    @SuppressWarnings("PMD.CommentSize")
+    public void doNothing() {
+        /*
+        such
+        a
+        long
+        comment
+        */
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2996 Not suppressed</description>
+        <rule-property name="maxLines">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+    }
+
+    public void doNothing() {
+        /*
+        such
+        a
+        long
+        comment
+        */
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -90,25 +90,23 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
      */
     protected void fitTokensToChildren(int index) {
         if (index == 0) {
-            enlargeLeft((B) getChild(index));
+            enlargeLeft(getChild(index).getFirstToken());
         }
         if (index == getNumChildren()) {
-            enlargeRight((B) getChild(index));
+            enlargeRight(getChild(index).getLastToken());
         }
     }
 
-    private void enlargeLeft(B child) {
+    protected void enlargeLeft(JavaccToken childFst) {
         JavaccToken thisFst = this.getFirstToken();
-        JavaccToken childFst = child.getFirstToken();
 
         if (childFst.compareTo(thisFst) < 0) {
             this.setFirstToken(childFst);
         }
     }
 
-    private void enlargeRight(B child) {
+    private void enlargeRight(JavaccToken childLast) {
         JavaccToken thisLast = this.getLastToken();
-        JavaccToken childLast = child.getLastToken();
 
         if (childLast.compareTo(thisLast) > 0) {
             this.setLastToken(childLast);
