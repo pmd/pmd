@@ -16,6 +16,74 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>IssueExamplePrint</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package foo.bar;
+
+public final class IssueExample {
+
+	private IssueExample() {}
+
+	public static void main(final String... args) {
+		print(FooType.FOO);
+		print(BarType.BAR);
+	}
+
+	private static void print(final FooType fooType) {
+		System.out.println(fooType);
+	}
+
+	private static void print(final BarType barType) {
+		System.out.println(barType);
+	}
+
+	enum FooType {
+		FOO
+	}
+	enum BarType {
+		BAR
+	}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>IssueExamplePrintOneUnused</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+package foo.bar;
+
+public final class IssueExample {
+
+	private IssueExample() {}
+
+	public static void main(final String... args) {
+		print(FooType.FOO);
+		print(BarType.BAR);
+	}
+
+	private static void print(final FooType fooType) {
+		System.out.println(fooType);
+	}
+
+	private static void print(final BarType barType) {
+		System.out.println(barType);
+	}
+
+	private static void print(final String barType) {
+		System.out.println(barType);
+	}
+
+	enum FooType {
+		FOO
+	}
+	enum BarType {
+		BAR
+	}
+}
+        ]]></code>
+    </test-code>
 
     <test-code>
         <description>simple unused private method</description>
