@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 class Java23PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
     private final JavaParsingHelper java23p =
             JavaParsingHelper.DEFAULT.withDefaultVersion("23-preview")
-                    .withResourceContext(Java22PreviewTreeDumpTest.class, "jdkversiontests/java23p/");
+                    .withResourceContext(Java23PreviewTreeDumpTest.class, "jdkversiontests/java23p/");
     private final JavaParsingHelper java23 = java23p.withDefaultVersion("23");
 
     @Override

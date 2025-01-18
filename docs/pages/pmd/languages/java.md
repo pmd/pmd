@@ -19,7 +19,6 @@ Usually the latest non-preview Java Version is the default version.
 | 24 (default) |       | 7.10.0                 |
 | 23-preview   |       | 7.5.0                  |
 | 23           |       | 7.5.0                  |
-| 22-preview   |       | 7.0.0                  |
 | 22           |       | 7.0.0                  |
 | 21           |       | 7.0.0                  |
 | 20           |       | 6.55.0                 |
@@ -44,10 +43,10 @@ Usually the latest non-preview Java Version is the default version.
 ## Using Java preview features
 
 In order to analyze a project with PMD that uses preview language features, you'll need to enable
-it via the environment variable `PMD_JAVA_OPTS` and select the new language version, e.g. `22-preview`:
+it via the environment variable `PMD_JAVA_OPTS` and select the new language version, e.g. `24-preview`:
 
     export PMD_JAVA_OPTS=--enable-preview
-    pmd check --use-version java-22-preview ...
+    pmd check --use-version java-24-preview ...
 
 Note: we only support preview language features for the latest two java versions.
 

@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 class Java24PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
     private final JavaParsingHelper java24p =
             JavaParsingHelper.DEFAULT.withDefaultVersion("24-preview")
-                    .withResourceContext(Java22PreviewTreeDumpTest.class, "jdkversiontests/java24p/");
+                    .withResourceContext(Java24PreviewTreeDumpTest.class, "jdkversiontests/java24p/");
     private final JavaParsingHelper java24 = java24p.withDefaultVersion("24");
 
     @Override
