@@ -11,7 +11,7 @@ public class DummyLanguageDialectModule extends SimpleDialectLanguageModuleBase 
 
     public DummyLanguageDialectModule() {
         super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
-                .extensions("dummy", "txt")
+                .extensions("txt", "dummydlc")
                 .addDefaultVersion("1.0").asDialectOf(DummyLanguageModule.TERSE_NAME));
     }
 

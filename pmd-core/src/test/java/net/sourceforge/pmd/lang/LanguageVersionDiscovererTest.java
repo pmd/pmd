@@ -28,7 +28,7 @@ class LanguageVersionDiscovererTest {
         DummyLanguageModule lang = DummyLanguageModule.getInstance();
         LanguageRegistry lr = LanguageRegistry.singleton(lang);
         LanguageVersionDiscoverer lvDicoverer = new LanguageVersionDiscoverer(lr);
-        LanguageVersion versionForFile = lvDicoverer.getDefaultLanguageVersionForFile(new File("file.dummy"));
+        LanguageVersion versionForFile = lvDicoverer.getDefaultLanguageVersionForFile(new File("file.txt"));
 
         assertNotNull(versionForFile);
         assertSame(lang, versionForFile.getLanguage());
@@ -45,7 +45,7 @@ class LanguageVersionDiscovererTest {
 
         LanguageRegistry lr = new LanguageRegistry(langSet);
         LanguageVersionDiscoverer lvDicoverer = new LanguageVersionDiscoverer(lr);
-        LanguageVersion versionForFile = lvDicoverer.getDefaultLanguageVersionForFile(new File("file.dummy"));
+        LanguageVersion versionForFile = lvDicoverer.getDefaultLanguageVersionForFile(new File("file.txt"));
 
         assertNotNull(versionForFile);
         assertSame(dialect, versionForFile.getLanguage());
