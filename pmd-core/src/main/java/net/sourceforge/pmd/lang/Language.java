@@ -84,9 +84,6 @@ public interface Language extends Comparable<Language> {
     @SuppressWarnings("PMD.SimplifyBooleanReturns")
     default boolean isDialectOf(Language language) {
         AssertionUtil.requireParamNotNull("language", language);
-        if (this.equals(language)) {
-            return true;
-        }
         String base = getBaseLanguageId();
         if (base == null) {
             return false;
