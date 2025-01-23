@@ -144,7 +144,7 @@ public class LanguageLevelChecker<T> {
          * @see <a href="https://openjdk.org/jeps/477">JEP 477: Implicitly Declared Classes and Instance Main Methods (Third Preview)</a> (Java 23)
          * @see <a href="https://openjdk.org/jeps/495">JEP 495: Simple Source Files and Instance Main Methods (Fourth Preview)</a> (Java 24)
          */
-        IMPLICITLY_DECLARED_CLASSES_AND_INSTANCE_MAIN_METHODS(22, 24, false),
+        SIMPLE_SOURCE_FILES_AND_INSTANCE_MAIN_METHODS(22, 24, false),
 
         /**
          * Statements before super
@@ -446,7 +446,7 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTImplicitClassDeclaration node, T data) {
-            check(node, PreviewFeature.IMPLICITLY_DECLARED_CLASSES_AND_INSTANCE_MAIN_METHODS, data);
+            check(node, PreviewFeature.SIMPLE_SOURCE_FILES_AND_INSTANCE_MAIN_METHODS, data);
             return null;
         }
 

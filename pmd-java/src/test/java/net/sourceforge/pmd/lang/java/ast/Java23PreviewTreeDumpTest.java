@@ -71,7 +71,7 @@ class Java23PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
     @Test
     void jep477ImplicitlyDeclaredClassesAndInstanceMainMethods1BeforeJava23Preview() {
         ParseException thrown = assertThrows(ParseException.class, () -> java23.parseResource("Jep477_ImplicitlyDeclaredClassesAndInstanceMainMethods1.java"));
-        assertThat(thrown.getMessage(), containsString("Implicitly declared classes and instance main methods is a preview feature of JDK 23, you should select your language version accordingly"));
+        assertThat(thrown.getMessage(), containsString("Simple source files and instance main methods is a preview feature of JDK 23, you should select your language version accordingly"));
     }
 
     @Test
