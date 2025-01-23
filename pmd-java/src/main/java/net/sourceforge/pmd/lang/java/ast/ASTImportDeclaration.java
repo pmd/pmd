@@ -139,6 +139,7 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
      * @return {@code true} if this is a module declaration import
      * @since 7.5.0
      * @see <a href="https://openjdk.org/jeps/476">JEP 476: Module Import Declarations (Preview)</a> (Java 23)
+     * @see <a href="https://openjdk.org/jeps/494">JEP 494: Module Import Declarations (Second Preview)</a> (Java 24)
      */
     @Experimental
     public boolean isModuleImport() {
