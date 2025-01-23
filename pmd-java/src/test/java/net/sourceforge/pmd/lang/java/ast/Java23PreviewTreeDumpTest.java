@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
@@ -114,9 +115,9 @@ class Java23PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
 
     @Test
     void stringTemplatesAreNotSupportedAnymore() {
-        ParseException thrown = assertThrows(ParseException.class, () -> java23p.parseResource("StringTemplatesAreNotSupportedAnymore.java"));
-        assertThat(thrown.getMessage(), containsString("String templates is a preview feature of JDK 22, you should select your language version accordingly"));
-        ParseException thrown2 = assertThrows(ParseException.class, () -> java23.parseResource("StringTemplatesAreNotSupportedAnymore.java"));
-        assertThat(thrown2.getMessage(), containsString("String templates is a preview feature of JDK 22, you should select your language version accordingly"));
+        LexException thrown = assertThrows(LexException.class, () -> java23p.parseResource("StringTemplatesAreNotSupportedAnymore.java"));
+        assertThat(thrown.getMessage(), containsString("Lexical error in file"));
+        LexException thrown2 = assertThrows(LexException.class, () -> java23.parseResource("StringTemplatesAreNotSupportedAnymore.java"));
+        assertThat(thrown2.getMessage(), containsString("Lexical error in file"));
     }
 }

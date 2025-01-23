@@ -44,7 +44,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
-import net.sourceforge.pmd.lang.java.ast.ASTTemplateExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
@@ -129,14 +128,6 @@ public class LanguageLevelChecker<T> {
      * They might be also be standardized.
      */
     private enum PreviewFeature implements LanguageFeature {
-        /**
-         * String Templates. Only support with Java 22 Preview now.
-         * @see <a href="https://openjdk.org/jeps/430">JEP 430: String Templates (Preview)</a> (Java 21)
-         * @see <a href="https://openjdk.org/jeps/459">JEP 459: String Templates (Second Preview)</a> (Java 22)
-         * @see <a href="https://bugs.openjdk.org/browse/JDK-8329949">JDK-8329949 Remove the String Templates preview feature</a> (Java 23)
-         */
-        STRING_TEMPLATES(22, 22, false),
-
         /**
          * Unnamed Classes and Instance Main Methods
          * @see <a href="https://openjdk.org/jeps/445">JEP 445: Unnamed Classes and Instance Main Methods (Preview)</a> (Java 21)
@@ -682,12 +673,6 @@ public class LanguageLevelChecker<T> {
         @Override
         public Void visit(ASTVariableId node, T data) {
             checkIdent(node, node.getName(), data);
-            return null;
-        }
-
-        @Override
-        public Void visit(ASTTemplateExpression node, T data) {
-            check(node, PreviewFeature.STRING_TEMPLATES, data);
             return null;
         }
 

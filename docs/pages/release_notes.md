@@ -18,6 +18,13 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚨 API Changes
 
+#### Removed Experimental API
+* pmd-java
+  * `net.sourceforge.pmd.lang.java.ast.ASTTemplate`, `net.sourceforge.pmd.lang.java.ast.ASTTemplateExpression`,
+    `net.sourceforge.pmd.lang.java.ast.ASTTemplateFragment`: These nodes were introduced with Java 21 and 22
+    Preview to support String Templates. However, the String Template preview feature was not finalized
+    and has been removed from Java for now. We now cleaned up the PMD implementation of it.
+
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 
