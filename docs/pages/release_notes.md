@@ -14,7 +14,28 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+### 🚀 New: Java 24 Support
+This release of PMD brings support for Java 24. There are no new standard language features,
+but a couple of preview language features:
+
+* [JEP 488: Primitive Types in Patterns, instanceof, and switch (Second Preview)](https://openjdk.org/jeps/488)
+* [JEP 492: Flexible Constructor Bodies (Third Preview)](https://openjdk.org/jeps/492)
+* [JEP 494: Module Import Declarations (Second Preview)](https://openjdk.org/jeps/494)
+* [JEP 495: Simple Source Files and Instance Main Methods (Fourth Preview)](https://openjdk.org/jeps/495)
+
+In order to analyze a project with PMD that uses these preview language features,
+you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
+version `24-preview`:
+
+    export PMD_JAVA_OPTS=--enable-preview
+    pmd check --use-version java-24-preview ...
+
+Note: Support for Java 22 preview language features have been removed. The version "22-preview"
+are no longer available.
+
 ### 🐛 Fixed Issues
+* java
+  * [#5154](https://github.com/pmd/pmd/issues/5154): \[java] Support Java 24
 
 ### 🚨 API Changes
 
