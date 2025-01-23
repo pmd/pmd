@@ -1183,17 +1183,6 @@
         </profile>
 
         <profile>
-            <id>Java 18+</id>
-            <activation>
-                <jdk>[18,)</jdk>
-            </activation>
-            <properties>
-                <!-- java.security.manager=allow is needed under Java 18+ for usages of com.github.stefanbirkner.systemlambda.SystemLambda.catchSystemExit -->
-                <extraArgLine>-Djava.security.manager=allow</extraArgLine>
-            </properties>
-        </profile>
-
-        <profile>
             <id>pmd-release</id>
             <properties>
                 <pmd.website.baseurl>https://docs.pmd-code.org/pmd-doc-${project.version}</pmd.website.baseurl>

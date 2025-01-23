@@ -12,7 +12,8 @@ public final class PmdCli {
 
     private PmdCli() { }
 
-    public static void main(String[] args) {
+    // package private for test only without calling System.exit
+    static int mainWithoutExit(String[] args) {
         // See https://github.com/remkop/picocli/blob/main/RELEASE-NOTES.md#-picocli-470
         // and https://picocli.info/#_closures_in_annotations
         // we don't use this feature. Disabling it avoids leaving the groovy jar open
@@ -20,7 +21,11 @@ public final class PmdCli {
         System.setProperty("picocli.disable.closures", "true");
         final CommandLine cli = new CommandLine(new PmdRootCommand())
                 .setCaseInsensitiveEnumValuesAllowed(true);
-        
-        System.exit(cli.execute(args));
+
+        return cli.execute(args);
+    }
+
+    public static void main(String[] args) {
+        System.exit(mainWithoutExit(args));
     }
 }

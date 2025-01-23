@@ -13,6 +13,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
@@ -55,26 +56,25 @@ abstract class BaseCliTest {
         final PrintStream formerOut = System.out;
         final PrintStream formerErr = System.err;
 
-        CliExitCode exitCode;
+        final AtomicReference<CliExitCode> exitCode = new AtomicReference<>();
         try {
             System.out.println("running: pmd " + String.join(" ", argList));
             System.setOut(new PrintStream(out));
             System.setErr(new PrintStream(err));
-            int actualExitCode = SystemLambda.catchSystemExit(
-                // restoring system properties: --debug might change logging properties
-                () -> SystemLambda.restoreSystemProperties(
-                    () -> PmdCli.main(argList.toArray(new String[0]))
-                )
+            // restoring system properties: --debug might change logging properties
+            SystemLambda.restoreSystemProperties(
+                () -> {
+                    int actualExitCode = PmdCli.mainWithoutExit(argList.toArray(new String[0]));
+                    exitCode.set(CliExitCode.fromInt(actualExitCode));
+                }
             );
-            exitCode = CliExitCode.fromInt(actualExitCode);
-
         } finally {
             System.setOut(formerOut);
             System.setErr(formerErr);
         }
 
         return new CliExecutionResult(
-            out, err, exitCode
+            out, err, exitCode.get()
         ).verify(e -> assertEquals(expectedExitCode, e.exitCode));
     }
 
