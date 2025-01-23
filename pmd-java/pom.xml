@@ -138,6 +138,13 @@
                             <exclude>net.sourceforge.pmd.lang.java.symbols.table.internal</exclude>
                             <exclude>net.sourceforge.pmd.lang.java.types.internal</exclude>
                             <exclude>net.sourceforge.pmd.lang.java.types.ast.internal</exclude>
+                            <!-- Template, TemplateExpression, TemplateFragment have been Experimental and
+                                 now removed with 7.10.0. These were part of String Templates, introduced with Java 21/22 Preview
+                                 but removed with Java 23.
+                             -->
+                            <exclude>net.sourceforge.pmd.lang.java.ast.JavaVisitor#visit(net.sourceforge.pmd.lang.java.ast.ASTTemplate,java.lang.Object)</exclude>
+                            <exclude>net.sourceforge.pmd.lang.java.ast.JavaVisitor#visit(net.sourceforge.pmd.lang.java.ast.ASTTemplateExpression,java.lang.Object)</exclude>
+                            <exclude>net.sourceforge.pmd.lang.java.ast.JavaVisitor#visit(net.sourceforge.pmd.lang.java.ast.ASTTemplateFragment,java.lang.Object)</exclude>
                         </excludes>
                     </parameter>
                 </configuration>
