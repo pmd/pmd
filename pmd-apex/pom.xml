@@ -96,12 +96,12 @@
         <dependency>
             <groupId>io.github.apex-dev-tools</groupId>
             <artifactId>apex-parser</artifactId>
-            <version>4.3.0</version>
+            <version>4.4.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.summit</groupId>
             <artifactId>summit-ast</artifactId>
-            <version>2.3.0</version>
+            <version>2.4.0</version>
         </dependency>
         <dependency>
             <groupId>io.github.apex-dev-tools</groupId>
