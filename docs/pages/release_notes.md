@@ -25,6 +25,12 @@ safe to use anymore. While the key itself is not compromised as far as we know, 
 new key, just to be safe. As until now (January 2025) we are not aware, that the key actually has been misused.
 The previous releases of PMD in Maven Central can still be considered untampered, as Maven Central is read-only.
 
+This unexpected issue was discovered while checking [Reproducible Builds](https://reproducible-builds.org/) by a
+third party.
+
+The compromised passphrase is tracked as [GHSA-88m4-h43f-wx84](https://github.com/pmd/pmd/security/advisories/GHSA-88m4-h43f-wx84)
+and [CVE-2025-23215](https://www.cve.org/CVERecord?id=CVE-2025-23215).
+
 ### 🐛 Fixed Issues
 
 ### 🚨 API Changes
