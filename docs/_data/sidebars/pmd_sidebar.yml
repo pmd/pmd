@@ -499,6 +499,9 @@ entries:
     - title: Ruby
       url: /pmd_languages_ruby.html
       output: web, pdf
+    - title: Rust
+      url: /pmd_languages_rust.html
+      output: web, pdf
     - title: Scala
       url: /pmd_languages_scala.html
       output: web, pdf
@@ -520,18 +523,48 @@ entries:
   - title: Developer Documentation
     output: web, pdf
     folderitems:
-    - title: Developer resources
-      url: /pmd_devdocs_development.html
+    - title: null
       output: web, pdf
-    - title: Building PMD from source
-      url: /pmd_devdocs_building.html
+      subfolders:
+      - title: Contributing
+        output: web, pdf
+        subfolderitems:
+        - title: Contributing
+          url: /pmd_devdocs_contributing.html
+          output: web, pdf
+        - title: Developer resources
+          url: /pmd_devdocs_development.html
+          output: web, pdf
+        - title: Newcomers' Guide
+          url: /pmd_devdocs_contributing_newcomers_guide.html
+          output: web, pdf
+        - title: Writing documentation
+          url: /pmd_devdocs_writing_documentation.html
+          output: web, pdf
+    - title: null
       output: web, pdf
-    - title: Contributing
-      external_url: https://github.com/pmd/pmd/blob/main/CONTRIBUTING.md
-      output: web, pdf
-    - title: Writing documentation
-      url: /pmd_devdocs_writing_documentation.html
-      output: web, pdf
+      subfolders:
+      - title: Building PMD
+        output: web, pdf
+        subfolderitems:
+        - title: General Info
+          url: /pmd_devdocs_building_general.html
+          output: web, pdf
+        - title: Building PMD from source
+          url: /pmd_devdocs_building.html
+          output: web, pdf
+        - title: Building PMD with IntelliJ IDEA
+          url: /pmd_devdocs_building_intellij.html
+          output: web, pdf
+        - title: Building PMD with Eclipse IDE
+          url: /pmd_devdocs_building_eclipse.html
+          output: web, pdf
+        - title: Building PMD with VS Code IDE
+          url: /pmd_devdocs_building_vscode.html
+          output: web, pdf
+        - title: Building PMD with Netbeans IDE
+          url: /pmd_devdocs_building_netbeans.html
+          output: web, pdf
     - title: Roadmap
       url: /pmd_devdocs_roadmap.html
       output: web, pdf

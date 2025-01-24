@@ -335,6 +335,7 @@ to be "debug".
 * [PL/SQL](pmd_languages_plsql.html)
 * Python
 * Ruby
+* [Rust](pmd_languages_rust.html)
 * [Salesforce.com Apex](pmd_languages_apex.html)
 * Scala
 * Swift

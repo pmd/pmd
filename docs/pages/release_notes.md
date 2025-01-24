@@ -14,6 +14,23 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+### New GPG Release Signing Key
+
+Since January 2025, we switched the GPG Key we use for signing releases in Maven Central to be
+[A0B5CA1A4E086838](https://keyserver.ubuntu.com/pks/lookup?search=0x2EFA55D0785C31F956F2F87EA0B5CA1A4E086838&fingerprint=on&op=index).
+The full fingerprint is `2EFA 55D0 785C 31F9 56F2  F87E A0B5 CA1A 4E08 6838`.
+
+This step was necessary, as the passphrase of the old key has been compromised and therefore the key is not
+safe to use anymore. While the key itself is not compromised as far as we know, we still decided to generate a
+new key, just to be safe. As until now (January 2025) we are not aware, that the key actually has been misused.
+The previous releases of PMD in Maven Central can still be considered untampered, as Maven Central is read-only.
+
+This unexpected issue was discovered while checking [Reproducible Builds](https://reproducible-builds.org/) by a
+third party.
+
+The compromised passphrase is tracked as [GHSA-88m4-h43f-wx84](https://github.com/pmd/pmd/security/advisories/GHSA-88m4-h43f-wx84)
+and [CVE-2025-23215](https://www.cve.org/CVERecord?id=CVE-2025-23215).
+
 ### 🌟 New and changed rules
 
 #### New Rules
@@ -23,23 +40,15 @@ This is a {{ site.pmd.release_type }} release.
   and prevents getting compiler errors when e.g. new enum constants are added without extending the switch.
 
 ### 🐛 Fixed Issues
-* cli
-  * [#5399](https://github.com/pmd/pmd/issues/5399): \[cli] Windows: PMD fails to start with special characters in path names
-  * [#5401](https://github.com/pmd/pmd/issues/5401): \[cli] Windows: Console output doesn't use unicode
-* java
-  * [#5096](https://github.com/pmd/pmd/issues/5096): \[java] StackOverflowError with recursively bound type variable
-* java-bestpractices
-  * [#4861](https://github.com/pmd/pmd/issues/4861): \[java] UnusedPrivateMethod - false positive with static methods in core JDK classes
+* apex
+  * [#5388](https://github.com/pmd/pmd/issues/5388): \[apex] Parse error with time literal in SOQL query
+  * [#5456](https://github.com/pmd/pmd/issues/5456): \[apex] Issue with java dependency apex-parser-4.3.1 but apex-parser-4.3.0 works
+* documentation
+  * [#2492](https://github.com/pmd/pmd/issues/2492): \[doc] Promote wiki pages to standard doc pages
 * java-performance
   * [#5311](https://github.com/pmd/pmd/issues/5311): \[java] TooFewBranchesForSwitch false positive for exhaustive switches over enums without default case
-* java-documentation
-  * [#2996](https://github.com/pmd/pmd/issues/2996): \[java] CommentSize rule violation is not suppressed at method level
 
 ### 🚨 API Changes
-
-#### Experimental API
-
-* pmd-core: {%jdoc !!core::reporting.RuleContext#addViolationWithPosition(core::reporting.Reportable,core::lang.ast.AstInfo,core::lang.document.FileLocation,java.lang.String,java.lang.Object...) %}
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
