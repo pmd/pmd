@@ -1554,7 +1554,38 @@
             
 
                 
-                <li><a href="pmd_devdocs_development.html">Developer resources</a></li>
+                
+                <li class="subfolders">
+                    <a href="#">Contributing</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_contributing.html">Contributing</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_development.html">Developer resources</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_contributing_newcomers_guide.html">Newcomers' Guide</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_writing_documentation.html">Writing documentation</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
                 
 
             
@@ -1566,31 +1597,50 @@
             
 
                 
-                <li><a href="pmd_devdocs_building.html">Building PMD from source</a></li>
                 
-
-            
-
-            
-            
-            
-
-            
-
+                <li class="subfolders">
+                    <a href="#">Building PMD</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_building_general.html">General Info</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_building.html">Building PMD from source</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_building_intellij.html">Building PMD with IntelliJ IDEA</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_building_eclipse.html">Building PMD with Eclipse IDE</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_building_vscode.html">Building PMD with VS Code IDE</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_building_netbeans.html">Building PMD with Netbeans IDE</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
                 
-                <li><a href="https://github.com/pmd/pmd/blob/main/CONTRIBUTING.md" target="_blank">Contributing</a></li>
-                
-
-            
-
-            
-            
-            
-
-            
-
-                
-                <li><a href="pmd_devdocs_writing_documentation.html">Writing documentation</a></li>
                 
 
             
@@ -1941,7 +1991,11 @@ or <a href="https://adoptium.net">Adoptium</a>.</p>
   </li>
 </ul>
 
-<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> For executing the Designer (<code class="language-plaintext highlighter-rouge">pmd designer</code>) using <a href="https://jdk.java.net">OpenJDK</a> or Java 11+, you need additionally <a href="https://gluonhq.com/products/javafx/">JavaFX</a>. Download it, extract it and set the environment variable JAVAFX_HOME pointing at that directory.</div>
+<div class="alert alert-info" role="alert">
+  <p><i class="fas fa-info-circle"></i>
+<strong>Note:</strong>
+For executing the Designer (<code class="language-plaintext highlighter-rouge">pmd designer</code>) using <a href="https://jdk.java.net">OpenJDK</a> or Java 11+, you need additionally <a href="https://gluonhq.com/products/javafx/">JavaFX</a>. Download it, extract it and set the environment variable JAVAFX_HOME pointing at that directory.</p>
+</div>
 
 <h3 id="installation">Installation</h3>
 
@@ -1990,10 +2044,14 @@ modifiers on Java sources with <code class="language-plaintext highlighter-rouge
 sources. Alternatively You can use the <code class="language-plaintext highlighter-rouge">-d</code> or <code class="language-plaintext highlighter-rouge">--dir</code> flag, which is equivalent.</li>
 </ul>
 
-<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> At the moment the formerly provided rulesets (eg <code class="language-plaintext highlighter-rouge">rulesets/java/basic.xml</code>) are deprecated,
+<div class="alert alert-info" role="alert">
+  <p><i class="fas fa-info-circle"></i>
+<strong>Note:</strong>
+At the moment the formerly provided rulesets (eg <code class="language-plaintext highlighter-rouge">rulesets/java/basic.xml</code>) are deprecated,
    though you can still use them. PMD includes a quickstart ruleset for some languages (currently, Java)
    as base configurations, which you can reference as e.g. <code class="language-plaintext highlighter-rouge">rulesets/java/quickstart.xml</code>. You’re strongly
-   encouraged to <a href="pmd_userdocs_making_rulesets.html">create your own ruleset</a> from the start though.</div>
+   encouraged to <a href="pmd_userdocs_making_rulesets.html">create your own ruleset</a> from the start though.</p>
+</div>
 
 <p>Additionally, the following options, are specified most of the time even though they’re not required:</p>
 <ul>
@@ -2046,8 +2104,12 @@ require it to function properly.</li>
 
 <h2 id="running-cpd-via-command-line">Running CPD via command line</h2>
 
-<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> CPD supports Java, JSP, C, C++, C#, Fortran and PHP source code, among other languages.
-            For the full list, see <a href="pmd_userdocs_cpd.html#supported-languages">Supported Languages</a>.</div>
+<div class="alert alert-info" role="alert">
+  <p><i class="fas fa-info-circle"></i>
+<strong>Note:</strong>
+CPD supports Java, JSP, C, C++, C#, Fortran and PHP source code, among other languages.
+            For the full list, see <a href="pmd_userdocs_cpd.html#supported-languages">Supported Languages</a>.</p>
+</div>
 
 <p>Like for PMD, CPD is started on Unix by <code class="language-plaintext highlighter-rouge">pmd cpd</code> and on Windows by <code class="language-plaintext highlighter-rouge">pmd.bat cpd</code>, and it requires one option and a list of sources:</p>
 
@@ -2151,7 +2213,7 @@ assertEquals(Boolean.TYPE, expressions.get(index++).getType());
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jan 20, 2025 <br />
+             Site last generated: Jan 24, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

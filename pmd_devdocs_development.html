@@ -1554,7 +1554,38 @@
             
 
                 
-                <li class="active"><a href="pmd_devdocs_development.html">Developer resources</a></li>
+                
+                <li class="subfolders">
+                    <a href="#">Contributing</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_contributing.html">Contributing</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li class="active"><a href="pmd_devdocs_development.html">Developer resources</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_contributing_newcomers_guide.html">Newcomers' Guide</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_writing_documentation.html">Writing documentation</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
                 
 
             
@@ -1566,31 +1597,50 @@
             
 
                 
-                <li><a href="pmd_devdocs_building.html">Building PMD from source</a></li>
                 
-
-            
-
-            
-            
-            
-
-            
-
+                <li class="subfolders">
+                    <a href="#">Building PMD</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_building_general.html">General Info</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_building.html">Building PMD from source</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_building_intellij.html">Building PMD with IntelliJ IDEA</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_building_eclipse.html">Building PMD with Eclipse IDE</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_building_vscode.html">Building PMD with VS Code IDE</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_building_netbeans.html">Building PMD with Netbeans IDE</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
                 
-                <li><a href="https://github.com/pmd/pmd/blob/main/CONTRIBUTING.md" target="_blank">Contributing</a></li>
-                
-
-            
-
-            
-            
-            
-
-            
-
-                
-                <li><a href="pmd_devdocs_writing_documentation.html">Writing documentation</a></li>
                 
 
             
@@ -1894,7 +1944,7 @@
             » Developer Resources   
             <a
                 target="_blank"
-                href="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/devdocs/development.md"
+                href="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/devdocs/contributing/development.md"
                 class="float-right"
                 role="button"
                 ><i class="fab fa-github fa-lg"></i> Edit on GitHub</a
@@ -1911,7 +1961,7 @@
    <h1 class="post-title-main">Developer Resources</h1>
 </div>
 
-<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/devdocs/development.md">
+<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/devdocs/contributing/development.md">
 
    
     <details id="inline-toc-details">
@@ -1921,14 +1971,16 @@
 
   <h2 id="source-code">Source Code</h2>
 
-<p>The complete source code can be found on Github:</p>
+<p>The complete source code can be found on GitHub:</p>
 
 <ul>
   <li><a href="https://github.com/pmd/pmd">github.com/pmd/pmd</a> - main PMD repository. Includes all the code to support all languages, including this documentation.</li>
   <li><a href="https://github.com/pmd/pmd.github.io">github.com/pmd/pmd.github.io</a> - Contains the landing page <a href="https://pmd.github.io">https://pmd.github.io</a></li>
   <li><a href="https://github.com/pmd/build-tools">github.com/pmd/build-tools</a> - Contains the checkstyle rules we use</li>
+  <li><a href="https://github.com/pmd/pmd-designer">github.com/pmd/pmd-designer</a> - PMD Rule Designer</li>
+  <li><a href="https://github.com/pmd/pmd-regression-tester">github.com/pmd/pmd-regression-tester</a> - PMD Regression Tester</li>
   <li><a href="https://github.com/pmd/pmd-eclipse-plugin">github.com/pmd/pmd-eclipse-plugin</a> - The PMD eclipse plugin</li>
-  <li><a href="https://github.com/pmd">github.com/pmd</a> - PMD Organization at github. There are a couple of more repositories</li>
+  <li><a href="https://github.com/pmd">github.com/pmd</a> - PMD Organization at GitHub. There are a couple of more repositories</li>
 </ul>
 
 <h2 id="continuous-integration">Continuous Integration</h2>
@@ -1947,13 +1999,6 @@ every push. Each pull request is built as well.</p>
 <p>A <a href="http://docs.pmd-code.org/snapshot/">snapshot</a> of the web site for the new version is generated by the ci job as well.</p>
 
 <p>The latest release documentation is always available under <a href="https://docs.pmd-code.org/latest/">docs.pmd-code.org/latest</a></p>
-
-<h2 id="contributing">Contributing</h2>
-
-<p>First off, thanks for taking the time to contribute!</p>
-
-<p>Please have a look at <a href="https://github.com/pmd/pmd/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> and
-<a href="https://github.com/pmd/pmd/blob/main/BUILDING.md">BUILDING.md</a>.</p>
 
 
     <div class="tags">
@@ -1980,7 +2025,7 @@ every push. Each pull request is built as well.</p>
         github and create a PR:
         <a
             target="_blank"
-            href="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/devdocs/development.md"
+            href="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/devdocs/contributing/development.md"
             role="button"
             ><i class="fab fa-github fa-lg"></i> Edit on GitHub</a
         >
@@ -1992,7 +2037,7 @@ every push. Each pull request is built as well.</p>
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            March 2024<br /> Site last generated: Jan 20, 2025 <br />
+            January 2025 (7.10.0)<br /> Site last generated: Jan 24, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

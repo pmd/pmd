@@ -1554,7 +1554,38 @@
             
 
                 
-                <li><a href="pmd_devdocs_development.html">Developer resources</a></li>
+                
+                <li class="subfolders">
+                    <a href="#">Contributing</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_contributing.html">Contributing</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_development.html">Developer resources</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_contributing_newcomers_guide.html">Newcomers' Guide</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_writing_documentation.html">Writing documentation</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
                 
 
             
@@ -1566,31 +1597,50 @@
             
 
                 
-                <li class="active"><a href="pmd_devdocs_building.html">Building PMD from source</a></li>
                 
-
-            
-
-            
-            
-            
-
-            
-
+                <li class="subfolders">
+                    <a href="#">Building PMD</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_building_general.html">General Info</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li class="active"><a href="pmd_devdocs_building.html">Building PMD from source</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_building_intellij.html">Building PMD with IntelliJ IDEA</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_building_eclipse.html">Building PMD with Eclipse IDE</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_building_vscode.html">Building PMD with VS Code IDE</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_building_netbeans.html">Building PMD with Netbeans IDE</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
                 
-                <li><a href="https://github.com/pmd/pmd/blob/main/CONTRIBUTING.md" target="_blank">Contributing</a></li>
-                
-
-            
-
-            
-            
-            
-
-            
-
-                
-                <li><a href="pmd_devdocs_writing_documentation.html">Writing documentation</a></li>
                 
 
             
@@ -1894,7 +1944,7 @@
             » Building PMD from source   
             <a
                 target="_blank"
-                href="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/devdocs/building.md"
+                href="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/devdocs/building/building_from_source.md"
                 class="float-right"
                 role="button"
                 ><i class="fab fa-github fa-lg"></i> Edit on GitHub</a
@@ -1911,7 +1961,7 @@
    <h1 class="post-title-main">Building PMD from source</h1>
 </div>
 
-<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/devdocs/building.md">
+<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/devdocs/building/building_from_source.md">
 
    
     <details id="inline-toc-details">
@@ -1919,17 +1969,17 @@
         <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
     </details>
 
-  <!-- Gives visibility -->
-<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> TODO add IDE specific indications</div>
-
-<h1 id="compiling-pmd">Compiling PMD</h1>
+  <h1 id="compiling-pmd">Compiling PMD</h1>
 
 <ul>
   <li>JDK 11 or higher</li>
 </ul>
 
-<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> While Java 11 is required for building, running PMD only requires Java 7
-(or Java 8 for Apex, JavaScript, Scala, Visualforce, and the Designer).</div>
+<div class="alert alert-info" role="alert">
+  <p><i class="fas fa-info-circle"></i>
+<strong>Note:</strong>
+While Java 11 is required for building, running PMD only requires Java 8.</p>
+</div>
 
 <p>You’ll need to either check out the source code or download the latest source release. Assuming you’ve got the latest source release, unzip it to a directory:</p>
 
@@ -1960,36 +2010,58 @@ total 5716
 ...
 ... after a few minutes ...
 [INFO] ------------------------------------------------------------------------
-[INFO] Reactor Summary:
-[INFO]
-[INFO] PMD ................................................ SUCCESS [  3.061 s]
-[INFO] PMD Core ........................................... SUCCESS [ 25.675 s]
-[INFO] PMD Test Framework ................................. SUCCESS [  0.457 s]
-[INFO] PMD C++ ............................................ SUCCESS [  1.893 s]
-[INFO] PMD C# ............................................. SUCCESS [  0.619 s]
-[INFO] PMD Fortran ........................................ SUCCESS [  0.609 s]
-[INFO] PMD Go ............................................. SUCCESS [  0.103 s]
-[INFO] PMD Java ........................................... SUCCESS [01:08 min]
-[INFO] PMD JavaScript ..................................... SUCCESS [  3.279 s]
-[INFO] PMD JSP ............................................ SUCCESS [  3.944 s]
-[INFO] PMD Matlab ......................................... SUCCESS [  1.342 s]
-[INFO] PMD Objective-C .................................... SUCCESS [  2.281 s]
-[INFO] PMD PHP ............................................ SUCCESS [  0.536 s]
-[INFO] PMD PL/SQL ......................................... SUCCESS [ 10.973 s]
-[INFO] PMD Python ......................................... SUCCESS [  1.758 s]
-[INFO] PMD Ruby ........................................... SUCCESS [  0.438 s]
-[INFO] PMD Velocity ....................................... SUCCESS [  3.941 s]
-[INFO] PMD XML and XSL .................................... SUCCESS [  2.174 s]
-[INFO] PMD Scala .......................................... SUCCESS [ 11.901 s]
-[INFO] PMD Distribution Packages .......................... SUCCESS [ 11.366 s]
-[INFO] PMD Java 8 Integration ............................. SUCCESS [  0.560 s]
+[INFO] Reactor Summary for PMD 7.10.0-SNAPSHOT:
+[INFO] 
+[INFO] PMD ................................................ SUCCESS [ 31.653 s]
+[INFO] PMD Core ........................................... SUCCESS [01:10 min]
+[INFO] PMD Test Schema .................................... SUCCESS [  5.408 s]
+[INFO] PMD Ant Integration ................................ SUCCESS [  9.623 s]
+[INFO] PMD Test Framework ................................. SUCCESS [  7.571 s]
+[INFO] PMD language module testing utilities .............. SUCCESS [ 30.390 s]
+[INFO] PMD Apex ........................................... SUCCESS [ 56.152 s]
+[INFO] PMD Coco ........................................... SUCCESS [01:18 min]
+[INFO] PMD C++ ............................................ SUCCESS [ 11.274 s]
+[INFO] PMD C# ............................................. SUCCESS [ 16.891 s]
+[INFO] PMD Dart ........................................... SUCCESS [  9.317 s]
+[INFO] PMD Fortran ........................................ SUCCESS [  6.105 s]
+[INFO] PMD Gherkin ........................................ SUCCESS [ 16.105 s]
+[INFO] PMD Go ............................................. SUCCESS [  8.768 s]
+[INFO] PMD Groovy ......................................... SUCCESS [  9.565 s]
+[INFO] PMD HTML ........................................... SUCCESS [  8.741 s]
+[INFO] PMD Java ........................................... SUCCESS [03:17 min]
+[INFO] PMD JavaScript ..................................... SUCCESS [ 25.659 s]
+[INFO] PMD JSP ............................................ SUCCESS [ 17.373 s]
+[INFO] PMD Julia .......................................... SUCCESS [ 26.660 s]
+[INFO] PMD Kotlin ......................................... SUCCESS [ 41.748 s]
+[INFO] PMD Lua ............................................ SUCCESS [ 18.991 s]
+[INFO] PMD Matlab ......................................... SUCCESS [ 14.886 s]
+[INFO] PMD Modelica ....................................... SUCCESS [ 30.926 s]
+[INFO] PMD Objective-C .................................... SUCCESS [  9.005 s]
+[INFO] PMD Perl ........................................... SUCCESS [  5.979 s]
+[INFO] PMD PHP ............................................ SUCCESS [  6.914 s]
+[INFO] PMD PL/SQL ......................................... SUCCESS [02:14 min]
+[INFO] PMD Python ......................................... SUCCESS [  6.971 s]
+[INFO] PMD Ruby ........................................... SUCCESS [  5.493 s]
+[INFO] PMD Rust ........................................... SUCCESS [  7.290 s]
+[INFO] PMD Scala Common Source and Settings ............... SUCCESS [  1.874 s]
+[INFO] PMD Scala for Scala 2.13 ........................... SUCCESS [ 24.269 s]
+[INFO] PMD Swift .......................................... SUCCESS [ 23.196 s]
+[INFO] PMD TSql ........................................... SUCCESS [  7.145 s]
+[INFO] PMD Visualforce .................................... SUCCESS [ 12.353 s]
+[INFO] PMD Velocity Template Language (VTL) ............... SUCCESS [ 10.073 s]
+[INFO] PMD XML and XSL .................................... SUCCESS [  7.855 s]
+[INFO] PMD Languages Dependencies ......................... SUCCESS [  2.878 s]
+[INFO] PMD Documentation Generator (internal) ............. SUCCESS [ 10.902 s]
+[INFO] PMD Scala for Scala 2.12 ........................... SUCCESS [ 21.131 s]
+[INFO] PMD CLI ............................................ SUCCESS [ 11.246 s]
+[INFO] PMD Distribution Packages .......................... SUCCESS [ 11.457 s]
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time: 02:36 min
-[INFO] Finished at: 2015-11-14T17:46:06+01:00
-[INFO] Final Memory: 63M/765M
+[INFO] Total time:  17:52 min
+[INFO] Finished at: 2025-01-09T15:49:59+01:00
 [INFO] ------------------------------------------------------------------------
+
 [tom@hal pmd-src-7.10.0-SNAPSHOT]$
 </code></pre></div></div>
 
@@ -2028,7 +2100,7 @@ They’re also in the jar file that’s included with both the source and binary
         github and create a PR:
         <a
             target="_blank"
-            href="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/devdocs/building.md"
+            href="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/devdocs/building/building_from_source.md"
             role="button"
             ><i class="fab fa-github fa-lg"></i> Edit on GitHub</a
         >
@@ -2039,7 +2111,8 @@ They’re also in the jar file that’s included with both the source and binary
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jan 20, 2025 <br />
+            <span>Page last updated:</span>
+            January 2025 (7.10.0)<br /> Site last generated: Jan 24, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
