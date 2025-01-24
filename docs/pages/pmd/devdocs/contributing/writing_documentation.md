@@ -1,7 +1,7 @@
 ---
 title: Writing documentation
 tags: [devdocs]
-last_update: August 2017
+last_updated: January 2025 (7.10.0)
 permalink: pmd_devdocs_writing_documentation.html
 keywords: documentation, jekyll, markdown
 author: Andreas Dangel <andreas.dangel@adangel.org>
@@ -134,7 +134,7 @@ is separated by 3 dashes (`---`). Example:
 
     ---
     title: Writing Documentation
-    last_update: August 2017
+    last_updated: January 2025 (7.10.0)
     permalink: pmd_devdocs_writing_documentation.html
     ---
 

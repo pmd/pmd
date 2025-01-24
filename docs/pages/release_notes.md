@@ -35,6 +35,8 @@ and [CVE-2025-23215](https://www.cve.org/CVERecord?id=CVE-2025-23215).
 * apex
   * [#5388](https://github.com/pmd/pmd/issues/5388): \[apex] Parse error with time literal in SOQL query
   * [#5456](https://github.com/pmd/pmd/issues/5456): \[apex] Issue with java dependency apex-parser-4.3.1 but apex-parser-4.3.0 works
+* documentation
+  * [#2492](https://github.com/pmd/pmd/issues/2492): \[doc] Promote wiki pages to standard doc pages
 
 ### 🚨 API Changes
 
