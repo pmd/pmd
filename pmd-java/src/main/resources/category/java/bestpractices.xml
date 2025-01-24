@@ -543,18 +543,20 @@ return a;
 
     <rule name="ExhaustiveSwitchHasDefault"
           language="java"
-          since="7.9.0"
+          since="7.10.0"
           message="The switch block is exhaustive even without the default case"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#exhaustiveswitchhasdefault">
         <description>
 When switching over an enum or sealed class, the compiler will ensure that all possible cases are covered.
-If a case is missed, this will result in a compilation error. But if a default case is added, this compiler
+If a case is missing, this will result in a compilation error. But if a default case is added, this compiler
 check is not performed anymore, leading to difficulties in noticing bugs at runtime.
 
 Not using a default case makes sure, a compiler error is introduced whenever a new enum constant or a
 new subclass to the sealed class hierarchy is added. We will discover this problem at compile time
 rather than at runtime (if at all).
+
+Note: The fix it not necessarily just removing the default case. Maybe a case is missing which needs to be implemented.
         </description>
         <priority>3</priority>
         <properties>
