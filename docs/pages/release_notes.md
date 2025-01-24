@@ -14,7 +14,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
-### New GPG Release Signing Key
+#### New GPG Release Signing Key
 
 Since January 2025, we switched the GPG Key we use for signing releases in Maven Central to be
 [A0B5CA1A4E086838](https://keyserver.ubuntu.com/pks/lookup?search=0x2EFA55D0785C31F956F2F87EA0B5CA1A4E086838&fingerprint=on&op=index).
@@ -30,6 +30,11 @@ third party.
 
 The compromised passphrase is tracked as [GHSA-88m4-h43f-wx84](https://github.com/pmd/pmd/security/advisories/GHSA-88m4-h43f-wx84)
 and [CVE-2025-23215](https://www.cve.org/CVERecord?id=CVE-2025-23215).
+
+#### Updated PMD Designer
+
+This PMD release ships a new version of the pmd-designer.
+For the changes, see [PMD Designer Changelog (7.10.0)](https://github.com/pmd/pmd-designer/releases/tag/7.10.0).
 
 ### 🐛 Fixed Issues
 * apex
