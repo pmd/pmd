@@ -21,6 +21,7 @@ import scala.meta.inputs.Input;
 import scala.meta.inputs.Position;
 import scala.meta.internal.tokenizers.ScalametaTokenizer;
 import scala.meta.tokenizers.TokenizeException;
+import scala.meta.tokenizers.TokenizerOptions;
 import scala.meta.tokens.Token;
 
 /**
@@ -49,7 +50,7 @@ public class ScalaCpdLexer implements CpdLexer {
 
             // create the input file for scala
             Input.VirtualFile vf = new Input.VirtualFile(document.getFileId().getOriginalPath(), fullCode);
-            ScalametaTokenizer tokenizer = new ScalametaTokenizer(vf, dialect);
+            ScalametaTokenizer tokenizer = new ScalametaTokenizer(vf, dialect, TokenizerOptions.implicitTokenizerOptions());
 
             // tokenize with a filter
             scala.meta.tokens.Tokens tokens = tokenizer.tokenize();
