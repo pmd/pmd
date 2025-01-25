@@ -4,11 +4,8 @@
 
 package net.sourceforge.pmd.lang.scala.cpd;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.scala.ScalaLanguageModule;
 import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 
@@ -29,8 +26,10 @@ class ScalaCpdLexerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    void tokenizeFailTest() {
-        assertThrows(LexException.class, () -> doTest("unlexable_sample"));
+    void unclosedLiteral() {
+        // note: this failed before PMD 7.10.0 with a LexException, but now the string literal is just
+        // expanded to the end of the line
+        doTest("unclosed_literal");
     }
 
     @Test

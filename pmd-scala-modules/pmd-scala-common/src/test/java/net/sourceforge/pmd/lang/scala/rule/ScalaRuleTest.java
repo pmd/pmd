@@ -35,7 +35,7 @@ class ScalaRuleTest extends BaseScalaTest {
         };
         ASTSource root = scala.parseResource(SCALA_TEST);
         rule.apply(root, null);
-        assertEquals(13, visited.get());
+        assertEquals(12, visited.get());
     }
 
     @Test
