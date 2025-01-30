@@ -36,6 +36,14 @@ and [CVE-2025-23215](https://www.cve.org/CVERecord?id=CVE-2025-23215).
 This PMD release ships a new version of the pmd-designer.
 For the changes, see [PMD Designer Changelog (7.10.0)](https://github.com/pmd/pmd-designer/releases/tag/7.10.0).
 
+### 🌟 New and changed rules
+
+#### New Rules
+
+* The new Java rule {%rule java/bestpractices/ExhaustiveSwitchHasDefault %} finds switch statements and
+  expressions, that cover already all cases but still have a default case. This default case is unnecessary
+  and prevents getting compiler errors when e.g. new enum constants are added without extending the switch.
+
 ### 🐛 Fixed Issues
 * apex
   * [#5388](https://github.com/pmd/pmd/issues/5388): \[apex] Parse error with time literal in SOQL query
@@ -44,11 +52,14 @@ For the changes, see [PMD Designer Changelog (7.10.0)](https://github.com/pmd/pm
   * [#3158](https://github.com/pmd/pmd/issues/3158): \[apex] ApexSuggestUsingNamedCred false positive with Named Credential merge fields
 * documentation
   * [#2492](https://github.com/pmd/pmd/issues/2492): \[doc] Promote wiki pages to standard doc pages
+* java-performance
+  * [#5311](https://github.com/pmd/pmd/issues/5311): \[java] TooFewBranchesForSwitch false positive for exhaustive switches over enums without default case
 
 ### 🚨 API Changes
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#5412](https://github.com/pmd/pmd/pull/5412): \[java] Support exhaustive switches - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5488](https://github.com/pmd/pmd/pull/5488): \[apex] Fix #3158: Recognize Named Credentials merge fields in ApexSuggestUsingNamedCredRule - [William Brockhus](https://github.com/YodaDaCoda) (@YodaDaCoda)
 
 ### 📦 Dependency updates
