@@ -1,4 +1,7 @@
 /**
+ * Removed support for String Templates, introduced in Java 21 / 22 Preview
+ * Andreas Dangel 01/2025
+ *====================================================================
  * Support "JEP 455: Primitive Types in Patterns, instanceof, and switch (Preview)" (Java 23)
  *     Changes in InstanceOfExpression
  * Support "JEP 476: Module Import Declarations (Preview)" (Java 23)
@@ -614,50 +617,6 @@ PARSER_END(JavaParserImpl)
 TOKEN_MGR_DECLS :
 {
     protected List<JavaComment> comments = new ArrayList<JavaComment>();
-    private Deque<Boolean> savedTemplateKind = new ArrayDeque<Boolean>();
-    private Deque<Integer> braceDepthInTemplate = new ArrayDeque<Integer>();
-    private int braceDepthCurrentTemplate;
-    private boolean templateKind;
-
-    private static final java.util.regex.Pattern TEXT_BLOCK_TEMPLATE_END_PATTERN =
-        java.util.regex.Pattern.compile("^}[^\"]*\"\"\"");
-    private static final java.util.regex.Pattern STRING_TEMPLATE_MID_OR_END_PATTERN =
-        java.util.regex.Pattern.compile("^}(?:[^\"\\\\\n\r]|\\\\(?:[ntbrfs\\\\'\"]|[0-7][0-7]?|[0-3][0-7][0-7]))*(\\{|\")");
-
-    private void pushBrace() {
-        braceDepthCurrentTemplate++;
-    }
-    private void pushTemplate(boolean isTextBlockTemplate) {
-        braceDepthInTemplate.push(braceDepthCurrentTemplate);
-        savedTemplateKind.push(templateKind);
-        templateKind = isTextBlockTemplate;
-        braceDepthCurrentTemplate = 1;
-    }
-    private boolean isInTemplate() {
-        return braceDepthCurrentTemplate > 0;
-    }
-    private void popBrace() {
-        if (!isInTemplate())
-            return;
-        if (--braceDepthCurrentTemplate == 0) {
-            // this brace ends the template
-            popTemplate();
-        }
-    }
-    private void popTemplate() {
-        boolean isInTextBlockTemplate = templateKind;
-        if (!braceDepthInTemplate.isEmpty()) {
-            braceDepthCurrentTemplate = braceDepthInTemplate.pop();
-            templateKind = savedTemplateKind.pop();
-            if (isInTextBlockTemplate) {
-                SwitchTo(JavaTokenKinds.IN_TEXT_BLOCK_LITERAL);
-            } else {
-                SwitchTo(JavaTokenKinds.IN_STRING_TEMPLATE);
-            }
-        } else {
-            SwitchTo(JavaTokenKinds.DEFAULT);
-        }
-    }
     private net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken rereadTokenAs(int kind, int length) {
         input_stream.backup(lengthOfMatch);
         try {
@@ -669,14 +628,6 @@ TOKEN_MGR_DECLS :
         }
         jjmatchedKind = kind;
         return jjFillToken();
-    }
-
-    private net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken handleBlock() {
-       net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken matchedToken = rereadTokenAs(JavaTokenKinds.RBRACE, 1);
-       if (!"}".equals(input_stream.getTokenImage())) {
-        throw new IllegalStateException("Expected '}'");
-       }
-       return matchedToken;
     }
 }
 
@@ -859,8 +810,6 @@ TOKEN :
         )
   >
 | < #TEXT_BLOCK_CHARACTER: ~["\\"] | <STRING_ESCAPE> | ("\\")? <LINE_TERMINATOR> >
-| < #STRING_FRAGMENT: (<STRING_CHARACTER>)* >
-| < STRING_TEMPLATE_BEGIN: "\"" <STRING_FRAGMENT> "\\{" > { pushTemplate(false); }
 }
 
 /* TEXT BLOCKS */
@@ -874,20 +823,12 @@ MORE :
 <IN_TEXT_BLOCK_LITERAL>
 TOKEN : {
   <TEXT_BLOCK_LITERAL: "\"\"\"" > : DEFAULT
-| <TEXT_BLOCK_TEMPLATE_MID: "\\{"> { pushTemplate(true); }: DEFAULT
 }
 
 <IN_TEXT_BLOCK_LITERAL>
 MORE :
 {
   < <TEXT_BLOCK_CHARACTER> >
-}
-
-<IN_STRING_TEMPLATE>
-TOKEN:
-{
-    < STRING_TEMPLATE_END: <STRING_FRAGMENT> "\""  > : DEFAULT
-|   < STRING_TEMPLATE_MID: <STRING_FRAGMENT> "\\{" > { pushTemplate(false); } : DEFAULT
 }
 
 /* IDENTIFIERS */
@@ -1027,8 +968,8 @@ TOKEN :
 {
   < LPAREN: "(" >
 | < RPAREN: ")" >
-| < LBRACE: "{" > { pushBrace(); }
-| < RBRACE: "}" > { popBrace(); }
+| < LBRACE: "{" >
+| < RBRACE: "}" >
 | < LBRACKET: "[" >
 | < RBRACKET: "]" >
 | < SEMICOLON: ";" >
@@ -2186,7 +2127,6 @@ void PrimaryStep2() #void:
             // "super" alone is not a valid expression
             ("." MemberSelector() | MethodReference())
         | MemberSelector()
-        | {forceExprContext();} Template() #TemplateExpression(2)
     )
     // catches the case where the ambig name is the start of an array type
     | LOOKAHEAD("@" | "[" "]") {forceTypeContext();} Dims() #ArrayType(2)  (MethodReference() | "." "class" #ClassLiteral(1))
@@ -2289,41 +2229,6 @@ boolean LambdaParameterType() #void :
     LOOKAHEAD( { jdkVersion >= 11 && isKeyword("var") } )
         <IDENTIFIER>    { return true; }
     | FormalParamType() { return false; }
-}
-
-void Template() :
-{}
-{
-      StringTemplate()
-    | TextBlockTemplate()
-    | <STRING_LITERAL> #TemplateFragment
-    | <TEXT_BLOCK_LITERAL> #TemplateFragment
-
-}
-
-void StringTemplate() #void :
-{}
-{
-        <STRING_TEMPLATE_BEGIN>  #TemplateFragment
-        EmbeddedExpression()
-        (LOOKAHEAD(2) (<RBRACE> <STRING_TEMPLATE_MID> ) #TemplateFragment EmbeddedExpression() )*
-        (<RBRACE> <STRING_TEMPLATE_END>)  #TemplateFragment
-}
-
-void TextBlockTemplate() #void :
-{}
-{
-
-        <TEXT_BLOCK_TEMPLATE_MID>  #TemplateFragment
-        EmbeddedExpression()
-        (LOOKAHEAD(2) ( <RBRACE> <TEXT_BLOCK_TEMPLATE_MID> ) #TemplateFragment EmbeddedExpression() )*
-        (<RBRACE> <TEXT_BLOCK_LITERAL>)  #TemplateFragment
-}
-
-void EmbeddedExpression() #void :
-{}
-{
-    [ Expression() ]
 }
 
 void Literal() #void :
