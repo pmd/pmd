@@ -174,7 +174,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>value as literal negative</description>
+        <description>#3158 value as literal negative</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -200,7 +200,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>value as variable negative</description>
+        <description>#3158 value as variable negative</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
