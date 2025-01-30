@@ -40,6 +40,8 @@ For the changes, see [PMD Designer Changelog (7.10.0)](https://github.com/pmd/pm
 * apex
   * [#5388](https://github.com/pmd/pmd/issues/5388): \[apex] Parse error with time literal in SOQL query
   * [#5456](https://github.com/pmd/pmd/issues/5456): \[apex] Issue with java dependency apex-parser-4.3.1 but apex-parser-4.3.0 works
+* apex-security
+  * [#3158](https://github.com/pmd/pmd/issues/3158): \[apex] ApexSuggestUsingNamedCred false positive with Named Credential merge fields
 * documentation
   * [#2492](https://github.com/pmd/pmd/issues/2492): \[doc] Promote wiki pages to standard doc pages
 
@@ -47,6 +49,7 @@ For the changes, see [PMD Designer Changelog (7.10.0)](https://github.com/pmd/pm
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#5488](https://github.com/pmd/pmd/pull/5488): \[apex] Fix #3158: Recognize Named Credentials merge fields in ApexSuggestUsingNamedCredRule - [William Brockhus](https://github.com/YodaDaCoda) (@YodaDaCoda)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
