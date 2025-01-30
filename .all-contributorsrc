@@ -7911,6 +7911,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "esc-sbarden",
+      "name": "Sven Barden",
+      "avatar_url": "https://avatars.githubusercontent.com/u/108530649?v=4",
+      "profile": "https://github.com/esc-sbarden",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
