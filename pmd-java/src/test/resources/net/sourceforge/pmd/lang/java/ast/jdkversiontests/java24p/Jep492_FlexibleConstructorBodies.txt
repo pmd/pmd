@@ -85,7 +85,7 @@
          |           |  |     +- ArrayTypeDim[@Varargs = false]
          |           |  +- VariableDeclarator[@Initializer = true, @Name = "certBytes"]
          |           |     +- VariableId[@ArrayType = true, @EffectiveVisibility = Visibility.V_LOCAL, @EnumConstant = false, @ExceptionBlockParameter = false, @Field = false, @Final = false, @ForLoopVariable = false, @ForeachVariable = false, @FormalParameter = false, @LambdaParameter = false, @LocalVariable = true, @Name = "certBytes", @PatternBinding = false, @RecordComponent = false, @ResourceDeclaration = false, @Static = false, @TypeInferred = false, @Unnamed = false, @Visibility = Visibility.V_LOCAL]
-         |           |     +- SwitchExpression[@CompileTimeConstant = false, @DefaultCase = true, @EnumSwitch = false, @ExhaustiveEnumSwitch = false, @FallthroughSwitch = false, @ParenthesisDepth = 0, @Parenthesized = false]
+         |           |     +- SwitchExpression[@CompileTimeConstant = false, @DefaultCase = true, @EnumSwitch = false, @Exhaustive = false, @ExhaustiveEnumSwitch = false, @FallthroughSwitch = false, @ParenthesisDepth = 0, @Parenthesized = false]
          |           |        +- VariableAccess[@AccessType = AccessType.READ, @CompileTimeConstant = false, @Image = "publicKey", @Name = "publicKey", @ParenthesisDepth = 0, @Parenthesized = false]
          |           |        +- SwitchArrowBranch[@Default = false]
          |           |        |  +- SwitchLabel[@Default = false, @PatternLabel = true]
