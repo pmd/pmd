@@ -1977,6 +1977,28 @@
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
+<h4 id="-new-java-24-support">🚀 New: Java 24 Support</h4>
+<p>This release of PMD brings support for Java 24. There are no new standard language features,
+but a couple of preview language features:</p>
+
+<ul>
+  <li><a href="https://openjdk.org/jeps/488">JEP 488: Primitive Types in Patterns, instanceof, and switch (Second Preview)</a></li>
+  <li><a href="https://openjdk.org/jeps/492">JEP 492: Flexible Constructor Bodies (Third Preview)</a></li>
+  <li><a href="https://openjdk.org/jeps/494">JEP 494: Module Import Declarations (Second Preview)</a></li>
+  <li><a href="https://openjdk.org/jeps/495">JEP 495: Simple Source Files and Instance Main Methods (Fourth Preview)</a></li>
+</ul>
+
+<p>In order to analyze a project with PMD that uses these preview language features,
+you’ll need to enable it via the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language
+version <code class="language-plaintext highlighter-rouge">24-preview</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS=--enable-preview
+pmd check --use-version java-24-preview ...
+</code></pre></div></div>
+
+<p>Note: Support for Java 22 preview language features have been removed. The version “22-preview”
+are no longer available.</p>
+
 <h4 id="new-gpg-release-signing-key">New GPG Release Signing Key</h4>
 
 <p>Since January 2025, we switched the GPG Key we use for signing releases in Maven Central to be
@@ -1999,6 +2021,16 @@ and <a href="https://www.cve.org/CVERecord?id=CVE-2025-23215">CVE-2025-23215</a>
 <p>This PMD release ships a new version of the pmd-designer.
 For the changes, see <a href="https://github.com/pmd/pmd-designer/releases/tag/7.10.0">PMD Designer Changelog (7.10.0)</a>.</p>
 
+<h3 id="-new-and-changed-rules">🌟 New and changed rules</h3>
+
+<h4 id="new-rules">New Rules</h4>
+
+<ul>
+  <li>The new Java rule <a href="pmd_rules_java_bestpractices.html#exhaustiveswitchhasdefault"><code class="language-plaintext highlighter-rouge">ExhaustiveSwitchHasDefault</code></a> finds switch statements and
+expressions, that cover already all cases but still have a default case. This default case is unnecessary
+and prevents getting compiler errors when e.g. new enum constants are added without extending the switch.</li>
+</ul>
+
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
 <ul>
   <li>apex
@@ -2017,13 +2049,37 @@ For the changes, see <a href="https://github.com/pmd/pmd-designer/releases/tag/7
       <li><a href="https://github.com/pmd/pmd/issues/2492">#2492</a>: [doc] Promote wiki pages to standard doc pages</li>
     </ul>
   </li>
+  <li>java
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/5154">#5154</a>: [java] Support Java 24</li>
+    </ul>
+  </li>
+  <li>java-performance
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/5311">#5311</a>: [java] TooFewBranchesForSwitch false positive for exhaustive switches over enums without default case</li>
+    </ul>
+  </li>
 </ul>
 
 <h3 id="-api-changes">🚨 API Changes</h3>
 
+<h4 id="removed-experimental-api">Removed Experimental API</h4>
+<ul>
+  <li>pmd-java
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.java.ast.ASTTemplate</code>, <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.java.ast.ASTTemplateExpression</code>,
+<code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.java.ast.ASTTemplateFragment</code>: These nodes were introduced with Java 21 and 22
+Preview to support String Templates. However, the String Template preview feature was not finalized
+and has been removed from Java for now. We now cleaned up the PMD implementation of it.</li>
+    </ul>
+  </li>
+</ul>
+
 <h3 id="-merged-pull-requests">✨ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/5412">#5412</a>: [java] Support exhaustive switches - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5471">#5471</a>: [java] Support Java 24 - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5488">#5488</a>: [apex] Fix #3158: Recognize Named Credentials merge fields in ApexSuggestUsingNamedCredRule - <a href="https://github.com/YodaDaCoda">William Brockhus</a> (@YodaDaCoda)</li>
 </ul>
 

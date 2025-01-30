@@ -2615,18 +2615,19 @@ if-else statement to increase code readability.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">//</span><span class="p">(</span><span class="nt">SwitchStatement</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nt">SwitchExpression</span><span class="p">)</span><span class="w">
+  </span><span class="p">[</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="c">(: ignore empty switch blocks :)</span><span class="w">
   </span><span class="p">[</span><span class="w"> </span><span class="p">(</span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="o">/</span><span class="nt">SwitchLabel</span><span class="err">/*</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="o">/</span><span class="nt">SwitchLabel</span><span class="p">[</span><span class="na">@Default</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]))</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nv">$minimumNumberCaseForASwitch</span><span class="w"> </span><span class="p">]</span><span class="w">
-  </span><span class="c">(: only consider if no pattern matching is used :)</span><span class="w">
-  </span><span class="p">[</span><span class="err">*</span><span class="o">/</span><span class="nt">SwitchLabel</span><span class="p">[</span><span class="na">@PatternLabel</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]]</span><span class="w">
+  </span><span class="c">(: do not consider exhaustive switches unless there is a default case :)</span><span class="w">
+  </span><span class="p">[</span><span class="na">@Exhaustive</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@DefaultCase</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// With a minimumNumberCaseForASwitch of 3</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">(</span><span class="kt">int</span> <span class="n">condition</span><span class="o">)</span> <span class="o">{</span>
         <span class="k">switch</span> <span class="o">(</span><span class="n">condition</span><span class="o">)</span> <span class="o">{</span>
-            <span class="k">case</span> <span class="nl">ONE:</span>
+            <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
                 <span class="n">instruction</span><span class="o">;</span>
                 <span class="k">break</span><span class="o">;</span>
             <span class="k">default</span><span class="o">:</span>
@@ -2681,18 +2682,19 @@ if-else statement to increase code readability.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">//</span><span class="p">(</span><span class="nt">SwitchStatement</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nt">SwitchExpression</span><span class="p">)</span><span class="w">
+  </span><span class="p">[</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="c">(: ignore empty switch blocks :)</span><span class="w">
   </span><span class="p">[</span><span class="w"> </span><span class="p">(</span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="o">/</span><span class="nt">SwitchLabel</span><span class="err">/*</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="o">/</span><span class="nt">SwitchLabel</span><span class="p">[</span><span class="na">@Default</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]))</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nv">$minimumNumberCaseForASwitch</span><span class="w"> </span><span class="p">]</span><span class="w">
-  </span><span class="c">(: only consider if no pattern matching is used :)</span><span class="w">
-  </span><span class="p">[</span><span class="err">*</span><span class="o">/</span><span class="nt">SwitchLabel</span><span class="p">[</span><span class="na">@PatternLabel</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]]</span><span class="w">
+  </span><span class="c">(: do not consider exhaustive switches unless there is a default case :)</span><span class="w">
+  </span><span class="p">[</span><span class="na">@Exhaustive</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@DefaultCase</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// With a minimumNumberCaseForASwitch of 3</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">(</span><span class="kt">int</span> <span class="n">condition</span><span class="o">)</span> <span class="o">{</span>
         <span class="k">switch</span> <span class="o">(</span><span class="n">condition</span><span class="o">)</span> <span class="o">{</span>
-            <span class="k">case</span> <span class="nl">ONE:</span>
+            <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
                 <span class="n">instruction</span><span class="o">;</span>
                 <span class="k">break</span><span class="o">;</span>
             <span class="k">default</span><span class="o">:</span>

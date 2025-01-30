@@ -2000,19 +2000,24 @@
   </thead>
   <tbody>
     <tr>
+      <td>24-preview</td>
+      <td> </td>
+      <td>7.10.0</td>
+    </tr>
+    <tr>
+      <td>24 (default)</td>
+      <td> </td>
+      <td>7.10.0</td>
+    </tr>
+    <tr>
       <td>23-preview</td>
       <td> </td>
       <td>7.5.0</td>
     </tr>
     <tr>
-      <td>23 (default)</td>
+      <td>23</td>
       <td> </td>
       <td>7.5.0</td>
-    </tr>
-    <tr>
-      <td>22-preview</td>
-      <td> </td>
-      <td>7.0.0</td>
     </tr>
     <tr>
       <td>22</td>
@@ -2120,10 +2125,10 @@
 <h2 id="using-java-preview-features">Using Java preview features</h2>
 
 <p>In order to analyze a project with PMD that uses preview language features, you’ll need to enable
-it via the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language version, e.g. <code class="language-plaintext highlighter-rouge">22-preview</code>:</p>
+it via the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language version, e.g. <code class="language-plaintext highlighter-rouge">24-preview</code>:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS=--enable-preview
-pmd check --use-version java-22-preview ...
+pmd check --use-version java-24-preview ...
 </code></pre></div></div>
 
 <p>Note: we only support preview language features for the latest two java versions.</p>
@@ -2322,7 +2327,7 @@ AST pass that adds dataflow information. The implementation can be found in
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            July 2024 (7.5.0)<br /> Site last generated: Jan 30, 2025 <br />
+            January 2025 (7.10.0)<br /> Site last generated: Jan 30, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
