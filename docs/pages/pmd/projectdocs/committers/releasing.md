@@ -152,15 +152,22 @@ Note: The release notes typically contain some Jekyll macros for linking to the 
 work in a plain markdown version. Therefore, you need to render the release notes first:
 
 ```shell
-# install bundles needed for rendering release notes
+# install bundles needed for rendering release notes and execute rendering
+cd docs
 bundle config set --local path vendor/bundle
-bundle config set --local with release_notes_preprocessing
 bundle install
+NEW_RELEASE_NOTES=$(bundle exec render_release_notes.rb pages/release_notes.md | tail -n +6)
+cd ..
 
 RELEASE_NOTES_POST="_posts/$(date -u +%Y-%m-%d)-PMD-${RELEASE_VERSION}.md"
 echo "Generating ../pmd.github.io/${RELEASE_NOTES_POST}..."
-NEW_RELEASE_NOTES=$(bundle exec docs/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
 cat > "../pmd.github.io/${RELEASE_NOTES_POST}" <<EOF
+---
+layout: post
+title: PMD ${RELEASE_VERSION} released
+---
+${NEW_RELEASE_NOTES}
+EOF
 ```
 
 Check in all (version, blog post) changes to branch main:

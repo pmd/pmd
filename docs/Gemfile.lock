@@ -272,9 +272,13 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  bigdecimal
   csv
   github-pages
   jekyll
+  liquid
+  rouge
+  safe_yaml
   webrick
 
 BUNDLED WITH

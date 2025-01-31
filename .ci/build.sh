@@ -299,13 +299,13 @@ function pmd_ci_build_and_upload_doc() {
 
         # render release notes
         # updating github release text
-        rm -f .bundle/config
+        pushd docs || { echo "Directory 'docs' doesn't exist"; exit 1; }
         bundle config set --local path vendor/bundle
-        bundle config set --local with release_notes_preprocessing
         bundle install
         # renders, and skips the first 6 lines - the Jekyll front-matter
         local rendered_release_notes
-        rendered_release_notes=$(bundle exec docs/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
+        rendered_release_notes=$(bundle exec render_release_notes.rb pages/release_notes.md | tail -n +6)
+        popd || exit 1
         local release_name
         release_name="PMD ${PMD_CI_MAVEN_PROJECT_VERSION} ($(date -u +%d-%B-%Y))"
         # Upload to https://sourceforge.net/projects/pmd/files/pmd/${PMD_CI_MAVEN_PROJECT_VERSION}/ReadMe.md
