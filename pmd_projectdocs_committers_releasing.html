@@ -2121,15 +2121,22 @@ the release notes into this page. This will appear under the news section.</p>
 <p>Note: The release notes typically contain some Jekyll macros for linking to the rule pages. These macros won’t
 work in a plain markdown version. Therefore, you need to render the release notes first:</p>
 
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># install bundles needed for rendering release notes</span>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># install bundles needed for rendering release notes and execute rendering</span>
+<span class="nb">cd </span>docs
 bundle config <span class="nb">set</span> <span class="nt">--local</span> path vendor/bundle
-bundle config <span class="nb">set</span> <span class="nt">--local</span> with release_notes_preprocessing
 bundle <span class="nb">install
+</span><span class="nv">NEW_RELEASE_NOTES</span><span class="o">=</span><span class="si">$(</span>bundle <span class="nb">exec </span>render_release_notes.rb pages/release_notes.md | <span class="nb">tail</span> <span class="nt">-n</span> +6<span class="si">)</span>
+<span class="nb">cd</span> ..
 
-</span><span class="nv">RELEASE_NOTES_POST</span><span class="o">=</span><span class="s2">"_posts/</span><span class="si">$(</span><span class="nb">date</span> <span class="nt">-u</span> +%Y-%m-%d<span class="si">)</span><span class="s2">-PMD-</span><span class="k">${</span><span class="nv">RELEASE_VERSION</span><span class="k">}</span><span class="s2">.md"</span>
+<span class="nv">RELEASE_NOTES_POST</span><span class="o">=</span><span class="s2">"_posts/</span><span class="si">$(</span><span class="nb">date</span> <span class="nt">-u</span> +%Y-%m-%d<span class="si">)</span><span class="s2">-PMD-</span><span class="k">${</span><span class="nv">RELEASE_VERSION</span><span class="k">}</span><span class="s2">.md"</span>
 <span class="nb">echo</span> <span class="s2">"Generating ../pmd.github.io/</span><span class="k">${</span><span class="nv">RELEASE_NOTES_POST</span><span class="k">}</span><span class="s2">..."</span>
-<span class="nv">NEW_RELEASE_NOTES</span><span class="o">=</span><span class="si">$(</span>bundle <span class="nb">exec </span>docs/render_release_notes.rb docs/pages/release_notes.md | <span class="nb">tail</span> <span class="nt">-n</span> +6<span class="si">)</span>
 <span class="nb">cat</span> <span class="o">&gt;</span> <span class="s2">"../pmd.github.io/</span><span class="k">${</span><span class="nv">RELEASE_NOTES_POST</span><span class="k">}</span><span class="s2">"</span> <span class="o">&lt;&lt;</span><span class="no">EOF</span><span class="sh">
+---
+layout: post
+title: PMD </span><span class="k">${</span><span class="nv">RELEASE_VERSION</span><span class="k">}</span><span class="sh"> released
+---
+</span><span class="k">${</span><span class="nv">NEW_RELEASE_NOTES</span><span class="k">}</span><span class="sh">
+</span><span class="no">EOF
 </span></code></pre></div></div>
 
 <p>Check in all (version, blog post) changes to branch main:</p>
