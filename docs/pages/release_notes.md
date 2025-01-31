@@ -31,7 +31,7 @@ version `24-preview`:
     pmd check --use-version java-24-preview ...
 
 Note: Support for Java 22 preview language features have been removed. The version "22-preview"
-are no longer available.
+is no longer available.
 
 #### New GPG Release Signing Key
 
@@ -47,7 +47,8 @@ The previous releases of PMD in Maven Central can still be considered untampered
 This unexpected issue was discovered while checking [Reproducible Builds](https://reproducible-builds.org/) by a
 third party.
 
-The compromised passphrase is tracked as [GHSA-88m4-h43f-wx84](https://github.com/pmd/pmd/security/advisories/GHSA-88m4-h43f-wx84)
+The security advisory about the compromised passphrase is tracked as
+[GHSA-88m4-h43f-wx84](https://github.com/pmd/pmd/security/advisories/GHSA-88m4-h43f-wx84)
 and [CVE-2025-23215](https://www.cve.org/CVERecord?id=CVE-2025-23215).
 
 #### Updated PMD Designer
@@ -87,15 +88,41 @@ For the changes, see [PMD Designer Changelog (7.10.0)](https://github.com/pmd/pm
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#5327](https://github.com/pmd/pmd/pull/5327): \[apex] Update apex-parser and summit-ast - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5412](https://github.com/pmd/pmd/pull/5412): \[java] Support exhaustive switches - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5449](https://github.com/pmd/pmd/pull/5449): Use new gpg key (A0B5CA1A4E086838) - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5458](https://github.com/pmd/pmd/pull/5458): \[doc] Move Wiki pages into main documentation, cleanups - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5471](https://github.com/pmd/pmd/pull/5471): \[java] Support Java 24 - [Andreas Dangel](https://github.com/adangel) (@adangel)
-* [#5488](https://github.com/pmd/pmd/pull/5488): \[apex] Fix #3158: Recognize Named Credentials merge fields in ApexSuggestUsingNamedCredRule - [William Brockhus](https://github.com/YodaDaCoda) (@YodaDaCoda)
+* [#5488](https://github.com/pmd/pmd/pull/5488): \[apex] Fix #3158: Recognize Named Credentials merge fields in ApexSuggestUsingNamedCredRule  - [William Brockhus](https://github.com/YodaDaCoda) (@YodaDaCoda)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#5423](https://github.com/pmd/pmd/pull/5423): Bump PMD from 7.8.0 to 7.9.0
+* [#5433](https://github.com/pmd/pmd/pull/5433): Bump org.codehaus.mojo:exec-maven-plugin from 3.2.0 to 3.5.0
+* [#5434](https://github.com/pmd/pmd/pull/5434): Bump commons-logging:commons-logging from 1.3.0 to 1.3.4
+* [#5435](https://github.com/pmd/pmd/pull/5435): Bump org.apache.maven.plugins:maven-enforcer-plugin from 3.4.1 to 3.5.0
+* [#5436](https://github.com/pmd/pmd/pull/5436): Bump the all-gems group across 2 directories with 1 update
+* [#5445](https://github.com/pmd/pmd/pull/5445): Bump org.junit.platform:junit-platform-commons from 1.11.2 to 1.11.4
+* [#5446](https://github.com/pmd/pmd/pull/5446): Bump org.sonarsource.scanner.maven:sonar-maven-plugin from 3.10.0.2594 to 5.0.0.4389
+* [#5459](https://github.com/pmd/pmd/pull/5459): Bump org.apache.maven.plugins:maven-gpg-plugin from 3.1.0 to 3.2.7
+* [#5460](https://github.com/pmd/pmd/pull/5460): Bump org.apache.commons:commons-text from 1.12.0 to 1.13.0
+* [#5461](https://github.com/pmd/pmd/pull/5461): Bump com.google.protobuf:protobuf-java from 4.29.1 to 4.29.3
+* [#5472](https://github.com/pmd/pmd/pull/5472): Bump net.bytebuddy:byte-buddy-agent from 1.15.11 to 1.16.1
+* [#5473](https://github.com/pmd/pmd/pull/5473): Bump org.sonatype.plugins:nexus-staging-maven-plugin from 1.6.13 to 1.7.0
+* [#5474](https://github.com/pmd/pmd/pull/5474): Bump com.github.siom79.japicmp:japicmp-maven-plugin from 0.23.0 to 0.23.1
+* [#5475](https://github.com/pmd/pmd/pull/5475): Bump liquid from 5.6.0 to 5.7.0 in the all-gems group across 1 directory
+* [#5479](https://github.com/pmd/pmd/pull/5479): Bump pmd-designer from 7.2.0 to 7.10.0
+* [#5480](https://github.com/pmd/pmd/pull/5480): Bump scalameta.version from 4.9.1 to 4.12.7
+* [#5481](https://github.com/pmd/pmd/pull/5481): Bump liquid from 5.7.0 to 5.7.1 in the all-gems group across 1 directory
+* [#5482](https://github.com/pmd/pmd/pull/5482): Bump org.codehaus.mojo:versions-maven-plugin from 2.17.1 to 2.18.0
+* [#5483](https://github.com/pmd/pmd/pull/5483): Bump org.jetbrains.dokka:dokka-maven-plugin from 1.9.20 to 2.0.0
+* [#5484](https://github.com/pmd/pmd/pull/5484): Bump com.github.hazendaz.maven:coveralls-maven-plugin from 4.5.0-M5 to 4.5.0-M6
+* [#5485](https://github.com/pmd/pmd/pull/5485): Bump com.puppycrawl.tools:checkstyle from 10.20.2 to 10.21.2
 
 ### 📈 Stats
 <!-- content will be automatically generated, see /do-release.sh -->
+* 70 commits
+* 13 closed tickets & PRs
+* Days since last release: 34
 
 {% endtocmaker %}
-
