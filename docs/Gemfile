@@ -4,3 +4,7 @@ gem 'jekyll'
 gem 'github-pages'
 gem "webrick"
 gem "csv"
+gem 'liquid'
+gem 'safe_yaml'
+gem 'rouge'
+gem 'bigdecimal'
