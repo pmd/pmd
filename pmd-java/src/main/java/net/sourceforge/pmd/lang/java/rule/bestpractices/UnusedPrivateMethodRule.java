@@ -48,7 +48,8 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         return listOf(
             "java.lang.Deprecated",
             "jakarta.annotation.PostConstruct",
-            "jakarta.annotation.PreDestroy"
+            "jakarta.annotation.PreDestroy",
+            "lombok.EqualsAndHashCode.Include"
         );
     }
 
