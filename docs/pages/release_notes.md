@@ -14,6 +14,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+#### Signed Releases
+
+We now not only sign the maven artifacts, but also our binary distribution files that you can
+download from [GitHub Releases](https://github.com/pmd/pmd/releases).
+See the page [Signed Releases](pmd_userdocs_signed_releases.html) in our documentation for how to verify the files.
+
 ### 🐛 Fixed Issues
 
 ### 🚨 API Changes
