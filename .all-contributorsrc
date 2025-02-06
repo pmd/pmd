@@ -7938,6 +7938,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "manuel-a-romeiro-alb",
+      "name": "Manuel Romeiro",
+      "avatar_url": "https://avatars.githubusercontent.com/u/170322479?v=4",
+      "profile": "https://github.com/manuel-a-romeiro-alb",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
