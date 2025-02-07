@@ -31,14 +31,10 @@ jobs:
           key: maven-${{ hashFiles('**/pom.xml') }}
           path: ~/.m2/repository
           enableCrossOsArchive: true
-      - name: Prefetch all maven plugins and dependencies for caching
-        run: |
-          ./mvnw --show-version --errors --batch-mode \
-            dependency:resolve-plugins dependency:resolve
       - name: Fast Build with Maven
         run: |
           ./mvnw --show-version --errors --batch-mode \
-            package -PfastSkip -DskipTests
+            verify -PfastSkip -DskipTests
       - uses: actions/upload-artifact@v4
         with:
           name: compile-artifact
