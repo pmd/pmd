@@ -1337,7 +1337,7 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-deploy-plugin</artifactId>
                         <configuration>
-                            <altDeploymentRepository>dogfood::file://${project.basedir}/target/staging</altDeploymentRepository>
+                            <altDeploymentRepository>dogfood::file://${dogfoodStagingRepo}</altDeploymentRepository>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -1345,7 +1345,7 @@
             <repositories>
                 <repository>
                     <id>dogfood</id>
-                    <url>file://${project.basedir}/target/staging</url>
+                    <url>file://${dogfoodStagingRepo}</url>
                     <releases><enabled>false</enabled></releases>
                     <snapshots><enabled>true</enabled></snapshots>
                 </repository>
@@ -1353,7 +1353,7 @@
             <pluginRepositories>
                 <pluginRepository>
                     <id>dogfood</id>
-                    <url>file://${project.basedir}/target/staging</url>
+                    <url>file://${dogfoodStagingRepo}</url>
                     <releases><enabled>false</enabled></releases>
                     <snapshots><enabled>true</enabled></snapshots>
                 </pluginRepository>

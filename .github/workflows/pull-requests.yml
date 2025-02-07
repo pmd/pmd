@@ -35,7 +35,7 @@ jobs:
         run: |
           ./mvnw --show-version --errors --batch-mode \
             verify -PfastSkip -DskipTests \
-            deploy:deploy -Pdogfood
+            deploy:deploy -Pdogfood -DdogfoodStagingRepo="$(pwd)/target/staging"
       - uses: actions/upload-artifact@v4
         with:
           name: compile-artifact
@@ -170,6 +170,7 @@ jobs:
           echo "::group::Run ./mvnw verify"
           ./mvnw verify --show-version --errors --batch-mode \
             -PfastSkip,dogfood \
+            -DdogfoodStagingRepo="$(pwd)/target/staging" \
             -DskipTests \
             -Dpmd.skip=false \
             -Dcpd.skip=false
