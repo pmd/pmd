@@ -15,6 +15,9 @@ jobs:
   compile:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
         with:
@@ -55,6 +58,9 @@ jobs:
     needs: compile
     timeout-minutes: 30
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
         with:
@@ -87,6 +93,9 @@ jobs:
     needs: compile
     timeout-minutes: 30
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     strategy:
       # don't fail fast - we want to know the results of both runs
       fail-fast: false
@@ -115,6 +124,9 @@ jobs:
     needs: compile
     timeout-minutes: 30
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
         with:
@@ -164,6 +176,9 @@ jobs:
     needs: compile
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
         with:
