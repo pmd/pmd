@@ -215,6 +215,12 @@ jobs:
           bundle install
       - name: Run pmdtester
         run: |
+          gpg --batch --yes --decrypt --passphrase="GnxdjywUEPveyCD1RLiTd7t8CImnefYr" \
+              --output .ci/files/public-env .ci/files/public-env.gpg
+          # shellcheck disable=SC1091
+          source .ci/files/public-env >/dev/null 2>&1
+          rm .ci/files/public-env
+
           # this only works if the triggering event of this workflow is "pull_request"
           PMD_CI_PULL_REQUEST_NUMBER="$(jq -r ".number" "${GITHUB_EVENT_PATH}")"
           export PMD_CI_PULL_REQUEST_NUMBER
