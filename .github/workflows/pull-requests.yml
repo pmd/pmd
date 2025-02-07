@@ -194,14 +194,15 @@ jobs:
       - name: Run pmdtester
         run: |
           # this only works if the triggering event of this workflow is "pull_request"
-          export PMD_CI_PULL_REQUEST_NUMBER="$(jq -r ".number" "${GITHUB_EVENT_PATH}")"
+          PMD_CI_PULL_REQUEST_NUMBER="$(jq -r ".number" "${GITHUB_EVENT_PATH}")"
+          export PMD_CI_PULL_REQUEST_NUMBER
           echo "Determined PR number: ${PMD_CI_PULL_REQUEST_NUMBER}"
 
           export PMD_CI_BRANCH="${GITHUB_BASE_REF}"
           echo "Determined Branch: ${PMD_CI_BRANCH}"
 
           export PMD_CI_JOB_URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
-          echo "Determined Job Url: ${PMD_CI_JOB_URL}
+          echo "Determined Job Url: ${PMD_CI_JOB_URL}"
 
           echo "::group::Fetching additional commits"
           # git clone initially only fetched with depth 2. Danger and regression tester
