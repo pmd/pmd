@@ -41,6 +41,7 @@ jobs:
           name: compile-artifact
           if-no-files-found: error
           path: |
+            target
             */target
             */*/target
             !pmd-dist/target/pmd-dist-*-bin.zip
