@@ -71,6 +71,8 @@ jobs:
     needs: compile
     runs-on: ${{ matrix.os }}
     strategy:
+      # don't fail fast - we want to know the results of both runs
+      fail-fast: false
       matrix:
         os: [ windows-latest, macos-latest ]
     steps:
