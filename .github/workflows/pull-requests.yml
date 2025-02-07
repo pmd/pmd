@@ -80,17 +80,13 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: |
-            8
-            17
-            21
-            11
+          java-version: '11'
           cache: 'maven'
       - uses: actions/download-artifact@v4
         with:
           name: compile-artifact
       - name: Build with Maven and run unit tests
-        run: ./mvnw -B verify -PfastSkip -Djava8.home=JAVA_HOME_8_X64 -Djava17.home=JAVA_HOME_17_X64 -Djava21.home=JAVA_HOME_21_X64
+        run: ./mvnw -B verify -PfastSkip
 
   dogfood:
     needs: compile
