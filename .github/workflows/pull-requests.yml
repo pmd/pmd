@@ -11,6 +11,9 @@ concurrency:
 permissions:
   contents: read # to fetch code (actions/checkout)
 
+env:
+  LANG: 'en_US.UTF-8'
+
 jobs:
   compile:
     runs-on: ubuntu-latest
