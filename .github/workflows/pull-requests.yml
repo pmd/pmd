@@ -172,6 +172,10 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '11'
+      - name: Set up Ruby 3.3
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3
       - uses: actions/cache@v4
         with:
           path: |
@@ -179,7 +183,7 @@ jobs:
             ~/.gradle/caches
             ~/work/pmd/target/repositories
             vendor/bundle
-          key: regressiontester-${{ hashFiles('.ci/files/project-list.xml') }}
+          key: regressiontester-${{ hashFiles('.ci/files/project-list.xml', 'Gemfile.lock') }}
       - uses: actions/download-artifact@v4
         with:
           name: compile-artifact
