@@ -1328,6 +1328,37 @@
                 <module>pmd-dist</module>
             </modules>
         </profile>
+
+        <profile>
+            <id>dogfood</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <altDeploymentRepository>dogfood::file://${project.basedir}/target/staging</altDeploymentRepository>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <repositories>
+                <repository>
+                    <id>dogfood</id>
+                    <url>file://${project.basedir}/target/staging</url>
+                    <releases><enabled>false</enabled></releases>
+                    <snapshots><enabled>true</enabled></snapshots>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>dogfood</id>
+                    <url>file://${project.basedir}/target/staging</url>
+                    <releases><enabled>false</enabled></releases>
+                    <snapshots><enabled>true</enabled></snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
     </profiles>
 
     <modules>

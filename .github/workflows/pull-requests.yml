@@ -34,7 +34,8 @@ jobs:
       - name: Fast Build with Maven
         run: |
           ./mvnw --show-version --errors --batch-mode \
-            verify -PfastSkip -DskipTests
+            verify -PfastSkip -DskipTests \
+            deploy:deploy -Pdogfood
       - uses: actions/upload-artifact@v4
         with:
           name: compile-artifact
@@ -42,6 +43,8 @@ jobs:
           path: |
             */target
             */*/target
+            !pmd-dist/target/pmd-dist-*-bin.zip
+            !pmd-dist/target/pmd-dist-*-src.zip
       - uses: actions/upload-artifact@v4
         with:
           name: dist-artifact
@@ -157,7 +160,7 @@ jobs:
 
           echo "::group::Run ./mvnw verify"
           ./mvnw verify --show-version --errors --batch-mode \
-            -PfastSkip \
+            -PfastSkip,dogfood \
             -DskipTests \
             -Dpmd.skip=false \
             -Dcpd.skip=false
@@ -197,7 +200,7 @@ jobs:
           key: regressiontester-${{ hashFiles('.ci/files/project-list.xml', 'Gemfile.lock') }}
       - uses: actions/download-artifact@v4
         with:
-          name: compile-artifact
+          name: dist-artifact
       - name: Setup bundler
         run: |
           bundle config set --local path vendor/bundle
