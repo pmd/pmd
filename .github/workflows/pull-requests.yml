@@ -101,6 +101,14 @@ jobs:
       matrix:
         os: [ windows-latest, macos-latest ]
     steps:
+      - name: Set git attributes
+        run: |
+          echo "core.autocrlf:"
+          git config --show-origin --show-scope --get core.autocrlf
+          echo "core.eol:"
+          git config --show-origin --show-scope --get core.eol
+          git config --global core.autocrlf false
+          git config --global core.eol lf
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2
