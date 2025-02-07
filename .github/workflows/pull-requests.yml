@@ -105,11 +105,11 @@ jobs:
       - name: Set git attributes
         run: |
           echo "core.autocrlf:"
-          git config --show-origin --show-scope --get core.autocrlf
+          git config get --show-origin --show-scope core.autocrlf
           echo "core.eol:"
-          git config --show-origin --show-scope --get core.eol
-          git config --global core.autocrlf false
-          git config --global core.eol lf
+          git config get --show-origin --show-scope core.eol
+          git config set --global core.autocrlf false
+          git config set --global core.eol lf
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2
