@@ -24,8 +24,14 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
           cache: 'maven'
+      - name: Prefetch all maven plugins and dependencies for caching
+        run: |
+          ./mvnw --show-version --errors --batch-mode \
+            dependency:resolve-plugins dependency:resolve
       - name: Fast Build with Maven
-        run: ./mvnw -B package -PfastSkip -DskipTests
+        run: |
+          ./mvnw --show-version --errors --batch-mode \
+            package -PfastSkip -DskipTests
       - uses: actions/upload-artifact@v4
         with:
           name: compile-artifact
