@@ -60,7 +60,12 @@ jobs:
         with:
           name: compile-artifact
       - name: Full Build with Maven
-        run: ./mvnw verify -Pgenerate-rule-docs -Djava8.home=JAVA_HOME_8_X64 -Djava17.home=JAVA_HOME_17_X64 -Djava21.home=JAVA_HOME_21_X64
+        run: |
+          ./mvnw verify \
+              -Pgenerate-rule-docs \
+              -Djava8.home="${JAVA_HOME_8_X64}" \
+              -Djava17.home="${JAVA_HOME_17_X64}" \
+              -Djava21.home="${JAVA_HOME_21_X64}"
 
   verify-unittests:
     needs: compile
