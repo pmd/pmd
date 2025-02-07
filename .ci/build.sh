@@ -90,7 +90,7 @@ function build() {
                 # Trying to delete the files now, if they exist.
                 # Alternatively, we could run maven with flag "-U" to force update all dependencies...
                 pmd_ci_log_info "Cleanup local maven repo..."
-                find ~/.m2/repository -wholename "*/net/sourceforge/pmd/*/${PMD_CI_MAVEN_PROJECT_VERSION}/*.lastUpdated" | xargs rm -v
+                find ~/.m2/repository -print0 -wholename "*/net/sourceforge/pmd/*/${PMD_CI_MAVEN_PROJECT_VERSION}/*.lastUpdated" | xargs -0 rm -v
                 pmd_ci_log_info "Cleanup local maven repo finished."
 
                 ./mvnw clean verify -pl pmd-cli,pmd-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
