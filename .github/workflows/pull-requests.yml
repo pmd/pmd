@@ -116,8 +116,7 @@ jobs:
           echo "Determined PR number: ${pr_number}"
 
           current_pmd_version=$(./mvnw --batch-mode --no-transfer-progress \
-              org.apache.maven.plugins:maven-help-plugin:3.5.1:evaluate \
-              -Dexpression=project.version -q -DforceStdout || echo "failed_to_determine_current_pmd_version")
+              maven:evaluate -Dexpression=project.version -q -DforceStdout || echo "failed_to_determine_current_pmd_version")
           echo "Determined current pmd version: ${current_pmd_version}"
 
           new_version="${current_pmd_version}-pr-${pr_number}-dogfood-SNAPSHOT"
