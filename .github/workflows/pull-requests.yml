@@ -1,0 +1,202 @@
+name: Pull Request Build
+
+on: pull_request
+
+# if another commit is added to the PR (same github.head_ref), then cancel already running jobs
+# and start a new build
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          cache: 'maven'
+      - name: Fast Build with Maven
+        run: ./mvnw -B package -DskipTests
+      - uses: actions/upload-artifact@v4
+        with:
+          name: compile-artifact
+          if-no-files-found: error
+          path: |
+            */target
+            */*/target
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-artifact
+          if-no-files-found: error
+          path: |
+            pmd-dist/target/pmd-dist-*-bin.zip
+            pmd-dist/target/pmd-dist-*-src.zip
+
+  verify-complete:
+    runs-on: ubuntu-latest
+    needs: compile
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: |
+            8
+            17
+            21
+            11
+          cache: 'maven'
+      - uses: actions/download-artifact@v4
+        with:
+          name: compile-artifact
+      - name: Full Build with Maven
+        run: ./mvnw verify -Pgenerate-rule-docs -Djava8.home=JAVA_HOME_8_X64 -Djava17.home=JAVA_HOME_17_X64 -Djava21.home=JAVA_HOME_21_X64
+
+  verify-unittests:
+    needs: compile
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ windows-latest, macos-latest ]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: |
+            8
+            17
+            21
+            11
+          cache: 'maven'
+      - uses: actions/download-artifact@v4
+        with:
+          name: compile-artifact
+      - name: Build with Maven and run unit tests
+        run: ./mvnw -B verify -PfastSkip -Djava8.home=JAVA_HOME_8_X64 -Djava17.home=JAVA_HOME_17_X64 -Djava21.home=JAVA_HOME_21_X64
+
+  dogfood:
+    needs: compile
+    runs-on: ubuntu-linux
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          cache: 'maven'
+      - uses: actions/download-artifact@v4
+        with:
+          name: compile-artifact
+      - name: Run PMD on PMD
+        run: |
+          # this only works if the triggering event of this workflow is "pull_request"
+          pr_number="$(jq -r ".number" "${GITHUB_EVENT_PATH}")"
+          echo "Determined PR number: ${pr_number}"
+
+          current_pmd_version=$(./mvnw --batch-mode --no-transfer-progress \
+              org.apache.maven.plugins:maven-help-plugin:3.5.1:evaluate \
+              -Dexpression=project.version -q -DforceStdout || echo "failed_to_determine_current_pmd_version")
+          echo "Determined current pmd version: ${current_pmd_version}"
+
+          new_version="${current_pmd_version}-pr-${pr_number}-dogfood-SNAPSHOT"
+          echo "::group::Set version to ${new_version}"
+          ./mvnw versions:set -DnewVersion="${new_version}" -DgenerateBackupPoms=false
+          sed -i 's/<version>[0-9]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}.*<\/version>\( *<!-- pmd.dogfood.version -->\)/<version>'"${current_pmd_version}"'<\/version>\1/' pom.xml
+          echo "::endgroup::"
+
+          echo "::group::Run ./mvnw verify"
+          ./mvnw verify --show-version --errors --batch-mode \
+            -PfastSkip \
+            -DskipTests \
+            -Dpmd.skip=false \
+            -Dcpd.skip=false
+          echo "::endgroup::"
+
+          echo "::group::Restore version to ${current_pmd_version}"
+          ./mvnw versions:set -DnewVersion="${current_pmd_version}" -DgenerateBackupPoms=false
+          git checkout -- pom.xml
+          echo "::endgroup::"
+
+  regressiontester:
+    needs: compile
+    runs-on: ubuntu-linux
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.gradle/caches
+            ~/work/pmd/target/repositories
+            vendor/bundle
+          key: regressiontester-${{ hashFiles('.ci/files/project-list.xml') }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: compile-artifact
+      - name: Setup bundler
+        run: |
+          bundle config set --local path vendor/bundle
+          bundle install
+      - name: Run pmdtester
+        run: |
+          # this only works if the triggering event of this workflow is "pull_request"
+          export PMD_CI_PULL_REQUEST_NUMBER="$(jq -r ".number" "${GITHUB_EVENT_PATH}")"
+          echo "Determined PR number: ${PMD_CI_PULL_REQUEST_NUMBER}"
+
+          export PMD_CI_BRANCH="${GITHUB_BASE_REF}"
+          echo "Determined Branch: ${PMD_CI_BRANCH}"
+
+          export PMD_CI_JOB_URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          echo "Determined Job Url: ${PMD_CI_JOB_URL}
+
+          echo "::group::Fetching additional commits"
+          # git clone initially only fetched with depth 2. Danger and regression tester
+          # need more history, so we'll fetch more here
+          # and create local branches as well (${PMD_CI_BRANCH} and pr-fetch)
+      
+          echo "Fetching 25 commits for ${PMD_CI_BRANCH} and pull/${PMD_CI_PULL_REQUEST_NUMBER}/head"
+          git fetch --no-tags --depth=25 origin "${PMD_CI_BRANCH}:${PMD_CI_BRANCH}" "pull/${PMD_CI_PULL_REQUEST_NUMBER}/head:pr-fetch"
+      
+          # if the PR is older, base might have advanced more than 25 commits... fetch more, up to 150
+          for i in $(seq 1 3); do
+            if [ -z "$( git merge-base "${PMD_CI_BRANCH}" "pr-fetch" )" ]; then
+              echo "No merge-base yet - fetching more commits... (try $i)"
+              git fetch --no-tags --deepen=50 origin "${PMD_CI_BRANCH}:" "pull/${PMD_CI_PULL_REQUEST_NUMBER}/head:pr-fetch"
+            fi
+          done
+          echo "Merge base is: $( git merge-base "${PMD_CI_BRANCH}" "pr-fetch" )"
+          echo "::endgroup::"
+      
+          echo "::group::Running danger on branch ${PMD_CI_BRANCH}"
+          bundle exec danger --verbose
+          echo "::endgroup::"
+      - name: Workaround actions/upload-artifact#176
+        run: |
+          echo "artifacts_path=$(realpath ..)" >> $GITHUB_ENV
+      - name: Upload regression tester report
+        uses: actions/upload-artifact@v4
+        with:
+          name: pmd-regression-tester
+          path: ${{ env.artifacts_path }}/target/pr-*-diff-report-*.tar.gz
+          if-no-files-found: ignore
