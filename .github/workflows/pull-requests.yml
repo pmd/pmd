@@ -23,7 +23,11 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '11'
-          cache: 'maven'
+      - uses: actions/cache@v4
+        with:
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          path: ~/.m2/repository
+          enableCrossOsArchive: true
       - name: Prefetch all maven plugins and dependencies for caching
         run: |
           ./mvnw --show-version --errors --batch-mode \
@@ -63,7 +67,11 @@ jobs:
             17
             21
             11
-          cache: 'maven'
+      - uses: actions/cache@v4
+        with:
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          path: ~/.m2/repository
+          enableCrossOsArchive: true
       - uses: actions/download-artifact@v4
         with:
           name: compile-artifact
@@ -92,7 +100,11 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '11'
-          cache: 'maven'
+      - uses: actions/cache@v4
+        with:
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          path: ~/.m2/repository
+          enableCrossOsArchive: true
       - uses: actions/download-artifact@v4
         with:
           name: compile-artifact
@@ -111,7 +123,11 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '11'
-          cache: 'maven'
+      - uses: actions/cache@v4
+        with:
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          path: ~/.m2/repository
+          enableCrossOsArchive: true
       - uses: actions/download-artifact@v4
         with:
           name: compile-artifact
