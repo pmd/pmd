@@ -24,7 +24,7 @@ jobs:
           java-version: '11'
           cache: 'maven'
       - name: Fast Build with Maven
-        run: ./mvnw -B package -DskipTests
+        run: ./mvnw -B package -PfastSkip -DskipTests
       - uses: actions/upload-artifact@v4
         with:
           name: compile-artifact
