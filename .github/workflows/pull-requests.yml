@@ -90,7 +90,7 @@ jobs:
 
   dogfood:
     needs: compile
-    runs-on: ubuntu-linux
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
@@ -135,7 +135,7 @@ jobs:
 
   regressiontester:
     needs: compile
-    runs-on: ubuntu-linux
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
