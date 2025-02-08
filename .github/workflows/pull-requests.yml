@@ -40,6 +40,10 @@ jobs:
           ./mvnw --show-version --errors --batch-mode \
             verify -PfastSkip -DskipTests \
             deploy:deploy -Pdogfood -DdogfoodStagingRepo="$(pwd)/target/staging"
+      - name: Debug
+        run: |
+          stat pom.xml
+          stat pmd-core/target/classes/net/sourceforge/pmd/PMDVersion.class
       - uses: actions/upload-artifact@v4
         with:
           name: compile-artifact
@@ -86,6 +90,10 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: compile-artifact
+      - name: Debug
+        run: |
+          stat pom.xml
+          stat pmd-core/target/classes/net/sourceforge/pmd/PMDVersion.class
       - name: Full Build with Maven
         run: |
           ./mvnw verify \
@@ -125,6 +133,10 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: compile-artifact
+      - name: Debug
+        run: |
+          stat pom.xml
+          stat pmd-core/target/classes/net/sourceforge/pmd/PMDVersion.class
       - name: Build with Maven and run unit tests
         run: ./mvnw -B verify -PfastSkip
 
