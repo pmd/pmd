@@ -32,6 +32,7 @@ jobs:
       - uses: actions/cache@v4
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-
           path: ~/.m2/repository
           enableCrossOsArchive: true
       - name: Fast Build with Maven
@@ -79,6 +80,7 @@ jobs:
       - uses: actions/cache@v4
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-
           path: ~/.m2/repository
           enableCrossOsArchive: true
       - uses: actions/download-artifact@v4
@@ -112,9 +114,12 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '11'
-      - uses: actions/cache@v4
+      # only restore the cache, don't create a new cache
+      # under Windows, hashFiles('**/pom.xml') gives a different result due to line endings
+      - uses: actions/cache/restore@v4
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-
           path: ~/.m2/repository
           enableCrossOsArchive: true
       - uses: actions/download-artifact@v4
@@ -141,6 +146,7 @@ jobs:
       - uses: actions/cache@v4
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-
           path: ~/.m2/repository
           enableCrossOsArchive: true
       - uses: actions/download-artifact@v4
@@ -203,6 +209,7 @@ jobs:
             ~/work/pmd/target/repositories
             vendor/bundle
           key: regressiontester-${{ hashFiles('.ci/files/project-list.xml', 'Gemfile.lock') }}
+          restore-keys: regressiontester-
       - uses: actions/download-artifact@v4
         with:
           name: dist-artifact
