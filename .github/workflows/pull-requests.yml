@@ -40,15 +40,6 @@ jobs:
           ./mvnw --show-version --errors --batch-mode \
             verify -PfastSkip -DskipTests \
             deploy:deploy -Pdogfood -DdogfoodStagingRepo="$(pwd)/target/staging"
-      - name: Debug
-        run: |
-          stat pmd-core/src/main/java/net/sourceforge/pmd/PMDVersion.java
-          stat pmd-core/target/classes/net/sourceforge/pmd/PMDVersion.class
-          stat pmd-ant/src/test/resources/net/sourceforge/pmd/ant/xml/expected-pmd-ant-xml.xml
-          stat pmd-ant/target/test-classes/net/sourceforge/pmd/ant/xml/expected-pmd-ant-xml.xml
-          stat pmd-kotlin/target/last-generated-timestamp-antlr4
-          stat pmd-kotlin/target/generated-sources/antlr4/net/sourceforge/pmd/lang/kotlin/ast/KotlinParser.java
-          stat antlr4-wrapper.xml
       - uses: actions/upload-artifact@v4
         with:
           name: compile-artifact
@@ -95,15 +86,6 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: compile-artifact
-      - name: Debug
-        run: |
-          stat pmd-core/src/main/java/net/sourceforge/pmd/PMDVersion.java
-          stat pmd-core/target/classes/net/sourceforge/pmd/PMDVersion.class
-          stat pmd-ant/src/test/resources/net/sourceforge/pmd/ant/xml/expected-pmd-ant-xml.xml
-          stat pmd-ant/target/test-classes/net/sourceforge/pmd/ant/xml/expected-pmd-ant-xml.xml
-          stat pmd-kotlin/target/last-generated-timestamp-antlr4
-          stat pmd-kotlin/target/generated-sources/antlr4/net/sourceforge/pmd/lang/kotlin/ast/KotlinParser.java
-          stat antlr4-wrapper.xml
       - name: Full Build with Maven
         run: |
           ./mvnw verify \
@@ -140,18 +122,6 @@ jobs:
           restore-keys: maven-
           path: ~/.m2/repository
           enableCrossOsArchive: true
-      - uses: actions/download-artifact@v4
-        with:
-          name: compile-artifact
-      - name: Debug
-        run: |
-          stat pmd-core/src/main/java/net/sourceforge/pmd/PMDVersion.java
-          stat pmd-core/target/classes/net/sourceforge/pmd/PMDVersion.class
-          stat pmd-ant/src/test/resources/net/sourceforge/pmd/ant/xml/expected-pmd-ant-xml.xml
-          stat pmd-ant/target/test-classes/net/sourceforge/pmd/ant/xml/expected-pmd-ant-xml.xml
-          stat pmd-kotlin/target/last-generated-timestamp-antlr4
-          stat pmd-kotlin/target/generated-sources/antlr4/net/sourceforge/pmd/lang/kotlin/ast/KotlinParser.java
-          stat antlr4-wrapper.xml
       - name: Build with Maven and run unit tests
         run: ./mvnw -B verify -PfastSkip
 
