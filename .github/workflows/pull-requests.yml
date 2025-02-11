@@ -127,7 +127,7 @@ jobs:
           path: ~/.m2/repository
           enableCrossOsArchive: true
       - name: Build with Maven and run unit tests
-        run: ./mvnw -B verify -PfastSkip
+        run: ./mvnw -B verify -PfastSkip -Dcyclonedx.skip=false
 
   dogfood:
     needs: compile
