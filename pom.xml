@@ -1331,6 +1331,11 @@
 
         <profile>
             <id>dogfood</id>
+            <activation>
+                <property>
+                    <name>dogfoodStagingRepo</name>
+                </property>
+            </activation>
             <build>
                 <plugins>
                     <plugin>

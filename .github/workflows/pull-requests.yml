@@ -39,17 +39,21 @@ jobs:
         run: |
           ./mvnw --show-version --errors --batch-mode \
             verify -PfastSkip -DskipTests \
-            deploy:deploy -Pdogfood -DdogfoodStagingRepo="$(pwd)/target/staging"
+            deploy:deploy -DdogfoodStagingRepo="$(pwd)/target/staging"
       - uses: actions/upload-artifact@v4
         with:
           name: compile-artifact
           if-no-files-found: error
           path: |
-            target
             */target
             */*/target
             !pmd-dist/target/pmd-dist-*-bin.zip
             !pmd-dist/target/pmd-dist-*-src.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: staging-repository
+          if-no-files-found: error
+          path: target/staging
       - uses: actions/upload-artifact@v4
         with:
           name: dist-artifact
@@ -149,6 +153,9 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: compile-artifact
+      - uses: actions/download-artifact@v4
+        with:
+          name: staging-repository
       - name: Run PMD on PMD
         run: |
           # this only works if the triggering event of this workflow is "pull_request"
@@ -167,7 +174,7 @@ jobs:
 
           echo "::group::Run ./mvnw verify"
           ./mvnw verify --show-version --errors --batch-mode \
-            -PfastSkip,dogfood \
+            -PfastSkip \
             -DdogfoodStagingRepo="$(pwd)/target/staging" \
             -DskipTests \
             -Dpmd.skip=false \
