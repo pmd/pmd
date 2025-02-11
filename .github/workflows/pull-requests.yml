@@ -160,6 +160,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: staging-repository
+          path: target/staging
       - name: Run PMD on PMD
         run: |
           # this only works if the triggering event of this workflow is "pull_request"
@@ -222,6 +223,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: dist-artifact
+          path: pmd-dist/target
       - name: Setup bundler
         run: |
           bundle config set --local path vendor/bundle
