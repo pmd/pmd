@@ -92,7 +92,8 @@ jobs:
           name: compile-artifact
       - name: Full Build with Maven
         run: |
-          ./mvnw verify \
+          ./mvnw --show-version --errors --batch-mode \
+              verify \
               -Pgenerate-rule-docs \
               -Djava8.home="${JAVA_HOME_8_X64}" \
               -Djava17.home="${JAVA_HOME_17_X64}" \
@@ -127,7 +128,10 @@ jobs:
           path: ~/.m2/repository
           enableCrossOsArchive: true
       - name: Build with Maven and run unit tests
-        run: ./mvnw -B verify -PfastSkip -Dcyclonedx.skip=false
+        run: |
+          ./mvnw --show-version --errors --batch-mode \
+              verify \
+              -PfastSkip -Dcyclonedx.skip=false
 
   dogfood:
     needs: compile
@@ -173,7 +177,8 @@ jobs:
           echo "::endgroup::"
 
           echo "::group::Run ./mvnw verify"
-          ./mvnw verify --show-version --errors --batch-mode \
+          ./mvnw --show-version --errors --batch-mode \
+            verify \
             -PfastSkip \
             -DdogfoodStagingRepo="$(pwd)/target/staging" \
             -DskipTests \
