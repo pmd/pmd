@@ -97,7 +97,6 @@ jobs:
         run: |
           ./mvnw --show-version --errors --batch-mode \
               verify \
-              -Pgenerate-rule-docs \
               -DskipTests
 
   verify-unittests:
