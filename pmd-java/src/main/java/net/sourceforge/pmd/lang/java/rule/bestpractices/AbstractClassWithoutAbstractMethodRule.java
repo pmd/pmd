@@ -22,7 +22,7 @@ public class AbstractClassWithoutAbstractMethodRule extends AbstractJavaRulechai
         }
 
         if (node.getDeclarations(ASTMethodDeclaration.class).none(ASTMethodDeclaration::isAbstract)) {
-            //asCtx(data).addViolation(node);
+            asCtx(data).addViolation(node);
         }
         return data;
     }
