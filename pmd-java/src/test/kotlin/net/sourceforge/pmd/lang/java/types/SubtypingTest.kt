@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
 import net.sourceforge.pmd.lang.java.symbols.internal.UnresolvedClassStore
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.createUnresolvedAsmSymbol
 import net.sourceforge.pmd.lang.java.types.TypeConversion.capture
+import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility
 import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility.UNCHECKED_NO_WARNING
 import net.sourceforge.pmd.lang.java.types.testdata.ComparableList
 import net.sourceforge.pmd.lang.java.types.testdata.SomeEnum
@@ -327,6 +328,21 @@ class SubtypingTest : FunSpec({
                 sym[t_String] shouldBeSubtypeOf sym[`?` extends t_String] // containment
             }
         }
+    }
+
+    test("Capture of recursive types #5442 stackoverflow") {
+        val acu = javaParser.parse(
+            """
+                abstract class AbstractResourceAssembler<R extends Resource<? extends R>, UID, V> implements EntityResourceAssembler<T, R, UID, V> {
+                }
+                abstract class Resource<T extends Resource<? extends T>> extends org.springframework.hateoas.RepresentationModel<T> {
+                }
+            """.trimIndent()
+        )
+
+        val tvar = acu.typeVar("R")
+
+        TypeOps.isConvertibleInferenceNoCapture(tvar, tvar.typeSystem.UNKNOWN) shouldBe Convertibility.SUBTYPING
     }
 
 
