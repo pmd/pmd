@@ -69,7 +69,7 @@ jobs:
             pmd-dist/target/pmd-dist-*-bin.zip
             pmd-dist/target/pmd-dist-*-src.zip
 
-  verify-complete:
+  verify:
     needs: compile
     timeout-minutes: 30
     runs-on: ubuntu-latest
@@ -83,11 +83,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: |
-            8
-            17
-            21
-            11
+          java-version: '11'
       - uses: actions/cache@v4
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
@@ -102,9 +98,7 @@ jobs:
           ./mvnw --show-version --errors --batch-mode \
               verify \
               -Pgenerate-rule-docs \
-              -Djava8.home="${JAVA_HOME_8_X64}" \
-              -Djava17.home="${JAVA_HOME_17_X64}" \
-              -Djava21.home="${JAVA_HOME_21_X64}"
+              -DskipTests
 
   verify-unittests:
     needs: compile
@@ -114,15 +108,25 @@ jobs:
       run:
         shell: bash
     strategy:
-      # don't fail fast - we want to know the results of both runs
+      # don't fail fast - we want to know the results of all runs
       fail-fast: false
       matrix:
-        os: [ windows-latest, macos-latest ]
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2
       - uses: actions/setup-java@v4
+        # under linux we execute more extensive integration tests with various java versions
+        if: ${{ runner.os == 'Linux' }}
+        with:
+          distribution: 'temurin'
+          java-version: |
+            8
+            17
+            21
+      - uses: actions/setup-java@v4
+        # default java version for all os is 11
         with:
           distribution: 'temurin'
           java-version: '11'
@@ -134,11 +138,20 @@ jobs:
           restore-keys: maven-
           path: ~/.m2/repository
           enableCrossOsArchive: true
+      - uses: actions/download-artifact@v4
+        # we can only reuse compile-artifacts under linux due to file timestamp issues and
+        # platform specific line endings in test files.
+        if: ${{ runner.os == 'Linux' }}
+        with:
+          name: compile-artifact
       - name: Build with Maven and run unit tests
         run: |
           ./mvnw --show-version --errors --batch-mode \
               verify \
-              -PfastSkip -Dcyclonedx.skip=false
+              -PfastSkip -Dcyclonedx.skip=false \
+              -Djava8.home="${JAVA_HOME_8_X64}" \
+              -Djava17.home="${JAVA_HOME_17_X64}" \
+              -Djava21.home="${JAVA_HOME_21_X64}"
 
   dogfood:
     needs: compile
