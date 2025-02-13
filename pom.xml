@@ -1347,20 +1347,28 @@
                     </plugin>
                 </plugins>
             </build>
-            <repositories>
-                <repository>
-                    <id>dogfood</id>
-                    <url>file://${dogfoodStagingRepo}</url>
-                    <releases><enabled>false</enabled></releases>
-                    <snapshots><enabled>true</enabled></snapshots>
-                </repository>
-            </repositories>
             <pluginRepositories>
                 <pluginRepository>
                     <id>dogfood</id>
                     <url>file://${dogfoodStagingRepo}</url>
                     <releases><enabled>false</enabled></releases>
                     <snapshots><enabled>true</enabled></snapshots>
+                </pluginRepository>
+                <!-- disable sonatype-nexus-plugin-snapshots, so that only dogfood is used -->
+                <pluginRepository>
+                    <id>sonatype-nexus-plugin-snapshots</id>
+                    <name>Sonatype Nexus Snapshots</name>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                    <releases><enabled>false</enabled></releases>
+                    <snapshots><enabled>false</enabled></snapshots>
+                </pluginRepository>
+                <!-- disable apache.snapshots, so that only dogfood is used -->
+                <pluginRepository>
+                    <id>apache.snapshots</id>
+                    <name>Apache Snapshot Repository</name>
+                    <url>https://repository.apache.org/snapshots</url>
+                    <releases><enabled>false</enabled></releases>
+                    <snapshots><enabled>false</enabled></snapshots>
                 </pluginRepository>
             </pluginRepositories>
         </profile>

@@ -40,6 +40,13 @@ jobs:
           ./mvnw --show-version --errors --batch-mode \
             verify -PfastSkip -DskipTests \
             deploy:deploy -DdogfoodStagingRepo="$(pwd)/target/staging"
+      - name: Cleanup local repository
+        run: |
+          # Cleanup local repository to not poison the shared cache with our SNAPSHOTS of the current build.
+          # Some information is stored in maven-metadata-*.xml files which tells maven which
+          # version exactly is available in the staging repo. But if we rerun the build using the
+          # older cache, it points to the old staging versions, which are not available anymore.
+          find ~/.m2/repository/net/sourceforge/pmd -type d -name "*-SNAPSHOT" | xargs rm -vrf
       - uses: actions/upload-artifact@v4
         with:
           name: compile-artifact
@@ -173,7 +180,7 @@ jobs:
 
           new_version="${current_pmd_version}-pr-${pr_number}-dogfood-SNAPSHOT"
           echo "::group::Set version to ${new_version}"
-          ./mvnw versions:set -DnewVersion="${new_version}" -DgenerateBackupPoms=false
+          ./mvnw versions:set --quiet -DnewVersion="${new_version}" -DgenerateBackupPoms=false
           sed -i 's/<version>[0-9]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}.*<\/version>\( *<!-- pmd.dogfood.version -->\)/<version>'"${current_pmd_version}"'<\/version>\1/' pom.xml
           echo "::endgroup::"
 
@@ -188,7 +195,7 @@ jobs:
           echo "::endgroup::"
 
           echo "::group::Restore version to ${current_pmd_version}"
-          ./mvnw versions:set -DnewVersion="${current_pmd_version}" -DgenerateBackupPoms=false
+          ./mvnw versions:set --quiet -DnewVersion="${current_pmd_version}" -DgenerateBackupPoms=false
           git checkout -- pom.xml
           echo "::endgroup::"
 
