@@ -46,7 +46,7 @@ jobs:
           # Some information is stored in maven-metadata-*.xml files which tells maven which
           # version exactly is available in the staging repo. But if we rerun the build using the
           # older cache, it points to the old staging versions, which are not available anymore.
-          find ~/.m2/repository/net/sourceforge/pmd -type d -name "*-SNAPSHOT" | xargs rm -vrf
+          find ~/.m2/repository/net/sourceforge/pmd -type d -name "*-SNAPSHOT" -and -not -wholename "*/pmd-designer/*" | xargs rm -vrf
       - uses: actions/upload-artifact@v4
         with:
           name: compile-artifact
