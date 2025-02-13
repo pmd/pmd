@@ -51,7 +51,7 @@ public final class PMDVersion {
             LOG.debug("Couldn't determine version of PMD", e);
         }
 
-        VERSION = pmdVersion;
+        VERSION = pmdVersion.replace("-SNAPSHOT", "-test-SNAPSHOT"); //pmdVersion;
         RELEASE_TIMESTAMP = releaseTimestamp;
         GIT_COMMIT_ID = gitCommitId;
         GIT_COMMIT_TIME = gitCommitTime;
