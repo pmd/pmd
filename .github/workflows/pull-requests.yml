@@ -97,7 +97,7 @@ jobs:
         run: |
           ./mvnw --show-version --errors --batch-mode \
               verify \
-              -DskipTests
+              -DskipTests -Dmaven.test.skip=true
 
   verify-unittests:
     needs: compile
