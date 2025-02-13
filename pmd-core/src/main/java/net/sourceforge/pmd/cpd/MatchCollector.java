@@ -173,34 +173,33 @@ class MatchCollector {
     /*
    One optimization we do is to prune marks that have same hash, but have the same preceding token.
    This is because the preceding token necessarily also hos the same hash, and will yield a longer
-   match. However, the final, leftmost tokens that have the same sequence may overlap. For instance
-   in
-       A B C;   // 1
-       A B C;   // 2
-       A B C;   // 3
-       A B C;   // 4
-       A B C;   // 5
-       A B C;   // 6
+   match. However, the final, leftmost tokens that have the same prefix sequence may overlap. For
+   instance in
+       A B C D   // 1
+       A B C D   // 2
+       A B C D   // 3
+       A B C D   // 4
+       A B C D   // 5
     with a tile size of 5. The hashes of A1, A2, A3, A4 will be equal, but we will only
-    have A1 and A2 in the mark set. That is because we first add A4, then A3, notice they
-    both are preceded by ;, so we remove them. Then we add A2 and A1, which are kept.
-    A1 and A2 have 4x4 tokens in common (4 lines of A B C;), but 3 of those lines are shared.
+    have A1 and A2 in the mark set. That is because we first add A5, then A4, notice they
+    both are preceded by D, so we remove them. Then we add A3 and A2 and prune them. Finally,
+    we add A1, which is kept, but is alone so won't be processed by this algorithm. However,
+    D1 and D2 will.
+    D1 and D2 have 13 tokens in common (3 lines of `D A B C` plus D5), but 2 of those
+    lines are shared (D2-D4).
 
-    Ideally in this situation we want to report A1-A2 and A3-A4 as non-overlapping
-    maximal marks in one match.
+    Ideally in this situation we want to report D1-D2 and D3-D4 as non-overlapping
+    maximal marks in one match. (We could also opt to report D1-D3 and D2-D5...
+    but currently we don't as they overlap, even if they are larger matches.)
 
-    We start by checking that A1 and A2 are in the same file and follow each other.
-    Then we compute their prefix length, which is 16. This is greater than the distance
-    between A1 and A2 (=4). That means that their common token sequence overlaps.
-    In this case we try to look 4 tokens away from A2 (=A3) and again compare with A1.
-    We find they have 12 tokens in common, and still overlap. But the non-overlapping
-    match part is 12-4=8 which is greater than our previous candidate, and greater than
-    the tile size (=5). (A1,A3) is therefore a better candidate than (A1,A2).
-    Next we check 4 tokens away from A3, ie we check (A1,A4). This still has 8
-    non-overlapping tokens so is not better. We stop and report (A1,A3).
-
-
-
+    We start by checking that D1 and D2 are in the same file and follow each other.
+    Then we compute their prefix length, which is 13. This is greater than the distance
+    between D1 and D2 (=4). That means that their common token sequence overlaps on 9 tokens.
+    In this case we try to look 4 tokens away from D2 (=D3) and again compare with D1.
+    We find they have 9 tokens in common, and do not overlap. (D1,D3) is therefore a
+    better candidate than (D1,D2).
+    Next we check 4 tokens away from D3, ie we check (D1,D4). This has no overlap
+    but only has 5 tokens in common so is a worse candidate. We stop and report (D1,D3).
     */
     private SmallTokenEntry bestDuplicate(final SmallTokenEntry mark1, final SmallTokenEntry mark2, final int dupes) {
         if (dupes < minTileSize) {
