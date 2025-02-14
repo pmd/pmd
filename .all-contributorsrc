@@ -7938,6 +7938,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "mladjan-gadzic",
+      "name": "Mladjan Gadzic",
+      "avatar_url": "https://avatars.githubusercontent.com/u/30688679?v=4",
+      "profile": "https://github.com/mladjan-gadzic",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
