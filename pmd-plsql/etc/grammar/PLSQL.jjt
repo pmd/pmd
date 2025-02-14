@@ -3267,7 +3267,10 @@ ASTLikeExpression LikeExpression() :
 }
 
 /**
- * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/TRIM.html
+ * There are two variants of TRIM:
+ * <p>
+ * 1. TRIM: https://docs.oracle.com/en//database/oracle/oracle-database/23/sqlrf/TRIM.html
+ * 2. TRIM Collection Method: https://docs.oracle.com/en/database/oracle/oracle-database/23/lnpls/collection-methods.html#GUID-6AF582B1-9C50-4858-AE6C-B14DD051ACD1
  */
 ASTTrimExpression TrimExpression() :
 { PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
@@ -3277,7 +3280,11 @@ ASTTrimExpression TrimExpression() :
      [ ( <LEADING> | <TRAILING> | <BOTH> ) { sb.append(" "); sb.append(token.getImage()); } ]
      [ LOOKAHEAD(StringExpression() <FROM>) simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); } ]
      [ <FROM> { sb.append(" ").append(token.getImage()); } ]
-     simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); }
+     (
+         //LOOKAHEAD(StringExpression()) simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); }
+         //|
+         Expression() // TRIM Collection Method takes an arbitrary expression as argument
+     )
      ")" { sb.append(")");}
   )
  {
