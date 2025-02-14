@@ -15,6 +15,10 @@ import static net.sourceforge.pmd.lang.java.ast.BinaryOp.MUL;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.SHIFT_OPS;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.SUB;
 import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isInfixExprWithOperator;
+import static net.sourceforge.pmd.util.OptionalBool.NO;
+import static net.sourceforge.pmd.util.OptionalBool.UNKNOWN;
+import static net.sourceforge.pmd.util.OptionalBool.YES;
+import static net.sourceforge.pmd.util.OptionalBool.definitely;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -28,16 +32,24 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
+import net.sourceforge.pmd.lang.java.ast.InvocationNode;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
+import net.sourceforge.pmd.lang.java.types.JClassType;
+import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind;
+import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * Detects casts where the operand is already a subtype of the context
@@ -99,6 +111,10 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isCastUnnecessary(ASTCastExpression castExpr, @NonNull ExprContext context, JTypeMirror coercionType, JTypeMirror operandType) {
+        if (isCastDeterminingReturnOfLambda(castExpr) != NO) {
+            return false;
+        }
+
         if (operandType.equals(coercionType)) {
             // with the exception of the lambda thing above, casts to
             // the same type are always unnecessary
@@ -185,6 +201,97 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
 
         }
         return false;
+    }
+
+    private static OptionalBool isCastDeterminingReturnOfLambda(ASTCastExpression castExpr) {
+        ASTLambdaExpression lambda = getLambdaParent(castExpr);
+        if (lambda == null) {
+            return NO;
+        }
+
+        // The necessary conditions are:
+        // - The lambda return type mentions type vars that are missing from its arguments
+        // (lambda is context dependent)
+        // - The lambda type is inferred:
+        //   1. its context is missing, or
+        //   2. it is invocation and the parent method call
+        //      a. is inferred (generic + no explicit arguments)
+        //      b. mentions some of its type params in the argument type corresponding to the lambda
+
+        JExecutableSymbol symbol = lambda.getFunctionalMethod().getSymbol();
+        if (symbol.isUnresolved()) {
+            return UNKNOWN;
+        }
+
+        // Note we don't test the functional method directly, because it has been instantiated
+        // We test its generic signature.
+        boolean contextDependent = TypeOps.isContextDependent(symbol);
+        if (!contextDependent) {
+            return NO;
+        }
+
+        ExprContext lambdaCtx = lambda.getConversionContext();
+        if (lambdaCtx.isMissing()) {
+            return YES;
+        } else if (lambdaCtx.hasKind(ExprContextKind.CAST)) {
+            return NO;
+        } else if (lambdaCtx.hasKind(ExprContextKind.INVOCATION)) {
+            InvocationNode parentCall = (InvocationNode) lambda.getParent().getParent();
+            if (parentCall.getExplicitTypeArguments() != null) {
+                return NO;
+            }
+            OverloadSelectionResult overload = parentCall.getOverloadSelectionInfo();
+            if (overload.isFailed()) {
+                return UNKNOWN;
+            }
+            JMethodSig parentMethod = overload.getMethodType();
+            if (!parentMethod.getSymbol().isGeneric()) {
+                return NO;
+            }
+
+            int argIdx = lambda.getIndexInParent();
+            JMethodSig genericSig = parentMethod.getSymbol().getGenericSignature();
+            // this is the generic lambda ty as mentioned in the formal parameters
+            JTypeMirror genericLambdaTy = genericSig.ithFormalParam(argIdx, overload.isVarargsCall());
+            if (!(genericLambdaTy instanceof JClassType)) {
+                return NO;
+            }
+            // Note that we don't capture this type, which may make the method type malformed (eg mentioning a wildcard
+            // as return type). We need these bare wildcards for "mentionsAny" to work properly.
+            // The "correct" approach here to remove wildcards would be to infer the ground non-wildcard parameterization
+            // of the lambda but this is pretty deep inside the inference code and not readily usable.
+            JClassType lambdaTyCapture = (JClassType) genericLambdaTy;
+
+            // This is the method signature of the lambda, given the formal parameter type of the parent call.
+            // The formal type is not instantiated, it may contain type variables of the parent method...
+            JMethodSig expectedLambdaMethod = genericLambdaTy.getTypeSystem().sigOf(
+                lambda.getFunctionalMethod().getSymbol(),
+                lambdaTyCapture.getTypeParamSubst()
+            );
+            // but if the return type does not contain such tvars, then the parent method type does
+            // not depend on the lambda type :)
+            return definitely(
+                TypeOps.mentionsAny(
+                    expectedLambdaMethod.getReturnType(),
+                    parentMethod.getTypeParameters()
+                )
+            );
+        }
+        return UNKNOWN;
+    }
+
+    private static @Nullable ASTLambdaExpression getLambdaParent(ASTCastExpression castExpr) {
+        if (castExpr.getParent() instanceof ASTLambdaExpression) {
+            return (ASTLambdaExpression) castExpr.getParent();
+        }
+        if (castExpr.getParent() instanceof ASTReturnStatement) {
+            JavaNode returnTarget = JavaAstUtils.getReturnTarget((ASTReturnStatement) castExpr.getParent());
+
+            if (returnTarget instanceof ASTLambdaExpression) {
+                return (ASTLambdaExpression) returnTarget;
+            }
+        }
+        return null;
     }
 
 }

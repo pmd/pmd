@@ -68,7 +68,9 @@ public interface OverloadSelectionResult {
      *                        greater than the number of argument
      *                        expressions to the method
      */
-    JTypeMirror ithFormalParam(int i);
+    default JTypeMirror ithFormalParam(int i) {
+        return getMethodType().ithFormalParam(i, isVarargsCall());
+    }
 
     /**
      * Returns true if the invocation of this method failed. This

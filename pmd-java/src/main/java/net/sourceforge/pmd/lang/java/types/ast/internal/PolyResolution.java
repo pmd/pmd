@@ -535,7 +535,7 @@ public final class PolyResolution {
 
 
             JMethodSig fun = ((ASTLambdaExpression) papa).getFunctionalMethod();
-            if (fun == null || TypeOps.isContextDependent(fun)) {
+            if (fun == null || TypeOps.isContextDependent(fun.getSymbol())) {
                 // Missing context, because the expression type itself
                 // is used to infer the context type.
                 return ExprContext.getMissingInstance();
