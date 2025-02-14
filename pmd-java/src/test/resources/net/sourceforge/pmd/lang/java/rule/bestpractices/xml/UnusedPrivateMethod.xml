@@ -16,6 +16,58 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>PmdTest2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+ import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Mono;
+import reactor.function.TupleUtils;
+import java.util.Optional;
+import static org.assertj.core.api.Assertions.assertThat;
+@ExtendWith(MockitoExtension.class)
+class PmdTest2 {
+    @Test
+    void test() {
+        var res = Mono.zip(Mono.just(Optional.of("Some test")), Mono.just(TestClass.of("some 2")))
+                .flatMap(TupleUtils.function((par1, par2) -> Mono.just(createProperty(par1, par2))))
+                .map(objectProperty -> addRequired(objectProperty))
+                .block();
+        assertThat(res.required).isEqualTo("pop");
+        assertThat(res.val).isEqualTo("Some test");
+    }
+    private TestClass createProperty(Optional<String> par1, TestClass objectProperty) {
+        return TestClass.of(par1.orElse("par5"));
+    }
+    private TestClass addRequired(TestClass objectProperty) {
+        return objectProperty.withRequiredProperty("pop");
+    }
+    private static class TestClass {
+        private String required;
+        private String val;
+        TestClass(String val) {
+            this.val = val;
+        }
+        public static TestClass of(String val) {
+            return new TestClass(val);
+        }
+        public TestClass withRequiredProperty(String s) {
+            required = s;
+            return this;
+        }
+        public String getRequired() {
+            return required;
+        }
+        public String getVal() {
+            return val;
+        }
+    }
+}
+
+        ]]></code>
+    </test-code>
 
     <test-code>
         <description>simple unused private method</description>
