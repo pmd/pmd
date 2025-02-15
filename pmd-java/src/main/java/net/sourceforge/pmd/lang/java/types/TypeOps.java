@@ -401,11 +401,6 @@ public final class TypeOps {
         return SubtypeVisitor.INFERENCE.isConvertible(t, s, true);
     }
 
-    // test only
-    static Convertibility isConvertibleInferenceNoCapture(@NonNull JTypeMirror t, @NonNull JTypeMirror s) {
-        return SubtypeVisitor.INFERENCE.isConvertible(t, s, false);
-    }
-
     @Deprecated // unused
     public static Convertibility isConvertible(@NonNull JTypeMirror t, @NonNull JTypeMirror s, boolean capture) {
         return SubtypeVisitor.PURE.isConvertible(t, s, capture);
