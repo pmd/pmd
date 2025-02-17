@@ -744,7 +744,6 @@ public final class DataflowPass {
                                     ASTStatement body,
                                     boolean checkFirstIter,
                                     ASTVariableId foreachVar) {
-            final GlobalAlgoState globalState = before.global;
 
             //todo while(true) and do {}while(true); are special-cased
             // by the compiler and there is no fork
