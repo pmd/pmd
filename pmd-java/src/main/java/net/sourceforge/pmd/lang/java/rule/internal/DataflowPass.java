@@ -774,6 +774,9 @@ public final class DataflowPass {
             // including itself
             SpanInfo iter = acceptOpt(body, before.fork());
 
+            // Make assignments that reached a continue reach the condition block before next iteration
+            iter.absorb(continueTarget);
+
             if (foreachVar != null && iter.hasVar(foreachVar)) {
                 // in foreach loops, the loop variable is reassigned on each update
                 iter.assign(foreachVar.getSymbol(), foreachVar);
@@ -782,19 +785,8 @@ public final class DataflowPass {
             }
 
             linkConditional(iter, cond, iter, breakTarget, true);
+            // do a second round to make sure assignments can reach themselves.
             iter = acceptOpt(body, iter);
-
-
-            breakTarget = globalState.breakTargets.peek();
-            continueTarget = globalState.continueTargets.peek();
-            if (!continueTarget.symtable.isEmpty()) {
-                // make assignments before a continue reach the other parts of the loop
-
-                linkConditional(continueTarget, cond, continueTarget, breakTarget, true);
-
-                continueTarget = acceptOpt(body, continueTarget);
-                continueTarget = acceptOpt(update, continueTarget);
-            }
 
             SpanInfo result = popTargets(loop, breakTarget, continueTarget);
             result.absorb(iter);
