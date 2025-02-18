@@ -18,6 +18,7 @@ public final class PMDVersion {
 
     private static final Logger LOG = LoggerFactory.getLogger(PMDVersion.class);
 
+
     /**
      * Constant that contains always the current version of PMD.
      */
