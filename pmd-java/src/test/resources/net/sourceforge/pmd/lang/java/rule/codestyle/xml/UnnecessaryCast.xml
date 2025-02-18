@@ -1015,11 +1015,31 @@ class Tester {
         <description>Other example of cast in lambda return (#5440)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+            import java.util.Optional;
             class Scratch {
                 public static void main(String[] args) {
                     Object object = Optional
                             .of(new Object())
-                            .map(o -> (Object) o.toString()) // <-- Unnecessary cast (Object)
+                            // necessary otherwise map would return Optional<String>
+                            .map(o -> (Object) o.toString())
+                            .orElse(Boolean.FALSE);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Other example of cast in lambda return (#5440) - has explicit type args</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import java.util.Optional;
+            class Scratch {
+                public static void main(String[] args) {
+                    Object object = Optional
+                            .of(new Object())
+                            // with explicit targs it is unnecessary
+                            .<Object>map(o -> (Object) o.toString())
                             .orElse(Boolean.FALSE);
                 }
             }
