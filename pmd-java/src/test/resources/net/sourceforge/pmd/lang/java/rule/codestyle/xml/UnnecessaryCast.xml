@@ -1046,4 +1046,24 @@ class Tester {
             ]]></code>
     </test-code>
 
+
+    <test-code>
+        <description>Other example of cast in lambda return (#5440) - has cast context</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import java.util.Optional;
+            import java.util.function.UnaryOperator;
+
+            class Scratch {
+                public static void main(String[] args) {
+                    Object object = Optional
+                            .of(new Object())
+                            // the outer cast determines the type of the lambda, not the inner cast
+                            .map((UnaryOperator<Object>) o -> (Object) o.toString())
+                            .orElse(Boolean.FALSE);
+                }
+            }
+            ]]></code>
+    </test-code>
+
 </test-data>

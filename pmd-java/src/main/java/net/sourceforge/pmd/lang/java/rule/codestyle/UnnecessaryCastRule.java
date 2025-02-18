@@ -224,7 +224,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         }
 
         // Note we don't test the functional method directly, because it has been instantiated
-        // We test its generic signature.
+        // We test its generic signature (the symbol).
         boolean contextDependent = TypeOps.isContextDependent(symbol);
         if (!contextDependent) {
             return NO;
