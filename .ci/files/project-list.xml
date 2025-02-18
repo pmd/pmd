@@ -196,4 +196,11 @@ EOF
     <tag>main</tag>
     <auxclasspath-command>realpath java-regression-tests-*.jar</auxclasspath-command>
   </project>
+
+  <project>
+    <name>OracleDBUtils</name>
+    <type>git</type>
+    <connection>https://github.com/Qualtagh/OracleDBUtils.git</connection>
+    <tag>0513fe6b053b31e6c09ac6f86eb2064733ecf32d</tag>
+  </project>
 </projectlist>
