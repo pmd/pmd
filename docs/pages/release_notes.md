@@ -16,6 +16,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🐛 Fixed Issues
 
+* java-codestyle
+  * [#5523](https://github.com/pmd/pmd/issues/5523): \[java] UnnecessaryCast false-positive for integer operations in floating-point context
+
 ### 🚨 API Changes
 
 ### ✨ Merged pull requests
