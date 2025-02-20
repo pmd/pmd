@@ -330,7 +330,7 @@ class SubtypingTest : IntelliMarker, FunSpec({
         }
     }
 
-    test("Capture of recursive types #5442 stackoverflow") {
+    test("Capture of recursive types #5505 stackoverflow") {
         javaParser.parse(
             """
                 package org.example;
