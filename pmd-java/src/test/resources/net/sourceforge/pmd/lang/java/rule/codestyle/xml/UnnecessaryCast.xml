@@ -911,6 +911,21 @@ class Tester {
     </test-code>
 
     <test-code>
+        <description>#5523 [java] UnnecessaryCast FP with integer division</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Scratch {
+                public static void main(String[] args) {
+                    long x = 100;
+                    Integer y = 75;
+                    System.out.println(Math.ceil((double) x / y)); // <-- Unnecessary cast (double).
+                    System.out.println(Math.ceil(x / y));
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
         <description>Cast in return position of lambda</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

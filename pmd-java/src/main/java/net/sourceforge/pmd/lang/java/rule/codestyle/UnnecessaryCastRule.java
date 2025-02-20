@@ -194,9 +194,9 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
                 // Eg in
                 //     int i; ((double) i) * i
                 // the only reason the mult expr has type double is because of the cast
-                return TypeOps.isStrictSubtype(otherType, coercionType)
-                    // but not for integers strictly smaller than int
-                    && !TypeOps.isStrictSubtype(otherType.unbox(), otherType.getTypeSystem().INT);
+                JTypeMirror promotedTypeWithoutCast = TypeConversion.binaryNumericPromotion(operandType, otherType);
+                JTypeMirror promotedTypeWithCast = TypeConversion.binaryNumericPromotion(coercionType, otherType);
+                return !promotedTypeWithoutCast.equals(promotedTypeWithCast);
             }
 
         }

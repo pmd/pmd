@@ -907,12 +907,12 @@
             <dependency>
                 <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy</artifactId>
-                <version>4.0.24</version>
+                <version>4.0.25</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
-                <version>2.11.0</version>
+                <version>2.12.1</version>
             </dependency>
             <dependency>
                 <groupId>org.yaml</groupId>
@@ -1020,7 +1020,7 @@
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy-agent</artifactId>
-                <version>1.17.0</version>
+                <version>1.17.1</version>
                 <scope>test</scope>
             </dependency>
 
