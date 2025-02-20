@@ -666,6 +666,26 @@
                                 <exclude>@net.sourceforge.pmd.annotation.Experimental</exclude>
                                 <exclude>@net.sourceforge.pmd.annotation.InternalApi</exclude>
                             </excludes>
+                            <overrideCompatibilityChangeParameters>
+                                <!-- See https://docs.oracle.com/javase/specs/jls/se21/html/jls-13.html#jls-13.5.7 -->
+                                <!-- See https://github.com/siom79/japicmp/issues/201 -->
+                                <overrideCompatibilityChangeParameter>
+                                    <!-- Adding a new default method to an interface is a binary-compatible change (JLS 13.5.7). -->
+                                    <!-- It doesn't break compatibility, and at most may clash with existing overriding methods. -->
+                                    <!-- But the risk here is the same as adding a method to a non-final class. -->
+                                    <compatibilityChange>METHOD_NEW_DEFAULT</compatibilityChange>
+                                    <binaryCompatible>true</binaryCompatible>
+                                    <sourceCompatible>true</sourceCompatible>
+                                </overrideCompatibilityChangeParameter>
+                                <overrideCompatibilityChangeParameter>
+                                    <!-- Turning an interface method from abstract to default is not binary-incompatible (JLS 13.5.7). -->
+                                    <!-- It may cause IncompatibleClassChangeError in some very specific situations,
+                                    where unrelated subinterfaces each define their own default. -->
+                                    <compatibilityChange>METHOD_ABSTRACT_NOW_DEFAULT</compatibilityChange>
+                                    <binaryCompatible>true</binaryCompatible>
+                                    <sourceCompatible>true</sourceCompatible>
+                                </overrideCompatibilityChangeParameter>
+                            </overrideCompatibilityChangeParameters>
                         </parameter>
                     </configuration>
                     <executions>
