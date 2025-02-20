@@ -3283,7 +3283,7 @@ ASTTrimExpression TrimExpression() :
      (
          //LOOKAHEAD(StringExpression()) simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); }
          //|
-         Expression() // TRIM Collection Method takes an arbitrary expression as argument
+         simpleNode = Expression() { sb.append(" ").append(simpleNode.getImage()); } // TRIM Collection Method takes an arbitrary expression as argument
      )
      ")" { sb.append(")");}
   )
