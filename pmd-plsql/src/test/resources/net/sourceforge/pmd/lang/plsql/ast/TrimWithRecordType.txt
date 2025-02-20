@@ -18,7 +18,7 @@
       |                 |     |     +- FunctionName[@CanonicalImage = "TRIM", @Image = "trim"]
       |                 |     |     |  +- ID[@CanonicalImage = "TRIM", @Image = "trim"]
       |                 |     |     +- TrimExpression[@CanonicalImage = "( VAR_PACKAGE.RECORD.FIELD)", @Image = "( var_package.record.field)"]
-      |                 |     |        +- Expression[@CanonicalImage = "VAR_PACKAGE.RECORD.FIELD", @Image = "var_package.record.field"]
+      |                 |     |        +- StringExpression[@CanonicalImage = "VAR_PACKAGE.RECORD.FIELD", @Image = "var_package.record.field"]
       |                 |     |           +- PrimaryPrefix[@CanonicalImage = "VAR_PACKAGE.RECORD.FIELD", @Image = "var_package.record.field", @SelfModifier = false]
       |                 |     |              +- SimpleExpression[@CanonicalImage = "VAR_PACKAGE.RECORD.FIELD", @Image = "var_package.record.field"]
       |                 |     |                 +- SchemaName[@CanonicalImage = "VAR_PACKAGE", @Image = "var_package"]
