@@ -78,6 +78,16 @@ class PlsqlTreeDumpTest extends BaseTreeDumpTest {
     }
 
     @Test
+    void trimFunction() {
+        doTest("TrimFunction");
+    }
+
+    @Test
+    void trimWithRecordType() {
+        doTest("TrimWithRecordType");
+    }
+
+    @Test
     void trimCollectionFunction() {
         doTest("TrimCollectionFunction");
     }
