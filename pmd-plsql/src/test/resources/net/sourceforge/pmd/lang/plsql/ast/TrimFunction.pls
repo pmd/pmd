@@ -66,4 +66,35 @@ select max(cmp_id)
         from companies
         where trim(sap_number) = trim(v_sap_nr);
 
+
+-- outputs "3" in sqlplus
+select trim(1+2) from dual;
+
+-- outputs col5="3" in sqlplus
+select 'X' || trim(leading 1 from '  test  ') || 'X' as col1,
+       'X' || trim(leading ' ' from '  test  ') || 'X' as col2,
+       'X' || trim(both ' ' from '  test  ') || 'X' as col3,
+       'X' || trim(leading from '  test  ') || 'X' as col4,
+       trim(1+2) as col5
+       from dual;
+
 END;
+
+create or replace package p_utils is
+    function distinguishXML(x in number, y in number) return varchar;
+end;
+/
+create or replace package body p_utils is
+    function distinguishXML(x in number, y in number) return varchar is
+    begin
+      return trim(x + y);
+    end;
+end;
+/
+SHOW ERRORS
+SET SERVEROUTPUT ON
+DECLARE
+    BEGIN
+        DBMS_OUTPUT.PUT_LINE(p_utils.distinguishXML(1, 2));
+    END;
+/
