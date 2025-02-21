@@ -6,7 +6,6 @@ on:
       - main
     tags:
       - '**'
-  pull_request:
   merge_group:
   schedule:
     # build it monthly: At 04:00 on day-of-month 1.
