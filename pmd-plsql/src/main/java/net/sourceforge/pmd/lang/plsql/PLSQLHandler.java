@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.plsql.ast.PLSQLParser;
  */
 public class PLSQLHandler extends AbstractPmdLanguageVersionHandler {
 
+
     @Override
     public Parser getParser() {
         return new PLSQLParser();
