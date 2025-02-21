@@ -8,7 +8,8 @@ bin/
 .ruleset
 .settings/
 *.iml
-.idea
+.idea/*
+!.idea/icon.svg
 *.patch
 */src/site/site.xml
 pmd-core/dependency-reduced-pom.xml
