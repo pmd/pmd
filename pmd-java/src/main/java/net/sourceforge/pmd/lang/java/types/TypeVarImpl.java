@@ -76,7 +76,7 @@ abstract class TypeVarImpl implements JTypeVar {
      */
     static JTypeVar tvarCapture(@NonNull JTypeVar tv) {
         if (tv.isCaptured()) {
-            return tv;
+            return tv.withUpperBound(capture(tv.getUpperBound()));
         }
         // Need to capture the bounds because those bounds contributes the methods of the tvar.
         // Eg in `<C extends Collection<? super X>>` the methods available in C may mention the type
@@ -331,7 +331,7 @@ abstract class TypeVarImpl implements JTypeVar {
 
         @Override
         public JTypeVar withUpperBound(@NonNull JTypeMirror newUB) {
-            throw new UnsupportedOperationException("This only needs to be implemented on regular type variables");
+            return cloneWithBounds(upperBound, newUB);
         }
 
         @Override
@@ -353,6 +353,7 @@ abstract class TypeVarImpl implements JTypeVar {
         public @NonNull String getName() {
             Object captureOrigin = wildcard == null ? tvar : wildcard;
             return "capture#" + hashCode() % PRIME + " of " + captureOrigin;
+            // + "[" + lowerBound + ".." + upperBound + "]";
         }
     }
 }

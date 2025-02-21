@@ -271,7 +271,9 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
             if (isUnresolved(mirror)) {
                 return ts.UNKNOWN;
             }
-            return mirror.getFormalParameters().get(param.getIndexInParent());
+            JTypeMirror parmty = mirror.getFormalParameters().get(param.getIndexInParent());
+            // project upwards to remove captures
+            return TypeOps.projectUpwards(parmty);
 
         } else if (node.isEnumConstant()) {
 
