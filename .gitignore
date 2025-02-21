@@ -10,6 +10,7 @@ bin/
 *.iml
 .idea/*
 !.idea/icon.svg
+!.idea/vcs.xml
 *.patch
 */src/site/site.xml
 pmd-core/dependency-reduced-pom.xml
