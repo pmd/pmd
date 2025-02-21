@@ -568,6 +568,9 @@ entries:
     - title: Roadmap
       url: /pmd_devdocs_roadmap.html
       output: web, pdf
+    - title: GitHub Actions Workflows
+      url: /pmd_devdocs_github_actions_workflows.html
+      output: web, pdf
     - title: How PMD works
       url: /pmd_devdocs_how_pmd_works.html
       output: web, pdf
