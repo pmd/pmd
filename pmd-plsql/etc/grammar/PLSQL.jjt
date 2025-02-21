@@ -3274,7 +3274,7 @@ ASTLikeExpression LikeExpression() :
  * <p>
  * There is another TRIM function as a collection method, which can only be called on collection types
  * (https://docs.oracle.com/en/database/oracle/oracle-database/23/lnpls/collection-methods.html#GUID-6AF582B1-9C50-4858-AE6C-B14DD051ACD1).
- * This is parsed as a normal FunctionCall with Arguments.
+ * The TRIM collection method is parsed instead as a normal FunctionCall with Arguments and not using TrimExpression.
  */
 ASTTrimExpression TrimExpression() :
 { PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
@@ -3283,7 +3283,12 @@ ASTTrimExpression TrimExpression() :
      [ ( <LEADING> | <TRAILING> | <BOTH> ) { sb.append(" "); sb.append(token.getImage()); } ]
      [ LOOKAHEAD(StringExpression() <FROM>) simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); } ]
      [ <FROM> { sb.append(" ").append(token.getImage()); } ]
-     simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); }
+     [
+        // first try to parse as StringExpression() to produce a backwards compatible tree
+        LOOKAHEAD(StringExpression() ")") simpleNode = StringExpression()
+        // if it is not a simple string expression, you the more generic expression
+        | simpleNode = Expression()
+     ] { sb.append(" "); sb.append(simpleNode.getImage()); }
      ")" { sb.append(')'); }
  {
  jjtThis.setImage(sb.toString()); return jjtThis;
