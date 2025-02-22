@@ -3954,4 +3954,33 @@ class Lock implements Autocloseable {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] UnusedAssignment false-positive with continue in foreach #5504</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.nio.file.Files;
+
+class Lock {
+
+    public static void foo() {
+        List<String> lines = Files.readAllLines("someFile");
+        int lineNumber = 0;
+        boolean expectingAnotherLine = false;
+        for (String line : lines)
+        {
+            ++lineNumber;
+            if (line.endsWith("\\"))
+            {
+                expectingAnotherLine = true; // line 9 - false positive unused assignment
+                continue;
+            }
+            expectingAnotherLine = false;
+        }
+        if (expectingAnotherLine)
+            throw new IllegalArgumentException("Unexpected end of line: " + command);
+
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
