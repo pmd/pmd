@@ -62,20 +62,6 @@ abstract class TypeVarImpl implements JTypeVar {
         return new CapturedTypeVar(wildcard, wildcard.getTypeAnnotations());
     }
 
-    private static SubstVar updateBounds(JTypeVar tv, SubstVar sv, CapturedTypeVar newTv) {
-        if (sv == tv) {
-            return newTv;
-        } else if (sv instanceof JTypeVar) {
-            return ((JTypeVar) sv).substInBounds(sv2 -> {
-                if (sv2 == tv) {
-                    return newTv;
-                }
-                return sv2;
-            });
-        }
-        return sv;
-    }
-
     static final class RegularTypeVar extends TypeVarImpl {
 
         private final @NonNull JTypeParameterSymbol symbol;
@@ -205,22 +191,10 @@ abstract class TypeVarImpl implements JTypeVar {
         }
 
         private CapturedTypeVar(@Nullable JWildcardType wild, @NonNull JTypeMirror lower, @NonNull JTypeMirror upper, PSet<SymAnnot> typeAnnots) {
-            super(lower.getTypeSystem(), typeAnnots);
-            this.upperBound = upper;
-            this.lowerBound = lower;
-            this.wildcard = wild;
-            this.tvar = null;
+            this(null, wild, lower, upper, typeAnnots);
         }
 
-        private CapturedTypeVar(@Nullable JTypeVar tvar, @NonNull JTypeMirror lower, @NonNull JTypeMirror upper, PSet<SymAnnot> typeAnnots) {
-            super(lower.getTypeSystem(), typeAnnots);
-            this.upperBound = upper;
-            this.lowerBound = lower;
-            this.tvar = tvar;
-            this.wildcard = null;
-        }
-
-        private CapturedTypeVar(@Nullable JTypeVar tvar, JWildcardType wild, @NonNull JTypeMirror lower, @NonNull JTypeMirror upper, PSet<SymAnnot> typeAnnots) {
+        private CapturedTypeVar(@Nullable JTypeVar tvar, @Nullable JWildcardType wild, @NonNull JTypeMirror lower, @NonNull JTypeMirror upper, PSet<SymAnnot> typeAnnots) {
             super(lower.getTypeSystem(), typeAnnots);
             this.upperBound = upper;
             this.lowerBound = lower;
@@ -270,7 +244,7 @@ abstract class TypeVarImpl implements JTypeVar {
             if (wild == this.wildcard && lower == this.lowerBound && upper == this.lowerBound) {
                 return this;
             } else if (wild == null) {
-                return new CapturedTypeVar(tvar, lower, upper, typeAnnots);
+                return new CapturedTypeVar(tvar, null, lower, upper, typeAnnots);
             }
             return new CapturedTypeVar(wild, lower, upper, getTypeAnnotations());
         }
