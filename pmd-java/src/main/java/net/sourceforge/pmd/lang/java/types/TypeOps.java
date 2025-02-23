@@ -163,6 +163,19 @@ public final class TypeOps {
         return true;
     }
 
+    /**
+     * Methods and fields of a type variable come from its upper bound, which must be captured.
+     * Capturing a type var does NOT capture its upper bound, so we must treat this
+     * case here.
+     */
+    public static JTypeMirror getMemberSource(JTypeMirror t) {
+        if (t instanceof JTypeVar) {
+            JTypeVar tv = (JTypeVar) t;
+            return capture(tv.getUpperBound());
+        }
+        return capture(t);
+    }
+
     // note that this does not take type annotations into account
     private static final class SameTypeVisitor implements JTypeVisitor<Boolean, JTypeMirror> {
 

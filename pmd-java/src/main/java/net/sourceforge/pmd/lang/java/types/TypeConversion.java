@@ -145,11 +145,9 @@ public final class TypeConversion {
      * @return The capture conversion of t
      */
     public static JTypeMirror capture(JTypeMirror t) {
-        if (t instanceof JTypeVar) {
-            return TypeVarImpl.tvarCapture((JTypeVar) t);
-        }
         return t instanceof JClassType ? capture((JClassType) t) : t;
     }
+
 
     /**
      * Perform capture conversion on the type t. This replaces wildcards

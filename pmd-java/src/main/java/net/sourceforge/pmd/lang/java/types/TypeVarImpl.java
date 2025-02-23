@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
-import static net.sourceforge.pmd.lang.java.types.TypeConversion.capture;
-
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -62,44 +60,6 @@ abstract class TypeVarImpl implements JTypeVar {
      */
     static TypeVarImpl.CapturedTypeVar freshCapture(@NonNull JWildcardType wildcard) {
         return new CapturedTypeVar(wildcard, wildcard.getTypeAnnotations());
-    }
-
-    /**
-     * Capture a type variable, that is, capture its bounds if needed.
-     * This is necessary because those bounds contributes to the methods
-     * of the type variable.
-     * Eg in {@code <C extends Collection<? super X>>} the methods available
-     * in C may mention the type parameter of Collection. But this is a
-     * wildcard `? super X` that needs to be replaced by a capture variable.
-     *
-     * @param tv a type var
-     */
-    static JTypeVar tvarCapture(@NonNull JTypeVar tv) {
-        if (tv.isCaptured()) {
-            return tv.withUpperBound(capture(tv.getUpperBound()));
-        }
-        // Need to capture the bounds because those bounds contributes the methods of the tvar.
-        // Eg in `<C extends Collection<? super X>>` the methods available in C may mention the type
-        // parameter of collection. But this is a wildcard `? super X` that needs to be captured.
-        JTypeMirror upperBoundCap = capture(tv.getUpperBound());
-        JTypeMirror lowerBoundCap = capture(tv.getLowerBound());
-        if (upperBoundCap == tv.getUpperBound() && lowerBoundCap == tv.getLowerBound()) {
-            // no change
-            return tv;
-        }
-        // We will return a new var.
-        CapturedTypeVar newTv = new CapturedTypeVar(tv, upperBoundCap, lowerBoundCap, tv.getTypeAnnotations());
-
-        // We have to update the bounds again, to uphold recursive bounds. Eg if you have the following:
-        //    class C<T extends C<? extends T>>
-        // then capturing T in the body of the class C should produce a new capture var, call it T2,
-        // which has captured bounds. The upper bound of T2 should be
-        //  capture(C<? extends T2>)
-        // and notice that here it's T2 and not T, otherwise the recursive bound is
-        // not preserved by capture. So this last update is there to map T to T2 (ie, tv to newTv).
-        newTv.upperBound = upperBoundCap.subst(sv -> updateBounds(tv, sv, newTv));
-        newTv.lowerBound = lowerBoundCap.subst(sv -> updateBounds(tv, sv, newTv));
-        return newTv;
     }
 
     private static SubstVar updateBounds(JTypeVar tv, SubstVar sv, CapturedTypeVar newTv) {

@@ -2512,4 +2512,24 @@ public class PmdTestCase {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Problem with capture of type parametr that has wildcard parameterized bound</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class AJjtN<N, B> {}
+            class JavaccToken {}
+            public final class JjtreeBuilder<N extends AJjtN<N, ?>> {
+
+
+                public void closeNodeScope(N n, boolean condition, JavaccToken lastToken) {
+                    closeImpl(n, lastToken);
+                }
+
+
+                private void closeImpl(N n, JavaccToken lastToken) {
+
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

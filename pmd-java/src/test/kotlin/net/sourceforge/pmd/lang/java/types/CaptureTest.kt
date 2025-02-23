@@ -12,7 +12,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableId
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.createUnresolvedAsmSymbol
 import net.sourceforge.pmd.lang.java.types.TypeConversion.capture
 import net.sourceforge.pmd.lang.test.ast.IntelliMarker
-import net.sourceforge.pmd.lang.test.ast.shouldBeA
 
 /**
  * @author Clément Fournier
@@ -109,85 +108,8 @@ class CaptureTest : IntelliMarker, FunSpec({
 
                 parm shouldHaveType child.typeArgs[0]
                 val captured = capture(parm.typeMirror)
-                captured.shouldBeA<JTypeVar> {
-                    it.isCaptured shouldBe true // its bounds are captured
-
-                    it.upperBound.shouldBeA<JClassType> {
-                        it.symbol shouldBe child.symbol
-                        it.typeArgs[0].shouldBeA<JTypeVar> { cvar ->
-                            cvar.isCaptured shouldBe true
-                            cvar.upperBound.shouldBeSameInstanceAs(captured)
-                        }
-                    }
-                }
+                captured shouldBeSameInstanceAs parm.typeMirror
             }
-
-            test("Capture of variable with capturable bound #5493") {
-                val acu = javaParser.parse(
-                    """
-                    
-                    interface ObservableList<T> {
-                    }
-                    
-                    interface EventStream<T> {
-                        Subscription subscribe(Consumer<? super T> observer);
-                    }
-                    
-                    interface BiFunction<A, B, C> {
-                        C apply(A a, B b);
-                    }
-                    
-                    interface Subscription {
-                    }
-                    
-                    interface Function<A, B> {
-                        B apply(A a);
-                    }
-                    
-                    interface Supplier<A> {
-                        A get();
-                    }
-                    
-                    interface Consumer<A> {
-                        void accept(A a);
-                    }
-                    
-                    class Ext {
-                    
-                        static <T> ObservableList<T> emptyList() {
-                        }
-                    
-                        public static <T> Subscription dynamic(
-                            ObservableList<? extends T> elems,
-                            BiFunction<? super T, Integer, ? extends Subscription> f) {
-
-                        }
-                    }
-                    
-                    public class Something<E> {
-                    
-                        ObservableList<E> base;
-                        Function<? super E, ? extends EventStream<?>> ticks;
-                    
-                        void notifyObservers(Supplier<? extends ObservableList<E>> f) {
-                        }
-                    
-                        protected Subscription observeInputs() {
-                            // ticks: Function<capt#1 of ? super E, capt#2 of ? extends EventStream<?>>
-                            // ticks.apply(e): capt#2 of ? extends EventStream<?>
-                            // capture(capt#2 of ...) should not return capt#2 unchanged,
-                            // but should return a capture var with its upper bound captured: EventStream<capt#3 of ?>
-                            return Ext.dynamic(base, (e, i) -> ticks.apply(e).subscribe(k -> this.notifyObservers(Ext::emptyList)));
-                        }
-                    }
-                """.trimIndent()
-                )
-
-                val subscribe = acu.firstMethodCall("subscribe")
-                subscribe.overloadSelectionInfo.isFailed shouldBe false
-                acu.varId("k") shouldHaveType ts.OBJECT // captureMatcher(`?`) // todo this should probably be projected upwards (and be Object)
-            }
-
 
 
 

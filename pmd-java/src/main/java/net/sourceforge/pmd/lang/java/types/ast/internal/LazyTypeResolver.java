@@ -643,7 +643,7 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
 
     @Override
     public JTypeMirror visit(ASTFieldAccess node, TypingContext ctx) {
-        JTypeMirror qualifierT = capture(node.getQualifier().getTypeMirror(ctx));
+        JTypeMirror qualifierT = TypeOps.getMemberSource(node.getQualifier().getTypeMirror(ctx));
         if (isUnresolved(qualifierT)) {
             return polyResolution.getContextTypeForStandaloneFallback(node);
         }
