@@ -28,6 +28,7 @@ This is a {{ site.pmd.release_type }} release.
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 * [#5503](https://github.com/pmd/pmd/pull/5503): \[java] AvoidSynchronizedAtMethodLevel: Fixed error in code example - [Balazs Glatz](https://github.com/gbq6) (@gbq6)
+* [#5538](https://github.com/pmd/pmd/pull/5538): Add project icon for IntelliJ IDEA - [Vincent Potucek](https://github.com/punkratz312) (@punkratz312)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
