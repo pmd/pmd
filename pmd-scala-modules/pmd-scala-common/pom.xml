@@ -13,7 +13,7 @@
     </parent>
 
     <properties>
-        <scalameta.version>4.13.1.1</scalameta.version>
+        <scalameta.version>4.13.2</scalameta.version>
     </properties>
 
     <build>
