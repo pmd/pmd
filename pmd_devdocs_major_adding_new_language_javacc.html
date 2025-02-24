@@ -2008,7 +2008,8 @@ is automatically available in the binary distribution (pmd-dist).</li>
 
 <h3 id="2--implement-an-ast-parser-for-your-language">2.  Implement an AST parser for your language</h3>
 <ul>
-  <li>Ideally an AST parser should be implemented as a JJT file <em>(see VmParser.jjt or Java.jjt for example)</em></li>
+  <li>Ideally an AST parser should be implemented as a JJT file <em>(see VmParser.jjt or Java.jjt for example)</em>.
+The grammar files are placed in directory <code class="language-plaintext highlighter-rouge">src/main/javacc</code>.</li>
   <li>There is nothing preventing any other parser implementation, as long as you have some way to convert an input
 stream into an AST tree. Doing it as a JJT simplifies maintenance down the road.</li>
   <li>See this link for reference: <a href="https://javacc.java.net/doc/JJTree.html">https://javacc.java.net/doc/JJTree.html</a></li>
@@ -2078,7 +2079,7 @@ provide the method name or class name, where the violation occurred.</li>
   <li>A parser visitor adapter is not needed anymore with PMD 7. The visitor interface now provides a default
 implementation.</li>
   <li>The visitor for JavaCC based AST is generated along the parser from the grammar file. The
-base interface for a visitor is <a href="https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/AstVisitor.java"><code class="language-plaintext highlighter-rouge">AstVisitor</code></a>.</li>
+base interface for a visitor is <a href="https://github.com/pmd/pmd/blob/main/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/AstVisitor.java"><code class="language-plaintext highlighter-rouge">AstVisitor</code></a>.</li>
   <li>The generated visitor class for VM is called <code class="language-plaintext highlighter-rouge">VmVisitor</code>.</li>
   <li>In order to help use this visitor later on, a base visitor class should be created.
 See <code class="language-plaintext highlighter-rouge">VmVisitorBase</code> as an example.</li>
@@ -2379,7 +2380,7 @@ see <a href="pmd_languages_java.html">Java-specific features and guidance</a>.</
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            December 2023 (7.0.0)<br /> Site last generated: Feb 21, 2025 <br />
+            December 2023 (7.0.0)<br /> Site last generated: Feb 24, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
