@@ -22,6 +22,8 @@ This is a {{ site.pmd.release_type }} release.
   * [#5504](https://github.com/pmd/pmd/issues/5504): \[java] UnusedAssignment false-positive in for-loop with continue
 * java-codestyle
   * [#5523](https://github.com/pmd/pmd/issues/5523): \[java] UnnecessaryCast false-positive for integer operations in floating-point context
+* plsql
+  * [#5522](https://github.com/pmd/pmd/issues/5522): \[plsql] Parse error for operator in TRIM function call
 
 ### 🚨 API Changes
 
