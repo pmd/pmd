@@ -4,9 +4,9 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Perl-specific features and guidance">
-<meta name="keywords" content="languagesCpdCapableLanguage,  ">
-<title>Perl support | PMD Source Code Analyzer</title>
+<meta name="description" content="">
+<meta name="keywords" content=" ">
+<title>PMD Security | PMD Source Code Analyzer</title>
 
 
 <link rel="stylesheet" type="text/css" href="assets/fontawesome-free-5.15.4-web/css/all.min.css">
@@ -175,7 +175,7 @@
             
 
                 
-                <li><a href="pmd_about_security.html">Security</a></li>
+                <li class="active"><a href="pmd_about_security.html">Security</a></li>
                 
 
             
@@ -1411,7 +1411,7 @@
             
 
                 
-                <li class="active"><a href="pmd_languages_perl.html">Perl</a></li>
+                <li><a href="pmd_languages_perl.html">Perl</a></li>
                 
 
             
@@ -1953,10 +1953,10 @@
             <a href="./" role="button"
                 ><i class="fa fa-home fa-lg"></i
             ></a>
-            » Perl support   
+            » PMD Security   
             <a
                 target="_blank"
-                href="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/languages/perl.md"
+                href="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/about/security.md"
                 class="float-right"
                 role="button"
                 ><i class="fab fa-github fa-lg"></i> Edit on GitHub</a
@@ -1970,53 +1970,138 @@
 
 
 <div class="post-header">
-   <h1 class="post-title-main">Perl support</h1>
+   <h1 class="post-title-main">PMD Security</h1>
 </div>
 
-<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/languages/perl.md">
+<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/about/security.md">
 
-   
-    <div class="summary">Perl-specific features and guidance</div>
    
     <details id="inline-toc-details">
         <summary>Table of Contents</summary>
         <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
     </details>
 
-  <blockquote>
-  <p><a href="https://www.perl.org/">Perl</a> is a highly capable, feature-rich programming language with over 30 years of development.</p>
-</blockquote>
+  <p>For reporting security issues, see <a href="https://github.com/pmd/pmd/blob/main/SECURITY.md">SECURITY.md</a>.</p>
 
-<details class="language-info">
-<summary>Language Info for Perl
-</summary>
+<h2 id="security-vulnerabilities">Security Vulnerabilities</h2>
 
-<div class="card">
-<ul class="list-group list-group-flush">
-<li class="list-group-item">Since PMD 5.5.0</li>
-<li class="list-group-item">Implementation: <a href="https://docs.pmd-code.org/apidocs/pmd-perl/7.11.0-SNAPSHOT/net/sourceforge/pmd/lang/perl/PerlLanguageModule.html#"><code>PerlLanguageModule</code></a></li>
-<li class="list-group-item">Id: perl</li>
-<li class="list-group-item">PMD: ❌</li>
-<li class="list-group-item">CPD: ✔️</li>
+<h3 id="cve-2025-23215">CVE-2025-23215</h3>
+<p><strong>Published:</strong> 2025-01-31</p>
+
+<p><strong>Severity:</strong> Low</p>
+
+<p><strong>Summary:</strong> Release key passphrase (GPG) available on Maven Central in cleartext</p>
+
+<p><strong>Versions Affected:</strong></p>
+
+<ul>
+  <li>net.sourceforge.pmd:pmd-core 7.9.0 and earlier</li>
+  <li>net.sourceforge.pmd:pmd-designer 7.9.0 and earlier</li>
+  <li>net.sourceforge.pmd:pmd-ui 7.0.0-rc4 and earlier</li>
+  <li>net.sourceforge.pmd.eclipse.plugin 7.9.0.v20241227-1626-r</li>
 </ul>
-</div>
-</details>
 
+<p><strong>Description:</strong></p>
+
+<p>While rebuilding <a href="https://github.com/pmd/pmd-designer">PMD Designer</a> for Reproducible Builds and digging into issues,
+I found out that passphrase for <code class="language-plaintext highlighter-rouge">gpg.keyname=0xD0BF1D737C9A1C22</code> is included in jar published to Maven Central.</p>
+
+<p><strong>Details</strong>
+See https://github.com/jvm-repo-rebuild/reproducible-central/blob/master/content/net/sourceforge/pmd/pmd-designer/README.md</p>
+
+<p>I removed 2 lines from https://github.com/jvm-repo-rebuild/reproducible-central/blob/master/content/net/sourceforge/pmd/pmd-designer/pmd-designer-7.0.0.diffoscope
+but real content is:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>├── net/sourceforge/pmd/util/fxdesigner/designer.properties
+│ @@ -1,14 +1,12 @@
+│  #Properties
+│  checkstyle.plugin.version=3.3.1
+│  checkstyle.version=10.14.0
+│ -gpg.keyname=0xD0BF1D737C9A1C22
+│ -gpg.passphrase=evicx0nuPfvSVhVyeXpw
+│  jar.plugin.version=3.3.0
+│ -java.version=11.0.22
+│ +java.version=11.0.25
+│  javadoc.plugin.version=3.6.3
+│  jflex-output=/home/runner/work/pmd-designer/pmd-designer/target/generated-sources/jflex
+│  junit5.version=5.8.2
+│  kotest.version=5.5.5
+│  kotlin.version=1.7.20
+│  local.lib.repo=/home/runner/work/pmd-designer/pmd-designer/lib/mvn-repo
+│  openjfx.scope=provided
+</code></pre></div></div>
+
+<p><strong>PoC</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./rebuild.sh content/net/sourceforge/pmd/pmd-designer/pmd-designer-7.0.0.buildspec
+</code></pre></div></div>
+
+<p><strong>Impact</strong>
+After further analysis, the passphrase of the following two keys have been compromised:</p>
+
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">94A5 2756 9CAF 7A47 AFCA  BDE4 86D3 7ECA 8C2E 4C5B</code>: PMD Designer (Release Signing Key) <a href="mailto:releases@pmd-code.org">releases@pmd-code.org</a>
+This key has been used since 2019 with the release of <a href="https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-ui/6.14.0/">net.sourceforge.pmd:pmd-ui:6.14.0</a>.
+The following versions are signed with the same key: 6.16.0, 6.17.0, 6.19.0.</li>
+  <li><code class="language-plaintext highlighter-rouge">EBB2 41A5 45CB 17C8 7FAC  B2EB D0BF 1D73 7C9A 1C22</code>: PMD Release Signing Key <a href="mailto:releases@pmd-code.org">releases@pmd-code.org</a>
+This key has been used since 2020 with the release of <a href="https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-ui/6.21.0/">net.sourceforge.pmd:pmd-ui:6.21.0</a>
+and all the other modules of PMD such as <a href="https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-core/6.21.0/">net.sourceforge.pmd:pmd-core:6.21.0</a>.<br />
+This key has also been used for PMD 7, for the designer, e.g. <a href="https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-designer/7.0.0/">net.sourceforge.pmd:pmd-designer:7.0.0</a>
+and <a href="https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-core/7.0.0/">net.sourceforge.pmd:pmd-core:7.0.0</a>.
+The versions between 6.21.0 and 7.9.0 are signed with this key.<br />
+Additionally the key has been used to sign the last release of <a href="https://github.com/pmd/pmd-eclipse-plugin/releases/tag/7.9.0.v20241227-1626-r">PMD Eclipse Plugin 7.9.0.v20241227-1626-r</a>.</li>
+</ol>
+
+<p>The keys have been used exclusively for signing artifacts that we published to Maven Central under group
+id <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd</code> and once for our pmd-eclipse-plugin. The private key itself is not known to have
+been compromised itself, but given its passphrase is, it must also be considered potentially compromised.</p>
+
+<p>As a mitigation, both compromised keys have been revoked so that no future use of the keys are possible.
+For future releases of PMD, PMD Designer and PMD Eclipse Plugin we use a new release signing key:
+<code class="language-plaintext highlighter-rouge">2EFA 55D0 785C 31F9 56F2  F87E A0B5 CA1A 4E08 6838</code> (PMD Release Signing Key <a href="mailto:releases@pmd-code.org">releases@pmd-code.org</a>).</p>
+
+<p>Note, that the published artifacts in Maven Central under the group id <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd</code> are <strong>not</strong>
+compromised and the signatures are valid. No other past usages of the private key is known to the project
+and no future use is possible due to the revocation. If anybody finds a past abuse of the private key,
+please share with us.</p>
+
+<p>Note, the module <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-ui</code> has been renamed to <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-designer</code> since PMD 7,
+so there won’t be a fixed version for <code class="language-plaintext highlighter-rouge">pmd-ui</code>.</p>
+
+<p><strong>Fixes</strong></p>
+<ul>
+  <li>Reworked build script in PMD Designer to not include all system properties
+    <ul>
+      <li>https://github.com/pmd/pmd-designer/commit/1548f5f27ba2981b890827fecbd0612fa70a0362</li>
+      <li>https://github.com/pmd/pmd-designer/commit/e87a45312753ec46b3e5576c6f6ac1f7de2f5891</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>References:</strong></p>
+<ul>
+  <li><a href="https://github.com/pmd/pmd/security/advisories/GHSA-88m4-h43f-wx84">GHSA-88m4-h43f-wx84</a></li>
+  <li><a href="https://www.cve.org/CVERecord?id=CVE-2025-23215">CVE-2025-23215</a></li>
+  <li><a href="https://github.com/jvm-repo-rebuild/reproducible-central?tab=readme-ov-file#reproducible-builds-for-maven-central-repository">reproducible-central</a></li>
+</ul>
+
+<h3 id="cve-2019-7722">CVE-2019-7722</h3>
+<p><strong>Published:</strong> 2019-02-11</p>
+
+<p><strong>Description:</strong></p>
+
+<p>PMD 5.8.1 and earlier processes XML external entities in ruleset files it parses as part of the analysis process,
+allowing attackers tampering it (either by direct modification or MITM attacks when using remote rulesets)
+to perform information disclosure, denial of service, or request forgery attacks. (PMD 6.x is unaffected
+because of a 2017-09-15 change.)</p>
+
+<p><strong>References:</strong></p>
+<ul>
+  <li><a href="https://www.cve.org/CVERecord?id=CVE-2019-7722">CVE-2019-7722</a></li>
+  <li><a href="https://github.com/pmd/pmd/issues/1650">[core] Advisory - XXE attack on ruleset parsing #1650</a></li>
+</ul>
 
 
     <div class="tags">
-        
-        <b>Tags: </b>
-        
-        
-        
-        <a href="tag_languages.html" class="btn btn-outline-secondary navbar-btn cursorNorm" role="button">languages</a>
-        
-        
-        
-        <a href="tag_CpdCapableLanguage.html" class="btn btn-outline-secondary navbar-btn cursorNorm" role="button">CpdCapableLanguage</a>
-        
-        
         
     </div>
 
@@ -2032,7 +2117,7 @@
         github and create a PR:
         <a
             target="_blank"
-            href="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/languages/perl.md"
+            href="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/about/security.md"
             role="button"
             ><i class="fab fa-github fa-lg"></i> Edit on GitHub</a
         >
@@ -2044,7 +2129,7 @@
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            September 2023 (7.0.0)<br /> Site last generated: Feb 25, 2025 <br />
+            January 2025 (PMD 7.11.0)<br /> Site last generated: Feb 25, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
