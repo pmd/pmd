@@ -61,6 +61,8 @@ public interface OverloadSelectionResult {
      * Returns the type of the i-th formal parameter of the method.
      * This is relevant when the call is varargs: {@code i} can in
      * that case be greater that the number of formal parameters.
+     * In that case, the formal param type is the array element of
+     * the vararg parameter, not the array type.
      *
      * @param i Index for a formal
      *

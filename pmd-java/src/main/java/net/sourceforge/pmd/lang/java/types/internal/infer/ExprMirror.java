@@ -513,7 +513,6 @@ public interface ExprMirror {
                 return failed;
             }
 
-
             @Override
             public String toString() {
                 return "CtDecl[phase=" + resolvePhase + ", method=" + methodType + ']';

@@ -5,11 +5,7 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Set;
-
-import net.sourceforge.pmd.lang.java.types.JArrayType;
-import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 /**
  * @author Clément Fournier
@@ -26,44 +22,17 @@ enum MethodResolutionPhase {
      * If a non-varargs method failed the LOOSE phase,
      * it has no chance of succeeding in VARARGS phase.
      */
-    VARARGS {
-        @Override
-        public JTypeMirror ithFormal(List<JTypeMirror> formals, int i) {
-            assert i >= 0;
-            if (i >= formals.size() - 1) {
-                JTypeMirror lastFormal = formals.get(formals.size() - 1);
-                return ((JArrayType) lastFormal).getComponentType();
-            }
-            return formals.get(i);
-        }
-    },
+    VARARGS,
 
 
     INVOC_STRICT,
     INVOC_LOOSE,
-    INVOC_VARARGS {
-        @Override
-        public JTypeMirror ithFormal(List<JTypeMirror> formals, int i) {
-            return VARARGS.ithFormal(formals, i);
-        }
-    };
+    INVOC_VARARGS;
 
     /**
      * Phases used to determine applicability.
      */
     static final Set<MethodResolutionPhase> APPLICABILITY_TESTS = EnumSet.of(STRICT, LOOSE, VARARGS);
-
-    /**
-     * For non-varargs phases, returns the type of the ith parameter.
-     * For varargs phases, returns the ith variable arity parameter type
-     * (https://docs.oracle.com/javase/specs/jls/se8/html/jls-15.html#jls-15.12.2.4).
-     *
-     * <p>The index i starts at 0, while in the JLS it starts at 1.
-     */
-    public JTypeMirror ithFormal(List<JTypeMirror> formals, int i) {
-        assert i >= 0 && i < formals.size();
-        return formals.get(i);
-    }
 
     MethodResolutionPhase asInvoc() {
         switch (this) {
