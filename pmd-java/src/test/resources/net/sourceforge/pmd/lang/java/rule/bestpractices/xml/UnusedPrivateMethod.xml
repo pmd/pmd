@@ -2512,4 +2512,56 @@ public class PmdTestCase {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5486 [java] UnusedPrivateMethod detected when class is referenced in another class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedprivatemethod.issue5486;
+
+public class Class1 {
+    public void publicMethod() {
+        new Class2().getClass1().privateMethod();
+    }
+
+    private void privateMethod() { // This method is detected as UnusedPrivateMethod (false positive)
+        // do stuff
+    }
+
+    public void publicMethod2() {
+        // Declaring the variable, makes the PMD works fine (workaround)
+        Class1 class1 = new Class2().getClass1();
+        class1.privateMethod2();
+    }
+
+    private void privateMethod2() {
+        // do stuff
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3359 [java] UnusedPrivateMethod does not recognize Lombok @EqualsAndHashCode.Include annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
+public class Foo {
+
+  @EqualsAndHashCode.Exclude
+  private BigDecimal bar;
+
+  @EqualsAndHashCode.Include
+  private BigDecimal getBarValueForEqAndHc() { // false positive UnusedMethod
+    return bar != null ? bar.stripTrailingZeros() : null;
+  }
+}
+]]></code>
+    </test-code>
 </test-data>

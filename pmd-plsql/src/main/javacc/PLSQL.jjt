@@ -1773,6 +1773,9 @@ ASTOuterJoinExpression OuterJoinExpression() :
  * See https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/Functions.html#GUID-D079EFD3-C683-441F-977E-2C9503089982
  * See https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/About-User-Defined-Functions.html#GUID-4EB3E236-8216-471C-BA44-23D87BDFEA67
  *
+ * There are also Collection Methods like "TRIM",
+ * see https://docs.oracle.com/en/database/oracle/oracle-database/23/lnpls/collection-methods.html#GUID-6AF582B1-9C50-4858-AE6C-B14DD051ACD1
+ *
  * XML Functions:
  * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/XMLROOT.html#GUID-5BD300E2-7138-436D-87AF-21658840CF9D
  * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/XMLFOREST.html#GUID-68E5C67E-CE97-4BF8-B7FF-2365E062C363
@@ -1791,7 +1794,7 @@ ASTFunctionCall FunctionCall() :
 {
     name = FunctionName()
     (
-        LOOKAHEAD({"TRIM".equalsIgnoreCase(token.getImage())}) TrimExpression()
+        LOOKAHEAD({"TRIM".equalsIgnoreCase(token.getImage()) && !jjtree.peekNode().getImage().contains(".")}) TrimExpression()
       | LOOKAHEAD({"XMLCAST".equalsIgnoreCase(token.getImage())}) "(" Expression() <AS> Datatype() ")"
       | LOOKAHEAD({"XMLQUERY".equalsIgnoreCase(token.getImage())}) "(" StringLiteral() [ LOOKAHEAD({isKeyword("PASSING")}) XMLPassingClause() ] <RETURNING> KEYWORD("CONTENT") [ <NULL> <ON> <EMPTY> ] ")"
       | LOOKAHEAD({"CAST".equalsIgnoreCase(token.getImage())}) "(" ( <MULTISET> "(" Subquery() ")" | Expression() ) <AS> Datatype() ")"
@@ -3267,19 +3270,26 @@ ASTLikeExpression LikeExpression() :
 }
 
 /**
- * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/TRIM.html
+ * This production is about the argument list of the TRIM function (https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/TRIM.html).
+ * <p>
+ * There is another TRIM function as a collection method, which can only be called on collection types
+ * (https://docs.oracle.com/en/database/oracle/oracle-database/23/lnpls/collection-methods.html#GUID-6AF582B1-9C50-4858-AE6C-B14DD051ACD1).
+ * The TRIM collection method is parsed instead as a normal FunctionCall with Arguments and not using TrimExpression.
  */
 ASTTrimExpression TrimExpression() :
 { PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
-  (
-     "(" { sb.append("(");}
+    "(" { sb.append('('); }
      [ ( <LEADING> | <TRAILING> | <BOTH> ) { sb.append(" "); sb.append(token.getImage()); } ]
      [ LOOKAHEAD(StringExpression() <FROM>) simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); } ]
      [ <FROM> { sb.append(" ").append(token.getImage()); } ]
-     simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); }
-     ")" { sb.append(")");}
-  )
+     [
+        // first try to parse as StringExpression() to produce a backwards compatible tree
+        LOOKAHEAD(StringExpression() ")") simpleNode = StringExpression()
+        // if it is not a simple string expression, you the more generic expression
+        | simpleNode = Expression()
+     ] { sb.append(" "); sb.append(simpleNode.getImage()); }
+     ")" { sb.append(')'); }
  {
  jjtThis.setImage(sb.toString()); return jjtThis;
  }

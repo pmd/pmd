@@ -14,16 +14,31 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
-### 🐛 Fixed Issues
+#### Signed Releases
 
+We now not only sign the maven artifacts, but also our binary distribution files that you can
+download from [GitHub Releases](https://github.com/pmd/pmd/releases).
+See the page [Signed Releases](pmd_userdocs_signed_releases.html) in our documentation for how to verify the files.
+
+### 🐛 Fixed Issues
+* java
+  * [#5442](https://github.com/pmd/pmd/issues/5442): \[java] StackOverflowError with recursive generic types
+  * [#5505](https://github.com/pmd/pmd/issues/5505): \[java] java.lang.StackOverflowError while executing a PmdRunnable
+* java-bestpractices
+  * [#3359](https://github.com/pmd/pmd/issues/3359): \[java] UnusedPrivateMethod does not recognize Lombok @<!-- -->EqualsAndHashCode.Include annotation
+  * [#5486](https://github.com/pmd/pmd/issues/5486): \[java] UnusedPrivateMethod detected when class is referenced in another class
+  * [#5504](https://github.com/pmd/pmd/issues/5504): \[java] UnusedAssignment false-positive in for-loop with continue
 * java-codestyle
   * [#5523](https://github.com/pmd/pmd/issues/5523): \[java] UnnecessaryCast false-positive for integer operations in floating-point context
+* plsql
+  * [#5522](https://github.com/pmd/pmd/issues/5522): \[plsql] Parse error for operator in TRIM function call
 
 ### 🚨 API Changes
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 * [#5503](https://github.com/pmd/pmd/pull/5503): \[java] AvoidSynchronizedAtMethodLevel: Fixed error in code example - [Balazs Glatz](https://github.com/gbq6) (@gbq6)
+* [#5538](https://github.com/pmd/pmd/pull/5538): Add project icon for IntelliJ IDEA - [Vincent Potucek](https://github.com/punkratz312) (@punkratz312)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->

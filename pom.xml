@@ -188,6 +188,11 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-help-plugin</artifactId>
+                    <version>3.5.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
                     <version>3.1.1</version>
                     <configuration>
@@ -1342,6 +1347,50 @@
                 <module>pmd-cli</module>
                 <module>pmd-dist</module>
             </modules>
+        </profile>
+
+        <profile>
+            <id>dogfood</id>
+            <activation>
+                <property>
+                    <name>dogfoodStagingRepo</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <altDeploymentRepository>dogfood::file://${dogfoodStagingRepo}</altDeploymentRepository>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>dogfood</id>
+                    <url>file://${dogfoodStagingRepo}</url>
+                    <releases><enabled>false</enabled></releases>
+                    <snapshots><enabled>true</enabled></snapshots>
+                </pluginRepository>
+                <!-- disable sonatype-nexus-plugin-snapshots, so that only dogfood is used -->
+                <pluginRepository>
+                    <id>sonatype-nexus-plugin-snapshots</id>
+                    <name>Sonatype Nexus Snapshots</name>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                    <releases><enabled>false</enabled></releases>
+                    <snapshots><enabled>false</enabled></snapshots>
+                </pluginRepository>
+                <!-- disable apache.snapshots, so that only dogfood is used -->
+                <pluginRepository>
+                    <id>apache.snapshots</id>
+                    <name>Apache Snapshot Repository</name>
+                    <url>https://repository.apache.org/snapshots</url>
+                    <releases><enabled>false</enabled></releases>
+                    <snapshots><enabled>false</enabled></snapshots>
+                </pluginRepository>
+            </pluginRepositories>
         </profile>
     </profiles>
 

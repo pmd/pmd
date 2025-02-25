@@ -76,4 +76,19 @@ class PlsqlTreeDumpTest extends BaseTreeDumpTest {
     void issue5133SubTypeDefinition() {
         doTest("Issue5133SubTypeDefinition");
     }
+
+    @Test
+    void trimFunction() {
+        doTest("TrimFunction");
+    }
+
+    @Test
+    void trimWithRecordType() {
+        doTest("TrimWithRecordType");
+    }
+
+    @Test
+    void trimCollectionFunction() {
+        doTest("TrimCollectionFunction");
+    }
 }

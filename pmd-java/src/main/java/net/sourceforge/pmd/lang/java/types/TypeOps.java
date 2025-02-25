@@ -801,7 +801,10 @@ public final class TypeOps {
         public Convertibility visitTypeVar(JTypeVar t, JTypeMirror s) {
             if (s instanceof JTypeVar && t.getSymbol() != null && Objects.equals(t.getSymbol(), s.getSymbol())) {
                 return Convertibility.SUBTYPING;
+            } else if (s instanceof SentinelType) {
+                return Convertibility.SUBTYPING;
             }
+
             if (isTypeRange(s)) {
                 return isConvertible(t, lowerBoundRec(s));
             }
