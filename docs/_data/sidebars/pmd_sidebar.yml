@@ -35,6 +35,9 @@ entries:
     - title: Support lifecycle
       url: /pmd_about_support_lifecycle.html
       output: web, pdf
+    - title: Security
+      url: /pmd_about_security.html
+      output: web, pdf
   - title: User Documentation
     output: web, pdf
     folderitems:
