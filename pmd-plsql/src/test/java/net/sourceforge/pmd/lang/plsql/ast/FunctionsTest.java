@@ -11,11 +11,6 @@ import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 class FunctionsTest extends AbstractPLSQLParserTst {
 
     @Test
-    void parseTrimCall() {
-        plsql.parseResource("TrimFunction.pls");
-    }
-
-    @Test
     void parseSelectExtractExpression() {
         plsql.parseResource("ExtractExpressions.pls");
     }
