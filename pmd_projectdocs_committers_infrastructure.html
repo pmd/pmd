@@ -318,6 +318,18 @@
             
 
                 
+                <li><a href="pmd_userdocs_signed_releases.html">Signed Releases</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
                 
                 <li class="subfolders">
                     <a href="#">CPD reference</a>
@@ -1676,6 +1688,18 @@
             
 
                 
+                <li><a href="pmd_devdocs_github_actions_workflows.html">GitHub Actions Workflows</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
                 <li><a href="pmd_devdocs_how_pmd_works.html">How PMD works</a></li>
                 
 
@@ -1983,7 +2007,7 @@
 
   <p>This page describes, which infrastructure and services is used by the pmd project.</p>
 
-<h2 id="github">github</h2>
+<h2 id="github">GitHub</h2>
 
 <p>The main repository is hosted on <a href="https://github.com/pmd">https://github.com/pmd</a>. We own the organization “pmd”.</p>
 
@@ -1993,21 +2017,21 @@
   <li>issue tracker</li>
   <li>discussions</li>
   <li>pull requests</li>
-  <li>github actions for CI</li>
+  <li><a href="pmd_devdocs_github_actions_workflows.html">GitHub Actions for CI</a></li>
 </ul>
 
 <p>Also the <a href="pmd_projectdocs_committers_main_landing_page.html">main landing page</a> (<a href="https://pmd.github.io">https://pmd.github.io</a>)
-is hosted using github pages.</p>
+is hosted using GitHub pages.</p>
 
-<h2 id="sourceforge">sourceforge</h2>
+<h2 id="sourceforge">SourceForge</h2>
 
-<p>Before moving to github, sourceforge was the main place. It is still there: <a href="https://sourceforge.net/projects/pmd/">https://sourceforge.net/projects/pmd/</a>.</p>
+<p>Before moving to GitHub, SourceForge was the main place. It is still there: <a href="https://sourceforge.net/projects/pmd/">https://sourceforge.net/projects/pmd/</a>.</p>
 
-<p>Nowadays it is used for:</p>
+<p>Nowadays, it is used for:</p>
 
 <ul>
-  <li>hosting archive of binaries: https://sourceforge.net/projects/pmd/files/</li>
-  <li>hosting an archive of documentation: https://pmd.sourceforge.io/archive.html</li>
+  <li>hosting an archive of binaries: <a href="https://sourceforge.net/projects/pmd/files/">https://sourceforge.net/projects/pmd/files/</a></li>
+  <li>hosting an archive of documentation: <a href="https://pmd.sourceforge.io/archive.html">https://pmd.sourceforge.io/archive.html</a></li>
   <li>mailing lists:
     <ul>
       <li><a href="mailto:pmd-commits@lists.sourceforge.net">pmd-commits@lists.sourceforge.net</a></li>
@@ -2019,7 +2043,7 @@ is hosted using github pages.</p>
 
 <p>It also contains the old issue tracker.</p>
 
-<h2 id="domain-email-and-homepage">domain, email and homepage</h2>
+<h2 id="domain-mail-and-homepage">Domain, mail and homepage</h2>
 
 <p>We are using a webhosting package by <a href="https://www.netcup.de/">Netcup</a>.</p>
 
@@ -2042,30 +2066,24 @@ is hosted using github pages.</p>
 
 <p>Some docs are hosted at <a href="https://docs.pmd-code.org/">https://docs.pmd-code.org/</a>.</p>
 
-<h2 id="other-services">other services</h2>
+<h2 id="other-services">Other services</h2>
 
 <ul>
-  <li>Deployment to maven central via <a href="https://oss.sonatype.org/">https://oss.sonatype.org/</a> and <a href="https://issues.sonatype.org/browse/OSSRH-2295">https://issues.sonatype.org/browse/OSSRH-2295</a>
+  <li>Deployment to Maven Central via <a href="https://oss.sonatype.org/">https://oss.sonatype.org/</a> and <a href="https://central.sonatype.org/register/central-portal/">https://central.sonatype.org/register/central-portal/</a>
 Uploading requires credentials (CI_DEPLOY_USERNAME, CI_DEPLOY_PASSWORD) and permissions.</li>
-  <li>Hosting eclipse plugin update site via <a href="https://bintray.com/">https://bintray.com/</a>
-Uploading requires credentials (BINTRAY_USER, BINTRAY_APIKEY)
-Note: This service is retired and the update site is now hosted via Github Pages (<a href="https://github.com/pmd/pmd-eclipse-plugin-p2-site/">https://github.com/pmd/pmd-eclipse-plugin-p2-site/</a>).</li>
-  <li>Hosting result reports from pmd-regression-tester via <a href="https://chunk.io/">https://chunk.io/</a>
-Uploading requires credentials (PMD_CI_CHUNK_TOKEN)</li>
   <li>Twitter: <a href="https://twitter.com/pmd_analyzer">https://twitter.com/pmd_analyzer</a></li>
   <li>Rubygems for pmd-regression-tester: <a href="https://rubygems.org/gems/pmdtester">https://rubygems.org/gems/pmdtester</a>
 Uploading requires credentials (GEM_HOST_API_KEY)</li>
-  <li>sonarcloud: <a href="https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd">https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd</a>
+  <li>SonarCloud: <a href="https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd">https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd</a>
 We use the “CI-based Analysis method” with GitHub Actions.
 Documentation: <a href="https://sonarcloud.io/documentation">https://sonarcloud.io/documentation</a>
 Uploading new analysis results requires credentials (SONAR_TOKEN).
-Login is via github.</li>
-  <li>coveralls: <a href="https://coveralls.io/github/pmd/pmd">https://coveralls.io/github/pmd/pmd</a>
-We don’t use the <a href="https://github.com/marketplace/actions/coveralls-github-action">Coveralls Github Actions</a> but the <a href="https://github.com/trautonen/coveralls-maven-plugin">coveralls-maven-plugin</a>.
+Login is via GitHub.</li>
+  <li>Coveralls: <a href="https://coveralls.io/github/pmd/pmd">https://coveralls.io/github/pmd/pmd</a>
+We don’t use the <a href="https://github.com/marketplace/actions/coveralls-github-action">Coveralls GitHub Actions</a> but the <a href="https://github.com/trautonen/coveralls-maven-plugin">coveralls-maven-plugin</a>.
 Documentation: <a href="https://docs.coveralls.io/">https://docs.coveralls.io/</a>
 Uploading new results requires credentials (COVERALLS_REPO_TOKEN).
-Login is via github.</li>
-  <li>travis ci was used before github actions: <a href="https://travis-ci.org/github/pmd">https://travis-ci.org/github/pmd</a></li>
+Login is via GitHub.</li>
 </ul>
 
 
@@ -2098,7 +2116,7 @@ Login is via github.</li>
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            April 2021<br /> Site last generated: Feb 25, 2025 <br />
+            February 2025 (7.11.0)<br /> Site last generated: Feb 25, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

@@ -4,9 +4,9 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="">
+<meta name="description" content="PMD uses GitHub Actions as the CI/CD infrastructure to build and release new versions.This page gives an overview of how these workflows work and how to use ...">
 <meta name="keywords" content=" ">
-<title>Getting started pages | PMD Source Code Analyzer</title>
+<title>GitHub Actions Workflows | PMD Source Code Analyzer</title>
 
 
 <link rel="stylesheet" type="text/css" href="assets/fontawesome-free-5.15.4-web/css/all.min.css">
@@ -1688,7 +1688,7 @@
             
 
                 
-                <li><a href="pmd_devdocs_github_actions_workflows.html">GitHub Actions Workflows</a></li>
+                <li class="active"><a href="pmd_devdocs_github_actions_workflows.html">GitHub Actions Workflows</a></li>
                 
 
             
@@ -1977,10 +1977,10 @@
             <a href="./" role="button"
                 ><i class="fa fa-home fa-lg"></i
             ></a>
-            » Getting started pages   
+            » GitHub Actions Workflows   
             <a
                 target="_blank"
-                href="https://github.com/pmd/pmd/blob/main/docs/pages/tags/tag_getting_started.md"
+                href="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/devdocs/github_actions_workflows.md"
                 class="float-right"
                 role="button"
                 ><i class="fab fa-github fa-lg"></i> Edit on GitHub</a
@@ -1994,799 +1994,85 @@
 
 
 <div class="post-header">
-   <h1 class="post-title-main">Getting started pages</h1>
+   <h1 class="post-title-main">GitHub Actions Workflows</h1>
 </div>
 
-<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/main/docs/pages/tags/tag_getting_started.md">
+<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/devdocs/github_actions_workflows.md">
 
+   
+    <div class="summary">PMD uses GitHub Actions as the CI/CD infrastructure to build and release new versions.
+This page gives an overview of how these workflows work and how to use them.
+</div>
    
     <details id="inline-toc-details">
         <summary>Table of Contents</summary>
         <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
     </details>
 
-  <p>The following pages and posts are tagged with <button type="button" style="cursor: default" class="btn btn-outline-secondary navbar-btn">getting_started</button></p>
-<table><thead><tr><th>Title</th><th>Type</th><th>Excerpt</th></tr></thead>
-    <tbody>
-    
-  
-    
-        
-     
-        
-     
-   
-    
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-        
-     
-   
-    
-        
-     
-   
-    
-        
-     
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-   
-    
-        
-     
-   
-    
-        
-     
-   
-    
-        
-     
-   
-    
-        
-     
-   
-    
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-        
-     
-        
+  <div class="alert alert-info" role="alert">
+  <p><i class="fas fa-info-circle"></i>
+<strong>Note:</strong>
+This page is work in progress and does not yet describe all workflows.</p>
+</div>
 
-        <tr><td><a href="pmd_userdocs_configuring_rules.html">Configuring rules</a></td>
-            <td><span class="label label-default">Page</span></td>
-          <td> Learn how to configure your rules directly from the ruleset XML. </td>
-        </tr>
-        
-     
-   
-    
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-   
-    
-        
-     
-        
-     
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-   
-    
-   
-    
-   
-    
-        
-     
-        
-     
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-   
-    
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-   
-    
-        
-     
-   
-    
-   
-    
-   
-    
-        
+<h2 id="pull-request-build">Pull Request Build</h2>
 
-        <tr><td><a href="pmd_userdocs_installation.html">Installation and basic CLI usage</a></td>
-            <td><span class="label label-default">Page</span></td>
-          <td> Sums up the first steps to set up a CLI installation and get started using PMD </td>
-        </tr>
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-        
-     
-   
-    
-        
-     
-   
-    
-   
-    
-        
-     
-   
-    
-   
-    
-        
-     
-        
-     
-   
-    
-   
-    
-        
+<ul>
+  <li>Builds: <a href="https://github.com/pmd/pmd/actions/workflows/pull-requests.yml">https://github.com/pmd/pmd/actions/workflows/pull-requests.yml</a></li>
+  <li>Workflow file: <a href="https://github.com/pmd/pmd/blob/main/.github/workflows/pull-requests.yml">https://github.com/pmd/pmd/blob/main/.github/workflows/pull-requests.yml</a></li>
+</ul>
 
-        <tr><td><a href="pmd_userdocs_making_rulesets.html">Making rulesets</a></td>
-            <td><span class="label label-default">Page</span></td>
-          <td> A ruleset is an XML configuration file, which describes a collection of rules to be executed in a PMD run. PMD includes built-in rulesets to run quick analys... </td>
-        </tr>
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-   
-    
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-        
-     
-   
-    
-   
-    
-        
-     
-   
-    
-   
-    
-   
-    
-   
-    
-        
-     
-        
-     
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-   
-    
-        
-     
-        
-     
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-        
-     
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-        
-     
-   
-    
-   
-    
-   
-    
-   
-    
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-        
-     
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-        
-     
-   
-    
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-        
+<p>This workflow is triggered whenever a pull request is created or synchronized.</p>
 
-        <tr><td><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing PMD rules</a></td>
-            <td><span class="label label-default">Page</span></td>
-          <td> Writing your own PMD rules </td>
-        </tr>
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
-    
-        
-     
-        
-     
-   
+<p>In order to avoid unnecessary builds, we use concurrency control to make sure, we cancel any in-progress jobs for
+the current pull request when a new commit has been pushed. This means, only the latest commit is built, which
+is enough, since only this will be merged in the end. Only the latest build matters.</p>
 
-        
-        
+<p>The workflow is self-contained, e.g. it doesn’t depend on the shell scripts from PMD’s build-tools.
+It also uses only read permissions and doesn’t need access to any secrets. It is safe to run also on
+forks.</p>
 
-   </tbody>
-</table>
+<p>During the build we create a couple of artifacts, that can be downloaded:</p>
 
+<ul>
+  <li>compile-artifact: contains all the built classes (everything in the <code class="language-plaintext highlighter-rouge">target/</code> directories). It is built under Linux,
+so unfortunately it can only be used to speed up other Linux based builds, but not Windows or MacOS.</li>
+  <li>staging-repository: contains all the artifacts of groupId <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd</code>. Could be used as a local
+repository to test against this built PMD version without the need to deploy the SNAPSHOTs anywhere. It is
+actually used by the dogfood job.</li>
+  <li>dist-artifact: contains the binary distribution files, ready to be downloaded. This can be used to test
+PMD with the changes from the pull request without the need to build it locally. It is actually used by the
+regression tester job to avoid building PMD another time.</li>
+  <li>docs-artifact: contains the generated rule documentation.</li>
+  <li>pmd-regression-tester: contains the generation regression report, if there were any changes to rules.</li>
+</ul>
+
+<p>In order to have fast feedback of the build results, we run a couple of jobs in parallel and not sequentially.
+The jobs are:</p>
+
+<ul>
+  <li>“compile”: First a fast compile job to sort out any basic problems at the beginning. If this job fails, nothing
+else is executed. It also populates the build cache (maven dependencies) that is reused for the following jobs.
+The created artifacts are: “compile-artifact”, “staging-repository”, “dist-artifact”.</li>
+  <li>After this first job, a bunch of other jobs are run in parallel:
+    <ul>
+      <li>“verify”: runs a complete <code class="language-plaintext highlighter-rouge">./mvnw verify</code> with all code checks like checkstyle, japicmp, javadoc, etc.
+but excluding unit tests (these are run in a separate job).
+This job is only run on linux. It reuses the already compiled artifacts from the first “compile” job.</li>
+      <li>“verify-unittests”: just runs the unit tests on Linux, Windows and MacOS. Only linux reuses the
+“compile-artifact” from the first job. For Windows/MacOS we can’t reuse this due to platform specific line
+endings and timestamp issues.</li>
+      <li>“dogfood”: runs maven-pmd-plugin on PMD with the latest changes from this very pull request. It uses the
+“staging-repository” artifact.</li>
+      <li>“documentation”: generates the rule documentations and builds PMD’s documentation page using jekyll.
+It also executes the verification for wrong rule tags and dead links. It creates the artifact “docs-artifact”.</li>
+      <li>“regressiontester”: runs the <a href="pmd_devdocs_pmdtester.html">pmdtester</a> to produce the regression report.
+It reuses the artifact “dist-artifact” so that we don’t need to build PMD again. It uses a different build
+cache as the other jobs, as this cache now contains the test projects (like Spring Framework) and their
+dependencies. It produces the artifact “pmd-regression-tester” with the regression report.</li>
+    </ul>
+  </li>
+</ul>
 
 
     <div class="tags">
@@ -2805,7 +2091,7 @@
         github and create a PR:
         <a
             target="_blank"
-            href="https://github.com/pmd/pmd/blob/main/docs/pages/tags/tag_getting_started.md"
+            href="https://github.com/pmd/pmd/blob/main/docs/pages/pmd/devdocs/github_actions_workflows.md"
             role="button"
             ><i class="fab fa-github fa-lg"></i> Edit on GitHub</a
         >
@@ -2816,7 +2102,8 @@
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Feb 25, 2025 <br />
+            <span>Page last updated:</span>
+            February 2025 (7.11.0)<br /> Site last generated: Feb 25, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
