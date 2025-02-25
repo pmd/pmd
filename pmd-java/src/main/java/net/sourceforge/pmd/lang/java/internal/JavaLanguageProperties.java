@@ -35,11 +35,24 @@ public class JavaLanguageProperties extends JvmLanguagePropertyBundle {
                        .defaultValue(true)
                        .build();
 
+    /**
+     * @since 7.11.0
+     */
+    public static final PropertyDescriptor<Boolean> FIRST_CLASS_LOMBOK =
+        PropertyFactory.booleanProperty("lombok")
+                       .desc("Whether to consider lombok-specific things in core facilities like type inference. " +
+                                 "Disable this option if you want to analyze the AST as it would appear before the lombok pre-processing is applied. " +
+                                 "For instance, with this option enabled, variables declared with type lombok.val will have their type inferred based on the right-hand-side. " +
+                                 "With the option disabled, the variable will have type lombok.val instead. " +
+                                 "See https://github.com/pmd/pmd/issues/3119")
+                       .defaultValue(true)
+                       .build();
 
     public JavaLanguageProperties() {
         super(JavaLanguageModule.getInstance());
         definePropertyDescriptor(INTERNAL_INFERENCE_LOGGING_VERBOSITY);
         definePropertyDescriptor(INTERNAL_DO_STRICT_TYPERES);
+        definePropertyDescriptor(FIRST_CLASS_LOMBOK);
         definePropertyDescriptor(CpdLanguageProperties.CPD_IGNORE_METADATA);
         definePropertyDescriptor(CpdLanguageProperties.CPD_ANONYMIZE_IDENTIFIERS);
         definePropertyDescriptor(CpdLanguageProperties.CPD_ANONYMIZE_LITERALS);

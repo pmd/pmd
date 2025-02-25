@@ -13,8 +13,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.internal.JavaLanguageProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 // @formatter:off
 /**
@@ -261,7 +263,19 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
      * since the type node is absent.
      */
     public boolean isTypeInferred() {
-        return getTypeNode() == null;
+        ASTType typeNode = getTypeNode();
+        if (typeNode == null) {
+            return true;
+        }
+        JavaLanguageProcessor javaLanguage = (JavaLanguageProcessor) getAstInfo().getLanguageProcessor();
+        if (!javaLanguage.hasFirstClassLombokSupport()) {
+            return false;
+        }
+        // Note that if language version is >= 10, then a variable cannot have
+        // type lombok.var unless it uses a qualified name. `var` is interpreted
+        // as a keyword by the parser and produces no type node.
+        return TypeTestUtil.isExactlyA("lombok.val", typeNode)
+            || TypeTestUtil.isExactlyA("lombok.var", typeNode);
     }
 
     /**
