@@ -47,8 +47,9 @@ public class IdenticalCatchBranchesRule extends AbstractJavaRulechainRule {
                                              if (n1 instanceof InvocationNode) {
                                                  JExecutableSymbol sym1 = ((InvocationNode) n1).getMethodType().getSymbol();
                                                  JExecutableSymbol sym2 = ((InvocationNode) n2).getMethodType().getSymbol();
-                                                 if (!Objects.equals(sym1, sym2))
+                                                 if (!Objects.equals(sym1, sym2)) {
                                                      return OptionalBool.NO;
+                                                 }
                                              }
                                              return OptionalBool.UNKNOWN;
                                          });
