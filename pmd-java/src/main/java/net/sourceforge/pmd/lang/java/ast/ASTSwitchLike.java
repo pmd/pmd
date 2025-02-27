@@ -4,11 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 
 /**
@@ -59,7 +63,7 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
 
 
     /**
-     * Returns true if this switch statement tests an expression
+     * Returns true if this switch block tests an expression
      * having an enum type and all the constants of this type
      * are covered by a switch case. Returns false if the type of
      * the tested expression could not be resolved.
@@ -76,7 +80,7 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
     }
 
     /**
-     * Returns true if this switch statement tests an expression
+     * Returns true if this switch block tests an expression
      * having an enum type.
      */
     default boolean isEnumSwitch() {
@@ -84,6 +88,74 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
         return type instanceof JClassSymbol && ((JClassSymbol) type).isEnum();
     }
 
+    /**
+     * Returns true if this switch block tests an expression
+     * having a sealed type or an enum type and all the possible
+     * constants or types are covered by a switch case.
+     * Returns false if the type of the tested expression could not
+     * be resolved.
+     *
+     * @see #isExhaustiveEnumSwitch()
+     */
+    default boolean isExhaustive() {
+        JTypeDeclSymbol symbol = getTestedExpression().getTypeMirror().getSymbol();
+
+        // shortcut1 - if we have any type patterns and there is no default case,
+        // then the compiler already ensured that the switch is exhaustive.
+        // This assumes, we only analyze valid, compiled source code.
+        boolean hasPatterns = getBranches().map(ASTSwitchBranch::getLabel)
+                .any(ASTSwitchLabel::isPatternLabel);
+        if (hasPatterns && !hasDefaultCase()) {
+            return true;
+        }
+
+        if (symbol instanceof JClassSymbol) {
+            JClassSymbol classSymbol = (JClassSymbol) symbol;
+
+            // shortcut2 - if we are dealing with a sealed type or a boolean (java 23 preview, JEP 455)
+            // and there is no default case then the compiler already checked for exhaustiveness
+            if (classSymbol.isSealed() || classSymbol.equals(getTypeSystem().BOOLEAN.getSymbol())) {
+                if (!hasDefaultCase()) {
+                    return true;
+                }
+            }
+
+            if (classSymbol.isSealed()) {
+                Set<JClassSymbol> checkedSubtypes = getBranches()
+                        .map(ASTSwitchBranch::getLabel)
+                        .children(ASTTypePattern.class)
+                        .map(ASTTypePattern::getTypeNode)
+                        .toStream()
+                        .map(TypeNode::getTypeMirror)
+                        .map(JTypeMirror::getSymbol)
+                        .filter(s -> s instanceof JClassSymbol)
+                        .map(s -> (JClassSymbol) s)
+                        .collect(Collectors.toSet());
+
+                Set<JClassSymbol> permittedSubtypes = new HashSet<>(classSymbol.getPermittedSubtypes());
+                // for all the switch cases, remove the checked type itself
+                permittedSubtypes.removeAll(checkedSubtypes);
+
+                // if there are any remaining types left, they might be covered, if they are sealed
+                // (there are no other possible subtypes) and all subtypes are covered
+                // Note: This currently only checks one level. If the type hierarchy is deeper, we don't
+                // recognize all possible permitted subtypes.
+                for (JClassSymbol remainingType : new HashSet<>(permittedSubtypes)) {
+                    if (remainingType.isSealed()) {
+                        Set<JClassSymbol> subtypes = new HashSet<>(remainingType.getPermittedSubtypes());
+                        subtypes.removeAll(checkedSubtypes);
+                        if (subtypes.isEmpty()) {
+                            permittedSubtypes.remove(remainingType);
+                        }
+                    }
+                }
+
+                return permittedSubtypes.isEmpty();
+            }
+        }
+
+        return isExhaustiveEnumSwitch();
+    }
 
     @Override
     default Iterator<ASTSwitchBranch> iterator() {

@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.types.TypeVarImpl.CapturedTypeVar;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -144,15 +145,9 @@ public final class TypeConversion {
      * @return The capture conversion of t
      */
     public static JTypeMirror capture(JTypeMirror t) {
-        if (t instanceof JTypeVar) {
-            // Need to capture the upper bound because that bound contributes the methods of the tvar.
-            // Eg in `<C extends Collection<? super X>>` the methods available in C may mention the type
-            // parameter of collection. But this is a wildcard `? super X` that needs to be captured.
-            JTypeVar tv = (JTypeVar) t;
-            return tv.withUpperBound(capture(tv.getUpperBound()));
-        }
         return t instanceof JClassType ? capture((JClassType) t) : t;
     }
+
 
     /**
      * Perform capture conversion on the type t. This replaces wildcards
@@ -207,7 +202,7 @@ public final class TypeConversion {
 
             if (arg instanceof JWildcardType) {
                 JWildcardType w = (JWildcardType) arg;        // Ti alias
-                TypeVarImpl.CapturedTypeVar freshVar = (TypeVarImpl.CapturedTypeVar) fresh; // Si alias
+                CapturedTypeVar freshVar = (CapturedTypeVar) fresh; // Si alias
 
                 JTypeMirror prevUpper = wellFormed ? typeParams.get(i).getUpperBound() : ts.OBJECT; // Ui
                 JTypeMirror substituted = TypeOps.subst(prevUpper, subst);

@@ -34,6 +34,9 @@ final class CommentAssignmentPass {
     private static void setComment(JavadocCommentOwner commentableNode, JavadocComment comment) {
         commentableNode.getUserMap().set(FORMAL_COMMENT_KEY, comment);
         comment.setOwner(commentableNode);
+        // This makes the node cover the comment too.
+        AbstractJavaNode node = (AbstractJavaNode) commentableNode;
+        node.enlargeLeft(comment.getToken());
     }
 
     public static void assignCommentsToDeclarations(ASTCompilationUnit root) {

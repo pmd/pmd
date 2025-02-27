@@ -12,7 +12,7 @@ require "liquid"
 require "safe_yaml"
 
 # include some custom liquid extensions
-require_relative "../docs/_plugins/all_extensions"
+require_relative "_plugins/all_extensions"
 
 # explicitly setting safe mode to get rid of the warning
 SafeYAML::OPTIONS[:default_mode] = :safe
@@ -27,11 +27,11 @@ end
 release_notes_file = ARGV[0]
 
 # Make the script execute wherever we are
-travis_dir = File.expand_path File.dirname(__FILE__)
+docs_dir = File.expand_path File.dirname(__FILE__)
 
 liquid_env = {
     # wrap the config under a "site." namespace because that's how jekyll does it
-    'site' => YAML.load_file(travis_dir + "/../docs/_config.yml"),
+    'site' => YAML.load_file(docs_dir + "/_config.yml"),
     'page' => YAML.load_file(release_notes_file),
     # This signals the links in {% rule %} tags that they should be rendered as absolute
     'is_release_notes_processor' => true

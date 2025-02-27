@@ -17,7 +17,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
-import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.internal.InternalMethodTypeItf;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
@@ -67,7 +66,7 @@ class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> {
             } else {
                 lhsType = lhs.getTypeMirror(getTypingContext());
             }
-            lhsType = TypeConversion.capture(lhsType);
+            lhsType = TypeOps.getMemberSource(lhsType);
             boolean staticOnly = lhs instanceof ASTTypeExpression;
 
             return TypeOps.getMethodsOf(lhsType, getName(), staticOnly, myNode.getEnclosingType().getSymbol());

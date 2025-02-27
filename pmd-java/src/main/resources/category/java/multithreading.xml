@@ -69,10 +69,10 @@ public class Foo {
         // code, that doesn't need synchronization
         // ...
         try {
-            CLS_LOCK.lock();
+            CLASS_LOCK.lock();
             // code, that requires synchronization
         } finally {
-            CLS_LOCK.unlock();
+            CLASS_LOCK.unlock();
         }
         // more code, that doesn't need synchronization
         // ...

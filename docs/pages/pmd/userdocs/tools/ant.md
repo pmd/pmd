@@ -6,7 +6,7 @@ author: >
     David Dixon-Peugh <dpeugh@users.sourceforge.net>,
     Tom Copeland <tom@infoether.com>,
     Xavier Le Vourch <xlv@users.sourceforge.net>
-last_updated: June 2024 (7.3.0)
+last_updated: January 2025 (7.10.0)
 ---
 
 ## PMD
@@ -213,7 +213,7 @@ accordingly and this rule won't be executed.
 The specific version of a language to be used is selected via the `sourceLanguage`
 nested element. Example:
 
-    <sourceLanguage name="java" version="23"/>
+    <sourceLanguage name="java" version="24"/>
 
 The available versions depend on the language. You can get a list of the currently supported language versions
 via the CLI option `--help`.

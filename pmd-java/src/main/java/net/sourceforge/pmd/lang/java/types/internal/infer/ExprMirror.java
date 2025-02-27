@@ -509,15 +509,9 @@ public interface ExprMirror {
             }
 
             @Override
-            public JTypeMirror ithFormalParam(int i) {
-                return resolvePhase.ithFormal(getMethodType().getFormalParameters(), i);
-            }
-
-            @Override
             public boolean isFailed() {
                 return failed;
             }
-
 
             @Override
             public String toString() {

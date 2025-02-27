@@ -7911,6 +7911,60 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "esc-sbarden",
+      "name": "Sven Barden",
+      "avatar_url": "https://avatars.githubusercontent.com/u/108530649?v=4",
+      "profile": "https://github.com/esc-sbarden",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "caiocarvalhotero",
+      "name": "caiocarvalhotero",
+      "avatar_url": "https://avatars.githubusercontent.com/u/143206673?v=4",
+      "profile": "https://github.com/caiocarvalhotero",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "gbq6",
+      "name": "Balazs Glatz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/24852447?v=4",
+      "profile": "https://github.com/gbq6",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "punkratz312",
+      "name": "Vincent Potucek",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8830888?v=4",
+      "profile": "https://github.com/punkratz312",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "manuel-a-romeiro-alb",
+      "name": "Manuel Romeiro",
+      "avatar_url": "https://avatars.githubusercontent.com/u/170322479?v=4",
+      "profile": "https://github.com/manuel-a-romeiro-alb",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "mladjan-gadzic",
+      "name": "Mladjan Gadzic",
+      "avatar_url": "https://avatars.githubusercontent.com/u/30688679?v=4",
+      "profile": "https://github.com/mladjan-gadzic",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,

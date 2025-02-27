@@ -27,6 +27,6 @@ fun JavaNode.ctorCalls(): DescendantNodeStream<ASTConstructorCall> = descendants
 fun JavaNode.firstCtorCall() = ctorCalls().crossFindBoundaries().firstOrThrow()
 
 fun JavaNode.typeVariables(): MutableList<JTypeVar> = descendants(ASTTypeParameter::class.java).crossFindBoundaries().toList { it.typeMirror }
-fun JavaNode.varAccesses(name: String): NodeStream<ASTVariableAccess> = descendants(ASTVariableAccess::class.java).filter { it.name == name }
-fun JavaNode.varId(name: String) = descendants(ASTVariableId::class.java).filter { it.name == name }.firstOrThrow()
-fun JavaNode.typeVar(name: String) = descendants(ASTTypeParameter::class.java).filter { it.name == name }.firstOrThrow().typeMirror
+fun JavaNode.varAccesses(name: String): NodeStream<ASTVariableAccess> = descendants(ASTVariableAccess::class.java).crossFindBoundaries().filter { it.name == name }
+fun JavaNode.varId(name: String) = descendants(ASTVariableId::class.java).crossFindBoundaries().filter { it.name == name }.firstOrThrow()
+fun JavaNode.typeVar(name: String) = descendants(ASTTypeParameter::class.java).crossFindBoundaries().filter { it.name == name }.firstOrThrow().typeMirror

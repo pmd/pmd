@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
-import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
@@ -42,8 +40,6 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
  * </pre>
  */
 public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JMethodSymbol> {
-
-    private String name;
 
     /**
      * Populated by {@link OverrideResolutionPass}.
@@ -81,23 +77,6 @@ public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JM
 
     void setOverriddenMethod(JMethodSig overriddenMethod) {
         this.overriddenMethod = overriddenMethod;
-    }
-
-    @Override
-    public FileLocation getReportLocation() {
-        // the method identifier
-        JavaccToken ident = TokenUtils.nthPrevious(getModifiers().getLastToken(), getFormalParameters().getFirstToken(), 1);
-        return ident.getReportLocation();
-    }
-
-    /** Returns the simple name of the method. */
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    void setName(String name) {
-        this.name = name;
     }
 
     /**
@@ -158,14 +137,14 @@ public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JM
             && this.isVoid()
             && this.getArity() == 1
             && TypeTestUtil.isExactlyA(String[].class, this.getFormalParameters().get(0))
-            || isMainMethodInImplicitlyDeclaredClass();
+            || isLaunchableMainMethod();
     }
 
     /**
-     * With JEP 445/463/477 (Java 23 Preview) the main method does not need to be static anymore and
+     * With JEP 445/463/477/495 (Java 23/24 Preview) the main method does not need to be static anymore and
      * does not need to be public or have a formal parameter.
      */
-    private boolean isMainMethodInImplicitlyDeclaredClass() {
+    private boolean isLaunchableMainMethod() {
         return this.getRoot().isSimpleCompilationUnit()
                 && "main".equals(this.getName())
                 && !this.hasModifiers(JModifier.PRIVATE)

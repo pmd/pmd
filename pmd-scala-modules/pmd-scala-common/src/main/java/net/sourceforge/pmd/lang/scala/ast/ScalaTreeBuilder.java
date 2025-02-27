@@ -111,11 +111,13 @@ class ScalaTreeBuilder {
         register(Pat.Wildcard.class, ASTPatWildcard.class);
         register(Pat.Xml.class, ASTPatXml.class);
         register(Pkg.class, ASTPkg.class);
+        register(Pkg.Body.class, ASTPkgBody.class);
         register(Pkg.Object.class, ASTPkgObject.class);
         register(Quasi.class, ASTQuasi.class);
         register(Self.class, ASTSelf.class);
         register(Source.class, ASTSource.class);
         register(Template.class, ASTTemplate.class);
+        register(Template.Body.class, ASTTemplateBody.class);
         register(Term.Annotate.class, ASTTermAnnotate.class);
         register(Term.Apply.class, ASTTermApply.class);
         register(Term.ApplyInfix.class, ASTTermApplyInfix.class);
@@ -125,6 +127,7 @@ class ScalaTreeBuilder {
         register(Term.Ascribe.class, ASTTermAscribe.class);
         register(Term.Assign.class, ASTTermAssign.class);
         register(Term.Block.class, ASTTermBlock.class);
+        register(Term.CasesBlock.class, ASTTermCasesBlock.class);
         register(Term.Do.class, ASTTermDo.class);
         register(Term.Eta.class, ASTTermEta.class);
         register(Term.For.class, ASTTermFor.class);

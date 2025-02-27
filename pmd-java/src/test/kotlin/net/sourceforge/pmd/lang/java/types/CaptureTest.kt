@@ -7,8 +7,10 @@ package net.sourceforge.pmd.lang.java.types
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeSameInstanceAs
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.createUnresolvedAsmSymbol
-import net.sourceforge.pmd.lang.java.types.TypeConversion.*
+import net.sourceforge.pmd.lang.java.types.TypeConversion.capture
 import net.sourceforge.pmd.lang.test.ast.IntelliMarker
 
 /**
@@ -87,6 +89,29 @@ class CaptureTest : IntelliMarker, FunSpec({
 
                  capture(type) shouldBe box[captureMatcher(`?` extends child)]
             }
+
+            test("Capture of recursive types #5096") {
+                val acu = javaParser.parse(
+                    """
+
+                    class Child<C extends Child<? extends C>> {
+                      Child(C t) {
+                        super(t); // <-- The bug is triggered by capture of the `t` here
+                      } 
+                    }
+                """.trimIndent()
+                )
+
+                val (child) = acu.declaredTypeSignatures()
+
+                val parm = acu.descendants(ASTVariableId::class.java).firstOrThrow()
+
+                parm shouldHaveType child.typeArgs[0]
+                val captured = capture(parm.typeMirror)
+                captured shouldBeSameInstanceAs parm.typeMirror
+            }
+
+
 
         }
     }

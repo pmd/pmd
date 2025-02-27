@@ -370,6 +370,14 @@ public interface ScalaVisitor<D, R> extends AstVisitor<D, R> {
     }
 
 
+    /**
+     * @since 7.10.0
+     */
+    default R visit(ASTPkgBody node, D data) {
+        return visit((ScalaNode<?>) node, data);
+    }
+
+
     default R visit(ASTPkgObject node, D data) {
         return visit((ScalaNode<?>) node, data);
     }
@@ -386,6 +394,14 @@ public interface ScalaVisitor<D, R> extends AstVisitor<D, R> {
 
 
     default R visit(ASTTemplate node, D data) {
+        return visit((ScalaNode<?>) node, data);
+    }
+
+
+    /**
+     * @since 7.10.0
+     */
+    default R visit(ASTTemplateBody node, D data) {
         return visit((ScalaNode<?>) node, data);
     }
 
@@ -426,6 +442,14 @@ public interface ScalaVisitor<D, R> extends AstVisitor<D, R> {
 
 
     default R visit(ASTTermBlock node, D data) {
+        return visit((ScalaNode<?>) node, data);
+    }
+
+
+    /**
+     * @since 7.10.0
+     */
+    default R visit(ASTTermCasesBlock node, D data) {
         return visit((ScalaNode<?>) node, data);
     }
 
