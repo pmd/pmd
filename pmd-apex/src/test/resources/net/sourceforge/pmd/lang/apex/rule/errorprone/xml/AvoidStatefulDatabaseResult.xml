@@ -7,6 +7,7 @@
   <test-code>
     <description>Result instances in stateful class</description>
     <expected-problems>7</expected-problems>
+    <expected-linenumbers>2,3,4,5,6,7,8</expected-linenumbers>
     <code><![CDATA[
 public class Example implements Database.Batchable<SObject>, Database.Stateful {
   private Database.DeleteResult deleteResult;
@@ -33,6 +34,7 @@ public class Example implements Database.Batchable<SObject>, Database.Stateful {
   <test-code>
     <description>Result lists in stateful class</description>
     <expected-problems>7</expected-problems>
+    <expected-linenumbers>2,3,4,5,6,7,8</expected-linenumbers>
     <code><![CDATA[
 public class Example implements Database.Batchable<SObject>, Database.Stateful {
   private List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>();
@@ -59,6 +61,7 @@ public class Example implements Database.Batchable<SObject>, Database.Stateful {
   <test-code>
     <description>Result sets in stateful class</description>
     <expected-problems>7</expected-problems>
+    <expected-linenumbers>2,3,4,5,6,7,8</expected-linenumbers>
     <code><![CDATA[
 public class Example implements Database.Batchable<SObject>, Database.Stateful {
   private Set<Database.DeleteResult> deleteResults = new Set<Database.DeleteResult>();
@@ -85,6 +88,7 @@ public class Example implements Database.Batchable<SObject>, Database.Stateful {
   <test-code>
     <description>Result maps in stateful class</description>
     <expected-problems>7</expected-problems>
+    <expected-linenumbers>2,3,4,5,6,7,8</expected-linenumbers>
     <code><![CDATA[
 public class Example implements Database.Batchable<SObject>, Database.Stateful {
   private Map<Id, Database.DeleteResult> deleteResults = new Map<Id, Database.DeleteResult>();
@@ -107,7 +111,32 @@ public class Example implements Database.Batchable<SObject>, Database.Stateful {
 }
         ]]></code>
   </test-code>
-  
+
+  <test-code>
+    <description>Compliant example</description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class Example implements Database.Batchable<SObject>, Database.Stateful {
+  List<StatefulResult> results = new List<StatefulResult>(); // Use a different custom type to persist state
+
+  public Database.Querylocator start(Database.BatchableContext context) {
+    return Database.getQueryLocator('SELECT Id FROM Account');
+  }
+
+  public void execute(Database.BatchableContext context, List<SObject> scope) {
+    Database.SaveResult[] saveResults = Database.update(scope, false);
+    for (Database.SaveResult result : saveResults) {
+      results.add(new StatefulResult(result));
+    }
+  }
+
+  public void finish(database.BatchableContext context) {
+  }
+
+}
+    ]]></code>
+  </test-code>
+
   <test-code>
     <description>Transient result in stateful class</description>
     <expected-problems>0</expected-problems>
