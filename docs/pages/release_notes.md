@@ -14,12 +14,21 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+#### ✨ New Rules
+
+* The new Apex rule {% rule apex/errorprone/AvoidStatefulDatabaseResult %} detects `Database.Stateful` implementations
+  that store database results in instance variables. This can cause serialization issues between successive batch
+  iterations.
+
 ### 🐛 Fixed Issues
+* apex-errorprone
+  * [#5305](https://github.com/pmd/pmd/issues/5305): \[apex] New Rule: Avoid Stateful Database Results
 
 ### 🚨 API Changes
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#5425](https://github.com/pmd/pmd/pull/5425): \[apex] New Rule: Avoid Stateful Database Results - [Mitch Spano](https://github.com/mitchspano) (@mitchspano)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
