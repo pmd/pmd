@@ -179,7 +179,7 @@
          |                 +- UnqualifiedID[@CanonicalImage = "T_REPORTING_LISTS", @Image = "t_reporting_lists"]
          +- Statement[@CanonicalImage = null]
             +- UnlabelledStatement[@CanonicalImage = null]
-               +- SelectStatement[@All = false, @CanonicalImage = null, @Distinct = false, @Unique = false]
+               +- SelectIntoStatement[@All = false, @CanonicalImage = null, @Distinct = false, @Unique = false]
                   +- SelectList[@CanonicalImage = null]
                   |  +- SqlExpression[@CanonicalImage = "CMER_ID", @Image = "cmer_id"]
                   |  |  +- PrimaryPrefix[@CanonicalImage = "CMER_ID", @Image = "cmer_id", @SelfModifier = false]

@@ -783,7 +783,7 @@
          |                       +- ID[@CanonicalImage = "\"Path\"", @Image = "\"Path\""]
          +- Statement[@CanonicalImage = null]
             +- UnlabelledStatement[@CanonicalImage = null]
-               +- SelectStatement[@All = false, @CanonicalImage = null, @Distinct = false, @Unique = false]
+               +- SelectIntoStatement[@All = false, @CanonicalImage = null, @Distinct = false, @Unique = false]
                   +- SelectList[@CanonicalImage = null]
                   |  +- SqlExpression[@CanonicalImage = "NAME", @Image = "name"]
                   |  |  +- PrimaryPrefix[@CanonicalImage = "NAME", @Image = "name", @SelfModifier = false]

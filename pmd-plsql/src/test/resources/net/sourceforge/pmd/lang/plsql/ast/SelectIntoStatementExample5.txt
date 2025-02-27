@@ -154,7 +154,7 @@
          |                                                                                      +- ID[@CanonicalImage = "I", @Image = "i"]
          +- Statement[@CanonicalImage = null]
          |  +- UnlabelledStatement[@CanonicalImage = null]
-         |     +- SelectStatement[@All = false, @CanonicalImage = null, @Distinct = false, @Unique = false]
+         |     +- SelectIntoStatement[@All = false, @CanonicalImage = null, @Distinct = false, @Unique = false]
          |        +- SelectList[@CanonicalImage = null]
          |        |  +- SqlExpression[@CanonicalImage = "EMPLOYEE_ID", @Image = "employee_id"]
          |        |  |  +- PrimaryPrefix[@CanonicalImage = "EMPLOYEE_ID", @Image = "employee_id", @SelfModifier = false]
