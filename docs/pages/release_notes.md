@@ -14,6 +14,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+#### ✨ New Rules
+
+* The new Apex rule {% rule apex/errorprone/AvoidStatefulDatabaseResult %} detects `Database.Stateful` implementations
+  that store database results in instance variables. This can cause serialization issues between successive batch
+  iterations.
+
 #### Signed Releases
 
 We now not only sign the maven artifacts, but also our binary distribution files that you can
@@ -21,6 +27,8 @@ download from [GitHub Releases](https://github.com/pmd/pmd/releases).
 See the page [Signed Releases](pmd_userdocs_signed_releases.html) in our documentation for how to verify the files.
 
 ### 🐛 Fixed Issues
+* apex-errorprone
+  * [#5305](https://github.com/pmd/pmd/issues/5305): \[apex] New Rule: Avoid Stateful Database Results
 * java
   * [#5442](https://github.com/pmd/pmd/issues/5442): \[java] StackOverflowError with recursive generic types
   * [#5493](https://github.com/pmd/pmd/issues/5493): \[java] IllegalArgumentException: <?> cannot be a wildcard bound
@@ -46,6 +54,7 @@ See the page [Signed Releases](pmd_userdocs_signed_releases.html) in our documen
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#5425](https://github.com/pmd/pmd/pull/5425): \[apex] New Rule: Avoid Stateful Database Results - [Mitch Spano](https://github.com/mitchspano) (@mitchspano)
 * [#5503](https://github.com/pmd/pmd/pull/5503): \[java] AvoidSynchronizedAtMethodLevel: Fixed error in code example - [Balazs Glatz](https://github.com/gbq6) (@gbq6)
 * [#5538](https://github.com/pmd/pmd/pull/5538): Add project icon for IntelliJ IDEA - [Vincent Potucek](https://github.com/punkratz312) (@punkratz312)
 
