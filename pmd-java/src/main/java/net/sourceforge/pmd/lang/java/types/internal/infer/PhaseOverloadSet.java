@@ -141,14 +141,12 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
         JMethodSig m2p = ctx.mapToIVars(m2);
 
         List<ExprMirror> es = site.getExpr().getArgumentExpressions();
-        List<JTypeMirror> m1Formals = m1.getFormalParameters();
-        List<JTypeMirror> m2Formals = m2p.getFormalParameters();
 
         int k = es.size();
 
         for (int i = 0; i < k; i++) {
-            JTypeMirror ti = phase.ithFormal(m2Formals, i);
-            JTypeMirror si = phase.ithFormal(m1Formals, i);
+            JTypeMirror ti = m2p.ithFormalParam(i, phase.requiresVarargs());
+            JTypeMirror si = m1.ithFormalParam(i, phase.requiresVarargs());
             ExprMirror ei = es.get(i);
 
             if (si.equals(ti)) {
@@ -196,9 +194,13 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
             }
         }
 
-        if (phase.requiresVarargs() && m2Formals.size() == k + 1) {
+        if (phase.requiresVarargs() && m2p.getArity() == k + 1) {
             // that is, the invocation has no arguments for the varargs, eg Stream.of()
-            infer.checkConvertibleOrDefer(ctx, phase.ithFormal(m1Formals, k), m2Formals.get(k), site.getExpr(), phase, site);
+            infer.checkConvertibleOrDefer(ctx,
+                                          m1.ithFormalParam(k, true),
+                                          m2p.ithFormalParam(k, true),
+                                          // m2Formals.get(k),
+                                          site.getExpr(), phase, site);
         }
 
         ctx.solve();

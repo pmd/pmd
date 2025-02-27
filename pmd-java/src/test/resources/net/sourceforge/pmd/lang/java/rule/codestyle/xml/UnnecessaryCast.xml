@@ -909,6 +909,7 @@ class Tester {
 }
 ]]></code>
     </test-code>
+
     <test-code>
         <description>#5523 [java] UnnecessaryCast FP with integer division</description>
         <expected-problems>0</expected-problems>
@@ -923,4 +924,161 @@ class Tester {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Cast in return position of lambda (#5073)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.*;
+            import static java.util.Comparator.nullsFirst;
+
+            public class Foo {
+                public int compare(List<String> someList) {
+                    final Set<String> set = Optional.ofNullable(someList)
+                                                .map(list -> (Set<String>) new HashSet<>(list)) // Code Style | UnnecessaryCast reported here
+                                                .orElseGet(Collections::emptySet);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Cast in return position of lambda, true positives</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>13,14,15</expected-linenumbers>
+        <code><![CDATA[
+            import java.util.*;
+
+            interface L1<X> { Object foo(X x); }
+            interface L2<X, Q> { Q foo(X x); }
+
+
+            public class Foo {
+                <X> void bar(L1<X> l) {}
+                <X> void bar2(L2<X, ? extends Comparable<?>> l) {}
+                <X> void bar4(L2<X, Comparable<?>> l) {}
+                <X, Q> void bar3(L2<X, Q> l) {}
+                void foor(List<String> someList) {
+                    bar(x -> (Comparable<?>) "something"); // redundant
+                    bar2(x -> (Comparable<?>) "something"); // redundant: lambda not context dependent
+                    bar4(x -> (Comparable<?>) "something"); // redundant: lambda not context dependent
+                    bar3(x -> (Comparable<?>) "something"); // not redundant: method uses lambda ret ty
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Cast in return position of lambda, types are unresolved (#5073)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package org.example;
+
+            import io.vavr.collection.Array;
+            import io.vavr.collection.Seq;
+            import io.vavr.control.Either;
+
+            public class Main {
+
+                public Either<Seq<String>, String> loadAll() {
+                    return load()
+                            .mapLeft(it -> (Seq<String>) Array.of(it))
+                            .map(foo -> "bar");
+                }
+
+                private Either<String, String> load() {
+                    return Either.left("hello");
+                }
+
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Cast in return position of lambda, declare types here (#5073)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            interface Function<P,R> { R apply(P p); }
+            interface Seq<T> {}
+            interface Array<T> extends Seq<T> {
+                static <U> Array<U> of(U u) {}
+            }
+            interface Either<L, R> {
+                <T> Either<T, R> mapLeft(Function<? super L, ? extends T> f) {}
+                <T> Either<L, T> map(Function<? super R, ? extends T> f) {}
+            }
+
+            public class Main {
+
+                public Either<Seq<String>, String> loadAll() {
+                    return load()
+                            .mapLeft(it -> (Seq<String>) Array.of(it))
+                            .map(foo -> "bar");
+                }
+
+                private Either<String, String> load() {
+                    //                    return Either.left("hello");
+                }
+
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Other example of cast in lambda return (#5440)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.Optional;
+            class Scratch {
+                public static void main(String[] args) {
+                    Object object = Optional
+                            .of(new Object())
+                            // necessary otherwise map would return Optional<String>
+                            .map(o -> (Object) o.toString())
+                            .orElse(Boolean.FALSE);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Other example of cast in lambda return (#5440) - has explicit type args</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import java.util.Optional;
+            class Scratch {
+                public static void main(String[] args) {
+                    Object object = Optional
+                            .of(new Object())
+                            // with explicit targs it is unnecessary
+                            .<Object>map(o -> (Object) o.toString())
+                            .orElse(Boolean.FALSE);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Other example of cast in lambda return (#5440) - has cast context</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import java.util.Optional;
+            import java.util.function.UnaryOperator;
+
+            class Scratch {
+                public static void main(String[] args) {
+                    Object object = Optional
+                            .of(new Object())
+                            // the outer cast determines the type of the lambda, not the inner cast
+                            .map((UnaryOperator<Object>) o -> (Object) o.toString())
+                            .orElse(Boolean.FALSE);
+                }
+            }
+            ]]></code>
+    </test-code>
+
 </test-data>

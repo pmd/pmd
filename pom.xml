@@ -671,6 +671,19 @@
                                 <exclude>@net.sourceforge.pmd.annotation.Experimental</exclude>
                                 <exclude>@net.sourceforge.pmd.annotation.InternalApi</exclude>
                             </excludes>
+                            <overrideCompatibilityChangeParameters>
+                                <!-- See https://docs.oracle.com/javase/specs/jls/se21/html/jls-13.html#jls-13.5.7 -->
+                                <!-- See https://github.com/siom79/japicmp/issues/201 -->
+                                <overrideCompatibilityChangeParameter>
+                                    <!-- Turning an interface method from abstract to default is not binary-incompatible (JLS 13.5.7). -->
+                                    <!-- It may cause IncompatibleClassChangeError in some very specific situations,
+                                    where unrelated subinterfaces each define their own default. -->
+                                    <compatibilityChange>METHOD_ABSTRACT_NOW_DEFAULT</compatibilityChange>
+                                    <binaryCompatible>true</binaryCompatible>
+                                    <sourceCompatible>true</sourceCompatible>
+                                    <semanticVersionLevel>PATCH</semanticVersionLevel>
+                                </overrideCompatibilityChangeParameter>
+                            </overrideCompatibilityChangeParameters>
                         </parameter>
                     </configuration>
                     <executions>

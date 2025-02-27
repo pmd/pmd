@@ -2180,9 +2180,21 @@ public final class TypeOps {
      * means its return type is influenced by the surrounding
      * context during type inference. Generic constructors
      * are always context dependent.
+     *
+     * @deprecated Since 7.11.0. Use {@link #isContextDependent(JExecutableSymbol)} instead which is more flexible.
      */
+    @Deprecated
     public static boolean isContextDependent(JMethodSig sig) {
-        JExecutableSymbol symbol = sig.getSymbol();
+        return isContextDependent(sig.getSymbol());
+    }
+
+    /**
+     * Return true if the method is context dependent. That
+     * means its return type is influenced by the surrounding
+     * context during type inference. Generic constructors
+     * are always context dependent.
+     */
+    public static boolean isContextDependent(JExecutableSymbol symbol) {
         if (symbol.isGeneric() || symbol.getEnclosingClass().isGeneric()) {
             if (symbol instanceof JMethodSymbol) {
                 JTypeMirror returnType = ((JMethodSymbol) symbol).getReturnType(EMPTY);
