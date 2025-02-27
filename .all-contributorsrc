@@ -7974,6 +7974,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "Ferada",
+      "name": "Olof-Joachim Frahm (欧雅福)",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13713?v=4",
+      "profile": "https://macrolet.net/",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
