@@ -46,6 +46,37 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         val suppressMarker: String = PMDConfiguration.DEFAULT_SUPPRESS_MARKER,
         val configLanguageProperties: LanguagePropertyBundle.() -> Unit = {}
     ) {
+
+        @Deprecated("Overload added for binary compatibility")
+        constructor(
+            doProcess: Boolean,
+            defaultVerString: String?,
+            resourceLoader: Class<*>?,
+            resourcePrefix: String,
+            languageRegistry: LanguageRegistry,
+            suppressMarker: String,
+        ) : this(
+            doProcess,
+            defaultVerString,
+            resourceLoader,
+            resourcePrefix,
+            languageRegistry,
+            suppressMarker,
+            configLanguageProperties = {})
+
+        @Deprecated("Overload added for binary compatibility")
+        fun copy(
+            doProcess: Boolean,
+            defaultVerString: String?,
+            resourceLoader: Class<*>?,
+            resourcePrefix: String,
+            languageRegistry: LanguageRegistry = LanguageRegistry.PMD,
+            suppressMarker: String = PMDConfiguration.DEFAULT_SUPPRESS_MARKER,
+        ) = copy(
+            doProcess, defaultVerString, resourceLoader, resourcePrefix, languageRegistry, suppressMarker,
+            configLanguageProperties
+        )
+
         companion object {
 
             @JvmStatic
