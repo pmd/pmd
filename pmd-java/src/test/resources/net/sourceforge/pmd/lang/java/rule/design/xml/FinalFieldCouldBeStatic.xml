@@ -297,4 +297,23 @@ public class Test {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5018 issue with super field reference</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Super {
+    int foo;
+}
+public class Test extends Super {
+    int foo;
+    class Inner {
+        private final int field = Test.super.foo;
+    }
+    class Inner2 {
+        private final int field = Test.this.foo;
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
