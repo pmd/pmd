@@ -926,7 +926,7 @@ class Tester {
     </test-code>
 
     <test-code>
-        <description>Cast in return position of lambda</description>
+        <description>Cast in return position of lambda (#5073)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             import java.util.*;
@@ -970,7 +970,7 @@ class Tester {
 
 
     <test-code>
-        <description>Cast in return position of lambda, types are unresolved</description>
+        <description>Cast in return position of lambda, types are unresolved (#5073)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             package org.example;
@@ -996,7 +996,7 @@ class Tester {
     </test-code>
 
     <test-code>
-        <description>Cast in return position of lambda, declare types here</description>
+        <description>Cast in return position of lambda, declare types here (#5073)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             interface Function<P,R> { R apply(P p); }

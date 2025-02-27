@@ -29,11 +29,19 @@ See the page [Signed Releases](pmd_userdocs_signed_releases.html) in our documen
   * [#5486](https://github.com/pmd/pmd/issues/5486): \[java] UnusedPrivateMethod detected when class is referenced in another class
   * [#5504](https://github.com/pmd/pmd/issues/5504): \[java] UnusedAssignment false-positive in for-loop with continue
 * java-codestyle
+  * [#5073](https://github.com/pmd/pmd/issues/5073): \[java] UnnecessaryCast false-positive for cast in return position of lambda
+  * [#5440](https://github.com/pmd/pmd/issues/5440): \[java] UnnecessaryCast reported in stream chain map() call that casts to more generic interface
   * [#5523](https://github.com/pmd/pmd/issues/5523): \[java] UnnecessaryCast false-positive for integer operations in floating-point context
 * plsql
   * [#5522](https://github.com/pmd/pmd/issues/5522): \[plsql] Parse error for operator in TRIM function call
 
 ### 🚨 API Changes
+
+#### Deprecations
+* java
+  * The method {%jdoc !ca!java::lang.java.types.TypeOps#isContextDependent(java::lang.java.types.JMethodSig) %} is deprecated for removal.
+    Use {%jdoc !a!java::lang.java.types.TypeOps#isContextDependent(java::lang.java.symbols.JExecutableSymbol) %} instead which
+    is more flexible.
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
