@@ -7965,6 +7965,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "slovdahl",
+      "name": "Sebastian Lövdahl",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1417619?v=4",
+      "profile": "https://github.com/slovdahl",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
