@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.">
-<meta name="keywords" content=" Error Prone, ApexCSRF, AvoidDirectAccessTriggerMap, AvoidHardcodingId, AvoidNonExistentAnnotations, EmptyCatchBlock, EmptyIfStmt, EmptyStatementBlock, EmptyTryOrFinallyBlock, EmptyWhileStmt, InaccessibleAuraEnabledGetter, MethodWithSameNameAsEnclosingClass, OverrideBothEqualsAndHashcode, TestMethodsMustBeInTestClasses">
+<meta name="keywords" content=" Error Prone, ApexCSRF, AvoidDirectAccessTriggerMap, AvoidHardcodingId, AvoidNonExistentAnnotations, AvoidStatefulDatabaseResult, EmptyCatchBlock, EmptyIfStmt, EmptyStatementBlock, EmptyTryOrFinallyBlock, EmptyWhileStmt, InaccessibleAuraEnabledGetter, MethodWithSameNameAsEnclosingClass, OverrideBothEqualsAndHashcode, TestMethodsMustBeInTestClasses">
 <title>Error Prone | PMD Source Code Analyzer</title>
 
 
@@ -2134,6 +2134,99 @@ A full list of supported annotations can be found at https://developer.salesforc
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/errorprone.xml/AvoidNonExistentAnnotations"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="avoidstatefuldatabaseresult">AvoidStatefulDatabaseResult</h2>
+
+<p><strong>Since:</strong> PMD 7.11.0</p>
+
+<p><strong>Priority:</strong> Medium High (2)</p>
+
+<p>Using instance variables of the following types (or collections of these types) within a stateful batch class can cause serialization errors between batch iterations:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">Database.DeleteResult</code></li>
+  <li><code class="language-plaintext highlighter-rouge">Database.EmptyRecycleBinResult</code></li>
+  <li><code class="language-plaintext highlighter-rouge">Database.MergeResult</code></li>
+  <li><code class="language-plaintext highlighter-rouge">Database.SaveResult</code></li>
+  <li><code class="language-plaintext highlighter-rouge">Database.UndeleteResult</code></li>
+  <li><code class="language-plaintext highlighter-rouge">Database.UpsertResult</code></li>
+</ul>
+
+<p>This error occurs inconsistently and asynchronously with an obscure error message - making it particularly challenging to troubleshoot.
+See <a href="https://issues.salesforce.com/issue/a028c00000qPwlqAAC/stateful-batch-job-that-stores-databasesaveresult-failed-after-validation-errors-throws-error-during-deserialization">this issue</a> for more details.</p>
+
+<p>These errors can be avoided by marking the variable as static, transient, or using a different
+data type that is safe to serialize.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/errorprone/AvoidStatefulDatabaseResultRule.java">net.sourceforge.pmd.lang.apex.rule.errorprone.AvoidStatefulDatabaseResultRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Violating</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Example</span> <span class="kd">implements</span> <span class="nc">Database</span><span class="o">.</span><span class="na">Batchable</span><span class="o">&lt;</span><span class="nc">SObject</span><span class="o">&gt;,</span> <span class="nc">Database</span><span class="o">.</span><span class="na">Stateful</span> <span class="o">{</span>
+  <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Database</span><span class="o">.</span><span class="na">SaveResult</span><span class="o">&gt;</span> <span class="n">results</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Database</span><span class="o">.</span><span class="na">SaveResult</span><span class="o">&gt;();</span> <span class="c1">// This can cause failures</span>
+
+  <span class="kd">public</span> <span class="nc">Database</span><span class="o">.</span><span class="na">Querylocator</span> <span class="nf">start</span><span class="o">(</span><span class="nc">Database</span><span class="o">.</span><span class="na">BatchableContext</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="nc">Database</span><span class="o">.</span><span class="na">getQueryLocator</span><span class="o">(</span><span class="err">'</span><span class="no">SELECT</span> <span class="nc">Id</span> <span class="no">FROM</span> <span class="nc">Account</span><span class="err">'</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">execute</span><span class="o">(</span><span class="nc">Database</span><span class="o">.</span><span class="na">BatchableContext</span> <span class="n">context</span><span class="o">,</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">SObject</span><span class="o">&gt;</span> <span class="n">scope</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">Database</span><span class="o">.</span><span class="na">SaveResult</span><span class="o">[]</span> <span class="n">saveResults</span> <span class="o">=</span> <span class="nc">Database</span><span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">scope</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
+    <span class="n">results</span><span class="o">.</span><span class="na">addAll</span><span class="o">(</span><span class="n">saveResults</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">finish</span><span class="o">(</span><span class="n">database</span><span class="o">.</span><span class="na">BatchableContext</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// Compliant</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Example</span> <span class="kd">implements</span> <span class="nc">Database</span><span class="o">.</span><span class="na">Batchable</span><span class="o">&lt;</span><span class="nc">SObject</span><span class="o">&gt;,</span> <span class="nc">Database</span><span class="o">.</span><span class="na">Stateful</span> <span class="o">{</span>
+  <span class="nc">List</span><span class="o">&lt;</span><span class="nc">StatefulResult</span><span class="o">&gt;</span> <span class="n">results</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">StatefulResult</span><span class="o">&gt;();</span> <span class="c1">// Use a different custom type to persist state</span>
+
+  <span class="kd">public</span> <span class="nc">Database</span><span class="o">.</span><span class="na">Querylocator</span> <span class="nf">start</span><span class="o">(</span><span class="nc">Database</span><span class="o">.</span><span class="na">BatchableContext</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="nc">Database</span><span class="o">.</span><span class="na">getQueryLocator</span><span class="o">(</span><span class="err">'</span><span class="no">SELECT</span> <span class="nc">Id</span> <span class="no">FROM</span> <span class="nc">Account</span><span class="err">'</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">execute</span><span class="o">(</span><span class="nc">Database</span><span class="o">.</span><span class="na">BatchableContext</span> <span class="n">context</span><span class="o">,</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">SObject</span><span class="o">&gt;</span> <span class="n">scope</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">Database</span><span class="o">.</span><span class="na">SaveResult</span><span class="o">[]</span> <span class="n">saveResults</span> <span class="o">=</span> <span class="nc">Database</span><span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">scope</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
+    <span class="k">for</span> <span class="o">(</span><span class="nc">Database</span><span class="o">.</span><span class="na">SaveResult</span> <span class="n">result</span> <span class="o">:</span> <span class="n">saveResults</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">results</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="nc">StatefulResult</span><span class="o">(</span><span class="n">result</span><span class="o">));</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">finish</span><span class="o">(</span><span class="n">database</span><span class="o">.</span><span class="na">BatchableContext</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+  <span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">StatefulResult</span> <span class="o">{</span>
+  <span class="kd">private</span> <span class="nc">Boolean</span> <span class="n">isSuccess</span><span class="o">;</span>
+  <span class="kd">private</span> <span class="nc">Id</span> <span class="n">id</span><span class="o">;</span>
+  <span class="kd">private</span> <span class="nc">Database</span><span class="o">.</span><span class="na">Error</span><span class="o">[]</span> <span class="n">errors</span><span class="o">;</span>
+
+  <span class="kd">public</span> <span class="nf">StatefulResult</span><span class="o">(</span><span class="nc">Database</span><span class="o">.</span><span class="na">SaveResult</span> <span class="n">result</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">isSuccess</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="na">isSuccess</span><span class="o">();</span>
+    <span class="n">id</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="na">getId</span><span class="o">();</span>
+    <span class="n">errors</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="na">getErrors</span><span class="o">();</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="nc">Boolean</span> <span class="nf">isSuccess</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">isSuccess</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="nc">Id</span> <span class="nf">getId</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">id</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="nc">Database</span><span class="o">.</span><span class="na">Error</span><span class="o">[]</span> <span class="nf">getErrors</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">errors</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/errorprone.xml/AvoidStatefulDatabaseResult"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="emptycatchblock">EmptyCatchBlock</h2>
 
 <p><strong>Since:</strong> PMD 6.0.0</p>
@@ -2209,7 +2302,7 @@ or reported.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">IfBlockStatement</span><span class="w">
- </span><span class="p">[</span><span class="nt">BlockStatement</span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">0</span><span class="p">]]</span><span class="w">
+          </span><span class="p">[</span><span class="nt">BlockStatement</span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">0</span><span class="p">]]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -2577,7 +2670,7 @@ dealing with legacy code.</p>
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Feb 25, 2025 <br />
+             Site last generated: Feb 27, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

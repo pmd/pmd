@@ -3706,6 +3706,15 @@
 ,
 
 {
+"title": "AvoidStatefulDatabaseResult (Apex, Error Prone)",
+"tags": "",
+"keywords": "AvoidStatefulDatabaseResult",
+"url": "pmd_rules_apex_errorprone.html#avoidstatefuldatabaseresult",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
 "title": "EmptyCatchBlock (Apex, Error Prone)",
 "tags": "",
 "keywords": "EmptyCatchBlock",
