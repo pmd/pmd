@@ -68,18 +68,6 @@ jobs:
           path: |
             pmd-dist/target/pmd-dist-*-bin.zip
             pmd-dist/target/pmd-dist-*-src.zip
-      - name: Save PR info
-        env:
-          PR_NUMBER: ${{ github.event.number }}
-          PR_SHA: ${{ github.event.pull_request.head.sha }}
-        run: |
-          mkdir -p ./pr
-          echo "${PR_NUMBER}" > ./pr/PR_NUMBER
-          echo "${PR_SHA}" > ./pr/PR_SHA
-      - use: actions/upload-artifact@v4
-        with:
-          name: pr-info
-          path: pr/
 
   verify:
     needs: compile

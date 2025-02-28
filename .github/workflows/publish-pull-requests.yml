@@ -20,16 +20,24 @@ jobs:
       run:
         shell: bash
     steps:
-      - name: Download PR info
-        uses: actions/download-artifact@v4
-        with:
-          name: pr-info
-          run-id: ${{ github.event.workflow_run.id }}
-      - run: |
-          PR_NUMBER="$(cat ./PR_NUMBER)"
-          echo "PR_NUMBER=${PR_NUMBER}" >> "$GITHUB_ENV"
-          PR_SHA="$(cat ./PR_SHA)"
-          echo "PR_SHA=${PR_SHA}" >> "$GITHUB_ENV"
+      - name: 'Get PR context'
+        env:
+          # Token required for GH CLI:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # If the PR is from a fork, prefix it with `<owner-login>:`, otherwise only the PR branch name is relevant:
+          PR_BRANCH: |-
+            ${{
+              (github.event.workflow_run.head_repository.owner.login != github.event.workflow_run.repository.owner.login)
+                && format('{0}:{1}', github.event.workflow_run.head_repository.owner.login, github.event.workflow_run.head_branch)
+                || github.event.workflow_run.head_branch
+            }}
+          PR_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          # Query the PR number by repo + branch, then assign to step output:
+          gh pr view --repo pmd/pmd "${PR_BRANCH}" \
+             --json 'number' --jq '"PR_NUMBER=\(.number)"' \
+             >> "${GITHUB_ENV}"
+          echo "PR_SHA=${PR_SHA}" >> "${GITHUB_ENV}"
       - name: Download docs-artifact
         env:
           RUN_ID: ${{ github.event.workflow_run.id }}
