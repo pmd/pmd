@@ -133,11 +133,14 @@ jobs:
           "
           fi
           
+          # conclusion can be one of: action_required, cancelled, failure, neutral, success, skipped, stale, timed_out
+          conclusion="$(cat pmd-regression-tester/conclusion.txt)"
+          
           gh api \
             --method POST \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             /repos/pmd/pmd/check-runs \
             -f "name=Regression Tester" -f "head_sha=${PR_SHA}" -f "status=completed" \
-            -f "started_at=${timestamp}" -f "conclusion=success" -f "completed_at=${timestamp}" \
+            -f "started_at=${timestamp}" -f "conclusion=${conclusion}" -f "completed_at=${timestamp}" \
             -f "output[title]=Regression Tester Report" -f "output[summary]=${summary}"

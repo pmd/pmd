@@ -31,12 +31,15 @@ def run_pmdtester
 
       if Dir.exist?('target/reports/diff')
         message = create_message
+        conclusion = determine_conclusion
       else
         message = "No regression tested rules have been changed."
+        conclusion = "skipped"
       end
 
     rescue StandardError => e
       message = "⚠ Running pmdtester failed, this message is mainly used to remind the maintainers of PMD."
+      conclusion = "failure"
       @logger.error "Running pmdtester failed: #{e.inspect}"
     end
 
@@ -45,8 +48,10 @@ def run_pmdtester
     end
     summary_file = 'target/reports/diff/summary.txt'
     File.write(summary_file, message)
-    @logger.info "Wrote summary file #{summary_file}:"
-    @logger.info message
+    @logger.info "Wrote summary file #{summary_file}:\n\n#{message}"
+    conclusion_file = 'target/reports/diff/conclusion.txt'
+    File.write(conclusion_file, conclusion)
+    @logger.info "Wrote conclusion file #{conclusion_file}: #{conclusion}"
   end
 end
 
@@ -60,6 +65,19 @@ def create_message
   "removes #{@summary[:violations][:removed]} violations, "\
   "#{@summary[:errors][:removed]} errors and " \
   "#{@summary[:configerrors][:removed]} configuration errors.\n"
+end
+
+def determine_conclusion
+  total_changes = @summary[:violations][:changed]
+    + @summary[:violations][:new]
+    + @summary[:violations][:removed]
+    + @summary[:errors][:new]
+    + @summary[:configerrors][:new]
+  if total_changes > 0
+    "neutral"
+  else
+    "success"
+  end
 end
 
 # Perform regression testing

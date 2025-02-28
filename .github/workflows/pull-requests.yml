@@ -333,4 +333,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pmd-regression-tester
+          if-no-files-found: error
           path: ${{ env.artifacts_path }}/target/reports/diff
