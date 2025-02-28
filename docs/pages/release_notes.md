@@ -15,6 +15,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀 New and noteworthy
 
 ### 🐛 Fixed Issues
+* java-codestyle
+  * [#5541](https://github.com/pmd/pmd/pull/5541): \[java] Fix IdenticalCatchBranch reporting branches that call different overloads
 
 ### 🚨 API Changes
 
