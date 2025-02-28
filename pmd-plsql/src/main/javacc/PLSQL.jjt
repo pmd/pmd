@@ -239,6 +239,15 @@ public class PLSQLParserImpl {
         && getToken(1).getText().charAt(0) != '"';
   }
 
+  private boolean hasIntoClause() {
+    int arity = jjtree.nodeArity();
+    while (--arity >= 0) {
+        if (jjtree.peekNode(arity) instanceof ASTIntoClause || jjtree.peekNode(arity) instanceof ASTBulkCollectIntoClause) {
+            return true;
+        }
+    }
+    return false;
+  }
 }
 
 PARSER_END(PLSQLParserImpl)
@@ -1302,6 +1311,38 @@ ASTSqlStatement SqlStatement(String initiator, String terminator)  :
     }
 }
 
+/**
+ * Parses a SELECT or a SELECT ... INTO statement. To avoid lookaheads, it returns a SelectIntoStatement,
+ * if a IntoClause or BulkCollectionIntoClause is present.
+ *
+ * Note: The SELECT INTO statement can be preceded by a WithClause, even though this is not in the
+ * official reference documentation.
+ *
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/SELECT-INTO-statement.html">SELECT INTO (18)</a>
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/23/lnpls/SELECT-INTO-statement.html">SELECT INTO (23)</a>
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/SELECT.html">SELECT (18)</a>
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/SELECT.html">SELECT (23)</a>
+ */
+void SelectOrSelectIntoStatement() #SelectStatement(>1) :
+{}
+{
+    (
+        [ WithClause() ] // Although undocumented, WITH works with both SELECT and SELECT INTO !
+        AbstractSelectStatement(jjtThis)
+        SelectList()
+
+        // The IntoClauses are used later to distinguish between SelectIntoStatement and SelectStatement.
+        //
+        // note: the into clause is here to allow parsing of wrong cursor for loop statements.
+        // while it will be parsed, the into clause is ignored by the database.
+        // see https://github.com/pmd/pmd/issues/1047#issuecomment-424757382
+        // see http://www.dba-oracle.com/t_adv_plsql_implicit_cursor_FOR_loop.htm
+        [ IntoClause() | BulkCollectIntoClause() ]
+
+        RestOfStatement()
+    ) #SelectIntoStatement(hasIntoClause())
+}
+
 void AbstractSelectStatement(AbstractSelectStatement node) #void :
 {}
 {
@@ -1310,26 +1351,6 @@ void AbstractSelectStatement(AbstractSelectStatement node) #void :
        | <UNIQUE> { node.setUnique(true); }
        | <ALL> { node.setAll(true); }
     ]
-}
-
-/**
- * Note: The SELECT INTO statement can be preceded by a WithClause, even though this is not in the
- * official reference documentation.
- *
- * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/SELECT-INTO-statement.html">SELECT INTO (18)</a>
- * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/23/lnpls/SELECT-INTO-statement.html">SELECT INTO (23)</a>
- * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/SELECT.html">SELECT (23)</a>
- */
-ASTSelectIntoStatement SelectIntoStatement() :
-{}
-{
-    [ WithClause() ]  // Although undocumented, WITH works with SELECT INTO !
-    AbstractSelectStatement(jjtThis)
-    SelectList()
-    ( IntoClause() | BulkCollectIntoClause() )
-    RestOfStatement()
-
-    { return jjtThis; }
 }
 
 void RestOfStatement() #void :
@@ -2378,14 +2399,7 @@ ASTUnlabelledStatement UnlabelledStatement()  :
 {}
 {
        (
-       // small optimization: SelectIntoStatement and SelectStatement both begin with WITH or SELECT
-       // but to distinguish the two, a complete lookahead of SelectIntoStatement needs to be parsed.
-       // Using a lookahead of a single token first avoids this the syntatic lookahead for all other choices
-       // not related to SELECT statements.
-       LOOKAHEAD(<WITH>|<SELECT>) (
-            LOOKAHEAD(SelectIntoStatement()) SelectIntoStatement() ";" |
-            SelectStatement() ";"
-       ) |
+       SelectOrSelectIntoStatement() ";" |
        UpdateStatement() ";" |
        DeleteStatement() ";" |
        InsertStatement() ";" |
