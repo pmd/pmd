@@ -41,6 +41,8 @@ See the page [Signed Releases](pmd_userdocs_signed_releases.html) in our documen
   * [#5073](https://github.com/pmd/pmd/issues/5073): \[java] UnnecessaryCast false-positive for cast in return position of lambda
   * [#5440](https://github.com/pmd/pmd/issues/5440): \[java] UnnecessaryCast reported in stream chain map() call that casts to more generic interface
   * [#5523](https://github.com/pmd/pmd/issues/5523): \[java] UnnecessaryCast false-positive for integer operations in floating-point context
+* java-design
+  * [#5018](https://github.com/pmd/pmd/issues/5018): \[java] FinalFieldCouldBeStatic false-positive for access of super class field
 * plsql
   * [#5522](https://github.com/pmd/pmd/issues/5522): \[plsql] Parse error for operator in TRIM function call
 
