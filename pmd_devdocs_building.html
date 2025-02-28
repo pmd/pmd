@@ -85,8 +85,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.11.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 28-February-2025</div>
+    <li class="sidebarTitle">PMD 7.12.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 28-March-2025</div>
     
     
     
@@ -2021,22 +2021,22 @@ While Java 11 is required for building, running PMD only requires Java 8.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal building]$ ls -l
 total 5716
--rw-rw-r--    1 tom      tom       5837216 Jul 17 13:09 pmd-src-7.11.0-SNAPSHOT.zip
-[tom@hal building]$ unzip -q pmd-src-7.11.0-SNAPSHOT.zip
+-rw-rw-r--    1 tom      tom       5837216 Jul 17 13:09 pmd-src-7.12.0-SNAPSHOT.zip
+[tom@hal building]$ unzip -q pmd-src-7.12.0-SNAPSHOT.zip
 [tom@hal building]$
 </code></pre></div></div>
 
 <p>Now cd down into the <code class="language-plaintext highlighter-rouge">pmd</code> directory:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal building]$ cd pmd-src-7.11.0-SNAPSHOT
-[tom@hal pmd-src-7.11.0-SNAPSHOT]$ ls -l | grep pom.xml
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal building]$ cd pmd-src-7.12.0-SNAPSHOT
+[tom@hal pmd-src-7.12.0-SNAPSHOT]$ ls -l | grep pom.xml
 -rw-rw-r--    1 tom      tom          36482 14\. Nov 17:36 pom.xml
-[tom@hal pmd-src-7.11.0-SNAPSHOT]$
+[tom@hal pmd-src-7.12.0-SNAPSHOT]$
 </code></pre></div></div>
 
 <p>That’s the project configuration for maven… let’s compile!</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal pmd-src-7.11.0-SNAPSHOT]$ ./mvnw clean verify
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal pmd-src-7.12.0-SNAPSHOT]$ ./mvnw clean verify
 [INFO] Scanning for projects...
 [INFO] ------------------------------------------------------------------------
 [INFO] Reactor Build Order:
@@ -2046,7 +2046,7 @@ total 5716
 ...
 ... after a few minutes ...
 [INFO] ------------------------------------------------------------------------
-[INFO] Reactor Summary for PMD 7.11.0-SNAPSHOT:
+[INFO] Reactor Summary for PMD 7.12.0-SNAPSHOT:
 [INFO] 
 [INFO] PMD ................................................ SUCCESS [ 31.653 s]
 [INFO] PMD Core ........................................... SUCCESS [01:10 min]
@@ -2098,7 +2098,7 @@ total 5716
 [INFO] Finished at: 2025-01-09T15:49:59+01:00
 [INFO] ------------------------------------------------------------------------
 
-[tom@hal pmd-src-7.11.0-SNAPSHOT]$
+[tom@hal pmd-src-7.12.0-SNAPSHOT]$
 </code></pre></div></div>
 
 <p>Now the source and binary distribution zip files can be found in the folder <code class="language-plaintext highlighter-rouge">pmd-dist/target</code>.</p>

@@ -85,8 +85,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.11.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 28-February-2025</div>
+    <li class="sidebarTitle">PMD 7.12.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 28-March-2025</div>
     
     
     
@@ -2005,90 +2005,20 @@
         <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
     </details>
 
-  <h2 id="28-february-2025---7110-snapshot">28-February-2025 - 7.11.0-SNAPSHOT</h2>
+  <h2 id="28-march-2025---7120-snapshot">28-March-2025 - 7.12.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 7.11.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 7.12.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
-<h4 id="-new-rules">✨ New Rules</h4>
-
-<ul>
-  <li>The new Apex rule <a href="pmd_rules_apex_errorprone.html#avoidstatefuldatabaseresult"><code class="language-plaintext highlighter-rouge">AvoidStatefulDatabaseResult</code></a> detects <code class="language-plaintext highlighter-rouge">Database.Stateful</code> implementations
-that store database results in instance variables. This can cause serialization issues between successive batch
-iterations.</li>
-</ul>
-
-<h4 id="signed-releases">Signed Releases</h4>
-
-<p>We now not only sign the maven artifacts, but also our binary distribution files that you can
-download from <a href="https://github.com/pmd/pmd/releases">GitHub Releases</a>.
-See the page <a href="pmd_userdocs_signed_releases.html">Signed Releases</a> in our documentation for how to verify the files.</p>
-
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
-<ul>
-  <li>apex-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5305">#5305</a>: [apex] New Rule: Avoid Stateful Database Results</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5442">#5442</a>: [java] StackOverflowError with recursive generic types</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5493">#5493</a>: [java] IllegalArgumentException: &lt;?&gt; cannot be a wildcard bound</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5505">#5505</a>: [java] java.lang.StackOverflowError while executing a PmdRunnable</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3359">#3359</a>: [java] UnusedPrivateMethod does not recognize Lombok @<!-- -->EqualsAndHashCode.Include annotation</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5486">#5486</a>: [java] UnusedPrivateMethod detected when class is referenced in another class</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5504">#5504</a>: [java] UnusedAssignment false-positive in for-loop with continue</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4822">#4822</a>: [java] UnnecessaryCast false-positive for raw types</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5073">#5073</a>: [java] UnnecessaryCast false-positive for cast in return position of lambda</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5440">#5440</a>: [java] UnnecessaryCast reported in stream chain map() call that casts to more generic interface</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5523">#5523</a>: [java] UnnecessaryCast false-positive for integer operations in floating-point context</li>
-      <li><a href="https://github.com/pmd/pmd/pull/5541">#5541</a>: [java] Fix IdenticalCatchBranch reporting branches that call different overloads</li>
-    </ul>
-  </li>
-  <li>java-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5018">#5018</a>: [java] FinalFieldCouldBeStatic false-positive for access of super class field</li>
-    </ul>
-  </li>
-  <li>plsql
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5522">#5522</a>: [plsql] Parse error for operator in TRIM function call</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="-api-changes">🚨 API Changes</h3>
 
-<h4 id="deprecations">Deprecations</h4>
-<ul>
-  <li>java
-    <ul>
-      <li>The method <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.11.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeOps.html#isContextDependent(net.sourceforge.pmd.lang.java.types.JMethodSig)"><code>TypeOps#isContextDependent(JMethodSig)</code></a> is deprecated for removal.
-Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.11.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeOps.html#isContextDependent(net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol)"><code>isContextDependent(JExecutableSymbol)</code></a> instead which
-is more flexible.</li>
-    </ul>
-  </li>
-</ul>
-
 <h3 id="-merged-pull-requests">✨ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/5425">#5425</a>: [apex] New Rule: Avoid Stateful Database Results - <a href="https://github.com/mitchspano">Mitch Spano</a> (@mitchspano)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5503">#5503</a>: [java] AvoidSynchronizedAtMethodLevel: Fixed error in code example - <a href="https://github.com/gbq6">Balazs Glatz</a> (@gbq6)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5538">#5538</a>: Add project icon for IntelliJ IDEA - <a href="https://github.com/punkratz312">Vincent Potucek</a> (@punkratz312)</li>
-</ul>
 
 <h3 id="-dependency-updates">📦 Dependency updates</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
