@@ -267,6 +267,15 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
         if (typeNode == null) {
             return true;
         }
+        if (!(typeNode instanceof ASTClassType)) {
+            return false;
+        }
+        String simpleName = ((ASTClassType) typeNode).getSimpleName();
+        if (!"val".equals(simpleName) && !"var".equals(simpleName)) {
+            // do a first filter to avoid having to query the language processor
+            return false;
+        }
+        @SuppressWarnings("PMD.CloseResource")
         JavaLanguageProcessor javaLanguage = (JavaLanguageProcessor) getAstInfo().getLanguageProcessor();
         if (!javaLanguage.hasFirstClassLombokSupport()) {
             return false;
