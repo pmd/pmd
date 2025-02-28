@@ -46,6 +46,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
+import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind;
@@ -123,11 +124,24 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             // then we have fewer violation conditions
 
             return !operandType.isBottom() // casts on a null literal are necessary
-                && operandType.isSubtypeOf(coercionType);
+                && operandType.isSubtypeOf(coercionType)
+                && !isCastToRawType(coercionType, operandType);
         }
 
         return !isCastDeterminingContext(castExpr, context, coercionType, operandType)
             && castIsUnnecessaryToMatchContext(context, coercionType, operandType);
+    }
+
+    /**
+     * Whether this cast is casting a non-raw type to a raw type.
+     * This is part of the {@link Convertibility#bySubtyping()} relation,
+     * and needs to be singled out as operations on the raw type
+     * behave differently than on the non-raw type. In that case the
+     * cast may be necessary to avoid compile-errors, even though it
+     * will be noop at runtime (an _unchecked_ cast).
+     */
+    private boolean isCastToRawType(JTypeMirror coercionType, JTypeMirror operandType) {
+        return coercionType.isRaw() && !operandType.isRaw();
     }
 
     private void reportCast(ASTCastExpression castExpr, Object data) {
