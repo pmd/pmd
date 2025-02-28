@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>7.11.0-SNAPSHOT</version>
+    <version>7.12.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
@@ -83,7 +83,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2025-01-31T09:22:09Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2025-02-28T10:34:31Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 

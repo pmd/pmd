@@ -160,7 +160,7 @@ class RuleFactory {
             rule = resourceLoader.loadRuleFromClassPath(clazz);
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
             Attr node = CLASS.getAttributeNode(ruleElement);
-            throw err.at(node).error(e);
+            throw err.at(node).error(e, "Reflection error while instantiating rule ({0})", e.getClass().getSimpleName());
         }
 
         rule.setName(NAME.getNonBlankAttribute(ruleElement, err));

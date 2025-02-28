@@ -717,34 +717,13 @@ public class Foo {
           language="java"
           since="1.1"
           message="This final field could be made static"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.FinalFieldCouldBeStaticRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#finalfieldcouldbestatic">
         <description>
 If a final field is assigned to a compile-time constant, it could be made static, thus saving overhead
 in each object at runtime.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//FieldDeclaration
-    [pmd-java:modifiers() = 'final']
-    [not(pmd-java:modifiers() = 'static')]
-    [not(./ancestor::ClassDeclaration[1][pmd-java:hasAnnotation('lombok.experimental.UtilityClass')])]
-    [not(.//Annotation[pmd-java:typeIs('lombok.Builder.Default')])]
-    /VariableDeclarator[*[last()][@CompileTimeConstant = true()
-         or self::NullLiteral
-         or self::VariableAccess[@Name = //FieldDeclaration[pmd-java:modifiers() = 'static']/VariableDeclarator/VariableId/@Name]
-         or self::FieldAccess
-         or self::ArrayAllocation/ArrayType/ArrayDimensions/ArrayDimExpr/NumericLiteral[@IntLiteral = true()][@Image = "0"]]]
-    /VariableId
-        [not(@Name = //MethodDeclaration[not(pmd-java:modifiers() = 'static')]
-            //SynchronizedStatement/(VariableAccess|FieldAccess[ThisExpression])/@Name)]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 public class Foo {
