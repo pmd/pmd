@@ -13,9 +13,12 @@ import io.kotest.core.test.TestScope
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.collections.shouldContainAll
-import net.sourceforge.pmd.lang.ast.*
+import net.sourceforge.pmd.lang.ast.LexException
+import net.sourceforge.pmd.lang.ast.Node
+import net.sourceforge.pmd.lang.ast.ParseException
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import net.sourceforge.pmd.lang.java.JavaParsingHelper.*
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.values
 import net.sourceforge.pmd.lang.test.ast.*
 import java.beans.PropertyDescriptor
 import java.io.PrintStream
@@ -68,6 +71,9 @@ enum class JavaVersion : Comparable<JavaVersion> {
                 values().toList() - v1 - versions.toSet()
 
         fun except(versions: List<JavaVersion>) = values().toList() - versions.toSet()
+
+        /** Up to and including parameter. */
+        fun until(v: JavaVersion) = Earliest.rangeTo(v)
     }
 }
 
