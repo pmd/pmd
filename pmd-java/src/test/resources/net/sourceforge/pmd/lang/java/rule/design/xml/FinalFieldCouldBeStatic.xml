@@ -357,12 +357,17 @@ class Literals {
 
     <test-code>
         <description>Static array property length</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,5</expected-linenumbers>
         <code><![CDATA[
 class ArrayLength {
     private static final int[] myArray = { 1, 2, 3 };
     public final int myArrayLength = myArray.length;
+
+    private final int[] nonStaticArray = { 1, 2, 3 };
+    public final int nonStaticArrayLength = nonStaticArray.length; // can't be made static, unless nonStaticArray is static as well
+
+    private static final int[] emptyArray = {};
 }
 ]]></code>
     </test-code>

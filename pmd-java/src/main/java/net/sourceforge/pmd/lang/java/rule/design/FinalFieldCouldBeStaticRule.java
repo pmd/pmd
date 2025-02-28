@@ -11,12 +11,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
@@ -50,8 +52,19 @@ public class FinalFieldCouldBeStaticRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isAllowedExpression(ASTExpression e) {
-        if (e instanceof ASTLiteral || e instanceof ASTClassLiteral || e instanceof ASTTypeExpression || e.getConstValue() != null) {
+        if (e instanceof ASTLiteral || e instanceof ASTClassLiteral || e instanceof ASTTypeExpression || e.isCompileTimeConstant()) {
             return true;
+        } else if (e instanceof ASTFieldAccess
+                && ((ASTFieldAccess) e).getName().equals("length")
+                && ((ASTFieldAccess) e).getQualifier().getTypeMirror().isArray()) {
+            JVariableSymbol arrayDeclarationSymbol = ((ASTVariableAccess) ((ASTFieldAccess) e).getQualifier()).getReferencedSym();
+            if (arrayDeclarationSymbol != null
+                    && arrayDeclarationSymbol.isField()
+                    && ((JFieldSymbol) arrayDeclarationSymbol).isStatic()
+                    && arrayDeclarationSymbol.tryGetNode() != null) {
+                ASTVariableId arrayVarId = arrayDeclarationSymbol.tryGetNode();
+                return arrayVarId != null && arrayVarId.getInitializer() != null && arrayVarId.getInitializer().isCompileTimeConstant();
+            }
         } else if (e instanceof ASTNamedReferenceExpr) {
             JVariableSymbol sym = ((ASTNamedReferenceExpr) e).getReferencedSym();
             return sym != null && sym.isField() && ((JFieldSymbol) sym).isStatic();
