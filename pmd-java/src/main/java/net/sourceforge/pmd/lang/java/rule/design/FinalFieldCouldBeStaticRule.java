@@ -55,7 +55,7 @@ public class FinalFieldCouldBeStaticRule extends AbstractJavaRulechainRule {
         if (e instanceof ASTLiteral || e instanceof ASTClassLiteral || e instanceof ASTTypeExpression || e.isCompileTimeConstant()) {
             return true;
         } else if (e instanceof ASTFieldAccess
-                && ((ASTFieldAccess) e).getName().equals("length")
+                && "length".equals(((ASTFieldAccess) e).getName())
                 && ((ASTFieldAccess) e).getQualifier().getTypeMirror().isArray()) {
             JVariableSymbol arrayDeclarationSymbol = ((ASTVariableAccess) ((ASTFieldAccess) e).getQualifier()).getReferencedSym();
             if (arrayDeclarationSymbol != null
