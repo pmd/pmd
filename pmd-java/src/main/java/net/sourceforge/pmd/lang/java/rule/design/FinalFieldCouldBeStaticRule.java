@@ -50,7 +50,7 @@ public class FinalFieldCouldBeStaticRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isAllowedExpression(ASTExpression e) {
-        if (e instanceof ASTLiteral || e instanceof ASTClassLiteral || e instanceof ASTTypeExpression) {
+        if (e instanceof ASTLiteral || e instanceof ASTClassLiteral || e instanceof ASTTypeExpression || e.getConstValue() != null) {
             return true;
         } else if (e instanceof ASTNamedReferenceExpr) {
             JVariableSymbol sym = ((ASTNamedReferenceExpr) e).getReferencedSym();
