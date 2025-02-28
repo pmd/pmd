@@ -300,27 +300,14 @@ jobs:
         run: |
           ln -sfn "${JAVA_HOME_11_X64}" "${HOME}/openjdk11"
       - name: Run pmdtester
-        run: |
-          gpg --batch --yes --decrypt --passphrase="GnxdjywUEPveyCD1RLiTd7t8CImnefYr" \
-              --output .ci/files/public-env .ci/files/public-env.gpg
-          # shellcheck disable=SC1091
-          source .ci/files/public-env >/dev/null 2>&1
-          rm .ci/files/public-env
-
+        env:
           # this only works if the triggering event of this workflow is "pull_request"
-          PMD_CI_PULL_REQUEST_NUMBER="$(jq -r ".number" "${GITHUB_EVENT_PATH}")"
-          export PMD_CI_PULL_REQUEST_NUMBER
-          echo "Determined PR number: ${PMD_CI_PULL_REQUEST_NUMBER}"
-
-          export PMD_CI_BRANCH="${GITHUB_BASE_REF}"
-          echo "Determined Branch: ${PMD_CI_BRANCH}"
-
-          export PMD_CI_JOB_URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
-          echo "Determined Job Url: ${PMD_CI_JOB_URL}"
-
+          PMD_CI_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+          PMD_CI_BRANCH: ${{ github.base_ref }}
+        run: |
           echo "::group::Fetching additional commits"
-          # git clone initially only fetched with depth 2. Danger and regression tester
-          # need more history, so we'll fetch more here
+          # git clone initially only fetched with depth 2. Regression tester
+          # needs more history, so we'll fetch more here
           # and create local branches as well (${PMD_CI_BRANCH} and pr-fetch)
       
           echo "Fetching 25 commits for ${PMD_CI_BRANCH} and pull/${PMD_CI_PULL_REQUEST_NUMBER}/head"
@@ -336,15 +323,14 @@ jobs:
           echo "Merge base is: $( git merge-base "${PMD_CI_BRANCH}" "pr-fetch" )"
           echo "::endgroup::"
       
-          echo "::group::Running danger on branch ${PMD_CI_BRANCH}"
-          bundle exec danger --verbose
+          echo "::group::Running pmdtester on branch ${PMD_CI_BRANCH}"
+          bundle exec ruby Dangerfile
           echo "::endgroup::"
       - name: Workaround actions/upload-artifact#176
         run: |
-          echo "artifacts_path=$(realpath ..)" >> $GITHUB_ENV
+          echo "artifacts_path=$(realpath ..)" >> "${GITHUB_ENV}"
       - name: Upload regression tester report
         uses: actions/upload-artifact@v4
         with:
           name: pmd-regression-tester
-          path: ${{ env.artifacts_path }}/target/pr-*-diff-report-*.tar.gz
-          if-no-files-found: ignore
+          path: ${{ env.artifacts_path }}/target/reports/diff

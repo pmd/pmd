@@ -82,7 +82,7 @@ jobs:
             -f "started_at=${timestamp}" -f "conclusion=success" -f "completed_at=${timestamp}" \
             -f "output[title]=Documentation Preview" -f "output[summary]=[Documentation Preview](https://pull-requests.pmd-code.org/pr-${PR_NUMBER}/docs)"
 
-      - name: Download pmd-regression-tester (optional)
+      - name: Download pmd-regression-tester
         env:
           # Token required for GH CLI:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -90,21 +90,23 @@ jobs:
         run: |
           mkdir pmd-regression-tester
           cd pmd-regression-tester
-          if gh run download "${RUN_ID}" --repo pmd/pmd --name pmd-regression-tester; then
-            echo "HAS_REGRESSION_REPORT=1" >> "${GITHUB_ENV}"
-          fi
+          gh run download "${RUN_ID}" --repo pmd/pmd --name pmd-regression-tester
       - name: Upload regression report to s3://pmd-pull-requests
-        if: ${{ env.HAS_REGRESSION_REPORT == 1 }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_S3_PMD_PULL_REQUESTS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_S3_PMD_PULL_REQUESTS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: eu-central-1
         run: |
-          tar xfzv "pmd-regression-tester/pr-${PR_NUMBER}-"*.tar.gz
-          aws s3 sync diff1 "s3://pmd-pull-requests/pr-${PR_NUMBER}/regression"
-          echo "public url: https://pull-requests.pmd-code.org/pr-${PR_NUMBER}/regression"
+          if [ -e "pmd-regression-tester/index.html" ]; then
+            aws s3 sync pmd-regression-tester "s3://pmd-pull-requests/pr-${PR_NUMBER}/regression"
+            echo "public url: https://pull-requests.pmd-code.org/pr-${PR_NUMBER}/regression"
+            echo "REGRESSION_REPORT_UPLOADED=1" >> "${GITHUB_ENV}"
+          else
+            echo "No report available."
+            echo "REGRESSION_REPORT_UPLOADED=0" >> "${GITHUB_ENV}"
+          fi
       - name: Add commit status (Regression Tester)
-        if: ${{ env.HAS_REGRESSION_REPORT == 1 }}
+        if: ${{ env.REGRESSION_REPORT_UPLOADED == 1 }}
         env:
           # Token required for GH CLI:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -117,12 +119,20 @@ jobs:
             -f "state=success" -f "target_url=https://pull-requests.pmd-code.org/pr-${PR_NUMBER}/regression" \
             -f "description=PMD Regression Tester Report" -f "context=Published Results / Regression Tester"
       - name: Add Check Status (Regression Tester)
-        if: ${{ env.HAS_REGRESSION_REPORT == 1 }}
         env:
           # Token required for GH CLI:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
+        run: |-
           timestamp="$(date -uIs)"
+          summary="$(cat pmd-regression-tester/summary.txt)"
+          if [ "$REGRESSION_REPORT_UPLOADED" = "1" ]; then
+            summary="
+          ${summary}
+          
+          [Regression Tester Report](https://pull-requests.pmd-code.org/pr-${PR_NUMBER}/regression)
+          "
+          fi
+          
           gh api \
             --method POST \
             -H "Accept: application/vnd.github+json" \
@@ -130,4 +140,4 @@ jobs:
             /repos/pmd/pmd/check-runs \
             -f "name=Regression Tester" -f "head_sha=${PR_SHA}" -f "status=completed" \
             -f "started_at=${timestamp}" -f "conclusion=success" -f "completed_at=${timestamp}" \
-            -f "output[title]=Regression Tester Report" -f "output[summary]=[Regression Tester Report](https://pull-requests.pmd-code.org/pr-${PR_NUMBER}/regression)"
+            -f "output[title]=Regression Tester Report" -f "output[summary]=${summary}"
