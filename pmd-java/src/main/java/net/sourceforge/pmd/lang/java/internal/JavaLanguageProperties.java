@@ -40,11 +40,11 @@ public class JavaLanguageProperties extends JvmLanguagePropertyBundle {
      */
     public static final PropertyDescriptor<Boolean> FIRST_CLASS_LOMBOK =
         PropertyFactory.booleanProperty("lombok")
-                       .desc("Whether to consider lombok-specific things in core facilities like type inference. " +
-                                 "Disable this option if you want to analyze the AST as it would appear before the lombok pre-processing is applied. " +
-                                 "For instance, with this option enabled, variables declared with type lombok.val will have their type inferred based on the right-hand-side. " +
-                                 "With the option disabled, the variable will have type lombok.val instead. " +
-                                 "See https://github.com/pmd/pmd/issues/3119")
+                       .desc("Whether to consider lombok-specific things in core facilities like type inference. "
+                                 + "Disable this option if you want to analyze the AST as it would appear before the lombok pre-processing is applied. "
+                                 + "For instance, with this option enabled, variables declared with type lombok.val will have their type inferred based on the right-hand-side. "
+                                 + "With the option disabled, the variable will have type lombok.val instead. "
+                                 + "See https://github.com/pmd/pmd/issues/3119")
                        .defaultValue(true)
                        .build();
 
