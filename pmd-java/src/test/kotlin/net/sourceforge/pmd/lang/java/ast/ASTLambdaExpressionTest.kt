@@ -4,13 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_8
-import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 
 
 class ASTLambdaExpressionTest : ParserTestSpec({
+    // note: isTypeInferred requires processing to be enabled if the
+    // declared type is val or var.
+
     parserTestContainer("Simple lambda expressions", javaVersions = J1_8..Latest) {
         inContext(ExpressionParsingCtx) {
             "() -> foo()" should parseAs {
