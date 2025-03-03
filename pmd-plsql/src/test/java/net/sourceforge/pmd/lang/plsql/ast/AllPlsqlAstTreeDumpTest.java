@@ -16,7 +16,8 @@ import org.junit.platform.suite.api.Suite;
     SelectExpressionsTest.class,
     SelectForUpdateTest.class,
     SelectHierarchicalTest.class,
-    SelectIntoWithGroupByTest.class
+    SelectIntoWithGroupByTest.class,
+    WhereClauseTest.class
 })
 class AllPlsqlAstTreeDumpTest {
 
