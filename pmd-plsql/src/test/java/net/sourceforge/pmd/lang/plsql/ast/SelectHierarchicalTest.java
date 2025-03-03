@@ -12,6 +12,6 @@ class SelectHierarchicalTest extends AbstractPLSQLParserTst {
 
     @Test
     void parseSelectHierarchicalQueries() {
-        plsql.parseResource("SelectHierarchical.pls");
+        doTest("SelectHierarchical");
     }
 }
