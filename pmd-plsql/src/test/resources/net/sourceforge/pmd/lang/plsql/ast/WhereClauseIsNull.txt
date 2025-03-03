@@ -20,7 +20,7 @@
                   +- WhereClause[@CanonicalImage = null]
                   |  +- Condition[@CanonicalImage = null]
                   |     +- CompoundCondition[@CanonicalImage = null, @Type = null]
-                  |        +- Name[@CanonicalImage = null]
+                  |        +- IsNullCondition[@CanonicalImage = "COMMISSION_PCT IS NULL", @Image = "commission_pct IS NULL"]
                   |           +- PrimaryPrefix[@CanonicalImage = "COMMISSION_PCT", @Image = "commission_pct", @SelfModifier = false]
                   |              +- SimpleExpression[@CanonicalImage = "COMMISSION_PCT", @Image = "commission_pct"]
                   |                 +- Column[@CanonicalImage = "COMMISSION_PCT", @Image = "commission_pct"]

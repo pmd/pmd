@@ -3579,46 +3579,45 @@ ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() #UnaryExpressionNot
  }
 }
 
-ASTIsNullCondition IsNullCondition() #IsNullCondition(>1) :  //yanzin
-{ PLSQLNode simpleNode = null; PLSQLNode name = null; StringBuilder sb = new StringBuilder(); }
+
+private PLSQLNode PrimaryExpressionOrIsNullOrIsOfTypeCondition() #void :
+{ PLSQLNode simpleNode = null; PLSQLNode name = null; StringBuilder sb = new StringBuilder(); boolean isNull = false; boolean isOfType = false; }
 {
-  (
-    LOOKAHEAD(PrimaryExpression() <IS> [<NOT>] <NULL>)
     (
-        (name = PrimaryExpression() #Name) {sb.append(name.getImage());} <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <NULL> {sb.append(" NULL");}
-    )
-    |
-    (
-        simpleNode = IsOfTypeCondition()
-    )
+        (
+            simpleNode = PrimaryExpression() {sb.append(simpleNode.getImage());}
+
+            [
+                <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}]
+                (
+                  <NULL> {sb.append(" NULL");} {isNull = true;}
+                  | <OF> {sb.append(" OF");} {isOfType = true;} [<TYPE>] "(" [<ONLY>] Name() ("," [<ONLY>] Name() )* ")"
+                )
+            ]
+        ) #IsNullCondition(isNull)
+    ) #IsOfTypeCondition(isOfType)
     {
-        sb.append(simpleNode.getImage());
+        jjtree.peekNode().setImage(sb.toString());
+        return jjtree.peekNode();
     }
-  )
-  {
-    jjtThis.setImage(sb.toString());
-	return jjtThis;
-  }
 }
 
-ASTIsOfTypeCondition IsOfTypeCondition() #IsOfTypeCondition(>1) :
-{ PLSQLNode simpleNode = null; PLSQLNode name = null; StringBuilder sb = new StringBuilder(); }
+PLSQLNode IsNullCondition() #void :
+{ PLSQLNode simpleNode = null;}
 {
-  (
-    LOOKAHEAD(<IDENTIFIER> <IS>)
-    ((name = Name()) {sb.append(name.getImage());} <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <OF> {sb.append(" OF");} [<TYPE>]
-      "(" [<ONLY>] Name() ("," [<ONLY>] Name() )* ")")
-  |
-    LOOKAHEAD(PrimaryExpression() <IS>)
-    (simpleNode = PrimaryExpression() ) { sb.append(simpleNode.getImage()); }
-    <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <OF> {sb.append(" OF");} [<TYPE>]
-      "(" [<ONLY>] Name() ("," [<ONLY>] Name() )* ")"
-  |
-    (simpleNode = PrimaryExpression() ) { sb.append(simpleNode.getImage()); }
-  )
-  {
-    jjtThis.setImage(sb.toString()); return jjtThis;
-  }
+    simpleNode = PrimaryExpressionOrIsNullOrIsOfTypeCondition()
+    {
+        return simpleNode;
+    }
+}
+
+PLSQLNode IsOfTypeCondition() #void :
+{ PLSQLNode simpleNode = null; }
+{
+    simpleNode = PrimaryExpressionOrIsNullOrIsOfTypeCondition()
+    {
+        return simpleNode;
+    }
 }
 
 /**

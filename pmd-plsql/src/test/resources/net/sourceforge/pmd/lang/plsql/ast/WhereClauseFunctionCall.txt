@@ -78,7 +78,7 @@
          |              +- CompoundCondition[@CanonicalImage = null, @Type = "AND"]
          |                 +- Condition[@CanonicalImage = null]
          |                 |  +- CompoundCondition[@CanonicalImage = null, @Type = "OR"]
-         |                 |     +- Name[@CanonicalImage = null]
+         |                 |     +- IsNullCondition[@CanonicalImage = "STREET_CNY_CODE_IN IS NULL", @Image = "street_cny_code_in IS NULL"]
          |                 |     |  +- PrimaryPrefix[@CanonicalImage = "STREET_CNY_CODE_IN", @Image = "street_cny_code_in", @SelfModifier = false]
          |                 |     |     +- SimpleExpression[@CanonicalImage = "STREET_CNY_CODE_IN", @Image = "street_cny_code_in"]
          |                 |     |        +- Column[@CanonicalImage = "STREET_CNY_CODE_IN", @Image = "street_cny_code_in"]
