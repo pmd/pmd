@@ -9,6 +9,7 @@ on:
 permissions:
   checks: write
   statuses: write
+  pull-requests: write # in order to add a comment
 
 jobs:
   publish:
@@ -118,6 +119,17 @@ jobs:
             "/repos/pmd/pmd/statuses/${PR_SHA}" \
             -f "state=success" -f "target_url=https://pull-requests.pmd-code.org/pr-${PR_NUMBER}/regression" \
             -f "description=PMD Regression Tester Report" -f "context=Published Results / Regression Tester"
+      - name: Prepare regression summary
+        run: |-
+          summary="$(cat pmd-regression-tester/summary.txt)"
+          if [ "$REGRESSION_REPORT_UPLOADED" = "1" ]; then
+            summary="
+          ${summary}
+
+          [Regression Tester Report](https://pull-requests.pmd-code.org/pr-${PR_NUMBER}/regression)
+          "
+          fi
+          echo "${summary}" > pmd-regression-tester/summary.txt
       - name: Add Check Status (Regression Tester)
         env:
           # Token required for GH CLI:
@@ -125,13 +137,6 @@ jobs:
         run: |-
           timestamp="$(date -uIs)"
           summary="$(cat pmd-regression-tester/summary.txt)"
-          if [ "$REGRESSION_REPORT_UPLOADED" = "1" ]; then
-            summary="
-          ${summary}
-          
-          [Regression Tester Report](https://pull-requests.pmd-code.org/pr-${PR_NUMBER}/regression)
-          "
-          fi
           
           # conclusion can be one of: action_required, cancelled, failure, neutral, success, skipped, stale, timed_out
           conclusion="$(cat pmd-regression-tester/conclusion.txt)"
@@ -144,3 +149,6 @@ jobs:
             -f "name=Regression Tester" -f "head_sha=${PR_SHA}" -f "status=completed" \
             -f "started_at=${timestamp}" -f "conclusion=${conclusion}" -f "completed_at=${timestamp}" \
             -f "output[title]=Regression Tester Report" -f "output[summary]=${summary}"
+      - uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          path: pmd-regression-tester/summary.txt
