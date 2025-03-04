@@ -5,7 +5,7 @@ summary: |
   PMD uses GitHub Actions as the CI/CD infrastructure to build and release new versions.
   This page gives an overview of how these workflows work and how to use them.
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: February 2025 (7.11.0)
+last_updated: March 2025 (7.12.0)
 ---
 
 {%include note.html content="This page is work in progress and does not yet describe all workflows."%}
@@ -59,3 +59,43 @@ The jobs are:
       It reuses the artifact "dist-artifact" so that we don't need to build PMD again. It uses a different build
       cache as the other jobs, as this cache now contains the test projects (like Spring Framework) and their
       dependencies. It produces the artifact "pmd-regression-tester" with the regression report.
+
+## Publish Results from Pull Requests
+
+* Builds: <https://github.com/pmd/pmd/actions/workflows/publish-pull-requests.yml>
+* Workflow file: <https://github.com/pmd/pmd/blob/main/.github/workflows/publish-pull-requests.yml>
+
+This workflow runs after "Pull Request Build" is completed. It runs in the context of our own
+repository and has write permissions and complete access to the configured secrets.
+For security reasons, this workflow won't checkout the pull request code and it won't build anything.
+
+It just uses the artifacts from the pull request build, uploads it as static website and adds
+a commit status and check status to the PR and finally adds a PR comment.
+
+Both the "docs-artifact" and the "pmd-regression-tester" artifact are uploaded to an AWS S3 bucket
+called **pmd-pull-requests**. This bucket is served via AWS Cloudfront (for having TLS) under
+the URL <https://pull-requests.pmd-code.org>. Note, there is no directory listing. The results
+of each pull request are uploaded under the folder "pr-{PR_NUMBER}/docs" and "pr-{PR_NUMBER}/regression",
+respectively. The data in the S3 bucket is available for 60 days, after that the files are removed
+(hopefully).
+
+In order to upload the files to AWS S3, we use the [AWS CLI](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/index.html)
+tool, that is available on the GitHub provided runners for GitHub Actions. It needs the following **secrets**:
+
+* AWS_S3_PMD_PULL_REQUESTS_ACCESS_KEY_ID
+* AWS_S3_PMD_PULL_REQUESTS_SECRET_ACCESS_KEY
+
+These are configured at the organization level of pmd: <https://github.com/organizations/pmd/settings/secrets/actions>.
+
+In order to set the commit status and add a check status, we use [GitHub's CLI](https://cli.github.com/manual/) tool
+which is also available on the GitHub provided runners for GitHub Actions. It will use the GitHub token
+that the workflow is assigned to automatically and that is available as the secret "GITHUB_TOKEN".
+The permissions are controlled in the workflow yaml file itself.
+See [Automatic token authentication](https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication).
+
+In the end, we use the action [sticky-pull-request-comment](https://github.com/marocchino/sticky-pull-request-comment)
+to create or update a comment on the pull request which shows the regression tester summary.
+
+This workflow is in that sense optional, as the docs-artifact and pmd-regression-tester artifacts can
+be manually downloaded from the "Pull Request Build" workflow run. It merely adds convenience by
+giving easy access to a preview of the documentation and to the regression tester results.
