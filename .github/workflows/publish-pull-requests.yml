@@ -149,6 +149,14 @@ jobs:
             -f "name=Regression Tester" -f "head_sha=${PR_SHA}" -f "status=completed" \
             -f "started_at=${timestamp}" -f "conclusion=${conclusion}" -f "completed_at=${timestamp}" \
             -f "output[title]=Regression Tester Report" -f "output[summary]=${summary}"
+      - name: Prepare comment text
+        run: |-
+          summary="$(cat pmd-regression-tester/summary.txt)"
+          comment="[Documentation Preview](https://pull-requests.pmd-code.org/pr-${PR_NUMBER}/docs)
+          
+          ${summary}
+          "
+          echo "${comment}" > comment.txt
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
-          path: pmd-regression-tester/summary.txt
+          path: comment.txt
