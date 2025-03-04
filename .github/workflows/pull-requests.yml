@@ -294,6 +294,7 @@ jobs:
           path: pmd-dist/target
       - name: Setup bundler
         run: |
+          bundle config set --local gemfile .ci/files/Gemfile
           bundle config set --local path vendor/bundle
           bundle install
       - name: Prepare HOME/openjdk11
@@ -324,7 +325,7 @@ jobs:
           echo "::endgroup::"
       
           echo "::group::Running pmdtester on branch ${PMD_CI_BRANCH}"
-          bundle exec ruby Dangerfile
+          bundle exec ruby .ci/files/pmdtester.rb
           echo "::endgroup::"
       - name: Workaround actions/upload-artifact#176
         run: |
