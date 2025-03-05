@@ -993,6 +993,10 @@ public class SarifLog {
          */
         private Message message;
         /**
+         * The severeness of a found bug. Is derived from PMDs defined Priorities (1,2 = error, 3 = warning, 4,5 = note).
+         */
+        private String level;
+        /**
          * The set of locations where the result was detected. Specify only one location unless the problem indicated by
          * the result can only be corrected by making a change at every specified location.
          */
@@ -1003,10 +1007,11 @@ public class SarifLog {
         private PropertyBag properties;
 
         @java.lang.SuppressWarnings("all")
-        Result(final String ruleId, final Integer ruleIndex, final Message message, final List<Location> locations, final PropertyBag properties) {
+        Result(final String ruleId, final Integer ruleIndex, final Message message, final String level, final List<Location> locations, final PropertyBag properties) {
             this.ruleId = ruleId;
             this.ruleIndex = ruleIndex;
             this.message = message;
+            this.level = level;
             this.locations = locations;
             this.properties = properties;
         }
@@ -1020,6 +1025,8 @@ public class SarifLog {
             private Integer ruleIndex;
             @java.lang.SuppressWarnings("all")
             private Message message;
+            @java.lang.SuppressWarnings("all")
+            private String level;
             @java.lang.SuppressWarnings("all")
             private List<Location> locations;
             @java.lang.SuppressWarnings("all")
@@ -1061,6 +1068,16 @@ public class SarifLog {
             }
 
             /**
+             * The severeness of a found bug. Is derived from PMDs defined Priorities (1,2 = error, 3 = warning, 4,5 = note).
+             * @return {@code this}.
+             */
+            @java.lang.SuppressWarnings("all")
+            public SarifLog.Result.ResultBuilder level(final String level) {
+                this.level = level;
+                return this;
+            }
+
+            /**
              * The set of locations where the result was detected. Specify only one location unless the problem indicated by
              * the result can only be corrected by making a change at every specified location.
              * @return {@code this}.
@@ -1083,13 +1100,13 @@ public class SarifLog {
 
             @java.lang.SuppressWarnings("all")
             public SarifLog.Result build() {
-                return new SarifLog.Result(this.ruleId, this.ruleIndex, this.message, this.locations, this.properties);
+                return new SarifLog.Result(this.ruleId, this.ruleIndex, this.message, this.level, this.locations, this.properties);
             }
 
             @java.lang.Override
             @java.lang.SuppressWarnings("all")
             public java.lang.String toString() {
-                return "SarifLog.Result.ResultBuilder(ruleId=" + this.ruleId + ", ruleIndex=" + this.ruleIndex + ", message=" + this.message + ", locations=" + this.locations + ", properties=" + this.properties + ")";
+                return "SarifLog.Result.ResultBuilder(ruleId=" + this.ruleId + ", ruleIndex=" + this.ruleIndex + ", message=" + this.message + ", level=" + this.level + ", locations=" + this.locations + ", properties=" + this.properties + ")";
             }
         }
 
@@ -1121,6 +1138,14 @@ public class SarifLog {
         @java.lang.SuppressWarnings("all")
         public Message getMessage() {
             return this.message;
+        }
+
+        /**
+         * The severeness of a found bug. Is derived from PMDs defined Priorities (1,2 = error, 3 = warning, 4,5 = note).
+         */
+        @java.lang.SuppressWarnings("all")
+        public String getLevel() {
+            return this.level;
         }
 
         /**
@@ -1168,6 +1193,16 @@ public class SarifLog {
         @java.lang.SuppressWarnings("all")
         public SarifLog.Result setMessage(final Message message) {
             this.message = message;
+            return this;
+        }
+
+        /**
+         * The severeness of a found bug. Is derived from PMDs defined Priorities (1,2 = error, 3 = warning, 4,5 = note).
+         * @return {@code this}.
+         */
+        @java.lang.SuppressWarnings("all")
+        public SarifLog.Result setLevel(final String level) {
+            this.level = level;
             return this;
         }
 
@@ -1220,6 +1255,11 @@ public class SarifLog {
             if (this$message == null ? other$message != null : !this$message.equals(other$message)) {
                 return false;
             }
+            final java.lang.Object this$level = this.getLevel();
+            final java.lang.Object other$level = other.getLevel();
+            if (this$level == null ? other$level != null : !this$level.equals(other$level)) {
+                return false;
+            }
             final java.lang.Object this$locations = this.getLocations();
             final java.lang.Object other$locations = other.getLocations();
             if (this$locations == null ? other$locations != null : !this$locations.equals(other$locations)) {
@@ -1249,6 +1289,8 @@ public class SarifLog {
             result = result * PRIME + ($ruleIndex == null ? 43 : $ruleIndex.hashCode());
             final java.lang.Object $message = this.getMessage();
             result = result * PRIME + ($message == null ? 43 : $message.hashCode());
+            final java.lang.Object $level = this.getLevel();
+            result = result * PRIME + ($level == null ? 43 : $level.hashCode());
             final java.lang.Object $locations = this.getLocations();
             result = result * PRIME + ($locations == null ? 43 : $locations.hashCode());
             final java.lang.Object $properties = this.getProperties();
@@ -1259,7 +1301,7 @@ public class SarifLog {
         @java.lang.Override
         @java.lang.SuppressWarnings("all")
         public java.lang.String toString() {
-            return "SarifLog.Result(ruleId=" + this.getRuleId() + ", ruleIndex=" + this.getRuleIndex() + ", message=" + this.getMessage() + ", locations=" + this.getLocations() + ", properties=" + this.getProperties() + ")";
+            return "SarifLog.Result(ruleId=" + this.getRuleId() + ", ruleIndex=" + this.getRuleIndex() + ", message=" + this.getMessage() + ", level=" + this.getLevel() + ", locations=" + this.getLocations() + ", properties=" + this.getProperties() + ")";
         }
     }
 

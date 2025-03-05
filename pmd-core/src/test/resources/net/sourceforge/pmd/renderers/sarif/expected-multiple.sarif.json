@@ -57,6 +57,7 @@
           "message": {
             "text": "blah"
           },
+          "level": "note",
           "locations": [
             {
               "physicalLocation": {
@@ -79,6 +80,7 @@
           "message": {
             "text": "blah"
           },
+          "level": "error",
           "locations": [
             {
               "physicalLocation": {
