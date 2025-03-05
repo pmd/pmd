@@ -1343,6 +1343,22 @@ void SelectOrSelectIntoStatement() #SelectStatement(>1) :
     ) #SelectIntoStatement(hasIntoClause())
 }
 
+/**
+ * @deprecated since 7.12.0. This production is not used anymore and is just still there for API backwards
+ * compatibility. See also deprecation notice at class level.
+ */
+ASTSelectIntoStatement SelectIntoStatement() :
+{}
+{
+    [ WithClause() ]  // Although undocumented, WITH works with SELECT INTO !
+    AbstractSelectStatement(jjtThis)
+    SelectList()
+    ( IntoClause() | BulkCollectIntoClause() )
+    RestOfStatement()
+
+    { return jjtThis; }
+}
+
 void AbstractSelectStatement(AbstractSelectStatement node) #void :
 {}
 {
@@ -3602,21 +3618,25 @@ private PLSQLNode PrimaryExpressionOrIsNullOrIsOfTypeCondition() #void :
     }
 }
 
-PLSQLNode IsNullCondition() #void :
+// note: the node returned here is never added to the tree, since >1 is never true
+ASTIsNullCondition IsNullCondition() #IsNullCondition(>1) :
 { PLSQLNode simpleNode = null;}
 {
     simpleNode = PrimaryExpressionOrIsNullOrIsOfTypeCondition()
     {
-        return simpleNode;
+        jjtThis.setImage(simpleNode.getImage());
+        return jjtThis;
     }
 }
 
-PLSQLNode IsOfTypeCondition() #void :
+// note: the node returned here is never added to the tree, since >1 is never true
+ASTIsOfTypeCondition IsOfTypeCondition() #IsOfTypeCondition(>1) :
 { PLSQLNode simpleNode = null; }
 {
     simpleNode = PrimaryExpressionOrIsNullOrIsOfTypeCondition()
     {
-        return simpleNode;
+        jjtThis.setImage(simpleNode.getImage());
+        return jjtThis;
     }
 }
 
