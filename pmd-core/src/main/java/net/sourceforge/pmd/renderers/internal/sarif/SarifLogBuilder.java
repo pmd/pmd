@@ -133,6 +133,7 @@ public class SarifLogBuilder {
         final Result result = Result.builder()
                 .ruleId(rule.getId())
                 .ruleIndex(ruleIndex)
+                .level(pmdPriorityToSarifErrorLevel(rule.getProperties().getPriority()))
                 .build();
 
         final Message message = Message.builder()
@@ -192,5 +193,24 @@ public class SarifLogBuilder {
                 .version(PMDVersion.VERSION)
                 .informationUri("https://docs.pmd-code.org/latest/")
                 .build();
+    }
+
+
+    /**
+     * Converts Pmd's Priority levels into the Sarif options.
+     * @param pmdPriority of a found bug.
+     * @return sarif's error level.
+     */
+    private String pmdPriorityToSarifErrorLevel(int pmdPriority) {
+        switch (pmdPriority) {
+        case 1: // High
+        case 2: // Medium_High
+            return "error";
+        case 3: return "warning"; // Medium
+        case 4: // Medium_Low
+        case 5: // Low
+            return "note";
+        default: return "none"; // should not occur
+        }
     }
 }
