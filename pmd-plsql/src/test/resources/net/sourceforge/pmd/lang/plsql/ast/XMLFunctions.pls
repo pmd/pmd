@@ -37,3 +37,18 @@ SELECT XMLROOT ( XMLType('<poid>143598</poid>'), VERSION NO VALUE)
 
 SELECT XMLROOT ( XMLType('<poid>143598</poid>'), VERSION '1.0')
    AS "XMLROOT" FROM DUAL;
+
+-- https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/XMLAGG.html
+SELECT XMLELEMENT("Department",
+   XMLAGG(XMLELEMENT("Employee",
+   e.job_id||' '||e.last_name)
+   ORDER BY last_name))
+   as "Dept_list"
+   FROM employees e
+   WHERE e.department_id = 30;
+
+SELECT XMLELEMENT("Department",
+      XMLAGG(XMLELEMENT("Employee", e.job_id||' '||e.last_name)))
+   AS "Dept_list"
+   FROM employees e
+   GROUP BY e.department_id;

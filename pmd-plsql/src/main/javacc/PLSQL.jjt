@@ -3910,7 +3910,11 @@ ASTArguments Arguments() :
   "("
       [ [<ALL> | <DISTINCT> | <UNIQUE>] ("*" | ArgumentList()) ]
       // Note: ListaggOverflowClause is only allowed for LISTAGG function, but this grammar allows it for all functions.
+      // https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/LISTAGG.html
       [ ListaggOverflowClause() ]
+      // Note: OrderByClause is only allowed for XMLAGG function, but this grammar allows it for all functions.
+      // https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/XMLAGG.html
+      [ OrderByClause() ]
   ")"
 
  { return jjtThis; }

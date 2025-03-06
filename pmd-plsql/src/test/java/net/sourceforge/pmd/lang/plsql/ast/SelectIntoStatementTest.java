@@ -57,4 +57,9 @@ class SelectIntoStatementTest extends AbstractPLSQLParserTst {
     void testParsingIntoRecordField() {
         doTest("SelectIntoStatementRecordField");
     }
+
+    @Test
+    void selectIntoTimeoutIssue5521() {
+        doTest("SelectIntoTimeoutIssue5521");
+    }
 }

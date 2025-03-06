@@ -18,7 +18,8 @@ import org.junit.platform.suite.api.Suite;
     SelectHierarchicalTest.class,
     SelectIntoWithGroupByTest.class,
     WhereClauseTest.class,
-    PLSQLParserTest.class
+    PLSQLParserTest.class,
+    FunctionsTest.class
 })
 class AllPlsqlAstTreeDumpTest {
 
