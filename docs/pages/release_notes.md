@@ -15,6 +15,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀 New and noteworthy
 
 ### 🐛 Fixed Issues
+* apex
+  * [#5567](https://github.com/pmd/pmd/issues/5567): \[apex] Provide type information for CastExpression
 
 ### 🚨 API Changes
 
