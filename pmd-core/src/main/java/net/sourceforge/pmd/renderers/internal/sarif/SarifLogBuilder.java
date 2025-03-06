@@ -200,6 +200,7 @@ public class SarifLogBuilder {
      * Converts Pmd's Priority levels into the Sarif options.
      * @param pmdPriority of a found bug.
      * @return sarif's error level.
+     * @see net.sourceforge.pmd.lang.rule.RulePriority
      */
     private String pmdPriorityToSarifErrorLevel(int pmdPriority) {
         switch (pmdPriority) {
