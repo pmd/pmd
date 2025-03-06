@@ -473,13 +473,16 @@ ASTGlobal Global()  :
 	  defaulting to the globalPackageName if it cannot be found
 	*/
 	(
-	LOOKAHEAD ( ( Label() )* ( <DECLARE> | <BEGIN> ) ) ( Label() )* Block() ";"
+	( Label() )* Block() ";"
 	|
-	LOOKAHEAD (4) ProgramUnit()
+	ProgramUnit()
 	)
       { return jjtThis ; }
 }
 
+/*
+ * https://docs.oracle.com/en/database/oracle/oracle-database/23/lnpls/block.html
+ */
 ASTBlock Block()  :
 {
 }
@@ -1751,16 +1754,16 @@ ASTSimpleExpression SimpleExpression() :
 { StringBuilder sb = new StringBuilder(); }
 {
  (
-    LOOKAHEAD(2) <ROWNUM> { sb.append(token.getImage()); }
+    LOOKAHEAD(1) <ROWNUM> { sb.append(token.getImage()); }
  |
     StringLiteral() { sb.append(token.getImage()); }
  |
     NumericLiteral() { sb.append(token.getImage()); }
  |
-    LOOKAHEAD(2) NullLiteral() { sb.append(token.getImage()); }
+    LOOKAHEAD(1) NullLiteral() { sb.append(token.getImage()); }
  |
     // sequence
-    LOOKAHEAD(4) ID() "." ( <CURRVAL> | <NEXTVAL> )
+    LOOKAHEAD(3) ID() "." ( <CURRVAL> | <NEXTVAL> )
  |
     LOOKAHEAD(6)
         SchemaName() { sb.append(token.getText()); } "." { sb.append(token.getImage()); }
@@ -2083,7 +2086,7 @@ ASTSelectList SelectList() :
 {}
 {
   (
-      "*"
+      LOOKAHEAD(1) "*"
   |
       SelectListEntry() ("," SelectListEntry() )*
   )
@@ -2094,8 +2097,8 @@ ASTSelectList SelectList() :
 void SelectListEntry() #void :
 {}
 {
-  [ LOOKAHEAD(2) <CONNECT_BY_ROOT> ]
-  SqlExpression() [LOOKAHEAD(2, {!(getToken(1).kind == BULK)}) [LOOKAHEAD(2) <AS>] ColumnAlias() ]
+  [ LOOKAHEAD(1) <CONNECT_BY_ROOT> ]
+  SqlExpression() [LOOKAHEAD(2, {!(getToken(1).kind == BULK)}) [LOOKAHEAD(1) <AS>] ColumnAlias() ]
 }
 
 ASTColumnAlias ColumnAlias() :
@@ -3187,9 +3190,9 @@ ASTExpression Expression() :
 {
 	// Need syntactic lookahead to discriminate between Assignment and a procedure call
 	(
-  	LOOKAHEAD( PrimaryExpression() ":" "=" ) (simpleNode = Assignment())
-	| (simpleNode = ConditionalOrExpression() )
+  	LOOKAHEAD( AssignmentStatementTarget() ":" "=" ) (simpleNode = Assignment())
 	| (simpleNode = CompilationExpression() )
+	| (simpleNode = ConditionalOrExpression() )
 	) {sb.append(simpleNode.getImage()); }
  {
  jjtThis.setImage(sb.toString()); return jjtThis;
@@ -3249,7 +3252,20 @@ ASTCompilationExpression CompilationExpression() :
  }
 }
 
+void AssignmentStatementTarget() #void :
+{}
+{
+      ID() // collection_variable, cursor_variable, object, out_parameter, record_variable, scalar_variable
+      [ "(" Expression() ")" // index of collection_variable
+        | "." ID() // attribute of object, field of record_variable
+      ]
+    | ":" ID() // host_cursor_variable, host_cursor
+      [ LOOKAHEAD(2) ":" ID() ] // indicator_variable of host_cursor
+}
 
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/23/lnpls/assignment-statement.html#GUID-4C3BEFDF-3FFA-4E9D-96D0-4C5E13E08643
+ */
 ASTAssignment Assignment() :
 { PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
@@ -3581,13 +3597,13 @@ ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() #UnaryExpressionNot
 { PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
-    <NOT> {sb.append(" NOT "); } simpleNode = UnaryExpression(false)
+    LOOKAHEAD(1) <NOT> {sb.append(" NOT "); } simpleNode = UnaryExpression(false)
   |
-    LOOKAHEAD(2) simpleNode = ExtractExpression()
+    LOOKAHEAD(1) simpleNode = ExtractExpression()
   |
-    LOOKAHEAD(2) simpleNode = IsNullCondition()
+    LOOKAHEAD(1) simpleNode = ImplicitCursorAttribute()
   |
-    simpleNode = ImplicitCursorAttribute()
+    simpleNode = IsNullCondition()
   )
   {sb.append(simpleNode.getImage()); }
  {
