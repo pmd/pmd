@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.internal.util;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,6 +55,7 @@ public class ClasspathClassLoader extends URLClassLoader {
     private static final Logger LOG = LoggerFactory.getLogger(ClasspathClassLoader.class);
 
     String javaHome;
+    int jdkVersion;
 
     private FileSystem fileSystem;
     private Map<String, Set<String>> packagesDirsToModules;
@@ -77,6 +79,7 @@ public class ClasspathClassLoader extends URLClassLoader {
         for (URL url : fileToURL(files)) {
             addURL(url);
         }
+        determineJavaApi();
     }
 
     public ClasspathClassLoader(String classpath, ClassLoader parent) throws IOException {
@@ -84,6 +87,21 @@ public class ClasspathClassLoader extends URLClassLoader {
         for (URL url : initURLs(classpath)) {
             addURL(url);
         }
+        determineJavaApi();
+    }
+
+    private void determineJavaApi() throws IOException {
+        try (DataInputStream data = new DataInputStream(getResourceAsStream("java/lang/Object.class"))) {
+            int magicNumber = data.readInt();
+            assert 0xcafebabe == magicNumber;
+            data.readUnsignedShort(); // minorVersion, ignored
+            int majorVersion = data.readUnsignedShort();
+            jdkVersion = majorVersion - 44;
+        }
+    }
+
+    public int getJdkVersion() {
+        return jdkVersion;
     }
 
     private List<URL> fileToURL(List<File> files) throws IOException {
@@ -202,7 +220,11 @@ public class ClasspathClassLoader extends URLClassLoader {
         return getClass().getSimpleName()
             + "[["
             + StringUtils.join(getURLs(), ":")
-            + "] jrt-fs: " + javaHome + " parent: " + getParent() + ']';
+            + "]"
+            + " java-api: " + jdkVersion
+            + " jrt-fs: " + javaHome
+            + " parent: " + getParent()
+            + "]";
     }
 
     private static final String MODULE_INFO_SUFFIX = "module-info.class";
