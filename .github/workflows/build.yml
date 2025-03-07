@@ -2,14 +2,8 @@ name: build
 
 on:
   push:
-    branches:
-      - main
     tags:
       - '**'
-  merge_group:
-  schedule:
-    # build it monthly: At 04:00 on day-of-month 1.
-    - cron:  '0 4 1 * *'
   workflow_dispatch:
     inputs:
       build_cli_dist_only:
