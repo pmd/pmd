@@ -47,7 +47,7 @@ class PLSQLParserTest extends AbstractPLSQLParserTst {
 
     @Test
     void testBug1520IsOfType() {
-        plsql.parseResource("IsOfType.pls");
+        doTest("IsOfType");
     }
 
     @Test
@@ -67,7 +67,7 @@ class PLSQLParserTest extends AbstractPLSQLParserTst {
 
     @Test
     void testIsNull() {
-        plsql.parseResource("IsNull.pls");
+        doTest("IsNull");
     }
 
     @Test
