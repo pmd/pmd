@@ -75,9 +75,11 @@ a commit status and check status to the PR and finally adds a PR comment.
 Both the "docs-artifact" and the "pmd-regression-tester" artifact are uploaded to an AWS S3 bucket
 called **pmd-pull-requests**. This bucket is served via AWS Cloudfront (for having TLS) under
 the URL <https://pull-requests.pmd-code.org>. Note, there is no directory listing. The results
-of each pull request are uploaded under the folder "pr-{PR_NUMBER}/docs" and "pr-{PR_NUMBER}/regression",
+of each pull request are uploaded under the folders "pr-{PR_NUMBER}/{PR_SHA}/docs" and "pr-{PR_NUMBER}/{PR_SHA}/regression",
 respectively. The data in the S3 bucket is available for 60 days, after that the files are removed
-(hopefully).
+automatically (hopefully). Since the head SHA of the PR is included in the URL, an updated PR will upload
+new versions of the artifacts. Otherwise, Cloudfront's cache might prevent us from seeing the
+updated artifacts.
 
 In order to upload the files to AWS S3, we use the [AWS CLI](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/index.html)
 tool, that is available on the GitHub provided runners for GitHub Actions. It needs the following **secrets**:
