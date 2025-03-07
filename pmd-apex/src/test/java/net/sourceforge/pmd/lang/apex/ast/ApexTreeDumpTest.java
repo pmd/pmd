@@ -118,4 +118,12 @@ class ApexTreeDumpTest extends BaseTreeDumpTest {
     void timeLiteralsInSoql() {
         doTest("TimeLiteralsInSoql");
     }
+
+    /**
+     * @see <a href="https://github.com/pmd/pmd/issues/5567">[apex] Provide type information for CastExpression</a>
+     */
+    @Test
+    void castExpressionTypeInfo() {
+        doTest("CastExpressionTypeInfo");
+    }
 }
