@@ -99,7 +99,7 @@
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>3.5.2</surefire.version>
-        <checkstyle.version>10.21.3</checkstyle.version>
+        <checkstyle.version>10.21.4</checkstyle.version>
         <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
         <pmd.plugin.version>3.26.0</pmd.plugin.version>
         <ant.version>1.10.15</ant.version>
