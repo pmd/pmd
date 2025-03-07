@@ -18,9 +18,6 @@ env:
 
 jobs:
   reusable-build:
-    needs: check-version
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
     uses: ./.github/workflows/reusable-build.yml
 
   regressiontester:
