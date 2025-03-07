@@ -21,7 +21,7 @@ jobs:
     uses: ./.github/workflows/reusable-build.yml
 
   regressiontester:
-    needs: compile
+    needs: reusable-build
     timeout-minutes: 60
     runs-on: ubuntu-latest
     defaults:
