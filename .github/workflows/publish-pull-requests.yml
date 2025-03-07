@@ -1,5 +1,5 @@
 name: Publish Results from Pull Requests
-
+run-name: Publish Results for "${{ github.event.workflow_run.display_title }}"
 on:
   workflow_run:
     workflows: [Pull Request Build]
@@ -35,10 +35,11 @@ jobs:
           PR_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
           # Query the PR number by repo + branch, then assign to step output:
-          gh pr view --repo pmd/pmd "${PR_BRANCH}" \
-             --json 'number' --jq '"PR_NUMBER=\(.number)"' \
-             >> "${GITHUB_ENV}"
+          PR_NUMBER="$(gh pr view --repo pmd/pmd "${PR_BRANCH}" --json 'number' --jq '.number')"
+          echo "PR_NUMBER=${PR_NUMBER}" >> "${GITHUB_ENV}"
+          echo "PR_BRANCH=${PR_BRANCH}" >> "${GITHUB_ENV}"
           echo "PR_SHA=${PR_SHA}" >> "${GITHUB_ENV}"
+          echo "Triggered for PR [#${PR_NUMBER}](https://github.com/pmd/pmd/pull/${PR_NUMBER})" >> "${GITHUB_STEP_SUMMARY}"
       - name: Download docs-artifact
         env:
           # Token required for GH CLI:
@@ -54,7 +55,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_S3_PMD_PULL_REQUESTS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: eu-central-1
         run: |
-          aws s3 sync docs-artifact "s3://pmd-pull-requests/pr-${PR_NUMBER}/docs"
+          aws s3 sync docs-artifact "s3://pmd-pull-requests/pr-${PR_NUMBER}/docs" --no-progress
           echo "public url: https://pull-requests.pmd-code.org/pr-${PR_NUMBER}/docs"
       - name: Add commit status (Documentation)
         env:
@@ -99,7 +100,7 @@ jobs:
           AWS_DEFAULT_REGION: eu-central-1
         run: |
           if [ -e "pmd-regression-tester/index.html" ]; then
-            aws s3 sync pmd-regression-tester "s3://pmd-pull-requests/pr-${PR_NUMBER}/regression"
+            aws s3 sync pmd-regression-tester "s3://pmd-pull-requests/pr-${PR_NUMBER}/regression" --no-progress
             echo "public url: https://pull-requests.pmd-code.org/pr-${PR_NUMBER}/regression"
             echo "REGRESSION_REPORT_UPLOADED=1" >> "${GITHUB_ENV}"
           else
@@ -159,4 +160,5 @@ jobs:
           echo "${comment}" > comment.txt
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
+          number: ${{ env.PR_NUMBER }}
           path: comment.txt
