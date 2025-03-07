@@ -5,17 +5,18 @@ summary: |
   PMD uses GitHub Actions as the CI/CD infrastructure to build and release new versions.
   This page gives an overview of how these workflows work and how to use them.
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: March 2025 (7.12.0)
+last_updated: April 2025 (7.13.0)
 ---
 
 {%include note.html content="This page is work in progress and does not yet describe all workflows."%}
 
-## Pull Request Build
+## Build
 
-* Builds: <https://github.com/pmd/pmd/actions/workflows/pull-requests.yml>
-* Workflow file: <https://github.com/pmd/pmd/blob/main/.github/workflows/pull-requests.yml>
+* Builds: <https://github.com/pmd/pmd/actions/workflows/build.yml>
+* Workflow file: <https://github.com/pmd/pmd/blob/main/.github/workflows/build.yml>
 
-This workflow is triggered whenever a pull request is created or synchronized.
+This workflow is triggered whenever a pull request is created or synchronized or new commits are pushed.
+It is designed to run on the main repository in PMD's GitHub organization as well as for forks.
 
 In order to avoid unnecessary builds, we use concurrency control to make sure, we cancel any in-progress jobs for
 the current pull request when a new commit has been pushed. This means, only the latest commit is built, which
@@ -65,7 +66,7 @@ The jobs are:
 * Builds: <https://github.com/pmd/pmd/actions/workflows/publish-pull-requests.yml>
 * Workflow file: <https://github.com/pmd/pmd/blob/main/.github/workflows/publish-pull-requests.yml>
 
-This workflow runs after "Pull Request Build" is completed. It runs in the context of our own
+This workflow runs after "Build" on a pull request is completed. It runs in the context of our own
 repository and has write permissions and complete access to the configured secrets.
 For security reasons, this workflow won't checkout the pull request code and it won't build anything.
 
