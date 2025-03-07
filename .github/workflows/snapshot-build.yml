@@ -1,0 +1,106 @@
+name: Snapshot Build
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  schedule:
+    # build it monthly: At 04:00 on day-of-month 1.
+    - cron:  '0 4 1 * *'
+
+# if another commit is pushed (same github.head_ref), then cancel already running jobs
+# and start a new build
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
+env:
+  LANG: 'en_US.UTF-8'
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    default:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - name: Determine Version
+        run: |
+          PMD_VERSION=$(./mvnw --batch-mode --no-transfer-progress help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "Determined PMD_VERSION=$PMD_VERSION"
+          if [[ "$PMD_VERSION" != *-SNAPSHOT ]]; then
+            echo "::error ::PMD_VERSION=$PMD_VERSION is not a snapshot version, aborting."
+            exit 1
+          fi
+          echo "PMD_VERSION=$PMD_VERSION" >> "$GITHUB_OUTPUT"
+
+  reusable-build:
+    needs: check-version
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    uses: ./.github/workflows/reusable-build.yml
+
+  deploy-to-maven-central:
+    needs: reusable-build
+    # only run in the official pmd repo, where we have access to the secrets and not on forks
+    if: github.repository == 'pmd/pmd'
+    # use environment maven-central, where secrets are configured for OSSRH_*
+    environment: maven-central
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    default:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+      - uses: actions/cache@v4
+        with:
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-
+          path: ~/.m2/repository
+          enableCrossOsArchive: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: compile-artifact
+      - name: Build and publish
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+        run: |
+          ./mvnw --show-version --errors --batch-mode \
+            deploy \
+            -DskipTests \
+            -PfastSkip -Dcyclonedx.skip=false
+
+# TODO
+# deploy-to-sourceforge:
+# -> https://sourceforge.net/projects/pmd/files/pmd/
+# - pmd-dist bin+src+doc + release notes
+# - use environment with secrets
+# - deploy doc to sourceforge (https://pmd.sourceforge.io/snapshot)
+# deploy-documentation:
+# -> https://docs.pmd-code.org/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}/
+# - also api docs https://docs.pmd-code.org/apidocs/*/${PMD_CI_MAVEN_PROJECT_VERSION}/
+# - also symlink https://docs.pmd-code.org/snapshot -> pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}
+# - use environment with secrets
+# update-github-pages:
+# -> (https://pmd.github.io/pmd/)
+# - just updates branch gh_pages
+# - needs write permissions
+# regression-tester-baseline:
+# - create new baseline -> https://pmd-code.org/pmd-regression-tester/
+# run-sonar: -> https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd
+# run-coveralls: -> https://coveralls.io/github/pmd/pmd
