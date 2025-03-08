@@ -517,6 +517,10 @@ public final class Chars implements CharSequence {
         return str.substring(idx(start), idx(end));
     }
 
+    public String substring(int start) {
+        return substring(start, len);
+    }
+
     private static void validateRangeWithAssert(int off, int len, int bound) {
         assert len >= 0 && off >= 0 && off + len <= bound : invalidRange(off, len, bound);
     }
