@@ -333,6 +333,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Map;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 
@@ -380,7 +381,7 @@ class JavaParserImpl {
       return false;
     }
 
-    return getToken(1).getImage().equals("assert");
+    return getToken(1).getImageCs().contentEquals("assert");
   }
 
   private boolean isRecordStart() {
@@ -406,8 +407,8 @@ class JavaParserImpl {
   }
 
   private boolean isKeyword(int index, String image) {
-      Token token = getToken(index);
-      return token.kind == IDENTIFIER && token.image.equals(image);
+      JavaccToken token = getToken(index);
+      return token.kind == IDENTIFIER && token.getImageCs().contentEquals(image);
   }
 
   private boolean isToken(int index, int kind) {
@@ -426,8 +427,9 @@ class JavaParserImpl {
           JavaccToken nonToken = getToken(1);
           JavaccToken minusToken = getToken(2);
           JavaccToken sealedToken = getToken(3);
-          return nonToken.getReportLocation().getEndColumn() == minusToken.getReportLocation().getStartColumn()
-            && minusToken.getReportLocation().getEndColumn() == sealedToken.getReportLocation().getStartColumn();
+          TextRegion minusRegion = minusToken.getRegion();
+          return nonToken.getRegion().getEndOffset() == minusRegion.getStartOffset()
+            && minusRegion.getEndOffset() == sealedToken.getRegion().getStartOffset();
       }
       return false;
   }
@@ -450,8 +452,8 @@ class JavaParserImpl {
         || localTypesSupported() && (
               next.kind == INTERFACE
            || next.kind == AT && isToken(2, INTERFACE)
-           || next.kind == IDENTIFIER && next.getImage().equals("enum")
-           || next.kind == IDENTIFIER && next.getImage().equals("record") && isToken(2, IDENTIFIER)
+           || next.kind == IDENTIFIER && next.getImageCs().contentEquals("enum")
+           || next.kind == IDENTIFIER && next.getImageCs().contentEquals("record") && isToken(2, IDENTIFIER)
       );
   }
 
@@ -650,9 +652,9 @@ SPECIAL_TOKEN :
 {
   < SINGLE_LINE_COMMENT: "//"(~["\n","\r"])* ("\n"|"\r"|"\r\n")? >
     {
-        int startOfNOPMD = matchedToken.getImage().indexOf(suppressMarker);
+        int startOfNOPMD = matchedToken.getImageCs().indexOf(suppressMarker, 0);
         if (startOfNOPMD != -1) {
-            suppressMap.put(matchedToken.getReportLocation().getStartLine(), matchedToken.getImage().substring(startOfNOPMD + suppressMarker.length()));
+            suppressMap.put(matchedToken.getReportLocation().getStartLine(), matchedToken.getImageCs().substring(startOfNOPMD + suppressMarker.length()));
         }
         comments.add(new JavaComment(matchedToken));
     }
@@ -2922,9 +2924,9 @@ void ModuleName():
 }
 
 void AmbiguousName():
-{ String name; }
+{}
 {
-  name=VoidName() { jjtThis.setImage(name); }
+  VoidNameNoString()
 }
 
 String VoidName() #void:
@@ -2938,10 +2940,18 @@ String VoidName() #void:
   JavaccToken t;
 }
 {
-  t=<IDENTIFIER>                    { s.append(t.getImage()); }
-  ( LOOKAHEAD(2) "." t=<IDENTIFIER> { s.append('.').append(t.getImage()); }
+  t=<IDENTIFIER>                    { t.getImageCs().appendChars(s); }
+  ( LOOKAHEAD(2) "." t=<IDENTIFIER> { t.getImageCs().appendChars(s.append('.')); }
   )*
   {return s.toString();}
+}
+
+
+void VoidNameNoString() #void:
+{
+}
+{
+  <IDENTIFIER> ( LOOKAHEAD(2) "." <IDENTIFIER> )*
 }
 
 
@@ -2951,8 +2961,8 @@ String VoidNameNoLookahead() #void:
   JavaccToken t;
 }
 {
-  t=<IDENTIFIER>       { s.append(t.getImage()); }
-  ( "." t=<IDENTIFIER> { s.append('.').append(t.getImage()); } )*
+  t=<IDENTIFIER>       { t.getImageCs().appendChars(s); }
+  ( "." t=<IDENTIFIER> { t.getImageCs().appendChars(s.append('.')); } )*
   {return s.toString();}
 }
 

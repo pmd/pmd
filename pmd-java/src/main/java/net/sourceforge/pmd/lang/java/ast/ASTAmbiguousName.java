@@ -7,6 +7,9 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+
 /**
  * An ambiguous name occurring in any context. Without a disambiguation
  * pass that taking care of obscuring rules and the current declarations
@@ -66,15 +69,21 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
         super(id);
     }
 
-
-    ASTAmbiguousName(String id) {
-        super(JavaParserImplTreeConstants.JJTAMBIGUOUSNAME);
-        setImage(id);
+    @Override
+    public String getImage() {
+        if (getFirstToken() == getLastToken()) {
+            return getFirstToken().getImage();
+        }
+        StringBuilder sb = new StringBuilder();
+        for (JavaccToken tok : GenericToken.range(getFirstToken(), getLastToken())) {
+            tok.getImageCs().appendChars(sb);
+        }
+        return sb.toString();
     }
 
     /** Returns the entire name, including periods if any. */
     public String getName() {
-        return super.getImage();
+        return getImage();
     }
 
     boolean wasProcessed() {
@@ -149,11 +158,10 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
     private <T extends AbstractJavaNode> T shrinkOneSegment(Function<ASTAmbiguousName, T> simpleNameHandler,
                                                             BiFunction<ASTAmbiguousName, String, T> splitNameConsumer) {
 
-        String image = getName();
+        JavaccToken lastToken = getLastToken();
+        JavaccToken firstToken = getFirstToken();
 
-        int lastDotIdx = image.lastIndexOf('.');
-
-        if (lastDotIdx < 0) {
+        if (lastToken == firstToken) { // simple name
             T res = simpleNameHandler.apply(this);
             if (res != null) {
                 res.copyTextCoordinates(this);
@@ -161,8 +169,7 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
             return res;
         }
 
-        String lastSegment = image.substring(lastDotIdx + 1);
-        String remainingAmbiguous = image.substring(0, lastDotIdx);
+        String lastSegment = lastToken.getImage();
 
         T res = splitNameConsumer.apply(this, lastSegment);
         // copy coordinates before shrinking
@@ -172,7 +179,6 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
 
         // shift the ident + the dot
         this.shiftTokens(0, -2);
-        setImage(remainingAmbiguous);
         return res;
     }
 
@@ -201,7 +207,7 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
                 if (parent instanceof ASTClassType) {
                     ((ASTClassType) parent).setSimpleName(simpleNameImage);
                 } else {
-                    parent.setImage(simpleName.getFirstToken().getImage());
+                    parent.setImage(simpleNameImage);
                 }
                 parent.removeChildAtIndex(simpleName.getIndexInParent());
                 return null;
