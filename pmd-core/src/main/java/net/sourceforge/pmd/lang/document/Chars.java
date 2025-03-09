@@ -220,7 +220,7 @@ public final class Chars implements CharSequence {
      * @param ch Character to search
      * @param fromIndex From index (inclusive)
      * @param toIndex To index (exclusive)
-     * @throws AssertionError if fromIndex > toIndex
+     * @throws AssertionError if fromIndex &gt; toIndex
      */
     public int indexOf(int ch, int fromIndex, int toIndex) {
         assert fromIndex <= toIndex : "Malformed range " + fromIndex + " > " + toIndex;
