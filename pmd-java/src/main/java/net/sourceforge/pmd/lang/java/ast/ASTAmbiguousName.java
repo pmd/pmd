@@ -69,11 +69,6 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
         super(id);
     }
 
-
-    ASTAmbiguousName(String id) {
-        super(JavaParserImplTreeConstants.JJTAMBIGUOUSNAME);
-    }
-
     @Override
     public String getImage() {
         if (getFirstToken() == getLastToken()) {
