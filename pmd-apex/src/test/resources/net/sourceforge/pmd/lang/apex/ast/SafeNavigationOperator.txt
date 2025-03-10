@@ -36,7 +36,7 @@
       |     +- ExpressionStatement[@DefiningType = "Foo", @RealLoc = true]
       |        +- MethodCallExpression[@DefiningType = "Foo", @FullMethodName = "c1", @InputParametersSize = 0, @MethodName = "c1", @RealLoc = true]
       |           +- ReferenceExpression[@DefiningType = "Foo", @Image = "", @RealLoc = false, @ReferenceType = ReferenceType.METHOD, @SObjectType = false, @SafeNav = true]
-      |              +- CastExpression[@DefiningType = "Foo", @RealLoc = true]
+      |              +- CastExpression[@DefiningType = "Foo", @RealLoc = true, @Type = "T"]
       |                 +- VariableExpression[@DefiningType = "Foo", @Image = "b1", @RealLoc = true]
       |                    +- ReferenceExpression[@DefiningType = "Foo", @Image = "", @RealLoc = false, @ReferenceType = ReferenceType.LOAD, @SObjectType = false, @SafeNav = true]
       |                       +- VariableExpression[@DefiningType = "Foo", @Image = "a1", @RealLoc = true]
