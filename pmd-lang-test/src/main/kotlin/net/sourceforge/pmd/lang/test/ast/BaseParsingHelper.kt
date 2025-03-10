@@ -44,7 +44,39 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         val resourcePrefix: String,
         val languageRegistry: LanguageRegistry = LanguageRegistry.PMD,
         val suppressMarker: String = PMDConfiguration.DEFAULT_SUPPRESS_MARKER,
+        val configLanguageProperties: LanguagePropertyBundle.() -> Unit = {}
     ) {
+
+        @Deprecated("Overload added for binary compatibility")
+        constructor(
+            doProcess: Boolean,
+            defaultVerString: String?,
+            resourceLoader: Class<*>?,
+            resourcePrefix: String,
+            languageRegistry: LanguageRegistry,
+            suppressMarker: String,
+        ) : this(
+            doProcess,
+            defaultVerString,
+            resourceLoader,
+            resourcePrefix,
+            languageRegistry,
+            suppressMarker,
+            configLanguageProperties = {})
+
+        @Deprecated("Overload added for binary compatibility")
+        fun copy(
+            doProcess: Boolean,
+            defaultVerString: String?,
+            resourceLoader: Class<*>?,
+            resourcePrefix: String,
+            languageRegistry: LanguageRegistry = LanguageRegistry.PMD,
+            suppressMarker: String = PMDConfiguration.DEFAULT_SUPPRESS_MARKER,
+        ) = copy(
+            doProcess, defaultVerString, resourceLoader, resourcePrefix, languageRegistry, suppressMarker,
+            configLanguageProperties
+        )
+
         companion object {
 
             @JvmStatic
@@ -112,6 +144,10 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
             clone(params.copy(suppressMarker = marker))
 
 
+    fun withLanguageProperties(configFun: LanguagePropertyBundle.() -> Unit): Self =
+        clone(params.copy(configLanguageProperties = configFun))
+
+
     @JvmOverloads
     fun <R : Node> getNodes(target: Class<R>, source: String, version: String? = null): List<R> =
                 parse(source, version).descendants(target).crossFindBoundaries(true).toList()
@@ -152,6 +188,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         val props = language.newPropertyBundle().apply {
             setLanguageVersion(params.defaultVerString ?: defaultVersion.version)
             setProperty(LanguagePropertyBundle.SUPPRESS_MARKER, params.suppressMarker)
+            params.configLanguageProperties(this)
         }
         return language.createProcessor(props)
     }
