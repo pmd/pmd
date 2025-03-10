@@ -223,7 +223,7 @@ GEM
     listen (3.9.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    logger (1.6.1)
+    logger (1.6.6)
     mercenary (0.3.6)
     minima (2.5.1)
       jekyll (>= 3.5, < 5.0)
