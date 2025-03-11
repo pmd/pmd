@@ -138,6 +138,18 @@ class ClassStubTest {
     }
 
 
+    @Test
+    void testLoadAnonClassFromEnum() {
+        TypeSystem ts = TypeSystem.usingClassLoaderClasspath(JavaParsingHelper.class.getClassLoader());
+        JClassSymbol enumClass = loadTestDataClass(ts, "EnumConstantWithBody");
+        assertThat(enumClass, hasProperty("simpleName", equalTo("EnumConstantWithBody")));
+
+        JClassSymbol anonClass = loadTestDataClass(ts, "EnumConstantWithBody$0");
+        assertThat(anonClass, hasProperty("simpleName", equalTo("")));
+
+    }
+
+
 
 
     private static void assertIsListWithTyAnnotation(JClassType withTyAnnotation) {
@@ -151,6 +163,10 @@ class ClassStubTest {
 
     private static @NonNull JClassSymbol loadScalaClass(TypeSystem typeSystem, String simpleName) {
         return loadClassInPackage("net.sourceforge.pmd.lang.java.symbols.scalaclasses", simpleName, typeSystem);
+    }
+
+    private static @NonNull JClassSymbol loadTestDataClass(TypeSystem typeSystem, String simpleName) {
+        return loadClassInPackage("net.sourceforge.pmd.lang.java.symbols.testdata", simpleName, typeSystem);
     }
 
     private static @NonNull JClassSymbol loadRecordClass(TypeSystem typeSystem, String simpleName) {
