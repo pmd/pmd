@@ -135,7 +135,7 @@ class ClassStubBuilder extends ClassVisitor {
             }
             myStub.setSimpleName(innerSimpleName == null ? "" : innerSimpleName); // may be null for anonymous
             myStub.setModifiers(access, false);
-            isInnerNonStaticClass &= (Opcodes.ACC_STATIC & access) == 0;
+            isInnerNonStaticClass = (Opcodes.ACC_STATIC & access) == 0;
         }
     }
 
