@@ -492,4 +492,21 @@ class Tester {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>LiteralsFirstInComparisonsRule not applied on constant #5590</description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+            static class Foo {
+                private static final String FOO = null;
+
+                public static void bar(String _null) {
+                    String _null2 = null;
+                    FOO.equals("RAW");
+                    _null.equals("RAW");
+                    _null2.equals("RAW");
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>
