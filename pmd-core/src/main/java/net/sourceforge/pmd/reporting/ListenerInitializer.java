@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.List;
 
 import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.AssertionUtil;
@@ -29,6 +30,15 @@ public interface ListenerInitializer extends AutoCloseable {
      * Notifies the total number of files collected for analysis.
      */
     default void setNumberOfFilesToAnalyze(int totalFiles) {
+        // noop
+    }
+
+    /**
+     * Set the list of files that will be analyzed during this analysis.
+     * Renderers have to output each file in this order. Multithreaded
+     * processing might however pass them to the renderer in any order.
+     */
+    default void setSortedFileIds(List<FileId> files) {
         // noop
     }
 
@@ -94,6 +104,13 @@ public interface ListenerInitializer extends AutoCloseable {
             public void setNumberOfFilesToAnalyze(int totalFiles) {
                 for (ListenerInitializer initializer : list) {
                     initializer.setNumberOfFilesToAnalyze(totalFiles);
+                }
+            }
+
+            @Override
+            public void setSortedFileIds(List<FileId> files) {
+                for (ListenerInitializer initializer : list) {
+                    initializer.setSortedFileIds(files);
                 }
             }
 

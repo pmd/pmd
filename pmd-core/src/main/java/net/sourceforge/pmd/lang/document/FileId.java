@@ -8,6 +8,7 @@ import java.io.File;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -298,6 +299,9 @@ public interface FileId extends Comparable<FileId> {
      */
 
     static FileId asChildOf(FileId self, FileId parentFsPath) {
+        if (Objects.equals(self.getParentFsPath(), parentFsPath)) {
+            return self;
+        }
         return new FileId() {
             @Override
             public @Nullable FileId getParentFsPath() {
@@ -322,6 +326,17 @@ public interface FileId extends Comparable<FileId> {
             @Override
             public String getAbsolutePath() {
                 return self.getAbsolutePath();
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                return obj instanceof FileId &&
+                    getUriString().equals(((FileId) obj).getUriString());
+            }
+
+            @Override
+            public int hashCode() {
+                return getUriString().hashCode();
             }
 
             @Override
