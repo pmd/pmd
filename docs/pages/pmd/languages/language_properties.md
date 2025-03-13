@@ -2,7 +2,7 @@
 title: Language configuration
 permalink: pmd_languages_configuration.html
 author: Clément Fournier
-last_updated: August 2024 (7.5.0)
+last_updated: March 2025 (7.12.0)
 tags: [languages]
 keywords: [pmd, cpd, options, command, auxclasspath, language, properties]
 summary: "Summary of language configuration options and properties"
@@ -102,6 +102,17 @@ The Java language can be configured with the following properties:
 
   Since: 7.5.0  
   Environment variable: `PMD_JAVA_X_STRICT_TYPE_RES`
+  Default: "true"
+
+- `lombok`: Whether to consider lombok-specific things in core facilities like type inference.
+  Disable this option if you want to analyze the AST as it would appear before the lombok pre-processing is applied.
+  For instance, with this option enabled, variables declared with type lombok.val will have their type inferred based on the right-hand-side.
+  With the option disabled, the variable will have type lombok.val instead.
+  See [issue #3119](https://github.com/pmd/pmd/issues/3119).
+
+  Since: 7.12.0
+  Environment variable: `PMD_JAVA_LOMBOK`
+  Default: "true"
 
 ## Apex language properties
 

@@ -36,7 +36,7 @@ public class JavaLanguageProperties extends JvmLanguagePropertyBundle {
                        .build();
 
     /**
-     * @since 7.11.0
+     * @since 7.12.0
      */
     public static final PropertyDescriptor<Boolean> FIRST_CLASS_LOMBOK =
         PropertyFactory.booleanProperty("lombok")
