@@ -38,6 +38,7 @@
           "message": {
             "text": "blah"
           },
+          "level": "note",
           "locations": [
             {
               "physicalLocation": {
