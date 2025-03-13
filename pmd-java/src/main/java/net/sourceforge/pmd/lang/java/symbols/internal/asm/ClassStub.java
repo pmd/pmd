@@ -111,7 +111,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
                     enclosingInfo = EnclosingInfo.NO_ENCLOSING;
                 }
                 if (signature == null) {
-                    assert failed : "No signature, but the parse hasn't failed? investigate " +  names.internalName;
+                    assert failed : "No signature, but the parse hasn't failed? investigate " + names.internalName;
                     signature = LazyClassSignature.defaultWhenUnresolved(ClassStub.this, observedArity);
                 }
                 methods = Collections.unmodifiableList(methods);
