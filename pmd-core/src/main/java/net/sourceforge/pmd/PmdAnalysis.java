@@ -401,7 +401,7 @@ public final class PmdAnalysis implements AutoCloseable {
             // Initialize listeners
             try (ListenerInitializer initializer = listener.initializer()) {
                 initializer.setNumberOfFilesToAnalyze(textFiles.size());
-                initializer.setSortedFileIds(CollectionUtil.map(textFiles, TextFile::getFileId));
+                initializer.setFilesToAnalyze(CollectionUtil.map(textFiles, TextFile::getFileId));
                 initializer.setFileNameRenderer(fileNameRenderer());
             }
         } catch (Exception e) {

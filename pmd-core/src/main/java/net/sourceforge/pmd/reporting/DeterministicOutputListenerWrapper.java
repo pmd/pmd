@@ -57,7 +57,7 @@ public class DeterministicOutputListenerWrapper implements GlobalAnalysisListene
     public ListenerInitializer initializer() {
         return ListenerInitializer.tee(listOf(new ListenerInitializer() {
             @Override
-            public void setSortedFileIds(List<FileId> files) {
+            public void setFilesToAnalyze(List<FileId> files) {
                 for (int i = 0; i < files.size(); i++) {
                     filesToIdx.put(files.get(i), i);
                 }

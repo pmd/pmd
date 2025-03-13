@@ -35,10 +35,12 @@ public interface ListenerInitializer extends AutoCloseable {
 
     /**
      * Set the list of files that will be analyzed during this analysis.
-     * Renderers have to output each file in this order. Multithreaded
+     * Renderers must output each file in this order. Multithreaded
      * processing might however pass them to the renderer in any order.
+     * Renderers may use {@link DeterministicOutputListenerWrapper} to
+     * reorder the events.
      */
-    default void setSortedFileIds(List<FileId> files) {
+    default void setFilesToAnalyze(List<FileId> files) {
         // noop
     }
 
@@ -108,9 +110,9 @@ public interface ListenerInitializer extends AutoCloseable {
             }
 
             @Override
-            public void setSortedFileIds(List<FileId> files) {
+            public void setFilesToAnalyze(List<FileId> files) {
                 for (ListenerInitializer initializer : list) {
-                    initializer.setSortedFileIds(files);
+                    initializer.setFilesToAnalyze(files);
                 }
             }
 
