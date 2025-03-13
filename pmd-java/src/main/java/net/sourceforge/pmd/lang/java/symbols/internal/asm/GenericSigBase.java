@@ -66,6 +66,7 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
                 }
             }
 
+
             @Override
             protected boolean postCondition() {
                 return GenericSigBase.this.postCondition();
