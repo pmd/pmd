@@ -96,12 +96,14 @@ The Java language can be configured with the following properties:
 
 - `xTypeInferenceLogging`: Verbosity of type inference logging, possible values `DISABLED`, `SIMPLE`, `VERBOSE`.
 
-  Environment variable: `PMD_JAVA_X_TYPE_INFERENCE_LOGGING`
+  Since 7.0.0  
+  Environment variable: `PMD_JAVA_X_TYPE_INFERENCE_LOGGING`  
+  Default: "DISABLED"
 
-- `xStrictTypeRes`: Whether to perform type resolution strictly at the start of execution or not (default: "true")
+- `xStrictTypeRes`: Whether to perform type resolution strictly at the start of execution or not.
 
   Since: 7.5.0  
-  Environment variable: `PMD_JAVA_X_STRICT_TYPE_RES`
+  Environment variable: `PMD_JAVA_X_STRICT_TYPE_RES`  
   Default: "true"
 
 - `lombok`: Whether to consider lombok-specific things in core facilities like type inference.
@@ -110,8 +112,8 @@ The Java language can be configured with the following properties:
   With the option disabled, the variable will have type lombok.val instead.
   See [issue #3119](https://github.com/pmd/pmd/issues/3119).
 
-  Since: 7.12.0
-  Environment variable: `PMD_JAVA_LOMBOK`
+  Since: 7.12.0  
+  Environment variable: `PMD_JAVA_LOMBOK`  
   Default: "true"
 
 ## Apex language properties
