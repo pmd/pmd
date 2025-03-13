@@ -7,12 +7,15 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 import java.io.Writer;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
+import net.sourceforge.pmd.reporting.CloseHookFileListener;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.FileNameRenderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
@@ -20,10 +23,7 @@ import net.sourceforge.pmd.reporting.ListenerInitializer;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.Report.ConfigurationError;
 import net.sourceforge.pmd.reporting.Report.GlobalReportBuilderListener;
-import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.reporting.Report.ReportBuilderListener;
-import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
-import net.sourceforge.pmd.reporting.RuleViolation;
 
 /**
  * This is an interface for rendering a Report. When a Renderer is being
@@ -226,26 +226,10 @@ public interface Renderer extends PropertySource {
                 Renderer renderer = Renderer.this;
 
                 renderer.startFileAnalysis(file); // this routine is thread-safe by contract
-                return new FileAnalysisListener() {
-                    final ReportBuilderListener reportBuilder = new ReportBuilderListener();
+                return new CloseHookFileListener<ReportBuilderListener>(new ReportBuilderListener()) {
 
                     @Override
-                    public void onRuleViolation(RuleViolation violation) {
-                        reportBuilder.onRuleViolation(violation);
-                    }
-
-                    @Override
-                    public void onSuppressedRuleViolation(SuppressedViolation violation) {
-                        reportBuilder.onSuppressedRuleViolation(violation);
-                    }
-
-                    @Override
-                    public void onError(ProcessingError error) {
-                        reportBuilder.onError(error);
-                    }
-
-                    @Override
-                    public void close() throws Exception {
+                    protected void doClose(ReportBuilderListener reportBuilder, @Nullable Exception ignoredEx) throws Exception {
                         reportBuilder.close();
                         synchronized (reportMergeLock) {
                             // TODO renderFileReport should be thread-safe instead
