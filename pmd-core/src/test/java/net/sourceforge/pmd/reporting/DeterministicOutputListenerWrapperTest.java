@@ -1,3 +1,7 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.reporting;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -89,7 +93,7 @@ class DeterministicOutputListenerWrapperTest {
 
         List<FileId> fileIds = new ArrayList<>();
 
-        public MyRendererSpy() {
+        MyRendererSpy() {
             super("rendererspy", "description");
             setWriter(new PrintWriter(System.out));
         }

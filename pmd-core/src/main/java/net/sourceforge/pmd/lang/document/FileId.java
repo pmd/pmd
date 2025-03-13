@@ -330,8 +330,8 @@ public interface FileId extends Comparable<FileId> {
 
             @Override
             public boolean equals(Object obj) {
-                return obj instanceof FileId &&
-                    getUriString().equals(((FileId) obj).getUriString());
+                return obj instanceof FileId
+                    && getUriString().equals(((FileId) obj).getUriString());
             }
 
             @Override

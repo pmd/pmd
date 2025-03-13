@@ -1,3 +1,7 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.reporting;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
@@ -40,7 +44,7 @@ public class DeterministicOutputListenerWrapper implements GlobalAnalysisListene
     private final Map<FileId, Integer> filesToIdx = new HashMap<>();
 
     // use linkedlist because we are mostly doing one-element insertions and removals
-    private final LinkedList<ReportWrapper> reportBuffer = new LinkedList<>();
+    private final List<ReportWrapper> reportBuffer = new LinkedList<>();
     private int nextToOutput;
     private final Object lock = new Object();
 
