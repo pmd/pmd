@@ -164,7 +164,7 @@ abstract class ParseLock {
         final void releaseLock() {
             if (isAssertEnabled()) {
                 ParseLock lock = CURRENT_LOCK.get();
-                assert lock == this : "Tried to release different parse lock " + lock + " from " + this;
+                assert lock == this : "Tried to release different parse lock " + lock + " from " + this; // NOPMD CompareObjectsWithEquals
                 CURRENT_LOCK.remove();
             }
         }
