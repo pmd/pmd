@@ -129,6 +129,7 @@ public class DeterministicOutputListenerWrapper implements GlobalAnalysisListene
                 throw new AssertionError("Closed listener but not all files have been processed");
             }
         }
+        listener.close();
     }
 
     @Override
