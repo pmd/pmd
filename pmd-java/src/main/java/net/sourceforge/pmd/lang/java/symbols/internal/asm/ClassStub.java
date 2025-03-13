@@ -227,11 +227,17 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         }
         this.accessFlags = myAccess | accessFlags;
 
-        if ((accessFlags & Opcodes.ACC_ENUM) != 0) {
-            this.enumConstants = new ArrayList<>();
-        }
-        if ((accessFlags & Opcodes.ACC_RECORD) != 0) {
-            this.recordComponents = new ArrayList<>();
+        // setModifiers is called multiple times: once from ClassFile structure (fromClassInfo==true)
+        // and additionally from InnerClasses attribute (fromClassInfo==false)
+        // The enum constants and record components should only be initialized once
+        // to avoid losing the constants.
+        if (fromClassInfo) {
+            if ((accessFlags & Opcodes.ACC_ENUM) != 0) {
+                this.enumConstants = new ArrayList<>();
+            }
+            if ((accessFlags & Opcodes.ACC_RECORD) != 0) {
+                this.recordComponents = new ArrayList<>();
+            }
         }
     }
 

@@ -7965,6 +7965,51 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "slovdahl",
+      "name": "Sebastian Lövdahl",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1417619?v=4",
+      "profile": "https://github.com/slovdahl",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "Ferada",
+      "name": "Olof-Joachim Frahm (欧雅福)",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13713?v=4",
+      "profile": "https://macrolet.net/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "toKrause",
+      "name": "Torsten Krause",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6521030?v=4",
+      "profile": "https://github.com/toKrause",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "dymul",
+      "name": "Krzysztof Dymek",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4218370?v=4",
+      "profile": "https://github.com/dymul",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "Wolf2323",
+      "name": "Wolf2323",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4036106?v=4",
+      "profile": "https://github.com/Wolf2323",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,

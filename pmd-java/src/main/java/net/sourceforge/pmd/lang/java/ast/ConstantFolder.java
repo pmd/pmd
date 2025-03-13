@@ -67,6 +67,21 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, Object> {
     }
 
     @Override
+    public Object visit(ASTArrayInitializer node, Void data) {
+        int length = node.length();
+        Object[] result = new Object[length];
+        int index = 0;
+        for (ASTExpression expr : node) {
+            if (!expr.isCompileTimeConstant()) {
+                return null;
+            }
+            result[index++] = expr.getConstValue();
+        }
+
+        return result;
+    }
+
+    @Override
     public Object visit(ASTConditionalExpression node, Void data) {
         Object condition = node.getCondition().getConstValue();
         if (condition instanceof Boolean) {

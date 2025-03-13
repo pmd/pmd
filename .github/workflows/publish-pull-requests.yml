@@ -1,0 +1,164 @@
+name: Publish Results from Pull Requests
+run-name: Publish Results for "${{ github.event.workflow_run.display_title }}"
+on:
+  workflow_run:
+    workflows: [Pull Request Build]
+    types:
+      - completed
+
+permissions:
+  checks: write
+  statuses: write
+  pull-requests: write # in order to add a comment
+
+jobs:
+  publish:
+    # only run in the official pmd repo, where we have access to the secrets
+    if: github.repository == 'pmd/pmd'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: 'Get PR context'
+        env:
+          # Token required for GH CLI:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # If the PR is from a fork, prefix it with `<owner-login>:`, otherwise only the PR branch name is relevant:
+          PR_BRANCH: |-
+            ${{
+              (github.event.workflow_run.head_repository.owner.login != github.event.workflow_run.repository.owner.login)
+                && format('{0}:{1}', github.event.workflow_run.head_repository.owner.login, github.event.workflow_run.head_branch)
+                || github.event.workflow_run.head_branch
+            }}
+          PR_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          # Query the PR number by repo + branch, then assign to step output:
+          PR_NUMBER="$(gh pr view --repo pmd/pmd "${PR_BRANCH}" --json 'number' --jq '.number')"
+          echo "PR_NUMBER=${PR_NUMBER}" >> "${GITHUB_ENV}"
+          echo "PR_BRANCH=${PR_BRANCH}" >> "${GITHUB_ENV}"
+          echo "PR_SHA=${PR_SHA}" >> "${GITHUB_ENV}"
+          echo "Triggered for PR [#${PR_NUMBER}](https://github.com/pmd/pmd/pull/${PR_NUMBER})" >> "${GITHUB_STEP_SUMMARY}"
+      - name: Download docs-artifact
+        env:
+          # Token required for GH CLI:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          mkdir docs-artifact
+          cd docs-artifact
+          gh run download "${RUN_ID}" --repo pmd/pmd --name docs-artifact
+      - name: Upload docs-artifact to s3://pmd-pull-requests
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_S3_PMD_PULL_REQUESTS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_S3_PMD_PULL_REQUESTS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: eu-central-1
+        run: |
+          aws s3 sync docs-artifact "s3://pmd-pull-requests/pr-${PR_NUMBER}/${PR_SHA}/docs" --no-progress
+          echo "public url: https://pull-requests.pmd-code.org/pr-${PR_NUMBER}/${PR_SHA}/docs"
+      - name: Add commit status (Documentation)
+        env:
+          # Token required for GH CLI:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "/repos/pmd/pmd/statuses/${PR_SHA}" \
+            -f "state=success" -f "target_url=https://pull-requests.pmd-code.org/pr-${PR_NUMBER}/${PR_SHA}/docs" \
+            -f "description=PMD Documentation Preview" -f "context=Published Results / Documentation"
+      - name: Add Check Status (Documentation)
+        env:
+          # Token required for GH CLI:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          timestamp="$(date -uIs)"
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/pmd/pmd/check-runs \
+            -f "name=Documentation" -f "head_sha=${PR_SHA}" -f "status=completed" \
+            -f "started_at=${timestamp}" -f "conclusion=success" -f "completed_at=${timestamp}" \
+            -f "output[title]=Documentation Preview" -f "output[summary]=[Documentation Preview](https://pull-requests.pmd-code.org/pr-${PR_NUMBER}/${PR_SHA}/docs)"
+
+      - name: Download pmd-regression-tester
+        env:
+          # Token required for GH CLI:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          mkdir pmd-regression-tester
+          cd pmd-regression-tester
+          gh run download "${RUN_ID}" --repo pmd/pmd --name pmd-regression-tester
+      - name: Upload regression report to s3://pmd-pull-requests
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_S3_PMD_PULL_REQUESTS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_S3_PMD_PULL_REQUESTS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: eu-central-1
+        run: |
+          if [ -e "pmd-regression-tester/index.html" ]; then
+            aws s3 sync pmd-regression-tester "s3://pmd-pull-requests/pr-${PR_NUMBER}/${PR_SHA}/regression" --no-progress
+            echo "public url: https://pull-requests.pmd-code.org/pr-${PR_NUMBER}/${PR_SHA}/regression"
+            echo "REGRESSION_REPORT_UPLOADED=1" >> "${GITHUB_ENV}"
+          else
+            echo "No report available."
+            echo "REGRESSION_REPORT_UPLOADED=0" >> "${GITHUB_ENV}"
+          fi
+      - name: Add commit status (Regression Tester)
+        if: ${{ env.REGRESSION_REPORT_UPLOADED == 1 }}
+        env:
+          # Token required for GH CLI:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "/repos/pmd/pmd/statuses/${PR_SHA}" \
+            -f "state=success" -f "target_url=https://pull-requests.pmd-code.org/pr-${PR_NUMBER}/${PR_SHA}/regression" \
+            -f "description=PMD Regression Tester Report" -f "context=Published Results / Regression Tester"
+      - name: Prepare regression summary
+        run: |-
+          summary="$(cat pmd-regression-tester/summary.txt)"
+          if [ "$REGRESSION_REPORT_UPLOADED" = "1" ]; then
+            summary="
+          ${summary}
+
+          [Regression Tester Report](https://pull-requests.pmd-code.org/pr-${PR_NUMBER}/${PR_SHA}/regression)
+          "
+          fi
+          echo "${summary}" > pmd-regression-tester/summary.txt
+      - name: Add Check Status (Regression Tester)
+        env:
+          # Token required for GH CLI:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |-
+          timestamp="$(date -uIs)"
+          summary="$(cat pmd-regression-tester/summary.txt)"
+          
+          # conclusion can be one of: action_required, cancelled, failure, neutral, success, skipped, stale, timed_out
+          conclusion="$(cat pmd-regression-tester/conclusion.txt)"
+          
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/pmd/pmd/check-runs \
+            -f "name=Regression Tester" -f "head_sha=${PR_SHA}" -f "status=completed" \
+            -f "started_at=${timestamp}" -f "conclusion=${conclusion}" -f "completed_at=${timestamp}" \
+            -f "output[title]=Regression Tester Report" -f "output[summary]=${summary}"
+      - name: Prepare comment text
+        run: |-
+          summary="$(cat pmd-regression-tester/summary.txt)"
+          comment="[Documentation Preview](https://pull-requests.pmd-code.org/pr-${PR_NUMBER}/${PR_SHA}/docs)
+          
+          ${summary}
+          "
+          echo "${comment}" > comment.txt
+      - uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          number: ${{ env.PR_NUMBER }}
+          path: comment.txt
