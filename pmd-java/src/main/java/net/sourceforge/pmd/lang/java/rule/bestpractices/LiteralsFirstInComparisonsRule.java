@@ -9,6 +9,8 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
@@ -47,14 +49,15 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRulechainRule {
                 || call.getMethodType().getFormalParameters().equals(listOf(call.getTypeSystem().OBJECT));
     }
 
-    private boolean isConstantString(ASTExpression node) {
-        return node instanceof ASTStringLiteral || node.getConstValue() instanceof String;
+    private boolean isConstantString(@Nullable ASTExpression node) {
+        return node instanceof ASTStringLiteral
+            || node != null && node.getConstValue() instanceof String;
     }
 
     private void checkArgs(RuleContext ctx, ASTMethodCall call) {
         ASTExpression arg = call.getArguments().get(0);
-        ASTExpression qualifier = call.getQualifier();
-        if (!isConstantString(qualifier) && isConstantString(arg)) {
+        @Nullable ASTExpression qualifier = call.getQualifier();
+        if (qualifier != null && !isConstantString(qualifier) && isConstantString(arg)) {
             ctx.addViolation(call);
         }
     }
