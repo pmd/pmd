@@ -47,19 +47,23 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
     }
 
     @Override
-    protected @NonNull Number buildConstValue() {
+    protected @NonNull ConstResult buildConstValue() {
         // don't use ternaries, the compiler messes up autoboxing.
+        Object result;
         if (isIntegral()) {
             if (isIntLiteral()) {
-                return getValueAsInt();
+                result = getValueAsInt();
+            } else {
+                result = getValueAsLong();
             }
-            return getValueAsLong();
         } else {
             if (isFloatLiteral()) {
-                return getValueAsFloat();
+                result = getValueAsFloat();
+            } else {
+                result = getValueAsDouble();
             }
-            return getValueAsDouble();
         }
+        return ConstResult.ctConst(result);
     }
 
     @Override

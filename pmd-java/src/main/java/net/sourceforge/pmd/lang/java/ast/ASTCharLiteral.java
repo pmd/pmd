@@ -34,9 +34,15 @@ public final class ASTCharLiteral extends AbstractLiteral implements ASTLiteral 
      */
     @Override
     public @NonNull Character getConstValue() {
+        return (Character) super.getConstValue();
+    }
+
+    @Override
+    protected @NonNull ConstResult buildConstValue() {
         Chars image = getLiteralText();
         Chars woDelims = image.subSequence(1, image.length() - 1);
-        return StringEscapeUtils.UNESCAPE_JAVA.translate(woDelims).charAt(0);
+        Character result = StringEscapeUtils.UNESCAPE_JAVA.translate(woDelims).charAt(0);
+        return ConstResult.ctConst(result);
     }
 
     @Override

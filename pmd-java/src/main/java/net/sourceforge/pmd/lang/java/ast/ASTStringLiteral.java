@@ -88,12 +88,14 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
     }
 
     @Override
-    protected @NonNull String buildConstValue() {
+    protected @NonNull ConstResult buildConstValue() {
+        String result;
         if (isTextBlock()) {
-            return determineTextBlockContent(getLiteralText());
+            result = determineTextBlockContent(getLiteralText());
         } else {
-            return determineStringContent(getLiteralText());
+            result = determineStringContent(getLiteralText());
         }
+        return ConstResult.ctConst(result);
     }
 
     static @NonNull String determineStringContent(Chars image) {

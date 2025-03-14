@@ -4,14 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Objects;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 abstract class AbstractJavaExpr extends AbstractJavaTypeNode implements ASTExpression {
 
-    private static final Object NOT_COMPUTED = new Object(); // null is sentinel value too
-
     private int parenDepth;
-    private Object constValue = NOT_COMPUTED;
+    private @Nullable ConstResult constValue;
 
     AbstractJavaExpr(int i) {
         super(i);
@@ -28,15 +29,16 @@ abstract class AbstractJavaExpr extends AbstractJavaTypeNode implements ASTExpre
     }
 
     @Override
-    public @Nullable Object getConstValue() {
-        if (constValue == NOT_COMPUTED) { // NOPMD we want identity semantics
-            constValue = null; // remove the sentinel, so that we don't reenter on cycle
+    public @NonNull ConstResult getConstFoldingResult() {
+        if (constValue == null) {
+            constValue = ConstResult.NO_CONST_VALUE; // make non-null, so that we don't reenter on cycle
             constValue = buildConstValue();
+            Objects.requireNonNull(constValue, "constValue must not be null");
         }
         return constValue;
     }
 
-    protected @Nullable Object buildConstValue() {
+    protected @NonNull ConstResult buildConstValue() {
         return acceptVisitor(ConstantFolder.INSTANCE, null);
     }
 }
