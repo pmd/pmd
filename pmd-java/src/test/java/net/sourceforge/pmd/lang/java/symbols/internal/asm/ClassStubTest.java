@@ -8,6 +8,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -27,6 +28,8 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JRecordComponentSymbol;
+import net.sourceforge.pmd.lang.java.symbols.testdata.EnumConstantWithBody;
+import net.sourceforge.pmd.lang.java.symbols.testdata.LocalClasses;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
@@ -138,6 +141,47 @@ class ClassStubTest {
     }
 
 
+    @Test
+    void testLoadAnonClassFromEnum() {
+        TypeSystem ts = TypeSystem.usingClassLoaderClasspath(JavaParsingHelper.class.getClassLoader());
+        JClassSymbol enumClass = loadTestDataClass(ts, "EnumConstantWithBody");
+        assertThat(enumClass, hasProperty("simpleName", equalTo("EnumConstantWithBody")));
+
+        AsmSymbolResolver resolver = (AsmSymbolResolver) ts.bootstrapResolver();
+        JClassSymbol anonClass = resolver.resolveFromInternalNameCannotFail(
+            ClassNamesUtil.getInternalName(EnumConstantWithBody.class) + "$1");
+        assertThat(anonClass, hasProperty("unresolved", equalTo(false)));
+        assertThat(anonClass, hasProperty("simpleName", equalTo("")));
+        assertThat(anonClass.getEnclosingClass(), sameInstance(enumClass));
+    }
+
+    @Test
+    void testLoadLocalClass() {
+        TypeSystem ts = TypeSystem.usingClassLoaderClasspath(JavaParsingHelper.class.getClassLoader());
+        JClassSymbol outerClass = loadTestDataClass(ts, "LocalClasses");
+
+        AsmSymbolResolver resolver = (AsmSymbolResolver) ts.bootstrapResolver();
+        JClassSymbol local1 = resolver.resolveFromInternalNameCannotFail(
+            ClassNamesUtil.getInternalName(LocalClasses.class) + "$1Local1");
+
+        assertThat(local1, hasProperty("unresolved", equalTo(false)));
+        assertThat(local1, hasProperty("simpleName", equalTo("Local1")));
+        assertThat(local1, hasProperty("localClass", equalTo(true)));
+        assertThat(local1, hasProperty("anonymousClass", equalTo(false)));
+        assertThat(local1, hasProperty("enclosingMethod", equalTo(null)));
+        assertThat(local1.getEnclosingClass(), sameInstance(outerClass));
+
+        JClassSymbol local2 = resolver.resolveFromInternalNameCannotFail(
+            ClassNamesUtil.getInternalName(LocalClasses.class) + "$1Local2");
+        assertThat(local2, hasProperty("unresolved", equalTo(false)));
+        assertThat(local2, hasProperty("simpleName", equalTo("Local2")));
+        assertThat(local2, hasProperty("localClass", equalTo(true)));
+        assertThat(local2, hasProperty("anonymousClass", equalTo(false)));
+        assertThat(local2, hasProperty("enclosingMethod", notNullValue()));
+        assertThat(local2.getEnclosingClass(), sameInstance(outerClass));
+    }
+
+
 
 
     private static void assertIsListWithTyAnnotation(JClassType withTyAnnotation) {
@@ -151,6 +195,10 @@ class ClassStubTest {
 
     private static @NonNull JClassSymbol loadScalaClass(TypeSystem typeSystem, String simpleName) {
         return loadClassInPackage("net.sourceforge.pmd.lang.java.symbols.scalaclasses", simpleName, typeSystem);
+    }
+
+    private static @NonNull JClassSymbol loadTestDataClass(TypeSystem typeSystem, String simpleName) {
+        return loadClassInPackage("net.sourceforge.pmd.lang.java.symbols.testdata", simpleName, typeSystem);
     }
 
     private static @NonNull JClassSymbol loadRecordClass(TypeSystem typeSystem, String simpleName) {

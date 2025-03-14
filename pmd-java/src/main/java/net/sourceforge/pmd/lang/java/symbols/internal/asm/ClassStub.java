@@ -124,15 +124,19 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
                 }
                 permittedSubclasses = CollectionUtil.makeUnmodifiableAndNonNull(permittedSubclasses);
 
-                if (EnclosingInfo.NO_ENCLOSING.equals(enclosingInfo)) {
-                    if (names.canonicalName == null || names.simpleName == null) {
-                        // This happens if the simple name contains dollars,
-                        // in which case we might have an enclosing class, and
-                        // we can only tell now (no enclosingInfo) that that's
-                        // not the case.
-                        names.finishOuterClass();
-                    }
+                if (enclosingInfo.getEnclosingClass() == null && names.simpleName == null) {
+                    // Top-level classes don't get their simple-name populated during parsing.
+                    // If the class simple name contains dollars, we can only know after parsing
+                    // whether they are top-level or not.
+                    names.finishOuterClass();
                 }
+                assert names.simpleName != null : "At this point the simple name should be known";
+                if (!enclosingInfo.isLocalOrAnon && names.canonicalName == null) {
+                    // note that this may recursively parse the parent classes. This is
+                    // only necessary in specific cases where class simple names contain dollar signs.
+                    names.canonicalName = computeCanonicalName();
+                }
+
                 annotAttributes = (accessFlags & Opcodes.ACC_ANNOTATION) != 0
                                   ? getDeclaredMethods().stream().filter(JMethodSymbol::isAnnotationAttribute)
                                                         .map(JElementSymbol::getSimpleName)
@@ -241,14 +245,14 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         }
     }
 
-    void setOuterClass(ClassStub outer, @Nullable String methodName, @Nullable String methodDescriptor) {
+    void setEnclosingInfo(ClassStub outer, boolean localOrAnon, @Nullable String methodName, @Nullable String methodDescriptor) {
         if (enclosingInfo == null) {
             if (outer == null) {
                 assert methodName == null && methodDescriptor == null
                     : "Enclosing method requires enclosing class";
                 this.enclosingInfo = EnclosingInfo.NO_ENCLOSING;
             } else {
-                this.enclosingInfo = new EnclosingInfo(outer, methodName, methodDescriptor);
+                this.enclosingInfo = new EnclosingInfo(outer, localOrAnon, methodName, methodDescriptor);
             }
         }
     }
@@ -262,7 +266,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     }
 
     void addMemberClass(ClassStub classStub) {
-        classStub.setOuterClass(this, null, null);
+        classStub.setEnclosingInfo(this, false, null, null);
         memberClasses.add(classStub);
     }
 
@@ -461,25 +465,15 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
      * Simpler check than computing the canonical name.
      */
     boolean hasCanonicalName() {
-        if (names.canonicalName != null) {
-            return true;
-        }
-        parseLock.ensureParsed();
-        if (isAnonymousClass() || isLocalClass()) {
-            return false;
-        }
-        JClassSymbol enclosing = getEnclosingClass();
-        return enclosing == null // top-level class
-            || enclosing instanceof ClassStub
-            && ((ClassStub) enclosing).hasCanonicalName();
+        return getCanonicalName() != null;
     }
 
     @Override
-    public String getCanonicalName() {
-        String canoName = names.canonicalName;
+    public @Nullable String getCanonicalName() {
+        @Nullable String canoName = names.canonicalName;
         if (canoName == null) {
-            canoName = computeCanonicalName();
-            names.canonicalName = canoName;
+            parseLock.ensureParsed();
+            canoName = names.canonicalName;
         }
         return canoName;
     }
@@ -488,16 +482,20 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         parseLock.ensureParsed();
         if (names.canonicalName != null) {
             return names.canonicalName;
+        } else if (enclosingInfo.isLocalOrAnon()) {
+            return null;
         }
-        JClassSymbol enclosing = getEnclosingClass();
+        assert names.simpleName != null && !names.simpleName.isEmpty() : "Anon class should not take this branch";
+
+        JClassSymbol enclosing = enclosingInfo.getEnclosingClass();
         if (enclosing == null) {
-            return names.packageName + '.' + getSimpleName();
+            return names.binaryName;
         }
         String outerName = enclosing.getCanonicalName();
         if (outerName == null) {
             return null;
         }
-        return outerName + '.' + getSimpleName();
+        return outerName + '.' + names.simpleName;
     }
 
     @Override
@@ -510,7 +508,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         String mySimpleName = names.simpleName;
         if (mySimpleName == null) {
             parseLock.ensureParsed();
-            return Objects.requireNonNull(names.simpleName, "Null simple name after parsing");
+            return Objects.requireNonNull(names.simpleName, "Null simple name after parsing " + getInternalName());
         }
         return mySimpleName;
     }
@@ -584,7 +582,8 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
     @Override
     public boolean isLocalClass() {
-        return enclosingInfo.isLocal();
+        parseLock.ensureParsed();
+        return enclosingInfo.isLocalOrAnon() && !isAnonymousClass();
     }
 
     @Override
@@ -653,20 +652,22 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
     static class EnclosingInfo {
 
-        static final EnclosingInfo NO_ENCLOSING = new EnclosingInfo(null, null, null);
+        static final EnclosingInfo NO_ENCLOSING = new EnclosingInfo(null, false, null, null);
 
         private final @Nullable JClassSymbol stub;
         private final @Nullable String methodName;
         private final @Nullable String methodDescriptor;
+        private final boolean isLocalOrAnon;
 
-        EnclosingInfo(@Nullable JClassSymbol stub, @Nullable String methodName, @Nullable String methodDescriptor) {
+        EnclosingInfo(@Nullable JClassSymbol stub, boolean isLocalOrAnon, @Nullable String methodName, @Nullable String methodDescriptor) {
             this.stub = stub;
+            this.isLocalOrAnon = isLocalOrAnon;
             this.methodName = methodName;
             this.methodDescriptor = methodDescriptor;
         }
 
-        boolean isLocal() {
-            return methodName != null || methodDescriptor != null;
+        boolean isLocalOrAnon() {
+            return isLocalOrAnon;
         }
 
         public @Nullable JClassSymbol getEnclosingClass() {
@@ -706,13 +707,14 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
             }
             EnclosingInfo that = (EnclosingInfo) o;
             return Objects.equals(stub, that.stub)
+                && isLocalOrAnon == that.isLocalOrAnon
                 && Objects.equals(methodName, that.methodName)
                 && Objects.equals(methodDescriptor, that.methodDescriptor);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(stub, methodName, methodDescriptor);
+            return Objects.hash(stub, isLocalOrAnon, methodName, methodDescriptor);
         }
     }
 }

@@ -18,6 +18,10 @@ import net.sourceforge.pmd.lang.document.TextRegion;
  */
 public final class CharStream {
 
+    // This is thrown when the end of the stream is reached. Callers catch it and do not care about stack trace,
+    // so we reuse one instance to avoid creating one exception each time.
+    private static final EOFException EOF_EXCEPTION = new EOFException();
+
     private final JavaccTokenDocument tokenDoc;
     private final TextDocument textDoc;
     private final Chars chars;
@@ -61,7 +65,7 @@ public final class CharStream {
      */
     public char readChar() throws EOFException {
         if (curOffset == chars.length()) {
-            throw new EOFException();
+            throw EOF_EXCEPTION;
         }
         return chars.charAt(curOffset++);
     }
