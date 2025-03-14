@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.plsql.PlsqlParsingHelper;
@@ -40,7 +39,6 @@ class XmlDbTreeDumpTest extends BaseTreeDumpTest {
     /**
      * @see <a href="https://github.com/pmd/pmd/issues/4441">[plsql] Parsing exception with XMLTYPE and XMLQUERY function in SELECT</a>
      */
-    @Disabled
     @Test
     void xmlQuery() {
         doTest("XMLQuery");
