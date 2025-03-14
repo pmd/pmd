@@ -11,7 +11,8 @@ import org.junit.platform.suite.api.Suite;
 @SelectClasses({
     PlsqlTreeDumpTest.class,
     ParenthesisGroupTest.class,
-    ExecuteImmediateBulkCollectTest.class
+    ExecuteImmediateBulkCollectTest.class,
+    XmlDbTreeDumpTest.class
 })
 class AllPlsqlAstTreeDumpTest {
 
