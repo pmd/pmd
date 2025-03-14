@@ -486,7 +486,6 @@ class AnonCtorsTest : ProcessorTestSpec({
     }
 
     parserTest("Disambiguation of foreach when deferred") {
-        enableProcessing()
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
@@ -515,7 +514,6 @@ class Assert {
     }
 
     parserTest("Disambiguation of when deferred, local var decl") {
-        enableProcessing()
 
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """

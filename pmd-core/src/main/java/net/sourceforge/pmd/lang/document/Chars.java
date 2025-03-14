@@ -5,6 +5,9 @@
 package net.sourceforge.pmd.lang.document;
 
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -210,15 +213,40 @@ public final class Chars implements CharSequence {
      * See {@link String#indexOf(int, int)}.
      */
     public int indexOf(int ch, int fromIndex) {
-        return indexOf(ch, fromIndex, len);
+        return indexOf(ch, fromIndex, Integer.MAX_VALUE);
     }
 
+    /**
+     * Search a character in a range of this Chars instance.
+     * @param ch Character to search
+     * @param fromIndex From index (inclusive)
+     * @param toIndex To index (exclusive)
+     * @throws AssertionError if fromIndex &gt; toIndex
+     */
     public int indexOf(int ch, int fromIndex, int toIndex) {
-        if (fromIndex < 0 || fromIndex >= len || toIndex <= fromIndex) {
+        assert fromIndex <= toIndex : "Malformed range " + fromIndex + " > " + toIndex;
+
+        // there is no restriction on fromIndex, if it is negative,
+        // the whole string should be searched. If it is greater than
+        // the length of the string, then we should return -1.
+        fromIndex = max(fromIndex, 0);
+        // same for toindex
+        toIndex = min(toIndex, len);
+
+        if (fromIndex >= len || toIndex <= 0) {
             return NOT_FOUND;
         } else if (isFullString() && toIndex >= len) {
             return str.indexOf(ch, fromIndex);
         }
+
+        if (toIndex == len && start + len == str.length()) {
+            // If this slice is a suffix of the underlying string,
+            // then the indexOf of the string is enough and probably
+            // faster.
+            int i = str.indexOf(ch, start + fromIndex);
+            return i == NOT_FOUND ? NOT_FOUND : i - start;
+        }
+
         // we want to avoid searching too far in the string
         // so we don't use String#indexOf, as it would be looking
         // in the rest of the file too, which in the worst case is
@@ -498,6 +526,10 @@ public final class Chars implements CharSequence {
         return str.substring(idx(start), idx(end));
     }
 
+    public String substring(int start) {
+        return substring(start, len);
+    }
+
     private static void validateRangeWithAssert(int off, int len, int bound) {
         assert len >= 0 && off >= 0 && off + len <= bound : invalidRange(off, len, bound);
     }
@@ -575,7 +607,7 @@ public final class Chars implements CharSequence {
 
                 if (cr != NOT_FOUND && lf != NOT_FOUND) {
                     // found both CR and LF
-                    int min = Math.min(cr, lf);
+                    int min = min(cr, lf);
                     if (lf == cr + 1) {
                         // CRLF
                         pos = lf + 1;
@@ -593,7 +625,7 @@ public final class Chars implements CharSequence {
                     return subSequence(curPos, max);
                 } else {
                     // lf or cr (exactly one is != -1 and max returns that one)
-                    int idx = Math.max(cr, lf);
+                    int idx = max(cr, lf);
                     resetLookahead(cr, idx);
                     pos = idx + 1;
                     return subSequence(curPos, idx);
@@ -707,7 +739,7 @@ public final class Chars implements CharSequence {
         public long skip(long n) throws IOException {
             ensureOpen();
             int oldPos = pos;
-            pos = Math.min(max, pos + (int) n);
+            pos = min(max, pos + (int) n);
             return pos - oldPos;
         }
 

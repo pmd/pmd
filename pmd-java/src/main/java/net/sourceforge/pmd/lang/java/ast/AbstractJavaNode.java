@@ -91,10 +91,14 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
 
     @Override
     public @NonNull JSymbolTable getSymbolTable() {
-        if (symbolTable == null) {
-            return getParent().getSymbolTable();
+        AbstractJavaNode parent = (AbstractJavaNode) getParent();
+        JSymbolTable table = symbolTable;
+        while (parent != null && table == null) {
+            table = parent.getSymbolTable();
+            parent = (AbstractJavaNode) parent.getParent();
         }
-        return symbolTable;
+        assert table != null : "Symbol table was not set";
+        return table;
     }
 
     @Override
