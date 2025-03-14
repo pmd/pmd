@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    StringBuffer sb = new StringBuffer("c");
+}
+
+public class Foo {
+    StringBuilder sb2 = new StringBuilder("c");
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>failure case</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,6</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    StringBuffer sb = new StringBuffer('c');
+}
+
+public class Foo2 {
+    StringBuilder sb = new StringBuilder('c');
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>failure case (not a literal)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+
+public class Foo2 {
+    public void foo(char ch) {
+        StringBuilder builder = new StringBuilder(ch);  // should report a warning in this line
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

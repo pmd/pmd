@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Unused variables should result in errors</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,7</expected-linenumbers>
+        <expected-messages>
+            <message>Variable 'foo' defined but not used</message>
+            <message>Variable 'foo' defined but not used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void assignedVariable() {
+        String foo = 'unused string';
+    }
+
+    public void justADeclaration() {
+        String foo;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Used variables should not result in errors</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public String basicUsage() {
+        String x = 'used variable';
+        return x;
+    }
+
+    public Account moreComplexUsage() {
+        String x = 'blah';
+        return [SELECT Id FROM Account WHERE Name = :x];
+    }
+
+    public String usageInBlocks(Boolean y) {
+        String x = 'used variable';
+
+        if (y) {
+            return x;
+        } else {
+            return 'some other string';
+        }
+    }
+
+    public void hasMethodCalledOnIt() {
+        String foo = 'foobar';
+        foo.substringAfter('foo');
+    }
+
+    public void handlesChainedMethods() {
+        String foo = 'foobar';
+        foo.substringAfter('f').substringAfter('b');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Shadowing a field</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private String myfield;
+
+    public void unused() {
+        String myfield = 'unused string';
+    }
+
+    public String usedDifferentMethod() {
+        String myfield = 'used';
+        return myfield;
+    }
+
+    public String fieldUsage() {
+        return myfield;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NPE with triggers (#2554)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+trigger leadOwnerUpdate on Lead (after update) {
+    for(Lead Id : Trigger.new) {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[apex] UnusedLocalVariable - false positive on case insensitivity allowed in Apex #2626</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    private String foo() {
+        String Bar;
+        bar = 'bar';
+        return bar;
+    }
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>[apex] UnusedLocalVariable - false positive on string query #2669</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+class Foo {
+    public Database.QueryLocator start1(Database.BatchableContext BC) {
+        String customValue = 'Test';
+        String query = 'SELECT Id FROM Case ';
+        query += 'WHERE CustomField__c = :customValue ';
+        return Database.getQueryLocator(query);
+    }
+
+    public Database.QueryLocator start2(Database.BatchableContext BC) {
+        String customValue = 'Test';
+        return Database.getQueryLocator('SELECT Id From Case WHERE CustomField__c = :customValue');
+    }
+
+    public void doQuery1() {
+        String customValue = 'Test';
+        String query = 'SELECT Id FROM Case ';
+        query += 'WHERE CustomField__c = :customValue ';
+        Database.query(query);
+    }
+
+    public void doQuery2() {
+        String customValue = 'Test';
+        Database.query('SELECT Id From Case WHERE CustomField__c = :customValue');
+    }
+
+    public void doCount1() {
+        String customValue = 'Test';
+        String query = 'SELECT Id FROM Case ';
+        query += 'WHERE CustomField__c = :customValue ';
+        Database.countQuery(query);
+    }
+
+    public void doCount2() {
+        String customValue = 'Test';
+        Database.countQuery('SELECT Id From Case WHERE CustomField__c = :customValue');
+    }
+}
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>[apex] UnusedLocalVariable flags for variables which are using in SOQL/SOSL binds #4556</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void example1() {
+        String unusedFlag1a = 'this string'; // Variable 'unusedFlag1a' defined but not used
+        String query1a = 'SELECT Id From Account WHERE Name =: unusedFlag1a';
+        Database.query(query1a, System.AccessLevel.USER_MODE);
+
+        String unusedFlag1b = 'this string'; // Variable 'unusedFlag1b' defined but not used
+        String query1b = 'SELECT Id From Account WHERE Name  =:  unusedFlag1b';
+        Database.query(query1b, System.AccessLevel.USER_MODE);
+    }
+
+    public void example2() {
+        String unusedFlag2 = 'this string';
+        String query2 = 'SELECT Id From Account WHERE Name=:unusedFlag2';
+        Database.query(query2, System.AccessLevel.USER_MODE);
+    }
+
+    public void example3() {
+        String unusedFlag3a = 'this string';
+        String query3a = 'SELECT Id From Account WHERE Name= :unusedFlag3a';
+        Database.query(query3a, System.AccessLevel.USER_MODE);
+
+        String unusedFlag3b = 'this string';
+        String query3b = 'SELECT Id From Account WHERE Name=  :unusedFlag3b';
+        Database.query(query3b, System.AccessLevel.USER_MODE);
+
+        String unusedFlag3c = 'this string'; // Variable 'unusedFlag3c' defined but not used
+        String query3c = 'SELECT Id From Account WHERE Name=  :  unusedFlag3c';
+        Database.query(query3c, System.AccessLevel.USER_MODE);
+
+        String unusedFlag4d = 'this string'; // Variable 'unusedFlag4d' defined but not used
+        String query4d = 'SELECT Id From Account WHERE Name  =  :  unusedFlag4d';
+        Database.query(query4d, System.AccessLevel.USER_MODE);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[apex] UnusedLocalVariable flags for variables which are using in SOQL/SOSL binds #4556 - qualified</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void example1() {
+        Account a1a = new Account(); // Variable 'a1a' defined but not used
+        String query1a = 'SELECT Name From Account WHERE Id =: a1a.Id';
+        Database.query(query1a, System.AccessLevel.USER_MODE);
+
+        Account a1b = new Account(); // Variable 'a1b' defined but not used
+        String query1b = 'SELECT Name From Account WHERE Id  =:  a1b.Id';
+        Database.query(query1b, System.AccessLevel.USER_MODE);
+    }
+
+    public void example2() {
+        Account a2a = new Account();
+        String query2a = 'SELECT Name From Account WHERE Id=:a2a.Id';
+        Database.query(query2a, System.AccessLevel.USER_MODE);
+    }
+
+    public void example3() {
+        Account a3a = new Account();
+        String query3a = 'SELECT Name From Account WHERE Id= :a3a.Id';
+        Database.query(query3a, System.AccessLevel.USER_MODE);
+
+        Account a3b = new Account();
+        String query3b = 'SELECT Name From Account WHERE Id=  :a3b.Id';
+        Database.query(query3b, System.AccessLevel.USER_MODE);
+
+        Account a3c = new Account(); // Variable 'a3c' defined but not used
+        String query3c = 'SELECT Name From Account WHERE Id=  :  a3c.Id';
+        Database.query(query3c, System.AccessLevel.USER_MODE);
+
+        Account a3d = new Account(); // Variable 'a3d' defined but not used
+        String query3d = 'SELECT Name From Account WHERE Id  =  :  a3d.Id';
+        Database.query(query3d, System.AccessLevel.USER_MODE);
+    }
+}
+]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>[apex] UnusedLocalVariable FP with binds in SOSL / SOQL #5000</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void example() {
+        SObject record = this.getOldRecords()[0];
+        List<SObject> objectsToQuery = this.getOldRecords(); // used in bind
+
+        SObjectType sObjectType = record.getSObjectType();
+
+        String[] relatedObjectData = RELATED_RECORD_DATA_BY_OBJECT.get(sObjectType).split('::');
+
+        String relatedObjectName = relatedObjectData[0];
+        String relatedFieldName = relatedObjectData[1];
+
+        String query = 'SELECT ' + String.escapeSingleQuotes(relatedFieldName) +
+                       ' FROM ' + String.escapeSingleQuotes(relatedObjectName) +
+                       ' WHERE ' + String.escapeSingleQuotes(relatedFieldName) +
+                       ' IN :objectsToQuery'; // bind
+
+        for (sObject relatedRecord : (Database.query(query))) {
+            this.withRelatedRecords.add((String)relatedRecord.get(relatedFieldName));
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Using Apex Variables in SOQL and SOSL Queries (#5000)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+// examples taken from https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_SOQL_variables.htm
+public class Foo {
+    public void simpleBind() {
+        Account A = new Account(Name='xxx');
+        //insert A; // usage
+
+        // A simple bind
+        Account B = [SELECT Id FROM Account WHERE Id = :A.Id]; // usage of A
+        if (B != null) {} // usage of B
+    }
+
+    public void bindWithArithmetic() {
+        Account A = new Account(Name='xxx');
+        insert A; // usage of A
+
+        // A bind with arithmetic
+        Account B = [SELECT Id FROM Account
+            WHERE Name = :('x' + 'xx')]; // that's actually not a variable ref, but an expression
+        if (B != null) {} // usage of B
+    }
+
+    public void bindWithExpressions() {
+        Account A = new Account(Name='xxx');
+        insert A; // usage of A
+
+        // A bind with expressions
+        Account B = [SELECT Id FROM Account
+             WHERE Name = :'XXXX'.substring(0,3)];
+        if (B != null) {} // usage of B
+    }
+
+/* not supported by apex-parser yet - see https://github.com/apex-dev-tools/apex-parser/issues/44
+    public void bindWithIncludes() {
+        Account A = new Account(Name='xxx');
+        //insert A; // usage of A
+
+        // A bind with INCLUDES clause
+        Account B = [SELECT Id FROM Account WHERE :A.TYPE INCLUDES ('Customer - Direct; Customer - Channel')]; // usage of A
+        if (B != null) {} // usage of B
+    }
+*/
+
+    public void bindWithQueryResult() {
+        Account A = new Account(Name='xxx');
+        //insert A; // usage of A
+
+        // A bind with an expression that is itself a query result
+        Account B = [SELECT Id FROM Account
+             WHERE Name = :[SELECT Name FROM Account
+                            WHERE Id = :A.Id].Name]; // usage of A
+        if (B != null) {} // usage of B
+    }
+
+    public void bindInParentAndAggregateQuery() {
+        Account A = new Account(Name='xxx');
+        //insert A; // usage of A
+
+        Contact C = new Contact(LastName='xxx', AccountId=A.Id);
+        //insert new Contact[]{C, new Contact(LastName='yyy', // usage of C
+        //                                    accountId=A.id)}; // usage of A
+
+        // Binds in both the parent and aggregate queries
+        Account B = [SELECT Id, (SELECT Id FROM Contacts
+                         WHERE Id = :C.Id) // usage of C
+             FROM Account
+             WHERE Id = :A.Id]; // usage of A
+
+        // One contact returned
+        Contact D = B.Contacts; // usage of B
+        update D; // usage of D
+    }
+
+    public void limitBind() {
+        // A limit bind
+        Integer i = 1;
+        Account B = [SELECT Id FROM Account LIMIT :i]; // usage of i
+        if (B != null) {} // usage of B
+    }
+
+    public void offsetBind() {
+        // An OFFSET bind
+        Integer offsetVal = 10;
+        List<Account> offsetList = [SELECT Id FROM Account OFFSET :offsetVal]; // usage of offsetVal
+        if (offsetList != null) {} // usage of offsetList
+    }
+
+    public void inBindIdList() {
+        // An IN-bind with an Id list. Note that a list of sObjects
+        // can also be used--the Ids of the objects are used for
+        // the bind
+        Contact[] cc = [SELECT Id FROM Contact LIMIT 2];
+        Task[] tt = [SELECT Id FROM Task WHERE WhoId IN :cc]; // usage of cc
+        if (tt != null) {} // usage of tt
+    }
+
+    public void inBindStringList() {
+        // An IN-bind with a String list
+        String[] ss = new String[]{'a', 'b'};
+        Account[] aa = [SELECT Id FROM Account
+                        WHERE AccountNumber IN :ss]; // usage of ss
+        if (aa != null) {} // usage of aa
+    }
+
+    public void soslQuery() {
+        // A SOSL query with binds in all possible clauses
+
+        String myString1 = 'aaa';
+        String myString2 = 'bbb';
+        Integer myInt3 = 11;
+        //String myString4 = 'ccc';
+        Integer myInt5 = 22;
+
+        List<List<SObject>> searchList = [FIND :myString1 IN ALL FIELDS
+                                          RETURNING
+                                             Account (Id, Name WHERE Name LIKE :myString2
+                                                      LIMIT :myInt3),
+                                             Contact,
+                                             Opportunity,
+                                             Lead
+                                          // WITH DIVISION =:myString4 -- that's not supported by apex-parser yet
+                                          WITH DIVISION = 'ccc'
+                                          LIMIT :myInt5];
+        if (searchList != null) {} // usage of searchList
+    }
+}
+]]></code>
+    </test-code>
+</test-data>

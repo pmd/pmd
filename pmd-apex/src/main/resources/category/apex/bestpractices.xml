@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ruleset name="Best Practices"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+Rules which enforce generally accepted best practices.
+    </description>
+
+    <rule name="ApexAssertionsShouldIncludeMessage"
+          language="apex"
+          since="6.13.0"
+          message="Apex test assert statement should make use of the message parameter."
+          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexAssertionsShouldIncludeMessageRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexassertionsshouldincludemessage">
+        <description>
+The second parameter of System.assert/third parameter of System.assertEquals/System.assertNotEquals is a message.
+Having a second/third parameter provides more information and makes it easier to debug the test failure and
+improves the readability of test output.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+@isTest
+public class Foo {
+    @isTest
+    static void methodATest() {
+        System.assertNotEquals('123', o.StageName); // not good
+        System.assertEquals('123', o.StageName, 'Opportunity stageName is wrong.'); // good
+        System.assert(o.isClosed); // not good
+        System.assert(o.isClosed, 'Opportunity is not closed.'); // good
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ApexUnitTestClassShouldHaveAsserts"
+          language="apex"
+          since="5.5.1"
+          message="Apex unit tests should System.assert() or assertEquals() or assertNotEquals()"
+          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestClassShouldHaveAssertsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaveasserts">
+        <description>
+Apex unit tests should include at least one assertion.  This makes the tests more robust, and using assert
+with messages provide the developer a clearer idea of what the test does.  Custom assert method invocation
+patterns can be specified using the 'additionalAssertMethodPattern' property if required.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+@isTest
+public class Foo {
+    public static testMethod void testSomething() {
+        Account a = null;
+        // This is better than having a NullPointerException
+        // System.assertNotEquals(a, null, 'account not found');
+        a.toString();
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ApexUnitTestClassShouldHaveRunAs"
+          language="apex"
+          since="6.51.0"
+          message="Apex unit test classes should have at least one System.runAs() call"
+          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestClassShouldHaveRunAsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaverunas">
+        <description>
+Apex unit tests should include at least one runAs method.  This makes the tests more robust, and independent from the 
+user running it.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+@isTest
+private class TestRunAs {
+   public static testMethod void testRunAs() {
+        // Setup test data
+        // Create a unique UserName
+        String uniqueUserName = 'standarduser' + DateTime.now().getTime() + '@testorg.com';
+        // This code runs as the system user
+        Profile p = [SELECT Id FROM Profile WHERE Name='Standard User'];
+        User u = new User(Alias = 'standt', Email='standarduser@testorg.com',
+        EmailEncodingKey='UTF-8', LastName='Testing', LanguageLocaleKey='en_US',
+        LocaleSidKey='en_US', ProfileId = p.Id,
+        TimeZoneSidKey='America/Los_Angeles',
+         UserName=uniqueUserName);
+
+        System.runAs(u) {
+              // The following code runs as user 'u'
+              System.debug('Current User: ' + UserInfo.getUserName());
+              System.debug('Current Profile: ' + UserInfo.getProfileId());
+          }
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ApexUnitTestMethodShouldHaveIsTestAnnotation"
+          since="6.13.0"
+          language="apex"
+          message="Apex test methods should have @isTest annotation."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestmethodshouldhaveistestannotation">
+        <description>
+Apex test methods should have `@isTest` annotation instead of the `testMethod` keyword,
+as `testMethod` is deprecated.
+Salesforce advices to use [@isTest](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_annotation_isTest.htm)
+annotation for test classes and methods.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//Method[ModifierNode[@DeprecatedTestMethod = true()]]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+@isTest
+private class ATest {
+    @isTest
+    static void methodATest() {
+    }
+    static void methodBTest() {
+    }
+    @isTest static void methodCTest() {
+        System.assert(1==2);
+    }
+    static testmethod void methodCTest() {
+        System.debug('I am a debug statement');
+    }
+    private void fetchData() {
+    }
+}
+]]>
+        </example>
+
+    </rule>
+
+    <rule name="ApexUnitTestShouldNotUseSeeAllDataTrue"
+          language="apex"
+          since="5.5.1"
+          message="Apex unit tests should not use @isTest(seeAllData = true)"
+          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestShouldNotUseSeeAllDataTrueRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestshouldnotuseseealldatatrue">
+        <description>
+Apex unit tests should not use @isTest(seeAllData=true) because it opens up the existing database data for unexpected modification by tests.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+@isTest(seeAllData = true)
+public class Foo {
+    public static testMethod void testSomething() {
+        Account a = null;
+        // This is better than having a NullPointerException
+        // System.assertNotEquals(a, null, 'account not found');
+        a.toString();
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidGlobalModifier"
+          language="apex"
+          since="5.5.0"
+          message="Avoid using global modifier"
+          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.AvoidGlobalModifierRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#avoidglobalmodifier">
+        <description>
+Global classes should be avoided (especially in managed packages) as they can never be deleted or changed in signature. Always check twice if something needs to be global.
+Many interfaces (e.g. Batch) required global modifiers in the past but don't require this anymore. Don't lock yourself in.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+global class Unchangeable {
+    global UndeletableType unchangable(UndeletableType param) {
+        // ...
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidLogicInTrigger"
+          language="apex"
+          since="5.5.0"
+          message="Avoid logic in triggers"
+          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.AvoidLogicInTriggerRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#avoidlogicintrigger">
+        <description>
+As triggers do not allow methods like regular classes they are less flexible and suited to apply good encapsulation style.
+Therefore delegate the triggers work to a regular class (often called Trigger handler class).
+
+See more here: &lt;https://developer.salesforce.com/page/Trigger_Frameworks_and_Apex_Trigger_Best_Practices&gt;
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+trigger Accounts on Account (before insert, before update, before delete, after insert, after update, after delete, after undelete) {
+    for(Account acc : Trigger.new) {
+        if(Trigger.isInsert) {
+            // ...
+        }
+
+        // ...
+
+        if(Trigger.isDelete) {
+            // ...
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="DebugsShouldUseLoggingLevel"
+          since="6.18.0"
+          language="apex"
+          message="Calls to System.debug should specify a logging level."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#debugsshoulduselogginglevel">
+       <description>
+The first parameter of System.debug, when using the signature with two parameters, is a LoggingLevel enum.
+
+Having the Logging Level specified provides a cleaner log, and improves readability of it.
+       </description>
+       <priority>3</priority>
+       <properties>
+          <property name="strictMode" type="Boolean" value="false" description="If true, mark statements that use the DEBUG enum of LoggingLevel."/>
+          <property name="xpath">
+             <value>
+<![CDATA[
+//MethodCallExpression[lower-case(@FullMethodName)='system.debug'][count(*)=2
+    or ($strictMode=true() and count(*)=3 and lower-case(VariableExpression/@Image)='debug')]
+]]>
+             </value>
+          </property>
+       </properties>
+       <example>
+<![CDATA[
+@isTest
+public class Foo {
+    @isTest
+    static void bar() {
+        System.debug('Hey this code executed.'); // not good
+        System.debug(LoggingLevel.WARN, 'Hey, something might be wrong.'); // good
+        System.debug(LoggingLevel.DEBUG, 'Hey, something happened.'); // not good when on strict mode
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnusedLocalVariable"
+          since="6.23.0"
+          language="apex"
+          message="Variable ''{0}'' defined but not used"
+          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.UnusedLocalVariableRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#unusedlocalvariable">
+        <description>
+Detects when a local variable is declared and/or assigned but not used.
+        </description>
+        <example>
+<![CDATA[
+    public Boolean bar(String z) {
+        String x = 'some string'; // not used
+
+        String y = 'some other string'; // used in the next line
+        return z.equals(y);
+    }
+]]>
+        </example>
+    </rule>
+
+    <rule name="QueueableWithoutFinalizer"
+          since="7.8.0"
+          language="apex"
+          message="This Queueable doesn't attach a Finalizer"
+          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.QueueableWithoutFinalizerRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#queueablewithoutfinalizer">
+        <description>
+Detects when the Queueable interface is used but a Finalizer is not attached.
+It is best practice to call the `System.attachFinalizer(Finalizer f)` method within the `execute` method of a class which implements the `Queueable` interface.
+Without attaching a Finalizer, there is no way of designing error recovery actions should the Queueable action fail.
+        </description>
+        <priority>5</priority>
+        <example>
+<![CDATA[
+// Incorrect code, does not attach a finalizer.
+public class UserUpdater implements Queueable {
+    public List<User> usersToUpdate;
+
+    public UserUpdater(List<User> usersToUpdate) {
+        this.usersToUpdate = usersToUpdate;
+    }
+
+    public void execute(QueueableContext context) { // no Finalizer is attached
+        update usersToUpdate;
+    }
+}
+
+// Proper code, attaches a finalizer.
+public class UserUpdater implements Queueable, Finalizer {
+    public List<User> usersToUpdate;
+
+    public UserUpdater(List<User> usersToUpdate) {
+        this.usersToUpdate = usersToUpdate;
+    }
+
+    public void execute(QueueableContext context) {
+        System.attachFinalizer(this);
+        update usersToUpdate;
+    }
+
+    public void execute(FinalizerContext ctx) {
+        if (ctx.getResult() == ParentJobResult.SUCCESS) {
+            // Handle success
+        } else {
+            // Handle failure
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
+</ruleset>

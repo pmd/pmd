@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>pmd-test-schema</artifactId>
+    <name>PMD Test Schema</name>
+    <description>
+        Parser for the XML test description format. The module has no dependency
+        on junit or other test-only dependencies.
+    </description>
+
+    <parent>
+        <artifactId>pmd</artifactId>
+        <groupId>net.sourceforge.pmd</groupId>
+        <version>7.12.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <properties>
+        <java.version>8</java.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <!-- overrides the configuration from parent pom: we only have pmd-core yet -->
+                    <offlineLinks combine.self="override">
+                        <offlineLink>
+                            <location>${project.basedir}/../pmd-core/target/apidocs</location>
+                            <url>../../pmd-core/${project.version}</url>
+                        </offlineLink>
+                    </offlineLinks>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.oowekyala.ooxml</groupId>
+            <artifactId>nice-xml-messages</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.stefanbirkner</groupId>
+            <artifactId>system-lambda</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

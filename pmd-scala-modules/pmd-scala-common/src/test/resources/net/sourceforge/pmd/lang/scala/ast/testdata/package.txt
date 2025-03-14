@@ -1,0 +1,106 @@
++- Source
+   +- Pkg
+      +- TermSelect
+      |  +- TermName
+      |  +- TermName
+      +- PkgBody
+         +- PkgObject
+            +- TermName
+            +- Template
+               +- TemplateBody
+                  +- DefnType
+                  |  +- TypeName
+                  |  +- TypeParamClause
+                  |  +- TypeSelect
+                  |  |  +- TermSelect
+                  |  |  |  +- TermName
+                  |  |  |  +- TermName
+                  |  |  +- TypeName
+                  |  +- TypeBounds
+                  +- DefnVal
+                  |  +- PatVar
+                  |  |  +- TermName
+                  |  +- TermSelect
+                  |     +- TermSelect
+                  |     |  +- TermName
+                  |     |  +- TermName
+                  |     +- TermName
+                  +- DefnType
+                  |  +- TypeName
+                  |  +- TypeParamClause
+                  |  +- TypeSelect
+                  |  |  +- TermSelect
+                  |  |  |  +- TermName
+                  |  |  |  +- TermName
+                  |  |  +- TypeName
+                  |  +- TypeBounds
+                  +- DefnVal
+                  |  +- PatVar
+                  |  |  +- TermName
+                  |  +- TermSelect
+                  |     +- TermSelect
+                  |     |  +- TermName
+                  |     |  +- TermName
+                  |     +- TermName
+                  +- DefnType
+                  |  +- ModAnnot
+                  |  |  +- Init
+                  |  |     +- TypeName
+                  |  |     +- NameAnonymous
+                  |  |     +- TermArgClause
+                  |  |        +- LitString
+                  |  |        +- LitString
+                  |  +- TypeName
+                  |  +- TypeParamClause
+                  |  |  +- TypeParam
+                  |  |     +- ModCovariant
+                  |  |     +- TypeName
+                  |  |     +- TypeParamClause
+                  |  |     +- TypeBounds
+                  |  +- TypeApply
+                  |  |  +- TypeName
+                  |  |  +- TypeArgClause
+                  |  |     +- TypeName
+                  |  +- TypeBounds
+                  +- DefnVal
+                  |  +- ModAnnot
+                  |  |  +- Init
+                  |  |     +- TypeName
+                  |  |     +- NameAnonymous
+                  |  |     +- TermArgClause
+                  |  |        +- LitString
+                  |  |        +- LitString
+                  |  +- PatVar
+                  |  |  +- TermName
+                  |  +- TermName
+                  +- DefnType
+                     +- ModAnnot
+                     |  +- Init
+                     |     +- TypeName
+                     |     +- NameAnonymous
+                     |     +- TermArgClause
+                     |        +- LitString
+                     |        +- LitString
+                     +- TypeName
+                     +- TypeParamClause
+                     |  +- TypeParam
+                     |  |  +- TypeName
+                     |  |  +- TypeParamClause
+                     |  |  +- TypeBounds
+                     |  +- TypeParam
+                     |     +- ModCovariant
+                     |     +- TypeName
+                     |     +- TypeParamClause
+                     |     +- TypeBounds
+                     +- TypeApply
+                     |  +- TypeSelect
+                     |  |  +- TermSelect
+                     |  |  |  +- TermSelect
+                     |  |  |  |  +- TermName
+                     |  |  |  |  +- TermName
+                     |  |  |  +- TermName
+                     |  |  +- TypeName
+                     |  +- TypeArgClause
+                     |     +- TypeName
+                     |     +- TypeName
+                     +- TypeBounds

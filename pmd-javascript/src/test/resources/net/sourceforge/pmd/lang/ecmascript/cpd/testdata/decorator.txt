@@ -1,0 +1,26 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L2
+    [@]                                     1         2
+    [annotation]                            2         12
+L3
+    [class]                                 1         6
+    [MyClass]                               7         14
+    [{]                                     15        16
+    [}]                                     17        18
+L5
+    [function]                              1         9
+    [annotation]                            10        20
+    [(]                                     20        21
+    [target]                                21        27
+    [)]                                     27        28
+    [{]                                     29        30
+L7
+    [target]                                4         10
+    [.]                                     10        11
+    [annotated]                             11        20
+    [=]                                     21        22
+    [true]                                  23        27
+    [;]                                     27        28
+L8
+    [}]                                     1         2
+EOF

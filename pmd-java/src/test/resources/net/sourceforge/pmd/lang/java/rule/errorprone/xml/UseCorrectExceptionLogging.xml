@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+public class Foo {
+    static final Log _LOG = LogFactory.getLog( Foo.class );
+    void foo() {
+        try {
+        } catch (IllegalArgumentException iae) {
+            _LOG.error(iae.getMessage(), iae);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>failure case - two calls</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>9,10</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+public class Foo {
+    static final Log _LOG = LogFactory.getLog( Foo.class );
+    void foo() {
+        try {
+        } catch (Exception e) {
+            _LOG.error(e);
+            _LOG.info(e);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>must be in a catch block</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+public class Foo {
+    static final Log _LOG = LogFactory.getLog( Foo.class );
+    void foo(int e) {
+        _LOG.error(e);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bug 1626232, the rule should not be confused by inner classes</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>13,14</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+public class Foo {
+    static class Inner {
+        Log _LOG = LogFactory.getLog( Foo.class );
+    }
+
+    void foo() {
+        try {
+        } catch (Exception e) {
+            Log _LOG = LogFactory.getLog( Foo.class );
+            _LOG.error(e);
+            _LOG.info(e);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bug 1626232, should work with a static block</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+public class Foo {
+    static final Log _LOG = LogFactory.getLog( Foo.class );
+
+    static {}
+
+    void foo() {
+        try {
+        } catch (Exception e) {
+            _LOG.info(e);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>XPath problem: A sequence of more than one item is not allowed as the first argument of concat()</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+public class UseCorrectExceptionLoggingCase {
+    private static final String DISCONNECTED_CLIENT_LOG_CATEGORY = "thecategory";
+    protected static final Log logger1 = LogFactory.getLog(DISCONNECTED_CLIENT_LOG_CATEGORY);
+    protected final Log logger2 = LogFactory.getLog(getClass());
+
+    public void run() {
+        try {
+            //...
+        } catch (Exception e) {
+            logger2.debug("Error", e);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UseCorrectExceptionLogging FP in 6.31.0 #3100</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+class TestUseCorrectExceptionLogging{
+        private static Log log = LogFactory.getLog(TestUseCorrectExceptionLogging.class);
+        public void testPMD(){
+                try{
+                        //something
+                }
+                catch(Exception e){
+                        log.error(TestUseCorrectExceptionLogging.getStackTrace(e));
+                }
+        }
+
+        private static String getStackTrace(Throwable t) {
+            return "stack...";
+        }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negative with string concatenation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+public class Foo {
+    static final Log _LOG = LogFactory.getLog( Foo.class );
+    void foo() {
+        try {
+        } catch (IllegalArgumentException iae) {
+            _LOG.error("wrong arg: " + iae);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

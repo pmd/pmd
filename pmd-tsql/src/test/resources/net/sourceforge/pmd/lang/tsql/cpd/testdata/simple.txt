@@ -1,0 +1,28 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [CREATE]                                1         7
+    [PROCEDURE]                             8         17
+    [P]                                     18        19
+    [(]                                     20        21
+    [@V]                                    21        23
+    [INT]                                   24        27
+    [)]                                     27        28
+    [AS]                                    29        31
+    [BEGIN]                                 32        37
+L2
+    [DECLARE]                               2         9
+    [@F]                                    10        12
+    [INT]                                   13        16
+L3
+    [SET]                                   2         5
+    [@F]                                    6         8
+    [=]                                     9         10
+    [@V]                                    11        13
+    [+]                                     14        15
+    [2]                                     16        17
+L4
+    [SELECT]                                2         8
+    [@F]                                    9         11
+L5
+    [END]                                   1         4
+EOF

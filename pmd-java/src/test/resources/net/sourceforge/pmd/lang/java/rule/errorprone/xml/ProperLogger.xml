@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+public class Foo {
+    private static final Log LOG = LogFactory.getLog(Foo.class);
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Wrong class name</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+public class Foo {
+    private static final Log LOG = LogFactory.getLog(Bar.class);
+}
+class Bar {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, special case</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.commons.logging.Log;
+public class Foo {
+    private final Log log;
+    Foo(Log log) {
+        this.log = log;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Enum wrong class name</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+public enum Foo {
+    TEST;
+    private static final Log LOG = LogFactory.getLog(Bar.class);
+}
+class Bar {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bug 1626232, a separate variable initialization should not confuse the rule</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.commons.logging.Log;
+public class Foo {
+    private String bar = "";
+    private final Log log;
+    Foo(Log log) {
+        this.log = log;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Enums shoud be accepted for declaration</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+public enum Foo {
+    TEST;
+    private static final Log LOG = LogFactory.getLog(Foo.class);
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bug 1626232, extra loggers with different names are not allowed by default (use NOPMD if you want them)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+public class Foo {
+    private static final Log LOG = LogFactory.getLog(Foo.class);
+    private static final Log LOG2 = LogFactory.getLog(Foo.class + ".foo");
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Custom logger-class with invalid logger variable name</description>
+        <rule-property name="loggerClass">MyLog</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+public class Foo {
+    private static final MyLog INVALID_LOG_NAME = LogFactory.getLog(Foo.class);
+}
+
+abstract class MyLog implements Log {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Public logger</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+public class Foo {
+    public static final Log LOG = LogFactory.getLog(Foo.class);
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>package-private logger</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+public class Foo {
+    static final Log LOG = LogFactory.getLog(Foo.class);
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>package-private logger non static</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+public class Foo {
+    final Log LOG = LogFactory.getLog(Foo.class);
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>package-private logger non static and non final</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+public class Foo {
+    Log LOG = LogFactory.getLog(Foo.class);
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Public logger when static final required</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+public class Foo {
+    public static final Log LOG = LogFactory.getLog(Foo.class);
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Logger initialized as String constant from class name (java.util.logging)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.logging.Logger;
+
+public class Foo {
+    private static final Logger LOG = Logger.getLogger(Foo.class.getName());
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>non-private Logger initialized as String constant from class name</description>
+        <rule-property name="loggerClass">java.util.logging.Logger</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.util.logging.Logger;
+
+public class Foo {
+    Logger LOG = Logger.getLogger(Foo.class.getName());
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Package-protected logger when static final is not required</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+public class Foo {
+    Log LOG = LogFactory.getLog(Foo.class);
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Package-protected logger when static final is required</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+public class Foo {
+    Log LOG = LogFactory.getLog(Foo.class);
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Check type resolution of logger</description>
+        <rule-property name="loggerClass">org.slf4j.Logger</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class Foo {
+    private static final Logger LOG = LoggerFactory.getLogger(Foo.class);
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Check type resolution of logger with invalid logger specified</description>
+        <rule-property name="loggerClass">org.slf4j.Logger</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class Foo {
+    private static final Logger LOG = LoggerFactory.getLogger(Bar.class);
+}
+class Bar {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>similar to special case but with creating a new logger instead of passing in</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+public class Foo {
+    private final Log log;
+    public Foo() {
+        this.log = LogFactory.getLog(Foo.class);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>similar to special case but with creating a new logger instead of passing in</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.commons.logging.Log;
+public class Foo {
+    private final Log log;
+    public Foo() {
+        this.log = new Log(Foo.class);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>false negative with apache commons logging</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+public class ProperLoggerSample {
+    private final Log log;
+
+    public PropperLoggerSample() {
+        log = LogFactory.getLog(ProperLoggerSample.class);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ProperLogger gives false positives for inner classes #3436</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class ResultHolders {
+  private ResultHolders() {
+    super();
+  }
+
+  private static class SynchronizedHolder {
+    private static final Logger LOG = LoggerFactory.getLogger(SynchronizedHolder.class);
+  }
+
+  private static class JMSHolder {
+    private static final Logger LOG = LoggerFactory.getLogger(SynchronizedHolder.class);
+  }
+
+  static class ResultMessage {
+    private static final Logger LOG = LoggerFactory.getLogger(ResultMessage.class);
+  }
+}
+        ]]></code>
+    </test-code>
+</test-data>

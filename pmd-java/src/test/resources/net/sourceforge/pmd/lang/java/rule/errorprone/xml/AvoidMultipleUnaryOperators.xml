@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Simple duplicate typos</description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int i = + + 1;
+    int j = - - 1;
+    int k = ~~1;
+    boolean b = !!true;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Compound</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>2,3,4,5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    int i = + + + 1;
+    int j = - - - 1;
+    int k = ~~~1;
+    boolean b = !!!true;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Compound with parentheses</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>2,3,4,5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    int i = +(+(+1));
+    int j = -(-(-1));
+    int k = ~(~(~1));
+    boolean b = !(!(!true));
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Compound with parentheses an mixed operators</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>2,3,4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    int i = +(~(-(~1)));
+    int j = ~(-(+(-1)));
+    int k = -(+(~(+1)));
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Multiple levels of nested parentheses</description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int i = +((+1));
+    int j = -((-1));
+    int k = ~((~1));
+    boolean b = !((!true));
+}
+        ]]></code>
+    </test-code>
+</test-data>

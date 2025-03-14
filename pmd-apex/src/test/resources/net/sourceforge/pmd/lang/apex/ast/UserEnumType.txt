@@ -1,0 +1,5 @@
++- ApexFile[@DefiningType = "MyEnumType", @RealLoc = true]
+   +- UserEnum[@DefiningType = "MyEnumType", @Image = "MyEnumType", @Nested = false, @RealLoc = true, @SimpleName = "MyEnumType"]
+      +- ModifierNode[@Abstract = false, @DefiningType = "MyEnumType", @DeprecatedTestMethod = false, @Final = false, @Global = false, @InheritedSharing = false, @Modifiers = 1, @Override = false, @Private = false, @Protected = false, @Public = true, @RealLoc = true, @Static = false, @Test = false, @TestOrTestSetup = false, @Transient = false, @Virtual = false, @WebService = false, @WithSharing = false, @WithoutSharing = false]
+      +- Field[@DefiningType = "MyEnumType", @Image = "A", @Name = "A", @RealLoc = true, @Type = "MyEnumType", @Value = null]
+      +- Field[@DefiningType = "MyEnumType", @Image = "B", @Name = "B", @RealLoc = true, @Type = "MyEnumType", @Value = null]

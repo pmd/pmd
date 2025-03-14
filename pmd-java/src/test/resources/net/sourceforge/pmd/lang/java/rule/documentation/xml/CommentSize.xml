@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Too many lines</description>
+        <rule-property name="maxLines">5</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+/* 1
+ * 2
+ * 3
+ * 4
+ * 5  too many after here..
+ * 6
+ * 7
+ * 8
+ */
+public class Foo {
+    public Foo() {
+    }
+
+    public void doNothing() {
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#4369 Line too long</description>
+        <rule-property name="maxLineLength">5</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+//
+
+
+/*     12345
+ * 5 way too long
+ */
+public class Foo {
+    public Foo() {
+    }
+
+    public void doNothing() {
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2996 Test Suppression</description>
+        <rule-property name="maxLines">2</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+    }
+
+    @SuppressWarnings("PMD.CommentSize")
+    public void doNothing() {
+        /*
+        such
+        a
+        long
+        comment
+        */
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2996 Not suppressed</description>
+        <rule-property name="maxLines">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+    }
+
+    public void doNothing() {
+        /*
+        such
+        a
+        long
+        comment
+        */
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

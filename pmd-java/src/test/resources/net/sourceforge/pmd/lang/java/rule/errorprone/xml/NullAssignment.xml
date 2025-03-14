@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>initial assignment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Object foo() {
+        Object x = null; // OK
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bad assignment</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        Object x;
+        x = new Object();
+        bar(x);
+        x = null; // This is bad
+    }
+    private void bar(Object o) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>check test</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        Object x;
+        if (x == null) { // This is OK
+            return;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>null param on right hand side</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        String x = null;
+        x = new String(null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>null assignment in ternary - initialization</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        String x = bar() ? "fiz" : null;
+    }
+    private boolean bar() { return false; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>null assignment in ternary</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        String x;
+        x = bar() ? "fiz" : null;
+    }
+    private boolean bar() { return false; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>null assignment in ternary, part deux - initialization</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        String x = bar() ? null : "fiz";
+    }
+    private boolean bar() { return true; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>null assignment in ternary, part deux</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        String x;
+        x = bar() ? null : "fiz";
+    }
+    private boolean bar() { return true; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>comparison is not assignment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public String foo(String x) {
+        return x == null ? "42" : x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>final fields must be assigned</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private final String x;
+    public Foo(String y) {
+        if (y == "") x = null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>1556594 - Wonky detection of NullAssignment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private Object parentContext;
+    public void foo() {
+        assert isRoot() ? parentContext == null : parentContext != null;
+    }
+    private boolean isRoot() { return true; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] NullAssignment false positive - initialization #629</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.HashMap;
+import java.util.Map;
+
+public class NullAssignmentFP {
+    private Map<String, Object> someHash = new HashMap<>();
+    public void foo(String a, boolean test, Object truthy) {
+        Object result = someHash.computeIfAbsent(a, _unused -> test ? truthy : null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] NullAssignment false positive - no direct assignment, but lambda #629</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.HashMap;
+import java.util.Map;
+
+public class NullAssignmentFP {
+    private Map<String, Object> someHash = new HashMap<>();
+    public void foo(String a, boolean test, Object truthy) {
+        Object result;
+        result = someHash.computeIfAbsent(a, _unused -> test ? truthy : null);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] NullAssignment false positive - return with ternary #629</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.time.LocalDateTime;
+
+public class NullAssignmentFP {
+    public LocalDateTime foo(LocalDateTime dateTime) {
+        return dateTime.getYear() < 2100 ? dateTime : null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negative with ternary</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,5</expected-linenumbers>
+        <code><![CDATA[
+public class NullAssignmentTernary {
+    public void bar(String a) {
+        String b;
+        b = (a == null || a.length() < 1) ? null : a.substring(1);
+        b = ((a == null || a.length() < 1) ? null : a.substring(1));
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Multiple ternaries with null assignment eventually</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class NullAssignmentTernary {
+    public void bar(String a, String b, String c) {
+        String x;
+        x = a != null ? a : b != null ? b : c != null ? c : null;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with initializing final var</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class NullAssignmentFinal {
+    public void bar(String a) {
+        final String b;
+        if (a != null) {
+            b = a;
+        } else {
+            b = null;
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] NullAssignment - FP with ternary and null as method argument #2320</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class NullAssignmentMethodCall {
+    public void bar(String a) {
+        String b = this.getString(a == null ? null : a);
+    }
+
+    private String getString(String a) { return a; }
+
+    public String methodOne(String one, String two) {
+        return "test";
+    }
+    public String methodTwo(String one, String two) {
+        List<String> strings = new ArrayList<>();
+        return methodOne("one", strings.isEmpty() ? null : "two");
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] NullAssignment - FP with ternay and null as constructor argument #1669</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class NullAssignmentConstructorCall {
+    public void bar(String discordClient) {
+        throw new IllegalArgumentException(String.format(
+            "Unsupported client with class '%s' given",
+            (discordClient == null) ? null : discordClient.getClass()));
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] A false negative for NullAssignment #3959</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+class Tester {
+    public void foo() {
+        Object x;
+        x = new Object();
+        bar(x);
+        x = (null); // should report a warning in this line
+    }
+}
+]]></code>
+    </test-code>
+</test-data>

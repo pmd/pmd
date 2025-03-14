@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>JUnit3: failure case</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The class 'FooTest' might be a test class, but it contains no test cases.</message>
+        </expected-messages>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class FooTest extends TestCase {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit3: test method should be public</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class FooTest extends TestCase {
+    void testX(){}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit3: inner class should get checked</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class FooTest extends TestCase {
+    class Bar { void testX(){} }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit3: test method in inner class not valid</description>
+        <rule-property name="testClassPattern"></rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    class BarTest { void testX(){} }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit3: abstract classes are ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public abstract class FooTest extends TestCase {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ditto interfaces</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface FooTest {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ditto enum</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum FooTest {
+    ONE, TWO;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ditto annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public @interface FooTest {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>failure case does not extend TestCase and testClassPattern is not used</description>
+        <rule-property name="testClassPattern"></rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class FooTest {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>failure case does not extend TestCase and default testClassPattern</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+public class FooTest {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit4: #1453 False positive when the test class extends an other.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static org.junit.Assert.*;
+import org.junit.Test;
+
+abstract class YourTest {}
+public class MyTest extends YourTest {
+
+    @Test
+    public void falseMethod() {
+        assertFalse(0 == 1);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit5: #428 [java] PMD requires public modifier on JUnit 5 test</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+class JUnit5Test {
+    @Test
+    void myTest() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit4: false positive with anonymous class inside test class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Assert;
+import org.junit.Test;
+
+public class MyTest {
+    @Test
+    public void testSomething() {
+        Object check = new Object() { // false positive
+            @Override
+            public boolean equals(Object o) { return false; }
+        };
+        Assert.assertTrue(check.equals(null));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit4: [java] TestClassWithoutTestCases reports wrong classes in a file #3624</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+
+public class MyTest {
+    @Test
+    public void myTest() {
+    }
+
+    class NestedHelper { }
+}
+
+class Helper { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit5: [java] TestClassWithoutTestCases false positive with JUnit5 parameterized test #2636</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+final class SampleTest extends Object {
+    @ParameterizedTest
+    @ValueSource(ints = {1})
+    void doesTest(final int num) {
+        Assertions.assertTrue(num > 0);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit5: [java] TestClassWithoutTestCases false positive with JUnit5 normal test #2636</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+final class SampleTest {
+    @Test
+    void doesTest() {
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>empty package-private test class identified by default testClassPattern</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+class SampleTest { }
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>empty test class identified by special testClassPattern</description>
+        <rule-property name="testClassPattern">my\.pkg\..*Case</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+package my.pkg;
+class MyEmptyCase { }
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>empty test class identified by special testClassPattern with nested classes</description>
+        <rule-property name="testClassPattern">my\.pkg\..*Case$</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,3</expected-linenumbers>
+        <expected-messages>
+            <message>The class 'MyEmptyCase' might be a test class, but it contains no test cases.</message>
+            <message>The class 'MyNestedCase' might be a test class, but it contains no test cases.</message>
+        </expected-messages>
+        <code><![CDATA[
+package my.pkg;
+class MyEmptyCase {
+    class MyNestedCase { }
+    class OtherNestedClass { }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>empty test class identified by special testClassPattern - other package</description>
+        <rule-property name="testClassPattern">my\.pkg\..*Case</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package my.other.pkg;
+class MyEmptyCase { }
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>TestNG based test class without import</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class SampleTest {
+    @org.testng.annotations.Test
+    public void runAssertions() {}
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>TestNG based test class with import</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.testng.annotations.Test;
+public class SampleTest {
+    @Test
+    public void runAssertions() {}
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit5 @Nested tests with tests</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class DemoNestedTests {
+    @Nested
+    class SomeTest {
+        @Test
+        void isCorrect() {
+            assertTrue(42 == 42);
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit5 @Nested tests without tests</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,11</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+class DemoNestedTests {
+    @Nested
+    class SomeTest {
+        // missing tests
+    }
+
+    @Nested
+    class Other {
+        // missing tests
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ignore other nested classes that are not test classes</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+class SampleTest {
+    @Test
+    void usesNestedHelperClass() { }
+
+    private static class TestHelper {} // matches the default testClassPattern
+
+    private static class Other {}
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Default pattern shouldn't match inner classes that are not named test</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,9</expected-linenumbers>
+        <code><![CDATA[
+package org.example;
+public final class TestInputConfiguration {
+    public static final class Builder {
+        public TestInputConfiguration build() {
+            return new TestInputConfiguration();
+        }
+    }
+
+    public static final class InnerTest {
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Don't consider nested classes (JUnit4)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+public class MyTests {
+    @Test
+    public void myCheck() {}
+
+    static class Config {}
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Don't consider nested classes (TestNG)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.testng.annotations.Test;
+public class MyTests {
+    @Test
+    public void myCheck() {}
+
+    static class Config {}
+}
+]]></code>
+    </test-code>
+</test-data>

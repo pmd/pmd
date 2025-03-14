@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>failure case</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Singleton {
+    private static Singleton instance = null;
+    public static Singleton getInstance() {
+        synchronized(Singleton.class) {
+            return new Singleton();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>failure case</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Singleton {
+    private static Singleton instance = null;
+    public static Singleton getInstance() {
+        synchronized(Singleton.class) {
+            if (instance == null) {
+                Singleton instance = new Singleton();
+                return instance;
+            }
+        }
+        return instance;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Works! Does not return locally created variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Singleton {
+    private static Singleton instance = null;
+    public static Singleton getInstance() {
+        synchronized(Singleton.class){
+            if (instance == null) {
+                instance = new Singleton();
+            }
+        }
+        return instance;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] SingletonClassReturningNewInstance false positive with double assignment #932 - variant 1</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Foo {
+    private static volatile Foo myFoo;
+    public static Foo getInstance() {
+        Foo instance = myFoo;
+        if (instance == null) {
+            synchronized (Foo.class) {
+                instance = myFoo;
+                if (instance == null) {
+                    myFoo = instance = new Foo(); // here: double assignment to instance and then field
+                }
+            }
+        }
+        return instance;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] SingletonClassReturningNewInstance false positive with double assignment #932 - variant 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Foo {
+    private static volatile Foo myFoo;
+    public static Foo getInstance() {
+        Foo instance = myFoo;
+        if (instance == null) {
+            synchronized (Foo.class) {
+                instance = myFoo;
+                if (instance == null) {
+                    instance = myFoo = new Foo(); // here: double assignment to field and then instance
+                }
+            }
+        }
+        return instance;
+    }
+}
+]]></code>
+    </test-code>
+</test-data>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Bad add</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        String s = "" + 123;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Good add</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        String s = "1" + 123;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Good convert</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        String t = Integer.toString(456);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ignore in annotations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static final int VERSION = 1;
+
+    @Deprecated(since = "" + VERSION)
+    public void foo() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] AddEmptyString - false negative with empty var #3625</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Main {
+    public void func() {
+        final String var = "";
+        String test = var + "123"; // should report a warning here
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Local Variables be empty String</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>8,9,10</expected-linenumbers>
+        <code><![CDATA[
+class Main {
+    public static void main(String[] args) {
+        final String string1 = "";
+        final String string2 = "";
+        final String string3 = "";
+        String string4 = "";
+
+        String a = string1 + 114;
+        String b = string2 + 514;
+        String c = string3 + 1919810;
+
+        string4 = "foo";
+        String d = string4 + 1; // should not be flagged, because string4 is not empty anymore
+
+        final String s = "bar";
+        String e = s + 2; // should not be flagged, because s is not empty
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Local and global variables be empty String</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>9,10,11,12</expected-linenumbers>
+        <code><![CDATA[
+class Main {
+    final String outerString1 = "";
+    final String outerString2 = "";
+
+    public static void main(String[] args, String otherString) {
+        final String innerString1 = "";
+        final String innerString2 = "";
+
+        String a = outerString1 + 114;
+        String b = outerString2 + 514;
+        String c = innerString1 + 1919;
+        String d = innerString2 + 810;
+        String e = otherString + 42; // should not be flagged, otherString is a method parameter. Not to be confused with otherString local var in otherMethod
+    }
+
+    void otherMethod() {
+        final String otherString = "";
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

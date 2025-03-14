@@ -1,0 +1,10 @@
+#if( $XHTML )
+    #set( $br = "<br />" )
+    #if ($someValue)
+        #if ($otherValue)
+            do stuff
+        #end
+    #end
+#else
+    #set( $br = "<br>" )
+#end

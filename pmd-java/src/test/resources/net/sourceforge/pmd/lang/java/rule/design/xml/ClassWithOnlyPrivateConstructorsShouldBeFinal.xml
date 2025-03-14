@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Simple violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private Foo() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation for abstract class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private Foo() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, class is final</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Foo {
+    private Foo() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>One public constructor, not required to be final</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private Foo() { }
+    public Foo(String param) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>abstract class, one public constructor, not required to be final</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class Foo {
+    private Foo() { }
+    public Foo(String param) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, subclass using the private constructor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private Foo() { }
+
+    public static class Bar extends Foo {
+        public Bar() { }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, subclass using the private constructor of another subclass</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() { }
+
+    public static class Bar {
+        private Bar() { }
+    }
+
+    public static class Barbie extends Bar {
+        public Barbie() { }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, two classes</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private Foo() { }
+}
+class Bar extends Foo {
+    public Bar() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>One protected constructor, not required to be final</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class ClassWithOnlyPrivateConstructorsShouldBeFinal {
+    private String string;
+
+    protected ClassWithOnlyPrivateConstructorsShouldBeFinal(final Object object) {
+        this(object.toString());
+    }
+
+    private ClassWithOnlyPrivateConstructorsShouldBeFinal(final String string) {
+        super();
+
+        setString(string);
+    }
+
+    public final void setString(final String string) {
+        this.string = string;
+    }
+
+    public String getString() {
+        return string;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>One package private constructor, not required to be final</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class ClassWithOnlyPrivateConstructorsShouldBeFinal {
+    private String string;
+
+    ClassWithOnlyPrivateConstructorsShouldBeFinal(final Object object) {
+        this(object.toString());
+    }
+
+    private ClassWithOnlyPrivateConstructorsShouldBeFinal(final String string) {
+        super();
+
+        setString(string);
+    }
+
+    public final void setString(final String string) {
+        this.string = string;
+    }
+
+    public String getString() {
+        return string;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2536 [java] ClassWithOnlyPrivateConstructorsShouldBeFinal can't detect inner class with only private constructor</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Main209 {
+    private static class InputBits {
+        private InputBits(int number) { }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Inner class with only private constructor extended within compilation unit (#2536)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Main209 {
+    private static class InputBits {
+        private InputBits(int number) { }
+    }
+    public static final class Sub extends InputBits {
+        private Sub() {
+            super(1);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Private inner class with no ctor and no usage</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Main209 {
+    private static class InputBits {
+        // default ctor is implicitly private
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Private inner class with no ctor and usage</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Main209 {
+    private static class InputBits {
+        // default ctor is implicitly private
+    }
+    public static final class Sub extends InputBits {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Private abstract classes with abstract methods should be ignored #3668</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Outer {
+    private abstract class Base {
+        abstract void run();
+    }
+    public void someMethod() {
+        Base b = new Base() {
+            void run() {}
+        };
+        b.run();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Private abstract generic classes with abstract methods should be ignored #3668</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Comparator;
+public class Outer {
+    private abstract class Base<E> {
+        abstract void run();
+        abstract void sort(Comparator<E> comparator);
+    }
+    public void someMethod() {
+        Base b = new Base<Object>() {
+            void run() {}
+            void sort(Comparator<Object> comparator) {}
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Private abstract classes without abstract methods but with subclasses should be ignored #3668</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Outer {
+    private abstract class Base {
+        private void run() {}
+    }
+    private final class Sub extends Base {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Private abstract classes without abstract methods and subclasses #3668</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Outer {
+    private abstract class Base {
+        private void run() {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Abstract outer classes should be flagged #3668</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+public abstract class FooUtils {
+    private FooUtils() {
+        // private constructor can't be called from sub classes,
+        // so this class can't be extended
+    }
+    // note: this "abstract" class does not contain abstract methods
+    // it was only declared as abstract to prevent instantiation
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ClassWithOnlyPrivateConstructorsShouldBeFinal - false negative when a compilation unit contains two class declarations #3851</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+public class Example { // false-negative here
+    private Example() {
+    }
+}
+
+class Another {
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] ClassWithOnlyPrivateConstructorsShouldBeFinal should consider lombok's @Value #4200</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Value;
+
+@Value
+public class Test {
+    private Test(int a, int b) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ClassWithOnlyPrivateConstructorsShouldBeFinal false positive with Lombok's @NoArgsConstructor #4188</description>
+        <expected-problems>7</expected-problems>
+        <expected-linenumbers>10,19,29,38,47,56,61</expected-linenumbers>
+        <code><![CDATA[
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+
+@NoArgsConstructor
+class NoArgs1 { private NoArgs1(String a) {} } // no violation
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+class NoArgs2 { private NoArgs2(String a) {} } // violation: only private ctors
+
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
+class NoArgs3 { private NoArgs3(String a) {} } // no violation
+
+@lombok.NoArgsConstructor
+class NoArgs4 { private NoArgs4(String a) {} } // no violation
+
+@lombok.NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
+class NoArgs5 { private NoArgs5(String a) {} } // violation: only private ctors
+
+@lombok.NoArgsConstructor(access = lombok.AccessLevel.PUBLIC)
+class NoArgs6 { private NoArgs6(String a) {} } // no violation
+
+
+@RequiredArgsConstructor
+class RequiredArgs1 { private RequiredArgs1(String a) {} } // no violation
+
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+class RequiredArgs2 { private RequiredArgs2(String a) {} } // violation: only private ctors
+
+@RequiredArgsConstructor(access = AccessLevel.PUBLIC)
+class RequiredArgs3 { private RequiredArgs3(String a) {} } // no violation
+
+@lombok.RequiredArgsConstructor
+class RequiredArgs4 { private RequiredArgs4(String a) {} } // no violation
+
+@lombok.RequiredArgsConstructor(access = lombok.AccessLevel.PRIVATE)
+class RequiredArgs5 { private RequiredArgs5(String a) {} } // violation: only private ctors
+
+@lombok.RequiredArgsConstructor(access = lombok.AccessLevel.PUBLIC)
+class RequiredArgs6 { private RequiredArgs6(String a) {} } // no violation
+
+@AllArgsConstructor
+class AllArgs1 { private AllArgs1(String a) {} } // no violation
+
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+class AllArgs2 { private AllArgs2(String a) {} } // violation: only private ctors
+
+@AllArgsConstructor(access = AccessLevel.PUBLIC)
+class AllArgs3 { private AllArgs3(String a) {} } // no violation
+
+@lombok.AllArgsConstructor
+class AllArgs4 { private AllArgs4(String a) {} } // no violation
+
+@lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
+class AllArgs5 { private AllArgs5(String a) {} } // violation: only private ctors
+
+@lombok.AllArgsConstructor(access = lombok.AccessLevel.PUBLIC)
+class AllArgs6 { private AllArgs6(String a) {} } // no violation
+
+class OtherClass { private OtherClass(String a) {} } // violation: only private ctors
+]]></code>
+    </test-code>
+</test-data>

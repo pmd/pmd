@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>failure case</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() { ClassLoader cl = Foo.class.getClassLoader(); }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>correct way</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() { ClassLoader cl = Thread.currentThread().getContextClassLoader(); }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negatives (#2544)</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,7</expected-linenumbers>
+        <code><![CDATA[
+public class UseProperClassLoaderFN {
+    {
+        Object o = new Object();
+        ClassLoader cl = o.getClass().getClassLoader();
+
+        Class<?> c = o.getClass();
+        ClassLoader cl2 = c.getClassLoader();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positives (#3173)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UseProperClassLoaderFP {
+    public void run() {
+        ClassLoader cl = UseProperClassLoaderFP.getClassLoader();
+    }
+    
+    private static ClassLoader getClassLoader() {
+        return null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] False-positive UseProperClassLoader #4711</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Tester {
+    public Object dataSource(final DataSourceProperties properties) {
+      return DataSourceBuilder.create(properties.getClassLoader())
+          .build();
+    }
+}
+interface DataSourceProperties {
+    ClassLoader getClassLoader();
+}
+interface DataSourceBuilder {
+    static DataSourceBuilder create(ClassLoader classLoader);
+    Object build();
+}
+]]></code>
+    </test-code>
+</test-data>

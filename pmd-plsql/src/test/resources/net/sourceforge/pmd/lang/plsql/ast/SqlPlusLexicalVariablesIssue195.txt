@@ -1,0 +1,3 @@
++- Input[@CanonicalImage = null, @ExcludedLinesCount = 0, @ExcludedRangesCount = 0]
+   +- SqlPlusCommand[@CanonicalImage = "DEFINE PATCH_NAME = ACME_MODULE", @Image = "DEFINE PATCH_NAME = ACME_MODULE "]
+   +- SqlPlusCommand[@CanonicalImage = "SPOOL &PATCH_NAME. . LOG", @Image = "SPOOL &PATCH_NAME. . LOG "]

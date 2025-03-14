@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Basic test case</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class GCCall {
+    public void doSomething() {
+        // Explicit gc call !
+        Runtime.getRuntime().gc();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Alernate Basic test case</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,9</expected-linenumbers>
+        <code><![CDATA[
+public class GCCall {
+    public void explicitGCcall() {
+        // Explicit gc call !
+        System.gc();
+    }
+
+    public void doSomething() {
+        // Explicit gc call !
+        Runtime.getRuntime().gc();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Call in a constructor</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class GCCall {
+    public GCCall() {
+        // Explicit gc call !
+        System.gc();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>run finalization</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <code><![CDATA[
+public class Finalizer {
+    public void doSomething() {
+        System.runFinalization();
+        Runtime.getRuntime().runFinalization();
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

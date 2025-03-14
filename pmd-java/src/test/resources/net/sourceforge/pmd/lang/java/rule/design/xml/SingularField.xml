@@ -1,0 +1,1135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>failure case</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+
+    private int x;
+
+    int bar(int y) {
+        x = y + 5;
+        return x;
+    }
+}
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, used for control flow</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x;
+    int bar(int y) {
+        if (y == 5)
+            x = y + 5;
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x;
+    void setX(int x) {
+        this.x = x;
+    }
+    int getX() {
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>second method uses 'this'</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x;
+    void setX(int x) {
+        this.x = x;
+    }
+    int getX() {
+        return this.x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>skip publics</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int x;
+    int bar(int y) {
+        x = y + 5;
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3694 dont skip statics</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static int x;
+    int bar(int y) {
+        x = y + 5;
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>unused fields shouldn't show up</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int a = 3;
+    int b = 3;
+    void bar() {
+        foo(b);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>inner class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int a;
+    void bar() {
+        Object o = new FooAdapter() {
+            public void bar(Event e) {
+                a = e.GetInt();
+            }
+        };
+    }
+    int baz() {
+        return a;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>initialized in constructor, but the field is useless</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x;
+    public Foo(int y) {
+        x = y;
+    }
+    int bar(int y) {
+        x = y + 5;
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok case with Object</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private Integer x = null;
+    private Integer getFoo() {
+        if (x == null) {
+            x = new Integer(1);
+        }
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, shouldn't catch unused variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x;
+    void bar(int y) {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok case with self-instantiation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private Integer x = new Integer(1);
+    private Integer getFoo() {
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, field has no read access</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private Integer x = new Integer(1);
+    public Foo(Integer x) {
+    }
+    private void getFoo(Integer x) {
+        this.x = x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, instantiates own self internally</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x;
+    int bar(int y) {
+        x = y + 5;
+        return x;
+    }
+    private void bar() {
+        Foo foo = new Foo();
+        foo.x = new Integer(5);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, variable accessed twice in same method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private Map map = new SomeMap();
+    private boolean bar(Object o) {
+        boolean ret = true;
+        if(super.isTrue) {
+            if(map.get(o) != null) {
+                ret = false;
+            } else {
+                map.put(o,o);
+            }
+        }
+        return ret;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, static is ignored</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static int x;
+    static {
+        x = 5;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, field has no read access (shadowing)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x;
+    void setX(int x) {
+        this.x = x;
+    }
+    int doX() {
+        int x = 5;
+        return x*3;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>initialized in static initialization block</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static Foo FOO = new Foo();
+    private int x;
+    static {
+        FOO.x = 5;
+    }
+    int bar(int y) {
+        x = y + 5;
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>1409944, fields used to synchronize should not trigger</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private final Object oSync = new Object();
+
+    public void foo() {
+        synchronized (oSync) {
+            bar();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>1409944, fields not used to synchronize should trigger</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private final Object sync = new Object();
+    private Object noSync;
+
+    public void foo() {
+        synchronized (sync) {
+            noSync = new String("test");
+            call(noSync);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>1409944, field is used to change the flow of different calls</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private boolean bar = false;
+
+    public void foo() {
+        if (!bar) {
+            onlyOnce();
+            bar = true;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, used in outer class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private class Bar {
+        private int bar;
+
+        private Bar(int barry) {
+            bar = barry;
+        }
+    }
+
+    public int foo() {
+        Bar bart = new Bar(5);
+        return bart.bar;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, field is used by outer class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private class Bar {
+        private int bar;
+
+        private Bar(int barry) {
+            bar = barry;
+        }
+    }
+
+    public int foo() {
+        Bar bart = new Bar(5);
+        return bart.bar;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, violation with first usage != non-assignment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x;
+    int bar(int y) {
+        if (x > y) x = y + 5;
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, field used to aggregate values</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x;
+    int bar(int y) {
+        x = x + y;
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, the field is unused</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private Person p = new Person();
+
+    //ctor
+    public Foo(String name) {
+        p.name = name;
+    }
+
+    public void foo(String name) {
+        p.name = name;
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation, in ctor it's used only once</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private Person p = new Person();
+
+    //ctor
+    public Foo(String name) {
+        p.name = name;
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>multiple fields on same line</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private int x, foo;
+    int bar(int y) {
+        foo = y + 5;
+        return foo;
+    }
+    void setX(int x) {
+        this.x = x;
+    }
+    int getX() {
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>field in inner class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private final Object bufferFilter = new Object() {
+        public String toString() {
+            final Object[] candidates;
+            candidates = new Object[2];
+            return null;
+        }
+    };
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bug 3574133 - false + with enums</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum MyEnum {
+    A("a"),
+    B("b");
+
+    private final String description; // <-- SingularField reported
+
+    private MyEnum(String description) {
+        this.description = description;
+    }
+
+    public static MyEnum byDescription(String description) {
+        for (MyEnum myEnum : values()) {
+            if (myEnum.description.equals(description)) { // <--- USED HERE
+            return myEnum;
+            }
+        }
+        return null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1307 False positive: SingularField and lambda-expression</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package com.foo;
+
+import java.util.Optional;
+
+public enum Supplier {
+    bar("Bar");
+
+    private final String supplierName;
+
+    private Supplier(String supplierName) {
+        this.supplierName = supplierName;
+    }
+
+    public static String getSupplierNameIfPresent(String supplier) {
+        return Optional.ofNullable(supplier).map(foo -> valueOf(supplier).supplierName).orElse("");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1494 [java] SingularField: lombok.Data false positive - part1</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Data;
+
+@Data
+public class MyClass {
+
+    private String field1;
+
+    public MyClass(String field1) {
+        this.field1 = field1;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1494 [java] SingularField: lombok.Data false positive - part2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Getter;
+
+public class MyClass {
+
+    @Getter
+    private String field1;
+
+    public MyClass(String field1) {
+        this.field1 = field1;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] SingularField: Lombok false positive with inner class and annotated outer class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Data;
+
+@Data
+public class Outer {
+    public class Inner {
+        private String innerField;
+    }
+
+    private String outerField;
+
+    public Outer(String outerField) {
+        this.outerField = outerField;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] SingularField: Lombok false positive with annotated inner class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+import lombok.Data;
+
+public class Outer {
+    @Data
+    public class Inner {
+        private String innerField;
+    }
+
+    private String outerField;
+
+    public Outer(String outerField) {
+        this.outerField = outerField;
+    }
+
+    void useField() {
+        outerField = "";
+        System.out.println(outerField);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#177 [java] SingularField with lambdas as final fields</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/** Dummy class. */
+public final class Test {
+    private Timer timer1;
+    private Timer timer2;
+
+    /** Dummy constructor. */
+    public Timer() {
+        this.timer1 = new Timer(0, e -> {
+            // do nothing for now
+        });
+        this.timer2 = new Timer(0, e -> {
+            // do nothing for now
+        });
+    }
+
+    /** Use a lambda expression to reference timer1 -- triggers SingularField error. */
+    private final Runnable play1 = () -> {
+        this.timer1.start();
+    };
+
+    /** Use an anonymous class to reference timer2 -- no error. */
+    private final Runnable play2 = new Runnable() {
+        @Override
+        public void run() {
+            timer2.start();
+        }
+    };
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#527 [java] Lombok getter annotation on enum is not recognized correctly</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Getter;
+
+@Getter
+public enum Foo {
+    BAR(1);
+
+    private final int number;
+
+    Foo(final int number) {
+        this.number = number;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1056 [java] Property ignoredAnnotations does not work for SingularField and ImmutableField</description>
+        <rule-property name="ignoredAnnotations">java.lang.Deprecated</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Source {
+    @Deprecated
+    private Object o; //violation!
+
+    Object m() {
+        o = new Object();
+        return o;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1703 SingularField: False-positive with @Delegate</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.experimental.Delegate;
+
+public class Foo {
+    @Delegate private String bar;
+
+    public void set(String s) {
+        bar = s;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2673 SingularField false positive with lombok annotation EqualsAndHashCode</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
+public class Foo {
+    private String bar;
+
+    public void set(String s) {
+        bar = s;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#3006 [java] NPE in SingularFieldRule with concise resource syntax</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package oo;
+
+            public class IPA {
+
+                private final LocalModel model;
+
+                public InternalAggregation reduce(String s) {
+                    try (model) {
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#3303 [java] NPE Exception applying rule SingularField on file</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package net.sourceforge.pmd.lang.java.rule.design.singularfield;
+
+            public class Issue3303 {
+
+                // "private" is a must for reproducing the problem
+                private final NoThrowingCloseable first;
+
+                Issue3303(NoThrowingCloseable first) {
+                    this.first = first;
+                }
+
+                public void performClosing() {
+                    try (first) {
+                        // this block can be empty or not
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>failure case with anonymous class</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>4,13,20,23</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void myMethod() {
+        Object o = new Object() {
+            private int x;
+
+            int bar(int y) {
+                x = y + 5;
+                return x;
+            }
+        };
+    }
+    Object field = new Object() {
+        private int x;
+
+        int bar(int y) {
+            x = y + 5;
+            return x;
+        }
+    };
+    private Object doubleSingular;
+    Object doBar(final int y) {
+        doubleSingular = new Object() {
+            private int x;
+
+            int bar() {
+                x = y + 5;
+                return x;
+            }
+        };
+        return doubleSingular;
+    }
+}
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#3754: failure case with field used in loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class SingularFieldFP {
+                public Object case1() {
+                    return new Object() {
+                        private int field; // <---------- false positive
+                        public boolean foo() {
+                            while (field++ < 10);
+                            return false;
+                        }
+                    };
+                }
+                public Object case2() {
+                    return new Object() {
+                        private int field; // <---------- false positive
+                        public boolean foo() {
+                            while (field < 10) {
+                                field++;
+                            }
+                            return false;
+                        }
+                    };
+                }
+                public Object case3() {
+                    return new Object() {
+                        private int field;
+                        public boolean foo() {
+                            if (field < 10) {
+                                field++;
+                            }
+                            while (field < 10) {
+                                field++;
+                            }
+                            return false;
+                        }
+                    };
+                }
+                public Object case4() {
+                    return new Object() {
+                        private int field;
+                        public boolean foo() {
+                            if (field > 10) {
+                                return true;
+                            }
+                            field++;
+                            return false;
+                        }
+                    };
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#174 [java] SingularField false positive with switch in method that both assigns and reads field</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Perhaps 'singularField' could be replaced by a local variable.</message>
+        </expected-messages>
+        <code><![CDATA[
+package sample;
+
+public class Sample implements Listener {
+    private Timer timer; // false positive #174
+    private String singularField; // correct case
+
+    public void onEvent(int type) {
+        singularField = "test";
+        System.out.println(singularField);
+
+        switch (type) {
+            case 0: // START
+                timer = new Timer();
+                break;
+            case 1: // FINISHED
+                if (timer != null) {
+                    timer.logDuration();
+                }
+        }
+    }
+}
+
+class Timer {
+    private long start = System.currentTimeMillis();
+
+    public void logDuration() {
+        long duration = System.currentTimeMillis() - start;
+        System.out.printf("Duration: %d%n", (duration / 1000));
+    }
+}
+
+interface Listener {
+    void onEvent(int type);
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description> [java] SingularField false positive with non static inner classes #1688 </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class A {
+
+                private String value;
+                private String derivedValue;
+
+                public A(String value) {
+                    this.value = value;
+                    this.derivedValue = this.value + "-more";
+                }
+
+                private void run() {
+                    final B b = new B();
+                    b.useA();
+                }
+
+                public static void main(String[] args) {
+                    new A("").run();
+                }
+
+                public class B {
+
+                    public void useA() {
+                        final String field = A.this.value;
+                        System.out.println(field);
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#3694 singularfield ignores static variables</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>Perhaps 'var2' could be replaced by a local variable.</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Impl {
+                static private int var2 = 10;
+                public int foo(int y) {
+                    var2 = y + 5;
+                    return var2;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#3694 singularfield should ignore static final vars</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Impl {
+                private static final int var2 = 10;
+                public int foo(int y) {
+                    return var2;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Should not report when definition reaches usage</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Impl {
+                private int var2 = 10;
+                public int foo(int y) {
+                    dosomething();
+                    return var2;
+                }
+                void dosomething() {}
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Should not ignore when definition reaches usage (2)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Impl {
+                private int var2 = 10;
+                public int foo(int y) {
+                    dosomething();
+                    if (var2 < 0)
+                        var2 = 0;
+                    return var2;
+                }
+                void dosomething() {}
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Static field incremented in ctor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class PrintStream {
+                private static int gid;
+                private final int id;
+                public PrintStream() {
+                    this.id = gid++;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Static field used in field initializers</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class PrintStream {
+                private static Object[] EMPTY = {};
+                private Object[] field = EMPTY;
+                public PrintStream() {
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code disabled="true">
+        <!-- This is disabled because it looks legit to the rule, we can't know that doLoop is used concurrently. -->
+        <description>#4616 SingularField false-positive with field used concurrently</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+// AFTIPCTopologyWatcher.java
+public class AFTIPCTopologyWatcher {
+
+    private Channel channel;
+    private Selector selector;
+    private boolean doLoop;
+    private final AtomicBoolean running = new AtomicBoolean(false);
+
+
+    public final void runLoop() throws IOException {
+        if (!running.compareAndSet(false, true)) {
+            throw new IllegalStateException("Already running");
+        }
+
+        ByteBuffer buf = ByteBuffer.allocate(64);
+
+        try {
+            doLoop = true;
+            while (!Thread.interrupted() && doLoop) {
+                int n = selector.select();
+                if (!doLoop) {
+                    break;
+                }
+                if (n > 0) {
+                    channel.receive(buf);
+                    Event event = readFromBuffer((ByteBuffer) buf.flip());
+                    onEvent(event);
+                    buf.clear();
+                }
+            }
+        } finally {
+            running.set(false);
+        }
+    }
+
+    static Event readFromBuffer(ByteBuffer b) { }
+
+    protected void onEvent(Event event) throws IOException {
+    }
+
+
+    public final void stopLoop() {
+        doLoop = false;
+        selector.wakeup();
+    }
+
+    interface Event { }
+
+    interface Channel {
+
+        void receive(ByteBuffer buf);
+    }
+    interface Selector {
+        int select();
+        void wakeup();
+    }
+}
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] False-positive for SingularField when preceded by a synchronized block #5162 </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+            import java.util.List;
+
+            public class PmdBug {
+
+                private List<String> sessions;
+
+                public PmdBug(List<String> sessions) {
+                    this.sessions = sessions;
+                }
+
+                public void doStuff() {
+                    synchronized (this) {
+
+                    }
+
+                    sessions.stream().forEach(System.out::println);
+                }
+
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Make SingularField consider nested classes by default #3629</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Tester {
+  class nestedClass {
+      private int a;
+      public int func(int b) {
+          a = b + 5;
+          return a;
+      }
+  }
+}
+]]></code>
+    </test-code>
+</test-data>

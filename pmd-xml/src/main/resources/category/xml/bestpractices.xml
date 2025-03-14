@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ruleset name="Best Practices"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+Rules which enforce generally accepted best practices.
+    </description>
+    
+    <rule name="MissingEncoding"
+          language="xml"
+          since="7.0.0"
+          message="Set an explicit XML encoding in the XML declaration to ensure proper parsing"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_xml_bestpractices.html#missingencoding">
+       <description>
+When the character encoding is missing from the XML declaration,
+the parser may produce garbled text.
+
+This is completely dependent on how the parser is set up
+and the content of the XML file, so it may be hard to reproduce.
+
+Providing an explicit encoding ensures  accurate and consistent
+parsing.
+       </description>
+       <priority>3</priority>
+       <properties>
+          <property name="xpath">
+             <value>
+    <![CDATA[
+    /document[@XmlEncoding = ""]
+    ]]>
+             </value>
+          </property>
+       </properties>
+    </rule>
+</ruleset>

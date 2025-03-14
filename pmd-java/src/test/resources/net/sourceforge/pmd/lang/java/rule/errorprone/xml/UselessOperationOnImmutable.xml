@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <!-- TODO - should use symbol table to catch all misuses of these types -->
+
+    <test-code>
+        <description>useless operation on BigDecimal</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.math.*;
+public class Foo {
+    public void foo() {
+        BigDecimal bd = new BigDecimal(5);
+        bd.divideToIntegralValue(new BigDecimal(5));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>useless operation on BigInteger</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.math.*;
+public class Foo {
+    public void foo() {
+        BigInteger bi = new BigInteger(5);
+        bi.modPow(new BigInteger(1), new BigInteger(5));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>using the result, so OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.math.*;
+public class Foo {
+    public void foo() {
+        BigInteger bi = new BigInteger(5);
+        bi = bi.add(new BigInteger(5));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>using the result in a method call, so OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.math.*;
+public class Foo {
+    public void foo() {
+        BigInteger bi = new BigInteger(5);
+        bar(bi.add(new BigInteger(5)));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>BigInteger obtained from compound method call</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.math.*;
+public class Bar {
+    class C { BigInteger n; }
+    C getBigIntContainer() { return null; }
+    public String toString() {
+        Bar _b;
+        java.math.BigInteger n = _b.getBigIntContainer().n;
+        return n.toString();
+    }
+}
+         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Using generics on List, OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.math.*;
+import java.util.*;
+public class Foo {
+    List<BigDecimal> getSolution() {
+        List<BigDecimal> result = new ArrayList<BigDecimal>();
+        for (int i = 0; i < size(); i++) {
+           result.add(entry(size(),i).negate());
+           result.add(this.equations[i].check(solution));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>BigInteger in conditional statement</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.math.*;
+public class Foo {
+    public Object get() {
+        java.math.BigDecimal bigDecimal = new java.math.BigDecimal(1);
+        return bigDecimal==null ? null : bigDecimal.setScale(0, java.math.BigDecimal.ROUND_UNNECESSARY);
+    }
+}
+         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>1702782, Immutable used in comparison</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.math.*;
+public class RuleViolator {
+    public BigInteger foo() {
+        // some boiler plate code
+        final BigInteger anImmutable = BigInteger.ZERO;
+        final BigInteger anotherImmutable = BigInteger.ONE;
+        BigInteger unrelated = BigInteger.valueOf(42);
+
+        // the actual PMD problem occurs with the next statement
+        if (anImmutable.add(BigInteger.TEN).compareTo(anotherImmutable) == 0) {
+            // do something here that is not related to the actual comparison in
+            // the if clause
+            unrelated = unrelated.multiply(BigInteger.TEN);
+        }
+
+        return unrelated;
+    }
+}
+         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>String calls in expressions</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        String s;
+        String s2 = "foo" + s.substring( 0, delimiterIndex ) + "/";
+        s2 = "foo" + s.substring( 0, delimiterIndex );
+        if (s.trim().length() > 0) {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>String::getChars is allowed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String s, char[] buf) {
+        s.getChars(0,0, buf, 2);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>BigInteger calls in expression</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.math.*;
+public class Foo {
+    public void foo() {
+        BigInteger temp = BigInteger.valueOf((long) startMonth).add(dMonths);
+        setMonth(temp.subtract(BigInteger.ONE).mod(TWELVE).intValue() + 1);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>2645268, ClassCastException using Annotation on Local Field</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.math.*;
+@interface NotNull {}
+public class Foo {
+    public void foo() {
+        @NotNull
+        BigDecimal bd = new BigDecimal(5);
+        bd.divideToIntegralValue(new BigDecimal(5));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UselessOperationOnImmutable various false negatives with String #4513</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>3,6,9</expected-linenumbers>
+        <code><![CDATA[
+public class TestCase {
+  public void method1(String s) {
+    s.trim();
+  }
+  public void method2() {
+   String.valueOf(0);
+  }
+  public void method3() {
+   String.valueOf(0).trim();
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UselessOperationOnImmutable should detect java.time types #5244</description>
+        <expected-problems>44</expected-problems>
+        <expected-linenumbers>7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,61,66,71,76</expected-linenumbers>
+        <code><![CDATA[
+import java.time.*;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
+class Tester {
+    void violationsWithInstant() {
+        Instant instant = Instant.now();
+        instant.atOffset(ZoneOffset.UTC); // violation
+        instant.atZone(ZoneId.systemDefault()); // violation
+        instant.minus(1, ChronoUnit.SECONDS); // violation
+        instant.minus(Duration.ofSeconds(1)); // violation
+        instant.minusMillis(1); // violation
+        instant.minusNanos(1); // violation
+        instant.minusSeconds(1); // violation
+        instant.plus(1, ChronoUnit.SECONDS); // violation
+        instant.plus(Duration.ofSeconds(1)); // violation
+        instant.plusMillis(1); // violation
+        instant.plusNanos(1); // violation
+        instant.plusSeconds(1); // violation
+        instant.truncatedTo(ChronoUnit.MINUTES); // violation
+        instant.with(LocalDateTime.now()); // violation
+        instant.with(ChronoField.INSTANT_SECONDS, 1); // violation
+    }
+    void correctInstantExample() {
+        Instant instant = Instant.now();
+        instant = instant.plusSeconds(1);
+    }
+    void violationsWithLocalDate() {
+        LocalDate localDate = LocalDate.now();
+        localDate.atStartOfDay(); // violation
+        localDate.atStartOfDay(ZoneId.systemDefault()); // violation
+        localDate.atTime(10, 11); // violation
+        localDate.atTime(10, 11, 12); // violation
+        localDate.atTime(10, 11, 12, 13); // violation
+        localDate.atTime(LocalTime.now()); // violation
+        localDate.atTime(OffsetTime.now()); // violation
+        localDate.minus(1, ChronoUnit.SECONDS); // violation
+        localDate.minus(Duration.ofSeconds(1)); // violation
+        localDate.minusDays(1); // violation
+        localDate.minusMonths(1); // violation
+        localDate.minusWeeks(1); // violation
+        localDate.minusYears(1); // violation
+        localDate.plus(1, ChronoUnit.SECONDS); // violation
+        localDate.plus(Duration.ofSeconds(1)); // violation
+        localDate.plusDays(1); // violation
+        localDate.plusMonths(1); // violation
+        localDate.plusWeeks(1); // violation
+        localDate.plusYears(1); // violation
+        localDate.with(LocalDateTime.now()); // violation
+        localDate.with(ChronoField.DAY_OF_MONTH, 1); // violation
+        localDate.withDayOfMonth(1); // violation
+        localDate.withDayOfYear(1); // violation
+        localDate.withMonth(1); // violation
+        localDate.withYear(1); // violation
+    }
+    void correctLocalDateExample() {
+        LocalDate localDate = LocalDate.now();
+        localDate = localDate.plusDays(1);
+    }
+    void localTimeExamples() {
+        LocalTime localTime = LocalTime.now();
+        localTime.minusHours(1); // violation
+        localTime = localTime.plusMinutes(1); // ok
+    }
+    void localDateTimeExamples() {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        localDateTime.minusDays(1); // violation
+        localDateTime = localDateTime.plusHours(1); // ok
+    }
+    void zonedDateTimeExamples() {
+        ZonedDateTime zonedDateTime = new ZonedDateTime.now();
+        zonedDateTime.minusMonths(1); // violation
+        zonedDateTime = zonedDateTime.plusWeeks(1); // ok
+    }
+    void offsetDateTimeExamples() {
+        OffsetDateTime offsetDateTime = OffsetDateTime.now();
+        offsetDateTime.minusDays(1); // violation
+        offsetDateTime = offsetDateTime.plusYears(1); // ok
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UselessOperationOnImmutable should detect java.time types #5244 - Duration, Period</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,10</expected-linenumbers>
+        <code><![CDATA[
+import java.time.*;
+class Tester {
+    void durationExamples() {
+        Duration duration = Duration.ofSeconds(1);
+        duration.minusMillis(1); // violation
+        duration = duration.plusDays(1); //ok
+    }
+    void periodExamples() {
+        Period period = Period.ofMonths(1);
+        period.minusDays(1); // violation
+        period = period.plusWeeks(1); // ok
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive for package private method calls in openjdk</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package java.time;
+import java.io.ObjectOutput;
+class Tester {
+    static void writeExternal(ZonedDateTime zonedDateTime, ObjectOutput out) {
+        zonedDateTime.writeExternal(out); // false positive
+    }
+}
+]]></code>
+    </test-code>
+</test-data>

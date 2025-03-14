@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Using length properly</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        StringBuffer sb = new StringBuffer();
+        if ( sb.length() == 0 ) {
+            sb.append(",");
+        }
+        sb.append( "whatever" );
+    }
+    void bar2() {
+        StringBuilder sb = new StringBuilder();
+        if ( sb.length() == 0 ) {
+            sb.append(",");
+        }
+        sb.append( "whatever" );
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5320 StringBuffer.toString.equals(""), bad</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        StringBuffer sb = new StringBuffer();
+        if ( sb.toString().equals("") ) {
+            sb.append(",");
+        }
+        sb.append( "whatever" );
+    }
+    void bar2() {
+        StringBuilder sb = new StringBuilder();
+        if ( sb.toString().equals("") ) {
+            sb.append(",");
+        }
+        sb.append( "whatever" );
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>StringBuffer.toString.equals("foo"), ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        StringBuffer sb = new StringBuffer();
+        if ( sb.toString().equals("foo") ) {
+            sb.append(",");
+        }
+        sb.append( "whatever" );
+    }
+    void bar2() {
+        StringBuilder sb = new StringBuilder();
+        if ( sb.toString().equals("foo") ) {
+            sb.append(",");
+        }
+        sb.append( "whatever" );
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>StringBuffer.toString.length(), bad</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        StringBuffer sb = new StringBuffer();
+        if ( sb.toString().length() == 0 ) {
+            sb.append(",");
+        }
+        sb.append( "whatever" );
+    }
+    void bar2() {
+        StringBuilder sb = new StringBuilder();
+        if ( sb.toString().length() == 0 ) {
+            sb.append(",");
+        }
+        sb.append( "whatever" );
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no literals</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    boolean bar(Object foo) {
+        StringBuffer sb = new StringBuffer();
+        return sb.toString().equals(foo);
+    }
+    boolean bar2(Object foo) {
+        StringBuilder sb = new StringBuilder();
+        return sb.toString().equals(foo);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>empty + non-empty string sb.toString().equals("" + "x"), ok (as in: do not use StringBuffer.length())</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    boolean bar() {
+        StringBuffer sb = new StringBuffer();
+        return sb.toString().equals("" + "x");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>sb.toString().trim().equals(""), ok (as in: do not use StringBuffer.length())</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    boolean bar() {
+        StringBuffer sb = new StringBuffer(" ");
+        return sb.toString().trim().equals("");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>sb.toString().equals(baz("")), ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    boolean bar() {
+        StringBuffer sb = new StringBuffer();
+        return sb.toString().equals(baz(""));
+    }
+    String baz(String s) {
+        return s + "x";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>sb.toString().trim().length == 0, ok (as in: do not use StringBuffer.length())</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    boolean bar() {
+        StringBuffer sb = new StringBuffer();
+        return sb.toString().trim().length == 0;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1177 Incorrect StringBuffer warning when that class is not used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Ineffecient
+{
+    public static String getValue(int in)
+    {
+        Integer i = new Integer(in);
+        if (i.toString().length() == 1)
+        {
+            return "length 1";
+        }
+        return "";
+    }
+
+    public String toString()
+    {
+        return "Ineffecient";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UseStringBufferLength: false negative with empty string variable #3639</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        StringBuffer sb = new StringBuffer("any_string");
+        final String nullStr = "";
+        if (sb.toString().equals(nullStr)) { // PMD should report a warning here
+            System.out.println("Buffer is empty");
+        }
+
+        // the preferred way
+        if (sb.length() == 0) {
+            System.out.println("Buffer is empty");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5320 [java] UseStringBufferLength: false-negative on StringBuffer of sb.toString().equals("")</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>6,7,9</expected-linenumbers>
+        <code><![CDATA[
+public class UseStringBufferLengthTest {
+    public void example1() {
+        StringBuffer sb = new StringBuffer();
+        final String empty = "";
+
+        if (sb.toString().equals("")) {System.out.println();}        // line 6, inefficient
+        if (sb.toString().equals(empty)) {System.out.println();}     // line 7, inefficient
+        if (sb.length() == 0) {System.out.println();}                // line 8, preferred
+        if (sb.toString().length() == 2) {System.out.println();}     // line 9, inefficient
+        if (sb.length() == 2) {System.out.println();}                // line 10, preferred
+    }
+}
+]]></code>
+    </test-code>
+</test-data>

@@ -1,0 +1,4 @@
+net.sourceforge.pmd.lang.DummyLanguageModule
+net.sourceforge.pmd.lang.Dummy2LanguageModule
+net.sourceforge.pmd.lang.CpdOnlyDummyLanguage
+net.sourceforge.pmd.lang.DummyLanguageNoCapabilities

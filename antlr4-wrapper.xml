@@ -1,0 +1,247 @@
+<!--
+  ~ BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+  -->
+
+<project name="pmd" default="adapt-antlr-sources" basedir="../../../../">
+
+<!--    Input properties:
+        - lang-name: matches the grammar name (eg "Swift")
+        - lang-id: the language id, used in the conventional package name (eg "swift")
+        - node-prefix: prefix for generated AST nodes (eg "Sw")
+        - root-node-name: name of the root node without prefix (eg "TopLevel"), will be made to implement RootNode
+
+        See AntlrGeneratedParserBase
+-->
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties" />
+
+    <property name="target-package-dir" value="${antlr4.outputDirectory}/net/sourceforge/pmd/lang/${lang-id}/ast"/>
+    <property name="stamp-file" value="${project.build.directory}/last-generated-timestamp-antlr4" />
+
+
+    <property name="lang-ast-package" value="net.sourceforge.pmd.lang.${lang-id}.ast" />
+    <property name="ast-api-package" value="net.sourceforge.pmd.lang.ast" />
+    <property name="ast-impl-package" value="${ast-api-package}.impl.antlr4" />
+
+
+    <property name="parser-name" value="${lang-name}Parser"/>
+    <property name="parser-file" value="${target-package-dir}/${parser-name}.java"/>
+
+    <property name="visitor-name" value="${lang-name}Visitor"/>
+    <property name="visitor-file" value="${target-package-dir}/${visitor-name}.java"/>
+
+    <property name="base-visitor-name" value="${lang-name}BaseVisitor"/>
+    <property name="base-visitor-file" value="${target-package-dir}/${base-visitor-name}.java"/>
+
+    <property name="listener-name" value="${lang-name}Listener"/>
+    <property name="listener-file" value="${target-package-dir}/${listener-name}.java"/>
+
+    <property name="base-listener-name" value="${lang-name}BaseListener"/>
+    <property name="base-listener-file" value="${target-package-dir}/${base-listener-name}.java"/>
+
+    <property name="node-itf-name" value="${lang-name}Node"/>
+    <property name="base-class-name" value="Abstract${lang-name}Node"/>
+
+    <property name="lexer-name" value="${lang-name}Lexer"/>
+    <property name="lexer-file" value="${target-package-dir}/${lexer-name}.java"/>
+
+    <target name="check-up-to-date"
+            description="Checks the input files are up to date">
+
+        <uptodate property="processing-not-required" targetfile="${stamp-file}">
+            <srcfiles dir="${target-package-dir}" includes="*.java" />
+            <srcfiles file="${ant.file}" />
+        </uptodate>
+        <echo message="Up-to-date check: processing-not-required=${processing-not-required}" />
+    </target>
+
+    <target name="update-stamp-file" unless="processing-not-required">
+        <touch file="${stamp-file}" />
+    </target>
+
+    <target name="annotate-classes" description="Adds the @Generated annotation to all classes"
+            unless="processing-not-required">
+        <if>
+            <available file="${parser-file}"/>
+            <then>
+                <replace file="${parser-file}"
+                         token="public class ${parser-name}"
+                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+public class ${parser-name}'/>
+
+                <!-- Parse tree classes for each element -->
+                <replace file="${parser-file}"
+                         token="public static class "
+                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+public static class '/>
+            </then>
+        </if>
+
+        <if>
+            <available file="${visitor-file}"/>
+            <then>
+                <replace file="${visitor-file}"
+                         token="public interface ${visitor-name}"
+                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+public interface ${visitor-name}'/>
+            </then>
+        </if>
+
+        <if>
+            <available file="${base-visitor-file}"/>
+            <then>
+                <replace file="${base-visitor-file}"
+                         token="public class ${base-visitor-name}"
+                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+public class ${base-visitor-name}'/>
+            </then>
+        </if>
+
+        <if>
+            <available file="${listener-file}"/>
+            <then>
+                <replace file="${listener-file}"
+                         token="public interface ${listener-name}"
+                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+public interface ${listener-name}'/>
+            </then>
+        </if>
+
+        <if>
+            <available file="${base-listener-file}"/>
+            <then>
+                <replace file="${base-listener-file}"
+                         token="public class ${base-listener-name}"
+                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+public class ${base-listener-name}'/>
+            </then>
+        </if>
+
+        <if>
+            <available file="${lexer-file}"/>
+            <then>
+                <replace file="${lexer-file}"
+                         token="public class ${lexer-name}"
+                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+public class ${lexer-name}'/>
+            </then>
+        </if>
+    </target>
+
+    <condition property="rename-parser">
+        <and>
+            <not>
+                <available file="${parser-file}"/>
+            </not>
+            <available file="${target-package-dir}/${lang-name}.java"/>
+        </and>
+    </condition>
+
+    <target name="rename-parser" description="Rename the parser to our conventional name if needed"
+            if="rename-parser">
+        <replace file="${target-package-dir}/${lang-name}.java">
+            <replacefilter token="class ${lang-name} "
+                           value="class ${parser-name} "/>
+            <replacefilter token="public ${lang-name}(TokenStream input)"
+                           value="public ${parser-name}(TokenStream input)"/>
+        </replace>
+        <replace dir="${target-package-dir}">
+            <include name="${lang-name}.java"/>
+            <include name="${visitor-name}.java"/>
+            <include name="${base-visitor-name}.java"/>
+            <include name="${listener-name}.java"/>
+            <include name="${base-listener-name}.java"/>
+            <replacefilter token="${lang-name}." value="${parser-name}."/>
+            <replacefilter token="${lang-name}#" value="${parser-name}#"/>
+            <replacefilter token="{@link ${lang-name}}" value="{@link ${parser-name}}"/>
+        </replace>
+
+        <move file="${target-package-dir}/${lang-name}.java"
+              tofile="${parser-file}"/>
+    </target>
+
+    <target name="cpd-language" depends="check-up-to-date, annotate-classes, cpd-language-processing, update-stamp-file"/>
+    <target name="cpd-language-processing" description="Adapt Antlr sources for CPD-only languages"
+            unless="processing-not-required">
+        <!-- We only need the Lexer file. -->
+        <delete file="${parser-file}"/>
+        <delete>
+            <fileset dir="${target-package-dir}">
+                <include name="*"/>
+                <exclude name="*Lexer.java"/>
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="pmd-language" depends="check-up-to-date, rename-parser, annotate-classes, pmd-language-processing, update-stamp-file"/>
+    <target name="pmd-language-processing" description="Adapt Antlr sources for PMD languages"
+            unless="processing-not-required">
+
+        <!-- Adapt parser. -->
+        <replace file="${parser-file}">
+            <replacefilter token="${root-node-name}Context extends ${lang-name}InnerNode"
+                           value="${root-node-name}Context extends ${lang-name}RootNode"/>
+
+            <replacefilter token="_ctx = _localctx;"
+                           value="_ctx = _localctx.asAntlrNode();"/>
+
+            <replacefilter token="public &lt;T> T accept(ParseTreeVisitor&lt;? extends T> visitor)"
+                           value="public &lt;P, R> R acceptVisitor(AstVisitor&lt;? super P, ? extends R> visitor, P data)" />
+
+            <replacefilter token="((${visitor-name}&lt;? extends T>)visitor)"
+                           value="((${visitor-name}&lt;? super P, ? extends R>) visitor)" />
+
+            <replacefilter token="return visitor.visitChildren(this);"
+                           value="return super.acceptVisitor(visitor, data);" />
+
+        </replace>
+
+        <replaceregexp flags="g" file="${parser-file}">
+            <regexp pattern="\.visit(\w++)\(this\);"/>
+            <substitution expression=".visit\1(this, data);"/>
+        </replaceregexp>
+
+        <replaceregexp flags="g" file="${parser-file}">
+            <regexp pattern="_sempred\(\((\w+)\)_localctx,"/>
+            <substitution expression="_sempred\((\1) asPmdNode(_localctx),"/>
+        </replaceregexp>
+
+        <!-- Transform the visitor to PMD-style. -->
+        <replace file="${visitor-file}">
+
+            <replacefilter token="@param &lt;T> The return type of the visit operation. Use {@link Void} for"
+                           value="@param &lt;P> The parameter type of the visit&#10; * @param &lt;R> The return type of the visit operation. Use {@link Void} for"/>
+            <replacefilter token="Visitor&lt;T> extends ParseTreeVisitor&lt;T> {"
+                           value="Visitor&lt;P, R> extends net.sourceforge.pmd.lang.ast.AstVisitor&lt;P, R> {&#10;
+&#10;
+    /**&#10;
+     * The default visit method for ${lang-name} nodes. Unless overridden,&#10;
+     * the default implementations of the methods of this interface delegate&#10;
+     * to this method. The default calls {@link #visitNode(Node, Object)}.&#10;
+     * &#10;
+     * @param node Node to visit&#10;
+     * @param data Parameter of the visit&#10;
+     * @return Result of the visit&#10;
+     */&#10;
+     default R visit${node-itf-name}(${node-itf-name} node, P data) { return visitNode(node, data); }&#10;&#10;
+&#10;
+"/>
+
+            <replacefilter token="T visit" value="default R visit"/>
+            <replacefilter token="ctx);" value="node, P data) { return visit${node-itf-name}(node, data); }"/>
+            <replacefilter token="@param ctx the parse tree" value="@param node Node to visit&#10;&#9; * @param data Parameter of the visit"/>
+
+        </replace>
+
+        <!-- This is in the main sources (not much to do). -->
+        <delete file="${base-visitor-file}" />
+
+
+        <replaceregexp flags="g">
+            <fileset dir="${target-package-dir}" />
+            <regexp pattern="\b([A-Z]\w*)Context\b(?&lt;!\b(Parser)?RuleContext\b)"/>
+            <substitution expression="${node-prefix}\1"/>
+        </replaceregexp>
+
+
+    </target>
+</project>

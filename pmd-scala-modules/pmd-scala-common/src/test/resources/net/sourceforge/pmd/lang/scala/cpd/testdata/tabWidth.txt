@@ -1,0 +1,30 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [object]                                1         7
+    [Main]                                  8         12
+    [{]                                     13        14
+L2
+    [def]                                   2         5
+    [main]                                  6         10
+    [(]                                     10        11
+    [args]                                  11        15
+    [:]                                     15        16
+    [Array]                                 17        22
+    [\[]                                    22        23
+    [String]                                23        29
+    [\]]                                    29        30
+    [)]                                     30        31
+    [:]                                     31        32
+    [Unit]                                  33        37
+    [=]                                     38        39
+    [{]                                     40        41
+L3
+    [println]                               3         10
+    [(]                                     10        11
+    ["Hello, World!"]                       11        26
+    [)]                                     26        27
+L4
+    [}]                                     2         3
+L5
+    [}]                                     1         2
+EOF

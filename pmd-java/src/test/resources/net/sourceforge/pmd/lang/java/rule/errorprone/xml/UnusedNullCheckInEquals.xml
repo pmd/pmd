@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>failure case</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public Foo getBar(Foo x) {
+        Foo foo = new Foo();
+        if (x != null && foo.getBar(foo).equals(x)) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>different var, 'tis ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(Foo x, Foo y) {
+        Foo foo = new Foo();
+        if (x != null && foo.equals(y)) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>proper usage</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(Foo x, Foo y) {
+        if (x != null && x.equals(y)) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>variation of correct usage</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(String x, String y) {
+        if (x != null && "Foo".equals(y)) {}
+        if (y.equals(x)) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>var is not used in equals() call</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static Foo A = new Foo();
+    public void bar(String c) {
+        String d = "bar";
+        if (c != null && A.bar(c).equals(d)) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[ 1481051 ] false + UnusedNullCheckInEquals</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(Foo[] o1, Foo[] o2) {
+        if (o1 != null && o1[0] != null && o2[0].getName() != null && o2[0].getName().equals(o1[0].getName())) { }
+        if (o1 != null && o2.equals(o1.getName())) { }
+    }
+    public String getName() { return ""; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>shouldn't this fail? Yes, it should. Fixed it, so that method calls to equals on variables are considered, too.</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void bar(String x, String y) {
+        if (x != null && y.equals(x)) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Arrays can't be compared directly but with Arrays.equals().</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Arrays;
+
+public class Foo {
+    private static boolean isSame(Object[] a1, Object[] a2) {
+        return a1 == a2 || (a1 != null && a2 != null && Arrays.equals(a1, a2));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negative with another condition in the middle</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>3,7,14</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private boolean matches(String thatString, Object other, Class<?> otherClass) {
+        return thatString != null && otherClass == thatString.getClass() && other.equals(thatString);
+    }
+
+    private boolean matches_if(String thatString, Object other, Class<?> otherClass) {
+        if (thatString != null && otherClass == thatString.getClass() && other.equals(thatString)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean matches_var(String thatString, Object other, Class<?> otherClass) {
+        boolean result = thatString != null && otherClass == thatString.getClass() && other.equals(thatString);
+        return result;
+    }
+
+    private boolean matchesCorrected(String thatString, Object other, Class<?> otherClass) {
+        return thatString != null && otherClass == thatString.getClass() && thatString.equals(other);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with string literals / constants</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static final String CONST = "";
+
+    private boolean test(String val) {
+        return val != null && "".equals(val);
+    }
+
+    private boolean test_const(String val) {
+        return val != null && CONST.equals(val);
+    }
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>[java] UnusedNullCheckInEquals: various false positives #3432</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>22</expected-linenumbers>
+        <code><![CDATA[
+public class UnusedNullCheckInEquals {
+    // Arrays.equals... note: this is actually a false negative, see https://github.com/pmd/pmd/issues/4907
+    void case1(char[] name, Other other) {
+        if (other.name != null && java.util.Arrays.equals(other.name, name));
+    }
+
+    // Bytes.equals... note: this is actually a false negative, see https://github.com/pmd/pmd/issues/4907
+    void case2(byte[] startRow, byte[] stopRow) {
+        if (startRow != null && startRow.length > 0 && Bytes.equals(startRow,stopRow));
+    }
+
+    // overridden equals() that has more than two arguments - actual false positive, should not be reported
+    void case3a(HashingStrategy hashingStrategy, String k1, String k2) {
+        if (k1 == k2 || (k1 != null && hashingStrategy.equals(k1, k2)));
+    }
+    void case3b(String passthroughNsPrefix, Attribute attribute) {
+        if (passthroughNsPrefix != null && LexerUtils.equals(passthroughNsPrefix, attribute.namespacePrefix(), true, true));
+    }
+
+    // .class.getName() cannot return null - this should be reported, as the null check is indeed unused
+    void case4(String driverDelegate) {
+        if (driverDelegate != null && StdJDBCDelegate.class.getName().equals(driverDelegate)); // line 22
+        if (driverDelegate != null && driverDelegate.equals(StdJDBCDelegate.class.getName())); // corrected version
+    }
+
+    // null checked in condition of conditional expression
+    private int start;
+    private int length;
+    private String file;
+    void case5(UnusedNullCheckInEquals other) {
+        if (this.start == other.start && this.length == other.length &&
+            (this.file == null ? other.file == null : (other.file != null && this.file.equals(other.file))));
+            // note: the last check "other.file != null" is actually unnecessary, as we use this.file.equals(...)
+            // to compare with and this.file we already verified, cannot be null
+    }
+}
+class Other {
+    char[] name;
+}
+interface HashingStrategy {
+    boolean equals(String s1, String s2);
+}
+interface Attribute {
+    String namespacePrefix();
+}
+class LexerUtils {
+    static boolean equals(String prefix1, String prefix2, boolean flag1, boolean flag2) {
+        return false;
+    }
+}
+class StdJDBCDelegate {}
+]]></code>
+    </test-code>
+</test-data>

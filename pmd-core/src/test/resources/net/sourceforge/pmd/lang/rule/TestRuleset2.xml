@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<ruleset name="Test Ruleset" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+  Ruleset used by test RuleSetFactoryTest
+  </description>
+
+    <rule name="TestRule" language="dummy" since="1.0" message="Test Rule 1" class="net.sourceforge.pmd.lang.rule.MockRule"
+        externalInfoUrl="${pmd.website.baseurl}/rules/test/TestRuleset2.xml#TestRule">
+        <description>
+Just for test
+     </description>
+        <priority>3</priority>
+        <example>
+ <![CDATA[
+ ]]>
+     </example>
+    </rule>
+
+    <rule name="TestRule2Ruleset2" language="dummy" since="1.0" message="Test Rule 2" class="net.sourceforge.pmd.lang.rule.MockRule"
+        externalInfoUrl="${pmd.website.baseurl}/rules/test/TestRuleset2.xml#TestRule2Ruleset2">
+        <description>
+Just for test
+     </description>
+        <priority>3</priority>
+        <example>
+ <![CDATA[
+ ]]>
+     </example>
+    </rule>
+</ruleset>

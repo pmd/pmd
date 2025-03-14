@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<xs:schema
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="http://pmd.sourceforge.net/report/2.0.0"
+  targetNamespace="http://pmd.sourceforge.net/report/2.0.0"
+  elementFormDefault="qualified">
+
+  <xs:element name="pmd">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="file" type="file" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="error" type="error" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="suppressedviolation" type="suppressedviolation" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="configerror" type="configerror" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="version" type="xs:string" use="required" />
+      <xs:attribute name="timestamp" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="file">
+    <xs:sequence>
+      <xs:element name="violation" type="violation" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+  </xs:complexType>
+  
+  <xs:complexType name="violation">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+	    <xs:attribute name="beginline" type="xs:integer" use="required" />
+	    <xs:attribute name="endline" type="xs:integer" use="required" />
+	    <xs:attribute name="begincolumn" type="xs:integer" use="required" />
+	    <xs:attribute name="endcolumn" type="xs:integer" use="required" />
+	    <xs:attribute name="rule" type="xs:string" use="required" />
+	    <xs:attribute name="ruleset" type="xs:string" use="required" />
+	    <xs:attribute name="package" type="xs:string" use="optional" />
+	    <xs:attribute name="class" type="xs:string" use="optional" />
+	    <xs:attribute name="method" type="xs:string" use="optional" />
+	    <xs:attribute name="variable" type="xs:string" use="optional" />
+	    <xs:attribute name="externalInfoUrl" type="xs:string" use="optional" />
+	    <xs:attribute name="priority" type="xs:string" use="required" />
+	  </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  
+  <xs:complexType name="error">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="filename" type="xs:string" use="required"/>
+        <xs:attribute name="msg" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  
+  <xs:complexType name="suppressedviolation">
+    <xs:attribute name="filename" type="xs:string" use="required" />
+    <xs:attribute name="suppressiontype" type="xs:string" use="required" />
+    <xs:attribute name="msg" type="xs:string" use="required" />
+    <xs:attribute name="usermsg" type="xs:string" use="required" />
+  </xs:complexType>
+  
+   <xs:complexType name="configerror">
+     <xs:attribute name="rule" type="xs:string" use="required" />
+     <xs:attribute name="msg" type="xs:string" use="required" />
+   </xs:complexType>
+</xs:schema>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Success</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import android.app.Activity;
+import android.os.Bundle;
+
+public class MyActivity extends Activity {
+    @Override
+    protected void onCreate(final Bundle state) {
+        super.onCreate(state);
+        foo();
+    }
+
+    private void foo() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Success</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import android.app.Activity;
+import android.os.Bundle;
+
+public class MyActivity extends Activity {
+    @Override
+    protected void onCreate(final Bundle state) {
+        super.onCreate(state);
+        foo();
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        foo();
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        foo();
+    }
+    private void foo() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Failure - missing super</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import android.app.Activity;
+import android.os.Bundle;
+
+public class MyActivity extends Activity {
+    @Override
+    protected void onCreate(final Bundle state) {
+        foo();
+    }
+    private void foo() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Failure - super not as first</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import android.app.Activity;
+import android.os.Bundle;
+
+public class MyActivity extends Activity {
+    @Override
+    protected void onCreate(final Bundle state) {
+        foo();
+        super.onCreate(state);
+    }
+    private void foo() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1154 Call super onPause when there is no super</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import android.app.Activity;
+
+public class NotAnActivity {
+    Activity a = getActivity();
+    protected void onResume() {
+        doSomething();
+    }
+    private Activity getActivity() { return null; }
+    private void doSomething() {}
+}
+        ]]></code>
+    </test-code>
+</test-data>

@@ -1,0 +1,270 @@
+/**
+ * This Python 2.7 grammar was copied from the PyDev Project. (http://www.pydev.org/)
+ *
+ * Original source file:
+ * https://github.com/aptana/Pydev/blob/development/plugins/org.python.pydev.parser/src/org/python/pydev/parser/grammar27/python.jjt (commit 32950d534139f286e03d34795aec99edab09c04c)
+ */
+
+options {
+  BUILD_PARSER=false;
+  CACHE_TOKENS=true;
+  STATIC=false;
+  UNICODE_INPUT = true;
+  USER_CHAR_STREAM=true;
+}
+
+PARSER_BEGIN(PythonParserImpl)
+
+package net.sourceforge.pmd.lang.python.ast;
+
+public class PythonParserImpl {
+
+}
+
+PARSER_END(PythonParserImpl)
+
+SKIP :
+{
+    <SPACE: " ">
+|   "\t"
+|   "\014"
+|   <CONTINUATION: ("\\") ("\r\n"|"\n"|"\r")>
+|   <NEWLINE: ("\r\n"|"\n"|"\r")>
+}
+
+SPECIAL_TOKEN :
+{
+    <TRAILING_COMMENT: "#" (~["\n","\r"])* >
+}
+
+TOKEN : /* SEPARATORS */
+{
+    < LPAREN: "(" >
+|   < RPAREN: ")" >
+|   < LBRACE: "{" >
+|   < RBRACE: "}" >
+|   < LBRACKET: "[" >
+|   < RBRACKET: "]" >
+|   < SEMICOLON: ";" >
+|   < COMMA: "," >
+|   < DOT: "." >
+|   < COLON: ":" >
+|   < BACKTICK: "`" >
+}
+
+
+TOKEN : /* OPERATORS */
+{
+    < PLUS: "+" >
+|   < MINUS: "-" >
+|   < MULTIPLY: "*" >
+|   < DIVIDE: "/" >
+|   < FLOORDIVIDE: "//" >
+|   < POWER: "**" >
+|   < LSHIFT: "<<" >
+|   < RSHIFT: ">>" >
+|   < MODULO: "%" >
+|   < NOT: "~" >
+|   < XOR: "^" >
+|   < OR: "|" >
+|   < AND: "&" >
+|   < EQUAL: "=" >
+|   < GREATER: ">" >
+|   < LESS: "<" >
+|   < EQEQUAL: "==" >
+|   < EQLESS: "<=" >
+|   < EQGREATER: ">=" >
+|   < LESSGREATER: "<>" >
+|   < NOTEQUAL: "!=" >
+|   < PLUSEQ: "+=" >
+|   < MINUSEQ: "-=" >
+|   < MULTIPLYEQ: "*=" >
+|   < DIVIDEEQ: "/=" >
+|   < FLOORDIVIDEEQ: "//=" >
+|   < MODULOEQ: "%=" >
+|   < ANDEQ: "&=" >
+|   < OREQ: "|=" >
+|   < XOREQ: "^=" >
+|   < LSHIFTEQ: "<<=" >
+|   < RSHIFTEQ: ">>=" >
+|   < POWEREQ: "**=" >
+}
+
+TOKEN : /* KEYWORDS */
+{
+    < OR_BOOL: "or" >
+|   < AND_BOOL: "and" >
+|   < NOT_BOOL: "not" >
+|   < IS: "is" >
+|   < IN: "in" >
+|   < LAMBDA: "lambda" >
+|   < IF: "if" >
+|   < ELSE: "else" >
+|   < ELIF: "elif" >
+|   < WHILE: "while" >
+|   < FOR: "for" >
+|   < TRY: "try" >
+|   < EXCEPT: "except" >
+|   < DEF: "def" >
+|   < CLASS: "class" >
+|   < FINALLY: "finally" >
+|   < PRINT: "print" >
+|   < PASS: "pass" >
+|   < BREAK: "break" >
+|   < CONTINUE: "continue" >
+|   < RETURN: "return" >
+|   < YIELD: "yield" >
+|   < IMPORT: "import" >
+|   < FROM: "from" >
+|   < DEL: "del" >
+|   < RAISE: "raise" >
+|   < GLOBAL: "global" >
+|   < EXEC: "exec" >
+|   < ASSERT: "assert" >
+|   < AS: "as" >
+|   <WITH: "with" >
+|   < AT: "@" >
+}
+
+
+TOKEN : /* Python identifiers */
+{
+    < NAME: <LETTER> ( <LETTER> | <DIGIT>)* >
+|   < #LETTER : ["$","A"-"Z","_","a"-"z","\u00a2"-"\u00a5","\u00aa","\u00b5","\u00ba",
+       "\u00c0"-"\u00d6","\u00d8"-"\u00f6","\u00f8"-"\u021f","\u0222"-"\u0233","\u0250"-"\u02ad",
+       "\u02b0"-"\u02b8","\u02bb"-"\u02c1","\u02d0"-"\u02d1","\u02e0"-"\u02e4","\u02ee","\u037a",
+       "\u0386","\u0388"-"\u038a","\u038c","\u038e"-"\u03a1","\u03a3"-"\u03ce","\u03d0"-"\u03d7",
+       "\u03da"-"\u03f3","\u0400"-"\u0481","\u048c"-"\u04c4","\u04c7"-"\u04c8","\u04cb"-"\u04cc",
+       "\u04d0"-"\u04f5","\u04f8"-"\u04f9","\u0531"-"\u0556","\u0559","\u0561"-"\u0587",
+       "\u05d0"-"\u05ea","\u05f0"-"\u05f2","\u0621"-"\u063a","\u0640"-"\u064a","\u0671"-"\u06d3",
+       "\u06d5","\u06e5"-"\u06e6","\u06fa"-"\u06fc","\u0710","\u0712"-"\u072c","\u0780"-"\u07a5",
+       "\u0905"-"\u0939","\u093d","\u0950","\u0958"-"\u0961","\u0985"-"\u098c","\u098f"-"\u0990",
+       "\u0993"-"\u09a8","\u09aa"-"\u09b0","\u09b2","\u09b6"-"\u09b9","\u09dc"-"\u09dd",
+       "\u09df"-"\u09e1","\u09f0"-"\u09f3","\u0a05"-"\u0a0a","\u0a0f"-"\u0a10","\u0a13"-"\u0a28",
+       "\u0a2a"-"\u0a30","\u0a32"-"\u0a33","\u0a35"-"\u0a36","\u0a38"-"\u0a39","\u0a59"-"\u0a5c",
+       "\u0a5e","\u0a72"-"\u0a74","\u0a85"-"\u0a8b","\u0a8d","\u0a8f"-"\u0a91","\u0a93"-"\u0aa8",
+       "\u0aaa"-"\u0ab0","\u0ab2"-"\u0ab3","\u0ab5"-"\u0ab9","\u0abd","\u0ad0","\u0ae0",
+       "\u0b05"-"\u0b0c","\u0b0f"-"\u0b10","\u0b13"-"\u0b28","\u0b2a"-"\u0b30","\u0b32"-"\u0b33",
+       "\u0b36"-"\u0b39","\u0b3d","\u0b5c"-"\u0b5d","\u0b5f"-"\u0b61","\u0b85"-"\u0b8a",
+       "\u0b8e"-"\u0b90","\u0b92"-"\u0b95","\u0b99"-"\u0b9a","\u0b9c","\u0b9e"-"\u0b9f",
+       "\u0ba3"-"\u0ba4","\u0ba8"-"\u0baa","\u0bae"-"\u0bb5","\u0bb7"-"\u0bb9","\u0c05"-"\u0c0c",
+       "\u0c0e"-"\u0c10","\u0c12"-"\u0c28","\u0c2a"-"\u0c33","\u0c35"-"\u0c39","\u0c60"-"\u0c61",
+       "\u0c85"-"\u0c8c","\u0c8e"-"\u0c90","\u0c92"-"\u0ca8","\u0caa"-"\u0cb3","\u0cb5"-"\u0cb9",
+       "\u0cde","\u0ce0"-"\u0ce1","\u0d05"-"\u0d0c","\u0d0e"-"\u0d10","\u0d12"-"\u0d28",
+       "\u0d2a"-"\u0d39","\u0d60"-"\u0d61","\u0d85"-"\u0d96","\u0d9a"-"\u0db1","\u0db3"-"\u0dbb",
+       "\u0dbd","\u0dc0"-"\u0dc6","\u0e01"-"\u0e30","\u0e32"-"\u0e33","\u0e3f"-"\u0e46",
+       "\u0e81"-"\u0e82","\u0e84","\u0e87"-"\u0e88","\u0e8a","\u0e8d","\u0e94"-"\u0e97",
+       "\u0e99"-"\u0e9f","\u0ea1"-"\u0ea3","\u0ea5","\u0ea7","\u0eaa"-"\u0eab","\u0ead"-"\u0eb0",
+       "\u0eb2"-"\u0eb3","\u0ebd","\u0ec0"-"\u0ec4","\u0ec6","\u0edc"-"\u0edd","\u0f00",
+       "\u0f40"-"\u0f47","\u0f49"-"\u0f6a","\u0f88"-"\u0f8b","\u1000"-"\u1021","\u1023"-"\u1027",
+       "\u1029"-"\u102a","\u1050"-"\u1055","\u10a0"-"\u10c5","\u10d0"-"\u10f6","\u1100"-"\u1159",
+       "\u115f"-"\u11a2","\u11a8"-"\u11f9","\u1200"-"\u1206","\u1208"-"\u1246","\u1248",
+       "\u124a"-"\u124d","\u1250"-"\u1256","\u1258","\u125a"-"\u125d","\u1260"-"\u1286","\u1288",
+       "\u128a"-"\u128d","\u1290"-"\u12ae","\u12b0","\u12b2"-"\u12b5","\u12b8"-"\u12be","\u12c0",
+       "\u12c2"-"\u12c5","\u12c8"-"\u12ce","\u12d0"-"\u12d6","\u12d8"-"\u12ee","\u12f0"-"\u130e",
+       "\u1310","\u1312"-"\u1315","\u1318"-"\u131e","\u1320"-"\u1346","\u1348"-"\u135a",
+       "\u13a0"-"\u13f4","\u1401"-"\u166c","\u166f"-"\u1676","\u1681"-"\u169a","\u16a0"-"\u16ea",
+       "\u1780"-"\u17b3","\u17db","\u1820"-"\u1877","\u1880"-"\u18a8","\u1e00"-"\u1e9b",
+       "\u1ea0"-"\u1ef9","\u1d00"-"\u1eef","\u1f00"-"\u1f15","\u1f18"-"\u1f1d","\u1f20"-"\u1f45","\u1f48"-"\u1f4d",
+       "\u1f50"-"\u1f57","\u1f59","\u1f5b","\u1f5d","\u1f5f"-"\u1f7d","\u1f80"-"\u1fb4",
+       "\u1fb6"-"\u1fbc","\u1fbe","\u1fc2"-"\u1fc4","\u1fc6"-"\u1fcc","\u1fd0"-"\u1fd3",
+       "\u1fd6"-"\u1fdb","\u1fe0"-"\u1fec","\u1ff2"-"\u1ff4","\u1ff6"-"\u1ffc","\u203f"-"\u2040",
+       "\u207f","\u20a0"-"\u20af","\u2102","\u2107","\u210a"-"\u2113","\u2115","\u2119"-"\u211d",
+       "\u2124","\u2126","\u2128","\u212a"-"\u212d","\u212f"-"\u2131","\u2133"-"\u2139",
+       "\u2160"-"\u2183","\u3005"-"\u3007","\u3021"-"\u3029","\u3031"-"\u3035","\u3038"-"\u303a",
+       "\u3041"-"\u3094","\u309d"-"\u309e","\u30a1"-"\u30fe","\u3105"-"\u312c","\u3131"-"\u318e",
+       "\u31a0"-"\u31b7","\u3400"-"\u4db5","\u4e00"-"\u9fa5","\ua000"-"\ua48c","\ua490"-"\uabff","\uac00"-"\ud7a3",
+       "\uf900"-"\ufa2d","\ufb00"-"\ufb06","\ufb13"-"\ufb17","\ufb1d","\ufb1f"-"\ufb28",
+       "\ufb2a"-"\ufb36","\ufb38"-"\ufb3c","\ufb3e","\ufb40"-"\ufb41","\ufb43"-"\ufb44",
+       "\ufb46"-"\ufbb1","\ufbd3"-"\ufd3d","\ufd50"-"\ufd8f","\ufd92"-"\ufdc7","\ufdf0"-"\ufdfb",
+       "\ufe33"-"\ufe34","\ufe4d"-"\ufe4f","\ufe69","\ufe70"-"\ufe72","\ufe74","\ufe76"-"\ufefc",
+       "\uff04","\uff21"-"\uff3a","\uff3f","\uff41"-"\uff5a","\uff65"-"\uffbe","\uffc2"-"\uffc7",
+       "\uffca"-"\uffcf","\uffd2"-"\uffd7","\uffda"-"\uffdc","\uffe0"-"\uffe1","\uffe5"-"\uffe6"]>
+
+}
+
+
+TOKEN : /* Numeric literals */
+{
+    < DECNUMBER:
+        ["1"-"9"] (["0"-"9"])* (["l", "L"])?
+      | "0"
+      >
+|   < HEXNUMBER: "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+ (["l","L"])? >
+|   < OCTNUMBER: "0" (["o","O"])? (["0"-"7"])* (["l","L"])? >
+|   < BINNUMBER: "0" (["b","B"])? (["0"-"1"])* (["l","L"])? >
+|
+    < FLOAT:
+        (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)?
+      | "." (["0"-"9"])+ (<EXPONENT>)?
+      | (["0"-"9"])+ <EXPONENT>
+      >
+|   < COMPLEX: (<DECNUMBER> | <FLOAT> | "0" <DECNUMBER> ) ["j", "J"]>
+|   < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
+|   < #DIGIT: ["0" - "9"] >
+}
+
+MORE : /* Strings */
+{
+    < (["u", "U"]) (["r", "R"])? "'" > :  IN_USTRING11
+|   < (["u", "U"]) (["r", "R"])? "\"" > :  IN_USTRING21
+|   < (["u", "U"]) (["r", "R"])? "'''" > :  IN_USTRING13
+|   < (["u", "U"]) (["r", "R"])? "\"\"\"" > :  IN_USTRING23
+
+|   < (["b", "B"]) (["r", "R"])? "'" > :  IN_BSTRING11
+|   < (["b", "B"]) (["r", "R"])? "\"" > :  IN_BSTRING21
+|   < (["b", "B"]) (["r", "R"])? "'''" > :  IN_BSTRING13
+|   < (["b", "B"]) (["r", "R"])? "\"\"\"" > :  IN_BSTRING23
+
+|   < (["r", "R"])? "'" > :  IN_STRING11
+|   < (["r", "R"])? "\"" > :  IN_STRING21
+|   < (["r", "R"])? "'''" > :  IN_STRING13
+|   < (["r", "R"])? "\"\"\"" > :  IN_STRING23
+}
+
+<IN_STRING11> TOKEN : { <SINGLE_STRING: "'">        : DEFAULT}
+<IN_STRING21> TOKEN : { <SINGLE_STRING2: "\"">      : DEFAULT}
+<IN_STRING13> TOKEN : { <TRIPLE_STRING: "'''">      : DEFAULT}
+<IN_STRING23> TOKEN : { <TRIPLE_STRING2: "\"\"\"">  : DEFAULT}
+
+<IN_BSTRING11> TOKEN : { <SINGLE_BSTRING: "'">      : DEFAULT}
+<IN_BSTRING21> TOKEN : { <SINGLE_BSTRING2: "\"">    : DEFAULT}
+<IN_BSTRING13> TOKEN : { <TRIPLE_BSTRING: "'''">    : DEFAULT}
+<IN_BSTRING23> TOKEN : { <TRIPLE_BSTRING2: "\"\"\"">: DEFAULT}
+
+<IN_USTRING11> TOKEN : { <SINGLE_USTRING: "'">      : DEFAULT}
+<IN_USTRING21> TOKEN : { <SINGLE_USTRING2: "\"">    : DEFAULT}
+<IN_USTRING13> TOKEN : { <TRIPLE_USTRING: "'''">    : DEFAULT}
+<IN_USTRING23> TOKEN : { <TRIPLE_USTRING2: "\"\"\"">: DEFAULT}
+
+
+<IN_STRING11, IN_USTRING11, IN_BSTRING11> MORE: {
+     "\\'"
+}
+<IN_STRING21, IN_USTRING21, IN_BSTRING21> MORE: {
+    "\\\""
+}
+
+<IN_STRING11, IN_STRING21,
+ IN_USTRING11, IN_USTRING21,
+ IN_BSTRING11, IN_BSTRING21> MORE:
+{
+    // escaping a newline ignores it, this is handled by the token document
+    "\\\r\n" | "\\\n" | "\\\r"
+    | "\\\\"
+    | < ~["\n","\r"] >
+}
+
+// NLs are normalized in triple-quoted strings
+<IN_STRING13, IN_STRING23, IN_USTRING13, IN_USTRING23, IN_BSTRING13, IN_BSTRING23> MORE:
+{
+    "\r\n" {
+        int l = image.length();
+        image.setLength(l-1);
+        image.setCharAt(l-2, '\n');
+    }
+|   "\n"
+|   "\r" { image.setCharAt(image.length()-1, '\n'); }
+|   < ~["\n","\r"] >
+|   < "\\" ~["\n","\r"] >
+}

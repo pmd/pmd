@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Example code</description>
+        <rule-property name="ensureSerialization">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,3</expected-linenumbers>
+        <expected-messages>
+            <message>The bean 'MyBean' does not implement java.io.Serializable.</message>
+            <message>The bean 'MyBean' is missing a setter for property 'Label'.</message>
+        </expected-messages>
+        <code><![CDATA[
+package org.example.beans;
+public class MyBean {        // <-- bean is not serializable, missing "implements Serializable"
+    private String label;    // <-- missing setter for property "label"
+
+    public String getLabel() {
+        return label;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Valid Bean with all getters and setters</description>
+        <rule-property name="packages">net.sourceforge.pmd.example.beans</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.example.beans;
+import java.io.Serializable;
+public final class Button implements Serializable {
+    private String label;
+    private boolean active;
+    private Boolean enabled;
+    private transient String notImportant;
+    private final String constant = "Foo";
+
+    public String getLabel() { return label; }
+    public void setLabel(String label) { this.label = label; }
+
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
+
+    public Boolean isEnabled() { return enabled; }
+    public void setEnabled(Boolean enabled) { this.enabled = enabled; }
+
+    public String getConstant() { return constant; }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Bean with missing getters and setters</description>
+        <rule-property name="packages">net.sourceforge.pmd.example.beans</rule-property>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>4,5,7</expected-linenumbers>
+        <expected-messages>
+            <message>The bean 'Button' is missing a setter for property 'Label'.</message>
+            <message>The bean 'Button' is missing a getter and a setter for property 'Active'.</message>
+            <message>The bean 'Button' is missing a getter for property 'Constant'.</message>
+        </expected-messages>
+        <code><![CDATA[
+package net.sourceforge.pmd.example.beans;
+import java.io.Serializable;
+public final class Button implements Serializable {
+    private String label;
+    private boolean active;
+    private transient String notImportant;
+    private final String constant = "Foo";
+
+    public String getLabel() { return label; }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Bean with missing default ctor</description>
+        <rule-property name="packages">net.sourceforge.pmd.example.beans</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>The bean 'Button' is missing a no-arg constructor.</message>
+        </expected-messages>
+        <code><![CDATA[
+package net.sourceforge.pmd.example.beans;
+import java.io.Serializable;
+public final class Button implements Serializable {
+    private String label;
+    private final String constant;
+
+    public Button(String constant) {
+        this.constant = constant;
+    }
+
+    public String getConstant() { return constant; }
+    public String getLabel() { return label; }
+    public void setLabel(String label) { this.label = label; }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Bean with different type for property in getter and setter</description>
+        <rule-property name="packages">net.sourceforge.pmd.example.beans</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>The bean 'Button' should return a 'java.lang.String' in getter of property 'Label'.</message>
+        </expected-messages>
+        <code><![CDATA[
+package net.sourceforge.pmd.example.beans;
+import java.io.Serializable;
+public final class Button implements Serializable {
+    private String label;
+
+    public int getLabel() { return 42; }
+    public void setLabel(String label) { this.label = label; }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Bean with wrong getter name for boolean property</description>
+        <rule-property name="packages">net.sourceforge.pmd.example.beans</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>The bean 'Button' should use the method name 'isActive' for the getter of property 'Active'.</message>
+        </expected-messages>
+        <code><![CDATA[
+package net.sourceforge.pmd.example.beans;
+import java.io.Serializable;
+public final class Button implements Serializable {
+    private boolean active;
+
+    public boolean getActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
+}
+]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>#881 private final without setter is flagged</description>
+        <rule-property name="packages"></rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private final String bar = "BAR";
+    public String getBar() { return bar; }
+
+    private String baz;
+    public void setBaz(String b) { baz = b; }
+    public String getBaz() { return baz; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 1</description>
+        <rule-property name="packages"></rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Data;
+
+@Data
+public class Buzz {
+    private String foo;
+
+    public Buzz() {}
+
+    public Buzz(String s) {
+        foo = s;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 2</description>
+        <rule-property name="packages"></rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@lombok.Data
+public class Foo {
+    private String bar;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 3</description>
+        <rule-property name="packages"></rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.*;
+@Data
+public class Foo {
+    private String bar;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 4</description>
+        <rule-property name="packages"></rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Getter;
+import lombok.Setter;
+@Getter
+@Setter
+public class Foo {
+    private String bar;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 5</description>
+        <rule-property name="packages"></rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Getter;
+import lombok.Setter;
+public class Foo {
+    @Getter @Setter private String bar;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 6</description>
+        <rule-property name="packages"></rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Getter;
+public class Foo {
+    @Getter(lazy=true) private final String cached = expensive();
+
+    private String expensive() { return "expensive calculation that should be cached."; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1796 BeanMembersShouldSerialize should still report with @Delegate</description>
+        <rule-property name="packages"></rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The bean 'Foo' is missing a getter and a setter for property 'Bar'.</message>
+        </expected-messages>
+        <code><![CDATA[
+import lombok.experimental.Delegate;
+
+public class Foo {
+    @Delegate
+    private String bar;
+
+    public String toString() {
+        return "Foo: " + bar;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Consider properties not backed by a field (computed values)</description>
+        <rule-property name="packages"></rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The bean 'Button' has a property 'Size' with getter and setter that don't have the same type.</message>
+        </expected-messages>
+        <code><![CDATA[
+public final class Button {
+    public String getLabel() { return "foo"; }
+    public void setLabel(String label) { /* ignored */ }
+
+    public String getSize() { return "1"; }
+    public void setSize(int size) { /* ignored */ }
+
+    public String getName() { return "bar"; } // read-only property
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Consider indexed properties</description>
+        <rule-property name="packages"></rule-property>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>3,11,12</expected-linenumbers>
+        <expected-messages>
+            <message>The bean 'Button' should return a 'java.lang.String[]' in getter of property 'Labels'.</message>
+            <message>The bean 'Button' has a property 'Names' with an indexed getter using the wrong type.</message>
+            <message>The bean 'Button' has a property 'Names' with an indexed setter using the wrong type.</message>
+        </expected-messages>
+        <code><![CDATA[
+public final class Button {
+    private String[] labels;
+    public String getLabels() { return labels[0]; }
+    public void setLabels(String[] labels) { this.labels = labels; }
+    public String getLabels(int i) { return labels[i]; }
+    public void setLabels(int i, String label) { this.labels[i] = label; }
+
+    private String[] names;
+    public String[] getNames() { return names; }
+    public void setNames(String[] names) { this.names = names; }
+    public int getNames(int i) { return i; } // wrong result type
+    public void setNames(int i, int name) { /* ... */ } // wrong type
+}
+]]></code>
+    </test-code>
+</test-data>

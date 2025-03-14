@@ -1,0 +1,20 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L12
+    [class]                                 1         6
+    [StringTemplateReduction2]              7         31
+    [{]                                     32        33
+L13
+    [{]                                     5         6
+L14
+    [assert]                                9         15
+    [foo]                                   16        19
+    [.]                                     19        20
+    [equals]                                20        26
+    [(]                                     26        27
+    [bar]                                   27        30
+    [)]                                     30        31
+L15
+    [}]                                     5         6
+L16
+    [}]                                     1         2
+EOF

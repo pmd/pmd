@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>should be utility class since all static, public constructor</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>This utility class has a non-private constructor</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public Foo() { }
+    public static void doSomething() {}
+    public static void main(String args[]) {
+        doSomething();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, uses non-static</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() { }
+    public void doSomething() { }
+    public static void main(String args[]) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>should be utility class, couple of statics, no constructor</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void doSomething1() { }
+    public static void doSomething2() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>public constructor, no static - ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>classic utility class - ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private Foo() {}
+    public static Foo get() {
+        return null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>abstract, so ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class Foo {
+    public static void doSomething1() { }
+    public static void doSomething2() { }
+    public static void doSomething3() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>has some private and no public static fields, so ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() { }
+    private int x;
+    public static void doSomething() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>has public static field, so need to check</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static final int x = 5;
+    public static void doSomething() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>junit 3 'suite' method is OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestSuite;
+import junit.framework.Test;
+
+public class FooTest extends TestSuite {
+    public static Test suite() {
+        return new TestSuite();
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>junit 4 'suite' method is OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
+
+@RunWith(Suite.class)
+@SuiteClasses(FooTest.class)
+public class FooTest {
+}
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Reproducing bug [ 2315599 ] False +: UseSingleton with class containing constructor: Although there is a static method, the class also has a non-private constructor. This is a common design for custom exceptions which contain a private static method to format error message strings.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UseSingleton extends Exception {
+    UseSingleton(final String string) {
+        super(foo(string));
+    }
+
+    private static String foo(final String string) {
+        return string;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>inner should be utility class since all static, public constructor</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    static class Bar {
+        public Bar() { }
+        public static void doSomething() {}
+    }
+    public void doSomething() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[ 2404700 ] UseSingleton should not act on enums</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum EnumTest {
+    A, B;
+
+    EnumTest() { }
+
+    public static void main(String[] args) {
+        System.out.println(EnumTest.A);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NPE in incorrect implementation...</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() { }
+    public void doSomething() { }
+    public static void main(String args[]) { }
+    ;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>OK, method annotations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() { }
+    @Override
+    public void doSomething() { }
+    public static void main(String args[]) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1255 UseUtilityClass false positive with Exceptions</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MyException extends RuntimeException {
+
+    private static final long serialVersionUID = 2854498759784815062L;
+
+    public MyException() {
+        super(foo());
+    }
+
+    protected static String foo() {
+        return "foo";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1467 UseUtilityClass can't correctly check functions with multiple annotations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AccountFragment {
+
+    public static AccountFragment newInstance() {
+        // ...
+        return new AccountFragment();
+    }
+
+    @SafeVarargs
+    @Override
+    public void onCreateView() {
+        // ...
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Lombok NoArgsConstructor - ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.NoArgsConstructor;
+import lombok.AccessLevel;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class Foo {
+    public static Foo get() {
+        return null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Lombok NoArgsConstructor static import- ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static lombok.AccessLevel.PRIVATE;
+
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = PRIVATE)
+public class Foo {
+    public static Foo get() {
+        return null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Lombok NoArgsConstructor with no access level- should be a utility class</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+public class Foo {
+    public static Foo get() {
+        return null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Lombok NoArgsConstructor with wrong access level - should be a utility class</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = lombok.AccessLevel.PUBLIC)
+public class Foo {
+    public static Foo get() {
+        return null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Lombok AllArgsConstructor - ok</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
+
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class Foo {
+    public static Foo get() {
+        return null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#824 False Positive when extending another class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+
+public class FooLocal extends ThreadLocal<Integer> {
+    public static FooLocal get() {
+        return new FooLocal();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1094 [java] UseUtilityClass should be LombokAware</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public class MyUtil {
+    private final static int CONSTANT = 5;
+
+    public static int addSomething(int in) {
+        return in + CONSTANT;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Inner class in abstract class false-negative</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public abstract class Outer {
+    static class Inner { // no violation if private
+        public static int getInt() { return 42; }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Private inner class in abstract class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class Outer {
+    private static class Inner { // no violation if private
+        public static int getInt() { return 42; }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Inner class in abstract class false-negative</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public abstract class Outer {
+    static class Inner {
+        private static int answer;
+        public static int getInt() { return answer; }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Inner class in interface false-negative</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public interface Outer {
+    static class Inner {
+        public static int getInt() { return 42; }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Inner class in sub-class false-negative</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Outer extends Object {
+    static class Inner {
+        public static boolean isYes(int a) {
+            return a != 0;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

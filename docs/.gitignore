@@ -1,0 +1,8 @@
+_site/
+.sass-cache/
+.jekyll-metadata
+_pdf
+.idea/
+vendor/
+.bundle/
+assets/*.zip

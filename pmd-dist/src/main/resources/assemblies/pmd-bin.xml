@@ -1,0 +1,78 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.1.1 https://maven.apache.org/xsd/assembly-2.1.1.xsd">
+
+    <id>bin</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+
+    <includeBaseDirectory>true</includeBaseDirectory>
+    <baseDirectory>${pmd.dist.bin.baseDirectory}</baseDirectory>
+
+    <fileSets>
+        <fileSet>
+            <includes>
+                <include>pmd.bat</include>
+            </includes>
+            <directory>target/extra-resources/scripts</directory>
+            <outputDirectory>bin</outputDirectory>
+            <fileMode>0755</fileMode>
+            <directoryMode>0755</directoryMode>
+            <lineEnding>dos</lineEnding>
+        </fileSet>
+
+        <fileSet>
+            <includes>
+                <include>pmd</include>
+            </includes>
+            <directory>target/extra-resources/scripts</directory>
+            <outputDirectory>bin</outputDirectory>
+            <fileMode>0755</fileMode>
+            <directoryMode>0755</directoryMode>
+            <lineEnding>unix</lineEnding>
+        </fileSet>
+
+        <fileSet>
+            <includes>
+                <include>LICENSE</include>
+            </includes>
+            <directory>target/extra-resources</directory>
+            <outputDirectory>.</outputDirectory>
+            <directoryMode>0755</directoryMode>
+            <fileMode>0644</fileMode>
+        </fileSet>
+
+        <fileSet>
+            <includes>
+                <include>simplelogger.properties</include>
+            </includes>
+            <directory>target/extra-resources/conf</directory>
+            <outputDirectory>conf</outputDirectory>
+            <directoryMode>0755</directoryMode>
+            <fileMode>0644</fileMode>
+        </fileSet>
+
+        <fileSet>
+            <includes>
+                <include>pmd-*-cyclonedx.xml</include>
+                <include>pmd-*-cyclonedx.json</include>
+            </includes>
+            <directory>target</directory>
+            <outputDirectory>sbom</outputDirectory>
+        </fileSet>
+    </fileSets>
+
+    <dependencySets>
+        <!-- jar dependencies go to lib/ -->
+        <dependencySet>
+            <scope>runtime</scope>
+            <excludes>
+                <exclude>net.sourceforge.pmd:pmd-languages-deps:pom</exclude>
+            </excludes>
+            <outputDirectory>lib</outputDirectory>
+            <directoryMode>0755</directoryMode>
+            <fileMode>0644</fileMode>
+            <useProjectArtifact>false</useProjectArtifact>
+        </dependencySet>
+    </dependencySets>
+</assembly>

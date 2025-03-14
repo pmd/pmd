@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<ruleset name="Custom ruleset"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+<!-- Please note:
+     Although this is an xml file, it has explicitly NOT the .xml extension.
+
+     This file is used by RuleSetReferenceIdTest.
+-->
+
+  <description>Some ruleset</description>
+
+  <!-- We'll use the entire 'basic' ruleset -->
+  <rule ref="rulesets/java/basic.xml"/>
+</ruleset>

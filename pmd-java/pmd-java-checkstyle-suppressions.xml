@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suppressions PUBLIC
+     "-//Puppy Crawl//DTD Suppressions 1.0//EN"
+     "http://www.puppycrawl.com/dtds/suppressions_1_0.dtd">
+<suppressions>
+    <suppress files="[\\/]generated-sources[\\/]" checks="[a-zA-Z0-9]*"/>
+    <suppress files="[\\/]javasymbols[\\/]testdata[\\/]" checks="[a-zA-Z0-9]*"/>
+
+    <suppress files="[\\/]src[\\/]main[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]lang[\\/]java[\\/]rule[\\/]AbstractJavaRule\.java"
+        checks="AvoidStarImport" />
+    <suppress files="[\\/]src[\\/]test[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]typeresolution[\\/]testdata[\\/]*"
+              checks="AvoidStarImport" />
+    <suppress files="[\\/]src[\\/]test[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]typeresolution[\\/]testdata[\\/]*"
+              checks="HideUtilityClassConstructor" />
+    <suppress files="[\\/]src[\\/]test[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]typeresolution[\\/]testdata[\\/]*"
+              checks="OneTopLevelClass" />
+    <suppress files="src[\\/]main[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]lang[\\/]java[\\/]types[\\/]TypeSystem\.java"
+              checks="MemberName" />
+</suppressions>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Ok, no return</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+function foo() {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, 1 return w/ result</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+function foo() {
+    return true;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, 1 return w/o result</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+function foo() {
+    return;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, nested function with different return result</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+function foo() {
+    var x = function() {
+        return true;
+    };
+    return;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Bad, mixed result</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+function foo() {
+    if (true) {
+        return false;
+    }
+    return;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Bad, mixed result with nested function</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+function foo() {
+    var x = function() {
+        if (true) {
+            return false;
+        }
+        return;
+    };
+    if (true) {
+        return false;
+    }
+    return;
+}
+        ]]></code>
+    </test-code>
+</test-data>

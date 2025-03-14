@@ -1,0 +1,59 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+package net.sourceforge.pmd.lang.java.rule.errorprone;
+
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+
+/**
+ * The method clone() should only be implemented if the class implements the
+ * Cloneable interface with the exception of a final method that only throws
+ * CloneNotSupportedException. This version uses PMD's type resolution
+ * facilities, and can detect if the class implements or extends a Cloneable
+ * class
+ *
+ * @author acaplan
+ */
+public class CloneMethodMustImplementCloneableRule extends AbstractJavaRulechainRule {
+
+    public CloneMethodMustImplementCloneableRule() {
+        super(ASTMethodDeclaration.class);
+    }
+
+    @Override
+    public Object visit(final ASTMethodDeclaration node, final Object data) {
+        if (!JavaAstUtils.isCloneMethod(node)) {
+            return data;
+        }
+        ASTBlock body = node.getBody();
+        if (body != null && justThrowsCloneNotSupported(body)) {
+            return data;
+        }
+
+        ASTTypeDeclaration type = node.getEnclosingType();
+        if (type instanceof ASTClassDeclaration && !TypeTestUtil.isA(Cloneable.class, type)) {
+            // Nothing can save us now
+            asCtx(data).addViolation(node);
+        }
+        return data;
+    }
+
+    private static boolean justThrowsCloneNotSupported(ASTBlock body) {
+        return body.size() == 1
+                && body.getChild(0)
+                   .asStream()
+                   .filterIs(ASTThrowStatement.class)
+                   .map(ASTThrowStatement::getExpr)
+                   .filter(it -> TypeTestUtil.isA(CloneNotSupportedException.class, it))
+                   .nonEmpty();
+    }
+
+}

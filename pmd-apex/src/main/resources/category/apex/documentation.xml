@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ruleset name="Documentation"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+Rules that are related to code documentation.
+    </description>
+
+    <rule name="ApexDoc"
+          language="apex"
+          since="6.8.0"
+          message="ApexDoc comment is missing or incorrect"
+          class="net.sourceforge.pmd.lang.apex.rule.documentation.ApexDocRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_documentation.html#apexdoc">
+        <description>
+This rule validates that:
+
+*   ApexDoc comments are present for classes, methods, and properties that are public or global, excluding
+    overrides and test classes (as well as the contents of test classes).
+*   ApexDoc comments are present for classes, methods, and properties that are protected or private, depending
+    on the properties `reportPrivate` and `reportProtected`.
+*   ApexDoc comments should contain @description depending on the property `reportMissingDescription`.
+*   ApexDoc comments on non-void, non-constructor methods should contain @return.
+*   ApexDoc comments on void or constructor methods should not contain @return.
+*   ApexDoc comments on methods with parameters should contain @param for each parameter, in the same
+    order as the method signature.
+*   ApexDoc comments are present on properties is only validated, if the property `reportProperty` is enabled.
+    By setting `reportProperty` to false, you can ignore missing comments on properties.
+
+Method overrides and tests are both exempted from having ApexDoc.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+/**
+ * @description Hello World
+ */
+public class HelloWorld {
+    /**
+     * @description Bar
+     * @return Bar
+     */
+    public Object bar() { return null; }
+}
+]]>
+        </example>
+    </rule>
+
+</ruleset>

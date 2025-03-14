@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ruleset name="Multithreading"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+Rules that flag issues when dealing with multiple threads of execution.
+    </description>
+
+    <rule name="AvoidSynchronizedAtMethodLevel"
+          language="java"
+          since="3.0"
+          message="Use block level locking rather than method level synchronization"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#avoidsynchronizedatmethodlevel">
+        <description>
+Method-level synchronization will pin virtual threads and can cause performance problems. Additionally, it can cause
+problems when new code is added to the method.  Block-level ReentrantLock helps to ensure that only the code that
+needs mutual exclusion will be locked.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>//MethodDeclaration[pmd-java:modifiers() = "synchronized"]</value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+    // Try to avoid this:
+    synchronized void foo() {
+        // code, that doesn't need synchronization
+        // ...
+        // code, that requires synchronization
+        if (!sharedData.has("bar")) {
+            sharedData.add("bar");
+        }
+        // more code, that doesn't need synchronization
+        // ...
+    }
+    // Prefer this:
+    Lock instanceLock = new ReentrantLock();
+
+    void bar() {
+        // code, that doesn't need synchronization
+        // ...
+        try {
+            instanceLock.lock();  // or instanceLock.tryLock(long time, TimeUnit unit)
+            if (!sharedData.has("bar")) {
+                sharedData.add("bar");
+            }
+        } finally {
+            instanceLock.unlock();
+        }
+        // more code, that doesn't need synchronization
+        // ...
+    }
+
+    // Try to avoid this for static methods:
+    static synchronized void fooStatic() {
+    }
+
+    // Prefer this:
+    private static Lock CLASS_LOCK = new ReentrantLock();
+
+    static void barStatic() {
+        // code, that doesn't need synchronization
+        // ...
+        try {
+            CLASS_LOCK.lock();
+            // code, that requires synchronization
+        } finally {
+            CLASS_LOCK.unlock();
+        }
+        // more code, that doesn't need synchronization
+        // ...
+    }
+}
+]]>
+        </example>
+    </rule>
+
+  <rule name="AvoidSynchronizedStatement"
+        language="java"
+        since="7.5.0"
+        message="Use ReentrantLock rather than synchronization"
+        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#avoidsynchronizedstatement">
+    <description>
+      Synchronization will pin virtual threads and can cause performance problems.
+    </description>
+    <priority>3</priority>
+    <properties>
+      <property name="xpath">
+        <value>//SynchronizedStatement</value>
+      </property>
+    </properties>
+    <example>
+      <![CDATA[
+public class Foo {
+    // Try to avoid this:
+    void foo() {
+        // code that doesn't need mutual exclusion
+        synchronized(this) {
+            // code that requires mutual exclusion
+        }
+        // more code that doesn't need mutual exclusion
+    }
+    // Prefer this:
+    Lock instanceLock = new ReentrantLock();
+
+    void foo() {
+        // code that doesn't need mutual exclusion
+        try {
+            instanceLock.lock();  // or instanceLock.tryLock(long time, TimeUnit unit)
+            // code that requires mutual exclusion
+        } finally {
+            instanceLock.unlock();
+        }
+        // more code that doesn't need mutual exclusion
+    }
+}
+]]>
+    </example>
+  </rule>
+
+    <rule name="AvoidThreadGroup"
+          language="java"
+          since="3.6"
+          message="Avoid using java.lang.ThreadGroup; it is not thread safe"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#avoidthreadgroup">
+        <description>
+Avoid using java.lang.ThreadGroup; although it is intended to be used in a threaded environment
+it contains methods that are not thread-safe.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+  //ConstructorCall/ClassType[pmd-java:typeIs('java.lang.ThreadGroup')]
+| //MethodCall[@MethodName = 'getThreadGroup']
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Bar {
+    void buz() {
+        ThreadGroup tg = new ThreadGroup("My threadgroup");
+        tg = new ThreadGroup(tg, "my thread group");
+        tg = Thread.currentThread().getThreadGroup();
+        tg = System.getSecurityManager().getThreadGroup();
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidUsingVolatile"
+          language="java"
+          since="4.1"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          message="Use of modifier volatile is not recommended."
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#avoidusingvolatile">
+        <description>
+Use of the keyword 'volatile' is generally used to fine tune a Java application, and therefore, requires
+a good expertise of the Java Memory Model. Moreover, its range of action is somewhat misknown. Therefore,
+the volatile keyword should not be used for maintenance purpose and portability.
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value>//FieldDeclaration[pmd-java:modifiers() = "volatile"]</value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class ThrDeux {
+  private volatile String var1; // not suggested
+  private          String var2; // preferred
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="DoNotUseThreads"
+          language="java"
+          since="4.1"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          message="To be compliant to J2EE, a webapp should not use any thread."
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#donotusethreads">
+        <description>
+The J2EE specification explicitly forbids the use of threads. Threads are resources, that should be managed and monitored by the J2EE server.
+If the application creates threads on its own or uses own custom thread pools, then these threads are not managed, which could lead to resource exhaustion.
+Also, EJBs might be moved between machines in a cluster and only managed resources can be moved along.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ClassType
+[pmd-java:typeIs('java.lang.Thread') or pmd-java:typeIs('java.util.concurrent.ExecutorService')]
+(: allow Thread.currentThread().getContextClassLoader() :)
+[not(parent::TypeExpression[parent::MethodCall[pmd-java:matchesSig('_#currentThread()')
+                                               and parent::MethodCall[pmd-java:matchesSig('_#getContextClassLoader()')]
+                                              ]
+                           ]
+)]
+(: exclude duplicated types on the same line :)
+ [not((parent::FieldDeclaration|parent::LocalVariableDeclaration)/VariableDeclarator/*[2][pmd-java:typeIs('java.lang.Thread') or pmd-java:typeIs('java.util.concurrent.ExecutorService')])
+ or
+  @BeginLine != (parent::FieldDeclaration|parent::LocalVariableDeclaration)/VariableDeclarator/ConstructorCall/ClassType/@BeginLine]
+|
+//MethodCall[*[1][not(pmd-java:nodeIs('MethodCall'))][pmd-java:nodeIs('Expression') and (pmd-java:typeIs('java.util.concurrent.Executors')
+   or pmd-java:typeIs('java.util.concurrent.ExecutorService'))]]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+// This is not allowed
+public class UsingThread extends Thread {
+
+}
+
+// Neither this,
+public class UsingExecutorService {
+
+    public void methodX() {
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
+    }
+}
+
+// Nor this,
+public class Example implements ExecutorService {
+
+}
+
+// Nor this,
+public class Example extends AbstractExecutorService {
+
+}
+
+// Nor this
+public class UsingExecutors {
+
+    public void methodX() {
+        Executors.newSingleThreadExecutor().submit(() -> System.out.println("Hello!"));
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="DontCallThreadRun"
+          language="java"
+          since="4.3"
+          message="Don't call Thread.run() explicitly, use Thread.start()"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#dontcallthreadrun">
+        <description>
+Explicitly calling Thread.run() method will execute in the caller's thread of control.  Instead, call Thread.start() for the intended behavior.
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodCall[ pmd-java:matchesSig("java.lang.Thread#run()") ]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+Thread t = new Thread();
+t.run();            // use t.start() instead
+new Thread().run(); // same violation
+]]>
+        </example>
+    </rule>
+
+    <rule name="DoubleCheckedLocking"
+          language="java"
+          since="1.04"
+          message="Double checked locking is not thread safe in Java."
+          class="net.sourceforge.pmd.lang.java.rule.multithreading.DoubleCheckedLockingRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#doublecheckedlocking">
+        <description>
+Partially created objects can be returned by the Double Checked Locking pattern when used in Java.
+An optimizing JRE may assign a reference to the baz variable before it calls the constructor of the object the
+reference points to.
+
+Note: With Java 5, you can make Double checked locking work, if you declare the variable to be `volatile`.
+
+For more details refer to: &lt;http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-double.html>
+or &lt;http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html>
+        </description>
+        <priority>1</priority>
+        <example>
+<![CDATA[
+public class Foo {
+    /*volatile */ Object baz = null; // fix for Java5 and later: volatile
+    Object bar() {
+        if (baz == null) { // baz may be non-null yet not fully created
+            synchronized(this) {
+                if (baz == null) {
+                    baz = new Object();
+                }
+              }
+        }
+        return baz;
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="NonThreadSafeSingleton"
+          language="java"
+          since="3.4"
+          message="Singleton is not thread safe"
+          class="net.sourceforge.pmd.lang.java.rule.multithreading.NonThreadSafeSingletonRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#nonthreadsafesingleton">
+        <description>
+Non-thread safe singletons can result in bad state changes. Eliminate
+static singletons if possible by instantiating the object directly. Static
+singletons are usually not needed as only a single instance exists anyway.
+Other possible fixes are to synchronize the entire method or to use an
+[initialize-on-demand holder class](https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom).
+
+Refrain from using the double-checked locking pattern. The Java Memory Model doesn't
+guarantee it to work unless the variable is declared as `volatile`, adding an uneeded
+performance penalty. [Reference](http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html)
+
+See Effective Java, item 48.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+private static Foo foo = null;
+
+//multiple simultaneous callers may see partially initialized objects
+public static Foo getFoo() {
+    if (foo==null) {
+        foo = new Foo();
+    }
+    return foo;
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnsynchronizedStaticFormatter"
+          language="java"
+          since="6.11.0"
+          message="Static Formatter objects should be accessed in a synchronized manner"
+          class="net.sourceforge.pmd.lang.java.rule.multithreading.UnsynchronizedStaticFormatterRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#unsynchronizedstaticformatter">
+        <description>
+Instances of `java.text.Format` are generally not synchronized.
+Sun recommends using separate format instances for each thread.
+If multiple threads must access a static formatter, the formatter must be
+synchronized on block level.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo {
+    private static final SimpleDateFormat sdf = new SimpleDateFormat();
+    void bar() {
+        sdf.format(); // poor, no thread-safety
+    }
+    void foo() {
+        synchronized (sdf) { // preferred
+            sdf.format();
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UseConcurrentHashMap"
+          language="java"
+          minimumLanguageVersion="1.5"
+          since="4.2.6"
+          message="If you run in Java5 or newer and have concurrent access, you should use the ConcurrentHashMap implementation"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#useconcurrenthashmap">
+        <description>
+Since Java5 brought a new implementation of the Map designed for multi-threaded access, you can
+perform efficient map reads without blocking other threads.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//VariableDeclarator[VariableId[pmd-java:typeIsExactly('java.util.Map')] and *[2][self::ConstructorCall and not(pmd-java:typeIs('java.util.concurrent.ConcurrentHashMap'))]]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class ConcurrentApp {
+  public void getMyInstance() {
+    Map map1 = new HashMap();           // fine for single-threaded access
+    Map map2 = new ConcurrentHashMap(); // preferred for use with multiple threads
+
+    // the following case will be ignored by this rule
+    Map map3 = someModule.methodThatReturnMap(); // might be OK, if the returned map is already thread-safe
+  }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UseNotifyAllInsteadOfNotify"
+          language="java"
+          since="3.0"
+          message="Call Thread.notifyAll() rather than Thread.notify()"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#usenotifyallinsteadofnotify">
+        <description>
+Thread.notify() awakens a thread monitoring the object. If more than one thread is monitoring, then only
+one is chosen.  The thread chosen is arbitrary; thus its usually safer to call notifyAll() instead.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodCall[@MethodName="notify" and ArgumentList[count(*) = 0]]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+  void bar() {
+    x.notify();
+    // If many threads are monitoring x, only one (and you won't know which) will be notified.
+    // use instead:
+    x.notifyAll();
+  }
+]]>
+        </example>
+    </rule>
+
+</ruleset>

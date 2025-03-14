@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ruleset name="Design"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+Rules that help you discover design issues.
+    </description>
+
+    <rule name="AvoidDeeplyNestedIfStmts"
+          language="apex"
+          since="5.5.0"
+          message="Deeply nested if..then statements are hard to read"
+          class="net.sourceforge.pmd.lang.apex.rule.design.AvoidDeeplyNestedIfStmtsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#avoiddeeplynestedifstmts">
+        <description>
+Avoid creating deeply nested if-then statements since they are harder to read and error-prone to maintain.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo {
+    public void bar(Integer x, Integer y, Integer z) {
+        if (x>y) {
+            if (y>z) {
+                if (z==x) {
+                    // !! too deep
+                }
+            }
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnusedMethod"
+          language="apex"
+          since="7.0.0"
+          message="Unused methods make understanding code harder"
+          class="net.sourceforge.pmd.lang.apex.rule.design.UnusedMethodRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#unusedmethod">
+        <description><![CDATA[
+Avoid having unused methods since they make understanding and maintaining code harder.
+
+This rule finds not only unused private methods, but public methods as well, as long as
+the class itself is not entirely unused. A class is considered used, if it contains at
+least one other method/variable declaration that is used, as shown in the
+[test project file Foo.cls](https://github.com/pmd/pmd/blob/469b2a67ae375bde52bb33ccd4fb69e3c2993948/pmd-apex/src/test/resources/net/sourceforge/pmd/lang/apex/rule/design/UnusedMethod/project1/src/Foo.cls#L6-L8).
+
+[ApexLink](https://github.com/nawforce/ApexLink) is used to make this possible and this needs
+additional configuration. The environment variable `PMD_APEX_ROOT_DIRECTORY` needs to be set prior to executing
+PMD. With this variable the root directory of the Salesforce metadata, where `sfdx-project.json` resides, is
+specified. ApexLink can then load all the classes in the project and figure out, whether a method is used or not.
+
+For an accurate analysis it is important that the `PMD_APEX_ROOT_DIRECTORY` contains a complete set of metadata that
+may be referenced from the Apex source code, such as Custom Objects, Visualforce Pages, Flows and Labels. The
+`PMD_APEX_ROOT_DIRECTORY` directory must contain a `sfdx-project.json`, but metadata may be either in the
+[SFDX Source format](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_source_file_format.htm)
+or the older MDAPI format. The `packageDirectories` entries in `sfdx-project.json` are used to determine which
+directories to search for metadata, if a `.forceignore` file is present it will be respected.
+
+If the Apex code references external packages via namespace(s) you should declare these in your `sfdx-project.json`
+file using the 'plugins' syntax shown in the example below to avoid errors. Here's an example of a
+well-formed `sfdx-project.json`:
+```json
+{
+    "packageDirectories": [
+      {
+        "path": "src",
+        "default": true
+      }
+    ],
+    "namespace": "my_namespace",
+    "sfdcLoginUrl": "https://login.salesforce.com",
+    "sourceApiVersion": "52.0",
+    "plugins": {
+        "dependencies": [
+            {"namespace": "aa"}
+        ]
+    }
+}
+```
+]]>
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Triangle {
+    private Double side1;
+    private Double side2;
+    private Double side3;
+
+    public Triangle(Double side1, Double side2, Double side3) {
+        this.side1 = side1;
+        this.side2 = side2;
+        this.side3 = side3;
+    }
+
+    // Method is not invoked so can be removed
+    public Double area() {
+        return (side1 + side2 + side3)/2;
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="CyclomaticComplexity"
+          language="apex"
+          message="The {0} ''{1}'' has a{2} cyclomatic complexity of {3}."
+          since="6.0.0"
+          class="net.sourceforge.pmd.lang.apex.rule.design.CyclomaticComplexityRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#cyclomaticcomplexity">
+        <description>
+The complexity of methods directly affects maintenance costs and readability. Concentrating too much decisional logic
+in a single method makes its behaviour hard to read and change.
+
+Cyclomatic complexity assesses the complexity of a method by counting the number of decision points in a method,
+plus one for the method entry. Decision points are places where the control flow jumps to another place in the
+program. As such, they include all control flow statements, such as 'if', 'while', 'for', and 'case'.
+
+Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
+high complexity, and 11+ is very high complexity. By default, this rule reports methods with a complexity >= 10.
+Additionally, classes with many methods of moderate complexity get reported as well once the total of their
+methods' complexities reaches 40, even if none of the methods was directly reported.
+
+Reported methods should be broken down into several smaller methods. Reported classes should probably be broken down
+into subcomponents.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Complicated {
+  public void example() { // This method has a cyclomatic complexity of 12
+    int x = 0, y = 1, z = 2, t = 2;
+    boolean a = false, b = true, c = false, d = true;
+    if (a && b || b && d) {
+      if (y == z) {
+        x = 2;
+      } else if (y == t && !d) {
+        x = 2;
+      } else {
+        x = 2;
+      }
+    } else if (c && d) {
+      while (z < y) {
+        x = 2;
+      }
+    } else {
+      for (int n = 0; n < t; n++) {
+        x = 2;
+      }
+    }
+  }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="CognitiveComplexity"
+          language="apex"
+          message="The {0} ''{1}'' has a{2} cognitive complexity of {3}, current threshold is {4}"
+          since="6.22.0"
+          class="net.sourceforge.pmd.lang.apex.rule.design.CognitiveComplexityRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#cognitivecomplexity">
+        <description><![CDATA[
+Methods that are highly complex are difficult to read and more costly to maintain. If you include too much decisional
+logic within a single method, you make its behavior hard to understand and more difficult to modify.
+
+Cognitive complexity is a measure of how difficult it is for humans to read and understand a method. Code that contains
+a break in the control flow is more complex, whereas the use of language shorthands doesn't increase the level of
+complexity. Nested control flows can make a method more difficult to understand, with each additional nesting of the
+control flow leading to an increase in cognitive complexity.
+
+Information about Cognitive complexity can be found in the original paper here:
+<https://www.sonarsource.com/docs/CognitiveComplexity.pdf>
+
+By default, this rule reports methods with a complexity of 15 or more. Reported methods should be broken down into less
+complex components.
+]]>
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Foo {
+    // Has a cognitive complexity of 0
+    public void createAccount() {
+        Account account = new Account(Name = 'PMD');
+        insert account;
+    }
+
+    // Has a cognitive complexity of 1
+    public Boolean setPhoneNumberIfNotExisting(Account a, String phone) {
+        if (a.Phone == null) {                          // +1
+            a.Phone = phone;
+            update a;
+            return true;
+        }
+
+        return false;
+    }
+
+    // Has a cognitive complexity of 4
+    public void updateContacts(List<Contact> contacts) {
+        List<Contact> contactsToUpdate = new List<Contact>();
+
+        for (Contact contact : contacts) {                           // +1
+            if (contact.Department == 'Finance') {                   // +2 (nesting = 1)
+                contact.Title = 'Finance Specialist';
+                contactsToUpdate.add(contact);
+            } else if (contact.Department == 'Sales') {              // +1
+                contact.Title = 'Sales Specialist';
+                contactsToUpdate.add(contact);
+            }
+        }
+
+        update contactsToUpdate;
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ExcessiveClassLength"
+          language="apex"
+          since="5.5.0"
+          message="Avoid really long classes."
+          class="net.sourceforge.pmd.lang.apex.rule.design.ExcessiveClassLengthRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#excessiveclasslength">
+        <description>
+Excessive class file lengths are usually indications that the class may be burdened with excessive
+responsibilities that could be provided by external classes or functions. In breaking these methods
+apart the code becomes more managable and ripe for reuse.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo {
+    public void bar1() {
+        // 1000 lines of code
+    }
+    public void bar2() {
+        // 1000 lines of code
+    }
+    public void bar3() {
+        // 1000 lines of code
+    }
+    public void barN() {
+        // 1000 lines of code
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ExcessiveParameterList"
+          language="apex"
+          since="5.5.0"
+          message="Avoid long parameter lists."
+          class="net.sourceforge.pmd.lang.apex.rule.design.ExcessiveParameterListRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#excessiveparameterlist">
+        <description>
+Methods with numerous parameters are a challenge to maintain, especially if most of them share the
+same datatype. These situations usually denote the need for new objects to wrap the numerous parameters.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+// too many arguments liable to be mixed up
+public void addPerson(Integer birthYear, Integer birthMonth, Integer birthDate, Integer height, Integer weight, Integer ssn) {
+    // ...
+}
+// preferred approach
+public void addPerson(Date birthdate, BodyMeasurements measurements, int ssn) {
+    // ...
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ExcessivePublicCount"
+          language="apex"
+          since="5.5.0"
+          message="The class {0} has {1} public methods, attributes, and properties (limit: {2})"
+          class="net.sourceforge.pmd.lang.apex.rule.design.ExcessivePublicCountRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#excessivepubliccount">
+        <description>
+Classes with large numbers of public methods, attributes, and properties require disproportionate testing efforts
+since combinatorial side effects grow rapidly and increase risk. Refactoring these classes into
+smaller ones not only increases testability and reliability but also allows new variations to be
+developed easily.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo {
+    public String value;
+    public Bar something;
+    public Variable var;
+    // [... more more public attributes ...]
+
+    public void doWork() {}
+    public void doMoreWork() {}
+    public void doWorkAgain() {}
+    // [... more more public methods ...]
+
+    public String property1 { get; set; }
+    // [... more more public properties ...]
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="NcssConstructorCount"
+          language="apex"
+          since="5.5.0"
+          message="The constructor has an NCSS line count of {0}"
+          class="net.sourceforge.pmd.lang.apex.rule.design.NcssConstructorCountRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#ncssconstructorcount">
+        <description>
+This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
+of code for a given constructor. NCSS ignores comments, and counts actual statements. Using this algorithm,
+lines of code that are split are counted as one.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo extends Bar {
+    //this constructor only has 1 NCSS lines
+    public Foo() {
+        super();
+
+
+
+
+        super.foo();
+}
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="NcssMethodCount"
+          language="apex"
+          since="5.5.0"
+          message="The method ''{0}()'' has an NCSS line count of {1} (limit: {2})"
+          class="net.sourceforge.pmd.lang.apex.rule.design.NcssMethodCountRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#ncssmethodcount">
+        <description>
+This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
+of code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm,
+lines of code that are split are counted as one.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo extends Bar {
+    //this method only has 1 NCSS lines
+    public Integer method() {
+        super.method();
+
+
+
+        return 1;
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="NcssTypeCount"
+          language="apex"
+          since="5.5.0"
+          message="The type has an NCSS line count of {0}"
+          class="net.sourceforge.pmd.lang.apex.rule.design.NcssTypeCountRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#ncsstypecount">
+        <description>
+This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
+of code for a given type. NCSS ignores comments, and counts actual statements. Using this algorithm,
+lines of code that are split are counted as one.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+//this class only has 6 NCSS lines
+public class Foo extends Bar {
+    public Foo() {
+        super();
+
+
+
+
+
+        super.foo();
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="StdCyclomaticComplexity"
+          language="apex"
+          since="5.5.0"
+          message="The {0} ''{1}'' has a Standard Cyclomatic Complexity of {2}."
+          class="net.sourceforge.pmd.lang.apex.rule.design.StdCyclomaticComplexityRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#stdcyclomaticcomplexity">
+        <description>
+Complexity directly affects maintenance costs is determined by the number of decision points in a method
+plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.
+Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
+high complexity, and 11+ is very high complexity.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+// This has a Cyclomatic Complexity = 12
+public class Foo {
+1   public void example() {
+2   if (a == b || (c == d && e == f)) {
+3       if (a1 == b1) {
+            fiddle();
+4       } else if a2 == b2) {
+            fiddle();
+        }  else {
+            fiddle();
+        }
+5   } else if (c == d) {
+6       while (c == d) {
+            fiddle();
+        }
+7   } else if (e == f) {
+8       for (int n = 0; n < h; n++) {
+            fiddle();
+        }
+    } else {
+        switch (z) {
+9           case 1:
+                fiddle();
+                break;
+10          case 2:
+                fiddle();
+                break;
+11          case 3:
+                fiddle();
+                break;
+12          default:
+                fiddle();
+                break;
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="TooManyFields"
+          language="apex"
+          since="5.5.0"
+          message="Too many fields"
+          class="net.sourceforge.pmd.lang.apex.rule.design.TooManyFieldsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#toomanyfields">
+        <description>
+Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,
+possibly through grouping related fields in new objects.  For example, a class with individual
+city/state/zip fields could park them within a single Address field.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Person {
+    // too many separate fields
+    Integer birthYear;
+    Integer birthMonth;
+    Integer birthDate;
+    Double height;
+    Double weight;
+}
+
+public class Person {
+    // this is more manageable
+    Date birthDate;
+    BodyMeasurements measurements;
+}
+]]>
+        </example>
+    </rule>
+
+</ruleset>

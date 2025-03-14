@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ruleset name="Documentation"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+Rules that are related to code documentation.
+    </description>
+
+    <rule name="CommentContent"
+          language="java"
+          since="5.0"
+          message="Invalid words or phrases found"
+          class="net.sourceforge.pmd.lang.java.rule.documentation.CommentContentRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_documentation.html#commentcontent">
+        <description>
+A rule for the politically correct... we don't want to offend anyone.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+//OMG, this is horrible, Bob is an idiot !!!
+]]>
+        </example>
+    </rule>
+
+    <rule name="CommentRequired"
+          language="java"
+          since="5.1"
+          message="Comment is required"
+          class="net.sourceforge.pmd.lang.java.rule.documentation.CommentRequiredRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_documentation.html#commentrequired">
+        <description>
+Denotes whether javadoc (formal) comments are required (or unwanted) for specific language elements.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+/**
+*
+*
+* @author Jon Doe
+*/
+]]>
+        </example>
+    </rule>
+
+    <rule name="CommentSize"
+          language="java"
+          since="5.0"
+          message="Comment is too large"
+          class="net.sourceforge.pmd.lang.java.rule.documentation.CommentSizeRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_documentation.html#commentsize">
+        <description>
+Determines whether the dimensions of non-header comments found are within the specified limits.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+/**
+*
+*   too many lines!
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*/
+]]>
+        </example>
+    </rule>
+
+    <rule name="UncommentedEmptyConstructor"
+          language="java"
+          since="3.4"
+          message="Document empty constructor"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_documentation.html#uncommentedemptyconstructor">
+        <description>
+Uncommented Empty Constructor finds instances where a constructor does not
+contain statements, but there is no comment. By explicitly commenting empty
+constructors it is easier to distinguish between intentional (commented)
+and unintentional empty constructors.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ConstructorDeclaration[@Visibility != "private"]
+                        [not(
+                               pmd-java:hasAnnotation('javax.inject.Inject')
+                            or pmd-java:hasAnnotation('org.springframework.beans.factory.annotation.Autowired')
+                        )]
+                        [Block[
+                            @containsComment = false()
+                            and (count(*) = 0 or ($ignoreExplicitConstructorInvocation = true() and count(*) = 1 and ExplicitConstructorInvocation))
+                        ]]
+]]>
+                </value>
+            </property>
+            <property name="ignoreExplicitConstructorInvocation" type="Boolean" description="Ignore explicit constructor invocation when deciding whether constructor is empty or not" value="false"/>
+        </properties>
+        <example>
+<![CDATA[
+public Foo() {
+  // This constructor is intentionally empty. Nothing special is needed here.
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UncommentedEmptyMethodBody"
+          language="java"
+          since="3.4"
+          message="Document empty method body"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_documentation.html#uncommentedemptymethodbody">
+        <description>
+Uncommented Empty Method Body finds instances where a method body does not contain
+statements, but there is no comment. By explicitly commenting empty method bodies
+it is easier to distinguish between intentional (commented) and unintentional
+empty methods.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodDeclaration/Block[count(*) = 0 and @containsComment = false()]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public void doSomething() {
+}
+]]>
+        </example>
+    </rule>
+
+</ruleset>

@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<ruleset name="Test Ruleset" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+  Ruleset used by test RuleSetReferenceIdTest
+  </description>
+
+    <rule name="DummyBasicMockRule" language="dummy" since="1.0" message="Test Rule 1" class="net.sourceforge.pmd.lang.rule.MockRule"
+        externalInfoUrl="${pmd.website.baseurl}/rules/dummy/basic.xml#DummyBasicMockRule">
+        <description>
+Just for test
+     </description>
+        <priority>3</priority>
+        <example>
+ <![CDATA[
+ ]]>
+     </example>
+    </rule>
+
+    <!-- variant 1 of a renamed rule. This is definitively within the same ruleset. -->
+    <rule deprecated="true" name="OldNameOfDummyBasicMockRule" ref="DummyBasicMockRule"/>
+    <!-- variant 2 of a renamed rule. This explicitly mentions the new ruleset which happens to be this (the same) ruleset. -->
+    <rule deprecated="true" name="OldNameOfDummyBasicMockRule2" ref="rulesets/dummy/basic.xml/DummyBasicMockRule"/>
+
+    <rule name="SampleXPathRule" language="dummy" since="1.1" message="Test Rule 2" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/rules/dummy/basic.xml#SampleXPathRule">
+        <description>Test</description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+//dummyRootNode
+                ]]></value>
+            </property>
+        </properties>
+        <example> </example>
+    </rule>
+
+    <rule name="DeprecatedRule" deprecated="true" language="dummy" since="1.0" message="Test Rule 3" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/rules/dummy/basic.xml#deprecatedrule">
+        <description>Test Deprecated rule</description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+//dummyRootNode
+                ]]></value>
+            </property>
+        </properties>
+        <example> </example>
+    </rule>
+
+</ruleset>

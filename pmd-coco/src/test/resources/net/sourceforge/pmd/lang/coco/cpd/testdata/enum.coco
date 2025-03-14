@@ -1,0 +1,125 @@
+import unqualified ComponentDef
+import unqualified ExternalTypes
+import unqualified ExternalComponent
+
+@runtime(Runtime.SingleThreaded)
+component ComponentDefImpl {
+  val componentInst : Provided<ComponentDef>
+  val rExternalComponent : Required<ExternalComponent>
+
+  init() = {}
+
+  @ignoreWarning(Warning.Unreachable)
+  machine M {
+    enum CompEnum {
+      case Unknown
+      case Value1
+      case Value2
+    }
+
+    var compEnum_ : CompEnum = CompEnum.Unknown
+
+    entry() = {
+      setNextState(InitialState);
+    }
+
+    function FunctionA(inputVal : ExternalComponent.value) : Nil = {
+
+      @ignoreWarning(Warning.IncompleteMatch)
+      match (inputVal) {
+        .Scenario1 => {
+          if (compEnum_ == CompEnum.Value1) {
+            componentInst.doStuff();
+            setNextState(StateA);
+            return nil;
+          } else if (compEnum_ == CompEnum.Value2) {
+            ExternalComponent.doOtherStuff();
+            setNextState(StateB);
+            return nil;
+          };
+        },
+        .Scenario2 => {
+          if (compEnum_ == CompEnum.Value1) {
+            ExternalComponent.doOtherStuff();
+            setNextState(StateB);
+            return nil;
+          } else if (compEnum_ == CompEnum.Value2) {
+            componentInst.doStuff();
+            setNextState(StateA);
+            return nil;
+          };
+        },
+      }
+      abort();
+    }
+
+    function FunctionB(inputVal : ExternalComponent.value) : Nil = {
+
+      @ignoreWarning(Warning.IncompleteMatch)
+      match (inputVal) {
+        .Scenario1 => {
+          compEnum_ = CompEnum.Value1;
+          setNextState(StateA);
+          return nil;
+        },
+        .Scenario2 => {
+          compEnum_ = CompEnum.Value2;
+          setNextState(StateA);
+          return nil;
+        },
+      }
+      abort();
+    }
+
+    state InitialState {
+      assert(compEnum_ == CompEnum.Unknown)
+
+      componentInst.initialize() = {
+        FunctionB(ExternalComponent.doYourThing());
+      }
+    }
+
+    state StateA {
+      assert(compEnum_ != CompEnum.Unknown)
+
+      componentInst.run() = {
+        FunctionA(ExternalComponent.doYourThing());
+      }
+      componentInst.initialize() = {
+        FunctionB(ExternalComponent.doYourThing());
+      }
+    }
+
+    state StateB {
+      ExternalComponent.doOtherStuff() = {
+        componentInst.run();
+        compEnum_ = CompEnum.Unknown;
+        setNextState(InitialState);
+      }
+      ExternalComponent.doOtherStuffAgain() = {
+        ExternalComponent.process();
+        setNextState(StateC);
+      }
+    }
+
+    state StateC {
+      ExternalComponent.process() = {
+        componentInst.run();
+        compEnum_ = CompEnum.Unknown;
+        setNextState(InitialState);
+      }
+      ExternalComponent.processAgain() = offer {
+        if (compEnum_ == CompEnum.Value1) {
+          componentInst.doStuff();
+          compEnum_ = CompEnum.Value2;
+          setNextState(StateA);
+        },
+        if (compEnum_ == CompEnum.Value2) {
+          componentInst.doStuff();
+          compEnum_ = CompEnum.Value1;
+          setNextState(StateA);
+        },
+      }
+    }
+  }
+}

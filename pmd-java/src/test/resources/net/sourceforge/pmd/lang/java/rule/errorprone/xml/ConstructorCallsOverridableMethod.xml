@@ -1,0 +1,634 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>calling public method from constructor</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+        bar();
+    }
+    public void bar() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>calling protected method from constructor</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+        bar();
+    }
+    protected void bar() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>calling package private method from constructor</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+        bar();
+    }
+    void bar() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>calling private method, ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+        bar();
+    }
+    private void bar() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>overloaded constructors, calling public method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+        this("Bar");
+    }
+    private Foo(String bar) {
+        bar();
+    }
+    public void bar() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>calling method on literal bug</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo(String s) {
+        "foo".equals(s);
+    }
+    public void equals(String bar) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>method in anonymous inner class is ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo(String s) {
+        addRunnable(new Runnable() {
+            public void run() {bar();}
+        });
+    }
+    public void bar() {}
+    final void addRunnable(Runnable r) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>method in lambda expression is ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo(String s) {
+        addActionListener(() -> bar());
+        addActionListener(() -> { bar(); });
+        addActionListener((a) -> { bar(); });
+        addActionListener(this::bar);
+    }
+    public void bar() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bug report 975407</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+        bar();
+    }
+    private void bar() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>do not ignore abstract methods [java] ConstructorCallsOverridableMethod ignores abstract methods #3351</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+        bar();
+    }
+    abstract void bar();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Generics</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package foo.bar;
+public enum Buz {
+    FOO(2);
+    private Buz(String s) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>985989, base line</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class SeniorClass {
+    public SeniorClass(){
+        toString(); //may throw NullPointerException if overridden
+    }
+    public String toString(){
+        return "IAmSeniorClass";
+    }
+}
+public class JuniorClass extends SeniorClass {
+    private String name;
+
+    public JuniorClass() {
+        super(); //Automatic call leads to NullPointerException
+        name = "JuniorClass";
+    }
+    public String toString(){
+        return name.toUpperCase();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>985989, inner static class should be checked as well</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+
+    public static class SeniorClass {
+        public SeniorClass(){
+            toString(); //may throw NullPointerException if overridden
+        }
+        public String toString(){
+            return "IAmSeniorClass";
+        }
+    }
+    public static class JuniorClass extends SeniorClass {
+        private String name;
+
+        public JuniorClass() {
+            super(); //Automatic call leads to NullPointerException
+            name = "JuniorClass";
+        }
+        public String toString(){
+            return name.toUpperCase();
+        }
+    }
+    public static void main (String[] args) {
+        System.out.println(": "+new SeniorClass());
+        System.out.println(": "+new JuniorClass());
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bug #1005 False + for ConstructorCallsOverridableMethod - overloaded methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+        bar(true);
+    }
+    public final void bar(boolean b) {}
+    public void bar(String o) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bug #1127 False positive: Constructor Calls Overridable Method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Foo {
+    public Foo() {
+        bar();
+    }
+
+    public void bar() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NullPointer while analyzing ExcessiveLengthRule</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design;
+
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.rule.AbstractStatisticalJavaRule;
+import net.sourceforge.pmd.stat.DataPoint;
+
+public class ExcessiveLengthRule extends AbstractStatisticalJavaRule {
+    private Class<?> nodeClass;
+    public ExcessiveLengthRule(Class<?> nodeClass) {
+        this.nodeClass = nodeClass;
+    }
+    @Override
+    public Object visit(JavaNode node, Object data) {
+        if (nodeClass.isInstance(node)) {
+            DataPoint point = new DataPoint();
+            point.setNode(node);
+            point.setScore(1.0 * (node.getEndLine() - node.getBeginLine()));
+            point.setMessage(getMessage());
+            addDataPoint(point);
+        }
+        return node.childrenAccept(this, data);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1388 ConstructorCallsOverridableMethodRule doesn't work with params?</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+        bar(true);
+    }
+
+    public void bar(boolean b) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>IndexOutOfBoundsException with annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package sample;
+
+import java.lang.annotation.*;
+
+@interface CustomAnnotation {
+    Object object = new Object() {
+        @Override
+        public String toString() {
+            return new String(new StringBuilder("Hello").append(",World"));
+        }
+    }.toString();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Record creates an IndexOutOfBounds exception</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            record HelloMsg(String msg) {
+
+                    HelloMsg toTheWorld() {
+                       return new HelloMsg("World");
+                    }
+
+                    String hello() {
+                    return "Hello " + msg;
+                    }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>transitive dependency</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>This method may call an overridable method during object construction: Foo.bar(String) (call stack: [Foo.bar(boolean), Foo.bar(String)])</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                public Foo() {
+                    bar(true);
+                }
+                public final void bar(boolean b) {
+                    bar(""); // unsafe
+                }
+                public void bar(String o) {
+
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ConstructorCallsOverridableMethod should consider method calls with var access #4099</description>
+        <expected-problems>9</expected-problems>
+        <expected-linenumbers>7,14,21,28,35,42,49,56,63</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Collection;
+import java.util.Set;
+
+class Foo1 {
+  final boolean tag = true;
+  public Foo1() {
+    bar(tag);  // should report a warning at this line
+  }
+  public void bar(boolean b) {}
+}
+
+class Foo2 {
+  public Foo2() {
+    bar(true);  // should report a warning at this line
+  }
+  public void bar(boolean b) {}
+}
+
+class Foo3 {
+  public Foo3(String arg) {
+    bar(arg); // should report a warning at this line
+  }
+  public void bar(String s) {}
+}
+
+class Foo4 {
+  public Foo4(String[] arg) {
+    bar(arg); // should report a warning at this line
+  }
+  public void bar(String[] s) {}
+}
+
+class Foo5 {
+  public Foo5(int[] arg) {
+    bar(arg); // should report a warning at this line
+  }
+  public void bar(int[] i) {}
+}
+
+class Foo6 {
+  public Foo6(int[] arg) {
+    bar(arg); // should report a warning at this line
+  }
+  public void bar(int i[]) {} // note, the different array notation!
+}
+
+class Foo7 {
+  public Foo7(String[] arg) {
+    bar(arg); // should report a warning at this line
+  }
+  public void bar(String s[]) {} // note, the different array notation!
+}
+
+class Foo8 {
+  public Foo8(String[] arg) {
+    bar(arg); // should report a warning at this line
+  }
+  public void bar(String... s) {} // vararg
+}
+
+class Foo9<E> {
+  public Foo9(Set<E> arg) {
+    bar(arg); // should report a warning at this line
+  }
+  public void bar(Collection<E> s) {} // base type
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>False positive with public method call on new instance</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,5</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+  public Foo() {
+    privateInitOk(); // false positive
+    privateInitBad1(); // warning expected here
+    privateInitBad2(); // warning expected here
+  }
+
+  private void privateInitOk() {
+    new Foo().publicMethod();
+  }
+
+  private void privateInitBad1() {
+    publicMethod();
+  }
+
+  private void privateInitBad2() {
+    this.publicMethod();
+  }
+
+  public void publicMethod() { }
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>NPE when trying to find method name of method call</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    void bar(Object o) {
+      ((String) o).length();
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negative with method call as argument</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.errorprone.constructorcallsoverridablemethod;
+
+public abstract class AbstractThing implements Thing {
+    protected AbstractThing(Thing original) {
+        setName(original.getName());
+    }
+
+    @Override
+    public void setName(String name) { }
+
+    @Override
+    public String getName() { return ""; }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Clone and finalize overridden #1718</description>
+        <expected-problems>6</expected-problems>
+        <expected-linenumbers>3,4,5,7,8,9</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    public Foo() throws Throwable {
+        this.equals(new String());
+        this.clone();
+        this.finalize();
+
+        equals(new String());
+        clone();
+        finalize();
+
+        // #1718 - super calls should be ignored
+        super.equals(new String());
+        super.clone();
+        super.finalize();
+    }
+
+    public boolean equals(Object o) { return true; }
+
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    public void finalize() throws Throwable {
+        super.finalize();
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negative with var args and Arrays.asList</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Arrays;
+import java.util.Collection;
+
+class Foo {
+    public Foo(String ... names) {
+        setNames(Arrays.asList(names));
+    }
+
+    public void setNames(Collection<String> names) { }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Misleading message for method call chain</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>3,4,5</expected-linenumbers>
+        <expected-messages>
+            <message>This method may call an overridable method during object construction: Foo.overridableMethod() (call stack: [Foo.intermediatePrivateMethod(), Foo.otherMethod1(), Foo.otherMethod2(), Foo.overridableMethod()])</message>
+            <message>This method may call an overridable method during object construction: Foo.overridableMethod() (call stack: [Foo.shorterChain(), Foo.overridableMethod()])</message>
+            <message>This method may call an overridable method during object construction: Foo.otherOverridableMethod() (call stack: [Foo.differentChain(), Foo.otherOverridableMethod()])</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+        intermediatePrivateMethod();
+        shorterChain();
+        differentChain();
+    }
+
+    private void intermediatePrivateMethod() {
+        otherMethod1();
+    }
+
+    private final void otherMethod1() {
+        otherMethod2();
+    }
+
+    private final void otherMethod2() {
+        overridableMethod();
+    }
+
+    private void shorterChain() {
+        overridableMethod();
+    }
+
+    void overridableMethod();
+
+    private void differentChain() {
+        otherOverridableMethod();
+    }
+
+    void otherOverridableMethod();
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ConstructorCallsOverridableMethod occurs when unused overloaded method is defined #2348</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Scratch {
+    private Long member = 0L;
+
+    public Scratch(final Long v) {
+        setMember(v);
+    }
+
+    public final void setMember(final Long v) {
+        this.member = v;
+    }
+
+    // Renaming this or marking it as final prevents the
+    // 'ConstructorCallsOverridableMethod' rule from being broken.
+    public void setMember(final String n) {
+        setMember(Long.valueOf(n));
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ConstructorCallsOverridableMethod occurs when unused overloaded method is defined #2348 - sample 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Date;
+
+public class MyTimestamp {
+    private final long t;
+    public MyTimestamp() {
+        t = new Date().getTime(); // <-- false-positive violation here
+    }
+    public long getTime() {
+        return t;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ConstructorCallsOverridableMethod: false positive with lombok's @Value #4510</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Value;
+@Value
+class Foo1 {
+    public Foo1(String bar) {
+        bar();  //  false positive warning
+    }
+    public void bar() {}
+}
+]]></code>
+    </test-code>
+</test-data>

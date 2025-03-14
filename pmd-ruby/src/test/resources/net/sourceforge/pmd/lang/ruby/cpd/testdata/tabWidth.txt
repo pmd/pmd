@@ -1,0 +1,80 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [require]                               1         8
+    ["socket"]                              9         17
+L3
+    [gs]                                    1         3
+    [=]                                     4         5
+    [TCPServer]                             7         16
+    [.]                                     16        17
+    [open]                                  17        21
+    [(]                                     21        22
+    [0]                                     22        23
+    [)]                                     23        24
+L4
+    [addr]                                  1         5
+    [=]                                     7         8
+    [gs]                                    9         11
+    [.]                                     11        12
+    [addr]                                  12        16
+L5
+    [addr]                                  1         5
+    [.]                                     5         6
+    [shift]                                 6         11
+L7
+    [while]                                 1         6
+    [true]                                  7         11
+L8
+    [ns]                                    2         4
+    [=]                                     5         6
+    [gs]                                    7         9
+    [.]                                     9         10
+    [accept]                                10        16
+L9
+    [print]                                 2         7
+    [(]                                     7         8
+    [ns]                                    8         10
+    [,]                                     10        11
+    [" is accepted"]                        12        26
+    [)]                                     26        27
+L10
+    [Thread]                                2         8
+    [.]                                     8         9
+    [start]                                 9         14
+    [do]                                    15        17
+L11
+    [s]                                     3         4
+    [=]                                     5         6
+    [ns]                                    7         9
+L12
+    [while]                                 3         8
+    [s]                                     9         10
+    [.]                                     10        11
+    [gets]                                  11        15
+L13
+    [s]                                     4         5
+    [.]                                     5         6
+    [write]                                 6         11
+    [(]                                     11        12
+    [$]                                     12        13
+    [_]                                     13        14
+    [)]                                     14        15
+L14
+    [end]                                   3         6
+L15
+    [print]                                 3         8
+    [(]                                     8         9
+    [s]                                     9         10
+    [,]                                     10        11
+    [" is \n\t\t           gone\n\t\t  [    12        35
+L18
+    [)]                                     35        36
+L19
+    [s]                                     3         4
+    [.]                                     4         5
+    [close]                                 5         10
+L20
+    [end]                                   2         5
+L21
+    [end]                                   1         4
+EOF

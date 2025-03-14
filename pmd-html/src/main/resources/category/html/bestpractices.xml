@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ruleset name="Best Practices"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+Rules which enforce generally accepted best practices.
+    </description>
+
+    <rule name="AvoidInlineStyles"
+          language="html"
+          since="6.45.0"
+          message="Avoid inline styles"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_html_bestpractices.html#avoidinlinestyles">
+        <description>
+Don't mix content and style. Use separate CSS-files for the style and introduce classes.
+This helps to reuse common styles.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//*[@style]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+<div style="font-size: 12pt;"></div>
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnnecessaryTypeAttribute"
+          language="html"
+          since="6.45.0"
+          message="Type attribute for link and script elements is not needed."
+          class="net.sourceforge.pmd.lang.html.rule.bestpractices.UnnecessaryTypeAttributeRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_html_bestpractices.html#unnecessarytypeattribute">
+        <description>
+            In HTML5 the explicit type attribute for link and script elements is not needed. Modern browsers expect
+            stylesheets to be in CSS and scripts to use JavaScript.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+<!-- Instead of -->
+<link type="text/css" rel="stylesheet" href="css/styles.css" />
+<script type="text/javascript" src="js/scripts.js"></script>
+
+<!-- Just use -->
+<link rel="stylesheet" href="css/styles.css" />
+<script src="js/scripts.js"></script>
+]]>
+        </example>
+    </rule>
+
+    <rule name="UseAltAttributeForImages"
+          language="html"
+          since="6.45.0"
+          message="The image is missing an alternate text."
+          class="net.sourceforge.pmd.lang.html.rule.bestpractices.UseAltAttributeForImagesRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_html_bestpractices.html#usealtattributeforimages">
+        <description>
+            Always use an "alt" attribute for images. This provides an alternative text and is extensively used
+            by screen readers.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+<!-- instead of -->
+<img src="house.jpeg">
+
+<!-- use this -->
+<img src="house.jpeg" alt="A house from the 18th century">
+]]>
+        </example>
+    </rule>
+
+</ruleset>

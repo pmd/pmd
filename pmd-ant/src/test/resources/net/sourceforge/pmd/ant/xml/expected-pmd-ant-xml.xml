@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd xmlns="http://pmd.sourceforge.net/report/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 https://pmd.github.io/schema/report_2_0_0.xsd" version="" timestamp="">
+<file name="sample.dummy">
+<violation beginline="1" endline="1" begincolumn="1" endcolumn="110" rule="SampleXPathRule" ruleset="Test Ruleset" package="foo" externalInfoUrl="${pmd.website.baseurl}/rules/dummy/basic.xml#SampleXPathRule" priority="3">
+Test Rule 2
+</violation>
+<violation beginline="1" endline="1" begincolumn="1" endcolumn="110" rule="DeprecatedRule" ruleset="Test Ruleset" package="foo" externalInfoUrl="${pmd.website.baseurl}/rules/dummy/basic.xml#deprecatedrule" priority="3">
+Test Rule 3
+</violation>
+</file>
+<file name="sample2.dummy">
+<violation beginline="1" endline="1" begincolumn="1" endcolumn="110" rule="SampleXPathRule" ruleset="Test Ruleset" package="foo" externalInfoUrl="${pmd.website.baseurl}/rules/dummy/basic.xml#SampleXPathRule" priority="3">
+Test Rule 2
+</violation>
+<violation beginline="1" endline="1" begincolumn="1" endcolumn="110" rule="DeprecatedRule" ruleset="Test Ruleset" package="foo" externalInfoUrl="${pmd.website.baseurl}/rules/dummy/basic.xml#deprecatedrule" priority="3">
+Test Rule 3
+</violation>
+</file>
+<file name="sampleLexError.dummy">
+<violation beginline="1" endline="1" begincolumn="1" endcolumn="30" rule="SampleXPathRule" ruleset="Test Ruleset" package="foo" externalInfoUrl="${pmd.website.baseurl}/rules/dummy/basic.xml#SampleXPathRule" priority="3">
+Test Rule 2
+</violation>
+<violation beginline="1" endline="1" begincolumn="1" endcolumn="30" rule="DeprecatedRule" ruleset="Test Ruleset" package="foo" externalInfoUrl="${pmd.website.baseurl}/rules/dummy/basic.xml#deprecatedrule" priority="3">
+Test Rule 3
+</violation>
+</file>
+</pmd>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% include head.html %}
+</head>
+<body>
+<!-- Content is offset by the height of the topnav bar. -->
+<!-- There's already a padding-top rule in modern-business.css, but it apparently doesn't work on Firefox 60 and Chrome 67 -->
+<div id="topbar-content-offset">
+{% include topnav.html %}
+<!-- Page Content -->
+<div class="container-toc-wrapper">
+    <div class="container">
+        <div class="col-lg-12">&nbsp;</div>
+        <!-- Content Row -->
+        <div class="row">
+            {% assign content_col_size = "col-md-12" %}
+            {% unless page.hide_sidebar %}
+            <!-- Sidebar Column -->
+            <div class="col-md-3" id="tg-sb-sidebar">
+                {% include sidebar.html %}
+            </div>
+            {% assign content_col_size = "col-md-9" %}
+            {% endunless %}
+
+            <!-- Content Column -->
+            <div class="{{content_col_size}}" id="tg-sb-content">
+                {{content}}
+            </div>
+
+            <!-- /.row -->
+        </div>
+        <!-- /.container -->
+    </div>
+
+    {% unless page.toc == false %}
+    <!-- Sticky TOC column -->
+    <div class="toc-col">
+        <div id="toc"></div>
+    </div>
+    {% endunless %}
+    <!-- /.toc-container-wrapper -->
+</div>
+</div>
+
+<script type="application/javascript" src="assets/jquery-3.5.1/jquery-3.5.1.min.js"></script>
+<script type="application/javascript" src="assets/anchorjs-4.2.2/anchor.min.js"></script>
+<script type="application/javascript" src="assets/navgoco-0.2.1/src/jquery.navgoco.min.js"></script>
+<script type="application/javascript" src="assets/bootstrap-4.5.2-dist/js/bootstrap.bundle.min.js"></script>
+<script type="application/javascript" src="assets/Simple-Jekyll-Search-1.0.8/dest/jekyll-search.js"></script>
+<script type="application/javascript" src="assets/jekyll-table-of-contents/toc.js"></script>
+<script type="application/javascript" src="js/tabstate.js"></script>
+<script type="application/javascript" src="js/customscripts.js"></script>
+
+{% if page.additional_js %}
+{% for js in page.additional_js %}
+<script type="application/javascript" src="{{ js }}"></script>
+{% endfor %}
+{% endif %}
+
+</body>
+</html>

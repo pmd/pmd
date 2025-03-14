@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <code-fragment id="some-methods-fields-with-default-access-modifier"><![CDATA[
+public class Foo {
+    public final String stringValue = "stringValue";      // should not be reported
+    final String otherStringValue = "otherStringValue";   // should be reported
+    /* default */ final String otherValue = "otherValue"; // should not be reported
+    /*         default         */ final String anotherValue = "anotherValue"; // should not be reported
+
+    public void test() { // should not be reported
+    }
+
+    void test2() { // should be reported
+    }
+
+    /* default */ void test3() { // should not be reported
+    }
+
+    /*     default     */ void test4() { // should not be reported
+    }
+}
+    ]]></code-fragment>
+
+    <test-code>
+        <description>Some methods and Fields with default access modifier in a class</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,10</expected-linenumbers>
+        <code-ref id="some-methods-fields-with-default-access-modifier"/>
+    </test-code>
+
+    <code-fragment id="all-methods-fields-with-default-access-modifier"><![CDATA[
+public class Foo {
+    final String stringValue = "stringValue";
+    final String otherStringValue = "otherStringValue";
+    final String otherValue = "otherValue";
+
+    void test() {
+    }
+
+    void test2() {
+    }
+
+    void test3() {
+    }
+}
+    ]]></code-fragment>
+
+    <test-code>
+        <description>All methods and Field with default access modifier in a class</description>
+        <expected-problems>6</expected-problems>
+        <expected-linenumbers>2,3,4,6,9,12</expected-linenumbers>
+        <code-ref id="all-methods-fields-with-default-access-modifier"/>
+    </test-code>
+
+    <code-fragment id="all-methods-fields-without-default-access-modifier"><![CDATA[
+public class Foo {
+    private final String stringValue = "stringValue";
+    private final String otherStringValue = "otherStringValue";
+    private final String otherValue = "otherValue";
+
+    public void test() {
+    }
+
+    public void test2() {
+    }
+
+    public void test3() {
+    }
+}
+    ]]></code-fragment>
+
+    <test-code>
+        <description>All methods and Field without default access modifier in a class</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="all-methods-fields-without-default-access-modifier"/>
+    </test-code>
+
+    <code-fragment id="interface-with-methods-with-default-access-modifier"><![CDATA[
+public interface Foo {
+    void test();
+    public void test2();
+    void test3();
+}
+    ]]></code-fragment>
+
+    <test-code>
+        <description>Methods with default access modifier in an Interface</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="interface-with-methods-with-default-access-modifier"/>
+    </test-code>
+
+    <code-fragment id="nested-class-with-default-access-modifier"><![CDATA[
+public class Foo {
+    private final String stringValue = "stringValue";
+
+    public void test() {
+    }
+
+    class NestedClass {
+    }
+
+    static class OtherNestedClass {
+    }
+
+    public class AnotherNestedClass {
+    }
+}
+    ]]></code-fragment>
+
+    <test-code>
+        <description>Nested classes with default access modifier</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,10</expected-linenumbers>
+        <code-ref id="nested-class-with-default-access-modifier"/>
+    </test-code>
+
+    <code-fragment id="top-level-annotations-with-default-access-modifier"><![CDATA[
+import com.google.common.annotations.VisibleForTesting;
+@interface Bar {}
+
+public @interface Foo {}
+
+@SomeAnnotation
+@interface Baz {}
+
+@com.google.common.annotations.VisibleForTesting
+@interface Foobar {}
+
+/* default */ @interface FoobarWithComment {}
+    ]]></code-fragment>
+
+    <test-code>
+        <description>Top-level annotations with default access modifier are ignored by default (#1880)</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="top-level-annotations-with-default-access-modifier"/>
+    </test-code>
+
+    <test-code>
+        <description>Top-level annotations with default access modifier checks enabled with property</description>
+        <rule-property name="checkTopLevelTypes">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,7</expected-linenumbers>
+        <code-ref id="top-level-annotations-with-default-access-modifier"/>
+    </test-code>
+
+    <code-fragment id="top-level-enums-with-default-access-modifier"><![CDATA[
+enum Bar {}
+
+public enum Foo {}
+
+@SomeAnnotation
+enum Baz {}
+
+@com.google.common.annotations.VisibleForTesting
+enum Foobar {}
+
+/* default */ enum FoobarWithComment {}
+    ]]></code-fragment>
+
+    <test-code>
+        <description>Top-level enums with default access modifier are ignored by default (#1880)</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="top-level-enums-with-default-access-modifier"/>
+    </test-code>
+
+    <test-code>
+        <description>Top-level enums with default access modifier checks enabled with property</description>
+        <rule-property name="checkTopLevelTypes">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>1,6</expected-linenumbers>
+        <code-ref id="top-level-enums-with-default-access-modifier"/>
+    </test-code>
+
+    <code-fragment id="top-level-classes-with-default-access-modifier"><![CDATA[
+class Bar {}
+
+public class Foo {}
+
+@SomeAnnotation
+class Baz {}
+
+@com.google.common.annotations.VisibleForTesting
+class Foobar {}
+
+/* default */ class FoobarWithComment {}
+    ]]></code-fragment>
+
+    <test-code>
+        <description>Top-level classes with default access modifier are ignored by default (#1880)</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="top-level-classes-with-default-access-modifier"/>
+    </test-code>
+
+    <test-code>
+        <description>Top-level classes with default access modifier checks enabled with property</description>
+        <rule-property name="checkTopLevelTypes">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>1,6</expected-linenumbers>
+        <code-ref id="top-level-classes-with-default-access-modifier"/>
+    </test-code>
+
+    <code-fragment id="own-regex-to-default-access-modifier-rule"><![CDATA[
+public class Foo {
+    /* default */ final String stringValue = "stringValue";
+
+    void test() {
+    }
+
+    /* package-private */ class NestedClass {
+    }
+
+    /*     package-private     */ class OtherNestedClass {
+    }
+
+    static class AnotherNestedClass {
+    }
+}
+    ]]></code-fragment>
+
+    <test-code>
+        <description>Test own regex to default access modifier rule</description>
+        <rule-property name="regex">\/\*\s+package-private\s+\*\/</rule-property>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>2,4,13</expected-linenumbers>
+        <code-ref id="own-regex-to-default-access-modifier-rule"/>
+    </test-code>
+
+    <test-code>
+        <description>Declarations inside an enum</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum TestEnum {
+    FOO;
+
+    public String getName() { return "foo"; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1430 CommentDefaultAccessModifier triggers on field annotated with @VisibleForTesting</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import android.support.annotation.VisibleForTesting;
+public class CommentDefaultAccessModifier {
+    @VisibleForTesting void method() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1430 CommentDefaultAccessModifier triggers on field annotated with @VisibleForTesting 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import com.google.common.annotations.VisibleForTesting;
+
+public class CommentDefaultAccessModifier {
+    @VisibleForTesting void method() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#536 Constructor with default access modifier should trigger</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Foo() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#536 Enum constructor with implicit private modifier should not trigger</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum Bar {
+    ONE, TWO;
+
+    Bar() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested Enum constructor with implicit private modifier should not trigger</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    /*package*/ enum Bar {
+        ONE, TWO;
+
+        Bar() {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested enum can trigger rule</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    enum Bar { // here
+        ONE, TWO;
+
+        Bar() {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested annotation method with default access modifier should not trigger</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    /*package*/ @interface Bar {
+        String baz();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested annotation can trigger rule</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    @interface Bar {
+        String baz();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested interface can trigger rule</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    interface Bar {
+        String baz();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested record can trigger rule</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    record Bar(int i) {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1211 [java] CommentDefaultAccessModifier false positive with nested interface</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface A {
+    interface B {
+        default void b() {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Use property ignoredAnnotations (see #1343)</description>
+        <rule-property name="ignoredAnnotations">net.sourceforge.pmd.lang.java.rule.codestyle.commentdefaultaccessmodifier.OnlyForTesting</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Missing commented default access modifier on method 'method()'</message>
+        </expected-messages>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.commentdefaultaccessmodifier;
+
+import android.support.annotation.VisibleForTesting;
+
+public class CommentDefaultAccessModifier {
+    @VisibleForTesting void method() {}
+
+    @OnlyForTesting void method2() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] CommentDefaultAccessModifier - add co.elastic.clients.util.VisibleForTesting to as default suppressed annotations #4285</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import co.elastic.clients.util.VisibleForTesting;
+
+public class Foo {
+    @VisibleForTesting void method() {}
+}
+        ]]></code>
+    </test-code>
+
+    <code-fragment id="constructor-with-default-access-modifier-rule"><![CDATA[
+public class Foo {
+   Foo() {} // should be reported
+
+   Foo(final String str) {} // should be reported
+
+   /* default */ Foo(final String str1, final String str2) {}  // should not be reported
+}
+    ]]></code-fragment>
+
+    <test-code>
+        <description>Add a comment to the constructors with default access modifiers to avoid mistakes</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,4</expected-linenumbers>
+        <expected-messages>
+            <message>Missing commented default access modifier on constructor 'Foo()'</message>
+            <message>Missing commented default access modifier on constructor 'Foo(String)'</message>
+        </expected-messages>
+        <code-ref id="constructor-with-default-access-modifier-rule"/>
+    </test-code>
+
+    <test-code>
+        <description>Nested classes inside interfaces</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface MyInterface {
+    class MyNestedClass {} // this is always implicitly public static
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested classes inside enum</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public enum MyEnum {
+    FOO;
+    class MyNestedClass {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3859 #4273 #4645 [java] CommentDefaultAccessModifier is triggered in JUnit5 method and it was conflicting with rule JUnit5TestShouldBePackagePrivate</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+class SomeTest {
+
+  @Test
+  void test() {}
+
+  @ParameterizedTest
+  @ValueSource(strings = {"a", "b"})
+  void anotherTest(String param) { }
+
+  @BeforeEach
+  void setup() {}
+
+  @AfterEach
+  void cleanup() {}
+
+  @RepeatedTest(10)
+  void repeatedTest() {}
+
+  @RegisterExtension
+  void registerExtenstionTest(){}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] CommentDefaultAccessModifier should consider lombok's @Value #4201 #2458</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Value;
+
+@Value
+public class Test {
+    int foo;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] CommentDefaultAccessModifier should consider lombok's @Value #4201, the value class should be reported</description>
+        <rule-property name="checkTopLevelTypes">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+import lombok.Value;
+@Value
+class Test { // missing
+    int foo;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] CommentDefaultAccessModifier: false positive with TestNG annotations #4268</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterGroups;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeGroups;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+class C {
+    @BeforeSuite
+    void beforeSuite() {}
+
+    @BeforeTest
+    void beforeTest() {}
+
+    @BeforeClass
+    void beforeClass() {}
+
+    @BeforeGroups(groups = "group1")
+    void beforeGroups() {}
+
+    @BeforeMethod
+    void beforeMethod() {}
+
+    @Test(groups = "group1")
+    void foo() {
+        synchronized (this) {}
+    }
+
+    @AfterMethod
+    void afterMethod() {}
+
+    @AfterGroups(groups = "group1")
+    void afterGroups() {}
+
+    @AfterClass
+    void afterClass() {}
+
+    @AfterTest
+    void afterTest() {}
+
+    @AfterSuite
+    void afterSuite() {}
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>#4578 failure with comment after annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    @SuppressWarnings("")
+    /* package */ void test1() {
+    }
+
+    /* package */ @SuppressWarnings("")
+    void test2() {
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

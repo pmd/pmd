@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>new 'new String's</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private String bar = new String("bar");
+    private String baz = new String();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>new String array</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private String[] bar = new String[5];
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>using multiple parameter constructor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        byte[] bytes = new byte[50];
+        String bar = new String(bytes, 0, bytes.length);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>using 4 parameter constructor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        byte[] bytes = new byte[50];
+        String bar = new String(bytes, 0, bytes.length, "some-encoding");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>byte array constructor is ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        byte[] bytes = new byte[50];
+        String bar = new String(bytes);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Method returning new String</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    String foo() {
+        return new String("foo");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Not a new String</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import my.String;
+public class Foo {
+    String foo() {
+        return new String("foo");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Returns new String(str)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    String foo(String str) {
+        return new String(str);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2141 [java] StringInstatiation: False negative with String-array access</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,10</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        String[] arr = getArray();
+        String s = new String(arr[0]);
+        // better
+        String s2 = arr[0];
+    }
+    public void bar2() {
+        String[][] arr = getArray2();
+        String s = new String(arr[0][0]);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] StringInstantiation: false negative when using method result #3848</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    String getLiteral() {
+        return "foo";
+    }
+    String foo() {
+        return new String(getLiteral()); // should report a warning at this line
+    }
+}
+]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>[java] StringInstantiation: False-positive when using new String(charArray) #4874</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void barVar() {
+        var charArray = new char[] { 'a', 'b' };
+        var s1 = new String(charArray);
+        var s2 = new String(charArray, 0, charArray.length);
+    }
+
+    public void barTyped() {
+        char[] charArray = new char[] { 'a', 'b' };
+        String s1 = new String(charArray);
+        String s2 = new String(charArray, 0, charArray.length);
+    }
+
+    public void codePoints() {
+        int[] intArray = new int[] { 65, 66, 67 }; // ABC
+        String s = new String(intArray, 0, intArray.length);
+    }
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>FP in switch #5050</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Example {
+                String foo(Object foo) {
+                    return switch (foo) {
+                        case char[] array -> new String(array);
+                        case String string -> string;
+                        default -> throw new RuntimeException();
+                    };
+                }
+            }
+            ]]></code>
+    </test-code>
+</test-data>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>lots of coupling</description>
+        <rule-property name="threshold">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>A value of 3 may denote a high amount of coupling within the class (threshold: 2)</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.util.*;
+public class Foo {
+    public List foo() {return null;}
+    public ArrayList foo() {return null;}
+    public Vector foo() {return null;}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no coupling</description>
+        <rule-property name="threshold">2</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>skip interfaces</description>
+        <rule-property name="threshold">2</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+
+public interface Foo {
+    List foo();
+    ArrayList foo();
+    Vector foo();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>lots of coupling in inner class in interfaces</description>
+        <rule-property name="threshold">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>A value of 3 may denote a high amount of coupling within the class (threshold: 2)</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.util.*;
+public interface Foo {
+    class Inner {
+        public List foo() {return null;}
+        public ArrayList foo() {return null;}
+        public Vector foo() {return null;}
+    }
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>[java] CouplingBetweenObjectsRule does not count attribute and local variable couplings properly #2818</description>
+        <rule-property name="threshold">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>A value of 4 may denote a high amount of coupling within the class (threshold: 2)</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.Vector;
+import org.A;
+import org.B;
+
+public class Foo {
+
+  public static final ArrayList arrayList = new ArrayList();
+  public static final Vector vector = new Vector();
+
+  public void doWork() {
+    A a = new A();
+    B b = new B();
+  }
+
+}
+]]></code>
+    </test-code>
+</test-data>

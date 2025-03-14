@@ -1,0 +1,3 @@
+src/test/resources/net/sourceforge/pmd/cpd/cli/src/somefile.dummy,
+src/test/resources/net/sourceforge/pmd/cpd/cli/src/anotherfile.dummy
+src/test/resources/net/sourceforge/pmd/cpd/cli/src/somefile.dummy

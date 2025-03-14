@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Code sample</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.io.*;
+
+public class TryWithResources {
+    public void run() throws IOException {
+        InputStream in = null;
+        try {
+            in = openInputStream();
+            int i = in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (in != null) in.close();
+            } catch (IOException ignored) {
+                // ignored
+            }
+        }
+
+        // better use try-with-resources
+        try (InputStream in2 = openInputStream()) {
+            int i = in2.read();
+        }
+    }
+
+    static InputStream openInputStream() {
+        throw new UnsupportedOperationException();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>With IOUtils.closeQuietly 1</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.io.*;
+
+public class TryWithResources {
+    public void run() {
+        InputStream in = null;
+        try {
+            in = openInputStream();
+            int i = in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            IOUtils.closeQuietly(in);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>With IOUtils.closeQuietly 2</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.io.*;
+
+public class TryWithResources {
+    public void run() {
+        InputStream in = null;
+        try {
+            in = openInputStream();
+            int i = in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            closeQuietly(in);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Multiple Resources</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.io.*;
+
+public class TryWithResources {
+    public void run() {
+        InputStream in1 = null;
+        InputStream in2 = null;
+        try {
+            in1 = openInputStream();
+            in2 = openInputStream();
+            int x = in1.read();
+            int y = in2.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (in1 != null) in1.close();
+            } catch (IOException ignored) {
+                // ignored
+            }
+            IOUtils.closeQuietly(in2);
+        }
+
+        // better use try-with-resources
+        try (InputStream in3 = openInputStream(); InputStream in4 = openInputStream()) {
+            int x = in3.read();
+            int y = in4.read();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Custom close methods</description>
+        <rule-property name="closeMethods">myClose2,myClose</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.io.*;
+
+public class TryWithResources {
+    public void run() {
+        InputStream in = null;
+        try {
+            in = openInputStream();
+            int i = in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            myClose(in);
+        }
+
+        // this block doesn't trigger the rule because of the custom close methods property
+        try {
+            in = openInputStream();
+            int i = in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            IOUtils.closeQuietly(in);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negative with two resources</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.io.*;
+
+public class TryWithResources {
+    public void run() {
+        Reader r1 = new FileReader(file);
+        try (Reader r2 = new FileReader(otherFile)) {
+        } finally {
+            r1.close();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with no autocloseable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class TryWithResources {
+    public void run() {
+        var noAutoCloseable = new Object() {
+            public void close() {}
+        };
+        try {
+            System.out.println(noAutoCloseable);
+        } finally {
+            noAutoCloseable.close();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Custom close methods with multiple arguments</description>
+        <rule-property name="closeMethods">myClose2,myClose</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.io.*;
+
+public class TryWithResources {
+    public void run() {
+        InputStream in = null, in2 = null;
+        try {
+            in = openInputStream();
+            in2 = openInputStream();
+            int i = in.read(), j = in2.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            myClose(in, in2);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UseTryWithResources - false negative for explicit close #2882</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import java.io.*;
+
+            public class UseTryWithResources {
+                void method() throws Exception {
+                    final String fileName = "Test";
+                    final BufferedReader br = new BufferedReader(new InputStreamReader(
+                            new FileInputStream(fileName), StandardCharsets.UTF_8));
+                    try { // warning expected: Consider using a try-with-resources statement instead of explicitly closing the resource
+                    } finally {
+                        br.close();
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] UseTryWithResources false positive when AutoCloseable helper used #2650</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class PMDUseTryWithResources {
+
+                static class ResourceCloser implements AutoCloseable {
+                    public static void close(NotAutoCloseable notAutoCloseable) {
+                        notAutoCloseable.close();
+                    }
+
+                    @Override
+                    public void close() throws Exception {
+                        // nothing
+                    }
+                }
+
+                interface NotAutoCloseable {
+                    void close();
+                }
+
+                public void useTryWithResources() {
+                    NotAutoCloseable notAutoCloseable = null;
+                    try {
+                        notAutoCloseable = new NotAutoCloseable() {
+                            @Override
+                            public void close() {
+                            }
+                        };
+                    } finally {
+                        if (notAutoCloseable != null) {
+                            ResourceCloser.close(notAutoCloseable);
+                        }
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <code-fragment id="issue-3235"><![CDATA[
+import java.io.IOException;
+import java.io.Reader;
+
+class Scratch {
+    public static int count(AutoCloseable iterator) {
+        int count = 0;
+        try {
+            count++;
+        } finally {
+            iterator.close();
+        }
+        return count;
+    }
+}
+
+class Holder implements AutoCloseable {
+   private Reader reader;
+   public void close() throws IOException {
+      try {
+         someOtherActivity();
+      } finally {
+         reader.close();
+      }
+   }
+   private void someOtherActivity() throws IOException {
+     // do stuff
+   }
+}
+    ]]></code-fragment>
+
+    <test-code>
+        <description>[java] UseTryWithResources false positive when closeable is provided as a method argument or class field #3235 before java 9</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="issue-3235"/>
+        <source-type>java 1.8</source-type>
+    </test-code>
+
+    <test-code>
+        <description>[java] UseTryWithResources false positive when closeable is provided as a method argument or class field #3235</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,19</expected-linenumbers>
+        <code-ref id="issue-3235"/>
+    </test-code>
+
+    <code-fragment id="issue-3235-with-local-var"><![CDATA[
+import java.io.IOException;
+import java.io.Reader;
+
+class Scratch {
+    public static int count() {
+        AutoCloseable iterator;
+        int count = 0;
+        try {
+            count++;
+        } finally {
+            iterator.close();
+        }
+        return count;
+    }
+}
+
+class Holder implements AutoCloseable {
+   public void close() throws IOException {
+      Reader reader;
+      try {
+         someOtherActivity();
+      } finally {
+         reader.close();
+      }
+   }
+   private void someOtherActivity() throws IOException {
+     // do stuff
+   }
+}
+    ]]></code-fragment>
+
+    <test-code>
+        <description>[java] UseTryWithResources with local var and before java 9 #3235</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,20</expected-linenumbers>
+        <code-ref id="issue-3235-with-local-var"/>
+        <source-type>java 1.8</source-type>
+    </test-code>
+
+    <test-code>
+        <description>[java] UseTryWithResources with local var and latest java #3235</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,20</expected-linenumbers>
+        <code-ref id="issue-3235-with-local-var"/>
+    </test-code>
+
+    <test-code>
+        <description>NPE when determining closeTarget</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.io.InputStream;
+import java.io.IOException;
+
+public class UseTryWithResources {
+    public void read(InputStream is, boolean close) throws IOException {
+        try {
+            is.read();
+        } finally {
+            if (close) {
+                is.close();
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>No describer options</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void bar(List<Account> accounts) {
+        if (Account.SObjectType.getDescribe().isCreateable()) {
+            insert accounts;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No describer options using Schema class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void bar(List<Account> accounts) {
+        if (Schema.describeSObjects(new List<String>{'Account'})[0].isCreateable()) {
+            insert accounts;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Correct describer option check</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(List<Account> accounts) {
+        if (Account.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).isCreateable()) {
+            insert accounts;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Correct describer option check using Schema class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(List<Account> accounts) {
+        if (Schema.describeSObjects(new List<String>{'Account'}, SObjectDescribeOptions.DEFERRED)[0].isCreateable()) {
+            insert accounts;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Default describer option check allowing default</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(List<Account> accounts) {
+        if (Account.SObjectType.getDescribe(SObjectDescribeOptions.DEFAULT).isCreateable()) {
+            insert accounts;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Default describer option check restricting default option</description>
+        <rule-property name="noDefault">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(List<Account> accounts) {
+        if (Account.SObjectType.getDescribe(SObjectDescribeOptions.DEFAULT).isCreateable()) {
+            insert accounts;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with no describer options on SObjectField</description>
+        <expected-problems>0</expected-problems>
+        <!-- note, this is not a violation. The default behaviour for SObjectField.getDescribe()
+            doesn't seem to be a performance problem. #3773 -->
+        <code><![CDATA[
+public class Foo {
+    public void bar(Case case) {
+        String fieldName = Case.Subject.getDescribe().getName();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive on SObjectField with FieldDescribeOptions.FULL_DESCRIBE</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(Case case) {
+        String fieldName = Case.Subject.getDescribe(FieldDescribeOptions.FULL_DESCRIBE).getName();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive on SObjectField with FieldDescribeOptions.DEFAULT</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(Case case) {
+        String fieldName = Case.Subject.getDescribe(FieldDescribeOptions.DEFAULT).getName();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive on SObjectField with FieldDescribeOptions.DEFAULT with noDefault=true</description>
+        <rule-property name="noDefault">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(Case case) {
+        String fieldName = Case.Subject.getDescribe(FieldDescribeOptions.DEFAULT).getName();
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>failure case</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class Bar {
+    void foo() {
+        Integer[] ints = new Integer[10];
+        List l = new ArrayList(ints.length);
+        for (int i = 0; i < ints.length; i++) {
+            l.add(ints[i]);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>adding first element repeatedly</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class Bar {
+    void foo() {
+        Integer[] ints = new Integer(10);
+        List l = new ArrayList(10);
+        for (int i = 0; i < 100; i++) {
+            l.add(ints[1]);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>inside conditional</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class Bar {
+    void foo() {
+        Integer[] ints = new Integer(10);
+        List l = new ArrayList(10);
+        for (int i = 0; i < 100; i++) {
+            if (y > 10) {
+                l.add(ints[1]);
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>adding new object</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class Bar {
+    void foo() {
+        Integer[] ints = new Integer(10);
+        List l = new ArrayList(10);
+        for (int i = 0; i < 100; i++) {
+            l.add(new Integer(i+1));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>calling method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class Bar {
+    void foo() {
+        Integer[] ints = new Integer(10);
+        List l = new ArrayList(10);
+        for (int i = 0; i < 100; i++) {
+            l.add(String.valueOf(i));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Integer array passed as argument</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class Test {
+    public void foo(Integer[] ints) {
+        // could just use Arrays.asList(ints)
+        List l = new ArrayList(10);
+        for (int i = 0; i < ints.length; i++) {
+            l.add(ints[i]);
+        }
+
+        List l2 = new ArrayList(10);
+        for (int i = 0; i < ints.length; i++) {
+            l2.add(ints[i].toString()); // won't trigger the rule
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1099 UseArraysAsList false positives</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class Test {
+    public void foo() {
+        String [] result = new String[10000];
+        // some code which populates result
+
+        // copy n items from result to a List, such that resultList[i] = result[i+1]
+        List<String> resultList = new ArrayList<String>();
+        for (int i = 1; i <= n; i++) {
+            resultList.add(result[i]);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UseArraysAsList false negative with for-each loop #3331</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class UseArraysAsListFN {
+    public List<String> convert(String[] arr) {
+        List<String> result = new ArrayList<>();
+        for (String s : arr) {
+            result.add(s);  // violation expected
+        }
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UseArraysAsList with method call #3867</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class Test {
+    public void foo(Integer[] ints) {
+        // could just use Arrays.asList(ints)
+        List<Integer> l = new ArrayList<>(100);
+        for (int i = 0; i < ints.length; i++) {
+            l.add(ints[i]); // line 9, here is the violation
+        }
+        List<Integer> anotherList = new ArrayList<>();
+        for (int i = 0; i < ints.length; i++) {
+            anotherList.add(ints[i].toString()); // line 13 - false positive
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UseArraysAsList false positive with non-trivial loops #3965</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class Test {
+    public void foo(Integer[] ints) {
+        List<Integer> l = new ArrayList<>(100);
+        for (int i = 0; i < 100; i++) {
+            switch (lookup(ints[i])) {
+            case 1: l.add(ints[i]); break; // line 10 - false positive
+            case 2: l.addAll(getInts(i)); break;
+            }
+        }
+
+        List<Integer> anotherList = new ArrayList<>();
+        for (int i : ints) {
+            switch (lookup(i)) {
+            case 1: anotherList.add(i); break; // line 18 - false positive
+            case 2: anotherList.addAll(getInts(i)); break;
+            }
+        }
+    }
+
+    int lookup(int a) {
+        return a;
+    }
+
+    List<Integer> getInts(int a) {
+        return Arrays.asList(a);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UseArraysAsList must ignore primitive arrays #3379</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+class Test {
+    public void convert(Object value) {
+        short[] array = (short[]) value;
+        List<Short> arrayList = new ArrayList<>(array.length);
+        for (short v : array) {
+            arrayList.add(v); // line 9 - false positive
+        }
+
+        List<Short> arrayList2 = new ArrayList<>(array.length);
+        for (int i = 0; i < array.length; i++) {
+            arrayList2.add(array[i]); // line 14 - false positive
+        }
+    }
+}
+]]></code>
+    </test-code>
+</test-data>

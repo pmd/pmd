@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>JUnit 4 - Contains assert</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.lang.Thread;
+import org.junit.Test;
+public class Foo {
+    @Test
+    public void foo() throws Throwable {
+        Resolver r = n -> null;
+        try {
+            r.resolve("PMD");
+            fail("Should have thrown an exception");
+        } catch (ClassNotFoundException cnfe) {
+
+        }
+    }
+}
+interface Resolver { Object resolve(String name) throws ClassNotFoundException; }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Junit 3 format</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.lang.Thread;
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void testFoo() throws Throwable {
+        Resolver r = n -> null;
+        try {
+            r.resolve("PMD");
+            fail("Should have thrown an exception");
+        } catch (ClassNotFoundException cnfe) {
+
+        }
+    }
+}
+interface Resolver { Object resolve(String name) throws ClassNotFoundException; }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Junit 3 format</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+import java.lang.Thread;
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void testFoo() throws Throwable {
+        Resolver r = n -> null;
+        try {
+            r.resolve("PMD");
+            fail("Should have thrown an exception");
+        } catch (ClassNotFoundException cnfe) {
+
+        }
+        try {
+            r.resolve("PMD");
+            fail("Should have thrown an exception");
+        } catch (ClassNotFoundException cnfe) {
+
+        }
+    }
+}
+interface Resolver { Object resolve(String name) throws ClassNotFoundException; }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Throws</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.lang.Thread;
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void testFoo() throws Throwable {
+        Resolver r = n -> null;
+        try {
+            r.resolve("PMD");
+            throw new RuntimeException("Should have thrown an exception");
+        } catch (ClassNotFoundException cnfe) {
+
+        }
+    }
+}
+interface Resolver { Object resolve(String name) throws ClassNotFoundException; }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>This method can be broken into two, each checking</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+import java.lang.Thread;
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void testFoo() throws Throwable {
+        Resolver r = n -> null;
+        try {
+            r.resolve("PMD");
+            throw new RuntimeException("Should have thrown an exception");
+        } catch (ClassNotFoundException cnfe) {
+        // one
+        }
+        try {
+            r.resolve("FOO");
+            throw new RuntimeException("Should have thrown an exception also");
+        } catch (ClassNotFoundException cnfe) {
+        // another
+        }
+    }
+}
+interface Resolver { Object resolve(String name) throws ClassNotFoundException; }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Not a JUnit class - Contains assert</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.lang.Thread;
+public class Foo {
+    public void foo() throws Throwable {
+        Resolver r = n -> null;
+        try {
+            r.resolve("PMD");
+            fail("Should have thrown an exception");
+        } catch (ClassNotFoundException cnfe) {
+
+        }
+    }
+}
+interface Resolver { Object resolve(String name) throws ClassNotFoundException; }
+        ]]></code>
+    </test-code>
+</test-data>

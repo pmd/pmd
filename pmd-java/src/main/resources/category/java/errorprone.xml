@@ -1,0 +1,3240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ruleset name="Error Prone"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
+    </description>
+
+    <rule name="AssignmentInOperand"
+          language="java"
+          since="1.03"
+          message="Avoid assignments in operands"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.AssignmentInOperandRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#assignmentinoperand">
+        <description>
+Avoid assignments in operands; this can make code more complicated and harder to read.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public void bar() {
+    int x = 2;
+    if ((x = getX()) == 3) {
+      System.out.println("3!");
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AssignmentToNonFinalStatic"
+          language="java"
+          since="2.2"
+          message="Possible unsafe assignment to non-final static field ''{0}'' in a constructor."
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.AssignmentToNonFinalStaticRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#assignmenttononfinalstatic">
+        <description>
+Identifies a possible unsafe usage of a static field.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class StaticField {
+   static int x;
+   public FinalFields(int y) {
+    x = y; // unsafe
+   }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidAccessibilityAlteration"
+          language="java"
+          since="4.1"
+          message="You should not modify visibility of constructors, methods or fields using setAccessible()"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidaccessibilityalteration">
+        <description>
+Methods such as `getDeclaredConstructors()`, `getDeclaredMethods()`, and `getDeclaredFields()` also
+return private constructors, methods and fields. These can be made accessible by calling `setAccessible(true)`.
+This gives access to normally protected data which violates the principle of encapsulation.
+
+This rule detects calls to `setAccessible` and finds possible accessibility alterations.
+If the call to `setAccessible` is wrapped within a `PrivilegedAction`, then the access alteration
+is assumed to be deliberate and is not reported.
+
+Note that with Java 17 the Security Manager, which is used for `PrivilegedAction` execution,
+is deprecated: [JEP 411: Deprecate the Security Manager for Removal](https://openjdk.org/jeps/411).
+For future-proof code, deliberate access alteration should be suppressed using the usual
+suppression methods (e.g. by using `@SuppressWarnings` annotation).
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodCall[
+          pmd-java:matchesSig("java.lang.reflect.AccessibleObject#setAccessible(boolean)")
+       or pmd-java:matchesSig("_#setAccessible(java.lang.reflect.AccessibleObject[],boolean)")
+    ]
+    [not(ArgumentList/BooleanLiteral[@True = false()])]
+    (: exclude anonymous privileged action classes :)
+    [not(ancestor::ConstructorCall[1][pmd-java:typeIs('java.security.PrivilegedAction')]/AnonymousClassDeclaration)]
+    (: exclude inner privileged action classes :)
+    [not(ancestor::ClassDeclaration[1][pmd-java:typeIs('java.security.PrivilegedAction')])]
+    (: exclude privileged action lambdas :)
+    [not(ancestor::LambdaExpression[pmd-java:typeIs('java.security.PrivilegedAction')])]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
+public class Violation {
+    private void invalidSetAccessCalls() throws NoSuchMethodException, SecurityException {
+        Constructor<?> constructor = this.getClass().getDeclaredConstructor(String.class);
+        // call to forbidden setAccessible
+        constructor.setAccessible(true);
+
+        Method privateMethod = this.getClass().getDeclaredMethod("aPrivateMethod");
+        // call to forbidden setAccessible
+        privateMethod.setAccessible(true);
+
+        // deliberate accessibility alteration
+        String privateField = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                try {
+                    Field field = Violation.class.getDeclaredField("aPrivateField");
+                    field.setAccessible(true);
+                    return (String) field.get(null);
+                } catch (ReflectiveOperationException | SecurityException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidAssertAsIdentifier"
+          language="java"
+          maximumLanguageVersion="1.3"
+          since="3.4"
+          message="Avoid using assert as an identifier; it became a reserved word in JDK 1.4"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidassertasidentifier">
+        <description>
+Use of the term `assert` will conflict with newer versions of Java since it is a reserved word.
+
+Since Java 1.4, the token `assert` became a reserved word and using it as an identifier will
+result in a compilation failure for Java 1.4 and later. This rule is therefore only useful
+for old Java code before Java 1.4. It can be used to identify problematic code prior to a Java update.
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value>//VariableId[@Name='assert']</value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class A {
+    public class Foo {
+        String assert = "foo";
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidBranchingStatementAsLastInLoop"
+          language="java"
+          since="5.0"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule"
+          message="Avoid using a branching statement as the last in a loop."
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidbranchingstatementaslastinloop">
+        <description>
+Using a branching statement as the last part of a loop may be a bug, and/or is confusing.
+Ensure that the usage is not a bug, or consider using another approach.
+        </description>
+        <priority>2</priority>
+        <example>
+<![CDATA[
+// unusual use of branching statement in a loop
+for (int i = 0; i < 10; i++) {
+    if (i*i <= 25) {
+        continue;
+    }
+    break;
+}
+
+// this makes more sense...
+for (int i = 0; i < 10; i++) {
+    if (i*i > 25) {
+        break;
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidCallingFinalize"
+          language="java"
+          since="3.0"
+          message="Avoid calling finalize() explicitly"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidcallingfinalize">
+        <description>
+The method Object.finalize() is called by the garbage collector on an object when garbage collection determines
+that there are no more references to the object. It should not be invoked by application logic.
+
+Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodCall[pmd-java:matchesSig("java.lang.Object#finalize()")]
+    (: it's ok inside finalize :)
+    [not(SuperExpression and ancestor::*[self::MethodDeclaration or self::Initializer][1][@Name = 'finalize'][@Arity = 0][VoidType])]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+void foo() {
+    Bar b = new Bar();
+    b.finalize();
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidCatchingNPE"
+          language="java"
+          since="1.8"
+          message="Avoid catching NullPointerException; consider removing the cause of the NPE."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidcatchingnpe">
+        <description>
+Code should never throw NullPointerExceptions under normal circumstances.  A catch block may hide the
+original error, causing other, more subtle problems later on.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//CatchClause/CatchParameter/ClassType[pmd-java:typeIsExactly('java.lang.NullPointerException')]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+    void bar() {
+        try {
+            // do something
+        } catch (NullPointerException npe) {
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidCatchingThrowable"
+          language="java"
+          since="1.2"
+          message="A catch statement should never catch throwable since it includes errors."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidcatchingthrowable">
+        <description>
+Catching Throwable errors is not recommended since its scope is very broad. It includes runtime issues such as
+OutOfMemoryError that should be exposed and managed separately.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                //CatchParameter[ClassType[pmd-java:typeIsExactly('java.lang.Throwable')]]/VariableId
+                ]]></value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public void bar() {
+    try {
+        // do something
+    } catch (Throwable th) {  // should not catch Throwable
+        th.printStackTrace();
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidDecimalLiteralsInBigDecimalConstructor"
+          language="java"
+          since="3.4"
+          message="Avoid creating BigDecimal with a decimal (float/double) literal. Use a String literal"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoiddecimalliteralsinbigdecimalconstructor">
+        <description>
+One might assume that the result of "new BigDecimal(0.1)" is exactly equal to 0.1, but it is actually
+equal to .1000000000000000055511151231257827021181583404541015625.
+This is because 0.1 cannot be represented exactly as a double (or as a binary fraction of any finite
+length). Thus, the long value that is being passed in to the constructor is not exactly equal to 0.1,
+appearances notwithstanding.
+
+The (String) constructor, on the other hand, is perfectly predictable: 'new BigDecimal("0.1")' is
+exactly equal to 0.1, as one would expect.  Therefore, it is generally recommended that the
+(String) constructor be used in preference to this one.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ConstructorCall[pmd-java:matchesSig('java.math.BigDecimal#new(double)')]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+BigDecimal bd = new BigDecimal(1.123);       // loss of precision, this would trigger the rule
+
+BigDecimal bd = new BigDecimal("1.123");     // preferred approach
+
+BigDecimal bd = new BigDecimal(12);          // preferred approach, ok for integer values
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidDuplicateLiterals"
+          language="java"
+          since="1.0"
+          message="The String literal {0} appears {1} times in this file; the first occurrence is on line {2}"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidDuplicateLiteralsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidduplicateliterals">
+        <description>
+Code containing duplicate String literals can usually be improved by declaring the String as a constant field.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+private void bar() {
+     buz("Howdy");
+     buz("Howdy");
+     buz("Howdy");
+     buz("Howdy");
+}
+private void buz(String x) {}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidEnumAsIdentifier"
+          language="java"
+          maximumLanguageVersion="1.4"
+          since="3.4"
+          message="Avoid using enum as an identifier; it's a reserved word in JDK 1.5"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidenumasidentifier">
+        <description>
+Use of the term `enum` will conflict with newer versions of Java since it is a reserved word.
+
+Since Java 1.5, the token `enum` became a reserved word and using it as an identifier will
+result in a compilation failure for Java 1.5 and later. This rule is therefore only useful
+for old Java code before Java 1.5. It can be used to identify problematic code prior to a Java update.
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value>//VariableId[@Name='enum']</value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class A {
+    public class Foo {
+        String enum = "foo";
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidFieldNameMatchingMethodName"
+          language="java"
+          since="3.0"
+          message="Field {0} has the same name as a method"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidfieldnamematchingmethodname">
+        <description>
+It can be confusing to have a field name with the same name as a method. While this is permitted,
+having information (field) and actions (method) is not clear naming. Developers versed in
+Smalltalk often prefer this approach as the methods denote accessor methods.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//FieldDeclaration/VariableDeclarator/VariableId
+    [some $method in ../../..[self::ClassBody or self::EnumBody]/MethodDeclaration
+     satisfies lower-case(@Name) = lower-case($method/@Name)]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+    Object bar;
+    // bar is data or an action or both?
+    void bar() {
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidFieldNameMatchingTypeName"
+          language="java"
+          since="3.0"
+          message="It is somewhat confusing to have a field name matching the declaring class name"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidfieldnamematchingtypename">
+        <description>
+It is somewhat confusing to have a field name matching the declaring type name.
+This probably means that type and/or field names should be chosen more carefully.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//FieldDeclaration/VariableDeclarator/VariableId
+    [lower-case(@Name) = lower-case(ancestor::ClassDeclaration[1]/@SimpleName)]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo extends Bar {
+    int foo;    // There is probably a better name that can be used
+}
+public interface Operation {
+    int OPERATION = 1; // There is probably a better name that can be used
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidInstanceofChecksInCatchClause"
+          language="java"
+          since="3.0"
+          message="An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause">
+        <description>
+Each caught exception type should be handled in its own catch clause.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//CatchParameter
+    /following-sibling::Block//InfixExpression[@Operator = 'instanceof']
+        /VariableAccess[@Name = ./ancestor::Block/preceding-sibling::CatchParameter/@Name]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+try { // Avoid this
+    // do something
+} catch (Exception ee) {
+    if (ee instanceof IOException) {
+        cleanup();
+    }
+}
+
+try {  // Prefer this:
+    // do something
+} catch (IOException ee) {
+    cleanup();
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidLiteralsInIfCondition"
+          language="java"
+          since="4.2.6"
+          message="Avoid using literals in if statements"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidliteralsinifcondition">
+        <description>
+Avoid using hard-coded literals in conditional statements. By declaring them as static variables
+or private members with descriptive names maintainability is enhanced. By default, the literals "-1" and "0" are ignored.
+More exceptions can be defined with the property "ignoreMagicNumbers".
+
+The rule doesn't consider deeper expressions by default, but this can be enabled via the property `ignoreExpressions`.
+With this property set to false, if-conditions like `i == 1 + 5` are reported as well. Note that in that case,
+the property ignoreMagicNumbers is not taken into account, if there are multiple literals involved in such an expression.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="ignoreMagicNumbers"
+                      description="Comma-separated list of magic numbers, that should be ignored"
+                      type="String" value="-1,0"/>
+            <property name="ignoreExpressions"
+                      description="If true, only literals in simple if conditions are considered. Otherwise literals in expressions are checked, too."
+                      type="Boolean" value="true"/>
+            <property name="xpath">
+                <value>
+<![CDATA[
+(: simple case - no deep expressions - this is always executed :)
+//IfStatement/*[1]/*[pmd-java:nodeIs('Literal')]
+    [not(pmd-java:nodeIs('NullLiteral'))]
+    [not(pmd-java:nodeIs('BooleanLiteral'))]
+    [empty(index-of(tokenize($ignoreMagicNumbers, '\s*,\s*'), @Image))]
+|
+(: consider also deeper expressions :)
+//IfStatement[$ignoreExpressions = false()]/*[1]//*[not(self::UnaryExpression[@Operator = '-'])]/*[pmd-java:nodeIs('Literal')]
+    [not(pmd-java:nodeIs('NullLiteral'))]
+    [not(pmd-java:nodeIs('BooleanLiteral'))]
+    [empty(index-of(tokenize($ignoreMagicNumbers, '\s*,\s*'), @Image))]
+|
+(: consider negative literals :)
+//IfStatement[$ignoreExpressions = false()]/*[1]//UnaryExpression[@Operator = '-']/*[pmd-java:nodeIs('Literal')]
+    [not(pmd-java:nodeIs('NullLiteral'))]
+    [not(pmd-java:nodeIs('BooleanLiteral'))]
+    [empty(index-of(tokenize($ignoreMagicNumbers, '\s*,\s*'), concat('-', @Image)))]
+|
+(: consider multiple literals in expressions :)
+//IfStatement[$ignoreExpressions = false()]/*[1][count(*[pmd-java:nodeIs('Literal')]
+    [not(pmd-java:nodeIs('NullLiteral'))]
+    [not(pmd-java:nodeIs('BooleanLiteral'))]) > 1]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+private static final int MAX_NUMBER_OF_REQUESTS = 10;
+
+public void checkRequests() {
+
+    if (i == 10) {                        // magic number, buried in a method
+      doSomething();
+    }
+
+    if (i == MAX_NUMBER_OF_REQUESTS) {    // preferred approach
+      doSomething();
+    }
+
+    if (aString.indexOf('.') != -1) {}     // magic number -1, by default ignored
+    if (aString.indexOf('.') >= 0) { }     // alternative approach
+
+    if (aDouble > 0.0) {}                  // magic number 0.0
+    if (aDouble >= Double.MIN_VALUE) {}    // preferred approach
+
+    // with rule property "ignoreExpressions" set to "false"
+    if (i == pos + 5) {}  // violation: magic number 5 within an (additive) expression
+    if (i == pos + SUFFIX_LENGTH) {} // preferred approach
+    if (i == 5 && "none".equals(aString)) {} // 2 violations: magic number 5 and literal "none"
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidLosingExceptionInformation"
+          since="4.2.6"
+          language="java"
+          message="Avoid statements in a catch block that invoke accessors on the exception without using the information"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidlosingexceptioninformation">
+        <description>
+Statements in a catch block that invoke accessors on the exception without using the information
+only add to code size.  Either remove the invocation, or use the return result.
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//CatchClause/Block/ExpressionStatement/MethodCall[
+    pmd-java:matchesSig("java.lang.Throwable#getMessage()")
+    or pmd-java:matchesSig("java.lang.Throwable#getLocalizedMessage()")
+    or pmd-java:matchesSig("java.lang.Throwable#getCause()")
+    or pmd-java:matchesSig("java.lang.Throwable#getStackTrace()")
+    or pmd-java:matchesSig("java.lang.Object#toString()")
+]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public void bar() {
+    try {
+        // do something
+    } catch (SomeException se) {
+        se.getMessage();
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidMultipleUnaryOperators"
+          language="java"
+          since="4.2"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          message="Using multiple unary operators may be a bug, and/or is confusing."
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidmultipleunaryoperators">
+        <description>
+The use of multiple unary operators may be problematic, and/or confusing.
+Ensure that the intended usage is not a bug, or consider simplifying the expression.
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                    (: Only report on the toplevel one :)
+                    //UnaryExpression[UnaryExpression and not(parent::UnaryExpression)]
+                ]]></value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+// These are typo bugs, or at best needlessly complex and confusing:
+int i = - -1;
+int j = + - +1;
+int z = ~~2;
+boolean b = !!true;
+boolean c = !!!true;
+
+// These are better:
+int i = 1;
+int j = -1;
+int z = 2;
+boolean b = true;
+boolean c = false;
+
+// And these just make your brain hurt:
+int i = ~-2;
+int j = -~7;
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidUsingOctalValues"
+          language="java"
+          since="3.9"
+          message="Do not start a literal by 0 unless it's an octal value"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidUsingOctalValuesRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidusingoctalvalues">
+        <description>
+Integer literals should not start with zero since this denotes that the rest of literal will be
+interpreted as an octal value.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+int i = 012;    // set i with 10 not 12
+int j = 010;    // set j with 8 not 10
+k = i * j;      // set k with 80 not 120
+]]>
+        </example>
+    </rule>
+
+    <rule name="BrokenNullCheck"
+          language="java"
+          since="3.8"
+          message="This expression will throw a NullPointerException"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.BrokenNullCheckRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#brokennullcheck">
+        <description>
+The null check is broken since it will throw a NullPointerException itself.
+It is likely that you used || instead of &amp;&amp; or vice versa.
+        </description>
+        <priority>2</priority>
+        <example>
+<![CDATA[
+public String bar(String string) {
+  // should be &&
+    if (string!=null || !string.equals(""))
+        return string;
+  // should be ||
+    if (string==null && string.equals(""))
+        return string;
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="CallSuperFirst"
+          since="4.2.5"
+          language="java"
+          message="super should be called at the start of the method"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#callsuperfirst">
+        <description>Super should be called at the start of the method</description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ClassDeclaration
+    [
+      pmd-java:typeIs('android.app.Activity') or
+      pmd-java:typeIs('android.app.Application') or
+      pmd-java:typeIs('android.app.Service')
+    ]
+    //MethodDeclaration
+    [
+      @Name=('onCreate', 'onConfigurationChanged', 'onPostCreate', 'onPostResume', 'onRestart',
+             'onRestoreInstanceState', 'onResume', 'onStart')
+    ]
+    [not(Block/*[1]/MethodCall[SuperExpression][@MethodName = ancestor::MethodDeclaration/@Name])]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+import android.app.Activity;
+import android.os.Bundle;
+
+public class DummyActivity extends Activity {
+    public void onCreate(Bundle bundle) {
+        // missing call to super.onCreate(bundle)
+        foo();
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="CallSuperLast"
+          since="4.2.5"
+          language="java"
+          message="super should be called at the end of the method"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#callsuperlast">
+        <description>
+Super should be called at the end of the method
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ClassDeclaration
+    [
+      pmd-java:typeIs('android.app.Activity') or
+      pmd-java:typeIs('android.app.Application') or
+      pmd-java:typeIs('android.app.Service')
+    ]
+    //MethodDeclaration
+    [
+      @Name=('finish', 'onDestroy', 'onPause', 'onSaveInstanceState', 'onStop', 'onTerminate')
+    ]
+    [not(Block/*[last()]/MethodCall[SuperExpression][@MethodName = ancestor::MethodDeclaration/@Name])]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+import android.app.Activity;
+
+public class DummyActivity extends Activity {
+    public void onPause() {
+        foo();
+        // missing call to super.onPause()
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="CheckSkipResult"
+          language="java"
+          since="5.0"
+          message="Check the value returned by the skip() method of an InputStream to see if the requested number of bytes has been skipped."
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.CheckSkipResultRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#checkskipresult">
+        <description>
+The skip() method may skip a smaller number of bytes than requested. Check the returned value to find out if it was the case or not.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo {
+
+   private FileInputStream _s = new FileInputStream("file");
+
+   public void skip(int n) throws IOException {
+      _s.skip(n); // You are not sure that exactly n bytes are skipped
+   }
+
+   public void skipExactly(int n) throws IOException {
+      while (n != 0) {
+         long skipped = _s.skip(n);
+         if (skipped == 0)
+            throw new EOFException();
+         n -= skipped;
+      }
+   }
+]]>
+        </example>
+    </rule>
+
+    <rule name="ClassCastExceptionWithToArray"
+          language="java"
+          since="3.4"
+          message="This usage of the Collection.toArray() method will throw a ClassCastException."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#classcastexceptionwithtoarray">
+        <description>
+When deriving an array of a specific class from your Collection, one should provide an array of
+the same class as the parameter of the `toArray()` method. Doing otherwise will result
+in a `ClassCastException`.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//CastExpression[ArrayType/ClassType[not(pmd-java:typeIsExactly('java.lang.Object'))]]
+    /MethodCall[pmd-java:matchesSig("java.util.Collection#toArray()")]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+Collection c = new ArrayList();
+Integer obj = new Integer(1);
+c.add(obj);
+
+    // this would trigger the rule (and throw a ClassCastException if executed)
+Integer[] a = (Integer [])c.toArray();
+
+   // this is fine and will not trigger the rule
+Integer[] b = (Integer [])c.toArray(new Integer[0]);
+]]>
+        </example>
+    </rule>
+
+    <rule name="CloneMethodMustBePublic"
+          language="java"
+          since="5.4.0"
+          message="clone() method must be public if the class implements Cloneable"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#clonemethodmustbepublic">
+        <description>
+The java manual says "By convention, classes that implement this interface should override
+Object.clone (which is protected) with a public method."
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodDeclaration[not(pmd-java:modifiers() = "public")]
+    [@Name = 'clone']
+    [@Arity = 0]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo implements Cloneable {
+    @Override
+    protected Object clone() throws CloneNotSupportedException { // Violation, must be public
+    }
+}
+
+public class Foo implements Cloneable {
+    @Override
+    protected Foo clone() { // Violation, must be public
+    }
+}
+
+public class Foo implements Cloneable {
+    @Override
+    public Object clone() // Ok
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="CloneMethodMustImplementCloneable"
+          language="java"
+          since="1.9"
+          message="clone() method should be implemented only if implementing Cloneable interface"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.CloneMethodMustImplementCloneableRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#clonemethodmustimplementcloneable">
+        <description>
+The method clone() should only be implemented if the class implements the Cloneable interface with the exception of
+a final method that only throws CloneNotSupportedException.
+
+The rule can also detect, if the class implements or extends a Cloneable class.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class MyClass {
+ public Object clone() throws CloneNotSupportedException {
+  return foo;
+ }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="CloneMethodReturnTypeMustMatchClassName"
+          language="java"
+          minimumLanguageVersion="1.5"
+          since="5.4.0"
+          message="The return type of the clone() method must be the class name when implements Cloneable"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#clonemethodreturntypemustmatchclassname">
+        <description>
+If a class implements `Cloneable` the return type of the method `clone()` must be the class name. That way, the caller
+of the clone method doesn't need to cast the returned clone to the correct type.
+
+Note: Such a covariant return type is only possible with Java 1.5 or higher.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodDeclaration
+    [@Name = 'clone']
+    [@Arity = 0]
+    [ClassType[1]/@SimpleName != ancestor::ClassDeclaration[1]/@SimpleName]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo implements Cloneable {
+    @Override
+    protected Object clone() { // Violation, Object must be Foo
+    }
+}
+
+public class Foo implements Cloneable {
+    @Override
+    public Foo clone() { //Ok
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="CloseResource"
+          language="java"
+          since="1.2.2"
+          message="Ensure that resources like this {0} object are closed after use"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.CloseResourceRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#closeresource">
+        <description>
+Ensure that resources (like `java.sql.Connection`, `java.sql.Statement`, and `java.sql.ResultSet` objects
+and any subtype of `java.lang.AutoCloseable`) are always closed after use.
+Failing to do so might result in resource leaks.
+
+Note: It suffices to configure the super type, e.g. `java.lang.AutoCloseable`, so that this rule automatically triggers
+on any subtype (e.g. `java.io.FileInputStream`). Additionally specifying `java.sql.Connection` helps in detecting
+the types, if the type resolution / auxclasspath is not correctly setup.
+
+Note: Since PMD 6.16.0 the default value for the property `types` contains `java.lang.AutoCloseable` and detects
+now cases where the standard `java.io.*Stream` classes are involved. In order to restore the old behaviour,
+just remove "AutoCloseable" from the types.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Bar {
+    public void withSQL() {
+        Connection c = pool.getConnection();
+        try {
+            // do stuff
+        } catch (SQLException ex) {
+           // handle exception
+        } finally {
+            // oops, should close the connection using 'close'!
+            // c.close();
+        }
+    }
+
+    public void withFile() {
+        InputStream file = new FileInputStream(new File("/tmp/foo"));
+        try {
+            int c = file.in();
+        } catch (IOException e) {
+            // handle exception
+        } finally {
+            // TODO: close file
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="CompareObjectsWithEquals"
+          language="java"
+          since="3.2"
+          message="Use equals() to compare object references."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#compareobjectswithequals">
+        <description>
+Use `equals()` to compare object references; avoid comparing them with `==`.
+
+Since comparing objects with named constants is useful in some cases (eg, when
+defining constants for sentinel values), the rule ignores comparisons against
+fields with all-caps name (eg `this == SENTINEL`), which is a common naming
+convention for constant fields.
+
+You may allow some types to be compared by reference by listing the exceptions
+in the `typesThatCompareByReference` property.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="typesThatCompareByReference" type="List[String]" description="List of canonical type names for which reference comparison is allowed.">
+                <value>java.lang.Enum,java.lang.Class</value>
+            </property>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//InfixExpression
+    [@Operator = ("==", "!=")]
+    [count(*
+        [not(self::NullLiteral)]
+        [pmd-java:typeIs('java.lang.Object')]
+        [not(some $t in $typesThatCompareByReference satisfies pmd-java:typeIs($t))]
+      ) = 2
+    ]
+    [not(ancestor::MethodDeclaration[1][@Name = "equals"])]
+    (: Is not a field access with an all-caps identifier :)
+    [not(FieldAccess[upper-case(@Name)=@Name]
+     or VariableAccess[upper-case(@Name)=@Name])]
+]]>
+        </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+class Foo {
+  boolean bar(String a, String b) {
+    return a == b;
+  }
+}
+
+]]>
+        </example>
+    </rule>
+
+    <rule name="ComparisonWithNaN"
+          language="java"
+          since="6.36.0"
+          message="Comparisons with NaN always return false"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#comparisonwithnan">
+        <description><![CDATA[
+            Reports comparisons with double and float `NaN` (Not-a-Number) values.
+            These are [specified](https://docs.oracle.com/javase/specs/jls/se8/html/jls-15.html#jls-15.21.1)
+            to have unintuitive behavior: NaN is considered unequal to itself.
+            This means a check like `someDouble == Double.NaN` will always return
+            false, even if `someDouble` is really the NaN value. To test whether a
+            value is the NaN value, one should instead use `Double.isNaN(someDouble)`
+            (or `Float.isNaN`). The `!=` operator should be treated similarly.
+            Finally, comparisons like `someDouble <= Double.NaN` are nonsensical
+            and will always evaluate to false.
+            
+            This rule has been renamed from "BadComparison" in PMD 6.36.0.
+        ]]></description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//InfixExpression[@Operator = ("==", "!=", "<=", ">=", "<", ">")]/FieldAccess[@Name='NaN' and (pmd-java:typeIs('double') or pmd-java:typeIs('float'))]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+boolean x = (y == Double.NaN);
+]]>
+        </example>
+    </rule>
+
+    <rule name="ConfusingArgumentToVarargsMethod"
+          language="java"
+          since="7.1.0"
+          message="Unclear if a varargs or non-varargs call is intended. Cast to {0} or {0}[], or pass varargs parameters separately to clarify intent."
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.ConfusingArgumentToVarargsMethodRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#confusingargumenttovarargsmethod">
+        <description>
+            Reports a confusing argument passed to a varargs method.
+
+            This can occur when an array is passed as a single varargs argument, when the array type is not exactly the
+            type of array that the varargs method expects. If, that array is a subtype of the component type of the expected
+            array type, then it might not be clear what value the called varargs method will receive.
+            For instance if you have:
+            ```java
+            void varargs(Object... parm);
+            ```
+            and call it like so:
+            ```java
+            varargs(new String[]{"a"});
+            ```
+            it is not clear whether you intended the method to receive the value `new Object[]{ new String[] {"a"} }` or
+            just `new String[] {"a"}` (the latter happens). This confusion occurs because `String[]` is both a subtype
+            of `Object[]` and of `Object`. To clarify your intent in this case, use a cast or pass individual elements like so:
+            ```java
+            // varargs call
+            // parm will be `new Object[] { "a" }`
+            varargs("a");
+
+            // non-varargs call
+            // parm will be `new String[] { "a" }`
+            varargs((Object[]) new String[]{"a"});
+
+            // varargs call
+            // parm will be `new Object[] { new String[] { "a" } }`
+            varargs((Object) new String[]{"a"});
+            ```
+
+            Another confusing case is when you pass `null` as the varargs argument. Here it is not clear whether you intended
+            to pass an array with a single null element, or a null array (the latter happens). This can similarly be clarified
+            with a cast.
+        </description>
+        <priority>3</priority>
+        <example><![CDATA[
+            import java.util.Arrays;
+
+            abstract class C {
+                abstract void varargs(Object... args);
+                static {
+                    varargs(new String[] { "a" });
+                    varargs(null);
+                }
+            }
+            ]]></example>
+    </rule>
+
+    <rule name="ConstructorCallsOverridableMethod"
+          language="java"
+          since="1.04"
+          message="Overridable {0} called during object construction{1}"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.ConstructorCallsOverridableMethodRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#constructorcallsoverridablemethod">
+        <description>
+Reports calls to overridable methods on `this` during object initialization. These
+are invoked on an incompletely constructed object and can be difficult to debug if overridden.
+This is because the subclass usually assumes that the superclass is completely initialized
+in all methods. If that is not the case, bugs can appear in the constructor, for instance,
+some fields that are still null may cause a NullPointerException or be stored somewhere
+else to blow up later.
+
+To avoid this problem, only use methods that are static, private, or final in constructors.
+Note that those methods also must not call overridable methods transitively to be safe.
+        </description>
+        <priority>1</priority>
+        <example>
+<![CDATA[
+public class SeniorClass {
+  public SeniorClass(){
+      toString(); //may throw NullPointerException if overridden
+  }
+  public String toString(){
+    return "IAmSeniorClass";
+  }
+}
+public class JuniorClass extends SeniorClass {
+  private String name;
+  public JuniorClass(){
+    super(); //Automatic call leads to NullPointerException
+    name = "JuniorClass";
+  }
+  public String toString(){
+    return name.toUpperCase();
+  }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="DetachedTestCase"
+          language="java"
+          since="6.13.0"
+          message="Probable detached JUnit test case."
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.DetachedTestCaseRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#detachedtestcase">
+        <description>
+The method appears to be a test case since it has public or default visibility,
+non-static access, no arguments, no return value, has no annotations, but is a
+member of a class that has one or more JUnit test cases. If it is a utility
+method, it should likely have private visibility. If it is an ignored test, it
+should be annotated with @Test and @Ignore.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class MyTest {
+    @Test
+    public void someTest() {
+    }
+
+    // violation: Not annotated
+    public void someOtherTest () {
+    }
+
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="DoNotCallGarbageCollectionExplicitly"
+          language="java"
+          since="4.2"
+          message="Do not explicitly trigger a garbage collection."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#donotcallgarbagecollectionexplicitly">
+        <description>
+Calls to `System.gc()`, `Runtime.getRuntime().gc()`, and `System.runFinalization()` are not advised.
+Code should have the same behavior whether the garbage collection is disabled using the option
+`-Xdisableexplicitgc` or not.
+
+Moreover, "modern" JVMs do a very good job handling garbage collections. If memory usage issues unrelated to memory
+leaks develop within an application, it should be dealt with JVM options rather than within the code itself.
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodCall[
+       pmd-java:matchesSig("java.lang.System#gc()")
+    or pmd-java:matchesSig("java.lang.Runtime#gc()")
+    or pmd-java:matchesSig("java.lang.System#runFinalization()")
+    or pmd-java:matchesSig("java.lang.Runtime#runFinalization()")
+]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class GCCall {
+    public GCCall() {
+        // Explicit gc call !
+        System.gc();
+    }
+
+    public void doSomething() {
+        // Explicit gc call !
+        Runtime.getRuntime().gc();
+    }
+
+    public explicitGCcall() {
+        // Explicit gc call !
+        System.gc();
+    }
+
+    public void doSomething() {
+        // Explicit gc call !
+        Runtime.getRuntime().gc();
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="DoNotExtendJavaLangThrowable"
+          language="java"
+          since="6.0.0"
+          message="Exceptions should not extend java.lang.Throwable"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#donotextendjavalangthrowable">
+        <description>
+Extend Exception or RuntimeException instead of Throwable.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ClassDeclaration/ExtendsList/ClassType
+  [pmd-java:typeIsExactly('java.lang.Throwable')]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo extends Throwable { }
+]]>
+        </example>
+    </rule>
+
+    <rule name="DoNotHardCodeSDCard"
+          since="4.2.6"
+          language="java"
+          message="Do not hardcode /sdcard."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#donothardcodesdcard">
+        <description>
+Use Environment.getExternalStorageDirectory() instead of "/sdcard"
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>//StringLiteral[starts-with(@Image,'"/sdcard')]</value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class MyActivity extends Activity {
+    protected void foo() {
+        String storageLocation = "/sdcard/mypackage";   // hard-coded, poor approach
+
+       storageLocation = Environment.getExternalStorageDirectory() + "/mypackage"; // preferred approach
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="DoNotTerminateVM"
+          language="java"
+          since="4.1"
+          message="System.exit() should not be used in J2EE/JEE apps"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#donotterminatevm">
+        <description>
+Web applications should not call `System.exit()`, since only the web container or the
+application server should stop the JVM. Otherwise a web application would terminate all other applications
+running on the same application server.
+
+This rule also checks for the equivalent calls `Runtime.getRuntime().exit()` and `Runtime.getRuntime().halt()`.
+
+This rule has been renamed from "DoNotCallSystemExit" in PMD 6.29.0.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//(MethodDeclaration[@MainMethod = false()] | Initializer)//MethodCall[
+    pmd-java:matchesSig("java.lang.System#exit(int)")
+    or pmd-java:matchesSig("java.lang.Runtime#exit(int)")
+    or pmd-java:matchesSig("java.lang.Runtime#halt(int)")
+]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public void bar() {
+    System.exit(0);                 // never call this when running in an application server!
+}
+public void foo() {
+    Runtime.getRuntime().exit(0);   // never stop the JVM manually, the container will do this.
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="DoNotThrowExceptionInFinally"
+          language="java"
+          since="4.2"
+          message="A throw statement in a finally block makes the control flow hard to understand."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#donotthrowexceptioninfinally">
+        <description>
+Throwing exceptions within a 'finally' block is confusing since they may mask other exceptions
+or code defects.
+Note: This is a PMD implementation of the Lint4j rule "A throw in a finally block"
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>//FinallyClause[descendant::ThrowStatement]</value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+    public void bar() {
+        try {
+            // Here do some stuff
+        } catch( Exception e) {
+            // Handling the issue
+        } finally {
+            // is this really a good idea ?
+            throw new Exception();
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="DontImportSun"
+          language="java"
+          since="1.5"
+          message="Avoid importing anything from the 'sun.*' packages"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#dontimportsun">
+        <description>
+Avoid importing anything from the 'sun.*' packages. These packages are not portable
+and are likely to change.
+
+If you find yourself having to depend on Sun APIs, confine this dependency to as
+small a scope as possible, for instance by writing a stable wrapper class around
+the unstable API. You can then suppress this rule in the implementation of the wrapper.
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ImportDeclaration[starts-with(@ImportedName, 'sun.')]
+]]>
+                </value>
+            </property>
+
+        </properties>
+        <example>
+<![CDATA[
+import sun.misc.foo;
+public class Foo {}
+]]>
+        </example>
+    </rule>
+
+    <rule name="DontUseFloatTypeForLoopIndices"
+          language="java"
+          since="4.3"
+          message="Don't use floating point for loop indices. If you must use floating point, use double."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#dontusefloattypeforloopindices">
+        <description>
+Don't use floating point for loop indices. If you must use floating point, use double
+unless you're certain that float provides enough precision and you have a compelling
+performance need (space or time).
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ForStatement/ForInit//VariableId[pmd-java:typeIs('float')]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Count {
+  public static void main(String[] args) {
+    final int START = 2000000000;
+    int count = 0;
+    for (float f = START; f < START + 50; f++)
+      count++;
+      //Prints 0 because (float) START == (float) (START + 50).
+      System.out.println(count);
+      //The termination test misbehaves due to floating point granularity.
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="EmptyCatchBlock"
+          language="java"
+          since="0.1"
+          message="Avoid empty catch blocks"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#emptycatchblock">
+        <description>
+Empty Catch Block finds instances where an exception is caught, but nothing is done.
+In most circumstances, this swallows an exception which should either be acted on
+or reported.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//CatchClause[
+  Block[
+      count(*) = 0
+      and ($allowCommentedBlocks = false() or @containsComment = false())
+  ]
+  and CatchParameter/VariableId[not(matches(@Name, $allowExceptionNameRegex))]
+]
+]]>
+                </value>
+            </property>
+            <property name="allowCommentedBlocks" type="Boolean" description="Empty blocks containing comments will be skipped" value="false"/>
+            <property name="allowExceptionNameRegex" type="Regex" description="Empty blocks catching exceptions with names matching this regular expression will be skipped" value="^(ignored|expected)$"/>
+        </properties>
+        <example>
+<![CDATA[
+public void doSomething() {
+    try {
+        FileInputStream fis = new FileInputStream("/tmp/bugger");
+    } catch (IOException ioe) {
+        // not good
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="EmptyFinalizer"
+          language="java"
+          since="1.5"
+          message="Avoid empty finalize methods"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#emptyfinalizer">
+        <description>
+Empty finalize methods serve no purpose and should be removed. Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodDeclaration[@Name='finalize'][@Arity = 0]
+  /Block[not(*)]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+   protected void finalize() {}
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="EqualsNull"
+          language="java"
+          since="1.9"
+          message="Avoid using equals() to compare against null"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#equalsnull">
+        <description>
+Tests for null should not use the equals() method. The '==' operator should be used instead.
+        </description>
+        <priority>1</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodCall[@MethodName = "equals" and ArgumentList[count(*) = 1 and NullLiteral]]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+String x = "foo";
+
+if (x.equals(null)) {   // bad form
+    doSomething();
+}
+
+if (x == null) {        // preferred
+    doSomething();
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="FinalizeDoesNotCallSuperFinalize"
+          language="java"
+          since="1.5"
+          message="Last statement in finalize method should be a call to super.finalize()"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#finalizedoesnotcallsuperfinalize">
+        <description>
+If the finalize() is implemented, its last action should be to call super.finalize. Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<!-- in English: a method declaration of finalize(), with no arguments, containing
+a block whose last statement is NOT a call to super.finalize -->
+<![CDATA[
+//MethodDeclaration[@Name = "finalize"][@Arity = 0]
+   /Block/*[last()]
+      [not(MethodCall[@MethodName = "finalize"]/SuperExpression)]
+      [not(FinallyClause/Block/ExpressionStatement/
+          MethodCall[@MethodName = "finalize"]/SuperExpression)]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+protected void finalize() {
+    something();
+    // neglected to call super.finalize()
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="FinalizeOnlyCallsSuperFinalize"
+          language="java"
+          since="1.5"
+          message="Finalize should do something besides just calling super.finalize()"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#finalizeonlycallssuperfinalize">
+        <description>
+If the finalize() is implemented, it should do something besides just calling super.finalize(). Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodDeclaration[@Name='finalize'][@Arity = 0]
+   [Block[@Size=1]/ExpressionStatement/MethodCall[@MethodName = "finalize"][SuperExpression]]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+protected void finalize() {
+    super.finalize();
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="FinalizeOverloaded"
+          language="java"
+          since="1.5"
+          message="Finalize methods should not be overloaded"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#finalizeoverloaded">
+        <description>
+Methods named finalize() should not have parameters.  It is confusing and most likely an attempt to
+overload Object.finalize(). It will not be called by the VM.
+
+Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodDeclaration[@Name='finalize'][@Arity > 0]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+    // this is confusing and probably a bug
+    protected void finalize(int a) {
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="FinalizeShouldBeProtected"
+          language="java"
+          since="1.1"
+          message="If you override finalize(), make it protected"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#finalizeshouldbeprotected">
+        <description>
+When overriding the finalize(), the new method should be set as protected.  If made public,
+other classes may invoke it at inappropriate times.
+
+Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodDeclaration[@Visibility != "protected"][@Name='finalize'][@Arity = 0]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public void finalize() {
+    // do something
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="IdempotentOperations"
+          language="java"
+          since="2.0"
+          message="Avoid idempotent operations (like assigning a variable to itself)."
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.IdempotentOperationsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#idempotentoperations">
+        <description>
+Avoid idempotent operations - they have no effect.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo {
+ public void bar() {
+  int x = 2;
+  x = x;
+ }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ImplicitSwitchFallThrough"
+          language="java"
+          since="3.0"
+          message="This switch case may be reached by fallthrough from the previous case"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.ImplicitSwitchFallThroughRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#implicitswitchfallthrough">
+        <description>
+Switch statements without break or return statements for each case option
+may indicate problematic behaviour. Empty cases are ignored as these indicate
+an intentional fall-through.
+
+You can ignore a violation by commenting `// fallthrough` before the case label
+which is reached by fallthrough, or with `@SuppressWarnings("fallthrough")`.
+
+This rule has been renamed from "MissingBreakInSwitch" in PMD 6.37.0.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public void bar(int status) {
+    switch(status) {
+      case CANCELLED:
+        doCancelled();
+        // break; hm, should this be commented out?
+      case NEW:
+        doNew();
+        // is this really a fall-through?
+        // what happens if you add another case after this one?
+      case REMOVED:
+        doRemoved();
+        // fallthrough - this comment just clarifies that you want a fallthrough
+      case OTHER: // empty case - this is interpreted as an intentional fall-through
+      case ERROR:
+        doErrorHandling();
+        break;
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="InstantiationToGetClass"
+          language="java"
+          since="2.0"
+          message="Avoid instantiating an object just to call getClass() on it; use the .class public member instead"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#instantiationtogetclass">
+        <description>
+Avoid instantiating an object just to call getClass() on it; use the .class public member instead.
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodCall
+ [@MethodName='getClass']
+ [ConstructorCall]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+// replace this
+Class c = new String().getClass();
+
+// with this:
+Class c = String.class;
+]]>
+        </example>
+    </rule>
+
+    <rule name="InvalidLogMessageFormat"
+          language="java"
+          since="5.5.0"
+          message="Invalid message format"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.InvalidLogMessageFormatRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#invalidlogmessageformat">
+        <description>
+Check for messages in slf4j and log4j2 (since 6.19.0) loggers with non matching number of arguments and placeholders.
+
+Since 6.32.0 in addition to parameterized message placeholders (`{}`) also format specifiers of string formatted
+messages are supported (`%s`).
+
+This rule has been renamed from "InvalidSlf4jMessageFormat" in PMD 6.19.0.
+        </description>
+        <priority>5</priority>
+        <example>
+<![CDATA[
+LOGGER.error("forget the arg {}");
+LOGGER.error("forget the arg %s");
+LOGGER.error("too many args {}", "arg1", "arg2");
+LOGGER.error("param {}", "arg1", new IllegalStateException("arg")); //The exception is shown separately, so is correct.
+]]>
+        </example>
+    </rule>
+
+    <rule name="JumbledIncrementer"
+          language="java"
+          since="1.0"
+          message="Avoid modifying an outer loop incrementer in an inner loop for update expression"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#jumbledincrementer">
+        <description>
+Avoid jumbled loop incrementers - it's usually a mistake, and is confusing even if intentional.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+//ForStatement
+    [not(ForInit) or ForInit//VariableId/@Name != ForUpdate//VariableAccess/@Name]
+    [ForUpdate//VariableAccess[@AccessType = 'WRITE']/@Name
+     =
+     ancestor::ForStatement/ForInit//VariableId/@Name
+    ]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+ <![CDATA[
+public class JumbledIncrementerRule1 {
+    public void foo() {
+        for (int i = 0; i < 10; i++) {          // only references 'i'
+            for (int k = 0; k < 20; i++) {      // references both 'i' and 'k'
+                System.out.println("Hello");
+            }
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="JUnitSpelling"
+          language="java"
+          since="1.0"
+          message="You may have misspelled a JUnit framework method (setUp or tearDown)"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.JUnitSpellingRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#junitspelling">
+        <description>
+            In JUnit 3, the setUp method is used to set up all data entities required in running tests.
+            The tearDown method is used to clean up all data entities required in running tests.
+            You should not misspell method name if you want your test to set up and clean up everything correctly.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+import junit.framework.*;
+
+public class Foo extends TestCase {
+    public void setup() {}    // oops, should be setUp
+    public void TearDown() {} // oops, should be tearDown
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="JUnitStaticSuite"
+          language="java"
+          since="1.0"
+          message="You have a suite() method that is not both public and static, so JUnit won't call it to get your TestSuite.  Is that what you wanted to do?"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.JUnitStaticSuiteRule"
+          typeResolution="true"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#junitstaticsuite">
+        <description>
+The suite() method in a JUnit test needs to be both public and static.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+import junit.framework.*;
+
+public class Foo extends TestCase {
+    public void suite() {}         // oops, should be static
+}
+]]>
+        </example>
+        <example>
+<![CDATA[
+import junit.framework.*;
+
+public class Foo extends TestCase {
+    private static void suite() {} // oops, should be public
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="MethodWithSameNameAsEnclosingClass"
+          language="java"
+          since="1.5"
+          message="A method should not have the same name as its containing class"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#methodwithsamenameasenclosingclass">
+        <description>
+A method should not have the same name as its containing class.
+This would be confusing as it would look like a constructor. 
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodDeclaration[@Name = ancestor::ClassDeclaration/@SimpleName]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class MyClass {
+
+    public MyClass() {}         // this is OK because it is a constructor
+
+    public void MyClass() {}    // this is bad because it is a method
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="MisplacedNullCheck"
+          language="java"
+          since="3.5"
+          message="The null check here is misplaced; if the variable ''{0}'' is null there will be a NullPointerException"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#misplacednullcheck">
+        <description>
+The null check here is misplaced. If the variable is null a `NullPointerException` will be thrown.
+Either the check is useless (the variable will never be `null`) or it is incorrect.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//InfixExpression[@Operator = '&&']
+    /InfixExpression[@Operator = '!=']
+        (: one side is null :)
+        [NullLiteral]
+        (: other side checks for the variable used somewhere in the first child of conditional and expression :)
+        [VariableAccess]
+        [some $var in preceding-sibling::*//VariableAccess
+            [parent::MethodCall or parent::FieldAccess]
+            [not(ancestor::InfixExpression[@Operator = '||'])]
+            /@Name
+            satisfies $var = VariableAccess/@Name
+        ]
+    /VariableAccess
+|
+//InfixExpression[@Operator = '||']
+    /InfixExpression[@Operator = '==']
+        (: one side is null :)
+        [NullLiteral]
+        (: other side checks for the variable used somewhere in the first child of conditional or expression :)
+        [VariableAccess]
+        [some $var in preceding-sibling::*//VariableAccess
+            [parent::MethodCall or parent::FieldAccess]
+            [not(ancestor::InfixExpression[@Operator = '&&'])]
+            /@Name
+            satisfies $var = VariableAccess/@Name
+        ]
+    /VariableAccess
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+    void bar() {
+        if (a.equals(baz) && a != null) {} // a could be null, misplaced null check
+
+        if (a != null && a.equals(baz)) {} // correct null check
+    }
+}
+]]>
+        </example>
+        <example>
+<![CDATA[
+public class Foo {
+    void bar() {
+        if (a.equals(baz) || a == null) {} // a could be null, misplaced null check
+
+        if (a == null || a.equals(baz)) {} // correct null check
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="MissingSerialVersionUID"
+          language="java"
+          since="3.0"
+          message="Classes implementing Serializable should set a serialVersionUID"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#missingserialversionuid">
+        <description>
+Serializable classes should provide a serialVersionUID field.
+The serialVersionUID field is also needed for abstract base classes. Each individual class in the inheritance
+chain needs an own serialVersionUID field. See also [Should an abstract class have a serialVersionUID](https://stackoverflow.com/questions/893259/should-an-abstract-class-have-a-serialversionuid).
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ClassDeclaration
+    [@Interface = false()]
+    [count(ClassBody/FieldDeclaration/VariableDeclarator/VariableId[@Name='serialVersionUID']) = 0]
+    [(ImplementsList | ExtendsList)/ClassType[pmd-java:typeIs('java.io.Serializable')]]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo implements java.io.Serializable {
+    String name;
+    // Define serialization id to avoid serialization related bugs
+    // i.e., public static final long serialVersionUID = 4328743;
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="MissingStaticMethodInNonInstantiatableClass"
+          language="java"
+          since="3.0"
+          message="Class cannot be instantiated and does not provide any static methods or fields"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#missingstaticmethodinnoninstantiatableclass">
+        <description>
+A class that has private constructors and does not have any static methods or fields cannot be used.
+
+When one of the private constructors is annotated with one of the annotations, then the class is not considered
+non-instantiatable anymore and no violation will be reported.
+See the property `annotations`.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="annotations" type="List[String]" value="org.springframework.beans.factory.annotation.Autowired,javax.inject.Inject,com.google.inject.Inject,lombok.Builder" description="If a constructor is annotated with one of these annotations, then the class is ignored."/>
+            <property name="xpath">
+                <value>
+<![CDATA[
+let $topLevelClass := /*/ClassDeclaration return
+let $isLombokUtility := exists($topLevelClass[pmd-java:hasAnnotation('lombok.experimental.UtilityClass')]) return
+$topLevelClass[
+        (: non-instantiable :)
+        $isLombokUtility or
+        (
+            (: no lombok produced constructors :)
+            not(pmd-java:hasAnnotation('lombok.NoArgsConstructor') or
+                pmd-java:hasAnnotation('lombok.RequiredArgsConstructor') or
+                pmd-java:hasAnnotation('lombok.AllArgsConstructor') or
+                pmd-java:hasAnnotation('lombok.Builder')) and
+            (: or has non-default constructors … :)
+            ClassBody/ConstructorDeclaration and
+                (: … but only private … :)
+                not(ClassBody/ConstructorDeclaration[@Visibility != "private"]) and
+                (: … and none annotated … :)
+                (every $x in $annotations satisfies
+                      not(ClassBody/ConstructorDeclaration/ModifierList/Annotation[pmd-java:typeIs($x)]))
+        )
+    ]
+    [
+        (: With no visible static methods … :)
+        not(ClassBody/MethodDeclaration[($isLombokUtility or pmd-java:modifiers() = "static") and @Visibility != "private"]) and
+        (: … nor fields … :)
+        not(ClassBody/FieldDeclaration[($isLombokUtility or pmd-java:modifiers() = "static") and @Visibility != "private"]) and
+        (: … no nested classes, that are non-private and static … :)
+        not(ClassBody/ClassDeclaration
+            [pmd-java:modifiers() = "static" and @Visibility != "private"]
+            (: … and a non-private method returning the outer class type … :)
+            [(ClassBody/MethodDeclaration
+                [@Visibility != "private"]
+                [descendant::ReturnStatement/*[1][pmd-java:typeIs(ancestor::ClassDeclaration[@Nested = false()]/@BinaryName)]]
+            ) or (
+                (: … or the inner class extends the outer class :)
+                ExtendsList/ClassType[@SimpleName = ancestor::ClassDeclaration[@Nested = false()]/@SimpleName]
+            )]
+    )]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+// This class is unusable, since it cannot be
+// instantiated (private constructor),
+// and no static method can be called.
+
+public class Foo {
+  private Foo() {}
+  void foo() {}
+}
+
+]]>
+        </example>
+    </rule>
+
+    <rule name="MoreThanOneLogger"
+          language="java"
+          since="2.0"
+          message="Class contains more than one logger."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#morethanonelogger">
+        <description>
+Normally only one logger is used in each class. This rule supports slf4j, log4j, Java Util Logging and
+log4j2 (since 6.19.0).
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+//ClassDeclaration[
+  count(
+    ClassBody/FieldDeclaration/ClassType[
+      pmd-java:typeIs("org.apache.log4j.Logger") or
+      pmd-java:typeIs("org.apache.logging.log4j.Logger") or
+      pmd-java:typeIs("java.util.logging.Logger") or
+      pmd-java:typeIs("org.slf4j.Logger")
+    ]
+  ) > 1
+]
+                ]]></value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+    Logger log = Logger.getLogger(Foo.class.getName());
+    // It is very rare to see two loggers on a class, normally
+    // log information is multiplexed by levels
+    Logger log2= Logger.getLogger(Foo.class.getName());
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="NonCaseLabelInSwitchStatement" deprecated="true" ref="NonCaseLabelInSwitch" />
+
+    <rule name="NonCaseLabelInSwitch"
+          language="java"
+          since="1.5"
+          message="A non-case label was present in a switch statement or expression"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#noncaselabelinswitch">
+        <description>
+A non-case label (e.g. a named break/continue label) was present in a switch statement or switch expression.
+This is legal, but confusing. It is easy to mix up the case labels and the non-case labels.
+
+Note: This rule was renamed from `NonCaseLabelInSwitchStatement` with PMD 7.7.0.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>//(SwitchStatement|SwitchExpression)//LabeledStatement</value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+  void bar(int a) {
+   switch (a) {
+     case 1:
+       // do something
+     mylabel: // this is legal, but confusing!
+       break;
+     default:
+       break;
+    }
+  }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="NonSerializableClass"
+          language="java"
+          since="1.1"
+          message="The field ''{0}'' of serializable class ''{1}'' is of non-serializable type ''{2}''."
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.NonSerializableClassRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#nonserializableclass">
+        <description>
+If a class is marked as `Serializable`, then all fields need to be serializable as well. In order to exclude
+a field, it can be marked as transient. Static fields are not considered.
+
+This rule reports all fields, that are not serializable.
+
+If a class implements the methods to perform manual serialization (`writeObject`, `readObject`) or uses
+a replacement object (`writeReplace`, `readResolve`) then this class is ignored.
+
+Note: This rule has been revamped with PMD 6.52.0. It was previously called "BeanMembersShouldSerialize".
+The property `prefix` has been deprecated, since in a serializable class all fields have to be
+serializable regardless of the name.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+class Buzz implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private transient int someFoo;          // good, it's transient
+    private static int otherFoo;            // also OK, it's static
+    private java.io.FileInputStream stream; // bad - FileInputStream is not serializable
+
+    public void setStream(FileInputStream stream) {
+        this.stream = stream;
+    }
+
+    public int getSomeFoo() {
+          return this.someFoo;
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="NonStaticInitializer"
+          language="java"
+          since="1.5"
+          message="Non-static initializers are confusing"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#nonstaticinitializer">
+        <description>
+A non-static initializer block will be called any time a constructor is invoked (just prior to
+invoking the constructor).  While this is a valid language construct, it is rarely used and is
+confusing.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//Initializer[@Static=false()][not(ancestor::*[3][self::ConstructorCall or self::EnumConstant])]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class MyClass {
+  // this block gets run before any call to a constructor
+  {
+    System.out.println("I am about to construct myself");
+  }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="NullAssignment"
+          language="java"
+          since="1.02"
+          message="Assigning an Object to null is a code smell.  Consider refactoring."
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.NullAssignmentRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#nullassignment">
+        <description>
+Assigning a "null" to a variable (outside of its declaration) is usually bad form.  Sometimes, this type
+of assignment is an indication that the programmer doesn't completely understand what is going on in the code.
+
+NOTE: This sort of assignment may used in some cases to dereference objects and encourage garbage collection.
+        </description>
+        <priority>3</priority>
+        <example>
+ <![CDATA[
+public void bar() {
+  Object x = null; // this is OK
+  x = new Object();
+     // big, complex piece of code here
+  x = null; // this is not required
+     // big, complex piece of code here
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="OverrideBothEqualsAndHashcode"
+          language="java"
+          since="0.4"
+          message="Ensure you override both equals() and hashCode()"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.OverrideBothEqualsAndHashcodeRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#overridebothequalsandhashcode">
+        <description>
+Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Bar {        // poor, missing a hashcode() method
+    public boolean equals(Object o) {
+      // do some comparison
+    }
+}
+
+public class Baz {        // poor, missing an equals() method
+    public int hashCode() {
+      // return some hash value
+    }
+}
+
+public class Foo {        // perfect, both methods provided
+    public boolean equals(Object other) {
+      // do some comparison
+    }
+    public int hashCode() {
+      // return some hash value
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ProperCloneImplementation"
+          language="java"
+          since="1.4"
+          message="Object clone() should be implemented with super.clone()"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.ProperCloneImplementationRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#propercloneimplementation">
+        <description>
+Object clone() should be implemented with super.clone().
+        </description>
+        <priority>2</priority>
+        <example>
+<![CDATA[
+class Foo{
+    public Object clone(){
+        return new Foo(); // This is bad
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ProperLogger"
+          language="java"
+          since="3.3"
+          message="Logger should be defined private static final and have the correct class"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#properlogger">
+        <description>
+A logger should normally be defined private static final and be associated with the correct class.
+`private final Log log;` is also allowed for rare cases where loggers need to be passed around,
+with the restriction that the logger needs to be passed into the constructor.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//FieldDeclaration
+    [ClassType[pmd-java:typeIs($loggerClass)]]
+    [
+        (: check modifiers :)
+        (not(pmd-java:modifiers() = 'private') or not(pmd-java:modifiers() = 'final'))
+        (: check logger name :)
+        or (pmd-java:modifiers() = 'static' and VariableDeclarator/VariableId/@Name != $staticLoggerName)
+        or (not(pmd-java:modifiers() = 'static') and VariableDeclarator/VariableId/@Name != $loggerName)
+        (: check logger argument type matches class or enum name :)
+        or .//ArgumentList/ClassLiteral/ClassType/@SimpleName != ancestor::ClassDeclaration/@SimpleName
+        or .//ArgumentList/ClassLiteral/ClassType/@SimpleName != ancestor::EnumDeclaration/@SimpleName
+
+        (: special case - final logger initialized inside constructor :)
+        or (VariableDeclarator/@Initializer = false()
+            and not(pmd-java:modifiers() = 'static')
+            and not(ancestor::ClassBody/ConstructorDeclaration
+                //AssignmentExpression[@Operator = '=']
+                    [FieldAccess[1]/@Name = $loggerName or VariableAccess[1]/@Name = $loggerName]
+                    [*[2][@Name = ancestor::ConstructorDeclaration//FormalParameter/VariableId/@Name]])
+        )
+    ]
+]]>
+                </value>
+            </property>
+            <property name="staticLoggerName" type="String" description="Name of the static Logger variable" value="LOG"/>
+            <property name="loggerName" type="String" description="Name of the Logger instance variable" value="log"/>
+            <property name="loggerClass" type="String" description="Class name of the logger" value="org.apache.commons.logging.Log"/>
+        </properties>
+        <example>
+ <![CDATA[
+public class Foo {
+
+    private static final Log LOG = LogFactory.getLog(Foo.class);    // proper way
+
+    protected Log LOG = LogFactory.getLog(Testclass.class);         // wrong approach
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ReturnEmptyCollectionRatherThanNull"
+          language="java"
+          since="6.37.0"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          message="Return an empty collection rather than 'null'."
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#returnemptycollectionratherthannull">
+        <description>
+For any method that returns an collection (such as an array, Collection or Map), it is better to return
+an empty one rather than a null reference. This removes the need for null checking all results and avoids
+inadvertent NullPointerExceptions.
+
+See Effective Java, 3rd Edition, Item 54: Return empty collections or arrays instead of null
+        </description>
+        <priority>1</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ReturnStatement/NullLiteral
+[ancestor::MethodDeclaration[1]
+    [ArrayType
+     or ClassType[pmd-java:typeIs('java.util.Collection')
+        or pmd-java:typeIs('java.util.Map')]]
+]
+[not(./ancestor::LambdaExpression)]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Example {
+    // Not a good idea...
+    public int[] badBehavior() {
+        // ...
+        return null;
+    }
+
+    // Good behavior
+    public String[] bonnePratique() {
+        //...
+        return new String[0];
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ReturnFromFinallyBlock"
+          language="java"
+          since="1.05"
+          message="Avoid returning from a finally block"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#returnfromfinallyblock">
+        <description>
+Avoid returning from a finally block, this can discard exceptions.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>//FinallyClause//ReturnStatement except //FinallyClause//(MethodDeclaration|LambdaExpression)//ReturnStatement</value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Bar {
+    public String foo() {
+        try {
+            throw new Exception( "My Exception" );
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            return "A. O. K."; // return not recommended here
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="SimpleDateFormatNeedsLocale"
+          language="java"
+          since="2.0"
+          message="When instantiating a SimpleDateFormat object, specify a Locale"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#simpledateformatneedslocale">
+        <description>
+Be sure to specify a Locale when creating SimpleDateFormat instances to ensure that locale-appropriate
+formatting is used.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ConstructorCall
+    [pmd-java:typeIs('java.text.SimpleDateFormat')]
+    [ArgumentList/@Size = 1]
+]]>
+                    </value>
+                </property>
+            </properties>
+        <example>
+<![CDATA[
+public class Foo {
+  // Should specify Locale.US (or whatever)
+  private SimpleDateFormat sdf = new SimpleDateFormat("pattern");
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="SingleMethodSingleton"
+          language="java"
+          since="5.4"
+          message="Class contains multiple getInstance methods. Please review."
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.SingleMethodSingletonRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#singlemethodsingleton">
+        <description>
+Some classes contain overloaded getInstance. The problem with overloaded getInstance methods
+is that the instance created using the overloaded method is not cached and so,
+for each call and new objects will be created for every invocation.
+        </description>
+        <priority>2</priority>
+        <example>
+<![CDATA[
+public class Singleton {
+
+    private static Singleton singleton = new Singleton( );
+
+    private Singleton(){ }
+
+    public static Singleton getInstance( ) {
+        return singleton;
+    }
+
+    public static Singleton getInstance(Object obj){
+        Singleton singleton = (Singleton) obj;
+        return singleton;           //violation
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="SingletonClassReturningNewInstance"
+          language="java"
+          since="5.4"
+          message="getInstance method always creates a new object and hence does not comply to Singleton Design Pattern behaviour. Please review"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.SingletonClassReturningNewInstanceRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#singletonclassreturningnewinstance">
+        <description>
+            A singleton class should only ever have one instance. Failure to check
+            whether an instance has already been created may result in multiple
+            instances being created.
+        </description>
+        <priority>2</priority>
+        <example>
+<![CDATA[
+class Singleton {
+    private static Singleton instance = null;
+    public static Singleton getInstance() {
+        synchronized(Singleton.class) {
+            return new Singleton(); // this should be assigned to the field
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="StaticEJBFieldShouldBeFinal"
+          language="java"
+          since="4.1"
+          message="EJB's shouldn't have non-final static fields"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#staticejbfieldshouldbefinal">
+        <description>
+According to the J2EE specification, an EJB should not have any static fields
+with write access. However, static read-only fields are allowed. This ensures proper
+behavior especially when instances are distributed by the container on several JREs.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ClassDeclaration[ImplementsList/ClassType[
+        pmd-java:typeIs('javax.ejb.SessionBean')
+     or pmd-java:typeIs('javax.ejb.EJBHome')
+     or pmd-java:typeIs('javax.ejb.EJBLocalObject')
+     or pmd-java:typeIs('javax.ejb.EJBLocalHome')
+     or pmd-java:typeIs('javax.ejb.EJBObject')
+    ]]
+    /ClassBody/FieldDeclaration
+        [pmd-java:modifiers() = 'static']
+        [not(pmd-java:modifiers() = 'final')]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class SomeEJB extends EJBObject implements EJBLocalHome {
+
+    private static int CountA;          // poor, field can be edited
+
+    private static final int CountB;    // preferred, read-only access
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="StringBufferInstantiationWithChar"
+          language="java"
+          since="3.9"
+          message="Argument to `new StringBuilder()` or `new StringBuffer()` is implicitly converted from char to int"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#stringbufferinstantiationwithchar">
+        <description>
+Individual character values provided as initialization arguments will be converted into integers.
+This can lead to internal buffer sizes that are larger than expected. Some examples:
+
+```
+new StringBuffer()      //  16
+new StringBuffer(6)     //  6
+new StringBuffer("hello world")  // 11 + 16 = 27
+new StringBuffer('A')   //  chr(A) = 65
+new StringBuffer("A")   //  1 + 16 = 17
+
+new StringBuilder()     //  16
+new StringBuilder(6)    //  6
+new StringBuilder("hello world")  // 11 + 16 = 27
+new StringBuilder('C')   //  chr(C) = 67
+new StringBuilder("A")   //  1 + 16 = 17
+```
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ConstructorCall[ArgumentList/*[pmd-java:typeIsExactly('char')]]
+    [pmd-java:matchesSig('java.lang.StringBuilder#new(int)')
+     or pmd-java:matchesSig('java.lang.StringBuffer#new(int)')]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+// misleading instantiation, these buffers
+// are actually sized to 99 characters long
+StringBuffer  sb1 = new StringBuffer('c');
+StringBuilder sb2 = new StringBuilder('c');
+
+// in these forms, just single characters are allocated
+StringBuffer  sb3 = new StringBuffer("c");
+StringBuilder sb4 = new StringBuilder("c");
+]]>
+        </example>
+    </rule>
+
+    <rule name="SuspiciousEqualsMethodName"
+          language="java"
+          since="2.0"
+          message="The method name and parameter number are suspiciously close to equals(Object)"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#suspiciousequalsmethodname">
+        <description>
+The method name and parameter number are suspiciously close to `Object.equals`, which can denote an
+intention to override it. However, the method does not override `Object.equals`, but overloads it instead.
+Overloading `Object.equals` method is confusing for other programmers, error-prone and hard to maintain,
+especially when using inheritance, because `@Override` annotations used in subclasses can provide a false
+sense of security. For more information on `Object.equals` method, see Effective Java, 3rd Edition,
+Item 10: Obey the general contract when overriding equals.
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodDeclaration[@Name = 'equals'][
+    (@Arity = 1
+     and not(FormalParameters/FormalParameter[pmd-java:typeIsExactly('java.lang.Object')])
+     or not(PrimitiveType[@Kind = 'boolean'])
+    ) or (
+     @Arity = 2
+     and PrimitiveType[@Kind = 'boolean']
+     and FormalParameters/FormalParameter[pmd-java:typeIsExactly('java.lang.Object')]
+     and not(pmd-java:hasAnnotation('java.lang.Override'))
+    )
+]
+| //MethodDeclaration[@Name = 'equal'][
+    @Arity = 1
+    and FormalParameters/FormalParameter[pmd-java:typeIsExactly('java.lang.Object')]
+]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+   public int equals(Object o) {
+     // oops, this probably was supposed to be boolean equals
+   }
+   public boolean equals(String s) {
+     // oops, this probably was supposed to be equals(Object)
+   }
+   public boolean equals(Object o1, Object o2) {
+     // oops, this probably was supposed to be equals(Object)
+   }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="SuspiciousHashcodeMethodName"
+          language="java"
+          since="1.5"
+          message="The method name and return type are suspiciously close to hashCode()"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#suspicioushashcodemethodname">
+        <description>
+The method name and return type are suspiciously close to hashCode(), which may denote an intention
+to override the hashCode() method.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//MethodDeclaration[
+        lower-case(@Name) = 'hashcode'
+    and @Name != 'hashCode'
+    and @Arity = 0
+    and PrimitiveType[@Kind = 'int']
+]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+    public int hashcode() { // oops, this probably was supposed to be 'hashCode'
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="SuspiciousOctalEscape"
+          language="java"
+          since="1.5"
+          message="Suspicious decimal characters following octal escape in string literal: {0}"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.SuspiciousOctalEscapeRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#suspiciousoctalescape">
+        <description>
+A suspicious octal escape sequence was found inside a String literal.
+The Java language specification (section 3.10.6) says an octal
+escape sequence inside a literal String shall consist of a backslash
+followed by:
+
+    OctalDigit | OctalDigit OctalDigit | ZeroToThree OctalDigit OctalDigit
+
+Any octal escape sequence followed by non-octal digits can be confusing,
+e.g. "\038" is interpreted as the octal escape sequence "\03" followed by
+the literal character "8".
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public void foo() {
+  // interpreted as octal 12, followed by character '8'
+  System.out.println("suspicious: \128");
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="TestClassWithoutTestCases"
+          language="java"
+          since="3.0"
+          message="The class ''{0}'' might be a test class, but it contains no test cases."
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.TestClassWithoutTestCasesRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#testclasswithouttestcases">
+        <description>
+Test classes typically end with the suffix "Test", "Tests" or "TestCase". Having a non-test class with that name
+is not a good practice, since most people will assume it is a test case. Test classes have test methods
+named "testXXX" (JUnit3) or use annotations (e.g. `@Test`).
+
+The suffix can be configured using the property `testClassPattern`. To disable the detection of possible test classes
+by name, set this property to an empty string.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+//Consider changing the name of the class if it is not a test
+//Consider adding test methods if it is a test
+public class CarTest {
+   public static void main(String[] args) {
+    // do something
+   }
+   // code
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnconditionalIfStatement"
+          language="java"
+          since="1.5"
+          message="Do not use 'if' statements that are always true or always false"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#unconditionalifstatement">
+        <description>
+Do not use "if" statements whose conditionals are always true or always false.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+ <![CDATA[
+//IfStatement[BooleanLiteral[1]]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+    public void close() {
+        if (true) {        // fixed conditional, not recommended
+            // ...
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnnecessaryBooleanAssertion"
+          language="java"
+          since="3.0"
+          message="assertTrue(true) or similar statements are unnecessary"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#unnecessarybooleanassertion">
+        <description>
+A JUnit test assertion with a boolean literal is unnecessary since it always will evaluate to the same thing.
+Consider using flow control (in case of `assertTrue(false)` or similar) or simply removing
+statements like `assertTrue(true)` and `assertFalse(false)`. If you just want a test to halt after finding
+an error, use the `fail()` method and provide an indication message of why it did.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ClassDeclaration
+    [pmd-java:typeIs('junit.framework.TestCase')
+     or .//Annotation[pmd-java:typeIs('org.junit.Test')
+                   or pmd-java:typeIs('org.junit.jupiter.api.Test')
+                   or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+                   or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
+                   or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+                   or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+     ]
+    ]
+    //MethodCall[@MethodName = ('assertTrue', 'assertFalse')]
+        [ArgumentList
+            [
+                BooleanLiteral or
+                UnaryExpression[@Operator = '!'][BooleanLiteral]
+            ]
+        ]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class SimpleTest extends TestCase {
+    public void testX() {
+        assertTrue(true);            // serves no real purpose - remove it
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnnecessaryCaseChange"
+          language="java"
+          since="3.3"
+          message="Using equalsIgnoreCase() is cleaner than using toUpperCase/toLowerCase().equals()."
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.UnnecessaryCaseChangeRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#unnecessarycasechange">
+        <description>
+Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+boolean answer1 = buz.toUpperCase().equals("BAZ");              // should be buz.equalsIgnoreCase("BAZ")
+
+boolean answer2 = buz.toUpperCase().equalsIgnoreCase("BAZ");    // another unnecessary toUpperCase()
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnnecessaryConversionTemporary"
+          language="java"
+          since="0.1"
+          message="Avoid unnecessary temporaries when converting primitives to Strings"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#unnecessaryconversiontemporary">
+        <description>
+Avoid the use temporary objects when converting primitives to Strings. Use the static conversion methods
+on the wrapper classes instead.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodCall[@MethodName = 'toString']
+    [ConstructorCall[position() = 1]
+        [
+            pmd-java:typeIs('java.lang.Integer')
+         or pmd-java:typeIs('java.lang.Long')
+         or pmd-java:typeIs('java.lang.Float')
+         or pmd-java:typeIs('java.lang.Byte')
+         or pmd-java:typeIs('java.lang.Double')
+         or pmd-java:typeIs('java.lang.Short')
+        ]
+    ]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public String convert(int x) {
+    String foo = new Integer(x).toString(); // this wastes an object
+
+    return Integer.toString(x);             // preferred approach
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnusedNullCheckInEquals"
+          language="java"
+          since="3.5"
+          message="Invoke equals() on the object you''ve already ensured is not null"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#unusednullcheckinequals">
+        <description>
+After checking an object reference for null, you should invoke equals() on that object rather than passing
+it to another object's equals() method.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//InfixExpression[@Operator = '&&']
+  /MethodCall[pmd-java:matchesSig("java.lang.Object#equals(java.lang.Object)")]
+             [not(StringLiteral)]
+             [not(VariableAccess[@CompileTimeConstant = true()])]
+             [ArgumentList/VariableAccess/@Name = ..//InfixExpression[@Operator = '!='][NullLiteral]/VariableAccess/@Name]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Test {
+
+    public String method1() { return "ok";}
+    public String method2() { return null;}
+
+    public void method(String a) {
+        String b;
+        // I don't know it method1() can be "null"
+        // but I know "a" is not null..
+        // I'd better write a.equals(method1())
+
+        if (a!=null && method1().equals(a)) { // will trigger the rule
+            //whatever
+        }
+
+        if (method1().equals(a) && a != null) { // won't trigger the rule
+            //whatever
+        }
+
+        if (a!=null && method1().equals(b)) { // won't trigger the rule
+            //whatever
+        }
+
+        if (a!=null && "LITERAL".equals(a)) { // won't trigger the rule
+            //whatever
+        }
+
+        if (a!=null && !a.equals("go")) { // won't trigger the rule
+            a=method2();
+            if (method1().equals(a)) {
+                //whatever
+            }
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UseCorrectExceptionLogging"
+          language="java"
+          since="3.2"
+          message="Use the correct logging statement for logging exceptions"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#usecorrectexceptionlogging">
+        <description>
+To make sure the full stacktrace is printed out, use the logging statement with two arguments: a String and a Throwable.
+
+This rule only applies to [Apache Commons Logging](https://commons.apache.org/proper/commons-logging/).
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//CatchClause/Block//MethodCall
+    [pmd-java:matchesSig('org.apache.commons.logging.Log#_(java.lang.Object)')]
+    [ArgumentList[not(MethodCall)]//VariableAccess/@Name = ancestor::CatchClause/CatchParameter/@Name]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Main {
+    private static final Log _LOG = LogFactory.getLog( Main.class );
+    void bar() {
+        try {
+        } catch( Exception e ) {
+            _LOG.error( e ); //Wrong!
+        } catch( OtherException oe ) {
+            _LOG.error( oe.getMessage(), oe ); //Correct
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UseEqualsToCompareStrings"
+          language="java"
+          since="4.1"
+          message="Use equals() to compare strings instead of ''=='' or ''!=''"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#useequalstocomparestrings">
+        <description>
+Using '==' or '!=' to compare strings is only reliable if the interned string (`String#intern()`)
+is used on both sides.
+
+Use the `equals()` method instead.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//InfixExpression[@Operator = ('==', '!=')]
+                 [count(*[pmd-java:typeIsExactly('java.lang.String')]) = 2]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public boolean test(String s) {
+    if (s == "one") return true;        // unreliable
+    if ("two".equals(s)) return true;   // better
+    return false;
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UselessOperationOnImmutable"
+          language="java"
+          since="3.5"
+          message="The result of an operation on an immutable object is ignored"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.UselessOperationOnImmutableRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#uselessoperationonimmutable">
+        <description>
+An operation on an immutable object will not change the object itself since the result of the operation is a new object.
+Therefore, ignoring the result of such an operation is likely a mistake. The operation can probably be removed.
+
+This rule recognizes the types `String`, `BigDecimal`, `BigInteger` or any type from `java.time.*` as immutable.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+import java.math.*;
+
+class Test {
+    void method1() {
+        BigDecimal bd=new BigDecimal(10);
+        bd.add(new BigDecimal(5));      // this will trigger the rule
+    }
+    void method2() {
+        BigDecimal bd=new BigDecimal(10);
+        bd = bd.add(new BigDecimal(5)); // this won't trigger the rule
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UseLocaleWithCaseConversions"
+          language="java"
+          since="2.0"
+          message="When doing a String.toLowerCase()/toUpperCase() call, use a Locale"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#uselocalewithcaseconversions">
+        <description>
+When doing `String::toLowerCase()/toUpperCase()` conversions, use an explicit locale argument to specify the case
+transformation rules.
+
+Using `String::toLowerCase()` without arguments implicitly uses `Locale::getDefault()`.
+The problem is that the default locale depends on the current JVM setup (and usually on the system in which
+it is running). Using the system default may be exactly what you want (e.g. if you are manipulating strings
+you got through standard input), but it may as well not be the case (e.g. if you are getting the string over
+the network or a file, and the encoding is well-defined and independent of the environment). In the latter case,
+using the default locale makes the case transformation brittle, as it may yield unexpected results on a machine
+whose locale has other case translation rules. For example, in Turkish, the uppercase form of `i` is `İ` (U+0130,
+not ASCII) and not `I` (U+0049) as in English.
+
+The rule is intended to *force* developers to think about locales when dealing with strings. By taking a
+conscious decision about the choice of locale at the time of writing, you reduce the risk of surprising
+behaviour down the line, and communicate your intent to future readers.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodCall[pmd-java:matchesSig("java.lang.String#toLowerCase()") or pmd-java:matchesSig("java.lang.String#toUpperCase()")]
+            [not(MethodCall[@MethodName = "toHexString"])]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+// violation - implicitly system-dependent conversion
+if (x.toLowerCase().equals("list")) {}
+
+// The above will not match "LIST" on a system with a Turkish locale.
+// It could be replaced with
+if (x.toLowerCase(Locale.US).equals("list")) { }
+// or simply
+if (x.equalsIgnoreCase("list")) { }
+
+// ok - system independent conversion
+String z = a.toLowerCase(Locale.ROOT);
+
+// ok - explicit system-dependent conversion
+String z2 = a.toLowerCase(Locale.getDefault());
+]]>
+        </example>
+    </rule>
+
+    <rule name="UseProperClassLoader"
+          language="java"
+          since="3.7"
+          message="In J2EE, getClassLoader() might not work as expected.  Use Thread.currentThread().getContextClassLoader() instead."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#useproperclassloader">
+        <description>
+In J2EE, the getClassLoader() method might not work as expected. Use
+Thread.currentThread().getContextClassLoader() instead.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>//MethodCall[pmd-java:matchesSig("java.lang.Class#getClassLoader()")]</value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class Foo {
+    ClassLoader cl = Bar.class.getClassLoader();
+}
+]]>
+        </example>
+    </rule>
+
+</ruleset>

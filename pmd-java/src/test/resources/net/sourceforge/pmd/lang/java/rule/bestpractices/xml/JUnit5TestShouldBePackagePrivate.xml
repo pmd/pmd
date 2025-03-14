@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Public modifier is not necessary on a test method nor on the class</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,5</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+public class MyTests {
+    @Test
+    public void testRegular() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Package private modifiers are what is required</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+class MyTests {
+    @Test
+    void testRegular() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Private method modifiers should be reported by rule 'JUnit5TestNoPrivateModifier' and ignored by rule 'JUnit5TestShouldBePackagePrivate'</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+class MyTests {
+  @Test
+  private void ignoredTest() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Private modifiers for inner classes should be reported by rule 'JUnit5TestNoPrivateModifier' and ignored by rule 'JUnit5TestShouldBePackagePrivate'</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+class MyTests {
+
+  private static class InnerPrivateClass {
+    @Test
+    void testFoo() {}
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Public modifier is allowed on an abstract test classes</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+public abstract class MyTests {
+    @Test
+    void testRegular() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Public modifier is allowed on test interfaces</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+public interface MyTests {
+    @Test
+    default void testRegular() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Public and protected modifiers on all JUnit5 test types should be rejected</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>8,10,13,19,23</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.TestTemplate;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+protected class MyTests {
+    @Test
+    public void testRegular() { }
+
+    @RepeatedTest(2)
+    protected void testRepeated() { }
+
+    @TestFactory
+    private void testFactory() { }
+
+    @TestTemplate
+    public void testTemplate() { }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"Hello", "World"})
+    protected void testParameterized(final String value) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Public JUnit4 tests are not flagged</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+public class Foo {
+    @Test
+    public void testFoo() { }
+}
+        ]]></code>
+    </test-code>
+</test-data>

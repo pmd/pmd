@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<ruleset name="JavaScript Test Ruleset"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>JavaScript Test Ruleset</description>
+
+    <rule ref="category/ecmascript/bestpractices.xml/GlobalVariable" />
+    <rule ref="category/ecmascript/codestyle.xml/UnreachableCode" />
+    <rule ref="category/ecmascript/errorprone.xml/EqualComparison" />
+</ruleset>

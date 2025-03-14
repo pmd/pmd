@@ -1,0 +1,750 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>comment should start with two asterisks</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/*
+ * @description Foo
+ */
+public class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>public test class does not need comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@isTest
+public class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>public class should have comment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>global class should have comment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+global class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>private class does not need comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+private class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>private class should have comment if specified</description>
+        <rule-property name="reportPrivate">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+private class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>class comment should have description</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Missing ApexDoc @description</message>
+        </expected-messages>
+        <code><![CDATA[
+/**
+ */
+public class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>correct class comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>correct class comment with annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+@Deprecated
+public class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>public interface should have comment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public interface Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>global interface should have comment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+global interface Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>private interface does not need comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+private interface Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>private interface should have comment if specified</description>
+        <rule-property name="reportPrivate">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+private interface Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>interface comment should have description</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ */
+public interface Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>correct interface comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public interface Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>correct interface comment with annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+@Deprecated
+public interface Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>public method in interface should have comment</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Missing ApexDoc comment</message>
+        </expected-messages>
+        <code><![CDATA[
+/**
+ * @description My Interface
+ */
+public interface MyInterface {
+    void func();
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>public method should have comment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    public void bar() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>global method should have comment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    global void bar() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>private method does not need comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    private void bar() { }
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>private method should have comment if specified</description>
+        <rule-property name="reportPrivate">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    private void bar() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>protected method does not need comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    protected void bar() { }
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>protected method should have comment if specified</description>
+        <rule-property name="reportProtected">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    protected void bar() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>public override method does not need comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    public override void bar() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>method comment should have description</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     */
+    public void bar() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>non-void method comment should have return</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     * @description Bar
+     */
+    public Object bar() { return null; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>constructor comment does not need return</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     * @description Foo
+     */
+    public Foo() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>method with param comment should have param</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     * @description Bar
+     */
+    public void bar(String foo) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>params should match method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     * @description Bar
+     * @param foo1 Foo
+     */
+    public void bar(String foo) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>correct void method comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     * @description Bar
+     */
+    public void bar() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>correct non-void method comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     * @description Bar
+     * @return Bar
+     */
+    public Object bar() { return null; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>correct method with params comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     * @description Bar
+     * @param foo1 Foo1
+     * @param foo2 Foo2
+     */
+    public void bar(String foo1, String foo2) { return null; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>correct method comment with annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     * @description Bar
+     */
+    @Deprecated
+    public void bar() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>public property should have comment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    public Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>global property should have comment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    global Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>private property does not need a comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    private Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>private property should have a comment if specified</description>
+        <rule-property name="reportPrivate">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    private Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>protected property does not need a comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    protected Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>protected property should have a comment if specified</description>
+        <rule-property name="reportProtected">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    protected Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>property comment should have description</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    public Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>correct property comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     * @description Bar
+     */
+    public Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>correct property comment with annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     * @description Bar
+     */
+    @Deprecated
+    public Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1783 correct comments for constructor and inner class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+
+    /**
+     * @description Foo
+     */
+    public Foo() {
+    }
+
+    /**
+     * @description Bar
+     */
+    public class Bar {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1783 correct comments for constructor and inner class - false negative</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+
+    /**
+     * @description Foo
+     */
+    public Foo() {
+    }
+
+    public class Bar {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3566 [apex] ApexDoc: Verify use of reportMissingDescription, negative test unspecified/default</description>
+        <!-- reportMissingDescription unspecified; should default to true -->
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+/**
+ * No at-description tag provided.
+ */
+public class Foo {
+
+    /**
+     * No at-description tag provided.
+     */
+    public Foo() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3566 [apex] ApexDoc: Verify use of reportMissingDescription, negative test specified</description>
+        <rule-property name="reportMissingDescription">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+/**
+ * No at-description tag provided.
+ */
+public class Foo {
+
+    /**
+     * No at-description tag provided.
+     */
+    public Foo() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3566 [apex] ApexDoc: Verify use of reportMissingDescription, positive test</description>
+        <rule-property name="reportMissingDescription">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * No at-description tag provided.
+ */
+public class Foo {
+
+    /**
+     * No at-description tag provided.
+     */
+    public Foo() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>property should have comment</description>
+        <rule-property name="reportProperty">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    global Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>property with missing description</description>
+        <rule-property name="reportProperty">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     * the property bar
+     */
+    global Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>property does not need comment</description>
+        <rule-property name="reportProperty">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    global Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No comment required for static initializer blocks</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description My Class
+ */
+public class MyClass {
+  static {
+    Test = 1;
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Misplaced formal comment for static initializer blocks</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description My Class
+ */
+public class MyClass {
+  /**
+   * Missing description... but that's no problem. Fields are not considered (yet) by ApexDoc.
+   **/
+  public static Integer Test;
+
+  static {
+    Test = 1;
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[apex] ApexDoc false-positive for the first method of an annotated Apex class #4774</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description       : rest service
+ **/
+@RestResource(urlMapping='/api/v1/get/*')
+global without sharing class TestService {
+    /**
+     * @description Bar
+     */
+    public void bar() { return; }
+}
+]]></code>
+    </test-code>
+</test-data>

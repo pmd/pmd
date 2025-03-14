@@ -1,0 +1,21 @@
+<!-- Row of the CLI reference table, describing an option -->
+<!-- Rows can be linked to the name of the option (without leading dash) -->
+<!-- Argument summary: -->
+<!-- options: comma separated list of aliases for the option.-->
+<!-- option_arg: optional name for the argument of the option, eg 'arg', will be formatted eg to '<arg>'-->
+<!-- description: description, you can use "some" inline markdown -->
+<!-- required: whether the option is required, if specified, whatever the value, it's considered required -->
+<!-- languages: languages to which the option applies -->
+<!-- default: default value -->
+
+{% assign arg = {{ include.option_arg | prepend: "&nbsp;<" | append: ">" | escape_once | keep_if: include.option_arg }} %}
+{% capture required_label %}{% if include.required %}<span class="label label-primary">Required</span>  {% endif %}{% endcapture %}
+<!-- fragment id in the page -->
+{% assign option_id = include.options | split: ',' | first | replace_first: '-', '' | prepend: {{ table_id }} | url_encode %}
+
+<tr>
+    <td><a style="pointer-events: none; cursor: default;" name="{{ option_id }}"><code>{{ include.options | split: ',' | mappend: arg | join: "</code><br/><code>" }}</code></a></td>
+    <td>{{ required_label }}{{ include.description | render_markdown }}</td>
+    <td><code>{{ include.default }}</code></td>
+    <td>{{ include.languages }}</td>
+</tr>

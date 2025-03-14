@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>TEST1</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Object foo;
+    void foo () {
+        foo.notify();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>TEST2</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Object foo;
+
+    void foo () {
+        foo.notify();
+        foo.notify();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>TEST3</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo () {
+        notify();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>TEST4</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo () {
+        super.notify();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>TEST5</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo () {
+        new Object().notify();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>notify() with params is OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Object foo;
+    void foo (int x) {
+        foo.notify(x);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1438 UseNotifyAllInsteadOfNotify gives false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class FlasePositive {
+    public static void main(String[] args) {
+        boolean notify;
+        notify = true;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java]UseNotifyAllInsteadOfNotify falsely detect a special case with argument: foo.notify(bar) #2577</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class FalsePositive {
+    void notify(String s, String x) {
+
+    }
+    public static void main(FalsePositive injector) {
+        // unresolved method
+        injector.notify("", "e.getMessage()");
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

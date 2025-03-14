@@ -1,0 +1,104 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+package net.sourceforge.pmd.lang.apex.rule.security;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.apex.ast.ASTField;
+import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
+import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
+import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
+import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+
+/**
+ * Flags dangerous method calls, e.g. FinancialForce
+ * Configuration.disableTriggerCRUDSecurity() or System.debug with sensitive
+ * input
+ *
+ *
+ * @author sergey.gorbaty
+ *
+ */
+public class ApexDangerousMethodsRule extends AbstractApexRule {
+    private static final String BOOLEAN = "boolean";
+
+    private static final Pattern REGEXP = Pattern.compile("^.*?(pass|pwd|crypt|auth|session|token|saml)(?!id|user).*?$",
+            Pattern.CASE_INSENSITIVE);
+
+    private static final String DISABLE_CRUD = "disableTriggerCRUDSecurity";
+    private static final String CONFIGURATION = "Configuration";
+    private static final String SYSTEM = "System";
+    private static final String DEBUG = "debug";
+
+    private final Set<String> whiteListedVariables = new HashSet<>();
+
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTUserClass.class);
+    }
+
+
+    @Override
+    public Object visit(ASTUserClass node, Object data) {
+        if (Helper.isTestMethodOrClass(node)) {
+            return data;
+        }
+
+        collectBenignVariables(node);
+
+        List<ASTMethodCallExpression> methodCalls = node.descendants(ASTMethodCallExpression.class).toList();
+        for (ASTMethodCallExpression methodCall : methodCalls) {
+            if (Helper.isMethodName(methodCall, CONFIGURATION, DISABLE_CRUD)) {
+                asCtx(data).addViolation(methodCall);
+            }
+
+            if (Helper.isMethodName(methodCall, SYSTEM, DEBUG)) {
+                validateParameters(methodCall, data);
+            }
+        }
+
+        whiteListedVariables.clear();
+
+        return data;
+    }
+
+    private void collectBenignVariables(ASTUserClass node) {
+        List<ASTField> fields = node.descendants(ASTField.class).toList();
+        for (ASTField field : fields) {
+            if (BOOLEAN.equalsIgnoreCase(field.getType())) {
+                whiteListedVariables.add(Helper.getFQVariableName(field));
+            }
+
+        }
+
+        List<ASTVariableDeclaration> declarations = node.descendants(ASTVariableDeclaration.class).toList();
+        for (ASTVariableDeclaration decl : declarations) {
+            if (BOOLEAN.equalsIgnoreCase(decl.getType())) {
+                whiteListedVariables.add(Helper.getFQVariableName(decl));
+            }
+        }
+
+    }
+
+    private void validateParameters(ASTMethodCallExpression methodCall, Object data) {
+        List<ASTVariableExpression> variables = methodCall.descendants(ASTVariableExpression.class).toList();
+        for (ASTVariableExpression var : variables) {
+            if (REGEXP.matcher(var.getImage()).matches()) {
+                if (!whiteListedVariables.contains(Helper.getFQVariableName(var))) {
+                    asCtx(data).addViolation(methodCall);
+                }
+            }
+        }
+    }
+
+}

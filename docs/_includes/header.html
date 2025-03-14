@@ -1,0 +1,23 @@
+<header>
+    <div class="row">
+        <div class="col-lg-12">
+            <a href="./" role="button"
+                ><i class="fa fa-home fa-lg"></i
+            ></a>
+            » {{page.title}} {% if site.github_editme_path %} {% assign
+            editmepath = page.path %} {% if page.editmepath %} {% assign
+            editmepath = page.editmepath %} {% endif %}{% unless page.editmepath
+            == false %}
+            <a
+                target="_blank"
+                href="https://github.com/{{site.github_editme_path}}{{editmepath}}"
+                class="float-right"
+                role="button"
+                ><i class="fab fa-github fa-lg"></i> Edit on GitHub</a
+            >
+            {% endunless %} {% endif %}
+        </div>
+    </div>
+
+    <hr />
+</header>

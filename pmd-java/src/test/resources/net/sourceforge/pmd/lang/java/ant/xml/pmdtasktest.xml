@@ -1,0 +1,171 @@
+<project name="pmdtasktest" default="all">
+
+	<property name="pmd.home" value="${user.dir}"/>
+
+    <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
+
+	<target name="testNestedRuleset">
+		<pmd>
+			<ruleset>${pmd.home}/src/test/resources/rulesets/testing/test-rset-1.xml</ruleset>
+			<ruleset>${pmd.home}/src/test/resources/rulesets/testing/test-rset-2.xml</ruleset>
+			<formatter type="text" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/test/resources/ant/java">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="testFormatterWithProperties">
+		<pmd>
+			<ruleset>${pmd.home}/src/test/resources/rulesets/testing/test-rset-1.xml</ruleset>
+			<ruleset>${pmd.home}/src/test/resources/rulesets/testing/test-rset-2.xml</ruleset>
+			<formatter type="summaryhtml" toConsole="true">
+				<param name="linkPrefix" value="link_prefix"/>
+				<param name="linePrefix" value="line_prefix"/>
+			</formatter>
+			<fileset dir="${pmd.home}/src/test/resources/ant/java">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="testAbstractNames">
+		<pmd rulesetfiles="rulesets/testing/test-rset-1.xml,rulesets/testing/test-rset-2.xml">
+			<formatter type="text" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/test/resources/ant/java">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="testAbstractNamesInNestedRuleset">
+		<pmd>
+			<ruleset>rulesets/testing/test-rset-1.xml</ruleset>
+			<ruleset>rulesets/testing/test-rset-2.xml</ruleset>
+			<formatter type="text" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/test/resources/ant/java">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="testCommaInRulesetfiles">
+		<pmd rulesetfiles="${pmd.home}/src/test/resources/rulesets/testing/test-rset-1.xml,${pmd.home}/src/test/resources/rulesets/testing/test-rset-2.xml">
+			<formatter type="text" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/test/resources/ant/java">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="testRelativeRulesets">
+		<pmd>
+			<ruleset>custom_ruleset.xml</ruleset>
+			<ruleset>rulesets/testing/test-rset-1.xml</ruleset>
+			<formatter type="text" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/test/resources/ant/java">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="testRelativeRulesetsInRulesetfiles">
+		<pmd rulesetfiles="custom_ruleset.xml,src/test/resources/rulesets/testing/test-rset-1.xml">
+			<formatter type="text" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/test/resources/ant/java">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="testNoFormattersValidation">
+		<pmd rulesetfiles="${pmd.home}/src/test/resources/rulesets/testing/test-rset-1.xml">
+            <fileset dir="${pmd.home}/src/test/resources/ant/java">
+                <include name="*.java"/>
+            </fileset>
+		</pmd>
+	</target>
+
+	<target name="testExplicitRuleInRuleSet">
+		<pmd rulesetfiles="src/test/resources/rulesets/testing/test-rset-1.xml/DummyRuleWithAViolationPerFile">
+			<formatter type="text" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/test/resources/ant/java">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+    <target name="testClasspath">
+        <pmd>
+            <ruleset>classpathtest/ruleset.xml</ruleset>
+            <classpath>
+                <pathelement path="${pmd.home}/target/classes"/>
+                <pathelement path="${pmd.home}/target/test-classes"/>
+                <pathelement path="${pmd.home}/target/test-classes/net/sourceforge/pmd/lang/java/ant"/>
+            </classpath>
+        </pmd>
+    </target>
+
+    <target name="testFormatterEncodingWithXML">
+        <!-- source encoding is cp1252 -->
+        <pmd encoding="cp1252">
+            <ruleset>rulesets/testing/test-rset-3.xml</ruleset>
+            <!--
+            <formatter type="xml" toConsole="true"/>
+            -->
+            <formatter type="xml" toFile="${tmpfile}">
+                <param name="encoding" value="UTF-8" /> <!-- report encoding -->
+            </formatter>
+            <fileset dir="${pmd.home}/src/test/resources/ant/java">
+                <include name="EncodingTestClass.java" />
+                <include name="MoreThanThousandLinesOfCodeWithDuplicateLiterals.java" />
+            </fileset>
+        </pmd>
+    </target>
+
+    <target name="testFormatterEncodingWithXMLConsole">
+        <!-- source encoding is cp1252 -->
+        <pmd encoding="cp1252">
+					<ruleset>rulesets/testing/test-rset-3.xml</ruleset>
+            <formatter type="xml" toConsole="true">
+                <!-- specifying a encoding here will override the console encoding.
+                     The output might have junk characters in it.
+
+                     <param name="encoding" value="UTF-8" />
+
+                     The test doesn't specify the report encoding, so that the console/default encoding is used
+                 -->
+            </formatter>
+            <fileset dir="${pmd.home}/src/test/resources/ant/java">
+                <include name="EncodingTestClass.java" />
+            </fileset>
+        </pmd>
+    </target>
+
+	<target name="testAnalysisCache">
+		<pmd rulesetfiles="src/test/resources/rulesets/testing/test-rset-1.xml/DummyRuleWithAViolationPerFile" cacheLocation="${tmpfile}">
+			<formatter type="xml" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/test/resources/ant/java">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="testMissingCacheLocation">
+		<pmd rulesetfiles="src/test/resources/rulesets/testing/test-rset-1.xml/DummyRuleWithAViolationPerFile">
+			<formatter type="xml" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/test/resources/ant/java">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="testDisableIncrementalAnalysis">
+		<pmd rulesetfiles="src/test/resources/rulesets/testing/test-rset-1.xml/DummyRuleWithAViolationPerFile" noCache="true" cacheLocation="${tmpfile}">
+			<formatter type="xml" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/test/resources/ant/java">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+</project>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ruleset name="Design"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+Rules that help you discover design issues.
+    </description>
+
+    <rule name="AvoidDeeplyNestedIfStmts"
+          language="velocity"
+          since="5.1"
+          message="Deeply nested if..then statements are hard to read"
+          class="net.sourceforge.pmd.lang.velocity.rule.design.AvoidDeeplyNestedIfStmtsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_velocity_design.html#avoiddeeplynestedifstmts">
+        <description>
+Avoid creating deeply nested if-then statements since they are harder to read and error-prone to maintain.
+        </description>
+        <priority>3</priority>
+    </rule>
+
+    <rule name="CollapsibleIfStatements"
+          language="velocity"
+          since="5.1"
+          message="These nested if statements could be combined"
+          class="net.sourceforge.pmd.lang.velocity.rule.design.CollapsibleIfStatementsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_velocity_design.html#collapsibleifstatements">
+        <description>
+Sometimes two consecutive 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
+        </description>
+        <priority>3</priority>
+    </rule>
+
+    <rule name="ExcessiveTemplateLength"
+          language="velocity"
+          since="5.1"
+          message="Template is too long"
+          class="net.sourceforge.pmd.lang.velocity.rule.design.ExcessiveTemplateLengthRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_velocity_design.html#excessivetemplatelength">
+        <description>
+The template is too long. It should be broken up into smaller pieces.
+        </description>
+        <priority>3</priority>
+    </rule>
+
+    <rule name="NoInlineJavaScript"
+          language="velocity"
+          since="5.1"
+          message="Avoid inline JavaScript"
+          class="net.sourceforge.pmd.lang.velocity.rule.design.NoInlineJavaScriptRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_velocity_design.html#noinlinejavascript">
+        <description>
+Avoid inline JavaScript. Import .js files instead.
+        </description>
+        <priority>2</priority>
+    </rule>
+
+    <rule name="NoInlineStyles"
+          language="velocity"
+          since="5.1"
+          message="Avoid inline styles"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_velocity_design.html#noinlinestyles">
+        <description>
+Avoid inline styles. Use css classes instead.
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//Text[matches(@literal, "<[^>]+\s[sS][tT][yY][lL][eE]\s*=")]
+]]>
+                </value>
+            </property>
+        </properties>
+    </rule>
+
+</ruleset>

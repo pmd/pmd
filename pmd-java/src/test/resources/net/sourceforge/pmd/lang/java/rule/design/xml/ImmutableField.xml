@@ -1,0 +1,981 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Could be immutable, only assigned in constructor</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x;
+
+    public Foo() {
+        x = 2;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Could be immutable, only assigned in decl</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x = 42;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, assigned twice</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x;
+
+    public Foo() {
+        x = 41;
+    }
+
+    public void bar() {
+        x = 42;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, static field</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static int x = 0;
+    private final int y;
+
+    public Foo() {
+        y = x;
+        x++;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, one constructor assigns, one doesn't</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x;
+
+    public Foo(int y) {
+        x = y;
+    }
+
+    public Foo() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ok, assignment via postfix expression</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x;
+
+    public Foo() {
+    }
+
+    private void bar() {
+        x++;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Postfix expressions imply mutability</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x = 0;
+
+    private void bar() {
+        x++;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Compound assignment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int w;
+    private int z;
+
+    private void bar() {
+        w = 2;
+        z = 4;
+    }
+
+    private void gaz() {
+        w += z++;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Preincrement</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x = 0;
+
+    public void bar() {
+        ++x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Predecrement</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x = 0;
+
+    public void bar() {
+        --x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Compound assignment 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x = 0;
+
+    public void bar() {
+        x += 1;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Rhs 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x = 0;
+
+    Foo(int y) {}
+
+    public void bar() {
+        Object y = new Foo(x++);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Assignment in constructor is in try block</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x;
+
+    public Foo() {
+        try {
+            mayThrow();
+            x = 2;
+            mayThrow();
+        } catch (Exception e) {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Assignment in method is in try block</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x;
+
+    public void bar() {
+        try {
+            x = 2;
+        } catch (Exception e) {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Assignment in constructor in loop is ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x;
+
+    public Foo() {
+        for (int i = 0; i < 10; i++) {
+            x += 5;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Assignment in anonymous inner class method is OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int x = 2;
+    MouseAdapter mouseListener;
+
+    public Foo() {
+        mouseListener = new MouseAdapter() {
+            public void mouseClicked(Object e) {
+                x = e.hashCode();
+            }
+        };
+    }
+}
+
+interface MouseAdapter {
+    void mouseClicked(Object e);
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Assignment through this</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int counter;
+
+    private Foo() {
+        counter = 0;
+    }
+
+    private int foo() {
+        if (++this.counter < 3) {
+            return 0;
+        }
+        return 1;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Volatile variables can't be final</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Foo {
+    private volatile boolean bar = false;
+
+    public Foo() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Bug 1740480, optional override of default value based on constructor argument check</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MyClass {
+    private int positive = 1; // cannot be final, is modified in ctor
+
+    public MyClass(int value) {
+        // if negative keep default
+        if (value > 0) {
+            positive = value;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Bug 1740480, assignment in single constructor based on constructor argument check</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class MyClass {
+    private int positive; // can be final
+
+    public MyClass(int value) {
+        if (value > 0) {
+            positive = value;
+        } else {
+            positive = 1;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>3526212, pmd-5.0.0: ImmutableField false positive on self-inc/dec</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class pmd_inc {
+    private int test;
+
+    public pmd_inc() {
+        this.test = 2;
+    }
+
+    public int get_test() {
+        return this.test;
+    }
+
+    public void inc_test(int val) {
+        this.test += val;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#946 ImmutableField false +</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MyClass {
+    private long counter = 0;
+
+    public <E> void run(final E entity, final Class<?> m) throws Exception {
+        this.counter += 1;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1032 ImmutableField Rule: Private field in inner class gives false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static class Bar {
+        private int i;
+
+        Bar(final int i) {
+            this.i = i;
+        }
+    }
+
+    public int foo() {
+        final Bar b = new Bar(1);
+        b.i = 0;
+        return b.i;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1448 [java] ImmutableField: Private field in inner class gives false positive with lambdas</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.function.BinaryOperator;
+public class CombinersTest {
+
+    private static final BinaryOperator<Purse> ADDITION = (p1, p2) -> {
+        p1.amount += p2.amount;
+        return p1;
+    };
+
+    private static class Purse {
+        private int amount;
+
+        public Purse(final int amount) {
+            this.amount = amount;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#410 [java] ImmutableField: False positive with lombok on class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Setter;
+
+@Setter
+public class Foo {
+    private String id;
+
+    public Foo(String id) {
+        this.id = id;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4254 [java] ImmutableField: False positive with lombok on field</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Getter;
+import lombok.Setter;
+
+public class Foo {
+    @Setter
+    private String id;
+
+    public Foo(String id) {
+        this.id = id;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#855 [java] ImmutableField: False positive within lambda</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    private Bar bar;
+
+    public Foo() {
+        someMethod(() -> {
+            bar = new Bar();
+        });
+    }
+
+    private void someMethod(Runnable action) {
+        action.run();
+    }
+
+    static class Bar {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#855 [java] ImmutableField: False positive within lambda (expression style)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    private Bar bar;
+
+    public Foo() {
+        someMethod(() -> bar = new Bar());
+    }
+
+    private void someMethod(Runnable action) {
+        action.run();
+    }
+
+    static class Bar {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1792 Immutable field should still be detected with @Delegate</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import lombok.experimental.Delegate;
+
+public class Foo {
+    @Delegate
+    private String x;
+
+    public Foo() {
+        x = "bar";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2075 [java] ImmutableField false positive with inner class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Stack {
+    private Node first;
+    private int n;   // can't be made final
+
+    public void insert(int x) {
+        first = new Node(first, x);
+    }
+
+    public int size() {
+        return n;
+    }
+
+    private class Node {
+        final Node next;
+        final int x;
+        private Node(Node next, int x) {
+            this.next = next;
+            this.x = x;
+            n++;  // inner class updates instance variable in outer class
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Non-private field of private class</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Stack {
+
+    private class Node {
+        Node next;
+        int x;
+        private Node(Node next, int x) {
+            this.next = next;
+            this.x = x;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ImmutableField: False positive when variable is updated in conditional loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package pmdtests;
+
+import java.util.Random;
+import java.math.BigInteger;
+
+public class TestFinal {
+  private BigInteger e;
+
+  public TestFinal() {
+    Random random = new Random();
+    e = BigInteger.probablePrime(Integer.MAX_VALUE / 2, random);
+
+    while (random.nextBoolean())
+      e = e.add(BigInteger.ONE);
+  }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Blank field should not be considered final, it's most probably not used that way.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
+private static class Person {
+
+    @Autowired @Qualifier("special")
+    private Person larry;
+
+    public Person getLarry() {
+        return larry;
+    }
+}
+
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Multiple ctors writing a subset of fields</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Field 'beanName' may be declared final</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.Collection;
+            class GroovyBeanDefinitionWrapper {
+
+                private String beanName;
+                private Class<?> clazz;
+                private Collection<?> constructorArgs;
+                private Object definition;
+
+
+                public GroovyBeanDefinitionWrapper(String beanName) {
+                    this.beanName = beanName;
+                }
+
+                public GroovyBeanDefinitionWrapper(String beanName, Class<?> clazz) {
+                    this.beanName = beanName;
+                    this.clazz = clazz;
+                }
+
+                public GroovyBeanDefinitionWrapper(String beanName, Class<?> clazz, Collection<?> constructorArgs) {
+                    this.beanName = beanName;
+                    this.clazz = clazz;
+                    this.constructorArgs = constructorArgs;
+                }
+
+                public Collection<?> getConstructorArgs() {return constructorArgs;}
+                public String getBeanName() {return beanName;}
+                public Object getDefinition() {return definition;}
+                public Class<?> getClazz() {return clazz;}
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ImmutableField - false negative when field assigned in constructor conditionally #3850</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class ExampleImmutableField {
+
+    private String str; // false negative here, could be final
+
+    public ExampleImmutableField(String strLocal, boolean flag) { 
+        if (flag){
+            this.str = strLocal;
+        } else {
+            this.str = strLocal+"123";
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3874 [java] ImmutableField reports fields annotated with @Autowired (Spring) and @Mock (Mockito)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.beans.factory.annotation.Autowired;
+
+public class ExampleImmutableField {
+
+    @Mock
+    private Foo foo;
+
+    @InjectMocks
+    private Bar bar;
+
+    @MockBean
+    private Baz Baz;
+
+    @Autowired
+    private Foo2 foo2;
+}
+
+class Foo {}
+class Bar {}
+class Baz {}
+class Foo2 {}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#3981 #3998 [java] ImmutableField reports fields annotated with @Value (Spring) and @Captor (Mockito)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.mockito.Captor;
+import org.mockito.ArgumentCaptor;
+import org.springframework.beans.factory.annotation.Value;
+
+public class ExampleImmutableField {
+
+    @Value("${property.value}")
+    private String bar2;
+
+    @Captor
+    private ArgumentCaptor<Object> baz2;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#4008 FN with field assigned only in initializer</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                private String variable = "hello";
+
+                public Goo() {
+
+                }
+                public String getVariable() {
+                    return variable;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#4008 FN with field assigned only in initializer (no ctor)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                private String variable = "hello";
+
+                public String getVariable() {
+                    return variable;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] ImmutableField: Do not flag fields annotated with @Inject #4011</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.inject.Inject;
+public class Foo {
+    @Inject
+    private MyService service;
+}
+
+interface MyService {}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] ImmutableField reports fields annotated with @FindBy and @FindBys (Selenium) #4020</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class SomePage {
+    @org.openqa.selenium.support.FindBy(id = "id1")
+    private WebElement field1;
+
+    @org.openqa.selenium.support.FindBys(value = {@org.openqa.selenium.support.FindByFindBy(id = "id2"),
+                                                       @org.openqa.selenium.support.FindBy(xpath = "//div/table")})
+    private WebElement table;
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] ImmutableField reports fields annotated with @GwtMock (GwtMockito) and @Spy (Mockito) #4004</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class SomeTest {
+    @com.google.gwtmockito.GwtMock
+    private String someMock;
+
+    @org.mockito.Spy
+    private String someSpy;
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] ImmutableField: Do not flag fields in @Entity #3823</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.Column;
+@Entity
+@Table(name = "my_table")
+public class MyTable implements Serializable
+{
+   private static final long serialVersionUID = 1L;
+
+   @Id
+   @Column(name = "directory", nullable = false)
+   private long m_id;  // PMD Violation: ImmutableField
+
+   // other fields
+
+   /**
+    * For JPA
+    */
+   public MyTable()
+   {
+      // nothing to do
+   }
+
+   public long getId()
+   {
+      return m_id;
+   }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4490 False negative with Lombok @Getter only</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import lombok.Getter;
+import lombok.Setter;
+
+class Foo {
+    @Getter
+    private String name = "tada";
+
+    @Getter
+    @Setter
+    private String name2 = "tada";
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>FN with instance method call in ctor</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,3</expected-linenumbers>
+        <code><![CDATA[
+            class BitSieve {
+                private long bits[];
+                private int length;
+
+                private BitSieve() {
+                    length = 150 * 64;
+                    bits = new long[(unitIndex(length - 1) + 1)];
+
+                    // This instance method call will cause the fields to be "reassigned"
+                    // to some unknown (unbound) value, to be conservative.
+                    set(0);
+                }
+
+                private static int unitIndex(int bitIndex) {
+                    return bitIndex >>> 6;
+                }
+
+                private static long bit(int bitIndex) {
+                    return 1L << (bitIndex & ((1<<6) - 1));
+                }
+
+                private boolean get(int bitIndex) {
+                    int unitIndex = unitIndex(bitIndex);
+                    return ((bits[unitIndex] & bit(bitIndex)) != 0);
+                }
+
+                private void set(int bitIndex) {
+                    int unitIndex = unitIndex(bitIndex);
+                    bits[unitIndex] |= bit(bitIndex);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <!-- https://github.com/openjdk/jdk/blob/jdk-11%2B28/src/java.base/share/classes/java/util/stream/AbstractPipeline.java#L205 -->
+        <description>Instance field assigned by ctor of other instance</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class BitSieve {
+                private BitSieve prev;
+
+                BitSieve(BitSieve other) {
+                    other.prev = this;
+                }
+
+                BitSieve getPrev() {
+                    return prev;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <!-- https://github.com/openjdk/jdk/blob/da75f3c4ad5bdf25167a3ed80e51f567ab3dbd01/src/java.base/share/classes/java/util/stream/AbstractPipeline.java#L212 -->
+        <description>Instance field where default value is visible</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class BitSieve {
+                private boolean foo;
+
+                BitSieve(BitSieve other) {
+                    if (other.foo)
+                        this.foo = true;
+                }
+
+                boolean getPrev() {
+                    return foo;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <!-- https://github.com/openjdk/jdk/blob/da75f3c4ad5bdf25167a3ed80e51f567ab3dbd01/src/java.base/share/classes/sun/security/provider/KeyProtector.java#L117 -->
+        <description>Instance field set after throw</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class BitSieve {
+                private boolean foo;
+
+                BitSieve() {
+                    if (System.nanoTime() < 10)
+                        throw new IllegalArgumentException();
+                    this.foo = true;
+                }
+
+                boolean getPrev() {
+                    return foo;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ImmutableField should consider fields in anonymous classes #3956</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,4</expected-linenumbers>
+        <code><![CDATA[
+public class C {
+    private int g = 0;  // can report a warning in this line
+    public Object o = new Object() {
+        private int f = 0;  // should report a warning in this line
+    };
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ImmutableField should consider enum class #3957</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class D {
+    enum E {
+        R;
+        private int y = 42;  // should have a warning in this line
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4046 [java] Incorrect ImmutableField error on field with both declaration and constructor initializer</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class NotSoImmutableField {
+    /* Note: field "foo" can be made final, when using constructor chaining. For now, the rule won't report this,
+     * as it is not a simple change anymore (e.g. just adding the final keyword).
+     * In the future, either this rule or a new rule can report even such more complicated cases.
+     * See [[java] ImmutableField: false-negative for field with a default + constructor assignment #4869](https://github.com/pmd/pmd/issues/4869)
+     */
+    private int foo = 2;
+
+    NotSoImmutableField() {
+    }
+
+    NotSoImmutableField(final int foo) {
+        this.foo = foo;
+    }
+
+    public int getFoo() {
+        return foo;
+    }
+}
+]]></code>
+    </test-code>
+</test-data>

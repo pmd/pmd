@@ -1,0 +1,142 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+package net.sourceforge.pmd.lang.java.rule.multithreading;
+
+import java.lang.reflect.Modifier;
+import java.util.List;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+
+/**
+ * <pre>
+ * void method() {
+ *   if (x == null) {
+ *     synchronized(this){
+ *       if (x == null) {
+ *         x = new | method();
+ *       }
+ *     }
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>The error is when one uses the value assigned within a synchronized
+ * section, outside of a synchronized section.</p>
+ *
+ * <pre>
+ * if (x == null) // is outside of synchronized section
+ *   x = new | method();
+ * </pre>
+ *
+ * <p>Very very specific check for double checked locking.</p>
+ *
+ * @author CL Gilbert (dnoyeb@users.sourceforge.net)
+ */
+public class DoubleCheckedLockingRule extends AbstractJavaRule {
+
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTMethodDeclaration.class);
+    }
+
+    @Override
+    public Object visit(ASTMethodDeclaration node, Object data) {
+        if (node.isVoid() || node.getResultTypeNode() instanceof ASTPrimitiveType || node.getBody() == null) {
+            return data;
+        }
+
+        List<ASTReturnStatement> rsl = node.descendants(ASTReturnStatement.class).toList();
+        if (rsl.size() != 1) {
+            return data;
+        }
+        ASTReturnStatement rs = rsl.get(0);
+
+        ASTExpression returnExpr = rs.getExpr();
+        if (!(returnExpr instanceof ASTNamedReferenceExpr)) {
+            return data;
+        }
+
+        JVariableSymbol returnVariable = ((ASTNamedReferenceExpr) returnExpr).getReferencedSym();
+        // With Java5 and volatile keyword, DCL is no longer an issue
+        if (returnVariable instanceof JFieldSymbol
+            && Modifier.isVolatile(((JFieldSymbol) returnVariable).getModifiers())) {
+            return data;
+        }
+
+        // if the return variable is local and only written with the volatile
+        // field, then it's ok, too
+        if (isLocalOnlyStoredWithVolatileField(node, returnVariable)) {
+            return data;
+        }
+
+        List<ASTIfStatement> isl = node.descendants(ASTIfStatement.class).toList();
+        if (isl.size() == 2) {
+            ASTIfStatement outerIf = isl.get(0);
+            if (JavaRuleUtil.isNullCheck(outerIf.getCondition(), returnVariable)) {
+                // find synchronized
+                List<ASTSynchronizedStatement> ssl = outerIf.descendants(ASTSynchronizedStatement.class).toList();
+                if (ssl.size() == 1 && ssl.get(0).ancestors().any(it -> it == outerIf)) {
+                    ASTIfStatement is2 = isl.get(1);
+                    if (JavaRuleUtil.isNullCheck(is2.getCondition(), returnVariable)) {
+                        List<ASTAssignmentExpression> assignments = is2.descendants(ASTAssignmentExpression.class).toList();
+                        if (assignments.size() == 1
+                            && JavaAstUtils.isReferenceToVar(assignments.get(0).getLeftOperand(), returnVariable)) {
+                            asCtx(data).addViolation(node);
+
+                        }
+                    }
+                }
+            }
+        }
+        return data;
+    }
+
+    private boolean isLocalOnlyStoredWithVolatileField(ASTMethodDeclaration method, JVariableSymbol local) {
+        ASTExpression initializer;
+        if (local instanceof JLocalVariableSymbol) {
+            ASTVariableId id = local.tryGetNode();
+            if (id == null) {
+                return false;
+            }
+            initializer = id.getInitializer();
+        } else {
+            // the return variable name doesn't seem to be a local variable
+            return false;
+        }
+
+        return (initializer == null || isVolatileFieldReference(initializer))
+            && method.descendants(ASTAssignmentExpression.class)
+                     .filter(it -> JavaAstUtils.isReferenceToVar(it.getLeftOperand(), local))
+                     .all(it -> isVolatileFieldReference(it.getRightOperand()));
+    }
+
+    private boolean isVolatileFieldReference(@Nullable ASTExpression initializer) {
+        if (initializer instanceof ASTNamedReferenceExpr) {
+            JVariableSymbol fieldSym = ((ASTNamedReferenceExpr) initializer).getReferencedSym();
+            return fieldSym instanceof JFieldSymbol && Modifier.isVolatile(((JFieldSymbol) fieldSym).getModifiers());
+        } else {
+            return false;
+        }
+    }
+
+}

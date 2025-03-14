@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ruleset name="Security"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+Rules that flag potential security flaws.
+    </description>
+
+    <rule name="ApexBadCrypto"
+          language="apex"
+          since="5.5.3"
+          message="Apex classes should use random IV/key"
+          class="net.sourceforge.pmd.lang.apex.rule.security.ApexBadCryptoRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_security.html#apexbadcrypto">
+        <description>
+The rule makes sure you are using randomly generated IVs and keys for `Crypto` calls.
+Hard-wiring these values greatly compromises the security of encrypted data.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public without sharing class Foo {
+    Blob hardCodedIV = Blob.valueOf('Hardcoded IV 123');
+    Blob hardCodedKey = Blob.valueOf('0000000000000000');
+    Blob data = Blob.valueOf('Data to be encrypted');
+    Blob encrypted = Crypto.encrypt('AES128', hardCodedKey, hardCodedIV, data);
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ApexCRUDViolation"
+          language="apex"
+          since="5.5.3"
+          message="Validate CRUD permission before SOQL/DML operation or enforce user mode"
+          class="net.sourceforge.pmd.lang.apex.rule.security.ApexCRUDViolationRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_security.html#apexcrudviolation">
+        <description><![CDATA[
+The rule validates you are checking for access permissions before a SOQL/SOSL/DML operation.
+Since Apex runs by default in system mode not having proper permissions checks results in escalation of
+privilege and may produce runtime errors. This check forces you to handle such scenarios.
+
+Since Winter '23 (API Version 56) you can enforce user mode for database operations by using
+`WITH USER_MODE` in SOQL. This makes Apex to respect Field-level security (FLS) and object
+permissions of the running user. When using user mode, no violation is reported by this rule.
+
+By default, the rule allows access checks can be performed using system Apex provisions such as
+`DescribeSObjectResult.isAccessible/Createable/etc.`, the SOQL `WITH SECURITY_ENFORCED` clause,
+or using the open source [Force.com ESAPI](https://github.com/forcedotcom/force-dot-com-esapi)
+class library. Because it is common to use authorization facades to assist with this task, the
+rule also allows configuration of regular expression-based patterns for the methods used to
+authorize each type of CRUD operation. These pattern are configured via the following properties:
+
+* `createAuthMethodPattern`/`createAuthMethodTypeParamIndex` - a pattern for the method used
+  for create authorization and an optional 0-based index of the parameter passed to that method
+  that denotes the `SObjectType` being authorized for create.
+* `readAuthMethodPattern`/`readAuthMethodTypeParamIndex` - a pattern for the method used
+  for read authorization and an optional 0-based index of the parameter passed to that method
+  that denotes the `SObjectType` being authorized for read.
+* `updateAuthMethodPattern`/`updateAuthMethodTypeParamIndex` - a pattern for the method used
+  for update authorization and an optional 0-based index of the parameter passed to that method
+  that denotes the `SObjectType` being authorized for update.
+* `deleteAuthMethodPattern`/`deleteAuthMethodTypeParamIndex` - a pattern for the method used
+  for delete authorization and an optional 0-based index of the parameter passed to that method
+  that denotes the `SObjectType` being authorized for delete.
+* `undeleteAuthMethodPattern`/`undeleteAuthMethodTypeParamIndex` - a pattern for the method used
+  for undelete authorization and an optional 0-based index of the parameter passed to that method
+  that denotes the `SObjectType` being authorized for undelete.
+* `mergeAuthMethodPattern`/`mergeAuthMethodTypeParamIndex` - a pattern for the method used
+  for merge authorization and an optional 0-based index of the parameter passed to that method
+  that denotes the `SObjectType` being authorized for merge.
+
+The following example shows how the rule can be configured for the
+[sirono-common](https://github.com/SCWells72/sirono-common)
+[`AuthorizationUtil`](https://github.com/SCWells72/sirono-common#authorization-utilities) class:
+
+```xml
+<rule ref="category/apex/security.xml/ApexCRUDViolation" message="Validate CRUD permission before SOQL/DML operation">
+    <priority>3</priority>
+    <properties>
+        <property name="createAuthMethodPattern" value="AuthorizationUtil\.(is|assert)(Createable|Upsertable)"/>
+        <property name="readAuthMethodPattern" value="AuthorizationUtil\.(is|assert)Accessible"/>
+        <property name="updateAuthMethodPattern" value="AuthorizationUtil\.(is|assert)(Updateable|Upsertable)"/>
+        <property name="deleteAuthMethodPattern" value="AuthorizationUtil\.(is|assert)Deletable"/>
+        <property name="undeleteAuthMethodPattern" value="AuthorizationUtil\.(is|assert)Undeletable"/>
+        <property name="mergeAuthMethodPattern" value="AuthorizationUtil\.(is|assert)Mergeable"/>
+    </properties>
+</rule>
+```
+
+Note: This rule will produce false positives for VF getter methods. In VF getters the access permission
+check happens automatically and is not needed explicitly. However, the rule can't reliably determine
+whether a getter is a VF getter or not and reports a violation in any case. In such cases, the violation
+should be [suppressed](pmd_userdocs_suppressing_warnings.html).
+]]>
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo {
+    public Contact foo(String status, String ID) {
+
+        // validate you can actually query what you intend to retrieve
+        Contact c = [SELECT Status__c FROM Contact WHERE Id=:ID WITH SECURITY_ENFORCED];
+
+        // Make sure we can update the database before even trying
+        if (!Schema.sObjectType.Contact.fields.Status__c.isUpdateable()) {
+            return null;
+        }
+
+        c.Status__c = status;
+        update c;
+        return c;
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ApexDangerousMethods"
+          language="apex"
+          since="5.5.3"
+          message="Calling potentially dangerous method"
+          class="net.sourceforge.pmd.lang.apex.rule.security.ApexDangerousMethodsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_security.html#apexdangerousmethods">
+        <description>
+Checks against calling dangerous methods.
+
+For the time being, it reports:
+
+* Against `FinancialForce`'s `Configuration.disableTriggerCRUDSecurity()`. Disabling CRUD security
+opens the door to several attacks and requires manual validation, which is unreliable.
+* Calling `System.debug` passing sensitive data as parameter, which could lead to exposure
+of private data.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo {
+    public Foo() {
+        Configuration.disableTriggerCRUDSecurity();
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ApexInsecureEndpoint"
+          language="apex"
+          since="5.5.3"
+          message="Apex callouts should use encrypted communication channels"
+          class="net.sourceforge.pmd.lang.apex.rule.security.ApexInsecureEndpointRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_security.html#apexinsecureendpoint">
+        <description>
+Checks against accessing endpoints under plain **http**. You should always use
+**https** for security.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public without sharing class Foo {
+    void foo() {
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('http://localhost:com');
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ApexOpenRedirect"
+          language="apex"
+          since="5.5.3"
+          message="Apex classes should safely redirect to a known location"
+          class="net.sourceforge.pmd.lang.apex.rule.security.ApexOpenRedirectRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_security.html#apexopenredirect">
+        <description>
+Checks against redirects to user-controlled locations. This prevents attackers from
+redirecting users to phishing sites.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public without sharing class Foo {
+    String unsafeLocation = ApexPage.getCurrentPage().getParameters.get('url_param');
+    PageReference page() {
+       return new PageReference(unsafeLocation);
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ApexSharingViolations"
+          language="apex"
+          since="5.5.3"
+          message="Apex classes should declare a sharing model if DML or SOQL/SOSL is used"
+          class="net.sourceforge.pmd.lang.apex.rule.security.ApexSharingViolationsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_security.html#apexsharingviolations">
+        <description>
+Detect classes declared without explicit sharing mode if DML methods are used. This
+forces the developer to take access restrictions into account before modifying objects.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public without sharing class Foo {
+    // DML operation here
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ApexSOQLInjection"
+          language="apex"
+          since="5.5.3"
+          message="Avoid untrusted/unescaped variables in DML query"
+          class="net.sourceforge.pmd.lang.apex.rule.security.ApexSOQLInjectionRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_security.html#apexsoqlinjection">
+        <description>
+Detects the usage of untrusted / unescaped variables in DML queries.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo {
+    public void test1(String t1) {
+        Database.query('SELECT Id FROM Account' + t1);
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ApexSuggestUsingNamedCred"
+          language="apex"
+          since="5.5.3"
+          message="Suggest named credentials for authentication"
+          class="net.sourceforge.pmd.lang.apex.rule.security.ApexSuggestUsingNamedCredRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_security.html#apexsuggestusingnamedcred">
+        <description>
+Detects hardcoded credentials used in requests to an endpoint.
+
+You should refrain from hardcoding credentials:
+  * They are hard to mantain by being mixed in application code
+  * Particularly hard to update them when used from different classes
+  * Granting a developer access to the codebase means granting knowledge
+     of credentials, keeping a two-level access is not possible.
+  * Using different credentials for different environments is troublesome
+     and error-prone.
+
+Instead, you should use *Named Credentials* and a callout endpoint.
+
+For more information, you can check [this](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_callouts_named_credentials.htm)
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo {
+    public void foo(String username, String password) {
+        Blob headerValue = Blob.valueOf(username + ':' + password);
+        String authorizationHeader = 'BASIC ' + EncodingUtil.base64Encode(headerValue);
+        req.setHeader('Authorization', authorizationHeader);
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ApexXSSFromEscapeFalse"
+          language="apex"
+          since="5.5.3"
+          message="Apex classes should escape Strings in error messages"
+          class="net.sourceforge.pmd.lang.apex.rule.security.ApexXSSFromEscapeFalseRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_security.html#apexxssfromescapefalse">
+        <description>
+Reports on calls to `addError` with disabled escaping. The message passed to `addError`
+will be displayed directly to the user in the UI, making it prime ground for XSS
+attacks if unescaped.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public without sharing class Foo {
+    Trigger.new[0].addError(vulnerableHTMLGoesHere, false);
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ApexXSSFromURLParam"
+          language="apex"
+          since="5.5.3"
+          message="Apex classes should escape/sanitize Strings obtained from URL parameters"
+          class="net.sourceforge.pmd.lang.apex.rule.security.ApexXSSFromURLParamRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_security.html#apexxssfromurlparam">
+        <description>
+Makes sure that all values obtained from URL parameters are properly escaped / sanitized
+to avoid XSS attacks.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public without sharing class Foo {
+    String unescapedstring = ApexPage.getCurrentPage().getParameters.get('url_param');
+    String usedLater = unescapedstring;
+}
+]]>
+        </example>
+    </rule>
+
+</ruleset>

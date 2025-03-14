@@ -1,0 +1,34 @@
+<project name="pmdtasktest" default="all">
+
+	<property name="pmd.home" value="${user.dir}"/>
+    <property name="src"      value="src/test/resources/net/sourceforge/pmd/ant/src"/>
+
+    <taskdef name="cpd" classname="net.sourceforge.pmd.ant.CPDTask"/>
+
+    <target name="all" depends="testBasic"/>
+
+	<target name="testBasic">
+        <cpd minimumTokenCount="20" outputFile="${pmd.home}/target/cpd.ant.tests" language="dummy">
+          <fileset dir="${pmd.home}/${src}">
+            <include name="**/*.dummy"/>
+            <exclude name="sampleLexError.dummy"/>
+          </fileset>
+        </cpd>
+	</target>
+
+    <target name="failOnErrorDefault">
+        <cpd minimumTokenCount="20" outputFile="${pmd.home}/target/cpd.ant.tests" language="dummy">
+            <fileset dir="${pmd.home}/${src}">
+                <include name="**/*.dummy"/>
+            </fileset>
+        </cpd>
+    </target>
+
+    <target name="failOnErrorIgnore">
+        <cpd minimumTokenCount="20" outputFile="${pmd.home}/target/cpd.ant.tests" language="dummy" failOnError="false">
+            <fileset dir="${pmd.home}/${src}">
+                <include name="**/*.dummy"/>
+            </fileset>
+        </cpd>
+    </target>
+</project>

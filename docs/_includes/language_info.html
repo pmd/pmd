@@ -1,0 +1,14 @@
+<details class="language-info">
+<summary markdown="span">Language Info for {{include.name}}
+</summary>
+
+<div class="card">
+<ul class="list-group list-group-flush">
+{% if include.since %}<li class="list-group-item">Since PMD {{include.since}}</li>{% endif %}
+<li class="list-group-item">Implementation: {% jdoc include.implementation %}</li>
+<li class="list-group-item">Id: {{include.id}}</li>
+<li class="list-group-item">PMD: {% if include.supports_pmd %}✔️{% else %}❌{% endif %}</li>
+<li class="list-group-item">CPD: {% if include.supports_cpd %}✔️{% else %}❌{% endif %}</li>
+</ul>
+</div>
+</details>

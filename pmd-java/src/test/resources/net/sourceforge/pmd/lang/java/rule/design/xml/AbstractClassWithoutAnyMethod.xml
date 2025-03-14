@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Empty abstract method should trigger the rule nonetheless</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public abstract class Foo {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>An abstract method without any method at all (Basic test case)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public abstract class Foo {
+    private String field;
+    public int otherField;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>An abstract method with constructors</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class Foo extends Error {
+    public Foo() {
+        super();
+    }
+    public Foo(String s) {
+        super(s);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>An abstract class with method, no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class Foo {
+    private String field;
+    public int otherField;
+
+    public abstract void m();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#438 An abstract AutoValue class with no methods, no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import com.google.auto.value.AutoValue;
+
+@AutoValue public abstract class Something implements java.util.RandomAccess {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#438 An abstract AutoValue class with no methods and fully qualified annotation, no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@com.google.auto.value.AutoValue public abstract class Something implements java.util.RandomAccess {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FN with nested class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+abstract class Foo {
+
+    class Inner {
+        void ohio() {}
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FN with sibling class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+
+    abstract class Pos {}
+
+    class Sibling {
+        void ohio() {}
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Interfaces are ignored</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            interface Some {
+                // no abstract
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] AbstractClassWithoutAnyMethod should consider lombok's @AllArgsConstructor #4189</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+
+@AllArgsConstructor
+abstract class AllArgs {
+    private String field;
+    public int otherField;
+}
+
+@NoArgsConstructor
+abstract class NoArgs {
+    private String field;
+    public int otherField;
+}
+
+@RequiredArgsConstructor
+abstract class RequiredArgs {
+    private String field;
+    public int otherField;
+}
+]]></code>
+    </test-code>
+</test-data>

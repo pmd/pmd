@@ -1,0 +1,38 @@
+---
+layout: default
+---
+
+{% include header.html %}
+
+<div class="post-header">
+   <h1 class="post-title-main">{{ page.title }}</h1>
+</div>
+
+<div class="post-content" {% if site.github_editme_path and page.editmepath != false %}data-github-edit-url="https://github.com/{{site.github_editme_path}}{{editmepath}}"{% endif %}>
+
+   {% if page.summary %}
+    <div class="summary">{{page.summary}}</div>
+   {% endif %}
+    <details id="inline-toc-details">
+        <summary>Table of Contents</summary>
+        <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
+    </details>
+
+  {{content}}
+
+    <div class="tags">
+        {% if page.tags != null %}
+        <b>Tags: </b>
+        {% assign projectTags = site.data.tags.allowed-tags %}
+        {% for tag in page.tags %}
+        {% if projectTags contains tag %}
+        <a href="{{ "tag_" | append: tag | append: ".html" }}" class="btn btn-outline-secondary navbar-btn cursorNorm" role="button">{{page.tagName}}{{tag}}</a>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+    </div>
+
+</div>
+
+
+{% include footer.html %}

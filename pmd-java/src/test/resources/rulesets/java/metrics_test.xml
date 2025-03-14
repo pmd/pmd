@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+
+<ruleset name="Metrics testing ruleset"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+        Metrics testing ruleset. Each metric is tested through a dummy rule.
+    </description>
+
+    <rule name="CognitiveComplexityTest"
+        language="java"
+        message = "''{0}'' has value {1}."
+        class="net.sourceforge.pmd.lang.java.metrics.impl.CognitiveComplexityTestRule">
+    </rule>
+
+    <rule name="CycloTest"
+          language="java"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.CycloTestRule">
+    </rule>
+
+    <rule name="NcssTest"
+          language="java"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.NcssTestRule">
+    </rule>
+
+    <rule name="WmcTest"
+          language="java"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.WmcTestRule">
+    </rule>
+
+    <rule name="LocTest"
+          language="java"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.LocTestRule">
+    </rule>
+
+    <rule name="NPathTest"
+          language="java"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.NPathTestRule">
+    </rule>
+
+    <rule name="NopaTest"
+          language="java"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.NopaTestRule">
+    </rule>
+
+    <rule name="NoamTest"
+          language="java"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.NoamTestRule">
+    </rule>
+
+    <rule name="WocTest"
+          language="java"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.WocTestRule">
+    </rule>
+
+    <rule name="TccTest"
+          language="java"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.TccTestRule">
+    </rule>
+
+    <rule name="AtfdTest"
+          language="java"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.AtfdTestRule">
+    </rule>
+
+    <rule name="CfoTest"
+          language="java"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.CfoTestRule">
+    </rule>
+
+</ruleset>

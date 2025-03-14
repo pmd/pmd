@@ -1,0 +1,32 @@
+<!ELEMENT ruleset ( description, include-pattern*, exclude-pattern*, rule+ ) >
+<!ATTLIST ruleset name CDATA #REQUIRED >
+<!ELEMENT description ( #PCDATA ) >
+<!ELEMENT exclude-pattern ( #PCDATA ) >
+<!ELEMENT include-pattern ( #PCDATA ) >
+<!ELEMENT rule ( description? , priority? , properties? , exclude* , example* ) >
+<!ATTLIST rule language CDATA #IMPLIED >
+<!ATTLIST rule minimumLanguageVersion CDATA #IMPLIED >
+<!ATTLIST rule maximumLanguageVersion CDATA #IMPLIED >
+<!ATTLIST rule name ID #IMPLIED >
+<!ATTLIST rule since CDATA #IMPLIED >
+<!ATTLIST rule ref CDATA #IMPLIED >
+<!ATTLIST rule message CDATA #IMPLIED >
+<!ATTLIST rule externalInfoUrl CDATA #IMPLIED >
+<!ATTLIST rule class NMTOKEN #IMPLIED >
+<!ATTLIST rule dfa CDATA #IMPLIED >
+<!ATTLIST rule typeResolution CDATA #IMPLIED >
+<!ATTLIST rule deprecated CDATA #IMPLIED >
+<!ELEMENT example ( #PCDATA ) >
+<!ELEMENT priority ( #PCDATA ) >
+<!ELEMENT properties ( property+ ) >
+<!ELEMENT property ( value? ) >
+<!ATTLIST property name NMTOKEN #REQUIRED >
+<!ATTLIST property value CDATA #IMPLIED >
+<!ATTLIST property description CDATA #IMPLIED >
+<!ATTLIST property type CDATA #IMPLIED >
+<!ATTLIST property delimiter CDATA #IMPLIED >
+<!ATTLIST property min CDATA #IMPLIED >
+<!ATTLIST property max CDATA #IMPLIED >
+<!ELEMENT value ( #PCDATA ) >
+<!ELEMENT exclude EMPTY >
+<!ATTLIST exclude name NMTOKEN #REQUIRED >

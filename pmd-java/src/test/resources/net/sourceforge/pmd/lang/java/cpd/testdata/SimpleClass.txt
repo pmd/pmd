@@ -1,0 +1,21 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L5
+    [public]                                1         7
+    [class]                                 8         13
+    [SimpleClass]                           14        25
+    [{]                                     26        27
+L6
+    [private]                               5         12
+    [int]                                   13        16
+    [field]                                 17        22
+L7
+    [private]                               5         12
+    [void]                                  13        17
+    [method]                                18        24
+    [(]                                     24        25
+    [)]                                     25        26
+    [{]                                     27        28
+    [}]                                     28        29
+L8
+    [}]                                     1         2
+EOF

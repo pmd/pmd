@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<ruleset name="Metrics testing ruleset"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+        Metrics testing ruleset. Each metric is tested through a dummy rule.
+    </description>
+
+    <rule name="CycloTest"
+          language="apex"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.apex.metrics.internal.CycloTestRule">
+    </rule>
+
+    <rule name="WmcTest"
+          language="apex"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.apex.metrics.internal.WmcTestRule">
+    </rule>
+
+    <rule name="CognitiveComplexityTest"
+          language="apex"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.apex.metrics.internal.CognitiveComplexityTestRule">
+    </rule>
+
+</ruleset>

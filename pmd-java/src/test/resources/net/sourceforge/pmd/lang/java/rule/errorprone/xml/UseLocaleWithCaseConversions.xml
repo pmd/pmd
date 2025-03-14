@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>toLowerCase() with no args</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void run(String y) {
+        String x = y.toLowerCase();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>toUpperCase() with no args</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void run(String y) {
+        String x = y.toUpperCase();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>both ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Locale;
+
+public class Foo {
+    public void run(String y) {
+        String x = y.toUpperCase(Locale.EN);
+        String z = y.toLowerCase(Locale.EN);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>toHexString OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void run() {
+        String x = Integer.toHexString(42).toUpperCase();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Compound method call</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Locale;
+
+public class Foo {
+    public String getString(){
+        String x = "hello world";
+        return x.toUpperCase(Locale.GERMANY).trim();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1556 [java] UseLocaleWithCaseConversions does not works with `ResultSet` (false negative)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.sql.*;
+
+final class Test {
+    private Test() { }
+
+    public static String foo(ResultSet r) throws SQLException {
+        return r.getString("bar").toLowerCase();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4277 FP when invoking a method called toLowerCase on a non-String class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static String generateUlid(boolean uppercase) {
+        Ulid ulid = new Ulid();
+        return uppercase ? ulid.toString() : ulid.toLowerCase(); // not a String, should be ok
+    }
+
+    private static class Ulid {
+        public Strinc toLowerCase() {
+            return null;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

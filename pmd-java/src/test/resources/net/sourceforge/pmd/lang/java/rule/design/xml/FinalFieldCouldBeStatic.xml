@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>simple failure case</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public final int BAR = 42;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>already static, OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static final int BAR = 42;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>non-final, OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int BAR = 42;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>non-primitive failure case - only works for String</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public final String BAR = "42";
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>final field that's a thread, OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public final Thread BAR = new Thread();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>don't flag interfaces</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+    public final int BAR = 42;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bug #1002 False +: FinalFieldCouldBeStatic on inner class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd;
+
+public class FinalFieldCouldBeStaticTest {
+
+    public void foo() {
+        final Test t = new Test() {
+            // the rule was triggered for "foo" - which could be indeed a final static String constant
+            private final byte[] b = "foo".getBytes();
+
+            @Override
+            public byte[] bar() {
+                return b;
+            }
+        };
+        t.bar();
+    }
+}
+
+interface Test {
+    byte[] bar();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#275 - False positive in @interface</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public @interface MetricType {
+    int CHECKBOX = 0, COUNTER = 1, SPINNER = 2, NOTE = 3, STOPWATCH = 4, HEADER = 5;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2708 - False positive with lombok @Builder.Default fields</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package com.example;
+
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class ExampleClass {
+
+    @Builder.Default
+    private final long exampleField = 0L;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2708 - Should trigger with non-lombok @Builder.Default fields</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
+        <code><![CDATA[
+package com.example;
+
+import not.lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class ExampleClass {
+
+    @Builder.Default // that's not a lombok Builder!!
+    private final long exampleField = 0L;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Should trigger multiple times for fields declared on one line</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,5</expected-linenumbers>
+        <code><![CDATA[
+package com.example;
+
+public class ExampleClass {
+
+    private final String one = "one", two = "two";
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3679 - False-negative on initializing with another object</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Clazz {
+  public static final int a = 10;
+  public final int b = a;  // should report a warning here
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[OK] initializing with a method invocation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Clazz {
+  public final int a = getValue();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>
+            #3724 - the rule should be triggered only if the referenced name is static
+        </description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private int nonStaticPrivate = 1;                   //no violation cause non-final
+    private final int nonStatic = nonStaticPrivate;     //no violation cause referenced name is non-static
+
+    //private static final int staticFinal = nonStatic; //noncompliant: Non-static field 'nonStatic' cannot be referenced from a static context
+    private static int staticNonFinal = 1;              //no violation cause non-final
+    private final int nonStatic2 = staticNonFinal;      //violation because it could be static
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3949 - FinalFieldCouldBeStatic false negative with unnecessary parenthesis</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>5,8,9</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class Foo {
+    public final int BAR = (42);
+
+    // these empty arrays could theoretically be shared and therefore be static
+    private final Object[] argsObjs1 = new Object[0];
+    private final Object[] argsObjs2 = new Object[(0)];
+
+    // not flagging anonymous class instantiation
+    private final StringBuffer mFilter = new StringBuffer(new CharSequence() {
+        @Override public char charAt(int index) { return 'A'; }
+        @Override public int length() { return 1; }
+        @Override public CharSequence subSequence(int start, int end) { return this; }
+        @Override public String toString() { return "Foo"; }
+    });
+
+    // not flagging any instantiation in order to avoid false positives
+    // especially for lists one could still require a separate list for each instance...
+    public final List<String> mList = new ArrayList<>();
+
+    // not flagging instantiation of boxed types - would be a different rule
+    // this is to keep this rule simple
+    public final Integer DefaultInit = new Integer(27);
+    private final String mString = new String("Foo");
+
+    // not flagging array creation. Same reasoning as for lists:
+    // one could still require a separate array for each instance...
+    private final int[] p = new int[42];
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>[java] FinalFieldCouldBeStatic false positive with non-static synchronized block (regression in 6.48, worked with 6.47) #4090</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class foo {
+    private final Object[] lock = new Object[0];
+    private final Object[] lock2 = new Object[0];
+    private final Object[] o = new Object[0];
+
+
+    void init() {
+        synchronized (lock) {
+            // do init stuff
+        }
+    }
+
+    public void close() {
+        synchronized (this.lock2) {
+           // do close stuff
+        }
+    }
+
+    void foo() {
+        System.out.println(o);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] FinalFieldCouldBeStatic: false positive with lombok's @UtilityClass #4456</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.experimental.UtilityClass;
+@UtilityClass
+public class Test {
+    public final String BAR = "42";  //  false positive warning
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FN when the right side of the assignment is a constant expression #2440</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    private final double HALF_PI = Math.PI * 0.5; // false-negative
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>null literals should be flagged</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    private final Object HALF_PI = null; // false-negative
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5018 issue with super field reference</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Super {
+    int foo;
+}
+public class Test extends Super {
+    int foo;
+    class Inner {
+        private final int field = Test.super.foo;
+    }
+    class Inner2 {
+        private final int field = Test.this.foo;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Class literal</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,5</expected-linenumbers>
+        <code><![CDATA[
+public class MyClass {
+    private final Class<MyClass> clazz = MyClass.class;
+}
+class OtherToplevelClass {
+    private final Class<OtherToplevelClass> clazz = OtherToplevelClass.class;
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Literals with constant expressions</description>
+        <expected-problems>12</expected-problems>
+        <expected-linenumbers>2,3,4,5,6,7,10,11,12,13,14,15</expected-linenumbers>
+        <code><![CDATA[
+public class MyLiterals {
+    final int one = 1 + 1 - 1;
+    final double zero = -0.0;
+    final float otherZero = 0.0f;
+    final long unknown = -1;
+    final byte mask = (byte)0x1;
+    final short entries = (short)10;
+}
+class Literals {
+    final int one = 2 - 1;
+    final double zero = -0.0;
+    final float otherZero = 0.0f;
+    final long unknown = -1;
+    final byte mask = (byte)0x1;
+    final short entries = (short)10;
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Static array property length</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,5</expected-linenumbers>
+        <code><![CDATA[
+class ArrayLength {
+    private static final int[] myArray = { 1, 2, 3 };
+    public final int myArrayLength = myArray.length;
+
+    private final int[] nonStaticArray = { 1, 2, 3 };
+    public final int nonStaticArrayLength = nonStaticArray.length; // can't be made static, unless nonStaticArray is static as well
+
+    private static final int[] emptyArray = {};
+}
+]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>constant via static ondemand import</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+import static java.math.BigInteger.*;
+class MyConstants {
+    public final BigInteger myZero = ZERO;
+}
+]]></code>
+    </test-code>
+</test-data>

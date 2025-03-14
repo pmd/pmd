@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>one field declaration per statement</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Integer a, b;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>one variable declaration per statement</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        Integer a, b;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>all is well</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Integer a;
+    Integer b;
+    void bar() {
+        Integer c;
+        Integer d;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>one variable declaration per line, ok by default</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        Integer a,
+                b;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>one field declaration per line, ok by default</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Integer a,
+            b;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>one variable declaration per line, not ok when strictMode</description>
+        <rule-property name="strictMode">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        Integer a,
+                b;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>one field declaration per line, not ok when strictMode</description>
+        <rule-property name="strictMode">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Integer a,
+            b;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3570 - Verify use of reportInForLoopInitializer, negative test unspecified/default</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        for (Integer i = 0, maxValue = computeMaxValue(); i < maxValue; i++) {
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3570 - Verify use of reportInForLoopInitializer, negative test specified</description>
+        <rule-property name="reportInForLoopInitializer">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        for (Integer i = 0, maxValue = computeMaxValue(); i < maxValue; i++) {
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3570 - Verify use of reportInForLoopInitializer, positive test</description>
+        <rule-property name="reportInForLoopInitializer">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        for (Integer i = 0, maxValue = computeMaxValue(); i < maxValue; i++) {
+        }
+    }
+}
+]]></code>
+    </test-code>
+</test-data>

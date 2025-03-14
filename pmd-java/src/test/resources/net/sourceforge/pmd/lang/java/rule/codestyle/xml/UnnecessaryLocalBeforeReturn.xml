@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>skip void/native/abstract methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {}
+    public native int buz();
+    public abstract int baz();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>skip literal returns</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int bar() { return 5; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>simple failure case</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int bar() {
+        int x = doSomething();
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>skip complicated returns</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int bar() {
+        int x = doSomething();
+        return x == null ? foo : bar;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>skip method calls</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int bar() {
+        return doSomething(a, b, c);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1495 [java] UnnecessaryLocalBeforeReturn with assert</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int bar() {
+        int res = 2; assert res>=0;
+        return res;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#219 ClassCastException in switch case with local variable returned</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int m(int val) {
+        switch (vl) {
+            default:
+                int i = 0;
+                return i;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Detect violation even if not on consecutive lines</description>
+        <rule-property name="statementOrderMatters">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int bar() {
+        int res = 2;
+        doSomething();
+        return res;
+    }
+
+    public void doSomething() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No violations on multiple uses of the variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int bar() {
+        int res = 2;
+        doSomething(res);
+        return res;
+    }
+
+    public void doSomething(int x) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No violations on multiple uses of the variable - statement order does not matter</description>
+        <rule-property name="statementOrderMatters">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int bar() {
+        int res = 2;
+        doSomething(res);
+        return res;
+    }
+
+    public void doSomething(int x) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#933 UnnecessaryLocalBeforeReturn false positive for SuppressWarnings annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class TestCase<T> {
+    T getSomeT() { return null; }
+    private static <T> T findEventTypeValueByName(TestCase<?> unchecked) {
+        @SuppressWarnings("unchecked")
+        T result = (T) unchecked.getSomeT();
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#282 UnnecessaryLocalBeforeReturn false positive when cloning Maps</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
+import java.util.HashMap;
+public class CustomerErrorCollector {
+
+    private final ConcurrentHashMap<String, String> customerErrors = new ConcurrentHashMap<>();
+
+    public void error(String customerNr, String errorMsg) {
+        customerErrors.put(customerNr, errorMsg);
+    }
+
+    public Map<String, String> getAndReset() {
+        final Map<String, String> copy = new HashMap<>(customerErrors);
+        customerErrors.clear();
+        return copy; // PMD complains that variable could be avoided
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#310 UnnecessaryLocalBeforeReturn enhancement is overly restrictive -- method order matters</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Mutable {
+    public int example1() {
+        int i = compute(); // might throw
+        markComputationDone();
+        return i; // PMD complains that variable could be avoided
+    }
+
+    public int example2() {
+        Mutable m = new Mutable();
+        int i = compute(m);
+        sideEffect(m);
+        return i;
+    }
+    static void sideEffect(Mutable m) {}
+    static int sideEffect(Mutable m) {}
+    static int compute() {}
+    static int markComputationDone() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#310 UnnecessaryLocalBeforeReturn statement order does not matter</description>
+        <rule-property name="statementOrderMatters">false</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,10</expected-linenumbers>
+        <code><![CDATA[
+public class Mutable {
+    public int example1() {
+        int i = compute(); // might throw
+        markComputationDone();
+        return i; // PMD complains that variable could be avoided
+    }
+
+    public int example2() {
+        Mutable m = new Mutable();
+        int i = compute(m);
+        sideEffect(m);
+        return i;
+    }
+    static void sideEffect(Mutable m) {}
+    static int sideEffect(Mutable m) {}
+    static int compute() {}
+    static int markComputationDone() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1775 [java] False negative in UnnecessaryLocalBeforeReturn when splitting statements across multiple lines</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class UnnecessaryLocalBeforeReturnFP {
+    public Object test2() {
+        int i = 0;
+        Object o = thing()
+            .make(i);
+        return o; // true positive
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1804 [java] NPE with fields</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class ObjectCreator {
+
+    private static final String A = "";
+    private static final String B = "" + A; // the existence of this line causes the NPE.
+
+    public Object create() {
+        final Object o = new Object(A);
+        return o;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FP with captured method reference</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.function.Supplier;
+public class ObjectCreator {
+    public Supplier<String> create() {
+        final Object o = new Object(); // captured by the method ref
+        return o::toString;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FN with lambdas #3275</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.concurrent.Callable;
+
+public class UnnecessaryLocal {
+    void foo() {
+        Callable<String> c = () -> { String s = "1"; return s; };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FN with anonymous classes #3275</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.concurrent.Callable;
+
+public class UnnecessaryLocal {
+    void foo() {
+        Callable<String> c = new Callable<>() {
+            public String call() {
+                String s = "1";
+                return s;
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>[java] UnnecessaryLocalBeforeReturn - false positive with catch clause</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Example {
+    public Example() {
+        Exception result = attempt(() -> {});
+        if (result != null) {
+            throw new RuntimeException(result);
+        }
+    }
+
+    private Exception attempt(Runnable task) {
+        try {
+            task.run();
+            return null;
+        } catch (Exception e) {
+            // src/Example.java:15:    UnnecessaryLocalBeforeReturn:   Consider simply returning the value vs storing it in local variable 'e'
+            return e;
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnnecessaryLocalBeforeReturn false positive when negating variable #2206</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Example {
+    public boolean isOk() {
+        boolean isWrong = foo();
+        return !isWrong;
+    }
+
+    private boolean foo() {
+        return false;
+    }
+}
+]]></code>
+    </test-code>
+</test-data>

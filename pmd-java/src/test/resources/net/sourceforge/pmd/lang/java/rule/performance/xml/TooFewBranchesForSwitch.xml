@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Switch Statement with no case, ok</description>
+        <rule-property name="minimumNumberCaseForASwitch">3</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class DumbSwitch {
+    public void foo(int i) {
+        switch (i) { } // This is detected by EmptyControlStatement
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch Statement with only one case, not ok</description>
+        <rule-property name="minimumNumberCaseForASwitch">3</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class DumbSwitch {
+    public void foo(int i) {
+        switch (i) {
+            case 0:
+            {
+                System.err.println("I am a fish.");
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch Expression with only one case, not ok #5250</description>
+        <rule-property name="minimumNumberCaseForASwitch">3</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class DumbSwitch {
+    public String foo(int i) {
+        return switch (i) {
+            case 0:
+            {
+                yield "I am a fish.";
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Even two branches is not enough for a switch statement</description>
+        <rule-property name="minimumNumberCaseForASwitch">3</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class DumbSwitch {
+    public void foo(int i) {
+        switch (i) {
+            case 0:
+            {
+                System.err.println("I am a fish.");
+            }
+            case 1:
+            {
+                System.exit();
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Three branches in a switch statement is ok.</description>
+        <rule-property name="minimumNumberCaseForASwitch">3</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class ValidSwitch {
+    public void foo(int i) {
+        switch (i) {
+            case 0:
+            {
+                System.err.println("I am a fish.");
+            }
+            case 1:
+            {
+                System.exit();
+            }
+            case 2:
+            {
+                // ...
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] TooFewBranchesForASwitchStatement false positive for Pattern Matching #5249</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+sealed interface S permits A {}
+final class A implements S {}
+public class Sample {
+    public void simpleSwitchStatment(S s) {
+        switch(s) {
+            case A a -> System.out.println("a");
+        }
+    }
+
+    public void simpleSwitchExpression(S s) {
+        String result = switch(s) {
+            case A a -> "a";
+        };
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Record patterns are ignored, too #5249</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+record R(int i) {}
+
+public class SwitchWithRecordPattern {
+    public void check(R r) {
+        switch(r) {
+            case R(int a) -> System.out.println(a);
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5287 [java] TooFewBranchesForSwitch false-positive with switch using list of case constants</description>
+        <rule-property name="minimumNumberCaseForASwitch">3</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+enum SomeEnum { A, B, C, D }
+class Tester {
+    int checkSwitchExpression(SomeEnum someEnumValue) {
+        return switch(someEnumValue) {
+            case A, B, C -> 1;
+            default -> 0;
+        };
+    }
+
+    int checkSwitchStatement(SomeEnum someEnumValue) {
+        int result;
+        switch(someEnumValue) {
+            case A, B, C -> { result = 1; }
+            default -> { result = 0; }
+        }
+        return result;
+    }
+
+    int checkSwitchExpressionGroup(SomeEnum someEnumValue) {
+        return switch(someEnumValue) {
+            case A, B, C: yield 1;
+            default: yield 0;
+        };
+    }
+
+    int checkSwitchStatementGroup(SomeEnum someEnumValue) {
+        int result;
+        switch(someEnumValue) {
+            case A, B, C: result = 1; break;
+            default: result = 0; break;
+        }
+        return result;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>From #5311: Another example for list of case constants</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+  String foo(Bar bar) {
+    return switch (bar) {
+      case A, B, C, D -> "Hello";
+      case E, F, G -> "World";
+    };
+  }
+
+  enum Bar {
+    A, B, C, D, E, F, G
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5311 [java] TooFewBranchesForSwitch false positive for exhaustive switches over enums without default case</description>
+        <rule-property name="minimumNumberCaseForASwitch">50</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>10</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    String foo(Bar bar) {
+        return switch (bar) {
+            case A -> "A";
+            case B -> "B";
+        };
+    }
+
+    String fooWithDefault(Bar bar) {
+        return switch (bar) { // line 10 - violation
+            case A -> "A";
+            case B -> "B";
+            default -> "?";
+        };
+    }
+
+    enum Bar { A, B }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5311 [java] TooFewBranchesForSwitch false positive for exhaustive switches over sealed without default case</description>
+        <rule-property name="minimumNumberCaseForASwitch">50</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>13</expected-linenumbers>
+        <code><![CDATA[
+public sealed class Foo {
+    static final class A extends Foo {}
+    static final class B extends Foo {}
+
+    String foo(Foo foo) {
+        return switch (foo) {
+            case A a -> "A";
+            case B b -> "B";
+        };
+    }
+
+    String fooWithDefault(Foo foo) {
+        return switch (foo) { // line 13 - violation
+            case A a -> "A";
+            case B b -> "B";
+            default -> "?";
+        };
+    }
+}
+]]></code>
+    </test-code>
+</test-data>

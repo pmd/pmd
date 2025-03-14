@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<pmd:rootElement xmlns:pmd="http://pmd.sf.net">
+    <!-- that's a comment -->
+    <pmd:child1 test="1">entity: &amp;
+    </pmd:child1>
+    <pmd:child2>
+        <![CDATA[ cdata section ]]>
+    </pmd:child2>
+</pmd:rootElement>

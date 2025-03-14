@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>failure case</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class Foo {
+    private static List<Object> buz;
+    public static List<Object> bar() {
+        if (buz == null) buz = new ArrayList<>();
+        return buz;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>OK, method is synchronized</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class Foo {
+    private static List<Object> buz;
+    public static synchronized List<Object> bar() {
+        if (buz == null) buz = new ArrayList<>();
+        return buz;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>OK, in synchronized block</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class Foo {
+    private static List<Object> buz;
+    public static List<Object> bar() {
+        synchronized (baz) {
+            if (buz == null) buz = new ArrayList<>();
+            return buz;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>OK, in returning non-static data</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Locale;
+
+public class Foo {
+    private static Locale locale;
+    public static Locale bar() {
+        if (locale == null) return Locale.getDefault();
+        return locale;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>failure case, two if statements</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class Foo {
+    private static List<Object> buz;
+    private static boolean b = false;
+    public static List<Object> bar(String foo) {
+        if (buz == null) {
+            buz = new ArrayList<>();
+            if (foo == null) {
+                b = true;
+            }
+        }
+        return buz;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>failure case, compound if statement</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class Foo {
+    private static List<Object> list;
+    public static List<Object> bar(String param) {
+        if (list == null || !param.equals("foo")) {
+            list = new ArrayList<>();
+            param = "x";
+        }
+        return list;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>failure case 2</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Collections;
+import java.util.List;
+
+public class Foo {
+    private static List<Object> buz = null;
+    private static List<Object> bar() {
+        if (buz == null) {
+            buz = Collections.<Object> emptyList();
+        }
+        return buz;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>From defect 1573591</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class A {
+    public final static String FOO = "0";
+    private String bar;
+    public void bla() {
+        if (this.bar == null) {
+            this.bar = FOO;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#997 Rule NonThreadSafeSingleton gives analysis problem</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class B {}
+class A extends B {
+    static B instance = null;
+    private boolean bar = false;
+
+    static void foo() {
+        if (instance == null) {
+            instance = new A();
+            ((A)instance).bar = false;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with correct double-checked pattern #4483</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static volatile Object o;
+    public static Object getO() {
+        if (o == null) {
+            synchronized(Foo.class) {
+                if (o == null) {
+                    o = new Object();
+                }
+            }
+        }
+        return o;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] A false positive about the rule NonThreadSafeSingleton #4043</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+class Tester {
+    private static List buz;
+    public static List bar() {
+        if (true) { // the first warning (wrong)
+            if (buz == null) // the second warning (correct)
+                buz = new ArrayList();
+        }
+        return buz;
+    }
+}
+]]></code>
+    </test-code>
+</test-data>

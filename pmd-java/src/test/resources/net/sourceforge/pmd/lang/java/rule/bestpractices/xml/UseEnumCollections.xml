@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Use enumset</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <expected-messages>
+            <message>This collection could be an EnumSet</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.*;
+
+            public class Foo {
+
+                enum E {A, B, C}
+
+                public static boolean bar() {
+                    Set<E> set = new HashSet<>();
+                    return set.contains(E.A);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+
+    <test-code>
+        <description>Use enummap</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <expected-messages>
+            <message>This collection could be an EnumMap</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.*;
+
+            public class Foo {
+                public enum E {A, B, C}
+
+                public static Map<E, Boolean> bar() {
+                    return new HashMap<>();
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Neg, LinkedHashSet or LinkedHashMap</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.*;
+
+            public class Foo {
+                public enum E {A, B, C}
+
+                public static Map<E, Boolean> bar() {
+                    Set<E> set = new LinkedHashSet<>();
+                    return new LinkedHashMap<>();
+                }
+            }
+            ]]></code>
+    </test-code>
+
+</test-data>

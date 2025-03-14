@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>No problem using List and ArrayList</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+public class Bar {
+    void x() {
+        List v = new ArrayList();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Just using Vector</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Vector;
+public class Bar {
+    void x() {
+        Vector v = new Vector();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Using Vector as field</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Vector;
+public class Bar {
+    Vector v = new Vector();
+    void x() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Using Vector as List</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+import java.util.Vector;
+public class Bar {
+    List v = new Vector();
+    void x() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1146 real problem</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Vector;
+public class Foo {
+    public void bar() {
+        Vector v = new Vector();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1146 UseArrayListInsteadOfVector false positive when using own Vector class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import com.mycompany.myproject.Vector;
+public class Foo {
+    public void bar() {
+        Vector v = new Vector();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UseArrayListInsteadOfVector ignores Vector when other classes are imported #4148 - sample 1</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import org.Annotation;
+// import java.util.Vector; Note: explicitly not importing... unresolved type
+@Annotation
+public class C {
+    void x() {
+        Vector v = new Vector();  // should report a warning in this line, but no warnings
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UseArrayListInsteadOfVector ignores Vector when other classes are imported #4148 - sample 2</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import some.OtherClass;
+
+public class C {
+    void x() {
+        java.util.Vector v = new java.util.Vector();  // should report a warning
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Only consider Vector and not subclasses</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Stack;
+class StackUser {
+    Stack s = new Stack();
+}
+]]></code>
+    </test-code>
+</test-data>

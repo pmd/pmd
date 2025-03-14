@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>unused local with assignment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        String fr = new String();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>unused local w/o assignment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        int x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>unused local in constructor</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+public class Foo {
+    public Foo() {
+       List a = new ArrayList();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>local used on rhs</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+public class Foo {
+    public Foo() {
+       List a = new ArrayList();
+       if (true) {
+               a.size();
+       }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>unused local in static initializer</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+public class Foo {
+    static {
+        String x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>unused field</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int x;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>loop indexes are not unused locals</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        for (int i=0;i<10; i++);
+        for (int i=0;i<10; i++);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>local used in anonymous inner class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        final int x = 2;
+        new Runnable() {
+            public void run() {
+                System.out.println(x);
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>two unused locals of same name, one in nested class</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        int x = 2;
+        class Bar {
+            void buz() {
+                int x = 4;
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>two locals declared on same line</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        int x,y=0;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>an assignment does not a usage make</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int x;
+        x = 4;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>a compound assignment operator does not a usage make #4517</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>3,9,12</expected-linenumbers>
+        <expected-messages>
+            <message>Avoid unused local variables such as 'x'.</message>
+            <message>Avoid unused local variables such as 'c'.</message>
+            <message>Avoid unused local variables such as 'c'.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class UnusedCompoundAssignment {
+    void this_is_unused() {
+        int x = 0; // violation expected (line 3)
+        x += 2;    // doesn't count as usage
+    }
+    void transitive_used_but_unused1() {
+        int a = 1; // _no_ violation expected, a is used
+        int b = a; // _no_ violation expected, b is used
+        int c = b; // violation expected (line 9)
+    }
+    void transitive_used_but_unused2() {
+        int a, b, c; // 1 violation expected, only c is unused (line 12)
+        a = 1;
+        b = a;
+        c = b;
+    }
+    void transitive_used() {
+        int a, b, c; // _no_ violation expected
+        a = 1;
+        b = a;
+        c = b;
+        System.out.println(c); // usage
+    }
+    void this_is_used() {
+        int y = 0; // _no_ violation expected
+        y += 2;
+        System.out.println(y); // usage
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assignment to a member field means used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int buz;
+    void bar() {
+        Foo b = new Foo();
+        b.buz = 2;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>make sure scopes are working</description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int x = 2;
+        if (true) {int y =2;int j =3;}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>another scope test</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int x = 2;
+        if (true) {int y =2;foo(y);int j =3;foo(j);}
+    }
+    void bar2() {
+        int x = 2;
+        fiddle(x);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assignment to an array member will be treated as a usage</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int[] x = {2};
+        x[1] = 2;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>local variable used in postfix expression as child of StatementExpression</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int x = 2;
+        x++;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>local variable used in postfix expression on right hand side</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int x = 2;
+        foo(x++);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>local variable, object ref, public field of which is incremented via in postfix expression</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int x; Foo getBaz() { return this; }
+    void bar() {
+        Foo b = getBaz();
+        b.x++;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>local used in right shift</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        int x = 2;
+        int y = 4 >> x;
+        foo(y);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>unused local with assignment - Suppressed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@SuppressWarnings("unused")
+public class Foo {
+    void foo() {
+        String fr = new String();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Reproducing bug #1955852: false positives for UnusedPrivateMethod and UnusedLocalField</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class PMDFalsePositiveTest {
+    private <T> T doSomething(Object param){
+        return (T) param;
+    }
+
+    public static void main(String[] args) {
+        PMDFalsePositiveTest test = new PMDFalsePositiveTest();
+        Object o = "Awesome!";
+        String result = test.<String>doSomething(o);
+        System.out.println(result);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1247 Not able to recognize JDK 8 Static Method References</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(java.util.List<Object> objs) {
+        KeyMap keymap = new KeyMap();
+        if (objs.stream().allMatch(keymap::booleanFunc))
+        {
+            // do something
+        }
+    }
+    static class KeyMap {
+        boolean booleanFunc(Object o) {return o!=null;}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1484 UnusedLocalVariable - false positive - parenthesis</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class Test {
+    public static void main(String[] args) {
+        List<String> list = new ArrayList<>();
+        list.add("first");
+        list.add("second");
+
+        int notEmpty = 0;
+        for (String string : list) {
+                if (!string.isEmpty()) {
+                    notEmpty++;
+                }
+        }
+
+        System.out.println(list.size() + " (" + (notEmpty) + " not empty)");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#257 UnusedLocalVariable - false positive - parenthesis</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public static void main(String[] args) {
+        double a = 4.0;
+        double b = 2.0;
+        double result = Math.sqrt((a) - b);
+        System.out.println(result);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1190 [java] UnusedLocalVariable/UnusedPrivateField false-positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.InputStream;
+
+public class UnusedLocalVariable {
+
+    public void testSomething() {
+        InputStream is = new InputStream();
+
+        try (is) {
+            System.out.println("foo!");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2957 Unused rules should ignore some names</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class UnusedLocalVariable {
+    public void testSomething() {
+        int ignored, unused = 0;
+        int notok = 0;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2130 [java] UnusedLocalVariable: false-negative with array</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            package pmdtests;
+
+            import java.lang.reflect.Constructor;
+
+            public final class Construct {
+
+                private Construct() {
+                    throw new IllegalStateException("Private constructor.");
+                }
+
+                public static void main(String... args) {
+                    // get all visible constructors
+                    Constructor<?>[] constructors = String.class.getConstructors();
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with try-with-resources #3656</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.InputStream;
+public class UsedLocalVar {
+    public boolean run() {
+        boolean canRead = false;
+        try(InputStream ignored = open()) {
+            canRead = true;
+        } catch (Throwable ignore) {}
+        return canRead;
+    }
+    private InputStream open() { return null; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Actually unused try-with-resources #3656 and #4516</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.io.InputStream;
+public class UnusedUsedLocalVar {
+    public boolean run() {
+        boolean canRead = false;
+        try(InputStream resource = open()) {
+            canRead = true;
+        } catch (Throwable ignore) {}
+        return canRead;
+    }
+    private InputStream open() { return null; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with variable used in unary expression #3671</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void run1(String ...args) {
+        int i = 0;
+        for (String a : args) {
+            String id = a + " -> " + i++;
+            System.out.println(id);
+        }
+    }
+    public void run2(String ...args) {
+        int x = 0;
+        for (String a : args) {
+            String id = a + " -> " + (++x);
+            System.out.println(id);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedLocalVariable: false-positive with multiple for-loop indices #4518</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>3,3,6,15</expected-linenumbers>
+        <expected-messages>
+            <message>Avoid unused local variables such as 'a'.</message>
+            <message>Avoid unused local variables such as 'b'.</message>
+            <message>Avoid unused local variables such as 'b'.</message>
+            <message>Avoid unused local variables such as 'j'.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class UnusedLocalVarsMultiple {
+    public void sample1() {
+        int a = 0, b = 1; // a and b unused (line 3)
+    }
+    public void sample2() {
+        int a = 0, b = a; // only b unused (line 6)
+    }
+    public void sample3() {
+        for (int i = 0; i < 10; i++); // i is loop index, is used and should be ignored
+    }
+    public void sample4() {
+        for (int i = 0, j = 0; i < 10; i++, j++); // i and j are loop indices, both are used (line 12)
+    }
+    public void sample5() {
+        for (int i = 0, j = 0; i < 10; i++); // i and j are loop indices, but j is not used (line 15)
+    }
+}
+]]></code>
+    </test-code>
+</test-data>

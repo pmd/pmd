@@ -1,0 +1,13 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [def]                                   1         4
+    [check]                                 5         10
+    [(]                                     10        11
+    [)]                                     11        12
+    [:]                                     12        13
+L2
+    [a$a]                                   5         8
+    [=]                                     9         10
+    [\[]                                    11        12
+    [\]]                                    12        13
+EOF

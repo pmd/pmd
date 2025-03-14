@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>simple failure case</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>private constructor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private Foo() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>constructor with arguments</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo(int x) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>constructor with contents</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+        int x = 2;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>constructor throws exception</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() throws java.io.IOException {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>two constructors</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+    }
+    public Foo(String foo) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>inner class with unnecessary constructor</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public class Inner {
+        public Inner() {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>inner and outer both have unnecessary constructors</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public class Inner {
+        public Inner() {}
+    }
+    public Foo() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>inner and outer, both ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public class Inner {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>inner ok, outer bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public class Inner {
+    }
+    public Foo() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>inner ok due to nonpublic constructor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public class Inner {
+        private Inner() {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>constructor calls super</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {super(7);}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>constructor calls super, no args</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {super();}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Issue #1003: UnnecessaryConstructor triggered on required empty constructor (Dagger @Inject)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.inject.Inject;
+public class Foo {
+    @Inject
+    public Foo() {
+        super();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>the class is declared protected -- 1</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    protected class Inner {
+        public Inner(){}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>the class is declared protected -- 2</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    protected class Inner {
+        protected Inner(){}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>unnecessary constructor in enum</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public enum Foo {
+    MON, TUE;
+    private Foo() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Verify ignoredAnnotations property is used</description>
+        <rule-property name="ignoredAnnotations">java.lang.Deprecated</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @Deprecated
+    public Foo() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Issue #4487: [java]A false-positive about UnnecessaryConstructor and @Inject</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import com.google.inject.Inject;
+import org.springframework.beans.factory.annotation.Autowired;
+public class Foo {
+    private Foo() {}
+}
+public class Bar extends Foo {
+    @Inject
+    public Bar() {}
+}
+public class Bar extends Foo {
+    @Autowired
+    public Bar() {}
+}
+        ]]></code>
+    </test-code>
+</test-data>

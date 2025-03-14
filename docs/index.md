@@ -1,0 +1,161 @@
+---
+title: Documentation Index
+keywords: java
+permalink: index.html
+toc: false
+summary: >
+    Welcome to the documentation site for PMD and CPD! <br/><br/>
+
+
+last_updated: October 2022
+author: Jeff Jensen <jjensen@apache.org>, Andreas Dangel <andreas.dangel@adangel.org>,
+        Clément Fournier <clement.fournier76@gmail.com>
+
+additional_js:
+ - assets/Shuffle-5.2.3/dist/shuffle.min.js
+ - assets/jquery-ui-1.12.1/jquery-ui.min.js
+ - js/shuffle.js
+---
+
+
+
+## 💡 Overview
+
+<!--  You can link to an individual panel, the id is determined from the title of the panel -->
+<!--  See custom/shuffle_panel.html for the details -->
+
+**PMD** is an extensible multilanguage static code analyzer. It finds common programming flaws like unused variables,
+empty catch blocks, unnecessary object creation, and so forth. It's mainly concerned with **Java and
+Apex**, but **supports 16 other languages**. It comes with **400+ built-in rules**. It can be
+extended with custom rules. It uses JavaCC and Antlr to parse source files into abstract syntax trees
+(AST) and runs rules against them to find violations. Rules can be written in Java or using a XPath query.
+
+Currently, PMD supports Java, JavaScript, Salesforce.com Apex and Visualforce,
+Kotlin, Swift, Modelica, PLSQL, Apache Velocity, JSP, WSDL, Maven POM, HTML, XML and XSL.
+Scala is supported, but there are currently no Scala rules available.
+
+Additionally, it includes **CPD**, the copy-paste-detector. CPD finds duplicated code in
+Coco, C/C++, C#, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Julia, Kotlin,
+Lua, Matlab, Modelica, Objective-C, Perl, PHP, PLSQL, Python, Ruby, Rust, Salesforce.com Apex and
+Visualforce, Scala, Swift, T-SQL, Typescript, Apache Velocity, WSDL, XML and XSL.
+
+PMD features many **built-in checks** (in PMD lingo, *rules*), which are documented
+for each language in our [Rule references](#shuffle-panel-rule-references). We
+also support an extensive API to [**write your own rules**](#shuffle-panel-writing-rules),
+which you can do either in Java or as a self-contained XPath query.
+
+PMD is most useful when **integrated into your build process**. It can then be
+used as a quality gate, to enforce a coding standard for your codebase. Among other
+things, PMD can be run:
+* As a [Maven goal](pmd_userdocs_tools_maven.html)
+* As an [Ant task](pmd_userdocs_tools_ant.html)
+* As a [Gradle task](pmd_userdocs_tools_gradle.html)
+* As a [bld operation](pmd_userdocs_tools_bld.html)
+* From [command-line](pmd_userdocs_installation.html#running-pmd-via-command-line)
+
+**CPD**, the **copy-paste detector**, is also distributed with PMD. You can use it
+in a variety of ways, which are [documented here](pmd_userdocs_cpd.html).
+
+## 💾 Download
+
+The latest release of PMD can be downloaded from our [Github releases page](https://github.com/pmd/pmd/releases/latest).
+
+The Logo is available from the [Logo Project Page](pmd_projectdocs_logo.html).
+
+## 📖 Documentation
+
+The rest of this page exposes the contents of the documentation site thematically,
+which you can further scope down using the blue filter buttons. To navigate the site,
+you may also use the search bar in the top right, or the sidebar on the left.
+
+## ✨ Contributors
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification.
+Contributions of any kind welcome!
+
+See [credits](pmd_projectdocs_credits.html) for the complete list.
+
+<br/>
+
+
+
+
+<div class="filter-options" id='grid-rule' >
+      <button class="btn btn-primary" data-group="all">All</button>
+      <button class="btn btn-primary" data-group="getting_started">Getting Started</button>
+      <button class="btn btn-primary" data-group="userdocs">User documentation</button>
+      <button class="btn btn-primary" data-group="extending">Extending PMD</button>
+      <button class="btn btn-primary" data-group="contributing">Contributing</button>
+</div>
+
+
+
+<div id="grid" class="row">
+
+<!--  TODO the "getting started" panel is not that useful. It would be better to make a page series. -->
+    {% include custom/shuffle_panel.html
+       title="Getting started"
+       tags="getting_started"
+       datagroups='["getting_started"]'
+       description="These pages summarize the gist of PMD usage to get you started quickly." %}
+
+
+    {% include custom/shuffle_panel.html
+       title="Rule references"
+       tags="rule_references"
+       datagroups='["userdocs"]'
+       description="Pick your language to find out about the rule it supports."
+       fa-icon="fa-database"
+       titlemaker="page.language_name" %}
+
+    {% include custom/shuffle_panel.html
+       title="Writing rules"
+       tags="userdocs,extending"
+       datagroups='["userdocs", "extending", "contributing"]'
+       description="These pages document the process of writing and testing custom rules and metrics for PMD."
+    %}
+
+    {% include custom/shuffle_panel.html
+       title="Usage and configuration"
+       tags="userdocs"
+       except_tags="extending,tools"
+       datagroups='["userdocs"]'
+       fa-icon="fa-cog"
+       description="Learn how to build effective and versatile rulesets."
+    %}
+
+
+    {% include custom/shuffle_panel.html
+       title="Contributing"
+       tags="devdocs"
+       except_tags="extending"
+       datagroups='["contributing"]'
+       fa-style="fab"
+       fa-icon="fa-github"
+       description="If you'd like to help us build PMD, these topics may interest you. See you around!"
+    %}
+
+
+
+    {% include custom/shuffle_panel.html
+       title="Tools and integrations"
+       tags="tools"
+       datagroups='["userdocs"]'
+       description="These pages describe solutions that integrate PMD within your build process."
+    %}
+
+    {% include custom/shuffle_panel.html
+       title="Major contributions"
+       tags="devdocs,extending"
+       datagroups='["contributing","extending"]'
+       description=""
+    %}
+
+    <!-- sizer -->
+    <div class="col-xs-6 col-sm-4 col-md-1 shuffle_sizer"></div>
+</div>
+
+<!-- {% include image.html file="pmd-logo-big.png" alt="PMD Logo" %} -->
+
+
+{% include links.html %}

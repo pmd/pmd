@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<ruleset name="Sample Deprecated"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+  <description>
+Sample ruleset which only contains deprecated rule references.
+  </description>
+
+    <rule ref="rulesets/ruledoctest/sample.xml/OverrideBothEqualsAndHashcode" deprecated="true" />
+    <rule ref="rulesets/ruledoctest/sample.xml/JumbledIncrementer" deprecated="true" />
+
+    <!-- both moved and renamed: -->
+    <rule ref="rulesets/ruledoctest/sample.xml/JumbledIncrementer" name="OldNameOfJumbledIncrementer" deprecated="true" />
+
+</ruleset>

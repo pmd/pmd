@@ -1,0 +1,90 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L2
+    [public]                                1         7
+    [class]                                 8         13
+    [<IDENTIFIER>]                          14        17
+    [extends]                               18        25
+    [<IDENTIFIER>]                          26        29
+    [{]                                     30        31
+L4
+    [private]                               5         12
+    [<IDENTIFIER>]                          13        16
+    [<IDENTIFIER>]                          17        32
+L6
+    [public]                                5         11
+    [Foo]                                   12        15
+    [(]                                     15        16
+    [int]                                   16        19
+    [<IDENTIFIER>]                          20        21
+    [)]                                     21        22
+    [{]                                     23        24
+    [super]                                 25        30
+    [(]                                     30        31
+    [<IDENTIFIER>]                          31        32
+    [)]                                     32        33
+    [}]                                     35        36
+L8
+    [private]                               5         12
+    [Foo]                                   13        16
+    [(]                                     16        17
+    [int]                                   17        20
+    [<IDENTIFIER>]                          21        22
+    [,]                                     22        23
+    [<IDENTIFIER>]                          24        30
+    [<IDENTIFIER>]                          31        32
+    [)]                                     32        33
+    [{]                                     34        35
+    [super]                                 36        41
+    [(]                                     41        42
+    [<IDENTIFIER>]                          42        43
+    [,]                                     43        44
+    [<IDENTIFIER>]                          45        46
+    [)]                                     46        47
+    [}]                                     49        50
+L10
+    [Foo]                                   19        22
+    [(]                                     22        23
+    [int]                                   23        26
+    [<IDENTIFIER>]                          27        28
+    [,]                                     28        29
+    [<IDENTIFIER>]                          30        36
+    [<IDENTIFIER>]                          37        38
+    [,]                                     38        39
+    [<IDENTIFIER>]                          40        46
+    [<IDENTIFIER>]                          47        48
+    [)]                                     48        49
+    [{]                                     50        51
+    [super]                                 52        57
+    [(]                                     57        58
+    [<IDENTIFIER>]                          58        59
+    [,]                                     59        60
+    [<IDENTIFIER>]                          61        62
+    [,]                                     62        63
+    [<IDENTIFIER>]                          64        65
+    [)]                                     65        66
+    [}]                                     68        69
+L12
+    [private]                               5         12
+    [static]                                13        19
+    [class]                                 20        25
+    [<IDENTIFIER>]                          26        31
+    [{]                                     32        33
+L14
+    [Inner]                                 9         14
+    [(]                                     14        15
+    [)]                                     15        16
+    [{]                                     17        18
+    [<IDENTIFIER>]                          19        25
+    [.]                                     25        26
+    [<IDENTIFIER>]                          26        29
+    [.]                                     29        30
+    [<IDENTIFIER>]                          30        37
+    [(]                                     37        38
+    ["Guess who?"]                          38        50
+    [)]                                     50        51
+    [}]                                     53        54
+L16
+    [}]                                     5         6
+L17
+    [}]                                     1         2
+EOF

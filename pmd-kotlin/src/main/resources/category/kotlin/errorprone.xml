@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ruleset name="Error Prone"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
+    </description>
+
+        <rule name="OverrideBothEqualsAndHashcode"
+          language="kotlin"
+          since="7.0.0"
+          message="Ensure you override both equals() and hashCode()"
+          class="net.sourceforge.pmd.lang.kotlin.rule.errorprone.OverrideBothEqualsAndHashcodeRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#overridebothequalsandhashcode">
+        <description>
+Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+class Bar {        // poor, missing a hashCode() method
+    override fun equals(o: Any?): Boolean {
+      // do some comparison
+    }
+}
+
+class Baz {        // poor, missing an equals() method
+    override fun hashCode(): Int {
+      // return some hash value
+    }
+}
+
+class Foo {        // perfect, both methods provided
+    override fun equals(other: Any?): Boolean {
+      // do some comparison
+    }
+    override fun hashCode(): Int {
+      // return some hash value
+    }
+}
+]]>
+        </example>
+    </rule>
+
+</ruleset>

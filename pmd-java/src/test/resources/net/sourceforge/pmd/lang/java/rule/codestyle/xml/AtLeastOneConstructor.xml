@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>simple failure case</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>inner bad, outer ok</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public class Bar {}
+    public Foo() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>inner ok, outer bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public class Bar {
+        public Bar() {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>inner and outer both bad</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public class Bar {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>inner and outer both ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public class Bar {
+        public Bar() {}
+    }
+    public Foo() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>skip interfaces</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>skip static classes</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public static class Foo {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>skip classes with only static methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public static class Foo {
+    public static void method() {}
+    public static void otherMethods() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Don't skip classes with non-static methods; #1216 AtLeastOneConstructor ignores classes with *any* methods</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class TestAtLeastOneConstructor {
+    public void NotStatic() {
+        System.out.println("This class should have a constructor");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ignore classes with lombok-generated constructors (Value)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Value;
+
+@Value
+public class TestAtLeastOneConstructor {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ignore classes with lombok-generated constructors (Required)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public class TestAtLeastOneConstructor {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ignore classes with lombok-generated constructors (No)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+public class TestAtLeastOneConstructor {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ignore classes with lombok-generated constructors (All)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
+public class TestAtLeastOneConstructor {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ignore classes with lombok-generated constructors (Builder)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Builder;
+
+@Builder
+public class TestAtLeastOneConstructor {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Report classes with at least one non-static method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class TestAtLeastOneConstructor {
+    public static void foo() { }
+    public void bar () { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Report classes with at least one non-static field</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class TestAtLeastOneConstructor {
+    public int bar;
+    public static void foo() { }
+}
+        ]]></code>
+    </test-code>
+</test-data>

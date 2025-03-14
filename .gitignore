@@ -1,0 +1,26 @@
+target/
+bin/
+.project
+.classpath
+.checkstyle
+.pmd
+.pmdruleset.xml
+.ruleset
+.settings/
+*.iml
+.idea/*
+!.idea/icon.svg
+!.idea/vcs.xml
+*.patch
+*/src/site/site.xml
+pmd-core/dependency-reduced-pom.xml
+.bundle
+vendor
+.DS_Store
+
+# node modules for https://allcontributors.org/docs/en/cli/installation
+node_modules
+
+# rule docs are generated
+docs/pages/pmd/rules
+.history/*

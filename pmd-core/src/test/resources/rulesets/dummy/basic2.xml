@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<ruleset name="Test Ruleset" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+  Ruleset used by test RuleSetFactoryTest
+  </description>
+
+    <rule name="DummyBasic2MockRule" language="dummy" since="1.0" message="Test Rule 2" class="net.sourceforge.pmd.lang.rule.MockRule"
+        externalInfoUrl="${pmd.website.baseurl}/rules/dummy/basic2.xml#DummyBasic2MockRule">
+        <description>
+Just for test
+     </description>
+        <priority>3</priority>
+        <example>
+ <![CDATA[
+ ]]>
+     </example>
+    </rule>
+
+
+    <!-- The rule "DummyBasicMockRule" has been moved from here to basic.xml -->
+    <rule deprecated="true" ref="rulesets/dummy/basic.xml/DummyBasicMockRule"/>
+
+</ruleset>

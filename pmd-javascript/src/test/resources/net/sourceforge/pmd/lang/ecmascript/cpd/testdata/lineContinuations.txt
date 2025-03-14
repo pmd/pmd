@@ -1,0 +1,16 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [var]                                   1         4
+    [s]                                     5         6
+    [=]                                     7         8
+    ["a string continues"]                  9         11
+L2
+    [;]                                     11        12
+L3
+    [var]                                   1         4
+    [s]                                     5         6
+    [=]                                     7         8
+    ["a string continues2"]                 9         12
+L4
+    [;]                                     12        13
+EOF

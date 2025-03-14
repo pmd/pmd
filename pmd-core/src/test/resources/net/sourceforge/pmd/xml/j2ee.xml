@@ -1,0 +1,383 @@
+<?xml version="1.0"?>
+
+<ruleset name="J2EE Rules"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+  <description>
+    These are rules for J2EE
+  </description>
+
+  <rule name="UseProperClassLoader"
+  language="java"
+   since="3.7"
+   message="In J2EE, getClassLoader() might not work as expected.  Use Thread.currentThread().getContextClassLoader() instead."
+   class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+   externalInfoUrl="${pmd.website.baseurl}/rules/j2ee.html#UseProperClassLoader">
+   <description>
+    In J2EE getClassLoader() might not work as expected.  Use Thread.currentThread().getContextClassLoader() instead.
+   </description>
+   <priority>3</priority>
+      <properties>
+          <property name="xpath">
+              <value>
+<![CDATA[
+//PrimarySuffix[@Image='getClassLoader']
+ ]]>
+              </value>
+          </property>
+      </properties>
+   <example>
+<![CDATA[
+public class Foo {
+ ClassLoader cl = Bar.class.getClassLoader();
+}
+]]>
+  </example>
+ </rule>
+
+    <rule
+        name="MDBAndSessionBeanNamingConvention"
+  language="java"
+        since="4.0"
+        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+        message="SessionBean or MessageBean should be suffixed by Bean"
+        externalInfoUrl="${pmd.website.baseurl}/rules/j2ee.html#MDBAndSessionBeanNamingConvention">
+        <description>
+        The EJB Specification state that any MessageDrivenBean or SessionBean should be suffixed by Bean.
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+//TypeDeclaration/ClassOrInterfaceDeclaration
+[
+    (
+        (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'SessionBean')])
+        or
+        (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'MessageDrivenBean')])
+    )
+    and
+    not
+    (
+        ends-with(@Image,'Bean')
+    )
+]
+             ]]></value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+            /* Proper name */
+            public class SomeBean implements SessionBean{}
+            ]]>
+        </example>
+        <example>
+            <![CDATA[
+            /* Bad name */
+            public class MissingTheProperSuffix implements SessionBean {}
+            ]]>
+        </example>
+    </rule>
+
+    <rule
+        name="RemoteSessionInterfaceNamingConvention"
+  language="java"
+        since="4.0"
+        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+        message="Remote Home interface of a Session EJB should be suffixed by 'Home'"
+        externalInfoUrl="${pmd.website.baseurl}/rules/j2ee.html#RemoteSessionInterfaceNamingConvention">
+        <description>
+        Remote Home interface of a Session EJB should be suffixed by 'Home'.
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ClassOrInterfaceDeclaration
+[
+    (
+        (./ExtendsList/ClassOrInterfaceType[ends-with(@Image,'EJBHome')])
+    )
+    and
+    not
+    (
+        ends-with(@Image,'Home')
+    )
+]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+            /* Proper name */
+            public interface MyBeautifulHome extends javax.ejb.EJBHome {}
+            ]]>
+        </example>
+        <example>
+            <![CDATA[
+            /* Bad name */
+            public interface MissingProperSuffix extends javax.ejb.EJBHome {}
+            ]]>
+        </example>
+    </rule>
+
+    <rule
+        name="LocalInterfaceSessionNamingConvention"
+  language="java"
+        since="4.0"
+        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+        message="The Local Interface of a Session EJB should be suffixed by 'Local'"
+        externalInfoUrl="${pmd.website.baseurl}/rules/j2ee.html#LocalInterfaceSessionNamingConvention">
+        <description>
+        The Local Interface of a Session EJB should be suffixed by 'Local'.
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ClassOrInterfaceDeclaration
+[
+    (
+        (./ExtendsList/ClassOrInterfaceType[ends-with(@Image,'EJBLocalObject')])
+    )
+    and
+    not
+    (
+        ends-with(@Image,'Local')
+    )
+]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+            /* Proper name */
+            public interface MyLocal extends javax.ejb.EJBLocalObject {}
+            ]]>
+        </example>
+        <example>
+            <![CDATA[
+            /* Bad name */
+            public interface MissingProperSuffix extends javax.ejb.EJBLocalObject {}
+            ]]>
+        </example>
+    </rule>
+
+    <rule
+        name="LocalHomeNamingConvention"
+  language="java"
+        since="4.0"
+        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+        message="The Local Home interface of a Session EJB should be suffixed by 'LocalHome'"
+        externalInfoUrl="${pmd.website.baseurl}/rules/j2ee.html#LocalHomeNamingConvention">
+        <description>
+        The Local Home interface of a Session EJB should be suffixed by 'LocalHome'.
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ClassOrInterfaceDeclaration
+[
+    (
+        (./ExtendsList/ClassOrInterfaceType[ends-with(@Image,'EJBLocalHome')])
+    )
+    and
+    not
+    (
+        ends-with(@Image,'LocalHome')
+    )
+]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+            /* Proper name */
+            public interface MyBeautifulLocalHome extends javax.ejb.EJBLocalHome {}
+            ]]>
+        </example>
+        <example>
+            <![CDATA[
+            /* Bad name */
+            public interface MissingProperSuffix extends javax.ejb.EJBLocalHome {}
+            ]]>
+        </example>
+    </rule>
+
+    <rule
+        name="RemoteInterfaceNamingConvention"
+  language="java"
+        since="4.0"
+        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+        message="Remote Interface of a Session EJB should NOT be suffixed"
+        externalInfoUrl="${pmd.website.baseurl}/rules/j2ee.html#RemoteInterfaceNamingConvention">
+        <description>
+        Remote Interface of a Session EJB should NOT be suffixed.
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ClassOrInterfaceDeclaration
+[
+    (
+        (./ExtendsList/ClassOrInterfaceType[ends-with(@Image,'EJBObject')])
+    )
+    and
+    (
+        ends-with(@Image,'Session')
+        or
+        ends-with(@Image,'EJB')
+        or
+        ends-with(@Image,'Bean')
+    )
+]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+            /* Bad Session suffix */
+            public interface BadSuffixSession extends javax.ejb.EJBObject {}
+            ]]>
+        </example>
+        <example>
+            <![CDATA[
+            /* Bad EJB suffix */
+            public interface BadSuffixEJB extends javax.ejb.EJBObject {}
+            ]]>
+        </example>
+        <example>
+            <![CDATA[
+            /* Bad Bean suffix */
+            public interface BadSuffixBean extends javax.ejb.EJBObject {}
+            ]]>
+        </example>
+    </rule>
+
+    <rule name="DoNotCallSystemExit"
+  language="java"
+      since="4.1"
+    	message="System.exit() should not be used in J2EE/JEE apps"
+    	class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+    	externalInfoUrl="${pmd.website.baseurl}/rules/j2ee.html#DoNotCallSystemExit">
+    	<description><![CDATA[
+Web applications should not call System.exit(), since only the web container or the
+application server should stop the JVM.
+     ]]></description>
+    	<priority>3</priority>
+    	<properties>
+    		<property name="xpath">
+    			<value><![CDATA[
+//Name[starts-with(@Image,'System.exit')]
+    		]]></value>
+    		</property>
+    	</properties>
+    	<example>
+    		<![CDATA[
+public class Foo {
+    public void bar() {
+        // NEVER DO THIS IN A APP SERVER !!!
+        System.exit(0);
+    }
+}
+     ]]></example>
+    </rule>
+
+    <rule name="StaticEJBFieldShouldBeFinal"
+  language="java"
+      since="4.1"
+    	message="EJB's shouldn't have non-final static fields"
+    	class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+    	externalInfoUrl="${pmd.website.baseurl}/rules/j2ee.html#StaticEJBFieldShouldBeFinal">
+    	<description>
+According to the J2EE specification (p.494), an EJB should not have any static fields
+with write access. However, static read only fields are allowed. This ensures proper
+behavior especially when instances are distributed by the container on several JREs.
+    	</description>
+    	<priority>3</priority>
+    	<properties>
+    		<property name="xpath">
+    			<value><![CDATA[
+//ClassOrInterfaceDeclaration[
+    (
+    (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'SessionBean')])
+    or
+    (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'EJBHome')])
+    or
+    (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'EJBLocalObject')])
+    or
+    (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'EJBLocalHome')])
+    or
+    (./ExtendsList/ClassOrInterfaceType[ends-with(@Image,'EJBObject')])
+    )
+    and
+    (./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration[
+         (./FieldDeclaration[@Static = true()])
+         and
+         (./FieldDeclaration[@Final = false()])
+    ])
+]
+    		 ]]></value>
+    		</property>
+    	</properties>
+    	<example><![CDATA[
+public class SomeEJB extends EJBObject implements EJBLocalHome {
+	private static int BAD_STATIC_FIELD;
+
+	private static final int GOOD_STATIC_FIELD;
+}
+     ]]></example>
+    </rule>
+
+	<rule
+        name="DoNotUseThreads"
+  language="java"
+        since="4.1"
+        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+        message="To be compliant to J2EE, a webapp should not use any thread."
+    	externalInfoUrl="${pmd.website.baseurl}/rules/j2ee.html#NoThreadInJ2EEContainer">
+        <description>
+            <![CDATA[
+                The J2EE specification explicitly forbid use of threads.
+            ]]>
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+                        //ClassOrInterfaceType[@Image = 'Thread' or @Image = 'Runnable']
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            	<![CDATA[
+            // This is not allowed
+            public class UsingThread extends Thread {
+
+            }
+			// Neither this,
+			public class OtherThread implements Runnable {
+				// Nor this ...
+				public void methode() {
+					Runnable thread = new Thread(); thread.run();
+				}
+			}
+				]]>
+		</example>
+	</rule>
+
+</ruleset>

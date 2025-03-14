@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>pos</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    int bar;
+    void bar() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Problem when there are several methods</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    int bar;
+    void bar() {}
+    void bar2() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>pos, inner class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    class Dummy {
+        Foo foo;
+        void foo() {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>neg, field and method are in different classes</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Foo foo;
+    class Dummy {
+        void foo() {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Neg, inner enum</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                int bar;
+                enum Inner {
+                    ;
+                    void bar() {}
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Pos in enum</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+            public enum Foo {
+                ;
+                int bar;
+                void bar() {}
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>neg, field and method are in different classes, reversed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {}
+    class Dummy {
+        Foo foo;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Just skip interfaces</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Bar {
+    public static final int FOO = 5;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test1 in Enum #3936</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class C {
+  enum E {
+      R;
+      int bar;
+      void bar() {}  // should report a warning in this line
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test2 in Enum #3936</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class C {
+  int bar;
+  enum E {
+      R;
+      void bar() {}
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test3 in Enum #3936</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class C {
+  void bar() {}
+  enum E {
+      R;
+      int bar;
+  }
+}
+        ]]></code>
+    </test-code>
+</test-data>

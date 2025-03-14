@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <code-fragment id="full-example"><![CDATA[
+import javax.inject.Inject;
+public class Foo {
+    public static int a;
+    public final int b;
+    protected int c;
+    public static int d;
+    public static final int e;
+    int f;
+    int g;
+    public int h;
+    public int i;
+    public int j;
+
+    @Inject public int k;
+
+    public static void bar() {
+
+    }
+}
+    ]]></code-fragment>
+
+    <test-code>
+        <description>Full example</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 8.</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <test-code>
+        <description>Test empty class</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 0.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NOPA supports enums, interfaces or annotations</description>
+        <expected-problems>3</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 1.</message>
+            <message>'Foo$Bar' has value 1.</message>
+            <message>'Foo$Tag' has value 1.</message>
+        </expected-messages>
+        <code><![CDATA[
+public interface Foo {
+
+    public final int h;
+
+    enum Bar{
+        FOO;
+        public int bel = 0;
+    }
+
+    @interface Tag {
+        public static final int num = 0;
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

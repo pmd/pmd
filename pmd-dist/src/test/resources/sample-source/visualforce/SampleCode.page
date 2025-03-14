@@ -1,0 +1,1 @@
+<apex:page controller="AcRestActionsController" action="{!csrfInitMethod}" >

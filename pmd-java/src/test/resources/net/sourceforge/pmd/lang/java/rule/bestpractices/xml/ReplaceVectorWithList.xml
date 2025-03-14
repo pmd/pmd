@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>bad, local variable of type Vector</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+import java.util.Vector;
+public class Foo {
+    void bar() {
+        Vector v = new Vector();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bad, param of type Vector</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Vector;
+
+public class Foo {
+    void bar(Vector v) {
+    }
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Generic vector</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Vector;
+
+public class Foo {
+    void bar(Vector<Integer> v) {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, not java.util.Vector</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import foo.Vector;
+
+public class Foo {
+    void bar(Vector v) {
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Not about vector</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package pmd.false_positive;
+
+            import java.util.Map;
+            import java.util.function.Predicate;
+
+            public class AAntiFraudPolicy<C extends IAntiFraudCriterion> {
+
+                public static <E extends Enum<E> & IAntiFraudCriterion> AAntiFraudPolicy<E> of(Class<E> enumClass,
+                                                                                               Map<E, Predicate<AntiFraudCheckResult>> criterionChecks) {
+                    return new AAntiFraudPolicy<E>();
+                }
+
+            }
+        ]]></code>
+    </test-code>
+</test-data>

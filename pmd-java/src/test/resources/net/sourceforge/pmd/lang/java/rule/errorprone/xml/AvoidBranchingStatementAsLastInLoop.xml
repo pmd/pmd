@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <code-fragment id="ok"><![CDATA[
+public class Foo {
+    // These are all okay
+    public void foo(boolean b) {
+        for (int i = 0; i < 10;) {
+            if (b) {
+                return true;
+            }
+        }
+        for (int i = 0; i < 10;)
+            if (b)
+                return true;
+        for (int i = 0; i < 10;) {
+            if (b) {
+                break;
+            }
+        }
+        for (int i = 0; i < 10;) {
+            if (b) {
+                continue;
+            }
+        }
+        for (String s : new String[] { "a", "b" }) {
+            if (b) {
+                return;
+            }
+        }
+        for (String s : new String[] { "a", "b" })
+            if (b)
+                return;
+        while (true) {
+            if (b) {
+                return true;
+            }
+        }
+        while (true)
+            if (b)
+                return true;
+        while (true) {
+            if (b) {
+                break;
+            }
+        }
+        while (true) {
+            if (b) {
+                continue;
+            }
+        }
+        do {
+            if (b) {
+                return true;
+            }
+        } while (true);
+        do {
+            if (b)
+                return true;
+        } while (true);
+        do
+            if (b)
+                return true;
+        while (true);
+        do {
+            if (b) {
+                break;
+            }
+        } while (true);
+        do {
+            if (b) {
+                continue;
+            }
+        } while (true);
+    }
+}
+    ]]></code-fragment>
+
+    <code-fragment id="violations"><![CDATA[
+public class Foo {
+    // These are all bad
+    public void bar() {
+        for (int i = 0; i < 10;) {
+            return true;
+        }
+        for (int i = 0; i < 10;) {
+            break;
+        }
+        for (int i = 0; i < 10;) {
+            continue;
+        }
+        for (String s : new String[] { "a", "b" }) {
+            return;
+        }
+        for (String s : new String[] { "a", "b" }) {
+            break;
+        }
+        for (String s : new String[] { "a", "b" }) {
+            continue;
+        }
+        while (true) {
+            return true;
+        }
+        while (true) {
+            break;
+        }
+        while (true)  {
+            continue;
+        }
+        do {
+            return true;
+        } while (true);
+        do {
+            break;
+        } while (true);
+        do {
+            continue;
+        } while (true);
+    }
+}
+    ]]></code-fragment>
+
+    <test-code>
+        <description>ok: no violations</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="ok"/>
+    </test-code>
+
+    <test-code>
+        <description>violations: break:for/do/while, continue:for/do/while and return:for/do/while</description>
+        <expected-problems>12</expected-problems>
+        <expected-linenumbers>5,8,11,14,17,20,23,26,29,32,35,38</expected-linenumbers>
+        <code-ref id="violations"/>
+    </test-code>
+
+    <test-code>
+        <description>violations: break:for/do/while</description>
+        <rule-property name="checkBreakLoopTypes">for,do,while</rule-property>
+        <rule-property name="checkContinueLoopTypes"></rule-property>
+        <rule-property name="checkReturnLoopTypes"></rule-property>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>8,17,26,35</expected-linenumbers>
+        <code-ref id="violations"/>
+    </test-code>
+
+    <test-code>
+        <description>violations: continue:for/do/while</description>
+        <rule-property name="checkBreakLoopTypes"></rule-property>
+        <rule-property name="checkContinueLoopTypes">for,do,while</rule-property>
+        <rule-property name="checkReturnLoopTypes"></rule-property>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>11,20,29,38</expected-linenumbers>
+        <code-ref id="violations"/>
+    </test-code>
+
+    <test-code>
+        <description>violations: return:for/do/while</description>
+        <rule-property name="checkBreakLoopTypes"></rule-property>
+        <rule-property name="checkContinueLoopTypes"></rule-property>
+        <rule-property name="checkReturnLoopTypes">for,do,while</rule-property>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>5,14,23,32</expected-linenumbers>
+        <code-ref id="violations"/>
+    </test-code>
+
+    <test-code>
+        <description>violations: break:for</description>
+        <rule-property name="checkBreakLoopTypes">for</rule-property>
+        <rule-property name="checkContinueLoopTypes"></rule-property>
+        <rule-property name="checkReturnLoopTypes"></rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,17</expected-linenumbers>
+        <code-ref id="violations"/>
+    </test-code>
+
+    <test-code>
+        <description>violations: break:do</description>
+        <rule-property name="checkBreakLoopTypes">do</rule-property>
+        <rule-property name="checkContinueLoopTypes"></rule-property>
+        <rule-property name="checkReturnLoopTypes"></rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>35</expected-linenumbers>
+        <code-ref id="violations"/>
+    </test-code>
+
+    <test-code>
+        <description>violations: break:while</description>
+        <rule-property name="checkBreakLoopTypes">while</rule-property>
+        <rule-property name="checkContinueLoopTypes"></rule-property>
+        <rule-property name="checkReturnLoopTypes"></rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>26</expected-linenumbers>
+        <code-ref id="violations"/>
+    </test-code>
+
+    <test-code>
+        <description>violations: continue:for</description>
+        <rule-property name="checkBreakLoopTypes"></rule-property>
+        <rule-property name="checkContinueLoopTypes">for</rule-property>
+        <rule-property name="checkReturnLoopTypes"></rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>11,20</expected-linenumbers>
+        <code-ref id="violations"/>
+    </test-code>
+
+    <test-code>
+        <description>violations: continue:do</description>
+        <rule-property name="checkBreakLoopTypes"></rule-property>
+        <rule-property name="checkContinueLoopTypes">do</rule-property>
+        <rule-property name="checkReturnLoopTypes"></rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>38</expected-linenumbers>
+        <code-ref id="violations"/>
+    </test-code>
+
+    <test-code>
+        <description>violations: continue:while</description>
+        <rule-property name="checkBreakLoopTypes"></rule-property>
+        <rule-property name="checkContinueLoopTypes">while</rule-property>
+        <rule-property name="checkReturnLoopTypes"></rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>29</expected-linenumbers>
+        <code-ref id="violations"/>
+    </test-code>
+
+    <test-code>
+        <description>violations: return:for</description>
+        <rule-property name="checkBreakLoopTypes"></rule-property>
+        <rule-property name="checkContinueLoopTypes"></rule-property>
+        <rule-property name="checkReturnLoopTypes">for</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,14</expected-linenumbers>
+        <code-ref id="violations"/>
+    </test-code>
+
+    <test-code>
+        <description>violations: return:do</description>
+        <rule-property name="checkBreakLoopTypes"></rule-property>
+        <rule-property name="checkContinueLoopTypes"></rule-property>
+        <rule-property name="checkReturnLoopTypes">do</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>32</expected-linenumbers>
+        <code-ref id="violations"/>
+    </test-code>
+
+    <test-code>
+        <description>violations: return:while</description>
+        <rule-property name="checkBreakLoopTypes"></rule-property>
+        <rule-property name="checkContinueLoopTypes"></rule-property>
+        <rule-property name="checkReturnLoopTypes">while</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>23</expected-linenumbers>
+        <code-ref id="violations"/>
+    </test-code>
+
+    <test-code>
+        <description>#1170 false positive with switch in loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(String str) {
+        for (int i=0; i<str.length(); i++)
+            switch(str.charAt(i)) {
+                case 'a':
+                    do_a();
+                    break;
+                case 'b':
+                    do_b();
+                    break;
+                case 'c':
+                    do_c();
+                    break;
+            }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Without blocks</description>
+        <expected-problems>12</expected-problems>
+        <expected-linenumbers>4,6,8,10,12,14,16,18,20,21,22,23</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    public void bar(boolean b) {
+        for (int i = 0; i < 10; i++)
+            return;
+        for (int i = 0; i < 10; i++)
+            break;
+        for (int i = 0; i < 10; i++)
+            continue;
+        for (String s : new String[] { "a", "b" })
+            return;
+        for (String s : new String[] { "a", "b" })
+            break;
+        for (String s : new String[] { "a", "b" })
+            continue;
+        while (true)
+            return;
+        while (true)
+            break;
+        while (true)
+            continue;
+        do return; while (true);
+        do break; while (true);
+        do continue; while (true);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] AvoidBranchingStatementAsLastInLoop: False-negative about try/finally block #4063</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
+        <code><![CDATA[
+class A {
+    void foo() {
+        while (true) {
+            try {
+                // nothing to do
+            }
+            catch (Throwable c) {
+                throw c;
+            }
+            finally {
+                break;
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>conditional break in finally #4063</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class A {
+    void foo() {
+        for (int i = 0; i < 10; i++) {
+            try {
+                // nothing to do
+            }
+            catch (Throwable c){
+                throw c;
+            }
+            finally {
+                if (i*i > 25) {
+                    break;
+                }
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>allow break in try #4063</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class A {
+    void foo() {
+        while (true) {
+            try {
+                // nothing to do
+                break;
+            }
+            catch (Throwable c) {
+                // try next
+            }
+        }
+    }
+}
+]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>[java] A false positive negative by AvoidBranchingStatementAsLastInLoop when in a nested switch #3438</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class AvoidBranchingStatement{
+    public void test1(){
+        //this source code is from apache/netbeans/java/.../data/BreakOrContinue.java
+        A: while (1 == 1)
+              B: for (int c = 0; c < 100; c++)
+                  switch (c) {
+                      case 0: break;
+                      case 1: break B;
+                      case 2: break A;
+                      case 3: continue;
+                      case 4: continue A;
+                      case 5: continue B;
+                  }
+    }
+
+    public void test2(){
+          for (int c = 0; c < 100; c++)
+              switch (c) {
+                  case 0: break;
+                  case 1: break;
+                  case 2: break;
+                  case 3: continue;
+                  case 4: continue;
+                  case 5: continue;
+              }
+    }
+}
+]]></code>
+    </test-code>
+</test-data>

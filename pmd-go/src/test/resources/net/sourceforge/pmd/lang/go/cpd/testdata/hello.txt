@@ -1,0 +1,31 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L21
+    [import]                                1         7
+    [(]                                     8         9
+L22
+    ["fmt"]                                 2         7
+L24
+    ["github.com/golang/example/stringu[    2         40
+L25
+    [)]                                     1         2
+L27
+    [func]                                  1         5
+    [main]                                  6         10
+    [(]                                     10        11
+    [)]                                     11        12
+    [{]                                     13        14
+L28
+    [fmt]                                   2         5
+    [.]                                     5         6
+    [Println]                               6         13
+    [(]                                     13        14
+    [stringutil]                            14        24
+    [.]                                     24        25
+    [Reverse]                               25        32
+    [(]                                     32        33
+    ["!selpmaxe oG ,olleH"]                 33        54
+    [)]                                     54        55
+    [)]                                     55        56
+L29
+    [}]                                     1         2
+EOF

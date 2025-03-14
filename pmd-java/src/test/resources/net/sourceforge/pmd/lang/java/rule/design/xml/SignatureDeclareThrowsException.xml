@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>method throws Exception</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void foo() throws Exception {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>constructor throws Exception</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    Foo() throws Exception {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>constructor throws IOException</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.io.IOException;
+            public class Foo {
+                Foo() throws IOException { }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>method throws IOException</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.io.IOException;
+            public class Foo {
+                void foo() throws IOException { }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>skip junit3 setUp method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.*;
+public class Foo extends TestCase {
+    void setUp() throws Exception {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>skip junit3 tearDown method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.*;
+public class Foo extends TestCase {
+    void tearDown() throws Exception {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit 4 testcase</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.*;
+public class Foo {
+    @Before
+    void setUp() throws Exception {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Don't skip other methods</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+import junit.framework.*;
+public class Foo extends TestCase {
+    void bar() throws Exception {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Skip any method in junit3 test cases if ignoreJUnitCompletely</description>
+        <rule-property name="IgnoreJUnitCompletely">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.*;
+public class Foo extends TestCase {
+    void bar() throws Exception {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>skip junit setUp method where the superclass is TestCase</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo extends net.sourceforge.pmd.lang.java.rule.design.signaturedeclarethrowsexception.MyTestCase {
+    void setUp() throws Exception {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>skip junit setUp method where the superclass is TestCase, imported explicitly</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.design.signaturedeclarethrowsexception.MyTestCase;
+public class Foo extends MyTestCase {
+    void setUp() throws Exception {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>skip junit setUp method where the superclass is TestCase, but is imported implicitly</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.design.signaturedeclarethrowsexception.*;
+public class Foo extends MyTestCase {
+ void setUp() throws Exception {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>skip junit setUp method where the superclass is TestCase  and is in the same package</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design.signaturedeclarethrowsexception;
+
+public class Foo extends MyTestCase {
+    void setUp() throws Exception {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Generics</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public <T> Bar<T> foo() { /* blah */}
+}
+class Bar<X> {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>skip any method starting with 'test' for junit3</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.*;
+public class FooTest extends TestCase {
+    public void testFoo() throws Exception {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#913 SignatureDeclareThrowsException is raised twice</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import javax.swing.SwingWorker;
+public class BugSignature {
+  public void record() {
+    SwingWorker worker = new SwingWorker() {
+      protected String construct() throws Exception {
+        //
+      }
+    };
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1535 [java] SignatureDeclareThrowsException: ClassCastException with Annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class UnmodifiableList<T> implements @Readonly List<@Readonly T> {}
+@interface Readonly {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#350 allow throws exception when overriding a method defined elsewhere</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class BugSignature implements LousyInterface {
+    @Override
+    public void record() throws Exception {
+    }
+}
+interface LousyInterface {
+    void record() throws Exception; // <-- this is reported
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>SignatureDeclareThrowsException's IgnoreJUnitCompletely property not honored for constructors</description>
+        <rule-property name="IgnoreJUnitCompletely">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.*;
+
+public class JUnitAnnotationTest extends TestCase {
+    public JUnitAnnotationTest() throws Exception {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1369 ClassCastException in annotated extends</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
+
+public final class Namespace {
+
+    @Target(ElementType.TYPE_USE)
+    public @interface Weird {
+    }
+
+    public class WeirdException extends @Weird Exception {
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4477:[java] SignatureDeclareThrowsException: false-positive with TestNG annotations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.design.signaturedeclarethrowsexception.MyTestCase;
+public class Foo extends MyTestCase {
+    @org.testng.annotations.AfterClass
+    void setUp() throws Exception {}
+}
+        ]]></code>
+    </test-code>
+</test-data>

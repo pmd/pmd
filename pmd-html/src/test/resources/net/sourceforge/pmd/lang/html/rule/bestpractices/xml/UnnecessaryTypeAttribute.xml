@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Example</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,5</expected-linenumbers>
+        <code><![CDATA[
+<html>
+  <head>
+    <!-- Instead of -->
+    <link type="text/css" rel="stylesheet" href="css/styles.css" />
+    <script type="text/javascript" src="js/scripts.js"></script>
+
+    <!-- Just use -->
+    <link rel="stylesheet" href="css/styles.css" />
+    <script src="js/scripts.js"></script>
+  </head>
+</html>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Link refers not a stylesheet</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<html>
+  <head>
+    <link type="text/markdown" rel="author" href="the-author.md" />
+  </head>
+</html>
+]]></code>
+    </test-code>
+</test-data>

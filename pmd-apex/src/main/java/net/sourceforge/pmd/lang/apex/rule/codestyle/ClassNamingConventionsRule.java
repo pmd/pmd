@@ -1,0 +1,94 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+package net.sourceforge.pmd.lang.apex.rule.codestyle;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+
+public class ClassNamingConventionsRule extends AbstractNamingConventionsRule {
+    private static final Map<String, String> DESCRIPTOR_TO_DISPLAY_NAME = new HashMap<>();
+
+    private static final PropertyDescriptor<Pattern> TEST_CLASS_REGEX = prop("testClassPattern", "test class",
+            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(PASCAL_CASE_WITH_UNDERSCORES).build();
+
+    private static final PropertyDescriptor<Pattern> INNER_CLASS_REGEX = prop("innerClassPattern", "inner class",
+            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(PASCAL_CASE_WITH_UNDERSCORES).build();
+
+    private static final PropertyDescriptor<Pattern> ABSTRACT_CLASS_REGEX = prop("abstractClassPattern", "abstract class",
+            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(PASCAL_CASE_WITH_UNDERSCORES).build();
+
+    private static final PropertyDescriptor<Pattern> INNER_INTERFACE_REGEX = prop("innerInterfacePattern", "inner interface",
+            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(PASCAL_CASE_WITH_UNDERSCORES).build();
+
+    private static final PropertyDescriptor<Pattern> CLASS_REGEX = prop("classPattern", "class",
+            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(PASCAL_CASE_WITH_UNDERSCORES).build();
+
+    private static final PropertyDescriptor<Pattern> INTERFACE_REGEX = prop("interfacePattern", "interface",
+            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(PASCAL_CASE_WITH_UNDERSCORES).build();
+
+    private static final PropertyDescriptor<Pattern> ENUM_REGEX = prop("enumPattern", "enum",
+            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(PASCAL_CASE_WITH_UNDERSCORES).build();
+
+    public ClassNamingConventionsRule() {
+        definePropertyDescriptor(TEST_CLASS_REGEX);
+        definePropertyDescriptor(INNER_CLASS_REGEX);
+        definePropertyDescriptor(INNER_INTERFACE_REGEX);
+        definePropertyDescriptor(ABSTRACT_CLASS_REGEX);
+        definePropertyDescriptor(CLASS_REGEX);
+        definePropertyDescriptor(INTERFACE_REGEX);
+        definePropertyDescriptor(ENUM_REGEX);
+    }
+
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTUserClass.class, ASTUserInterface.class, ASTUserEnum.class);
+    }
+
+    @Override
+    public Object visit(ASTUserClass node, Object data) {
+        if (node.isNested()) {
+            checkMatches(INNER_CLASS_REGEX, node, data);
+        } else if (node.getModifiers().isTest()) {
+            checkMatches(TEST_CLASS_REGEX, node, data);
+        } else if (node.getModifiers().isAbstract()) {
+            checkMatches(ABSTRACT_CLASS_REGEX, node, data);
+        } else {
+            checkMatches(CLASS_REGEX, node, data);
+        }
+
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTUserInterface node, Object data) {
+        if (node.isNested()) {
+            checkMatches(INNER_INTERFACE_REGEX, node, data);
+        } else {
+            checkMatches(INTERFACE_REGEX, node, data);
+        }
+
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTUserEnum node, Object data) {
+        checkMatches(ENUM_REGEX, node, data);
+        return data;
+    }
+
+    @Override
+    protected String displayName(String name) {
+        return DESCRIPTOR_TO_DISPLAY_NAME.get(name);
+    }
+}

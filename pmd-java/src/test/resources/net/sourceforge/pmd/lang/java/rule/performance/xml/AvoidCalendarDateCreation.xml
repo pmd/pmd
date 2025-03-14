@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>violation: [Gregorian]Calendar.getInstance().getTime()</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>7,8,9,12</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
+public class Foo {
+    void foo() {
+        Date now = Calendar.getInstance().getTime();
+        setDate(Calendar.getInstance().getTime());
+        setDate(GregorianCalendar.getInstance().getTime());
+
+        Calendar cal = Calendar.getInstance();
+        Date now2 = cal.getTime();
+    }
+    private void setDate(Date when){
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation: joda-time: new DateTime([Gregorian]Calendar.getInstance())</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,8</expected-linenumbers>
+        <code><![CDATA[
+import org.joda.time.DateTime;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+public class Foo {
+    void foo() {
+        DateTime nowDT1 = new DateTime(GregorianCalendar.getInstance());
+        DateTime nowDT2 = new DateTime(Calendar.getInstance());
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation: Calendar.getInstance().getTimeInMillis()</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,6</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Calendar;
+
+public class Foo {
+    void foo() {
+        long time = Calendar.getInstance().getTimeInMillis();
+        String timeStr = Long.toString(Calendar.getInstance().getTimeInMillis());
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation: cal.getTimeInMillis()</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,8</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Calendar;
+
+public class Foo {
+    void foo() {
+        long time1 = 0;
+        Calendar cal = Calendar.getInstance();
+        long time2 = cal.getTimeInMillis();
+        time1 = cal.getTimeInMillis();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Calendar;
+import java.util.Date;
+
+public class Foo {
+    void foo() {
+        int warmestMonth = Calendar.getInstance().AUGUST;
+        long time = System.currentTimeMillis();
+        Date now = new Date();
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>false positive when Calendar is not created here</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.time.ZonedDateTime;
+import java.time.Instant;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
+public class Foo {
+    public Date convertToDate(Calendar source) {
+        return source.getTime(); // ok
+    }
+
+    public Long convertToLong(Calendar source) {
+        return source.getTimeInMillis(); // ok
+    }
+
+    public ZonedDateTime calendarToZonedDateTime(Calendar source) {
+        if (source instanceof GregorianCalendar) {
+            return ((GregorianCalendar) source).toZonedDateTime();
+        }
+        else {
+            return ZonedDateTime.ofInstant(Instant.ofEpochMilli(source.getTimeInMillis()), // ok
+                    source.getTimeZone().toZoneId());
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>false positive if Calendar is modified via set</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
+public class Foo {
+    public Date onlySet(Date date) {
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        calendar.set(Calendar.MILLISECOND, 0);
+        long originalTimestamp = calendar.getTimeInMillis();
+        return calendar.getTime();
+    }
+
+    public Date onlyAdd(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, 1);
+        long originalTimestamp = calendar.getTimeInMillis();
+        return calendar.getTime();
+    }
+
+    public Date onlyClear(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear(Calendar.MILLISECOND);
+        long originalTimestamp = calendar.getTimeInMillis();
+        return calendar.getTime();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with Calendar not created here</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Calendar;
+import java.util.Date;
+
+public class AvoidCalenderDateCreationFalsePositive {
+    public static void main(String[] args) {
+        AvoidCalenderDateCreationFalsePositive fp = new AvoidCalenderDateCreationFalsePositive();
+        Date parsedDate = fp.create().getTime();
+    }
+
+    public Calendar create() {
+        return null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive when this is a Calendar</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Date;
+import java.util.GregorianCalendar;
+
+public class MyCalendar extends GregorianCalendar {
+    public Date getTime2() {
+        return new Date(getTimeInMillis());
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with calendar builder</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
+public class AvoidCalendarDateCreationBuilder {
+    public void AvoidCalendarDateCreationBuilder(int year, int month, int day) {
+        Calendar c;
+        c = new Calendar.Builder().setTimeZone(TimeZone.getTimeZone("GMT"))
+                    .setDate(year, month - 1, day).build();
+        Date date = c.getTime();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with specific date</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Date;
+import java.util.GregorianCalendar;
+
+public class AvoidCalendarDateCreation {
+    public static void main(String[] args) {
+        Date date = new GregorianCalendar(2004, 1, 1).getTime();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with calendar not created by getInstance</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Calendar;
+import java.util.Date;
+
+public class AvoidCalendarDateCreation {
+    private Calendar calendar;
+
+    public void test() {
+        Date date = calendar.getTime();
+    }
+
+    public void test(Object in) {
+        if (in instanceof Calendar) {
+            Calendar cal = (Calendar) in;
+            Date date = cal.getTime();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>New GregorianCalendar default constructor</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,8</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+public class AvoidCalendarDateCreation {
+    public void test() {
+        Calendar cal = new GregorianCalendar();
+        System.out.println(cal.getTime());
+        System.out.println(new GregorianCalendar().getTime());
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

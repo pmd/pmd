@@ -1,0 +1,12 @@
++- AstRoot
+   +- FunctionNode
+      +- Block
+         +- VariableDeclaration
+         |  +- VariableInitializer
+         |     +- Name
+         |     +- StringLiteral
+         +- VariableDeclaration
+            +- VariableInitializer
+               +- Name
+               +- TemplateLiteral
+                  +- TemplateCharacters

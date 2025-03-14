@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>One non-final parameter</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(int a) {
+        System.out.println(a); // a is used here
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Two non-final parameters</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(int a, Object o) {
+        System.out.println(a);
+        System.out.println(o);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Two non-final parameters with assignments to local vars</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(int a, Object o) {
+        int z = a;
+        Object x = o.clone();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Two parameters, one final, one non-final (1)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(final int a, Object o) {
+        int z = a;
+        Object x = o.clone();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Two parameters, one final, one non-final (2)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(int a, final Object o) {
+        int z = a;
+        Object x = o.clone();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Already two final parameters</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(final int a, final Object o) {
+        int z = a;
+        Object x = o.clone();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Shouldn't trigger on try blocks</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(final Foo batch) {
+        try {} catch (Exception e) {}
+        try {} catch (Exception ee) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Skip native methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public native void bar(Object x);
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Skip abstract methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public abstract void bar(Object x);
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>self assignment of a method param means it can't be final</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(int a) {
+        x[a++] = 1;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>same as above but prefix vs postfix</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(int a) {
+        x[--a] = 1;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>same as above but with extra parenthesis</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(int a) {
+        x[--(a)] = 1;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bug 1808158 - Constructor args could also be final</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int field;
+    public Foo(int a) {
+        this.field = a;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3265 False negative with default methods in interface</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,7</expected-linenumbers>
+        <code><![CDATA[
+public interface DefaultMethodInInterface {
+    default String toString(Object one) {
+        return toString(one, one);
+    }
+    String toString(Object one, Object two);
+
+    default Object justReturn(Object o) {
+        return o;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3265 False negative with classes in interfaces</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,6</expected-linenumbers>
+        <code><![CDATA[
+public interface InterfaceWithClass {
+    class Inner {
+        public Inner(Object o) {
+            Object a = o;
+        }
+        public Object justReturn(Object o) {
+            return o;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4512 [java] MethodArgumentCouldBeFinal shouldn't report unused parameters</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void main(String[] args) {}
+}
+]]></code>
+    </test-code>
+</test-data>

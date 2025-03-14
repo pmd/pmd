@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ruleset name="Security" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+Rules that flag potential security flaws.
+    </description>
+
+    <rule name="HardCodedCryptoKey"
+          language="java"
+          since="6.4.0"
+          message="Do not use hard coded encryption keys"
+          class="net.sourceforge.pmd.lang.java.rule.security.HardCodedCryptoKeyRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_security.html#hardcodedcryptokey">
+        <description>
+Do not use hard coded values for cryptographic operations. Please store keys outside of source code.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo {
+    void good() {
+        SecretKeySpec secretKeySpec = new SecretKeySpec(Properties.getKey(), "AES");
+    }
+
+    void bad() {
+        SecretKeySpec secretKeySpec = new SecretKeySpec("my secret here".getBytes(), "AES");
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="InsecureCryptoIv"
+          language="java"
+          since="6.3.0"
+          message="Do not use hard coded initialization vector in crypto operations"
+          class="net.sourceforge.pmd.lang.java.rule.security.InsecureCryptoIvRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_security.html#insecurecryptoiv">
+        <description>
+Do not use hard coded initialization vector in cryptographic operations. Please use a randomly generated IV.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo {
+    void good() {
+        SecureRandom random = new SecureRandom();
+        byte iv[] = new byte[16];
+        random.nextBytes(bytes);
+    }
+
+    void bad() {
+        byte[] iv = new byte[] { 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, };
+    }
+
+    void alsoBad() {
+        byte[] iv = "secret iv in here".getBytes();
+    }
+}
+]]>
+        </example>
+    </rule>
+</ruleset>

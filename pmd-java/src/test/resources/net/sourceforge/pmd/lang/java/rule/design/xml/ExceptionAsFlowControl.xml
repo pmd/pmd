@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>failure case</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        try {
+            try {
+            } catch (Exception e) {
+                throw new WrapperException(e);
+                // this is essentially a GOTO to the WrapperException catch block
+            }
+        } catch (WrapperException e) {
+            // do some more stuff
+        }
+    }
+}
+class WrapperException extends Exception {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>normal throw catch</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        try {} catch (Exception e) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>BUG 996007</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.IOException;
+public class Foo {
+    void bar(Foo foo) {
+        try {
+        } catch (IOException e) {
+            if (foo!=null)
+                throw new IOException(foo.toString());
+            else
+                throw e;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NPE</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        switch(foo) {
+        default:
+            throw new IllegalArgumentException();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Catch block for subtype</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
+        <expected-messages>
+            <message>Exception thrown at line 10 is caught in this block.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {{
+
+    try {
+        throw new TopE();
+    } catch (SubE e) { // no violation
+
+    }
+
+    try {
+        throw new SubE();
+    } catch (TopE e) { // warn
+
+    }
+}}
+class TopE extends Exception { }
+class SubE extends TopE { }
+
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#4434 simple propagation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.*;
+            public class Foo {
+
+                public Map<K, V> getAll(Iterable<? extends K> keys) throws ExecutionException {
+                    try {
+                        Map<K, V> result = cache.getAll(keys);
+                        if (something()) {
+                            throw new InvalidCacheLoadException("null key or value");
+                        }
+                        return result;
+                    } catch (NullPointerException | InvalidCacheLoadException e) {
+                        throw e;
+                    } catch (CacheLoaderException e) {
+                        throw new ExecutionException(e.getCause());
+                    } catch (Exception e) {
+                        throw new UncheckedExecutionException(e);
+                    }
+                }
+            }
+
+            class ExecutionException extends Exception {
+                public ExecutionException(Throwable o) { super(o);}
+            }
+            class UncheckedExecutionException extends RuntimeException {
+                public UncheckedExecutionException(Throwable o) { super(o);}
+            }
+            class InvalidCacheLoadException extends RuntimeException {
+                public InvalidCacheLoadException(String msg) { super(msg);}
+            }
+
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#4434 simple propagation, 2nd case</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.*;
+            public class Foo {
+
+                public Map<K, V> getAll(Iterable<? extends K> keys) {
+                    try {
+                        Map<K, V> result = cache.getAll(keys);
+                        if (something()) {
+                            throw new InvalidCacheLoadException("null key or value");
+                        }
+                        return result;
+
+                    } catch (NullPointerException | InvalidCacheLoadException e) {
+                        // Note that technically this is still an code smell as
+                        // the exception is rethrown directly, but this should be
+                        // the purpose of another rule.
+                        throw e;
+                    }
+                }
+            }
+
+            class InvalidCacheLoadException extends RuntimeException {
+                public InvalidCacheLoadException(String msg) { super(msg);}
+            }
+
+            ]]></code>
+    </test-code>
+</test-data>

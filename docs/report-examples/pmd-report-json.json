@@ -1,0 +1,39 @@
+{
+  "formatVersion": 0,
+  "pmdVersion": "6.23.0-SNAPSHOT",
+  "timestamp": "2020-04-05T20:13:49.698+02:00",
+  "files": [
+    {
+      "filename": "/home/me/pmd/src/main/java/net/sourceforge/pmd/PMDVersion.java",
+      "violations": [
+        {
+          "beginline": 16,
+          "begincolumn": 14,
+          "endline": 79,
+          "endcolumn": 1,
+          "description": "The utility class name \u0027PMDVersion\u0027 doesn\u0027t match \u0027[A-Z][a-zA-Z0-9]+(Utils?|Helper)\u0027",
+          "rule": "ClassNamingConventions",
+          "ruleset": "Code Style",
+          "priority": 1,
+          "externalInfoUrl": "https://pmd.github.io/pmd/pmd_rules_java_codestyle.html#classnamingconventions"
+        }
+      ]
+    },
+    {
+      "filename": "/home/me/pmd/src/main/java/net/sourceforge/pmd/RuleContext.java",
+      "violations": [
+        {
+          "beginline": 124,
+          "begincolumn": 9,
+          "endline": 125,
+          "endcolumn": 111,
+          "description": "Logger calls should be surrounded by log level guards.",
+          "rule": "GuardLogStatement",
+          "ruleset": "Best Practices",
+          "priority": 2,
+          "externalInfoUrl": "https://pmd.github.io/pmd/pmd_rules_java_bestpractices.html#guardlogstatement"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>[apex] Queueable Without Finalizer - positive test case #5302</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+public class UserUpdater implements Queueable {
+    public List<User> usersToUpdate;
+
+    public UserUpdater(List<User> usersToUpdate) {
+        this.usersToUpdate = usersToUpdate;
+    }
+
+    public void execute(QueueableContext context) {
+        update usersToUpdate;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[apex] Queueable Without Finalizer - negative test case #5302</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UserUpdater implements Queueable, Finalizer {
+    public List<User> usersToUpdate;
+
+    public UserUpdater(List<User> usersToUpdate) {
+        this.usersToUpdate = usersToUpdate;
+    }
+
+    public void execute(QueueableContext context) {
+        System.attachFinalizer(this);
+        update usersToUpdate;
+    }
+
+    public void execute(FinalizerContext ctx) {
+        if (ctx.getResult() == ParentJobResult.SUCCESS) {
+            // Handle success
+        } else {
+            // Handle failure
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<ruleset name="Test Reference Deprecated Ruleset" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+  Ruleset used by test RuleSetFactoryTest
+  </description>
+
+    <!-- Load in the complete deprecated ruleset -->
+    <rule ref="rulesets/dummy/deprecated.xml" />
+</ruleset>
