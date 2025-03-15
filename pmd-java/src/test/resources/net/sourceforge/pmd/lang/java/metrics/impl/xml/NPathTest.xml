@@ -741,4 +741,30 @@ public class NPathComplexityOverflow {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Switch expression in return statement (#5568)</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Product#toByte(Register8)' has value 20.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Product {
+                static byte toByte(final Register8 r) {
+                    return switch (r) {
+                        case AL, R8B -> (byte) 0x00;
+                        case CL, R9B -> (byte) 0x01;
+                        case DL, R10B -> (byte) 0x02;
+                        case BL, R11B -> (byte) 0x03;
+                        case AH, SPL, R12B -> (byte) 0x04;
+                        case CH, BPL, R13B -> (byte) 0x05;
+                        case DH, SIL, R14B -> (byte) 0x06;
+                        case BH, DIL, R15B -> (byte) 0x07;
+                    };
+                }
+                enum Register8 {
+                    AL, R8B, CL, R9B, DL, R10B, BL, R11B, AH, SPL, R12B, CH, BPL, R13B, DH, SIL, R14B, BH, DIL, R15B
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

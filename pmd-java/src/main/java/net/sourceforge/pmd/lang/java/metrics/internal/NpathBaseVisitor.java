@@ -67,7 +67,8 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
 
     @Override
     public BigInteger visitMethodOrCtor(ASTExecutableDeclaration node, Void data) {
-        return multiplyChildrenComplexities(node);
+        return node.getBody() == null ? BigInteger.ONE
+                                      : node.getBody().acceptVisitor(this, data);
     }
 
 
@@ -140,7 +141,7 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
         }
 
         int boolCompReturn = CycloVisitor.booleanExpressionComplexity(expr);
-        BigInteger conditionalExpressionComplexity = multiplyChildrenComplexities(expr);
+        BigInteger conditionalExpressionComplexity = expr.acceptVisitor(this, data);
 
         return conditionalExpressionComplexity.add(BigInteger.valueOf(boolCompReturn));
     }
