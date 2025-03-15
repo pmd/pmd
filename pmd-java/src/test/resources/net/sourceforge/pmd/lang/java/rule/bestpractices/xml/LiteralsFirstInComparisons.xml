@@ -432,10 +432,10 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>[java] LiteralsFirstInComparisons with two constants #3315</description>
-        <expected-problems>0</expected-problems>
+        <description>[java] LiteralsFirstInComparisons with one constant and a constant field but not CT-const</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
-import net.sourceforge.pmd.PMDVersion;
 public class LiteralsFirstInComparisonCase {
     private static final String S1 = "s1";
     private static final String S2 = "s2";
@@ -443,22 +443,37 @@ public class LiteralsFirstInComparisonCase {
         return S1.equals(S2);
     }
     public static boolean isUnkown() {
-        return PMDVersion.VERSION.equals(S2);
+        return Foo.VERSION.equals(S2);
+    }
+}
+class Foo {
+    // not a CT constant because initialized outline
+    public static final String VERSION;
+    static {
+        VERSION = "auhesouat";
     }
 }
         ]]></code>
     </test-code>
 
+
     <test-code>
-        <description>[java] LiteralsFirstInComparisons with two constants #3315 - with on demand import</description>
+        <description>[java] LiteralsFirstInComparisons with two constants #3315</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import net.sourceforge.pmd.*;
 public class LiteralsFirstInComparisonCase {
+    private static final String S1 = "s1";
     private static final String S2 = "s2";
-    public static boolean isUnkown() {
-        return PMDVersion.VERSION.equals(S2);
+    public static boolean compare() {
+        return S1.equals(S2);
     }
+    public static boolean isUnkown() {
+        return Foo.VERSION.equals(S2);
+    }
+}
+class Foo {
+    // is a CT constant because initialized inline
+    public static final String VERSION = "ctconstant";
 }
         ]]></code>
     </test-code>
@@ -491,5 +506,34 @@ class Tester {
     }
 }
 ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>LiteralsFirstInComparisonsRule not applied on constant #5590</description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+            static class Foo {
+                private static final String FOO = null;
+
+                public static void bar(String _null) {
+                    String _null2 = null;
+                    FOO.equals("RAW");
+                    _null.equals("RAW");
+                    _null2.equals("RAW");
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Equals with self</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            static class Foo {
+
+                public static void bar(String _null) {
+                    equals("RAW");
+                }
+            }
+            ]]></code>
     </test-code>
 </test-data>
