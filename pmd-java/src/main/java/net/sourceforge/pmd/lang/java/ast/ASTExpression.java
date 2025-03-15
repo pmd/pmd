@@ -152,7 +152,7 @@ public interface ASTExpression extends TypeNode, ASTMemberValue, ASTSwitchArrowR
      * Result of constant folding an expression. This can be in one of three states:
      * <ul>
      * <li>No constant value: constant folding failed, meaning, the value of the expression is not known at compile time.
-     * <li>Has ompile-time constant value: there is a constant value, and it is a compile-time constant in the sense of the JLS.
+     * <li>Has compile-time constant value: there is a constant value, and it is a compile-time constant in the sense of the JLS.
      * Such constants are inlined in class files. One restriction on them is that they only use literals or CT-constant
      * fields (which must be static final and have a CT-constant initializer), but not final variables or non-static fields
      * for instance.
