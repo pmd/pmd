@@ -101,11 +101,7 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
      * There may not be an explicit final modifier, e.g. for enum constants.
      */
     public boolean isFinal() {
-        if (hasModifiers(JModifier.FINAL)) {
-            return true;
-        }
-        // check if this is a lombok.val (and we have lombok support enabled)
-        return isLombokVal(getTypeNode());
+        return hasModifiers(JModifier.FINAL) || isLombokVal(getTypeNode());
     }
 
     /**
@@ -268,10 +264,7 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
      */
     public boolean isTypeInferred() {
         ASTType typeNode = getTypeNode();
-        if (typeNode == null) {
-            return true;
-        }
-        return isLombokValOrVar(typeNode, false);
+        return typeNode == null || isLombokValOrVar(typeNode, false);
     }
 
     static boolean isLombokVal(@Nullable ASTType typeNode) {
