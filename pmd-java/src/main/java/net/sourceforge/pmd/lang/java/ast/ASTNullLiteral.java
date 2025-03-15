@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.document.Chars;
 
 /**
@@ -31,11 +29,6 @@ public final class ASTNullLiteral extends AbstractLiteral implements ASTLiteral 
     @Override
     public boolean isCompileTimeConstant() {
         return false;
-    }
-
-    @Override
-    protected @NonNull ConstResult buildConstValue() {
-        return ConstResult.NO_CONST_VALUE;
     }
 
     @Override

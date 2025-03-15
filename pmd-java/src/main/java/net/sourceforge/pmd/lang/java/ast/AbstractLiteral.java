@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
@@ -60,7 +58,4 @@ abstract class AbstractLiteral extends AbstractJavaExpr {
     public boolean isCompileTimeConstant() {
         return true; // note: NullLiteral overrides this to false
     }
-
-    @Override
-    protected abstract @NonNull ConstResult buildConstValue();
 }

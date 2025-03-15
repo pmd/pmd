@@ -32,13 +32,21 @@ abstract class AbstractJavaExpr extends AbstractJavaTypeNode implements ASTExpre
     public @NonNull ConstResult getConstFoldingResult() {
         if (constValue == null) {
             constValue = ConstResult.NO_CONST_VALUE; // make non-null, so that we don't reenter on cycle
-            constValue = buildConstValue();
+            constValue = doBuildConstValue();
             Objects.requireNonNull(constValue, "constValue must not be null");
         }
         return constValue;
     }
 
-    protected @NonNull ConstResult buildConstValue() {
+    final @NonNull ConstResult doBuildConstValue() {
         return acceptVisitor(ConstantFolder.INSTANCE, null);
+    }
+
+    /**
+     * @deprecated Kept for binary compatibility. This method should have been package-private from the start.
+     */
+    @Deprecated
+    protected @Nullable Object buildConstValue() {
+        return doBuildConstValue().getValue();
     }
 }

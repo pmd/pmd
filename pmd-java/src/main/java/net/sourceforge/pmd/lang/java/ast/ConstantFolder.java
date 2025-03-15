@@ -5,10 +5,12 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression.ConstResult;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
@@ -38,6 +40,55 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
     @Override
     public @NonNull ConstResult visitLiteral(ASTLiteral num, Void data) {
         throw new AssertionError("Literal nodes implement getConstValue directly");
+    }
+
+    @Override
+    public @NonNull ConstResult visit(ASTNumericLiteral node, Void data) {
+        // don't use ternaries, the compiler messes up autoboxing.
+        Object result;
+        if (node.isIntegral()) {
+            if (node.isIntLiteral()) {
+                result = node.getValueAsInt();
+            } else {
+                result = node.getValueAsLong();
+            }
+        } else {
+            if (node.isFloatLiteral()) {
+                result = node.getValueAsFloat();
+            } else {
+                result = node.getValueAsDouble();
+            }
+        }
+        return ConstResult.ctConst(result);
+    }
+
+    @Override
+    public @NonNull ConstResult visit(ASTBooleanLiteral node, Void data) {
+        return node.isTrue() ? ConstResult.BOOL_TRUE : ConstResult.BOOL_FALSE;
+    }
+
+    @Override
+    public @NonNull ConstResult visit(ASTStringLiteral node, Void data) {
+        String result;
+        if (node.isTextBlock()) {
+            result = ASTStringLiteral.determineTextBlockContent(node.getLiteralText());
+        } else {
+            result = ASTStringLiteral.determineStringContent(node.getLiteralText());
+        }
+        return ConstResult.ctConst(result);
+    }
+
+    @Override
+    public @NonNull ConstResult visit(ASTNullLiteral node, Void data) {
+        return ConstResult.NO_CONST_VALUE;
+    }
+
+    @Override
+    public @NonNull ConstResult visit(ASTCharLiteral node, Void data) {
+        Chars image = node.getLiteralText();
+        Chars woDelims = image.subSequence(1, image.length() - 1);
+        Character result = StringEscapeUtils.UNESCAPE_JAVA.translate(woDelims).charAt(0);
+        return ConstResult.ctConst(result);
     }
 
     @Override

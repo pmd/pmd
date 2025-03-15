@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.document.Chars;
@@ -33,11 +32,6 @@ public final class ASTBooleanLiteral extends AbstractLiteral implements ASTLiter
     @Override
     public @Nullable Boolean getConstValue() {
         return (Boolean) super.getConstValue();
-    }
-
-    @Override
-    protected @NonNull ConstResult buildConstValue() {
-        return isTrue ? ConstResult.BOOL_TRUE : ConstResult.BOOL_FALSE;
     }
 
     @Override
