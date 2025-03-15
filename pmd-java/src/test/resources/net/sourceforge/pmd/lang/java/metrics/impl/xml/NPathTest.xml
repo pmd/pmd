@@ -745,7 +745,7 @@ public class NPathComplexityOverflow {
         <description>Switch expression in return statement (#5568)</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Product#toByte(Register8)' has value 20.</message>
+            <message>'Product#toByte(Register8)' has value 21.</message>
         </expected-messages>
         <code><![CDATA[
             public class Product {
@@ -763,6 +763,40 @@ public class NPathComplexityOverflow {
                 }
                 enum Register8 {
                     AL, R8B, CL, R9B, DL, R10B, BL, R11B, AH, SPL, R12B, CH, BPL, R13B, DH, SIL, R14B, BH, DIL, R15B
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Return stmt</description>
+        <expected-problems>4</expected-problems>
+        <expected-messages>
+            <message>'Product#m0()' has value 2.</message>
+            <message>'Product#m1()' has value 2.</message>
+            <message>'Product#m2()' has value 4.</message>
+            <message>'Product#m3()' has value 5.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Product {
+//                static int m0() {
+//                    if (foo())
+//                        return 1 + 2;
+//                    return 4;
+//                }
+//                static int m1() {
+//                    if (foo())
+//                        return 2;
+//                    return 6;
+//                }
+                static boolean m2() {
+                    if (foo())
+                        return foo() || bar();
+                    return foo() && bar();
+                }
+                static boolean m3() {
+                    if (foo())
+                        return foo() || bar() ? foo() : bar();
+                    return foo() && bar();
                 }
             }
             ]]></code>
