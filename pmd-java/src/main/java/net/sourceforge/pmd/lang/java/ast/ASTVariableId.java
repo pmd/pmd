@@ -101,7 +101,7 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
      * There may not be an explicit final modifier, e.g. for enum constants.
      */
     public boolean isFinal() {
-        return hasModifiers(JModifier.FINAL);
+        return hasModifiers(JModifier.FINAL) || isLombokVal(getTypeNode());
     }
 
     /**
@@ -264,19 +264,24 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
      */
     public boolean isTypeInferred() {
         ASTType typeNode = getTypeNode();
-        if (typeNode == null) {
-            return true;
-        }
+        return typeNode == null || isLombokValOrVar(typeNode, false);
+    }
+
+    static boolean isLombokVal(@Nullable ASTType typeNode) {
+        return isLombokValOrVar(typeNode, true);
+    }
+
+    private static boolean isLombokValOrVar(@Nullable ASTType typeNode, boolean onlyVal) {
         if (!(typeNode instanceof ASTClassType)) {
             return false;
         }
         String simpleName = ((ASTClassType) typeNode).getSimpleName();
-        if (!"val".equals(simpleName) && !"var".equals(simpleName)) {
+        if (!"val".equals(simpleName) && (onlyVal || !"var".equals(simpleName))) {
             // do a first filter to avoid having to query the language processor
             return false;
         }
         @SuppressWarnings("PMD.CloseResource")
-        JavaLanguageProcessor javaLanguage = (JavaLanguageProcessor) getAstInfo().getLanguageProcessor();
+        JavaLanguageProcessor javaLanguage = (JavaLanguageProcessor) typeNode.getAstInfo().getLanguageProcessor();
         if (!javaLanguage.hasFirstClassLombokSupport()) {
             return false;
         }
@@ -284,7 +289,7 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
         // type lombok.var unless it uses a qualified name. `var` is interpreted
         // as a keyword by the parser and produces no type node.
         return TypeTestUtil.isExactlyA("lombok.val", typeNode)
-            || TypeTestUtil.isExactlyA("lombok.var", typeNode);
+            || !onlyVal && TypeTestUtil.isExactlyA("lombok.var", typeNode);
     }
 
     /**

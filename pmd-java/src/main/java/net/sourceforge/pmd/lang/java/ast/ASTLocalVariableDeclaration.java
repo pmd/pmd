@@ -74,7 +74,11 @@ public final class ASTLocalVariableDeclaration extends AbstractJavaNode
         return firstChild(ASTType.class);
     }
 
+    /**
+     * Return whether this declaration is final (including implicitly).
+     * If lombok support is enabled, then return true if the type is lombok.val.
+     */
     public boolean isFinal() {
-        return hasModifiers(JModifier.FINAL);
+        return hasModifiers(JModifier.FINAL) || ASTVariableId.isLombokVal(getTypeNode());
     }
 }

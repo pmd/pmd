@@ -409,4 +409,18 @@ public class ClassWithLambda {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] LocalVariableCouldBeFinal false-positive with lombok.val #5079</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.val;
+public class Test {
+    private StringBuilder createFileWatcher() {
+        val tost = "uaoleudaou";
+        return new StringBuilder(tost);
+    }
+
+}
+        ]]></code>
+    </test-code>
 </test-data>
