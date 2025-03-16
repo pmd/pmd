@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Keyword order</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>1,2,5</expected-linenumbers>
+        <expected-messages>
+            <message>Missorted modifiers `abstract public`.</message>
+            <message>Missorted modifiers `final static`.</message>
+            <message>Missorted modifiers `final public`.</message>
+        </expected-messages>
+        <code><![CDATA[
+abstract public class Foo { // warn l1
+    final static public enum Bar {} // warn l2
+    public static final enum Bar2 {} // ok
+
+    final public static int FOO = 2; // warn l5
+}
+        ]]></code>
+    </test-code>
+
+    <code-fragment id="annotations"><![CDATA[
+            class Foo {
+                class Inner{}
+
+                @Decl
+                public @TypeA int foo; // l5
+
+                @TypeA
+                public @Decl int foo; // l8
+
+                @Decl @TypeA
+                public int foo; // l11
+
+                @Decl
+                public @TypeA static int foo; // l14
+
+                @TypeA
+                public @Decl static int foo; // l17
+
+                @Decl @TypeA
+                public static int foo; // l20
+
+                public int @TypeA[] foo; // never reported
+                public  Foo.@TypeA Inner foo; // never reported
+
+            }
+
+            @java.lang.annotation.Target(java.lang.annotation.ElementType.TYPE_USE)
+            @interface TypeA {}
+
+            @interface Decl {}
+    ]]>
+    </code-fragment>
+
+
+    <test-code>
+        <description>Annotation order (property=anywhere)</description>
+        <rule-property name="typeAnnotations">anywhere</rule-property>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>8,14,17</expected-linenumbers>
+        <expected-messages>
+            <message>Missorted modifiers `public @Decl`. Annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `@TypeA static`. Type annotations should be placed before the type they qualify.</message>
+            <message>Missorted modifiers `public @Decl`. Annotations should be placed before modifiers.</message>
+        </expected-messages>
+        <code-ref id="annotations"/>
+    </test-code>
+
+    <test-code>
+        <description>Annotation order (property=ontype)</description>
+        <rule-property name="typeAnnotations">on type</rule-property>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>8,11,14,17,20</expected-linenumbers>
+        <expected-messages>
+            <message>Missorted modifiers `@TypeA public`. Type annotations should be placed before the type they qualify.</message>
+            <message>Missorted modifiers `@TypeA public`. Type annotations should be placed before the type they qualify.</message>
+            <message>Missorted modifiers `@TypeA static`. Type annotations should be placed before the type they qualify.</message>
+            <message>Missorted modifiers `@TypeA public`. Type annotations should be placed before the type they qualify.</message>
+            <message>Missorted modifiers `@TypeA public`. Type annotations should be placed before the type they qualify.</message>
+        </expected-messages>
+        <code-ref id="annotations"/>
+    </test-code>
+    
+    <test-code>
+        <description>Annotation order (property=ondecl)</description>
+        <rule-property name="typeAnnotations">on decl</rule-property>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>5,8,14,17</expected-linenumbers>
+        <expected-messages>
+            <message>Missorted modifiers `public @TypeA`. Annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @Decl`. Annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @TypeA`. Annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @Decl`. Annotations should be placed before modifiers.</message>
+        </expected-messages>
+        <code-ref id="annotations"/>
+    </test-code>
+
+
+</test-data>

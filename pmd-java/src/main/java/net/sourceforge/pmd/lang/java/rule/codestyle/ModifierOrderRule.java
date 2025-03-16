@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVoidType;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
@@ -37,34 +37,48 @@ import net.sourceforge.pmd.util.AssertionUtil;
 public class ModifierOrderRule extends AbstractJavaRulechainRule {
 
     private static final String MSG_TOKEN_ORDER =
-        "Modifier `{0}` should come after {1}.";
+        "Missorted modifiers `{0} {1}`.";
 
     private static final String MSG_ANNOTATIONS_SHOULD_BE_BEFORE_MODS =
-        "Annotation {0} follows modifier `{1}`. Annotations should come before modifiers.";
+        "Missorted modifiers `{0} {1}`. Annotations should be placed before modifiers.";
 
-    private static final String MSG_TYPE_ANNOT_SHOULD_COME_BEFORE_TYPE =
-        "Type annotation {0} should be placed right before the type it applies to: `{1}`{2}.";
+    private static final String MSG_TYPE_ANNOT_SHOULD_BE_AFTER_MODS =
+        "Missorted modifiers `{0} {1}`. Type annotations should be placed before the type they qualify.";
 
-    private static final PropertyDescriptor<Boolean> SORT_TYPE_ANNOTS
-        = PropertyFactory.booleanProperty("typeAnnotationsNextToType")
+    private static final PropertyDescriptor<TypeAnnotationPolicy> TYPE_ANNOT_POLICY
+        = PropertyFactory.enumProperty("typeAnnotations", TypeAnnotationPolicy.class, TypeAnnotationPolicy::label)
                          .desc("Whether type annotations should be placed next to the type they qualify and not before modifiers.")
-                         .defaultValue(true)
+                         .defaultValue(TypeAnnotationPolicy.EITHER)
                          .build();
 
-    private boolean sortTypeAnnotations;
+    public enum TypeAnnotationPolicy {
+        ON_TYPE,
+        ON_DECL,
+        EITHER;
+
+        String label() {
+            switch (this) {
+            case ON_TYPE:
+                return "on type";
+            case ON_DECL:
+                return "on decl";
+            case EITHER:
+                return "anywhere";
+            }
+            throw AssertionUtil.shouldNotReachHere("exhaustive switch");
+        }
+    }
+
+    private TypeAnnotationPolicy sortTypeAnnotations;
 
     public ModifierOrderRule() {
-        super(
-            ASTTypeDeclaration.class,
-            ASTMethodDeclaration.class,
-            ASTFieldDeclaration.class
-        );
-        definePropertyDescriptor(SORT_TYPE_ANNOTS);
+        super(ASTModifierList.class);
+        definePropertyDescriptor(TYPE_ANNOT_POLICY);
     }
 
     @Override
     public void start(RuleContext ctx) {
-        this.sortTypeAnnotations = getProperty(SORT_TYPE_ANNOTS);
+        this.sortTypeAnnotations = getProperty(TYPE_ANNOT_POLICY);
     }
 
 
@@ -80,7 +94,8 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
 
             @Override
             public boolean recordAnnotation(ASTAnnotation annot) {
-                if (sortTypeAnnotations && typeAnnotContext.acceptsTypeAnnots() && isTypeAnnotation(annot)) {
+                if (sortTypeAnnotations == TypeAnnotationPolicy.ON_TYPE
+                    && typeAnnotContext.acceptsTypeAnnots() && isTypeAnnotation(annot)) {
                     typeAnnotationSeen = annot;
                     return false;
                 }
@@ -104,7 +119,7 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
                     return true;
                 }
                 if (lastModSeen != null && mod.compareTo(lastModSeen) < 0) {
-                    ctx.addViolationWithPosition(modList, token, MSG_TOKEN_ORDER, mod, lastModSeen);
+                    ctx.addViolationWithPosition(modList, token, MSG_TOKEN_ORDER, lastModSeen, mod);
                     return true;
                 }
                 lastModSeen = mod;
@@ -112,12 +127,12 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
             }
 
             private boolean checkTypeAnnotationProblem() {
-                if (sortTypeAnnotations && typeAnnotationSeen != null) {
+                if (sortTypeAnnotations == TypeAnnotationPolicy.ON_TYPE && typeAnnotationSeen != null) {
                     String annotString = PrettyPrintingUtil.prettyPrintAnnot(typeAnnotationSeen);
                     String typeStr = typeAnnotContext.getTypeNodeDescription();
                     String note = typeAnnotContext.getSyntaxNote();
                     // this modifier comes after a type annotation. Report the annotation though
-                    ctx.addViolationWithMessage(typeAnnotationSeen, MSG_TYPE_ANNOT_SHOULD_COME_BEFORE_TYPE, annotString, typeStr, note);
+                    ctx.addViolationWithMessage(typeAnnotationSeen, MSG_TYPE_ANNOT_SHOULD_BE_AFTER_MODS, annotString, typeStr, note);
                     return true;
                 }
                 return false;
@@ -144,8 +159,10 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
             followingType = getFollowingType(modList);
             followedByVar = isFollowedByVarKeyword(modList);
             hasExtraDimensions = hasFollowingExtraBracketPairs(modList);
-            this.isTypeAnnotContext = followingType != null || followedByVar
-                || modList.getParent() instanceof ASTConstructorDeclaration;
+            this.isTypeAnnotContext =
+                followingType != null && !(followingType instanceof ASTVoidType)
+                    || followedByVar
+                    || modList.getParent() instanceof ASTConstructorDeclaration;
         }
 
         private boolean acceptsTypeAnnots() {
@@ -153,6 +170,7 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
         }
 
         String getTypeNodeDescription() {
+            assert acceptsTypeAnnots();
             if (followedByVar) {
                 return "var";
             } else if (followingType != null) {
@@ -164,6 +182,7 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
         }
 
         String getSyntaxNote() {
+            assert acceptsTypeAnnots();
             if (hasExtraDimensions || followingType instanceof ASTArrayType) {
                 return "note: type annotations on arrays are placed right before the corresponding square bracket pair, eg `int @A []` or `int varname @A[]`. To annotate the element type, write `@A int[]`.";
             } else if (followingType instanceof ASTClassType) {
@@ -259,16 +278,22 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
         List<ASTAnnotation> children = modList.children(ASTAnnotation.class).toList();
 
         while (tok != lastTok.getNext()) {
+            if (tok.isImplicit()) {
+                tok = tok.getNext();
+                continue;
+            }
+
             if (tok.kind == JavaTokenKinds.AT) {
                 // this is an annotation
                 assert nextAnnotIndex < children.size() : "annotation token was not parsed?";
                 ASTAnnotation annotation = children.get(nextAnnotIndex);
                 assert annotation.getFirstToken() == tok : "next annot index didn't match token";
 
+                nextAnnotIndex++;
                 if (events.recordAnnotation(annotation)) {
                     return;
                 }
-                tok = annotation.getLastToken().getNext();
+                tok = annotation.getLastToken();
             } else {
                 JModifier mod = getModFromToken(tok);
                 assert mod != null : "Token is not a modifier token? " + tok;
