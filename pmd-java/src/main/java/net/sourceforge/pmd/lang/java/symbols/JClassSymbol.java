@@ -343,9 +343,17 @@ public interface JClassSymbol extends JTypeDeclSymbol,
             // If an @Target meta-annotation is not present on an annotation type T,
             // then an annotation of type T may be written as a modifier
             // for any declaration except a type parameter declaration.
-            return elementType != ElementType.TYPE_PARAMETER;
+            return elementType != ElementType.TYPE_PARAMETER
+                && elementType != ElementType.TYPE_USE;
         }
         return target.attributeContains("value", elementType).isTrue();
+    }
+
+    /**
+     * Return whether this is an annotation type, and can apply to type use.
+     */
+    default boolean mayBeTypeAnnotation() {
+        return annotationAppliesTo(ElementType.TYPE_USE);
     }
 
     /**

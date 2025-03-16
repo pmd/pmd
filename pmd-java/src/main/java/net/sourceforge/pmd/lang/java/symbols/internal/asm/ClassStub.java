@@ -40,6 +40,7 @@ import net.sourceforge.pmd.lang.java.types.LexicalScope;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.OptionalBool;
 
 
 final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
@@ -69,6 +70,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     private PSet<SymAnnot> annotations = HashTreePSet.empty();
 
     private PSet<String> annotAttributes;
+    private OptionalBool mayBeTypeAnnotation;
 
     private final ParseLock parseLock;
 
@@ -379,6 +381,14 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     public PSet<String> getAnnotationAttributeNames() {
         parseLock.ensureParsed();
         return annotAttributes;
+    }
+
+    @Override
+    public boolean mayBeTypeAnnotation() {
+        if (mayBeTypeAnnotation == null) {
+            mayBeTypeAnnotation = OptionalBool.definitely(JClassSymbol.super.mayBeTypeAnnotation());
+        }
+        return mayBeTypeAnnotation.isTrue();
     }
 
     @Override
