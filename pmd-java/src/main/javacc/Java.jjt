@@ -2215,11 +2215,11 @@ void SimpleLambdaParam() #LambdaParameter:
 }
 
 void LambdaParameter():
-{}
+{boolean hasVar = false;}
 {
     LocalVarModifierList() // this weakens the grammar a bit
     [
-       LambdaParameterType()
+       hasVar=LambdaParameterType() {jjtThis.setUsesVarKw(hasVar);}
     ]
     VariableIdWithDims()
 }
