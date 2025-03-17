@@ -1,3 +1,7 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.reporting;
 
 import java.util.Collections;
@@ -77,7 +81,7 @@ public abstract class AbstractAnnotationSuppressor<A extends Node> implements Vi
 
     private boolean annotationSuppresses(A annotation, Rule rule) {
         return walkAnnotation(annotation, (parm, stringValue) -> {
-            if (annotationParamSuppresses(stringValue, rule)){
+            if (annotationParamSuppresses(stringValue, rule)) {
                 parm.getUserMap().compute(KEY_SUPPRESSED_ANY_VIOLATION, a -> Boolean.TRUE);
                 return true;
             }
@@ -85,7 +89,7 @@ public abstract class AbstractAnnotationSuppressor<A extends Node> implements Vi
         });
     }
 
-    protected abstract boolean walkAnnotation(A anotation, AnnotationWalkCallbacks callbacks);
+    protected abstract boolean walkAnnotation(A annotation, AnnotationWalkCallbacks callbacks);
 
     protected abstract NodeStream<A> getAnnotations(Node n);
 
