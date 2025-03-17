@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.internal;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +28,8 @@ import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
 import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.reporting.ViolationSuppressor;
+import net.sourceforge.pmd.util.DataMap;
+import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
 /**
  * Helper methods to suppress violations based on annotations.
@@ -55,6 +58,10 @@ final class AnnotationSuppressionUtil {
     private static final Set<String> SERIAL_RULES =
         new HashSet<>(Arrays.asList("BeanMembersShouldSerialize", "NonSerializableClass", "MissingSerialVersionUID"));
 
+    /** Key to store the set of rule violations that were effectively suppressed by an annotation. */
+    private static final SimpleDataKey<Set<String>> KEY_SUPPRESSED_RULES =
+        DataMap.simpleDataKey("pmd.java.suppressed.rules");
+
     static final ViolationSuppressor JAVA_ANNOT_SUPPRESSOR = new ViolationSuppressor() {
         @Override
         public String getId() {
@@ -77,21 +84,26 @@ final class AnnotationSuppressionUtil {
     }
 
     static boolean contextSuppresses(Node node, Rule rule) {
-        boolean result = suppresses(node, rule);
+        if (suppresses(node, rule)) {
+            return true;
+        }
 
-        if (!result && node instanceof ASTCompilationUnit) {
-            for (int i = 0; !result && i < node.getNumChildren(); i++) {
-                result = AnnotationSuppressionUtil.suppresses(node.getChild(i), rule);
+        if (node instanceof ASTCompilationUnit) {
+            for (int i = 0; i < node.getNumChildren(); i++) {
+                if (suppresses(node.getChild(i), rule)) {
+                    return true;
+                }
             }
         }
-        if (!result) {
-            Node parent = node.getParent();
-            while (!result && parent != null) {
-                result = AnnotationSuppressionUtil.suppresses(parent, rule);
-                parent = parent.getParent();
+
+        Node parent = node.getParent();
+        while (parent != null) {
+            if (suppresses(parent, rule)) {
+                return true;
             }
+            parent = parent.getParent();
         }
-        return result;
+        return false;
     }
 
 
@@ -104,8 +116,7 @@ final class AnnotationSuppressionUtil {
         return suppressor != null && hasSuppressWarningsAnnotationFor(suppressor, rule);
     }
 
-    @Nullable
-    private static Annotatable getSuppressor(Node node) {
+    private static @Nullable Annotatable getSuppressor(Node node) {
         if (node instanceof Annotatable) {
             return (Annotatable) node;
         } else {
@@ -133,6 +144,7 @@ final class AnnotationSuppressionUtil {
                         || "unused".equals(stringVal) && UNUSED_RULES.contains(rule.getName())
                         || "fallthrough".equals(stringVal) && rule instanceof ImplicitSwitchFallThroughRule
                     ) {
+                        annotation.getUserMap().computeIfAbsent(KEY_SUPPRESSED_RULES, HashSet::new).add(rule.getName());
                         return true;
                     }
                 }
@@ -140,5 +152,14 @@ final class AnnotationSuppressionUtil {
         }
 
         return false;
+    }
+
+    /**
+     * Return the set of rule names for which the given annotation has suppressed at least one violation.
+     *
+     * @param annotation An annotation
+     */
+    public static Set<String> getRulesSuppressed(ASTAnnotation annotation) {
+        return annotation.getUserMap().getOrDefault(KEY_SUPPRESSED_RULES, Collections.emptySet());
     }
 }
