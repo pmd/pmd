@@ -28,6 +28,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIntersectionType;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTModuleDeclaration;
@@ -292,6 +293,8 @@ public class LanguageLevelChecker<T> {
         DIAMOND_TYPE_ARGUMENTS_FOR_ANONYMOUS_CLASSES(9),
         PRIVATE_METHODS_IN_INTERFACES(9),
         CONCISE_RESOURCE_SYNTAX(9),
+
+        VAR_KEYWORD_IN_LAMBDA_PARAMETER(11),
 
         /**
          * @see <a href="https://openjdk.org/jeps/361">JEP 361: Switch Expressions</a>
@@ -563,6 +566,15 @@ public class LanguageLevelChecker<T> {
         @Override
         public Void visit(ASTLambdaExpression node, T data) {
             check(node, RegularLanguageFeature.LAMBDA_EXPRESSIONS, data);
+            return null;
+        }
+
+
+        @Override
+        public Void visit(ASTLambdaParameter node, T data) {
+            if (node.hasVarKeyword()) {
+                check(node, RegularLanguageFeature.VAR_KEYWORD_IN_LAMBDA_PARAMETER, data);
+            }
             return null;
         }
 
