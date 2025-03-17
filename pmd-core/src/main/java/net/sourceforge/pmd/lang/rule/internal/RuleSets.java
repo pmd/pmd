@@ -21,7 +21,9 @@ import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.InternalApiBridge;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.RuleSet;
+import net.sourceforge.pmd.lang.rule.RuleSet.RuleSetBuilder;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.PmdUnusedSuppressionRule;
 import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
@@ -49,7 +51,25 @@ public class RuleSets {
     }
 
     public RuleSets(Collection<? extends RuleSet> ruleSets) {
-        this.ruleSets = Collections.unmodifiableList(new ArrayList<>(ruleSets));
+        List<RuleSet> rulesets = new ArrayList<>();
+        List<RuleSet> suppressionRules = new ArrayList<>();
+
+        /*
+         Suppression rules are separated because they must be run last.
+         They are packed into their own rulesets. and added at the end of the ruleset list.
+         */
+
+        for (RuleSet ruleSet : ruleSets) {
+            RuleSetBuilder noSuppressions = ruleSet.toBuilder();
+            RuleSetBuilder onlySuppressions = ruleSet.toBuilder();
+
+            noSuppressions.removeIf(rule1 -> rule1 instanceof PmdUnusedSuppressionRule);
+            onlySuppressions.removeIf(rule1 -> !(rule1 instanceof PmdUnusedSuppressionRule));
+            rulesets.add(noSuppressions.build());
+            suppressionRules.add(onlySuppressions.build());
+        }
+        rulesets.addAll(suppressionRules);
+        this.ruleSets = Collections.unmodifiableList(rulesets);
     }
 
     /**

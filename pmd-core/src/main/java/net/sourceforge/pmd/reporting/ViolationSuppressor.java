@@ -138,7 +138,7 @@ public interface ViolationSuppressor {
 
                             @Override
                             public String unusedReason() {
-                                return "No violation reported at this line";
+                                return "Unused suppression comment";
                             }
                         }
                     );
