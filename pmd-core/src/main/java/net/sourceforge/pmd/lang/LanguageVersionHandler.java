@@ -9,6 +9,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
+import net.sourceforge.pmd.lang.rule.impl.PmdUnusedSuppressionRule;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
 import net.sourceforge.pmd.reporting.ViolationSuppressor;
@@ -54,6 +55,14 @@ public interface LanguageVersionHandler {
         return Collections.emptyList();
     }
 
+    /**
+     * Return the rule tasked with reporting unused PMD suppressions.
+     * This rule has privileged support within PMD, because it must interact
+     * with {@link ViolationSuppressor}, and always run last on a given file.
+     */
+    default PmdUnusedSuppressionRule getPmdSuppressionRule() {
+        return new PmdUnusedSuppressionRule();
+    }
 
     /**
      * Returns the metrics provider for this language version,

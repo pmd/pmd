@@ -9,6 +9,8 @@ import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
 
+import java.util.AbstractMap;
+import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -76,6 +78,38 @@ public final class CollectionUtil {
         } else {
             return new ConsList<>(head, tail);
         }
+    }
+
+    /**
+     * Returns a view over the given map, where values are mapped using the given function.
+     */
+    public static <K, V, U> Map<K, U> mapView(Map<K, V> map, Function<? super V, ? extends U> valueMapper) {
+        return new AbstractMap<K, U>() {
+            @Override
+            public U get(Object key) {
+                V v = map.get(key);
+                if (v == null && !map.containsKey(key)) {
+                    return null;
+                }
+                return valueMapper.apply(v);
+            }
+
+            @Override
+            public Set<Entry<K, U>> entrySet() {
+                return new AbstractSet<Entry<K, U>>() {
+
+                    @Override
+                    public Iterator<Entry<K, U>> iterator() {
+                        return IteratorUtil.map(map.entrySet().iterator(), entry -> new AbstractMap.SimpleEntry<>(entry.getKey(), valueMapper.apply(entry.getValue())));
+                    }
+
+                    @Override
+                    public int size() {
+                        return map.size();
+                    }
+                };
+            }
+        };
     }
 
 

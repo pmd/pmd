@@ -4,16 +4,26 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.reporting.Reportable;
 import net.sourceforge.pmd.util.AssertionUtil;
+import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.DataMap;
+import net.sourceforge.pmd.util.DataMap.DataKey;
 
 /**
  * The output of {@link Parser#parse(ParserTask)}.
@@ -25,7 +35,8 @@ public final class AstInfo<T extends RootNode> {
     private final TextDocument textDocument;
     private final T rootNode;
     private final LanguageProcessorRegistry lpReg;
-    private final Map<Integer, String> suppressionComments;
+    private final Map<Integer, SuppressionCommentWrapper> suppressionComments;
+    private final DataMap<DataKey<?, ?>> userMap = DataMap.newDataMap();
 
 
     public AstInfo(ParserTask task, T rootNode) {
@@ -35,7 +46,7 @@ public final class AstInfo<T extends RootNode> {
     private AstInfo(TextDocument textDocument,
                     T rootNode,
                     LanguageProcessorRegistry lpReg,
-                    Map<Integer, String> suppressionComments) {
+                    Map<Integer, SuppressionCommentWrapper> suppressionComments) {
         this.textDocument = AssertionUtil.requireParamNotNull("text document", textDocument);
         this.rootNode = AssertionUtil.requireParamNotNull("root node", rootNode);
         this.lpReg = lpReg;
@@ -72,19 +83,88 @@ public final class AstInfo<T extends RootNode> {
      * It is suppressed, if the line of the violation is contained in this suppress map.
      *
      * @return map of the suppress lines with the corresponding review comments.
+     * @deprecated Use {@link #getSuppressionCommentMap()}
      */
+    @Deprecated
     public Map<Integer, String> getSuppressionComments() {
-        return suppressionComments;
+        return CollectionUtil.mapView(suppressionComments, SuppressionCommentWrapper::getUserMessage);
     }
 
 
+    /**
+     * Returns the map of line numbers to suppression / review comments.
+     * Only single line comments are considered, that start with the configured
+     * "suppress marker", which by default is {@link PMDConfiguration#DEFAULT_SUPPRESS_MARKER}.
+     * The text after the suppress marker is used as a "review comment" and included in this map.
+     *
+     * <p>This map is later used to determine, if a violation is being suppressed.
+     * It is suppressed, if the line of the violation is contained in this suppress map.
+     *
+     * @return map of the suppress lines with the corresponding review comments.
+     */
+    public Map<Integer, SuppressionCommentWrapper> getSuppressionCommentMap() {
+        return suppressionComments;
+    }
+
+    /**
+     * Returns a data map used to store additional information on this ast info.
+     *
+     * @return The user data map of this node
+     *
+     * @since 7.12.0
+     */
+    public DataMap<DataKey<?, ?>> getUserMap() {
+        return userMap;
+    }
+
+
+    /**
+     * @deprecated Use {@link #withSuppressionComments(Collection)}
+     */
+    @Deprecated
     public AstInfo<T> withSuppressMap(Map<Integer, String> map) {
+        Set<SuppressionCommentWrapper> comments = new HashSet<>();
+        for (Map.Entry<Integer, String> entry : map.entrySet()) {
+            String comment = entry.getValue();
+            int line = entry.getKey();
+            comments.add(new SuppressionCommentWrapper() {
+                @Override
+                public String getUserMessage() {
+                    return comment;
+                }
+
+                @Override
+                public Reportable getLocation() {
+                    return () -> FileLocation.caret(textDocument.getFileId(), line, 1);
+                }
+            });
+        }
+        return withSuppressionComments(comments);
+    }
+
+
+    public AstInfo<T> withSuppressionComments(Collection<? extends SuppressionCommentWrapper> suppressionComments) {
+        Map<Integer, SuppressionCommentWrapper> suppressMap = new HashMap<>(suppressionComments.size());
+        for (SuppressionCommentWrapper comment : suppressionComments) {
+            suppressMap.put(comment.getLocation().getStartLine(), comment);
+        }
         return new AstInfo<>(
             textDocument,
             rootNode,
             lpReg,
-            map
+            Collections.unmodifiableMap(suppressMap)
         );
     }
 
+    /**
+     * Wrapper around a suppression comment.
+     */
+    public interface SuppressionCommentWrapper {
+        /** Message attached to the comment. */
+        String getUserMessage();
+
+        /** Location of the comment, maybe the location of the comment token for instance. */
+        Reportable getLocation();
+
+    }
 }
