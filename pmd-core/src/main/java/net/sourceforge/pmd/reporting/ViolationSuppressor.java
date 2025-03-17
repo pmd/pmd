@@ -173,6 +173,8 @@ public interface ViolationSuppressor {
      * that were not used during the analysis.
      * For instance, for an annotation suppressor, the set contains
      * suppressor nodes wrapping annotations.
+     * This must be implemented if this suppressor wants to play well
+     * with the unused PMD suppression rule.
      *
      * @param tree Root node of a file
      *
@@ -201,6 +203,11 @@ public interface ViolationSuppressor {
     }
 
 
+    /**
+     * Represents an instance of a "suppressor" that didn't suppress anything.
+     * This could be a suppression annotation, or part of an annotation, a
+     * comment, etc.
+     */
     interface UnusedSuppressorNode {
 
         Reportable getLocation();

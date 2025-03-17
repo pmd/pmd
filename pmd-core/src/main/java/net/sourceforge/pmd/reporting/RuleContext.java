@@ -44,9 +44,9 @@ public final class RuleContext {
     // they are stack-local
 
     private static final Object[] NO_ARGS = new Object[0];
-    private static final List<ViolationSuppressor> DEFAULT_SUPPRESSORS = listOf(ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR,
-                                                                                ViolationSuppressor.REGEX_SUPPRESSOR,
-                                                                                ViolationSuppressor.XPATH_SUPPRESSOR);
+    static final List<ViolationSuppressor> DEFAULT_SUPPRESSORS = listOf(ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR,
+                                                                        ViolationSuppressor.REGEX_SUPPRESSOR,
+                                                                        ViolationSuppressor.XPATH_SUPPRESSOR);
 
     private final FileAnalysisListener listener;
     private final Rule rule;
@@ -183,6 +183,24 @@ public final class RuleContext {
         } else {
             listener.onRuleViolation(violation);
         }
+    }
+
+    void addViolationNoSuppress(Reportable reportable, AstInfo<?> astInfo,
+                                String message, Object... formatArgs) {
+        Objects.requireNonNull(reportable, "Node was null");
+        Objects.requireNonNull(message, "Message was null");
+        Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
+
+        LanguageVersionHandler handler = astInfo.getLanguageProcessor().services();
+
+
+        Node nearestNode = getNearestNode(reportable, astInfo);
+        Map<String, String> extraVariables = ViolationDecorator.apply(handler.getViolationDecorator(), nearestNode);
+        String description = makeMessage(message, formatArgs, extraVariables);
+        FileLocation location = reportable.getReportLocation();
+        RuleViolation violation = new ParametricRuleViolation(rule, location, description, extraVariables);
+
+        listener.onRuleViolation(violation);
     }
 
     private Node getNearestNode(Reportable reportable, AstInfo<?> astInfo) {

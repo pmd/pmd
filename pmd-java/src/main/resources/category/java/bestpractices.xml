@@ -1814,6 +1814,27 @@ public class Something {
         </example>
     </rule>
 
+    <rule name="UnusedPmdSuppression"
+          language="java"
+          since="7.12.0"
+          message="Unused suppression {0}."
+          class="net.sourceforge.pmd.reporting.PmdUnusedSuppressionRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedpmdsuppression">
+        <description>
+            This rule reports suppression comments and annotations that did not suppress anything.
+            Note that violations of this rule cannot be suppressed.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Something {
+    // Unless some rule triggered on the following line, this rule will report the comment:
+    private void foo() {} // NOPMD
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="UseCollectionIsEmpty"
           language="java"
           since="3.9"

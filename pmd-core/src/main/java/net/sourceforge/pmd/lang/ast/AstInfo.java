@@ -146,7 +146,7 @@ public final class AstInfo<T extends RootNode> {
     public AstInfo<T> withSuppressionComments(Collection<? extends SuppressionCommentWrapper> suppressionComments) {
         Map<Integer, SuppressionCommentWrapper> suppressMap = new HashMap<>(suppressionComments.size());
         for (SuppressionCommentWrapper comment : suppressionComments) {
-            suppressMap.put(comment.getLocation().getStartLine(), comment);
+            suppressMap.put(comment.getLocation().getReportLocation().getStartLine(), comment);
         }
         return new AstInfo<>(
             textDocument,
