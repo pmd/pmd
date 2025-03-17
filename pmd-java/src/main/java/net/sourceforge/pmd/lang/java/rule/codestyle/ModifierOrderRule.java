@@ -27,6 +27,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.AssertionUtil;
+import net.sourceforge.pmd.util.OptionalBool;
 
 public class ModifierOrderRule extends AbstractJavaRulechainRule {
 
@@ -53,9 +54,9 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
         String label() {
             switch (this) {
             case ON_TYPE:
-                return "on type";
+                return "ontype";
             case ON_DECL:
-                return "on decl";
+                return "ondecl";
             case ANYWHERE:
                 return "anywhere";
             default:
@@ -109,8 +110,7 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
         @Override
         boolean checkNextAnnot(AnnotMod next, RuleContext ctx) {
             // keyword before annot
-            // check annot is
-            if (next.isTypeAnnot && typeAnnotPosition != TypeAnnotationPosition.ON_DECL) {
+            if (next.isTypeAnnot != OptionalBool.NO && typeAnnotPosition != TypeAnnotationPosition.ON_DECL) {
                 return false;
             }
             ctx.addViolationWithPosition(reportNode, token, MSG_ANNOTATIONS_SHOULD_BE_BEFORE_MODS, this, next);
@@ -127,25 +127,25 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
     class AnnotMod extends ModifierOrderRule.LastModSeen {
         private final @Nullable LastModSeen previous;
         private final ASTAnnotation annot;
-        private final boolean isTypeAnnot;
+        private final OptionalBool isTypeAnnot;
 
         AnnotMod(@Nullable LastModSeen previous, ASTAnnotation annot, boolean contextsAcceptsTypeAnnot) {
             this.previous = previous;
             this.annot = annot;
-            this.isTypeAnnot = contextsAcceptsTypeAnnot && isTypeAnnotation(annot);
+            this.isTypeAnnot = !contextsAcceptsTypeAnnot ? OptionalBool.NO : isTypeAnnotation(annot);
         }
 
 
         @Override
         boolean checkNextKeyword(KwMod next, RuleContext ctx) {
-            if (isTypeAnnot && typeAnnotPosition == TypeAnnotationPosition.ON_TYPE) {
+            if (isTypeAnnot.isTrue() && typeAnnotPosition == TypeAnnotationPosition.ON_TYPE) {
                 ctx.addViolationWithMessage(annot, MSG_TYPE_ANNOT_SHOULD_BE_BEFORE_TYPE, this, next);
                 return true;
             }
 
             if (previous instanceof KwMod) {
                 // annotation sandwiched between keywords
-                if (isTypeAnnot && typeAnnotPosition != TypeAnnotationPosition.ON_DECL) {
+                if (isTypeAnnot.isTrue() && typeAnnotPosition != TypeAnnotationPosition.ON_DECL) {
                     ctx.addViolationWithMessage(annot, MSG_TYPE_ANNOT_SHOULD_BE_BEFORE_TYPE, this, next);
                 } else {
                     ctx.addViolationWithMessage(annot, MSG_ANNOTATIONS_SHOULD_BE_BEFORE_MODS, previous, this);
@@ -158,6 +158,7 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
 
         @Override
         boolean checkNextAnnot(AnnotMod next, RuleContext ctx) {
+            // todo we could sort annotations (alphabetically or by length)
             return false;
         }
 
@@ -212,12 +213,12 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
             || modList.getParent() instanceof ASTConstructorDeclaration;
     }
 
-    private static boolean isTypeAnnotation(ASTAnnotation node) {
+    private static OptionalBool isTypeAnnotation(ASTAnnotation node) {
         JTypeDeclSymbol sym = node.getTypeNode().getTypeMirror().getSymbol();
-        if (sym instanceof JClassSymbol && !sym.isUnresolved()) {
-            return ((JClassSymbol) sym).mayBeTypeAnnotation();
+        if (sym instanceof JClassSymbol) {
+            return ((JClassSymbol) sym).mayBeTypeAnnotation(node.getLanguageVersion());
         }
-        return false;
+        return OptionalBool.UNKNOWN;
     }
 
     private static @Nullable ASTType getFollowingType(ASTModifierList node) {

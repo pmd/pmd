@@ -79,7 +79,7 @@ abstract public class Foo { // warn l1
 
     <test-code>
         <description>Annotation order (property=ontype)</description>
-        <rule-property name="typeAnnotations">on type</rule-property>
+        <rule-property name="typeAnnotations">ontype</rule-property>
         <expected-problems>7</expected-problems>
         <expected-linenumbers>7,10,14,16,19,22,24</expected-linenumbers>
         <expected-messages>
@@ -96,7 +96,7 @@ abstract public class Foo { // warn l1
     
     <test-code>
         <description>Annotation order (property=ondecl)</description>
-        <rule-property name="typeAnnotations">on decl</rule-property>
+        <rule-property name="typeAnnotations">ondecl</rule-property>
         <expected-problems>6</expected-problems>
         <expected-linenumbers>5,8,14,17,22,24</expected-linenumbers>
         <expected-messages>

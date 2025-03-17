@@ -279,7 +279,7 @@ final class TypesFromAst {
             PSet<SymAnnot> parentAnnots = getSymbolicAnnotations(parent);
             for (SymAnnot parentAnnot : parentAnnots) {
                 // filter annotations by whether they apply to the type use.
-                if (parentAnnot.getAnnotationSymbol().mayBeTypeAnnotation()) {
+                if (parentAnnot.getAnnotationSymbol().mayBeTypeAnnotation(type.getLanguageVersion()).isTrue()) {
                     annotsOnType = annotsOnType.plus(parentAnnot);
                 }
             }
