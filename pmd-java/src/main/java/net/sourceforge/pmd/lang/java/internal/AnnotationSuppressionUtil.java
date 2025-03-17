@@ -11,11 +11,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
@@ -26,8 +28,10 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
+import net.sourceforge.pmd.reporting.Reportable;
 import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.reporting.ViolationSuppressor;
+import net.sourceforge.pmd.reporting.ViolationSuppressor.UnusedSuppressorNode;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
@@ -47,7 +51,7 @@ import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
  * <ul>
  * <li>{@code "unused"}: suppresses rules like UnusedLocalVariable or UnusedPrivateField;
  * <li>{@code "serial"}: suppresses BeanMembersShouldSerialize, NonSerializableClass and MissingSerialVersionUID;
- * <li>TODO "fallthrough" #1899
+ * <li>{@code "fallthrough"}: suppresses ImplicitSwitchFallthrough #1899
  * </ul>
  */
 final class AnnotationSuppressionUtil {
@@ -59,7 +63,7 @@ final class AnnotationSuppressionUtil {
         new HashSet<>(Arrays.asList("BeanMembersShouldSerialize", "NonSerializableClass", "MissingSerialVersionUID"));
 
     /** Key to store the set of rule violations that were effectively suppressed by an annotation. */
-    private static final SimpleDataKey<Set<String>> KEY_SUPPRESSED_RULES =
+    private static final SimpleDataKey<Boolean> KEY_SUPPRESSED_RULES =
         DataMap.simpleDataKey("pmd.java.suppressed.rules");
 
     static final ViolationSuppressor JAVA_ANNOT_SUPPRESSOR = new ViolationSuppressor() {
@@ -74,6 +78,16 @@ final class AnnotationSuppressionUtil {
                 return new SuppressedViolation(rv, this, null);
             }
             return null;
+        }
+
+        @Override
+        public Set<UnusedSuppressorNode> getUnusedSuppressors(RootNode tree) {
+            return tree.descendants(ASTAnnotation.class)
+                       .crossFindBoundaries()
+                       .toStream()
+                       .map(AnnotationSuppressionUtil::getUnusedSuppressorNodes)
+                       .flatMap(Set::stream)
+                       .collect(Collectors.toSet());
         }
     };
 
@@ -144,7 +158,7 @@ final class AnnotationSuppressionUtil {
                         || "unused".equals(stringVal) && UNUSED_RULES.contains(rule.getName())
                         || "fallthrough".equals(stringVal) && rule instanceof ImplicitSwitchFallThroughRule
                     ) {
-                        annotation.getUserMap().computeIfAbsent(KEY_SUPPRESSED_RULES, HashSet::new).add(rule.getName());
+                        value.getUserMap().compute(KEY_SUPPRESSED_RULES, a -> Boolean.TRUE);
                         return true;
                     }
                 }
@@ -159,7 +173,65 @@ final class AnnotationSuppressionUtil {
      *
      * @param annotation An annotation
      */
-    public static Set<String> getRulesSuppressed(ASTAnnotation annotation) {
-        return annotation.getUserMap().getOrDefault(KEY_SUPPRESSED_RULES, Collections.emptySet());
+    private static Set<UnusedSuppressorNode> getUnusedSuppressorNodes(ASTAnnotation annotation) {
+        if (TypeTestUtil.isA(SuppressWarnings.class, annotation)) {
+            boolean entireAnnotationIsUnused = true;
+            Set<ASTMemberValue> unusedParts = new HashSet<>();
+            for (ASTMemberValue value : annotation.getFlatValue(ASTMemberValuePair.VALUE_ATTR)) {
+                boolean suppressedAny = annotation.getUserMap().getOrDefault(KEY_SUPPRESSED_RULES, Boolean.FALSE);
+                if (suppressedAny) {
+                    entireAnnotationIsUnused = false;
+                } else {
+                    Object constVal = value.getConstValue();
+                    if (constVal instanceof String) {
+                        String stringVal = (String) constVal;
+                        if (stringVal.startsWith("PMD")) {
+                            // we don't report other kinds of warnings, although maybe we should
+                            unusedParts.add(value);
+                        } else {
+                            entireAnnotationIsUnused = false;
+                        }
+                    }
+                }
+            }
+
+            if (entireAnnotationIsUnused) {
+                return Collections.singleton(
+                    new UnusedSuppressorNode() {
+                        @Override
+                        public Reportable getLocation() {
+                            return annotation;
+                        }
+
+                        @Override
+                        public String unusedReason() {
+                            return "Unnecessary PMD suppression annotation";
+                        }
+                    }
+                );
+            } else {
+                return toUnusedSuppressors(unusedParts);
+            }
+        }
+        return Collections.emptySet();
+    }
+
+    private static Set<UnusedSuppressorNode> toUnusedSuppressors(Set<ASTMemberValue> unusedParts) {
+        Set<UnusedSuppressorNode> unused = new HashSet<>();
+        for (ASTMemberValue value : unusedParts) {
+            unused.add(new UnusedSuppressorNode() {
+
+                @Override
+                public Reportable getLocation() {
+                    return value;
+                }
+
+                @Override
+                public String unusedReason() {
+                    return "Unnecessary PMD suppression";
+                }
+            });
+        }
+        return unused;
     }
 }

@@ -44,7 +44,7 @@ public final class RuleContext {
     // they are stack-local
 
     private static final Object[] NO_ARGS = new Object[0];
-    static final List<ViolationSuppressor> DEFAULT_SUPPRESSORS = listOf(ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR,
+    private static final List<ViolationSuppressor> DEFAULT_SUPPRESSORS = listOf(ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR,
                                                                         ViolationSuppressor.REGEX_SUPPRESSOR,
                                                                         ViolationSuppressor.XPATH_SUPPRESSOR);
 
@@ -185,7 +185,8 @@ public final class RuleContext {
         }
     }
 
-    void addViolationNoSuppress(Reportable reportable, AstInfo<?> astInfo,
+    @Experimental
+    public void addViolationNoSuppress(Reportable reportable, AstInfo<?> astInfo,
                                 String message, Object... formatArgs) {
         Objects.requireNonNull(reportable, "Node was null");
         Objects.requireNonNull(message, "Message was null");

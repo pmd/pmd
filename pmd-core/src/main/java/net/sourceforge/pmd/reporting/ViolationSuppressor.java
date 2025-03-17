@@ -138,7 +138,7 @@ public interface ViolationSuppressor {
 
                             @Override
                             public String unusedReason() {
-                                return "Unused suppression comment";
+                                return "Unnecessary PMD suppression comment";
                             }
                         }
                     );

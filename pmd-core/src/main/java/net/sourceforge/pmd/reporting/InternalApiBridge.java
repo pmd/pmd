@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.reporting;
 
+import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -28,6 +29,8 @@ public final class InternalApiBridge {
     public static Rule getRule(RuleContext ruleContext) {
         return ruleContext.getRule();
     }
+
+    public static List<ViolationSuppressor> DEFAULT_SUPPRESSORS = RuleContext.DEFAULT_SUPPRESSORS;
 
     /**
      * Create a new RuleContext.
