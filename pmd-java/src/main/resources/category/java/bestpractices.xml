@@ -1590,6 +1590,36 @@ class C {
             ]]></example>
     </rule>
 
+    <rule name="UnnecessaryWarningSuppression"
+          language="java"
+          since="7.12.0"
+          message="Unused suppression {0}."
+          class="net.sourceforge.pmd.lang.rule.internal.UnnecessaryPmdSuppressionRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unnecessarywarningsuppression">
+        <description>
+            This rule reports suppression comments and annotations that did not suppress any PMD violation.
+            Note that violations of this rule cannot be suppressed.
+
+            Please note:
+            - The rule will report those suppressions comments/annotations that did not suppress a violation
+            _during the current run_. That means you cannot run this rule separately from other rules, it must
+            always be run with all the rules that could produce a warning. This is most likely not a problem, as
+            you can just include this rule in your regular ruleset.
+            - The rule for now only reports annotations specific to PMD, like `@SuppressWarnings("PMD")`. For instance
+            `@SuppressWarnings("all")` is never reported as we cannot know if another tool is producing a
+            warning there that must be suppressed. In the future we might be able to check for other common ones
+            like `@SuppressWarnings("unchecked")` or `"fallthrough"`.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+            public class Something {
+                // Unless some rule triggered on the following line, this rule will report the comment:
+                private void foo() {} // NOPMD
+            }
+            ]]>
+        </example>
+    </rule>
 
     <rule name="UnusedAssignment"
           language="java"
@@ -1809,27 +1839,6 @@ Unused Private Method detects when a private method is declared but is unused.
 <![CDATA[
 public class Something {
     private void foo() {} // unused
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="UnusedPmdSuppression"
-          language="java"
-          since="7.12.0"
-          message="Unused suppression {0}."
-          class="net.sourceforge.pmd.lang.rule.internal.UnnecessaryPmdSuppressionRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedpmdsuppression">
-        <description>
-            This rule reports suppression comments and annotations that did not suppress anything.
-            Note that violations of this rule cannot be suppressed.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public class Something {
-    // Unless some rule triggered on the following line, this rule will report the comment:
-    private void foo() {} // NOPMD
 }
 ]]>
         </example>

@@ -41,7 +41,7 @@
         <expected-problems>2</expected-problems>
         <expected-linenumbers>4,5</expected-linenumbers>
         <expected-messages>
-            <message>Unused suppression comment</message>
+            <message>Unnecessary PMD suppression comment</message>
             <message>VIOLATION OF THE ORIGINAL RULE</message>
         </expected-messages>
         <code><![CDATA[

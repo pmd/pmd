@@ -44,7 +44,7 @@ public final class RuleContext {
     // they are stack-local
 
     private static final Object[] NO_ARGS = new Object[0];
-    private static final List<ViolationSuppressor> DEFAULT_SUPPRESSORS = listOf(ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR,
+    static final List<ViolationSuppressor> DEFAULT_SUPPRESSORS = listOf(ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR,
                                                                         ViolationSuppressor.REGEX_SUPPRESSOR,
                                                                         ViolationSuppressor.XPATH_SUPPRESSOR);
 

@@ -51,6 +51,7 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 import net.sourceforge.pmd.lang.rule.RuleSetWriter;
+import net.sourceforge.pmd.lang.rule.internal.UnnecessaryPmdSuppressionRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.log.internal.MessageReporterBase;
@@ -64,6 +65,7 @@ public abstract class AbstractRuleSetFactoryTest {
     private static ValidateDefaultHandler validateDefaultHandler;
     private static SAXParser saxParser;
 
+    // todo rename this field to validCoreRules or something. Make private.
     protected Set<String> validXPathClassNames = new HashSet<>();
     private final Set<String> languagesToSkip = new HashSet<>();
 
@@ -81,6 +83,7 @@ public abstract class AbstractRuleSetFactoryTest {
         this.languagesToSkip.add("dummy");
         this.languagesToSkip.addAll(Arrays.asList(languagesToSkip));
         validXPathClassNames.add(XPathRule.class.getName());
+        validXPathClassNames.add(UnnecessaryPmdSuppressionRule.class.getName());
     }
 
     public AbstractRuleSetFactoryTest(Language... languagesToSkip) {

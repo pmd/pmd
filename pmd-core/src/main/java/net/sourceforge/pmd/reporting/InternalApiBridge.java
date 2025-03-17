@@ -30,7 +30,7 @@ public final class InternalApiBridge {
         return ruleContext.getRule();
     }
 
-    public static List<ViolationSuppressor> DEFAULT_SUPPRESSORS = RuleContext.DEFAULT_SUPPRESSORS;
+    public static final List<ViolationSuppressor> DEFAULT_SUPPRESSORS = RuleContext.DEFAULT_SUPPRESSORS;
 
     /**
      * Create a new RuleContext.

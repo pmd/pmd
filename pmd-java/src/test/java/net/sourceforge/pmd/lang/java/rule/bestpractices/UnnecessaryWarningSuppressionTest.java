@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-class UnusedPmdSuppressionTest extends PmdRuleTst {
+class UnnecessaryWarningSuppressionTest extends PmdRuleTst {
 
     @Override
     protected Collection<? extends Rule> getExtraRules() {
@@ -24,7 +24,7 @@ class UnusedPmdSuppressionTest extends PmdRuleTst {
 
     static class FakeRuleThatReportsIncrements extends AbstractJavaRulechainRule {
 
-        public FakeRuleThatReportsIncrements() {
+        FakeRuleThatReportsIncrements() {
             super(ASTUnaryExpression.class);
             setLanguage(LanguageRegistry.PMD.getLanguageById("java"));
             setMessage("VIOLATION OF THE ORIGINAL RULE");
