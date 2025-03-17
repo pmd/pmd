@@ -1,3 +1,7 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.reporting;
 
 import java.util.List;
@@ -16,10 +20,6 @@ import net.sourceforge.pmd.util.CollectionUtil;
  */
 @Experimental
 public class PmdUnusedSuppressionRule extends AbstractRule {
-
-    public PmdUnusedSuppressionRule() {
-
-    }
 
 
     @Override

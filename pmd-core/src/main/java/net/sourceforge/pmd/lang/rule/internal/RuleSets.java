@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.InternalApiBridge;
 import net.sourceforge.pmd.lang.rule.Rule;
+import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.lang.rule.RuleSet.RuleSetBuilder;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
@@ -63,13 +64,20 @@ public class RuleSets {
             RuleSetBuilder noSuppressions = ruleSet.toBuilder();
             RuleSetBuilder onlySuppressions = ruleSet.toBuilder();
 
-            noSuppressions.removeIf(rule1 -> rule1 instanceof PmdUnusedSuppressionRule);
-            onlySuppressions.removeIf(rule1 -> !(rule1 instanceof PmdUnusedSuppressionRule));
+            noSuppressions.removeIf(rule1 -> followReference(rule1) instanceof PmdUnusedSuppressionRule);
+            onlySuppressions.removeIf(rule1 -> !(followReference(rule1) instanceof PmdUnusedSuppressionRule));
             rulesets.add(noSuppressions.build());
             suppressionRules.add(onlySuppressions.build());
         }
         rulesets.addAll(suppressionRules);
         this.ruleSets = Collections.unmodifiableList(rulesets);
+    }
+
+    private static Rule followReference(Rule rule) {
+        if (rule instanceof RuleReference) {
+            return followReference(((RuleReference) rule).getRule());
+        }
+        return rule;
     }
 
     /**
