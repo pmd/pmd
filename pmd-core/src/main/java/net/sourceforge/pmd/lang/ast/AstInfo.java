@@ -10,10 +10,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
@@ -159,6 +161,7 @@ public final class AstInfo<T extends RootNode> {
     /**
      * Wrapper around a suppression comment.
      */
+    @Experimental
     public interface SuppressionCommentWrapper {
         /** Message attached to the comment. */
         String getUserMessage();
@@ -166,5 +169,30 @@ public final class AstInfo<T extends RootNode> {
         /** Location of the comment, maybe the location of the comment token for instance. */
         Reportable getLocation();
 
+        @Experimental
+        class SuppressionCommentImpl<T extends Reportable> implements SuppressionCommentWrapper {
+            private final T token;
+            private final Function<? super T, String> messageGetter;
+
+            public SuppressionCommentImpl(T token, Function<? super T, String> messageGetter) {
+                this.token = token;
+                this.messageGetter = messageGetter;
+            }
+
+            public SuppressionCommentImpl(T token, String message) {
+                this.token = token;
+                this.messageGetter = t -> message;
+            }
+
+            @Override
+            public String getUserMessage() {
+                return messageGetter.apply(token);
+            }
+
+            @Override
+            public Reportable getLocation() {
+                return token;
+            }
+        }
     }
 }

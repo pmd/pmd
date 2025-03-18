@@ -4,14 +4,15 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.apex.ApexLanguageProcessor;
 import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
 import net.sourceforge.pmd.lang.ast.AstInfo;
+import net.sourceforge.pmd.lang.ast.AstInfo.SuppressionCommentWrapper;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.document.FileId;
@@ -27,10 +28,10 @@ public final class ASTApexFile extends AbstractApexNode.Single<CompilationUnit> 
 
     ASTApexFile(ParserTask task,
                 CompilationUnit compilationUnit,
-                Map<Integer, String> suppressMap,
+                Collection<? extends SuppressionCommentWrapper> suppressMap,
                 @NonNull ApexLanguageProcessor apexLang) {
         super(compilationUnit);
-        this.astInfo = new AstInfo<>(task, this).withSuppressMap(suppressMap);
+        this.astInfo = new AstInfo<>(task, this).withSuppressionComments(suppressMap);
         this.multifileAnalysis = apexLang.getMultiFileState();
         this.setRegion(TextRegion.fromOffsetLength(0, task.getTextDocument().getLength()));
     }

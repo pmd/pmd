@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
+import net.sourceforge.pmd.lang.ast.AstInfo.SuppressionCommentWrapper;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
@@ -157,8 +157,8 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
             return this;
         }
 
-        public DummyRootNode withNoPmdComments(Map<Integer, String> suppressMap) {
-            this.astInfo = astInfo.withSuppressMap(suppressMap);
+        public DummyRootNode withNoPmdComments(SuppressionCommentWrapper... suppressMap) {
+            this.astInfo = astInfo.withSuppressionComments(Arrays.asList(suppressMap));
             return this;
         }
 

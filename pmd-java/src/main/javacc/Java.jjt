@@ -326,12 +326,15 @@ PARSER_BEGIN(JavaParserImpl)
 package net.sourceforge.pmd.lang.java.ast;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Map;
+import net.sourceforge.pmd.lang.ast.AstInfo.SuppressionCommentWrapper;
+import net.sourceforge.pmd.lang.ast.AstInfo.SuppressionCommentWrapper.SuppressionCommentImpl;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -519,8 +522,8 @@ class JavaParserImpl {
     }
   }
 
-  public Map<Integer, String> getSuppressMap() {
-    return token_source.getSuppressMap();
+  public Collection<SuppressionCommentWrapper> getSuppressionComments() {
+    return token_source.getSuppressionComments();
   }
 
   public void setSuppressMarker(String marker) {
@@ -652,10 +655,7 @@ SPECIAL_TOKEN :
 {
   < SINGLE_LINE_COMMENT: "//"(~["\n","\r"])* ("\n"|"\r"|"\r\n")? >
     {
-        int startOfNOPMD = matchedToken.getImageCs().indexOf(suppressMarker, 0);
-        if (startOfNOPMD != -1) {
-            suppressMap.put(matchedToken.getReportLocation().getStartLine(), matchedToken.getImageCs().substring(startOfNOPMD + suppressMarker.length()));
-        }
+        processCommentForSuppression(matchedToken);
         comments.add(new JavaComment(matchedToken));
     }
 }

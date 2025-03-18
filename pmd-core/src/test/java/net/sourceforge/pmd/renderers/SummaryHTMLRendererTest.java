@@ -6,13 +6,13 @@ package net.sourceforge.pmd.renderers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Collections;
 import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.FooRule;
+import net.sourceforge.pmd.lang.ast.AstInfo.SuppressionCommentWrapper.SuppressionCommentImpl;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.InternalApiBridge;
@@ -146,8 +146,8 @@ class SummaryHTMLRendererTest extends AbstractRendererTest {
 
     private Consumer<FileAnalysisListener> createEmptyReportWithSuppression() {
         return listener -> {
-            DummyRootNode root = helper.parse("dummy code", getSourceCodeFilename())
-                                       .withNoPmdComments(Collections.singletonMap(1, "test"));
+            DummyRootNode root = helper.parse("dummy code", getSourceCodeFilename());
+            root = root.withNoPmdComments(new SuppressionCommentImpl<>(root, "test"));
 
             RuleContext ruleContext = InternalApiBridge.createRuleContext(listener, new FooRule());
             ruleContext.addViolationWithPosition(root, 1, 1, "suppress test");
