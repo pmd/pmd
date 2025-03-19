@@ -20,12 +20,12 @@ import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.AstInfo.SuppressionCommentWrapper;
-import net.sourceforge.pmd.lang.ast.AstInfo.SuppressionCommentWrapper.SuppressionCommentImpl;
 import net.sourceforge.pmd.lang.ast.LexException;
+import net.sourceforge.pmd.lang.ast.impl.SuppressionCommentImpl;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
+import net.sourceforge.pmd.reporting.ViolationSuppressor.SuppressionCommentWrapper;
 
 import io.github.apexdevtools.apexparser.ApexLexer;
 import io.github.apexdevtools.apexparser.CaseInsensitiveInputStream;

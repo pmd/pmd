@@ -10,19 +10,19 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.reporting.Reportable;
+import net.sourceforge.pmd.reporting.ViolationSuppressor;
+import net.sourceforge.pmd.reporting.ViolationSuppressor.SuppressionCommentWrapper;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.DataMap;
@@ -90,7 +90,7 @@ public final class AstInfo<T extends RootNode> {
      */
     @Deprecated
     public Map<Integer, String> getSuppressionComments() {
-        return CollectionUtil.mapView(suppressionComments, SuppressionCommentWrapper::getUserMessage);
+        return CollectionUtil.mapView(suppressionComments, ViolationSuppressor.SuppressionCommentWrapper::getUserMessage);
     }
 
 
@@ -161,41 +161,4 @@ public final class AstInfo<T extends RootNode> {
         );
     }
 
-    /**
-     * Wrapper around a suppression comment.
-     */
-    @Experimental
-    public interface SuppressionCommentWrapper {
-        /** Message attached to the comment. */
-        String getUserMessage();
-
-        /** Location of the comment, maybe the location of the comment token for instance. */
-        Reportable getLocation();
-
-        @Experimental
-        class SuppressionCommentImpl<T extends Reportable> implements SuppressionCommentWrapper {
-            private final T token;
-            private final Function<? super T, String> messageGetter;
-
-            public SuppressionCommentImpl(T token, Function<? super T, String> messageGetter) {
-                this.token = token;
-                this.messageGetter = messageGetter;
-            }
-
-            public SuppressionCommentImpl(T token, String message) {
-                this.token = token;
-                this.messageGetter = t -> message;
-            }
-
-            @Override
-            public String getUserMessage() {
-                return messageGetter.apply(token);
-            }
-
-            @Override
-            public Reportable getLocation() {
-                return token;
-            }
-        }
-    }
 }

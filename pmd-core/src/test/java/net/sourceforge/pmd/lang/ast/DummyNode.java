@@ -13,7 +13,6 @@ import java.util.Objects;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
-import net.sourceforge.pmd.lang.ast.AstInfo.SuppressionCommentWrapper;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
@@ -23,6 +22,7 @@ import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.CommentNode;
 import net.sourceforge.pmd.lang.rule.xpath.TextNode;
+import net.sourceforge.pmd.reporting.ViolationSuppressor.SuppressionCommentWrapper;
 
 public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
 

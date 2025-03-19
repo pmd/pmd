@@ -17,8 +17,8 @@ import java.util.regex.Pattern;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.AstInfo;
-import net.sourceforge.pmd.lang.ast.AstInfo.SuppressionCommentWrapper;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.Rule;
@@ -212,5 +212,18 @@ public interface ViolationSuppressor {
         Reportable getLocation();
 
         String unusedReason();
+    }
+
+    /**
+     * Wrapper around a suppression comment.
+     */
+    @Experimental
+    interface SuppressionCommentWrapper {
+        /** Message attached to the comment. */
+        String getUserMessage();
+
+        /** Location of the comment, maybe the location of the comment token for instance. */
+        Reportable getLocation();
+
     }
 }

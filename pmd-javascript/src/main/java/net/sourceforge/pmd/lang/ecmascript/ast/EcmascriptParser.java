@@ -21,14 +21,14 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.AstInfo;
-import net.sourceforge.pmd.lang.ast.AstInfo.SuppressionCommentWrapper;
-import net.sourceforge.pmd.lang.ast.AstInfo.SuppressionCommentWrapper.SuppressionCommentImpl;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.ast.impl.SuppressionCommentImpl;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextPos2d;
+import net.sourceforge.pmd.reporting.ViolationSuppressor.SuppressionCommentWrapper;
 
 public final class EcmascriptParser implements net.sourceforge.pmd.lang.ast.Parser {
     private static final Logger LOGGER = LoggerFactory.getLogger(EcmascriptParser.class);
