@@ -248,4 +248,20 @@
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>unrelated annotations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                @Test
+                static void foo() {
+                    int i = 0;
+                }
+                @Override
+                static void bar() {
+
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

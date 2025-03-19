@@ -174,7 +174,10 @@ public abstract class AbstractAnnotationSuppressor<A extends Node> implements Vi
     private Set<UnusedSuppressorNode> getUnusedSuppressorNodes(A annotation) {
         Set<UnusedSuppressorNode> unusedParts = new HashSet<>();
         MutableBoolean entireAnnotationIsUnused = new MutableBoolean(true);
+        MutableBoolean anySuppressor = new MutableBoolean(false);
         walkAnnotation(annotation, (annotationParam, stringValue) -> {
+            anySuppressor.setTrue();
+
             boolean suppressedAny = annotationParam.getUserMap().getOrDefault(KEY_SUPPRESSED_ANY_VIOLATION, Boolean.FALSE);
             if (suppressedAny) {
                 entireAnnotationIsUnused.setFalse();
@@ -188,7 +191,7 @@ public abstract class AbstractAnnotationSuppressor<A extends Node> implements Vi
             return false;
         });
 
-        if (entireAnnotationIsUnused.booleanValue()) {
+        if (anySuppressor.isTrue() && entireAnnotationIsUnused.isTrue()) {
             return Collections.singleton(makeFullAnnotationSuppressor(annotation));
         } else {
             return unusedParts;
