@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.annotation.Experimental;
@@ -85,7 +86,7 @@ public final class AstInfo<T extends RootNode> {
      * It is suppressed, if the line of the violation is contained in this suppress map.
      *
      * @return map of the suppress lines with the corresponding review comments.
-     * @deprecated Use {@link #getSuppressionCommentMap()}
+     * @deprecated Use {@link #getAllSuppressionComments()} or {@link #getSuppressionComment(int)}
      */
     @Deprecated
     public Map<Integer, String> getSuppressionComments() {
@@ -94,18 +95,20 @@ public final class AstInfo<T extends RootNode> {
 
 
     /**
-     * Returns the map of line numbers to suppression / review comments.
+     * Return the suppresson comment at the given line, or null if there is none.
+     */
+    public @Nullable SuppressionCommentWrapper getSuppressionComment(int lineNumber) {
+        return suppressionComments.get(lineNumber);
+    }
+
+    /**
+     * Return all suppression comments in the file.
      * Only single line comments are considered, that start with the configured
      * "suppress marker", which by default is {@link PMDConfiguration#DEFAULT_SUPPRESS_MARKER}.
      * The text after the suppress marker is used as a "review comment" and included in this map.
-     *
-     * <p>This map is later used to determine, if a violation is being suppressed.
-     * It is suppressed, if the line of the violation is contained in this suppress map.
-     *
-     * @return map of the suppress lines with the corresponding review comments.
      */
-    public Map<Integer, SuppressionCommentWrapper> getSuppressionCommentMap() {
-        return suppressionComments;
+    public Collection<SuppressionCommentWrapper> getAllSuppressionComments() {
+        return Collections.unmodifiableCollection(suppressionComments.values());
     }
 
     /**

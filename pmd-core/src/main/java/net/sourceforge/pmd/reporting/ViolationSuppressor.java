@@ -5,11 +5,11 @@
 package net.sourceforge.pmd.reporting;
 
 import java.util.AbstractSet;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -26,7 +26,6 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
-import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 import net.sourceforge.pmd.util.IteratorUtil;
@@ -97,7 +96,8 @@ public interface ViolationSuppressor {
      * Suppressor for regular NOPMD comments.
      *
      * @implNote This requires special support from the language, namely,
-     *     the parser must fill-in {@link AstInfo#getSuppressionCommentMap()}.
+     *     the parser must fill in suppression comments through
+     *     {@link AstInfo#withSuppressionComments(Collection)}.
      */
     ViolationSuppressor NOPMD_COMMENT_SUPPRESSOR = new ViolationSuppressor() {
         private final SimpleDataKey<Set<SuppressionCommentWrapper>> usedSuppressionComments =
@@ -111,8 +111,7 @@ public interface ViolationSuppressor {
         @Override
         public @Nullable SuppressedViolation suppressOrNull(RuleViolation rv, @NonNull Node node) {
             AstInfo<? extends RootNode> astInfo = node.getAstInfo();
-            Map<Integer, SuppressionCommentWrapper> noPmd = astInfo.getSuppressionCommentMap();
-            SuppressionCommentWrapper wrapper = noPmd.get(rv.getBeginLine());
+            SuppressionCommentWrapper wrapper = astInfo.getSuppressionComment(rv.getBeginLine());
             if (wrapper != null) {
                 astInfo.getUserMap().computeIfAbsent(usedSuppressionComments, HashSet::new).add(wrapper);
                 return new SuppressedViolation(rv, this, wrapper.getUserMessage());
@@ -123,7 +122,7 @@ public interface ViolationSuppressor {
         @Override
         public Set<UnusedSuppressorNode> getUnusedSuppressors(RootNode tree) {
             Set<SuppressionCommentWrapper> usedSuppressors = tree.getAstInfo().getUserMap().getOrDefault(usedSuppressionComments, Collections.emptySet());
-            Set<SuppressionCommentWrapper> allSuppressors = tree.getAstInfo().getSuppressionCommentMap().values().stream().collect(CollectionUtil.toMutableSet());
+            Set<SuppressionCommentWrapper> allSuppressors = new HashSet<>(tree.getAstInfo().getAllSuppressionComments());
             allSuppressors.removeAll(usedSuppressors);
             return new AbstractSet<UnusedSuppressorNode>() {
                 @Override
