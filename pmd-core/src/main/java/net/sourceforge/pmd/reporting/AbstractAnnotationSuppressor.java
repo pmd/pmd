@@ -4,19 +4,23 @@
 
 package net.sourceforge.pmd.reporting;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
+import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
@@ -80,27 +84,83 @@ public abstract class AbstractAnnotationSuppressor<A extends Node> implements Vi
     }
 
     private boolean annotationSuppresses(A annotation, Rule rule) {
-        return walkAnnotation(annotation, (parm, stringValue) -> {
+        List<AnnotationPartWrapper> applicableParts = new ArrayList<>();
+        walkAnnotation(annotation, (parm, stringValue) -> {
             if (annotationParamSuppresses(stringValue, rule)) {
-                parm.getUserMap().compute(KEY_SUPPRESSED_ANY_VIOLATION, a -> Boolean.TRUE);
-                return true;
+                applicableParts.add(new AnnotationPartWrapper(parm, stringValue));
             }
             return false;
         });
+
+        AnnotationPartWrapper mostSpecific = getMostSpecific(applicableParts);
+        if (mostSpecific != null) {
+            mostSpecific.node.getUserMap().compute(KEY_SUPPRESSED_ANY_VIOLATION, a -> Boolean.TRUE);
+            return true;
+        }
+        return false;
     }
 
+    /**
+     * If several parts match (eg "PMD.RuleName" and "PMD") then we take the most specific and mark it as used.
+     */
+    private static @Nullable AnnotationPartWrapper getMostSpecific(List<AnnotationPartWrapper> parts) {
+        if (parts.isEmpty()) {
+            return null;
+        } else if (parts.size() == 1) {
+            return parts.get(0);
+        }
+        parts.sort(AbstractAnnotationSuppressor::compareSpecificity);
+        if (parts.stream().allMatch(p -> isPmdSuppressor(p.stringValue))) {
+            // If they are all pmd suppressors then we can take the most specific and assume that
+            // the more generic
+            return parts.get(parts.size() - 1);
+        } else {
+            // Otherwise the non-pmd suppressors are found at the start of the list as they are
+            // classified as less-specific than any PMD suppressor.
+            return parts.get(0);
+        }
+    }
+
+    /**
+     * Walk the individual suppression specifications of an annotation (usually strings within the annotation).
+     * For each of those, call the callback. If the callback returns true, interrupt the walk and return true.
+     * Otherwise, continue the walk.
+     *
+     * @param annotation An annotation
+     * @param callbacks Callback object
+     *
+     * @return True if the callback returned true once
+     */
     protected abstract boolean walkAnnotation(A annotation, AnnotationWalkCallbacks callbacks);
 
+
+    /** Return the annotations attached to the given node. */
     protected abstract NodeStream<A> getAnnotations(Node n);
 
+    /** Return a nice toString for the given annotation. */
+    protected String getAnnotationName(A annotation) {
+        return "@SuppressWarnings annotation";
+    }
 
+
+    /**
+     * Return whether one of the annotation params suppresses the given rule.
+     * The default implementation uses sensible values, so call super.
+     */
     protected boolean annotationParamSuppresses(String stringVal, Rule rule) {
         return "PMD".equals(stringVal) || ("PMD." + rule.getName()).equals(stringVal) || "all".equals(stringVal);
     }
 
+    /** Callbacks for a walk over an annotation. */
     protected interface AnnotationWalkCallbacks {
 
-        boolean processNode(Node annotationParam, String stringValue);
+        /**
+         * Process one parameter of the annotation being walked.
+         *
+         * @param annotationParam The node corresponding to the parameter
+         * @param stringValue The string extracted from the node
+         */
+        boolean processNode(Node annotationParam, @NonNull String stringValue);
 
     }
 
@@ -112,16 +172,15 @@ public abstract class AbstractAnnotationSuppressor<A extends Node> implements Vi
      * @param annotation An annotation
      */
     private Set<UnusedSuppressorNode> getUnusedSuppressorNodes(A annotation) {
-        Set<Node> unusedParts = new HashSet<>();
-        MutableBoolean entireAnnotationIsUnused = new MutableBoolean(false);
+        Set<UnusedSuppressorNode> unusedParts = new HashSet<>();
+        MutableBoolean entireAnnotationIsUnused = new MutableBoolean(true);
         walkAnnotation(annotation, (annotationParam, stringValue) -> {
             boolean suppressedAny = annotationParam.getUserMap().getOrDefault(KEY_SUPPRESSED_ANY_VIOLATION, Boolean.FALSE);
             if (suppressedAny) {
                 entireAnnotationIsUnused.setFalse();
             } else {
-                if (stringValue.startsWith("PMD")) {
-                    // we don't report other kinds of warnings, although maybe we should
-                    unusedParts.add(annotationParam);
+                if (isPmdSuppressor(stringValue)) {
+                    unusedParts.add(makeAnnotationPartSuppressor(annotation, annotationParam, stringValue));
                 } else {
                     entireAnnotationIsUnused.setFalse();
                 }
@@ -130,39 +189,84 @@ public abstract class AbstractAnnotationSuppressor<A extends Node> implements Vi
         });
 
         if (entireAnnotationIsUnused.booleanValue()) {
-            return Collections.singleton(new UnusedSuppressorNode() {
-                @Override
-                public Reportable getLocation() {
-                    return annotation;
-                }
-
-                @Override
-                public String unusedReason() {
-                    return "Unnecessary PMD suppression annotation";
-                }
-            });
+            return Collections.singleton(makeFullAnnotationSuppressor(annotation));
         } else {
-            return toUnusedSuppressors(unusedParts);
+            return unusedParts;
         }
     }
 
-    private static Set<UnusedSuppressorNode> toUnusedSuppressors(Set<Node> unusedParts) {
-        Set<UnusedSuppressorNode> unused = new HashSet<>();
-        for (Node value : unusedParts) {
-            unused.add(new UnusedSuppressorNode() {
-
-                @Override
-                public Reportable getLocation() {
-                    return value;
-                }
-
-                @Override
-                public String unusedReason() {
-                    return "Unnecessary PMD suppression";
-                }
-            });
-        }
-        return unused;
+    private static boolean isPmdSuppressor(String stringValue) {
+        return "PMD".equals(stringValue) || stringValue.startsWith("PMD.");
     }
 
+    private SuppressorNodeImpl makeAnnotationPartSuppressor(A annotation, Node annotationPart, String stringValue) {
+        String message = "Unnecessary suppression \"" + stringValue + "\" in " + getAnnotationName(annotation);
+        return new SuppressorNodeImpl(annotationPart, message);
+    }
+
+    private SuppressorNodeImpl makeFullAnnotationSuppressor(A annotation) {
+        String message = "Unnecessary " + getAnnotationName(annotation);
+        return new SuppressorNodeImpl(annotation, message);
+    }
+
+    private static final class SuppressorNodeImpl implements UnusedSuppressorNode {
+        private final Node location;
+        private final String message;
+
+        SuppressorNodeImpl(Node node, String message) {
+            this.location = node;
+            this.message = message;
+        }
+
+        @Override
+        public Reportable getLocation() {
+            return location;
+        }
+
+        @Override
+        public String unusedReason() {
+            return message;
+        }
+    }
+
+
+    private static int compareSpecificity(AnnotationPartWrapper fstPart, AnnotationPartWrapper sndPart) {
+        String fst = fstPart.stringValue;
+        String snd = sndPart.stringValue;
+
+        if (fst.equals(snd)) {
+            return 0;
+        }
+        if ("all".equals(snd)) {
+            return 1;
+        } else if ("all".equals(fst)) {
+            return -1;
+        }
+
+        // this is the case for "fallthrough" and such, they may suppress warnings that PMD did not cause
+        if (!isPmdSuppressor(snd)) {
+            return 1;
+        } else if (!isPmdSuppressor(fst)) {
+            return -1;
+        }
+
+        if ("PMD".equals(snd)) {
+            return 1;
+        } else if ("PMD".equals(fst)) {
+            return -1;
+        } else {
+            throw AssertionUtil.shouldNotReachHere("Logically if we are here then both strings are of the form PMD.RuleName and should therefore be equal!");
+        }
+    }
+
+
+    private static final class AnnotationPartWrapper {
+        private final Node node;
+        private final String stringValue;
+
+        private AnnotationPartWrapper(Node node, String stringValue) {
+            this.node = node;
+            this.stringValue = stringValue;
+        }
+    }
 }

@@ -18,7 +18,8 @@ class UnnecessaryWarningSuppressionTest extends PmdRuleTst {
 
     @Override
     protected Collection<? extends Rule> getExtraRules() {
-        return listOf(new FakeRuleThatReportsIncrements());
+        return listOf(new FakeRuleThatReportsIncrements(),
+                      new FakeRuleThatReportsDecrements());
     }
 
 
@@ -27,13 +28,31 @@ class UnnecessaryWarningSuppressionTest extends PmdRuleTst {
         FakeRuleThatReportsIncrements() {
             super(ASTUnaryExpression.class);
             setLanguage(LanguageRegistry.PMD.getLanguageById("java"));
-            setMessage("VIOLATION OF THE ORIGINAL RULE");
+            setMessage("VIOLATION OF THE ORIGINAL RULE (++)");
             setName(getClass().getSimpleName());
         }
 
         @Override
         public Object visit(ASTUnaryExpression node, Object data) {
-            if (!node.getOperator().isPure()) {
+            if (node.getOperator().isIncrement()) {
+                asCtx(data).addViolation(node);
+            }
+            return null;
+        }
+    }
+
+    static class FakeRuleThatReportsDecrements extends AbstractJavaRulechainRule {
+
+        FakeRuleThatReportsDecrements() {
+            super(ASTUnaryExpression.class);
+            setLanguage(LanguageRegistry.PMD.getLanguageById("java"));
+            setMessage("VIOLATION OF THE ORIGINAL RULE (--)");
+            setName(getClass().getSimpleName());
+        }
+
+        @Override
+        public Object visit(ASTUnaryExpression node, Object data) {
+            if (node.getOperator().isDecrement()) {
                 asCtx(data).addViolation(node);
             }
             return null;

@@ -77,8 +77,7 @@ final class JavaAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnn
             for (ASTMemberValue value : annotation.getFlatValue(ASTMemberValuePair.VALUE_ATTR)) {
                 Object constVal = value.getConstValue();
                 if (constVal instanceof String) {
-                    String stringVal = (String) constVal;
-                    if (callbacks.processNode(value, stringVal)) {
+                    if (callbacks.processNode(value, (String) constVal)) {
                         return true;
                     }
                 }

@@ -9,7 +9,7 @@
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
         <expected-messages>
-            <message>VIOLATION OF THE ORIGINAL RULE</message>
+            <message>VIOLATION OF THE ORIGINAL RULE (++)</message>
         </expected-messages>
         <code><![CDATA[
             public class Foo {
@@ -42,7 +42,7 @@
         <expected-linenumbers>4,5</expected-linenumbers>
         <expected-messages>
             <message>Unnecessary PMD suppression comment</message>
-            <message>VIOLATION OF THE ORIGINAL RULE</message>
+            <message>VIOLATION OF THE ORIGINAL RULE (++)</message>
         </expected-messages>
         <code><![CDATA[
             public class Foo {
@@ -50,6 +50,200 @@
 
                     int i = 0; // NOPMD
                     i++;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>comment suppression (several comments)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary PMD suppression comment</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                static {
+
+                    int i = 0; // NOPMD
+                    i++; // NOPMD
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>annotation suppression (all)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                @SuppressWarnings("all")
+                static void foo() {
+                    int i = 0;
+                    i++;
+                }
+                @SuppressWarnings("all")
+                static void bar() {
+
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>annotation suppression (PMD)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary @SuppressWarnings annotation</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                @SuppressWarnings("PMD")
+                static void foo() {
+                    int i = 0;
+                    i++;
+                }
+                @SuppressWarnings("PMD")
+                static void bar() {
+
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>annotation suppression (specific rule)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary @SuppressWarnings annotation</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                @SuppressWarnings("PMD.FakeRuleThatReportsIncrements")
+                static void foo() {
+                    int i = 0;
+                    i++;
+                }
+                @SuppressWarnings("PMD.FakeRuleThatReportsIncrements")
+                static void bar() {
+
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>annotation suppression (multiple parts, specific rule)</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,7</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary suppression "PMD" in @SuppressWarnings annotation</message>
+            <message>Unnecessary @SuppressWarnings annotation</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                @SuppressWarnings({"PMD.FakeRuleThatReportsIncrements", "PMD"})
+                static void foo() {
+                    int i = 0;
+                    i++;
+                }
+                @SuppressWarnings({"PMD.FakeRuleThatReportsIncrements", "PMD"})
+                static void bar() {
+
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>annotation suppression (multiple parts, specific rule, inverted)</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,7</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary suppression "PMD" in @SuppressWarnings annotation</message>
+            <message>Unnecessary @SuppressWarnings annotation</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                @SuppressWarnings({"PMD", "PMD.FakeRuleThatReportsIncrements"})
+                static void foo() {
+                    int i = 0;
+                    i++;
+                }
+                @SuppressWarnings({"PMD", "PMD.FakeRuleThatReportsIncrements"})
+                static void bar() {
+
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>annotation suppression (multiple parts, specific rule, all)</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,7</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary suppression "PMD.FakeRuleThatReportsIncrements" in @SuppressWarnings annotation</message>
+            <message>Unnecessary suppression "PMD.FakeRuleThatReportsIncrements" in @SuppressWarnings annotation</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                @SuppressWarnings({"all", "PMD.FakeRuleThatReportsIncrements"})
+                static void foo() {
+                    int i = 0;
+                    i++;
+                }
+                @SuppressWarnings({"all", "PMD.FakeRuleThatReportsIncrements"})
+                static void bar() {
+
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>annotation suppression (multiple parts, specific rule, all, inverted)</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,7</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary suppression "PMD.FakeRuleThatReportsIncrements" in @SuppressWarnings annotation</message>
+            <message>Unnecessary suppression "PMD.FakeRuleThatReportsIncrements" in @SuppressWarnings annotation</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                @SuppressWarnings({"PMD.FakeRuleThatReportsIncrements", "all"})
+                static void foo() {
+                    int i = 0;
+                    i++;
+                }
+                @SuppressWarnings({"PMD.FakeRuleThatReportsIncrements", "all"})
+                static void bar() {
+
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code disabled="true">
+        <description>annotation suppression (multiple rules)</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,8</expected-linenumbers>
+        <expected-messages>
+            <!--
+            TODO what is the correct behavior here? rule 1 is suppressed by "PMD.FakeRule...",
+               rule 2 is suppressed by "PMD", so both are in use. Should we report "PMD.FakeRule..."
+               because it is a subset of "PMD"?
+            -->
+            <message>Unnecessary suppression "PMD.FakeRuleThatReportsIncrements" in @SuppressWarnings annotation</message>
+            <message>Unnecessary suppression "PMD.FakeRuleThatReportsIncrements" in @SuppressWarnings annotation</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                @SuppressWarnings({"PMD.FakeRuleThatReportsIncrements", "PMD"})
+                static void foo() {
+                    int i = 0;
+                    i++;
+                    i--;
+                }
+                @SuppressWarnings({"PMD.FakeRuleThatReportsIncrements", "all"})
+                static void bar() {
+
                 }
             }
             ]]></code>
