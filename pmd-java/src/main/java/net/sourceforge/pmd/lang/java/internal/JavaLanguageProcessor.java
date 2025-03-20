@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.internal;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -11,9 +13,6 @@ import java.util.Objects;
 import java.util.OptionalInt;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.Opcodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -151,73 +150,55 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     }
 
     static void checkClasspathVersionMatchesAnalyzedVersion(ClassLoader loader, LanguageVersion currentJavaVersion) {
-        OptionalInt jdkVer = getVersionOfObject(loader);
+        OptionalInt jdkVer = findClassVersion(loader, "java/lang/Object.class");
         if (!jdkVer.isPresent()) {
             // there is a problem, we couldn't load java.lang.Object from the classpath...
             return;
         }
 
-        int version = jdkVer.getAsInt();
-        version = Math.max(version, 3); // our versions start at 3
-
-        int analysisVersion = JavaLanguageProperties.getInternalJdkVersion(currentJavaVersion);
-
-
-        String message =
-            "JDK classes on the auxclasspath are detected to be for Java {}, but you are analyzing Java {} sources. "
-                + "Please add the JDK classes of Java {} on your auxclasspath (see https://docs.pmd-code.org/latest/pmd_languages_java.html#providing-the-auxiliary-classpath).";
-        Object[] params = {version, analysisVersion, analysisVersion};
-        if (analysisVersion > version) {
-            // This is a warning because it's much more likely that this causes problems.
-            LOG.warn(message, params);
-        } else {
-            LOG.debug(message, params);
-        }
-    }
-
-
-    static OptionalInt getVersionOfObject(ClassLoader classLoader) {
-        OptionalInt internalVersion = findClassVersion(classLoader, "java/lang/Object.class");
-        if (!internalVersion.isPresent()) {
-            return OptionalInt.empty();
-        }
-        int version = internalVersion.getAsInt();
-        int major = version & 0xffff;
         // https://javaalmanac.io/bytecode/versions/
         // Our java versions start at 1.3, which is version 47.0.
         // Minor version is only non-zero in 1.1 so we don't care about it
         // Then it increments by 1 for each version.
+        int major = jdkVer.getAsInt();
         assert major >= 45 : "major version is less than 45 (Java 1.0)";
-        int jdkVersion = major - 44;
-        return OptionalInt.of(jdkVersion); // this ranges from 1,2,3...25 for JDK 25 for instance.
+        major = Math.max(major - 44, 3); // our versions start at 3
+
+        int analysisVersion = JavaLanguageProperties.getInternalJdkVersion(currentJavaVersion);
+
+
+        if (analysisVersion != major) {
+            LOG.warn(
+                "JDK classes on the auxclasspath are detected to be for Java {}, but you are analyzing Java {} sources. "
+                    + "This may cause false positives and other incorrect type resolution results. "
+                    + "Please add the JDK classes of Java {} on your auxclasspath (see https://docs.pmd-code.org/latest/pmd_languages_java.html#providing-the-auxiliary-classpath).",
+                major, analysisVersion, analysisVersion);
+        }
     }
 
+    // Note: we could use ASM for this but ASM reads the entire class file greedily when
+    // we just need the first 8 bytes. Also, ASM forces us to specify an API version that
+    // we must update manually when the class file format is updated, so using it is not
+    // as forward compatible as just checking the first bytes manually.
     private static OptionalInt findClassVersion(ClassLoader classLoader, String classFilePath) {
-
-        class FoundVersionException extends RuntimeException {
-            private final int internalVersion;
-
-            private FoundVersionException(int internalVersion) {
-                this.internalVersion = internalVersion;
-            }
-        }
-
         try (InputStream stream = classLoader.getResourceAsStream(classFilePath)) {
             if (stream == null) {
                 return OptionalInt.empty();
             }
-
-            ClassReader classReader = new ClassReader(stream);
-            try {
-                classReader.accept(new ClassVisitor(Opcodes.ASM9) {
-                    @Override
-                    public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-                        throw new FoundVersionException(version);
-                    }
-                }, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
-            } catch (FoundVersionException found) {
-                return OptionalInt.of(found.internalVersion);
+            // the class file header is 4 bytes for the magic number,
+            // 2 bytes for the minor version, 2 bytes for the major version
+            byte[] bytes = new byte[8];
+            if (stream.read(bytes) != bytes.length) {
+                return OptionalInt.empty();
             }
+
+            DataInputStream in = new DataInputStream(new ByteArrayInputStream(bytes));
+            if (in.readInt() != 0xCAFEBABE) { // class file magic number
+                return OptionalInt.empty();
+            }
+            int ignoredMinorVersion = in.readUnsignedShort();
+            int majorVersion = in.readUnsignedShort();
+            return OptionalInt.of(majorVersion);
         } catch (IOException ignored) {
         }
         return OptionalInt.empty();
