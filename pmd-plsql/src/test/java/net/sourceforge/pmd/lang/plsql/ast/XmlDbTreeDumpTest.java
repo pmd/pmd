@@ -43,4 +43,9 @@ class XmlDbTreeDumpTest extends BaseTreeDumpTest {
     void xmlQuery() {
         doTest("XMLQuery");
     }
+
+    @Test
+    void xmlType() {
+        doTest("XMLType");
+    }
 }
