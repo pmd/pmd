@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +24,6 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeAnnotationHelper.TypeAnnotationSet;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeAnnotationHelper.TypeAnnotationSetWithReferences;
 import net.sourceforge.pmd.lang.java.types.JClassType;
-import net.sourceforge.pmd.lang.java.types.JIntersectionType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.LexicalScope;
@@ -73,8 +71,9 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
             }
 
             @Override
-            protected boolean canReenter() {
-                return typeParameters != null;
+            protected void finishParse(boolean failed) {
+                // Mark the bound as ready to parse, after any type annotations have been collected
+                typeParameters.forEach(tp -> ((TParamStub) tp.getSymbol()).setCanComputeBound());
             }
         };
     }
@@ -274,25 +273,12 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
             if (typeAnnots != null) {
                 // apply type annotations here
                 // this may change type parameters
-                boolean typeParamsWereMutated = typeAnnots.forEach(this::acceptAnnotationAfterParse);
-                if (typeParamsWereMutated) {
-                    // Some type parameters were mutated. We need to replace
-                    // the old tparams with the annotated ones in all other
-                    // types of this signature.
-
-                    // This substitution looks like the identity mapping.
-                    // It actually does work, because JTypeVar#equals considers only the symbol
-                    // and not the type annotations. So unannotated tvars in the type will be
-                    // matched with the annotated tvar that has the same symbol.
-                    Substitution subst = Substitution.mapping(typeParameters, typeParameters);
-                    this.returnType = this.returnType.subst(subst);
-                    this.parameterTypes = TypeOps.subst(parameterTypes, subst);
-                    this.exceptionTypes = TypeOps.subst(exceptionTypes, subst);
-                }
+                typeAnnots.forEach(this::acceptAnnotationAfterParse);
             }
             // null this transient data out
             this.rawExceptions = null;
             this.typeAnnots = null;
+
         }
 
         public JTypeMirror applyReceiverAnnotations(JTypeMirror typeMirror) {
@@ -400,12 +386,12 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
             case TypeReference.METHOD_TYPE_PARAMETER_BOUND: {
                 assert typeParameters != null;
                 int tparamIdx = tyRef.getTypeParameterIndex();
-                int boundIdx = tyRef.getTypeParameterBoundIndex();
 
                 JTypeVar tparam = typeParameters.get(tparamIdx);
-                final JTypeMirror newUb = computeNewUpperBound(path, annot, boundIdx, tparam.getUpperBound());
-                typeParameters.set(tparamIdx, tparam.withUpperBound(newUb));
-                return true;
+                TParamStub sym = (TParamStub) tparam.getSymbol();
+                assert sym != null;
+                sym.addAnnotationOnBound(tyRef, path, annot);
+                return false;
             }
             case TypeReference.METHOD_RECEIVER: {
                 if (receiverAnnotations == null) {
@@ -420,24 +406,5 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
             }
         }
 
-        private static JTypeMirror computeNewUpperBound(@Nullable TypePath path, SymAnnot annot, int boundIdx, JTypeMirror ub) {
-            final JTypeMirror newUb;
-            if (ub instanceof JIntersectionType) {
-                JIntersectionType intersection = (JIntersectionType) ub;
-
-                // Object is pruned from the component list
-                boundIdx = intersection.getPrimaryBound().isTop() ? boundIdx - 1 : boundIdx;
-
-                List<JTypeMirror> components = new ArrayList<>(intersection.getComponents());
-                JTypeMirror bound = components.get(boundIdx);
-                JTypeMirror newBound = TypeAnnotationHelper.applySinglePath(bound, path, annot);
-                components.set(boundIdx, newBound);
-                JTypeMirror newIntersection = intersection.getTypeSystem().glb(components);
-                newUb = newIntersection;
-            } else {
-                newUb = TypeAnnotationHelper.applySinglePath(ub, path, annot);
-            }
-            return newUb;
-        }
     }
 }

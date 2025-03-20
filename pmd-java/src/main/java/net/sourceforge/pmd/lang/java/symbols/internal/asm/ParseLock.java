@@ -55,7 +55,6 @@ abstract class ParseLock {
                 synchronized (this) {
                     logParseLockTrace("locked");
 
-
                     status = this.status;
                     if (status == ParseStatus.NOT_PARSED) {
                         this.status = ParseStatus.BEING_PARSED;
@@ -72,16 +71,12 @@ abstract class ParseLock {
                         // the status must be updated as last statement, so that
                         // other threads see the status FULL or FAILED only after finishParse()
                         // returns. Otherwise, some fields might not have been initialized.
-                        //
-                        // Note: the current thread might reenter the parsing logic through
-                        // finishParse() -> ... -> ensureParsed(). In that case the status is still BEING_PARSED,
-                        // and we don't call finishParse() again. See below for canReenter()
                         this.status = status;
 
                         assert status.isFinished : "Inconsistent status " + status;
                         assert postCondition() : "Post condition not satisfied after parsing sig " + this;
-                    } else if (status == ParseStatus.BEING_PARSED && !canReenter()) {
-                        throw new IllegalStateException("Thread is reentering the parse lock");
+                    } else if (status == ParseStatus.BEING_PARSED) {
+                        throw new IllegalStateException("Thread is reentering the parse lock " + this);
                     }
                 }
             } finally {
@@ -90,10 +85,6 @@ abstract class ParseLock {
             }
         }
         return status;
-    }
-
-    protected boolean canReenter() {
-        return false;
     }
 
     public boolean isFailed() {
