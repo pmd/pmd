@@ -54,6 +54,9 @@ public class TypeAnnotTestUtil {
         return sym.streamMethods(it -> it.nameEquals(fieldName)).findFirst().get();
     }
 
+    public static JMethodSig getCtorType(JClassType sym, int arity) {
+        return sym.getConstructors().stream().filter(it -> it.getArity() == arity).findFirst().get();
+    }
 
     public static JMethodSymbol getMethodSym(JClassSymbol sym, String fieldName) {
         return sym.getDeclaredMethods().stream().filter(it -> it.nameEquals(fieldName)).findFirst().get();

@@ -15,6 +15,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 /**
  * Common supertype for {@linkplain JMethodSymbol method}
@@ -30,6 +31,21 @@ public interface JExecutableSymbol extends JTypeParameterOwnerSymbol {
      * instance.
      */
     List<JFormalParamSymbol> getFormalParameters();
+
+    /**
+     * Return the return type under the given substitution.
+     * For a constructor, return the type of the owner. This type
+     * may be annotated.
+     */
+    default JTypeMirror getReturnType(Substitution subst) {
+        if (this instanceof JConstructorSymbol) {
+            TypeSystem ts = getTypeSystem();
+            return ts.declaration(getEnclosingClass()).subst(subst);
+        }
+        // JMethodSymbol has always had this method abstract so this branch
+        // should never be taken.
+        throw new UnsupportedOperationException("Default method was added for compatibility, will be removed");
+    }
 
 
     default boolean isDefaultMethod() {

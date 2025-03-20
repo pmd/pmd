@@ -27,6 +27,7 @@ abstract class AbstractAstAnnotableSym<T extends SymbolDeclaratorNode & Annotata
     @Override
     public PSet<SymAnnot> getDeclaredAnnotations() {
         if (annots == null) {
+            // todo filter out type annotations
             annots = SymbolResolutionPass.buildSymbolicAnnotations(node.getDeclaredAnnotations());
         }
         return annots;
