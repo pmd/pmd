@@ -59,17 +59,17 @@ class TParamStub implements JTypeParameterSymbol {
                 "Can't compute upper bound of " + name + " in " + owner.getEnclosingTypeParameterOwner());
         }
         JTypeMirror bound = sigParser.parseTypeVarBound(owner.getLexicalScope(), boundSignature);
-        if (typeAnnotationsOnBound != null) {
-            // apply all type annotations.
-            return typeAnnotationsOnBound.reduce(
-                bound,
-                (tyRef, path, annot, acc) -> {
-                    int boundIdx = tyRef.getTypeParameterBoundIndex();
-
-                    return applyTypeAnnotationToBound(path, annot, boundIdx, acc);
-                });
+        if (typeAnnotationsOnBound == null) {
+            return bound;
         }
-        return bound;
+        // apply all type annotations.
+        return typeAnnotationsOnBound.reduce(
+            bound,
+            (tyRef, path, annot, acc) -> {
+                int boundIdx = tyRef.getTypeParameterBoundIndex();
+
+                return applyTypeAnnotationToBound(path, annot, boundIdx, acc);
+            });
     }
 
     private static JTypeMirror applyTypeAnnotationToBound(@Nullable TypePath path, SymAnnot annot, int boundIdx, JTypeMirror ub) {
