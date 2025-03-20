@@ -129,7 +129,12 @@ public interface JTypeVar extends SubstVar {
      * @param newUB New upper bound
      *
      * @return a new tvar
+     *
+     * @deprecated There is no real use case for mutating the upper bound.
+     *  Also, the bound could have been changed to really anything, which means
+     *  it wasn't necessarily correct for two of those type vars to compare equals.
      */
+    @Deprecated
     JTypeVar withUpperBound(@NonNull JTypeMirror newUB);
 
     @Override // refine return type
