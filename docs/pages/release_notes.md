@@ -15,10 +15,15 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀 New and noteworthy
 
 ### 🐛 Fixed Issues
+* java
+  * [#5587](https://github.com/pmd/pmd/issues/5587): \[java] Thread deadlock during PMD analysis in ParseLock.getFinalStatus
 * java-bestpractices
   * [#5369](https://github.com/pmd/pmd/issues/5369): \[java] UnusedPrivateMethod false positives with lombok.val
 
 ### 🚨 API Changes
+
+- {% jdoc java::lang.java.types.JTypeVar#withUpperbound(java::types.JTypeMirror) %} is deprecated. It was previously meant to be used
+  internally and not needed anymore.
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
