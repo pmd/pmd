@@ -130,9 +130,9 @@ public interface JTypeVar extends SubstVar {
      *
      * @return a new tvar
      *
-     * @deprecated There is no real use case for mutating the upper bound.
-     *  Also, the bound could have been changed to really anything, which means
-     *  it wasn't necessarily correct for two of those type vars to compare equals.
+     * @deprecated Since 7.12.0. There is no real use case for mutating the upper bound.
+     *     Also, the bound could have been changed to really anything, which means
+     *     it wasn't necessarily correct for two of those type vars to compare equals.
      */
     @Deprecated
     JTypeVar withUpperBound(@NonNull JTypeMirror newUB);
