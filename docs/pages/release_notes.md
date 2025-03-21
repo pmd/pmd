@@ -22,7 +22,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚨 API Changes
 
-- {% jdoc java::lang.java.types.JTypeVar#withUpperbound(java::types.JTypeMirror) %} is deprecated. It was previously meant to be used
+- {% jdoc !!java::lang.java.types.JTypeVar#withUpperbound(java::types.JTypeMirror) %} is deprecated. It was previously meant to be used
   internally and not needed anymore.
 
 ### ✨ Merged pull requests
