@@ -16,20 +16,20 @@ is_cygwin() {
 
 cygwin_paths() {
     # For Cygwin, switch paths to Windows format before running java
-    if ${cygwin} ; then
-        [ -n "${JAVA_HOME}" ] && JAVA_HOME=$(cygpath --windows "${JAVA_HOME}")
-        [ -n "${JAVAFX_HOME}" ] && JAVAFX_HOME=$(cygpath --windows "${JAVAFX_HOME}")
-        [ -n "${DIRECTORY}" ] && DIRECTORY=$(cygpath --windows "${DIRECTORY}")
-        classpath=$(cygpath --path --windows "${classpath}")
+    if [ "$cygwin" = true ] ; then
+        [ -n "$JAVA_HOME" ] && JAVA_HOME=$(cygpath --windows "$JAVA_HOME")
+        [ -n "$JAVAFX_HOME" ] && JAVAFX_HOME=$(cygpath --windows "$JAVAFX_HOME")
+        [ -n "$DIRECTORY" ] && DIRECTORY=$(cygpath --windows "$DIRECTORY")
+        classpath=$(cygpath --path --windows "$classpath")
     fi
 }
 
 convert_cygwin_vars() {
     # If cygwin, convert to Unix form before manipulating
-    if ${cygwin} ; then
-        [ -n "${JAVA_HOME}" ] && JAVA_HOME=$(cygpath --unix "${JAVA_HOME}")
-        [ -n "${JAVAFX_HOME}" ] && JAVAFX_HOME=$(cygpath --unix "${JAVAFX_HOME}")
-        [ -n "${CLASSPATH}" ] && CLASSPATH=$(cygpath --path --unix "${CLASSPATH}")
+    if [ "$cygwin" = true ] ; then
+        [ -n "$JAVA_HOME" ] && JAVA_HOME=$(cygpath --unix "$JAVA_HOME")
+        [ -n "$JAVAFX_HOME" ] && JAVAFX_HOME=$(cygpath --unix "$JAVAFX_HOME")
+        [ -n "$CLASSPATH" ] && CLASSPATH=$(cygpath --path --unix "$CLASSPATH")
     fi
 }
 
@@ -47,7 +47,7 @@ java_heapsize_settings() {
 }
 
 set_lib_dir() {
-  if [ -z "${LIB_DIR}" ]; then
+  if [ -z "$LIB_DIR" ]; then
     # Allow for symlinks to this script
     if [ -L "$0" ]; then
       script_real_loc=$(readlink "$0")
@@ -61,13 +61,13 @@ set_lib_dir() {
 }
 
 check_lib_dir() {
-  if [ ! -e "${LIB_DIR}" ]; then
-    echo "The jar directory [${LIB_DIR}] does not exist"
+  if [ ! -e "$LIB_DIR" ]; then
+    echo "The jar directory [$LIB_DIR] does not exist"
   fi
 }
 
 set_conf_dir() {
-  if [ -z ${CONF_DIR} ]; then
+  if [ -z "$CONF_DIR" ]; then
     # Allow for symlinks to this script
     if [ -L "$0" ]; then
       script_real_loc=$(readlink "$0")
@@ -81,8 +81,8 @@ set_conf_dir() {
 }
 
 check_conf_dir() {
-  if [ ! -e "${CONF_DIR}" ]; then
-    echo "The configuration directory [${CONF_DIR}] does not exist"
+  if [ ! -e "$CONF_DIR" ]; then
+    echo "The configuration directory [$CONF_DIR] does not exist"
   fi
 }
 
@@ -116,7 +116,7 @@ determine_java_version() {
 }
 
 jre_specific_vm_options() {
-  if [ "${APPNAME}" = "designer" ]
+  if [ "$APPNAME" = "designer" ]
   then
     options=""
 
