@@ -1,0 +1,41 @@
+# syntax=docker/dockerfile:1
+# https://docs.docker.com/reference/dockerfile/
+
+#
+# BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+#
+
+# This Dockerfile doesn't need a build context.
+# Build this locally via: "docker build --load -t pmdcode/pmd:latest-bookworm-slim - < Dockerfile.bookworm-slim"
+# Run it with "docker run --rm --tty pmdcode/pmd:latest-bookworm-slim --version"
+
+ARG JAVA_VERSION=21
+ARG PMD_VERSION=7.11.0
+
+FROM eclipse-temurin:${JAVA_VERSION}
+
+# bring global args into scope
+ARG JAVA_VERSION
+ARG PMD_VERSION
+
+RUN apt-get update && apt-get -y install unzip && rm -rf /var/cache/apt
+
+RUN wget -O /pmd-dist-${PMD_VERSION}-bin.zip \
+    https://github.com/pmd/pmd/releases/download/pmd_releases%2F${PMD_VERSION}/pmd-dist-${PMD_VERSION}-bin.zip \
+    && unzip -d / /pmd-dist-${PMD_VERSION}-bin.zip \
+    && rm /pmd-dist-${PMD_VERSION}-bin.zip \
+    && mv /pmd-bin-${PMD_VERSION} /opt/pmd
+
+FROM debian:bookworm-slim
+ENV JAVA_HOME="/opt/java/openjdk"
+ENV PMD_HOME="/opt/pmd"
+ENV JAVAFX_HOME="/opt/java/openjfx"
+ENV PATH="${JAVA_HOME}/bin:${PMD_HOME}/bin:${PATH}"
+COPY --from=0 $JAVA_HOME $JAVA_HOME
+COPY --from=0 $PMD_HOME $PMD_HOME
+
+RUN mkdir /src
+VOLUME /src
+WORKDIR /src
+
+ENTRYPOINT ["pmd"]
