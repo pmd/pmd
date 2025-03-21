@@ -2015,6 +2015,11 @@
 
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
 <ul>
+  <li>java
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/5587">#5587</a>: [java] Thread deadlock during PMD analysis in ParseLock.getFinalStatus</li>
+    </ul>
+  </li>
   <li>java-bestpractices
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/5369">#5369</a>: [java] UnusedPrivateMethod false positives with lombok.val</li>
@@ -2023,6 +2028,11 @@
 </ul>
 
 <h3 id="-api-changes">🚨 API Changes</h3>
+
+<ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/JTypeVar.html#withUpperbound(net.sourceforge.pmd.types.JTypeMirror)"><code>JTypeVar#withUpperbound</code></a> is deprecated. It was previously meant to be used
+internally and not needed anymore.</li>
+</ul>
 
 <h3 id="-merged-pull-requests">✨ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
@@ -2062,7 +2072,7 @@
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Mar 20, 2025 <br />
+             Site last generated: Mar 21, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
