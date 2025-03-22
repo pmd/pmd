@@ -179,6 +179,7 @@ public abstract class RuleTst {
         }
 
         List<Integer> expected = test.getExpectedLineNumbers();
+        List<Integer> expectedEndLines = test.getExpectedEndLineNumbers();
         if (report.getViolations().size() != expected.size()) {
             throw new RuntimeException("Test setup error: number of expected line numbers " + expected.size()
                                            + " doesn't match number of violations " + report.getViolations().size()
@@ -188,13 +189,23 @@ public abstract class RuleTst {
 
         int index = 0;
         for (RuleViolation violation : report.getViolations()) {
-            Integer actual = violation.getBeginLine();
-            if (expected.get(index) != actual.intValue()) {
+            Integer actualBeginLine = violation.getBeginLine();
+            Integer actualEndLine = violation.getEndLine();
+
+            boolean isFailing = expected.get(index) != actualBeginLine.intValue();
+            isFailing |= (!expectedEndLines.isEmpty() && expectedEndLines.get(index) != actualEndLine.intValue());
+
+            if (isFailing) {
                 printReport(test, report);
             }
-            assertEquals(expected.get(index), actual,
+            assertEquals(expected.get(index), actualBeginLine,
                          '"' + test.getDescription() + "\" violation on wrong line number: violation number "
                              + (index + 1) + ".");
+            if (!expectedEndLines.isEmpty()) {
+                assertEquals(expectedEndLines.get(index), actualEndLine,
+                        '"' + test.getDescription() + "\" violation on wrong end line number: violation number "
+                            + (index + 1) + ".");
+            }
             index++;
         }
     }
@@ -206,7 +217,10 @@ public abstract class RuleTst {
             " -> Expected " + test.getExpectedProblems() + " problem(s), " + report.getViolations().size()
                 + " problem(s) found.");
         System.out.println(" -> Expected messages: " + test.getExpectedMessages());
-        System.out.println(" -> Expected line numbers: " + test.getExpectedLineNumbers());
+        System.out.println(" -> Expected begin line numbers: " + test.getExpectedLineNumbers());
+        if (!test.getExpectedEndLineNumbers().isEmpty()) {
+            System.out.println(" -> Expected   end line numbers: " + test.getExpectedEndLineNumbers());
+        }
         System.out.println();
         StringWriter reportOutput = new StringWriter();
         TextRenderer renderer = new TextRenderer();
