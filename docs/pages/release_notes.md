@@ -14,10 +14,18 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+#### ✨ New Rules
+
+* The new Java rule {% rule java/bestpractices/ImplicitFunctionalInterface %} reports functional interfaces that were
+  not explicitly declared as such with the annotation `@FunctionalInterface`. If an interface is accidentally a functional
+  interface, then it should bear a `@SuppressWarnings("PMD.ImplicitFunctionalInterface")`
+  annotation to make this clear.
+
 ### 🐛 Fixed Issues
 * java
   * [#5587](https://github.com/pmd/pmd/issues/5587): \[java] Thread deadlock during PMD analysis in ParseLock.getFinalStatus
 * java-bestpractices
+  * [#2849](https://github.com/pmd/pmd/issues/2849): \[java] New Rule: ImplicitFunctionalInterface
   * [#5369](https://github.com/pmd/pmd/issues/5369): \[java] UnusedPrivateMethod false positives with lombok.val
 * plsql
   * [#5521](https://github.com/pmd/pmd/issues/5521): \[plsql] Long parse time and eventually parse error with XMLAGG order by clause

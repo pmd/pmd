@@ -684,7 +684,7 @@ log.debug("log something expensive: {}", this::calculateExpensiveLoggingText);
 
     <rule name="ImplicitFunctionalInterface"
           language="java"
-          since="7.1.0"
+          since="7.12.0"
           message="Annotate this interface with @FunctionalInterface or with @SuppressWarnings(&quot;PMD.ImplicitFunctionalInterface&quot;) to clarify your intent."
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.ImplicitFunctionalInterfaceRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#implicitfunctionalinterface">
