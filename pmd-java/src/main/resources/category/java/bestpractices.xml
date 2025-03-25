@@ -682,6 +682,42 @@ log.debug("log something expensive: {}", this::calculateExpensiveLoggingText);
         </example>
     </rule>
 
+    <rule name="ImplicitFunctionalInterface"
+          language="java"
+          since="7.12.0"
+          message="Annotate this interface with @FunctionalInterface or with @SuppressWarnings(&quot;PMD.ImplicitFunctionalInterface&quot;) to clarify your intent."
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.ImplicitFunctionalInterfaceRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#implicitfunctionalinterface">
+        <description>
+            Reports functional interfaces that were not explicitly declared as such with
+            the annotation `@FunctionalInterface`. If an interface is accidentally a functional
+            interface, then it should bear a `@SuppressWarnings(&quot;PMD.ImplicitFunctionalInterface&quot;)`
+            annotation to make this clear.
+        </description>
+        <priority>2</priority>
+        <example>
+            <![CDATA[
+            // The intent on this declaration is unclear, and the rule will report it.
+            public interface MyInterface {
+                void doSomething();
+            }
+
+            // This is clearly intended as a functional interface.
+            @FunctionalInterface
+            public interface MyInterface {
+                void doSomething();
+            }
+
+            // This is clearly NOT intended as a functional interface.
+            @SuppressWarnings("PMD.ImplicitFunctionalInterface")
+            public interface MyInterface {
+                void doSomething();
+            }
+            ]]>
+        </example>
+    </rule>
+
+
     <rule name="JUnit4SuitesShouldUseSuiteAnnotation"
           language="java"
           since="4.0"
