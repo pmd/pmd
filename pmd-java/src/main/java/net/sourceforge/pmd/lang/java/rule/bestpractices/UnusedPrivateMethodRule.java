@@ -94,29 +94,29 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
             .map(NodeStream.<MethodUsage>asInstanceOf(ASTMethodCall.class, ASTMethodReference.class))
             .forEach(ref -> {
                 final JExecutableSymbol sym = getJExecutableSymbol(ref);
-                filterUsedMethods(methods,
-                    ref,
-                    ref.getMethodName(),
-                    sym.tryGetNode() != null
+                final String methodName = ref.getMethodName();
+                removeUnused(
+                    methods,
+                    methodName, sym.tryGetNode() != null
                         ? sym.tryGetNode()
-                        : cache.get(sym));
+                        : cache.get(sym), ref,
+                    methods.get(methodName));
             });
         return methods;
     }
 
-    private static void filterUsedMethods(Map<String, Set<ASTMethodDeclaration>> privateMethods,
-                                          MethodUsage ref,
-                                          String methodName,
-                                          JavaNode reffed) {
+    private static void removeUnused(Map<String, Set<ASTMethodDeclaration>> privateMethods,
+                                     String methodName,
+                                     JavaNode reffed,
+                                     MethodUsage usage,
+                                     Set<ASTMethodDeclaration> remainingUnused) {
         if (privateMethods.containsKey(methodName)
             && reffed instanceof ASTMethodDeclaration
-            && ref.ancestors(ASTMethodDeclaration.class).first() != reffed) {
-            final Set<ASTMethodDeclaration> remainingUnused = privateMethods.get(methodName);
-            if (remainingUnused != null
-                && remainingUnused.remove(reffed)
-                && remainingUnused.isEmpty()) {
-                privateMethods.remove(methodName);
-            }
+            && usage.ancestors(ASTMethodDeclaration.class).first() != reffed
+            && remainingUnused != null
+            && remainingUnused.remove(reffed)
+            && remainingUnused.isEmpty()) {
+            privateMethods.remove(methodName);
         }
     }
 
