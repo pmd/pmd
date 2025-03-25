@@ -258,9 +258,11 @@ final class AstDisambiguationPass {
 
             JSymbolTable symTable = name.getSymbolTable();
 
+            String firstImage = firstIdent.getImage();
+
             if (!isPackageOrTypeOnly) {
                 // first test if the leftmost segment is an expression
-                JVariableSig varResult = symTable.variables().resolveFirst(firstIdent.getImage());
+                JVariableSig varResult = symTable.variables().resolveFirst(firstImage);
 
                 if (varResult != null) {
                     return resolveExpr(null, varResult, firstIdent, tokens, ctx);
@@ -269,7 +271,7 @@ final class AstDisambiguationPass {
 
             // otherwise, test if it is a type name
 
-            JTypeMirror typeResult = ctx.resolveSingleTypeName(symTable, firstIdent.getImage(), name);
+            JTypeMirror typeResult = ctx.resolveSingleTypeName(symTable, firstImage, name);
 
             if (typeResult != null) {
                 JClassType enclosing = enclosingType(typeResult);
@@ -277,7 +279,7 @@ final class AstDisambiguationPass {
             }
 
             // otherwise, first is reclassified as package name.
-            return resolvePackage(firstIdent, new StringBuilder(firstIdent.getImage()), tokens, name, isPackageOrTypeOnly, ctx);
+            return resolvePackage(firstIdent, new StringBuilder(firstImage), tokens, name, isPackageOrTypeOnly, ctx);
         }
 
 
