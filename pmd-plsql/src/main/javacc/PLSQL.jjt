@@ -239,6 +239,15 @@ public class PLSQLParserImpl {
         && getToken(1).getText().charAt(0) != '"';
   }
 
+  private boolean hasIntoClause() {
+    int arity = jjtree.nodeArity();
+    while (--arity >= 0) {
+        if (jjtree.peekNode(arity) instanceof ASTIntoClause || jjtree.peekNode(arity) instanceof ASTBulkCollectIntoClause) {
+            return true;
+        }
+    }
+    return false;
+  }
 }
 
 PARSER_END(PLSQLParserImpl)
@@ -464,13 +473,16 @@ ASTGlobal Global()  :
 	  defaulting to the globalPackageName if it cannot be found
 	*/
 	(
-	LOOKAHEAD ( ( Label() )* ( <DECLARE> | <BEGIN> ) ) ( Label() )* Block() ";"
+	( Label() )* Block() ";"
 	|
-	LOOKAHEAD (4) ProgramUnit()
+	ProgramUnit()
 	)
       { return jjtThis ; }
 }
 
+/*
+ * https://docs.oracle.com/en/database/oracle/oracle-database/23/lnpls/block.html
+ */
 ASTBlock Block()  :
 {
 }
@@ -1302,23 +1314,41 @@ ASTSqlStatement SqlStatement(String initiator, String terminator)  :
     }
 }
 
-void AbstractSelectStatement(AbstractSelectStatement node) #void :
-{}
-{
-    <SELECT>
-    [    <DISTINCT> { node.setDistinct(true); }
-       | <UNIQUE> { node.setUnique(true); }
-       | <ALL> { node.setAll(true); }
-    ]
-}
-
 /**
+ * Parses a SELECT or a SELECT ... INTO statement. To avoid lookaheads, it returns a SelectIntoStatement,
+ * if a IntoClause or BulkCollectionIntoClause is present.
+ *
  * Note: The SELECT INTO statement can be preceded by a WithClause, even though this is not in the
  * official reference documentation.
  *
  * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/SELECT-INTO-statement.html">SELECT INTO (18)</a>
  * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/23/lnpls/SELECT-INTO-statement.html">SELECT INTO (23)</a>
+ * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/SELECT.html">SELECT (18)</a>
  * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/SELECT.html">SELECT (23)</a>
+ */
+void SelectOrSelectIntoStatement() #SelectStatement(>1) :
+{}
+{
+    (
+        [ WithClause() ] // Although undocumented, WITH works with both SELECT and SELECT INTO !
+        AbstractSelectStatement(jjtThis)
+        SelectList()
+
+        // The IntoClauses are used later to distinguish between SelectIntoStatement and SelectStatement.
+        //
+        // note: the into clause is here to allow parsing of wrong cursor for loop statements.
+        // while it will be parsed, the into clause is ignored by the database.
+        // see https://github.com/pmd/pmd/issues/1047#issuecomment-424757382
+        // see http://www.dba-oracle.com/t_adv_plsql_implicit_cursor_FOR_loop.htm
+        [ IntoClause() | BulkCollectIntoClause() ]
+
+        RestOfStatement()
+    ) #SelectIntoStatement(hasIntoClause())
+}
+
+/**
+ * @deprecated since 7.12.0. This production is not used anymore and is just still there for API backwards
+ * compatibility. See also deprecation notice at class level.
  */
 ASTSelectIntoStatement SelectIntoStatement() :
 {}
@@ -1330,6 +1360,16 @@ ASTSelectIntoStatement SelectIntoStatement() :
     RestOfStatement()
 
     { return jjtThis; }
+}
+
+void AbstractSelectStatement(AbstractSelectStatement node) #void :
+{}
+{
+    <SELECT>
+    [    <DISTINCT> { node.setDistinct(true); }
+       | <UNIQUE> { node.setUnique(true); }
+       | <ALL> { node.setAll(true); }
+    ]
 }
 
 void RestOfStatement() #void :
@@ -1714,16 +1754,16 @@ ASTSimpleExpression SimpleExpression() :
 { StringBuilder sb = new StringBuilder(); }
 {
  (
-    LOOKAHEAD(2) <ROWNUM> { sb.append(token.getImage()); }
+    LOOKAHEAD(1) <ROWNUM> { sb.append(token.getImage()); }
  |
     StringLiteral() { sb.append(token.getImage()); }
  |
     NumericLiteral() { sb.append(token.getImage()); }
  |
-    LOOKAHEAD(2) NullLiteral() { sb.append(token.getImage()); }
+    LOOKAHEAD(1) NullLiteral() { sb.append(token.getImage()); }
  |
     // sequence
-    LOOKAHEAD(4) ID() "." ( <CURRVAL> | <NEXTVAL> )
+    LOOKAHEAD(3) ID() "." ( <CURRVAL> | <NEXTVAL> )
  |
     LOOKAHEAD(6)
         SchemaName() { sb.append(token.getText()); } "." { sb.append(token.getImage()); }
@@ -2046,7 +2086,7 @@ ASTSelectList SelectList() :
 {}
 {
   (
-      "*"
+      LOOKAHEAD(1) "*"
   |
       SelectListEntry() ("," SelectListEntry() )*
   )
@@ -2057,8 +2097,8 @@ ASTSelectList SelectList() :
 void SelectListEntry() #void :
 {}
 {
-  [ LOOKAHEAD(2) <CONNECT_BY_ROOT> ]
-  SqlExpression() [LOOKAHEAD(2, {!(getToken(1).kind == BULK)}) [LOOKAHEAD(2) <AS>] ColumnAlias() ]
+  [ LOOKAHEAD(1) <CONNECT_BY_ROOT> ]
+  SqlExpression() [LOOKAHEAD(2, {!(getToken(1).kind == BULK)}) [LOOKAHEAD(1) <AS>] ColumnAlias() ]
 }
 
 ASTColumnAlias ColumnAlias() :
@@ -2378,14 +2418,7 @@ ASTUnlabelledStatement UnlabelledStatement()  :
 {}
 {
        (
-       // small optimization: SelectIntoStatement and SelectStatement both begin with WITH or SELECT
-       // but to distinguish the two, a complete lookahead of SelectIntoStatement needs to be parsed.
-       // Using a lookahead of a single token first avoids this the syntatic lookahead for all other choices
-       // not related to SELECT statements.
-       LOOKAHEAD(<WITH>|<SELECT>) (
-            LOOKAHEAD(SelectIntoStatement()) SelectIntoStatement() ";" |
-            SelectStatement() ";"
-       ) |
+       SelectOrSelectIntoStatement() ";" |
        UpdateStatement() ";" |
        DeleteStatement() ";" |
        InsertStatement() ";" |
@@ -3157,9 +3190,9 @@ ASTExpression Expression() :
 {
 	// Need syntactic lookahead to discriminate between Assignment and a procedure call
 	(
-  	LOOKAHEAD( PrimaryExpression() ":" "=" ) (simpleNode = Assignment())
-	| (simpleNode = ConditionalOrExpression() )
+  	LOOKAHEAD( AssignmentStatementTarget() ":" "=" ) (simpleNode = Assignment())
 	| (simpleNode = CompilationExpression() )
+	| (simpleNode = ConditionalOrExpression() )
 	) {sb.append(simpleNode.getImage()); }
  {
  jjtThis.setImage(sb.toString()); return jjtThis;
@@ -3219,7 +3252,20 @@ ASTCompilationExpression CompilationExpression() :
  }
 }
 
+void AssignmentStatementTarget() #void :
+{}
+{
+      ID() // collection_variable, cursor_variable, object, out_parameter, record_variable, scalar_variable
+      [ "(" Expression() ")" // index of collection_variable
+        | "." ID() // attribute of object, field of record_variable
+      ]
+    | ":" ID() // host_cursor_variable, host_cursor
+      [ LOOKAHEAD(2) ":" ID() ] // indicator_variable of host_cursor
+}
 
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/23/lnpls/assignment-statement.html#GUID-4C3BEFDF-3FFA-4E9D-96D0-4C5E13E08643
+ */
 ASTAssignment Assignment() :
 { PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
@@ -3551,13 +3597,13 @@ ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() #UnaryExpressionNot
 { PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
-    <NOT> {sb.append(" NOT "); } simpleNode = UnaryExpression(false)
+    LOOKAHEAD(1) <NOT> {sb.append(" NOT "); } simpleNode = UnaryExpression(false)
   |
-    LOOKAHEAD(2) simpleNode = ExtractExpression()
+    LOOKAHEAD(1) simpleNode = ExtractExpression()
   |
-    LOOKAHEAD(2) simpleNode = IsNullCondition()
+    LOOKAHEAD(1) simpleNode = ImplicitCursorAttribute()
   |
-    simpleNode = ImplicitCursorAttribute()
+    simpleNode = IsNullCondition()
   )
   {sb.append(simpleNode.getImage()); }
  {
@@ -3565,46 +3611,49 @@ ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() #UnaryExpressionNot
  }
 }
 
-ASTIsNullCondition IsNullCondition() #IsNullCondition(>1) :  //yanzin
-{ PLSQLNode simpleNode = null; PLSQLNode name = null; StringBuilder sb = new StringBuilder(); }
+
+private PLSQLNode PrimaryExpressionOrIsNullOrIsOfTypeCondition() #void :
+{ PLSQLNode simpleNode = null; PLSQLNode name = null; StringBuilder sb = new StringBuilder(); boolean isNull = false; boolean isOfType = false; }
 {
-  (
-    LOOKAHEAD(PrimaryExpression() <IS> [<NOT>] <NULL>)
     (
-        (name = PrimaryExpression() #Name) {sb.append(name.getImage());} <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <NULL> {sb.append(" NULL");}
-    )
-    |
-    (
-        simpleNode = IsOfTypeCondition()
-    )
+        (
+            simpleNode = PrimaryExpression() {sb.append(simpleNode.getImage());}
+
+            [
+                <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}]
+                (
+                  <NULL> {sb.append(" NULL");} {isNull = true;}
+                  | <OF> {sb.append(" OF");} {isOfType = true;} [<TYPE>] "(" [<ONLY>] Name() ("," [<ONLY>] Name() )* ")"
+                )
+            ]
+        ) #IsNullCondition(isNull)
+    ) #IsOfTypeCondition(isOfType)
     {
-        sb.append(simpleNode.getImage());
+        jjtree.peekNode().setImage(sb.toString());
+        return jjtree.peekNode();
     }
-  )
-  {
-    jjtThis.setImage(sb.toString());
-	return jjtThis;
-  }
 }
 
-ASTIsOfTypeCondition IsOfTypeCondition() #IsOfTypeCondition(>1) :
-{ PLSQLNode simpleNode = null; PLSQLNode name = null; StringBuilder sb = new StringBuilder(); }
+// note: the node returned here is never added to the tree, since >1 is never true
+ASTIsNullCondition IsNullCondition() #IsNullCondition(>1) :
+{ PLSQLNode simpleNode = null;}
 {
-  (
-    LOOKAHEAD(<IDENTIFIER> <IS>)
-    ((name = Name()) {sb.append(name.getImage());} <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <OF> {sb.append(" OF");} [<TYPE>]
-      "(" [<ONLY>] Name() ("," [<ONLY>] Name() )* ")")
-  |
-    LOOKAHEAD(PrimaryExpression() <IS>)
-    (simpleNode = PrimaryExpression() ) { sb.append(simpleNode.getImage()); }
-    <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <OF> {sb.append(" OF");} [<TYPE>]
-      "(" [<ONLY>] Name() ("," [<ONLY>] Name() )* ")"
-  |
-    (simpleNode = PrimaryExpression() ) { sb.append(simpleNode.getImage()); }
-  )
-  {
-    jjtThis.setImage(sb.toString()); return jjtThis;
-  }
+    simpleNode = PrimaryExpressionOrIsNullOrIsOfTypeCondition()
+    {
+        jjtThis.setImage(simpleNode.getImage());
+        return jjtThis;
+    }
+}
+
+// note: the node returned here is never added to the tree, since >1 is never true
+ASTIsOfTypeCondition IsOfTypeCondition() #IsOfTypeCondition(>1) :
+{ PLSQLNode simpleNode = null; }
+{
+    simpleNode = PrimaryExpressionOrIsNullOrIsOfTypeCondition()
+    {
+        jjtThis.setImage(simpleNode.getImage());
+        return jjtThis;
+    }
 }
 
 /**
@@ -3861,7 +3910,11 @@ ASTArguments Arguments() :
   "("
       [ [<ALL> | <DISTINCT> | <UNIQUE>] ("*" | ArgumentList()) ]
       // Note: ListaggOverflowClause is only allowed for LISTAGG function, but this grammar allows it for all functions.
+      // https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/LISTAGG.html
       [ ListaggOverflowClause() ]
+      // Note: OrderByClause is only allowed for XMLAGG function, but this grammar allows it for all functions.
+      // https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/XMLAGG.html
+      [ OrderByClause() ]
   ")"
 
  { return jjtThis; }

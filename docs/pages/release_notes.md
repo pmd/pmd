@@ -19,6 +19,8 @@ This is a {{ site.pmd.release_type }} release.
   * [#5587](https://github.com/pmd/pmd/issues/5587): \[java] Thread deadlock during PMD analysis in ParseLock.getFinalStatus
 * java-bestpractices
   * [#5369](https://github.com/pmd/pmd/issues/5369): \[java] UnusedPrivateMethod false positives with lombok.val
+* plsql
+  * [#5521](https://github.com/pmd/pmd/issues/5521): \[plsql] Long parse time and eventually parse error with XMLAGG order by clause
 
 ### 🚨 API Changes
 
