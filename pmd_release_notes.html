@@ -2013,6 +2013,15 @@
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
+<h4 id="-new-rules">✨ New Rules</h4>
+
+<ul>
+  <li>The new Java rule <a href="pmd_rules_java_bestpractices.html#implicitfunctionalinterface"><code class="language-plaintext highlighter-rouge">ImplicitFunctionalInterface</code></a> reports functional interfaces that were
+not explicitly declared as such with the annotation <code class="language-plaintext highlighter-rouge">@FunctionalInterface</code>. If an interface is accidentally a functional
+interface, then it should bear a <code class="language-plaintext highlighter-rouge">@SuppressWarnings("PMD.ImplicitFunctionalInterface")</code>
+annotation to make this clear.</li>
+</ul>
+
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
 <ul>
   <li>java
@@ -2022,6 +2031,7 @@
   </li>
   <li>java-bestpractices
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2849">#2849</a>: [java] New Rule: ImplicitFunctionalInterface</li>
       <li><a href="https://github.com/pmd/pmd/issues/5369">#5369</a>: [java] UnusedPrivateMethod false positives with lombok.val</li>
     </ul>
   </li>

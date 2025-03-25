@@ -817,6 +817,15 @@
 ,
 
 {
+"title": "ImplicitFunctionalInterface (Java, Best Practices)",
+"tags": "",
+"keywords": "ImplicitFunctionalInterface",
+"url": "pmd_rules_java_bestpractices.html#implicitfunctionalinterface",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
 "title": "JUnit4SuitesShouldUseSuiteAnnotation (Java, Best Practices)",
 "tags": "",
 "keywords": "JUnit4SuitesShouldUseSuiteAnnotation",

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce generally accepted best practices.">
-<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, DefaultLabelNotLastInSwitch, DoubleBraceInitialization, ExhaustiveSwitchHasDefault, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, NonExhaustiveSwitch, OneDeclarationPerLine, PreserveStackTrace, PrimitiveWrapperInstantiation, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SimplifiableTestAssertion, SwitchStmtsShouldHaveDefault, SystemPrintln, UnitTestAssertionsShouldIncludeMessage, UnitTestContainsTooManyAsserts, UnitTestShouldIncludeAssert, UnitTestShouldUseAfterAnnotation, UnitTestShouldUseBeforeAnnotation, UnitTestShouldUseTestAnnotation, UnnecessaryVarargsArrayCreation, UnusedAssignment, UnusedFormalParameter, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseCollectionIsEmpty, UseEnumCollections, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
+<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, DefaultLabelNotLastInSwitch, DoubleBraceInitialization, ExhaustiveSwitchHasDefault, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, ImplicitFunctionalInterface, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, NonExhaustiveSwitch, OneDeclarationPerLine, PreserveStackTrace, PrimitiveWrapperInstantiation, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SimplifiableTestAssertion, SwitchStmtsShouldHaveDefault, SystemPrintln, UnitTestAssertionsShouldIncludeMessage, UnitTestContainsTooManyAsserts, UnitTestShouldIncludeAssert, UnitTestShouldUseAfterAnnotation, UnitTestShouldUseBeforeAnnotation, UnitTestShouldUseTestAnnotation, UnnecessaryVarargsArrayCreation, UnusedAssignment, UnusedFormalParameter, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseCollectionIsEmpty, UseEnumCollections, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
 <title>Best Practices | PMD Source Code Analyzer</title>
 
 
@@ -2885,6 +2885,43 @@ with lambdas. The available alternatives depend on the actual logging framework.
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"guardsMethods"</span> <span class="na">value=</span><span class="s">"isTraceEnabled,isDebugEnabled,isInfoEnabled,isWarnEnabled,isErrorEnabled,isLoggable"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
+<h2 id="implicitfunctionalinterface">ImplicitFunctionalInterface</h2>
+
+<p><strong>Since:</strong> PMD 7.12.0</p>
+
+<p><strong>Priority:</strong> Medium High (2)</p>
+
+<p>Reports functional interfaces that were not explicitly declared as such with
+the annotation <code class="language-plaintext highlighter-rouge">@FunctionalInterface</code>. If an interface is accidentally a functional
+interface, then it should bear a <code class="language-plaintext highlighter-rouge">@SuppressWarnings("PMD.ImplicitFunctionalInterface")</code>
+annotation to make this clear.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/ImplicitFunctionalInterfaceRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.ImplicitFunctionalInterfaceRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// The intent on this declaration is unclear, and the rule will report it.</span>
+            <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">MyInterface</span> <span class="o">{</span>
+                <span class="kt">void</span> <span class="nf">doSomething</span><span class="o">();</span>
+            <span class="o">}</span>
+
+            <span class="c1">// This is clearly intended as a functional interface.</span>
+            <span class="nd">@FunctionalInterface</span>
+            <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">MyInterface</span> <span class="o">{</span>
+                <span class="kt">void</span> <span class="nf">doSomething</span><span class="o">();</span>
+            <span class="o">}</span>
+
+            <span class="c1">// This is clearly NOT intended as a functional interface.</span>
+            <span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="s">"PMD.ImplicitFunctionalInterface"</span><span class="o">)</span>
+            <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">MyInterface</span> <span class="o">{</span>
+                <span class="kt">void</span> <span class="nf">doSomething</span><span class="o">();</span>
+            <span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/ImplicitFunctionalInterface"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="junit4suitesshouldusesuiteannotation">JUnit4SuitesShouldUseSuiteAnnotation</h2>
