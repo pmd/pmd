@@ -22,6 +22,8 @@ This is a {{ site.pmd.release_type }} release.
   annotation to make this clear.
 
 ### 🐛 Fixed Issues
+* apex
+  * [#5567](https://github.com/pmd/pmd/issues/5567): \[apex] Provide type information for CastExpression
 * java
   * [#5587](https://github.com/pmd/pmd/issues/5587): \[java] Thread deadlock during PMD analysis in ParseLock.getFinalStatus
 * java-bestpractices
