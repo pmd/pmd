@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
+import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration
 import net.sourceforge.pmd.lang.java.ast.JavaVersion
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J9
 import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
@@ -42,8 +43,12 @@ class LombokTest : IntelliMarker, ProcessorTestSpec({
         val acu = parser.parse(lombokValCode)
 
         acu.withTypeDsl {
-            acu.varId("q") shouldHaveType float
-            acu.varId("q").isTypeInferred shouldBe true
+            acu.varId("q").let {
+                it shouldHaveType float
+                it.isTypeInferred shouldBe true
+                it.isFinal shouldBe true
+                it.ancestors(ASTLocalVariableDeclaration::class.java).firstOrThrow().isFinal shouldBe true
+            }
             acu.varId("n") shouldHaveType java.util.List::class.raw
         }
     }
@@ -56,13 +61,20 @@ class LombokTest : IntelliMarker, ProcessorTestSpec({
         val acu = parser.disableLombok().parse(lombokValCode)
 
         acu.withTypeDsl {
-            acu.varId("q").isTypeInferred shouldBe false
-            acu.varId("q").typeMirror.shouldBeA<JClassType> {
-                it.symbol.canonicalName shouldBe "lombok.val"
+            acu.varId("q").let {
+                it.isTypeInferred shouldBe false
+                it.isFinal shouldBe false
+                it.typeMirror.shouldBeA<JClassType> {
+                    it.symbol.canonicalName shouldBe "lombok.val"
+                }
+                it.ancestors(ASTLocalVariableDeclaration::class.java).firstOrThrow().isFinal shouldBe false
             }
-            acu.varId("n").isTypeInferred shouldBe false
-            acu.varId("n").typeMirror.shouldBeA<JClassType> {
-                it.symbol.canonicalName shouldBe "lombok.val"
+            acu.varId("n").let {
+                it.isTypeInferred shouldBe false
+                it.isFinal shouldBe false
+                it.typeMirror.shouldBeA<JClassType> {
+                    it.symbol.canonicalName shouldBe "lombok.val"
+                }
             }
         }
     }
@@ -83,8 +95,11 @@ class LombokTest : IntelliMarker, ProcessorTestSpec({
         val acu = parser.parse(lombokVarCode)
 
         acu.withTypeDsl {
-            acu.varId("i").isTypeInferred shouldBe true
-            acu.varId("i") shouldHaveType int
+            acu.varId("i").let {
+                it.isTypeInferred shouldBe true
+                it shouldHaveType int
+                it.isFinal shouldBe false
+            }
         }
     }
 
@@ -95,9 +110,12 @@ class LombokTest : IntelliMarker, ProcessorTestSpec({
         val acu = parser.disableLombok().parse(lombokVarCode)
 
         acu.withTypeDsl {
-            acu.varId("i").isTypeInferred shouldBe false
-            acu.varId("i").typeMirror.shouldBeA<JClassType> {
-                it.symbol.canonicalName shouldBe "lombok.var"
+            acu.varId("i").let {
+                it.isTypeInferred shouldBe false
+                it.isFinal shouldBe false
+                it.typeMirror.shouldBeA<JClassType> {
+                    it.symbol.canonicalName shouldBe "lombok.var"
+                }
             }
         }
     }
@@ -110,9 +128,12 @@ class LombokTest : IntelliMarker, ProcessorTestSpec({
         val acu = parser.disableLombok().parse(lombokVarCode)
 
         acu.withTypeDsl {
-            acu.varId("i").isTypeInferred shouldBe true
-            acu.varId("i") shouldHaveType int
-            acu.varId("i").typeNode shouldBe null
+            acu.varId("i").let {
+                it.isTypeInferred shouldBe true
+                it shouldHaveType int
+                it.typeNode shouldBe null
+                it.isFinal shouldBe false
+            }
         }
     }
 
