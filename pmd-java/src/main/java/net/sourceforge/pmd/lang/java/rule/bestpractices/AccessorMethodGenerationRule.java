@@ -49,19 +49,15 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTVariableAccess node, Object data) {
         JVariableSymbol sym = node.getReferencedSym();
-        if (sym instanceof JFieldSymbol) {
-            JFieldSymbol fieldSym = (JFieldSymbol) sym;
-            if (((JFieldSymbol) sym).getConstValue() == null) {
-                checkMemberAccess((RuleContext) data, node, fieldSym);
-            }
+        if (sym instanceof JFieldSymbol && ((JFieldSymbol) sym).getConstValue() == null) {
+            checkMemberAccess((RuleContext) data, node, (JFieldSymbol) sym);
         }
         return null;
     }
 
     @Override
     public Object visit(ASTMethodCall node, Object data) {
-        JMethodSymbol symbol = (JMethodSymbol) node.getMethodType().getSymbol();
-        checkMemberAccess((RuleContext) data, node, symbol);
+        checkMemberAccess((RuleContext) data, node, node.getMethodType().getSymbol());
         return null;
     }
 
@@ -91,14 +87,11 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
      * canonical name {@code com.github.Outer.Inner}, returns {@code Outer.Inner}.
      */
     private static String stripPackageName(JClassSymbol symbol) {
-        String p = symbol.getPackageName();
         String canoName = symbol.getCanonicalName();
-        if (canoName == null) {
-            return symbol.getSimpleName();
-        }
-        if (p.isEmpty()) {
-            return canoName;
-        }
-        return canoName.substring(p.length() + 1); //+1 for the dot
+        return canoName == null
+                ? symbol.getSimpleName()
+                : symbol.getPackageName().isEmpty()
+                ? canoName
+                : canoName.substring(symbol.getPackageName().length() + 1); //+1 for the dot
     }
 }
