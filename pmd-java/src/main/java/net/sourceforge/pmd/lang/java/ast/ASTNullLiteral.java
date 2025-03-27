@@ -27,11 +27,6 @@ public final class ASTNullLiteral extends AbstractLiteral implements ASTLiteral 
     }
 
     @Override
-    public boolean isCompileTimeConstant() {
-        return false;
-    }
-
-    @Override
     public Chars getLiteralText() {
         return super.getLiteralText();
     }

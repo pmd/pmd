@@ -101,6 +101,7 @@ public interface ASTExpression extends TypeNode, ASTMemberValue, ASTSwitchArrowR
      * Returns the result of constant folding on this expression. This may find a
      * constant value for more than strict compile-time constants. See {@link ConstResult}.
      *
+     * @since 7.12.0
      */
     default @NonNull ConstResult getConstFoldingResult() {
         return ConstResult.NO_CONST_VALUE;
@@ -159,6 +160,8 @@ public interface ASTExpression extends TypeNode, ASTMemberValue, ASTSwitchArrowR
      * <li>Has value, not compile-time constant: we could compute a constant value, but it is not CT-constant in the sense
      * of the JLS. Maybe it uses the constant initializer of a final local variable for instance.
      * </ul>
+     *
+     * @since 7.12.0
      */
     final class ConstResult {
         private final boolean isCompileTimeConstant;

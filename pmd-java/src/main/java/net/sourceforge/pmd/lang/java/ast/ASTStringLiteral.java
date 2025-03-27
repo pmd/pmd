@@ -89,7 +89,7 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
     }
 
     /**
-     * @deprecated See super method. This override is needed due to covariant return type change.
+     * @deprecated Since 7.12.0. See super method. This override is needed due to covariant return type change.
      */
     @Override
     @Deprecated

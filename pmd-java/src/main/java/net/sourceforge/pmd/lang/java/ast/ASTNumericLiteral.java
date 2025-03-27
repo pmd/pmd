@@ -48,7 +48,7 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
     }
 
     /**
-     * @deprecated See super method. This override is needed due to covariant return type change.
+     * @deprecated Since 7.12.0. See super method. This override is needed due to covariant return type change.
      */
     @Override
     @Deprecated
