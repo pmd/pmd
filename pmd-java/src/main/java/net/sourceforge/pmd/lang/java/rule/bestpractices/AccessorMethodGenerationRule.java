@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.reporting.RuleContext;
 
@@ -48,35 +49,40 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTVariableAccess node, Object data) {
         JVariableSymbol sym = node.getReferencedSym();
-        if (sym instanceof JFieldSymbol && ((JFieldSymbol) sym).getConstValue() == null) {
-            checkMemberAccess((RuleContext) data, node, (JFieldSymbol) sym);
+        if (sym instanceof JFieldSymbol) {
+            JFieldSymbol fieldSym = (JFieldSymbol) sym;
+            if (((JFieldSymbol) sym).getConstValue() == null) {
+                checkMemberAccess((RuleContext) data, node, fieldSym);
+            }
         }
         return null;
     }
 
     @Override
     public Object visit(ASTMethodCall node, Object data) {
-        checkMemberAccess((RuleContext) data, node, node.getMethodType().getSymbol());
+        JMethodSymbol symbol = (JMethodSymbol) node.getMethodType().getSymbol();
+        checkMemberAccess((RuleContext) data, node, symbol);
         return null;
     }
 
     private void checkMemberAccess(RuleContext data, ASTExpression node, JAccessibleElementSymbol symbol) {
-        if (Modifier.isPrivate(symbol.getModifiers())
-            && !Objects.equals(symbol.getEnclosingClass(),
-            node.getEnclosingType().getSymbol())) {
-            addViolation(data, node, symbol);
-        }
+        checkMemberAccess(data, node, symbol, this.reportedNodes);
     }
 
-    private void addViolation(RuleContext data, ASTExpression node, JAccessibleElementSymbol symbol) {
-        JavaNode node1 = symbol.tryGetNode();
-        if (node1 == null && JConstructorSymbol.CTOR_NAME.equals(symbol.getSimpleName())) {
-            // might be a default constructor, implicitly defined and not explicitly in the compilation unit
-            node1 = symbol.getEnclosingClass().tryGetNode();
-        }
-        assert node1 != null : "Node should be in the same compilation unit";
-        if (reportedNodes.add(node1)) {
-            data.addViolation(node1, stripPackageName(node.getEnclosingType().getSymbol()));
+    static void checkMemberAccess(RuleContext ruleContext, JavaNode refExpr, JAccessibleElementSymbol sym, Set<JavaNode> reportedNodes) {
+        if (Modifier.isPrivate(sym.getModifiers())
+            && !Objects.equals(sym.getEnclosingClass(),
+                               refExpr.getEnclosingType().getSymbol())) {
+
+            JavaNode node = sym.tryGetNode();
+            if (node == null && JConstructorSymbol.CTOR_NAME.equals(sym.getSimpleName())) {
+                // might be a default constructor, implicitly defined and not explicitly in the compilation unit
+                node = sym.getEnclosingClass().tryGetNode();
+            }
+            assert node != null : "Node should be in the same compilation unit";
+            if (reportedNodes.add(node)) {
+                ruleContext.addViolation(node, stripPackageName(refExpr.getEnclosingType().getSymbol()));
+            }
         }
     }
 
@@ -85,14 +91,14 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
      * canonical name {@code com.github.Outer.Inner}, returns {@code Outer.Inner}.
      */
     private static String stripPackageName(JClassSymbol symbol) {
-        return stripPackageName(symbol, symbol.getCanonicalName());
-    }
-
-    private static String stripPackageName(JClassSymbol symbol, String canoName) {
-        return canoName == null
-            ? symbol.getSimpleName()
-            : symbol.getPackageName().isEmpty()
-            ? canoName
-            : canoName.substring(symbol.getPackageName().length() + 1);
+        String p = symbol.getPackageName();
+        String canoName = symbol.getCanonicalName();
+        if (canoName == null) {
+            return symbol.getSimpleName();
+        }
+        if (p.isEmpty()) {
+            return canoName;
+        }
+        return canoName.substring(p.length() + 1); //+1 for the dot
     }
 }
