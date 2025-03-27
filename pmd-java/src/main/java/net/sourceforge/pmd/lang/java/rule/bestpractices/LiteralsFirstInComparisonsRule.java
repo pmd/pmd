@@ -40,9 +40,11 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRulechainRule {
     }
 
     private boolean shouldCheckArgs(ASTMethodCall call) {
-        return (EQUALS.equals(call.getMethodName()) && call.getArguments().size() == 1 && isEqualsObjectAndNotAnOverload(call))
-                || (STRING_COMPARISONS.contains(call.getMethodName()) && call.getArguments().size() == 1
-                && TypeTestUtil.isDeclaredInClass(String.class, call.getMethodType()));
+        return call.getArguments().size() == 1
+                && EQUALS.equals(call.getMethodName())
+                && isEqualsObjectAndNotAnOverload(call)
+                || STRING_COMPARISONS.contains(call.getMethodName())
+                && TypeTestUtil.isDeclaredInClass(String.class, call.getMethodType());
     }
 
     private boolean isEqualsObjectAndNotAnOverload(ASTMethodCall call) {
