@@ -25,6 +25,7 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRulechainRule {
               "compareTo",
               "compareToIgnoreCase",
               "contentEquals");
+    private static final String EQUALS = "equals";
 
     public LiteralsFirstInComparisonsRule() {
         super(ASTMethodCall.class);
@@ -32,17 +33,18 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodCall call, Object data) {
-        if ("equals".equals(call.getMethodName())
-            && call.getArguments().size() == 1
-            && isEqualsObjectAndNotAnOverload(call)) {
-            checkArgs((RuleContext) data, call);
-        } else if (STRING_COMPARISONS.contains(call.getMethodName())
-            && call.getArguments().size() == 1
-            && TypeTestUtil.isDeclaredInClass(String.class, call.getMethodType())) {
+        if (shouldCheckArgs(call)) {
             checkArgs((RuleContext) data, call);
         }
         return data;
     }
+
+    private boolean shouldCheckArgs(ASTMethodCall call) {
+        return (EQUALS.equals(call.getMethodName()) && call.getArguments().size() == 1 && isEqualsObjectAndNotAnOverload(call))
+                || (STRING_COMPARISONS.contains(call.getMethodName()) && call.getArguments().size() == 1
+                && TypeTestUtil.isDeclaredInClass(String.class, call.getMethodType()));
+    }
+
 
     private boolean isEqualsObjectAndNotAnOverload(ASTMethodCall call) {
         return call.getOverloadSelectionInfo().isFailed() // failed selection is considered probably equals(Object)
