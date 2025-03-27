@@ -22,6 +22,8 @@ This is a {{ site.pmd.release_type }} release.
   annotation to make this clear.
 
 ### 🐛 Fixed Issues
+* core
+  * [#5593](https://github.com/pmd/pmd/issues/5593): \[core] Make renderers output files in deterministic order even when multithreaded
 * apex
   * [#5567](https://github.com/pmd/pmd/issues/5567): \[apex] Provide type information for CastExpression
 * java
