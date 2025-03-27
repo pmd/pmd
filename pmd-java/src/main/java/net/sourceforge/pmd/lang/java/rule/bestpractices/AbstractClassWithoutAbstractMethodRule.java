@@ -32,6 +32,6 @@ public class AbstractClassWithoutAbstractMethodRule extends AbstractJavaRulechai
     }
 
     private boolean doesImplement(ASTClassDeclaration node) {
-        return !node.getSuperInterfaceTypeNodes().isEmpty();
+        return node.getSuperInterfaceTypeNodes().nonEmpty();
     }
 }
