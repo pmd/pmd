@@ -3451,6 +3451,9 @@ with messages provide the developer a clearer idea of what the test does.</p>
 can be avoided, they will just return false. Note that switching literal positions for compareTo and
 compareToIgnoreCase may change the result, see examples.</p>
 
+<p>Note that compile-time constant strings are treated like literals. This is because they are inlined into
+the class file, are necessarily non-null, and therefore cannot cause an NPE at runtime.</p>
+
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/LiteralsFirstInComparisonsRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.LiteralsFirstInComparisonsRule</a></p>
 
 <p><strong>Example(s):</strong></p>
@@ -3470,6 +3473,11 @@ compareToIgnoreCase may change the result, see examples.</p>
     <span class="o">}</span>
     <span class="kt">boolean</span> <span class="nf">bar</span><span class="o">(</span><span class="nc">String</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
         <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="na">contentEquals</span><span class="o">(</span><span class="s">"bar"</span><span class="o">);</span> <span class="c1">// should be "bar".contentEquals(x)</span>
+    <span class="o">}</span>
+
+    <span class="kd">static</span> <span class="kd">final</span> <span class="nc">String</span> <span class="no">CONSTANT</span> <span class="o">=</span> <span class="s">"const"</span><span class="o">;</span>
+    <span class="o">{</span>
+        <span class="no">CONSTANT</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"literal"</span><span class="o">);</span> <span class="c1">// not reported, this is effectively the same as writing "const".equals("foo")</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>

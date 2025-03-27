@@ -2043,6 +2043,7 @@ annotation to make this clear.</li>
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2849">#2849</a>: [java] New Rule: ImplicitFunctionalInterface</li>
       <li><a href="https://github.com/pmd/pmd/issues/5369">#5369</a>: [java] UnusedPrivateMethod false positives with lombok.val</li>
+      <li><a href="https://github.com/pmd/pmd/issues/5590">#5590</a>: [java] LiteralsFirstInComparisonsRule not applied on constant</li>
     </ul>
   </li>
   <li>plsql
@@ -2053,8 +2054,18 @@ annotation to make this clear.</li>
 </ul>
 
 <h3 id="-api-changes">🚨 API Changes</h3>
-
+<h4 id="deprecations">Deprecations</h4>
 <ul>
+  <li>java
+    <ul>
+      <li>The method <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/AbstractJavaExpr.html#buildConstValue()"><code>buildConstValue</code></a> is deprecated for removal. It should
+have been package-private from the start. In order to get the (compile time) const value of an expression, use
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#getConstValue()"><code>getConstValue</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#getConstFoldingResult()"><code>getConstFoldingResult</code></a>
+instead.</li>
+      <li>For the same reason, the following methods are also deprecated for removal:
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTNumericLiteral.html#buildConstValue()"><code>buildConstValue</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTStringLiteral.html#buildConstValue()"><code>buildConstValue</code></a>.</li>
+    </ul>
+  </li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/JTypeVar.html#withUpperbound(net.sourceforge.pmd.types.JTypeMirror)"><code>JTypeVar#withUpperbound</code></a> is deprecated. It was previously meant to be used
 internally and not needed anymore.</li>
 </ul>
