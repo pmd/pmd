@@ -1819,6 +1819,7 @@ ASTOuterJoinExpression OuterJoinExpression() :
  * XML Functions:
  * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/XMLROOT.html#GUID-5BD300E2-7138-436D-87AF-21658840CF9D
  * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/XMLFOREST.html#GUID-68E5C67E-CE97-4BF8-B7FF-2365E062C363
+ * https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/XMLQUERY.html#GUID-9E8D3220-2CF5-4C63-BDC2-0526D57B9CDB
  *
  * A function reference/name might be:
  * function_name
@@ -1836,7 +1837,7 @@ ASTFunctionCall FunctionCall() :
     (
         LOOKAHEAD({"TRIM".equalsIgnoreCase(token.getImage()) && !jjtree.peekNode().getImage().contains(".")}) TrimExpression()
       | LOOKAHEAD({"XMLCAST".equalsIgnoreCase(token.getImage())}) "(" Expression() <AS> Datatype() ")"
-      | LOOKAHEAD({"XMLQUERY".equalsIgnoreCase(token.getImage())}) "(" StringLiteral() [ LOOKAHEAD({isKeyword("PASSING")}) XMLPassingClause() ] <RETURNING> KEYWORD("CONTENT") [ <NULL> <ON> <EMPTY> ] ")"
+      | LOOKAHEAD({"XMLQUERY".equalsIgnoreCase(token.getImage())}) "(" ( StringLiteral() | ID() ) [ LOOKAHEAD({isKeyword("PASSING")}) XMLPassingClause() ] <RETURNING> KEYWORD("CONTENT") [ <NULL> <ON> <EMPTY> ] ")"
       | LOOKAHEAD({"CAST".equalsIgnoreCase(token.getImage())}) "(" ( <MULTISET> "(" Subquery() ")" | Expression() ) <AS> Datatype() ")"
       | LOOKAHEAD({"XMLFOREST".equalsIgnoreCase(token.getImage())}) "(" SqlExpression() [ [ <AS> ] ID() ] ( "," SqlExpression() [ [ <AS> ] ID() ] )* ")"
       | LOOKAHEAD({"XMLELEMENT".equalsIgnoreCase(token.getImage())}) XMLElement()

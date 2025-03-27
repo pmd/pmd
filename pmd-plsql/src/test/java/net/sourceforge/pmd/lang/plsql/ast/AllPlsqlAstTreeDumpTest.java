@@ -19,7 +19,8 @@ import org.junit.platform.suite.api.Suite;
     SelectIntoWithGroupByTest.class,
     WhereClauseTest.class,
     PLSQLParserTest.class,
-    FunctionsTest.class
+    FunctionsTest.class,
+    XmlDbTreeDumpTest.class
 })
 class AllPlsqlAstTreeDumpTest {
 

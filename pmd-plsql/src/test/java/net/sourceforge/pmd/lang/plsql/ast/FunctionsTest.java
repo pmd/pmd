@@ -14,9 +14,4 @@ class FunctionsTest extends AbstractPLSQLParserTst {
     void parseSelectExtractExpression() {
         doTest("ExtractExpressions");
     }
-
-    @Test
-    void parseXMLExpression() {
-        doTest("XMLFunctions");
-    }
 }
