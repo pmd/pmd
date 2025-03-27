@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.rule.bestpractices;
+package net.sourceforge.pmd.lang.java.rule.bestpractices.accessor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,7 +11,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.bestpractices.accessor.AccessorHelper;
 import net.sourceforge.pmd.reporting.RuleContext;
 
 /**

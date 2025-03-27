@@ -14,10 +14,9 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.reporting.RuleContext;
 
-public class AccessorHelper {
+class AccessorHelper {
 
-    public static void checkMemberAccess(RuleContext ruleContext, JavaNode refExpr, JAccessibleElementSymbol sym,
-                                         Set<JavaNode> reportedNodes) {
+    static void checkMemberAccess(RuleContext ruleContext, JavaNode refExpr, JAccessibleElementSymbol sym, Set<JavaNode> reportedNodes) {
         if (Modifier.isPrivate(sym.getModifiers())
             && !Objects.equals(sym.getEnclosingClass(),
             refExpr.getEnclosingType().getSymbol())) {
@@ -29,21 +28,24 @@ public class AccessorHelper {
             }
             assert node != null : "Node should be in the same compilation unit";
             if (reportedNodes.add(node)) {
-                ruleContext.addViolation(node, stripPackageName(refExpr.getEnclosingType().getSymbol()));
+                ruleContext.addViolation(node, canonicalNameWithoutPackage(refExpr.getEnclosingType().getSymbol()));
             }
         }
     }
 
     /**
-     * Returns the canonical name without the package name. Eg for a
-     * canonical name {@code com.github.Outer.Inner}, returns {@code Outer.Inner}.
+     * Returns the canonical name without the package name.
+     * Eg for a canonical name {@code com.github.Outer.Inner}, returns {@code Outer.Inner}.
      */
-    private static String stripPackageName(JClassSymbol symbol) {
-        String canoName = symbol.getCanonicalName();
+    private static String canonicalNameWithoutPackage(JClassSymbol symbol) {
+        return canonicalNameWithoutPackage(symbol, symbol.getCanonicalName());
+    }
+
+    private static String canonicalNameWithoutPackage(JClassSymbol symbol, String canoName) {
         return canoName == null
             ? symbol.getSimpleName()
             : symbol.getPackageName().isEmpty()
             ? canoName
-            : canoName.substring(symbol.getPackageName().length() + 1); //+1 for the dot
+            : canoName.substring(symbol.getPackageName().length() + 1);
     }
 }
