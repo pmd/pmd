@@ -22,7 +22,7 @@
          |           +- ArgumentList[@Empty = false, @Size = 1]
          |              +- LambdaExpression[@Arity = 1, @BlockBody = false, @CompileTimeConstant = false, @ExplicitlyTyped = false, @ExpressionBody = true, @ParenthesisDepth = 0, @Parenthesized = false]
          |                 +- LambdaParameterList[@Empty = false, @Size = 1]
-         |                 |  +- LambdaParameter[@EffectiveVisibility = Visibility.V_PACKAGE, @Final = false, @TypeInferred = true, @Visibility = Visibility.V_PACKAGE]
+         |                 |  +- LambdaParameter[@EffectiveVisibility = Visibility.V_PACKAGE, @Final = false, @TypeInferred = true, @VarKeyword = false, @Visibility = Visibility.V_PACKAGE]
          |                 |     +- ModifierList[@EffectiveModifiers = (), @ExplicitModifiers = ()]
          |                 |     +- VariableId[@ArrayType = false, @EffectiveVisibility = Visibility.V_PACKAGE, @EnumConstant = false, @ExceptionBlockParameter = false, @Field = false, @Final = false, @ForLoopVariable = false, @ForeachVariable = false, @FormalParameter = true, @LambdaParameter = true, @LocalVariable = false, @Name = "path", @PatternBinding = false, @RecordComponent = false, @ResourceDeclaration = false, @Static = false, @TypeInferred = true, @Unnamed = false, @Visibility = Visibility.V_PACKAGE]
          |                 +- MethodCall[@CompileTimeConstant = false, @Image = "deleteDirectory", @MethodName = "deleteDirectory", @ParenthesisDepth = 0, @Parenthesized = false]

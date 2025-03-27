@@ -4,9 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -16,18 +19,23 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr
 import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValueArrayInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
+import net.sourceforge.pmd.lang.java.types.JArrayType;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.Substitution;
 
 /**
  *
  */
-class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
+class AstSymbolicAnnot implements SymAnnot {
 
     private final ASTAnnotation node;
     private final JClassSymbol sym;
@@ -41,9 +49,33 @@ class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
     public @Nullable SymbolicValue getAttribute(String attrName) {
         ASTMemberValue explicitAttr = node.getAttribute(attrName);
         if (explicitAttr != null) {
-            return ofNode(explicitAttr);
+            SymbolicValue valueOfAttr = ofNode(explicitAttr);
+            if (shouldWrapInArray(explicitAttr)) {
+                return SymArray.forElements(listOf(valueOfAttr));
+            }
+            return valueOfAttr;
         }
-        return getAnnotationSymbol().getDefaultAnnotationAttributeValue(attrName);
+        return sym.getDefaultAnnotationAttributeValue(attrName);
+    }
+
+    private boolean shouldWrapInArray(@NonNull ASTMemberValue attr) {
+        ASTMemberValuePair parent = (ASTMemberValuePair) attr.getParent();
+        if (!parent.isShorthand() || attr instanceof ASTMemberValueArrayInitializer) {
+            // in these syntactic cases there is no implicit conversion to an array
+            return false;
+        }
+        Optional<JMethodSymbol> first = getAnnotationAttrDeclaration(parent.getName());
+        if (first.isPresent()) {
+            JTypeMirror returnTy = first.get().getReturnType(Substitution.EMPTY);
+            return returnTy instanceof JArrayType;
+        }
+        return false;
+    }
+
+    private Optional<JMethodSymbol> getAnnotationAttrDeclaration(String attrName) {
+        return sym.getDeclaredMethods().stream()
+                  .filter(it -> it.isAnnotationAttribute()
+                      && it.getSimpleName().equals(attrName)).findFirst();
     }
 
     @Override
