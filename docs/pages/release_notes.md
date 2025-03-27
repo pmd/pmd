@@ -26,6 +26,8 @@ This is a {{ site.pmd.release_type }} release.
   * [#5593](https://github.com/pmd/pmd/issues/5593): \[core] Make renderers output files in deterministic order even when multithreaded
 * apex
   * [#5567](https://github.com/pmd/pmd/issues/5567): \[apex] Provide type information for CastExpression
+* apex-design
+  * [#5616](https://github.com/pmd/pmd/issues/5616): \[apex] ExcessiveParameterList reports entire method instead of signature only
 * java
   * [#5587](https://github.com/pmd/pmd/issues/5587): \[java] Thread deadlock during PMD analysis in ParseLock.getFinalStatus
 * java-bestpractices
