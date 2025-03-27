@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.document;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -34,6 +35,17 @@ class FileIdTest {
         String uriStr = absPath.toUri().toString();
         FileId fileId = FileId.fromURI(uriStr);
         checkId(fileId, absPath.toAbsolutePath().toString(), "b.c", uriStr, absPath.toAbsolutePath().toString());
+    }
+
+    @Test
+    void testFromAsChild() {
+        FileId parent = FileId.fromPathLikeString("bla");
+        FileId child = FileId.fromPathLikeString("bla");
+        FileId fileId = FileId.asChildOf(child, parent);
+        checkId(fileId, child.getAbsolutePath(), "bla", child.getUriString(), "bla");
+
+        assertSame(child, FileId.asChildOf(child, null));
+        assertSame(fileId, FileId.asChildOf(fileId, parent));
     }
 
     @Test

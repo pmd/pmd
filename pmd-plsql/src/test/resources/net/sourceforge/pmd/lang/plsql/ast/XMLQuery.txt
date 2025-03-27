@@ -46,7 +46,7 @@
          |                 +- NumericLiteral[@CanonicalImage = "4000", @Image = "4000"]
          +- Statement[@CanonicalImage = null]
          |  +- UnlabelledStatement[@CanonicalImage = null]
-         |     +- SelectStatement[@All = false, @CanonicalImage = null, @Distinct = false, @Unique = false]
+         |     +- SelectIntoStatement[@All = false, @CanonicalImage = null, @Distinct = false, @Unique = false]
          |        +- SelectList[@CanonicalImage = null]
          |        |  +- SqlExpression[@CanonicalImage = "XMLCAST", @Image = "XMLCAST"]
          |        |     +- PrimaryPrefix[@CanonicalImage = "XMLCAST", @Image = "XMLCAST", @SelfModifier = false]

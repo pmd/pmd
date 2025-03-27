@@ -12,6 +12,6 @@ class FunctionsTest extends AbstractPLSQLParserTst {
 
     @Test
     void parseSelectExtractExpression() {
-        plsql.parseResource("ExtractExpressions.pls");
+        doTest("ExtractExpressions");
     }
 }
