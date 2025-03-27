@@ -36,6 +36,8 @@ import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
  * <p>Any renderer whose output may depend on ordering of files should be shielded
  * by an instance of this wrapper. Note that each wrapper maintains its own buffer
  * so it should be
+ *
+ * @since 7.12.0
  */
 public class DeterministicOutputListenerWrapper implements GlobalAnalysisListener {
     private static final Logger LOG = LoggerFactory.getLogger(DeterministicOutputListenerWrapper.class.getName());
@@ -45,8 +47,8 @@ public class DeterministicOutputListenerWrapper implements GlobalAnalysisListene
 
     // use linkedlist because we are mostly doing one-element insertions and removals
     private final List<ReportWrapper> reportBuffer = new LinkedList<>();
-    private int nextToOutput;
     private final Object lock = new Object();
+    private int nextToOutput;
 
 
     public DeterministicOutputListenerWrapper(GlobalAnalysisListener listener) {

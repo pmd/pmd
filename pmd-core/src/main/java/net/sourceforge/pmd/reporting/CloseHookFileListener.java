@@ -12,6 +12,8 @@ import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
 /**
  * A delegating listener wrapper that can override the closing behavior.
  * @param <T> Type of the delegate
+ *
+ * @since 7.12.0
  */
 public abstract class CloseHookFileListener<T extends FileAnalysisListener> implements FileAnalysisListener {
     private final T delegate;

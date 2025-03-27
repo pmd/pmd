@@ -39,6 +39,8 @@ public interface ListenerInitializer extends AutoCloseable {
      * processing might however pass them to the renderer in any order.
      * Renderers may use {@link DeterministicOutputListenerWrapper} to
      * reorder the events.
+     *
+     * @since 7.12.0
      */
     default void setFilesToAnalyze(List<FileId> files) {
         // noop
