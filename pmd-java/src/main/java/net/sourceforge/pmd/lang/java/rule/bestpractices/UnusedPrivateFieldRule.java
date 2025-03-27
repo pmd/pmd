@@ -75,14 +75,13 @@ public class UnusedPrivateFieldRule extends AbstractJavaRulechainRule {
     }
 
     private boolean hasAnyAnnotation(Annotatable node) {
-        NodeStream<ASTAnnotation> declaredAnnotations = node.getDeclaredAnnotations();
         for (String reportAnnotation : getProperty(REPORT_FOR_ANNOTATIONS_DESCRIPTOR)) {
-            for (ASTAnnotation annotation: declaredAnnotations) {
+            for (ASTAnnotation annotation : node.getDeclaredAnnotations()) {
                 if (TypeTestUtil.isA(reportAnnotation, annotation)) {
                     return false;
                 }
             }
         }
-        return !declaredAnnotations.isEmpty();
+        return node.getDeclaredAnnotations().nonEmpty();
     }
 }
