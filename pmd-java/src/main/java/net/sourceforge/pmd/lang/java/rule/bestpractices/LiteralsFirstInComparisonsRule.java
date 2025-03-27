@@ -49,16 +49,14 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRulechainRule {
                 || call.getMethodType().getFormalParameters().equals(listOf(call.getTypeSystem().OBJECT));
     }
 
-    private boolean isConstantString(@Nullable ASTExpression node) {
-        return node instanceof ASTStringLiteral
-            || node != null && node.getConstValue() instanceof String;
-    }
-
     private void checkArgs(RuleContext ctx, ASTMethodCall call) {
-        ASTExpression arg = call.getArguments().get(0);
-        @Nullable ASTExpression qualifier = call.getQualifier();
-        if (qualifier != null && !isConstantString(qualifier) && isConstantString(arg)) {
+        if (!isConstantString(call.getQualifier()) && isConstantString(call.getArguments().get(0))) {
             ctx.addViolation(call);
         }
+    }
+
+    private boolean isConstantString(@Nullable ASTExpression node) {
+        return node != null
+                && (node instanceof ASTStringLiteral || node.getConstValue() instanceof String);
     }
 }
