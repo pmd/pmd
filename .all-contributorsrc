@@ -6749,7 +6749,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/8797018?v=4",
       "profile": "https://www.stokpop.nl/",
       "contributions": [
-        "code"
+        "code",
+        "bug"
       ]
     },
     {
@@ -8007,6 +8008,24 @@
       "name": "Wolf2323",
       "avatar_url": "https://avatars.githubusercontent.com/u/4036106?v=4",
       "profile": "https://github.com/Wolf2323",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "pankratz76",
+      "name": "pankratz76",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8830888?v=4",
+      "profile": "https://github.com/pankratz76",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "Miuler",
+      "name": "Hector Miuler Malpica Gallegos",
+      "avatar_url": "https://avatars.githubusercontent.com/u/9974?v=4",
+      "profile": "https://miuler.com/",
       "contributions": [
         "bug"
       ]
