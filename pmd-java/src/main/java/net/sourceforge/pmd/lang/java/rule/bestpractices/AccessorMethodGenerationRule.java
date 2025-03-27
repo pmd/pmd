@@ -62,18 +62,21 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
 
     private void checkMemberAccess(RuleContext data, ASTExpression node, JAccessibleElementSymbol symbol) {
         if (Modifier.isPrivate(symbol.getModifiers())
-                && !Objects.equals(symbol.getEnclosingClass(),
-                node.getEnclosingType().getSymbol())) {
+            && !Objects.equals(symbol.getEnclosingClass(),
+            node.getEnclosingType().getSymbol())) {
+            addViolation(data, node, symbol);
+        }
+    }
 
-            JavaNode node1 = symbol.tryGetNode();
-            if (node1 == null && JConstructorSymbol.CTOR_NAME.equals(symbol.getSimpleName())) {
-                // might be a default constructor, implicitly defined and not explicitly in the compilation unit
-                node1 = symbol.getEnclosingClass().tryGetNode();
-            }
-            assert node1 != null : "Node should be in the same compilation unit";
-            if (reportedNodes.add(node1)) {
-                data.addViolation(node1, stripPackageName(node.getEnclosingType().getSymbol()));
-            }
+    private void addViolation(RuleContext data, ASTExpression node, JAccessibleElementSymbol symbol) {
+        JavaNode node1 = symbol.tryGetNode();
+        if (node1 == null && JConstructorSymbol.CTOR_NAME.equals(symbol.getSimpleName())) {
+            // might be a default constructor, implicitly defined and not explicitly in the compilation unit
+            node1 = symbol.getEnclosingClass().tryGetNode();
+        }
+        assert node1 != null : "Node should be in the same compilation unit";
+        if (reportedNodes.add(node1)) {
+            data.addViolation(node1, stripPackageName(node.getEnclosingType().getSymbol()));
         }
     }
 
@@ -82,11 +85,14 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
      * canonical name {@code com.github.Outer.Inner}, returns {@code Outer.Inner}.
      */
     private static String stripPackageName(JClassSymbol symbol) {
-        String canoName = symbol.getCanonicalName();
+        return stripPackageName(symbol, symbol.getCanonicalName());
+    }
+
+    private static String stripPackageName(JClassSymbol symbol, String canoName) {
         return canoName == null
-                ? symbol.getSimpleName()
-                : symbol.getPackageName().isEmpty()
-                ? canoName
-                : canoName.substring(symbol.getPackageName().length() + 1); //+1 for the dot
+            ? symbol.getSimpleName()
+            : symbol.getPackageName().isEmpty()
+            ? canoName
+            : canoName.substring(symbol.getPackageName().length() + 1);
     }
 }
