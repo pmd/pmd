@@ -17,6 +17,7 @@ This is a {{ site.pmd.release_type }} release.
 ### 🐛 Fixed Issues
 * java-bestpractices
   * [#5369](https://github.com/pmd/pmd/issues/5369): \[java] UnusedPrivateMethod false positives with lombok.val
+  * [#5592](https://github.com/pmd/pmd/issues/5592): \[java] UnusedAssignment false positive in record compact constructor
 
 ### 🚨 API Changes
 
