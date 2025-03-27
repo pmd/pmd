@@ -33,13 +33,16 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodCall call, Object data) {
-        if (shouldCheckArgs(call)) {
-            checkArgs((RuleContext) data, call);
+        if (shouldVisit(call)
+                && call.getQualifier() != null
+                && !isConstantString(call.getQualifier())
+                && isConstantString(call.getArguments().get(0))) {
+            ((RuleContext) data).addViolation(call);
         }
         return data;
     }
 
-    private boolean shouldCheckArgs(ASTMethodCall call) {
+    private boolean shouldVisit(ASTMethodCall call) {
         return call.getArguments().size() == 1
                 && EQUALS.equals(call.getMethodName())
                 && isEqualsObjectAndNotAnOverload(call)
@@ -52,14 +55,7 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRulechainRule {
                 || call.getMethodType().getFormalParameters().equals(listOf(call.getTypeSystem().OBJECT));
     }
 
-    private void checkArgs(RuleContext ctx, ASTMethodCall call) {
-        if (!isConstantString(call.getQualifier()) && isConstantString(call.getArguments().get(0))) {
-            ctx.addViolation(call);
-        }
-    }
-
-    private boolean isConstantString(@Nullable ASTExpression node) {
-        return node != null &&
-                (node instanceof ASTStringLiteral || node.getConstValue() instanceof String);
+    private boolean isConstantString(ASTExpression node) {
+        return node instanceof ASTStringLiteral || node.getConstValue() instanceof String;
     }
 }
