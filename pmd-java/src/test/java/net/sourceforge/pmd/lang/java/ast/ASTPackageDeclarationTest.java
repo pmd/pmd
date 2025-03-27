@@ -17,7 +17,7 @@ class ASTPackageDeclarationTest extends BaseParserTest {
     private static final String PACKAGE_INFO_ANNOTATED = "@Deprecated\npackage net.sourceforge.pmd.foobar;\n";
 
     /**
-     * Regression test for bug 3524607.
+     * Regression test for bug https://sourceforge.net/p/pmd/bugs/1006/.
      */
     @Test
     void testPackageName() {
@@ -27,9 +27,6 @@ class ASTPackageDeclarationTest extends BaseParserTest {
         assertEquals("net.sourceforge.pmd.foobar", nodes.getPackageName());
     }
 
-    /**
-     * Regression test for bug 3524607.
-     */
     @Test
     void testReportLocation() {
         ASTCompilationUnit nodes = java.parse(

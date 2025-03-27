@@ -18,7 +18,7 @@ This is a {{ site.pmd.release_type }} release.
 * java-bestpractices
   * [#5369](https://github.com/pmd/pmd/issues/5369): \[java] UnusedPrivateMethod false positives with lombok.val
 * java-codestyle
-  * [#5452](https://github.com/pmd/pmd/issues/5452): \[java] Suppression comment has no effect due to finding at wrong position in case of JavaDoc comment
+  * [#5452](https://github.com/pmd/pmd/issues/5452): \[java] PackageCase: Suppression comment has no effect due to finding at wrong position in case of JavaDoc comment
 
 ### 🚨 API Changes
 

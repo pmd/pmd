@@ -27,6 +27,17 @@ package foo.BarBuz;
     </test-code>
 
     <test-code>
+        <description>#5452 javadoc comment and suppression NOPMD</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ *  comment
+ */
+package foo.BarBuz; //NOPMD upper-case package name ok
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>good</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
