@@ -19,7 +19,6 @@ import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.reporting.RuleContext;
 
@@ -62,22 +61,18 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
     }
 
     private void checkMemberAccess(RuleContext data, ASTExpression node, JAccessibleElementSymbol symbol) {
-        checkMemberAccess(data, node, symbol, this.reportedNodes);
-    }
+        if (Modifier.isPrivate(symbol.getModifiers())
+                && !Objects.equals(symbol.getEnclosingClass(),
+                node.getEnclosingType().getSymbol())) {
 
-    static void checkMemberAccess(RuleContext ruleContext, JavaNode refExpr, JAccessibleElementSymbol sym, Set<JavaNode> reportedNodes) {
-        if (Modifier.isPrivate(sym.getModifiers())
-            && !Objects.equals(sym.getEnclosingClass(),
-                               refExpr.getEnclosingType().getSymbol())) {
-
-            JavaNode node = sym.tryGetNode();
-            if (node == null && JConstructorSymbol.CTOR_NAME.equals(sym.getSimpleName())) {
+            JavaNode node1 = symbol.tryGetNode();
+            if (node1 == null && JConstructorSymbol.CTOR_NAME.equals(symbol.getSimpleName())) {
                 // might be a default constructor, implicitly defined and not explicitly in the compilation unit
-                node = sym.getEnclosingClass().tryGetNode();
+                node1 = symbol.getEnclosingClass().tryGetNode();
             }
-            assert node != null : "Node should be in the same compilation unit";
-            if (reportedNodes.add(node)) {
-                ruleContext.addViolation(node, stripPackageName(refExpr.getEnclosingType().getSymbol()));
+            assert node1 != null : "Node should be in the same compilation unit";
+            if (reportedNodes.add(node1)) {
+                data.addViolation(node1, stripPackageName(node.getEnclosingType().getSymbol()));
             }
         }
     }
