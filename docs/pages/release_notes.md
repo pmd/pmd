@@ -15,6 +15,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀 New and noteworthy
 
 ### 🐛 Fixed Issues
+* core
+  * [#5593](https://github.com/pmd/pmd/issues/5593): \[core] Make renderers output files in deterministic order even when multithreaded
 * java-bestpractices
   * [#5369](https://github.com/pmd/pmd/issues/5369): \[java] UnusedPrivateMethod false positives with lombok.val
 
