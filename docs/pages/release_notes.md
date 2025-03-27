@@ -35,6 +35,7 @@ This is a {{ site.pmd.release_type }} release.
   * [#5592](https://github.com/pmd/pmd/issues/5592): \[java] UnusedAssignment false positive in record compact constructor
 * java-codestyle
   * [#5079](https://github.com/pmd/pmd/issues/5079): \[java] LocalVariableCouldBeFinal false-positive with lombok.val
+  * [#5452](https://github.com/pmd/pmd/issues/5452): \[java] PackageCase: Suppression comment has no effect due to finding at wrong position in case of JavaDoc comment
 * plsql
   * [#5521](https://github.com/pmd/pmd/issues/5521): \[plsql] Long parse time and eventually parse error with XMLAGG order by clause
 
