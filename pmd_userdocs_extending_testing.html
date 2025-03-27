@@ -2180,7 +2180,10 @@ For false-positive test cases, this is always “0”. For false-negative test c
     <p><strong><code class="language-plaintext highlighter-rouge">&lt;expected-linenumbers&gt;</code></strong>: Optional element. It’s a comma separated list of line numbers.
 If there are rule violations reported, then this allows you to
 assert the line numbers. Useful if multiple violations should be detected and to be sure that
-false positives and negatives don’t erase each other.</p>
+false positives and negatives don’t erase each other.<br />
+Since 7.12.0, you can also specify ranges in order to verify begin line and end line of the reported
+violation’s location. E.g. <code class="language-plaintext highlighter-rouge">1-3,4-5</code> asserts, that there are two violations, the first one from line 1 to 3,
+and the second one from lines 4 to 5.</p>
   </li>
   <li>
     <p><strong><code class="language-plaintext highlighter-rouge">&lt;expected-messages&gt;</code></strong>: Optional element, with <code class="language-plaintext highlighter-rouge">&lt;message&gt;</code> elements as children.
@@ -2372,7 +2375,7 @@ create custom PMD rules for different languages including tests.</p>
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            December 2023 (7.0.0)<br /> Site last generated: Mar 27, 2025 <br />
+            March 2025 (7.12.0)<br /> Site last generated: Mar 27, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
