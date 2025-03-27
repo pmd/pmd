@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.rule.bestpractices.accessor;
+package net.sourceforge.pmd.lang.java.rule.bestpractices.util;
 
 import java.lang.reflect.Modifier;
 import java.util.Objects;
@@ -14,9 +14,10 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.reporting.RuleContext;
 
-class AccessorHelper {
+public interface AccessorUtil {
 
-    static void checkMemberAccess(RuleContext ruleContext, JavaNode refExpr, JAccessibleElementSymbol sym, Set<JavaNode> reportedNodes) {
+    static void checkMemberAccess(RuleContext ruleContext, JavaNode refExpr, JAccessibleElementSymbol sym,
+                                  Set<JavaNode> reportedNodes) {
         if (Modifier.isPrivate(sym.getModifiers())
             && !Objects.equals(sym.getEnclosingClass(),
             refExpr.getEnclosingType().getSymbol())) {
@@ -37,11 +38,11 @@ class AccessorHelper {
      * Returns the canonical name without the package name.
      * Eg for a canonical name {@code com.github.Outer.Inner}, returns {@code Outer.Inner}.
      */
-    private static String canonicalNameWithoutPackage(JClassSymbol symbol) {
+    static String canonicalNameWithoutPackage(JClassSymbol symbol) {
         return canonicalNameWithoutPackage(symbol, symbol.getCanonicalName());
     }
 
-    private static String canonicalNameWithoutPackage(JClassSymbol symbol, String canoName) {
+    static String canonicalNameWithoutPackage(JClassSymbol symbol, String canoName) {
         return canoName == null
             ? symbol.getSimpleName()
             : symbol.getPackageName().isEmpty()

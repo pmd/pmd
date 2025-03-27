@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.rule.bestpractices.accessor;
+package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.bestpractices.util.AccessorUtil;
 import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
@@ -60,7 +61,7 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
     }
 
     private void checkMemberAccess(RuleContext data, ASTExpression node, JAccessibleElementSymbol symbol) {
-        AccessorHelper.checkMemberAccess(data, node, symbol, reportedNodes);
+        AccessorUtil.checkMemberAccess(data, node, symbol, reportedNodes);
     }
 
 }

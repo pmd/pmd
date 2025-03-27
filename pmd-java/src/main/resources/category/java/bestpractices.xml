@@ -39,7 +39,7 @@ public abstract class Foo {
           since="1.04"
           maximumLanguageVersion="10"
           message="Avoid instantiation through private constructors from outside of the constructor's class."
-          class="net.sourceforge.pmd.lang.java.rule.bestpractices.accessor.AccessorClassGenerationRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.AccessorClassGenerationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#accessorclassgeneration">
         <description>
 Instantiation by way of private constructors from outside the constructor's class often causes the
@@ -72,7 +72,7 @@ public class Outer {
           since="5.5.4"
           maximumLanguageVersion="10"
           message="Consider giving this member package visibility to access it from {0} without a synthetic accessor method"
-          class="net.sourceforge.pmd.lang.java.rule.bestpractices.accessor.AccessorMethodGenerationRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.AccessorMethodGenerationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#accessormethodgeneration">
         <description>
 When accessing private fields / methods from another class, the Java compiler will generate accessor methods
