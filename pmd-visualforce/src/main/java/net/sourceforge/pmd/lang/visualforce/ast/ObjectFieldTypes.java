@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.visualforce.ast;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -154,9 +153,9 @@ class ObjectFieldTypes extends SalesforceFieldTypes {
      * @return path to the metadata file for the Custom Field or null if not found
      */
     private Path getSfdxCustomFieldPath(Path objectsDirectory, String objectName, String fieldName) {
-        Path fieldsDirectoryPath = Paths.get(objectsDirectory.toString(), objectName, FIELDS_DIRECTORY);
+        Path fieldsDirectoryPath = Path.of(objectsDirectory.toString(), objectName, FIELDS_DIRECTORY);
         if (Files.exists(fieldsDirectoryPath) && Files.isDirectory(fieldsDirectoryPath)) {
-            Path sfdxFieldPath = Paths.get(fieldsDirectoryPath.toString(), fieldName + SFDX_FIELD_FILE_SUFFIX);
+            Path sfdxFieldPath = Path.of(fieldsDirectoryPath.toString(), fieldName + SFDX_FIELD_FILE_SUFFIX);
             if (Files.exists(sfdxFieldPath) && Files.isRegularFile(sfdxFieldPath)) {
                 return sfdxFieldPath;
             }

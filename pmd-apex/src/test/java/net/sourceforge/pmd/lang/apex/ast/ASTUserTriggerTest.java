@@ -15,8 +15,12 @@ class ASTUserTriggerTest extends ApexParserTestBase {
 
     @Test
     void testTriggerName() {
-        ApexNode<?> node = parse("trigger HelloWorldTrigger on Book__c (before insert, after update) {\n"
-                + "   Book__c[] books = Trigger.new;\n" + "   MyHelloWorld.applyDiscount(books);\n" + "}\n");
+        ApexNode<?> node = parse("""
+                trigger HelloWorldTrigger on Book__c (before insert, after update) {
+                   Book__c[] books = Trigger.new;
+                   MyHelloWorld.applyDiscount(books);
+                }
+                """);
         assertSame(ASTUserTrigger.class, node.getClass());
         ASTUserTrigger trigger = (ASTUserTrigger) node;
         assertEquals("HelloWorldTrigger", trigger.getSimpleName());

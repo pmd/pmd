@@ -56,7 +56,7 @@ public interface JTypeParameterSymbol extends JTypeDeclSymbol, BoundToNode<ASTTy
     @NonNull
     default JClassSymbol getEnclosingClass() {
         JTypeParameterOwnerSymbol ownerSymbol = getDeclaringSymbol();
-        return ownerSymbol instanceof JClassSymbol ? (JClassSymbol) ownerSymbol : ownerSymbol.getEnclosingClass();
+        return ownerSymbol instanceof JClassSymbol jcs ? jcs : ownerSymbol.getEnclosingClass();
     }
 
 

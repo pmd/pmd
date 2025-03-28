@@ -192,8 +192,7 @@ public final class TypeOps {
 
         @Override
         public Boolean visitClass(JClassType t, JTypeMirror s) {
-            if (s instanceof JClassType) {
-                JClassType s2 = (JClassType) s;
+            if (s instanceof JClassType s2) {
                 return t.getSymbol().equals(s2.getSymbol()) // maybe compare the type system as well.
                     && t.hasErasedSuperTypes() == s2.hasErasedSuperTypes()
                     && isSameType(t.getEnclosingType(), s2.getEnclosingType(), pure, considerAnnotations)
@@ -226,8 +225,7 @@ public final class TypeOps {
                 return false;
             }
 
-            if (s instanceof JWildcardType) {
-                JWildcardType s2 = (JWildcardType) s;
+            if (s instanceof JWildcardType s2) {
                 if (s2.isUpperBound()) {
                     t.addBound(BoundKind.UPPER, s2.asUpperBound());
                 } else {
@@ -278,8 +276,8 @@ public final class TypeOps {
 
         @Override
         public Boolean visitArray(JArrayType t, JTypeMirror s) {
-            return s instanceof JArrayType
-                && isSameType(t.getComponentType(), ((JArrayType) s).getComponentType(), pure, considerAnnotations);
+            return s instanceof JArrayType jat
+                && isSameType(t.getComponentType(), jat.getComponentType(), pure, considerAnnotations);
         }
     }
 
@@ -545,32 +543,31 @@ public final class TypeOps {
     }
 
     private static JTypeMirror wildUpperBound(JTypeMirror type) {
-        if (type instanceof JWildcardType) {
-            JWildcardType wild = (JWildcardType) type;
+        if (type instanceof JWildcardType wild) {
             if (wild.isUpperBound()) {
                 return wildUpperBound(wild.asUpperBound());
             } else if (wild.asLowerBound() instanceof JTypeVar) {
                 return ((JTypeVar) wild.asLowerBound()).getUpperBound();
             }
-        } else if (type instanceof JTypeVar && ((JTypeVar) type).isCaptured()) {
+        } else if (type instanceof JTypeVar var && var.isCaptured()) {
             // note: tvar.getUpperBound() != tvar.getCapturedOrigin().asUpperBound()
-            return wildUpperBound(((JTypeVar) type).getUpperBound());
+            return wildUpperBound(var.getUpperBound());
         }
         return type;
     }
 
     private static JTypeMirror wildLowerBound(JTypeMirror type) {
-        if (type instanceof JWildcardType) {
-            return wildLowerBound(((JWildcardType) type).asLowerBound());
+        if (type instanceof JWildcardType wildcardType) {
+            return wildLowerBound(wildcardType.asLowerBound());
         }
         return type;
     }
 
     private static JTypeMirror lowerBoundRec(JTypeMirror type) {
-        if (type instanceof JWildcardType) {
-            return lowerBoundRec(((JWildcardType) type).asLowerBound());
-        } else if (type instanceof JTypeVar && ((JTypeVar) type).isCaptured()) {
-            return lowerBoundRec(((JTypeVar) type).getLowerBound());
+        if (type instanceof JWildcardType wildcardType) {
+            return lowerBoundRec(wildcardType.asLowerBound());
+        } else if (type instanceof JTypeVar var && var.isCaptured()) {
+            return lowerBoundRec(var.getLowerBound());
         }
         return type;
     }
@@ -580,7 +577,7 @@ public final class TypeOps {
     }
 
     private static boolean isCvar(JTypeMirror s) {
-        return s instanceof JTypeVar && ((JTypeVar) s).isCaptured();
+        return s instanceof JTypeVar jtv && jtv.isCaptured();
     }
 
 
@@ -621,10 +618,10 @@ public final class TypeOps {
                 return Convertibility.subtypeIf(!t.isPrimitive());
             } else if (s.isVoid() || t.isVoid()) { // t != s
                 return Convertibility.NEVER;
-            } else if (s instanceof InferenceVar) {
+            } else if (s instanceof InferenceVar var) {
                 if (!pure) {
                     // it's possible to add a bound to UNKNOWN or ERROR
-                    ((InferenceVar) s).addBound(BoundKind.LOWER, t);
+                    var.addBound(BoundKind.LOWER, t);
                 }
                 return Convertibility.SUBTYPING;
             } else if (isTypeRange(s)) {
@@ -772,12 +769,11 @@ public final class TypeOps {
                 return Convertibility.SUBTYPING;
             }
 
-            if (s instanceof JWildcardType) {
-                JWildcardType sw = (JWildcardType) s;
+            if (s instanceof JWildcardType sw) {
 
                 // capt(? extends T) <= ? extends T
                 // capt(? super T) <= ? super T
-                if (t instanceof JTypeVar && ((JTypeVar) t).isCaptureOf(sw)) {
+                if (t instanceof JTypeVar var && var.isCaptureOf(sw)) {
                     return Convertibility.SUBTYPING;
                 }
 
@@ -1113,8 +1109,7 @@ public final class TypeOps {
         }
 
         <T extends JTypeMirror> JTypeMirror recurseIfNotDone(T t, BiFunction<T, RecursionStop, JTypeMirror> body) {
-            if (t instanceof JTypeVar) {
-                JTypeVar var = (JTypeVar) t;
+            if (t instanceof JTypeVar var) {
                 if (isAbsent(var)) {
                     return body.apply(t, this);
                 } else {
@@ -1451,9 +1446,9 @@ public final class TypeOps {
 
         JTypeMirror m1AsSuper = origin.getAsSuper(((JClassType) m1Owner).getSymbol());
         JTypeMirror m2AsSuper = origin.getAsSuper(m2Owner.getSymbol());
-        if (m1AsSuper instanceof JClassType && m2AsSuper instanceof JClassType) {
-            m1 = ((JClassType) m1AsSuper).getDeclaredMethod(m1.getSymbol());
-            m2 = ((JClassType) m2AsSuper).getDeclaredMethod(m2.getSymbol());
+        if (m1AsSuper instanceof JClassType type && m2AsSuper instanceof JClassType type1) {
+            m1 = type.getDeclaredMethod(m1.getSymbol());
+            m2 = type1.getDeclaredMethod(m2.getSymbol());
             assert m1 != null && m2 != null;
             return isSubSignature(m1, m2);
         }
@@ -1538,14 +1533,12 @@ public final class TypeOps {
 
         for (int i = 0; i < tparams.size(); i++) {
             JTypeMirror ai = targs.get(i);
-            if (ai instanceof JWildcardType) {
+            if (ai instanceof JWildcardType ai2) {
                 JTypeVar pi = tparams.get(i);
                 JTypeMirror bi = pi.getUpperBound();
                 if (mentionsAny(bi, new HashSet<>(tparams))) {
                     return null;
                 }
-
-                JWildcardType ai2 = (JWildcardType) ai;
 
                 if (ai2.isUnbounded()) {
                     newArgs.add(bi);
@@ -1599,10 +1592,10 @@ public final class TypeOps {
      * if the parameter is null.
      */
     public static @Nullable JClassType asClassType(@Nullable JTypeMirror t) {
-        if (t instanceof JClassType) {
-            return (JClassType) t;
-        } else if (t instanceof JIntersectionType) {
-            return ((JIntersectionType) t).getInducedClassType();
+        if (t instanceof JClassType type) {
+            return type;
+        } else if (t instanceof JIntersectionType type) {
+            return type.getInducedClassType();
         }
         return null;
     }
@@ -1630,7 +1623,7 @@ public final class TypeOps {
         if (candidates.isEmpty()) {
             return null;
         } else if (candidates.size() == 1) {
-            return candidates.get(0);
+            return candidates.getFirst();
         }
 
         JMethodSig currentBest = null;
@@ -1686,8 +1679,7 @@ public final class TypeOps {
      * with the given type.  If none exists, return null.
      */
     public static @Nullable JClassType asOuterSuper(JTypeMirror t, JClassSymbol sym) {
-        if (t instanceof JClassType) {
-            JClassType ct = (JClassType) t;
+        if (t instanceof JClassType ct) {
             do {
                 JClassType sup = ct.getAsSuper(sym);
                 if (sup != null) {
@@ -1824,8 +1816,8 @@ public final class TypeOps {
      * otherwise returns t.
      */
     public static List<JTypeMirror> asList(JTypeMirror t) {
-        if (t instanceof JIntersectionType) {
-            return ((JIntersectionType) t).getComponents();
+        if (t instanceof JIntersectionType type) {
+            return type.getComponents();
         } else {
             return Collections.singletonList(t);
         }
@@ -1945,8 +1937,7 @@ public final class TypeOps {
      * case here.
      */
     public static JTypeMirror getMemberSource(JTypeMirror t) {
-        if (t instanceof JTypeVar) {
-            JTypeVar tv = (JTypeVar) t;
+        if (t instanceof JTypeVar tv) {
             return capture(tv.getUpperBound());
         }
         return capture(t);
@@ -2011,9 +2002,9 @@ public final class TypeOps {
     }
 
     public static NameResolver<FieldSig> getMemberFieldResolver(JTypeMirror c, @NonNull String accessPackageName, @Nullable JClassSymbol access, String name) {
-        if (c instanceof JClassType) {
+        if (c instanceof JClassType type) {
             // fast path
-            return JavaResolvers.getMemberFieldResolver((JClassType) c, accessPackageName, access, name);
+            return JavaResolvers.getMemberFieldResolver(type, accessPackageName, access, name);
         }
 
         return c.acceptVisitor(GetFieldVisitor.INSTANCE, new FieldSearchParams(accessPackageName, access, name));
@@ -2143,7 +2134,7 @@ public final class TypeOps {
     public static boolean isSpecialUnresolvedOrArray(@Nullable JTypeMirror t) {
         return t == null
             || isSpecialUnresolved(t)
-            || t instanceof JArrayType && isSpecialUnresolved(((JArrayType) t).getElementType());
+            || t instanceof JArrayType jat && isSpecialUnresolved(jat.getElementType());
     }
 
     /**
@@ -2161,7 +2152,7 @@ public final class TypeOps {
      */
     public static boolean hasUnresolvedSymbolOrArray(@Nullable JTypeMirror t) {
         if (!(t instanceof JClassType)) {
-            return t instanceof JArrayType && hasUnresolvedSymbol(((JArrayType) t).getElementType());
+            return t instanceof JArrayType jat && hasUnresolvedSymbol(jat.getElementType());
         }
         return hasUnresolvedSymbol(t);
     }
@@ -2171,7 +2162,7 @@ public final class TypeOps {
     }
 
     public static @Nullable JTypeMirror getArrayComponent(@Nullable JTypeMirror t) {
-        return t instanceof JArrayType ? ((JArrayType) t).getComponentType() : null;
+        return t instanceof JArrayType jat ? jat.getComponentType() : null;
     }
 
 
@@ -2196,8 +2187,8 @@ public final class TypeOps {
      */
     public static boolean isContextDependent(JExecutableSymbol symbol) {
         if (symbol.isGeneric() || symbol.getEnclosingClass().isGeneric()) {
-            if (symbol instanceof JMethodSymbol) {
-                JTypeMirror returnType = ((JMethodSymbol) symbol).getReturnType(EMPTY);
+            if (symbol instanceof JMethodSymbol methodSymbol) {
+                JTypeMirror returnType = methodSymbol.getReturnType(EMPTY);
                 return mentionsAny(returnType, symbol.getTypeParameters())
                     || mentionsAny(returnType, symbol.getEnclosingClass().getTypeParameters());
             }

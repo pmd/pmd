@@ -168,10 +168,10 @@ class JavaQualifiedNameTest {
 
         List<ASTAnonymousClassDeclaration> classes = getNodes(ASTAnonymousClassDeclaration.class, TEST);
 
-        assertEquals(("Bzaz$1"), classes.get(0).getBinaryName());
-        assertFalse(classes.get(0).isLocal());
-        assertTrue(classes.get(0).isAnonymous());
-        assertEquals("", classes.get(0).getSimpleName());
+        assertEquals(("Bzaz$1"), classes.getFirst().getBinaryName());
+        assertFalse(classes.getFirst().isLocal());
+        assertTrue(classes.getFirst().isAnonymous());
+        assertEquals("", classes.getFirst().getSimpleName());
     }
 
 
@@ -189,8 +189,8 @@ class JavaQualifiedNameTest {
 
         List<ASTAnonymousClassDeclaration> classes = getNodes(ASTAnonymousClassDeclaration.class, TEST);
 
-        assertNotEquals(classes.get(0), classes.get(1));
-        assertEquals("Bzaz$1", classes.get(0).getBinaryName());
+        assertNotEquals(classes.getFirst(), classes.get(1));
+        assertEquals("Bzaz$1", classes.getFirst().getBinaryName());
         assertEquals("Bzaz$2", classes.get(1).getBinaryName());
     }
 
@@ -210,8 +210,8 @@ class JavaQualifiedNameTest {
 
         List<ASTAnonymousClassDeclaration> classes = getNodes(ASTAnonymousClassDeclaration.class, TEST);
 
-        assertNotEquals(classes.get(0), classes.get(1));
-        assertEquals("Bzaz$1", classes.get(0).getBinaryName());
+        assertNotEquals(classes.getFirst(), classes.get(1));
+        assertEquals("Bzaz$1", classes.getFirst().getBinaryName());
         assertEquals("Bzaz$1$1", classes.get(1).getBinaryName());
     }
 

@@ -104,8 +104,7 @@ public enum UnaryOp implements InternalInterfaces.OperatorLike {
      * Tests if the node is an {@link ASTUnaryExpression} with one of the given operators.
      */
     public static boolean isUnaryExprWithOperator(@Nullable JavaNode e, Set<UnaryOp> operators) {
-        if (e instanceof ASTUnaryExpression) {
-            ASTUnaryExpression unary = (ASTUnaryExpression) e;
+        if (e instanceof ASTUnaryExpression unary) {
             return operators.contains(unary.getOperator());
         }
         return false;
@@ -115,8 +114,7 @@ public enum UnaryOp implements InternalInterfaces.OperatorLike {
      * Tests if the node is an {@link ASTUnaryExpression} with the given operator.
      */
     public static boolean isUnaryExprWithOperator(@Nullable JavaNode e, UnaryOp operator) {
-        if (e instanceof ASTUnaryExpression) {
-            ASTUnaryExpression unary = (ASTUnaryExpression) e;
+        if (e instanceof ASTUnaryExpression unary) {
             return operator == unary.getOperator();
         }
         return false;

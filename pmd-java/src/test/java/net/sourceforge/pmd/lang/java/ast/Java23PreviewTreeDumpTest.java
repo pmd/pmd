@@ -43,7 +43,7 @@ class Java23PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
         assertTrue(compilationUnit.isSimpleCompilationUnit());
 
         List<ASTMethodCall> methodCalls = compilationUnit.descendants(ASTMethodCall.class).toList();
-        OverloadSelectionResult systemOutPrintln = methodCalls.get(0).getOverloadSelectionInfo(); // System.out.println
+        OverloadSelectionResult systemOutPrintln = methodCalls.getFirst().getOverloadSelectionInfo(); // System.out.println
         assertFalse(systemOutPrintln.isFailed());
         TypeTestUtil.isA("java.io.PrintStream", systemOutPrintln.getMethodType().getDeclaringType());
 

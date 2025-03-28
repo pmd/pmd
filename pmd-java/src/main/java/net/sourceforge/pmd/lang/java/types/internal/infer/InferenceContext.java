@@ -277,8 +277,8 @@ final class InferenceContext {
     }
 
     private static JTypeMirror groundSubst(SubstVar var) {
-        if (var instanceof InferenceVar) {
-            JTypeMirror inst = ((InferenceVar) var).getInst();
+        if (var instanceof InferenceVar inferenceVar) {
+            JTypeMirror inst = inferenceVar.getInst();
             if (inst != null) {
                 return inst;
             }

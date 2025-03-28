@@ -24,7 +24,7 @@ class XPathJspRuleTest extends AbstractJspNodesTst {
 
         assertEquals(1, report.getViolations().size(), "One violation expected!");
 
-        RuleViolation rv = report.getViolations().get(0);
+        RuleViolation rv = report.getViolations().getFirst();
         assertEquals(1, rv.getBeginLine());
     }
 

@@ -456,8 +456,7 @@ public final class TypeSystem {
             return common;
         }
 
-        if (symbol instanceof JClassSymbol) {
-            JClassSymbol classSym = (JClassSymbol) symbol;
+        if (symbol instanceof JClassSymbol classSym) {
             if (classSym.isArray()) {
                 JTypeMirror component = typeOf(classSym.getArrayComponent(), isErased);
                 assert component != null : "the symbol necessarily has an array component symbol";
@@ -465,8 +464,8 @@ public final class TypeSystem {
             } else {
                 return new ClassTypeImpl(this, classSym, emptyList(), isErased, HashTreePSet.empty());
             }
-        } else if (symbol instanceof JTypeParameterSymbol) {
-            return ((JTypeParameterSymbol) symbol).getTypeMirror();
+        } else if (symbol instanceof JTypeParameterSymbol parameterSymbol) {
+            return parameterSymbol.getTypeMirror();
         }
         throw AssertionUtil.shouldNotReachHere("Uncategorized type symbol " + symbol.getClass() + ": " + symbol);
     }

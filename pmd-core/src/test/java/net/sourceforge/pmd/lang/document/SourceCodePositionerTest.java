@@ -122,9 +122,11 @@ class SourceCodePositionerTest {
 
     @Test
     void lineToOffsetMappingWithLineFeedShouldSucceed() {
-        final String code = "public static int main(String[] args) {\n"
-            + "int var;\n"
-            + "}";
+        final String code = """
+            public static int main(String[] args) {
+            int var;
+            }\
+            """;
 
         SourceCodePositioner positioner = SourceCodePositioner.create(code);
 
@@ -133,9 +135,11 @@ class SourceCodePositionerTest {
 
     @Test
     void lineToOffsetMappingWithCarriageReturnFeedLineFeedShouldSucceed() {
-        final String code = "public static int main(String[] args) {\r\n"
-            + "int var;\r\n"
-            + "}";
+        final String code = """
+            public static int main(String[] args) {
+            int var;
+            }\
+            """;
 
         SourceCodePositioner positioner = SourceCodePositioner.create(code);
 
@@ -144,9 +148,11 @@ class SourceCodePositionerTest {
 
     @Test
     void lineToOffsetMappingWithMixedLineSeparatorsShouldSucceed() {
-        final String code = "public static int main(String[] args) {\r\n"
-            + "int var;\n"
-            + "}";
+        final String code = """
+            public static int main(String[] args) {
+            int var;
+            }\
+            """;
 
         SourceCodePositioner positioner = SourceCodePositioner.create(code);
 

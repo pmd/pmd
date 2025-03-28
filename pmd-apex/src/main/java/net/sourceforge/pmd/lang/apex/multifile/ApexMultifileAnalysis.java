@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.apex.multifile;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -60,7 +59,7 @@ public final class ApexMultifileAnalysis {
         try {
             // Load the package into the org, this can take some time!
             if (rootDir.isPresent() && !rootDir.get().isEmpty()) {
-                Path projectPath = Paths.get(rootDir.get());
+                Path projectPath = Path.of(rootDir.get());
                 Path sfdxProjectJson = projectPath.resolve("sfdx-project.json");
 
                 // Limit analysis to SFDX Projects

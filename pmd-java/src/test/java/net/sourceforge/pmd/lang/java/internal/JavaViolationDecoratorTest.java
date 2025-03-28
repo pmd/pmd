@@ -157,13 +157,13 @@ class JavaViolationDecoratorTest {
         List<ASTClassDeclaration> classes = ast.descendants(ASTClassDeclaration.class).toList();
         assertEquals(2, classes.size());
 
-        assertThat(decorate(classes.get(0)), hasEntry(CLASS_NAME, "Foo"));
+        assertThat(decorate(classes.getFirst()), hasEntry(CLASS_NAME, "Foo"));
         assertThat(decorate(classes.get(1)), hasEntry(CLASS_NAME, "Bar"));
 
         List<ASTFieldDeclaration> fields = ast.descendants(ASTFieldDeclaration.class).crossFindBoundaries().toList();
         assertEquals(2, fields.size());
 
-        assertThat(decorate(fields.get(0)), hasEntry(CLASS_NAME, "Foo"));
+        assertThat(decorate(fields.getFirst()), hasEntry(CLASS_NAME, "Foo"));
         assertThat(decorate(fields.get(1)), hasEntry(CLASS_NAME, "Bar"));
     }
 
@@ -173,8 +173,8 @@ class JavaViolationDecoratorTest {
         List<ASTNumericLiteral> expressions = ast.descendants(ASTNumericLiteral.class).toList();
         assertEquals(2, expressions.size());
 
-        assertThat(decorate(expressions.get(0)), hasEntry(CLASS_NAME, "Foo"));
-        assertThat(decorate(expressions.get(0)), hasEntry(VARIABLE_NAME, "a"));
+        assertThat(decorate(expressions.getFirst()), hasEntry(CLASS_NAME, "Foo"));
+        assertThat(decorate(expressions.getFirst()), hasEntry(VARIABLE_NAME, "a"));
 
         assertThat(decorate(expressions.get(1)), hasEntry(CLASS_NAME, "Foo"));
         assertThat(decorate(expressions.get(1)), hasEntry(VARIABLE_NAME, "x"));

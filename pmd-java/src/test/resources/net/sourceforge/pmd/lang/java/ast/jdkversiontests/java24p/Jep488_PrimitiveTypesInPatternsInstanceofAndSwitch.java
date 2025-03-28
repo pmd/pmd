@@ -65,8 +65,7 @@ public class Jep488_PrimitiveTypesInPatternsInstanceofAndSwitch {
         if (i instanceof byte b) {
             System.out.println("byte: " + b);
         }
-        if (i instanceof byte) {  // value of i fits in a byte
-            byte b = (byte)i; // traditional cast required
+        if (i instanceof byte b1) { // traditional cast required
             System.out.println("byte: ... " + b);
         }
     }

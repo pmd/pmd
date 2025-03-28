@@ -23,9 +23,9 @@ abstract class SwiftInnerNode
 
     @Override
     public <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
-        if (visitor instanceof SwiftVisitor) {
+        if (visitor instanceof SwiftVisitor<? super P, ? extends R> swiftVisitor) {
             // some of the generated antlr nodes have no accept method...
-            return ((SwiftVisitor<? super P, ? extends R>) visitor).visitSwiftNode(this, data);
+            return swiftVisitor.visitSwiftNode(this, data);
         }
         return visitor.visitNode(this, data);
     }

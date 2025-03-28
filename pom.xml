@@ -85,7 +85,7 @@
     <properties>
         <project.build.outputTimestamp>2025-02-28T10:34:31Z</project.build.outputTimestamp>
 
-        <java.version>8</java.version>
+        <java.version>21</java.version>
 
         <maven.compiler.test.source>1.8</maven.compiler.test.source>
         <maven.compiler.test.target>1.8</maven.compiler.test.target>

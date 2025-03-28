@@ -130,7 +130,7 @@ public class CPDTask extends Task {
 
                 int errors = config.getReporter().numErrors();
                 if (errors > 0) {
-                    String message = String.format("There were %d recovered errors during analysis.", errors);
+                    String message = "There were %d recovered errors during analysis.".formatted(errors);
                     if (failOnError) {
                         throw new BuildException(message + " Ignore these with failOnError=\"true\".");
                     } else {

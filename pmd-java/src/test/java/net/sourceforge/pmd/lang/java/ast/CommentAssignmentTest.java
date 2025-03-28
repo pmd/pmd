@@ -26,12 +26,20 @@ class CommentAssignmentTest extends BaseParserTest {
      */
     @Test
     void testFilteredCommentIn() {
-        ASTCompilationUnit node = java.parse("public class Foo {\n"
-                                                 + "     /* multi line comment with blank lines\n\n\n */\n"
-                                                 + "        /** a formal comment with blank lines\n\n\n */"
-                                                 + "}");
+        ASTCompilationUnit node = java.parse("""
+                                                 public class Foo {
+                                                      /* multi line comment with blank lines
+                                                 
+                                                 
+                                                  */
+                                                         /** a formal comment with blank lines
+                                                 
+                                                 
+                                                  */\
+                                                 }\
+                                                 """);
 
-        JavaComment comment = node.getComments().get(0);
+        JavaComment comment = node.getComments().getFirst();
 
         assertFalse(comment.isSingleLine());
         assertFalse(comment.hasJavadocContent());
@@ -48,43 +56,50 @@ class CommentAssignmentTest extends BaseParserTest {
     @Test
     void testCommentAssignments() {
 
-        ASTCompilationUnit node = java.parse("public class Foo {\n"
-                                                 + "     /** Comment 1 */\n"
-                                                 + "        public void method1() {}\n"
-                                                 + "    \n"
-                                                 + "        /** Comment 2 */\n"
-                                                 + "    \n"
-                                                 + "        /** Comment 3 */\n"
-                                                 + "        public void method2() {}" + "}");
+        ASTCompilationUnit node = java.parse("""
+                                                 public class Foo {
+                                                      /** Comment 1 */
+                                                         public void method1() {}
+                                                    \s
+                                                         /** Comment 2 */
+                                                    \s
+                                                         /** Comment 3 */
+                                                         public void method2() {}\
+                                                 }\
+                                                 """);
 
         List<ASTMethodDeclaration> methods = node.descendants(ASTMethodDeclaration.class).toList();
-        assertCommentEquals(methods.get(0), "/** Comment 1 */");
+        assertCommentEquals(methods.getFirst(), "/** Comment 1 */");
         assertCommentEquals(methods.get(1), "/** Comment 3 */");
     }
 
     @Test
     void testCommentAssignmentsWithAnnotation() {
 
-        ASTCompilationUnit node = java.parse("public class Foo {\n"
-                                                 + "     /** Comment 1 */\n"
-                                                 + "        @Oha public void method1() {}\n"
-                                                 + "    \n"
-                                                 + "        /** Comment 2 */\n"
-                                                 + "    @Oha\n"
-                                                 // note that since this is the first token, the prev comment gets selected
-                                                 + "        /** Comment 3 */\n"
-                                                 + "        public void method2() {}" + "}");
+        ASTCompilationUnit node = java.parse("""
+                                                 public class Foo {
+                                                      /** Comment 1 */
+                                                         @Oha public void method1() {}
+                                                    \s
+                                                         /** Comment 2 */
+                                                     @Oha
+                                                         /** Comment 3 */
+                                                         public void method2() {}\
+                                                 }\
+                                                 """);
 
         List<ASTMethodDeclaration> methods = node.descendants(ASTMethodDeclaration.class).toList();
-        assertCommentEquals(methods.get(0), "/** Comment 1 */");
+        assertCommentEquals(methods.getFirst(), "/** Comment 1 */");
         assertCommentEquals(methods.get(1), "/** Comment 2 */");
     }
 
     @Test
     void testCommentAssignmentOnPackage() {
 
-        ASTCompilationUnit node = java.parse("/** Comment 1 */\n"
-                                                 + "package bar;\n");
+        ASTCompilationUnit node = java.parse("""
+                                                 /** Comment 1 */
+                                                 package bar;
+                                                 """);
 
         assertCommentEquals(node.descendants(ASTPackageDeclaration.class).firstOrThrow(),
                             "/** Comment 1 */");
@@ -93,15 +108,17 @@ class CommentAssignmentTest extends BaseParserTest {
     @Test
     void testCommentAssignmentOnClass() {
 
-        ASTCompilationUnit node = java.parse("/** outer */\n"
-                                                 + "class Foo { "
-                                                 + " /** inner */ class Nested { } "
-                                                 + " { /** local */ class Local {}} "
-                                                 + " /** enum */enum NestedEnum {}"
-                                                 + "}");
+        ASTCompilationUnit node = java.parse("""
+                                                 /** outer */
+                                                 class Foo { \
+                                                  /** inner */ class Nested { } \
+                                                  { /** local */ class Local {}} \
+                                                  /** enum */enum NestedEnum {}\
+                                                 }\
+                                                 """);
 
         List<ASTTypeDeclaration> types = node.descendants(ASTTypeDeclaration.class).crossFindBoundaries().toList();
-        assertCommentEquals(types.get(0), "/** outer */");
+        assertCommentEquals(types.getFirst(), "/** outer */");
         assertCommentEquals(types.get(1), "/** inner */");
         assertCommentEquals(types.get(2), "/** local */");
         assertCommentEquals(types.get(3), "/** enum */");
@@ -118,7 +135,7 @@ class CommentAssignmentTest extends BaseParserTest {
                                                  + "}");
 
         List<ASTEnumConstant> constants = node.descendants(ASTEnumConstant.class).toList();
-        assertCommentEquals(constants.get(0), "/** A */");
+        assertCommentEquals(constants.getFirst(), "/** A */");
         assertCommentEquals(constants.get(1), "/** B */");
         assertHasNoComment(constants.get(2));
         assertHasNoComment(constants.get(3));

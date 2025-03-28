@@ -43,12 +43,12 @@ class TypeAnnotReflectionTest {
         {
             JClassType t = (JClassType) getFieldType(sym, "annotOnListArg");
             assertHasTypeAnnots(t, emptyList());
-            assertHasTypeAnnots(t.getTypeArgs().get(0), ANNOT_A);
+            assertHasTypeAnnots(t.getTypeArgs().getFirst(), ANNOT_A);
         }
         {
             JClassType t = (JClassType) getFieldType(sym, "annotOnBothListAndArg");
             assertHasTypeAnnots(t, ANNOT_A);
-            assertHasTypeAnnots(t.getTypeArgs().get(0), ANNOT_A);
+            assertHasTypeAnnots(t.getTypeArgs().getFirst(), ANNOT_A);
         }
     }
 
@@ -175,29 +175,29 @@ class TypeAnnotReflectionTest {
             JClassType t = (JClassType) getFieldType(sym, "annotOnOuterGenericArg");
             assertHasTypeAnnots(t, ANNOT_A);
             assertHasTypeAnnots(t.getEnclosingType(), emptyList());
-            assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(0), ANNOT_A);
+            assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().getFirst(), ANNOT_A);
             assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(1), emptyList());
         }
         {
             JClassType t = (JClassType) getFieldType(sym, "annotOnOuterGenericArg2");
             assertHasTypeAnnots(t, ANNOT_A);
             assertHasTypeAnnots(t.getEnclosingType(), emptyList());
-            assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(0), emptyList());
+            assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().getFirst(), emptyList());
             assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(1), ANNOT_A);
         }
         {
             JClassType t = (JClassType) getFieldType(sym, "annotOnOuterGenericArgAndOuter");
             assertHasTypeAnnots(t, emptyList());
             assertHasTypeAnnots(t.getEnclosingType(), ANNOT_A);
-            assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(0), emptyList());
+            assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().getFirst(), emptyList());
             assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(1), ANNOT_A);
         }
         {
             JClassType t = (JClassType) getFieldType(sym, "annotOnOuterGenericArgAndInner");
             assertHasTypeAnnots(t, ANNOT_A);
-            assertHasTypeAnnots(t.getTypeArgs().get(0), ANNOT_A);
+            assertHasTypeAnnots(t.getTypeArgs().getFirst(), ANNOT_A);
             assertHasTypeAnnots(t.getEnclosingType(), ANNOT_A);
-            assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(0), emptyList());
+            assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().getFirst(), emptyList());
             assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(1), ANNOT_A);
         }
     }
@@ -218,9 +218,9 @@ class TypeAnnotReflectionTest {
         {
             JClassType t = (JClassType) getFieldType(sym, "annotOnOuterGenericArgAndInner");
             assertHasTypeAnnots(t, ANNOT_A);
-            assertHasTypeAnnots(t.getTypeArgs().get(0), ANNOT_A);
+            assertHasTypeAnnots(t.getTypeArgs().getFirst(), ANNOT_A);
             assertHasTypeAnnots(t.getEnclosingType(), ANNOT_A);
-            assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(0), emptyList());
+            assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().getFirst(), emptyList());
             assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(1), ANNOT_A);
         }
     }
@@ -242,7 +242,7 @@ class TypeAnnotReflectionTest {
         {
             JClassType t = (JClassType) getFieldType(sym, "severalWildcards");
             assertHasTypeAnnots(t, emptyList());
-            JWildcardType wild0 = (JWildcardType) t.getTypeArgs().get(0);
+            JWildcardType wild0 = (JWildcardType) t.getTypeArgs().getFirst();
             assertHasTypeAnnots(wild0, ANNOT_A);
             assertTrue(wild0.isUpperBound());
             assertHasTypeAnnots(wild0.getBound(), ANNOT_B);
@@ -255,14 +255,14 @@ class TypeAnnotReflectionTest {
         {
             JClassType t = (JClassType) getFieldType(sym, "complicatedField");
             assertHasTypeAnnots(t, ANNOT_A);
-            JWildcardType wild0 = (JWildcardType) t.getTypeArgs().get(0);
+            JWildcardType wild0 = (JWildcardType) t.getTypeArgs().getFirst();
             assertHasTypeAnnots(wild0, ANNOTS_A_B);
             assertTrue(wild0.isUpperBound());
             assertHasTypeAnnots(wild0.getBound(), ANNOT_B);
 
             JClassType arg1 = (JClassType) t.getTypeArgs().get(1);
             assertHasTypeAnnots(arg1, ANNOT_A);
-            assertHasTypeAnnots(arg1.getTypeArgs().get(0), ANNOTS_A_B);
+            assertHasTypeAnnots(arg1.getTypeArgs().getFirst(), ANNOTS_A_B);
         }
     }
 

@@ -180,7 +180,7 @@ public interface JMethodSig extends JTypeVisitable {
         if (varargs) {
             assert i >= 0 : "Argument index out of range: " + i;
             if (i >= formals.size() - 1) {
-                JTypeMirror lastFormal = formals.get(formals.size() - 1);
+                JTypeMirror lastFormal = formals.getLast();
                 return ((JArrayType) lastFormal).getComponentType();
             }
         } else {

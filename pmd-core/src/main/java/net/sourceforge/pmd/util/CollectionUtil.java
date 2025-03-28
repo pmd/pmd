@@ -609,7 +609,7 @@ public final class CollectionUtil {
         if (list.isEmpty()) {
             return ConsPStack.empty();
         } else if (list.size() == 1) {
-            return ConsPStack.singleton(list.get(0));
+            return ConsPStack.singleton(list.getFirst());
         }
         return ConsPStack.from(list);
     }

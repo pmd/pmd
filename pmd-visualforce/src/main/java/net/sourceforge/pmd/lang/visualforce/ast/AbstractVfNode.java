@@ -28,8 +28,8 @@ abstract class AbstractVfNode extends AbstractJjtreeNode<AbstractVfNode, VfNode>
     @Override
     @SuppressWarnings("unchecked")
     public final <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
-        if (visitor instanceof VfVisitor) {
-            return acceptVfVisitor((VfVisitor<? super P, ? extends R>) visitor, data);
+        if (visitor instanceof VfVisitor<? super P, ? extends R> vfVisitor) {
+            return acceptVfVisitor(vfVisitor, data);
         }
         return visitor.cannotVisit(this, data);
     }

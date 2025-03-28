@@ -23,7 +23,7 @@ public final class ASTTypeWhenBlock extends AbstractApexNode.Single<SwitchStatem
     }
 
     public String getName() {
-        return node.getDowncast().getDeclarations().get(0).getId().getString();
+        return node.getDowncast().getDeclarations().getFirst().getId().getString();
     }
 
 

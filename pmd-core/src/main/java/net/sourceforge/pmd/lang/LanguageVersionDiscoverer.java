@@ -108,7 +108,7 @@ public class LanguageVersionDiscoverer {
         List<Language> languages = getLanguagesForFile(fileName);
         LanguageVersion languageVersion = null;
         if (!languages.isEmpty()) {
-            languageVersion = getDefaultLanguageVersion(languages.get(0));
+            languageVersion = getDefaultLanguageVersion(languages.getFirst());
         }
         return languageVersion;
     }

@@ -88,7 +88,7 @@ class VfExpressionTypeVisitorTest {
             // Each string appears twice, it is set on a "value" attribute and inline
             assertEquals(2, nodes.size(), entry.getKey());
             for (Node node : nodes) {
-                assertEquals(String.format("'%s'", entry.getKey()), node.getImage());
+                assertEquals("'%s'".formatted(entry.getKey()), node.getImage());
                 assertTrue(node instanceof ASTLiteral, node.getClass().getSimpleName());
                 ASTLiteral literal = (ASTLiteral) node;
                 assertNull(literal.getDataType(), entry.getKey());

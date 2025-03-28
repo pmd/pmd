@@ -8,7 +8,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ class CPDFilelistTest {
     private static void testFileList(String first) throws IOException {
         CPDConfiguration arguments = new CPDConfiguration();
         arguments.setOnlyRecognizeLanguage(DummyLanguageModule.getInstance());
-        arguments.setInputFilePath(Paths.get(first));
+        arguments.setInputFilePath(Path.of(first));
         List<FileId> paths;
         try (CpdAnalysis cpd = CpdAnalysis.create(arguments)) {
             paths = CollectionUtil.map(cpd.files().getCollectedFiles(), TextFile::getFileId);

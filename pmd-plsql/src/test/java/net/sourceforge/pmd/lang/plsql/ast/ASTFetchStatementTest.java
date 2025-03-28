@@ -21,7 +21,7 @@ class ASTFetchStatementTest extends AbstractPLSQLParserTst {
         ASTInput input = plsql.parseResource("FetchStatementBulkCollectLimit.pls");
         List<ASTFetchStatement> fetchStatements = input.descendants(ASTFetchStatement.class).toList();
         assertEquals(1, fetchStatements.size());
-        ASTFetchStatement fetch = fetchStatements.get(0);
+        ASTFetchStatement fetch = fetchStatements.getFirst();
         assertTrue(fetch.isBulkCollect());
         assertTrue(fetch.isLimit());
     }
@@ -31,7 +31,7 @@ class ASTFetchStatementTest extends AbstractPLSQLParserTst {
         ASTInput input = plsql.parseResource("FetchStatement.pls");
         List<ASTFetchStatement> fetchStatements = input.descendants(ASTFetchStatement.class).toList();
         assertEquals(1, fetchStatements.size());
-        ASTFetchStatement fetch = fetchStatements.get(0);
+        ASTFetchStatement fetch = fetchStatements.getFirst();
         assertFalse(fetch.isBulkCollect());
         assertFalse(fetch.isLimit());
     }

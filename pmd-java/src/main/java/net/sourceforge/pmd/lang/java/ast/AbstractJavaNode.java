@@ -34,8 +34,8 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
     @Override
     @SuppressWarnings("unchecked")
     public final <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
-        if (visitor instanceof JavaVisitor) {
-            return this.acceptVisitor((JavaVisitor<? super P, ? extends R>) visitor, data);
+        if (visitor instanceof JavaVisitor<? super P, ? extends R> javaVisitor) {
+            return this.acceptVisitor(javaVisitor, data);
         }
         return visitor.cannotVisit(this, data);
     }

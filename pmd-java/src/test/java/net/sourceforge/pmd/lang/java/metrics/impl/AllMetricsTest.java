@@ -39,11 +39,11 @@ class AllMetricsTest extends SimpleAggregatorTst {
 
     static String formatJavaMessage(Node node, Object result, String defaultMessage) {
         String qname = null;
-        if (node instanceof ASTTypeDeclaration) {
-            qname = ((ASTTypeDeclaration) node).getBinaryName();
-        } else if (node instanceof ASTExecutableDeclaration) {
-            String enclosing = ((ASTExecutableDeclaration) node).getEnclosingType().getBinaryName();
-            qname = enclosing + "#" + PrettyPrintingUtil.displaySignature((ASTExecutableDeclaration) node);
+        if (node instanceof ASTTypeDeclaration declaration) {
+            qname = declaration.getBinaryName();
+        } else if (node instanceof ASTExecutableDeclaration declaration) {
+            String enclosing = declaration.getEnclosingType().getBinaryName();
+            qname = enclosing + "#" + PrettyPrintingUtil.displaySignature(declaration);
         }
 
         if (qname != null) {

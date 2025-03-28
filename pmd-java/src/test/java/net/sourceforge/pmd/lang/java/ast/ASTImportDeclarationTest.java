@@ -20,19 +20,19 @@ class ASTImportDeclarationTest extends BaseParserTest {
     @Test
     void testImportOnDemand() {
         List<ASTImportDeclaration> ops = java.getNodes(ASTImportDeclaration.class, TEST1);
-        assertTrue(ops.get(0).isImportOnDemand());
+        assertTrue(ops.getFirst().isImportOnDemand());
     }
 
     @Test
     void testGetImportedNameNode() {
-        ASTImportDeclaration i = java.getNodes(ASTImportDeclaration.class, TEST2).get(0);
+        ASTImportDeclaration i = java.getNodes(ASTImportDeclaration.class, TEST2).getFirst();
         assertEquals("foo.bar.Baz", i.getImportedName());
     }
 
     @Test
     void testStaticImport() {
         List<ASTImportDeclaration> ops = java.getNodes(ASTImportDeclaration.class, TEST3);
-        ASTImportDeclaration i = ops.get(0);
+        ASTImportDeclaration i = ops.getFirst();
         assertTrue(i.isStatic());
     }
 

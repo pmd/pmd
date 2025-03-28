@@ -20,7 +20,7 @@ class DeleteStatementTest extends AbstractPLSQLParserTst {
         List<ASTDeleteStatement> deleteStatements = input.descendants(ASTDeleteStatement.class).toList();
         assertEquals(3, deleteStatements.size());
 
-        assertEquals("product_descriptions", deleteStatements.get(0).getChild(0)
+        assertEquals("product_descriptions", deleteStatements.getFirst().getChild(0)
                                                                     .firstChild(ASTTableName.class).getImage());
     }
 }

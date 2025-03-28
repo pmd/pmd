@@ -105,7 +105,7 @@ class NodeStreamBlanketTest<T extends Node> {
         assertImplication(
             stream,
             prop("nonEmpty", NodeStream::nonEmpty),
-            prop("first() == toList().get(0)", it -> it.first() == it.toList().get(0))
+            prop("first() == toList().get(0)", it -> it.first() == it.toList().getFirst())
         );
     }
 

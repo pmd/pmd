@@ -243,11 +243,11 @@ public interface JTypeMirror extends JTypeVisitable {
     default boolean isReifiable() {
         if (this instanceof JPrimitiveType) {
             return true;
-        } else if (this instanceof JArrayType) {
-            return ((JArrayType) this).getElementType().isReifiable();
+        } else if (this instanceof JArrayType type) {
+            return type.getElementType().isReifiable();
         }
 
-        return this instanceof JClassType && TypeOps.allArgsAreUnboundedWildcards(((JClassType) this).getTypeArgs());
+        return this instanceof JClassType jct && TypeOps.allArgsAreUnboundedWildcards(jct.getTypeArgs());
     }
 
 

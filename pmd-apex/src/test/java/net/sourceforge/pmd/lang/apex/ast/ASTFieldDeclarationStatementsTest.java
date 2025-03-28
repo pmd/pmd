@@ -23,7 +23,7 @@ class ASTFieldDeclarationStatementsTest extends ApexParserTestBase {
         ASTFieldDeclarationStatements fields = parse("class Foo { List<String> field; }").descendants(ASTFieldDeclarationStatements.class).first();
         assertEquals("List<String>", fields.getTypeName());
         assertEquals(1, fields.getTypeArguments().size());
-        assertEquals("String", fields.getTypeArguments().get(0));
+        assertEquals("String", fields.getTypeArguments().getFirst());
     }
 
     @Test
@@ -31,7 +31,7 @@ class ASTFieldDeclarationStatementsTest extends ApexParserTestBase {
         ASTFieldDeclarationStatements fields = parse("class Foo { my.List<my.String> field; }").descendants(ASTFieldDeclarationStatements.class).first();
         assertEquals("my.List<my.String>", fields.getTypeName());
         assertEquals(1, fields.getTypeArguments().size());
-        assertEquals("my.String", fields.getTypeArguments().get(0));
+        assertEquals("my.String", fields.getTypeArguments().getFirst());
     }
 
     @Test
@@ -39,7 +39,7 @@ class ASTFieldDeclarationStatementsTest extends ApexParserTestBase {
         ASTFieldDeclarationStatements fields = parse("class Foo { List<List<String>> field; }").descendants(ASTFieldDeclarationStatements.class).first();
         assertEquals("List<List<String>>", fields.getTypeName());
         assertEquals(1, fields.getTypeArguments().size());
-        assertEquals("List<String>", fields.getTypeArguments().get(0));
+        assertEquals("List<String>", fields.getTypeArguments().getFirst());
     }
 
     @Test
@@ -47,7 +47,7 @@ class ASTFieldDeclarationStatementsTest extends ApexParserTestBase {
         ASTFieldDeclarationStatements fields = parse("class Foo { Map<String,Integer> field; }").descendants(ASTFieldDeclarationStatements.class).first();
         assertEquals("Map<String, Integer>", fields.getTypeName());
         assertEquals(2, fields.getTypeArguments().size());
-        assertEquals("String", fields.getTypeArguments().get(0));
+        assertEquals("String", fields.getTypeArguments().getFirst());
         assertEquals("Integer", fields.getTypeArguments().get(1));
     }
 }

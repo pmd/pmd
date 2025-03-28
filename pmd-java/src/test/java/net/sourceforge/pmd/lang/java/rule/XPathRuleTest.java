@@ -43,7 +43,7 @@ class XPathRuleTest {
         XPathRule rule = makeXPath("//VariableId[string-length(@Name) < 3]");
         rule.setMessage("{0}");
         Report report = getReportForTestString(rule, TEST1);
-        RuleViolation rv = report.getViolations().get(0);
+        RuleViolation rv = report.getViolations().getFirst();
         assertEquals("a", rv.getDescription());
     }
 
@@ -75,7 +75,7 @@ class XPathRuleTest {
         rule.definePropertyDescriptor(varDescriptor);
         rule.setProperty(varDescriptor, "fiddle");
         Report report = getReportForTestString(rule, TEST2);
-        RuleViolation rv = report.getViolations().get(0);
+        RuleViolation rv = report.getViolations().getFirst();
         assertEquals(3, rv.getBeginLine());
     }
 
@@ -83,7 +83,7 @@ class XPathRuleTest {
     void testFnPrefixOnSaxon() throws Exception {
         XPathRule rule = makeXPath("//VariableId[fn:matches(@Name, 'fiddle')]");
         Report report = getReportForTestString(rule, TEST2);
-        RuleViolation rv = report.getViolations().get(0);
+        RuleViolation rv = report.getViolations().getFirst();
         assertEquals(3, rv.getBeginLine());
     }
 
@@ -91,7 +91,7 @@ class XPathRuleTest {
     void testNoFnPrefixOnSaxon() {
         XPathRule rule = makeXPath("//VariableId[matches(@Name, 'fiddle')]");
         Report report = getReportForTestString(rule, TEST2);
-        RuleViolation rv = report.getViolations().get(0);
+        RuleViolation rv = report.getViolations().getFirst();
         assertEquals(3, rv.getBeginLine());
     }
 
@@ -138,7 +138,7 @@ class XPathRuleTest {
                                                                      DeprecatedAttrLogger.noop());
         List<Node> nodes = xpathRuleQuery.evaluate(cu);
         assertEquals(2, nodes.size());
-        assertEquals("Bar", ((JavaNode) nodes.get(0)).getText().toString());
+        assertEquals("Bar", ((JavaNode) nodes.getFirst()).getText().toString());
         assertEquals("Baz", ((JavaNode) nodes.get(1)).getText().toString());
     }
 
@@ -147,18 +147,24 @@ class XPathRuleTest {
     }
 
 
-    private static final String TEST1 = "public class Foo {\n"
-        + " int a;\n"
-        + "}";
+    private static final String TEST1 = """
+        public class Foo {
+         int a;
+        }\
+        """;
 
-    private static final String TEST2 = "public class Foo {\n"
-        + " int faddle;\n"
-        + " int fiddle;\n"
-        + "}";
+    private static final String TEST2 = """
+        public class Foo {
+         int faddle;
+         int fiddle;
+        }\
+        """;
 
 
-    private static final String TEST3 = "public class Foo {\n"
-        + " int forbid1; int forbid2; int forbid1$forbid2;\n"
-        + "}";
+    private static final String TEST3 = """
+        public class Foo {
+         int forbid1; int forbid2; int forbid1$forbid2;
+        }\
+        """;
 
 }

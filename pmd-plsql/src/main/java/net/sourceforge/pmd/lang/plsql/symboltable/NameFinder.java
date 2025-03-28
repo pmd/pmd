@@ -22,8 +22,7 @@ public class NameFinder {
 
     public NameFinder(ASTPrimaryExpression node) {
         Node simpleNode = node.getChild(0);
-        if (simpleNode instanceof ASTPrimaryPrefix) {
-            ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) simpleNode;
+        if (simpleNode instanceof ASTPrimaryPrefix prefix) {
             // if (prefix.usesSuperModifier()) {
             // add(new NameOccurrence(prefix, "super"));
             // } else
@@ -50,12 +49,11 @@ public class NameFinder {
                 add(new PLSQLNameOccurrence(grandchild, st.nextToken()));
             }
         }
-        if (node instanceof ASTPrimarySuffix) {
-            ASTPrimarySuffix suffix = (ASTPrimarySuffix) node;
+        if (node instanceof ASTPrimarySuffix suffix) {
             if (suffix.isArguments()) {
-                PLSQLNameOccurrence occurrence = names.get(names.size() - 1);
+                PLSQLNameOccurrence occurrence = names.getLast();
                 occurrence.setIsMethodOrConstructorInvocation();
-                ASTArguments args = (ASTArguments) ((ASTPrimarySuffix) node).getChild(0);
+                ASTArguments args = (ASTArguments) suffix.getChild(0);
                 occurrence.setArgumentCount(args.getArgumentCount());
             } // else if (suffix.getNumChildren() == 1
             // && suffix.getChild(0) instanceof ASTMemberSelector)

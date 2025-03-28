@@ -98,7 +98,7 @@ public interface Language extends Comparable<Language> {
      */
     default LanguageVersion getLatestVersion() {
         List<LanguageVersion> versions = getVersions();
-        return versions.get(versions.size() - 1);
+        return versions.getLast();
     }
 
     /**

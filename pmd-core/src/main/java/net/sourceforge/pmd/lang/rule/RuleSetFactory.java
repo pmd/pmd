@@ -451,7 +451,7 @@ final class RuleSetFactory {
             err.at(xmlPlace).warn("Empty ref attribute");
             return null;
         }
-        return references.get(0);
+        return references.getFirst();
     }
 
     /**
@@ -541,8 +541,7 @@ final class RuleSetFactory {
         }
 
         if (warnDeprecated && referencedRule.isDeprecated()) {
-            if (referencedRule instanceof RuleReference) {
-                RuleReference ruleReference = (RuleReference) referencedRule;
+            if (referencedRule instanceof RuleReference ruleReference) {
                 err.at(ruleNode).warn(
                     "Use Rule name {0}/{1} instead of the deprecated Rule name {2}. PMD {3}"
                         + " will remove support for this deprecated Rule name usage.",
@@ -579,8 +578,7 @@ final class RuleSetFactory {
 
         if (withDeprecatedRuleReferences || !isSameRuleSet || !ruleReference.isDeprecated()) {
             Rule existingRule = ruleSetBuilder.getExistingRule(ruleReference);
-            if (existingRule instanceof RuleReference) {
-                RuleReference existingRuleReference = (RuleReference) existingRule;
+            if (existingRule instanceof RuleReference existingRuleReference) {
                 // the only valid use case is: the existing rule does not override anything yet
                 // which means, it is a plain reference. And the new reference overrides.
                 // for all other cases, we should log a warning
@@ -642,7 +640,7 @@ final class RuleSetFactory {
         if (ruleElement.hasAttribute("name")) {
             return ruleElement.getAttribute("name").equals(ruleName);
         } else if (ruleElement.hasAttribute("ref")) {
-            RuleSetReferenceId ruleSetReferenceId = RuleSetReferenceId.parse(ruleElement.getAttribute("ref")).get(0);
+            RuleSetReferenceId ruleSetReferenceId = RuleSetReferenceId.parse(ruleElement.getAttribute("ref")).getFirst();
             return ruleSetReferenceId.getRuleName() != null && ruleSetReferenceId.getRuleName().equals(ruleName);
         } else {
             return false;

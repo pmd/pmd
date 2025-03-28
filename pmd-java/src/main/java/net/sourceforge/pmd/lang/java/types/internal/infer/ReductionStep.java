@@ -27,7 +27,7 @@ enum ReductionStep {
     EQ(BoundKind.EQ) {
         @Override
         JTypeMirror solve(InferenceVar uv, InferenceContext inferenceContext) {
-            return filterBounds(uv, inferenceContext).get(0);
+            return filterBounds(uv, inferenceContext).getFirst();
         }
     },
 

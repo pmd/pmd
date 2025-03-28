@@ -70,8 +70,8 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
      */
     default boolean isExhaustiveEnumSwitch() {
         JTypeDeclSymbol symbol = getTestedExpression().getTypeMirror().getSymbol();
-        if (symbol instanceof JClassSymbol && ((JClassSymbol) symbol).isEnum()) {
-            long numConstants = ((JClassSymbol) symbol).getEnumConstants().size();
+        if (symbol instanceof JClassSymbol classSymbol && classSymbol.isEnum()) {
+            long numConstants = classSymbol.getEnumConstants().size();
             // we assume there's no duplicate labels
             int numLabels = getBranches().sumByInt(it -> it.getLabel().getNumChildren());
             return numLabels == numConstants;
@@ -85,7 +85,7 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
      */
     default boolean isEnumSwitch() {
         JTypeDeclSymbol type = getTestedExpression().getTypeMirror().getSymbol();
-        return type instanceof JClassSymbol && ((JClassSymbol) type).isEnum();
+        return type instanceof JClassSymbol jcs && jcs.isEnum();
     }
 
     /**
@@ -109,8 +109,7 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
             return true;
         }
 
-        if (symbol instanceof JClassSymbol) {
-            JClassSymbol classSymbol = (JClassSymbol) symbol;
+        if (symbol instanceof JClassSymbol classSymbol) {
 
             // shortcut2 - if we are dealing with a sealed type or a boolean (java 23 preview, JEP 455)
             // and there is no default case then the compiler already checked for exhaustiveness

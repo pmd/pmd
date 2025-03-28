@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.cpp.cpd;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +22,7 @@ class CppCpdTest {
     @BeforeEach
     void setUp() {
         String path = IOUtil.normalizePath("src/test/resources/net/sourceforge/pmd/lang/cpp/cpd/testdata");
-        testdir = Paths.get(path);
+        testdir = Path.of(path);
     }
 
     @Test
@@ -37,7 +36,7 @@ class CppCpdTest {
             cpd.performAnalysis(matches -> {
                 // There should only be 1 duplication, and it should be maximal
                 assertEquals(1, matches.getMatches().size());
-                assertEquals(128, matches.getMatches().get(0).getTokenCount());
+                assertEquals(128, matches.getMatches().getFirst().getTokenCount());
             });
         }
     }

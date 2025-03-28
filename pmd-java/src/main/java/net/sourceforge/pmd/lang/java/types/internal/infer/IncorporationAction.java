@@ -241,14 +241,12 @@ abstract class IncorporationAction {
             //   && alpha = beta  ~> beta >: T      |  T <: alpha =  beta
 
             for (JTypeMirror b : alpha.getBounds(kind.complement())) {
-                if (b instanceof InferenceVar) {
-                    InferenceVar beta = (InferenceVar) b;
+                if (b instanceof InferenceVar beta) {
                     beta.addBound(kind, ctx.ground(bound));
                 }
             }
 
-            if (bound instanceof InferenceVar) {
-                InferenceVar beta = (InferenceVar) bound;
+            if (bound instanceof InferenceVar beta) {
 
                 if (kind == BoundKind.EQ) {
                     beta.adoptAllBounds(alpha);

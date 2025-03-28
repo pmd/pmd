@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.test
 
 import net.sourceforge.pmd.lang.document.FileId
 import java.nio.file.Path
-import java.nio.file.Paths
 import kotlin.test.assertEquals
 
 
@@ -80,9 +79,9 @@ abstract class BaseTextComparisonTest {
     private val srcTestResources = let {
         // this is set from maven surefire
         System.getProperty("mvn.project.src.test.resources")
-                ?.let { Paths.get(it).toAbsolutePath() }
+                ?.let { Path.of(it).toAbsolutePath() }
         // that's for when the tests are run inside the IDE
-                ?: Paths.get(javaClass.protectionDomain.codeSource.location.file)
+                ?: Path.of(javaClass.protectionDomain.codeSource.location.file)
                         // go up from target/test-classes into the project root
                         .resolve("../../src/test/resources").normalize()
     }
@@ -92,7 +91,7 @@ abstract class BaseTextComparisonTest {
         // normalize the path, because if eg we have src/test/resources/some/pack/../other,
         // where the directory 'some/pack' does not exist, the file will not be found, even if
         // some/other exists. Normalization turns the above path into src/test/resources/some/other
-        val norm = Paths.get("$path/$resourcePath").normalize()
+        val norm = Path.of("$path/$resourcePath").normalize()
         return srcTestResources.resolve(norm)
     }
 

@@ -11,7 +11,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -161,7 +160,7 @@ public class DeadLinksChecker {
 
                         Future<String> futureMessage =
                             getCachedFutureResponse(linkTarget)
-                                .thenApply(errorMessage -> errorMessage != null ? String.format("%8d: %s (%s)", lineNo, linkText, errorMessage) : null);
+                                .thenApply(errorMessage -> errorMessage != null ? "%8d: %s (%s)".formatted(lineNo, linkText, errorMessage) : null);
 
                         addDeadLink(fileToDeadLinks, mdFile, futureMessage);
 
@@ -191,7 +190,7 @@ public class DeadLinksChecker {
                     }
 
                     if (!linkOk) {
-                        RunnableFuture<String> futureTask = new FutureTask<>(() -> String.format("%8d: %s", lineNo, linkText));
+                        RunnableFuture<String> futureTask = new FutureTask<>(() -> "%8d: %s".formatted(lineNo, linkText));
                         // execute this task immediately in this thread.
                         // External links are checked by another executor and don't end up here.
                         futureTask.run();
@@ -379,7 +378,7 @@ public class DeadLinksChecker {
             System.err.println("java " + DeadLinksChecker.class.getSimpleName() + " <project base directory>");
             System.exit(1);
         }
-        final Path rootDirectory = Paths.get(args[0]).resolve("..").toRealPath();
+        final Path rootDirectory = Path.of(args[0]).resolve("..").toRealPath();
 
         DeadLinksChecker deadLinksChecker = new DeadLinksChecker();
         deadLinksChecker.checkDeadLinks(rootDirectory);

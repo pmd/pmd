@@ -183,9 +183,9 @@ class RuleReferenceTest {
         assertEquals("description2", ruleReference.getOverriddenDescription(), "Override failed");
 
         assertEquals(2, ruleReference.getExamples().size(), "Override failed");
-        assertEquals("example1", ruleReference.getExamples().get(0), "Override failed");
+        assertEquals("example1", ruleReference.getExamples().getFirst(), "Override failed");
         assertEquals("example2", ruleReference.getExamples().get(1), "Override failed");
-        assertEquals("example2", ruleReference.getOverriddenExamples().get(0), "Override failed");
+        assertEquals("example2", ruleReference.getOverriddenExamples().getFirst(), "Override failed");
 
         assertEquals("externalInfoUrl2", ruleReference.getExternalInfoUrl(), "Override failed");
         assertEquals("externalInfoUrl2", ruleReference.getOverriddenExternalInfoUrl(), "Override failed");
@@ -248,7 +248,7 @@ class RuleReferenceTest {
         assertNull(ruleReference.getOverriddenDescription(), "Override failed");
 
         assertEquals(1, ruleReference.getExamples().size(), "Override failed");
-        assertEquals("example1", ruleReference.getExamples().get(0), "Override failed");
+        assertEquals("example1", ruleReference.getExamples().getFirst(), "Override failed");
         assertNull(ruleReference.getOverriddenExamples(), "Override failed");
 
         assertEquals("externalInfoUrl1", ruleReference.getExternalInfoUrl(), "Override failed");

@@ -120,7 +120,7 @@ class AbstractRuleTest {
 
         DummyRootNode s = helper.parse("abc()", FileId.UNKNOWN);
 
-        RuleViolation rv = getReportForRuleApply(r, s).getViolations().get(0);
+        RuleViolation rv = getReportForRuleApply(r, s).getViolations().getFirst();
         assertEquals("Message foo ${className} ${methodName} ${variableName} 10 ${noSuchProperty}", rv.getDescription());
     }
 

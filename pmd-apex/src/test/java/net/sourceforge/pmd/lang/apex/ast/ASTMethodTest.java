@@ -16,8 +16,8 @@ class ASTMethodTest extends ApexParserTestBase {
     void testConstructorName() {
         ASTUserClass node = (ASTUserClass) parse("public class Foo { public Foo() {} public void bar() {} }");
         List<ASTMethod> methods = node.children(ASTMethod.class).toList();
-        assertEquals("Foo", methods.get(0).getImage()); // constructor
-        assertEquals("<init>", methods.get(0).getCanonicalName());
+        assertEquals("Foo", methods.getFirst().getImage()); // constructor
+        assertEquals("<init>", methods.getFirst().getCanonicalName());
         assertEquals("bar", methods.get(1).getImage()); // normal method
     }
 

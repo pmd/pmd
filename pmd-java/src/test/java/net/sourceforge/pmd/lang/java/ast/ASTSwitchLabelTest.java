@@ -22,7 +22,7 @@ class ASTSwitchLabelTest extends BaseParserTest {
     @Test
     void testDefaultOff() {
         List<ASTSwitchLabel> ops = java.getNodes(ASTSwitchLabel.class, "public class Foo {\n void bar() {\n  switch (x) {\n   case 1: y = 2;\n  }\n }\n}");
-        assertFalse(ops.get(0).isDefault());
+        assertFalse(ops.getFirst().isDefault());
     }
 
     @Test
@@ -56,51 +56,59 @@ class ASTSwitchLabelTest extends BaseParserTest {
     }
 
     private static final String SWITCH_WITH_DEFAULT =
-        "public class Foo {\n"
-            + " void bar() {\n"
-            + "  switch (x) {\n"
-            + "   default: y = 2;\n"
-            + "   case 4: break;\n"
-            + "  }\n"
-            + " }\n"
-            + "}";
+        """
+        public class Foo {
+         void bar() {
+          switch (x) {
+           default: y = 2;
+           case 4: break;
+          }
+         }
+        }\
+        """;
 
     private static final String EXHAUSTIVE_ENUM =
-        "public class Foo {\n"
-            + " void bar() {\n"
-            + "  enum LocalEnum { A, B, C } "
-            + "  var v = LocalEnum.A; "
-            + "  switch (v) {\n"
-            + "   case A: break;\n"
-            + "   case B: break;\n"
-            + "   case C: break;\n"
-            + "  }\n"
-            + " }\n"
-            + "}";
+        """
+        public class Foo {
+         void bar() {
+          enum LocalEnum { A, B, C } \
+          var v = LocalEnum.A; \
+          switch (v) {
+           case A: break;
+           case B: break;
+           case C: break;
+          }
+         }
+        }\
+        """;
 
     private static final String NOT_EXHAUSTIVE_ENUM =
-        "public class Foo {\n"
-            + " void bar() {\n"
-            + "  enum LocalEnum { A, B, C } "
-            + "  var v = LocalEnum.A; "
-            + "  switch (v) {\n"
-            + "   case A: break;\n"
-            + " //  case B: break;\n"
-            + "   case C: break;\n"
-            + "  }\n"
-            + " }\n"
-            + "}";
+        """
+        public class Foo {
+         void bar() {
+          enum LocalEnum { A, B, C } \
+          var v = LocalEnum.A; \
+          switch (v) {
+           case A: break;
+         //  case B: break;
+           case C: break;
+          }
+         }
+        }\
+        """;
 
     private static final String ENUM_SWITCH_WITH_DEFAULT =
-        "public class Foo {\n"
-            + " void bar() {\n"
-            + "  enum LocalEnum { A, B, C } "
-            + "  var v = LocalEnum.A; "
-            + "  switch (v) {\n"
-            + "   case A: break;\n"
-            + "   case C: break;\n"
-            + "   default: break;\n"
-            + "  }\n"
-            + " }\n"
-            + "}";
+        """
+        public class Foo {
+         void bar() {
+          enum LocalEnum { A, B, C } \
+          var v = LocalEnum.A; \
+          switch (v) {
+           case A: break;
+           case C: break;
+           default: break;
+          }
+         }
+        }\
+        """;
 }

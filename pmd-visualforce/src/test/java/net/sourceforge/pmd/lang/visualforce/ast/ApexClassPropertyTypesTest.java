@@ -8,7 +8,6 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +70,7 @@ class ApexClassPropertyTypesTest {
                 .resolve("SomePage.page");
         FileId vfFileName = FileId.fromPath(vfPagePath);
 
-        List<String> paths = listOf(Paths.get("..", "classes-does-not-exist").toString());
+        List<String> paths = listOf(Path.of("..", "classes-does-not-exist").toString());
         try (LanguageProcessorRegistry lpReg = VFTestUtils.fakeLpRegistry()) {
             ApexClassPropertyTypes apexClassPropertyTypes = new ApexClassPropertyTypes(lpReg);
             assertNull(apexClassPropertyTypes.getDataType("ApexController.accOuntIdProp", vfFileName, paths));
