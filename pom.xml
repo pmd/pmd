@@ -700,24 +700,6 @@
         </pluginManagement>
         <plugins>
             <plugin>
-                <groupId>org.openrewrite.maven</groupId>
-                <artifactId>rewrite-maven-plugin</artifactId>
-                <version>6.3.2</version>
-                <configuration>
-                    <activeRecipes>
-                        <recipe>org.openrewrite.java.migrate.UpgradeToJava17</recipe>
-                        <!--                        <recipe>org.openrewrite.java.migrate.UpgradeToJava21</recipe>-->
-                    </activeRecipes>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.openrewrite.recipe</groupId>
-                        <artifactId>rewrite-migrate-java</artifactId>
-                        <version>3.5.0</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <executions>
