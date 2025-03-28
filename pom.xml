@@ -1117,7 +1117,7 @@
             <dependency>
                 <groupId>org.junit.platform</groupId>
                 <artifactId>junit-platform-commons</artifactId>
-                <version>1.11.4</version>
+                <version>1.12.1</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
