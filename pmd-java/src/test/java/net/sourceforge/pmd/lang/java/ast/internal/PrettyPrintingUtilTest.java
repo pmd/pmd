@@ -125,7 +125,7 @@ class PrettyPrintingUtilTest extends BaseParserTest {
         return new BaseMatcher<CharSequence>() {
             @Override
             public boolean matches(Object o) {
-                return o instanceof CharSequence && str.contentEquals((CharSequence) o);
+                return o instanceof CharSequence cs && str.contentEquals(cs);
             }
 
             @Override

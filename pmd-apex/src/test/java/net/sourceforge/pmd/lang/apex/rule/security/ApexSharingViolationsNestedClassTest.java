@@ -138,7 +138,7 @@ class ApexSharingViolationsNestedClassTest extends ApexParserTestBase {
             // Do nothing
             break;
         default:
-            sb.append(String.format("\t\tpublic void outer%s(){ %s }\n", outerOperation.name(), outerOperation.codeSnippet));
+            sb.append("\t\tpublic void outer%s(){ %s }\n".formatted(outerOperation.name(), outerOperation.codeSnippet));
             break;
         }
         sb.append("\tpublic ");
@@ -151,7 +151,7 @@ class ApexSharingViolationsNestedClassTest extends ApexParserTestBase {
             // DO Nothing
             break;
         default:
-            sb.append(String.format("\t\tpublic void inner%s(){ %s }\n", innerOperation.name(), innerOperation.codeSnippet));
+            sb.append("\t\tpublic void inner%s(){ %s }\n".formatted(innerOperation.name(), innerOperation.codeSnippet));
             break;
         }
         sb.append("\t}\n"); // Closes class Inner

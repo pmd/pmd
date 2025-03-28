@@ -252,10 +252,10 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
      * this is a way to hide the explicit cast to {@link RuleContext} in rules.
      */
     protected final RuleContext asCtx(Object ctx) {
-        if (ctx instanceof RuleContext) {
-            assert isThisRule(InternalApiBridge.getRule((RuleContext) ctx))
+        if (ctx instanceof RuleContext context) {
+            assert isThisRule(InternalApiBridge.getRule(context))
                 : "not an appropriate rule context!";
-            return (RuleContext) ctx;
+            return context;
         } else {
             throw new ClassCastException("Unexpected context object! " + ctx);
         }
@@ -263,7 +263,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     private boolean isThisRule(Rule rule) {
         return rule == this // NOPMD CompareObjectsWithEquals
-            || rule instanceof RuleReference && this.isThisRule(((RuleReference) rule).getRule());
+            || rule instanceof RuleReference rr && this.isThisRule(rr.getRule());
     }
 
     /**

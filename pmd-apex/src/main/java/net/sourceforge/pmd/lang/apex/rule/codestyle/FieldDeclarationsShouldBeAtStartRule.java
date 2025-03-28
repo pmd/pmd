@@ -52,7 +52,7 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
             .filter(ApexNode::hasRealLoc)
             .min(NODE_BY_SOURCE_LOCATION_COMPARATOR);
 
-        if (!firstNonFieldDeclaration.isPresent()) {
+        if (firstNonFieldDeclaration.isEmpty()) {
             // there is nothing except field declaration, so that has to come first
             return data;
         }

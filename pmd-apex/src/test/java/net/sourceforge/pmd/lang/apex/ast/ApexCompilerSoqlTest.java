@@ -8,11 +8,13 @@ import org.junit.jupiter.api.Test;
 
 class ApexCompilerSoqlTest extends ApexParserTestBase {
 
-    private static final String CODE = "public class Foo {\n"
-        + "   public List<SObject> test1() {\n"
-        + "       return Database.query(\'Select Id from Account LIMIT 100\');\n"
-        + "   }\n"
-        + "}\n";
+    private static final String CODE = """
+        public class Foo {
+           public List<SObject> test1() {
+               return Database.query('Select Id from Account LIMIT 100');
+           }
+        }
+        """;
 
     @Test
     void testSoqlCompilation() {

@@ -18,8 +18,7 @@ public class ConnectUsingNonConnectorRule extends AbstractModelicaRule {
         ResolutionResult<ResolvableEntity> resolution = ref.getResolutionCandidates();
         if (!resolution.isUnresolved()) { // no false positive if not resolved at all
             ResolvableEntity firstDecl = resolution.getBestCandidates().get(0);
-            if (firstDecl instanceof ModelicaComponentDeclaration) {
-                ModelicaComponentDeclaration componentDecl = (ModelicaComponentDeclaration) firstDecl;
+            if (firstDecl instanceof ModelicaComponentDeclaration componentDecl) {
                 ResolutionResult componentTypes = componentDecl.getTypeCandidates();
                 if (!componentTypes.isUnresolved()) {
                     if (componentTypes.getBestCandidates().get(0) instanceof ModelicaClassType) {

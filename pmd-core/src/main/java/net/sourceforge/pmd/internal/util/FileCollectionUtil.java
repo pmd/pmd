@@ -10,7 +10,6 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
@@ -45,7 +44,7 @@ public final class FileCollectionUtil {
         if (cpdConfiguration.isSkipDuplicates()) {
             final Set<String> alreadyAddedFileNamesWithSize = new HashSet<>();
             collector.setFileFilter(fileId -> {
-                Path path = Paths.get(fileId.getAbsolutePath());
+                Path path = Path.of(fileId.getAbsolutePath());
                 if (!Files.isRegularFile(path)) {
                     // file is not a simple file, maybe inside a ZIP archive
                     // don't filter these out

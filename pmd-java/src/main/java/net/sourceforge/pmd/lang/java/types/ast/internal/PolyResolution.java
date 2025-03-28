@@ -127,12 +127,12 @@ public final class PolyResolution {
 
     private JTypeMirror polyTypeOtherCtx(TypeNode e, ExprContext ctx) {
         // we have a context, that is not an invocation
-        if (e instanceof InvocationNode) {
+        if (e instanceof InvocationNode node) {
             // The original expr was an invocation, but we have
             // a context type (eg assignment context)
             JTypeMirror targetType = ctx.getPolyTargetType(false);
 
-            return inferInvocation((InvocationNode) e, e, targetType);
+            return inferInvocation(node, e, targetType);
         } else if (e instanceof ASTSwitchExpression || e instanceof ASTConditionalExpression) {
             // Those are standalone if possible, otherwise they take
             // the target type
@@ -179,10 +179,10 @@ public final class PolyResolution {
 
                     // null standalone, force resolution anyway, because there is no context
                     // this is more general than ExprMirror#getStandaloneType, it's not a bug
-                    if (e instanceof ASTSwitchExpression) {
+                    if (e instanceof ASTSwitchExpression expression) {
                         // todo merge this fallback into SwitchMirror
                         //  That would be less easily testable that what's below...
-                        List<JTypeMirror> branches = ((ASTSwitchExpression) e).getYieldExpressions().toList(TypeNode::getTypeMirror);
+                        List<JTypeMirror> branches = expression.getYieldExpressions().toList(TypeNode::getTypeMirror);
                         return computeStandaloneConditionalType(ts, branches);
                     } else {
                         throw AssertionUtil.shouldNotReachHere("ConditionalMirrorImpl returns non-null for conditionals: " + e);
@@ -372,13 +372,13 @@ public final class PolyResolution {
     private static @Nullable JTypeMirror returnTargetType(ASTReturnStatement context) {
         JavaNode methodDecl = JavaAstUtils.getReturnTarget(context);
 
-        if (methodDecl instanceof ASTLambdaExpression) {
+        if (methodDecl instanceof ASTLambdaExpression expression) {
             // return within a lambda
             // "assignment context", deferred to lambda inference
-            JMethodSig fun = ((ASTLambdaExpression) methodDecl).getFunctionalMethod();
+            JMethodSig fun = expression.getFunctionalMethod();
             return fun == null ? null : fun.getReturnType();
-        } else if (methodDecl instanceof ASTMethodDeclaration) {
-            @NonNull ASTType resultType = ((ASTMethodDeclaration) methodDecl).getResultTypeNode();
+        } else if (methodDecl instanceof ASTMethodDeclaration declaration) {
+            @NonNull ASTType resultType = declaration.getResultTypeNode();
             return resultType instanceof ASTVoidType ? null // (this is an error)
                                                      : resultType.getTypeMirror();
         }
@@ -467,39 +467,39 @@ public final class PolyResolution {
             return ExprContext.getMissingInstance();
         }
 
-        if (papa instanceof ASTArrayInitializer) {
+        if (papa instanceof ASTArrayInitializer initializer) {
 
-            JTypeMirror target = TypeOps.getArrayComponent(((ASTArrayInitializer) papa).getTypeMirror());
+            JTypeMirror target = TypeOps.getArrayComponent(initializer.getTypeMirror());
             return newAssignmentCtx(target);
 
-        } else if (papa instanceof ASTCastExpression) {
+        } else if (papa instanceof ASTCastExpression expression) {
 
-            JTypeMirror target = ((ASTCastExpression) papa).getCastType().getTypeMirror();
+            JTypeMirror target = expression.getCastType().getTypeMirror();
             return newCastCtx(target);
 
-        } else if (papa instanceof ASTAssignmentExpression && node.getIndexInParent() == 1) { // second operand
+        } else if (papa instanceof ASTAssignmentExpression expression && node.getIndexInParent() == 1) { // second operand
 
-            JTypeMirror target = ((ASTAssignmentExpression) papa).getLeftOperand().getTypeMirror();
+            JTypeMirror target = expression.getLeftOperand().getTypeMirror();
             return newAssignmentCtx(target);
 
-        } else if (papa instanceof ASTReturnStatement) {
+        } else if (papa instanceof ASTReturnStatement statement) {
 
-            return newAssignmentCtx(returnTargetType((ASTReturnStatement) papa));
+            return newAssignmentCtx(returnTargetType(statement));
 
 
-        } else if (papa instanceof ASTVariableDeclarator
-            && !((ASTVariableDeclarator) papa).getVarId().isTypeInferred()) {
+        } else if (papa instanceof ASTVariableDeclarator declarator
+            && !declarator.getVarId().isTypeInferred()) {
 
-            return newAssignmentCtx(((ASTVariableDeclarator) papa).getVarId().getTypeMirror());
+            return newAssignmentCtx(declarator.getVarId().getTypeMirror());
 
-        } else if (papa instanceof ASTYieldStatement) {
+        } else if (papa instanceof ASTYieldStatement statement) {
 
             // break with value (switch expr)
-            ASTSwitchExpression owner = ((ASTYieldStatement) papa).getYieldTarget();
+            ASTSwitchExpression owner = statement.getYieldTarget();
             return contextOf(owner, false, internalUse);
 
-        } else if (node instanceof ASTExplicitConstructorInvocation
-            && ((ASTExplicitConstructorInvocation) node).isSuper()) {
+        } else if (node instanceof ASTExplicitConstructorInvocation invocation
+            && invocation.isSuper()) {
 
             // the superclass type is taken as a target type for inference,
             // when the super ctor is generic/ the superclass is generic
@@ -530,11 +530,11 @@ public final class PolyResolution {
             return node.getIndexInParent() == 0 ? booleanCtx // condition
                                                 : stringCtx; // message
 
-        } else if (papa instanceof ASTLambdaExpression && node.getIndexInParent() == 1) {
+        } else if (papa instanceof ASTLambdaExpression expression && node.getIndexInParent() == 1) {
             // lambda expression body
 
 
-            JMethodSig fun = ((ASTLambdaExpression) papa).getFunctionalMethod();
+            JMethodSig fun = expression.getFunctionalMethod();
             if (fun == null || TypeOps.isContextDependent(fun.getSymbol())) {
                 // Missing context, because the expression type itself
                 // is used to infer the context type.
@@ -548,7 +548,7 @@ public final class PolyResolution {
 
             return booleanCtx; // condition
 
-        } else if (papa instanceof ASTConditionalExpression) {
+        } else if (papa instanceof ASTConditionalExpression expression) {
 
             if (node.getIndexInParent() == 0) {
                 return booleanCtx; // the condition
@@ -557,18 +557,18 @@ public final class PolyResolution {
                 if (isPreJava8()) {
                     return ExprContext.getMissingInstance();
                 }
-                assert InternalApiBridge.isStandaloneInternal((ASTConditionalExpression) papa)
+                assert InternalApiBridge.isStandaloneInternal(expression)
                     : "Expected standalone ternary, otherwise doesCascadeContext(..) would have returned true";
 
-                return newStandaloneTernaryCtx(((ASTConditionalExpression) papa).getTypeMirror());
+                return newStandaloneTernaryCtx(expression.getTypeMirror());
             }
 
-        } else if (papa instanceof ASTInfixExpression) {
+        } else if (papa instanceof ASTInfixExpression expression) {
             // numeric contexts, maybe
-            BinaryOp op = ((ASTInfixExpression) papa).getOperator();
+            BinaryOp op = expression.getOperator();
             JTypeMirror nodeType = ((ASTExpression) node).getTypeMirror();
             JTypeMirror otherType = JavaAstUtils.getOtherOperandIfInInfixExpr(node).getTypeMirror();
-            JTypeMirror ctxType = ((ASTInfixExpression) papa).getTypeMirror();
+            JTypeMirror ctxType = expression.getTypeMirror();
             switch (op) {
             case CONDITIONAL_OR:
             case CONDITIONAL_AND:
@@ -616,12 +616,12 @@ public final class PolyResolution {
             default:
                 return ExprContext.getMissingInstance();
             }
-        } else if (papa instanceof ASTUnaryExpression) {
-            switch (((ASTUnaryExpression) papa).getOperator()) {
+        } else if (papa instanceof ASTUnaryExpression expression) {
+            switch (expression.getOperator()) {
             case UNARY_PLUS:
             case UNARY_MINUS:
             case COMPLEMENT:
-                JTypeMirror parentType = ((ASTUnaryExpression) papa).getTypeMirror();
+                JTypeMirror parentType = expression.getTypeMirror();
                 if (parentType == ts.ERROR) {
                     break;
                 }
@@ -653,11 +653,11 @@ public final class PolyResolution {
             // in java < 8, context doesn't flow through ternaries
             return false;
         } else if (!internalUse
-            && node instanceof ASTConditionalExpression
+            && node instanceof ASTConditionalExpression expression
             && child.getIndexInParent() != 0) {
             // conditional branch
-            ((ASTConditionalExpression) node).getTypeMirror(); // force resolution
-            return !InternalApiBridge.isStandaloneInternal((ASTConditionalExpression) node);
+            expression.getTypeMirror(); // force resolution
+            return !InternalApiBridge.isStandaloneInternal(expression);
         }
         return node instanceof ASTSwitchExpression && child.getIndexInParent() != 0 // not the condition
             || node instanceof ASTSwitchArrowBranch

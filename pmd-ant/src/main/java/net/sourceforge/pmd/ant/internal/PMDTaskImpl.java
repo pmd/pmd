@@ -7,7 +7,7 @@ package net.sourceforge.pmd.ant.internal;
 import static net.sourceforge.pmd.lang.rule.InternalApiBridge.loadRuleSetsWithoutException;
 
 import java.nio.charset.Charset;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -105,7 +105,7 @@ public class PMDTaskImpl {
         List<java.nio.file.Path> paths = new ArrayList<>();
         for (Path path : pmdTask.getRelativizePathsWith()) {
             for (Resource resource : path) {
-                paths.add(Paths.get(resource.toString()));
+                paths.add(Path.of(resource.toString()));
             }
         }
         return paths;

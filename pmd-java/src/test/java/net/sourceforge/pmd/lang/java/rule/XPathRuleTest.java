@@ -147,18 +147,24 @@ class XPathRuleTest {
     }
 
 
-    private static final String TEST1 = "public class Foo {\n"
-        + " int a;\n"
-        + "}";
+    private static final String TEST1 = """
+        public class Foo {
+         int a;
+        }\
+        """;
 
-    private static final String TEST2 = "public class Foo {\n"
-        + " int faddle;\n"
-        + " int fiddle;\n"
-        + "}";
+    private static final String TEST2 = """
+        public class Foo {
+         int faddle;
+         int fiddle;
+        }\
+        """;
 
 
-    private static final String TEST3 = "public class Foo {\n"
-        + " int forbid1; int forbid2; int forbid1$forbid2;\n"
-        + "}";
+    private static final String TEST3 = """
+        public class Foo {
+         int forbid1; int forbid2; int forbid1$forbid2;
+        }\
+        """;
 
 }

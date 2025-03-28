@@ -28,7 +28,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
       - uses: actions/cache@v4
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
@@ -83,7 +83,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
       - uses: actions/cache@v4
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
@@ -128,7 +128,7 @@ jobs:
         # default java version for all os is 11
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
       # only restore the cache, don't create a new cache
       # under Windows, hashFiles('**/pom.xml') gives a different result due to line endings
       - uses: actions/cache/restore@v4
@@ -166,7 +166,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
       - uses: actions/cache@v4
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
@@ -225,7 +225,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
       - uses: actions/cache@v4
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
@@ -274,7 +274,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
       - name: Set up Ruby 3.3
         uses: ruby/setup-ruby@v1
         with:

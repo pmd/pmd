@@ -127,8 +127,8 @@ public class SaxonXPathRuleQuery {
                 SequenceIterator iterator = expression.iterate(xpathDynamicContext.getXPathContextObject());
                 Item current = iterator.next();
                 while (current != null) {
-                    if (current instanceof AstNodeOwner) {
-                        results.add(((AstNodeOwner) current).getUnderlyingNode());
+                    if (current instanceof AstNodeOwner owner) {
+                        results.add(owner.getUnderlyingNode());
                     } else {
                         throw new XPathException("XPath rule expression returned a non-node (" + current.getClass() + "): " + current);
                     }

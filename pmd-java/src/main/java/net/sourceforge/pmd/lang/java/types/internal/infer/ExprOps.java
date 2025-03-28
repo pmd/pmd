@@ -61,11 +61,7 @@ public final class ExprOps {
      * @param t Formal parameter type
      */
     boolean isPotentiallyCompatible(JMethodSig m, ExprMirror e, JTypeMirror t) {
-        if (e instanceof BranchingMirror) {
-            // A conditional expression (§15.25) is potentially compatible with a type if each
-            // of its second and third operand expressions are potentially compatible with that type.
-
-            BranchingMirror cond = (BranchingMirror) e;
+        if (e instanceof BranchingMirror cond) {
             return cond.branchesMatch(branch -> isPotentiallyCompatible(m, branch, t));
 
         }
@@ -89,8 +85,7 @@ public final class ExprOps {
                 return false;
             }
 
-            if (e instanceof LambdaExprMirror) {
-                LambdaExprMirror lambda = (LambdaExprMirror) e;
+            if (e instanceof LambdaExprMirror lambda) {
                 if (fun.getArity() != lambda.getParamCount()) {
                     return false;
                 }
@@ -129,8 +124,7 @@ public final class ExprOps {
         // An argument expression is considered pertinent to applicability
         // for a potentially applicable method m unless it has one of the following forms:
 
-        if (arg instanceof LambdaExprMirror) {
-            LambdaExprMirror lambda = (LambdaExprMirror) arg;
+        if (arg instanceof LambdaExprMirror lambda) {
 
             // An implicitly typed lambda expression(§ 15.27 .1).
             if (!lambda.isExplicitlyTyped()) {
@@ -154,9 +148,9 @@ public final class ExprOps {
                     || !formalType.isTypeVariable();
         }
 
-        if (arg instanceof MethodRefMirror) {
+        if (arg instanceof MethodRefMirror mirror) {
             // An inexact method reference expression(§ 15.13 .1).
-            return getExactMethod((MethodRefMirror) arg) != null
+            return getExactMethod(mirror) != null
                     //  If m is a generic method and the method invocation does
                     //  not provide explicit type arguments, an exact method
                     //  reference expression for which the corresponding target type
@@ -166,11 +160,7 @@ public final class ExprOps {
                         || !formalType.isTypeVariable());
         }
 
-        if (arg instanceof BranchingMirror) {
-            // A conditional expression (§15.25) is potentially compatible with a type if each
-            // of its second and third operand expressions are potentially compatible with that type.
-
-            BranchingMirror cond = (BranchingMirror) arg;
+        if (arg instanceof BranchingMirror cond) {
             return cond.branchesMatch(branch -> isPertinentToApplicability(branch, m, formalType, invoc));
         }
 
@@ -214,7 +204,7 @@ public final class ExprOps {
                 if (lhs.isReifiable()) {
                     JTypeDeclSymbol symbol = lhs.getSymbol();
 
-                    assert symbol instanceof JClassSymbol && ((JClassSymbol) symbol).isArray()
+                    assert symbol instanceof JClassSymbol jcs && jcs.isArray()
                         : "Reifiable array should present a symbol! " + lhs;
 
                     return lhs.getConstructors().get(0);
@@ -473,19 +463,8 @@ public final class ExprOps {
                     return TypeOps.lazyFilterAccessible(typeToSearch.getConstructors(), mref.getEnclosingType().getSymbol());
                 }
 
-                if (asInstanceMethod && typeToSearch.isRaw() && typeToSearch instanceof JClassType
+                if (asInstanceMethod && typeToSearch.isRaw() && typeToSearch instanceof JClassType type
                     && targetType.getArity() > 0) {
-                    //  In the second search, if P1, ..., Pn is not empty
-                    //  and P1 is a subtype of ReferenceType, then the
-                    //  method reference expression is treated as if it were
-                    //  a method invocation expression with argument expressions
-                    //  of types P2, ..., Pn. If ReferenceType is a raw type,
-                    //  and there exists a parameterization of this type, G<...>,
-                    //  that is a supertype of P1, the type to search is the result
-                    //  of capture conversion (§5.1.10) applied to G<...>; otherwise,
-                    //  the type to search is the same as the type of the first search.
-
-                    JClassType type = (JClassType) typeToSearch;
                     JTypeMirror p1 = targetType.getFormalParameters().get(0);
                     JTypeMirror asSuper = p1.getAsSuper(type.getSymbol());
                     if (asSuper != null && asSuper.isParameterizedType()) {

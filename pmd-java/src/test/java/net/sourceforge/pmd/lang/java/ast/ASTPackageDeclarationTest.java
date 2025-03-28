@@ -30,11 +30,13 @@ class ASTPackageDeclarationTest extends BaseParserTest {
     @Test
     void testReportLocation() {
         ASTCompilationUnit nodes = java.parse(
-            "/** a javadoc comment */\n"
-                + "package \n"
-                + "     foo.\n"
-                + "     bar\n"
-                + ";"
+            """
+            /** a javadoc comment */
+            package\s
+                 foo.
+                 bar
+            ;\
+            """
         );
         ASTPackageDeclaration packageDecl = nodes.getPackageDeclaration();
         // this is the range of the Name.

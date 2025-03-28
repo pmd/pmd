@@ -486,20 +486,20 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private boolean isWithSecurityEnforced(final ApexNode<?> node) {
-        return node instanceof ASTSoqlExpression
-                && WITH_SECURITY_ENFORCED.matcher(((ASTSoqlExpression) node).getQuery()).matches();
+        return node instanceof ASTSoqlExpression astse
+                && WITH_SECURITY_ENFORCED.matcher(astse.getQuery()).matches();
     }
 
     //For USER_MODE
     private boolean isWithUserMode(final ApexNode<?> node) {
-        return node instanceof ASTSoqlExpression
-            && WITH_USER_MODE.matcher(((ASTSoqlExpression) node).getQuery()).matches();
+        return node instanceof ASTSoqlExpression astse
+            && WITH_USER_MODE.matcher(astse.getQuery()).matches();
     }
 
     //For System Mode
     private boolean isWithSystemMode(final ApexNode<?> node) {
-        return node instanceof ASTSoqlExpression
-            && WITH_SYSTEM_MODE.matcher(((ASTSoqlExpression) node).getQuery()).matches();
+        return node instanceof ASTSoqlExpression astse
+            && WITH_SYSTEM_MODE.matcher(astse.getQuery()).matches();
     }
 
     private String getType(final ASTMethodCallExpression methodNode) {
@@ -909,8 +909,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 final List<ASTVariableExpression> parameters = new ArrayList<>(numParameters);
                 for (int parameterIndex = 0, numChildren = methodNode.getNumChildren(); parameterIndex < numChildren; parameterIndex++) {
                     final ApexNode<?> childNode = methodNode.getChild(parameterIndex);
-                    if (childNode instanceof ASTVariableExpression) {
-                        parameters.add((ASTVariableExpression) childNode);
+                    if (childNode instanceof ASTVariableExpression expression) {
+                        parameters.add(expression);
                     }
                 }
                 // Make sure that it looks like "sObjectType.<objectTypeName>" as VariableExpression > ReferenceExpression

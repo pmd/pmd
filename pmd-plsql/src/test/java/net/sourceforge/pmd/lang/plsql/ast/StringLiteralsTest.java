@@ -29,7 +29,11 @@ class StringLiteralsTest extends AbstractPLSQLParserTst {
         assertString("Q'{SELECT * FROM employees WHERE last_name = 'Smith';}'",
                 "SELECT * FROM employees WHERE last_name = 'Smith';", 13, strings);
         assertString("q'{\n" + "    also multiple\n" + "    lines\n" + "  }'",
-                "\n" + "    also multiple\n" + "    lines\n" + "  ", 15, strings);
+                """
+                
+                    also multiple
+                    lines
+                  """, 15, strings);
     }
 
     @Test

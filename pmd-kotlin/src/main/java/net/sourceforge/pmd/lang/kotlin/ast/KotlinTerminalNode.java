@@ -33,8 +33,8 @@ public final class KotlinTerminalNode extends BaseAntlrTerminalNode<KotlinNode> 
 
     @Override
     public <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
-        if (visitor instanceof KotlinVisitor) {
-            return ((KotlinVisitor<? super P, ? extends R>) visitor).visitKotlinNode(this, data);
+        if (visitor instanceof KotlinVisitor<? super P, ? extends R> kotlinVisitor) {
+            return kotlinVisitor.visitKotlinNode(this, data);
         }
         return super.acceptVisitor(visitor, data);
     }

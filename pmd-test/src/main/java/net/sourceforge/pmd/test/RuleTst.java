@@ -15,7 +15,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -248,14 +247,14 @@ public abstract class RuleTst {
         // Similar logic like jdk.internal.jrtfs.SystemImage
         CodeSource codeSource = Object.class.getProtectionDomain().getCodeSource();
         if (codeSource == null) {
-            PATH_TO_JRT_FS_JAR = Paths.get(System.getProperty("java.home"), "lib", "jrt-fs.jar");
+            PATH_TO_JRT_FS_JAR = Path.of(System.getProperty("java.home"), "lib", "jrt-fs.jar");
         } else {
             URL location = codeSource.getLocation();
             if (!"file".equalsIgnoreCase(location.getProtocol())) {
                 throw new IllegalStateException("Object.class loaded in unexpected way from " + location);
             }
             try {
-                PATH_TO_JRT_FS_JAR = Paths.get(location.toURI());
+                PATH_TO_JRT_FS_JAR = Path.of(location.toURI());
             } catch (URISyntaxException e) {
                 throw new IllegalStateException(e);
             }

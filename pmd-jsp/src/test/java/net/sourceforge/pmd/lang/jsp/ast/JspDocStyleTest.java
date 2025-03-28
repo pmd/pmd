@@ -796,9 +796,11 @@ class JspDocStyleTest extends AbstractJspNodesTst {
 
     private static final String TEST_CDATA = "<html><![CDATA[ some <cdata> ]] ]> ]]></html>";
 
-    private static final String TEST_DOCTYPE = "<?xml version=\"1.0\" standalone='yes'?>\n"
-            + "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" "
-            + "\"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n" + "<greeting>Hello, world!</greeting>";
+    private static final String TEST_DOCTYPE = """
+            <?xml version="1.0" standalone='yes'?>
+            <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" \
+            "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+            <greeting>Hello, world!</greeting>""";
 
     private static final String TEST_COMMENT = "<html><!-- comment --></html>";
 

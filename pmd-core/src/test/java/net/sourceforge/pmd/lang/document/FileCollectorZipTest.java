@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -25,7 +24,7 @@ import net.sourceforge.pmd.internal.util.IOUtil;
 class FileCollectorZipTest {
 
     private static final String ZIP_PATH = "src/test/resources/net/sourceforge/pmd/lang/document/filecollectorziptest/zipWithSources.zip";
-    private final Path zipPath = Paths.get(ZIP_PATH);
+    private final Path zipPath = Path.of(ZIP_PATH);
 
     @Test
     void testZipFile() {
@@ -61,7 +60,7 @@ class FileCollectorZipTest {
     void testZipFileRelativizeWith() {
         PMDConfiguration conf = new PMDConfiguration();
         conf.addInputPath(zipPath);
-        conf.addRelativizeRoot(Paths.get("src/test/resources"));
+        conf.addRelativizeRoot(Path.of("src/test/resources"));
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));

@@ -156,8 +156,8 @@ public final class StringUtil {
      * or a stringBuffer. This is especially useful in parsers.
      */
     public static StringBuilder append(StringBuilder sb, CharSequence charSeq) {
-        if (charSeq instanceof Chars) {
-            ((Chars) charSeq).appendChars(sb);
+        if (charSeq instanceof Chars chars) {
+            chars.appendChars(sb);
             return sb;
         } else {
             return sb.append(charSeq);

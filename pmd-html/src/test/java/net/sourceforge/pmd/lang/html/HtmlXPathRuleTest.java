@@ -22,19 +22,20 @@ import net.sourceforge.pmd.reporting.RuleViolation;
 class HtmlXPathRuleTest {
 
     // from https://developer.salesforce.com/docs/component-library/documentation/en/lwc/lwc.js_props_getter
-    private static final String LIGHTNING_WEB_COMPONENT = "<!-- helloExpressions.html -->\n"
-            + "<template>\n"
-            + "    <p>Hello, { greeting}!</p>\n"
-            + "    <lightning-input label=\"Name\" value={ greeting} onchange={handleChange}></lightning-input>\n"
-            + "    <div class=\"slds-m-around_medium\">\n"
-            + "        <lightning-input name='firstName' label=\"First Name\" onchange={ handleChange}></lightning-input>\n"
-            + "        <lightning-input name='lastName' label=\"Last Name\" onchange={handleChange}></lightning-input>\n"
-            + "        <p class=\"slds-m-top_medium\">Uppercased Full Name: {uppercasedFullName}</p>\n"
-            + "    </div>\n"
-            + "    <template if:true={visible}>\n"
-            + "      <p>Test</p>\n"
-            + "    </template>\n"
-            + "</template>";
+    private static final String LIGHTNING_WEB_COMPONENT = """
+            <!-- helloExpressions.html -->
+            <template>
+                <p>Hello, { greeting}!</p>
+                <lightning-input label="Name" value={ greeting} onchange={handleChange}></lightning-input>
+                <div class="slds-m-around_medium">
+                    <lightning-input name='firstName' label="First Name" onchange={ handleChange}></lightning-input>
+                    <lightning-input name='lastName' label="Last Name" onchange={handleChange}></lightning-input>
+                    <p class="slds-m-top_medium">Uppercased Full Name: {uppercasedFullName}</p>
+                </div>
+                <template if:true={visible}>
+                  <p>Test</p>
+                </template>
+            </template>""";
 
     @Test
     void selectTextNode() {

@@ -127,7 +127,7 @@ public final class JPrimitiveType implements JTypeMirror {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof JPrimitiveType && ((JPrimitiveType) obj).kind == this.kind;
+        return obj instanceof JPrimitiveType jpt && jpt.kind == this.kind;
     }
 
     @Override

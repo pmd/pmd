@@ -50,8 +50,8 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
 
     @Override
     public final int compareLocation(Node other) {
-        if (other instanceof JjtreeNode<?>) {
-            return getTextRegion().compareTo(((JjtreeNode<?>) other).getTextRegion());
+        if (other instanceof JjtreeNode<?> node) {
+            return getTextRegion().compareTo(node.getTextRegion());
         }
         return super.compareLocation(other);
     }

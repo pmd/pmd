@@ -32,12 +32,15 @@ class ApexParserTest extends ApexParserTestBase {
     void understandsSimpleFile() {
 
         // Setup
-        String code = "@isTest\n"
-            + " public class SimpleClass {\n"
-            + "    @isTest\n public static void testAnything() {\n"
-            + "        \n"
-            + "    }\n"
-            + "}";
+        String code = """
+            @isTest
+             public class SimpleClass {
+                @isTest
+             public static void testAnything() {
+                   \s
+                }
+            }\
+            """;
 
         // Exercise
         ASTUserClassOrInterface<?> rootNode = parse(code);
@@ -54,12 +57,14 @@ class ApexParserTest extends ApexParserTestBase {
     }
 
     private final String testCodeForLineNumbers =
-              "public class SimpleClass {\n" // line 1
-            + "    public void method1() {\n" // line 2
-            + "        System.out.println('abc');\n" // line 3
-            + "        // this is a comment\n" // line 4
-            + "    }\n" // line 5
-            + "}"; // line 6
+              """
+              public class SimpleClass {
+                  public void method1() {
+                      System.out.println('abc');
+                      // this is a comment
+                  }
+              }\
+              """; // line 6
 
     @Test
     void verifyLineColumnNumbers() {
@@ -125,13 +130,15 @@ class ApexParserTest extends ApexParserTestBase {
     @Test
     void checkComments() {
 
-        String code = "public  /** Comment on Class */ class SimpleClass {\n" // line 1
-            + "    /** Comment on m1 */"
-            + "    public void method1() {\n" // line 2
-            + "    }\n" // line 3
-            + "    public void method2() {\n" // line 4
-            + "    }\n" // line 5
-            + "}\n"; // line 6
+        String code = """
+            public  /** Comment on Class */ class SimpleClass {
+                /** Comment on m1 */\
+                public void method1() {
+                }
+                public void method2() {
+                }
+            }
+            """; // line 6
 
         ASTUserClassOrInterface<?> root = parse(code);
 

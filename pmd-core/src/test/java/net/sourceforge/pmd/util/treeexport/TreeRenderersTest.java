@@ -60,10 +60,12 @@ class TreeRenderersTest {
         StringBuilder out = new StringBuilder();
 
         renderer.renderSubtree(dummyTree1(helper), out);
-        assertEquals("<dummyNode foo=\"bar\" ohio=\"4\">\n"
-                                + "    <dummyNode o=\"ha\" />\n"
-                                + "    <dummyNode />\n"
-                                + "</dummyNode>\n", out.toString());
+        assertEquals("""
+                                <dummyNode foo="bar" ohio="4">
+                                    <dummyNode o="ha" />
+                                    <dummyNode />
+                                </dummyNode>
+                                """, out.toString());
 
     }
 

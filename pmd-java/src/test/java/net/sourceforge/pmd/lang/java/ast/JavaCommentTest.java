@@ -27,10 +27,12 @@ class JavaCommentTest extends BaseParserTest {
     @Test
     void testFilteredLines() {
         JavaComment comment = parseComment(
-            "/**\n"
-                + " * @author Clément Fournier\n"
-                + " *\n"
-                + " */\n"
+            """
+            /**
+             * @author Clément Fournier
+             *
+             */
+            """
         );
 
         assertThat(comment.getFilteredLines(),
@@ -52,10 +54,12 @@ class JavaCommentTest extends BaseParserTest {
     @Test
     void testFilteredLinesKeepBlankLines() {
         JavaComment comment = parseComment(
-            "/**\n"
-                + " * @author Clément Fournier\n"
-                + " *\n"
-                + " */\n"
+            """
+            /**
+             * @author Clément Fournier
+             *
+             */
+            """
         );
 
         assertThat(comment.getFilteredLines(true),

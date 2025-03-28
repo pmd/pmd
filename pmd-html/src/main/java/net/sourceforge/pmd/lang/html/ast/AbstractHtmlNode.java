@@ -39,8 +39,8 @@ abstract class AbstractHtmlNode<T extends Node> extends AbstractNode<AbstractHtm
     @Override
     @SuppressWarnings("unchecked")
     public final <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
-        if (visitor instanceof HtmlVisitor) {
-            return this.acceptHtmlVisitor((HtmlVisitor<? super P, ? extends R>) visitor, data);
+        if (visitor instanceof HtmlVisitor<? super P, ? extends R> htmlVisitor) {
+            return this.acceptHtmlVisitor(htmlVisitor, data);
         }
         return visitor.cannotVisit(this, data);
     }

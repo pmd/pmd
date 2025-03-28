@@ -16,8 +16,8 @@ abstract class AbstractJspNode extends AbstractJjtreeNode<AbstractJspNode, JspNo
     @Override
     @SuppressWarnings("unchecked")
     public final <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
-        if (visitor instanceof JspVisitor) {
-            return this.acceptVisitor((JspVisitor<? super P, ? extends R>) visitor, data);
+        if (visitor instanceof JspVisitor<? super P, ? extends R> jspVisitor) {
+            return this.acceptVisitor(jspVisitor, data);
         }
         return visitor.cannotVisit(this, data);
     }

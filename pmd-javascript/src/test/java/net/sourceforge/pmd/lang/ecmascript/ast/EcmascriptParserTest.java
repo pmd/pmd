@@ -53,12 +53,15 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
     @Test
     void testLineNumbersWithinEcmascriptRules() {
         String source =
-            "function f(x){\n"
-                + "   if (x) {\n"
-                + "       return 1;\n"
-                + "   } else {\n"
-                + "       return 0;\n" + "   }\n"
-                + "}";
+            """
+            function f(x){
+               if (x) {
+                   return 1;
+               } else {
+                   return 0;
+               }
+            }\
+            """;
 
         class MyEcmascriptRule extends AbstractEcmascriptRule {
 
@@ -97,8 +100,15 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
     @Test
     void testArrayMethod() {
         EcmascriptNode<AstRoot> rootNode = js.parse(
-            "function test(){\n" + "  a();      // OK\n" + "  b.c();    // OK\n" + "  d[0]();   // OK\n"
-                + "  e[0].f(); // OK\n" + "  y.z[0](); // FAIL ==> java.lang.NullPointerException\n" + "}");
+            """
+            function test(){
+              a();      // OK
+              b.c();    // OK
+              d[0]();   // OK
+              e[0].f(); // OK
+              y.z[0](); // FAIL ==> java.lang.NullPointerException
+            }\
+            """);
 
         List<ASTFunctionCall> calls = rootNode.descendants(ASTFunctionCall.class).toList();
         List<String> results = new ArrayList<>();
@@ -110,17 +120,16 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
     }
 
     private String getName(Node node) {
-        if (node instanceof ASTName) {
-            return ((ASTName) node).getIdentifier();
+        if (node instanceof ASTName name) {
+            return name.getIdentifier();
         }
-        if (node instanceof ASTPropertyGet) {
-            final ASTPropertyGet pgNode = (ASTPropertyGet) node;
+        if (node instanceof ASTPropertyGet pgNode) {
             final String leftName = getName(pgNode.getLeft());
             final String rightName = getName(pgNode.getRight());
             return leftName + "." + rightName;
         }
-        if (node instanceof ASTElementGet) {
-            return getName(((ASTElementGet) node).getTarget()) + "[]";
+        if (node instanceof ASTElementGet get) {
+            return getName(get.getTarget()) + "[]";
         }
         return "????";
     }
@@ -144,9 +153,11 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
      */
     @Test
     void testSuppressionComment() {
-        ASTAstRoot root = js.parse("function(x) {\n"
-                                       + "x = x; //NOPMD I know what I'm doing\n"
-                                       + "}\n");
+        ASTAstRoot root = js.parse("""
+                                       function(x) {
+                                       x = x; //NOPMD I know what I'm doing
+                                       }
+                                       """);
         assertEquals(" I know what I'm doing", root.getAstInfo().getSuppressionComments().get(2));
         assertEquals(1, root.getAstInfo().getSuppressionComments().size());
 
@@ -161,9 +172,11 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
      */
     @Test
     void testVoidKeyword() {
-        ASTAstRoot rootNode = js.parse("function f(matchFn, fieldval, n){\n"
-                                           + "    return (matchFn)?(matcharray = eval(matchFn+\"('\"+fieldval+\"','\"+n.id+\"')\")):void(0);\n"
-                                           + "}\n");
+        ASTAstRoot rootNode = js.parse("""
+                                           function f(matchFn, fieldval, n){
+                                               return (matchFn)?(matcharray = eval(matchFn+"('"+fieldval+"','"+n.id+"')")):void(0);
+                                           }
+                                           """);
         ASTUnaryExpression unary = rootNode.descendants(ASTUnaryExpression.class).first();
         assertEquals("void", unary.getOperator());
     }
@@ -174,22 +187,24 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
     @Test
     void testXorAssignment() {
         ASTAstRoot rootNode = js.parse(
-                "function f() {\n"
-                         + "  var x = 2;\n"
-                         + "  x ^= 2;\n"
-                         + "  x &= 2;\n"
-                         + "  x |= 2;\n"
-                         + "  x &&= true;\n"
-                         + "  x ||= false;\n"
-                         + "  x *= 2;\n"
-                         + "  x /= 2;\n"
-                         + "  x %= 2;\n"
-                         + "  x += 2;\n"
-                         + "  x -= 2;\n"
-                         + "  x <<= 2;\n"
-                         + "  x >>= 2;\n"
-                         + "  x >>>= 2;\n"
-                         + "}");
+                """
+                function f() {
+                  var x = 2;
+                  x ^= 2;
+                  x &= 2;
+                  x |= 2;
+                  x &&= true;
+                  x ||= false;
+                  x *= 2;
+                  x /= 2;
+                  x %= 2;
+                  x += 2;
+                  x -= 2;
+                  x <<= 2;
+                  x >>= 2;
+                  x >>>= 2;
+                }\
+                """);
         ASTAssignment infix = rootNode.descendants(ASTAssignment.class).first();
         assertEquals("^=", infix.getOperator());
     }
@@ -200,11 +215,12 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
     @Test
     void testUnicodeCjk() {
         // the first is u+4F60
-        js.parse("import { Test } from 'test2'\n"
-                 + "define('element', class extends Test {\n"
-                 + "    <button onClick={this.clickHandler}>你好</button>\n"
-                 + "  }\n"
-                 + "})");
+        js.parse("""
+                 import { Test } from 'test2'
+                 define('element', class extends Test {
+                     <button onClick={this.clickHandler}>你好</button>
+                   }
+                 })""");
     }
 
     /**

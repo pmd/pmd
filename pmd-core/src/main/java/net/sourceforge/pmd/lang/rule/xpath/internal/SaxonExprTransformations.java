@@ -32,9 +32,9 @@ final class SaxonExprTransformations {
         public Expression visit(SlashExpression e) {
             Expression left = super.visit(e.getLhsExpression());
             Expression right = super.visit(e.getRhsExpression());
-            if (right instanceof FilterExpression) {
-                Expression middle = ((FilterExpression) right).getBase();
-                Expression filter = ((FilterExpression) right).getFilter();
+            if (right instanceof FilterExpression expression) {
+                Expression middle = expression.getBase();
+                Expression filter = expression.getFilter();
                 return new FilterExpression(new SlashExpression(left, middle), filter);
             }
             return super.visit(e);
@@ -48,16 +48,16 @@ final class SaxonExprTransformations {
             Expression left = super.visit(e.getLhsExpression());
             Expression right = super.visit(e.getRhsExpression());
 
-            if (right instanceof AxisExpression
-                && ((AxisExpression) right).getAxis() == AxisInfo.CHILD
-                && left instanceof SlashExpression) {
+            if (right instanceof AxisExpression expression
+                && expression.getAxis() == AxisInfo.CHILD
+                && left instanceof SlashExpression expression1) {
 
-                Expression leftLeft = ((SlashExpression) left).getLhsExpression();
-                Expression leftRight = ((SlashExpression) left).getRhsExpression();
+                Expression leftLeft = expression1.getLhsExpression();
+                Expression leftRight = expression1.getRhsExpression();
 
-                if (leftLeft instanceof RootExpression && leftRight instanceof AxisExpression) {
-                    if (((AxisExpression) leftRight).getAxis() == AxisInfo.DESCENDANT_OR_SELF
-                        && isAnyNode(((AxisExpression) leftRight).getNodeTest())) {
+                if (leftLeft instanceof RootExpression && leftRight instanceof AxisExpression expression) {
+                    if (expression.getAxis() == AxisInfo.DESCENDANT_OR_SELF
+                        && isAnyNode(expression.getNodeTest())) {
                         // ok!
                         left = leftLeft; // the root expression
                         right = new AxisExpression(AxisInfo.DESCENDANT, ((AxisExpression) right).getNodeTest());
@@ -123,8 +123,7 @@ final class SaxonExprTransformations {
         }
 
         // Does it need them? Or is it already the same variable under the same assignment?
-        if (subexpr instanceof LetExpression) {
-            final LetExpression letSubexpr = (LetExpression) subexpr;
+        if (subexpr instanceof LetExpression letSubexpr) {
             final LetExpression letOriginal = (LetExpression) original;
             if (letOriginal.getVariableQName().equals(letSubexpr.getVariableQName())
                     && letSubexpr.getSequence().toString().equals(letOriginal.getSequence().toString())) {

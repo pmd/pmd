@@ -24,8 +24,8 @@ public class LocalScope extends MethodOrLocalScope {
                 List<NameOccurrence> nameOccurrences = getVariableDeclarations().get(decl);
                 nameOccurrences.add(occurrence);
                 Node n = occurrence.getLocation();
-                if (n instanceof ASTName) {
-                    InternalApiBridge.setNameDeclaration((ASTName) n, decl);
+                if (n instanceof ASTName name) {
+                    InternalApiBridge.setNameDeclaration(name, decl);
                 } // TODO what to do with PrimarySuffix case?
             }
         }

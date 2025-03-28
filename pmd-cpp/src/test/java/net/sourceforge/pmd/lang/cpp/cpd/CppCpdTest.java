@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.cpp.cpd;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +22,7 @@ class CppCpdTest {
     @BeforeEach
     void setUp() {
         String path = IOUtil.normalizePath("src/test/resources/net/sourceforge/pmd/lang/cpp/cpd/testdata");
-        testdir = Paths.get(path);
+        testdir = Path.of(path);
     }
 
     @Test

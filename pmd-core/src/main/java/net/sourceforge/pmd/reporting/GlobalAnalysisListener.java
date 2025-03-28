@@ -156,7 +156,7 @@ public interface GlobalAnalysisListener extends AutoCloseable {
         // This prevents suppressed exceptions from being chained too deep if they occur in close()
         List<GlobalAnalysisListener> myList =
             listeners.stream()
-                     .flatMap(l -> l instanceof TeeListener ? ((TeeListener) l).myList.stream() : Stream.of(l))
+                     .flatMap(l -> l instanceof TeeListener tl ? tl.myList.stream() : Stream.of(l))
                      .filter(l -> !(l instanceof NoopAnalysisListener))
                      .collect(CollectionUtil.toUnmodifiableList());
         

@@ -626,7 +626,7 @@ public class GUI implements CPDListener {
             FileId sourceId = sourceIDs.iterator().next();
             return "..." + sourceId.getFileName();
         } else {
-            return String.format("(%d separate files)", sourceIDs.size());
+            return "(%d separate files)".formatted(sourceIDs.size());
         }
     }
 

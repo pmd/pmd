@@ -31,7 +31,7 @@ class ASTExpressionTest {
     @Test
     void testExpressionWithApexGetter() throws ASTExpression.DataNodeStateException {
         for (String template : SNIPPET_TEMPLATES) {
-            ASTCompilationUnit compilationUnit = compile(String.format(template, "MyValue"));
+            ASTCompilationUnit compilationUnit = compile(template.formatted("MyValue"));
 
             List<Node> nodes = getExpressions(compilationUnit);
             assertEquals(1, nodes.size(), template);
@@ -49,7 +49,7 @@ class ASTExpressionTest {
     @Test
     void testExpressionWithStandardController() throws ASTExpression.DataNodeStateException {
         for (String template : SNIPPET_TEMPLATES) {
-            ASTCompilationUnit compilationUnit = compile(String.format(template, "MyObject__c.Text__c"));
+            ASTCompilationUnit compilationUnit = compile(template.formatted("MyObject__c.Text__c"));
 
             List<Node> nodes = getExpressions(compilationUnit);
             assertEquals(1, nodes.size(), template);
@@ -67,7 +67,7 @@ class ASTExpressionTest {
     @Test
     void testSelectOptions() throws ASTExpression.DataNodeStateException {
         for (String template : SNIPPET_TEMPLATES) {
-            ASTCompilationUnit compilationUnit = compile(String.format(template, "userOptions.0"));
+            ASTCompilationUnit compilationUnit = compile(template.formatted("userOptions.0"));
 
             List<Node> nodes = getExpressions(compilationUnit);
             assertEquals(1, nodes.size(), template);
@@ -85,7 +85,7 @@ class ASTExpressionTest {
     @Test
     void testMultipleIdentifiers() throws ASTExpression.DataNodeStateException {
         for (String template : SNIPPET_TEMPLATES) {
-            ASTCompilationUnit compilationUnit = compile(String.format(template, "MyObject__c.Text__c + ' this is a string' + MyObject__c.Text2__c"));
+            ASTCompilationUnit compilationUnit = compile(template.formatted("MyObject__c.Text__c + ' this is a string' + MyObject__c.Text2__c"));
 
             List<Node> nodes = getExpressions(compilationUnit);
             assertEquals(1, nodes.size(), template);
@@ -106,7 +106,7 @@ class ASTExpressionTest {
     @Test
     void testIdentifierWithRelation() throws ASTExpression.DataNodeStateException {
         for (String template : SNIPPET_TEMPLATES) {
-            ASTCompilationUnit compilationUnit = compile(String.format(template, "MyObject1__c.MyObject2__r.Text__c"));
+            ASTCompilationUnit compilationUnit = compile(template.formatted("MyObject1__c.MyObject2__r.Text__c"));
 
             List<Node> nodes = getExpressions(compilationUnit);
             assertEquals(1, nodes.size(), template);
@@ -125,7 +125,7 @@ class ASTExpressionTest {
     @Test
     void testMultipleIdentifiersWithRelation() throws ASTExpression.DataNodeStateException {
         for (String template : SNIPPET_TEMPLATES) {
-            ASTCompilationUnit compilationUnit = compile(String.format(template, "MyObject1__c.MyObject2__r.Text__c + ' this is a string' + MyObject1__c.MyObject2__r.Text2__c"));
+            ASTCompilationUnit compilationUnit = compile(template.formatted("MyObject1__c.MyObject2__r.Text__c + ' this is a string' + MyObject1__c.MyObject2__r.Text2__c"));
 
             List<Node> nodes = getExpressions(compilationUnit);
             assertEquals(1, nodes.size(), template);
@@ -150,7 +150,7 @@ class ASTExpressionTest {
     @Test
     void testExpressionWithArrayIndexingNotSupported() {
         for (String template : SNIPPET_TEMPLATES) {
-            ASTCompilationUnit compilationUnit = compile(String.format(template, "MyObject__c['Name']"));
+            ASTCompilationUnit compilationUnit = compile(template.formatted("MyObject__c['Name']"));
 
             List<Node> nodes = getExpressions(compilationUnit);
             assertEquals(2, nodes.size(), template);
@@ -168,7 +168,7 @@ class ASTExpressionTest {
     @Test
     void testIdentifierWithRelationIndexedAsArrayNotSupported() {
         for (String template : SNIPPET_TEMPLATES) {
-            ASTCompilationUnit compilationUnit = compile(String.format(template, "MyObject1__c['MyObject2__r'].Text__c"));
+            ASTCompilationUnit compilationUnit = compile(template.formatted("MyObject1__c['MyObject2__r'].Text__c"));
 
             List<Node> nodes = getExpressions(compilationUnit);
             assertEquals(2, nodes.size(), template);
@@ -186,7 +186,7 @@ class ASTExpressionTest {
     @Test
     void testIdentifierWithComplexIndexedArrayNotSupported() {
         for (String template : SNIPPET_TEMPLATES) {
-            ASTCompilationUnit compilationUnit = compile(String.format(template, "theLineItems[item.Id].UnitPrice"));
+            ASTCompilationUnit compilationUnit = compile(template.formatted("theLineItems[item.Id].UnitPrice"));
 
             List<Node> nodes = getExpressions(compilationUnit);
             assertEquals(2, nodes.size(), template);

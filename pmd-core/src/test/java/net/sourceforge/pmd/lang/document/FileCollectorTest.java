@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -38,7 +37,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * @author Clément Fournier
  */
 class FileCollectorTest {
-    private static final Path RESOURCES = Paths.get("src/test/resources/net/sourceforge/pmd/lang/document/filecollectortest/");
+    private static final Path RESOURCES = Path.of("src/test/resources/net/sourceforge/pmd/lang/document/filecollectortest/");
 
     @TempDir
     private Path tempFolder;
@@ -145,7 +144,7 @@ class FileCollectorTest {
     void testRelativizeWith() {
         PMDConfiguration conf = new PMDConfiguration();
         conf.setInputFilePath(RESOURCES.resolve("filelist2.txt"));
-        conf.addRelativizeRoot(Paths.get("src/test/resources"));
+        conf.addRelativizeRoot(Path.of("src/test/resources"));
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(2));

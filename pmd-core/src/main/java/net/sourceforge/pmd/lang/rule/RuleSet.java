@@ -102,8 +102,8 @@ public class RuleSet implements ChecksumAware {
      */
     public static RuleSet forSingleRule(final Rule rule) {
         final long checksum;
-        if (rule instanceof XPathRule) {
-            checksum = ((XPathRule) rule).getXPathExpression().hashCode();
+        if (rule instanceof XPathRule pathRule) {
+            checksum = pathRule.getXPathExpression().hashCode();
         } else {
             // TODO : Is this good enough? all properties' values + rule name
             checksum = rule.getPropertiesByPropertyDescriptor().values().hashCode() * 31 + rule.getName().hashCode();
@@ -324,8 +324,8 @@ public class RuleSet implements ChecksumAware {
                 throw new IllegalArgumentException("Cannot add a null rule reference to a RuleSet");
             }
             final RuleReference ruleReference;
-            if (rule instanceof RuleReference) {
-                ruleReference = (RuleReference) rule;
+            if (rule instanceof RuleReference reference) {
+                ruleReference = reference;
             } else {
                 final RuleSetReference ruleSetReference = new RuleSetReference(ruleSetFileName);
                 ruleReference = new RuleReference(rule, ruleSetReference);

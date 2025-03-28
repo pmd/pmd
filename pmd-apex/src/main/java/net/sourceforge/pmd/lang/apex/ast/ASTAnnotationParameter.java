@@ -31,8 +31,8 @@ public final class ASTAnnotationParameter extends AbstractApexNode.Single<Elemen
     public String getValue() {
         if (node.getValue() instanceof ElementValue.ExpressionValue) {
             Expression value = ((ElementValue.ExpressionValue) node.getValue()).getValue();
-            if (value instanceof LiteralExpression) {
-                return literalToString((LiteralExpression) value);
+            if (value instanceof LiteralExpression expression) {
+                return literalToString(expression);
             }
         }
         return null;
@@ -41,8 +41,8 @@ public final class ASTAnnotationParameter extends AbstractApexNode.Single<Elemen
     public Boolean getBooleanValue() {
         if (node.getValue() instanceof ElementValue.ExpressionValue) {
             Expression value = ((ElementValue.ExpressionValue) node.getValue()).getValue();
-            if (value instanceof LiteralExpression.BooleanVal) {
-                return ((LiteralExpression.BooleanVal) value).getValue();
+            if (value instanceof LiteralExpression.BooleanVal val) {
+                return val.getValue();
             }
         }
         return false;

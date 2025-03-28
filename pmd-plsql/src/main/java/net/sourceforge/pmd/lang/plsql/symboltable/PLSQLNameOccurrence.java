@@ -184,8 +184,7 @@ public class PLSQLNameOccurrence implements NameOccurrence {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof PLSQLNameOccurrence) {
-            PLSQLNameOccurrence n = (PLSQLNameOccurrence) o;
+        if (o instanceof PLSQLNameOccurrence n) {
             return n.getImage().equals(getImage());
         }
         return false;

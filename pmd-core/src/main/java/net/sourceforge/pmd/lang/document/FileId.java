@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.document;
 import java.io.File;
 import java.net.URI;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -161,12 +160,12 @@ public interface FileId extends Comparable<FileId> {
      * {@link #getUriString()} may work.
      *
      * @param str A string. Should be a valid file system path for the platform (see
-     *            {@link Paths#get(String, String...)}.
+     *            {@link Path#of(String, String...)}.
      *
      * @return A new file id
      */
     static FileId fromPathLikeString(String str) {
-        Path absPath = Paths.get(str).toAbsolutePath();
+        Path absPath = Path.of(str).toAbsolutePath();
 
         // this is null for the root path.
         @Nullable Path fileNamePath = absPath.getFileName();
@@ -199,8 +198,8 @@ public interface FileId extends Comparable<FileId> {
 
             @Override
             public boolean equals(Object obj) {
-                return obj instanceof FileId
-                    && ((FileId) obj).getUriString().equals(this.getUriString());
+                return obj instanceof FileId fi
+                    && fi.getUriString().equals(this.getUriString());
             }
 
             @Override
@@ -266,8 +265,8 @@ public interface FileId extends Comparable<FileId> {
 
             @Override
             public boolean equals(Object obj) {
-                return obj instanceof FileId
-                    && ((FileId) obj).getUriString().equals(this.getUriString());
+                return obj instanceof FileId fi
+                    && fi.getUriString().equals(this.getUriString());
             }
 
             @Override
@@ -330,8 +329,8 @@ public interface FileId extends Comparable<FileId> {
 
             @Override
             public boolean equals(Object obj) {
-                return obj instanceof FileId
-                    && getUriString().equals(((FileId) obj).getUriString());
+                return obj instanceof FileId fi
+                    && getUriString().equals(fi.getUriString());
             }
 
             @Override
@@ -348,7 +347,7 @@ public interface FileId extends Comparable<FileId> {
 
     /**
      * Return a file ID which interprets the first parameter as an absolute path.
-     * The path must be a valid path for this system ({@link Paths#get(String, String...)} should not fail).
+     * The path must be a valid path for this system ({@link Path#of(String, String...)} should not fail).
      * The URI is rebuilt using the outer file ID if it is non-null.
      *
      * @param absPath Absolute path for the file
@@ -357,7 +356,7 @@ public interface FileId extends Comparable<FileId> {
      * @return A new file id
      */
     static FileId fromAbsolutePath(String absPath, @Nullable FileId outer) {
-        Path fileName = Paths.get(absPath).getFileName();
+        Path fileName = Path.of(absPath).getFileName();
         // we know this one uses platform specific thing (for display)
         String platformAbsPath = absPath.replace('/', File.separatorChar);
         // we know this one uses / (for URIs)
@@ -393,7 +392,7 @@ public interface FileId extends Comparable<FileId> {
 
             @Override
             public boolean equals(Object obj) {
-                return obj instanceof FileId && getUriString().equals(((FileId) obj).getUriString());
+                return obj instanceof FileId fi && getUriString().equals(fi.getUriString());
             }
 
             @Override
@@ -433,7 +432,7 @@ public interface FileId extends Comparable<FileId> {
                 return fromAbsolutePath(localPath, outer);
             }
         } else if ("file".equals(uri.getScheme())) {
-            Path path = Paths.get(uri);
+            Path path = Path.of(uri);
             return fromPath(path);
         }
         throw new UnsupportedOperationException("Unknown scheme " + uriStr);

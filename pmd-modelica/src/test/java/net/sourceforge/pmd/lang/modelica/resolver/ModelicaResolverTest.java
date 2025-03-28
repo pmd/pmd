@@ -210,9 +210,11 @@ class ModelicaResolverTest {
     @Test
     void nestedStoredDefinitionTest() {
         String contents =
-              "within TestPackage.SubPackage;\n"
-            + "model Test\n"
-            + "end Test;\n";
+              """
+            within TestPackage.SubPackage;
+            model Test
+            end Test;
+            """;
 
         ASTStoredDefinition ast = modelica.parse(contents);
         RootScope rootScope = (RootScope) ast.getMostSpecificScope().getParent();
@@ -233,13 +235,15 @@ class ModelicaResolverTest {
     @Test
     void extendsTest() {
         String contents =
-              "model A\n"
-            + "  model X\n"
-            + "  end X;\n"
-            + "end A;\n"
-            + "model B\n"
-            + "  extends A;"
-            + "end B;";
+              """
+            model A
+              model X
+              end X;
+            end A;
+            model B
+              extends A;\
+            end B;\
+            """;
 
         ASTStoredDefinition ast = modelica.parse(contents);
 
@@ -249,18 +253,20 @@ class ModelicaResolverTest {
     @Test
     void importTest() {
         String contents =
-              "model I\n"
-            + "  model Z\n"
-            + "  end Z;\n"
-            + "end I;\n"
-            + "model A\n"
-            + "  import I.Z;\n"
-            + "  model X\n"
-            + "  end X;\n"
-            + "end A;\n"
-            + "model B\n"
-            + "  extends A;"
-            + "end B;";
+              """
+            model I
+              model Z
+              end Z;
+            end I;
+            model A
+              import I.Z;
+              model X
+              end X;
+            end A;
+            model B
+              extends A;\
+            end B;\
+            """;
 
         ASTStoredDefinition ast = modelica.parse(contents);
 

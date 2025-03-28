@@ -43,11 +43,13 @@ class XmlTreeRendererTest {
 
         renderer.renderSubtree(dummy, out);
 
-        assertEquals("<?xml version='1.0' encoding='UTF-8' ?>\n"
-                                + "<dummyNode foo='bar' ohio='4'>\n"
-                                + "    <dummyNode o='ha' />\n"
-                                + "    <dummyNode />\n"
-                                + "</dummyNode>\n", out.toString());
+        assertEquals("""
+                                <?xml version='1.0' encoding='UTF-8' ?>
+                                <dummyNode foo='bar' ohio='4'>
+                                    <dummyNode o='ha' />
+                                    <dummyNode />
+                                </dummyNode>
+                                """, out.toString());
 
     }
 
@@ -65,11 +67,13 @@ class XmlTreeRendererTest {
 
         renderer.renderSubtree(dummy, out);
 
-        assertEquals("<?xml version='1.0' encoding='UTF-8' ?>\r\n"
-                                + "<dummyNode foo='bar' ohio='4'>\r\n"
-                                + "    <dummyNode o='ha' />\r\n"
-                                + "    <dummyNode />\r\n"
-                                + "</dummyNode>\r\n", out.toString());
+        assertEquals("""
+                                <?xml version='1.0' encoding='UTF-8' ?>
+                                <dummyNode foo='bar' ohio='4'>
+                                    <dummyNode o='ha' />
+                                    <dummyNode />
+                                </dummyNode>
+                                """, out.toString());
 
     }
 
@@ -114,11 +118,13 @@ class XmlTreeRendererTest {
 
         renderer.renderSubtree(dummy, out);
 
-        assertEquals("<?xml version='1.0' encoding='UTF-8' ?>\n"
-                                + "<dummyNode>\n"
-                                + "    <dummyNode />\n"
-                                + "    <dummyNode />\n"
-                                + "</dummyNode>\n", out.toString());
+        assertEquals("""
+                                <?xml version='1.0' encoding='UTF-8' ?>
+                                <dummyNode>
+                                    <dummyNode />
+                                    <dummyNode />
+                                </dummyNode>
+                                """, out.toString());
 
     }
 
@@ -140,11 +146,13 @@ class XmlTreeRendererTest {
 
         renderer.renderSubtree(dummy, out);
 
-        assertEquals("<?xml version='1.0' encoding='UTF-8' ?>\n"
-                                + "<dummyNode ohio='4'>\n"
-                                + "    <dummyNode />\n"
-                                + "    <dummyNode />\n"
-                                + "</dummyNode>\n", out.toString());
+        assertEquals("""
+                                <?xml version='1.0' encoding='UTF-8' ?>
+                                <dummyNode ohio='4'>
+                                    <dummyNode />
+                                    <dummyNode />
+                                </dummyNode>
+                                """, out.toString());
 
     }
 
@@ -182,11 +190,13 @@ class XmlTreeRendererTest {
 
         renderer.renderSubtree(dummy, out);
 
-        assertEquals("<?xml version='1.0' encoding='UTF-8' ?>\n"
-                                + "<dummyNode eh=' &apos;a &amp;> b\" ' foo='bar' ohio='4'>\n"
-                                + "    <dummyNode o='ha' />\n"
-                                + "    <dummyNode />\n"
-                                + "</dummyNode>\n", out.toString());
+        assertEquals("""
+                                <?xml version='1.0' encoding='UTF-8' ?>
+                                <dummyNode eh=' &apos;a &amp;> b" ' foo='bar' ohio='4'>
+                                    <dummyNode o='ha' />
+                                    <dummyNode />
+                                </dummyNode>
+                                """, out.toString());
 
     }
 
@@ -205,11 +215,13 @@ class XmlTreeRendererTest {
 
         renderer.renderSubtree(dummy, out);
 
-        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
-                                + "<dummyNode eh=\" 'a &amp;> b&quot; \" foo=\"bar\" ohio=\"4\">\n"
-                                + "    <dummyNode o=\"ha\" />\n"
-                                + "    <dummyNode />\n"
-                                + "</dummyNode>\n", out.toString());
+        assertEquals("""
+                                <?xml version="1.0" encoding="UTF-8" ?>
+                                <dummyNode eh=" 'a &amp;> b&quot; " foo="bar" ohio="4">
+                                    <dummyNode o="ha" />
+                                    <dummyNode />
+                                </dummyNode>
+                                """, out.toString());
 
     }
 
@@ -227,10 +239,12 @@ class XmlTreeRendererTest {
 
         renderer.renderSubtree(dummy, out);
 
-        assertEquals("<dummyNode foo='bar' ohio='4'>\n"
-                                + "    <dummyNode o='ha' />\n"
-                                + "    <dummyNode />\n"
-                                + "</dummyNode>\n", out.toString());
+        assertEquals("""
+                                <dummyNode foo='bar' ohio='4'>
+                                    <dummyNode o='ha' />
+                                    <dummyNode />
+                                </dummyNode>
+                                """, out.toString());
 
     }
 

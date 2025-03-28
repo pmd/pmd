@@ -115,15 +115,14 @@ final class ExprCheckHelper {
             }
         }
 
-        if (expr instanceof FunctionalExprMirror) { // those are never standalone
+        if (expr instanceof FunctionalExprMirror mirror) { // those are never standalone
 
-            JClassType funType = getProbablyFunctItfType(targetType, (FunctionalExprMirror) expr);
+            JClassType funType = getProbablyFunctItfType(targetType, mirror);
             if (funType == null) {
                 return true; // deferred to invocation
             }
 
-            if (expr instanceof LambdaExprMirror) {
-                LambdaExprMirror lambda = (LambdaExprMirror) expr;
+            if (expr instanceof LambdaExprMirror lambda) {
                 try {
                     return isLambdaCompatible(funType, lambda);
                 } catch (ResolutionFailedException e) {
@@ -142,12 +141,12 @@ final class ExprCheckHelper {
                 return isMethodRefCompatible(funType, (MethodRefMirror) expr);
             }
 
-        } else if (expr instanceof InvocationMirror) {
+        } else if (expr instanceof InvocationMirror mirror) {
             // then the argument is a poly invoc expression itself
             // in that case we need to infer that as well
-            return isInvocationCompatible(targetType, (InvocationMirror) expr, isStandalone);
-        } else if (expr instanceof BranchingMirror) {
-            return ((BranchingMirror) expr).branchesMatch(it -> isCompatible(targetType, it));
+            return isInvocationCompatible(targetType, mirror, isStandalone);
+        } else if (expr instanceof BranchingMirror mirror) {
+            return mirror.branchesMatch(it -> isCompatible(targetType, it));
         }
 
         return false;
@@ -243,8 +242,7 @@ final class ExprCheckHelper {
     }
 
     private void handleFunctionalExprWithoutTargetType(FunctionalExprMirror expr, JTypeMirror targetType) {
-        if (expr instanceof LambdaExprMirror) {
-            LambdaExprMirror lambda = (LambdaExprMirror) expr;
+        if (expr instanceof LambdaExprMirror lambda) {
             List<JTypeMirror> paramTypes;
             List<JTypeMirror> explicit = lambda.getExplicitParameterTypes();
             paramTypes = explicit != null

@@ -41,7 +41,7 @@ final class ApexViolationSuppressors {
 
         @Override
         public Report.SuppressedViolation suppressOrNull(RuleViolation rv, @NonNull Node node) {
-            if (node instanceof ApexNode && isSuppressed((ApexNode<?>) node, rv.getRule())) {
+            if (node instanceof ApexNode<?> apexNode && isSuppressed(apexNode, rv.getRule())) {
                 return new SuppressedViolation(rv, this, null);
             }
             return null;

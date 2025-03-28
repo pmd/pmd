@@ -171,8 +171,10 @@ class AnnotationReflectionTest {
     void testAnnotWithInvalidType() {
         @NonNull ASTVariableId field =
             JavaParsingHelper.DEFAULT.parse(
-                "@interface A {}\n"
-                    + "class C<A> { @A int a; }\n"
+                """
+                @interface A {}
+                class C<A> { @A int a; }
+                """
             ).descendants(ASTFieldDeclaration.class).firstOrThrow().getVarIds().firstOrThrow();
 
         // The annotation actually refers to the type parameter A. Since

@@ -541,8 +541,7 @@ final class RuleSetFactory {
         }
 
         if (warnDeprecated && referencedRule.isDeprecated()) {
-            if (referencedRule instanceof RuleReference) {
-                RuleReference ruleReference = (RuleReference) referencedRule;
+            if (referencedRule instanceof RuleReference ruleReference) {
                 err.at(ruleNode).warn(
                     "Use Rule name {0}/{1} instead of the deprecated Rule name {2}. PMD {3}"
                         + " will remove support for this deprecated Rule name usage.",
@@ -579,8 +578,7 @@ final class RuleSetFactory {
 
         if (withDeprecatedRuleReferences || !isSameRuleSet || !ruleReference.isDeprecated()) {
             Rule existingRule = ruleSetBuilder.getExistingRule(ruleReference);
-            if (existingRule instanceof RuleReference) {
-                RuleReference existingRuleReference = (RuleReference) existingRule;
+            if (existingRule instanceof RuleReference existingRuleReference) {
                 // the only valid use case is: the existing rule does not override anything yet
                 // which means, it is a plain reference. And the new reference overrides.
                 // for all other cases, we should log a warning

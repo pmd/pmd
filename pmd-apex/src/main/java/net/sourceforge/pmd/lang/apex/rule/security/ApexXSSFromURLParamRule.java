@@ -169,8 +169,8 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 
                 String varType = null;
 
-                if (node instanceof ASTVariableDeclaration) {
-                    varType = ((ASTVariableDeclaration) node).getType();
+                if (node instanceof ASTVariableDeclaration declaration) {
+                    varType = declaration.getType();
 
                 }
 
@@ -208,8 +208,8 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
         if (methodCallAssignment != null) {
 
             String varType = null;
-            if (node instanceof ASTVariableDeclaration) {
-                varType = ((ASTVariableDeclaration) node).getType();
+            if (node instanceof ASTVariableDeclaration declaration) {
+                varType = declaration.getType();
             }
 
             if (varType == null || !"id".equalsIgnoreCase(varType)) {

@@ -56,15 +56,15 @@ public final class DomainConversion {
 
     @NonNull
     public static AtomicSequence convert(Object obj) {
-        if (obj instanceof Collection) {
-            return getSequenceRepresentation((Collection<?>) obj);
+        if (obj instanceof Collection<?> collection) {
+            return getSequenceRepresentation(collection);
         }
         return getAtomicRepresentation(obj);
     }
 
     public static SequenceType typeOf(Object obj) {
-        if (obj instanceof Collection) {
-            if (((Collection<?>) obj).isEmpty()) {
+        if (obj instanceof Collection<?> collection) {
+            if (collection.isEmpty()) {
                 return SequenceType.EMPTY_SEQUENCE;
             }
             return SequenceType.NON_EMPTY_SEQUENCE;
@@ -105,8 +105,8 @@ public final class DomainConversion {
     // just in case
     private static void flattenInto(Collection<?> list, List<AtomicValue> values) {
         for (Object o : list) {
-            if (o instanceof Collection) {
-                flattenInto((Collection<?>) o, values);
+            if (o instanceof Collection<?> collection) {
+                flattenInto(collection, values);
             } else {
                 values.add(getAtomicRepresentation(o));
             }
@@ -132,20 +132,20 @@ public final class DomainConversion {
         if (value == null) {
             return StringValue.ZERO_LENGTH_UNTYPED;
 
-        } else if (value instanceof String) {
-            return new StringValue((String) value);
-        } else if (value instanceof Boolean) {
-            return BooleanValue.get((Boolean) value);
-        } else if (value instanceof Integer) {
-            return Int64Value.makeIntegerValue((Integer) value);
-        } else if (value instanceof Long) {
-            return new BigIntegerValue((Long) value);
-        } else if (value instanceof Double) {
-            return new DoubleValue((Double) value);
+        } else if (value instanceof String string) {
+            return new StringValue(string);
+        } else if (value instanceof Boolean boolean1) {
+            return BooleanValue.get(boolean1);
+        } else if (value instanceof Integer integer) {
+            return Int64Value.makeIntegerValue(integer);
+        } else if (value instanceof Long long1) {
+            return new BigIntegerValue(long1);
+        } else if (value instanceof Double double1) {
+            return new DoubleValue(double1);
         } else if (value instanceof Character) {
             return new StringValue(value.toString());
-        } else if (value instanceof Float) {
-            return new FloatValue((Float) value);
+        } else if (value instanceof Float float1) {
+            return new FloatValue(float1);
         } else if (value instanceof Pattern || value instanceof Enum) {
             return new StringValue(String.valueOf(value));
         } else {

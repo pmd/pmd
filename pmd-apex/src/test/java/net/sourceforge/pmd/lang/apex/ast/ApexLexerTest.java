@@ -25,11 +25,13 @@ import io.github.apexdevtools.apexparser.CaseInsensitiveInputStream;
  * This is an exploration test for {@link ApexLexer}.
  */
 class ApexLexerTest {
-    private static final String CODE = "public class Foo {\n"
-            + "   public List<SObject> test1() {\n"
-            + "       return Database.query('Select Id from Account LIMIT 100');\n"
-            + "   }\n"
-            + "}\n";
+    private static final String CODE = """
+            public class Foo {
+               public List<SObject> test1() {
+                   return Database.query('Select Id from Account LIMIT 100');
+               }
+            }
+            """;
 
     @Test
     void testLexer() {

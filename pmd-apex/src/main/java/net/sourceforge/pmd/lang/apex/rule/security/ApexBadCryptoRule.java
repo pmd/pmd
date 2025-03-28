@@ -109,19 +109,16 @@ public class ApexBadCryptoRule extends AbstractApexRule {
     }
 
     private void reportIfHardCoded(Object data, Object potentialIV) {
-        if (potentialIV instanceof ASTMethodCallExpression) {
-            ASTMethodCallExpression expression = (ASTMethodCallExpression) potentialIV;
+        if (potentialIV instanceof ASTMethodCallExpression expression) {
             if (expression.getNumChildren() > 1) {
                 Object potentialStaticIV = expression.getChild(1);
-                if (potentialStaticIV instanceof ASTLiteralExpression) {
-                    ASTLiteralExpression variable = (ASTLiteralExpression) potentialStaticIV;
+                if (potentialStaticIV instanceof ASTLiteralExpression variable) {
                     if (variable.isString()) {
                         asCtx(data).addViolation(variable);
                     }
                 }
             }
-        } else if (potentialIV instanceof ASTVariableExpression) {
-            ASTVariableExpression variable = (ASTVariableExpression) potentialIV;
+        } else if (potentialIV instanceof ASTVariableExpression variable) {
             if (potentiallyStaticBlob.contains(Helper.getFQVariableName(variable))) {
                 asCtx(data).addViolation(variable);
             }

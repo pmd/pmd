@@ -181,7 +181,7 @@ public final class Infer {
     public JTypeMirror inferParameterizationForSubtype(JClassSymbol symbol, JTypeMirror superType) {
         if (!symbol.isGeneric()) {
             return ts.typeOf(symbol, false);
-        } else if (superType instanceof JClassType && ((JClassType) superType).hasErasedSuperTypes()) {
+        } else if (superType instanceof JClassType type && type.hasErasedSuperTypes()) {
             return ts.typeOf(symbol, true); // raw type
         }
 
@@ -668,8 +668,8 @@ public final class Infer {
         return !isPreJava8
             && !target.getOuterCtx().isEmpty()  //enclosing context is a generic method
             && !inferenceContext.isGround(resultType)   //return type contains inference vars
-            && !(resultType instanceof InferenceVar    //no eager instantiation is required (as per 18.5.2)
-            && needsEagerInstantiation((InferenceVar) resultType, target.getExpectedType(), inferenceContext));
+            && !(resultType instanceof InferenceVar iv    //no eager instantiation is required (as per 18.5.2)
+            && needsEagerInstantiation(iv, target.getExpectedType(), inferenceContext));
     }
 
     /**
@@ -698,13 +698,13 @@ public final class Infer {
         resultType = infCtx.mapToIVars(resultType);
         InferenceContext outerInfCtx = site.getOuterCtx();
 
-        if (!infCtx.isGround(resultType) && !outerInfCtx.isEmpty() && resultType instanceof JClassType) {
-            JClassType resClass = capture((JClassType) resultType);
+        if (!infCtx.isGround(resultType) && !outerInfCtx.isEmpty() && resultType instanceof JClassType type) {
+            JClassType resClass = capture(type);
             resultType = resClass;
 
             for (JTypeMirror targ : resClass.getTypeArgs()) {
-                if (targ instanceof JTypeVar && ((JTypeVar) targ).isCaptured()) {
-                    infCtx.addVar((JTypeVar) targ);
+                if (targ instanceof JTypeVar var && var.isCaptured()) {
+                    infCtx.addVar(var);
                 }
             }
             resultType = infCtx.mapToIVars(resultType);
@@ -715,8 +715,7 @@ public final class Infer {
             actualRes = ts.OBJECT;
         }
 
-        if (resultType instanceof InferenceVar) {
-            InferenceVar retVar = (InferenceVar) resultType;
+        if (resultType instanceof InferenceVar retVar) {
             if (needsEagerInstantiation(retVar, actualRes, infCtx)) {
                 infCtx.solve(retVar);
                 infCtx.callListeners();

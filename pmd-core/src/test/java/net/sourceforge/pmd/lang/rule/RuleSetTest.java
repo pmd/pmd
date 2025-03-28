@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.charset.Charset;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -390,7 +390,7 @@ class RuleSetTest {
 
     @Test
     void testIncludeExcludeApplies() {
-        FileId fileId = TextFile.forPath(Paths.get("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java"), Charset.defaultCharset(), dummyVersion())
+        FileId fileId = TextFile.forPath(Path.of("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java"), Charset.defaultCharset(), dummyVersion())
                 .getFileId();
 
         RuleSet ruleSet = createRuleSetBuilder("ruleset").build();

@@ -74,26 +74,25 @@ class TypesTreeDumpTest extends BaseTreeDumpTest {
 
         @Override
         protected void fillAttributes(@NonNull Node node, @NonNull List<AttributeInfo> result) {
-            if (node instanceof TypeNode) {
-                result.add(new AttributeInfo("TypeMirror", ((TypeNode) node).getTypeMirror().toString()));
+            if (node instanceof TypeNode typeNode) {
+                result.add(new AttributeInfo("TypeMirror", typeNode.getTypeMirror().toString()));
             }
 
-            if (node instanceof InvocationNode) {
-                InvocationNode invoc = (InvocationNode) node;
+            if (node instanceof InvocationNode invoc) {
                 result.add(new AttributeInfo("MethodName", invoc.getMethodName()));
                 result.add(new AttributeInfo("VarargsCall", invoc.getOverloadSelectionInfo().isVarargsCall()));
                 result.add(new AttributeInfo("Unchecked", invoc.getOverloadSelectionInfo().needsUncheckedConversion()));
                 result.add(new AttributeInfo("Failed", invoc.getOverloadSelectionInfo().isFailed()));
                 result.add(new AttributeInfo("Function", TypePrettyPrint.prettyPrint(invoc.getMethodType())));
             }
-            if (node instanceof ASTNamedReferenceExpr) {
-                result.add(new AttributeInfo("Name", ((ASTNamedReferenceExpr) node).getName()));
+            if (node instanceof ASTNamedReferenceExpr expr) {
+                result.add(new AttributeInfo("Name", expr.getName()));
             }
-            if (node instanceof ASTVariableId) {
-                result.add(new AttributeInfo("Name", ((ASTVariableId) node).getName()));
+            if (node instanceof ASTVariableId id) {
+                result.add(new AttributeInfo("Name", id.getName()));
             }
-            if (node instanceof ASTMethodDeclaration) {
-                result.add(new AttributeInfo("Name", ((ASTMethodDeclaration) node).getName()));
+            if (node instanceof ASTMethodDeclaration declaration) {
+                result.add(new AttributeInfo("Name", declaration.getName()));
             }
         }
 

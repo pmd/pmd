@@ -43,21 +43,27 @@ class ExcludeLinesTest extends BaseParserTest {
         assertSuppressed(rpt, 1);
     }
 
-    private static final String TEST1 = "public class Foo {\n"
-                                        + " void foo() {\n"
-                                        + "  int x; //NOPMD \n"
-                                        + " } \n"
-                                        + "}";
+    private static final String TEST1 = """
+                                        public class Foo {
+                                         void foo() {
+                                          int x; //NOPMD\s
+                                         }\s
+                                        }\
+                                        """;
 
-    private static final String TEST2 = "public class Foo {\n"
-                                        + " void foo() {\n"
-                                        + "  int x;\n"
-                                        + " } \n"
-                                        + "}";
+    private static final String TEST2 = """
+                                        public class Foo {
+                                         void foo() {
+                                          int x;
+                                         }\s
+                                        }\
+                                        """;
 
-    private static final String TEST3 = "public class Foo {\n"
-                                        + " void foo() {\n"
-                                        + "  int x; // FOOBAR\n"
-                                        + " } \n"
-                                        + "}";
+    private static final String TEST3 = """
+                                        public class Foo {
+                                         void foo() {
+                                          int x; // FOOBAR
+                                         }\s
+                                        }\
+                                        """;
 }

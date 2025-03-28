@@ -675,9 +675,11 @@ class VfDocStyleTest extends AbstractVfTest {
 
     private static final String TEST_CDATA = "<html><![CDATA[ some <cdata> ]] ]> ]]></html>";
 
-    private static final String TEST_DOCTYPE = "<?xml version=\"1.0\" standalone='yes'?>\n"
-            + "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" "
-            + "\"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n" + "<greeting>Hello, world!</greeting>";
+    private static final String TEST_DOCTYPE = """
+            <?xml version="1.0" standalone='yes'?>
+            <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" \
+            "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+            <greeting>Hello, world!</greeting>""";
 
     private static final String TEST_ATTRIBUTE_VALUE_CONTAINING_HASH = "<tag:if something=\"#yes#\" foo=\"CREATE\">  <a href=\"#\">foo</a> </tag:if>";
 

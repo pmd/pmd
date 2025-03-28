@@ -91,13 +91,15 @@ class DeadlockTest {
 
         Thread t1 = new Thread(() -> {
             ASTCompilationUnit class1 = JavaParsingHelper.DEFAULT.parse(
-                    "package net.sourceforge.pmd.lang.java.symbols;\n"
-                            + "import net.sourceforge.pmd.lang.java.symbols.DeadlockTest.Outer;\n"
-                            + "  class Class1 {\n"
-                            + "    public static <X> Outer.Inner<X> newInner(Outer<X> grid) {\n"
-                            + "      return null;\n"
-                            + "    }\n"
-                            + "  }\n"
+                    """
+                    package net.sourceforge.pmd.lang.java.symbols;
+                    import net.sourceforge.pmd.lang.java.symbols.DeadlockTest.Outer;
+                      class Class1 {
+                        public static <X> Outer.Inner<X> newInner(Outer<X> grid) {
+                          return null;
+                        }
+                      }
+                    """
             );
             assertNotNull(class1);
 
@@ -119,11 +121,13 @@ class DeadlockTest {
 
         Thread t2 = new Thread(() -> {
             ASTCompilationUnit class2 = JavaParsingHelper.DEFAULT.parse(
-                    "package net.sourceforge.pmd.lang.java.symbols;\n"
-                            + "import net.sourceforge.pmd.lang.java.symbols.DeadlockTest.Outer;\n"
-                            + "  class Class2<M> {\n"
-                            + "    protected Outer<M> theOuter;\n"
-                            + "  }\n"
+                    """
+                    package net.sourceforge.pmd.lang.java.symbols;
+                    import net.sourceforge.pmd.lang.java.symbols.DeadlockTest.Outer;
+                      class Class2<M> {
+                        protected Outer<M> theOuter;
+                      }
+                    """
             );
             assertNotNull(class2);
 

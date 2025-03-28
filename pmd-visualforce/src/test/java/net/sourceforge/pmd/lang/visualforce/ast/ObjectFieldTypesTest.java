@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -98,7 +97,7 @@ class ObjectFieldTypesTest {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf).resolve("SomePage.page");
         FileId vfFileName = FileId.fromPath(vfPagePath);
 
-        List<String> paths = Arrays.asList(Paths.get("..", "objects-does-not-exist").toString());
+        List<String> paths = Arrays.asList(Path.of("..", "objects-does-not-exist").toString());
         ObjectFieldTypes objectFieldTypes = new ObjectFieldTypes();
         assertNull(objectFieldTypes.getDataType("Account.DoesNotExist__c", vfFileName, paths));
     }

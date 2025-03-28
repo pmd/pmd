@@ -102,8 +102,8 @@ public abstract class AbstractPropertySource implements PropertySource {
     @Override
     public <T> void setProperty(PropertyDescriptor<T> propertyDescriptor, T value) {
         checkValidPropertyDescriptor(propertyDescriptor);
-        if (value instanceof List) {
-            propertyValuesByDescriptor.put(propertyDescriptor, Collections.unmodifiableList((List) value));
+        if (value instanceof List list) {
+            propertyValuesByDescriptor.put(propertyDescriptor, Collections.unmodifiableList(list));
         } else {
             propertyValuesByDescriptor.put(propertyDescriptor, value);
         }
