@@ -85,8 +85,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.12.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 28-March-2025</div>
+    <li class="sidebarTitle">PMD 7.13.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 25-April-2025</div>
     
     
     
@@ -2014,7 +2014,7 @@
 <div class="card">
 <ul class="list-group list-group-flush">
 <li class="list-group-item">Since PMD 5.4.0</li>
-<li class="list-group-item">Implementation: <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/pom/PomLanguageModule.html#"><code>PomLanguageModule</code></a></li>
+<li class="list-group-item">Implementation: <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/pom/PomLanguageModule.html#"><code>PomLanguageModule</code></a></li>
 <li class="list-group-item">Id: pom</li>
 <li class="list-group-item">PMD: ✔️</li>
 <li class="list-group-item">CPD: ✔️</li>
@@ -2029,7 +2029,7 @@
 <div class="card">
 <ul class="list-group list-group-flush">
 <li class="list-group-item">Since PMD 5.4.0</li>
-<li class="list-group-item">Implementation: <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/wsdl/WsdlLanguageModule.html#"><code>WsdlLanguageModule</code></a></li>
+<li class="list-group-item">Implementation: <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/wsdl/WsdlLanguageModule.html#"><code>WsdlLanguageModule</code></a></li>
 <li class="list-group-item">Id: wsdl</li>
 <li class="list-group-item">PMD: ✔️</li>
 <li class="list-group-item">CPD: ✔️</li>
@@ -2044,7 +2044,7 @@
 <div class="card">
 <ul class="list-group list-group-flush">
 <li class="list-group-item">Since PMD 5.0.0</li>
-<li class="list-group-item">Implementation: <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/XmlLanguageModule.html#"><code>XmlLanguageModule</code></a></li>
+<li class="list-group-item">Implementation: <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/XmlLanguageModule.html#"><code>XmlLanguageModule</code></a></li>
 <li class="list-group-item">Id: xml</li>
 <li class="list-group-item">PMD: ✔️</li>
 <li class="list-group-item">CPD: ✔️</li>
@@ -2059,7 +2059,7 @@
 <div class="card">
 <ul class="list-group list-group-flush">
 <li class="list-group-item">Since PMD 5.0.0</li>
-<li class="list-group-item">Implementation: <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/xsl/XslLanguageModule.html#"><code>XslLanguageModule</code></a></li>
+<li class="list-group-item">Implementation: <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/xsl/XslLanguageModule.html#"><code>XslLanguageModule</code></a></li>
 <li class="list-group-item">Id: xsl</li>
 <li class="list-group-item">PMD: ✔️</li>
 <li class="list-group-item">CPD: ✔️</li>
@@ -2120,9 +2120,9 @@ for more examples.</p>
 
 <h3 id="xpath-rules-in-xml">XPath rules in XML</h3>
 
-<p>While other languages use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/xpath/XPathRule.html#"><code>XPathRule</code></a> to create XPath rules,
+<p>While other languages use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/xpath/XPathRule.html#"><code>XPathRule</code></a> to create XPath rules,
 the use of this class is not recommended for XML languages. Instead, since 6.44.0, you
-are advised to use <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/rule/DomXPathRule.html#"><code>DomXPathRule</code></a>. This rule class interprets
+are advised to use <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/rule/DomXPathRule.html#"><code>DomXPathRule</code></a>. This rule class interprets
 XPath queries exactly as regular XPath, while <code class="language-plaintext highlighter-rouge">XPathRule</code> works on a wrapper for the
 DOM which is inconsistent with the XPath spec. Since <code class="language-plaintext highlighter-rouge">DomXPathRule</code> conforms to the
 XPath spec, you can</p>
@@ -2156,7 +2156,7 @@ The Rule Designer only works with <code class="language-plaintext highlighter-ro
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 <p>The most important change is the <code class="language-plaintext highlighter-rouge">class</code> attribute, which doesn’t point to <code class="language-plaintext highlighter-rouge">XPathRule</code>
-but to <code class="language-plaintext highlighter-rouge">DomXPathRule</code>. Please see the Javadoc for <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/rule/DomXPathRule.html#"><code>DomXPathRule</code></a>
+but to <code class="language-plaintext highlighter-rouge">DomXPathRule</code>. Please see the Javadoc for <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/rule/DomXPathRule.html#"><code>DomXPathRule</code></a>
 for more info about the differences with <code class="language-plaintext highlighter-rouge">XPathRule</code>.</p>
 
 
@@ -2205,7 +2205,7 @@ for more info about the differences with <code class="language-plaintext highlig
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            September 2023 (7.0.0)<br /> Site last generated: Mar 27, 2025 <br />
+            September 2023 (7.0.0)<br /> Site last generated: Mar 28, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

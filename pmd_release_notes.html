@@ -85,8 +85,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.12.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 28-March-2025</div>
+    <li class="sidebarTitle">PMD 7.13.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 25-April-2025</div>
     
     
     
@@ -2005,83 +2005,17 @@
         <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
     </details>
 
-  <h2 id="28-march-2025---7120-snapshot">28-March-2025 - 7.12.0-SNAPSHOT</h2>
+  <h2 id="25-april-2025---7130-snapshot">25-April-2025 - 7.13.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 7.12.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 7.13.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
-<h4 id="-new-rules">✨ New Rules</h4>
-
-<ul>
-  <li>The new Java rule <a href="pmd_rules_java_bestpractices.html#implicitfunctionalinterface"><code class="language-plaintext highlighter-rouge">ImplicitFunctionalInterface</code></a> reports functional interfaces that were
-not explicitly declared as such with the annotation <code class="language-plaintext highlighter-rouge">@FunctionalInterface</code>. If an interface is accidentally a functional
-interface, then it should bear a <code class="language-plaintext highlighter-rouge">@SuppressWarnings("PMD.ImplicitFunctionalInterface")</code>
-annotation to make this clear.</li>
-</ul>
-
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
-<ul>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5593">#5593</a>: [core] Make renderers output files in deterministic order even when multithreaded</li>
-    </ul>
-  </li>
-  <li>apex
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5567">#5567</a>: [apex] Provide type information for CastExpression</li>
-    </ul>
-  </li>
-  <li>apex-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5616">#5616</a>: [apex] ExcessiveParameterList reports entire method instead of signature only</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5587">#5587</a>: [java] Thread deadlock during PMD analysis in ParseLock.getFinalStatus</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2849">#2849</a>: [java] New Rule: ImplicitFunctionalInterface</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5369">#5369</a>: [java] UnusedPrivateMethod false positives with lombok.val</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5590">#5590</a>: [java] LiteralsFirstInComparisonsRule not applied on constant</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5592">#5592</a>: [java] UnusedAssignment false positive in record compact constructor</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5079">#5079</a>: [java] LocalVariableCouldBeFinal false-positive with lombok.val</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5452">#5452</a>: [java] PackageCase: Suppression comment has no effect due to finding at wrong position in case of JavaDoc comment</li>
-    </ul>
-  </li>
-  <li>plsql
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4441">#4441</a>: [plsql] Parsing exception with XMLQUERY function in SELECT</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5521">#5521</a>: [plsql] Long parse time and eventually parse error with XMLAGG order by clause</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="-api-changes">🚨 API Changes</h3>
-<h4 id="deprecations">Deprecations</h4>
-<ul>
-  <li>java
-    <ul>
-      <li>The method <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/AbstractJavaExpr.html#buildConstValue()"><code>buildConstValue</code></a> is deprecated for removal. It should
-have been package-private from the start. In order to get the (compile time) const value of an expression, use
-<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#getConstValue()"><code>getConstValue</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#getConstFoldingResult()"><code>getConstFoldingResult</code></a>
-instead.</li>
-      <li>For the same reason, the following methods are also deprecated for removal:
-<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTNumericLiteral.html#buildConstValue()"><code>buildConstValue</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTStringLiteral.html#buildConstValue()"><code>buildConstValue</code></a>.</li>
-    </ul>
-  </li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/JTypeVar.html#withUpperbound(net.sourceforge.pmd.types.JTypeMirror)"><code>JTypeVar#withUpperbound</code></a> is deprecated. It was previously meant to be used
-internally and not needed anymore.</li>
-</ul>
 
 <h3 id="-merged-pull-requests">✨ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
@@ -2121,7 +2055,7 @@ internally and not needed anymore.</li>
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Mar 27, 2025 <br />
+             Site last generated: Mar 28, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

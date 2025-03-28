@@ -85,8 +85,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.12.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 28-March-2025</div>
+    <li class="sidebarTitle">PMD 7.13.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 25-April-2025</div>
     
     
     
@@ -2021,7 +2021,7 @@ deprecation warnings.</p>
 
 <ul>
   <li>
-    <p>Properties: In order to define property descriptors, you should use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#"><code>PropertyFactory</code></a> now.
+    <p>Properties: In order to define property descriptors, you should use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#"><code>PropertyFactory</code></a> now.
 This factory can create properties of any type. E.g. instead of <code class="language-plaintext highlighter-rouge">StringProperty.named(...)</code> use
 <code class="language-plaintext highlighter-rouge">PropertyFactory.stringProperty(...)</code>.</p>
 
@@ -2031,7 +2031,7 @@ This factory can create properties of any type. E.g. instead of <code class="lan
   </li>
   <li>
     <p>When reporting a violation, you might see a deprecation of the <code class="language-plaintext highlighter-rouge">addViolation</code> methods. These methods have been moved
-to <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/reporting/RuleContext.html#"><code>RuleContext</code></a>. E.g. instead of <code class="language-plaintext highlighter-rouge">addViolation(data, node, ...)</code> use <code class="language-plaintext highlighter-rouge">asCtx(data).addViolation(node, ...)</code>.</p>
+to <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/reporting/RuleContext.html#"><code>RuleContext</code></a>. E.g. instead of <code class="language-plaintext highlighter-rouge">addViolation(data, node, ...)</code> use <code class="language-plaintext highlighter-rouge">asCtx(data).addViolation(node, ...)</code>.</p>
   </li>
   <li>When you are calling PMD from CLI, you need to stop using deprecated CLI params, e.g.
     <ul>
@@ -2134,7 +2134,7 @@ with a backslash. This affects the following rules:
 <p>Ideally, you have written good tests already for your custom rules - see <a href="pmd_userdocs_extending_testing.html">Testing your rules</a>.
 This helps to identify problems early on.</p>
 
-<p>The base test classes <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.12.0-SNAPSHOT/net/sourceforge/pmd/test/PmdRuleTst.html#"><code>PmdRuleTst</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.12.0-SNAPSHOT/net/sourceforge/pmd/test/SimpleAggregatorTst.html#"><code>SimpleAggregatorTst</code></a> have been moved out
+<p>The base test classes <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.13.0-SNAPSHOT/net/sourceforge/pmd/test/PmdRuleTst.html#"><code>PmdRuleTst</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.13.0-SNAPSHOT/net/sourceforge/pmd/test/SimpleAggregatorTst.html#"><code>SimpleAggregatorTst</code></a> have been moved out
 of package <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.testframework</code>. You’ll need to adjust your imports.</p>
 
 <h4 id="ruleset-xml">Ruleset XML</h4>
@@ -2151,7 +2151,7 @@ can be expected to work in PMD 7 without any further changes. So the migration p
 with PMD 7. PMD 7 by default uses XPath 3.1. See below <a href="#xpath-migrating-from-10-to-20">XPath</a> for details.</p>
 
 <p>Then change the <code class="language-plaintext highlighter-rouge">class</code> attribute of your rule to <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.rule.xpath.XPathRule</code> - because the
-class <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/xpath/XPathRule.html#"><code>XPathRule</code></a> has been moved into subpackage <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/xpath/package-summary.html#"><code>net.sourceforge.pmd.lang.rule.xpath</code></a>.</p>
+class <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/xpath/XPathRule.html#"><code>XPathRule</code></a> has been moved into subpackage <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/xpath/package-summary.html#"><code>net.sourceforge.pmd.lang.rule.xpath</code></a>.</p>
 
 <p>There are some general changes for AST nodes regarding the <code class="language-plaintext highlighter-rouge">@Image</code> attribute.
 See below <a href="#general-ast-changes-to-avoid-image">General AST Changes to avoid @Image</a>.</p>
@@ -2168,7 +2168,7 @@ functions.</li>
 <p>If you have <strong>Java based rules</strong>, and you are using rulechain, this works a bit different now. The RuleChain API
 has changed, see <a href="https://github.com/pmd/pmd/pull/2490">[core] Simplify the rulechain (#2490)</a> for the full details.
 But in short, you don’t call <code class="language-plaintext highlighter-rouge">addRuleChainVisit(...)</code> in the rule’s constructor anymore. Instead, you
-override the method <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/AbstractRule.html#buildTargetSelector"><code>buildTargetSelector</code></a>:</p>
+override the method <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/AbstractRule.html#buildTargetSelector"><code>buildTargetSelector</code></a>:</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kd">protected</span> <span class="nc">RuleTargetSelector</span> <span class="nf">buildTargetSelector</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">return</span> <span class="nc">RuleTargetSelector</span><span class="o">.</span><span class="na">forTypes</span><span class="o">(</span><span class="nc">ASTVariableId</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
@@ -2199,15 +2199,15 @@ of the AST. See the section <a href="#java-ast">Java AST</a> below for details.<
 <a href="pmd_devdocs_major_adding_new_language_antlr.html">Adding a new language with ANTLR</a>.</li>
   <li>There is a shared ant script that wraps the calls to javacc: <code class="language-plaintext highlighter-rouge">javacc-wrapper.xml</code>. This should be used now.</li>
   <li>PMD’s parser adapter for JavaCC generated parsers is called now
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/impl/javacc/JjtreeParserAdapter.html#"><code>JjtreeParserAdapter</code></a>. This is the class that needs to be implemented now.</li>
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/impl/javacc/JjtreeParserAdapter.html#"><code>JjtreeParserAdapter</code></a>. This is the class that needs to be implemented now.</li>
   <li>There is no need anymore to write a custom <code class="language-plaintext highlighter-rouge">TokenManager</code> - we have now a common base class for JavaCC generated
-token managers. This base class is <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/impl/javacc/AbstractTokenManager.html#"><code>AbstractTokenManager</code></a>.</li>
+token managers. This base class is <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/impl/javacc/AbstractTokenManager.html#"><code>AbstractTokenManager</code></a>.</li>
   <li>A rule violation factory is not needed anymore. For language specific information on rule violations, there is
-now a <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/reporting/ViolationDecorator.html#"><code>ViolationDecorator</code></a> that a language can implement. These ViolationDecorators
+now a <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/reporting/ViolationDecorator.html#"><code>ViolationDecorator</code></a> that a language can implement. These ViolationDecorators
 are called when a violation is reported and they can provide the additional information. This information can be
-used by renderers via <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/reporting/RuleViolation.html#getAdditionalInfo()"><code>RuleViolation#getAdditionalInfo</code></a>.</li>
+used by renderers via <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/reporting/RuleViolation.html#getAdditionalInfo()"><code>RuleViolation#getAdditionalInfo</code></a>.</li>
   <li>A parser visitor adapter is not needed anymore. The visitor interface now provides a default implementation.
-Instead, a base visitor for the language should be created, which extends <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/AstVisitorBase.html#"><code>AstVisitorBase</code></a>.</li>
+Instead, a base visitor for the language should be created, which extends <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/AstVisitorBase.html#"><code>AstVisitorBase</code></a>.</li>
   <li>A rule chain visitor is not needed anymore. PMD provides a common implementation that fits all languages.</li>
 </ul>
 
@@ -2356,33 +2356,33 @@ That way you avoid being confronted with just compile errors.</div>
 
 <p>Unchanged methods that work as before:</p>
 <ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getParent()"><code>getParent</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getChild(int)"><code>getChild</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getNumChildren()"><code>getNumChildren</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getIndexInParent()"><code>getIndexInParent</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getParent()"><code>getParent</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getChild(int)"><code>getChild</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getNumChildren()"><code>getNumChildren</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getIndexInParent()"><code>getIndexInParent</code></a></li>
 </ul>
 
 <p>New methods:</p>
 <ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getFirstChild()"><code>getFirstChild</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getLastChild()"><code>getLastChild</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getPreviousSibling()"><code>getPreviousSibling</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getNextSibling()"><code>getNextSibling</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getRoot()"><code>getRoot</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getFirstChild()"><code>getFirstChild</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getLastChild()"><code>getLastChild</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getPreviousSibling()"><code>getPreviousSibling</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getNextSibling()"><code>getNextSibling</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getRoot()"><code>getRoot</code></a></li>
 </ul>
 
 <p>New methods that integrate with NodeStream:</p>
 <ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#children()"><code>children</code></a> - returns a NodeStream containing all the children of this node.
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#children()"><code>children</code></a> - returns a NodeStream containing all the children of this node.
 Note: in PMD 6, this method returned an <code class="language-plaintext highlighter-rouge">Iterable</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#descendants()"><code>descendants</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#descendantsOrSelf()"><code>descendantsOrSelf</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#ancestors()"><code>ancestors</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#ancestorsOrSelf()"><code>ancestorsOrSelf</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#children(java.lang.Class)"><code>children</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#firstChild(java.lang.Class)"><code>firstChild</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#descendants(java.lang.Class)"><code>descendants</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#ancestors(java.lang.Class)"><code>ancestors</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#descendants()"><code>descendants</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#descendantsOrSelf()"><code>descendantsOrSelf</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#ancestors()"><code>ancestors</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#ancestorsOrSelf()"><code>ancestorsOrSelf</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#children(java.lang.Class)"><code>children</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#firstChild(java.lang.Class)"><code>firstChild</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#descendants(java.lang.Class)"><code>descendants</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#ancestors(java.lang.Class)"><code>ancestors</code></a></li>
 </ul>
 
 <p>Methods removed completely:</p>
@@ -2399,7 +2399,7 @@ Note: in PMD 6, this method returned an <code class="language-plaintext highligh
   <li><code class="language-plaintext highlighter-rouge">jjt*</code> like <code class="language-plaintext highlighter-rouge">jjtGetParent</code>. These methods were implementation specific. Use the equivalent methods like <code class="language-plaintext highlighter-rouge">getParent()</code>.</li>
 </ul>
 
-<p>See <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a> for the details.</p>
+<p>See <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a> for the details.</p>
 
 <h3 id="nodestream-api">NodeStream API</h3>
 
@@ -2425,7 +2425,7 @@ E.g. the following tests if the node is a variable declarator id initialized to 
                <span class="o">.</span><span class="na">nonEmpty</span><span class="o">();</span> <span class="c1">// If the stream is non empty here, then all the pipeline matched</span>
 </code></pre></div></div>
 
-<p>See <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/NodeStream.html#"><code>NodeStream</code></a> for the details.
+<p>See <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/NodeStream.html#"><code>NodeStream</code></a> for the details.
 Note: This was implemented via <a href="https://github.com/pmd/pmd/pull/1622">PR #1622 [core] NodeStream API</a></p>
 
 <h3 id="xpath-migrating-from-10-to-20">XPath: Migrating from 1.0 to 2.0</h3>
@@ -2490,8 +2490,8 @@ simply remove the “pmd:” prefix.</li>
 <h3 id="general-ast-changes-to-avoid-image">General AST Changes to avoid @Image</h3>
 
 <p>An abstract syntax tree should be abstract, but in the same time, should not be too abstract. One of the
-base interfaces for PMD’s AST for all languages is <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a>, which provides
-the methods <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getImage()"><code>getImage</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#hasImageEqualTo(java.lang.String)"><code>hasImageEqualTo</code></a>.
+base interfaces for PMD’s AST for all languages is <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a>, which provides
+the methods <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getImage()"><code>getImage</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#hasImageEqualTo(java.lang.String)"><code>hasImageEqualTo</code></a>.
 However, these methods don’t necessarily make sense for all nodes in all contexts. That’s why <code class="language-plaintext highlighter-rouge">getImage()</code>
 often returns just <code class="language-plaintext highlighter-rouge">null</code>. Also, the name is not very describing. AST nodes should try to use more specific
 names, such as <code class="language-plaintext highlighter-rouge">getValue()</code> or <code class="language-plaintext highlighter-rouge">getName()</code>.</p>
@@ -2509,7 +2509,7 @@ by deprecating the attribute and providing alternatives.</p>
 <h4 id="html">Html</h4>
 
 <ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-html/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/html/ast/ASTHtmlTextNode.html#"><code>ASTHtmlTextNode</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Text</code>, <code class="language-plaintext highlighter-rouge">@NormalizedText</code> ➡️ <code class="language-plaintext highlighter-rouge">@Text</code>, <code class="language-plaintext highlighter-rouge">@Text</code> ➡️ <code class="language-plaintext highlighter-rouge">@WholeText</code>.</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-html/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/html/ast/ASTHtmlTextNode.html#"><code>ASTHtmlTextNode</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Text</code>, <code class="language-plaintext highlighter-rouge">@NormalizedText</code> ➡️ <code class="language-plaintext highlighter-rouge">@Text</code>, <code class="language-plaintext highlighter-rouge">@Text</code> ➡️ <code class="language-plaintext highlighter-rouge">@WholeText</code>.</li>
 </ul>
 
 <h4 id="java">Java</h4>
@@ -2522,83 +2522,83 @@ by deprecating the attribute and providing alternatives.</p>
 <p>Some nodes have already the image attribute (and others) deprecated. These deprecated attributes are removed now:</p>
 
 <ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnnotationTypeDeclaration.html#"><code>ASTAnnotationTypeDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleName</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnonymousClassDeclaration.html#"><code>ASTAnonymousClassDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleName</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassDeclaration.html#"><code>ASTClassDeclaration</code></a> (previously “ASTClassOrInterfaceDeclaration”): <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleName</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTEnumDeclaration.html#"><code>ASTEnumDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleName</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#"><code>ASTFieldDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@VariableName</code> ➡️ <code class="language-plaintext highlighter-rouge">VariableId/@Name</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#"><code>ASTMethodDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#"><code>ASTMethodDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@MethodName</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTRecordDeclaration.html#"><code>ASTRecordDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleName</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a> (previously “ASTVariableDeclaratorId”): <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a> (previously “ASTVariableDeclaratorId”): <code class="language-plaintext highlighter-rouge">@VariableName</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a> (previously “ASTVariableDeclaratorId”): <code class="language-plaintext highlighter-rouge">@Array</code> ➡️ <code class="language-plaintext highlighter-rouge">@ArrayType</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnnotationTypeDeclaration.html#"><code>ASTAnnotationTypeDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleName</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnonymousClassDeclaration.html#"><code>ASTAnonymousClassDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleName</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassDeclaration.html#"><code>ASTClassDeclaration</code></a> (previously “ASTClassOrInterfaceDeclaration”): <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleName</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTEnumDeclaration.html#"><code>ASTEnumDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleName</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#"><code>ASTFieldDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@VariableName</code> ➡️ <code class="language-plaintext highlighter-rouge">VariableId/@Name</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#"><code>ASTMethodDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#"><code>ASTMethodDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@MethodName</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTRecordDeclaration.html#"><code>ASTRecordDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleName</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a> (previously “ASTVariableDeclaratorId”): <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a> (previously “ASTVariableDeclaratorId”): <code class="language-plaintext highlighter-rouge">@VariableName</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a> (previously “ASTVariableDeclaratorId”): <code class="language-plaintext highlighter-rouge">@Array</code> ➡️ <code class="language-plaintext highlighter-rouge">@ArrayType</code></li>
 </ul>
 
 <h4 id="javascript">JavaScript</h4>
 
 <ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTAssignment.html#"><code>ASTAssignment</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTBigIntLiteral.html#"><code>ASTBigIntLiteral</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTBreakStatement.html#"><code>ASTBreakStatement</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">Name/@Identifier</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTContinueStatement.html#"><code>ASTContinueStatement</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">Name/@Identifier</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTErrorNode.html#"><code>ASTErrorNode</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Message</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTFunctionNode.html#"><code>ASTFunctionNode</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">Name/@Identifier</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTInfixExpression.html#"><code>ASTInfixExpression</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTKeywordLiteral.html#"><code>ASTKeywordLiteral</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Literal</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTLabel.html#"><code>ASTLabel</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTName.html#"><code>ASTName</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Identifier</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTNumberLiteral.html#"><code>ASTNumberLiteral</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTObjectProperty.html#"><code>ASTObjectProperty</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTPropertyGet.html#"><code>ASTPropertyGet</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTRegExpLiteral.html#"><code>ASTRegExpLiteral</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTStringLiteral.html#"><code>ASTStringLiteral</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTUnaryExpression.html#"><code>ASTUnaryExpression</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTUpdateExpression.html#"><code>ASTUpdateExpression</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTXmlDotQuery.html#"><code>ASTXmlDotQuery</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTXmlMemberGet.html#"><code>ASTXmlMemberGet</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTXmlPropRef.html#"><code>ASTXmlPropRef</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">Name[last()]/@Identifier</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTXmlString.html#"><code>ASTXmlString</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Xml</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTAssignment.html#"><code>ASTAssignment</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTBigIntLiteral.html#"><code>ASTBigIntLiteral</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTBreakStatement.html#"><code>ASTBreakStatement</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">Name/@Identifier</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTContinueStatement.html#"><code>ASTContinueStatement</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">Name/@Identifier</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTErrorNode.html#"><code>ASTErrorNode</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Message</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTFunctionNode.html#"><code>ASTFunctionNode</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">Name/@Identifier</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTInfixExpression.html#"><code>ASTInfixExpression</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTKeywordLiteral.html#"><code>ASTKeywordLiteral</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Literal</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTLabel.html#"><code>ASTLabel</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTName.html#"><code>ASTName</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Identifier</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTNumberLiteral.html#"><code>ASTNumberLiteral</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTObjectProperty.html#"><code>ASTObjectProperty</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTPropertyGet.html#"><code>ASTPropertyGet</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTRegExpLiteral.html#"><code>ASTRegExpLiteral</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTStringLiteral.html#"><code>ASTStringLiteral</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTUnaryExpression.html#"><code>ASTUnaryExpression</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTUpdateExpression.html#"><code>ASTUpdateExpression</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTXmlDotQuery.html#"><code>ASTXmlDotQuery</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTXmlMemberGet.html#"><code>ASTXmlMemberGet</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTXmlPropRef.html#"><code>ASTXmlPropRef</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">Name[last()]/@Identifier</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTXmlString.html#"><code>ASTXmlString</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Xml</code></li>
 </ul>
 
 <h4 id="jsp">JSP</h4>
 
 <ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTAttributeValue.html#"><code>ASTAttributeValue</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTCData.html#"><code>ASTCData</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTCommentTag.html#"><code>ASTCommentTag</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTElExpression.html#"><code>ASTElExpression</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTHtmlScript.html#"><code>ASTHtmlScript</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTJspComment.html#"><code>ASTJspComment</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTJspDeclaration.html#"><code>ASTJspDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTJspExpression.html#"><code>ASTJspExpression</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTJspExpressionInAttribute.html#"><code>ASTJspExpressionInAttribute</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTJspScriptlet.html#"><code>ASTJspScriptlet</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTText.html#"><code>ASTText</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTUnparsedText.html#"><code>ASTUnparsedText</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTValueBinding.html#"><code>ASTValueBinding</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTAttributeValue.html#"><code>ASTAttributeValue</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTCData.html#"><code>ASTCData</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTCommentTag.html#"><code>ASTCommentTag</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTElExpression.html#"><code>ASTElExpression</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTHtmlScript.html#"><code>ASTHtmlScript</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTJspComment.html#"><code>ASTJspComment</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTJspDeclaration.html#"><code>ASTJspDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTJspExpression.html#"><code>ASTJspExpression</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTJspExpressionInAttribute.html#"><code>ASTJspExpressionInAttribute</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTJspScriptlet.html#"><code>ASTJspScriptlet</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTText.html#"><code>ASTText</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTUnparsedText.html#"><code>ASTUnparsedText</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTValueBinding.html#"><code>ASTValueBinding</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
 </ul>
 
 <h4 id="modelica">Modelica</h4>
 
 <ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTAddOp.html#"><code>ASTAddOp</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTDerClassSpecifier.html#"><code>ASTDerClassSpecifier</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleClassName</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTEnumerationShortClassSpecifier.html#"><code>ASTEnumerationShortClassSpecifier</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleClassName</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTExtendingLongClassSpecifier.html#"><code>ASTExtendingLongClassSpecifier</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleClassName</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTFactor.html#"><code>ASTFactor</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTLanguageSpecification.html#"><code>ASTLanguageSpecification</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@ExternalLanguage</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTMulOp.html#"><code>ASTMulOp</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTName.html#"><code>ASTName</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTNumberLiteral.html#"><code>ASTNumberLiteral</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTRelOp.html#"><code>ASTRelOp</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTSimpleLongClassSpecifier.html#"><code>ASTSimpleLongClassSpecifier</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleClassName</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTSimpleName.html#"><code>ASTSimpleName</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTSimpleShortClassSpecifier.html#"><code>ASTSimpleShortClassSpecifier</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleClassName</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTStoredDefinition.html#"><code>ASTStoredDefinition</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTStringComment.html#"><code>ASTStringComment</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Comment</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTStringLiteral.html#"><code>ASTStringLiteral</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTWithinClause.html#"><code>ASTWithinClause</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTAddOp.html#"><code>ASTAddOp</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTDerClassSpecifier.html#"><code>ASTDerClassSpecifier</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleClassName</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTEnumerationShortClassSpecifier.html#"><code>ASTEnumerationShortClassSpecifier</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleClassName</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTExtendingLongClassSpecifier.html#"><code>ASTExtendingLongClassSpecifier</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleClassName</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTFactor.html#"><code>ASTFactor</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTLanguageSpecification.html#"><code>ASTLanguageSpecification</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@ExternalLanguage</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTMulOp.html#"><code>ASTMulOp</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTName.html#"><code>ASTName</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTNumberLiteral.html#"><code>ASTNumberLiteral</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTRelOp.html#"><code>ASTRelOp</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTSimpleLongClassSpecifier.html#"><code>ASTSimpleLongClassSpecifier</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleClassName</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTSimpleName.html#"><code>ASTSimpleName</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTSimpleShortClassSpecifier.html#"><code>ASTSimpleShortClassSpecifier</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleClassName</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTStoredDefinition.html#"><code>ASTStoredDefinition</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTStringComment.html#"><code>ASTStringComment</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Comment</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTStringLiteral.html#"><code>ASTStringLiteral</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTWithinClause.html#"><code>ASTWithinClause</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
 </ul>
 
 <h4 id="plsql">PLSQL</h4>
@@ -2611,30 +2611,30 @@ by deprecating the attribute and providing alternatives.</p>
 <h4 id="scala">Scala</h4>
 
 <ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitBoolean.html#"><code>ASTLitBoolean</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitByte.html#"><code>ASTLitByte</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitChar.html#"><code>ASTLitChar</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitDouble.html#"><code>ASTLitDouble</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitFloat.html#"><code>ASTLitFloat</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitInt.html#"><code>ASTLitInt</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitLong.html#"><code>ASTLitLong</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitNull.html#"><code>ASTLitNull</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitShort.html#"><code>ASTLitShort</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitString.html#"><code>ASTLitString</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitSymbol.html#"><code>ASTLitSymbol</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitUnit.html#"><code>ASTLitUnit</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTNameAnonymous.html#"><code>ASTNameAnonymous</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTNameIndeterminate.html#"><code>ASTNameIndeterminate</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTTermName.html#"><code>ASTTermName</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTTypeName.html#"><code>ASTTypeName</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitBoolean.html#"><code>ASTLitBoolean</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitByte.html#"><code>ASTLitByte</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitChar.html#"><code>ASTLitChar</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitDouble.html#"><code>ASTLitDouble</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitFloat.html#"><code>ASTLitFloat</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitInt.html#"><code>ASTLitInt</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitLong.html#"><code>ASTLitLong</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitNull.html#"><code>ASTLitNull</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitShort.html#"><code>ASTLitShort</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitString.html#"><code>ASTLitString</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitSymbol.html#"><code>ASTLitSymbol</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitUnit.html#"><code>ASTLitUnit</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTNameAnonymous.html#"><code>ASTNameAnonymous</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTNameIndeterminate.html#"><code>ASTNameIndeterminate</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTTermName.html#"><code>ASTTermName</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTTypeName.html#"><code>ASTTypeName</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
 </ul>
 
 <h4 id="xml-and-pom">XML (and POM)</h4>
 
-<p>When using <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/xpath/XPathRule.html#"><code>XPathRule</code></a>, text of text nodes was exposed as <code class="language-plaintext highlighter-rouge">@Image</code> of
+<p>When using <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/xpath/XPathRule.html#"><code>XPathRule</code></a>, text of text nodes was exposed as <code class="language-plaintext highlighter-rouge">@Image</code> of
 normal element type nodes. Now the attribute is called <code class="language-plaintext highlighter-rouge">@Text</code>.</p>
 
-<p>Note: In general, it is recommended to use <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/rule/DomXPathRule.html#"><code>DomXPathRule</code></a> instead,
+<p>Note: In general, it is recommended to use <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/rule/DomXPathRule.html#"><code>DomXPathRule</code></a> instead,
 which exposes text nodes as real XPath/XML text nodes which conforms to the XPath spec.
 There is no difference, text of text nodes can be selected using <code class="language-plaintext highlighter-rouge">text()</code>.</p>
 
@@ -2652,21 +2652,21 @@ which can also display the AST.</p>
 <h4 id="renamed-classes--interfaces">Renamed classes / interfaces</h4>
 
 <ul>
-  <li>AccessNode ➡️ <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#"><code>ModifierOwner</code></a></li>
-  <li>ClassOrInterfaceType ➡️ ClassType (<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a>)</li>
-  <li>ClassOrInterfaceDeclaration ➡️ ClassDeclaration (<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassDeclaration.html#"><code>ASTClassDeclaration</code></a>)</li>
-  <li>AnyTypeDeclaration ➡️ TypeDeclaration (<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypeDeclaration.html#"><code>ASTTypeDeclaration</code></a>)</li>
-  <li>MethodOrConstructorDeclaration ➡️ ExecutableDeclaration (<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExecutableDeclaration.html#"><code>ASTExecutableDeclaration</code></a>)</li>
-  <li>VariableDeclaratorId ➡️ VariableId (<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a>)</li>
-  <li>ClassOrInterfaceBody ➡️ ClassBody (<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassBody.html#"><code>ASTClassBody</code></a>)</li>
+  <li>AccessNode ➡️ <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#"><code>ModifierOwner</code></a></li>
+  <li>ClassOrInterfaceType ➡️ ClassType (<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a>)</li>
+  <li>ClassOrInterfaceDeclaration ➡️ ClassDeclaration (<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassDeclaration.html#"><code>ASTClassDeclaration</code></a>)</li>
+  <li>AnyTypeDeclaration ➡️ TypeDeclaration (<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypeDeclaration.html#"><code>ASTTypeDeclaration</code></a>)</li>
+  <li>MethodOrConstructorDeclaration ➡️ ExecutableDeclaration (<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExecutableDeclaration.html#"><code>ASTExecutableDeclaration</code></a>)</li>
+  <li>VariableDeclaratorId ➡️ VariableId (<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a>)</li>
+  <li>ClassOrInterfaceBody ➡️ ClassBody (<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassBody.html#"><code>ASTClassBody</code></a>)</li>
 </ul>
 
 <h4 id="annotations">Annotations</h4>
 
 <ul>
   <li>What: Annotations are consolidated into a single node. <code class="language-plaintext highlighter-rouge">SingleMemberAnnotation</code>, <code class="language-plaintext highlighter-rouge">NormalAnnotation</code> and <code class="language-plaintext highlighter-rouge">MarkerAnnotation</code>
-are removed in favour of <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnnotation.html#"><code>ASTAnnotation</code></a>. The Name node is removed, replaced by a
-<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a>.</li>
+are removed in favour of <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnnotation.html#"><code>ASTAnnotation</code></a>. The Name node is removed, replaced by a
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a>.</li>
   <li>Why: Those different node types implement a syntax-only distinction, that only makes semantically equivalent annotations
 have different possible representations. For example, <code class="language-plaintext highlighter-rouge">@A</code> and <code class="language-plaintext highlighter-rouge">@A()</code> are semantically equivalent, yet they were
 parsed as MarkerAnnotation resp. NormalAnnotation. Similarly, <code class="language-plaintext highlighter-rouge">@A("")</code> and <code class="language-plaintext highlighter-rouge">@A(value="")</code> were parsed as
@@ -2817,9 +2817,9 @@ type is used to share the disambiguation logic.</li>
 <h5 id="annotation-nesting">Annotation nesting</h5>
 
 <ul>
-  <li>What: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnnotation.html#"><code>ASTAnnotation</code></a>s are now nested within the node, to which they are applied to.
-E.g. if a method is annotated, the Annotation node is now a child of a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTModifierList.html#"><code>ASTModifierList</code></a>,
-inside the <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#"><code>ASTMethodDeclaration</code></a>.</li>
+  <li>What: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnnotation.html#"><code>ASTAnnotation</code></a>s are now nested within the node, to which they are applied to.
+E.g. if a method is annotated, the Annotation node is now a child of a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTModifierList.html#"><code>ASTModifierList</code></a>,
+inside the <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#"><code>ASTMethodDeclaration</code></a>.</li>
   <li>Why: Fixes a lot of inconsistencies, where sometimes the annotations were inside the node, and sometimes just
 somewhere in the parent, with no real structure.</li>
   <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1875">[java] Move annotations inside the node they apply to (#1875)</a></li>
@@ -3156,9 +3156,9 @@ Enum constants
 <ul>
   <li>What:
     <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTType.html#"><code>ASTType</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTReferenceType.html#"><code>ASTReferenceType</code></a> have been turned into
-interfaces, implemented by <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPrimitiveType.html#"><code>ASTPrimitiveType</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a>,
-and the new node <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayType.html#"><code>ASTArrayType</code></a>. This reduces the depth of the relevant
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTType.html#"><code>ASTType</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTReferenceType.html#"><code>ASTReferenceType</code></a> have been turned into
+interfaces, implemented by <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPrimitiveType.html#"><code>ASTPrimitiveType</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a>,
+and the new node <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayType.html#"><code>ASTArrayType</code></a>. This reduces the depth of the relevant
 subtrees, and allows to explore them more easily and consistently.</li>
     </ul>
   </li>
@@ -3236,8 +3236,8 @@ The Java equivalent is <code class="language-plaintext highlighter-rouge">TypeHe
 <h5 id="array-changes">Array changes</h5>
 
 <ul>
-  <li>What: Additional nodes <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayType.html#"><code>ASTArrayType</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayTypeDim.html#"><code>ASTArrayTypeDim</code></a>,
-<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayDimensions.html#"><code>ASTArrayDimensions</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayAllocation.html#"><code>ASTArrayAllocation</code></a>.</li>
+  <li>What: Additional nodes <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayType.html#"><code>ASTArrayType</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayTypeDim.html#"><code>ASTArrayTypeDim</code></a>,
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayDimensions.html#"><code>ASTArrayDimensions</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayAllocation.html#"><code>ASTArrayAllocation</code></a>.</li>
   <li>Why: Support annotated array types (<a href="https://github.com/pmd/pmd/issues/997">[java] Java8 parsing corner case with annotated array types (#997)</a>)</li>
   <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1981">[java] Simplify array allocation expressions (#1981)</a></li>
 </ul>
@@ -3384,7 +3384,7 @@ The Java equivalent is <code class="language-plaintext highlighter-rouge">TypeHe
 <h5 id="classtype-nesting">ClassType nesting</h5>
 
 <ul>
-  <li>What: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a> (formerly ASTClassOrInterfaceType) appears to be left recursive now,
+  <li>What: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a> (formerly ASTClassOrInterfaceType) appears to be left recursive now,
 and encloses its qualifying type.</li>
   <li>Why: To preserve the position of annotations and type arguments</li>
   <li>Related issue: <a href="https://github.com/pmd/pmd/issues/1150">[java] ClassOrInterfaceType AST improvements (#1150)</a></li>
@@ -3459,10 +3459,10 @@ and encloses its qualifying type.</li>
 <ul>
   <li>What:
     <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.11.0/net/sourceforge/pmd/lang/java/ast/ASTTypeArgument.html#"><code>ASTTypeArgument</code></a> is removed. Instead, the <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypeArguments.html#"><code>ASTTypeArguments</code></a> node contains directly
-a sequence of <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTType.html#"><code>ASTType</code></a> nodes. To support this, the new node type <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTWildcardType.html#"><code>ASTWildcardType</code></a>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0/net/sourceforge/pmd/lang/java/ast/ASTTypeArgument.html#"><code>ASTTypeArgument</code></a> is removed. Instead, the <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypeArguments.html#"><code>ASTTypeArguments</code></a> node contains directly
+a sequence of <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTType.html#"><code>ASTType</code></a> nodes. To support this, the new node type <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTWildcardType.html#"><code>ASTWildcardType</code></a>
 captures the syntax previously parsed as a TypeArgument.</li>
-      <li>The <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.11.0/net/sourceforge/pmd/lang/java/ast/ASTWildcardBounds.html#"><code>ASTWildcardBounds</code></a> node is removed. Instead, the bound is a direct child of the WildcardType.</li>
+      <li>The <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0/net/sourceforge/pmd/lang/java/ast/ASTWildcardBounds.html#"><code>ASTWildcardBounds</code></a> node is removed. Instead, the bound is a direct child of the WildcardType.</li>
     </ul>
   </li>
   <li>Why: Because wildcard types are types in their own right, and having a node to represent them skims several levels
@@ -3533,7 +3533,7 @@ of nesting off.</li>
 
 <ul>
   <li>What: Remove the Name node in imports and package declaration nodes.</li>
-  <li>Why: Name is a TypeNode, but it’s equivalent to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAmbiguousName.html#"><code>ASTAmbiguousName</code></a> in that it describes nothing
+  <li>Why: Name is a TypeNode, but it’s equivalent to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAmbiguousName.html#"><code>ASTAmbiguousName</code></a> in that it describes nothing
 about what it represents. The name in an import may represent a method name, a type name, a field name…
 It’s too ambiguous to treat in the parser and could just be the image of the import, or package, or module.</li>
   <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1888">[java] Remove Name nodes in Import- and PackageDeclaration (#1888)</a></li>
@@ -3591,7 +3591,7 @@ It’s too ambiguous to treat in the parser and could just be the image of the i
 <h5 id="modifier-lists">Modifier lists</h5>
 
 <ul>
-  <li>What: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#"><code>ModifierOwner</code></a> (formerly AccessNode) is now based on a node: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTModifierList.html#"><code>ASTModifierList</code></a>.
+  <li>What: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#"><code>ModifierOwner</code></a> (formerly AccessNode) is now based on a node: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTModifierList.html#"><code>ASTModifierList</code></a>.
 That node represents
 modifiers occurring before a declaration. It provides a flexible API to query modifiers, both explicit and
 implicit. All declaration nodes now have such a modifier list, even if it’s implicit (no explicit modifiers).</li>
@@ -3684,8 +3684,8 @@ Top-level type declaration
 <h5 id="flattened-body-declarations">Flattened body declarations</h5>
 
 <ul>
-  <li>What: Removes <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.11.0/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceBodyDeclaration.html#"><code>ASTClassOrInterfaceBodyDeclaration</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.11.0/net/sourceforge/pmd/lang/java/ast/ASTTypeDeclaration.html#"><code>ASTTypeDeclaration</code></a>,
-and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.11.0/net/sourceforge/pmd/lang/java/ast/ASTAnnotationTypeMemberDeclaration.html#"><code>ASTAnnotationTypeMemberDeclaration</code></a>.
+  <li>What: Removes <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceBodyDeclaration.html#"><code>ASTClassOrInterfaceBodyDeclaration</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0/net/sourceforge/pmd/lang/java/ast/ASTTypeDeclaration.html#"><code>ASTTypeDeclaration</code></a>,
+and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0/net/sourceforge/pmd/lang/java/ast/ASTAnnotationTypeMemberDeclaration.html#"><code>ASTAnnotationTypeMemberDeclaration</code></a>.
 These were unnecessary since annotations are nested (see above <a href="#annotation-nesting">Annotation nesting</a>).</li>
   <li>Why: This flattens the tree, makes it less verbose and simpler.</li>
   <li>Related issue: <a href="https://github.com/pmd/pmd/pull/2300">[java] Flatten body declarations (#2300)</a></li>
@@ -3773,7 +3773,7 @@ These were unnecessary since annotations are nested (see above <a href="#annotat
 <h5 id="module-declarations">Module declarations</h5>
 
 <ul>
-  <li>What: Removes the generic Name node and uses instead <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a> where appropriate. Also
+  <li>What: Removes the generic Name node and uses instead <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a> where appropriate. Also
 uses specific node types for different directives (requires, exports, uses, provides).</li>
   <li>Why: Simplify queries, support type resolution</li>
   <li>Related issue: <a href="https://github.com/pmd/pmd/pull/3890">[java] Improve module grammar (#3890)</a></li>
@@ -3849,7 +3849,7 @@ uses specific node types for different directives (requires, exports, uses, prov
 <h5 id="anonymous-class-declarations">Anonymous class declarations</h5>
 
 <ul>
-  <li>What: A separate node type <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnonymousClassDeclaration.html#"><code>ASTAnonymousClassDeclaration</code></a> is introduced for anonymous classes.</li>
+  <li>What: A separate node type <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnonymousClassDeclaration.html#"><code>ASTAnonymousClassDeclaration</code></a> is introduced for anonymous classes.</li>
   <li>Why: Unify the AST for type declarations including anonymous class declaration in constructor calls
 and enums.</li>
   <li>Related issues:
@@ -4030,14 +4030,14 @@ explicitly differentiate between these two.</li>
 <h5 id="formal-parameters">Formal parameters</h5>
 
 <ul>
-  <li>What: Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTFormalParameter.html#"><code>ASTFormalParameter</code></a> only for method and constructor declaration. Lambdas use
-<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLambdaParameter.html#"><code>ASTLambdaParameter</code></a>, catch clauses use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTCatchParameter.html#"><code>ASTCatchParameter</code></a>.</li>
+  <li>What: Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTFormalParameter.html#"><code>ASTFormalParameter</code></a> only for method and constructor declaration. Lambdas use
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLambdaParameter.html#"><code>ASTLambdaParameter</code></a>, catch clauses use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTCatchParameter.html#"><code>ASTCatchParameter</code></a>.</li>
   <li>Why: FormalParameter’s API is different from the other ones.
     <ul>
       <li>FormalParameter must mention a type node.</li>
       <li>LambdaParameter can be inferred</li>
       <li>CatchParameter cannot be varargs</li>
-      <li>CatchParameter can have multiple exception types (a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTUnionType.html#"><code>ASTUnionType</code></a> now)</li>
+      <li>CatchParameter can have multiple exception types (a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTUnionType.html#"><code>ASTUnionType</code></a> now)</li>
     </ul>
   </li>
 </ul>
@@ -4191,11 +4191,11 @@ explicitly differentiate between these two.</li>
 <h5 id="new-node-for-explicit-receiver-parameter">New node for explicit receiver parameter</h5>
 
 <ul>
-  <li>What: A separate node type <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTReceiverParameter.html#"><code>ASTReceiverParameter</code></a> is introduced to differentiate it from formal parameters.</li>
+  <li>What: A separate node type <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTReceiverParameter.html#"><code>ASTReceiverParameter</code></a> is introduced to differentiate it from formal parameters.</li>
   <li>Why: A receiver parameter is not a formal parameter, even though it looks like one: it doesn’t declare a variable,
 and doesn’t affect the arity of the method or constructor. It’s so rarely used that giving it its own node avoids
-matching it by mistake and simplifies the API and grammar of the ubiquitous <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTFormalParameter.html#"><code>ASTFormalParameter</code></a>
-and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a>.</li>
+matching it by mistake and simplifies the API and grammar of the ubiquitous <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTFormalParameter.html#"><code>ASTFormalParameter</code></a>
+and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a>.</li>
   <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1980">[java] Separate receiver parameter from formal parameter (#1980)</a></li>
 </ul>
 
@@ -4245,7 +4245,7 @@ and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sour
 <h5 id="varargs">Varargs</h5>
 
 <ul>
-  <li>What: parse the varargs ellipsis as an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayType.html#"><code>ASTArrayType</code></a>.</li>
+  <li>What: parse the varargs ellipsis as an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayType.html#"><code>ASTArrayType</code></a>.</li>
   <li>Why: this improves regularity of the grammar, and allows type annotations to be added to the ellipsis</li>
 </ul>
 
@@ -4339,7 +4339,7 @@ and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sour
 <h5 id="add-void-type-node-to-replace-resulttype">Add void type node to replace ResultType</h5>
 
 <ul>
-  <li>What: Add a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVoidType.html#"><code>ASTVoidType</code></a> node to replace <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.11.0/net/sourceforge/pmd/lang/java/ast/ASTResultType.html#"><code>ASTResultType</code></a>.</li>
+  <li>What: Add a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVoidType.html#"><code>ASTVoidType</code></a> node to replace <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0/net/sourceforge/pmd/lang/java/ast/ASTResultType.html#"><code>ASTResultType</code></a>.</li>
   <li>Why: This means we don’t need the ResultType wrapper when the method is not void, and the result type node is never null.</li>
   <li>Related issue: <a href="https://github.com/pmd/pmd/pull/2715">[java] Add void type node to replace ResultType (#2715)</a></li>
 </ul>
@@ -4400,8 +4400,8 @@ and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sour
 
 <ul>
   <li>What: Statements are flattened. There are no superfluous BlockStatement and Statement nodes anymore.
-All children of a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTBlock.html#"><code>ASTBlock</code></a> are by definition
-<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTStatement.html#"><code>ASTStatement</code></a>s, which is now an interface implemented by all statements.</li>
+All children of a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTBlock.html#"><code>ASTBlock</code></a> are by definition
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTStatement.html#"><code>ASTStatement</code></a>s, which is now an interface implemented by all statements.</li>
   <li>Why: This simplifies the tree traversal. The removed nodes BlockStatement and Statement didn’t add any
 additional information. We only need a Statement abstraction. BlockStatement was used to enforce, that no
 variable or local class declaration is found alone as the child of e.g. an unbraced if, else, for, etc.
@@ -4461,7 +4461,7 @@ This is a parser-only distinction that’s not that useful for analysis later on
 <h5 id="new-node-for-for-each-statements">New node for For-each statements</h5>
 
 <ul>
-  <li>What: New node for For-each statements: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTForeachStatement.html#"><code>ASTForeachStatement</code></a> instead of ForStatement.</li>
+  <li>What: New node for For-each statements: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTForeachStatement.html#"><code>ASTForeachStatement</code></a> instead of ForStatement.</li>
   <li>Why: This makes it a lot easier to distinguish in the AST between For-loops and For-Each-loops. E.g. some
 rules only apply to one or the other, and it was complicated to write a rule that works with both different
 subtrees (for loops have additional children ForInit and ForUpdate)</li>
@@ -4531,12 +4531,12 @@ subtrees (for loops have additional children ForInit and ForUpdate)</li>
 <h5 id="new-nodes-for-expressionstatement-localclassstatement">New nodes for ExpressionStatement, LocalClassStatement</h5>
 
 <ul>
-  <li>What: Renamed StatementExpression to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpressionStatement.html#"><code>ASTExpressionStatement</code></a>.
-Added new node <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLocalClassStatement.html#"><code>ASTLocalClassStatement</code></a>.</li>
-  <li>Why: ExpressionStatement is now a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTStatement.html#"><code>ASTStatement</code></a>, that can be used as a child in a
-block. It itself has only one child, which is some kind of <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#"><code>ASTExpression</code></a>,
+  <li>What: Renamed StatementExpression to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpressionStatement.html#"><code>ASTExpressionStatement</code></a>.
+Added new node <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLocalClassStatement.html#"><code>ASTLocalClassStatement</code></a>.</li>
+  <li>Why: ExpressionStatement is now a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTStatement.html#"><code>ASTStatement</code></a>, that can be used as a child in a
+block. It itself has only one child, which is some kind of <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#"><code>ASTExpression</code></a>,
 which can be really any kind of expression (like assignment).
-In order to allow local class declarations as part of a block, we introduced <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLocalClassStatement.html#"><code>ASTLocalClassStatement</code></a>
+In order to allow local class declarations as part of a block, we introduced <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLocalClassStatement.html#"><code>ASTLocalClassStatement</code></a>
 which is a statement that carries a type declaration. Now blocks are just a list of statements.
 This allows us to have two distinct hierarchies for expressions and statements.</li>
   <li>Related issue: <a href="https://github.com/pmd/pmd/pull/2164">[java] Improve statement grammar (#2164)</a></li>
@@ -4586,7 +4586,7 @@ This allows us to have two distinct hierarchies for expressions and statements.<
 
 <ul>
   <li>What: The AST representation of a try-with-resources statement has been simplified.
-It uses now <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLocalVariableDeclaration.html#"><code>ASTLocalVariableDeclaration</code></a> unless it is a concise try-with-resources.</li>
+It uses now <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLocalVariableDeclaration.html#"><code>ASTLocalVariableDeclaration</code></a> unless it is a concise try-with-resources.</li>
   <li>Why: Simpler integration try-with-resources into symboltable and type resolution.</li>
   <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1897">[java] Improve try-with-resources grammar (#1897)</a></li>
 </ul>
@@ -4674,7 +4674,7 @@ It uses now <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/
 
 <ul>
   <li>
-    <p><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#"><code>ASTExpression</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPrimaryExpression.html#"><code>ASTPrimaryExpression</code></a> have
+    <p><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#"><code>ASTExpression</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPrimaryExpression.html#"><code>ASTPrimaryExpression</code></a> have
 been turned into interfaces. These added no information to the AST and increased
 its depth unnecessarily. All expressions implement the first interface. Both of
 those nodes can no more be found in ASTs.</p>
@@ -4694,14 +4694,14 @@ name tests won’t match anything anymore. However, the axis step *[@Expression=
 <ul>
   <li>What:
     <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLiteral.html#"><code>ASTLiteral</code></a> has been turned into an interface.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTNumericLiteral.html#"><code>ASTNumericLiteral</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTCharLiteral.html#"><code>ASTCharLiteral</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTStringLiteral.html#"><code>ASTStringLiteral</code></a>,
-and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassLiteral.html#"><code>ASTClassLiteral</code></a> are new nodes that implement that interface.</li>
-      <li>ASTLiteral implements <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPrimaryExpression.html#"><code>ASTPrimaryExpression</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLiteral.html#"><code>ASTLiteral</code></a> has been turned into an interface.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTNumericLiteral.html#"><code>ASTNumericLiteral</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTCharLiteral.html#"><code>ASTCharLiteral</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTStringLiteral.html#"><code>ASTStringLiteral</code></a>,
+and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassLiteral.html#"><code>ASTClassLiteral</code></a> are new nodes that implement that interface.</li>
+      <li>ASTLiteral implements <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPrimaryExpression.html#"><code>ASTPrimaryExpression</code></a></li>
     </ul>
   </li>
-  <li>Why: The fact that <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTNullLiteral.html#"><code>ASTNullLiteral</code></a>
-and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTBooleanLiteral.html#"><code>ASTBooleanLiteral</code></a> were nested within it but other literals types were all directly represented
+  <li>Why: The fact that <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTNullLiteral.html#"><code>ASTNullLiteral</code></a>
+and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTBooleanLiteral.html#"><code>ASTBooleanLiteral</code></a> were nested within it but other literals types were all directly represented
 by it was inconsistent, and ultimately that level of nesting was unnecessary.</li>
   <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1759">[java] New expression and type grammar (#1759)</a></li>
   <li><strong>Migrating</strong>:
@@ -4755,9 +4755,9 @@ by it was inconsistent, and ultimately that level of nesting was unnecessary.</l
 <ul>
   <li>What: Extra nodes dedicated for method and constructor calls and array allocations
     <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTConstructorCall.html#"><code>ASTConstructorCall</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodCall.html#"><code>ASTMethodCall</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayAllocation.html#"><code>ASTArrayAllocation</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTConstructorCall.html#"><code>ASTConstructorCall</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodCall.html#"><code>ASTMethodCall</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayAllocation.html#"><code>ASTArrayAllocation</code></a></li>
     </ul>
   </li>
   <li>Why: It was extremely difficult to identify method calls in PMD 6 - these consisted of multiple nodes with
@@ -4868,7 +4868,7 @@ primary prefix, suffix and expressions. This was too low level to be easy to be 
 <h5 id="method-call-chains-are-left-recursive">Method call chains are left-recursive</h5>
 
 <ul>
-  <li>What: The nodes <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.11.0/net/sourceforge/pmd/lang/java/ast/ASTPrimaryPrefix.html#"><code>ASTPrimaryPrefix</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.11.0/net/sourceforge/pmd/lang/java/ast/ASTPrimarySuffix.html#"><code>ASTPrimarySuffix</code></a> are removed from the
+  <li>What: The nodes <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0/net/sourceforge/pmd/lang/java/ast/ASTPrimaryPrefix.html#"><code>ASTPrimaryPrefix</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0/net/sourceforge/pmd/lang/java/ast/ASTPrimarySuffix.html#"><code>ASTPrimarySuffix</code></a> are removed from the
 grammar. Subtrees for primary expressions appear to be left-recursive now.</li>
   <li>Why: Allows to reuse abstractions like method calls without introducing a new artificial node (like method chain).</li>
   <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1759">[java] New expression and type grammar (#1759)</a></li>
@@ -4935,7 +4935,7 @@ without bothering with the placement details.</p>
 but hopefully firing up the designer to inspect the new structure should
 give you the information you need quickly.</p>
 
-<p>Note: this also affect binary expressions like <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTInfixExpression.html#"><code>ASTInfixExpression</code></a>.
+<p>Note: this also affect binary expressions like <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTInfixExpression.html#"><code>ASTInfixExpression</code></a>.
 E.g. <code class="language-plaintext highlighter-rouge">a+b+c</code> is not parsed as</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>AdditiveExpression
 + (a)
@@ -4957,9 +4957,9 @@ E.g. <code class="language-plaintext highlighter-rouge">a+b+c</code> is not pars
   <li>What: New nodes dedicated to accessing field, variables and referencing arrays.
 Also provide info about the access type, like whether a variable is read or written.
     <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTFieldAccess.html#"><code>ASTFieldAccess</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableAccess.html#"><code>ASTVariableAccess</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayAccess.html#"><code>ASTArrayAccess</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTFieldAccess.html#"><code>ASTFieldAccess</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableAccess.html#"><code>ASTVariableAccess</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayAccess.html#"><code>ASTArrayAccess</code></a></li>
     </ul>
   </li>
   <li>Why: Like MethodCalls, this was a missing abstraction in the AST that has been added now.</li>
@@ -5074,8 +5074,8 @@ Also provide info about the access type, like whether a variable is read or writ
 <ul>
   <li>What: <code class="language-plaintext highlighter-rouge">this</code> and <code class="language-plaintext highlighter-rouge">super</code> are now explicit nodes instead of PrimaryPrefix.
     <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTThisExpression.html#"><code>ASTThisExpression</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTSuperExpression.html#"><code>ASTSuperExpression</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTThisExpression.html#"><code>ASTThisExpression</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTSuperExpression.html#"><code>ASTSuperExpression</code></a></li>
     </ul>
   </li>
   <li>Why: That way these nodes can qualify other nodes like FieldAccess.</li>
@@ -5170,8 +5170,8 @@ Also provide info about the access type, like whether a variable is read or writ
 <h5 id="type-expressions">Type expressions</h5>
 
 <ul>
-  <li>What: The node <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypeExpression.html#"><code>ASTTypeExpression</code></a> wraps a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTType.html#"><code>ASTType</code></a> node (such as
-<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a>) and is used to qualify a method call or field access or method reference.</li>
+  <li>What: The node <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypeExpression.html#"><code>ASTTypeExpression</code></a> wraps a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTType.html#"><code>ASTType</code></a> node (such as
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a>) and is used to qualify a method call or field access or method reference.</li>
   <li>Why: Simplify the qualifier of method calls, treat instanceof as infix expression.</li>
   <li>Related issue: <a href="https://github.com/pmd/pmd/pull/2039">[java] Grammar type expr (#2039)</a></li>
 </ul>
@@ -5255,7 +5255,7 @@ Also provide info about the access type, like whether a variable is read or writ
 <h5 id="merge-unary-expressions">Merge unary expressions</h5>
 
 <ul>
-  <li>What: Merge AST nodes for postfix and prefix expressions into the single <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTUnaryExpression.html#"><code>ASTUnaryExpression</code></a> node.
+  <li>What: Merge AST nodes for postfix and prefix expressions into the single <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTUnaryExpression.html#"><code>ASTUnaryExpression</code></a> node.
 The merged nodes are:
     <ul>
       <li>PreIncrementExpression</li>
@@ -5477,7 +5477,7 @@ which is based on an open source grammar for Apex: <a href="https://github.com/n
 <p>The produced AST is mostly compatible, there are some unavoidable changes however:</p>
 
 <ul>
-  <li>Node <code class="language-plaintext highlighter-rouge">Method</code> (<a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTMethod.html#"><code>ASTMethod</code></a>)
+  <li>Node <code class="language-plaintext highlighter-rouge">Method</code> (<a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTMethod.html#"><code>ASTMethod</code></a>)
     <ul>
       <li>No attribute <code class="language-plaintext highlighter-rouge">@Synthetic</code> anymore. Unlike Jorje, Summit AST doesn’t generate synthetic methods anymore, so
 this attribute would have been always false and is of no use. Therefore it has been removed completely.</li>
@@ -5488,7 +5488,7 @@ this attribute would have been always false and is of no use. Therefore it has b
 new parser doesn’t generate synthetic methods anymore, this node is not needed anymore.</li>
   <li>There is in general no attribute <code class="language-plaintext highlighter-rouge">@Namespace</code> anymore. The attribute has been removed, as it was never fully
 implemented. It always returned an empty string.</li>
-  <li>Node <code class="language-plaintext highlighter-rouge">ReferenceExpression</code> (<a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTReferenceExpression.html#"><code>ASTReferenceExpression</code></a>)
+  <li>Node <code class="language-plaintext highlighter-rouge">ReferenceExpression</code> (<a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTReferenceExpression.html#"><code>ASTReferenceExpression</code></a>)
     <ul>
       <li>No attribute <code class="language-plaintext highlighter-rouge">@Context</code> anymore. It was not used and always returned <code class="language-plaintext highlighter-rouge">null</code>.</li>
     </ul>
@@ -5511,14 +5511,14 @@ this default version will be used. Usually the latest version is the default ver
 <p>This is only relevant, if you are maintaining a CPD language module for a custom language.</p>
 
 <ul>
-  <li>Instead of <code class="language-plaintext highlighter-rouge">AbstractLanguage</code> extend now <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/impl/CpdOnlyLanguageModuleBase.html#"><code>CpdOnlyLanguageModuleBase</code></a>.</li>
-  <li>Instead of <code class="language-plaintext highlighter-rouge">AntlrTokenManager</code> use now <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/TokenManager.html#"><code>TokenManager</code></a></li>
-  <li>Instead of <code class="language-plaintext highlighter-rouge">AntlrTokenFilter</code> also use now <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/TokenManager.html#"><code>TokenManager</code></a></li>
-  <li>Instead of <code class="language-plaintext highlighter-rouge">AntlrTokenFilter</code> extend now <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/cpd/impl/BaseTokenFilter.html#"><code>BaseTokenFilter</code></a></li>
+  <li>Instead of <code class="language-plaintext highlighter-rouge">AbstractLanguage</code> extend now <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/impl/CpdOnlyLanguageModuleBase.html#"><code>CpdOnlyLanguageModuleBase</code></a>.</li>
+  <li>Instead of <code class="language-plaintext highlighter-rouge">AntlrTokenManager</code> use now <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/TokenManager.html#"><code>TokenManager</code></a></li>
+  <li>Instead of <code class="language-plaintext highlighter-rouge">AntlrTokenFilter</code> also use now <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/TokenManager.html#"><code>TokenManager</code></a></li>
+  <li>Instead of <code class="language-plaintext highlighter-rouge">AntlrTokenFilter</code> extend now <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/cpd/impl/BaseTokenFilter.html#"><code>BaseTokenFilter</code></a></li>
   <li>CPD Module discovery change. The service loader won’t load anymore <code class="language-plaintext highlighter-rouge">src/main/resources/META-INF/services/net.sourceforge.pmd.cpd.Language</code>
 but instead <code class="language-plaintext highlighter-rouge">src/main/resources/META-INF/services/net.sourceforge.pmd.lang.Language</code>. This is the unified
 language interface for both PMD and CPD capable languages. See also the subinterfaces
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/cpd/CpdCapableLanguage.html#"><code>CpdCapableLanguage</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.12.0-SNAPSHOT/net/sourceforge/pmd/lang/PmdCapableLanguage.html#"><code>PmdCapableLanguage</code></a>.</li>
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/cpd/CpdCapableLanguage.html#"><code>CpdCapableLanguage</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/PmdCapableLanguage.html#"><code>PmdCapableLanguage</code></a>.</li>
   <li>The documentation <a href="pmd_devdocs_major_adding_new_cpd_language.html">How to add a new CPD language</a> has been updated
 to reflect these changes.</li>
 </ul>
@@ -5538,7 +5538,7 @@ See the use case <a href="#im-using-only-built-in-rules">I’m using only built-
 <h4 id="ant">Ant</h4>
 
 <ul>
-  <li>The Ant tasks <a href="https://docs.pmd-code.org/apidocs/pmd-ant/7.12.0-SNAPSHOT/net/sourceforge/pmd/ant/PMDTask.html#"><code>PMDTask</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-ant/7.12.0-SNAPSHOT/net/sourceforge/pmd/ant/CPDTask.html#"><code>CPDTask</code></a> have been moved from the module
+  <li>The Ant tasks <a href="https://docs.pmd-code.org/apidocs/pmd-ant/7.13.0-SNAPSHOT/net/sourceforge/pmd/ant/PMDTask.html#"><code>PMDTask</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-ant/7.13.0-SNAPSHOT/net/sourceforge/pmd/ant/CPDTask.html#"><code>CPDTask</code></a> have been moved from the module
 <code class="language-plaintext highlighter-rouge">pmd-core</code> into the new module <code class="language-plaintext highlighter-rouge">pmd-ant</code>.</li>
   <li>You need to add this dependency/jar file onto the class path (<code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-ant</code>) in order to
 import the tasks into your build file.</li>
@@ -5559,11 +5559,11 @@ the pmd-ant jar file is included in the binary distribution of PMD. It is part o
 <ul>
   <li>Gradle uses internally PMD’s Ant task to execute PMD</li>
   <li>Gradle 8.6 supports PMD 7 out of the box, but does not yet use PMD 7 by default.</li>
-  <li>You can set <code class="language-plaintext highlighter-rouge">toolVersion = "7.12.0-SNAPSHOT"</code>.</li>
+  <li>You can set <code class="language-plaintext highlighter-rouge">toolVersion = "7.13.0-SNAPSHOT"</code>.</li>
   <li>Only for older gradle versions you need to configure the dependencies manually for now, since
 the ant task is in an own dependency with PMD 7:
-    <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pmd</span> <span class="s1">'net.sourceforge.pmd:pmd-ant:7.12.0-SNAPSHOT'</span>
-<span class="n">pmd</span> <span class="s1">'net.sourceforge.pmd:pmd-java:7.12.0-SNAPSHOT'</span>
+    <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pmd</span> <span class="s1">'net.sourceforge.pmd:pmd-ant:7.13.0-SNAPSHOT'</span>
+<span class="n">pmd</span> <span class="s1">'net.sourceforge.pmd:pmd-java:7.13.0-SNAPSHOT'</span>
 </code></pre></div>    </div>
   </li>
   <li>See <a href="https://github.com/gradle/gradle/issues/24502">Support for PMD 7.0</a></li>
@@ -5620,7 +5620,7 @@ the ant task is in an own dependency with PMD 7:
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            June 2024 (7.3.0)<br /> Site last generated: Mar 27, 2025 <br />
+            June 2024 (7.3.0)<br /> Site last generated: Mar 28, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
