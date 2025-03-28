@@ -175,7 +175,15 @@ public class RuleSet implements ChecksumAware {
         return new RuleSet(original);
     }
 
-    /* package */ static class RuleSetBuilder {
+    /**
+     * Return a ruleset builder used to create rules. It is initialized with
+     * the configuration of this ruleset.
+     */
+    public RuleSetBuilder toBuilder() {
+        return new RuleSetBuilder(this);
+    }
+
+    public static class RuleSetBuilder {
 
         public String description;
         public String name;
@@ -226,6 +234,10 @@ public class RuleSet implements ChecksumAware {
 
             rules.add(newRule);
             return this;
+        }
+
+        public boolean removeIf(Predicate<? super Rule> rule) {
+            return rules.removeIf(rule);
         }
 
         /**
