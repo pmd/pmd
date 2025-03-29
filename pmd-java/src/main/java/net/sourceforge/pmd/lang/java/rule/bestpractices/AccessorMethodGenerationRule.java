@@ -19,7 +19,6 @@ import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.reporting.RuleContext;
 
@@ -48,31 +47,31 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTVariableAccess node, Object data) {
-        JVariableSymbol sym = node.getReferencedSym();
-        if (sym instanceof JFieldSymbol) {
-            JFieldSymbol fieldSym = (JFieldSymbol) sym;
-            if (((JFieldSymbol) sym).getConstValue() == null) {
-                checkMemberAccess((RuleContext) data, node, fieldSym);
-            }
-        }
+        visit(node, (RuleContext) data, node.getReferencedSym());
         return null;
+    }
+
+    private void visit(ASTVariableAccess node, RuleContext data, JVariableSymbol sym) {
+        if (sym instanceof JFieldSymbol && ((JFieldSymbol) sym).getConstValue() == null) {
+            checkMemberAccess(data, node, (JFieldSymbol) sym);
+        }
     }
 
     @Override
     public Object visit(ASTMethodCall node, Object data) {
-        JMethodSymbol symbol = (JMethodSymbol) node.getMethodType().getSymbol();
-        checkMemberAccess((RuleContext) data, node, symbol);
+        checkMemberAccess((RuleContext) data, node, node.getMethodType().getSymbol());
         return null;
     }
 
     private void checkMemberAccess(RuleContext data, ASTExpression node, JAccessibleElementSymbol symbol) {
-        checkMemberAccess(data, node, symbol, this.reportedNodes);
+        checkMemberAccess(data, node, symbol, reportedNodes);
     }
 
-    static void checkMemberAccess(RuleContext ruleContext, JavaNode refExpr, JAccessibleElementSymbol sym, Set<JavaNode> reportedNodes) {
+    static void checkMemberAccess(RuleContext ruleContext, JavaNode refExpr, JAccessibleElementSymbol sym,
+                                  Set<JavaNode> reportedNodes) {
         if (Modifier.isPrivate(sym.getModifiers())
-            && !Objects.equals(sym.getEnclosingClass(),
-                               refExpr.getEnclosingType().getSymbol())) {
+                && !Objects.equals(sym.getEnclosingClass(),
+                refExpr.getEnclosingType().getSymbol())) {
 
             JavaNode node = sym.tryGetNode();
             if (node == null && JConstructorSymbol.CTOR_NAME.equals(sym.getSimpleName())) {
@@ -81,24 +80,24 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
             }
             assert node != null : "Node should be in the same compilation unit";
             if (reportedNodes.add(node)) {
-                ruleContext.addViolation(node, stripPackageName(refExpr.getEnclosingType().getSymbol()));
+                ruleContext.addViolation(node, canonicalNameWithoutPackage(refExpr.getEnclosingType().getSymbol()));
             }
         }
     }
 
     /**
-     * Returns the canonical name without the package name. Eg for a
-     * canonical name {@code com.github.Outer.Inner}, returns {@code Outer.Inner}.
+     * Returns the canonical name without the package name.
+     * Eg for a canonical name {@code com.github.Outer.Inner}, returns {@code Outer.Inner}.
      */
-    private static String stripPackageName(JClassSymbol symbol) {
-        String p = symbol.getPackageName();
-        String canoName = symbol.getCanonicalName();
-        if (canoName == null) {
-            return symbol.getSimpleName();
-        }
-        if (p.isEmpty()) {
-            return canoName;
-        }
-        return canoName.substring(p.length() + 1); //+1 for the dot
+    static String canonicalNameWithoutPackage(JClassSymbol symbol) {
+        return canonicalNameWithoutPackage(symbol.getCanonicalName(), symbol.getPackageName(), symbol.getSimpleName());
+    }
+
+    static String canonicalNameWithoutPackage(String canoName, String packageName, String simpleName) {
+        return canoName == null
+                ? simpleName
+                : packageName.isEmpty()
+                ? canoName
+                : canoName.substring(packageName.length() + 1); //+1 for the dot
     }
 }
