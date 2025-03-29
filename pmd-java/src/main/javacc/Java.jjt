@@ -479,11 +479,6 @@ class JavaParserImpl {
       JavaccToken token = getToken(offset);
       if (token == null) return false; // eof
       switch (token.kind) {
-           case PLUS: case MINUS: case STRING_LITERAL: case CHARACTER_LITERAL:
-           case INTEGER_LITERAL: case FLOATING_POINT_LITERAL: case HEX_FLOATING_POINT_LITERAL:
-           case NULL: case IDENTIFIER: case TRUE: case FALSE:
-           case NEW: case SWITCH: case THIS: case SUPER:
-               return true;
            case INCR: case DECR:
                return getToken(offset + 1).kind != SEMICOLON; // eg yield++;
            case LPAREN:
@@ -504,7 +499,7 @@ class JavaParserImpl {
                    && (lookahead != offset + 2 // ie ()
                    || t.kind == LAMBDA);
            default:
-               return false;
+               return token.kind != SEMICOLON;
       }
   }
 
