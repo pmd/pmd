@@ -550,7 +550,7 @@ class JavaParserImpl {
   private void pushEmptyModifierList() {
         ASTModifierList emptyMods = new ASTModifierList(JJTMODIFIERLIST);
 
-        emptyMods.setDeclaredModifiers(Collections.emptySet());
+        emptyMods.setDeclaredModifiers(ASTModifierList.EMPTY);
 
         JavaccToken tok = JavaccToken.implicitBefore(getToken(1));
         emptyMods.setFirstToken(tok);
@@ -562,7 +562,7 @@ class JavaParserImpl {
   private void insertEmptyModifierListWithAnnotations(AbstractJavaNode node, AbstractJavaNode nodeWithAnnotations) {
         ASTModifierList emptyMods = new ASTModifierList(JJTMODIFIERLIST);
 
-        emptyMods.setDeclaredModifiers(Collections.emptySet());
+        emptyMods.setDeclaredModifiers(ASTModifierList.EMPTY);
 
         JavaccToken tok = JavaccToken.implicitBefore(node.getFirstToken());
         emptyMods.setFirstToken(tok);
@@ -1511,7 +1511,7 @@ void AnnotationList() #void:
 }
 
 void ModAnnotationList() #ModifierList:
-{jjtThis.setDeclaredModifiers(Collections.emptySet());}
+{jjtThis.setDeclaredModifiers(ASTModifierList.EMPTY);}
 {
   (Annotation())*
 }
@@ -2221,11 +2221,11 @@ void SimpleLambdaParam() #LambdaParameter:
 }
 
 void LambdaParameter():
-{}
+{boolean hasVar = false;}
 {
     LocalVarModifierList() // this weakens the grammar a bit
     [
-       LambdaParameterType()
+       hasVar=LambdaParameterType() {jjtThis.setUsesVarKw(hasVar);}
     ]
     VariableIdWithDims()
 }
@@ -2479,7 +2479,7 @@ void LocalVariableDeclarationPendingModifiers() #LocalVariableDeclaration:
 }
 
 private void LocalVarModifierList() #ModifierList:
-{Set<JModifier> set = Collections.emptySet(); }
+{Set<JModifier> set = ASTModifierList.EMPTY; }
 {
     ( "final" { set = ASTModifierList.JUST_FINAL; } | Annotation() )*
     {jjtThis.setDeclaredModifiers(set);}
