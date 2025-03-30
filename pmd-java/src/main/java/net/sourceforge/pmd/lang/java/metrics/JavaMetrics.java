@@ -33,8 +33,8 @@ import net.sourceforge.pmd.lang.java.metrics.internal.ClassFanOutVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.CognitiveComplexityVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.CognitiveComplexityVisitor.State;
 import net.sourceforge.pmd.lang.java.metrics.internal.CycloVisitor;
+import net.sourceforge.pmd.lang.java.metrics.internal.NPathMetricCalculator;
 import net.sourceforge.pmd.lang.java.metrics.internal.NcssVisitor;
-import net.sourceforge.pmd.lang.java.metrics.internal.NpathBaseVisitor;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
@@ -460,8 +460,9 @@ public final class JavaMetrics {
         return counter.getValue();
     }
 
-    private static BigInteger computeNpath(JavaNode node, MetricOptions ignored) {
-        return node.acceptVisitor(NpathBaseVisitor.INSTANCE, null);
+    private static BigInteger computeNpath(ASTExecutableDeclaration node, MetricOptions ignored) {
+        return BigInteger.valueOf(NPathMetricCalculator.computeNpath(node));
+        //        return node.acceptVisitor(NpathBaseVisitor.INSTANCE, null);
     }
 
     private static int computeCognitive(JavaNode node, MetricOptions ignored) {

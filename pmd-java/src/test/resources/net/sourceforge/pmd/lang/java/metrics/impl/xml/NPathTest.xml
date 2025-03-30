@@ -302,12 +302,24 @@ class Foo {
         <description>Boolean operators</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Foo#bar()' has value 4.</message>
+            <message>'Foo#bar()' has value 5.</message>
         </expected-messages>
         <code><![CDATA[
 class Foo {
     void bar() {
-        if (a && b || c);
+        if (a && b || c) {
+            // there are 3 paths into here:
+            // a && b
+            // !a && c
+            // a && !b && c
+        }
+        // And 2 paths into here (if stmt is false):
+        // !a && !c
+        // a && !b && !c
+
+        // To which must be added the three paths into the `if` stmt
+        // that fallthrough to here.
+        // Total number of paths to the end of the function: 5
     }
 }
         ]]></code>
@@ -367,7 +379,7 @@ class Foo {
         <description>NPath should count the boolean complexity of ternaries</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Test#method(Date)' has value 4.</message>
+            <message>'Test#method(Date)' has value 5.</message>
         </expected-messages>
         <code><![CDATA[
 import java.util.Date;
@@ -533,6 +545,32 @@ public class SOFExample {
         ]]></code>
     </test-code>
 
+
+    <test-code>
+        <description>Foreach with break and continue</description>
+        <rule-property name="reportLevel">6</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'SOFExample#usefulMethod(List&lt;MyCal&gt;)' has value 6.</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.util.*;
+public class SOFExample {
+    private static final class MyCal { long aTime; long bTime; long cTime; long dTime;}
+
+    public void usefulMethod(final List<MyCal> myCals) {
+
+        for (MyCal myCal : myCals) {
+            if(myCal.aTime == UNKNOWN) continue;
+            if(myCal.bTime == UNKNOWN) myCal.bTime = bTime;
+            if(myCal.cTime == UNKNOWN) break;
+            if(myCal.dTime == UNKNOWN) myCal.dTime = dTime;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
     <test-code>
         <description>NPath foreach times other construct</description>
         <rule-property name="reportLevel">6</rule-property>
@@ -632,7 +670,7 @@ public class NPathComplexityOverflow {
         <rule-property name="reportLevel">2</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Product#buildProduct(String, Language)' has value 12.</message>
+            <message>'Product#buildProduct(String, Language)' has value 6.</message>
         </expected-messages>
         <code><![CDATA[
             public class Product {
@@ -666,7 +704,7 @@ public class NPathComplexityOverflow {
         <rule-property name="reportLevel">2</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Product#buildProduct(String, Language)' has value 12.</message>
+            <message>'Product#buildProduct(String, Language)' has value 6.</message>
         </expected-messages>
         <code><![CDATA[
             public class Product {
@@ -745,7 +783,7 @@ public class NPathComplexityOverflow {
         <description>Switch expression in return statement (#5568)</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Product#toByte(Register8)' has value 21.</message>
+            <message>'Product#toByte(Register8)' has value 20.</message>
         </expected-messages>
         <code><![CDATA[
             public class Product {
@@ -778,16 +816,16 @@ public class NPathComplexityOverflow {
         </expected-messages>
         <code><![CDATA[
             public class Product {
-//                static int m0() {
-//                    if (foo())
-//                        return 1 + 2;
-//                    return 4;
-//                }
-//                static int m1() {
-//                    if (foo())
-//                        return 2;
-//                    return 6;
-//                }
+               static int m0() {
+                   if (foo())
+                       return 1 + 2;
+                   return 4;
+               }
+               static int m1() {
+                   if (foo())
+                       return 2;
+                   return 6;
+               }
                 static boolean m2() {
                     if (foo())
                         return foo() || bar();
