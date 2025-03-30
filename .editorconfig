@@ -3,7 +3,7 @@ charset = utf-8
 end_of_line = lf
 indent_style = space
 insert_final_newline = true
-max_line_length = 120
+max_line_length = 140
 
 [*.java]
 ij_continuation_indent_size = 4
