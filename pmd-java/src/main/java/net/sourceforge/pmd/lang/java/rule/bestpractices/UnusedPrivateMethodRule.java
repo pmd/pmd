@@ -57,6 +57,14 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         return null;
     }
 
+    /**
+     * @implNote does following traversals:
+     * <ul>
+     * <li>one to find annotations that potentially reference a method</li>
+     * <li>one to collect candidates, that is, potentially unused methods</li>
+     * <li>one to walk through all possible usages of methods, and delete used methods from the set</li>
+     * </ul>
+     */
     private static Map<JExecutableSymbol, ASTMethodDeclaration> findViolations(ASTCompilationUnit file,
                                                                         Map<JExecutableSymbol, ASTMethodDeclaration> candidates) {
         // this does a couple of traversals:
