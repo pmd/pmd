@@ -52,12 +52,12 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
 
     @Override
     public Object visit(ASTCompilationUnit file, Object param) {
-        visit(file, findCandidates(file, methodsUsedByAnnotations(file)), asCtx(param));
+        addViolations(findViolations(file, findCandidates(file, methodsUsedByAnnotations(file))), asCtx(param));
         return null;
     }
 
-    private void visit(ASTCompilationUnit file, Map<JExecutableSymbol, ASTMethodDeclaration> candidates,
-                       RuleContext ctx) {
+    private Map<JExecutableSymbol, ASTMethodDeclaration> findViolations(ASTCompilationUnit file,
+                                                                        Map<JExecutableSymbol, ASTMethodDeclaration> candidates) {
         // this does a couple of traversals:
         // - one to find annotations that potentially reference a method
         // - one to collect candidates, that is, potentially unused methods
@@ -75,7 +75,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
                     return reffed;
                 });
             });
-        addViolations(candidates, ctx);
+        return candidates;
     }
 
     private void addViolations(Map<JExecutableSymbol, ASTMethodDeclaration> candidates, RuleContext ctx) {
