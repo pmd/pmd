@@ -65,15 +65,13 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         file.descendants()
             .crossFindBoundaries()
             .<MethodUsage>map(asInstanceOf(ASTMethodCall.class, ASTMethodReference.class))
-            .forEach(ref -> {
-                candidates.compute(getMethodSymbol(ref), (sym2, reffed) -> {
-                    if (reffed != null && ref.ancestors(ASTMethodDeclaration.class).first() != reffed) {
-                        // remove mapping, but only if it is called from outside itself
-                        return null;
-                    }
-                    return reffed;
-                });
-            });
+            .forEach(ref -> candidates.compute(getMethodSymbol(ref), (sym2, reffed) -> {
+                if (reffed != null && ref.ancestors(ASTMethodDeclaration.class).first() != reffed) {
+                    // remove mapping, but only if it is called from outside itself
+                    return null;
+                }
+                return reffed;
+            }));
         return candidates;
     }
 
