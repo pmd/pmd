@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
@@ -71,8 +70,8 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         return candidates;
     }
 
-    private static Consumer<@NonNull MethodUsage> removeUsedMethods(Map<JExecutableSymbol, ASTMethodDeclaration> candidates) {
-        return ref -> candidates.compute(getMethodSymbol(ref), (sym2, reffed) -> {
+    private static Consumer<MethodUsage> removeUsedMethods(Map<JExecutableSymbol, ASTMethodDeclaration> candidates) {
+        return ref -> candidates.compute(getMethodSymbol(ref), (sym, reffed) -> {
             if (reffed != null && ref.ancestors(ASTMethodDeclaration.class).first() != reffed) {
                 return null; // remove mapping, but only if it is called from outside itself
             }
