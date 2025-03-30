@@ -51,13 +51,15 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
 
     @Override
     public Object visit(ASTCompilationUnit file, Object param) {
+        visit(file, param, findCandidates(file, methodsUsedByAnnotations(file)));
+        return null;
+    }
+
+    private void visit(ASTCompilationUnit file, Object param, Map<JExecutableSymbol, ASTMethodDeclaration> candidates) {
         // this does a couple of traversals:
         // - one to find annotations that potentially reference a method
         // - one to collect candidates, that is, potentially unused methods
         // - one to walk through all possible usages of methods, and delete used methods from the set
-        Set<String> methodsUsedByAnnotations = methodsUsedByAnnotations(file);
-        Map<JExecutableSymbol, ASTMethodDeclaration> candidates = findCandidates(file, methodsUsedByAnnotations);
-
         file.descendants()
             .crossFindBoundaries()
             .<MethodUsage>map(asInstanceOf(ASTMethodCall.class, ASTMethodReference.class))
@@ -71,11 +73,9 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
                     return reffed;
                 });
             });
-
         for (ASTMethodDeclaration unusedMethod : candidates.values()) {
             asCtx(param).addViolation(unusedMethod, PrettyPrintingUtil.displaySignature(unusedMethod));
         }
-        return null;
     }
 
     private static JExecutableSymbol getMethodSymbol(MethodUsage ref) {
