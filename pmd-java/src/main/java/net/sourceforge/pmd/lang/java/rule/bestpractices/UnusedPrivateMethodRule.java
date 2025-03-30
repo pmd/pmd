@@ -77,9 +77,9 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         return candidates;
     }
 
-    private void addViolations(Map<JExecutableSymbol, ASTMethodDeclaration> candidates, RuleContext ctx) {
-        for (ASTMethodDeclaration unusedMethod : candidates.values()) {
-            ctx.addViolation(unusedMethod, PrettyPrintingUtil.displaySignature(unusedMethod));
+    private void addViolations(Map<JExecutableSymbol, ASTMethodDeclaration> violations, RuleContext ctx) {
+        for (ASTMethodDeclaration violation : violations.values()) {
+            ctx.addViolation(violation, PrettyPrintingUtil.displaySignature(violation));
         }
     }
 
