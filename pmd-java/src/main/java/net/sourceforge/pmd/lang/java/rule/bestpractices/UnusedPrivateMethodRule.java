@@ -57,7 +57,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         return null;
     }
 
-    private Map<JExecutableSymbol, ASTMethodDeclaration> findViolations(ASTCompilationUnit file,
+    private static Map<JExecutableSymbol, ASTMethodDeclaration> findViolations(ASTCompilationUnit file,
                                                                         Map<JExecutableSymbol, ASTMethodDeclaration> candidates) {
         // this does a couple of traversals:
         // - one to find annotations that potentially reference a method
@@ -79,7 +79,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         });
     }
 
-    private void addViolations(Map<JExecutableSymbol, ASTMethodDeclaration> violations, RuleContext ctx) {
+    private static void addViolations(Map<JExecutableSymbol, ASTMethodDeclaration> violations, RuleContext ctx) {
         for (ASTMethodDeclaration violation : violations.values()) {
             ctx.addViolation(violation, PrettyPrintingUtil.displaySignature(violation));
         }
@@ -139,7 +139,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         );
     }
 
-    private boolean hasExcludedName(ASTMethodDeclaration node) {
+    private static boolean hasExcludedName(ASTMethodDeclaration node) {
         return SERIALIZATION_METHODS.contains(node.getName());
     }
 }
