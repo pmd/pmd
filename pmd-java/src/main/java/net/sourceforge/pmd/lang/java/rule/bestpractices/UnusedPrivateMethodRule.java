@@ -94,12 +94,22 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         throw new IllegalStateException("unknown type: " + ref);
     }
 
-
     /**
-     * Collect potential unused private methods and index them by their symbol.
-     * We don't use {@link JExecutableSymbol#tryGetNode()} because it may return
-     * null for types that are treated specially by the type inference system. For
-     * instance for java.lang.String, the ASM symbol is preferred over the AST symbol.
+     * Find the method in the compilation unit. Note that this is a patch to fix some
+     * incorrect behavior of the rule in two cases:
+     *
+     * <p>1. While parsing and type resolving a referenced class, that itself
+     * references the current class. In that case, we end up with the ASM symbols
+     * and symbol.tryGetNode() returns null.
+     *
+     * <p>2. When dealing with classes in the java.lang package.
+     * This is due to the fact that some
+     * java.lang types (like Object, or primitive boxes) are
+     * treated specially by the type resolution framework, and
+     * for those the preexisting ASM symbol is preferred over
+     * the AST symbol - symbol.tryGetNode() returns null in that
+     * case. This is only relevant, when PMD is used to analyze OpenJDK
+     * sources, like with the regression tester.
      */
     private Map<JExecutableSymbol, ASTMethodDeclaration> findCandidates(ASTCompilationUnit file, Set<String> methodsUsedByAnnotations) {
         return file.descendants(ASTMethodDeclaration.class)
