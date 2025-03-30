@@ -2607,4 +2607,62 @@ class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5621 [java] UnusedPrivateMethod false positives with method ref</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package sample;
+
+import java.util.Optional;
+import java.io.*;
+import java.util.Base64;
+import java.net.InetSocketAddress;
+
+class Foo {
+
+    public String foo(final Object foo, final String bar) {
+        final String abc = Optional.ofNullable(foo.toString()).map(Foo::getNormalizedAddress).orElse(null);
+        return abc;
+    }
+
+    private static String getNormalizedAddress(final String encoded) {
+        try (var objectInputStream = new ObjectInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(encoded)))) {
+            final var inetSocketAddress = (InetSocketAddress) objectInputStream.readObject();
+            return inetSocketAddress.toString().substring(1);
+        } catch (IOException | ClassNotFoundException | IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5621 [java] UnusedPrivateMethod false positives with method ref, #2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package sample;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Consumer;
+import java.io.*;
+import java.util.Base64;
+import java.net.InetSocketAddress;
+
+class Foo {
+    @Override
+    public Collection<Consumer<Router>> routes() {
+        return List.of(
+                r -> r.post("/some/path").handler(this::handleRequest)
+        );
+    }
+
+    private void handleRequest(RoutingContext rc) { }
+//    private void handleRequest(String rc) { }
+}
+]]></code>
+    </test-code>
 </test-data>
