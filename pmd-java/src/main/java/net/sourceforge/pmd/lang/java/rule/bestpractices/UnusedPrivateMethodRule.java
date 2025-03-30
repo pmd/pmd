@@ -11,10 +11,12 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
@@ -65,14 +67,17 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         file.descendants()
             .crossFindBoundaries()
             .<MethodUsage>map(asInstanceOf(ASTMethodCall.class, ASTMethodReference.class))
-            .forEach(ref -> candidates.compute(getMethodSymbol(ref), (sym2, reffed) -> {
-                if (reffed != null && ref.ancestors(ASTMethodDeclaration.class).first() != reffed) {
-                    // remove mapping, but only if it is called from outside itself
-                    return null;
-                }
-                return reffed;
-            }));
+            .forEach(removeUsedMethods(candidates));
         return candidates;
+    }
+
+    private static Consumer<@NonNull MethodUsage> removeUsedMethods(Map<JExecutableSymbol, ASTMethodDeclaration> candidates) {
+        return ref -> candidates.compute(getMethodSymbol(ref), (sym2, reffed) -> {
+            if (reffed != null && ref.ancestors(ASTMethodDeclaration.class).first() != reffed) {
+                return null; // remove mapping, but only if it is called from outside itself
+            }
+            return reffed;
+        });
     }
 
     private void addViolations(Map<JExecutableSymbol, ASTMethodDeclaration> violations, RuleContext ctx) {
