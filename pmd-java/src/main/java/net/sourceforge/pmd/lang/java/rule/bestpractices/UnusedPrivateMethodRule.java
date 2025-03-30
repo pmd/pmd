@@ -95,6 +95,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
     }
 
     /**
+     * @implNote
      * Find the method in the compilation unit. Note that this is a patch to fix some
      * incorrect behavior of the rule in two cases:
      *
