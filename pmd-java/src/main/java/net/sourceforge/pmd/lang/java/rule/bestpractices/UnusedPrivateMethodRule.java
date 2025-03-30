@@ -29,6 +29,7 @@ import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.AbstractIgnoredAnnotationRule;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * This rule detects private methods, that are not used and can therefore be
@@ -51,11 +52,12 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
 
     @Override
     public Object visit(ASTCompilationUnit file, Object param) {
-        visit(file, param, findCandidates(file, methodsUsedByAnnotations(file)));
+        visit(file, findCandidates(file, methodsUsedByAnnotations(file)), asCtx(param));
         return null;
     }
 
-    private void visit(ASTCompilationUnit file, Object param, Map<JExecutableSymbol, ASTMethodDeclaration> candidates) {
+    private void visit(ASTCompilationUnit file, Map<JExecutableSymbol, ASTMethodDeclaration> candidates,
+                       RuleContext ctx) {
         // this does a couple of traversals:
         // - one to find annotations that potentially reference a method
         // - one to collect candidates, that is, potentially unused methods
@@ -73,12 +75,12 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
                     return reffed;
                 });
             });
-        addViolations(param, candidates);
+        addViolations(candidates, ctx);
     }
 
-    private void addViolations(Object param, Map<JExecutableSymbol, ASTMethodDeclaration> candidates) {
+    private void addViolations(Map<JExecutableSymbol, ASTMethodDeclaration> candidates, RuleContext ctx) {
         for (ASTMethodDeclaration unusedMethod : candidates.values()) {
-            asCtx(param).addViolation(unusedMethod, PrettyPrintingUtil.displaySignature(unusedMethod));
+            ctx.addViolation(unusedMethod, PrettyPrintingUtil.displaySignature(unusedMethod));
         }
     }
 
