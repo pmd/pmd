@@ -19,7 +19,6 @@ import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.reporting.RuleContext;
 
@@ -39,34 +38,30 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTFieldAccess node, Object data) {
-        JFieldSymbol sym = node.getReferencedSym();
-        if (sym != null && sym.getConstValue() == null) {
-            checkMemberAccess((RuleContext) data, node, sym);
-        }
+        checkMemberAccessIfConstValueIsNull(node, (RuleContext) data, node.getReferencedSym());
         return null;
     }
 
     @Override
     public Object visit(ASTVariableAccess node, Object data) {
-        JVariableSymbol sym = node.getReferencedSym();
-        if (sym instanceof JFieldSymbol) {
-            JFieldSymbol fieldSym = (JFieldSymbol) sym;
-            if (((JFieldSymbol) sym).getConstValue() == null) {
-                checkMemberAccess((RuleContext) data, node, fieldSym);
-            }
-        }
+        checkMemberAccessIfConstValueIsNull(node, (RuleContext) data, node.getReferencedSym());
         return null;
+    }
+
+    private void checkMemberAccessIfConstValueIsNull(JavaNode node, RuleContext data, JVariableSymbol sym) {
+        if (sym instanceof JFieldSymbol && ((JFieldSymbol) sym).getConstValue() == null) {
+            checkMemberAccess(data, (ASTExpression) node, (JFieldSymbol) sym);
+        }
     }
 
     @Override
     public Object visit(ASTMethodCall node, Object data) {
-        JMethodSymbol symbol = (JMethodSymbol) node.getMethodType().getSymbol();
-        checkMemberAccess((RuleContext) data, node, symbol);
+        checkMemberAccess((RuleContext) data, node, node.getMethodType().getSymbol());
         return null;
     }
 
     private void checkMemberAccess(RuleContext data, ASTExpression node, JAccessibleElementSymbol symbol) {
-        checkMemberAccess(data, node, symbol, this.reportedNodes);
+        checkMemberAccess(data, node, symbol, reportedNodes);
     }
 
     static void checkMemberAccess(RuleContext ruleContext, JavaNode refExpr, JAccessibleElementSymbol sym, Set<JavaNode> reportedNodes) {
@@ -91,11 +86,11 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
      * canonical name {@code com.github.Outer.Inner}, returns {@code Outer.Inner}.
      */
     private static String stripPackageName(JClassSymbol symbol) {
-        String p = symbol.getPackageName();
         String canoName = symbol.getCanonicalName();
         if (canoName == null) {
             return symbol.getSimpleName();
         }
+        String p = symbol.getPackageName();
         if (p.isEmpty()) {
             return canoName;
         }
