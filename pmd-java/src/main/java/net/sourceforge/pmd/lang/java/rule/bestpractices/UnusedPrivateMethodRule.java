@@ -73,6 +73,10 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
                     return reffed;
                 });
             });
+        addViolations(param, candidates);
+    }
+
+    private void addViolations(Object param, Map<JExecutableSymbol, ASTMethodDeclaration> candidates) {
         for (ASTMethodDeclaration unusedMethod : candidates.values()) {
             asCtx(param).addViolation(unusedMethod, PrettyPrintingUtil.displaySignature(unusedMethod));
         }
