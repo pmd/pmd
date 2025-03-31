@@ -2608,7 +2608,7 @@ class Foo {
 ]]></code>
     </test-code>
     <test-code>
-        <description>#5621 [java] UnusedPrivateMethod with method ref</description>
+        <description>#5621 [java] UnusedPrivateMethod with method ref - ambiguous</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import io.vertx.ext.web.Router;
@@ -2620,9 +2620,8 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public final class TheResource extends AbstractResource {
+public final class TheResource {
 
-    @Override
     public Collection<Consumer<Router>> routes() {
         return List.of(
             r -> r.post("/").handler(this::handleRequest)
@@ -2630,6 +2629,33 @@ public final class TheResource extends AbstractResource {
     }
 
     private void handleRequest(RoutingContext rc) {
+    }
+
+    private static Optional<Object> handleRequest(String name, Map<String, Object> registry, Function<Object, Object> run) {
+        return null;
+    }
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>#5621 [java] UnusedPrivateMethod with method ref - ambiguous Object</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+public final class TheResource {
+
+    public Collection<Consumer<Object>> routes() {
+        Collections.emptyList().forEach(this::handleRequest);
+        return null;
+    }
+
+    private void handleRequest(Object rc) {
     }
 
     private static Optional<Object> handleRequest(String name, Map<String, Object> registry, Function<Object, Object> run) {
@@ -2651,9 +2677,8 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public final class TheResource extends AbstractResource {
+public final class TheResource {
 
-    @Override
     public Collection<Consumer<Router>> routes() {
         return null;
     }
@@ -2680,9 +2705,8 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public final class TheResource extends AbstractResource {
+public final class TheResource {
 
-    @Override
     public Collection<Consumer<Router>> routes() {
         handleRequest("used");
         return null;
@@ -2695,6 +2719,40 @@ public final class TheResource extends AbstractResource {
     }
 
     private static Optional<Object> handleRequest(String name, Map<String, Object> registry, Function<Object, Object> run) {
+        return null;
+    }
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>#5621 [java] UnusedPrivateMethod with method ref</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Collection;
+public final class TheResource {
+    public Collection<String> routes(Collection<String> list) {
+        list.forEach(this::handleRequest);
+        return list;
+    }
+    private void handleRequest(String used) {
+    }
+    private void handleRequest(Object unused) {
+    }
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>#5621 [java] UnusedPrivateMethod with method ref - getNormalizedAddress</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Optional;
+
+public final class TheResource {
+    private String foo(final Object foo, final String bar) {
+        return Optional.ofNullable(foo.toString()).map(TheResource::getNormalizedAddress).orElse(null);
+    }
+
+    private static String getNormalizedAddress(final String encoded) {
         return null;
     }
 }
