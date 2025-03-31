@@ -29,6 +29,7 @@ import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.AbstractIgnoredAnnotationRule;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * This rule detects private methods, that are not used and can therefore be
@@ -51,31 +52,36 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
 
     @Override
     public Object visit(ASTCompilationUnit file, Object param) {
-        // this does a couple of traversals:
-        // - one to find annotations that potentially reference a method
-        // - one to collect candidates, that is, potentially unused methods
-        // - one to walk through all possible usages of methods, and delete used methods from the set
-        Set<String> methodsUsedByAnnotations = methodsUsedByAnnotations(file);
-        Map<JExecutableSymbol, ASTMethodDeclaration> candidates = findCandidates(file, methodsUsedByAnnotations);
+        RuleContext ctx = asCtx(param);
+        for (ASTMethodDeclaration violation : findViolations(file, findCandidates(file)).values()) {
+            ctx.addViolation(violation, PrettyPrintingUtil.displaySignature(violation));
+        }
+        return null;
+    }
 
+    /**
+     * does the following traversals:
+     * <ol>
+     * <li>find annotations that potentially reference a method.</li>
+     * <li>collect potentially unused methods.</li>
+     * <li>delete used methods from the set by walking through all usages.</li>
+     * </ol>
+     */
+    private Map<JExecutableSymbol, ASTMethodDeclaration> findViolations(ASTCompilationUnit file,
+                                                                        Map<JExecutableSymbol, ASTMethodDeclaration> methods) {
         file.descendants()
             .crossFindBoundaries()
             .<MethodUsage>map(asInstanceOf(ASTMethodCall.class, ASTMethodReference.class))
-            .forEach(ref -> {
-                JExecutableSymbol calledMethod = getMethodSymbol(ref);
-                candidates.compute(calledMethod, (sym2, reffed) -> {
-                    if (reffed != null && ref.ancestors(ASTMethodDeclaration.class).first() != reffed) {
-                        // remove mapping, but only if it is called from outside itself
-                        return null;
-                    }
-                    return reffed;
-                });
-            });
+            .forEach(ref -> removeUsedMethods(methods, ref));
+        return methods;
+    }
 
-        for (ASTMethodDeclaration unusedMethod : candidates.values()) {
-            asCtx(param).addViolation(unusedMethod, PrettyPrintingUtil.displaySignature(unusedMethod));
-        }
-        return null;
+    private static void removeUsedMethods(Map<JExecutableSymbol, ASTMethodDeclaration> candidates, MethodUsage ref) {
+        candidates.compute(
+            getMethodSymbol(ref),
+            (s, reffed) -> reffed != null && ref.ancestors(ASTMethodDeclaration.class).first() != reffed
+                ? null // remove mapping, but only if it is called from outside itself
+                : reffed);
     }
 
     private static JExecutableSymbol getMethodSymbol(MethodUsage ref) {
@@ -87,25 +93,24 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         throw new IllegalStateException("unknown type: " + ref);
     }
 
-
     /**
      * Collect potential unused private methods and index them by their symbol.
      * We don't use {@link JExecutableSymbol#tryGetNode()} because it may return
      * null for types that are treated specially by the type inference system. For
      * instance for java.lang.String, the ASM symbol is preferred over the AST symbol.
      */
-    private Map<JExecutableSymbol, ASTMethodDeclaration> findCandidates(ASTCompilationUnit file, Set<String> methodsUsedByAnnotations) {
+    private Map<JExecutableSymbol, ASTMethodDeclaration> findCandidates(ASTCompilationUnit file) {
         return file.descendants(ASTMethodDeclaration.class)
-                   .crossFindBoundaries()
-                   .filter(
-                       it -> it.getVisibility() == Visibility.V_PRIVATE
-                           && !hasIgnoredAnnotation(it)
-                           && !hasExcludedName(it)
-                           && !(it.getArity() == 0 && methodsUsedByAnnotations.contains(it.getName())))
-                   .collect(Collectors.toMap(
-                       ASTMethodDeclaration::getSymbol,
-                       m -> m
-                   ));
+            .crossFindBoundaries()
+            .filter(
+                it -> it.getVisibility() == Visibility.V_PRIVATE
+                    && !hasIgnoredAnnotation(it)
+                    && !hasExcludedName(it)
+                    && !(it.getArity() == 0 && methodsUsedByAnnotations(file).contains(it.getName())))
+            .collect(Collectors.toMap(
+                ASTMethodDeclaration::getSymbol,
+                m -> m
+            ));
     }
 
     private static Set<String> methodsUsedByAnnotations(ASTCompilationUnit file) {
@@ -132,7 +137,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         );
     }
 
-    private boolean hasExcludedName(ASTMethodDeclaration node) {
+    private static boolean hasExcludedName(ASTMethodDeclaration node) {
         return SERIALIZATION_METHODS.contains(node.getName());
     }
 }
