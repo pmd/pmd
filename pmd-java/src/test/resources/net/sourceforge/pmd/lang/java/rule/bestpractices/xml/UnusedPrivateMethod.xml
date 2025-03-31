@@ -2607,4 +2607,25 @@ class Foo {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>#5621 [java] UnusedPrivateMethod with method ref</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class TheResource extends AbstractResource {
+
+    @Override
+    public Collection<Consumer<Router>> routes() {
+        return List.of(
+                r -> r.post("/some/path").handler(this::handleRequest)
+        );
+    }
+
+    private void handleRequest(RoutingContext rc) { ... }
+
+
+    private static <T, R> Optional<R> handleRequest(String name, Map<String, T> registry, Function<T, R> run) { ... }
+
+}
+]]></code>
+    </test-code>
 </test-data>
