@@ -2725,7 +2725,7 @@ public final class TheResource {
 ]]></code>
     </test-code>
     <test-code>
-        <description>#5621 [java] UnusedPrivateMethod with method ref</description>
+        <description>#5621 [java] UnusedPrivateMethod with method ref - this::handleRequest</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.Collection;
