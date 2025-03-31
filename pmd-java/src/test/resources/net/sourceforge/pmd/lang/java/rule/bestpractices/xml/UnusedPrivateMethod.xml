@@ -1803,7 +1803,7 @@ public class OuterClass {
     }
 }
         ]]></code>
-    </test-code> 
+    </test-code>
 
     <test-code>
         <description>[java] UnusedPrivateMethod false positive with static method and cast expression #3209</description>
@@ -1826,7 +1826,7 @@ public class UnusedAssignmentRule {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>[java] UnusedPrivateMethod false positive: Autoboxing into Number #4625</description>
         <expected-problems>0</expected-problems>
@@ -2742,7 +2742,7 @@ public final class TheResource {
 ]]></code>
     </test-code>
     <test-code>
-        <description>#5621 [java] UnusedPrivateMethod with method ref - getNormalizedAddress</description>
+        <description>#5621 [java] UnusedPrivateMethod with method ref - TheResource::getNormalizedAddress</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.Optional;
@@ -2753,6 +2753,23 @@ public final class TheResource {
     }
 
     private static String getNormalizedAddress(final String encoded) {
+        return null;
+    }
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>#5621 [java] UnusedPrivateMethod with method ref - this::getNormalizedAddress</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Optional;
+
+public final class TheResource {
+    private String foo(final Object foo, final String bar) {
+        return Optional.ofNullable(foo.toString()).map(this::getNormalizedAddress).orElse(null);
+    }
+
+    private String getNormalizedAddress(final String encoded) {
         return null;
     }
 }
