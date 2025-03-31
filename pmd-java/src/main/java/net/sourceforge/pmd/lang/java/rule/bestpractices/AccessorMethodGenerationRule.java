@@ -48,9 +48,9 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    private void checkMemberAccessIfConstValueIsNull(JavaNode node, RuleContext data, JVariableSymbol sym) {
+    private void checkMemberAccessIfConstValueIsNull(ASTExpression node, RuleContext data, JVariableSymbol sym) {
         if (sym instanceof JFieldSymbol && ((JFieldSymbol) sym).getConstValue() == null) {
-            checkMemberAccess(data, (ASTExpression) node, (JFieldSymbol) sym);
+            checkMemberAccess(data, node, (JFieldSymbol) sym);
         }
     }
 
