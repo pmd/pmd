@@ -11,6 +11,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -53,7 +54,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
     @Override
     public Object visit(ASTCompilationUnit file, Object param) {
         RuleContext ctx = asCtx(param);
-        for (ASTMethodDeclaration violation : findViolations(file, findCandidates(file)).values()) {
+        for (ASTMethodDeclaration violation : findViolations(file, findMethods(file)).values()) {
             ctx.addViolation(violation, PrettyPrintingUtil.displaySignature(violation));
         }
         return null;
@@ -72,16 +73,15 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         file.descendants()
             .crossFindBoundaries()
             .<MethodUsage>map(asInstanceOf(ASTMethodCall.class, ASTMethodReference.class))
-            .forEach(ref -> removeUsedMethods(methods, ref));
+            .forEach(ref -> methods.compute(getMethodSymbol(ref), removeMappingIfUsed(ref)));
         return methods;
     }
 
-    private static void removeUsedMethods(Map<JExecutableSymbol, ASTMethodDeclaration> candidates, MethodUsage ref) {
-        candidates.compute(
-            getMethodSymbol(ref),
-            (s, reffed) -> reffed != null && ref.ancestors(ASTMethodDeclaration.class).first() != reffed
-                ? null // remove mapping, but only if it is called from outside itself
-                : reffed);
+    private static BiFunction<JExecutableSymbol, ASTMethodDeclaration, ASTMethodDeclaration> removeMappingIfUsed(MethodUsage methodUsage) {
+        return (s, reffed) -> reffed != null
+            && reffed != methodUsage.ancestors(ASTMethodDeclaration.class).first()
+            ? null // remove mapping, but only if it is called from outside itself
+            : reffed;
     }
 
     private static JExecutableSymbol getMethodSymbol(MethodUsage ref) {
@@ -99,7 +99,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
      * null for types that are treated specially by the type inference system. For
      * instance for java.lang.String, the ASM symbol is preferred over the AST symbol.
      */
-    private Map<JExecutableSymbol, ASTMethodDeclaration> findCandidates(ASTCompilationUnit file) {
+    private Map<JExecutableSymbol, ASTMethodDeclaration> findMethods(ASTCompilationUnit file) {
         return file.descendants(ASTMethodDeclaration.class)
             .crossFindBoundaries()
             .filter(
