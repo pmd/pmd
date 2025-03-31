@@ -2775,4 +2775,21 @@ public final class TheResource {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>#5621 [java] UnusedPrivateMethod with method ref - s -> getNormalizedAddress(s)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Optional;
+
+public final class TheResource {
+    private String foo(final Object foo, final String bar) {
+        return Optional.ofNullable(foo.toString()).map(s -> getNormalizedAddress(s)).orElse(null);
+    }
+
+    private String getNormalizedAddress(final String encoded) {
+        return null;
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
