@@ -2609,22 +2609,94 @@ class Foo {
     </test-code>
     <test-code>
         <description>#5621 [java] UnusedPrivateMethod with method ref</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
+import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 public final class TheResource extends AbstractResource {
 
     @Override
     public Collection<Consumer<Router>> routes() {
         return List.of(
-                r -> r.post("/some/path").handler(this::handleRequest)
+            r -> r.post("/").handler(this::handleRequest)
         );
     }
 
-    private void handleRequest(RoutingContext rc) { ... }
+    private void handleRequest(RoutingContext rc) {
+    }
 
+    private static Optional<Object> handleRequest(String name, Map<String, Object> registry, Function<Object, Object> run) {
+        return null;
+    }
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>#5621 [java] UnusedPrivateMethod with method ref 2</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
-    private static <T, R> Optional<R> handleRequest(String name, Map<String, T> registry, Function<T, R> run) { ... }
+public final class TheResource extends AbstractResource {
 
+    @Override
+    public Collection<Consumer<Router>> routes() {
+        return null;
+    }
+
+    private void handleRequest(RoutingContext rc) {
+    }
+
+    private static Optional<Object> handleRequest(String name, Map<String, Object> registry, Function<Object, Object> run) {
+        return null;
+    }
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>#5621 [java] UnusedPrivateMethod with method ref 3</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+public final class TheResource extends AbstractResource {
+
+    @Override
+    public Collection<Consumer<Router>> routes() {
+        handleRequest("used");
+        return null;
+    }
+
+    private void handleRequest(RoutingContext rc) {
+    }
+
+    private void handleRequest(String used) {
+    }
+
+    private static Optional<Object> handleRequest(String name, Map<String, Object> registry, Function<Object, Object> run) {
+        return null;
+    }
 }
 ]]></code>
     </test-code>
