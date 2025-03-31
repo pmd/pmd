@@ -17,11 +17,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
@@ -238,12 +241,17 @@ public final class NPathMetricCalculator {
                 }
             }
 
+            if (!JavaAstUtils.isTotalSwitch(switchLike)) {
+                // add a path for the implicit default case
+                currentFallthroughState.absorb(startState.currentProgramPoint);
+            }
+
             return currentFallthroughState;
         }
 
         @Override
         public CfVisitState visit(ASTSwitchStatement node, CfVisitState data) {
-            return handleLabels(node, data, true, null, this::visitSwitch);
+            return handleLabels(node, data, true, false, this::visitSwitch);
         }
 
 
@@ -259,32 +267,58 @@ public final class NPathMetricCalculator {
 
         @Override
         public CfVisitState visit(ASTForeachStatement node, CfVisitState state) {
-            state = node.getIterableExpr().acceptVisitor(this, state);
-            final CfPoint startPoint = new CfPoint(state.currentProgramPoint);
-
-            CfPoint continuePoint = new CfPoint(0);
-            CfVisitState loopState = handleLabels(node, state, true, continuePoint,
-                    (loop, state2) -> loop.getBody().acceptVisitor(this, state2));
-            loopState.absorb(continuePoint);
-            // this is here for the path where the loop body is not executed because collection is empty
-            loopState.absorb(startPoint);
-            return loopState;
+            return visitLoopExceptDoWhile(node, state, node.getIterableExpr(), null, node.getIterableExpr());
         }
 
 
         @Override
         public CfVisitState visit(ASTWhileStatement node, CfVisitState state) {
-            if (node.getCondition() != null) {
-                state = node.getCondition().acceptVisitor(this, state);
-            }
+            return visitLoopExceptDoWhile(node, state, null, null, node.getCondition());
+        }
 
-            CfPoint continuePoint = new CfPoint(0);
-            return handleLabels(node, state, true, continuePoint,
+        @Override
+        public CfVisitState visit(ASTForStatement node, CfVisitState state) {
+            return visitLoopExceptDoWhile(node, state, node.getInit(), node.getUpdate(), node.getCondition());
+        }
+
+        private CfVisitState visitLoopExceptDoWhile(ASTLoopStatement node, CfVisitState state, @Nullable JavaNode init, @Nullable JavaNode update, @Nullable ASTExpression conditionNode) {
+            state = acceptOpt(init, state);
+
+            DecisionPoint decision = getLoopCondition(conditionNode, state.currentProgramPoint);
+
+            CfVisitState endState = handleLabels(node, state.fork(decision.truePoint()), true, true,
                     (loop, state2) -> {
-                        CfVisitState bodyState1 = loop.getBody().acceptVisitor(this, state2);
-                        bodyState1.absorb(continuePoint); // continue reaches the body state
-                        return bodyState1;
+                        state2 = loop.getBody().acceptVisitor(this, state2);
+                        return acceptOpt(update, state2);
+                    },
+                    (afterBody, breakPoint, contPoint) -> {
+                        assert contPoint != null;
+                        return afterBody.absorb(breakPoint).absorb(contPoint);
+                    }
+            );
+            if (JavaAstUtils.isUnconditionalLoop(node)) {
+                return endState;
+            }
+            return endState.absorb(decision.falsePoint());
+        }
+
+
+        @Override
+        public CfVisitState visit(ASTDoStatement node, CfVisitState state) {
+            return handleLabels(node, state, true, true, (loop, state2) -> loop.getBody().acceptVisitor(this, state2),
+                    (afterBody, breakPoint, contPoint) -> {
+                        assert contPoint != null;
+                        CfPoint beforeCond = afterBody.currentProgramPoint.connectTo(contPoint);
+                        DecisionPoint condition = getLoopCondition(node.getCondition(), beforeCond);
+                        return afterBody.absorb(condition.falsePoint()).absorb(breakPoint);
                     });
+        }
+
+        private DecisionPoint getLoopCondition(@Nullable ASTExpression condition, CfPoint point) {
+            if (condition != null) {
+                return getControlFlowInCondition(condition, point);
+            }
+            return point;
         }
 
         @Override
@@ -293,17 +327,37 @@ public final class NPathMetricCalculator {
             return state.withPoint(endPoint);
         }
 
+        private CfVisitState acceptOpt(@Nullable JavaNode node, CfVisitState state) {
+            if (node == null) {
+                return state;
+            }
+            return node.acceptVisitor(this, state);
+        }
+
         private static <N extends ASTStatement> CfVisitState handleLabelsForRegularStmt(N stmt, CfVisitState state,
                                                                                         BiFunction<N, CfVisitState, CfVisitState> action) {
-            return handleLabels(stmt, state, false, null, action);
+            return handleLabels(stmt, state, false, false, action);
         }
 
         private static <N extends ASTStatement> CfVisitState handleLabels(N stmt, CfVisitState state,
                                                                           boolean canBreakWithoutLabel,
-                                                                          @Nullable CfPoint continuePoint,
+                                                                          boolean canContinue,
                                                                           BiFunction<N, CfVisitState, CfVisitState> action) {
+            return handleLabels(stmt, state, canBreakWithoutLabel, canContinue, action,
+                    (endState, breakPoint, contPoint) -> endState.absorb(breakPoint));
+        }
+
+        interface BreakAndContinueHandler {
+            CfVisitState handleBreakAndContinue(CfVisitState state, CfPoint breakPoint, @Nullable CfPoint continuePoint);
+        }
+
+        private static <N extends ASTStatement> CfVisitState handleLabels(N stmt, CfVisitState state,
+                                                                          boolean canBreakWithoutLabel,
+                                                                          boolean canContinue,
+                                                                          BiFunction<N, CfVisitState, CfVisitState> action,
+                                                                          BreakAndContinueHandler callback) {
             Set<String> labels = JavaAstUtils.getStatementLabels(stmt);
-            if (labels.isEmpty() && !canBreakWithoutLabel && continuePoint == null) {
+            if (labels.isEmpty() && !canBreakWithoutLabel && !canContinue) {
                 return action.apply(stmt, state);
             }
             final PMap<String, CfPoint> prevLabeledBreaks = state.labeledBreakPoints;
@@ -320,7 +374,9 @@ public final class NPathMetricCalculator {
                 state.breakPoint = breakPoint;
             }
 
-            if (continuePoint != null) {
+            CfPoint continuePoint = null;
+            if (canContinue) {
+                continuePoint = new CfPoint(0);
                 state.continuePoint = continuePoint;
                 for (String label : labels) {
                     state.labeledContinuePoints = state.labeledContinuePoints.plus(label, continuePoint);
@@ -328,12 +384,12 @@ public final class NPathMetricCalculator {
             }
 
             CfVisitState endState = action.apply(stmt, state);
-            breakPoint.connectTo(endState.currentProgramPoint);
             endState.continuePoint = prevContinue;
             endState.breakPoint = prevBreak;
             endState.labeledBreakPoints = prevLabeledBreaks;
             endState.labeledContinuePoints = prevLabeledContinues;
-            return endState;
+
+            return callback.handleBreakAndContinue(endState, breakPoint, continuePoint);
         }
     }
 
@@ -385,6 +441,8 @@ public final class NPathMetricCalculator {
 
     static final class CfVisitState {
 
+        // these are overridable and accumulate paths that end the current statement.
+
         private PMap<String, CfPoint> labeledBreakPoints;
         private PMap<String, CfPoint> labeledContinuePoints;
 
@@ -392,8 +450,12 @@ public final class NPathMetricCalculator {
         private @Nullable CfPoint continuePoint;
         private @Nullable CfPoint yieldPoint;
 
+        /** Accumulate paths that end in a return. */
         private final CfPoint returnPoint;
+        /** Accumulate paths that end in a throw. */
         private final CfPoint throwPoint;
+
+        /** Stores the number of paths until the current program point we are exploring. */
         private CfPoint currentProgramPoint;
 
         CfVisitState(long numPathsUntilThisPoint) {
@@ -460,7 +522,9 @@ public final class NPathMetricCalculator {
         }
 
         long getNumPathsToExit() {
-            return currentProgramPoint.connectTo(returnPoint).connectTo(throwPoint).numPathsUntilThisPoint;
+            return currentProgramPoint
+                    .connectTo(returnPoint)
+                    .connectTo(throwPoint).numPathsUntilThisPoint;
         }
     }
 

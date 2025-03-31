@@ -49,6 +49,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
@@ -66,6 +67,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
@@ -866,5 +869,23 @@ public final class JavaAstUtils {
             }
         }
         return true;
+    }
+
+    public static boolean isUnconditionalLoop(ASTLoopStatement loop) {
+        return !(loop instanceof ASTForeachStatement)
+                && (loop.getCondition() == null || isBooleanLiteral(loop.getCondition(), true));
+    }
+
+    /**
+     * Return true if this switch is total with respect to the scrutinee
+     * type. This means, one of the branches will always be taken, and the
+     * switch will never "not match". A switch with a default case is always
+     * total. A switch expression is checked by the compiler for exhaustivity,
+     * and we assume it is correct.
+     */
+    public static boolean isTotalSwitch(ASTSwitchLike switchLike) {
+        if (switchLike instanceof ASTSwitchExpression || switchLike.hasDefaultCase())
+            return true;
+        return switchLike.isExhaustive();
     }
 }
