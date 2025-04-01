@@ -4,29 +4,21 @@
 
 package net.sourceforge.pmd.lang.xml.pom;
 
-import net.sourceforge.pmd.cpd.CpdLexer;
-import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
-import net.sourceforge.pmd.lang.xml.XmlHandler;
-import net.sourceforge.pmd.lang.xml.cpd.XmlCpdLexer;
+import net.sourceforge.pmd.lang.impl.SimpleDialectLanguageModuleBase;
 
-public class PomLanguageModule extends SimpleLanguageModuleBase {
+public class PomLanguageModule extends SimpleDialectLanguageModuleBase {
     private static final String ID = "pom";
 
     public PomLanguageModule() {
         super(LanguageMetadata.withId(ID).name("Maven POM")
                               .extensions("pom")
-                              .addDefaultVersion("4.0.0"),
-              new XmlHandler());
+                              .addDefaultVersion("4.0.0")
+                              .asDialectOf("xml"));
     }
 
     public static PomLanguageModule getInstance() {
         return (PomLanguageModule) LanguageRegistry.PMD.getLanguageById(ID);
     }
 
-    @Override
-    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
-        return new XmlCpdLexer();
-    }
 }
