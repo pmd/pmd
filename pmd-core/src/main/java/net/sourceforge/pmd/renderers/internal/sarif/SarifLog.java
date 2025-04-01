@@ -40,21 +40,21 @@ public class SarifLog {
          */
         private PhysicalLocation physicalLocation;
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         Location(final Integer id, final PhysicalLocation physicalLocation) {
             this.id = id;
             this.physicalLocation = physicalLocation;
         }
 
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static class LocationBuilder {
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private Integer id;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private PhysicalLocation physicalLocation;
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             LocationBuilder() {
             }
 
@@ -62,7 +62,7 @@ public class SarifLog {
              * Value that distinguishes this location from all other locations within a single result object.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Location.LocationBuilder id(final Integer id) {
                 this.id = id;
                 return this;
@@ -72,25 +72,25 @@ public class SarifLog {
              * Identifies the artifact and region.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Location.LocationBuilder physicalLocation(final PhysicalLocation physicalLocation) {
                 this.physicalLocation = physicalLocation;
                 return this;
             }
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Location build() {
                 return new SarifLog.Location(this.id, this.physicalLocation);
             }
 
-            @java.lang.Override
-            @java.lang.SuppressWarnings("all")
-            public java.lang.String toString() {
+            @Override
+            @SuppressWarnings("all")
+            public String toString() {
                 return "SarifLog.Location.LocationBuilder(id=" + this.id + ", physicalLocation=" + this.physicalLocation + ")";
             }
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static SarifLog.Location.LocationBuilder builder() {
             return new SarifLog.Location.LocationBuilder();
         }
@@ -98,7 +98,7 @@ public class SarifLog {
         /**
          * Value that distinguishes this location from all other locations within a single result object.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public Integer getId() {
             return this.id;
         }
@@ -106,7 +106,7 @@ public class SarifLog {
         /**
          * Identifies the artifact and region.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public PhysicalLocation getPhysicalLocation() {
             return this.physicalLocation;
         }
@@ -115,7 +115,7 @@ public class SarifLog {
          * Value that distinguishes this location from all other locations within a single result object.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Location setId(final Integer id) {
             this.id = id;
             return this;
@@ -125,15 +125,15 @@ public class SarifLog {
          * Identifies the artifact and region.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Location setPhysicalLocation(final PhysicalLocation physicalLocation) {
             this.physicalLocation = physicalLocation;
             return this;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public boolean equals(final java.lang.Object o) {
+        @Override
+        @SuppressWarnings("all")
+        public boolean equals(final Object o) {
             if (o == this) {
                 return true;
             }
@@ -144,39 +144,39 @@ public class SarifLog {
             if (!other.canEqual((java.lang.Object) this)) {
                 return false;
             }
-            final java.lang.Object this$id = this.getId();
-            final java.lang.Object other$id = other.getId();
+            final Object this$id = this.getId();
+            final Object other$id = other.getId();
             if (this$id == null ? other$id != null : !this$id.equals(other$id)) {
                 return false;
             }
-            final java.lang.Object this$physicalLocation = this.getPhysicalLocation();
-            final java.lang.Object other$physicalLocation = other.getPhysicalLocation();
+            final Object this$physicalLocation = this.getPhysicalLocation();
+            final Object other$physicalLocation = other.getPhysicalLocation();
             if (this$physicalLocation == null ? other$physicalLocation != null : !this$physicalLocation.equals(other$physicalLocation)) {
                 return false;
             }
             return true;
         }
 
-        @java.lang.SuppressWarnings("all")
-        protected boolean canEqual(final java.lang.Object other) {
+        @SuppressWarnings("all")
+        protected boolean canEqual(final Object other) {
             return other instanceof SarifLog.Location;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
+        @Override
+        @SuppressWarnings("all")
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
-            final java.lang.Object $id = this.getId();
+            final Object $id = this.getId();
             result = result * PRIME + ($id == null ? 43 : $id.hashCode());
-            final java.lang.Object $physicalLocation = this.getPhysicalLocation();
+            final Object $physicalLocation = this.getPhysicalLocation();
             result = result * PRIME + ($physicalLocation == null ? 43 : $physicalLocation.hashCode());
             return result;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public java.lang.String toString() {
+        @Override
+        @SuppressWarnings("all")
+        public String toString() {
             return "SarifLog.Location(id=" + this.getId() + ", physicalLocation=" + this.getPhysicalLocation() + ")";
         }
     }
@@ -200,7 +200,7 @@ public class SarifLog {
          */
         private Integer index;
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         ArtifactLocation(final String uri, final String uriBaseId, final Integer index) {
             this.uri = uri;
             this.uriBaseId = uriBaseId;
@@ -208,16 +208,16 @@ public class SarifLog {
         }
 
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static class ArtifactLocationBuilder {
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private String uri;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private String uriBaseId;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private Integer index;
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             ArtifactLocationBuilder() {
             }
 
@@ -225,7 +225,7 @@ public class SarifLog {
              * A string containing a valid relative or absolute URI.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.ArtifactLocation.ArtifactLocationBuilder uri(final String uri) {
                 this.uri = uri;
                 return this;
@@ -236,7 +236,7 @@ public class SarifLog {
              * is interpreted.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.ArtifactLocation.ArtifactLocationBuilder uriBaseId(final String uriBaseId) {
                 this.uriBaseId = uriBaseId;
                 return this;
@@ -246,25 +246,25 @@ public class SarifLog {
              * The index within the run artifacts array of the artifact object associated with the artifact location.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.ArtifactLocation.ArtifactLocationBuilder index(final Integer index) {
                 this.index = index;
                 return this;
             }
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.ArtifactLocation build() {
                 return new SarifLog.ArtifactLocation(this.uri, this.uriBaseId, this.index);
             }
 
-            @java.lang.Override
-            @java.lang.SuppressWarnings("all")
-            public java.lang.String toString() {
+            @Override
+            @SuppressWarnings("all")
+            public String toString() {
                 return "SarifLog.ArtifactLocation.ArtifactLocationBuilder(uri=" + this.uri + ", uriBaseId=" + this.uriBaseId + ", index=" + this.index + ")";
             }
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static SarifLog.ArtifactLocation.ArtifactLocationBuilder builder() {
             return new SarifLog.ArtifactLocation.ArtifactLocationBuilder();
         }
@@ -272,7 +272,7 @@ public class SarifLog {
         /**
          * A string containing a valid relative or absolute URI.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public String getUri() {
             return this.uri;
         }
@@ -281,7 +281,7 @@ public class SarifLog {
          * A string which indirectly specifies the absolute URI with respect to which a relative URI in the "uri" property
          * is interpreted.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public String getUriBaseId() {
             return this.uriBaseId;
         }
@@ -289,7 +289,7 @@ public class SarifLog {
         /**
          * The index within the run artifacts array of the artifact object associated with the artifact location.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public Integer getIndex() {
             return this.index;
         }
@@ -298,7 +298,7 @@ public class SarifLog {
          * A string containing a valid relative or absolute URI.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.ArtifactLocation setUri(final String uri) {
             this.uri = uri;
             return this;
@@ -309,7 +309,7 @@ public class SarifLog {
          * is interpreted.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.ArtifactLocation setUriBaseId(final String uriBaseId) {
             this.uriBaseId = uriBaseId;
             return this;
@@ -319,15 +319,15 @@ public class SarifLog {
          * The index within the run artifacts array of the artifact object associated with the artifact location.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.ArtifactLocation setIndex(final Integer index) {
             this.index = index;
             return this;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public boolean equals(final java.lang.Object o) {
+        @Override
+        @SuppressWarnings("all")
+        public boolean equals(final Object o) {
             if (o == this) {
                 return true;
             }
@@ -338,46 +338,46 @@ public class SarifLog {
             if (!other.canEqual((java.lang.Object) this)) {
                 return false;
             }
-            final java.lang.Object this$uri = this.getUri();
-            final java.lang.Object other$uri = other.getUri();
+            final Object this$uri = this.getUri();
+            final Object other$uri = other.getUri();
             if (this$uri == null ? other$uri != null : !this$uri.equals(other$uri)) {
                 return false;
             }
-            final java.lang.Object this$uriBaseId = this.getUriBaseId();
-            final java.lang.Object other$uriBaseId = other.getUriBaseId();
+            final Object this$uriBaseId = this.getUriBaseId();
+            final Object other$uriBaseId = other.getUriBaseId();
             if (this$uriBaseId == null ? other$uriBaseId != null : !this$uriBaseId.equals(other$uriBaseId)) {
                 return false;
             }
-            final java.lang.Object this$index = this.getIndex();
-            final java.lang.Object other$index = other.getIndex();
+            final Object this$index = this.getIndex();
+            final Object other$index = other.getIndex();
             if (this$index == null ? other$index != null : !this$index.equals(other$index)) {
                 return false;
             }
             return true;
         }
 
-        @java.lang.SuppressWarnings("all")
-        protected boolean canEqual(final java.lang.Object other) {
+        @SuppressWarnings("all")
+        protected boolean canEqual(final Object other) {
             return other instanceof SarifLog.ArtifactLocation;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
+        @Override
+        @SuppressWarnings("all")
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
-            final java.lang.Object $uri = this.getUri();
+            final Object $uri = this.getUri();
             result = result * PRIME + ($uri == null ? 43 : $uri.hashCode());
-            final java.lang.Object $uriBaseId = this.getUriBaseId();
+            final Object $uriBaseId = this.getUriBaseId();
             result = result * PRIME + ($uriBaseId == null ? 43 : $uriBaseId.hashCode());
-            final java.lang.Object $index = this.getIndex();
+            final Object $index = this.getIndex();
             result = result * PRIME + ($index == null ? 43 : $index.hashCode());
             return result;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public java.lang.String toString() {
+        @Override
+        @SuppressWarnings("all")
+        public String toString() {
             return "SarifLog.ArtifactLocation(uri=" + this.getUri() + ", uriBaseId=" + this.getUriBaseId() + ", index=" + this.getIndex() + ")";
         }
     }
@@ -397,21 +397,21 @@ public class SarifLog {
          */
         private Region region;
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         PhysicalLocation(final ArtifactLocation artifactLocation, final Region region) {
             this.artifactLocation = artifactLocation;
             this.region = region;
         }
 
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static class PhysicalLocationBuilder {
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private ArtifactLocation artifactLocation;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private Region region;
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             PhysicalLocationBuilder() {
             }
 
@@ -419,7 +419,7 @@ public class SarifLog {
              * The location of the artifact.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.PhysicalLocation.PhysicalLocationBuilder artifactLocation(final ArtifactLocation artifactLocation) {
                 this.artifactLocation = artifactLocation;
                 return this;
@@ -429,25 +429,25 @@ public class SarifLog {
              * Specifies a portion of the artifact.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.PhysicalLocation.PhysicalLocationBuilder region(final Region region) {
                 this.region = region;
                 return this;
             }
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.PhysicalLocation build() {
                 return new SarifLog.PhysicalLocation(this.artifactLocation, this.region);
             }
 
-            @java.lang.Override
-            @java.lang.SuppressWarnings("all")
-            public java.lang.String toString() {
+            @Override
+            @SuppressWarnings("all")
+            public String toString() {
                 return "SarifLog.PhysicalLocation.PhysicalLocationBuilder(artifactLocation=" + this.artifactLocation + ", region=" + this.region + ")";
             }
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static SarifLog.PhysicalLocation.PhysicalLocationBuilder builder() {
             return new SarifLog.PhysicalLocation.PhysicalLocationBuilder();
         }
@@ -455,7 +455,7 @@ public class SarifLog {
         /**
          * The location of the artifact.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public ArtifactLocation getArtifactLocation() {
             return this.artifactLocation;
         }
@@ -463,7 +463,7 @@ public class SarifLog {
         /**
          * Specifies a portion of the artifact.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public Region getRegion() {
             return this.region;
         }
@@ -472,7 +472,7 @@ public class SarifLog {
          * The location of the artifact.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.PhysicalLocation setArtifactLocation(final ArtifactLocation artifactLocation) {
             this.artifactLocation = artifactLocation;
             return this;
@@ -482,15 +482,15 @@ public class SarifLog {
          * Specifies a portion of the artifact.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.PhysicalLocation setRegion(final Region region) {
             this.region = region;
             return this;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public boolean equals(final java.lang.Object o) {
+        @Override
+        @SuppressWarnings("all")
+        public boolean equals(final Object o) {
             if (o == this) {
                 return true;
             }
@@ -501,39 +501,39 @@ public class SarifLog {
             if (!other.canEqual((java.lang.Object) this)) {
                 return false;
             }
-            final java.lang.Object this$artifactLocation = this.getArtifactLocation();
-            final java.lang.Object other$artifactLocation = other.getArtifactLocation();
+            final Object this$artifactLocation = this.getArtifactLocation();
+            final Object other$artifactLocation = other.getArtifactLocation();
             if (this$artifactLocation == null ? other$artifactLocation != null : !this$artifactLocation.equals(other$artifactLocation)) {
                 return false;
             }
-            final java.lang.Object this$region = this.getRegion();
-            final java.lang.Object other$region = other.getRegion();
+            final Object this$region = this.getRegion();
+            final Object other$region = other.getRegion();
             if (this$region == null ? other$region != null : !this$region.equals(other$region)) {
                 return false;
             }
             return true;
         }
 
-        @java.lang.SuppressWarnings("all")
-        protected boolean canEqual(final java.lang.Object other) {
+        @SuppressWarnings("all")
+        protected boolean canEqual(final Object other) {
             return other instanceof SarifLog.PhysicalLocation;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
+        @Override
+        @SuppressWarnings("all")
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
-            final java.lang.Object $artifactLocation = this.getArtifactLocation();
+            final Object $artifactLocation = this.getArtifactLocation();
             result = result * PRIME + ($artifactLocation == null ? 43 : $artifactLocation.hashCode());
-            final java.lang.Object $region = this.getRegion();
+            final Object $region = this.getRegion();
             result = result * PRIME + ($region == null ? 43 : $region.hashCode());
             return result;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public java.lang.String toString() {
+        @Override
+        @SuppressWarnings("all")
+        public String toString() {
             return "SarifLog.PhysicalLocation(artifactLocation=" + this.getArtifactLocation() + ", region=" + this.getRegion() + ")";
         }
     }
@@ -556,7 +556,7 @@ public class SarifLog {
          */
         private Set<String> tags;
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         PropertyBag(final String ruleset, final Integer priority, final Set<String> tags) {
             this.ruleset = ruleset;
             this.priority = priority;
@@ -564,16 +564,16 @@ public class SarifLog {
         }
 
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static class PropertyBagBuilder {
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private String ruleset;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private Integer priority;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private Set<String> tags;
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             PropertyBagBuilder() {
             }
 
@@ -581,7 +581,7 @@ public class SarifLog {
              * The name of the rule set.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.PropertyBag.PropertyBagBuilder ruleset(final String ruleset) {
                 this.ruleset = ruleset;
                 return this;
@@ -591,7 +591,7 @@ public class SarifLog {
              * The pmd priority of the rule.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.PropertyBag.PropertyBagBuilder priority(final Integer priority) {
                 this.priority = priority;
                 return this;
@@ -601,25 +601,25 @@ public class SarifLog {
              * A set of distinct strings that provide additional information. This is SARIF 2.1.0 Schema.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.PropertyBag.PropertyBagBuilder tags(final Set<String> tags) {
                 this.tags = tags;
                 return this;
             }
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.PropertyBag build() {
                 return new SarifLog.PropertyBag(this.ruleset, this.priority, this.tags);
             }
 
-            @java.lang.Override
-            @java.lang.SuppressWarnings("all")
-            public java.lang.String toString() {
+            @Override
+            @SuppressWarnings("all")
+            public String toString() {
                 return "SarifLog.PropertyBag.PropertyBagBuilder(ruleset=" + this.ruleset + ", priority=" + this.priority + ", tags=" + this.tags + ")";
             }
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static SarifLog.PropertyBag.PropertyBagBuilder builder() {
             return new SarifLog.PropertyBag.PropertyBagBuilder();
         }
@@ -627,7 +627,7 @@ public class SarifLog {
         /**
          * The name of the rule set.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public String getRuleset() {
             return this.ruleset;
         }
@@ -635,7 +635,7 @@ public class SarifLog {
         /**
          * The pmd priority of the rule.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public Integer getPriority() {
             return this.priority;
         }
@@ -643,7 +643,7 @@ public class SarifLog {
         /**
          * A set of distinct strings that provide additional information. This is SARIF 2.1.0 Schema.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public Set<String> getTags() {
             return this.tags;
         }
@@ -652,7 +652,7 @@ public class SarifLog {
          * The name of the rule set.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.PropertyBag setRuleset(final String ruleset) {
             this.ruleset = ruleset;
             return this;
@@ -662,7 +662,7 @@ public class SarifLog {
          * The pmd priority of the rule.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.PropertyBag setPriority(final Integer priority) {
             this.priority = priority;
             return this;
@@ -672,15 +672,15 @@ public class SarifLog {
          * The set of distinct strings that provide additional information. This is SARIF 2.1.0 Schema.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.PropertyBag setTags(final Set<String> tags) {
             this.tags = tags;
             return this;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public boolean equals(final java.lang.Object o) {
+        @Override
+        @SuppressWarnings("all")
+        public boolean equals(final Object o) {
             if (o == this) {
                 return true;
             }
@@ -691,46 +691,46 @@ public class SarifLog {
             if (!other.canEqual((java.lang.Object) this)) {
                 return false;
             }
-            final java.lang.Object this$ruleset = this.getRuleset();
-            final java.lang.Object other$ruleset = other.getRuleset();
+            final Object this$ruleset = this.getRuleset();
+            final Object other$ruleset = other.getRuleset();
             if (this$ruleset == null ? other$ruleset != null : !this$ruleset.equals(other$ruleset)) {
                 return false;
             }
-            final java.lang.Object this$priority = this.getPriority();
-            final java.lang.Object other$priority = other.getPriority();
+            final Object this$priority = this.getPriority();
+            final Object other$priority = other.getPriority();
             if (this$priority == null ? other$priority != null : !this$priority.equals(other$priority)) {
                 return false;
             }
-            final java.lang.Object this$tags = this.getTags();
-            final java.lang.Object other$tags = other.getTags();
+            final Object this$tags = this.getTags();
+            final Object other$tags = other.getTags();
             if (this$tags == null ? other$tags != null : !this$tags.equals(other$tags)) {
                 return false;
             }
             return true;
         }
 
-        @java.lang.SuppressWarnings("all")
-        protected boolean canEqual(final java.lang.Object other) {
+        @SuppressWarnings("all")
+        protected boolean canEqual(final Object other) {
             return other instanceof SarifLog.PropertyBag;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
+        @Override
+        @SuppressWarnings("all")
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
-            final java.lang.Object $ruleset = this.getRuleset();
+            final Object $ruleset = this.getRuleset();
             result = result * PRIME + ($ruleset == null ? 43 : $ruleset.hashCode());
-            final java.lang.Object $priority = this.getPriority();
+            final Object $priority = this.getPriority();
             result = result * PRIME + ($priority == null ? 43 : $priority.hashCode());
-            final java.lang.Object $tags = this.getTags();
+            final Object $tags = this.getTags();
             result = result * PRIME + ($tags == null ? 43 : $tags.hashCode());
             return result;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public java.lang.String toString() {
+        @Override
+        @SuppressWarnings("all")
+        public String toString() {
             return "SarifLog.PropertyBag(ruleset=" + this.getRuleset() + ", priority=" + this.getPriority() + ", tags=" + this.getTags() + ")";
         }
     }
@@ -757,7 +757,7 @@ public class SarifLog {
          */
         private Integer endColumn;
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         Region(final Integer startLine, final Integer startColumn, final Integer endLine, final Integer endColumn) {
             this.startLine = startLine;
             this.startColumn = startColumn;
@@ -766,18 +766,18 @@ public class SarifLog {
         }
 
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static class RegionBuilder {
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private Integer startLine;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private Integer startColumn;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private Integer endLine;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private Integer endColumn;
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             RegionBuilder() {
             }
 
@@ -785,7 +785,7 @@ public class SarifLog {
              * The line number of the first character in the region.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Region.RegionBuilder startLine(final Integer startLine) {
                 this.startLine = startLine;
                 return this;
@@ -795,7 +795,7 @@ public class SarifLog {
              * The column number of the first character in the region.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Region.RegionBuilder startColumn(final Integer startColumn) {
                 this.startColumn = startColumn;
                 return this;
@@ -805,7 +805,7 @@ public class SarifLog {
              * The line number of the last character in the region.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Region.RegionBuilder endLine(final Integer endLine) {
                 this.endLine = endLine;
                 return this;
@@ -815,25 +815,25 @@ public class SarifLog {
              * The column number of the character following the end of the region.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Region.RegionBuilder endColumn(final Integer endColumn) {
                 this.endColumn = endColumn;
                 return this;
             }
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Region build() {
                 return new SarifLog.Region(this.startLine, this.startColumn, this.endLine, this.endColumn);
             }
 
-            @java.lang.Override
-            @java.lang.SuppressWarnings("all")
-            public java.lang.String toString() {
+            @Override
+            @SuppressWarnings("all")
+            public String toString() {
                 return "SarifLog.Region.RegionBuilder(startLine=" + this.startLine + ", startColumn=" + this.startColumn + ", endLine=" + this.endLine + ", endColumn=" + this.endColumn + ")";
             }
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static SarifLog.Region.RegionBuilder builder() {
             return new SarifLog.Region.RegionBuilder();
         }
@@ -841,7 +841,7 @@ public class SarifLog {
         /**
          * The line number of the first character in the region.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public Integer getStartLine() {
             return this.startLine;
         }
@@ -849,7 +849,7 @@ public class SarifLog {
         /**
          * The column number of the first character in the region.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public Integer getStartColumn() {
             return this.startColumn;
         }
@@ -857,7 +857,7 @@ public class SarifLog {
         /**
          * The line number of the last character in the region.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public Integer getEndLine() {
             return this.endLine;
         }
@@ -865,7 +865,7 @@ public class SarifLog {
         /**
          * The column number of the character following the end of the region.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public Integer getEndColumn() {
             return this.endColumn;
         }
@@ -874,7 +874,7 @@ public class SarifLog {
          * The line number of the first character in the region.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Region setStartLine(final Integer startLine) {
             this.startLine = startLine;
             return this;
@@ -884,7 +884,7 @@ public class SarifLog {
          * The column number of the first character in the region.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Region setStartColumn(final Integer startColumn) {
             this.startColumn = startColumn;
             return this;
@@ -894,7 +894,7 @@ public class SarifLog {
          * The line number of the last character in the region.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Region setEndLine(final Integer endLine) {
             this.endLine = endLine;
             return this;
@@ -904,15 +904,15 @@ public class SarifLog {
          * The column number of the character following the end of the region.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Region setEndColumn(final Integer endColumn) {
             this.endColumn = endColumn;
             return this;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public boolean equals(final java.lang.Object o) {
+        @Override
+        @SuppressWarnings("all")
+        public boolean equals(final Object o) {
             if (o == this) {
                 return true;
             }
@@ -923,53 +923,53 @@ public class SarifLog {
             if (!other.canEqual((java.lang.Object) this)) {
                 return false;
             }
-            final java.lang.Object this$startLine = this.getStartLine();
-            final java.lang.Object other$startLine = other.getStartLine();
+            final Object this$startLine = this.getStartLine();
+            final Object other$startLine = other.getStartLine();
             if (this$startLine == null ? other$startLine != null : !this$startLine.equals(other$startLine)) {
                 return false;
             }
-            final java.lang.Object this$startColumn = this.getStartColumn();
-            final java.lang.Object other$startColumn = other.getStartColumn();
+            final Object this$startColumn = this.getStartColumn();
+            final Object other$startColumn = other.getStartColumn();
             if (this$startColumn == null ? other$startColumn != null : !this$startColumn.equals(other$startColumn)) {
                 return false;
             }
-            final java.lang.Object this$endLine = this.getEndLine();
-            final java.lang.Object other$endLine = other.getEndLine();
+            final Object this$endLine = this.getEndLine();
+            final Object other$endLine = other.getEndLine();
             if (this$endLine == null ? other$endLine != null : !this$endLine.equals(other$endLine)) {
                 return false;
             }
-            final java.lang.Object this$endColumn = this.getEndColumn();
-            final java.lang.Object other$endColumn = other.getEndColumn();
+            final Object this$endColumn = this.getEndColumn();
+            final Object other$endColumn = other.getEndColumn();
             if (this$endColumn == null ? other$endColumn != null : !this$endColumn.equals(other$endColumn)) {
                 return false;
             }
             return true;
         }
 
-        @java.lang.SuppressWarnings("all")
-        protected boolean canEqual(final java.lang.Object other) {
+        @SuppressWarnings("all")
+        protected boolean canEqual(final Object other) {
             return other instanceof SarifLog.Region;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
+        @Override
+        @SuppressWarnings("all")
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
-            final java.lang.Object $startLine = this.getStartLine();
+            final Object $startLine = this.getStartLine();
             result = result * PRIME + ($startLine == null ? 43 : $startLine.hashCode());
-            final java.lang.Object $startColumn = this.getStartColumn();
+            final Object $startColumn = this.getStartColumn();
             result = result * PRIME + ($startColumn == null ? 43 : $startColumn.hashCode());
-            final java.lang.Object $endLine = this.getEndLine();
+            final Object $endLine = this.getEndLine();
             result = result * PRIME + ($endLine == null ? 43 : $endLine.hashCode());
-            final java.lang.Object $endColumn = this.getEndColumn();
+            final Object $endColumn = this.getEndColumn();
             result = result * PRIME + ($endColumn == null ? 43 : $endColumn.hashCode());
             return result;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public java.lang.String toString() {
+        @Override
+        @SuppressWarnings("all")
+        public String toString() {
             return "SarifLog.Region(startLine=" + this.getStartLine() + ", startColumn=" + this.getStartColumn() + ", endLine=" + this.getEndLine() + ", endColumn=" + this.getEndColumn() + ")";
         }
     }
@@ -1002,7 +1002,7 @@ public class SarifLog {
          */
         private PropertyBag properties;
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         Result(final String ruleId, final Integer ruleIndex, final Message message, final List<Location> locations, final PropertyBag properties) {
             this.ruleId = ruleId;
             this.ruleIndex = ruleIndex;
@@ -1012,20 +1012,20 @@ public class SarifLog {
         }
 
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static class ResultBuilder {
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private String ruleId;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private Integer ruleIndex;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private Message message;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private List<Location> locations;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private PropertyBag properties;
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             ResultBuilder() {
             }
 
@@ -1033,7 +1033,7 @@ public class SarifLog {
              * The stable, unique identifier of the rule, if any, to which this result is relevant.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Result.ResultBuilder ruleId(final String ruleId) {
                 this.ruleId = ruleId;
                 return this;
@@ -1043,7 +1043,7 @@ public class SarifLog {
              * The index link the rule, if any, to which this result is relevant.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Result.ResultBuilder ruleIndex(final Integer ruleIndex) {
                 this.ruleIndex = ruleIndex;
                 return this;
@@ -1054,7 +1054,7 @@ public class SarifLog {
              * space is limited.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Result.ResultBuilder message(final Message message) {
                 this.message = message;
                 return this;
@@ -1065,7 +1065,7 @@ public class SarifLog {
              * the result can only be corrected by making a change at every specified location.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Result.ResultBuilder locations(final List<Location> locations) {
                 this.locations = locations;
                 return this;
@@ -1075,25 +1075,25 @@ public class SarifLog {
              * Key/value pairs that provide additional information about the address.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Result.ResultBuilder properties(final PropertyBag properties) {
                 this.properties = properties;
                 return this;
             }
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Result build() {
                 return new SarifLog.Result(this.ruleId, this.ruleIndex, this.message, this.locations, this.properties);
             }
 
-            @java.lang.Override
-            @java.lang.SuppressWarnings("all")
-            public java.lang.String toString() {
+            @Override
+            @SuppressWarnings("all")
+            public String toString() {
                 return "SarifLog.Result.ResultBuilder(ruleId=" + this.ruleId + ", ruleIndex=" + this.ruleIndex + ", message=" + this.message + ", locations=" + this.locations + ", properties=" + this.properties + ")";
             }
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static SarifLog.Result.ResultBuilder builder() {
             return new SarifLog.Result.ResultBuilder();
         }
@@ -1101,7 +1101,7 @@ public class SarifLog {
         /**
          * The stable, unique identifier of the rule, if any, to which this result is relevant.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public String getRuleId() {
             return this.ruleId;
         }
@@ -1109,7 +1109,7 @@ public class SarifLog {
         /**
          * The index link the rule, if any, to which this result is relevant.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public Integer getRuleIndex() {
             return this.ruleIndex;
         }
@@ -1118,7 +1118,7 @@ public class SarifLog {
          * A message that describes the result. The first sentence of the message only will be displayed when visible
          * space is limited.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public Message getMessage() {
             return this.message;
         }
@@ -1127,7 +1127,7 @@ public class SarifLog {
          * The set of locations where the result was detected. Specify only one location unless the problem indicated by
          * the result can only be corrected by making a change at every specified location.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public List<Location> getLocations() {
             return this.locations;
         }
@@ -1135,7 +1135,7 @@ public class SarifLog {
         /**
          * Key/value pairs that provide additional information about the address.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public PropertyBag getProperties() {
             return this.properties;
         }
@@ -1144,7 +1144,7 @@ public class SarifLog {
          * The stable, unique identifier of the rule, if any, to which this result is relevant.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Result setRuleId(final String ruleId) {
             this.ruleId = ruleId;
             return this;
@@ -1154,7 +1154,7 @@ public class SarifLog {
          * The index link the rule, if any, to which this result is relevant.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Result setRuleIndex(final Integer ruleIndex) {
             this.ruleIndex = ruleIndex;
             return this;
@@ -1165,7 +1165,7 @@ public class SarifLog {
          * space is limited.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Result setMessage(final Message message) {
             this.message = message;
             return this;
@@ -1176,7 +1176,7 @@ public class SarifLog {
          * the result can only be corrected by making a change at every specified location.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Result setLocations(final List<Location> locations) {
             this.locations = locations;
             return this;
@@ -1186,15 +1186,15 @@ public class SarifLog {
          * Key/value pairs that provide additional information about the address.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Result setProperties(final PropertyBag properties) {
             this.properties = properties;
             return this;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public boolean equals(final java.lang.Object o) {
+        @Override
+        @SuppressWarnings("all")
+        public boolean equals(final Object o) {
             if (o == this) {
                 return true;
             }
@@ -1205,60 +1205,60 @@ public class SarifLog {
             if (!other.canEqual((java.lang.Object) this)) {
                 return false;
             }
-            final java.lang.Object this$ruleId = this.getRuleId();
-            final java.lang.Object other$ruleId = other.getRuleId();
+            final Object this$ruleId = this.getRuleId();
+            final Object other$ruleId = other.getRuleId();
             if (this$ruleId == null ? other$ruleId != null : !this$ruleId.equals(other$ruleId)) {
                 return false;
             }
-            final java.lang.Object this$ruleIndex = this.getRuleIndex();
-            final java.lang.Object other$ruleIndex = other.getRuleIndex();
+            final Object this$ruleIndex = this.getRuleIndex();
+            final Object other$ruleIndex = other.getRuleIndex();
             if (this$ruleIndex == null ? other$ruleIndex != null : !this$ruleIndex.equals(other$ruleIndex)) {
                 return false;
             }
-            final java.lang.Object this$message = this.getMessage();
-            final java.lang.Object other$message = other.getMessage();
+            final Object this$message = this.getMessage();
+            final Object other$message = other.getMessage();
             if (this$message == null ? other$message != null : !this$message.equals(other$message)) {
                 return false;
             }
-            final java.lang.Object this$locations = this.getLocations();
-            final java.lang.Object other$locations = other.getLocations();
+            final Object this$locations = this.getLocations();
+            final Object other$locations = other.getLocations();
             if (this$locations == null ? other$locations != null : !this$locations.equals(other$locations)) {
                 return false;
             }
-            final java.lang.Object this$properties = this.getProperties();
-            final java.lang.Object other$properties = other.getProperties();
+            final Object this$properties = this.getProperties();
+            final Object other$properties = other.getProperties();
             if (this$properties == null ? other$properties != null : !this$properties.equals(other$properties)) {
                 return false;
             }
             return true;
         }
 
-        @java.lang.SuppressWarnings("all")
-        protected boolean canEqual(final java.lang.Object other) {
+        @SuppressWarnings("all")
+        protected boolean canEqual(final Object other) {
             return other instanceof SarifLog.Result;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
+        @Override
+        @SuppressWarnings("all")
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
-            final java.lang.Object $ruleId = this.getRuleId();
+            final Object $ruleId = this.getRuleId();
             result = result * PRIME + ($ruleId == null ? 43 : $ruleId.hashCode());
-            final java.lang.Object $ruleIndex = this.getRuleIndex();
+            final Object $ruleIndex = this.getRuleIndex();
             result = result * PRIME + ($ruleIndex == null ? 43 : $ruleIndex.hashCode());
-            final java.lang.Object $message = this.getMessage();
+            final Object $message = this.getMessage();
             result = result * PRIME + ($message == null ? 43 : $message.hashCode());
-            final java.lang.Object $locations = this.getLocations();
+            final Object $locations = this.getLocations();
             result = result * PRIME + ($locations == null ? 43 : $locations.hashCode());
-            final java.lang.Object $properties = this.getProperties();
+            final Object $properties = this.getProperties();
             result = result * PRIME + ($properties == null ? 43 : $properties.hashCode());
             return result;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public java.lang.String toString() {
+        @Override
+        @SuppressWarnings("all")
+        public String toString() {
             return "SarifLog.Result(ruleId=" + this.getRuleId() + ", ruleIndex=" + this.getRuleIndex() + ", message=" + this.getMessage() + ", locations=" + this.getLocations() + ", properties=" + this.getProperties() + ")";
         }
     }
@@ -1281,7 +1281,7 @@ public class SarifLog {
          */
         private String id;
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         Message(final String text, final String markdown, final String id) {
             this.text = text;
             this.markdown = markdown;
@@ -1289,16 +1289,16 @@ public class SarifLog {
         }
 
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static class MessageBuilder {
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private String text;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private String markdown;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private String id;
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             MessageBuilder() {
             }
 
@@ -1306,7 +1306,7 @@ public class SarifLog {
              * A plain text message string.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Message.MessageBuilder text(final String text) {
                 this.text = text;
                 return this;
@@ -1316,7 +1316,7 @@ public class SarifLog {
              * A Markdown message string.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Message.MessageBuilder markdown(final String markdown) {
                 this.markdown = markdown;
                 return this;
@@ -1326,25 +1326,25 @@ public class SarifLog {
              * The identifier for this message.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Message.MessageBuilder id(final String id) {
                 this.id = id;
                 return this;
             }
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Message build() {
                 return new SarifLog.Message(this.text, this.markdown, this.id);
             }
 
-            @java.lang.Override
-            @java.lang.SuppressWarnings("all")
-            public java.lang.String toString() {
+            @Override
+            @SuppressWarnings("all")
+            public String toString() {
                 return "SarifLog.Message.MessageBuilder(text=" + this.text + ", markdown=" + this.markdown + ", id=" + this.id + ")";
             }
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static SarifLog.Message.MessageBuilder builder() {
             return new SarifLog.Message.MessageBuilder();
         }
@@ -1352,7 +1352,7 @@ public class SarifLog {
         /**
          * A plain text message string.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public String getText() {
             return this.text;
         }
@@ -1360,7 +1360,7 @@ public class SarifLog {
         /**
          * A Markdown message string.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public String getMarkdown() {
             return this.markdown;
         }
@@ -1368,7 +1368,7 @@ public class SarifLog {
         /**
          * The identifier for this message.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public String getId() {
             return this.id;
         }
@@ -1377,7 +1377,7 @@ public class SarifLog {
          * A plain text message string.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Message setText(final String text) {
             this.text = text;
             return this;
@@ -1387,7 +1387,7 @@ public class SarifLog {
          * A Markdown message string.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Message setMarkdown(final String markdown) {
             this.markdown = markdown;
             return this;
@@ -1397,15 +1397,15 @@ public class SarifLog {
          * The identifier for this message.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Message setId(final String id) {
             this.id = id;
             return this;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public boolean equals(final java.lang.Object o) {
+        @Override
+        @SuppressWarnings("all")
+        public boolean equals(final Object o) {
             if (o == this) {
                 return true;
             }
@@ -1416,46 +1416,46 @@ public class SarifLog {
             if (!other.canEqual((java.lang.Object) this)) {
                 return false;
             }
-            final java.lang.Object this$text = this.getText();
-            final java.lang.Object other$text = other.getText();
+            final Object this$text = this.getText();
+            final Object other$text = other.getText();
             if (this$text == null ? other$text != null : !this$text.equals(other$text)) {
                 return false;
             }
-            final java.lang.Object this$markdown = this.getMarkdown();
-            final java.lang.Object other$markdown = other.getMarkdown();
+            final Object this$markdown = this.getMarkdown();
+            final Object other$markdown = other.getMarkdown();
             if (this$markdown == null ? other$markdown != null : !this$markdown.equals(other$markdown)) {
                 return false;
             }
-            final java.lang.Object this$id = this.getId();
-            final java.lang.Object other$id = other.getId();
+            final Object this$id = this.getId();
+            final Object other$id = other.getId();
             if (this$id == null ? other$id != null : !this$id.equals(other$id)) {
                 return false;
             }
             return true;
         }
 
-        @java.lang.SuppressWarnings("all")
-        protected boolean canEqual(final java.lang.Object other) {
+        @SuppressWarnings("all")
+        protected boolean canEqual(final Object other) {
             return other instanceof SarifLog.Message;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
+        @Override
+        @SuppressWarnings("all")
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
-            final java.lang.Object $text = this.getText();
+            final Object $text = this.getText();
             result = result * PRIME + ($text == null ? 43 : $text.hashCode());
-            final java.lang.Object $markdown = this.getMarkdown();
+            final Object $markdown = this.getMarkdown();
             result = result * PRIME + ($markdown == null ? 43 : $markdown.hashCode());
-            final java.lang.Object $id = this.getId();
+            final Object $id = this.getId();
             result = result * PRIME + ($id == null ? 43 : $id.hashCode());
             return result;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public java.lang.String toString() {
+        @Override
+        @SuppressWarnings("all")
+        public String toString() {
             return "SarifLog.Message(text=" + this.getText() + ", markdown=" + this.getMarkdown() + ", id=" + this.getId() + ")";
         }
     }
@@ -1482,7 +1482,7 @@ public class SarifLog {
          */
         private List<Invocation> invocations;
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         Run(final Tool tool, final List<Result> results, final List<Invocation> invocations) {
             this.tool = tool;
             this.results = results;
@@ -1490,16 +1490,16 @@ public class SarifLog {
         }
 
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static class RunBuilder {
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private Tool tool;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private java.util.ArrayList<Result> results;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private List<Invocation> invocations;
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             RunBuilder() {
             }
 
@@ -1509,13 +1509,13 @@ public class SarifLog {
              * as context around the tool run (tool command-line arguments and the like) is identical for all aggregated files.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Run.RunBuilder tool(final Tool tool) {
                 this.tool = tool;
                 return this;
             }
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Run.RunBuilder result(final Result result) {
                 if (this.results == null) {
                     this.results = new java.util.ArrayList<Result>();
@@ -1524,10 +1524,10 @@ public class SarifLog {
                 return this;
             }
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Run.RunBuilder results(final java.util.Collection<? extends Result> results) {
                 if (results == null) {
-                    throw new java.lang.NullPointerException("results cannot be null");
+                    throw new NullPointerException("results cannot be null");
                 }
                 if (this.results == null) {
                     this.results = new java.util.ArrayList<Result>();
@@ -1536,7 +1536,7 @@ public class SarifLog {
                 return this;
             }
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Run.RunBuilder clearResults() {
                 if (this.results != null) {
                     this.results.clear();
@@ -1549,13 +1549,13 @@ public class SarifLog {
              * exceptions
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Run.RunBuilder invocations(final List<Invocation> invocations) {
                 this.invocations = invocations;
                 return this;
             }
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Run build() {
                 java.util.List<Result> results;
                 switch (this.results == null ? 0 : this.results.size()) {
@@ -1571,14 +1571,14 @@ public class SarifLog {
                 return new SarifLog.Run(this.tool, results, this.invocations);
             }
 
-            @java.lang.Override
-            @java.lang.SuppressWarnings("all")
-            public java.lang.String toString() {
+            @Override
+            @SuppressWarnings("all")
+            public String toString() {
                 return "SarifLog.Run.RunBuilder(tool=" + this.tool + ", results=" + this.results + ", invocations=" + this.invocations + ")";
             }
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static SarifLog.Run.RunBuilder builder() {
             return new SarifLog.Run.RunBuilder();
         }
@@ -1588,7 +1588,7 @@ public class SarifLog {
          * results produced by a single tool or tool pipeline. A run can aggregate results from multiple log files, as long
          * as context around the tool run (tool command-line arguments and the like) is identical for all aggregated files.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public Tool getTool() {
             return this.tool;
         }
@@ -1597,7 +1597,7 @@ public class SarifLog {
          * The set of results contained in an SARIF log. The results array can be omitted when a run is solely exporting
          * rules metadata. It must be present (but may be empty) if a log file represents an actual scan.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public List<Result> getResults() {
             return this.results;
         }
@@ -1606,7 +1606,7 @@ public class SarifLog {
          * The set of invocations providing information about the tool execution such as configuration errors or runtime
          * exceptions
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public List<Invocation> getInvocations() {
             return this.invocations;
         }
@@ -1617,7 +1617,7 @@ public class SarifLog {
          * as context around the tool run (tool command-line arguments and the like) is identical for all aggregated files.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Run setTool(final Tool tool) {
             this.tool = tool;
             return this;
@@ -1628,7 +1628,7 @@ public class SarifLog {
          * rules metadata. It must be present (but may be empty) if a log file represents an actual scan.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Run setResults(final List<Result> results) {
             this.results = results;
             return this;
@@ -1639,15 +1639,15 @@ public class SarifLog {
          * exceptions
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Run setInvocations(final List<Invocation> invocations) {
             this.invocations = invocations;
             return this;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public boolean equals(final java.lang.Object o) {
+        @Override
+        @SuppressWarnings("all")
+        public boolean equals(final Object o) {
             if (o == this) {
                 return true;
             }
@@ -1658,46 +1658,46 @@ public class SarifLog {
             if (!other.canEqual((java.lang.Object) this)) {
                 return false;
             }
-            final java.lang.Object this$tool = this.getTool();
-            final java.lang.Object other$tool = other.getTool();
+            final Object this$tool = this.getTool();
+            final Object other$tool = other.getTool();
             if (this$tool == null ? other$tool != null : !this$tool.equals(other$tool)) {
                 return false;
             }
-            final java.lang.Object this$results = this.getResults();
-            final java.lang.Object other$results = other.getResults();
+            final Object this$results = this.getResults();
+            final Object other$results = other.getResults();
             if (this$results == null ? other$results != null : !this$results.equals(other$results)) {
                 return false;
             }
-            final java.lang.Object this$invocations = this.getInvocations();
-            final java.lang.Object other$invocations = other.getInvocations();
+            final Object this$invocations = this.getInvocations();
+            final Object other$invocations = other.getInvocations();
             if (this$invocations == null ? other$invocations != null : !this$invocations.equals(other$invocations)) {
                 return false;
             }
             return true;
         }
 
-        @java.lang.SuppressWarnings("all")
-        protected boolean canEqual(final java.lang.Object other) {
+        @SuppressWarnings("all")
+        protected boolean canEqual(final Object other) {
             return other instanceof SarifLog.Run;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
+        @Override
+        @SuppressWarnings("all")
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
-            final java.lang.Object $tool = this.getTool();
+            final Object $tool = this.getTool();
             result = result * PRIME + ($tool == null ? 43 : $tool.hashCode());
-            final java.lang.Object $results = this.getResults();
+            final Object $results = this.getResults();
             result = result * PRIME + ($results == null ? 43 : $results.hashCode());
-            final java.lang.Object $invocations = this.getInvocations();
+            final Object $invocations = this.getInvocations();
             result = result * PRIME + ($invocations == null ? 43 : $invocations.hashCode());
             return result;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public java.lang.String toString() {
+        @Override
+        @SuppressWarnings("all")
+        public String toString() {
             return "SarifLog.Run(tool=" + this.getTool() + ", results=" + this.getResults() + ", invocations=" + this.getInvocations() + ")";
         }
     }
@@ -1712,18 +1712,18 @@ public class SarifLog {
          */
         private Component driver;
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         Tool(final Component driver) {
             this.driver = driver;
         }
 
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static class ToolBuilder {
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private Component driver;
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             ToolBuilder() {
             }
 
@@ -1731,25 +1731,25 @@ public class SarifLog {
              * The analysis tool that was run.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Tool.ToolBuilder driver(final Component driver) {
                 this.driver = driver;
                 return this;
             }
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Tool build() {
                 return new SarifLog.Tool(this.driver);
             }
 
-            @java.lang.Override
-            @java.lang.SuppressWarnings("all")
-            public java.lang.String toString() {
+            @Override
+            @SuppressWarnings("all")
+            public String toString() {
                 return "SarifLog.Tool.ToolBuilder(driver=" + this.driver + ")";
             }
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static SarifLog.Tool.ToolBuilder builder() {
             return new SarifLog.Tool.ToolBuilder();
         }
@@ -1757,7 +1757,7 @@ public class SarifLog {
         /**
          * The analysis tool that was run.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public Component getDriver() {
             return this.driver;
         }
@@ -1766,15 +1766,15 @@ public class SarifLog {
          * The analysis tool that was run.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Tool setDriver(final Component driver) {
             this.driver = driver;
             return this;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public boolean equals(final java.lang.Object o) {
+        @Override
+        @SuppressWarnings("all")
+        public boolean equals(final Object o) {
             if (o == this) {
                 return true;
             }
@@ -1785,32 +1785,32 @@ public class SarifLog {
             if (!other.canEqual((java.lang.Object) this)) {
                 return false;
             }
-            final java.lang.Object this$driver = this.getDriver();
-            final java.lang.Object other$driver = other.getDriver();
+            final Object this$driver = this.getDriver();
+            final Object other$driver = other.getDriver();
             if (this$driver == null ? other$driver != null : !this$driver.equals(other$driver)) {
                 return false;
             }
             return true;
         }
 
-        @java.lang.SuppressWarnings("all")
-        protected boolean canEqual(final java.lang.Object other) {
+        @SuppressWarnings("all")
+        protected boolean canEqual(final Object other) {
             return other instanceof SarifLog.Tool;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
+        @Override
+        @SuppressWarnings("all")
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
-            final java.lang.Object $driver = this.getDriver();
+            final Object $driver = this.getDriver();
             result = result * PRIME + ($driver == null ? 43 : $driver.hashCode());
             return result;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public java.lang.String toString() {
+        @Override
+        @SuppressWarnings("all")
+        public String toString() {
             return "SarifLog.Tool(driver=" + this.getDriver() + ")";
         }
     }
@@ -1837,7 +1837,7 @@ public class SarifLog {
          */
         private List<ReportingDescriptor> rules;
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         Component(final String name, final String version, final String informationUri, final List<ReportingDescriptor> rules) {
             this.name = name;
             this.version = version;
@@ -1846,18 +1846,18 @@ public class SarifLog {
         }
 
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static class ComponentBuilder {
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private String name;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private String version;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private String informationUri;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private List<ReportingDescriptor> rules;
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             ComponentBuilder() {
             }
 
@@ -1865,7 +1865,7 @@ public class SarifLog {
              * The name of the tool component.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Component.ComponentBuilder name(final String name) {
                 this.name = name;
                 return this;
@@ -1875,7 +1875,7 @@ public class SarifLog {
              * The tool component version, in whatever format the component natively provides.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Component.ComponentBuilder version(final String version) {
                 this.version = version;
                 return this;
@@ -1885,7 +1885,7 @@ public class SarifLog {
              * The absolute URI at which information about this version of the tool component can be found.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Component.ComponentBuilder informationUri(final String informationUri) {
                 this.informationUri = informationUri;
                 return this;
@@ -1895,30 +1895,30 @@ public class SarifLog {
              * An array of reportingDescriptor objects relevant to the analysis performed by the tool component.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Component.ComponentBuilder rules(final List<ReportingDescriptor> rules) {
                 this.rules = rules;
                 return this;
             }
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Component build() {
                 return new SarifLog.Component(this.name, this.version, this.informationUri, this.rules);
             }
 
-            @java.lang.Override
-            @java.lang.SuppressWarnings("all")
-            public java.lang.String toString() {
+            @Override
+            @SuppressWarnings("all")
+            public String toString() {
                 return "SarifLog.Component.ComponentBuilder(name=" + this.name + ", version=" + this.version + ", informationUri=" + this.informationUri + ", rules=" + this.rules + ")";
             }
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static SarifLog.Component.ComponentBuilder builder() {
             return new SarifLog.Component.ComponentBuilder();
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Component.ComponentBuilder toBuilder() {
             return new SarifLog.Component.ComponentBuilder().name(this.name).version(this.version).informationUri(this.informationUri).rules(this.rules);
         }
@@ -1926,7 +1926,7 @@ public class SarifLog {
         /**
          * The name of the tool component.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public String getName() {
             return this.name;
         }
@@ -1934,7 +1934,7 @@ public class SarifLog {
         /**
          * The tool component version, in whatever format the component natively provides.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public String getVersion() {
             return this.version;
         }
@@ -1942,7 +1942,7 @@ public class SarifLog {
         /**
          * The absolute URI at which information about this version of the tool component can be found.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public String getInformationUri() {
             return this.informationUri;
         }
@@ -1950,7 +1950,7 @@ public class SarifLog {
         /**
          * An array of reportingDescriptor objects relevant to the analysis performed by the tool component.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public List<ReportingDescriptor> getRules() {
             return this.rules;
         }
@@ -1959,7 +1959,7 @@ public class SarifLog {
          * The name of the tool component.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Component setName(final String name) {
             this.name = name;
             return this;
@@ -1969,7 +1969,7 @@ public class SarifLog {
          * The tool component version, in whatever format the component natively provides.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Component setVersion(final String version) {
             this.version = version;
             return this;
@@ -1979,7 +1979,7 @@ public class SarifLog {
          * The absolute URI at which information about this version of the tool component can be found.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Component setInformationUri(final String informationUri) {
             this.informationUri = informationUri;
             return this;
@@ -1989,15 +1989,15 @@ public class SarifLog {
          * An array of reportingDescriptor objects relevant to the analysis performed by the tool component.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Component setRules(final List<ReportingDescriptor> rules) {
             this.rules = rules;
             return this;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public boolean equals(final java.lang.Object o) {
+        @Override
+        @SuppressWarnings("all")
+        public boolean equals(final Object o) {
             if (o == this) {
                 return true;
             }
@@ -2008,53 +2008,53 @@ public class SarifLog {
             if (!other.canEqual((java.lang.Object) this)) {
                 return false;
             }
-            final java.lang.Object this$name = this.getName();
-            final java.lang.Object other$name = other.getName();
+            final Object this$name = this.getName();
+            final Object other$name = other.getName();
             if (this$name == null ? other$name != null : !this$name.equals(other$name)) {
                 return false;
             }
-            final java.lang.Object this$version = this.getVersion();
-            final java.lang.Object other$version = other.getVersion();
+            final Object this$version = this.getVersion();
+            final Object other$version = other.getVersion();
             if (this$version == null ? other$version != null : !this$version.equals(other$version)) {
                 return false;
             }
-            final java.lang.Object this$informationUri = this.getInformationUri();
-            final java.lang.Object other$informationUri = other.getInformationUri();
+            final Object this$informationUri = this.getInformationUri();
+            final Object other$informationUri = other.getInformationUri();
             if (this$informationUri == null ? other$informationUri != null : !this$informationUri.equals(other$informationUri)) {
                 return false;
             }
-            final java.lang.Object this$rules = this.getRules();
-            final java.lang.Object other$rules = other.getRules();
+            final Object this$rules = this.getRules();
+            final Object other$rules = other.getRules();
             if (this$rules == null ? other$rules != null : !this$rules.equals(other$rules)) {
                 return false;
             }
             return true;
         }
 
-        @java.lang.SuppressWarnings("all")
-        protected boolean canEqual(final java.lang.Object other) {
+        @SuppressWarnings("all")
+        protected boolean canEqual(final Object other) {
             return other instanceof SarifLog.Component;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
+        @Override
+        @SuppressWarnings("all")
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
-            final java.lang.Object $name = this.getName();
+            final Object $name = this.getName();
             result = result * PRIME + ($name == null ? 43 : $name.hashCode());
-            final java.lang.Object $version = this.getVersion();
+            final Object $version = this.getVersion();
             result = result * PRIME + ($version == null ? 43 : $version.hashCode());
-            final java.lang.Object $informationUri = this.getInformationUri();
+            final Object $informationUri = this.getInformationUri();
             result = result * PRIME + ($informationUri == null ? 43 : $informationUri.hashCode());
-            final java.lang.Object $rules = this.getRules();
+            final Object $rules = this.getRules();
             result = result * PRIME + ($rules == null ? 43 : $rules.hashCode());
             return result;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public java.lang.String toString() {
+        @Override
+        @SuppressWarnings("all")
+        public String toString() {
             return "SarifLog.Component(name=" + this.getName() + ", version=" + this.getVersion() + ", informationUri=" + this.getInformationUri() + ", rules=" + this.getRules() + ")";
         }
     }
@@ -2102,7 +2102,7 @@ public class SarifLog {
          */
         private PropertyBag properties;
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         ReportingDescriptor(final String id, final String name, final MultiformatMessage shortDescription, final MultiformatMessage fullDescription, final MultiformatMessage messageStrings, final String helpUri, final MultiformatMessage help, final PropertyBag properties) {
             this.id = id;
             this.name = name;
@@ -2115,26 +2115,26 @@ public class SarifLog {
         }
 
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static class ReportingDescriptorBuilder {
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private String id;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private String name;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private MultiformatMessage shortDescription;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private MultiformatMessage fullDescription;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private MultiformatMessage messageStrings;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private String helpUri;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private MultiformatMessage help;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private PropertyBag properties;
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             ReportingDescriptorBuilder() {
             }
 
@@ -2142,7 +2142,7 @@ public class SarifLog {
              * A stable, opaque identifier for the report.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.ReportingDescriptor.ReportingDescriptorBuilder id(final String id) {
                 this.id = id;
                 return this;
@@ -2152,7 +2152,7 @@ public class SarifLog {
              * A report identifier that is understandable to an end user.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.ReportingDescriptor.ReportingDescriptorBuilder name(final String name) {
                 this.name = name;
                 return this;
@@ -2163,7 +2163,7 @@ public class SarifLog {
              * limited to a single line of text.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.ReportingDescriptor.ReportingDescriptorBuilder shortDescription(final MultiformatMessage shortDescription) {
                 this.shortDescription = shortDescription;
                 return this;
@@ -2174,7 +2174,7 @@ public class SarifLog {
              * problem indicated by the result.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.ReportingDescriptor.ReportingDescriptorBuilder fullDescription(final MultiformatMessage fullDescription) {
                 this.fullDescription = fullDescription;
                 return this;
@@ -2186,7 +2186,7 @@ public class SarifLog {
              * be used to construct a message in combination with an arbitrary number of additional string arguments.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.ReportingDescriptor.ReportingDescriptorBuilder messageStrings(final MultiformatMessage messageStrings) {
                 this.messageStrings = messageStrings;
                 return this;
@@ -2196,7 +2196,7 @@ public class SarifLog {
              * A URI where the primary documentation for the report can be found.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.ReportingDescriptor.ReportingDescriptorBuilder helpUri(final String helpUri) {
                 this.helpUri = helpUri;
                 return this;
@@ -2206,7 +2206,7 @@ public class SarifLog {
              * Provides the primary documentation for the report, useful when there is no online documentation.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.ReportingDescriptor.ReportingDescriptorBuilder help(final MultiformatMessage help) {
                 this.help = help;
                 return this;
@@ -2216,25 +2216,25 @@ public class SarifLog {
              * Key/value pairs that provide additional information about the report.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.ReportingDescriptor.ReportingDescriptorBuilder properties(final PropertyBag properties) {
                 this.properties = properties;
                 return this;
             }
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.ReportingDescriptor build() {
                 return new SarifLog.ReportingDescriptor(this.id, this.name, this.shortDescription, this.fullDescription, this.messageStrings, this.helpUri, this.help, this.properties);
             }
 
-            @java.lang.Override
-            @java.lang.SuppressWarnings("all")
-            public java.lang.String toString() {
+            @Override
+            @SuppressWarnings("all")
+            public String toString() {
                 return "SarifLog.ReportingDescriptor.ReportingDescriptorBuilder(id=" + this.id + ", name=" + this.name + ", shortDescription=" + this.shortDescription + ", fullDescription=" + this.fullDescription + ", messageStrings=" + this.messageStrings + ", helpUri=" + this.helpUri + ", help=" + this.help + ", properties=" + this.properties + ")";
             }
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static SarifLog.ReportingDescriptor.ReportingDescriptorBuilder builder() {
             return new SarifLog.ReportingDescriptor.ReportingDescriptorBuilder();
         }
@@ -2242,7 +2242,7 @@ public class SarifLog {
         /**
          * A stable, opaque identifier for the report.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public String getId() {
             return this.id;
         }
@@ -2250,7 +2250,7 @@ public class SarifLog {
         /**
          * A report identifier that is understandable to an end user.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public String getName() {
             return this.name;
         }
@@ -2259,7 +2259,7 @@ public class SarifLog {
          * A concise description of the report. Should be a single sentence that is understandable when visible space is
          * limited to a single line of text.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public MultiformatMessage getShortDescription() {
             return this.shortDescription;
         }
@@ -2268,7 +2268,7 @@ public class SarifLog {
          * A description of the report. Should, as far as possible, provide details sufficient to enable resolution of any
          * problem indicated by the result.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public MultiformatMessage getFullDescription() {
             return this.fullDescription;
         }
@@ -2278,7 +2278,7 @@ public class SarifLog {
          * message strings in plain text and (optionally) Markdown format. The strings can include placeholders, which can
          * be used to construct a message in combination with an arbitrary number of additional string arguments.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public MultiformatMessage getMessageStrings() {
             return this.messageStrings;
         }
@@ -2286,7 +2286,7 @@ public class SarifLog {
         /**
          * A URI where the primary documentation for the report can be found.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public String getHelpUri() {
             return this.helpUri;
         }
@@ -2294,7 +2294,7 @@ public class SarifLog {
         /**
          * Provides the primary documentation for the report, useful when there is no online documentation.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public MultiformatMessage getHelp() {
             return this.help;
         }
@@ -2302,7 +2302,7 @@ public class SarifLog {
         /**
          * Key/value pairs that provide additional information about the report.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public PropertyBag getProperties() {
             return this.properties;
         }
@@ -2311,7 +2311,7 @@ public class SarifLog {
          * A stable, opaque identifier for the report.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.ReportingDescriptor setId(final String id) {
             this.id = id;
             return this;
@@ -2321,7 +2321,7 @@ public class SarifLog {
          * A report identifier that is understandable to an end user.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.ReportingDescriptor setName(final String name) {
             this.name = name;
             return this;
@@ -2332,7 +2332,7 @@ public class SarifLog {
          * limited to a single line of text.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.ReportingDescriptor setShortDescription(final MultiformatMessage shortDescription) {
             this.shortDescription = shortDescription;
             return this;
@@ -2343,7 +2343,7 @@ public class SarifLog {
          * problem indicated by the result.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.ReportingDescriptor setFullDescription(final MultiformatMessage fullDescription) {
             this.fullDescription = fullDescription;
             return this;
@@ -2355,7 +2355,7 @@ public class SarifLog {
          * be used to construct a message in combination with an arbitrary number of additional string arguments.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.ReportingDescriptor setMessageStrings(final MultiformatMessage messageStrings) {
             this.messageStrings = messageStrings;
             return this;
@@ -2365,7 +2365,7 @@ public class SarifLog {
          * A URI where the primary documentation for the report can be found.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.ReportingDescriptor setHelpUri(final String helpUri) {
             this.helpUri = helpUri;
             return this;
@@ -2375,7 +2375,7 @@ public class SarifLog {
          * Provides the primary documentation for the report, useful when there is no online documentation.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.ReportingDescriptor setHelp(final MultiformatMessage help) {
             this.help = help;
             return this;
@@ -2385,15 +2385,15 @@ public class SarifLog {
          * Key/value pairs that provide additional information about the report.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.ReportingDescriptor setProperties(final PropertyBag properties) {
             this.properties = properties;
             return this;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public boolean equals(final java.lang.Object o) {
+        @Override
+        @SuppressWarnings("all")
+        public boolean equals(final Object o) {
             if (o == this) {
                 return true;
             }
@@ -2404,81 +2404,81 @@ public class SarifLog {
             if (!other.canEqual((java.lang.Object) this)) {
                 return false;
             }
-            final java.lang.Object this$id = this.getId();
-            final java.lang.Object other$id = other.getId();
+            final Object this$id = this.getId();
+            final Object other$id = other.getId();
             if (this$id == null ? other$id != null : !this$id.equals(other$id)) {
                 return false;
             }
-            final java.lang.Object this$name = this.getName();
-            final java.lang.Object other$name = other.getName();
+            final Object this$name = this.getName();
+            final Object other$name = other.getName();
             if (this$name == null ? other$name != null : !this$name.equals(other$name)) {
                 return false;
             }
-            final java.lang.Object this$shortDescription = this.getShortDescription();
-            final java.lang.Object other$shortDescription = other.getShortDescription();
+            final Object this$shortDescription = this.getShortDescription();
+            final Object other$shortDescription = other.getShortDescription();
             if (this$shortDescription == null ? other$shortDescription != null : !this$shortDescription.equals(other$shortDescription)) {
                 return false;
             }
-            final java.lang.Object this$fullDescription = this.getFullDescription();
-            final java.lang.Object other$fullDescription = other.getFullDescription();
+            final Object this$fullDescription = this.getFullDescription();
+            final Object other$fullDescription = other.getFullDescription();
             if (this$fullDescription == null ? other$fullDescription != null : !this$fullDescription.equals(other$fullDescription)) {
                 return false;
             }
-            final java.lang.Object this$messageStrings = this.getMessageStrings();
-            final java.lang.Object other$messageStrings = other.getMessageStrings();
+            final Object this$messageStrings = this.getMessageStrings();
+            final Object other$messageStrings = other.getMessageStrings();
             if (this$messageStrings == null ? other$messageStrings != null : !this$messageStrings.equals(other$messageStrings)) {
                 return false;
             }
-            final java.lang.Object this$helpUri = this.getHelpUri();
-            final java.lang.Object other$helpUri = other.getHelpUri();
+            final Object this$helpUri = this.getHelpUri();
+            final Object other$helpUri = other.getHelpUri();
             if (this$helpUri == null ? other$helpUri != null : !this$helpUri.equals(other$helpUri)) {
                 return false;
             }
-            final java.lang.Object this$help = this.getHelp();
-            final java.lang.Object other$help = other.getHelp();
+            final Object this$help = this.getHelp();
+            final Object other$help = other.getHelp();
             if (this$help == null ? other$help != null : !this$help.equals(other$help)) {
                 return false;
             }
-            final java.lang.Object this$properties = this.getProperties();
-            final java.lang.Object other$properties = other.getProperties();
+            final Object this$properties = this.getProperties();
+            final Object other$properties = other.getProperties();
             if (this$properties == null ? other$properties != null : !this$properties.equals(other$properties)) {
                 return false;
             }
             return true;
         }
 
-        @java.lang.SuppressWarnings("all")
-        protected boolean canEqual(final java.lang.Object other) {
+        @SuppressWarnings("all")
+        protected boolean canEqual(final Object other) {
             return other instanceof SarifLog.ReportingDescriptor;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
+        @Override
+        @SuppressWarnings("all")
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
-            final java.lang.Object $id = this.getId();
+            final Object $id = this.getId();
             result = result * PRIME + ($id == null ? 43 : $id.hashCode());
-            final java.lang.Object $name = this.getName();
+            final Object $name = this.getName();
             result = result * PRIME + ($name == null ? 43 : $name.hashCode());
-            final java.lang.Object $shortDescription = this.getShortDescription();
+            final Object $shortDescription = this.getShortDescription();
             result = result * PRIME + ($shortDescription == null ? 43 : $shortDescription.hashCode());
-            final java.lang.Object $fullDescription = this.getFullDescription();
+            final Object $fullDescription = this.getFullDescription();
             result = result * PRIME + ($fullDescription == null ? 43 : $fullDescription.hashCode());
-            final java.lang.Object $messageStrings = this.getMessageStrings();
+            final Object $messageStrings = this.getMessageStrings();
             result = result * PRIME + ($messageStrings == null ? 43 : $messageStrings.hashCode());
-            final java.lang.Object $helpUri = this.getHelpUri();
+            final Object $helpUri = this.getHelpUri();
             result = result * PRIME + ($helpUri == null ? 43 : $helpUri.hashCode());
-            final java.lang.Object $help = this.getHelp();
+            final Object $help = this.getHelp();
             result = result * PRIME + ($help == null ? 43 : $help.hashCode());
-            final java.lang.Object $properties = this.getProperties();
+            final Object $properties = this.getProperties();
             result = result * PRIME + ($properties == null ? 43 : $properties.hashCode());
             return result;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public java.lang.String toString() {
+        @Override
+        @SuppressWarnings("all")
+        public String toString() {
             return "SarifLog.ReportingDescriptor(id=" + this.getId() + ", name=" + this.getName() + ", shortDescription=" + this.getShortDescription() + ", fullDescription=" + this.getFullDescription() + ", messageStrings=" + this.getMessageStrings() + ", helpUri=" + this.getHelpUri() + ", help=" + this.getHelp() + ", properties=" + this.getProperties() + ")";
         }
     }
@@ -2502,14 +2502,14 @@ public class SarifLog {
         }
 
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static class MultiformatMessageBuilder {
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private String text;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private String markdown;
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             MultiformatMessageBuilder() {
             }
 
@@ -2517,7 +2517,7 @@ public class SarifLog {
              * A plain text message string or format string.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.MultiformatMessage.MultiformatMessageBuilder text(final String text) {
                 this.text = text;
                 return this;
@@ -2527,25 +2527,25 @@ public class SarifLog {
              * A Markdown message string or format string.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.MultiformatMessage.MultiformatMessageBuilder markdown(final String markdown) {
                 this.markdown = markdown;
                 return this;
             }
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.MultiformatMessage build() {
                 return new SarifLog.MultiformatMessage(this.text, this.markdown);
             }
 
-            @java.lang.Override
-            @java.lang.SuppressWarnings("all")
-            public java.lang.String toString() {
+            @Override
+            @SuppressWarnings("all")
+            public String toString() {
                 return "SarifLog.MultiformatMessage.MultiformatMessageBuilder(text=" + this.text + ", markdown=" + this.markdown + ")";
             }
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static SarifLog.MultiformatMessage.MultiformatMessageBuilder builder() {
             return new SarifLog.MultiformatMessage.MultiformatMessageBuilder();
         }
@@ -2553,7 +2553,7 @@ public class SarifLog {
         /**
          * A plain text message string or format string.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public String getText() {
             return this.text;
         }
@@ -2561,7 +2561,7 @@ public class SarifLog {
         /**
          * A Markdown message string or format string.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public String getMarkdown() {
             return this.markdown;
         }
@@ -2570,7 +2570,7 @@ public class SarifLog {
          * A plain text message string or format string.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.MultiformatMessage setText(final String text) {
             this.text = text;
             return this;
@@ -2580,15 +2580,15 @@ public class SarifLog {
          * A Markdown message string or format string.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.MultiformatMessage setMarkdown(final String markdown) {
             this.markdown = markdown;
             return this;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public boolean equals(final java.lang.Object o) {
+        @Override
+        @SuppressWarnings("all")
+        public boolean equals(final Object o) {
             if (o == this) {
                 return true;
             }
@@ -2599,47 +2599,47 @@ public class SarifLog {
             if (!other.canEqual((java.lang.Object) this)) {
                 return false;
             }
-            final java.lang.Object this$text = this.getText();
-            final java.lang.Object other$text = other.getText();
+            final Object this$text = this.getText();
+            final Object other$text = other.getText();
             if (this$text == null ? other$text != null : !this$text.equals(other$text)) {
                 return false;
             }
-            final java.lang.Object this$markdown = this.getMarkdown();
-            final java.lang.Object other$markdown = other.getMarkdown();
+            final Object this$markdown = this.getMarkdown();
+            final Object other$markdown = other.getMarkdown();
             if (this$markdown == null ? other$markdown != null : !this$markdown.equals(other$markdown)) {
                 return false;
             }
             return true;
         }
 
-        @java.lang.SuppressWarnings("all")
-        protected boolean canEqual(final java.lang.Object other) {
+        @SuppressWarnings("all")
+        protected boolean canEqual(final Object other) {
             return other instanceof SarifLog.MultiformatMessage;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
+        @Override
+        @SuppressWarnings("all")
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
-            final java.lang.Object $text = this.getText();
+            final Object $text = this.getText();
             result = result * PRIME + ($text == null ? 43 : $text.hashCode());
-            final java.lang.Object $markdown = this.getMarkdown();
+            final Object $markdown = this.getMarkdown();
             result = result * PRIME + ($markdown == null ? 43 : $markdown.hashCode());
             return result;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public java.lang.String toString() {
+        @Override
+        @SuppressWarnings("all")
+        public String toString() {
             return "SarifLog.MultiformatMessage(text=" + this.getText() + ", markdown=" + this.getMarkdown() + ")";
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public MultiformatMessage() {
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public MultiformatMessage(final String text, final String markdown) {
             this.text = text;
             this.markdown = markdown;
@@ -2656,18 +2656,18 @@ public class SarifLog {
          */
         private String message;
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         Exception(final String message) {
             this.message = message;
         }
 
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static class ExceptionBuilder {
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private String message;
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             ExceptionBuilder() {
             }
 
@@ -2675,30 +2675,30 @@ public class SarifLog {
              * A plain text message string or format string.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Exception.ExceptionBuilder message(final String message) {
                 this.message = message;
                 return this;
             }
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Exception build() {
                 return new SarifLog.Exception(this.message);
             }
 
-            @java.lang.Override
-            @java.lang.SuppressWarnings("all")
-            public java.lang.String toString() {
+            @Override
+            @SuppressWarnings("all")
+            public String toString() {
                 return "SarifLog.Exception.ExceptionBuilder(message=" + this.message + ")";
             }
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static SarifLog.Exception.ExceptionBuilder builder() {
             return new SarifLog.Exception.ExceptionBuilder();
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Exception.ExceptionBuilder toBuilder() {
             return new SarifLog.Exception.ExceptionBuilder().message(this.message);
         }
@@ -2706,7 +2706,7 @@ public class SarifLog {
         /**
          * A plain text message string or format string.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public String getMessage() {
             return this.message;
         }
@@ -2715,15 +2715,15 @@ public class SarifLog {
          * A plain text message string or format string.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Exception setMessage(final String message) {
             this.message = message;
             return this;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public boolean equals(final java.lang.Object o) {
+        @Override
+        @SuppressWarnings("all")
+        public boolean equals(final Object o) {
             if (o == this) {
                 return true;
             }
@@ -2734,32 +2734,32 @@ public class SarifLog {
             if (!other.canEqual((java.lang.Object) this)) {
                 return false;
             }
-            final java.lang.Object this$message = this.getMessage();
-            final java.lang.Object other$message = other.getMessage();
+            final Object this$message = this.getMessage();
+            final Object other$message = other.getMessage();
             if (this$message == null ? other$message != null : !this$message.equals(other$message)) {
                 return false;
             }
             return true;
         }
 
-        @java.lang.SuppressWarnings("all")
-        protected boolean canEqual(final java.lang.Object other) {
+        @SuppressWarnings("all")
+        protected boolean canEqual(final Object other) {
             return other instanceof SarifLog.Exception;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
+        @Override
+        @SuppressWarnings("all")
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
-            final java.lang.Object $message = this.getMessage();
+            final Object $message = this.getMessage();
             result = result * PRIME + ($message == null ? 43 : $message.hashCode());
             return result;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public java.lang.String toString() {
+        @Override
+        @SuppressWarnings("all")
+        public String toString() {
             return "SarifLog.Exception(message=" + this.getMessage() + ")";
         }
     }
@@ -2774,18 +2774,18 @@ public class SarifLog {
          */
         private String id;
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         AssociatedRule(final String id) {
             this.id = id;
         }
 
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static class AssociatedRuleBuilder {
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private String id;
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             AssociatedRuleBuilder() {
             }
 
@@ -2793,30 +2793,30 @@ public class SarifLog {
              * The stable, unique identifier of the rule, if any, to which this result is relevant.
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.AssociatedRule.AssociatedRuleBuilder id(final String id) {
                 this.id = id;
                 return this;
             }
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.AssociatedRule build() {
                 return new SarifLog.AssociatedRule(this.id);
             }
 
-            @java.lang.Override
-            @java.lang.SuppressWarnings("all")
-            public java.lang.String toString() {
+            @Override
+            @SuppressWarnings("all")
+            public String toString() {
                 return "SarifLog.AssociatedRule.AssociatedRuleBuilder(id=" + this.id + ")";
             }
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static SarifLog.AssociatedRule.AssociatedRuleBuilder builder() {
             return new SarifLog.AssociatedRule.AssociatedRuleBuilder();
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.AssociatedRule.AssociatedRuleBuilder toBuilder() {
             return new SarifLog.AssociatedRule.AssociatedRuleBuilder().id(this.id);
         }
@@ -2824,7 +2824,7 @@ public class SarifLog {
         /**
          * The stable, unique identifier of the rule, if any, to which this result is relevant.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public String getId() {
             return this.id;
         }
@@ -2833,15 +2833,15 @@ public class SarifLog {
          * The stable, unique identifier of the rule, if any, to which this result is relevant.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.AssociatedRule setId(final String id) {
             this.id = id;
             return this;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public boolean equals(final java.lang.Object o) {
+        @Override
+        @SuppressWarnings("all")
+        public boolean equals(final Object o) {
             if (o == this) {
                 return true;
             }
@@ -2852,32 +2852,32 @@ public class SarifLog {
             if (!other.canEqual((java.lang.Object) this)) {
                 return false;
             }
-            final java.lang.Object this$id = this.getId();
-            final java.lang.Object other$id = other.getId();
+            final Object this$id = this.getId();
+            final Object other$id = other.getId();
             if (this$id == null ? other$id != null : !this$id.equals(other$id)) {
                 return false;
             }
             return true;
         }
 
-        @java.lang.SuppressWarnings("all")
-        protected boolean canEqual(final java.lang.Object other) {
+        @SuppressWarnings("all")
+        protected boolean canEqual(final Object other) {
             return other instanceof SarifLog.AssociatedRule;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
+        @Override
+        @SuppressWarnings("all")
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
-            final java.lang.Object $id = this.getId();
+            final Object $id = this.getId();
             result = result * PRIME + ($id == null ? 43 : $id.hashCode());
             return result;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public java.lang.String toString() {
+        @Override
+        @SuppressWarnings("all")
+        public String toString() {
             return "SarifLog.AssociatedRule(id=" + this.getId() + ")";
         }
     }
@@ -2896,21 +2896,21 @@ public class SarifLog {
          */
         private Message message;
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         ToolConfigurationNotification(final AssociatedRule associatedRule, final Message message) {
             this.associatedRule = associatedRule;
             this.message = message;
         }
 
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static class ToolConfigurationNotificationBuilder {
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private AssociatedRule associatedRule;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private Message message;
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             ToolConfigurationNotificationBuilder() {
             }
 
@@ -2918,7 +2918,7 @@ public class SarifLog {
              * An associated rule
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.ToolConfigurationNotification.ToolConfigurationNotificationBuilder associatedRule(final AssociatedRule associatedRule) {
                 this.associatedRule = associatedRule;
                 return this;
@@ -2928,30 +2928,30 @@ public class SarifLog {
              * A message component to detail the configuration error
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.ToolConfigurationNotification.ToolConfigurationNotificationBuilder message(final Message message) {
                 this.message = message;
                 return this;
             }
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.ToolConfigurationNotification build() {
                 return new SarifLog.ToolConfigurationNotification(this.associatedRule, this.message);
             }
 
-            @java.lang.Override
-            @java.lang.SuppressWarnings("all")
-            public java.lang.String toString() {
+            @Override
+            @SuppressWarnings("all")
+            public String toString() {
                 return "SarifLog.ToolConfigurationNotification.ToolConfigurationNotificationBuilder(associatedRule=" + this.associatedRule + ", message=" + this.message + ")";
             }
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static SarifLog.ToolConfigurationNotification.ToolConfigurationNotificationBuilder builder() {
             return new SarifLog.ToolConfigurationNotification.ToolConfigurationNotificationBuilder();
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.ToolConfigurationNotification.ToolConfigurationNotificationBuilder toBuilder() {
             return new SarifLog.ToolConfigurationNotification.ToolConfigurationNotificationBuilder().associatedRule(this.associatedRule).message(this.message);
         }
@@ -2959,7 +2959,7 @@ public class SarifLog {
         /**
          * An associated rule
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public AssociatedRule getAssociatedRule() {
             return this.associatedRule;
         }
@@ -2967,7 +2967,7 @@ public class SarifLog {
         /**
          * A message component to detail the configuration error
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public Message getMessage() {
             return this.message;
         }
@@ -2976,7 +2976,7 @@ public class SarifLog {
          * An associated rule
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.ToolConfigurationNotification setAssociatedRule(final AssociatedRule associatedRule) {
             this.associatedRule = associatedRule;
             return this;
@@ -2986,15 +2986,15 @@ public class SarifLog {
          * A message component to detail the configuration error
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.ToolConfigurationNotification setMessage(final Message message) {
             this.message = message;
             return this;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public boolean equals(final java.lang.Object o) {
+        @Override
+        @SuppressWarnings("all")
+        public boolean equals(final Object o) {
             if (o == this) {
                 return true;
             }
@@ -3005,39 +3005,39 @@ public class SarifLog {
             if (!other.canEqual((java.lang.Object) this)) {
                 return false;
             }
-            final java.lang.Object this$associatedRule = this.getAssociatedRule();
-            final java.lang.Object other$associatedRule = other.getAssociatedRule();
+            final Object this$associatedRule = this.getAssociatedRule();
+            final Object other$associatedRule = other.getAssociatedRule();
             if (this$associatedRule == null ? other$associatedRule != null : !this$associatedRule.equals(other$associatedRule)) {
                 return false;
             }
-            final java.lang.Object this$message = this.getMessage();
-            final java.lang.Object other$message = other.getMessage();
+            final Object this$message = this.getMessage();
+            final Object other$message = other.getMessage();
             if (this$message == null ? other$message != null : !this$message.equals(other$message)) {
                 return false;
             }
             return true;
         }
 
-        @java.lang.SuppressWarnings("all")
-        protected boolean canEqual(final java.lang.Object other) {
+        @SuppressWarnings("all")
+        protected boolean canEqual(final Object other) {
             return other instanceof SarifLog.ToolConfigurationNotification;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
+        @Override
+        @SuppressWarnings("all")
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
-            final java.lang.Object $associatedRule = this.getAssociatedRule();
+            final Object $associatedRule = this.getAssociatedRule();
             result = result * PRIME + ($associatedRule == null ? 43 : $associatedRule.hashCode());
-            final java.lang.Object $message = this.getMessage();
+            final Object $message = this.getMessage();
             result = result * PRIME + ($message == null ? 43 : $message.hashCode());
             return result;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public java.lang.String toString() {
+        @Override
+        @SuppressWarnings("all")
+        public String toString() {
             return "SarifLog.ToolConfigurationNotification(associatedRule=" + this.getAssociatedRule() + ", message=" + this.getMessage() + ")";
         }
     }
@@ -3060,7 +3060,7 @@ public class SarifLog {
          */
         private Exception exception;
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         ToolExecutionNotification(final List<Location> locations, final Message message, final Exception exception) {
             this.locations = locations;
             this.message = message;
@@ -3068,16 +3068,16 @@ public class SarifLog {
         }
 
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static class ToolExecutionNotificationBuilder {
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private List<Location> locations;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private Message message;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private Exception exception;
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             ToolExecutionNotificationBuilder() {
             }
 
@@ -3085,7 +3085,7 @@ public class SarifLog {
              * A list of related locations to the error
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.ToolExecutionNotification.ToolExecutionNotificationBuilder locations(final List<Location> locations) {
                 this.locations = locations;
                 return this;
@@ -3095,7 +3095,7 @@ public class SarifLog {
              * A message component to detail the runtime error
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.ToolExecutionNotification.ToolExecutionNotificationBuilder message(final Message message) {
                 this.message = message;
                 return this;
@@ -3105,30 +3105,30 @@ public class SarifLog {
              * A exception component to detail the tool exception
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.ToolExecutionNotification.ToolExecutionNotificationBuilder exception(final Exception exception) {
                 this.exception = exception;
                 return this;
             }
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.ToolExecutionNotification build() {
                 return new SarifLog.ToolExecutionNotification(this.locations, this.message, this.exception);
             }
 
-            @java.lang.Override
-            @java.lang.SuppressWarnings("all")
-            public java.lang.String toString() {
+            @Override
+            @SuppressWarnings("all")
+            public String toString() {
                 return "SarifLog.ToolExecutionNotification.ToolExecutionNotificationBuilder(locations=" + this.locations + ", message=" + this.message + ", exception=" + this.exception + ")";
             }
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static SarifLog.ToolExecutionNotification.ToolExecutionNotificationBuilder builder() {
             return new SarifLog.ToolExecutionNotification.ToolExecutionNotificationBuilder();
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.ToolExecutionNotification.ToolExecutionNotificationBuilder toBuilder() {
             return new SarifLog.ToolExecutionNotification.ToolExecutionNotificationBuilder().locations(this.locations).message(this.message).exception(this.exception);
         }
@@ -3136,7 +3136,7 @@ public class SarifLog {
         /**
          * A list of related locations to the error
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public List<Location> getLocations() {
             return this.locations;
         }
@@ -3144,7 +3144,7 @@ public class SarifLog {
         /**
          * A message component to detail the runtime error
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public Message getMessage() {
             return this.message;
         }
@@ -3152,7 +3152,7 @@ public class SarifLog {
         /**
          * A exception component to detail the tool exception
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public Exception getException() {
             return this.exception;
         }
@@ -3161,7 +3161,7 @@ public class SarifLog {
          * A list of related locations to the error
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.ToolExecutionNotification setLocations(final List<Location> locations) {
             this.locations = locations;
             return this;
@@ -3171,7 +3171,7 @@ public class SarifLog {
          * A message component to detail the runtime error
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.ToolExecutionNotification setMessage(final Message message) {
             this.message = message;
             return this;
@@ -3181,15 +3181,15 @@ public class SarifLog {
          * A exception component to detail the tool exception
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.ToolExecutionNotification setException(final Exception exception) {
             this.exception = exception;
             return this;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public boolean equals(final java.lang.Object o) {
+        @Override
+        @SuppressWarnings("all")
+        public boolean equals(final Object o) {
             if (o == this) {
                 return true;
             }
@@ -3200,46 +3200,46 @@ public class SarifLog {
             if (!other.canEqual((java.lang.Object) this)) {
                 return false;
             }
-            final java.lang.Object this$locations = this.getLocations();
-            final java.lang.Object other$locations = other.getLocations();
+            final Object this$locations = this.getLocations();
+            final Object other$locations = other.getLocations();
             if (this$locations == null ? other$locations != null : !this$locations.equals(other$locations)) {
                 return false;
             }
-            final java.lang.Object this$message = this.getMessage();
-            final java.lang.Object other$message = other.getMessage();
+            final Object this$message = this.getMessage();
+            final Object other$message = other.getMessage();
             if (this$message == null ? other$message != null : !this$message.equals(other$message)) {
                 return false;
             }
-            final java.lang.Object this$exception = this.getException();
-            final java.lang.Object other$exception = other.getException();
+            final Object this$exception = this.getException();
+            final Object other$exception = other.getException();
             if (this$exception == null ? other$exception != null : !this$exception.equals(other$exception)) {
                 return false;
             }
             return true;
         }
 
-        @java.lang.SuppressWarnings("all")
-        protected boolean canEqual(final java.lang.Object other) {
+        @SuppressWarnings("all")
+        protected boolean canEqual(final Object other) {
             return other instanceof SarifLog.ToolExecutionNotification;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
+        @Override
+        @SuppressWarnings("all")
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
-            final java.lang.Object $locations = this.getLocations();
+            final Object $locations = this.getLocations();
             result = result * PRIME + ($locations == null ? 43 : $locations.hashCode());
-            final java.lang.Object $message = this.getMessage();
+            final Object $message = this.getMessage();
             result = result * PRIME + ($message == null ? 43 : $message.hashCode());
-            final java.lang.Object $exception = this.getException();
+            final Object $exception = this.getException();
             result = result * PRIME + ($exception == null ? 43 : $exception.hashCode());
             return result;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public java.lang.String toString() {
+        @Override
+        @SuppressWarnings("all")
+        public String toString() {
             return "SarifLog.ToolExecutionNotification(locations=" + this.getLocations() + ", message=" + this.getMessage() + ", exception=" + this.getException() + ")";
         }
     }
@@ -3262,7 +3262,7 @@ public class SarifLog {
          */
         private List<ToolExecutionNotification> toolExecutionNotifications;
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         Invocation(final Boolean executionSuccessful, final List<ToolConfigurationNotification> toolConfigurationNotifications, final List<ToolExecutionNotification> toolExecutionNotifications) {
             this.executionSuccessful = executionSuccessful;
             this.toolConfigurationNotifications = toolConfigurationNotifications;
@@ -3270,95 +3270,95 @@ public class SarifLog {
         }
 
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static class InvocationBuilder {
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private Boolean executionSuccessful;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private List<ToolConfigurationNotification> toolConfigurationNotifications;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private List<ToolExecutionNotification> toolExecutionNotifications;
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             InvocationBuilder() {
             }
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Invocation.InvocationBuilder executionSuccessful(final Boolean executionSuccessful) {
                 this.executionSuccessful = executionSuccessful;
                 return this;
             }
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Invocation.InvocationBuilder toolConfigurationNotifications(final List<ToolConfigurationNotification> toolConfigurationNotifications) {
                 this.toolConfigurationNotifications = toolConfigurationNotifications;
                 return this;
             }
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Invocation.InvocationBuilder toolExecutionNotifications(final List<ToolExecutionNotification> toolExecutionNotifications) {
                 this.toolExecutionNotifications = toolExecutionNotifications;
                 return this;
             }
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Invocation build() {
                 return new SarifLog.Invocation(this.executionSuccessful, this.toolConfigurationNotifications, this.toolExecutionNotifications);
             }
 
-            @java.lang.Override
-            @java.lang.SuppressWarnings("all")
-            public java.lang.String toString() {
+            @Override
+            @SuppressWarnings("all")
+            public String toString() {
                 return "SarifLog.Invocation.InvocationBuilder(executionSuccessful=" + this.executionSuccessful + ", toolConfigurationNotifications=" + this.toolConfigurationNotifications + ", toolExecutionNotifications=" + this.toolExecutionNotifications + ")";
             }
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static SarifLog.Invocation.InvocationBuilder builder() {
             return new SarifLog.Invocation.InvocationBuilder();
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Invocation.InvocationBuilder toBuilder() {
             return new SarifLog.Invocation.InvocationBuilder().executionSuccessful(this.executionSuccessful).toolConfigurationNotifications(this.toolConfigurationNotifications).toolExecutionNotifications(this.toolExecutionNotifications);
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public Boolean getExecutionSuccessful() {
             return this.executionSuccessful;
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public List<ToolConfigurationNotification> getToolConfigurationNotifications() {
             return this.toolConfigurationNotifications;
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public List<ToolExecutionNotification> getToolExecutionNotifications() {
             return this.toolExecutionNotifications;
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Invocation setExecutionSuccessful(final Boolean executionSuccessful) {
             this.executionSuccessful = executionSuccessful;
             return this;
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Invocation setToolConfigurationNotifications(final List<ToolConfigurationNotification> toolConfigurationNotifications) {
             this.toolConfigurationNotifications = toolConfigurationNotifications;
             return this;
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Invocation setToolExecutionNotifications(final List<ToolExecutionNotification> toolExecutionNotifications) {
             this.toolExecutionNotifications = toolExecutionNotifications;
             return this;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public boolean equals(final java.lang.Object o) {
+        @Override
+        @SuppressWarnings("all")
+        public boolean equals(final Object o) {
             if (o == this) {
                 return true;
             }
@@ -3369,61 +3369,61 @@ public class SarifLog {
             if (!other.canEqual((java.lang.Object) this)) {
                 return false;
             }
-            final java.lang.Object this$executionSuccessful = this.getExecutionSuccessful();
-            final java.lang.Object other$executionSuccessful = other.getExecutionSuccessful();
+            final Object this$executionSuccessful = this.getExecutionSuccessful();
+            final Object other$executionSuccessful = other.getExecutionSuccessful();
             if (this$executionSuccessful == null ? other$executionSuccessful != null : !this$executionSuccessful.equals(other$executionSuccessful)) {
                 return false;
             }
-            final java.lang.Object this$toolConfigurationNotifications = this.getToolConfigurationNotifications();
-            final java.lang.Object other$toolConfigurationNotifications = other.getToolConfigurationNotifications();
+            final Object this$toolConfigurationNotifications = this.getToolConfigurationNotifications();
+            final Object other$toolConfigurationNotifications = other.getToolConfigurationNotifications();
             if (this$toolConfigurationNotifications == null ? other$toolConfigurationNotifications != null : !this$toolConfigurationNotifications.equals(other$toolConfigurationNotifications)) {
                 return false;
             }
-            final java.lang.Object this$toolExecutionNotifications = this.getToolExecutionNotifications();
-            final java.lang.Object other$toolExecutionNotifications = other.getToolExecutionNotifications();
+            final Object this$toolExecutionNotifications = this.getToolExecutionNotifications();
+            final Object other$toolExecutionNotifications = other.getToolExecutionNotifications();
             if (this$toolExecutionNotifications == null ? other$toolExecutionNotifications != null : !this$toolExecutionNotifications.equals(other$toolExecutionNotifications)) {
                 return false;
             }
             return true;
         }
 
-        @java.lang.SuppressWarnings("all")
-        protected boolean canEqual(final java.lang.Object other) {
+        @SuppressWarnings("all")
+        protected boolean canEqual(final Object other) {
             return other instanceof SarifLog.Invocation;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
+        @Override
+        @SuppressWarnings("all")
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
-            final java.lang.Object $executionSuccessful = this.getExecutionSuccessful();
+            final Object $executionSuccessful = this.getExecutionSuccessful();
             result = result * PRIME + ($executionSuccessful == null ? 43 : $executionSuccessful.hashCode());
-            final java.lang.Object $toolConfigurationNotifications = this.getToolConfigurationNotifications();
+            final Object $toolConfigurationNotifications = this.getToolConfigurationNotifications();
             result = result * PRIME + ($toolConfigurationNotifications == null ? 43 : $toolConfigurationNotifications.hashCode());
-            final java.lang.Object $toolExecutionNotifications = this.getToolExecutionNotifications();
+            final Object $toolExecutionNotifications = this.getToolExecutionNotifications();
             result = result * PRIME + ($toolExecutionNotifications == null ? 43 : $toolExecutionNotifications.hashCode());
             return result;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public java.lang.String toString() {
+        @Override
+        @SuppressWarnings("all")
+        public String toString() {
             return "SarifLog.Invocation(executionSuccessful=" + this.getExecutionSuccessful() + ", toolConfigurationNotifications=" + this.getToolConfigurationNotifications() + ", toolExecutionNotifications=" + this.getToolExecutionNotifications() + ")";
         }
     }
 
-    @java.lang.SuppressWarnings("all")
+    @SuppressWarnings("all")
     private static String defaultSchema() {
         return "https://json.schemastore.org/sarif-2.1.0.json";
     }
 
-    @java.lang.SuppressWarnings("all")
+    @SuppressWarnings("all")
     private static String defaultVersion() {
         return "2.1.0";
     }
 
-    @java.lang.SuppressWarnings("all")
+    @SuppressWarnings("all")
     SarifLog(final String schema, final String version, final List<Run> runs) {
         this.schema = schema;
         this.version = version;
@@ -3431,20 +3431,20 @@ public class SarifLog {
     }
 
 
-    @java.lang.SuppressWarnings("all")
+    @SuppressWarnings("all")
     public static class SarifLogBuilder {
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         private boolean schemaSet;
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         private String schemaValue;
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         private boolean versionSet;
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         private String versionValue;
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         private List<Run> runs;
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         SarifLogBuilder() {
         }
 
@@ -3452,7 +3452,7 @@ public class SarifLog {
          * The URI of the JSON schema corresponding to the version.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.SarifLogBuilder schema(final String schema) {
             this.schemaValue = schema;
             schemaSet = true;
@@ -3463,7 +3463,7 @@ public class SarifLog {
          * The SARIF format version of this log file.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.SarifLogBuilder version(final String version) {
             this.versionValue = version;
             versionSet = true;
@@ -3474,13 +3474,13 @@ public class SarifLog {
          * The set of runs contained in this log file.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.SarifLogBuilder runs(final List<Run> runs) {
             this.runs = runs;
             return this;
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog build() {
             String schemaValue = this.schemaValue;
             if (!this.schemaSet) {
@@ -3493,14 +3493,14 @@ public class SarifLog {
             return new SarifLog(schemaValue, versionValue, this.runs);
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public java.lang.String toString() {
+        @Override
+        @SuppressWarnings("all")
+        public String toString() {
             return "SarifLog.SarifLogBuilder(schema$value=" + this.schemaValue + ", version$value=" + this.versionValue + ", runs=" + this.runs + ")";
         }
     }
 
-    @java.lang.SuppressWarnings("all")
+    @SuppressWarnings("all")
     public static SarifLog.SarifLogBuilder builder() {
         return new SarifLog.SarifLogBuilder();
     }
@@ -3508,7 +3508,7 @@ public class SarifLog {
     /**
      * The URI of the JSON schema corresponding to the version.
      */
-    @java.lang.SuppressWarnings("all")
+    @SuppressWarnings("all")
     public String getSchema() {
         return this.schema;
     }
@@ -3516,7 +3516,7 @@ public class SarifLog {
     /**
      * The SARIF format version of this log file.
      */
-    @java.lang.SuppressWarnings("all")
+    @SuppressWarnings("all")
     public String getVersion() {
         return this.version;
     }
@@ -3524,7 +3524,7 @@ public class SarifLog {
     /**
      * The set of runs contained in this log file.
      */
-    @java.lang.SuppressWarnings("all")
+    @SuppressWarnings("all")
     public List<Run> getRuns() {
         return this.runs;
     }
@@ -3533,7 +3533,7 @@ public class SarifLog {
      * The URI of the JSON schema corresponding to the version.
      * @return {@code this}.
      */
-    @java.lang.SuppressWarnings("all")
+    @SuppressWarnings("all")
     public SarifLog setSchema(final String schema) {
         this.schema = schema;
         return this;
@@ -3543,7 +3543,7 @@ public class SarifLog {
      * The SARIF format version of this log file.
      * @return {@code this}.
      */
-    @java.lang.SuppressWarnings("all")
+    @SuppressWarnings("all")
     public SarifLog setVersion(final String version) {
         this.version = version;
         return this;
@@ -3553,15 +3553,15 @@ public class SarifLog {
      * The set of runs contained in this log file.
      * @return {@code this}.
      */
-    @java.lang.SuppressWarnings("all")
+    @SuppressWarnings("all")
     public SarifLog setRuns(final List<Run> runs) {
         this.runs = runs;
         return this;
     }
 
-    @java.lang.Override
-    @java.lang.SuppressWarnings("all")
-    public boolean equals(final java.lang.Object o) {
+    @Override
+    @SuppressWarnings("all")
+    public boolean equals(final Object o) {
         if (o == this) {
             return true;
         }
@@ -3572,46 +3572,46 @@ public class SarifLog {
         if (!other.canEqual((java.lang.Object) this)) {
             return false;
         }
-        final java.lang.Object this$schema = this.getSchema();
-        final java.lang.Object other$schema = other.getSchema();
+        final Object this$schema = this.getSchema();
+        final Object other$schema = other.getSchema();
         if (this$schema == null ? other$schema != null : !this$schema.equals(other$schema)) {
             return false;
         }
-        final java.lang.Object this$version = this.getVersion();
-        final java.lang.Object other$version = other.getVersion();
+        final Object this$version = this.getVersion();
+        final Object other$version = other.getVersion();
         if (this$version == null ? other$version != null : !this$version.equals(other$version)) {
             return false;
         }
-        final java.lang.Object this$runs = this.getRuns();
-        final java.lang.Object other$runs = other.getRuns();
+        final Object this$runs = this.getRuns();
+        final Object other$runs = other.getRuns();
         if (this$runs == null ? other$runs != null : !this$runs.equals(other$runs)) {
             return false;
         }
         return true;
     }
 
-    @java.lang.SuppressWarnings("all")
-    protected boolean canEqual(final java.lang.Object other) {
+    @SuppressWarnings("all")
+    protected boolean canEqual(final Object other) {
         return other instanceof SarifLog;
     }
 
-    @java.lang.Override
-    @java.lang.SuppressWarnings("all")
+    @Override
+    @SuppressWarnings("all")
     public int hashCode() {
         final int PRIME = 59;
         int result = 1;
-        final java.lang.Object $schema = this.getSchema();
+        final Object $schema = this.getSchema();
         result = result * PRIME + ($schema == null ? 43 : $schema.hashCode());
-        final java.lang.Object $version = this.getVersion();
+        final Object $version = this.getVersion();
         result = result * PRIME + ($version == null ? 43 : $version.hashCode());
-        final java.lang.Object $runs = this.getRuns();
+        final Object $runs = this.getRuns();
         result = result * PRIME + ($runs == null ? 43 : $runs.hashCode());
         return result;
     }
 
-    @java.lang.Override
-    @java.lang.SuppressWarnings("all")
-    public java.lang.String toString() {
+    @Override
+    @SuppressWarnings("all")
+    public String toString() {
         return "SarifLog(schema=" + this.getSchema() + ", version=" + this.getVersion() + ", runs=" + this.getRuns() + ")";
     }
 }
