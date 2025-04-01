@@ -110,10 +110,10 @@ public interface Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public boolean equals(java.lang.Object o1, java.lang.Object o2) {
+    public boolean equals(Object o1, Object o2) {
         return true;
     }
-    public Integer hashCode(java.lang.Object o) {
+    public Integer hashCode(Object o) {
         return 0;
     }
 }
