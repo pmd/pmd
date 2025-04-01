@@ -13,6 +13,7 @@ import org.pcollections.PMap;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
@@ -24,6 +25,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
@@ -74,6 +76,16 @@ public final class NPathMetricCalculator {
         }
 
         @Override
+        public DecisionPoint visit(ASTAnonymousClassDeclaration node, CfPoint point) {
+            return point; // stop recursion.
+        }
+
+        @Override
+        public DecisionPoint visit(ASTLambdaExpression node, CfPoint point) {
+            return point; // stop recursion.
+        }
+
+        @Override
         public DecisionPoint visit(ASTConditionalExpression node, CfPoint point) {
             DecisionPoint condition = node.getCondition().acceptVisitor(this, point);
             DecisionPoint thenState = node.getThenBranch().acceptVisitor(this, condition.truePoint());
@@ -112,17 +124,30 @@ public final class NPathMetricCalculator {
             } else {
                 // other ops have only a linear path from left to right
                 return super.visit(node, point);
-                // BooleanExprResult left = node.getLeftOperand().acceptVisitor(this, startPoint);
-                // return node.getRightOperand().acceptVisitor(this, left.collapse());
             }
         }
     }
 
     interface DecisionPoint {
+        /**
+         * This is the total number of paths that lead out of the decision.
+         * It is not the same as the sum of the true paths and false paths
+         * as that sum would be double-counting some paths.
+         */
         CfPoint endPaths();
 
+        /**
+         * The point that counts the number of CF-paths that lead to a
+         * "true" result. For instance in {@code a || b}, there are two
+         * paths that lead to a true result.
+         */
         CfPoint truePoint();
 
+        /**
+         * The point that counts the number of CF-paths that lead to a
+         * "false" result. For instance in {@code a && b}, there are two
+         * paths that lead to a false result.
+         */
         CfPoint falsePoint();
 
     }
@@ -153,9 +178,6 @@ public final class NPathMetricCalculator {
             return pointLeadingToThisDecision;
         }
 
-        CfPoint collapse() {
-            return new CfPoint(pointLeadingToThisDecision);
-        }
     }
 
     static final class CfVisitor extends JavaVisitorBase<CfVisitState, CfVisitState> {
