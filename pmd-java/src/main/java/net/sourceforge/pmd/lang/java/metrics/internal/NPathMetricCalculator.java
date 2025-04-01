@@ -19,7 +19,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
@@ -36,6 +35,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchFallthroughBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
@@ -98,6 +98,16 @@ public final class NPathMetricCalculator {
             );
         }
 
+
+        @Override
+        public DecisionPoint visit(ASTUnaryExpression node, CfPoint point) {
+            if (JavaAstUtils.isBooleanNegation(node)) {
+                DecisionPoint condition = node.getOperand().acceptVisitor(this, point);
+                return condition.negate();
+            }
+            return super.visit(node, point);
+        }
+
         @Override
         public DecisionPoint visit(ASTInfixExpression node, CfPoint point) {
             if (node.getOperator() == BinaryOp.CONDITIONAL_AND) {
@@ -151,6 +161,8 @@ public final class NPathMetricCalculator {
          */
         CfPoint falsePoint();
 
+
+        DecisionPoint negate();
     }
 
     static final class BooleanDecisionPoint implements DecisionPoint {
@@ -179,6 +191,10 @@ public final class NPathMetricCalculator {
             return pointLeadingToThisDecision;
         }
 
+        @Override
+        public DecisionPoint negate() {
+            return new BooleanDecisionPoint(pointLeadingToThisDecision, falsePoint, truePoint);
+        }
     }
 
     static final class CfVisitor extends JavaVisitorBase<CfVisitState, CfVisitState> {
@@ -458,6 +474,11 @@ public final class NPathMetricCalculator {
 
         @Override
         public CfPoint endPaths() {
+            return this;
+        }
+
+        @Override
+        public DecisionPoint negate() {
             return this;
         }
     }
