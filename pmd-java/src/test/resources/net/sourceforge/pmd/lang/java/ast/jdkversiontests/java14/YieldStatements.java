@@ -48,6 +48,14 @@ public class YieldStatements {
             yield 2e74;
             yield 0b01;
             yield 0x4P60;
+            yield new Object();
+            yield (new Object());
+            yield switch(foo) {
+                default -> 4;
+            };
+            yield this;
+            yield super.field;
+            yield this.field;
         }
         };
     }

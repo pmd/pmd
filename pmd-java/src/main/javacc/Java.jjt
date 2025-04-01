@@ -485,7 +485,8 @@ class JavaParserImpl {
            case NULL: case IDENTIFIER: case TRUE: case FALSE:
            case VOID: case INT: case DOUBLE: case FLOAT: case BOOLEAN: case LONG: case SHORT: case BYTE: case CHAR:
            case BANG: case TILDE:
-                 return true;
+           case NEW: case SWITCH: case THIS: case SUPER:
+               return true;
            case INCR: case DECR:
                return getToken(offset + 1).kind != SEMICOLON; // eg yield++;
            case LPAREN:
