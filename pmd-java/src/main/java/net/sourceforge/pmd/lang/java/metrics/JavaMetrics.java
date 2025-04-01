@@ -28,6 +28,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
+import net.sourceforge.pmd.lang.java.ast.ReturnScopeNode;
 import net.sourceforge.pmd.lang.java.metrics.internal.AtfdBaseVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.ClassFanOutVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.CognitiveComplexityVisitor;
@@ -344,9 +345,18 @@ public final class JavaMetrics {
      * </li>
      * </ul>
      */
+    public static final Metric<ReturnScopeNode, Long> NPATH_COMP =
+            Metric.of(JavaMetrics::computeNpath, NodeStream.asInstanceOf(ReturnScopeNode.class),
+                    "NPath Complexity", "NPath");
+
+    /**
+     * @deprecated Use {@link #NPATH_COMP}, which is available on more nodes,
+     *             and uses Long instead of BigInteger.
+     */
+    @Deprecated
     public static final Metric<ASTExecutableDeclaration, BigInteger> NPATH =
         Metric.of(JavaMetrics::computeNpath, asMethodOrCtor(),
-                  "NPath Complexity", "NPath");
+                  "NPath Complexity (deprecated)", "NPath");
 
     public static final Metric<ASTTypeDeclaration, Integer> NUMBER_OF_ACCESSORS =
         Metric.of(JavaMetrics::computeNoam, asClass(always()),
@@ -411,6 +421,7 @@ public final class JavaMetrics {
     }
 
     private static Function<Node, @Nullable ASTExecutableDeclaration> asMethodOrCtor() {
+
         return n -> n instanceof ASTExecutableDeclaration ? (ASTExecutableDeclaration) n : null;
     }
 
@@ -462,7 +473,10 @@ public final class JavaMetrics {
 
     private static BigInteger computeNpath(ASTExecutableDeclaration node, MetricOptions ignored) {
         return BigInteger.valueOf(NPathMetricCalculator.computeNpath(node));
-        //        return node.acceptVisitor(NpathBaseVisitor.INSTANCE, null);
+    }
+
+    private static long computeNpath(ReturnScopeNode node, MetricOptions ignored) {
+        return NPathMetricCalculator.computeNpath(node);
     }
 
     private static int computeCognitive(JavaNode node, MetricOptions ignored) {

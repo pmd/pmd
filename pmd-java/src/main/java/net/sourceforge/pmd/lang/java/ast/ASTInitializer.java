@@ -15,7 +15,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  *
  */
-public final class ASTInitializer extends AbstractJavaNode implements ASTBodyDeclaration {
+public final class ASTInitializer extends AbstractJavaNode implements ASTBodyDeclaration, ReturnScopeNode {
 
     private boolean isStatic;
 
@@ -41,6 +41,7 @@ public final class ASTInitializer extends AbstractJavaNode implements ASTBodyDec
     /**
      * Returns the body of this initializer.
      */
+    @Override
     public ASTBlock getBody() {
         return (ASTBlock) getChild(0);
     }

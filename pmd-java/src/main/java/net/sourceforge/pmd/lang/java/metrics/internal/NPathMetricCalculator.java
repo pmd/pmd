@@ -41,11 +41,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
+import net.sourceforge.pmd.lang.java.ast.ReturnScopeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 
 public final class NPathMetricCalculator {
 
-    public static long computeNpath(ASTExecutableDeclaration node) {
+    public static long computeNpath(ReturnScopeNode node) {
         ASTBlock body = node.getBody();
         if (body == null) {
             return 1;
