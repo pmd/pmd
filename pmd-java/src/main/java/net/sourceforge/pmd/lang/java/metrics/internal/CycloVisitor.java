@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.metrics.internal;
 
 import org.apache.commons.lang3.mutable.MutableInt;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
@@ -69,7 +68,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
 
     private Void handleSwitch(ASTSwitchLike node, MutableInt data) {
         if (considerBooleanPaths) {
-            data.add(expressionComplexity(node.getTestedExpression()));
+            data.add(booleanExpressionComplexity(node.getTestedExpression()));
         }
 
         for (ASTSwitchBranch branch : node) {
@@ -94,7 +93,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
     public Void visit(ASTConditionalExpression node, MutableInt data) {
         data.increment();
         if (considerBooleanPaths) {
-            data.add(conditionComplexity(node.getCondition()));
+            data.add(booleanExpressionComplexity(node.getCondition()));
         }
         return super.visit(node, data);
     }
@@ -104,7 +103,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
     public Void visit(ASTWhileStatement node, MutableInt data) {
         data.increment();
         if (considerBooleanPaths) {
-            data.add(conditionComplexity(node.getCondition()));
+            data.add(booleanExpressionComplexity(node.getCondition()));
         }
         return super.visit(node, data);
     }
@@ -114,7 +113,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
     public Void visit(ASTIfStatement node, MutableInt data) {
         data.increment();
         if (considerBooleanPaths) {
-            data.add(conditionComplexity(node.getCondition()));
+            data.add(booleanExpressionComplexity(node.getCondition()));
         }
 
         return super.visit(node, data);
@@ -126,7 +125,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
         data.increment();
 
         if (considerBooleanPaths) {
-            data.add(conditionComplexity(node.getCondition()));
+            data.add(booleanExpressionComplexity(node.getCondition()));
         }
 
         return super.visit(node, data);
@@ -148,7 +147,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
     public Void visit(ASTDoStatement node, MutableInt data) {
         data.increment();
         if (considerBooleanPaths) {
-            data.add(conditionComplexity(node.getCondition()));
+            data.add(booleanExpressionComplexity(node.getCondition()));
         }
 
         return super.visit(node, data);
@@ -175,7 +174,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
             data.add(2); // equivalent to if (condition) { throw .. }
 
             if (considerBooleanPaths) {
-                data.add(conditionComplexity(node.getCondition()));
+                data.add(booleanExpressionComplexity(node.getCondition()));
             }
         }
 
@@ -190,49 +189,21 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
      *
      * @return The number of paths through the expression
      */
-    @Deprecated
     public static int booleanExpressionComplexity(@Nullable ASTExpression expr) {
-        return conditionComplexity(expr);
-    }
-
-    /**
-     * Complexity of an expression that is not the condition of a control-flow operator. Shortcut
-     * boolean operators do not count, but ternaries count.
-     */
-    static int expressionComplexity(@Nullable ASTExpression expr) {
         if (expr == null) {
             return 0;
         }
 
-        return booleanComplexity(expr, true);
-    }
-
-    /**
-     * Complexity of the condition on a control-flow operator. Shortcut
-     * boolean operators and ternaries count.
-     */
-    static int conditionComplexity(@Nullable ASTExpression expr) {
-        if (expr == null) {
-            return 1;
-        }
-
-        return booleanComplexity(expr, false);
-    }
-
-    private static int booleanComplexity(@NonNull ASTExpression expr, boolean onlyTernary) {
         if (expr instanceof ASTConditionalExpression) {
             ASTConditionalExpression conditional = (ASTConditionalExpression) expr;
-            return conditionComplexity(conditional.getCondition())
-                + expressionComplexity(conditional.getThenBranch())
-                + expressionComplexity(conditional.getElseBranch())
+            return booleanExpressionComplexity(conditional.getCondition())
+                + booleanExpressionComplexity(conditional.getThenBranch())
+                + booleanExpressionComplexity(conditional.getElseBranch())
                 + 2;
-        } else if (onlyTernary) {
-            return 1;
         } else {
             return expr.descendantsOrSelf()
                        .filter(JavaAstUtils::isConditional)
-                       .count() + 1;
+                       .count();
         }
     }
-
 }

@@ -8,11 +8,13 @@ import java.math.BigInteger;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
@@ -22,7 +24,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
-import net.sourceforge.pmd.lang.java.ast.BinaryOp;
+import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
@@ -65,8 +67,7 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
 
     @Override
     public BigInteger visitMethodOrCtor(ASTExecutableDeclaration node, Void data) {
-        return node.getBody() == null ? BigInteger.ONE
-                                      : node.getBody().acceptVisitor(this, data);
+        return multiplyChildrenComplexities(node);
     }
 
 
@@ -78,31 +79,72 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
 
     @Override
     public BigInteger visit(ASTIfStatement node, Void data) {
-        // (npath of if + npath of else (or 1) ) * bool_comp of if * npath of next
+        // (npath of if + npath of else (or 1) + bool_comp of if) * npath of next
 
-        BooleanPaths cond = pathsInCondition(node.getCondition());
+        int boolCompIf = CycloVisitor.booleanExpressionComplexity(node.getCondition());
 
         BigInteger thenResult = node.getThenBranch().acceptVisitor(this, data);
         ASTStatement elseBranch = node.getElseBranch();
         BigInteger elseResult = elseBranch != null ? elseBranch.acceptVisitor(this, data) : BigInteger.ONE;
 
-        return thenResult.multiply(cond.truePaths())
-                         .add(elseResult.multiply(cond.falsePaths()));
+        return thenResult.add(BigInteger.valueOf(boolCompIf)).add(elseResult);
     }
 
 
     @Override
-    public BigInteger visitLoop(ASTLoopStatement node, Void data) {
+    public BigInteger visit(ASTWhileStatement node, Void data) {
         // (npath of while + bool_comp of while + 1) * npath of next
 
-        BooleanPaths cond = node.getCondition() == null
-                            ? BooleanPaths.UNIT
-                            : pathsInCondition(node.getCondition());
+        int boolComp = CycloVisitor.booleanExpressionComplexity(node.getCondition());
+        BigInteger nPathBody = node.getBody().acceptVisitor(this, data);
+        return nPathBody.add(BigInteger.valueOf(boolComp + 1));
+    }
+
+
+    @Override
+    public BigInteger visit(ASTDoStatement node, Void data) {
+        // (npath of do + bool_comp of do + 1) * npath of next
+
+        int boolComp = CycloVisitor.booleanExpressionComplexity(node.getCondition());
+        BigInteger nPathBody = node.getBody().acceptVisitor(this, data);
+        return nPathBody.add(BigInteger.valueOf(boolComp + 1));
+    }
+
+
+    @Override
+    public BigInteger visit(ASTForStatement node, Void data) {
+        // (npath of for + bool_comp of for + 1) * npath of next
+
+        int boolComp = CycloVisitor.booleanExpressionComplexity(node.getCondition());
+        BigInteger nPathBody = node.getBody().acceptVisitor(this, data);
+        return nPathBody.add(BigInteger.valueOf(boolComp + 1));
+    }
+
+    @Override
+    public BigInteger visit(ASTForeachStatement node, Void data) {
+        // (npath of for + 1) * npath of next
 
         BigInteger nPathBody = node.getBody().acceptVisitor(this, data);
-
-        return nPathBody.multiply(cond.truePaths()).add(cond.falsePaths());
+        return nPathBody.add(BigInteger.ONE);
     }
+
+
+    @Override
+    public BigInteger visit(ASTReturnStatement node, Void data) {
+        // return statements are valued at 1, or the value of the boolean expression
+
+        ASTExpression expr = node.getExpr();
+
+        if (expr == null) {
+            return BigInteger.ONE;
+        }
+
+        int boolCompReturn = CycloVisitor.booleanExpressionComplexity(expr);
+        BigInteger conditionalExpressionComplexity = multiplyChildrenComplexities(expr);
+
+        return conditionalExpressionComplexity.add(BigInteger.valueOf(boolCompReturn));
+    }
+
 
     @Override
     public BigInteger visit(ASTSwitchExpression node, Void data) {
@@ -117,7 +159,7 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
     public BigInteger handleSwitch(ASTSwitchLike node, Void data) {
         // bool_comp of switch + sum(npath(case_range))
 
-        BigInteger boolCompSwitch = node.getTestedExpression().acceptVisitor(this, data);
+        int boolCompSwitch = CycloVisitor.booleanExpressionComplexity(node.getTestedExpression());
 
         BigInteger npath = BigInteger.ZERO;
         int caseRange = 0;
@@ -139,10 +181,8 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
                 npath = npath.add(branchNpath.multiply(BigInteger.valueOf(numAlts)));
             }
         }
-//        if (!node.isExhaustive()) {
-//            npath = npath.add(BigInteger.ONE);
-//        }
-        return npath.multiply(boolCompSwitch);
+        // add in npath of last label
+        return npath.add(BigInteger.valueOf(boolCompSwitch));
     }
 
     @Override
@@ -155,24 +195,13 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
 
     @Override
     public BigInteger visit(ASTConditionalExpression node, Void data) {
-        // bool comp of guard clause * sum of complexity of branches
+        // bool comp of guard clause + complexity of last two children (= total - 1)
 
-        BigInteger cond = node.getCondition().acceptVisitor(this, data);
-        BigInteger thenBranch = node.getThenBranch().acceptVisitor(this, data);
-        BigInteger elseBranch = node.getElseBranch().acceptVisitor(this, data);
+        int boolCompTernary = CycloVisitor.booleanExpressionComplexity(node.getCondition());
 
-        return thenBranch.add(elseBranch).multiply(cond);
+        return sumChildrenComplexities(node, data).add(BigInteger.valueOf(boolCompTernary - 1));
     }
 
-    @Override
-    public BigInteger visit(ASTInfixExpression node, Void data) {
-        if (BinaryOp.CONDITIONAL_OPS.contains(node.getOperator())) {
-            BigInteger leftOp = node.getLeftOperand().acceptVisitor(this, data);
-            BigInteger rightOp = node.getRightOperand().acceptVisitor(this, data);
-            return leftOp.add(BigInteger.ONE).multiply(rightOp);
-        }
-        return super.visit(node, data);
-    }
 
     @Override
     public BigInteger visit(ASTTryStatement node, Void data) {
@@ -183,42 +212,5 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
          * complexities of the catch and finally blocks.
          */
         return sumChildrenComplexities(node, data);
-    }
-
-    private static class BooleanPaths {
-        public static final BooleanPaths UNIT = new BooleanPaths(1, 1);
-        private final int truePaths;
-        private final int falsePaths;
-
-        private BooleanPaths(int truePaths, int falsePaths) {
-            this.truePaths = truePaths;
-            this.falsePaths = falsePaths;
-        }
-
-        BigInteger truePaths() {
-            return BigInteger.valueOf(truePaths);
-        }
-
-        BigInteger falsePaths() {
-            return BigInteger.valueOf(falsePaths);
-        }
-    }
-
-    private static BooleanPaths pathsInCondition(ASTExpression e) {
-
-        if (e instanceof ASTInfixExpression) {
-            BooleanPaths left = pathsInCondition(((ASTInfixExpression) e).getLeftOperand());
-            BooleanPaths right = pathsInCondition(((ASTInfixExpression) e).getRightOperand());
-
-            if (JavaAstUtils.isInfixExprWithOperator(e, BinaryOp.CONDITIONAL_OR)) {
-                return new BooleanPaths(left.truePaths * right.truePaths + 1,
-                                        left.falsePaths * right.falsePaths);
-            } else if (JavaAstUtils.isInfixExprWithOperator(e, BinaryOp.CONDITIONAL_AND)) {
-                return new BooleanPaths(left.truePaths * right.truePaths,
-                                        left.falsePaths * right.falsePaths + 1);
-            }
-        }
-
-        return BooleanPaths.UNIT;
     }
 }
