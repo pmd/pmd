@@ -4,9 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import static net.sourceforge.pmd.lang.ast.NodeStream.asInstanceOf;
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.*;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
+import net.sourceforge.pmd.lang.java.rule.internal.AbstractIgnoredAnnotationRule;
+import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
 import java.util.Map;
@@ -14,21 +19,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.StringUtils;
-
-import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
-import net.sourceforge.pmd.lang.java.ast.MethodUsage;
-import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
-import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
-import net.sourceforge.pmd.lang.java.rule.internal.AbstractIgnoredAnnotationRule;
-import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
-import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import static net.sourceforge.pmd.lang.ast.NodeStream.asInstanceOf;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 /**
  * This rule detects private methods, that are not used and can therefore be
@@ -37,7 +30,7 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
 
     private static final Set<String> SERIALIZATION_METHODS =
-        setOf("readObject", "writeObject", "readResolve", "writeReplace");
+            setOf("readObject", "writeObject", "readResolve", "writeReplacew");
 
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
