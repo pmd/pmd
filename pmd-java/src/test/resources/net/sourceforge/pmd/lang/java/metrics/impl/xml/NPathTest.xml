@@ -971,4 +971,31 @@ public class NPathComplexityOverflow {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Lambdas and anon classes don't count as control flow in their parent</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Test#foo(int)' has value 1.</message>
+            <message>'Test$1#run()' has value 16.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Test {
+                Runnable foo(int x) {
+                    Runnable lambda = () -> {
+                        if(x==0) dosomething();
+                    };
+                    lambda = new Runnable() {
+                        void run() {
+                            if(x==0) dosomething();
+                            if(x==1) dosomething();
+                            if(x==2) dosomething();
+                            if(x==4) dosomething();
+                        }
+                    };
+                    return lambda;
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>
