@@ -46,15 +46,15 @@ import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 
 public final class NPathMetricCalculator {
 
+    private NPathMetricCalculator() {
+
+    }
+
     public static long computeNpath(ReturnScopeNode node) {
         ASTBlock body = node.getBody();
         if (body == null) {
             return 1;
         }
-        return computeNpath(body);
-    }
-
-    public static long computeNpath(ASTBlock node) {
         CfVisitState state = new CfVisitState(1);
         state = node.acceptVisitor(CfVisitor.INSTANCE, state);
         return state.getNumPathsToExit();
