@@ -56,7 +56,7 @@ public final class NPathMetricCalculator {
             return 1;
         }
         CfVisitState state = new CfVisitState(1);
-        state = node.acceptVisitor(CfVisitor.INSTANCE, state);
+        state = body.acceptVisitor(CfVisitor.INSTANCE, state);
         return state.getNumPathsToExit();
     }
 
