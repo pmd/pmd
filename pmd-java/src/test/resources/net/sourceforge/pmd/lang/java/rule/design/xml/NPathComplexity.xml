@@ -60,7 +60,7 @@ public class Foo {
         <description>Full example</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'bar()' has an NPath complexity of 8064, current threshold is 200</message>
+            <message>The method 'bar()' has an NPath complexity of 5064, current threshold is 200</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -70,7 +70,7 @@ public class Foo {
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'bar()' has an NPath complexity of 200, current threshold is 1</message>
+            <message>The method 'bar()' has an NPath complexity of 288, current threshold is 1</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -95,7 +95,10 @@ public class Foo {
 
     <test-code>
         <description>Test default report level - ignore 199</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The method 'bar()' has an NPath complexity of 588, current threshold is 200</message>
+        </expected-messages>
         <code><![CDATA[
 class Foo {
     void bar() {
@@ -132,7 +135,7 @@ class Foo {
         <rule-property name="reportLevel">2</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'bar()' has an NPath complexity of 4, current threshold is 2</message>
+            <message>The method 'bar()' has an NPath complexity of 5, current threshold is 2</message>
         </expected-messages>
         <code><![CDATA[
 class Foo {
@@ -148,7 +151,7 @@ class Foo {
         <rule-property name="reportLevel">2</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'bar()' has an NPath complexity of 9, current threshold is 2</message>
+            <message>The method 'bar()' has an NPath complexity of 10, current threshold is 2</message>
         </expected-messages>
         <code><![CDATA[
 class Foo {
