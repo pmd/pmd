@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
@@ -87,13 +88,13 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
         return (String) super.getConstValue(); // value is cached
     }
 
+    /**
+     * @deprecated Since 7.12.0. See super method. This override is needed due to covariant return type change.
+     */
     @Override
-    protected @NonNull String buildConstValue() {
-        if (isTextBlock()) {
-            return determineTextBlockContent(getLiteralText());
-        } else {
-            return determineStringContent(getLiteralText());
-        }
+    @Deprecated
+    protected @Nullable String buildConstValue() {
+        return (String) super.buildConstValue();
     }
 
     static @NonNull String determineStringContent(Chars image) {

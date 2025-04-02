@@ -15,6 +15,29 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>javadoc comment</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+/**
+ *  comment
+ */
+package foo.BarBuz;
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5452 javadoc comment and suppression NOPMD</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ *  comment
+ */
+package foo.BarBuz; //NOPMD upper-case package name ok
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>good</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
