@@ -61,7 +61,7 @@ public final class NPathMetricCalculator {
     }
 
     private static DecisionPoint getControlFlowInCondition(ASTExpression e, CfPoint point) {
-        return e.acceptVisitor(CfExpressionVisitor.INSTANCE, point);
+        return e.acceptVisitor(CfExpressionVisitor.INSTANCE, new CfPoint(point));
     }
 
     static final class CfExpressionVisitor extends JavaVisitorBase<CfPoint, DecisionPoint> {
@@ -88,9 +88,9 @@ public final class NPathMetricCalculator {
 
         @Override
         public DecisionPoint visit(ASTConditionalExpression node, CfPoint point) {
-            DecisionPoint condition = node.getCondition().acceptVisitor(this, point);
-            DecisionPoint thenState = node.getThenBranch().acceptVisitor(this, condition.truePoint());
-            DecisionPoint elseState = node.getElseBranch().acceptVisitor(this, condition.falsePoint());
+            DecisionPoint condition = node.getCondition().acceptVisitor(this, new CfPoint(point));
+            DecisionPoint thenState = node.getThenBranch().acceptVisitor(this, new CfPoint(condition.truePoint()));
+            DecisionPoint elseState = node.getElseBranch().acceptVisitor(this, new CfPoint(condition.falsePoint()));
             return new BooleanDecisionPoint(
                     thenState.endPaths().connectTo(new CfPoint(elseState.endPaths())),
                     thenState.truePoint().connectTo(new CfPoint(elseState.truePoint())),
@@ -349,7 +349,11 @@ public final class NPathMetricCalculator {
                         assert contPoint != null;
                         CfPoint beforeCond = afterBody.currentProgramPoint.connectTo(contPoint);
                         DecisionPoint condition = getLoopCondition(node.getCondition(), beforeCond);
-                        return afterBody.absorb(condition.falsePoint()).absorb(breakPoint);
+                        // Condition.falsePoint already counts the after body paths so we replace
+                        // the point instead of absorbing it.
+                        CfVisitState endState = afterBody.withPoint(condition.falsePoint()).absorb(breakPoint);
+                        condition.truePoint().connectTo(endState.loopBackPaths);
+                        return endState;
                     });
         }
 
@@ -498,6 +502,8 @@ public final class NPathMetricCalculator {
         private final CfPoint returnPoint;
         /** Accumulate paths that end in a throw. */
         private final CfPoint throwPoint;
+        /** Accumulate loop backpaths that shouldn't be double-counted. */
+        private final CfPoint loopBackPaths;
 
         /** Stores the number of paths until the current program point we are exploring. */
         private CfPoint currentProgramPoint;
@@ -507,6 +513,7 @@ public final class NPathMetricCalculator {
             this.labeledContinuePoints = HashTreePMap.empty();
             this.returnPoint = new CfPoint(0);
             this.throwPoint = new CfPoint(0);
+            this.loopBackPaths = new CfPoint(0);
             this.currentProgramPoint = new CfPoint(numPathsUntilThisPoint);
         }
 
@@ -518,6 +525,7 @@ public final class NPathMetricCalculator {
             this.yieldPoint = state.yieldPoint;
             this.returnPoint = state.returnPoint;
             this.throwPoint = state.throwPoint;
+            this.loopBackPaths = state.loopBackPaths;
             this.currentProgramPoint = currentProgramPoint;
         }
 
@@ -568,7 +576,8 @@ public final class NPathMetricCalculator {
         long getNumPathsToExit() {
             return currentProgramPoint
                     .connectTo(returnPoint)
-                    .connectTo(throwPoint).numPathsUntilThisPoint;
+                    .connectTo(throwPoint)
+                    .connectTo(loopBackPaths).numPathsUntilThisPoint;
         }
     }
 

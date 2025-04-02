@@ -60,7 +60,7 @@ public class Foo {
         <description>Full example</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Foo#bar()' has value 8064.</message>
+            <message>'Foo#bar()' has value 5064.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -903,14 +903,29 @@ public class NPathComplexityOverflow {
 
     <test-code>
         <description>For stmt</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>5</expected-problems>
         <expected-messages>
+            <message>'Test#testFor1()' has value 2.</message>
+            <message>'Test#testFor2()' has value 3.</message>
+            <message>'Test#testFor3()' has value 5.</message>
+            <message>'Test#testFor4()' has value 4.</message>
             <message>'Test#testForCyclesComplex()' has value 120.</message>
         </expected-messages>
         <code><![CDATA[
             public class Test {
-                // NP = (for-statement[1]=2) * (for-statement[2]=3)
-                //         * (for-statement[3]=4) * (for-statement[4]=5) = 120
+                boolean a, b, c, d;
+                void testFor1() { // violation
+                    for (int i = 0; i < 10; i++) dosomething();
+                }
+                void testFor2() { // violation
+                    for (int i = 0; i < 10 && b; i++)  dosomething();;
+                }
+                void testFor3() { // violation
+                    for (int i = 0; a ? i < 10 : c || d; i++)  dosomething();;
+                }
+                void testFor4() { // violation
+                    for (int i = b ? 0 : 1; i < 10; i++)  dosomething();;
+                }
                 void testForCyclesComplex() { // violation
                     // NP(for-statement) = (for-range=1) + (expr(1)=0) + (expr(2)=0) + (expr(3)=0) + 1 = 2
                     for (int i = 0; i < 10; i++) ;
@@ -952,14 +967,47 @@ public class NPathComplexityOverflow {
     </test-code>
     <test-code>
         <description>Do stmt</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>6</expected-problems>
         <expected-messages>
-            <message>'Test#testDoWhileCyclesComplex()' has value 21.</message>
+            <message>'Test#testDoWhile0()' has value 2.</message>
+            <message>'Test#testDoWhile1()' has value 3.</message>
+            <message>'Test#testDoWhile2()' has value 3.</message>
+            <message>'Test#testDoWhile3()' has value 4.</message>
+            <message>'Test#testDoWhile4()' has value 7.</message>
+            <message>'Test#testDoWhileCyclesComplex()' has value 15.</message>
         </expected-messages>
         <code><![CDATA[
             public class Test {
+                boolean x, q, b;
+                int a = 0;
+                void testDoWhile0() { // violation
+                    do {
+                    } while (b);
+
+                }
+                void testDoWhile1() { // violation
+                    do {
+                    } while (a < 10 && b);
+
+                }
+                void testDoWhile2() { // violation
+                    do { } while (a < 10 || b);
+                }
+                void testDoWhile3() { // violation
+                    do {
+                        do { } while (a < 10 || b);
+
+                    } while (x);
+                }
+                void testDoWhile4() { // violation
+                    do {
+                        do { } while (a < 10 || b);
+
+                    } while (x ? a > 10 : (a < 10 || q));
+                }
+
                 // NP = (do-statement[1]=6) * (do-statement[2]=3) = 21
-                void testDoWhileCyclesComplex(boolean x, boolean q) { // violation
+                void testDoWhileCyclesComplex() { // violation
                     int a = 0;
                     // 1 path going in
                     do { } while (a < 10 && b);
