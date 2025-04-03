@@ -51,4 +51,262 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>key Authorization as literal negative</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        HttpRequest req = new HttpRequest();
+        req.setHeader('NotAuth', 'SomeValue');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>key Authorization as literal positive</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        HttpRequest req = new HttpRequest();
+        req.setHeader('Authorization', 'SomeValue');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>key Authorization as variable negative</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        HttpRequest req = new HttpRequest();
+        String key = 'NotAuth';
+        req.setHeader(key, 'SomeValue');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>key Authorization as variable positive</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        HttpRequest req = new HttpRequest();
+        String key = 'Authorization';
+        req.setHeader(key, 'SomeValue');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>key Authorization as field negative</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private String key = 'NotAuth';
+    public void foo() {
+        HttpRequest req = new HttpRequest();
+        req.setHeader(key, 'SomeValue');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>key Authorization as field positive</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private String key = 'Authorization';
+    public void foo() {
+        HttpRequest req = new HttpRequest();
+        req.setHeader(key, 'SomeValue');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>key Authorization as binary expression first negative</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        HttpRequest req = new HttpRequest();
+        req.setHeader('Auth' + 'orization', 'SomeValue');   // we don't resolve binary expressions
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>key Authorization as binary expression nonfirst negative</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        HttpRequest req = new HttpRequest();
+        req.setHeader('SomethingElse' + 'Authorization', 'SomeValue');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>key Authorization as binary expression positive</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        HttpRequest req = new HttpRequest();
+        req.setHeader('Authorization' + 'SomethingElse', 'SomeValue');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3158 value as literal negative</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        HttpRequest req = new HttpRequest();
+        req.setHeader('Authorization', 'Bearer {!$Credential.Password}');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>value as literal positive</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        HttpRequest req = new HttpRequest();
+        req.setHeader('Authorization', 'Bearer HardcodedToken');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3158 value as variable negative</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        String value = 'Bearer {!$Credential.Password}';
+        HttpRequest req = new HttpRequest();
+        req.setHeader('Authorization', value);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>value as variable positive</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        String value = 'Bearer HardcodedToken';
+        HttpRequest req = new HttpRequest();
+        req.setHeader('Authorization', value);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>value as field negative</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private String value = 'Bearer {!$Credential.Password}';
+    public void foo() {
+        HttpRequest req = new HttpRequest();
+        req.setHeader('Authorization', value);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>value as field positive</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private String value = 'Bearer HardCodedToken';
+    public void foo() {
+        HttpRequest req = new HttpRequest();
+        req.setHeader('Authorization', value);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>value as binary expression literal negative</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        HttpRequest req = new HttpRequest();
+        req.setHeader('Authorization', 'Bearer ' + '{!$Credential.Password}');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>value as binary expression variable negative</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        String value = '{!$Credential.Password}';
+        HttpRequest req = new HttpRequest();
+        req.setHeader('Authorization', 'Bearer ' + value);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>value as binary expression literal positive</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        HttpRequest req = new HttpRequest();
+        req.setHeader('Authorization', 'Bearer ' + 'HardCodedToken');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>value as binary expression variable positive</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        String value = 'HardCodedToken';
+        HttpRequest req = new HttpRequest();
+        req.setHeader('Authorization', 'Bearer ' + value);
+    }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>

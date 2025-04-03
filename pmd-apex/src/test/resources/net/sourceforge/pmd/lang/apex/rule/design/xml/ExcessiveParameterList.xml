@@ -19,6 +19,7 @@ public class Foo {
         <description>long</description>
         <rule-property name="minimum">9</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void foo(Integer p01, Integer p02, Integer p03, Integer p04, Integer p05, Integer p06, Integer p07, Integer p08, Integer p09, Integer p10 ) { }
@@ -47,5 +48,27 @@ public class SomeClass {
     private String field;
 }
        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>#5616 [apex] ExcessiveParameterList reports entire method instead of signature only</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2-3,9-11</expected-linenumbers>
+        <code><![CDATA[
+class Excessive {
+    void method1(
+        int i1, int i2, int i3, int i4) {
+        // some more lines
+        someMethodCall(i1);
+        someMethodCall(i2);
+    }
+
+    void method2(
+        int i1, int i2,
+        int i3, int i4) {
+        // some more lines
+    }
+}
+]]></code>
     </test-code>
 </test-data>

@@ -62,7 +62,7 @@
                |  +- VariableDeclarator[@Initializer = true, @Name = "day"]
                |     +- VariableId[@ArrayType = false, @EffectiveVisibility = Visibility.V_LOCAL, @EnumConstant = false, @ExceptionBlockParameter = false, @Field = false, @Final = false, @ForLoopVariable = false, @ForeachVariable = false, @FormalParameter = false, @LambdaParameter = false, @LocalVariable = true, @Name = "day", @PatternBinding = false, @RecordComponent = false, @ResourceDeclaration = false, @Static = false, @TypeInferred = false, @Unnamed = false, @Visibility = Visibility.V_LOCAL]
                |     +- VariableAccess[@AccessType = AccessType.READ, @CompileTimeConstant = true, @Image = "THURSDAY", @Name = "THURSDAY", @ParenthesisDepth = 0, @Parenthesized = false]
-               +- SwitchStatement[@DefaultCase = false, @EnumSwitch = false, @ExhaustiveEnumSwitch = false, @FallthroughSwitch = true]
+               +- SwitchStatement[@DefaultCase = false, @EnumSwitch = false, @Exhaustive = false, @ExhaustiveEnumSwitch = false, @FallthroughSwitch = true]
                   +- VariableAccess[@AccessType = AccessType.READ, @CompileTimeConstant = false, @Image = "day", @Name = "day", @ParenthesisDepth = 0, @Parenthesized = false]
                   +- SwitchFallthroughBranch[@Default = false]
                   |  +- SwitchLabel[@Default = false, @PatternLabel = false]

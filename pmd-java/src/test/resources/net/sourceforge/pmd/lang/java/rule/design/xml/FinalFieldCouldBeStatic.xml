@@ -297,4 +297,102 @@ public class Test {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5018 issue with super field reference</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Super {
+    int foo;
+}
+public class Test extends Super {
+    int foo;
+    class Inner {
+        private final int field = Test.super.foo;
+    }
+    class Inner2 {
+        private final int field = Test.this.foo;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Class literal</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,5</expected-linenumbers>
+        <code><![CDATA[
+public class MyClass {
+    private final Class<MyClass> clazz = MyClass.class;
+}
+class OtherToplevelClass {
+    private final Class<OtherToplevelClass> clazz = OtherToplevelClass.class;
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Literals with constant expressions</description>
+        <expected-problems>12</expected-problems>
+        <expected-linenumbers>2,3,4,5,6,7,10,11,12,13,14,15</expected-linenumbers>
+        <code><![CDATA[
+public class MyLiterals {
+    final int one = 1 + 1 - 1;
+    final double zero = -0.0;
+    final float otherZero = 0.0f;
+    final long unknown = -1;
+    final byte mask = (byte)0x1;
+    final short entries = (short)10;
+}
+class Literals {
+    final int one = 2 - 1;
+    final double zero = -0.0;
+    final float otherZero = 0.0f;
+    final long unknown = -1;
+    final byte mask = (byte)0x1;
+    final short entries = (short)10;
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Static array property length</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,5</expected-linenumbers>
+        <code><![CDATA[
+class ArrayLength {
+    private static final int[] myArray = { 1, 2, 3 };
+    public final int myArrayLength = myArray.length;
+
+    private final int[] nonStaticArray = { 1, 2, 3 };
+    public final int nonStaticArrayLength = nonStaticArray.length; // can't be made static, unless nonStaticArray is static as well
+
+    private static final int[] emptyArray = {};
+}
+]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>constant via static ondemand import</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+import static java.math.BigInteger.*;
+class MyConstants {
+    public final BigInteger myZero = ZERO;
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>Nonstatic</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,3</expected-linenumbers>
+        <code><![CDATA[
+class MyConstants {
+    private final byte BITARRAYMASK = (byte)0x1;
+    private final int  BYTEPOWER = 3;
+    private final int  BYTEMASK = (1 << BYTEPOWER) - 1; //this one cannot
+}
+]]></code>
+    </test-code>
 </test-data>
