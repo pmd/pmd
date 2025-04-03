@@ -46,17 +46,37 @@ java_heapsize_settings() {
     esac
 }
 
+set_pmd_home_dir() {
+  if [ -z "$PMD_HOME" ]; then
+    script_real_loc="$0"
+
+    # see #4723 - allow calling as "bash pmd", when pmd is on the PATH
+    if [ ! -e "$script_real_loc" ]; then
+      script_real_loc=$(which "$script_real_loc")
+    fi
+  fi
+
+  if [ ! -e "$script_real_loc" ]; then
+    echo "Couldn't determine PMD_HOME path. Script location [$script_real_loc] does not exist"
+    exit 1
+  fi
+
+  # Allow for symlinks to this script
+  if [ -L "$script_real_loc" ]; then
+    script_real_loc=$(readlink "$script_real_loc")
+  fi
+
+  # use the directory of the script (which is ..../bin)
+  script_real_loc=$(dirname "$script_real_loc")
+  # use the parent directory
+  PMD_HOME="$script_real_loc/.."
+  # make it normalized and fully qualified
+  PMD_HOME=$(cd "$PMD_HOME" && pwd)
+}
+
 set_lib_dir() {
   if [ -z "$LIB_DIR" ]; then
-    # Allow for symlinks to this script
-    if [ -L "$0" ]; then
-      script_real_loc=$(readlink "$0")
-    else
-      script_real_loc="$0"
-    fi
-    script_dir=$(dirname "$script_real_loc")
-
-    LIB_DIR=$(realpath "$script_dir/../lib")
+    LIB_DIR="$PMD_HOME/lib"
   fi
 }
 
@@ -68,15 +88,7 @@ check_lib_dir() {
 
 set_conf_dir() {
   if [ -z "$CONF_DIR" ]; then
-    # Allow for symlinks to this script
-    if [ -L "$0" ]; then
-      script_real_loc=$(readlink "$0")
-    else
-      script_real_loc="$0"
-    fi
-    script_dir=$(dirname "$script_real_loc")
-
-    CONF_DIR=$(realpath "$script_dir/../conf")
+    CONF_DIR="$PMD_HOME/conf"
   fi
 }
 
@@ -92,8 +104,7 @@ script_exit() {
 }
 
 check_java() {
-  java -version >/dev/null 2>&1
-  if [ $? -ne 0 ]; then
+  if ! java -version >/dev/null 2>&1; then
     script_exit "No java executable found in PATH"
   fi
 }
@@ -188,6 +199,7 @@ is_cygwin
 
 check_java
 
+set_pmd_home_dir
 set_lib_dir
 check_lib_dir
 set_conf_dir
