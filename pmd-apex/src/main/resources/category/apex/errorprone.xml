@@ -604,9 +604,9 @@ private class TestClass {
 
     <rule name="TypeShadowsSystemNamespace"
           language="apex"
-          since="7.10.0"
+          since="7.13.0"
           message="This name causes a collision with a class, enum, or interface used in the `System` namespace. Please choose a different name."
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          class="net.sourceforge.pmd.lang.apex.rule.errorprone.TypeShadowsSystemNamespaceRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#typeshadowssystemnamespace">
         <description>
             This rule finds Apex classes, enums, and interfaces that have the same name as a class, enum, or interface in the `System` namespace.
@@ -614,52 +614,13 @@ private class TestClass {
             Code that intends to reference a `System` class, enum, or interface may inadvertently reference the locally defined type instead.
             This can result in ambiguous code and unexpected runtime behavior.
             It is best to avoid naming your types the same as those in the `System` namespace to prevent these issues.
-            Note that the list of classes, enums, and interfaces in the `System` namespace is statically defined based on the contents of Salesforce's [documentation](https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_namespace_System.htm).
-            As Salesforce introduces new types into the `System` namespace, this rule may need to be updated.
+
+            Note that the list of classes, enums, and interfaces in the `System` namespace is determined through
+            [io.github.apex-dev-tools:standard-types](https://github.com/apex-dev-tools/standard-types). It is based on the contents of
+            Salesforce's [Apex Reference Guide / System Namespace](https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_namespace_System.htm).
+            As Salesforce introduces new types into the `System` namespace, the standard types may need to be updated.
         </description>
         <priority>1</priority>
-        <properties>
-            <property
-                name="systemClasses"
-                type="String"
-                description="Comma-separated list of classes in the `System` namespace."
-                value="accesslevel,address,answers,apexpages,approval,assert,asyncinfo,asyncoptions,blob,boolean,businesshours,cases,collator,continuation,cookie,crypto,database,date,datetime,decimal,domain,domaincreator,domainparser,double,emailmessages,encodingutil,eventbus,exception,externalservicetest,flexqueue,featuremanagement,formula,formularecalcfielderror,formularecalcresult,http,httprequest,httpresponse,id,ideas,integer,json,jsongenerator,jsonparser,label,limits,list,location,long,map,matcher,math,messaging,multistaticresourcecalloutmock,network,object,orglimit,orglimits,pagereference,packaging,pattern,queueableduplicatesignature,queueableduplicatesignature.builder,quickaction,request,resetpasswordresult,restcontext,restrequest,restresponse,schema,search,security,selectoption,set,site,sobject,sobjectaccessdecision,soqlstubprovider,staticresourcecalloutmock,string,system,test,time,timezone,trigger,type,url,userinfo,usermanagement,uuid,version,webservicecallout,xmlstreamreader,xmlstreamwriter"
-                />
-            <property
-                name="systemEnums"
-                type="String"
-                description="Comma-separated list of enums in the `System` namespace."
-                value="accesstype,callbackstatus,domaintype,jsontoken,logginglevel,quiddity,triggeroperation"
-                />
-            <property
-                name="systemInterfaces"
-                type="String"
-                description="Comma-separated list of interfaces in the `System` namespace."
-                value="callable,comparable,comparator,httpcalloutmock,installhandler,queueable,queueablecontext,sandboxpostcopy,schedulable,schedulablecontext,stubprovider,uninstallhandler,webservicemock"
-                />
-            <property name="xpath">
-                <value>
-                    <![CDATA[
-//UserClass[
-    contains(
-        concat(",", $systemClasses, ",", $systemEnums, ",", $systemInterfaces, ","),
-        concat(",", lower-case(@DefiningType), ",")
-    )
-] | //UserEnum[
-    contains(
-        concat(",", $systemClasses, ",", $systemEnums, ",", $systemInterfaces, ","),
-        concat(",", lower-case(@DefiningType), ",")
-    )
-] | //UserInterface[
-    contains(
-        concat(",", $systemClasses, ",", $systemEnums, ",", $systemInterfaces, ","),
-        concat(",", lower-case(@DefiningType), ",")
-    )
-]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
             <![CDATA[
 // Violation: Causes a collision with the `System.Database` class.
