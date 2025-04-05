@@ -59,6 +59,7 @@
           "message": {
             "text": "Apex classes should declare a sharing model if DML or SOQL/SOSL is used"
           },
+          "level": "warning",
           "locations": [
             {
               "physicalLocation": {
@@ -94,6 +95,7 @@
           "message": {
             "text": "Missing ApexDoc comment"
           },
+          "level": "warning",
           "locations": [
             {
               "physicalLocation": {
