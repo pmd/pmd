@@ -15,6 +15,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀 New and noteworthy
 
 ### 🐛 Fixed Issues
+* java
+  * [#5645](https://github.com/pmd/pmd/issues/5645): \[java] Parse error on switch with yield
 
 ### 🚨 API Changes
 
