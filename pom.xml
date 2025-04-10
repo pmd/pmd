@@ -94,7 +94,8 @@
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
         <kotlin.version>1.9.24</kotlin.version>
         <kotest.version>5.9.1</kotest.version>
-        <junit5.version>5.11.4</junit5.version>
+        <junit5.version>5.12.1</junit5.version>
+        <junit5.platform.version>1.12.1</junit5.platform.version>
         <dokka.version>2.0.0</dokka.version>
 
         <javacc.version>5.0</javacc.version>
@@ -374,6 +375,15 @@
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-build-tools-config</artifactId>
                             <version>${pmd.build-tools.version}</version>
+                        </dependency>
+                        <!--
+                             explicitly select correct junit-platform-launcher version, as
+                             pmd-build-tools-config might bring a different version.
+                        -->
+                        <dependency>
+                            <groupId>org.junit.platform</groupId>
+                            <artifactId>junit-platform-launcher</artifactId>
+                            <version>${junit5.platform.version}</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -985,13 +995,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.junit.platform</groupId>
-                <artifactId>junit-platform-suite</artifactId>
-                <version>1.12.1</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
                 <groupId>com.github.stefanbirkner</groupId>
                 <artifactId>system-lambda</artifactId>
                 <version>1.2.1</version>
@@ -1111,13 +1114,13 @@
                 <version>4.30.2</version>
             </dependency>
 
-            <!-- Make sure to use the correct version the JUnit5 needs. E.g. 5.11.2 needs 1.11.2
-                 Kotest might bring a wrong version.
-                 see junit5.version -->
+            <!-- Make sure to use the correct version that JUnit5 needs. E.g. 5.12.1 needs 1.12.1
+                 Kotest might bring a different version.
+                 see junit5.version / junit5.platform.version -->
             <dependency>
                 <groupId>org.junit.platform</groupId>
                 <artifactId>junit-platform-commons</artifactId>
-                <version>1.11.4</version>
+                <version>${junit5.platform.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
