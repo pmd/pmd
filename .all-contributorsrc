@@ -8029,6 +8029,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "fesse",
+      "name": "Mathias Lagerwall",
+      "avatar_url": "https://avatars.githubusercontent.com/u/668267?v=4",
+      "profile": "https://github.com/fesse",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
