@@ -17,6 +17,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🐛 Fixed Issues
 * java-bestpractices
   * [#5369](https://github.com/pmd/pmd/issues/5369): \[java] UnusedPrivateMethod false positives with lombok.val
+* core
+  * [#5623](https://github.com/pmd/pmd/issues/5623): \[dist] Make pmd launch script compatible with /bin/sh
 
 ### 🚨 API Changes
 
