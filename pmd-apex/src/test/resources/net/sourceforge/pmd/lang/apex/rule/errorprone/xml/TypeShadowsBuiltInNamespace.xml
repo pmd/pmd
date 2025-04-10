@@ -7,6 +7,9 @@
         <description>Shadows a class in the System namespace</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>This name causes a collision with a class, enum, or interface used in the `System` namespace. Please choose a different name.</message>
+        </expected-messages>
         <code><![CDATA[
 public class Database {
 }
@@ -40,5 +43,24 @@ public class Callable {
 public class FooBar{
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Shadows a class in the Schema namespace</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>This name causes a collision with a class, enum, or interface used in the `Schema` namespace. Please choose a different name.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class DataCategory { }
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Shadows an enum in the Schema namespace</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class DisplayType { }
+]]></code>
     </test-code>
 </test-data>
