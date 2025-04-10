@@ -46,7 +46,7 @@ public class TypeShadowsBuiltInNamespaceRule extends AbstractRule {
         target.acceptVisitor(VISITOR, ctx);
     }
 
-    private static class Visitor implements ApexVisitor<RuleContext, Void> {
+    private static final class Visitor implements ApexVisitor<RuleContext, Void> {
         private final Set<String> systemTypes;
         private final Set<String> schemaTypes;
 
