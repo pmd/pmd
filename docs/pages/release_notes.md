@@ -21,8 +21,12 @@ This is a {{ site.pmd.release_type }} release.
   Shadowing these namespaces in this way can lead to confusion and unexpected behavior.
 
 ### 🐛 Fixed Issues
+* core
+  * [#5623](https://github.com/pmd/pmd/issues/5623): \[dist] Make pmd launch script compatible with /bin/sh
 * apex-errorprone
   * [#3184](https://github.com/pmd/pmd/issues/3184): \[apex] Prevent classes from shadowing System Namespace
+* java
+  * [#5645](https://github.com/pmd/pmd/issues/5645): \[java] Parse error on switch with yield
 
 ### 🚨 API Changes
 
