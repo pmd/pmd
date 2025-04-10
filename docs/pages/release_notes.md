@@ -17,6 +17,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🐛 Fixed Issues
 * core
   * [#5623](https://github.com/pmd/pmd/issues/5623): \[dist] Make pmd launch script compatible with /bin/sh
+* java
+  * [#5645](https://github.com/pmd/pmd/issues/5645): \[java] Parse error on switch with yield
 
 ### 🚨 API Changes
 
