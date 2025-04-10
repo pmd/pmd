@@ -376,6 +376,15 @@
                             <artifactId>pmd-build-tools-config</artifactId>
                             <version>${pmd.build-tools.version}</version>
                         </dependency>
+                        <!--
+                             explicitly select correct junit-platform-launcher version, as
+                             pmd-build-tools-config might bring a different version.
+                        -->
+                        <dependency>
+                            <groupId>org.junit.platform</groupId>
+                            <artifactId>junit-platform-launcher</artifactId>
+                            <version>${junit5.platform.version}</version>
+                        </dependency>
                     </dependencies>
                 </plugin>
                 <plugin>
