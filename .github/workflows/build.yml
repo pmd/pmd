@@ -5,7 +5,9 @@ on:
   merge_group:
   push:
     branches:
-      - main
+      - '**'
+      # don't run on dependabot branches. Dependabot will create a pull requests, which will then be run instead
+      - '!dependabot/**'
   workflow_dispatch:
   schedule:
     # build it monthly: At 04:00 on day-of-month 1.
