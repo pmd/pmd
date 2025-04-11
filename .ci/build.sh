@@ -150,6 +150,35 @@ function build() {
     pmd_ci_log_group_end
     fi
 
+    # Trigger docker workflow to build new images
+    if pmd_ci_maven_isSnapshotBuild || [ "${BUILD_CLI_DIST_ONLY}" = "true" ]; then
+    pmd_ci_log_group_start "Trigger docker workflow"
+      # split semantic version by dot
+      IFS="." read -ra VERSION_ARRAY <<< "${PMD_CI_MAVEN_PROJECT_VERSION}"
+      all_tags=""
+      new_tag=""
+      for i in "${VERSION_ARRAY[@]}"; do
+        if [ -z "$new_tag" ]; then
+          new_tag="${i}"
+        else
+          new_tag="${new_tag}.${i}"
+        fi
+        all_tags="${all_tags}${new_tag},"
+      done
+      all_tags="${all_tags}latest"
+      echo "version: ${PMD_CI_MAVEN_PROJECT_VERSION}"
+      echo "tags: ${all_tags}"
+
+      GH_TOKEN="${PMD_ACTIONS_HELPER_TOKEN}" \
+      gh api \
+        --method POST \
+        -H "Accept: application/vnd.github+json" \
+        -H "X-GitHub-Api-Version: 2022-11-28" \
+        /repos/pmd/docker/actions/workflows/publish-docker-image.yaml/dispatches \
+         -f "ref=main" -f "inputs[version]=${PMD_CI_MAVEN_PROJECT_VERSION}" -f "inputs[tags]=${all_tags}"
+    pmd_ci_log_group_end
+    fi
+
     #
     # everything from here runs only on snapshots, not on release builds
     #
