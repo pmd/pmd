@@ -14,8 +14,22 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+#### Docker images
+
+PMD is now providing official docker images at <https://hub.docker.com/r/pmdcode/pmd> and
+<https://github.com/pmd/docker/pkgs/container/pmd>.
+
+You can now analyze your code with PMD by using docker like so: 
+
+```
+docker run --rm --tty -v $PWD:/src pmdcode/pmd:latest check -d . -R rulesets/java/quickstart.xml`
+```
+
+More information is available at <https://github.com/pmd/docker>.
+
 ### 🐛 Fixed Issues
 * core
+  * [#5448](https://github.com/pmd/pmd/issues/5448): Maintain a public PMD docker image
   * [#5623](https://github.com/pmd/pmd/issues/5623): \[dist] Make pmd launch script compatible with /bin/sh
 * java
   * [#5645](https://github.com/pmd/pmd/issues/5645): \[java] Parse error on switch with yield
