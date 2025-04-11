@@ -67,6 +67,14 @@ jobs:
         ( [ -e .ci/$f ] || curl -sSL "${PMD_CI_SCRIPTS_URL}/$f" > ".ci/$f" ) && \
         chmod 755 .ci/$f && \
         .ci/$f
+    - uses: actions/create-github-app-token@v2
+      id: pmd-actions-helper-app-token
+      with:
+        app-id: ${{ secrets.PMD_ACTIONS_HELPER_ID }}
+        private-key: ${{ secrets.PMD_ACTIONS_HELPER_PRIVATE_KEY }}
+        owner: ${{ github.repository_owner }}
+        repositories: docker
+        permission-actions: write
     - name: Build
       run: .ci/build.sh
       shell: bash
@@ -76,6 +84,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         PMD_CI_GPG_PRIVATE_KEY: ${{ secrets.PMD_CI_GPG_PRIVATE_KEY }}
         MAVEN_GPG_PASSPHRASE: ${{ secrets.PMD_CI_GPG_PASSPHRASE }}
+        PMD_ACTIONS_HELPER_TOKEN: ${{ steps.pmd-actions-helper-app-token.outputs.token }}
     - name: Workaround actions/upload-artifact#176
       run: |
         echo "artifacts_path=$(realpath ..)" >> $GITHUB_ENV
