@@ -25,7 +25,7 @@ public class LocalVariableCouldBeFinalRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
-        if (node.isFinal()) { // also for implicit finals, like resources
+        if (node.isFinal()) { // also for implicit finals, like resources, or lombok.val
             return data;
         }
         if (getProperty(IGNORE_FOR_EACH) && node.getParent() instanceof ASTForeachStatement) {

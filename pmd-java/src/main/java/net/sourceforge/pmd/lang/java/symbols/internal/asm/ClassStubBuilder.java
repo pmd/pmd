@@ -29,6 +29,7 @@ class ClassStubBuilder extends ClassVisitor {
     private final String myInternalName;
     private final AsmSymbolResolver resolver;
 
+    private boolean isAnonOrLocalClass = false;
     private boolean isInnerNonStaticClass = false;
 
     ClassStubBuilder(ClassStub stub, AsmSymbolResolver resolver) {
@@ -70,12 +71,14 @@ class ClassStubBuilder extends ClassVisitor {
     }
 
 
+    // called only if this is local or anonymous class
     @Override
     public void visitOuterClass(String ownerInternalName, @Nullable String methodName, @Nullable String methodDescriptor) {
+        isAnonOrLocalClass = true;
         isInnerNonStaticClass = true;
         // only for enclosing method
         ClassStub outer = resolver.resolveFromInternalNameCannotFail(ownerInternalName);
-        myStub.setOuterClass(outer, methodName, methodDescriptor);
+        myStub.setEnclosingInfo(outer, true, methodName, methodDescriptor);
     }
 
     @Override
@@ -123,13 +126,15 @@ class ClassStubBuilder extends ClassVisitor {
             member.setSimpleName(innerSimpleName);
             member.setModifiers(access, false);
             myStub.addMemberClass(member);
-        } else if (myInternalName.equals(innerInternalName) && outerName != null) {
+        } else if (myInternalName.equals(innerInternalName)) {
             // then it's specifying the enclosing class
             // (myStub is the inner class)
-            ClassStub outer = resolver.resolveFromInternalNameCannotFail(outerName);
-            myStub.setSimpleName(innerSimpleName);
+            if (outerName != null) {
+                ClassStub outer = resolver.resolveFromInternalNameCannotFail(outerName);
+                myStub.setEnclosingInfo(outer, this.isAnonOrLocalClass, null, null);
+            }
+            myStub.setSimpleName(innerSimpleName == null ? "" : innerSimpleName); // may be null for anonymous
             myStub.setModifiers(access, false);
-            myStub.setOuterClass(outer, null, null);
             isInnerNonStaticClass = (Opcodes.ACC_STATIC & access) == 0;
         }
     }

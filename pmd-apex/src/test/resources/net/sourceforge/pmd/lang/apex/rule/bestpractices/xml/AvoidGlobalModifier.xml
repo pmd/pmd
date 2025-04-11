@@ -55,7 +55,7 @@ global class Foo {
     </test-code>
 
     <test-code>
-        <description>#1348 [apex] AvoidGlobalModifierRule gives warning even when its a REST webservice - false positive</description>
+        <description>#1348 [apex] AvoidGlobalModifierRule gives warning even when it's a REST webservice - false positive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 @RestResource(urlMapping = '/partners/submit/*')
@@ -68,7 +68,7 @@ global class Generic_LoanCreation {
     </test-code>
 
     <test-code>
-        <description>#1348 [apex] AvoidGlobalModifierRule gives warning even when its a SOAP webservice - false positive</description>
+        <description>#1348 [apex] AvoidGlobalModifierRule gives warning even when it's a SOAP webservice - false positive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 global class Generic_LoanCreation {

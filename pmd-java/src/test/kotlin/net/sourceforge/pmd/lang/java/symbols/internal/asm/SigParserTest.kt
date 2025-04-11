@@ -11,14 +11,14 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import javasymbols.testdata.impls.SomeInnerClasses
-import net.sourceforge.pmd.lang.test.ast.IntelliMarker
-import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.GenericSigBase.LazyMethodType
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeParamsParser.BaseTypeParamsBuilder
 import net.sourceforge.pmd.lang.java.types.*
-import org.mockito.Mockito.`when`
+import net.sourceforge.pmd.lang.test.ast.IntelliMarker
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
 
 
 fun TypeSystem.mockTypeVar(name: String): JTypeVar {

@@ -213,5 +213,6 @@
    <!-- <rule ref="category/apex/errorprone.xml/OverrideBothEqualsAndHashcode" /> -->
    <!-- <rule ref="category/apex/errorprone.xml/InaccessibleAuraEnabledGetter" /> -->
    <!-- <rule ref="category/apex/errorprone.xml/AvoidStatefulDatabaseResult" /> -->
+   <!-- <rule ref="category/apex/errorprone.xml/TypeShadowsBuiltInNamespace" /> -->
 
 </ruleset>

@@ -19,10 +19,25 @@ public final class AssertionUtil {
     private static final Pattern BINARY_NAME_PATTERN = Pattern.compile("[\\w$]+(?:\\.[\\w$]+)*(?:\\[])*");
     private static final Pattern BINARY_NAME_NO_ARRAY = Pattern.compile("[\\w$]++(?:\\.[\\w$]++)*");
 
+    private static final boolean ASSERT_ENABLED;
+
+    static {
+        boolean assertEnabled = false;
+        //noinspection AssertWithSideEffects
+        assert assertEnabled = true; // SUPPRESS CHECKSTYLE now
+        ASSERT_ENABLED = assertEnabled;
+    }
+
     private AssertionUtil() {
         // utility class
     }
 
+    /**
+     * Return true if the VM runs with assertions enabled.
+     */
+    public static boolean isAssertEnabled() {
+        return ASSERT_ENABLED;
+    }
 
     /** @throws NullPointerException if any item is null */
     public static void requireContainsNoNullValue(String name, Collection<?> c) {

@@ -48,7 +48,7 @@ public class LanguageVersionDiscoverer {
     }
 
     /**
-     * Set the given LanguageVersion as the current default for it's Language.
+     * Set the given LanguageVersion as the current default for its Language.
      *
      * @param languageVersion
      *            The new default for the Language.

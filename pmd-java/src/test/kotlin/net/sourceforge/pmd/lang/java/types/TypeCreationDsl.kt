@@ -38,9 +38,13 @@ interface TypeDslMixin {
 
     /* extensions to turn a class (literal) into a type mirror */
 
-    val KClass<*>.raw: JClassType get() = ts.rawType(ts.getClassSymbol(this.java)!!) as JClassType
+    private fun getNonNullClassSymbol(klass: Class<*>): JClassSymbol =
+        ts.getClassSymbol(klass) ?: throw AssertionError("Symbol resolver couldn't resolve $klass")
+
+    val KClass<*>.raw: JClassType get() = java.raw
+    val Class<*>.raw: JClassType get() = ts.rawType(getNonNullClassSymbol(this)) as JClassType
     val KClass<*>.decl: JClassType get() = java.decl
-    val Class<*>.decl: JClassType get() = ts.declaration(ts.getClassSymbol(this)!!) as JClassType
+    val Class<*>.decl: JClassType get() = ts.declaration(getNonNullClassSymbol(this)) as JClassType
 
     /* aliases with regular java keywords */
 

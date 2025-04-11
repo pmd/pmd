@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.lang.rule.internal.CommonPropertyDescriptors;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -60,6 +61,9 @@ public abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends Ab
         return false;
     }
 
+    protected FileLocation getReportLocation(T node) {
+        return node.getReportLocation();
+    }
 
     @Override
     public Object visitApexNode(ApexNode<?> node, Object data) {
@@ -71,7 +75,7 @@ public abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends Ab
             int metric = getMetric(t);
             int limit = getProperty(reportLevel);
             if (metric >= limit) {
-                asCtx(data).addViolation(node, getViolationParameters(t, metric, limit));
+                asCtx(data).addViolationWithPosition(t, t.getAstInfo(), getReportLocation(t), getMessage(), getViolationParameters(t, metric, limit));
             }
         }
 

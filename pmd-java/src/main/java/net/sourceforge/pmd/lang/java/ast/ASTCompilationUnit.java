@@ -15,7 +15,6 @@ import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
-import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.ast.internal.LazyTypeResolver;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
@@ -141,13 +140,6 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements RootNo
     public @Nullable ASTModuleDeclaration getModuleDeclaration() {
         return firstChild(ASTModuleDeclaration.class);
     }
-
-    @Override
-    public @NonNull JSymbolTable getSymbolTable() {
-        assert symbolTable != null : "Symbol table wasn't set";
-        return symbolTable;
-    }
-
 
     @Override
     public TypeSystem getTypeSystem() {

@@ -106,6 +106,18 @@ module CustomFilters
     ('a'..'z').to_a.shuffle[0, length].join
   end
 
+  def escape_json(text)
+    if text
+      res = text
+      res = res.gsub(/\\/, '\\\\')
+      res = res.gsub(/"/, '\\"')
+      res = res.gsub(/\n/, '\\n')
+      res = res.gsub(/\r/, '\\r')
+      res = res.gsub(/\f/, '\\f')
+      res = res.gsub(/\t/, '\\t')
+      res = res.gsub(/\b/, '\\b')
+    end
+  end
 
   private
 

@@ -75,7 +75,7 @@ class RuleTstTest {
         testDescriptor.setLanguageVersion(dummyLanguage);
         testDescriptor.setCode(code);
         testDescriptor.setDescription("sample test");
-        testDescriptor.recordExpectedViolations(2, Arrays.asList(1, 2), Collections.emptyList());
+        testDescriptor.recordExpectedViolations(2, Arrays.asList(1, 2), Arrays.asList(1, 2), Collections.emptyList());
 
         ruleTester.runTest(testDescriptor);
     }

@@ -86,10 +86,14 @@ public interface JClassSymbol extends JTypeDeclSymbol,
 
     /**
      * Returns the method or constructor this symbol is declared in, if
-     * it represents a {@linkplain #isLocalClass() local class declaration}.
+     * it represents a {@linkplain #isLocalClass() local class declaration}
+     * or an anonymous class declaration.
      *
      * <p>Notice, that this returns null also if this class is local to
-     * a class or instance initializer.
+     * a class or instance initializer, a field initializer, and some other
+     * special circumstances.
+     *
+     * @see Class#getEnclosingMethod()
      */
     @Nullable JExecutableSymbol getEnclosingMethod();
 

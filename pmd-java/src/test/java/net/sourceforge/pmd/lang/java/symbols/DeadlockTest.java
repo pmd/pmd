@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Timeout;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
@@ -39,8 +39,8 @@ class DeadlockTest {
 
     abstract static class GenericClass<T> extends GenericBaseClass<Outer.Inner<T>> { }
 
-    @Test
     @Timeout(2)
+    @RepeatedTest(50)
     void parseWithoutDeadlock() throws InterruptedException {
         /*
          Deadlock:

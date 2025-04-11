@@ -3,7 +3,7 @@ title: Testing your rules
 tags: [extending, userdocs]
 summary: "Learn how to use PMD's simple test framework for unit testing rules."
 permalink: pmd_userdocs_extending_testing.html
-last_updated: December 2023 (7.0.0)
+last_updated: March 2025 (7.12.0)
 author: Andreas Dangel <andreas.dangel@adangel.org>
 ---
 
@@ -157,7 +157,10 @@ The `<test-code>` elements understands the following optional attributes:
 *   **`<expected-linenumbers>`**: Optional element. It's a comma separated list of line numbers.
     If there are rule violations reported, then this allows you to
     assert the line numbers. Useful if multiple violations should be detected and to be sure that
-    false positives and negatives don't erase each other.
+    false positives and negatives don't erase each other.\
+    Since 7.12.0, you can also specify ranges in order to verify begin line and end line of the reported
+    violation's location. E.g. `1-3,4-5` asserts, that there are two violations, the first one from line 1 to 3,
+    and the second one from lines 4 to 5.
 
 *   **`<expected-messages>`**: Optional element, with `<message>` elements as children.
     Can be used to validate the correct error message, e.g. if the error message references a variable name.

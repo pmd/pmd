@@ -115,5 +115,16 @@ test
                 \\test
                 """;
         System.out.println(bs.replaceAll("\n", "<LF>"));
+
+        // text blocks can appear in yield stmts and case labels
+        var x = switch (foo) {
+            case """
+                a label
+                """ -> {
+                yield """
+            aoeuaoteu
+            """;
+            }
+        };
     }
 }

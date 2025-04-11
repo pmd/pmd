@@ -41,7 +41,7 @@ public class RawFileFingerprinter implements ClasspathEntryFingerprinter {
     @Override
     public void fingerprint(URL entry, Checksum checksum) throws IOException {
         try (CheckedInputStream inputStream = new CheckedInputStream(entry.openStream(), checksum)) {
-            // Just read it, the CheckedInputStream will update the checksum on it's own
+            // Just read it, the CheckedInputStream will update the checksum on its own
             while (IOUtil.skipFully(inputStream, Long.MAX_VALUE) == Long.MAX_VALUE) {
                 // just loop
             }

@@ -25,6 +25,7 @@ public class RuleTestDescriptor {
     private String code;
     private int expectedProblems;
     private List<Integer> expectedLineNumbers;
+    private List<Integer> expectedEndLineNumbers;
     private List<String> expectedMessages;
     private int lineNumber;
 
@@ -86,6 +87,12 @@ public class RuleTestDescriptor {
         this.expectedMessages = expectedMessages;
     }
 
+    public void recordExpectedViolations(int expectedProblems, List<Integer> expectedLineNumbers, List<Integer> expectedEndLineNumbers, List<String> expectedMessages) {
+        checkListSize(expectedProblems, expectedEndLineNumbers);
+        this.expectedEndLineNumbers = expectedEndLineNumbers;
+        recordExpectedViolations(expectedProblems, expectedLineNumbers, expectedMessages);
+    }
+
     private void checkListSize(int expectedProblems, List<?> expectedMessages) {
         if (!expectedMessages.isEmpty() && expectedProblems != expectedMessages.size()) {
             throw new IllegalArgumentException(
@@ -103,6 +110,10 @@ public class RuleTestDescriptor {
 
     public List<Integer> getExpectedLineNumbers() {
         return expectedLineNumbers;
+    }
+
+    public List<Integer> getExpectedEndLineNumbers() {
+        return expectedEndLineNumbers;
     }
 
     public List<String> getExpectedMessages() {
