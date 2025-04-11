@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.">
-<meta name="keywords" content=" Error Prone, ApexCSRF, AvoidDirectAccessTriggerMap, AvoidHardcodingId, AvoidNonExistentAnnotations, AvoidStatefulDatabaseResult, EmptyCatchBlock, EmptyIfStmt, EmptyStatementBlock, EmptyTryOrFinallyBlock, EmptyWhileStmt, InaccessibleAuraEnabledGetter, MethodWithSameNameAsEnclosingClass, OverrideBothEqualsAndHashcode, TestMethodsMustBeInTestClasses">
+<meta name="keywords" content=" Error Prone, ApexCSRF, AvoidDirectAccessTriggerMap, AvoidHardcodingId, AvoidNonExistentAnnotations, AvoidStatefulDatabaseResult, EmptyCatchBlock, EmptyIfStmt, EmptyStatementBlock, EmptyTryOrFinallyBlock, EmptyWhileStmt, InaccessibleAuraEnabledGetter, MethodWithSameNameAsEnclosingClass, OverrideBothEqualsAndHashcode, TestMethodsMustBeInTestClasses, TypeShadowsBuiltInNamespace">
 <title>Error Prone | PMD Source Code Analyzer</title>
 
 
@@ -2639,6 +2639,42 @@ dealing with legacy code.</p>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/errorprone.xml/TestMethodsMustBeInTestClasses"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="typeshadowsbuiltinnamespace">TypeShadowsBuiltInNamespace</h2>
+
+<p><strong>Since:</strong> PMD 7.13.0</p>
+
+<p><strong>Priority:</strong> High (1)</p>
+
+<p>This rule finds Apex classes, enums, and interfaces that have the same name as a class, enum, or interface in the <code class="language-plaintext highlighter-rouge">System</code>
+or <code class="language-plaintext highlighter-rouge">Schema</code> namespace.
+Shadowing these namespaces in this way can lead to confusion and unexpected behavior.
+Code that intends to reference a <code class="language-plaintext highlighter-rouge">System</code> or <code class="language-plaintext highlighter-rouge">Schema</code> class, enum, or interface may inadvertently reference the locally defined type instead.
+This can result in ambiguous code and unexpected runtime behavior.
+It is best to avoid naming your types the same as those in the <code class="language-plaintext highlighter-rouge">System</code> or <code class="language-plaintext highlighter-rouge">Schema</code> namespace to prevent these issues.</p>
+
+<p>Note that the list of classes, enums, and interfaces in the <code class="language-plaintext highlighter-rouge">System</code> and <code class="language-plaintext highlighter-rouge">Schema</code> namespaces are determined through
+<a href="https://github.com/apex-dev-tools/standard-types">io.github.apex-dev-tools:standard-types</a>. It is based on the contents of
+Salesforce’s <a href="https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_namespace_System.htm">Apex Reference Guide / System Namespace</a>
+and <a href="https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_namespace_Schema.htm">Apex Reference Guide / Schema Namespace</a>.
+As Salesforce introduces new types into the <code class="language-plaintext highlighter-rouge">System</code> and <code class="language-plaintext highlighter-rouge">Schema</code> namespaces, the rule might not always recognize
+the new types and produce false-negatives und the standard types are updated.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/errorprone/TypeShadowsBuiltInNamespaceRule.java">net.sourceforge.pmd.lang.apex.rule.errorprone.TypeShadowsBuiltInNamespaceRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Violation: Causes a collision with the `System.Database` class.</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Database</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">String</span> <span class="nf">query</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="err">'</span><span class="nc">Hello</span> <span class="nc">World</span><span class="err">'</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/errorprone.xml/TypeShadowsBuiltInNamespace"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 

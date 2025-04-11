@@ -3802,6 +3802,15 @@
 "url": "pmd_rules_apex_errorprone.html#testmethodsmustbeintestclasses",
 "summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
 }
+,
+
+{
+"title": "TypeShadowsBuiltInNamespace (Apex, Error Prone)",
+"tags": "",
+"keywords": "TypeShadowsBuiltInNamespace",
+"url": "pmd_rules_apex_errorprone.html#typeshadowsbuiltinnamespace",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
 
 
 

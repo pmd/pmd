@@ -2013,11 +2013,24 @@
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
+<h4 id="-new-rules">✨ New Rules</h4>
+
+<ul>
+  <li>The new Apex rule <a href="pmd_rules_apex_errorprone.html#typeshadowsbuiltinnamespace"><code class="language-plaintext highlighter-rouge">TypeShadowsBuiltInNamespace</code></a> finds Apex classes, enums, and interfaces
+that have the same name as a class, enum, or interface in the <code class="language-plaintext highlighter-rouge">System</code> or <code class="language-plaintext highlighter-rouge">Schema</code> namespace.
+Shadowing these namespaces in this way can lead to confusion and unexpected behavior.</li>
+</ul>
+
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
 <ul>
   <li>core
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/5623">#5623</a>: [dist] Make pmd launch script compatible with /bin/sh</li>
+    </ul>
+  </li>
+  <li>apex-errorprone
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3184">#3184</a>: [apex] Prevent classes from shadowing System Namespace</li>
     </ul>
   </li>
   <li>java
@@ -2032,6 +2045,7 @@
 <h3 id="-merged-pull-requests">✨ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/5450">#5450</a>: Fix #3184: [apex] New Rule: TypeShadowsBuiltInNamespace - <a href="https://github.com/mitchspano">Mitch Spano</a> (@mitchspano)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5672">#5672</a>: [doc] Fix its/it’s and doable/double typos - <a href="https://github.com/jetmore">John Jetmore</a> (@jetmore)</li>
 </ul>
 
