@@ -15,7 +15,7 @@ last_updated: April 2025 (7.13.0)
 * Builds: <https://github.com/pmd/pmd/actions/workflows/build.yml>
 * Workflow file: <https://github.com/pmd/pmd/blob/main/.github/workflows/build.yml>
 
-This workflow is triggered whenever a pull request is created or synchronized or new commits are pushed.
+This workflow is triggered whenever a pull request is created or synchronized or new commits are pushed to any branch.
 It is designed to run on the main repository in PMD's GitHub organization as well as for forks.
 
 In order to avoid unnecessary builds, we use concurrency control to make sure, we cancel any in-progress jobs for
