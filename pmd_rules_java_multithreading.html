@@ -2474,7 +2474,7 @@ perform efficient map reads without blocking other threads.</p>
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>Thread.notify() awakens a thread monitoring the object. If more than one thread is monitoring, then only
-one is chosen.  The thread chosen is arbitrary; thus its usually safer to call notifyAll() instead.</p>
+one is chosen.  The thread chosen is arbitrary; thus it’s usually safer to call notifyAll() instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodCall</span><span class="p">[</span><span class="na">@MethodName</span><span class="err">=</span><span class="s2">"notify"</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nt">ArgumentList</span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">0</span><span class="p">]]</span><span class="w">
@@ -2523,7 +2523,7 @@ one is chosen.  The thread chosen is arbitrary; thus its usually safer to call n
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 10, 2025 <br />
+             Site last generated: Apr 11, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
