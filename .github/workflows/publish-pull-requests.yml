@@ -2,7 +2,7 @@ name: Publish Results from Pull Requests
 run-name: Publish Results for "${{ github.event.workflow_run.display_title }}"
 on:
   workflow_run:
-    workflows: [Pull Request Build]
+    workflows: [Build]
     types:
       - completed
 
@@ -14,7 +14,10 @@ permissions:
 jobs:
   publish:
     # only run in the official pmd repo, where we have access to the secrets and not on forks
-    if: github.repository == 'pmd/pmd'
+    # and only run for _successful_ pull requests workflow runs.
+    if: ${{ github.repository == 'pmd/pmd'
+            && github.event.workflow_run.event == 'pull_request'
+            && github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
