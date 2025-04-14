@@ -263,6 +263,7 @@ jobs:
 
   regressiontester:
     needs: compile
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
     timeout-minutes: 60
     runs-on: ubuntu-latest
     defaults:
@@ -303,31 +304,9 @@ jobs:
           ln -sfn "${JAVA_HOME_11_X64}" "${HOME}/openjdk11"
       - name: Run pmdtester
         env:
-          # this only works if the triggering event of this workflow is "pull_request"
-          PMD_CI_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
-          PMD_CI_BRANCH: ${{ github.base_ref }}
-        run: |
-          echo "::group::Fetching additional commits"
-          # git clone initially only fetched with depth 2. Regression tester
-          # needs more history, so we'll fetch more here
-          # and create local branches as well (${PMD_CI_BRANCH} and pr-fetch)
-      
-          echo "Fetching 25 commits for ${PMD_CI_BRANCH} and pull/${PMD_CI_PULL_REQUEST_NUMBER}/head"
-          git fetch --no-tags --depth=25 origin "${PMD_CI_BRANCH}:${PMD_CI_BRANCH}" "pull/${PMD_CI_PULL_REQUEST_NUMBER}/head:pr-fetch"
-      
-          # if the PR is older, base might have advanced more than 25 commits... fetch more, up to 150
-          for i in $(seq 1 3); do
-            if [ -z "$( git merge-base "${PMD_CI_BRANCH}" "pr-fetch" )" ]; then
-              echo "No merge-base yet - fetching more commits... (try $i)"
-              git fetch --no-tags --deepen=50 origin "${PMD_CI_BRANCH}:" "pull/${PMD_CI_PULL_REQUEST_NUMBER}/head:pr-fetch"
-            fi
-          done
-          echo "Merge base is: $( git merge-base "${PMD_CI_BRANCH}" "pr-fetch" )"
-          echo "::endgroup::"
-      
-          echo "::group::Running pmdtester on branch ${PMD_CI_BRANCH}"
-          bundle exec ruby .ci/files/pmdtester.rb
-          echo "::endgroup::"
+          # this variable is available for "push" builds only, otherwise it's empty
+          PMD_REGRESSION_TESTER_PUSH_BEFORE: ${{ github.event.push.before }}
+        run: .ci/files/pmdtester_start.sh
       - name: Workaround actions/upload-artifact#176
         run: |
           echo "artifacts_path=$(realpath ..)" >> "${GITHUB_ENV}"
