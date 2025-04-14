@@ -66,11 +66,15 @@ for i in $(seq 1 3); do
 done
 merge_base="$( git merge-base "${PMD_REGRESSION_TESTER_BASE_BRANCH}_BASE_FETCH" "${PMD_REGRESSION_TESTER_2ND_REF}" )"
 echo "Found merge base: ${merge_base}"
-git branch "PMD_REGRESSION_TESTER_BASE" "${merge_base}"
+if [ "$(git symbolic-ref HEAD 2>/dev/null)" = "refs/heads/main" ]; then
+  # rename main branch to free up the name "main"
+  git branch -m "original_main"
+fi
+git branch "main" "${merge_base}"
 echo "::endgroup::"
 
 echo "::group::Running pmdtester on branch ${PMD_CI_BRANCH}"
-export PMD_CI_BRANCH="PMD_REGRESSION_TESTER_BASE"
+export PMD_CI_BRANCH="main"
 if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
   export PMD_CI_PULL_REQUEST_NUMBER="${GITHUB_REF_NAME%/merge}"
 fi
