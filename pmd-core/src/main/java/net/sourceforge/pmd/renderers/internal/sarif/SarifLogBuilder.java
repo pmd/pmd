@@ -181,7 +181,7 @@ public class SarifLogBuilder {
             .build();
     }
 
-    private ReportingConfiguration getDefaultConfigForRuleViolation(RuleViolation rv){
+    private ReportingConfiguration getDefaultConfigForRuleViolation(RuleViolation rv) {
         return ReportingConfiguration.builder()
                 // get pmd level from rv and translate it to sarif level (for the config)
                 .level(pmdPriorityToSarifErrorLevel(rv.getRule().getPriority().getPriority()))

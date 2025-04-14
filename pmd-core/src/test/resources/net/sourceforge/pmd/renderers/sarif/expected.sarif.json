@@ -26,6 +26,10 @@
                 "tags": [
                   "RuleSet"
                 ]
+              },
+              "defaultConfiguration": {
+                "enabled": false,
+                "level": "note"
               }
             }
           ]

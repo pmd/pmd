@@ -2295,7 +2295,7 @@ public class SarifLog {
             @java.lang.Override
             @java.lang.SuppressWarnings("all")
             public java.lang.String toString() {
-                return "SarifLog.ReportingDescriptor.ReportingDescriptorBuilder(id=" + this.id + ", name=" + this.name + ", shortDescription=" + this.shortDescription + ", fullDescription=" + this.fullDescription + ", messageStrings=" + this.messageStrings + ", helpUri=" + this.helpUri + ", help=" + this.help + ", properties=" + this.properties  + ", defaultConfiguration=" + this.defaultConfiguration + ")";
+                return "SarifLog.ReportingDescriptor.ReportingDescriptorBuilder(id=" + this.id + ", name=" + this.name + ", shortDescription=" + this.shortDescription + ", fullDescription=" + this.fullDescription + ", messageStrings=" + this.messageStrings + ", helpUri=" + this.helpUri + ", help=" + this.help + ", properties=" + this.properties + ", defaultConfiguration=" + this.defaultConfiguration + ")";
             }
         }
 
@@ -2673,7 +2673,7 @@ public class SarifLog {
             @Override
             @SuppressWarnings("all")
             public String toString() {
-                return "SarifLog.ReportingConfiguration.ReportingConfigurationBuilder(enabled=" + this.enabled + ", level=" + this.level + ", rank=" + this.rank +", parameters=" + this.parameters + ")";
+                return "SarifLog.ReportingConfiguration.ReportingConfigurationBuilder(enabled=" + this.enabled + ", level=" + this.level + ", rank=" + this.rank + ", parameters=" + this.parameters + ")";
             }
         }
 
@@ -2814,7 +2814,7 @@ public class SarifLog {
         @Override
         @SuppressWarnings("all")
         public String toString() {
-            return "SarifLog.ReportingConfiguration(enabled=" + this.getEnabled() + ", level=" + this.getLevel() + ", rank=" + this.getRank() +", parameters=" + this.getParameters() + ")";
+            return "SarifLog.ReportingConfiguration(enabled=" + this.getEnabled() + ", level=" + this.getLevel() + ", rank=" + this.getRank() + ", parameters=" + this.getParameters() + ")";
         }
     }
 
