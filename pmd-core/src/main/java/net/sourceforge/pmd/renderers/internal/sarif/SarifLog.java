@@ -979,29 +979,35 @@ public class SarifLog {
      * A result produced by an analysis tool.
      */
     public static class Result {
+
         /**
          * The stable, unique identifier of the rule, if any, to which this result is relevant.
          */
         private String ruleId;
+
         /**
          * The index link the rule, if any, to which this result is relevant.
          */
         private Integer ruleIndex;
+
         /**
          * A message that describes the result. The first sentence of the message only will be displayed when visible
          * space is limited.
          */
         private Message message;
+
         /**
          * The severeness of a found bug. Is derived from PMDs defined Priorities (1,2 = error, 3 = warning, 4,5 = note).
          * @see net.sourceforge.pmd.lang.rule.RulePriority
          */
         private String level;
+
         /**
          * The set of locations where the result was detected. Specify only one location unless the problem indicated by
          * the result can only be corrected by making a change at every specified location.
          */
         private List<Location> locations;
+
         /**
          * Key/value pairs that provide additional information about the address.
          */
@@ -1026,7 +1032,7 @@ public class SarifLog {
             private Integer ruleIndex;
             @java.lang.SuppressWarnings("all")
             private Message message;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private String level;
             @java.lang.SuppressWarnings("all")
             private List<Location> locations;
@@ -1072,7 +1078,7 @@ public class SarifLog {
              * The severeness of a found bug. Is derived from PMDs defined Priorities (1,2 = error, 3 = warning, 4,5 = note).
              * @return {@code this}.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.Result.ResultBuilder level(final String level) {
                 this.level = level;
                 return this;
@@ -1144,7 +1150,7 @@ public class SarifLog {
         /**
          * The severeness of a found bug. Is derived from PMDs defined Priorities (1,2 = error, 3 = warning, 4,5 = note).
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public String getLevel() {
             return this.level;
         }
@@ -1201,7 +1207,7 @@ public class SarifLog {
          * The severeness of a found bug. Is derived from PMDs defined Priorities (1,2 = error, 3 = warning, 4,5 = note).
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.Result setLevel(final String level) {
             this.level = level;
             return this;
@@ -1256,8 +1262,8 @@ public class SarifLog {
             if (this$message == null ? other$message != null : !this$message.equals(other$message)) {
                 return false;
             }
-            final java.lang.Object this$level = this.getLevel();
-            final java.lang.Object other$level = other.getLevel();
+            final Object this$level = this.getLevel();
+            final Object other$level = other.getLevel();
             if (this$level == null ? other$level != null : !this$level.equals(other$level)) {
                 return false;
             }
@@ -1290,7 +1296,7 @@ public class SarifLog {
             result = result * PRIME + ($ruleIndex == null ? 43 : $ruleIndex.hashCode());
             final java.lang.Object $message = this.getMessage();
             result = result * PRIME + ($message == null ? 43 : $message.hashCode());
-            final java.lang.Object $level = this.getLevel();
+            final Object $level = this.getLevel();
             result = result * PRIME + ($level == null ? 43 : $level.hashCode());
             final java.lang.Object $locations = this.getLocations();
             result = result * PRIME + ($locations == null ? 43 : $locations.hashCode());
@@ -2533,27 +2539,32 @@ public class SarifLog {
      * Can also be used in configurationOverride to override those defaults.
      */
     public static class ReportingConfiguration {
+
+
         /**
          * Boolean, to dis- and enable the config based on matching a rule (through the Descriptor).
          * Default: true.
          */
         private boolean enabled;
+
         /**
          * Takes the levelProperty of the Descriptor (if present) or provides a default/override.
          * Default: warning.
          */
         private String level;
+
         /**
          * Takes the rank/priority of the Descriptor (if present) or provides a default/override value between 1.0 and 100.0.
          * Default: -1.0.
          */
         private double rank;
+
         /**
          * Define configuration information (propertyBag) specific to the Descriptor.
          */
         private PropertyBag parameters;
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         ReportingConfiguration(final boolean enabled, final String level, final double rank, final PropertyBag parameters) {
             this.enabled = enabled;
             this.level = level;
@@ -2562,25 +2573,25 @@ public class SarifLog {
         }
 
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static class ReportingConfigurationBuilder {
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private boolean enabled;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private String level;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private double rank;
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             private PropertyBag parameters;
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             ReportingConfigurationBuilder() {
             }
 
             /**
              * Boolean, to dis- and enable the config based on matching a rule (through the Descriptor).
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.ReportingConfiguration.ReportingConfigurationBuilder enabled(final boolean enabled) {
                 this.enabled = enabled;
                 return this;
@@ -2589,7 +2600,7 @@ public class SarifLog {
             /**
              * Takes the levelProperty of the Descriptor (if present) or provides a default/override.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.ReportingConfiguration.ReportingConfigurationBuilder level(final String level) {
                 this.level = level;
                 return this;
@@ -2598,33 +2609,34 @@ public class SarifLog {
             /**
              * Takes the rank/priority of the Descriptor (if present) or provides a default/override value between 1.0 and 100.0.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.ReportingConfiguration.ReportingConfigurationBuilder rank(final double rank) {
                 this.rank = rank;
                 return this;
             }
+
             /**
              * Define configuration information (propertyBag) specific to the Descriptor.
              */
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.ReportingConfiguration.ReportingConfigurationBuilder parameters(final PropertyBag parameters) {
                 this.parameters = parameters;
                 return this;
             }
 
-            @java.lang.SuppressWarnings("all")
+            @SuppressWarnings("all")
             public SarifLog.ReportingConfiguration build() {
                 return new SarifLog.ReportingConfiguration(this.enabled, this.level, this.rank, this.parameters);
             }
 
-            @java.lang.Override
-            @java.lang.SuppressWarnings("all")
-            public java.lang.String toString() {
+            @Override
+            @SuppressWarnings("all")
+            public String toString() {
                 return "SarifLog.ReportingConfiguration.ReportingConfigurationBuilder(enabled=" + this.enabled + ", level=" + this.level + ", rank=" + this.rank +", parameters=" + this.parameters + ")";
             }
         }
 
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public static SarifLog.ReportingConfiguration.ReportingConfigurationBuilder builder() {
             return new SarifLog.ReportingConfiguration.ReportingConfigurationBuilder();
         }
@@ -2632,28 +2644,31 @@ public class SarifLog {
         /**
          * Boolean, to dis- and enable the config based on matching a rule (through the Descriptor).
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public boolean getEnabled() {
             return this.enabled;
         }
+
         /**
          * Takes the levelProperty of the Descriptor (if present) or provides a default/override.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public String getLevel() {
             return this.level;
         }
+
         /**
          * Takes the rank/priority of the Descriptor (if present) or provides a default/override value between 1.0 and 100.0.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public double getRank() {
             return this.rank;
         }
+
         /**
          * Define configuration information (propertyBag) specific to the Descriptor.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public PropertyBag getParameters() {
             return this.parameters;
         }
@@ -2662,42 +2677,45 @@ public class SarifLog {
          * Boolean, to dis- and enable the config based on matching a rule (through the Descriptor).
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.ReportingConfiguration setEnabled(final boolean enabled) {
             this.enabled = enabled;
             return this;
         }
+
         /**
          * Takes the levelProperty of the Descriptor (if present) or provides a default/override.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.ReportingConfiguration setLevel(final String level) {
             this.level = level;
             return this;
         }
+
         /**
          * Takes the rank/priority of the Descriptor (if present) or provides a default/override value between 1.0 and 100.0.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.ReportingConfiguration setRank(final double rank) {
             this.rank = rank;
             return this;
         }
+
         /**
          * Define configuration information (propertyBag) specific to the Descriptor.
          * @return {@code this}.
          */
-        @java.lang.SuppressWarnings("all")
+        @SuppressWarnings("all")
         public SarifLog.ReportingConfiguration setParameters(final PropertyBag parameters) {
             this.parameters = parameters;
             return this;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public boolean equals(final java.lang.Object o) {
+        @Override
+        @SuppressWarnings("all")
+        public boolean equals(final Object o) {
             if (o == this) {
                 return true;
             }
@@ -2705,56 +2723,56 @@ public class SarifLog {
                 return false;
             }
             final SarifLog.ReportingConfiguration other = (SarifLog.ReportingConfiguration) o;
-            if (!other.canEqual((java.lang.Object) this)) {
+            if (!other.canEqual((Object) this)) {
                 return false;
             }
-            final java.lang.Object this$enabled = this.getEnabled();
-            final java.lang.Object other$enabled = other.getEnabled();
+            final Object this$enabled = this.getEnabled();
+            final Object other$enabled = other.getEnabled();
             if (this$enabled == null ? other$enabled != null : !this$enabled.equals(other$enabled)) {
                 return false;
             }
-            final java.lang.Object this$level = this.getLevel();
-            final java.lang.Object other$level = other.getLevel();
+            final Object this$level = this.getLevel();
+            final Object other$level = other.getLevel();
             if (this$level == null ? other$level != null : !this$level.equals(other$level)) {
                 return false;
             }
-            final java.lang.Object this$rank = this.getRank();
-            final java.lang.Object other$rank = other.getRank();
+            final Object this$rank = this.getRank();
+            final Object other$rank = other.getRank();
             if (this$rank == null ? other$rank != null : !this$rank.equals(other$rank)) {
                 return false;
             }
-            final java.lang.Object this$parameters = this.getParameters();
-            final java.lang.Object other$parameters = other.getParameters();
+            final Object this$parameters = this.getParameters();
+            final Object other$parameters = other.getParameters();
             if (this$parameters == null ? other$parameters != null : !this$parameters.equals(other$parameters)) {
                 return false;
             }
             return true;
         }
 
-        @java.lang.SuppressWarnings("all")
-        protected boolean canEqual(final java.lang.Object other) {
+        @SuppressWarnings("all")
+        protected boolean canEqual(final Object other) {
             return other instanceof SarifLog.ReportingConfiguration;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
+        @Override
+        @SuppressWarnings("all")
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
-            final java.lang.Object $enabled = this.getEnabled();
+            final Object $enabled = this.getEnabled();
             result = result * PRIME + ($enabled == null ? 43 : $enabled.hashCode());
-            final java.lang.Object $level = this.getLevel();
+            final Object $level = this.getLevel();
             result = result * PRIME + ($level == null ? 43 : $level.hashCode());
-            final java.lang.Object $rank = this.getRank();
+            final Object $rank = this.getRank();
             result = result * PRIME + ($rank == null ? 43 : $rank.hashCode());
-            final java.lang.Object $parameters = this.getParameters();
+            final Object $parameters = this.getParameters();
             result = result * PRIME + ($parameters == null ? 43 : $parameters.hashCode());
             return result;
         }
 
-        @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        public java.lang.String toString() {
+        @Override
+        @SuppressWarnings("all")
+        public String toString() {
             return "SarifLog.ReportingConfiguration(enabled=" + this.getEnabled() + ", level=" + this.getLevel() + ", rank=" + this.getRank() +", parameters=" + this.getParameters() + ")";
         }
     }
