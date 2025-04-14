@@ -22,6 +22,7 @@ import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.MultiformatMessage;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.PhysicalLocation;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.PropertyBag;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Region;
+import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.ReportingConfiguration;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.ReportingDescriptor;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Result;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Run;
@@ -176,7 +177,15 @@ public class SarifLogBuilder {
             .helpUri(rv.getRule().getExternalInfoUrl())
             .help(new MultiformatMessage(rv.getRule().getDescription()))
             .properties(getRuleProperties(rv))
+            .defaultConfiguration(getDefaultConfigForRuleViolation(rv))
             .build();
+    }
+
+    private ReportingConfiguration getDefaultConfigForRuleViolation(RuleViolation rv){
+        return ReportingConfiguration.builder()
+                // get pmd level from rv and translate it to sarif level (for the config)
+                .level(pmdPriorityToSarifErrorLevel(rv.getRule().getPriority().getPriority()))
+                .build();
     }
 
     private PropertyBag getRuleProperties(RuleViolation rv) {

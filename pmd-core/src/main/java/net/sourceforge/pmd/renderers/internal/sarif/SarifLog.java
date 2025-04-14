@@ -2150,9 +2150,13 @@ public class SarifLog {
          * Key/value pairs that provide additional information about the report.
          */
         private PropertyBag properties;
+        /**
+         * The default configuration of a rule, can contain a default level and other properties.
+         */
+        private ReportingConfiguration defaultConfiguration;
 
         @java.lang.SuppressWarnings("all")
-        ReportingDescriptor(final String id, final String name, final MultiformatMessage shortDescription, final MultiformatMessage fullDescription, final MultiformatMessage messageStrings, final String helpUri, final MultiformatMessage help, final PropertyBag properties) {
+        ReportingDescriptor(final String id, final String name, final MultiformatMessage shortDescription, final MultiformatMessage fullDescription, final MultiformatMessage messageStrings, final String helpUri, final MultiformatMessage help, final PropertyBag properties, final ReportingConfiguration defaultConfiguration) {
             this.id = id;
             this.name = name;
             this.shortDescription = shortDescription;
@@ -2161,6 +2165,7 @@ public class SarifLog {
             this.helpUri = helpUri;
             this.help = help;
             this.properties = properties;
+            this.defaultConfiguration = defaultConfiguration;
         }
 
 
@@ -2182,6 +2187,8 @@ public class SarifLog {
             private MultiformatMessage help;
             @java.lang.SuppressWarnings("all")
             private PropertyBag properties;
+            @SuppressWarnings("all")
+            private ReportingConfiguration defaultConfiguration;
 
             @java.lang.SuppressWarnings("all")
             ReportingDescriptorBuilder() {
@@ -2271,15 +2278,24 @@ public class SarifLog {
                 return this;
             }
 
+            /**
+             * The default configuration of a rule, can contain a default level and other properties.
+             * @return {@code this}.
+             */
+            public SarifLog.ReportingDescriptor.ReportingDescriptorBuilder defaultConfiguration(final ReportingConfiguration defaultConfiguration) {
+                this.defaultConfiguration = defaultConfiguration;
+                return this;
+            }
+
             @java.lang.SuppressWarnings("all")
             public SarifLog.ReportingDescriptor build() {
-                return new SarifLog.ReportingDescriptor(this.id, this.name, this.shortDescription, this.fullDescription, this.messageStrings, this.helpUri, this.help, this.properties);
+                return new SarifLog.ReportingDescriptor(this.id, this.name, this.shortDescription, this.fullDescription, this.messageStrings, this.helpUri, this.help, this.properties, this.defaultConfiguration);
             }
 
             @java.lang.Override
             @java.lang.SuppressWarnings("all")
             public java.lang.String toString() {
-                return "SarifLog.ReportingDescriptor.ReportingDescriptorBuilder(id=" + this.id + ", name=" + this.name + ", shortDescription=" + this.shortDescription + ", fullDescription=" + this.fullDescription + ", messageStrings=" + this.messageStrings + ", helpUri=" + this.helpUri + ", help=" + this.help + ", properties=" + this.properties + ")";
+                return "SarifLog.ReportingDescriptor.ReportingDescriptorBuilder(id=" + this.id + ", name=" + this.name + ", shortDescription=" + this.shortDescription + ", fullDescription=" + this.fullDescription + ", messageStrings=" + this.messageStrings + ", helpUri=" + this.helpUri + ", help=" + this.help + ", properties=" + this.properties  + ", defaultConfiguration=" + this.defaultConfiguration + ")";
             }
         }
 
@@ -2354,6 +2370,14 @@ public class SarifLog {
         @java.lang.SuppressWarnings("all")
         public PropertyBag getProperties() {
             return this.properties;
+        }
+
+        /**
+         * The default configuration of a rule, can contain a default level and other properties.
+         */
+        @SuppressWarnings("all")
+        public ReportingConfiguration getDefaultConfiguration() {
+            return this.defaultConfiguration;
         }
 
         /**
@@ -2440,6 +2464,16 @@ public class SarifLog {
             return this;
         }
 
+        /**
+         * The default configuration of a rule, can contain a default level and other properties.
+         * @return {@code this}.
+         */
+        @SuppressWarnings("all")
+        public SarifLog.ReportingDescriptor setDefaultConfiguration(final ReportingConfiguration defaultConfiguration) {
+            this.defaultConfiguration = defaultConfiguration;
+            return this;
+        }
+
         @java.lang.Override
         @java.lang.SuppressWarnings("all")
         public boolean equals(final java.lang.Object o) {
@@ -2493,6 +2527,11 @@ public class SarifLog {
             if (this$properties == null ? other$properties != null : !this$properties.equals(other$properties)) {
                 return false;
             }
+            final Object this$defaultConfiguration = this.getDefaultConfiguration();
+            final Object other$defaultConfiguration = other.getDefaultConfiguration();
+            if (this$defaultConfiguration == null ? other$defaultConfiguration != null : !this$defaultConfiguration.equals(other$defaultConfiguration)) {
+                return false;
+            }
             return true;
         }
 
@@ -2522,13 +2561,15 @@ public class SarifLog {
             result = result * PRIME + ($help == null ? 43 : $help.hashCode());
             final java.lang.Object $properties = this.getProperties();
             result = result * PRIME + ($properties == null ? 43 : $properties.hashCode());
+            final Object $defaultConfiguration = this.getDefaultConfiguration();
+            result = result * PRIME + ($defaultConfiguration == null ? 43 : $defaultConfiguration.hashCode());
             return result;
         }
 
         @java.lang.Override
         @java.lang.SuppressWarnings("all")
         public java.lang.String toString() {
-            return "SarifLog.ReportingDescriptor(id=" + this.getId() + ", name=" + this.getName() + ", shortDescription=" + this.getShortDescription() + ", fullDescription=" + this.getFullDescription() + ", messageStrings=" + this.getMessageStrings() + ", helpUri=" + this.getHelpUri() + ", help=" + this.getHelp() + ", properties=" + this.getProperties() + ")";
+            return "SarifLog.ReportingDescriptor(id=" + this.getId() + ", name=" + this.getName() + ", shortDescription=" + this.getShortDescription() + ", fullDescription=" + this.getFullDescription() + ", messageStrings=" + this.getMessageStrings() + ", helpUri=" + this.getHelpUri() + ", help=" + this.getHelp() + ", properties=" + this.getProperties() + ", defaultConfiguration=" + this.getDefaultConfiguration() + ")";
         }
     }
 
@@ -2545,7 +2586,7 @@ public class SarifLog {
          * Boolean, to dis- and enable the config based on matching a rule (through the Descriptor).
          * Default: true.
          */
-        private boolean enabled;
+        private Boolean enabled;
 
         /**
          * Takes the levelProperty of the Descriptor (if present) or provides a default/override.
@@ -2557,7 +2598,7 @@ public class SarifLog {
          * Takes the rank/priority of the Descriptor (if present) or provides a default/override value between 1.0 and 100.0.
          * Default: -1.0.
          */
-        private double rank;
+        private Double rank;
 
         /**
          * Define configuration information (propertyBag) specific to the Descriptor.
@@ -2565,7 +2606,7 @@ public class SarifLog {
         private PropertyBag parameters;
 
         @SuppressWarnings("all")
-        ReportingConfiguration(final boolean enabled, final String level, final double rank, final PropertyBag parameters) {
+        ReportingConfiguration(final Boolean enabled, final String level, final Double rank, final PropertyBag parameters) {
             this.enabled = enabled;
             this.level = level;
             this.rank = rank;
@@ -2580,7 +2621,7 @@ public class SarifLog {
             @SuppressWarnings("all")
             private String level;
             @SuppressWarnings("all")
-            private double rank;
+            private Double rank;
             @SuppressWarnings("all")
             private PropertyBag parameters;
 
@@ -2610,7 +2651,7 @@ public class SarifLog {
              * Takes the rank/priority of the Descriptor (if present) or provides a default/override value between 1.0 and 100.0.
              */
             @SuppressWarnings("all")
-            public SarifLog.ReportingConfiguration.ReportingConfigurationBuilder rank(final double rank) {
+            public SarifLog.ReportingConfiguration.ReportingConfigurationBuilder rank(final Double rank) {
                 this.rank = rank;
                 return this;
             }
@@ -2645,7 +2686,7 @@ public class SarifLog {
          * Boolean, to dis- and enable the config based on matching a rule (through the Descriptor).
          */
         @SuppressWarnings("all")
-        public boolean getEnabled() {
+        public Boolean getEnabled() {
             return this.enabled;
         }
 
@@ -2661,7 +2702,7 @@ public class SarifLog {
          * Takes the rank/priority of the Descriptor (if present) or provides a default/override value between 1.0 and 100.0.
          */
         @SuppressWarnings("all")
-        public double getRank() {
+        public Double getRank() {
             return this.rank;
         }
 
@@ -2678,7 +2719,7 @@ public class SarifLog {
          * @return {@code this}.
          */
         @SuppressWarnings("all")
-        public SarifLog.ReportingConfiguration setEnabled(final boolean enabled) {
+        public SarifLog.ReportingConfiguration setEnabled(final Boolean enabled) {
             this.enabled = enabled;
             return this;
         }
@@ -2698,7 +2739,7 @@ public class SarifLog {
          * @return {@code this}.
          */
         @SuppressWarnings("all")
-        public SarifLog.ReportingConfiguration setRank(final double rank) {
+        public SarifLog.ReportingConfiguration setRank(final Double rank) {
             this.rank = rank;
             return this;
         }
@@ -2942,7 +2983,7 @@ public class SarifLog {
 
 
     /**
-     * A exception information object, for the tool runtime errors.
+     * An exception information object, for the tool runtime errors.
      */
     public static class Exception {
         /**
@@ -3060,7 +3101,7 @@ public class SarifLog {
 
 
     /**
-     * A associated rule to the toolConfigurationNotification.
+     * An associated rule to the toolConfigurationNotification.
      */
     public static class AssociatedRule {
         /**
@@ -3350,7 +3391,7 @@ public class SarifLog {
          */
         private Message message;
         /**
-         * A exception component to detail the tool exception
+         * An exception component to detail the tool exception
          */
         private Exception exception;
 
