@@ -27,6 +27,8 @@ This is a {{ site.pmd.release_type }} release.
   * [#3184](https://github.com/pmd/pmd/issues/3184): \[apex] Prevent classes from shadowing System Namespace
 * java
   * [#5645](https://github.com/pmd/pmd/issues/5645): \[java] Parse error on switch with yield
+* plsql
+  * [#5675](https://github.com/pmd/pmd/issues/5675): \[plsql] Parse error with TREAT function
 
 ### 🚨 API Changes
 
