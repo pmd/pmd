@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
-public class TreatFunctionTest extends AbstractPLSQLParserTst {
+class TreatFunctionTest extends AbstractPLSQLParserTst {
     @Test
     void treatFunctionBasic() {
         doTest("TreatFunctionBasic");
