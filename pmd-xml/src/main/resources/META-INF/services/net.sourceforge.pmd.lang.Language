@@ -1,4 +1,4 @@
 net.sourceforge.pmd.lang.xml.XmlLanguageModule
-net.sourceforge.pmd.lang.xml.xsl.XslLanguageModule
-net.sourceforge.pmd.lang.xml.wsdl.WsdlLanguageModule
-net.sourceforge.pmd.lang.xml.pom.PomLanguageModule
+net.sourceforge.pmd.lang.xml.xsl.XslDialectModule
+net.sourceforge.pmd.lang.xml.wsdl.WsdlDialectModule
+net.sourceforge.pmd.lang.xml.pom.PomDialectModule

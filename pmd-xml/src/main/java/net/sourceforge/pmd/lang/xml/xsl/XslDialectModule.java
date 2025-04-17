@@ -10,10 +10,10 @@ import net.sourceforge.pmd.lang.impl.SimpleDialectLanguageModuleBase;
 /**
  * Created by christoferdutz on 20.09.14.
  */
-public class XslLanguageModule extends SimpleDialectLanguageModuleBase {
+public class XslDialectModule extends SimpleDialectLanguageModuleBase {
     private static final String ID = "xsl";
 
-    public XslLanguageModule() {
+    public XslDialectModule() {
         super(LanguageMetadata.withId(ID).name("XSL")
                               .extensions("xsl", "xslt")
                               .addVersion("1.0")
@@ -22,7 +22,7 @@ public class XslLanguageModule extends SimpleDialectLanguageModuleBase {
                               .asDialectOf("xml"));
     }
 
-    public static XslLanguageModule getInstance() {
-        return (XslLanguageModule) LanguageRegistry.PMD.getLanguageById(ID);
+    public static XslDialectModule getInstance() {
+        return (XslDialectModule) LanguageRegistry.PMD.getLanguageById(ID);
     }
 }

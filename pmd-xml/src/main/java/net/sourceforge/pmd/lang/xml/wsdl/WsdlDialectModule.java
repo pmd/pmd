@@ -10,10 +10,10 @@ import net.sourceforge.pmd.lang.impl.SimpleDialectLanguageModuleBase;
 /**
  * Created by bernardo-macedo on 24.06.15.
  */
-public class WsdlLanguageModule extends SimpleDialectLanguageModuleBase {
+public class WsdlDialectModule extends SimpleDialectLanguageModuleBase {
     private static final String ID = "wsdl";
 
-    public WsdlLanguageModule() {
+    public WsdlDialectModule() {
         super(LanguageMetadata.withId(ID).name("WSDL")
                               .extensions("wsdl")
                               .addVersion("1.1")
@@ -21,7 +21,7 @@ public class WsdlLanguageModule extends SimpleDialectLanguageModuleBase {
                               .asDialectOf("xml"));
     }
 
-    public static WsdlLanguageModule getInstance() {
-        return (WsdlLanguageModule) LanguageRegistry.PMD.getLanguageById(ID);
+    public static WsdlDialectModule getInstance() {
+        return (WsdlDialectModule) LanguageRegistry.PMD.getLanguageById(ID);
     }
 }
