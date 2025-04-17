@@ -5,17 +5,25 @@ import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.impl.BasePmdDialectLanguageVersionHandler;
 import net.sourceforge.pmd.lang.impl.SimpleDialectLanguageModuleBase;
+import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
+import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionDefinition;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 public class DummyLanguageDialectModule extends SimpleDialectLanguageModuleBase {
 
     public static final String NAME = "DummyDialect";
     public static final String TERSE_NAME = "dummydialect";
+
+    public static final Metric<Node, Number> DUMMY_DIALECT_METRIC =
+            Metric.of((node, options) -> null, (node) -> node,
+            "Constant NULL metric", "null");
 
     public static final PropertyDescriptor<Boolean> DUMMY_DIALECT_PROP =
             PropertyFactory.booleanProperty("dummyDialectProperty")
@@ -45,6 +53,11 @@ public class DummyLanguageDialectModule extends SimpleDialectLanguageModuleBase 
         @Override
         public XPathHandler getXPathHandler() {
             return XPathHandler.getHandlerForFunctionDefs(dummyDialectFunction());
+        }
+
+        @Override
+        public LanguageMetricsProvider getLanguageMetricsProvider() {
+            return () -> CollectionUtil.setOf(DUMMY_DIALECT_METRIC);
         }
     }
 

@@ -25,10 +25,13 @@ import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextPos2d;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
+import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
+import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionDefinition;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Dummy language used for testing PMD.
@@ -116,6 +119,13 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase implements Cpd
         @Override
         public XPathHandler getXPathHandler() {
             return XPathHandler.getHandlerForFunctionDefs(imageIsFunction());
+        }
+
+        @Override
+        public LanguageMetricsProvider getLanguageMetricsProvider() {
+            return () -> CollectionUtil.setOf(
+                    Metric.of((node, options) -> 1, (node) -> node,
+                    "Constant value metric", "const1"));
         }
     }
 
