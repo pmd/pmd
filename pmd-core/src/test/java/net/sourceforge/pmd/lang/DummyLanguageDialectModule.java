@@ -9,11 +9,19 @@ import net.sourceforge.pmd.lang.impl.BasePmdDialectLanguageVersionHandler;
 import net.sourceforge.pmd.lang.impl.SimpleDialectLanguageModuleBase;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionDefinition;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 public class DummyLanguageDialectModule extends SimpleDialectLanguageModuleBase {
 
     public static final String NAME = "DummyDialect";
     public static final String TERSE_NAME = "dummydialect";
+
+    public static final PropertyDescriptor<Boolean> DUMMY_DIALECT_PROP =
+            PropertyFactory.booleanProperty("dummyDialectProperty")
+                    .defaultValue(false)
+                    .desc("Some dummy boolean without purpose")
+                    .build();
 
     public DummyLanguageDialectModule() {
         super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
@@ -23,6 +31,13 @@ public class DummyLanguageDialectModule extends SimpleDialectLanguageModuleBase 
 
     public static DummyLanguageDialectModule getInstance() {
         return (DummyLanguageDialectModule) Objects.requireNonNull(LanguageRegistry.PMD.getLanguageByFullName(NAME));
+    }
+
+    @Override
+    protected @NonNull LanguagePropertyBundle newDialectPropertyBundle() {
+        LanguagePropertyBundle bundle = super.newDialectPropertyBundle();
+        bundle.definePropertyDescriptor(DUMMY_DIALECT_PROP);
+        return bundle;
     }
 
     public static class Handler extends BasePmdDialectLanguageVersionHandler {

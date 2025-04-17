@@ -9,7 +9,9 @@ import org.junit.jupiter.api.Test;
 import net.sourceforge.pmd.lang.DummyLanguageDialectModule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageProcessor;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionDefinition;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 class SimpleDialectLanguageModuleBaseTest {
 
@@ -42,12 +44,23 @@ class SimpleDialectLanguageModuleBaseTest {
 
     @Test
     void baseLanguagePropertiesAreAvailable() {
-        // TODO
+        DummyLanguageModule lang = DummyLanguageModule.getInstance();
+        DummyLanguageDialectModule dialect = DummyLanguageDialectModule.getInstance();
+
+        LanguagePropertyBundle languagePropertyBundle = lang.newPropertyBundle();
+        LanguagePropertyBundle dialectPropertyBundle = dialect.newPropertyBundle();
+
+        for (PropertyDescriptor<?> pd : languagePropertyBundle.getPropertyDescriptors()) {
+            assertTrue(dialectPropertyBundle.hasDescriptor(pd), "The property " + pd.name() + " is not available in the dialect.");
+        }
     }
 
     @Test
     void dialectSpecificPropertiesAreAvailable() {
-        // TODO
+        DummyLanguageDialectModule dialect = DummyLanguageDialectModule.getInstance();
+
+        LanguagePropertyBundle dialectPropertyBundle = dialect.newPropertyBundle();
+        assertTrue(dialectPropertyBundle.hasDescriptor(DummyLanguageDialectModule.DUMMY_DIALECT_PROP), "The property " + DummyLanguageDialectModule.DUMMY_DIALECT_PROP.name() + " is not available in the dialect.");
     }
 
     @Test
