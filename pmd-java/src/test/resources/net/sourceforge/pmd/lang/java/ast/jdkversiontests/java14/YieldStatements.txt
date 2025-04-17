@@ -137,7 +137,7 @@
                               +- YieldStatement[]
                               |  +- NumericLiteral[@Base = 2, @CompileTimeConstant = true, @DoubleLiteral = false, @FloatLiteral = false, @Image = "0b01", @IntLiteral = true, @Integral = true, @LiteralText = "0b01", @LongLiteral = false, @ParenthesisDepth = 0, @Parenthesized = false, @ValueAsDouble = 1.0, @ValueAsFloat = 1.0, @ValueAsInt = 1, @ValueAsLong = 1]
                               +- YieldStatement[]
-                              |  +- NumericLiteral[@Base = 16, @CompileTimeConstant = true, @DoubleLiteral = true, @FloatLiteral = false, @Image = "0x4P60", @IntLiteral = false, @Integral = false, @LiteralText = "0x4P60", @LongLiteral = false, @ParenthesisDepth = 0, @Parenthesized = false, @ValueAsDouble = 4.6116860184273879E18, @ValueAsFloat = 4.611686E18, @ValueAsInt = 0, @ValueAsLong = 4611686018427387904]
+                              |  +- NumericLiteral[@Base = 16, @CompileTimeConstant = true, @DoubleLiteral = true, @FloatLiteral = false, @Image = "0x4P61", @IntLiteral = false, @Integral = false, @LiteralText = "0x4P61", @LongLiteral = false, @ParenthesisDepth = 0, @Parenthesized = false, @ValueAsDouble = 9.223372036854776E18, @ValueAsFloat = 9.223372E18, @ValueAsInt = -1, @ValueAsLong = 9223372036854775807]
                               +- YieldStatement[]
                               |  +- ConstructorCall[@AnonymousClass = false, @CompileTimeConstant = false, @DiamondTypeArgs = false, @MethodName = "new", @ParenthesisDepth = 0, @Parenthesized = false, @QualifiedInstanceCreation = false]
                               |     +- ClassType[@FullyQualified = false, @PackageQualifier = null, @SimpleName = "Object"]

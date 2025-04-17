@@ -47,7 +47,7 @@ public class YieldStatements {
             yield 004;
             yield 2e74;
             yield 0b01;
-            yield 0x4P60;
+            yield 0x4P61;
             yield new Object();
             yield (new Object());
             yield switch(foo) {
