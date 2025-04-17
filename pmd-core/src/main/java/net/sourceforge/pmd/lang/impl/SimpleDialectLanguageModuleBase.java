@@ -39,7 +39,7 @@ import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
  * with all dialect extension applied.
  *
  * @author Juan Martín Sotuyo Dodero
- * @since 7.10.0
+ * @since 7.13.0
  */
 @Experimental
 public class SimpleDialectLanguageModuleBase extends LanguageModuleBase implements PmdCapableLanguage, CpdCapableLanguage {

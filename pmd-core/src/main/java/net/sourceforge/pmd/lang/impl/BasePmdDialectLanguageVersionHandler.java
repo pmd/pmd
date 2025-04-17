@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.ast.Parser;
  * and support AST processing stages.
  *
  * @author Juan Martín Sotuyo Dodero
- * @since 7.10.0
+ * @since 7.13.0
  */
 @Experimental
 public class BasePmdDialectLanguageVersionHandler extends AbstractPmdLanguageVersionHandler {
