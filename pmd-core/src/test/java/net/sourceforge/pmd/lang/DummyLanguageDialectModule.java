@@ -2,7 +2,13 @@ package net.sourceforge.pmd.lang;
 
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.impl.BasePmdDialectLanguageVersionHandler;
 import net.sourceforge.pmd.lang.impl.SimpleDialectLanguageModuleBase;
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionDefinition;
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 
 public class DummyLanguageDialectModule extends SimpleDialectLanguageModuleBase {
 
@@ -12,10 +18,38 @@ public class DummyLanguageDialectModule extends SimpleDialectLanguageModuleBase 
     public DummyLanguageDialectModule() {
         super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
                 .extensions("txt", "dummydlc")
-                .addDefaultVersion("1.0").asDialectOf(DummyLanguageModule.TERSE_NAME));
+                .addDefaultVersion("1.0").asDialectOf(DummyLanguageModule.TERSE_NAME), new Handler());
     }
 
     public static DummyLanguageDialectModule getInstance() {
         return (DummyLanguageDialectModule) Objects.requireNonNull(LanguageRegistry.PMD.getLanguageByFullName(NAME));
+    }
+
+    public static class Handler extends BasePmdDialectLanguageVersionHandler {
+
+        @Override
+        public XPathHandler getXPathHandler() {
+            return XPathHandler.getHandlerForFunctionDefs(dummyDialectFunction());
+        }
+    }
+
+    @NonNull
+    public static XPathFunctionDefinition dummyDialectFunction() {
+        return new XPathFunctionDefinition("dummyDialectFn", DummyLanguageDialectModule.getInstance()) {
+            @Override
+            public Type[] getArgumentTypes() {
+                return new Type[] {Type.SINGLE_STRING};
+            }
+
+            @Override
+            public Type getResultType() {
+                return Type.SINGLE_BOOLEAN;
+            }
+
+            @Override
+            public FunctionCall makeCallExpression() {
+                return (contextNode, arguments) -> StringUtils.equals(arguments[0].toString(), contextNode.getImage());
+            }
+        };
     }
 }

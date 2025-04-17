@@ -30,6 +30,33 @@ class SimpleDialectLanguageModuleBaseTest {
 
     @Test
     void dialectSpecificXPathFunctionAvailable() throws Exception {
+        DummyLanguageDialectModule dialect = DummyLanguageDialectModule.getInstance();
+
+        try (LanguageProcessor dialectProcessor = dialect.createProcessor(dialect.newPropertyBundle())) {
+            Set<XPathFunctionDefinition> dialectFunctions = dialectProcessor.services().getXPathHandler().getRegisteredExtensionFunctions();
+
+            XPathFunctionDefinition dummyDialectFunction = DummyLanguageDialectModule.dummyDialectFunction();
+            assertTrue(dialectFunctions.contains(dummyDialectFunction), "The function " + dummyDialectFunction.getQName() + " is not available in the dialect.");
+        }
+    }
+
+    @Test
+    void baseLanguagePropertiesAreAvailable() {
+        // TODO
+    }
+
+    @Test
+    void dialectSpecificPropertiesAreAvailable() {
+        // TODO
+    }
+
+    @Test
+    void baseLanguageMetricsAreAvailable() {
+        // TODO
+    }
+
+    @Test
+    void dialectSpecificMetricsAreAvailable() {
         // TODO
     }
 }
