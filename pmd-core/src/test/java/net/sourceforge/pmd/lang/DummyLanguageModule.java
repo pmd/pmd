@@ -6,6 +6,9 @@ package net.sourceforge.pmd.lang;
 
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.cpd.AnyCpdLexer;
 import net.sourceforge.pmd.cpd.CpdCapableLanguage;
 import net.sourceforge.pmd.cpd.CpdLanguageProperties;
@@ -22,6 +25,8 @@ import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextPos2d;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionDefinition;
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
 
@@ -107,6 +112,11 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase implements Cpd
         public ViolationDecorator getViolationDecorator() {
             return (node, data) -> data.put(RuleViolation.PACKAGE_NAME, "foo");
         }
+
+        @Override
+        public XPathHandler getXPathHandler() {
+            return XPathHandler.getHandlerForFunctionDefs(imageIsFunction());
+        }
     }
 
     /**
@@ -176,4 +186,23 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase implements Cpd
         return root;
     }
 
+    @NonNull
+    public static XPathFunctionDefinition imageIsFunction() {
+        return new XPathFunctionDefinition("imageIs", DummyLanguageModule.getInstance()) {
+            @Override
+            public Type[] getArgumentTypes() {
+                return new Type[] {Type.SINGLE_STRING};
+            }
+
+            @Override
+            public Type getResultType() {
+                return Type.SINGLE_BOOLEAN;
+            }
+
+            @Override
+            public FunctionCall makeCallExpression() {
+                return (contextNode, arguments) -> StringUtils.equals(arguments[0].toString(), contextNode.getImage());
+            }
+        };
+    }
 }
