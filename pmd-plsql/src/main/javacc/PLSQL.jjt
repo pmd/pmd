@@ -3916,6 +3916,18 @@ ASTArguments Arguments() :
       // Note: OrderByClause is only allowed for XMLAGG function, but this grammar allows it for all functions.
       // https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/XMLAGG.html
       [ OrderByClause() ]
+      // Note: "AS" is only allowed for TREAT function, but this grammar allows it for all functions.
+      // https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/TREAT.html
+      [
+        <AS>
+        { String typeImage = ""; }
+        (
+            (
+                LOOKAHEAD({isKeyword("JSON")}) KEYWORD("JSON") { typeImage = token.getImage(); }
+                | ([ "REF" ] { PLSQLNode name; } name = QualifiedName() { typeImage = name.getImage();} )
+            ) { jjtThis.setImage(typeImage); }
+        ) #Datatype
+      ]
   ")"
 
  { return jjtThis; }
