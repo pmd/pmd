@@ -37,7 +37,7 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
 
     private static final Set<String> SERIALIZATION_METHODS =
-        setOf("readObject", "writeObject", "readResolve", "writeReplace");
+        setOf("readObject", "readObjectNoData", "writeObject", "readResolve", "writeReplace");
 
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
