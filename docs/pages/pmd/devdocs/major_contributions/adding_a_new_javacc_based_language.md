@@ -9,6 +9,16 @@ permalink: pmd_devdocs_major_adding_new_language_javacc.html
 folder: pmd/devdocs
 ---
 
+{% include callout.html type="info" content="
+
+**Do you really need a new language?**<br><br>
+
+This document describes how to add a new full-fledged language, with it's own grammar and parser.
+If what you are trying to support is "a specific type" of files for a grammar that already exists
+(ie: a specific type of XML or HTML file) you may want to consider [creating a **dialect**](pmd_devdocs_major_adding_dialect.html) instead.
+
+" %}
+
 {% include callout.html type="warning" content="
 
 **Before you start...**<br><br>
