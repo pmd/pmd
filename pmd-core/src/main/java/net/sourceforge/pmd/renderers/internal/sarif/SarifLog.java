@@ -997,7 +997,7 @@ public class SarifLog {
         private Message message;
 
         /**
-         * The severeness of a found bug. Is derived from PMDs defined Priorities (1,2 = error, 3 = warning, 4,5 = note).
+         * Specifies the severity level of the result. It is derived from PMD's defined rule priorities (1,2 = error, 3 = warning, 4,5 = note).
          * @see net.sourceforge.pmd.lang.rule.RulePriority
          */
         private String level;
@@ -1075,8 +1075,9 @@ public class SarifLog {
             }
 
             /**
-             * The severeness of a found bug. Is derived from PMDs defined Priorities (1,2 = error, 3 = warning, 4,5 = note).
+             * Specifies the severity level of the result. It is derived from PMD's defined rule priorities (1,2 = error, 3 = warning, 4,5 = note).
              * @return {@code this}.
+             * @see net.sourceforge.pmd.lang.rule.RulePriority
              */
             @SuppressWarnings("all")
             public SarifLog.Result.ResultBuilder level(final String level) {
@@ -1148,7 +1149,8 @@ public class SarifLog {
         }
 
         /**
-         * The severeness of a found bug. Is derived from PMDs defined Priorities (1,2 = error, 3 = warning, 4,5 = note).
+         * Specifies the severity level of the result. It is derived from PMD's defined rule priorities (1,2 = error, 3 = warning, 4,5 = note).
+         * @see net.sourceforge.pmd.lang.rule.RulePriority
          */
         @SuppressWarnings("all")
         public String getLevel() {
@@ -1204,8 +1206,9 @@ public class SarifLog {
         }
 
         /**
-         * The severeness of a found bug. Is derived from PMDs defined Priorities (1,2 = error, 3 = warning, 4,5 = note).
+         * Specifies the severity level of the result. It is derived from PMD's defined rule priorities (1,2 = error, 3 = warning, 4,5 = note).
          * @return {@code this}.
+         * @see net.sourceforge.pmd.lang.rule.RulePriority
          */
         @SuppressWarnings("all")
         public SarifLog.Result setLevel(final String level) {
