@@ -34,7 +34,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>[apex] ApexUnitTestShouldNotUseSeeAllDataTrue false negative due to casing (regression in PMD 7) #5095</description>
         <expected-problems>9</expected-problems>
@@ -80,6 +80,22 @@ public class SomeTest {
 
     @isTest(seeAllData=True)
     public static void testMethod8() {
+        System.assertEquals(1 + 2, 3);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[apex] ApexUnitTestShouldNotUseSeeAllDataTrue seeAllData boolean enclosed in quote #5667</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,5</expected-linenumbers>
+        <code><![CDATA[
+@isTest(SeeAllData = 'true')
+public class SomeTest {
+
+    @IsTest(SeeAllData=true)
+    public static void testMethod1() {
         System.assertEquals(1 + 2, 3);
     }
 }
