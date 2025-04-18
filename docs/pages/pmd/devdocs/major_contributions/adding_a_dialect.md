@@ -14,15 +14,15 @@ folder: pmd/devdocs
 **What is a dialect?**<br><br>
 
 A dialect is a particular form of another supported language. For example, an XSLT is a particular form of an XML.
-Even though the dialect has it's own seantics and uses, the contents are still readable by any tool capable of understanding the base language.
+Even though the dialect has it's own seantics and uses, the contents are still readable by any tool capable of understanding the base language.<br><br>
 
 In PMD, a dialect allows to set up completely custom rules, XPath functions, properties and metrics for these files;
-while retaining the full support of the underlaying language. That means:
+while retaining the full support of the underlaying language. That means:<br><br>
 
-- All rules applicable to the base language are automatically applicable to all files processed as a dialect.
-- All XPath functions existing in the base language are available when creating new rules.
-- All metrics supported by the base language are available when creating new rules.
-- All properties (ie: support to suppress literals in CPD) supported by the base language are supported by the dialect.
+- All rules applicable to the base language are automatically applicable to all files processed as a dialect.<br>
+- All XPath functions existing in the base language are available when creating new rules.<br>
+- All metrics supported by the base language are available when creating new rules.<br>
+- All properties (ie: support to suppress literals in CPD) supported by the base language are supported by the dialect.<br>
 
 " %}
 

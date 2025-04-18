@@ -14,7 +14,7 @@ folder: pmd/devdocs
 **Do you really need a new language?**<br><br>
 
 This document describes how to add a new full-fledged language, with it's own grammar and parser.
-If what you are trying to support is "a specific type" of files for a grammar that already exists
+If what you are trying to support is “a specific type” of files for a grammar that already exists
 (ie: a specific type of XML or HTML file) you may want to consider [creating a **dialect**](pmd_devdocs_major_adding_dialect.html) instead.
 
 " %}
