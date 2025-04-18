@@ -18,8 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -32,7 +30,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
-import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionDefinition;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -420,28 +417,8 @@ class SaxonXPathRuleQueryTest {
             xpath,
             XPathVersion.DEFAULT,
             props,
-            XPathHandler.getHandlerForFunctionDefs(imageIsFunction()),
+            XPathHandler.getHandlerForFunctionDefs(DummyLanguageModule.imageIsFunction()),
             DeprecatedAttrLogger.noop()
         );
-    }
-
-    @NonNull
-    private static XPathFunctionDefinition imageIsFunction() {
-        return new XPathFunctionDefinition("imageIs", DummyLanguageModule.getInstance()) {
-            @Override
-            public Type[] getArgumentTypes() {
-                return new Type[] {Type.SINGLE_STRING};
-            }
-
-            @Override
-            public Type getResultType() {
-                return Type.SINGLE_BOOLEAN;
-            }
-
-            @Override
-            public FunctionCall makeCallExpression() {
-                return (contextNode, arguments) -> StringUtils.equals(arguments[0].toString(), contextNode.getImage());
-            }
-        };
     }
 }

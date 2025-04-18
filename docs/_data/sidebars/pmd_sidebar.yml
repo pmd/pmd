@@ -595,6 +595,9 @@ entries:
         - title: Rule Guidelines
           url: /pmd_devdocs_major_rule_guidelines.html
           output: web, pdf
+        - title: Adding a new dialect
+          url: /pmd_devdocs_major_adding_dialect.html
+          output: web, pdf
         - title: Adding a new language (JavaCC)
           url: /pmd_devdocs_major_adding_new_language_javacc.html
           output: web, pdf

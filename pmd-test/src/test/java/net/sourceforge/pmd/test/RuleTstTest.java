@@ -6,6 +6,7 @@ package net.sourceforge.pmd.test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -43,7 +44,7 @@ class RuleTstTest {
 
         ruleTester.runTestFromString("the code", rule, dummyLanguage);
 
-        verify(rule).initialize(any(LanguageProcessor.class));
+        verify(rule, atLeastOnce()).initialize(any(LanguageProcessor.class));
         verify(rule).start(any(RuleContext.class));
         verify(rule).apply(any(Node.class), any(RuleContext.class));
         verify(rule).end(any(RuleContext.class));
