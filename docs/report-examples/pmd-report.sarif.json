@@ -27,6 +27,9 @@
                 "tags":[
                   "Security"
                 ]
+              },
+              "defaultConfiguration": {
+                "level": "warning"
               }
             },
             {
@@ -47,6 +50,9 @@
                 "tags": [
                   "Documentation"
                 ]
+              },
+              "defaultConfiguration": {
+                "level": "warning"
               }
             }
           ]
