@@ -2617,7 +2617,7 @@ public class SarifLog {
         @SuppressWarnings("all")
         public static class ReportingConfigurationBuilder {
             @SuppressWarnings("all")
-            private boolean enabled;
+            private Boolean enabled;
             @SuppressWarnings("all")
             private String level;
             @SuppressWarnings("all")
@@ -2633,7 +2633,7 @@ public class SarifLog {
              * Boolean, to dis- and enable the config based on matching a rule (through the Descriptor).
              */
             @SuppressWarnings("all")
-            public SarifLog.ReportingConfiguration.ReportingConfigurationBuilder enabled(final boolean enabled) {
+            public SarifLog.ReportingConfiguration.ReportingConfigurationBuilder enabled(final Boolean enabled) {
                 this.enabled = enabled;
                 return this;
             }

@@ -28,7 +28,6 @@
                 ]
               },
               "defaultConfiguration": {
-                "enabled": false,
                 "level": "note"
               }
             }
