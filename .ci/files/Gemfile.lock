@@ -10,7 +10,7 @@ GEM
     fugit (1.11.1)
       et-orbi (~> 1, >= 1.2.11)
       raabro (~> 1.4)
-    liquid (5.8.4)
+    liquid (5.8.6)
       bigdecimal
       strscan (>= 3.1.1)
     logger (1.7.0)
