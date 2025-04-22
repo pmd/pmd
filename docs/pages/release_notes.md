@@ -23,6 +23,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🐛 Fixed Issues
 * core
   * [#5623](https://github.com/pmd/pmd/issues/5623): \[dist] Make pmd launch script compatible with /bin/sh
+* apex-bestpractices
+  * [#5667](https://github.com/pmd/pmd/issues/5667): \[apex] ApexUnitTestShouldNotUseSeeAllDataTrue false negative when seeAllData parameter is a string
 * apex-errorprone
   * [#3184](https://github.com/pmd/pmd/issues/3184): \[apex] Prevent classes from shadowing System Namespace
 * java
@@ -34,6 +36,7 @@ This is a {{ site.pmd.release_type }} release.
 <!-- content will be automatically generated, see /do-release.sh -->
 * [#5450](https://github.com/pmd/pmd/pull/5450): Fix #3184: \[apex] New Rule: TypeShadowsBuiltInNamespace - [Mitch Spano](https://github.com/mitchspano) (@mitchspano)
 * [#5672](https://github.com/pmd/pmd/pull/5672): \[doc] Fix its/it's and doable/double typos - [John Jetmore](https://github.com/jetmore) (@jetmore)
+* [#5684](https://github.com/pmd/pmd/pull/5684): Fix #5667: \[apex] ApexUnitTestShouldNotUseSeeAllDataTrue false negative when seeAllDate parameter is a string - [Thomas Prouvot](https://github.com/tprouvot) (@tprouvot)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
