@@ -12,6 +12,7 @@ import org.pcollections.PSet;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.SymbolDeclaratorNode;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
@@ -45,6 +46,13 @@ public final class SymbolResolutionPass {
         AstSymbolMakerVisitor visitor = new AstSymbolMakerVisitor(root);
         root.acceptVisitor(visitor, new AstSymFactory(processor));
         return visitor.makeKnownSymbolResolver();
+    }
+
+    public static void desugarLombokMembers(JavaAstProcessor processor, ASTTypeDeclaration type) {
+        JClassSymbol symbol = type.getSymbol();
+        if (symbol instanceof AstClassSym) {
+            ((AstClassSym) symbol).processLombok(processor);
+        }
     }
 
     /**

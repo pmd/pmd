@@ -130,6 +130,7 @@ public final class JavaAstProcessor {
         InternalApiBridge.initTypeResolver(acu, this, typeInferenceLogger);
 
         TimeTracker.bench("Symbol table resolution", () -> SymbolTableResolver.traverse(this, acu));
+
         TimeTracker.bench("AST disambiguation", () -> InternalApiBridge.disambigWithCtx(NodeStream.of(acu), ReferenceCtx.root(this, acu)));
         if (globalProc.getProperties().getProperty(JavaLanguageProperties.INTERNAL_DO_STRICT_TYPERES)) {
             TimeTracker.bench("Force type resolution", () -> InternalApiBridge.forceTypeResolutionPhase(this, acu));

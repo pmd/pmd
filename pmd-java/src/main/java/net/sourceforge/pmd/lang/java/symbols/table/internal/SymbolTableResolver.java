@@ -73,6 +73,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
+import net.sourceforge.pmd.lang.java.symbols.internal.ast.SymbolResolutionPass;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.PatternBindingsUtil.BindSet;
 import net.sourceforge.pmd.lang.java.types.JClassType;
@@ -264,6 +265,9 @@ public final class SymbolTableResolver {
             }
 
             popStack(pushed - 1);
+            // resolve annotations, necessary for lombok
+            f.disambig(node.getModifiers().asStream(), ctx);
+            SymbolResolutionPass.desugarLombokMembers(ctx.processor, node);
 
             // resolve the supertypes, necessary for TypeMemberSymTable
             f.disambig(notBody, ctx); // extends/implements
