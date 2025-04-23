@@ -16,6 +16,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🐛 Fixed Issues
 
+- java
+  - [#5702](https://github.com/pmd/pmd/issue/5702): Lombok `@Slf4j` annotation is not interpreted by PMD
+
 ### 🚨 API Changes
 
 ### ✨ Merged pull requests
