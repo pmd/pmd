@@ -826,12 +826,12 @@ public final class JavaAstUtils {
     }
 
     /**
-     * Return the target of the return. May be any {@link ReturnScopeNode}.
-     *
+     * Return the target of the return.
      */
-    public static @Nullable JavaNode getReturnTarget(ASTReturnStatement stmt) {
+    public static @Nullable ReturnScopeNode getReturnTarget(ASTReturnStatement stmt) {
         return stmt.ancestors().first(ReturnScopeNode.class);
     }
+
 
     /**
      * Return true if the variable is effectively final. This means
