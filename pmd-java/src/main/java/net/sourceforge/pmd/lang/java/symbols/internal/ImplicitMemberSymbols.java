@@ -16,6 +16,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
+import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -149,6 +150,18 @@ public final class ImplicitMemberSymbols {
             "length",
             Modifier.PUBLIC | Modifier.FINAL,
             (ts, s) -> ts.INT
+        );
+    }
+
+    public static JFieldSymbol lombokSlf4jLoggerField(JClassSymbol classSym, JavaAstProcessor processor) {
+        // https://javadoc.io/doc/org.projectlombok/lombok/1.16.18/lombok/extern/slf4j/Slf4j.html
+
+        return new FakeFieldSym(
+                classSym,
+                "log",
+                Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL,
+                (ts, s) ->
+                        ts.declaration(processor.findSymbolCannotFail("org.slf4j.Logger"))
         );
     }
 
