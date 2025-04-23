@@ -491,7 +491,7 @@ final class RuleSetFactory {
 
     /**
      * Parse a rule node as a RuleReference. A RuleReference is a single Rule
-     * which comes from another RuleSet with some of it's attributes potentially
+     * which comes from another RuleSet with some of its attributes potentially
      * overridden.
      *
      * @param ruleSetReferenceId           The RuleSetReferenceId of the RuleSet being parsed.

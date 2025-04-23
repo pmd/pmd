@@ -89,7 +89,7 @@ You can enter source code in the middle zone.
 
 There are several ways to focus a node for inspection:
 * **From the tree view:** just click on an item
-   * Since 6.16.0, the tree view is also searchable: press <kbd>Ctlr</kbd>+<kbd>F</kbd> when it's focused,
+   * Since 6.16.0, the tree view is also searchable: press <kbd>Ctrl</kbd>+<kbd>F</kbd> when it's focused,
      or click on the `Search` button and enter a search query. You can cycle through results with
      <kbd>Ctrl</kbd>+<kbd>Tab</kbd> or <kbd>Ctrl</kbd>+<kbd>F3</kbd>, and cycle back with
      <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Tab</kbd> or <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>F3</kbd>.

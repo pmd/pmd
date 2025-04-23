@@ -18,7 +18,7 @@
  */
 
 /*
- *  NOTE : please see documentation at bottom of this file. (It was placed there its tiring
+ *  NOTE : please see documentation at bottom of this file. (It was placed there it's tiring
  *    to always have to page past it... :)
  */
 options
@@ -415,7 +415,7 @@ TOKEN:
 
 
 /*
- * needed because #set is so wacky in it's desired behavior.  We want set
+ * needed because #set is so wacky in its desired behavior.  We want set
  * to eat any preceding whitespace so it is invisible in formatting.
  * (As it should be.)  If this works well, I am going to chuck the whole MORE:
  * token abomination.

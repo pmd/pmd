@@ -5,13 +5,14 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.test.ast.shouldBe
-import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.BinaryOp.*
-import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
-import net.sourceforge.pmd.lang.java.ast.UnaryOp.UNARY_MINUS
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.J14
+import net.sourceforge.pmd.lang.java.ast.UnaryOp.*
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 
 
 /**
@@ -282,6 +283,53 @@ class ASTSwitchExpressionTests : ParserTestSpec({
 
                     outerYields[2].shouldMatchN {
                         int(4)
+                    }
+                }
+            }
+        }
+    }
+
+    parserTestContainer("Test yield expressions negated (#5645)", javaVersions = JavaVersion.since(J14)) {
+        inContext(ExpressionParsingCtx) {
+            """
+            switch (day) {
+                case ONE: 
+                    yield !true;
+                    yield ~0;
+                    yield +2;
+                    yield -2;
+                    yield --foo;
+                    yield ++foo;
+                    yield void.class;
+                    yield double.class; yield float.class;
+                    yield long.class; yield int.class; yield short.class; 
+                    yield char.class; yield byte.class;
+                    yield boolean.class;
+            }
+        """.trimIndent() should parseAs {
+                switchExpr {
+
+                    it::getTestedExpression shouldBe variableAccess("day")
+
+                    switchFallthrough {
+                        switchLabel {
+                            variableAccess("ONE")
+                        }
+                        yieldStatement { unaryExpr(NEGATION) { boolean(true) } }
+                        yieldStatement { unaryExpr(COMPLEMENT) { int(0) } }
+                        yieldStatement { unaryExpr(UNARY_PLUS) { int(2) } }
+                        yieldStatement { unaryExpr(UNARY_MINUS) { int(2) } }
+                        yieldStatement { unaryExpr(PRE_DECREMENT) { variableAccess("foo") } }
+                        yieldStatement { unaryExpr(PRE_INCREMENT) { variableAccess("foo") } }
+                        yieldStatement { classLiteral { voidType() } }
+                        yieldStatement { classLiteral { primitiveType(PrimitiveTypeKind.DOUBLE) } }
+                        yieldStatement { classLiteral { primitiveType(PrimitiveTypeKind.FLOAT) } }
+                        yieldStatement { classLiteral { primitiveType(PrimitiveTypeKind.LONG) } }
+                        yieldStatement { classLiteral { primitiveType(PrimitiveTypeKind.INT) } }
+                        yieldStatement { classLiteral { primitiveType(PrimitiveTypeKind.SHORT) } }
+                        yieldStatement { classLiteral { primitiveType(PrimitiveTypeKind.CHAR) } }
+                        yieldStatement { classLiteral { primitiveType(PrimitiveTypeKind.BYTE) } }
+                        yieldStatement { classLiteral { primitiveType(PrimitiveTypeKind.BOOLEAN) } }
                     }
                 }
             }
