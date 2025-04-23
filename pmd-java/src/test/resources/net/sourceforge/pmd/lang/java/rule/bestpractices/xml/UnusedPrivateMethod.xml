@@ -2607,4 +2607,15 @@ class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5687 [java] UnusedPrivateMethodRule: exclude serialization method readObjectNoData()</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.ObjectStreamException;
+public class Foo {
+    private void readObjectNoData() throws ObjectStreamException {}
+}
+]]></code>
+    </test-code>
 </test-data>

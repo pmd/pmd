@@ -27,6 +27,9 @@
                 "tags":[
                   "Security"
                 ]
+              },
+              "defaultConfiguration": {
+                "level": "warning"
               }
             },
             {
@@ -47,6 +50,9 @@
                 "tags": [
                   "Documentation"
                 ]
+              },
+              "defaultConfiguration": {
+                "level": "warning"
               }
             }
           ]
@@ -59,6 +65,7 @@
           "message": {
             "text": "Apex classes should declare a sharing model if DML or SOQL/SOSL is used"
           },
+          "level": "warning",
           "locations": [
             {
               "physicalLocation": {
@@ -94,6 +101,7 @@
           "message": {
             "text": "Missing ApexDoc comment"
           },
+          "level": "warning",
           "locations": [
             {
               "physicalLocation": {

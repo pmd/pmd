@@ -7546,7 +7546,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/633348?v=4",
       "profile": "https://github.com/cowwoc",
       "contributions": [
-        "bug"
+        "bug",
+        "code"
       ]
     },
     {
@@ -8028,6 +8029,52 @@
       "profile": "https://miuler.com/",
       "contributions": [
         "bug"
+      ]
+    },
+    {
+      "login": "fesse",
+      "name": "Mathias Lagerwall",
+      "avatar_url": "https://avatars.githubusercontent.com/u/668267?v=4",
+      "profile": "https://github.com/fesse",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "jetmore",
+      "name": "John Jetmore",
+      "avatar_url": "https://avatars.githubusercontent.com/u/978659?v=4",
+      "profile": "https://jetmore.org/john/",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "julees7",
+      "name": "julees7",
+      "avatar_url": "https://avatars.githubusercontent.com/u/98476761?v=4",
+      "profile": "https://github.com/julees7",
+      "contributions": [
+        "code",
+        "bug"
+      ]
+    },
+    {
+      "login": "yarlpavaworkday",
+      "name": "yarlpavaworkday",
+      "avatar_url": "https://avatars.githubusercontent.com/u/73499430?v=4",
+      "profile": "https://github.com/yarlpavaworkday",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "dwgrth",
+      "name": "Douglas Griffith",
+      "avatar_url": "https://avatars.githubusercontent.com/u/37941350?v=4",
+      "profile": "https://github.com/dwgrth",
+      "contributions": [
+        "doc"
       ]
     }
   ],

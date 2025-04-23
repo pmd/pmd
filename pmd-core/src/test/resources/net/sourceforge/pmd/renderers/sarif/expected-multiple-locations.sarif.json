@@ -26,6 +26,9 @@
                 "tags": [
                   "RuleSet"
                 ]
+              },
+              "defaultConfiguration": {
+                "level": "note"
               }
             },
             {
@@ -45,6 +48,9 @@
                 "tags": [
                   "RuleSet"
                 ]
+              },
+              "defaultConfiguration": {
+                "level": "error"
               }
             }
           ]
@@ -57,6 +63,7 @@
           "message": {
             "text": "blah"
           },
+          "level": "note",
           "locations": [
             {
               "physicalLocation": {
@@ -79,6 +86,7 @@
           "message": {
             "text": "blah"
           },
+          "level": "error",
           "locations": [
             {
               "physicalLocation": {
@@ -101,6 +109,7 @@
           "message": {
             "text": "blah"
           },
+          "level": "note",
           "locations": [
             {
               "physicalLocation": {

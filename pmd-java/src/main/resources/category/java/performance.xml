@@ -549,7 +549,7 @@ public class C {
     long l      = 0;
 
     float f     = .0f;    // all possible float literals
-    doable d    = 0d;     // all possible double literals
+    double d    = 0d;     // all possible double literals
     Object o    = null;
 
     MyClass mca[] = null;
