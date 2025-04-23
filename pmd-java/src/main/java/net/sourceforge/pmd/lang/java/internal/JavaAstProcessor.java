@@ -60,6 +60,10 @@ public final class JavaAstProcessor {
         this.acu = acu;
     }
 
+    public boolean hasFirstClassLombokSupport() {
+        return globalProc.hasFirstClassLombokSupport();
+    }
+
     public UnresolvedClassStore getUnresolvedStore() {
         return unresolvedTypes;
     }

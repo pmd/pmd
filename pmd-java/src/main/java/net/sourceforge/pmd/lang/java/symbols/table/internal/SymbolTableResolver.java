@@ -265,6 +265,7 @@ public final class SymbolTableResolver {
             }
 
             popStack(pushed - 1);
+
             // resolve annotations, necessary for lombok
             f.disambig(node.getModifiers().asStream(), ctx);
             SymbolResolutionPass.desugarLombokMembers(ctx.processor, node);

@@ -6,15 +6,10 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
-import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration
-import net.sourceforge.pmd.lang.java.ast.JavaVersion
+import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J9
-import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties
-import net.sourceforge.pmd.lang.java.types.JClassType
-import net.sourceforge.pmd.lang.java.types.shouldHaveType
-import net.sourceforge.pmd.lang.java.types.varId
-import net.sourceforge.pmd.lang.java.types.withTypeDsl
+import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.test.ast.IntelliMarker
 import net.sourceforge.pmd.lang.test.ast.shouldBeA
 
@@ -137,5 +132,39 @@ class LombokTest : IntelliMarker, ProcessorTestSpec({
         }
     }
 
+
+
+    parserTestContainer("Lombok @Slf4j annotation") {
+
+        val code =
+            """
+            import lombok.extern.slf4j.Slf4j;
+            @Slf4j
+            public class Book {
+                public void logMe() {
+                    log.info("Hello, %s!");
+                }
+            }
+            """.trimIndent()
+
+
+        doTest("Creates a log field when supported") {
+            val acu = parser.parse(code)
+            acu.withTypeDsl {
+                val qualifier = acu.firstMethodCall().qualifier!!
+                qualifier shouldHaveType org.slf4j.Logger::class.decl
+                qualifier.shouldBeA<ASTVariableAccess>()
+            }
+        }
+
+        doTest("Do nothing when lombok support is disabled") {
+            val acu = parser.disableLombok().parse(code)
+            acu.withTypeDsl {
+                val qualifier = acu.firstMethodCall().qualifier!!
+                qualifier shouldHaveType ts.UNKNOWN
+                qualifier.shouldBeA<ASTAmbiguousName>()
+            }
+        }
+    }
 
 })

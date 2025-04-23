@@ -49,6 +49,10 @@ public final class SymbolResolutionPass {
     }
 
     public static void desugarLombokMembers(JavaAstProcessor processor, ASTTypeDeclaration type) {
+        if (!processor.hasFirstClassLombokSupport()) {
+            return;
+        }
+
         JClassSymbol symbol = type.getSymbol();
         if (symbol instanceof AstClassSym) {
             ((AstClassSym) symbol).processLombok(processor);
