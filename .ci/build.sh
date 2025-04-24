@@ -169,7 +169,7 @@ function build() {
     pmd_ci_log_group_end
 
     pmd_ci_log_group_start "Executing build with coveralls"
-        pmd_ci_openjdk_setdefault 11
+        pmd_ci_openjdk_setdefault 17
         export CI_NAME="github actions"
         export CI_BUILD_URL="${PMD_CI_JOB_URL}"
         export CI_BRANCH="${PMD_CI_BRANCH}"
