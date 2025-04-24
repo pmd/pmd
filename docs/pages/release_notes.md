@@ -46,6 +46,8 @@ More information is available at <https://github.com/pmd/docker>.
   * [#5645](https://github.com/pmd/pmd/issues/5645): \[java] Parse error on switch with yield
 * java-bestpractices
   * [#5687](https://github.com/pmd/pmd/issues/5687): \[java] UnusedPrivateMethodRule: exclude serialization method readObjectNoData()
+* plsql
+  * [#5675](https://github.com/pmd/pmd/issues/5675): \[plsql] Parse error with TREAT function
 
 ### 🚨 API Changes
 
