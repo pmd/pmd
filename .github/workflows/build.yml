@@ -69,6 +69,8 @@ jobs:
         .ci/$f
     - uses: actions/create-github-app-token@v2
       id: pmd-actions-helper-app-token
+      # only run in the official pmd repo, where we have access to the secrets and not on forks
+      if: github.repository == 'pmd/pmd'
       with:
         app-id: ${{ secrets.PMD_ACTIONS_HELPER_ID }}
         private-key: ${{ secrets.PMD_ACTIONS_HELPER_PRIVATE_KEY }}
