@@ -8076,6 +8076,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "MiladSadinam",
+      "name": "MiladSadinam",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8689490?v=4",
+      "profile": "https://github.com/MiladSadinam",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
