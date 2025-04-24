@@ -150,8 +150,9 @@ function build() {
     pmd_ci_log_group_end
     fi
 
-    # Trigger docker workflow to build new images
-    if pmd_ci_maven_isSnapshotBuild || [ "${BUILD_CLI_DIST_ONLY}" = "true" ]; then
+    # Trigger docker workflow to build new images for release builds
+    # but only for case b) pmd-cli/pmd-dist release
+    if pmd_ci_maven_isReleaseBuild && [ "${BUILD_CLI_DIST_ONLY}" = "true" ]; then
     pmd_ci_log_group_start "Trigger docker workflow"
       # split semantic version by dot
       IFS="." read -ra VERSION_ARRAY <<< "${PMD_CI_MAVEN_PROJECT_VERSION}"
