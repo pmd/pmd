@@ -2274,6 +2274,8 @@ and the news post on sourceforge <a href="https://sourceforge.net/p/pmd/news/">h
 selected as the new default for PMD.</li>
   <li>As a last step, a new baseline for the <a href="https://github.com/pmd/pmd-regression-tester">regression tester</a>
 is created and uploaded to <a href="https://pmd-code.org/pmd-regression-tester">https://pmd-code.org/pmd-regression-tester</a>.</li>
+  <li>After that, the workflow in <a href="https://github.com/pmd/docker/actions/workflows/publish-docker-image.yaml">https://github.com/pmd/docker/actions/workflows/publish-docker-image.yaml</a>
+is triggered to create and publish a new docker image for the new PMD version.</li>
 </ul>
 
 <p>Once this second GitHub Action run is done, you can spread additional news:</p>
@@ -2334,6 +2336,12 @@ is created and uploaded to <a href="https://pmd-code.org/pmd-regression-tester">
       <td>sourceforge files</td>
       <td>The 3 assets (bin, src, doc) are uploaded, the new version is pre-selected as latest</td>
       <td><a href="https://sourceforge.net/projects/pmd/files/pmd/">https://sourceforge.net/projects/pmd/files/pmd/</a></td>
+      <td><input type="checkbox" /></td>
+    </tr>
+    <tr>
+      <td>docker image</td>
+      <td>New docker images are available</td>
+      <td><a href="https://hub.docker.com/r/pmdcode/pmd">https://hub.docker.com/r/pmdcode/pmd</a> / <a href="https://github.com/pmd/docker/pkgs/container/pmd">https://github.com/pmd/docker/pkgs/container/pmd</a></td>
       <td><input type="checkbox" /></td>
     </tr>
     <tr>
@@ -2438,6 +2446,16 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
+{% if is_release_notes_processor %}
+{% comment %}
+This allows to use links e.g. [Basic CLI usage]({{ baseurl }}pmd_userdocs_installation.html) that work both
+in the release notes on GitHub (as an absolute url) and on the rendered documentation page (as a relative url). 
+{% endcomment %}
+{% capture baseurl %}https://docs.pmd-code.org/pmd-doc-{{ site.pmd.version }}/{% endcapture %}
+{% else %}
+{% assign baseurl = "" %}
+{% endif %}
+
 ## {{ site.pmd.date | date: "%d-%B-%Y" }} - {{ site.pmd.version }}
 
 The PMD team is pleased to announce PMD {{ site.pmd.version }}.
@@ -2528,7 +2546,7 @@ the tag. Here are the steps:</p>
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            July 2024 (7.5.0)<br /> Site last generated: Apr 24, 2025 <br />
+            April 2025 (7.13.0)<br /> Site last generated: Apr 24, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

@@ -2013,6 +2013,18 @@
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
+<h4 id="docker-images">Docker images</h4>
+
+<p>PMD is now providing official docker images at <a href="https://hub.docker.com/r/pmdcode/pmd">https://hub.docker.com/r/pmdcode/pmd</a> and
+<a href="https://github.com/pmd/docker/pkgs/container/pmd">https://github.com/pmd/docker/pkgs/container/pmd</a>.</p>
+
+<p>You can now analyze your code with PMD by using docker like so:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run --rm --tty -v $PWD:/src pmdcode/pmd:latest check -d . -R rulesets/java/quickstart.xml`
+</code></pre></div></div>
+
+<p>More information is available at <a href="https://github.com/pmd/docker">https://github.com/pmd/docker</a>.</p>
+
 <h4 id="-new-rules">✨ New Rules</h4>
 
 <ul>
@@ -2025,6 +2037,7 @@ Shadowing these namespaces in this way can lead to confusion and unexpected beha
 <ul>
   <li>core
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/5448">#5448</a>: Maintain a public PMD docker image</li>
       <li><a href="https://github.com/pmd/pmd/issues/5525">#5525</a>: [core] Add rule priority as level to Sarif report</li>
       <li><a href="https://github.com/pmd/pmd/issues/5623">#5623</a>: [dist] Make pmd launch script compatible with /bin/sh</li>
     </ul>
@@ -2047,6 +2060,11 @@ Shadowing these namespaces in this way can lead to confusion and unexpected beha
   <li>java-bestpractices
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/5687">#5687</a>: [java] UnusedPrivateMethodRule: exclude serialization method readObjectNoData()</li>
+    </ul>
+  </li>
+  <li>plsql
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/5675">#5675</a>: [plsql] Parse error with TREAT function</li>
     </ul>
   </li>
 </ul>
