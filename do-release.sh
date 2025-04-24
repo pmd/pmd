@@ -258,8 +258,8 @@ keywords: changelog, release notes
 
 {% if is_release_notes_processor %}
 {% comment %}
-This allows to use links like [Page]({{ basedir }}pmd_devdocs_page.html) that work both in the release notes
-on GitHub (as an absolute url) and on the rendered documentation page (as a relative url).
+This allows to use links e.g. [Basic CLI usage]({{ basedir }}pmd_userdocs_installation.html) that work both
+in the release notes on GitHub (as an absolute url) and on the rendered documentation page (as a relative url).
 {% endcomment %}
 {% capture baseurl %}https://docs.pmd-code.org/pmd-doc-{{ site.pmd.version }}/{% endcapture %}
 {% else %}
