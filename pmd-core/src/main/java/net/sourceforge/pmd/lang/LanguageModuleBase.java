@@ -54,6 +54,14 @@ public abstract class LanguageModuleBase implements Language {
         this(metadata, null);
     }
 
+    /**
+     * @experimental Since 7.13.0. See <a href="https://github.com/pmd/pmd/pull/5438">[core] Support language dialects #5438</a>.
+     */
+    @Experimental
+    protected LanguageModuleBase(DialectLanguageMetadata metadata) {
+        this(metadata.metadata, metadata.baseLanguageId);
+    }
+
     private LanguageModuleBase(LanguageMetadata metadata, String baseLanguageId) {
         this.meta = metadata;
         metadata.validate();
@@ -100,11 +108,6 @@ public abstract class LanguageModuleBase implements Language {
         this.byName = Collections.unmodifiableMap(byName);
         this.distinctVersions = Collections.unmodifiableList(versions);
         this.defaultVersion = Objects.requireNonNull(defaultVersion, "No default version for " + getId());
-    }
-
-    @Experimental
-    protected LanguageModuleBase(DialectLanguageMetadata metadata) {
-        this(metadata.metadata, metadata.baseLanguageId);
     }
 
     private static void checkNotPresent(Map<String, ?> map, String alias) {
@@ -370,14 +373,15 @@ public abstract class LanguageModuleBase implements Language {
         /**
          * Defines the language as a dialect of another language.
          *
-         * @param id The id of the base language this is a dialect of.
+         * @param baseLanguageId The id of the base language this is a dialect of.
          * @return A new dialect language metadata model.
+         * @experimental Since 7.13.0. See <a href="https://github.com/pmd/pmd/pull/5438">[core] Support language dialects #5438</a>.
          */
         @Experimental
-        public DialectLanguageMetadata asDialectOf(String id) {
-            checkValidLangId(id);
-            dependsOnLanguage(id); // a dialect automatically depends on it's base language at runtime
-            return new DialectLanguageMetadata(this, id);
+        public DialectLanguageMetadata asDialectOf(String baseLanguageId) {
+            checkValidLangId(baseLanguageId);
+            dependsOnLanguage(baseLanguageId); // a dialect automatically depends on it's base language at runtime
+            return new DialectLanguageMetadata(this, baseLanguageId);
         }
 
         private static void checkValidLangId(String id) {
@@ -438,6 +442,7 @@ public abstract class LanguageModuleBase implements Language {
 
     /**
      * Expresses the language as a dialect of another language.
+     * @experimental Since 7.13.0. See <a href="https://github.com/pmd/pmd/pull/5438">[core] Support language dialects #5438</a>.
      */
     @Experimental
     public static final class DialectLanguageMetadata {

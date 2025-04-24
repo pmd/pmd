@@ -9,6 +9,9 @@ import net.sourceforge.pmd.lang.impl.SimpleDialectLanguageModuleBase;
 
 /**
  * Created by bernardo-macedo on 24.06.15.
+ *
+ * <p>Since PMD 7.13.0 this is a dialect of XML. Before that, WSDL was a language module on its own.
+ * @since 7.13.0
  */
 public class WsdlDialectModule extends SimpleDialectLanguageModuleBase {
     private static final String ID = "wsdl";

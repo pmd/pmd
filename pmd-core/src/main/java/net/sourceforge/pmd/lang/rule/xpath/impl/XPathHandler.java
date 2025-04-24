@@ -42,7 +42,8 @@ public interface XPathHandler {
     /**
      * Return a new XPath handler combining all available functions from this and another handler.
      * @param other The handler whose functions to merge with this one.
-     * @return Anew handler exposing all functions from both XPath handlers.
+     * @return A new handler exposing all functions from both XPath handlers.
+     * @since 7.13.0
      */
     default XPathHandler combine(XPathHandler other) {
         Set<XPathFunctionDefinition> set = new HashSet<>(getRegisteredExtensionFunctions());

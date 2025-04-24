@@ -529,8 +529,8 @@ public final class PmdAnalysis implements AutoCloseable {
             changed = false;
             for (Language lang : reg) {
                 if (lang.getBaseLanguageId() != null) {
-                    Language depLang = reg.getLanguageById(lang.getBaseLanguageId());
-                    if (depLang != null && languages.contains(depLang)) {
+                    Language baseLang = reg.getLanguageById(lang.getBaseLanguageId());
+                    if (baseLang != null && languages.contains(baseLang)) {
                         changed |= languages.add(lang);
                     }
                 }

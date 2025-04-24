@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.xml.cpd.XmlCpdLexer;
 
 /**
  * This language module is deprecated. XSL is now a dialect of XML.
- * @deprecated Use @link{XslDialectModule} instead.
+ * @deprecated Since 7.13.0. Use @link{XslDialectModule} instead.
  */
 @Deprecated
 public class XslLanguageModule extends SimpleLanguageModuleBase {

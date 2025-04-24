@@ -9,6 +9,9 @@ import net.sourceforge.pmd.lang.impl.SimpleDialectLanguageModuleBase;
 
 /**
  * Created by christoferdutz on 20.09.14.
+ *
+ * <p>Since PMD 7.13.0 this is a dialect of XML. Before that, XSL was a language module on its own.
+ * @since 7.13.0
  */
 public class XslDialectModule extends SimpleDialectLanguageModuleBase {
     private static final String ID = "xsl";

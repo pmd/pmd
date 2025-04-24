@@ -1,7 +1,7 @@
 ---
 title: Adding PMD support for a new dialect for an already existing language
 short_title: Adding a new dialect
-tags: [devdocs, extending]
+tags: [devdocs, extending, experimental]
 summary: "How to add a new dialect."
 last_updated: April 2025 (7.13.0)
 sidebar: pmd_sidebar
@@ -14,10 +14,10 @@ folder: pmd/devdocs
 **What is a dialect?**<br><br>
 
 A dialect is a particular form of another supported language. For example, an XSLT is a particular form of an XML.
-Even though the dialect has it's own seantics and uses, the contents are still readable by any tool capable of understanding the base language.<br><br>
+Even though the dialect has its own semantics and uses, the contents are still readable by any tool capable of understanding the base language.<br><br>
 
 In PMD, a dialect allows to set up completely custom rules, XPath functions, properties and metrics for these files;
-while retaining the full support of the underlaying language. That means:<br><br>
+while retaining the full support of the underlying language. That means:<br><br>
 
 - All rules applicable to the base language are automatically applicable to all files processed as a dialect.<br>
 - All XPath functions existing in the base language are available when creating new rules.<br>
@@ -31,13 +31,13 @@ while retaining the full support of the underlaying language. That means:<br><br
 ### 1.  Create a dialect module
 *   Dialects usually reside in the same module of the base language they leverage; but can technically live standalone in a separate module if needed.
 *   Create your subclass of `net.sourceforge.pmd.lang.impl.SimpleDialectLanguageModuleBase`, see XSL as an example: [`XslDialectModule`](https://github.com/pmd/pmd/blob/main/pmd-xml/src/main/java/net/sourceforge/pmd/lang/xml/xsl/XslDialectModule.java).
-*   For a minimal implementation, it just needs a constructor calling supper with the required metadata.
+*   For a minimal implementation, it just needs a constructor calling super() with the required metadata.
     Dialect metadata is created through the builder obtained `LanguageMetadata.withId`
     *   Define the human readable name of the language by calling `name`
     *   Define all extensions PMD should consider when applying this dialect by calling `extensions`
     *   Add for each version of your language a call to `addVersion` in your language module’s constructor.
         Use `addDefaultVersion` for defining the default version.
-    *   Finalize the metadata construiction by calling `asDialectOf` to reference the base language by id.
+    *   Finalize the metadata construction by calling `asDialectOf` to reference the base language by id.
 *   Create the service registration via the text file `src/main/resources/META-INF/services/net.sourceforge.pmd.lang.Language`.
     Add your fully qualified class name as a single line into it.
 
@@ -72,7 +72,7 @@ while retaining the full support of the underlaying language. That means:<br><br
         [`UnavailableFunctionTest`](https://github.com/pmd/pmd/blob/main/pmd-swift/src/test/java/net/sourceforge/pmd/lang/swift/rule/bestpractices/UnavailableFunctionTest.java)
         for example)*
     *   Create a category rule set for your dialect *(see
-        [`pmd-swift/src/main/resources/bestpractices.xml`](https://github.com/pmd/pmd/blob/main/pmd-swift/src/main/resources/category/swift/bestpractices.xml)
+        [`category/swift/bestpractices.xml`](https://github.com/pmd/pmd/blob/main/pmd-swift/src/main/resources/category/swift/bestpractices.xml)
         for example)*
     *   Place the test XML file with the test cases in the correct location
     *   When executing the test class
@@ -107,7 +107,7 @@ There is also the following Jekyll Include, that creates summary box for the lan
 
 ```
 {% raw %}
-{% include language_info.html name='<Language Name>' id='<langId>' implementation='<langId>::lang.<langId>.<langId>LanguageModule' supports_cpd=true supports_pmd=true %}
+{% include language_info.html name='<Language Name>' id='<langId>' implementation='<langId>::lang.<langId>.<langId>LanguageModule' supports_cpd=true supports_pmd=true since='<PMD Version>' %}
 {% endraw %}
 ```
 

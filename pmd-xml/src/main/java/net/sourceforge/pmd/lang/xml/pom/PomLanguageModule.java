@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.xml.cpd.XmlCpdLexer;
 
 /**
  * This language module is deprecated. POM is now a dialect of XML.
- * @deprecated Use @link{PomDialectModule} instead.
+ * @deprecated Since 7.13.0. Use @link{PomDialectModule} instead.
  */
 @Deprecated
 public class PomLanguageModule extends SimpleLanguageModuleBase {

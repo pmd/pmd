@@ -7,6 +7,10 @@ package net.sourceforge.pmd.lang.xml.pom;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.impl.SimpleDialectLanguageModuleBase;
 
+/**
+ * Since PMD 7.13.0 this is a dialect of XML. Before that, POM was a language module on its own.
+ * @since 7.13.0
+ */
 public class PomDialectModule extends SimpleDialectLanguageModuleBase {
     private static final String ID = "pom";
 
