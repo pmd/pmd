@@ -14,6 +14,19 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+#### Docker images
+
+PMD is now providing official docker images at <https://hub.docker.com/r/pmdcode/pmd> and
+<https://github.com/pmd/docker/pkgs/container/pmd>.
+
+You can now analyze your code with PMD by using docker like so:
+
+```
+docker run --rm --tty -v $PWD:/src pmdcode/pmd:latest check -d . -R rulesets/java/quickstart.xml`
+```
+
+More information is available at <https://github.com/pmd/docker>.
+
 #### ✨ New Rules
 
 * The new Apex rule {% rule apex/errorprone/TypeShadowsBuiltInNamespace %} finds Apex classes, enums, and interfaces
@@ -22,6 +35,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🐛 Fixed Issues
 * core
+  * [#5448](https://github.com/pmd/pmd/issues/5448): Maintain a public PMD docker image
   * [#5525](https://github.com/pmd/pmd/issues/5525): \[core] Add rule priority as level to Sarif report
   * [#5623](https://github.com/pmd/pmd/issues/5623): \[dist] Make pmd launch script compatible with /bin/sh
 * apex-bestpractices

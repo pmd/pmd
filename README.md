@@ -11,6 +11,7 @@
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](code_of_conduct.md) 
 [![Documentation (latest)](https://img.shields.io/badge/docs-latest-green)](https://docs.pmd-code.org/latest/)
 [![Gurubase](https://img.shields.io/badge/Gurubase-Ask%20PMD%20Guru-006BFF)](https://gurubase.io/g/pmd)
+[![Docker Image Version](https://img.shields.io/docker/v/pmdcode/pmd?sort=semver&label=Docker)](https://hub.docker.com/r/pmdcode/pmd)
 
 **PMD** is an extensible multilanguage static code analyzer. It finds common programming flaws like unused variables,
 empty catch blocks, unnecessary object creation, and so forth. It's mainly concerned with **Java and

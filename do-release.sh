@@ -347,6 +347,7 @@ echo "  * <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-core/${R
 echo "  * <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-java/${RELEASE_VERSION}/>"
 echo "  * <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-designer/${RELEASE_VERSION}/>"
 echo "* Regression Tester baseline has been created: <https://pmd-code.org/pmd-regression-tester/>"
+echo "* Docker images have been created: <https://hub.docker.com/r/pmdcode/pmd> / <https://github.com/pmd/docker/pkgs/container/pmd>"
 echo
 echo "*   Send out an announcement mail to the mailing list:"
 echo
