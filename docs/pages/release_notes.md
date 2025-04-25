@@ -4,6 +4,12 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
+{% if is_release_notes_processor %}
+{% capture baseurl %}https://docs.pmd-code.org/pmd-doc-{{ site.pmd.version }}/{% endcapture %}
+{% else %}
+{% assign baseurl = "" %}
+{% endif %}
+
 ## {{ site.pmd.date | date: "%d-%B-%Y" }} - {{ site.pmd.version }}
 
 The PMD team is pleased to announce PMD {{ site.pmd.version }}.
@@ -27,6 +33,19 @@ docker run --rm --tty -v $PWD:/src pmdcode/pmd:latest check -d . -R rulesets/jav
 
 More information is available at <https://github.com/pmd/docker>.
 
+#### Experimental support for language dialects
+
+A dialect is a particular form of another supported language. For example, an XSLT is a particular
+form of an XML. Even though the dialect has its own semantics and uses, the contents are still readable
+by any tool capable of understanding the base language.
+
+In PMD, a dialect allows to set up completely custom rules, XPath functions, properties and metrics
+for these files; while retaining the full support of the underlying base language including
+already existing rules and XPath functions.
+
+See [[core] Support language dialects #5438](https://github.com/pmd/pmd/pull/5438) and
+[Adding a new dialect]({{ baseurl }}pmd_devdocs_major_adding_dialect.html) for more information.
+
 #### ✨ New Rules
 
 * The new Apex rule {% rule apex/errorprone/TypeShadowsBuiltInNamespace %} finds Apex classes, enums, and interfaces
@@ -35,6 +54,7 @@ More information is available at <https://github.com/pmd/docker>.
 
 ### 🐛 Fixed Issues
 * core
+  * [#5438](https://github.com/pmd/pmd/issues/5438): \[core] Support language dialects
   * [#5448](https://github.com/pmd/pmd/issues/5448): Maintain a public PMD docker image
   * [#5525](https://github.com/pmd/pmd/issues/5525): \[core] Add rule priority as level to Sarif report
   * [#5623](https://github.com/pmd/pmd/issues/5623): \[dist] Make pmd launch script compatible with /bin/sh
@@ -50,6 +70,24 @@ More information is available at <https://github.com/pmd/docker>.
   * [#5675](https://github.com/pmd/pmd/issues/5675): \[plsql] Parse error with TREAT function
 
 ### 🚨 API Changes
+
+#### Deprecations
+* {%jdoc !!xml::lang.xml.pom.PomLanguageModule %} is deprecated. POM is now a dialect of XML.
+  Use {%jdoc xml::lang.xml.pom.PomDialectModule %} instead.
+* {%jdoc !!xml::lang.xml.wsdl.WsdlLanguageModule %} is deprecated. WSDL is now a dialect of XML.
+  Use {%jdoc xml::lang.xml.wsdl.WsdlDialectModule %} instead.
+* {%jdoc !!xml::lang.xml.xsl.XslLanguageModule %} is deprecated. XSL is now a dialect of XML.
+  Use {%jdoc xml::lang.xml.xsl.XslDialectModule %} instead.
+
+#### Experimental API
+* The core API around support for language dialects:
+  * {%jdoc !!core::lang.Language#getBaseLanguageId() %}
+  * {%jdoc !!core::lang.Language#isDialectOf(core::lang.Language) %}
+  * {%jdoc !!core::lang.LanguageModuleBase#<init>(core::lang.LanguageModuleBase.DialectLanguageMetadata) %}
+  * {%jdoc !!core::lang.LanguageModuleBase#asDialectOf(java.lang.String) %}
+  * {%jdoc core::lang.LanguageModuleBase.DialectLanguageMetadata %}
+  * {%jdoc core::lang.impl.BasePmdDialectLanguageVersionHandler %}
+  * {%jdoc core::lang.impl.SimpleDialectLanguageModuleBase %}
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
