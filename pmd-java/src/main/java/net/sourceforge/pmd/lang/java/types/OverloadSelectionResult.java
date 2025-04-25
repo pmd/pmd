@@ -61,6 +61,8 @@ public interface OverloadSelectionResult {
      * Returns the type of the i-th formal parameter of the method.
      * This is relevant when the call is varargs: {@code i} can in
      * that case be greater that the number of formal parameters.
+     * In that case, the formal param type is the array element of
+     * the vararg parameter, not the array type.
      *
      * @param i Index for a formal
      *
@@ -68,7 +70,9 @@ public interface OverloadSelectionResult {
      *                        greater than the number of argument
      *                        expressions to the method
      */
-    JTypeMirror ithFormalParam(int i);
+    default JTypeMirror ithFormalParam(int i) {
+        return getMethodType().ithFormalParam(i, isVarargsCall());
+    }
 
     /**
      * Returns true if the invocation of this method failed. This

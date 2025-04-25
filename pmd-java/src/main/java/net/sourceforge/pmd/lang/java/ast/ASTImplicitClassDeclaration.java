@@ -19,8 +19,9 @@ import net.sourceforge.pmd.annotation.Experimental;
  * </pre>
  *
  * @see <a href="https://openjdk.org/jeps/477">JEP 477: Implicitly Declared Classes and Instance Main Methods (Third Preview)</a> (Java 23)
+ * @see <a href="https://openjdk.org/jeps/495">JEP 495: Simple Source Files and Instance Main Methods (Fourth Preview)</a> (Java 24)
  */
-@Experimental("Implicitly Declared Classes and Instance Main Methods is a Java 22 / Java 23 Preview feature")
+@Experimental("Simple Source Files and Instance Main Methods is a Java 22 / Java 23 / Java 24 Preview feature")
 public final class ASTImplicitClassDeclaration extends AbstractTypeDeclaration {
     ASTImplicitClassDeclaration(int id) {
         super(id);

@@ -20,9 +20,11 @@
     <rule ref="category/java/bestpractices.xml/ConstantsInInterface"/>
     <rule ref="category/java/bestpractices.xml/DefaultLabelNotLastInSwitch"/>
     <rule ref="category/java/bestpractices.xml/DoubleBraceInitialization"/>
+    <!-- <rule ref="category/java/bestpractices.xml/ExhaustiveSwitchHasDefault"/> -->
     <rule ref="category/java/bestpractices.xml/ForLoopCanBeForeach"/>
     <!-- <rule ref="category/java/bestpractices.xml/ForLoopVariableCount" /> -->
     <rule ref="category/java/bestpractices.xml/GuardLogStatement"/>
+    <!-- <rule ref="category/java/bestpractices.xml/ImplicitFunctionalInterface"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnit4SuitesShouldUseSuiteAnnotation" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnit5TestShouldBePackagePrivate" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnitUseExpected" /> -->

@@ -53,7 +53,8 @@ definitely don't come for free. It is much effort and requires perseverance to i
     is automatically available in the binary distribution (pmd-dist).
 
 ### 2.  Implement an AST parser for your language
-*   Ideally an AST parser should be implemented as a JJT file *(see VmParser.jjt or Java.jjt for example)*
+*   Ideally an AST parser should be implemented as a JJT file *(see VmParser.jjt or Java.jjt for example)*.
+    The grammar files are placed in directory `src/main/javacc`.
 *   There is nothing preventing any other parser implementation, as long as you have some way to convert an input
     stream into an AST tree. Doing it as a JJT simplifies maintenance down the road.
 *   See this link for reference: [https://javacc.java.net/doc/JJTree.html](https://javacc.java.net/doc/JJTree.html)
@@ -104,7 +105,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
 *   A parser visitor adapter is not needed anymore with PMD 7. The visitor interface now provides a default
     implementation.
 *   The visitor for JavaCC based AST is generated along the parser from the grammar file. The
-    base interface for a visitor is [`AstVisitor`](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/AstVisitor.java).
+    base interface for a visitor is [`AstVisitor`](https://github.com/pmd/pmd/blob/main/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/AstVisitor.java).
 *   The generated visitor class for VM is called `VmVisitor`.
 *   In order to help use this visitor later on, a base visitor class should be created.
     See `VmVisitorBase` as an example.

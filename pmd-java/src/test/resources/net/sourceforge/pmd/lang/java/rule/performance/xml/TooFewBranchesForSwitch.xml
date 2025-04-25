@@ -200,4 +200,59 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5311 [java] TooFewBranchesForSwitch false positive for exhaustive switches over enums without default case</description>
+        <rule-property name="minimumNumberCaseForASwitch">50</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>10</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    String foo(Bar bar) {
+        return switch (bar) {
+            case A -> "A";
+            case B -> "B";
+        };
+    }
+
+    String fooWithDefault(Bar bar) {
+        return switch (bar) { // line 10 - violation
+            case A -> "A";
+            case B -> "B";
+            default -> "?";
+        };
+    }
+
+    enum Bar { A, B }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5311 [java] TooFewBranchesForSwitch false positive for exhaustive switches over sealed without default case</description>
+        <rule-property name="minimumNumberCaseForASwitch">50</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>13</expected-linenumbers>
+        <code><![CDATA[
+public sealed class Foo {
+    static final class A extends Foo {}
+    static final class B extends Foo {}
+
+    String foo(Foo foo) {
+        return switch (foo) {
+            case A a -> "A";
+            case B b -> "B";
+        };
+    }
+
+    String fooWithDefault(Foo foo) {
+        return switch (foo) { // line 13 - violation
+            case A a -> "A";
+            case B b -> "B";
+            default -> "?";
+        };
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

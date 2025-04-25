@@ -4,7 +4,7 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>7.10.0-SNAPSHOT</version>
+        <version>7.13.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>pmd-languages-deps</artifactId>

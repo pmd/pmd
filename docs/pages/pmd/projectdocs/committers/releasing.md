@@ -2,7 +2,7 @@
 title: Release process
 permalink: pmd_projectdocs_committers_releasing.html
 author: Romain Pelisse <rpelisse@users.sourceforge.net>, Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: July 2024 (7.5.0)
+last_updated: April 2025 (7.13.0)
 ---
 
 This page describes the current status of the release process.
@@ -152,15 +152,22 @@ Note: The release notes typically contain some Jekyll macros for linking to the 
 work in a plain markdown version. Therefore, you need to render the release notes first:
 
 ```shell
-# install bundles needed for rendering release notes
+# install bundles needed for rendering release notes and execute rendering
+cd docs
 bundle config set --local path vendor/bundle
-bundle config set --local with release_notes_preprocessing
 bundle install
+NEW_RELEASE_NOTES=$(bundle exec render_release_notes.rb pages/release_notes.md | tail -n +6)
+cd ..
 
 RELEASE_NOTES_POST="_posts/$(date -u +%Y-%m-%d)-PMD-${RELEASE_VERSION}.md"
 echo "Generating ../pmd.github.io/${RELEASE_NOTES_POST}..."
-NEW_RELEASE_NOTES=$(bundle exec docs/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
 cat > "../pmd.github.io/${RELEASE_NOTES_POST}" <<EOF
+---
+layout: post
+title: PMD ${RELEASE_VERSION} released
+---
+${NEW_RELEASE_NOTES}
+EOF
 ```
 
 Check in all (version, blog post) changes to branch main:
@@ -260,6 +267,8 @@ perform the following steps:
     selected as the new default for PMD.
 *   As a last step, a new baseline for the [regression tester](https://github.com/pmd/pmd-regression-tester)
     is created and uploaded to <https://pmd-code.org/pmd-regression-tester>.
+*   After that, the workflow in <https://github.com/pmd/docker/actions/workflows/publish-docker-image.yaml>
+    is triggered to create and publish a new docker image for the new PMD version.
 
 Once this second GitHub Action run is done, you can spread additional news:
 
@@ -284,22 +293,23 @@ Tweet on <https://twitter.com/pmd_analyzer>, eg.:
 
 ### Checklist
 
-| Task              | Description                                                                          | URL                                                             | ☐ / ✔                   |
-|-------------------|--------------------------------------------------------------------------------------|-----------------------------------------------------------------|-------------------------|
-| maven central     | The new version of all artifacts are available in maven central                      | <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/> | <input type="checkbox"> |
-| github releases   | A new release with 3 assets (bin, src, doc) is created                               | <https://github.com/pmd/pmd/releases>                           | <input type="checkbox"> |
-| sourceforge files | The 3 assets (bin, src, doc) are uploaded, the new version is pre-selected as latest | <https://sourceforge.net/projects/pmd/files/pmd/>               | <input type="checkbox"> |
-| homepage          | Main landing page points to new version, doc for new version is available            | <https://pmd.github.io>                                         | <input type="checkbox"> |
-| homepage2         | New blogpost for the new release is posted                                           | <https://pmd.github.io/#news>                                   | <input type="checkbox"> |
-| docs              | New docs are uploaded                                                                | <https://docs.pmd-code.org/latest/>                             | <input type="checkbox"> |
-| docs2             | New version in the docs is listed under "Version specific documentation"             | <https://docs.pmd-code.org/>                                    | <input type="checkbox"> |
-| docs-archive      | New docs are also on archive site                                                    | <https://pmd.sourceforge.io/archive.phtml>                      | <input type="checkbox"> |
-| javadoc           | New javadocs are uploaded                                                            | <https://docs.pmd-code.org/apidocs/>                            | <input type="checkbox"> |
-| news              | New blogpost on sourceforge is posted                                                | <https://sourceforge.net/p/pmd/news/>                           | <input type="checkbox"> |
-| regression-tester | New release baseline is uploaded                                                     | <https://pmd-code.org/pmd-regression-tester>                    | <input type="checkbox"> |
-| mailing list      | announcement on mailing list is sent                                                 | <https://sourceforge.net/p/pmd/mailman/pmd-devel/>              | <input type="checkbox"> |
-| twitter           | tweet about the new release                                                          | <https://twitter.com/pmd_analyzer>                              | <input type="checkbox"> |
-| gitter            | message about the new release                                                        | <https://matrix.to/#/#pmd_pmd:gitter.im>                        | <input type="checkbox"> |
+| Task              | Description                                                                          | URL                                                                                         | ☐ / ✔                   |
+|-------------------|--------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------|-------------------------|
+| maven central     | The new version of all artifacts are available in maven central                      | <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/>                             | <input type="checkbox"> |
+| github releases   | A new release with 3 assets (bin, src, doc) is created                               | <https://github.com/pmd/pmd/releases>                                                       | <input type="checkbox"> |
+| sourceforge files | The 3 assets (bin, src, doc) are uploaded, the new version is pre-selected as latest | <https://sourceforge.net/projects/pmd/files/pmd/>                                           | <input type="checkbox"> |
+| docker image      | New docker images are available                                                      | <https://hub.docker.com/r/pmdcode/pmd> / <https://github.com/pmd/docker/pkgs/container/pmd> | <input type="checkbox"> |
+| homepage          | Main landing page points to new version, doc for new version is available            | <https://pmd.github.io>                                                                     | <input type="checkbox"> |
+| homepage2         | New blogpost for the new release is posted                                           | <https://pmd.github.io/#news>                                                               | <input type="checkbox"> |
+| docs              | New docs are uploaded                                                                | <https://docs.pmd-code.org/latest/>                                                         | <input type="checkbox"> |
+| docs2             | New version in the docs is listed under "Version specific documentation"             | <https://docs.pmd-code.org/>                                                                | <input type="checkbox"> |
+| docs-archive      | New docs are also on archive site                                                    | <https://pmd.sourceforge.io/archive.phtml>                                                  | <input type="checkbox"> |
+| javadoc           | New javadocs are uploaded                                                            | <https://docs.pmd-code.org/apidocs/>                                                        | <input type="checkbox"> |
+| news              | New blogpost on sourceforge is posted                                                | <https://sourceforge.net/p/pmd/news/>                                                       | <input type="checkbox"> |
+| regression-tester | New release baseline is uploaded                                                     | <https://pmd-code.org/pmd-regression-tester>                                                | <input type="checkbox"> |
+| mailing list      | announcement on mailing list is sent                                                 | <https://sourceforge.net/p/pmd/mailman/pmd-devel/>                                          | <input type="checkbox"> |
+| twitter           | tweet about the new release                                                          | <https://twitter.com/pmd_analyzer>                                                          | <input type="checkbox"> |
+| gitter            | message about the new release                                                        | <https://matrix.to/#/#pmd_pmd:gitter.im>                                                    | <input type="checkbox"> |
 
 ## Prepare the next release
 
@@ -331,6 +341,16 @@ title: PMD Release Notes
 permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
+
+{% if is_release_notes_processor %}
+{% comment %}
+This allows to use links e.g. [Basic CLI usage]({{ baseurl }}pmd_userdocs_installation.html) that work both
+in the release notes on GitHub (as an absolute url) and on the rendered documentation page (as a relative url). 
+{% endcomment %}
+{% capture baseurl %}https://docs.pmd-code.org/pmd-doc-{{ site.pmd.version }}/{% endcapture %}
+{% else %}
+{% assign baseurl = "" %}
+{% endif %}
 
 ## {{ site.pmd.date | date: "%d-%B-%Y" }} - {{ site.pmd.version }}
 

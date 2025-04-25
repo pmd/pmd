@@ -44,7 +44,7 @@
     <property name="ast-api-package" value="net.sourceforge.pmd.lang.ast" />
     <property name="ast-impl-package" value="${ast-api-package}.impl.javacc" />
 
-    <property name="grammar-file" value="${basedir}/etc/grammar/${lang-name}.jjt" />
+    <property name="grammar-file" value="${basedir}/src/main/javacc/${lang-name}.jjt" />
 
     <property name="parser-name" value="${lang-name}ParserImpl" />
     <property name="parser-file" value="${target-package-dir}/${parser-name}.java" />
@@ -88,7 +88,7 @@
             description="Checks the input files are up to date">
 
         <uptodate property="javaccBuildNotRequired" targetfile="${stamp-file}">
-            <srcfiles dir="etc/grammar" includes="${lang-name}.jj*" />
+            <srcfiles dir="src/main/javacc" includes="${lang-name}.jj*" />
             <srcfiles file="${ant.file}" />
         </uptodate>
         <echo message="Up-to-date check: javaccBuildNotRequired=${javaccBuildNotRequired}" />
@@ -132,7 +132,7 @@
     <target name="jjtree-ersatz" if="no-jjtree" unless="javaccBuildNotRequired">
         <!--  If no jjtree is run, then we look for a .jj file to place
               in the target dir for the javacc target to pick up on it -->
-        <copy file="etc/grammar/${lang-name}.jj" todir="${target-package-dir}" />
+        <copy file="src/main/javacc/${lang-name}.jj" todir="${target-package-dir}" />
     </target>
 
     <target name="javacc" depends="jjtree" unless="javaccBuildNotRequired">

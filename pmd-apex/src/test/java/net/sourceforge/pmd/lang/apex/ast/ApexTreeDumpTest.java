@@ -110,4 +110,20 @@ class ApexTreeDumpTest extends BaseTreeDumpTest {
     void convertCurrencyInSoqlAndSosl() {
         doTest("ConvertCurrencyInSoqlAndSosl");
     }
+
+    /**
+     * @see <a href="https://github.com/pmd/pmd/issues/5388">[apex] Parse error with time literal in SOQL query</a>
+     */
+    @Test
+    void timeLiteralsInSoql() {
+        doTest("TimeLiteralsInSoql");
+    }
+
+    /**
+     * @see <a href="https://github.com/pmd/pmd/issues/5567">[apex] Provide type information for CastExpression</a>
+     */
+    @Test
+    void castExpressionTypeInfo() {
+        doTest("CastExpressionTypeInfo");
+    }
 }

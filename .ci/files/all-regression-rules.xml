@@ -4,7 +4,7 @@
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
-    <description>Every apex and java rule in PMD which is used for the regression tests with pmdtester</description>
+    <description>Every apex, plsql and java rule in PMD which is used for the regression tests with pmdtester</description>
 
     <rule ref="category/apex/bestpractices.xml" />
     <rule ref="category/apex/codestyle.xml" />
@@ -14,6 +14,15 @@
     <rule ref="category/apex/multithreading.xml" />
     <rule ref="category/apex/performance.xml" />
     <rule ref="category/apex/security.xml" />
+
+    <rule ref="category/plsql/bestpractices.xml" />
+    <rule ref="category/plsql/codestyle.xml" />
+    <rule ref="category/plsql/design.xml" />
+    <!-- no rules <rule ref="category/plsql/documentation.xml" /> -->
+    <rule ref="category/plsql/errorprone.xml" />
+    <!-- no rules <rule ref="category/plsql/multithreading.xml" /> -->
+    <!-- no rules <rule ref="category/plsql/performance.xml" /> -->
+    <!-- no rules <rule ref="category/plsql/security.xml" /> -->
 
     <rule ref="category/java/bestpractices.xml" />
     <rule ref="category/java/codestyle.xml" />

@@ -22,16 +22,14 @@ fi
 #
 set +e # don't stop for error "command not found" - it is handled
 ruby_version_full=$(ruby --version 2>&1)
-ruby_version=$(echo "${ruby_version_full}" | grep "ruby 3" | head -1 2>&1)
-if [ $? -eq 0 ] && [ -n "${ruby_version}" ]; then
+if ruby_version=$(echo "${ruby_version_full}" | grep "ruby 3" | head -1 2>&1) && [ -n "${ruby_version}" ]; then
   echo "Using ${ruby_version_full}"
 else
   echo "Wrong ruby version! Expected ruby 3"
   echo "${ruby_version_full}"
   exit 1
 fi
-bundler_version=$(bundler --version 2>&1)
-if [ $? -eq 0 ]; then
+if bundler_version=$(bundler --version 2>&1); then
   echo "Using ${bundler_version}"
 else
   echo "Missing bundler!"
@@ -151,15 +149,16 @@ echo
 echo "Press enter to continue..."
 read -r
 
-# install bundles needed for rendering release notes
+# install bundles needed for rendering release notes and execute rendering
+pushd docs || { echo "Directory 'docs' doesn't exist"; exit 1; }
 bundle config set --local path vendor/bundle
-bundle config set --local with release_notes_preprocessing
 bundle install
+NEW_RELEASE_NOTES=$(bundle exec render_release_notes.rb pages/release_notes.md | tail -n +6)
+popd || exit 1
 
 RELEASE_NOTES_POST="_posts/$(date -u +%Y-%m-%d)-PMD-${RELEASE_VERSION}.md"
 export RELEASE_NOTES_POST
 echo "Generating ../pmd.github.io/${RELEASE_NOTES_POST}..."
-NEW_RELEASE_NOTES=$(bundle exec docs/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
 cat > "../pmd.github.io/${RELEASE_NOTES_POST}" <<EOF
 ---
 layout: post
@@ -257,6 +256,16 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
+{% if is_release_notes_processor %}
+{% comment %}
+This allows to use links e.g. [Basic CLI usage]({{ baseurl }}pmd_userdocs_installation.html) that work both
+in the release notes on GitHub (as an absolute url) and on the rendered documentation page (as a relative url).
+{% endcomment %}
+{% capture baseurl %}https://docs.pmd-code.org/pmd-doc-{{ site.pmd.version }}/{% endcapture %}
+{% else %}
+{% assign baseurl = "" %}
+{% endif %}
+
 ## {{ site.pmd.date | date: "%d-%B-%Y" }} - {{ site.pmd.version }}
 
 The PMD team is pleased to announce PMD {{ site.pmd.version }}.
@@ -338,6 +347,7 @@ echo "  * <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-core/${R
 echo "  * <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-java/${RELEASE_VERSION}/>"
 echo "  * <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-designer/${RELEASE_VERSION}/>"
 echo "* Regression Tester baseline has been created: <https://pmd-code.org/pmd-regression-tester/>"
+echo "* Docker images have been created: <https://hub.docker.com/r/pmdcode/pmd> / <https://github.com/pmd/docker/pkgs/container/pmd>"
 echo
 echo "*   Send out an announcement mail to the mailing list:"
 echo

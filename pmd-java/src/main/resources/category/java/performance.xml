@@ -549,7 +549,7 @@ public class C {
     long l      = 0;
 
     float f     = .0f;    // all possible float literals
-    doable d    = 0d;     // all possible double literals
+    double d    = 0d;     // all possible double literals
     Object o    = null;
 
     MyClass mca[] = null;
@@ -629,9 +629,10 @@ Note: This rule was named TooFewBranchesForASwitchStatement before PMD 7.7.0.
                 <value>
 <![CDATA[
 //(SwitchStatement | SwitchExpression)
+  [ count(*) > 1 ] (: ignore empty switch blocks :)
   [ (count(*/SwitchLabel/*) + count(*/SwitchLabel[@Default = true()])) < $minimumNumberCaseForASwitch ]
-  (: only consider if no pattern matching is used :)
-  [*/SwitchLabel[@PatternLabel = false()]]
+  (: do not consider exhaustive switches unless there is a default case :)
+  [@Exhaustive = false() or @DefaultCase = true()]
 ]]>
                 </value>
             </property>
@@ -640,9 +641,9 @@ Note: This rule was named TooFewBranchesForASwitchStatement before PMD 7.7.0.
 <![CDATA[
 // With a minimumNumberCaseForASwitch of 3
 public class Foo {
-    public void bar() {
+    public void bar(int condition) {
         switch (condition) {
-            case ONE:
+            case 1:
                 instruction;
                 break;
             default:

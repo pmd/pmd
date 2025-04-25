@@ -53,7 +53,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
-import net.sourceforge.pmd.lang.java.ast.ASTTemplateExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
@@ -272,7 +271,9 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
             if (isUnresolved(mirror)) {
                 return ts.UNKNOWN;
             }
-            return mirror.getFormalParameters().get(param.getIndexInParent());
+            JTypeMirror parmty = mirror.getFormalParameters().get(param.getIndexInParent());
+            // project upwards to remove captures
+            return TypeOps.projectUpwards(parmty);
 
         } else if (node.isEnumConstant()) {
 
@@ -510,15 +511,6 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
     }
 
     @Override
-    public @NonNull JTypeMirror visit(ASTTemplateExpression node, TypingContext data) {
-        if (node.isStringTemplate()) {
-            return stringType;
-        }
-
-        return ts.UNKNOWN;
-    }
-
-    @Override
     public JTypeMirror visit(ASTNullLiteral node, TypingContext ctx) {
         return ts.NULL_TYPE;
     }
@@ -651,7 +643,7 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
 
     @Override
     public JTypeMirror visit(ASTFieldAccess node, TypingContext ctx) {
-        JTypeMirror qualifierT = capture(node.getQualifier().getTypeMirror(ctx));
+        JTypeMirror qualifierT = TypeOps.getMemberSource(node.getQualifier().getTypeMirror(ctx));
         if (isUnresolved(qualifierT)) {
             return polyResolution.getContextTypeForStandaloneFallback(node);
         }
