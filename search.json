@@ -22,6 +22,22 @@
 
 
 {
+"title": "Adding PMD support for a new dialect for an already existing language",
+"tags": "devdocsextendingexperimental",
+"keywords": "",
+"url": "pmd_devdocs_major_adding_dialect.html",
+"summary": "\bHow\b \bto\b \badd\b \ba\b \bnew\b \bdialect\b."
+}
+
+
+
+,
+
+
+
+
+
+{
 "title": "Adding PMD support for a new ANTLR grammar based language",
 "tags": "devdocsextending",
 "keywords": "",

@@ -1749,6 +1749,12 @@
                         
                         
                         
+                        <li><a href="pmd_devdocs_major_adding_dialect.html">Adding a new dialect</a></li>
+                        
+                        
+                        
+                        
+                        
                         <li><a href="pmd_devdocs_major_adding_new_language_javacc.html">Adding a new language (JavaCC)</a></li>
                         
                         
@@ -2005,7 +2011,8 @@
         <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
     </details>
 
-  <h2 id="25-april-2025---7130-snapshot">25-April-2025 - 7.13.0-SNAPSHOT</h2>
+  
+<h2 id="25-april-2025---7130-snapshot">25-April-2025 - 7.13.0-SNAPSHOT</h2>
 
 <p>The PMD team is pleased to announce PMD 7.13.0-SNAPSHOT.</p>
 
@@ -2025,6 +2032,19 @@
 
 <p>More information is available at <a href="https://github.com/pmd/docker">https://github.com/pmd/docker</a>.</p>
 
+<h4 id="experimental-support-for-language-dialects">Experimental support for language dialects</h4>
+
+<p>A dialect is a particular form of another supported language. For example, an XSLT is a particular
+form of an XML. Even though the dialect has its own semantics and uses, the contents are still readable
+by any tool capable of understanding the base language.</p>
+
+<p>In PMD, a dialect allows to set up completely custom rules, XPath functions, properties and metrics
+for these files; while retaining the full support of the underlying base language including
+already existing rules and XPath functions.</p>
+
+<p>See <a href="https://github.com/pmd/pmd/pull/5438">[core] Support language dialects #5438</a> and
+<a href="pmd_devdocs_major_adding_dialect.html">Adding a new dialect</a> for more information.</p>
+
 <h4 id="-new-rules">✨ New Rules</h4>
 
 <ul>
@@ -2037,6 +2057,7 @@ Shadowing these namespaces in this way can lead to confusion and unexpected beha
 <ul>
   <li>core
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/5438">#5438</a>: [core] Support language dialects</li>
       <li><a href="https://github.com/pmd/pmd/issues/5448">#5448</a>: Maintain a public PMD docker image</li>
       <li><a href="https://github.com/pmd/pmd/issues/5525">#5525</a>: [core] Add rule priority as level to Sarif report</li>
       <li><a href="https://github.com/pmd/pmd/issues/5623">#5623</a>: [dist] Make pmd launch script compatible with /bin/sh</li>
@@ -2070,6 +2091,31 @@ Shadowing these namespaces in this way can lead to confusion and unexpected beha
 </ul>
 
 <h3 id="-api-changes">🚨 API Changes</h3>
+
+<h4 id="deprecations">Deprecations</h4>
+<ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/pom/PomLanguageModule.html#"><code>net.sourceforge.pmd.lang.xml.pom.PomLanguageModule</code></a> is deprecated. POM is now a dialect of XML.
+Use <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/pom/PomDialectModule.html#"><code>PomDialectModule</code></a> instead.</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/wsdl/WsdlLanguageModule.html#"><code>net.sourceforge.pmd.lang.xml.wsdl.WsdlLanguageModule</code></a> is deprecated. WSDL is now a dialect of XML.
+Use <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/wsdl/WsdlDialectModule.html#"><code>WsdlDialectModule</code></a> instead.</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/xsl/XslLanguageModule.html#"><code>net.sourceforge.pmd.lang.xml.xsl.XslLanguageModule</code></a> is deprecated. XSL is now a dialect of XML.
+Use <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/xsl/XslDialectModule.html#"><code>XslDialectModule</code></a> instead.</li>
+</ul>
+
+<h4 id="experimental-api">Experimental API</h4>
+<ul>
+  <li>The core API around support for language dialects:
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/Language.html#getBaseLanguageId()"><code>Language#getBaseLanguageId</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/Language.html#isDialectOf(net.sourceforge.pmd.lang.Language)"><code>Language#isDialectOf</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/LanguageModuleBase.html#&lt;init&gt;(net.sourceforge.pmd.lang.LanguageModuleBase.DialectLanguageMetadata)"><code>LanguageModuleBase#&lt;init&gt;</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/LanguageModuleBase.html#asDialectOf(java.lang.String)"><code>LanguageModuleBase#asDialectOf</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/LanguageModuleBase.DialectLanguageMetadata.html#"><code>LanguageModuleBase.DialectLanguageMetadata</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/impl/BasePmdDialectLanguageVersionHandler.html#"><code>BasePmdDialectLanguageVersionHandler</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0-SNAPSHOT/net/sourceforge/pmd/lang/impl/SimpleDialectLanguageModuleBase.html#"><code>SimpleDialectLanguageModuleBase</code></a></li>
+    </ul>
+  </li>
+</ul>
 
 <h3 id="-merged-pull-requests">✨ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
@@ -2117,7 +2163,7 @@ Shadowing these namespaces in this way can lead to confusion and unexpected beha
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 24, 2025 <br />
+             Site last generated: Apr 25, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
