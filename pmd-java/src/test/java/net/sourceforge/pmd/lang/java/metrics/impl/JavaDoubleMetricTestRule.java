@@ -31,6 +31,6 @@ public abstract class JavaDoubleMetricTestRule extends AbstractMetricTestRule.Of
     @Override
     protected String violationMessage(Node node, Double result) {
         String fmt = String.format(Locale.ROOT, "%.4f", result);
-        return AllMetricsTest.formatJavaMessage(node, fmt, super.violationMessage(node, result));
+        return AllMetricsTest.formatJavaMessage(node, fmt);
     }
 }
