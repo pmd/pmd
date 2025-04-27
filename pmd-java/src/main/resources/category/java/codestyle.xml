@@ -1115,7 +1115,7 @@ class Foo {
             specific kind (e.g. JUnit test or native method). Each regex can be
             configured through properties.
 
-            By default this rule uses the standard Java naming convention (Camel case).
+            By default, this rule uses the standard Java naming convention (Camel case).
         </description>
         <priority>1</priority>
         <example>

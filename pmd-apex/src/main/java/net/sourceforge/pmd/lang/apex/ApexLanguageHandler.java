@@ -30,7 +30,7 @@ class ApexLanguageHandler implements LanguageVersionHandler {
 
     @Override
     public List<ViolationSuppressor> getExtraViolationSuppressors() {
-        return ApexViolationSuppressors.ALL_APEX_SUPPRESSORS;
+        return ApexAnnotationSuppressor.ALL_APEX_SUPPRESSORS;
     }
 
     @Override
