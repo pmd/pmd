@@ -47,8 +47,18 @@ import java.util.Set;
  */
 public final class ASTModifierList extends AbstractJavaNode {
 
-    /** Might as well share it. */
-    static final Set<JModifier> JUST_FINAL = Collections.singleton(FINAL);
+    // We can share these sets.
+
+    static final Set<JModifier> JUST_FINAL =
+        Collections.unmodifiableSet(EnumSet.of(FINAL));
+
+    /**
+     * This one is not Collections.emptySet so that it has the same runtime
+     * type as other modifier sets. This makes optimizations like devirtualization
+     * possible in code that uses getExplicitModifiers.
+     */
+    static final Set<JModifier> EMPTY =
+        Collections.unmodifiableSet(EnumSet.noneOf(JModifier.class));
 
     private Set<JModifier> explicitModifiers;
     private Set<JModifier> effectiveModifiers;

@@ -12,6 +12,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
@@ -231,6 +232,15 @@ public final class PrettyPrintingUtil {
             return name + ".*";
         }
         return name;
+    }
+
+
+    public static String prettyPrintAnnot(ASTAnnotation annot) {
+        String result = "@" + annot.getSimpleName();
+        if (annot.getMembers().isEmpty()) {
+            return result;
+        }
+        return result + "(...)";
     }
 
     /**
