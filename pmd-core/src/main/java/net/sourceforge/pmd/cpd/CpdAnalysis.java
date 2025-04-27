@@ -183,8 +183,8 @@ public final class CpdAnalysis implements AutoCloseable {
                 }
             }
             if (!processingErrors.isEmpty() && !configuration.isSkipLexicalErrors()) {
-                // will be caught by CPD command
-                throw new IllegalStateException("Errors were detected while lexing source, exiting because --skip-lexical-errors is unset.");
+                reporter.error("Errors were detected while lexing source, exiting because --skip-lexical-errors is unset.");
+                return;
             }
 
             LOGGER.debug("Running match algorithm on {} files...", sourceManager.size());
@@ -202,7 +202,7 @@ public final class CpdAnalysis implements AutoCloseable {
             }
 
             consumer.accept(cpdReport);
-        } catch (Exception e) {
+        } catch (IOException e) {
             reporter.errorEx("Exception while running CPD", e);
         }
         // source manager is closed and closes all text files now.
