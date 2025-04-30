@@ -34,12 +34,11 @@ class RuleSetFactoryMessagesTest extends RulesetFactoryTestBase {
         ));
 
         assertThat(log, containsString(
-            """
-            Error at dummyRuleset.xml:9:1
-             7|\s
-             8| <rule name="MockRuleName" language="dummy" class="net.sourceforge.pmd.lang.rule.MockRuleWithNoProperties" message="avoid the mock rule">
-             9| <priority>not a priority</priority></rule></ruleset>
-                ^^^^^^^^^ Not a valid priority: 'not a priority', expected a number in [1,5]"""
+            "Error at dummyRuleset.xml:9:1\n"
+                + " 7| \n"
+                + " 8| <rule name=\"MockRuleName\" language=\"dummy\" class=\"net.sourceforge.pmd.lang.rule.MockRuleWithNoProperties\" message=\"avoid the mock rule\">\n"
+                + " 9| <priority>not a priority</priority></rule></ruleset>\n"
+                + "    ^^^^^^^^^ Not a valid priority: 'not a priority', expected a number in [1,5]"
         ));
     }
 
@@ -58,9 +57,8 @@ class RuleSetFactoryMessagesTest extends RulesetFactoryTestBase {
         ));
 
         assertThat(log, containsString(
-            """
-             10| <property name='testIntProperty' value='-4'/>
-                                                  ^^^^^ Value should be between 1 and 100"""
+            " 10| <property name='testIntProperty' value='-4'/>\n"
+                + "                                      ^^^^^ Value should be between 1 and 100"
         ));
     }
 
@@ -80,10 +78,8 @@ class RuleSetFactoryMessagesTest extends RulesetFactoryTestBase {
         ).getProperty(MockRule.PROP)));
 
         assertThat(log, containsString(
-                """
-                 10| <property name='testIntProperty' value='4'>
-                                                      ^^^^^ Both a 'value' attribute and a child element are present, the attribute will be ignored
-                """
+                " 10| <property name='testIntProperty' value='4'>\n"
+                      + "                                      ^^^^^ Both a 'value' attribute and a child element are present, the attribute will be ignored\n"
         ));
     }
 
@@ -111,10 +107,8 @@ class RuleSetFactoryMessagesTest extends RulesetFactoryTestBase {
         });
 
         assertThat(log, containsString(
-                """
-                 11| <property name="packageRegEx" value="com.aptsssss|com.abc" delimiter="|" type="List[String]" description="valid packages"/></properties></rule></ruleset>
-                                                                                ^^^^^^^^^ Delimiter attribute is not supported anymore, values are always comma-separated.
-                """
+                " 11| <property name=\"packageRegEx\" value=\"com.aptsssss|com.abc\" delimiter=\"|\" type=\"List[String]\" description=\"valid packages\"/></properties></rule></ruleset>\n"
+                      + "                                                                ^^^^^^^^^ Delimiter attribute is not supported anymore, values are always comma-separated.\n"
         ));
     }
 

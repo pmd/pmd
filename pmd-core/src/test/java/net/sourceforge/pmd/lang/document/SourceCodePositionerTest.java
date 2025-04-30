@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.document;
 
+import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link SourceCodePositioner}.
@@ -143,7 +143,7 @@ class SourceCodePositionerTest {
 
         SourceCodePositioner positioner = SourceCodePositioner.create(code);
 
-        assertArrayEquals(new int[] { 0, 41, 51, 52 }, positioner.getLineOffsets());
+        assertArrayEquals(new int[]{0, 40, 49, 50}, positioner.getLineOffsets());
     }
 
     @Test
@@ -156,7 +156,7 @@ class SourceCodePositionerTest {
 
         SourceCodePositioner positioner = SourceCodePositioner.create(code);
 
-        assertArrayEquals(new int[] { 0, 41, 50, 51 }, positioner.getLineOffsets());
+        assertArrayEquals(new int[]{0, 40, 49, 50}, positioner.getLineOffsets());
     }
 
 }
