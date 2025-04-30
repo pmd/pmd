@@ -87,8 +87,8 @@
 
         <java.version>21</java.version>
 
-        <maven.compiler.test.source>1.8</maven.compiler.test.source>
-        <maven.compiler.test.target>1.8</maven.compiler.test.target>
+        <maven.compiler.test.source>21</maven.compiler.test.source>
+        <maven.compiler.test.target>21</maven.compiler.test.target>
 
 
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
@@ -1303,7 +1303,7 @@
             <properties>
                 <sonar.host.url>https://sonarcloud.io</sonar.host.url>
                 <sonar.organization>pmd</sonar.organization>
-                <sonar.java.source>1.8</sonar.java.source>
+                <sonar.java.source>21</sonar.java.source>
             </properties>
             <build>
                 <pluginManagement>
