@@ -207,7 +207,7 @@ public final class StreamImpl {
         if (coll.isEmpty()) {
             return empty();
         } else if (coll.size() == 1) {
-            return singleton(coll.getFirst());
+            return singleton(coll.get(0));
         }
 
         return new GreedyKnownNStream<>(coll);

@@ -18,6 +18,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -134,8 +135,8 @@ public class ClasspathClassLoader extends URLClassLoader {
     }
 
     private URL createURLFromPath(String path) throws MalformedURLException {
-        Path filePath = Path.of(path).toAbsolutePath();
-        if (filePath.endsWith(Path.of("lib", "jrt-fs.jar"))) {
+        Path filePath = Paths.get(path).toAbsolutePath();
+        if (filePath.endsWith(Paths.get("lib", "jrt-fs.jar"))) {
             initializeJrtFilesystem(filePath);
             // don't add jrt-fs.jar to the normal aux classpath
             return null;
@@ -353,8 +354,8 @@ public class ClasspathClassLoader extends URLClassLoader {
             // jrt created an own classloader to load the JrtFileSystemProvider class out of the
             // jrt-fs.jar. This needs to be closed manually.
             ClassLoader classLoader = fileSystem.getClass().getClassLoader();
-            if (classLoader instanceof URLClassLoader loader) {
-                loader.close();
+            if (classLoader instanceof URLClassLoader) {
+                ((URLClassLoader) classLoader).close();
             }
             packagesDirsToModules = null;
             fileSystem = null;

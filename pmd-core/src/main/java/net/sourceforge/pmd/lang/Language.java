@@ -129,7 +129,7 @@ public interface Language extends Comparable<Language> {
      */
     default LanguageVersion getLatestVersion() {
         List<LanguageVersion> versions = getVersions();
-        return versions.getLast();
+        return versions.get(versions.size() - 1);
     }
 
     /**

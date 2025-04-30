@@ -231,7 +231,7 @@ public final class FileCollector implements AutoCloseable {
             LOG.trace("File {} matches no known language, ignoring", file);
             return null;
         }
-        Language lang = languages.getFirst();
+        Language lang = languages.get(0);
         if (languages.size() > 1) {
             LOG.trace("File {} matches multiple languages ({}), selecting {}", file, languages, lang);
         }

@@ -399,7 +399,7 @@ public class GUI implements CPDListener {
         progressPanel = makeProgressPanel();
         JPanel resultsPanel = makeResultsPanel();
 
-        adjustLanguageControlsFor(LANGUAGE_SETS.getFirst());
+        adjustLanguageControlsFor(LANGUAGE_SETS.get(0));
 
         frame.getContentPane().setLayout(new BorderLayout());
         JPanel topPanel = new JPanel();
@@ -431,7 +431,7 @@ public class GUI implements CPDListener {
         if (enableExtension) {
             extensionField.setText("");
         } else {
-            String firstExt = current.getLanguage().getExtensions().getFirst();
+            String firstExt = current.getLanguage().getExtensions().get(0);
             extensionField.setText(firstExt);
         }
         extensionField.setEnabled(enableExtension);
@@ -626,7 +626,7 @@ public class GUI implements CPDListener {
             FileId sourceId = sourceIDs.iterator().next();
             return "..." + sourceId.getFileName();
         } else {
-            return "(%d separate files)".formatted(sourceIDs.size());
+            return String.format("(%d separate files)", sourceIDs.size());
         }
     }
 

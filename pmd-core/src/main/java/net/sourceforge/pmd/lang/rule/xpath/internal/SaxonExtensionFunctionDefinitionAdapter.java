@@ -95,8 +95,8 @@ public class SaxonExtensionFunctionDefinitionAdapter extends ExtensionFunctionDe
             public Expression rewrite(StaticContext context, Expression[] arguments) throws XPathException {
                 Object[] convertedArguments = new Object[definition.getArgumentTypes().length];
                 for (int i = 0; i < convertedArguments.length; i++) {
-                    if (arguments[i] instanceof StringLiteral literal) {
-                        convertedArguments[i] = literal.getString().toString();
+                    if (arguments[i] instanceof StringLiteral) {
+                        convertedArguments[i] = ((StringLiteral) arguments[i]).getString().toString();
                     }
                 }
                 try {

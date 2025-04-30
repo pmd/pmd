@@ -88,8 +88,8 @@ class AstAttributeNode extends BaseNodeInfo implements SiblingCountingNode {
 
     @Override
     public int compareOrder(NodeInfo other) {
-        if (other instanceof SiblingCountingNode node) {
-            return Navigator.compareOrder(this, node);
+        if (other instanceof SiblingCountingNode) {
+            return Navigator.compareOrder(this, (SiblingCountingNode) other);
         }
         throw new UnsupportedOperationException();
     }

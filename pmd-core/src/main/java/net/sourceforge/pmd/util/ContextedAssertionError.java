@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.util;
 
-import java.io.Serial;
-
 import org.apache.commons.lang3.exception.DefaultExceptionContext;
 
 import net.sourceforge.pmd.internal.util.ExceptionContextDefaultImpl;
@@ -15,7 +13,6 @@ import net.sourceforge.pmd.internal.util.ExceptionContextDefaultImpl;
  */
 public final class ContextedAssertionError extends AssertionError implements ExceptionContextDefaultImpl<ContextedAssertionError> {
     /** The serialization version. */
-    @Serial
     private static final long serialVersionUID = -8919808081157463410L;
 
     private final DefaultExceptionContext exceptionContext = new DefaultExceptionContext();
@@ -27,7 +24,7 @@ public final class ContextedAssertionError extends AssertionError implements Exc
 
 
     public static ContextedAssertionError wrap(AssertionError e) {
-        return e instanceof ContextedAssertionError cae ? cae
+        return e instanceof ContextedAssertionError ? (ContextedAssertionError) e
                                                     : new ContextedAssertionError(e);
     }
 

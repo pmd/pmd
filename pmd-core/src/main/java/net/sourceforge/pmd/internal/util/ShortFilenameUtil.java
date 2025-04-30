@@ -6,6 +6,7 @@ package net.sourceforge.pmd.internal.util;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 public final class ShortFilenameUtil {
@@ -26,7 +27,7 @@ public final class ShortFilenameUtil {
      */
     public static String determineFileName(List<String> inputPathPrefixes, String inputFileName) {
         for (final String prefix : inputPathPrefixes) {
-            final Path prefPath = Path.of(prefix).toAbsolutePath();
+            final Path prefPath = Paths.get(prefix).toAbsolutePath();
             final String prefPathString = prefPath.toString();
 
             if (inputFileName.startsWith(prefPathString)) {

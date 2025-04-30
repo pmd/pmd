@@ -32,7 +32,7 @@ abstract class GreedyNStream<T extends Node> extends IteratorBasedNStream<T> {
 
     @Override
     public T first() {
-        return toList().getFirst();
+        return toList().get(0);
     }
 
     @Override

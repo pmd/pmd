@@ -92,9 +92,9 @@ class MatchAlgorithm {
                 // markGroup keys will have only one value.
                 if (o == null) {
                     markGroups.put(token, token);
-                } else if (o instanceof TokenEntry entry) {
+                } else if (o instanceof TokenEntry) {
                     List<TokenEntry> l = new ArrayList<>();
-                    l.add(entry);
+                    l.add((TokenEntry) o);
                     l.add(token);
                     markGroups.put(token, l);
                 } else {

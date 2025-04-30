@@ -186,8 +186,8 @@ public final class RuleContext {
     }
 
     private Node getNearestNode(Reportable reportable, AstInfo<?> astInfo) {
-        if (reportable instanceof Node node) {
-            return node;
+        if (reportable instanceof Node) {
+            return (Node) reportable;
         }
         int startOffset = getStartOffset(reportable, astInfo);
         Optional<Node> foundNode = NodeFindingUtil.findNodeAt(astInfo.getRootNode(), startOffset);
@@ -196,8 +196,8 @@ public final class RuleContext {
     }
 
     private static int getStartOffset(Reportable reportable, AstInfo<?> astInfo) {
-        if (reportable instanceof JavaccToken token) {
-            return token.getRegion().getStartOffset();
+        if (reportable instanceof JavaccToken) {
+            return ((JavaccToken) reportable).getRegion().getStartOffset();
         }
         FileLocation loc = reportable.getReportLocation();
         return astInfo.getTextDocument().offsetAtLineColumn(loc.getStartPos());

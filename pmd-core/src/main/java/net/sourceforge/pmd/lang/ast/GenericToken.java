@@ -63,8 +63,8 @@ public interface GenericToken<T extends GenericToken<T>> extends Comparable<T>, 
      */
     default boolean imageEquals(CharSequence charSeq) {
         CharSequence imageCs = getImageCs();
-        if (imageCs instanceof Chars chars) {
-            return chars.contentEquals(charSeq);
+        if (imageCs instanceof Chars) {
+            return ((Chars) imageCs).contentEquals(charSeq);
         }
         return StringUtils.equals(imageCs, charSeq);
     }

@@ -93,8 +93,8 @@ public class RuleApplicator {
 
 
     private <E extends Throwable> void reportOrRethrow(FileAnalysisListener listener, Rule rule, Node node, E e, boolean reportAndDontThrow) throws E {
-        if (e instanceof ExceptionContext context) {
-            context.addContextValue("Rule applied on node", node);
+        if (e instanceof ExceptionContext) {
+            ((ExceptionContext) e).addContextValue("Rule applied on node", node);
         }
 
         if (reportAndDontThrow) {

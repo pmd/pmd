@@ -22,14 +22,14 @@ public final class XPathElementToNodeHelper {
     }
 
     static Node itemToNode(Object item) {
-        if (item instanceof Node node) {
-            return node;
-        } else if (item instanceof AstElementNode node) {
-            return itemToNode(node.getUnderlyingNode());
-        } else if (item instanceof AbstractNodeWrapper wrapper) {
-            return itemToNode(wrapper.getUnderlyingNode());
-        } else if (item instanceof org.w3c.dom.Node node) {
-            return itemToNode(node.getUserData(PMD_NODE_USER_DATA));
+        if (item instanceof Node) {
+            return (Node) item;
+        } else if (item instanceof AstElementNode) {
+            return itemToNode(((AstElementNode) item).getUnderlyingNode());
+        } else if (item instanceof AbstractNodeWrapper) {
+            return itemToNode(((AbstractNodeWrapper) item).getUnderlyingNode());
+        } else if (item instanceof org.w3c.dom.Node) {
+            return itemToNode(((org.w3c.dom.Node) item).getUserData(PMD_NODE_USER_DATA));
         }
         return null;
     }

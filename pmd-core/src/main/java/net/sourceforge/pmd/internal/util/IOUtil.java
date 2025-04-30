@@ -24,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.charset.UnsupportedCharsetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
@@ -142,8 +143,8 @@ public final class IOUtil {
     }
 
     public static void tryCloseClassLoader(ClassLoader classLoader) {
-        if (classLoader instanceof Closeable closeable) {
-            closeQuietly(closeable);
+        if (classLoader instanceof Closeable) {
+            closeQuietly((Closeable) classLoader);
         }
     }
 
@@ -241,7 +242,7 @@ public final class IOUtil {
     }
 
     public static String normalizePath(String path) {
-        Path path1 = Path.of(path);
+        Path path1 = Paths.get(path);
         String normalized = path1.normalize().toString();
         if (normalized.contains("." + File.separator) || normalized.contains(".." + File.separator) || "".equals(normalized)) {
             return null;
@@ -254,7 +255,7 @@ public final class IOUtil {
     }
 
     public static String getFilenameExtension(String name) {
-        String filename = Path.of(name).getFileName().toString();
+        String filename = Paths.get(name).getFileName().toString();
         int dot = filename.lastIndexOf('.');
         if (dot > -1) {
             return filename.substring(dot + 1);
@@ -263,7 +264,7 @@ public final class IOUtil {
     }
 
     public static String getFilenameBase(String name) {
-        String filename = Path.of(name).getFileName().toString();
+        String filename = Paths.get(name).getFileName().toString();
         int dot = filename.lastIndexOf('.');
         if (dot > -1) {
             return filename.substring(0, dot);

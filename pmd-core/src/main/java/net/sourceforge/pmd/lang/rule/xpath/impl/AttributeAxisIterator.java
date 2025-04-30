@@ -128,10 +128,10 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
 
         if (Collection.class.isAssignableFrom(klass)) {
             Type t = method.getGenericReturnType();
-            if (t instanceof ParameterizedType type) {
+            if (t instanceof ParameterizedType) {
                 try {
                     // ignore type variables, such as List<N>… we could check all bounds, but probably it's overkill
-                    Type actualTypeArgument = type.getActualTypeArguments()[0];
+                    Type actualTypeArgument = ((ParameterizedType) t).getActualTypeArguments()[0];
                     if (!TypeVariable.class.isAssignableFrom(actualTypeArgument.getClass())) {
                         Class<?> elementKlass = Class.forName(actualTypeArgument.getTypeName());
                         return CONSIDERED_RETURN_TYPES.contains(elementKlass) || elementKlass.isEnum();

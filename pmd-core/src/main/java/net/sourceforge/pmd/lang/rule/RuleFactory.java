@@ -432,8 +432,8 @@ class RuleFactory {
     }
 
     private static <T> Comparable<T> asComparableOrThrow(T object, PmdReporter err) {
-        if (object instanceof Comparable comparable) {
-            return comparable;
+        if (object instanceof Comparable) {
+            return (Comparable) object;
         }
         throw err.error("Object is not comparable");
     }

@@ -91,9 +91,11 @@ public class RuleChainAnalyzer extends SaxonExprVisitor {
         if (!insideExpensiveExpr && rootElement == null) {
             Expression result = visitSlashPreserveRootElement(e);
             if (rootElement != null && !rootElementReplaced) {
-                if (result instanceof SlashExpression newPath) {
+                if (result instanceof SlashExpression) {
+                    SlashExpression newPath = (SlashExpression) result;
                     Expression step = newPath.getStep();
-                    if (step instanceof FilterExpression filterExpression) {
+                    if (step instanceof FilterExpression) {
+                        FilterExpression filterExpression = (FilterExpression) step;
 
                         Deque<Expression> filters = new ArrayDeque<>();
                         Expression walker = filterExpression;

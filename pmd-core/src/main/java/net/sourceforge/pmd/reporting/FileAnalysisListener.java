@@ -95,7 +95,7 @@ public interface FileAnalysisListener extends AutoCloseable {
         if (list.isEmpty()) {
             return noop();
         } else if (list.size() == 1) {
-            return list.getFirst();
+            return list.iterator().next();
         }
 
         class TeeListener implements FileAnalysisListener {

@@ -161,7 +161,8 @@ public class RuleSetWriter {
     }
 
     private Element createRuleElement(Rule rule) {
-        if (rule instanceof RuleReference ruleReference) {
+        if (rule instanceof RuleReference) {
+            RuleReference ruleReference = (RuleReference) rule;
             RuleSetReference ruleSetReference = ruleReference.getRuleSetReference();
             if (ruleSetReference.isAllRules()) {
                 if (!ruleSetFileNames.contains(ruleSetReference.getRuleSetFileName())) {

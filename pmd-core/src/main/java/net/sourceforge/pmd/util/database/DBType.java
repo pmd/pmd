@@ -125,7 +125,7 @@ public class DBType {
                 LOG.debug("DBType found using subProtocol={}", subProtocol);
             } else {
                 throw new RuntimeException(
-                        "Could not locate DBType properties using subProtocol=%s and subnamePrefix=%s".formatted(
+                        String.format("Could not locate DBType properties using subProtocol=%s and subnamePrefix=%s",
                                 subProtocol, subnamePrefix));
             }
 

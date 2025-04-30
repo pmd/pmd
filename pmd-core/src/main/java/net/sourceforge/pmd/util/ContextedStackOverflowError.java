@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.util;
 
-import java.io.Serial;
-
 import org.apache.commons.lang3.exception.DefaultExceptionContext;
 
 import net.sourceforge.pmd.internal.util.ExceptionContextDefaultImpl;
@@ -15,7 +13,6 @@ import net.sourceforge.pmd.internal.util.ExceptionContextDefaultImpl;
  */
 public final class ContextedStackOverflowError extends StackOverflowError implements ExceptionContextDefaultImpl<ContextedStackOverflowError> {
     /** The serialization version. */
-    @Serial
     private static final long serialVersionUID = 4111035582093848670L;
 
     private final DefaultExceptionContext exceptionContext = new DefaultExceptionContext();
@@ -27,7 +24,7 @@ public final class ContextedStackOverflowError extends StackOverflowError implem
 
 
     public static ContextedStackOverflowError wrap(StackOverflowError e) {
-        return e instanceof ContextedStackOverflowError csoe ? csoe
+        return e instanceof ContextedStackOverflowError ? (ContextedStackOverflowError) e
                                                         : new ContextedStackOverflowError(e);
     }
 

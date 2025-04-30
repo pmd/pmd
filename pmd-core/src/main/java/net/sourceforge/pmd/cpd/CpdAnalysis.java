@@ -173,8 +173,8 @@ public final class CpdAnalysis implements AutoCloseable {
                     numberOfTokensPerFile.put(textDocument.getFileId(), newTokens);
                     listener.addedFile(1);
                 } catch (IOException | FileAnalysisException e) {
-                    if (e instanceof FileAnalysisException exception) { // NOPMD
-                        exception.setFileId(textFile.getFileId());
+                    if (e instanceof FileAnalysisException) { // NOPMD
+                        ((FileAnalysisException) e).setFileId(textFile.getFileId());
                     }
                     String message = configuration.isSkipLexicalErrors() ? "Skipping file" : "Error while tokenizing";
                     reporter.errorEx(message, e);

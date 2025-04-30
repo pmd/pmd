@@ -156,8 +156,8 @@ public final class StringUtil {
      * or a stringBuffer. This is especially useful in parsers.
      */
     public static StringBuilder append(StringBuilder sb, CharSequence charSeq) {
-        if (charSeq instanceof Chars chars) {
-            chars.appendChars(sb);
+        if (charSeq instanceof Chars) {
+            ((Chars) charSeq).appendChars(sb);
             return sb;
         } else {
             return sb.append(charSeq);
@@ -525,7 +525,7 @@ public final class StringUtil {
                 if (words.isEmpty()) {
                     return "";
                 }
-                return words.getFirst().toLowerCase(Locale.ROOT) + PASCAL_CASE.joinWords(words.subList(1, words.size()));
+                return words.get(0).toLowerCase(Locale.ROOT) + PASCAL_CASE.joinWords(words.subList(1, words.size()));
             }
         },
         /** PascalCase. */
