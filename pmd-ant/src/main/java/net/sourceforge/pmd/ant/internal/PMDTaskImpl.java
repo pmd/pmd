@@ -4,6 +4,27 @@
 
 package net.sourceforge.pmd.ant.internal;
 
+import static net.sourceforge.pmd.lang.rule.InternalApiBridge.loadRuleSetsWithoutException;
+
+import java.nio.charset.Charset;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.tools.ant.AntClassLoader;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.types.Path;
+import org.apache.tools.ant.types.Resource;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
+
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.ant.Formatter;
@@ -23,30 +44,11 @@ import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.reporting.ReportStatsListener;
-import org.apache.tools.ant.AntClassLoader;
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.DirectoryScanner;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.types.FileSet;
-import org.apache.tools.ant.types.Resource;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
-
-import java.nio.charset.Charset;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static net.sourceforge.pmd.lang.rule.InternalApiBridge.loadRuleSetsWithoutException;
 
 public class PMDTaskImpl {
 
-    private org.apache.tools.ant.types.Path classpath;
-    private org.apache.tools.ant.types.Path auxClasspath;
+    private Path classpath;
+    private Path auxClasspath;
     private final List<Formatter> formatters = new ArrayList<>();
     private final List<FileSet> filesets = new ArrayList<>();
     private final PMDConfiguration configuration = new PMDConfiguration();
@@ -101,9 +103,9 @@ public class PMDTaskImpl {
 
     private static List<java.nio.file.Path> getRelativizeRoots(PMDTask pmdTask) {
         List<java.nio.file.Path> paths = new ArrayList<>();
-        for (org.apache.tools.ant.types.Path path : pmdTask.getRelativizePathsWith()) {
+        for (Path path : pmdTask.getRelativizePathsWith()) {
             for (Resource resource : path) {
-                paths.add(Path.of(resource.toString()));
+                paths.add(Paths.get(resource.toString()));
             }
         }
         return paths;

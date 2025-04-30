@@ -101,6 +101,14 @@
                     <suppressionsLocation>pmd-javascript-checkstyle-suppressions.xml</suppressionsLocation>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>16</source>
+                    <target>16</target>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
