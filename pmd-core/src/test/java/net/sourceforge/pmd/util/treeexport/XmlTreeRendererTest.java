@@ -4,19 +4,18 @@
 
 package net.sourceforge.pmd.util.treeexport;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.IOException;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
-
 import net.sourceforge.pmd.DummyParsingHelper;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.util.treeexport.XmlTreeRenderer.XmlRenderingConfig;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  */
@@ -68,12 +67,12 @@ class XmlTreeRendererTest {
         renderer.renderSubtree(dummy, out);
 
         assertEquals("""
-                                <?xml version='1.0' encoding='UTF-8' ?>
-                                <dummyNode foo='bar' ohio='4'>
-                                    <dummyNode o='ha' />
-                                    <dummyNode />
-                                </dummyNode>
-                                """, out.toString());
+                <?xml version='1.0' encoding='UTF-8' ?>
+                <dummyNode foo='bar' ohio='4'>
+                    <dummyNode o='ha' />
+                    <dummyNode />
+                </dummyNode>
+                """, out.toString());
 
     }
 
