@@ -91,7 +91,7 @@ public interface ASTExecutableDeclaration
     @Nullable
     default ASTBlock getBody() {
         JavaNode last = getLastChild();
-        return last instanceof ASTBlock ? (ASTBlock) last : null;
+        return last instanceof ASTBlock astb ? astb : null;
     }
 
     /**
@@ -108,7 +108,7 @@ public interface ASTExecutableDeclaration
      */
     default boolean isVarargs() {
         JavaNode lastFormal = getFormalParameters().getLastChild();
-        return lastFormal instanceof ASTFormalParameter && ((ASTFormalParameter) lastFormal).isVarargs();
+        return lastFormal instanceof ASTFormalParameter astfp && astfp.isVarargs();
     }
 
 

@@ -145,7 +145,7 @@ public final class TypeConversion {
      * @return The capture conversion of t
      */
     public static JTypeMirror capture(JTypeMirror t) {
-        return t instanceof JClassType ? capture((JClassType) t) : t;
+        return t instanceof JClassType jct ? capture(jct) : t;
     }
 
 
@@ -200,8 +200,7 @@ public final class TypeConversion {
             // we mutate the bounds to preserve the correct instance in
             // the substitutions
 
-            if (arg instanceof JWildcardType) {
-                JWildcardType w = (JWildcardType) arg;        // Ti alias
+            if (arg instanceof JWildcardType w) {        // Ti alias
                 CapturedTypeVar freshVar = (CapturedTypeVar) fresh; // Si alias
 
                 JTypeMirror prevUpper = wellFormed ? typeParams.get(i).getUpperBound() : ts.OBJECT; // Ui
@@ -244,16 +243,16 @@ public final class TypeConversion {
      * wildcards as type arguments. Capture variables don't count.
      */
     public static boolean isWilcardParameterized(JTypeMirror t) {
-        return t instanceof JClassType
-                && CollectionUtil.any(((JClassType) t).getTypeArgs(), it -> it instanceof JWildcardType);
+        return t instanceof JClassType jct
+                && CollectionUtil.any(jct.getTypeArgs(), it -> it instanceof JWildcardType);
     }
 
 
     private static List<JTypeMirror> makeFreshVars(JClassType type) {
         List<JTypeMirror> freshVars = new ArrayList<>(type.getTypeArgs().size());
         for (JTypeMirror typeArg : type.getTypeArgs()) {
-            if (typeArg instanceof JWildcardType) {
-                freshVars.add(TypeVarImpl.freshCapture((JWildcardType) typeArg));
+            if (typeArg instanceof JWildcardType wildcardType) {
+                freshVars.add(TypeVarImpl.freshCapture(wildcardType));
             } else {
                 freshVars.add(typeArg);
             }

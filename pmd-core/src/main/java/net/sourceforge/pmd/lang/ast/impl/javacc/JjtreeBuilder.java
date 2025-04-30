@@ -54,7 +54,7 @@ public final class JjtreeBuilder<N extends AbstractJjtreeNode<N, ?>> {
      * this after a successful parse.
      */
     public N rootNode() {
-        return nodes.get(0);
+        return nodes.getFirst();
     }
 
     /***
@@ -87,14 +87,14 @@ public final class JjtreeBuilder<N extends AbstractJjtreeNode<N, ?>> {
     public N popNode() {
         --sp;
         if (sp < mk) {
-            mk = marks.remove(marks.size() - 1);
+            mk = marks.removeLast();
         }
-        return nodes.remove(nodes.size() - 1);
+        return nodes.removeLast();
     }
 
     /** Returns the node currently on the top of the stack. */
     public N peekNode() {
-        return nodes.get(nodes.size() - 1);
+        return nodes.getLast();
     }
 
     /**
@@ -110,7 +110,7 @@ public final class JjtreeBuilder<N extends AbstractJjtreeNode<N, ?>> {
         while (sp > mk) {
             popNode();
         }
-        mk = marks.remove(marks.size() - 1);
+        mk = marks.removeLast();
     }
 
 
@@ -137,7 +137,7 @@ public final class JjtreeBuilder<N extends AbstractJjtreeNode<N, ?>> {
      */
     public void closeNodeScope(N n, final int num, JavaccToken lastToken) {
         int a = nodeArity();
-        mk = marks.remove(marks.size() - 1);
+        mk = marks.removeLast();
         N child = null;
         int i = num;
         while (i-- > 0) {
@@ -169,13 +169,13 @@ public final class JjtreeBuilder<N extends AbstractJjtreeNode<N, ?>> {
     public void closeNodeScope(N n, boolean condition, JavaccToken lastToken) {
         if (condition) {
             int a = nodeArity();
-            mk = marks.remove(marks.size() - 1);
+            mk = marks.removeLast();
             while (a-- > 0) {
                 n.addChild(popNode(), a);
             }
             closeImpl(n, lastToken);
         } else {
-            mk = marks.remove(marks.size() - 1);
+            mk = marks.removeLast();
             nodeCreated = false;
         }
     }

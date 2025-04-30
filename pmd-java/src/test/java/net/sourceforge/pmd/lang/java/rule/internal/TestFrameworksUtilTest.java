@@ -19,7 +19,7 @@ class TestFrameworksUtilTest {
     @Test
     void testIsProbableAssertCallWithoutExtraMethodNames() {
         ASTCompilationUnit root = java.parse("class A { { assertThat(1); } }");
-        ASTMethodCall m = root.descendants(ASTMethodCall.class).toList().get(0);
+        ASTMethodCall m = root.descendants(ASTMethodCall.class).toList().getFirst();
         assertThat(TestFrameworksUtil.isProbableAssertCall(m)).isTrue();
     }
 

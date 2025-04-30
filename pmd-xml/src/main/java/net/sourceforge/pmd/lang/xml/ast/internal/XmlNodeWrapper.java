@@ -101,7 +101,7 @@ class XmlNodeWrapper implements XmlNode {
      */
     @NoAttribute // see getXPathAttributesIterator() for how this is exposed as XPath attribute
     public String getText() {
-        return node instanceof Text ? ((Text) node).getData() : null;
+        return node instanceof Text t ? t.getData() : null;
     }
 
     @Override

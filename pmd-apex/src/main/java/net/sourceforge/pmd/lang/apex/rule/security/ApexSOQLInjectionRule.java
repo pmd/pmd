@@ -151,8 +151,8 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
             }
         }
 
-        if (node instanceof ASTVariableDeclaration) {
-            if (isSafeVariableType(((ASTVariableDeclaration) node).getType())) {
+        if (node instanceof ASTVariableDeclaration declaration) {
+            if (isSafeVariableType(declaration.getType())) {
                 safeVariables.add(Helper.getFQVariableName(left));
             }
         }

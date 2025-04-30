@@ -99,7 +99,7 @@ public interface ListenerInitializer extends AutoCloseable {
         if (list.isEmpty()) {
             return noop();
         } else if (list.size() == 1) {
-            return list.iterator().next();
+            return list.getFirst();
         }
 
         class TeeListener implements ListenerInitializer {

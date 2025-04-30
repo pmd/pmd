@@ -38,7 +38,7 @@ public interface ASTSwitchBranch extends JavaNode {
     /** Returns the previous branch, if it exists. */
     default @Nullable ASTSwitchBranch getPreviousBranch() {
         JavaNode prev = getPreviousSibling();
-        return prev instanceof ASTSwitchBranch ? (ASTSwitchBranch) prev : null;
+        return prev instanceof ASTSwitchBranch astsb ? astsb : null;
     }
 
 }

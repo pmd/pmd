@@ -65,7 +65,7 @@ public interface ViolationSuppressor {
             //  not at the time it is evaluated, and also parsed by the XPath parser only once
             Rule rule = rv.getRule();
             Optional<String> xpath = rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR);
-            if (!xpath.isPresent()) {
+            if (xpath.isEmpty()) {
                 return null;
             }
             SaxonXPathRuleQuery rq = new SaxonXPathRuleQuery(

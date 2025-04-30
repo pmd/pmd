@@ -103,9 +103,9 @@ public final class ApexQualifiedName {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof ApexQualifiedName
-               && Objects.deepEquals(classes, ((ApexQualifiedName) obj).classes)
-               && Objects.equals(operation, ((ApexQualifiedName) obj).operation);
+        return obj instanceof ApexQualifiedName aqn
+               && Objects.deepEquals(classes, aqn.classes)
+               && Objects.equals(operation, aqn.operation);
 
     }
 
@@ -199,8 +199,7 @@ public final class ApexQualifiedName {
         }
 
         ASTUserClassOrInterface<?> parent = node.ancestors(ASTUserClassOrInterface.class).firstOrThrow();
-        if (parent instanceof ASTUserTrigger) {
-            ASTUserTrigger trigger = (ASTUserTrigger) parent;
+        if (parent instanceof ASTUserTrigger trigger) {
             String targetObj = trigger.getTargetName();
 
             return new ApexQualifiedName(new String[]{"trigger", targetObj}, trigger.getSimpleName()); // uses a reserved word as a class name to prevent clashes

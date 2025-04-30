@@ -86,7 +86,7 @@ public final class XmlUtil {
     public static Element getSingleChildIn(Element elt, boolean throwOnMissing, PmdXmlReporter err, Set<SchemaConstant> names) {
         List<Element> children = getElementChildrenNamed(elt, names).collect(Collectors.toList());
         if (children.size() == 1) {
-            return children.get(0);
+            return children.getFirst();
         } else if (children.isEmpty()) {
             if (throwOnMissing) {
                 throw err.at(elt).error(ERR__MISSING_REQUIRED_ELEMENT, formatPossibleNames(names));
@@ -98,7 +98,7 @@ public final class XmlUtil {
                 Element child = children.get(i);
                 err.at(child).warn(IGNORED__DUPLICATE_CHILD_ELEMENT, child.getTagName());
             }
-            return children.get(0);
+            return children.getFirst();
         }
     }
 

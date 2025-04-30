@@ -42,8 +42,8 @@ abstract class AbstractVtlNode extends AbstractJjtreeNode<AbstractVtlNode, VtlNo
     @Override
     @SuppressWarnings("unchecked")
     public final <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
-        if (visitor instanceof VtlVisitor) {
-            return acceptVtlVisitor((VtlVisitor<? super P, ? extends R>) visitor, data);
+        if (visitor instanceof VtlVisitor<? super P, ? extends R> vtlVisitor) {
+            return acceptVtlVisitor(vtlVisitor, data);
         }
         return visitor.cannotVisit(this, data);
     }

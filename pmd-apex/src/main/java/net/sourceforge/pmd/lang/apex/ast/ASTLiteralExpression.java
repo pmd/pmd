@@ -33,8 +33,8 @@ public final class ASTLiteralExpression extends AbstractApexNode.Single<LiteralE
     public LiteralType getLiteralType() {
         if (node instanceof LiteralExpression.StringVal) {
             return LiteralType.STRING;
-        } else if (node instanceof LiteralExpression.BooleanVal) {
-            return ((LiteralExpression.BooleanVal) node).getValue() ? LiteralType.TRUE : LiteralType.FALSE;
+        } else if (node instanceof LiteralExpression.BooleanVal val) {
+            return val.getValue() ? LiteralType.TRUE : LiteralType.FALSE;
         } else if (node instanceof LiteralExpression.IntegerVal) {
             return LiteralType.INTEGER;
         } else if (node instanceof LiteralExpression.DoubleVal) {

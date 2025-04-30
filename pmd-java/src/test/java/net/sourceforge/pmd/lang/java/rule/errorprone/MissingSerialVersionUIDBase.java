@@ -4,11 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
  * This class is used for a test case for the rule MissingSerialVersionUID.
  */
 public class MissingSerialVersionUIDBase implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1234567L;
 }

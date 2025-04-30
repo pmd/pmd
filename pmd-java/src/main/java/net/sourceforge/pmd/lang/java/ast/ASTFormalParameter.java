@@ -51,8 +51,8 @@ public final class ASTFormalParameter extends AbstractJavaNode
      */
     public boolean isVarargs() {
         ASTType tn = getTypeNode();
-        return tn instanceof ASTArrayType
-            && ((ASTArrayType) tn).getDimensions().getLastChild().isVarargs();
+        return tn instanceof ASTArrayType astat
+            && astat.getDimensions().getLastChild().isVarargs();
     }
 
 

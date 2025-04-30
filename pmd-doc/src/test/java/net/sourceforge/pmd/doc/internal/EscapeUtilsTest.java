@@ -46,14 +46,58 @@ class EscapeUtilsTest {
 
     @Test
     void testEscapeHtmlWithinMarkdownBlocks() {
-        String text = "paragraph\n\n> quote <script>\n> quote line \"2\"\n>quote line `<script>` 3\n\n"
-                + "next paragraph\n\n    code <script> \"a < b\"\n    code line 2\n\n"
-                + "next paragraph\n\n```\ncode <script> \"a < b\"\ncode line 2\n```\n\n"
-                + "next paragraph\n\n```java\nString = \"code <script> with syntax highlighting\";\ncode line 2\n```\n";
-        String expected = "paragraph\n\n> quote &lt;script&gt;\n> quote line &quot;2&quot;\n>quote line `<script>` 3\n\n"
-                + "next paragraph\n\n    code <script> \"a < b\"\n    code line 2\n\n"
-                + "next paragraph\n\n```\ncode <script> \"a < b\"\ncode line 2\n```\n\n"
-                + "next paragraph\n\n```java\nString = \"code <script> with syntax highlighting\";\ncode line 2\n```\n";
+        String text = """
+                paragraph
+                
+                > quote <script>
+                > quote line "2"
+                >quote line `<script>` 3
+                
+                next paragraph
+                
+                    code <script> "a < b"
+                    code line 2
+                
+                next paragraph
+                
+                ```
+                code <script> "a < b"
+                code line 2
+                ```
+                
+                next paragraph
+                
+                ```java
+                String = "code <script> with syntax highlighting";
+                code line 2
+                ```
+                """;
+        String expected = """
+                paragraph
+                
+                > quote &lt;script&gt;
+                > quote line &quot;2&quot;
+                >quote line `<script>` 3
+                
+                next paragraph
+                
+                    code <script> "a < b"
+                    code line 2
+                
+                next paragraph
+                
+                ```
+                code <script> "a < b"
+                code line 2
+                ```
+                
+                next paragraph
+                
+                ```java
+                String = "code <script> with syntax highlighting";
+                code line 2
+                ```
+                """;
         List<String> escaped = EscapeUtils.escapeLines(Arrays.asList(text.split("\n")));
         assertEquals(Arrays.asList(expected.split("\n")), escaped);
     }

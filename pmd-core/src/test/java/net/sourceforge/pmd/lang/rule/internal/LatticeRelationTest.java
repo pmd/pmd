@@ -278,17 +278,19 @@ class LatticeRelationTest {
 
         // all {1}, {2}, and { } are query nodes, not {1,2}
 
-        assertEquals("strict digraph {\n"
-                         + "n0 [ shape=box, color=black, label=\"[1, 2]\" ];\n"
-                         + "n1 [ shape=box, color=green, label=\"[1]\" ];\n"
-                         + "n2 [ shape=box, color=green, label=\"[2]\" ];\n"
-                         + "n3 [ shape=box, color=green, label=\"[]\" ];\n"
-                         + "n0 -> n1;\n" // {1}   -> { }
-                         + "n0 -> n2;\n" // {2}   -> { }
-                         + "n0 -> n3;\n" // {1,2} -> { }
-                         + "n1 -> n3;\n" // {1,2} -> {1}
-                         + "n2 -> n3;\n" // {1,2} -> {2}
-                         + "}", lattice.toString());
+        assertEquals("""
+                         strict digraph {
+                         n0 [ shape=box, color=black, label="[1, 2]" ];
+                         n1 [ shape=box, color=green, label="[1]" ];
+                         n2 [ shape=box, color=green, label="[2]" ];
+                         n3 [ shape=box, color=green, label="[]" ];
+                         n0 -> n1;
+                         n0 -> n2;
+                         n0 -> n3;
+                         n1 -> n3;
+                         n2 -> n3;
+                         }\
+                         """, lattice.toString());
     }
 
     @Test

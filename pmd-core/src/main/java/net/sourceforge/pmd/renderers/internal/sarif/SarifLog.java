@@ -1615,7 +1615,7 @@ public class SarifLog {
                     results = java.util.Collections.emptyList();
                     break;
                 case 1:
-                    results = java.util.Collections.singletonList(this.results.get(0));
+                    results = java.util.Collections.singletonList(this.results.getFirst());
                     break;
                 default:
                     results = java.util.Collections.unmodifiableList(new java.util.ArrayList<Result>(this.results));

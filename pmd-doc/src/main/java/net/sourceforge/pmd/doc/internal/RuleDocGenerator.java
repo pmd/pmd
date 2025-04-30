@@ -235,8 +235,7 @@ public class RuleDocGenerator {
                     String link = RULESET_INDEX_PERMALINK_PATTERN
                             .replace("${language.tersename}", languageTersename)
                             .replace("${ruleset.name}", RuleSetUtils.getRuleSetFilename(ruleset));
-                    if (rule instanceof RuleReference) {
-                        RuleReference ref = (RuleReference) rule;
+                    if (rule instanceof RuleReference ref) {
                         if (ruleset.getFileName().equals(ref.getRuleSetReference().getRuleSetFileName())) {
                             // rule renamed within same ruleset
                             lines.add("*   [" + rule.getName() + "](" + link + "#" + rule.getName().toLowerCase(Locale.ROOT) + "): "
@@ -296,9 +295,7 @@ public class RuleDocGenerator {
                         }
 
                         Rule resolvedRule = RuleSetUtils.resolveRuleReferences(rule);
-                        if (resolvedRule instanceof RuleReference) {
-                            // Note: deprecated rulesets contain by definition only rule references
-                            RuleReference ref = (RuleReference) resolvedRule;
+                        if (resolvedRule instanceof RuleReference ref) {
                             String otherLink = RULESET_INDEX_PERMALINK_PATTERN
                                     .replace("${language.tersename}", languageTersename)
                                     .replace("${ruleset.name}", RuleSetUtils.getRuleSetFilename(ref.getRuleSetReference().getRuleSetFileName()));
@@ -392,8 +389,7 @@ public class RuleDocGenerator {
                     lines.add("## " + rule.getName());
                     lines.add("");
 
-                    if (rule instanceof RuleReference) {
-                        RuleReference ref = (RuleReference) rule;
+                    if (rule instanceof RuleReference ref) {
                         if (ruleset.getFileName().equals(ref.getRuleSetReference().getRuleSetFileName())) {
                             // rule renamed within same ruleset
                             lines.add(DEPRECATION_LABEL);
@@ -533,10 +529,10 @@ public class RuleDocGenerator {
     }
 
     private XPathRule asXPathRule(Rule rule) {
-        if (rule instanceof XPathRule) {
-            return (XPathRule) rule;
-        } else if (rule instanceof RuleReference && ((RuleReference) rule).getRule() instanceof XPathRule) {
-            return (XPathRule) ((RuleReference) rule).getRule();
+        if (rule instanceof XPathRule pathRule) {
+            return pathRule;
+        } else if (rule instanceof RuleReference reference && ((RuleReference) rule).getRule() instanceof XPathRule) {
+            return (XPathRule) reference.getRule();
         }
         return null;
     }

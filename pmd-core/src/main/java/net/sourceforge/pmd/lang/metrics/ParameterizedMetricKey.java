@@ -43,9 +43,9 @@ final class ParameterizedMetricKey<N extends Node, R extends Number> implements 
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof ParameterizedMetricKey
-            && ((ParameterizedMetricKey<?, ?>) o).metric.equals(metric)
-            && ((ParameterizedMetricKey<?, ?>) o).options.equals(options);
+        return o instanceof ParameterizedMetricKey<?, ?> pmk
+            && pmk.metric.equals(metric)
+            && pmk.options.equals(options);
     }
 
 

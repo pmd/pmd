@@ -40,7 +40,7 @@ class NioTextFileTest {
             pmd.files().addZipFileWithContent(zipArchive);
             List<TextFile> collectedFiles = pmd.files().getCollectedFiles();
             assertEquals(1, collectedFiles.size());
-            TextFile textFile = collectedFiles.get(0);
+            TextFile textFile = collectedFiles.getFirst();
             assertEquals(zipArchive.toAbsolutePath() + "!/path/inside/someSource.dummy",
                     pmd.fileNameRenderer().getDisplayName(textFile));
         }

@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -67,16 +66,16 @@ class RuleDocGeneratorTest {
                         "rulesets/ruledoctest/other-ruleset.xml"));
 
         assertEquals(3, writer.getData().size());
-        FileEntry languageIndex = writer.getData().get(0);
-        assertTrue(IOUtil.normalizePath(languageIndex.getFilename()).endsWith(Paths.get("docs", "pages", "pmd", "rules", "java.md").toString()));
+        FileEntry languageIndex = writer.getData().getFirst();
+        assertTrue(IOUtil.normalizePath(languageIndex.getFilename()).endsWith(Path.of("docs", "pages", "pmd", "rules", "java.md").toString()));
         assertEquals(loadResource("/expected/java.md"), languageIndex.getContent());
 
         FileEntry ruleSetIndex = writer.getData().get(1);
-        assertTrue(IOUtil.normalizePath(ruleSetIndex.getFilename()).endsWith(Paths.get("docs", "pages", "pmd", "rules", "java", "sample.md").toString()));
+        assertTrue(IOUtil.normalizePath(ruleSetIndex.getFilename()).endsWith(Path.of("docs", "pages", "pmd", "rules", "java", "sample.md").toString()));
         assertEquals(loadResource("/expected/sample.md"), ruleSetIndex.getContent());
 
         FileEntry sidebar = writer.getData().get(2);
-        assertTrue(IOUtil.normalizePath(sidebar.getFilename()).endsWith(Paths.get("docs", "_data", "sidebars", "pmd_sidebar.yml").toString()));
+        assertTrue(IOUtil.normalizePath(sidebar.getFilename()).endsWith(Path.of("docs", "_data", "sidebars", "pmd_sidebar.yml").toString()));
         assertEquals(loadResource("/expected/pmd_sidebar.yml"), sidebar.getContent());
     }
 }

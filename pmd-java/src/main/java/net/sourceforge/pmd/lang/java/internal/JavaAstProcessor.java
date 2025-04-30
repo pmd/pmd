@@ -97,8 +97,8 @@ public final class JavaAstProcessor {
     }
 
     public JClassSymbol makeUnresolvedReference(JTypeDeclSymbol outer, String simpleName, int typeArity) {
-        if (outer instanceof JClassSymbol) {
-            return unresolvedTypes.makeUnresolvedReference((JClassSymbol) outer, simpleName, typeArity);
+        if (outer instanceof JClassSymbol symbol) {
+            return unresolvedTypes.makeUnresolvedReference(symbol, simpleName, typeArity);
         }
         return makeUnresolvedReference("error." + simpleName, typeArity);
     }

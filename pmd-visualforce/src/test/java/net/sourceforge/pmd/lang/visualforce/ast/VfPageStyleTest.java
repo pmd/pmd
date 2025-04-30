@@ -19,7 +19,7 @@ class VfPageStyleTest extends AbstractVfTest {
     void testElExpression() {
         List<ASTElExpression> expressions = vf.getNodes(ASTElExpression.class, VF_EL_EXPRESSION);
         assertEquals(1, expressions.size(), "One expression expected!");
-        ASTElExpression expression = expressions.iterator().next();
+        ASTElExpression expression = expressions.getFirst();
         ASTExpression exp = expression.firstChild(ASTExpression.class);
         ASTIdentifier id = exp.firstChild(ASTIdentifier.class);
         assertEquals("myBean", id.getImage(), "Correct expression content expected!");
@@ -39,7 +39,7 @@ class VfPageStyleTest extends AbstractVfTest {
     void testElExpressionInAttribute() {
         List<ASTElExpression> expressions = vf.getNodes(ASTElExpression.class, VF_EL_EXPRESSION_IN_ATTRIBUTE);
         assertEquals(1, expressions.size(), "One expression expected!");
-        ASTElExpression expression = expressions.iterator().next();
+        ASTElExpression expression = expressions.getFirst();
         ASTExpression exp = expression.firstChild(ASTExpression.class);
         ASTIdentifier id = exp.firstChild(ASTIdentifier.class);
         assertEquals("myValidator", id.getImage(), "Correct expression content expected!");

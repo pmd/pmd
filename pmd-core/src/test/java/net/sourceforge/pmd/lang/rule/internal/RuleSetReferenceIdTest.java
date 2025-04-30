@@ -131,7 +131,7 @@ class RuleSetReferenceIdTest {
         List<RuleSetReferenceId> references = RuleSetReferenceId.parse("rulesets/dummy/basic.xml, rulesets/dummy/unusedcode.xml, rulesets/dummy2/basic.xml");
         assertEquals(3, references.size());
         assertRuleSetReferenceId(true, "rulesets/dummy/basic.xml", true, null, "rulesets/dummy/basic.xml",
-                references.get(0));
+                references.getFirst());
         assertRuleSetReferenceId(true, "rulesets/dummy/unusedcode.xml", true, null, "rulesets/dummy/unusedcode.xml",
                 references.get(1));
         assertRuleSetReferenceId(true, "rulesets/dummy2/basic.xml", true, null, "rulesets/dummy2/basic.xml",
@@ -143,7 +143,7 @@ class RuleSetReferenceIdTest {
         List<RuleSetReferenceId> references = RuleSetReferenceId.parse("rulesets/java/unusedcode.xml");
         assertEquals(1, references.size());
         assertRuleSetReferenceId(true, "rulesets/java/unusedcode.xml", true, null, "rulesets/java/unusedcode.xml",
-                references.get(0));
+                references.getFirst());
     }
 
     @Test
@@ -151,7 +151,7 @@ class RuleSetReferenceIdTest {
         List<RuleSetReferenceId> references = RuleSetReferenceId.parse("file://somepath/rulesets/java/unusedcode.xml");
         assertEquals(1, references.size());
         assertRuleSetReferenceId(true, "file://somepath/rulesets/java/unusedcode.xml", true, null,
-                "file://somepath/rulesets/java/unusedcode.xml", references.get(0));
+                "file://somepath/rulesets/java/unusedcode.xml", references.getFirst());
     }
 
     @Test
@@ -160,7 +160,7 @@ class RuleSetReferenceIdTest {
                 .parse("rulesets/java/unusedcode.xml,rulesets/java/basic.xml");
         assertEquals(2, references.size());
         assertRuleSetReferenceId(true, "rulesets/java/unusedcode.xml", true, null, "rulesets/java/unusedcode.xml",
-                references.get(0));
+                references.getFirst());
         assertRuleSetReferenceId(true, "rulesets/java/basic.xml", true, null, "rulesets/java/basic.xml",
                 references.get(1));
     }
@@ -169,7 +169,7 @@ class RuleSetReferenceIdTest {
     void testUnknownRuleSet() {
         List<RuleSetReferenceId> references = RuleSetReferenceId.parse("nonexistant.xml");
         assertEquals(1, references.size());
-        assertRuleSetReferenceId(true, "nonexistant.xml", true, null, "nonexistant.xml", references.get(0));
+        assertRuleSetReferenceId(true, "nonexistant.xml", true, null, "nonexistant.xml", references.getFirst());
     }
 
     @Test
@@ -177,7 +177,7 @@ class RuleSetReferenceIdTest {
         List<RuleSetReferenceId> references = RuleSetReferenceId.parse("rulesets/java/basic.xml/EmptyCatchBlock");
         assertEquals(1, references.size());
         assertRuleSetReferenceId(true, "rulesets/java/basic.xml", false, "EmptyCatchBlock",
-                "rulesets/java/basic.xml/EmptyCatchBlock", references.get(0));
+                "rulesets/java/basic.xml/EmptyCatchBlock", references.getFirst());
     }
 
     @Test
@@ -186,21 +186,21 @@ class RuleSetReferenceIdTest {
                 .parse("file://somepath/rulesets/java/unusedcode.xml/EmptyCatchBlock");
         assertEquals(1, references.size());
         assertRuleSetReferenceId(true, "file://somepath/rulesets/java/unusedcode.xml", false, "EmptyCatchBlock",
-                "file://somepath/rulesets/java/unusedcode.xml/EmptyCatchBlock", references.get(0));
+                "file://somepath/rulesets/java/unusedcode.xml/EmptyCatchBlock", references.getFirst());
     }
 
     @Test
     void testRelativeRule() {
         List<RuleSetReferenceId> references = RuleSetReferenceId.parse("EmptyCatchBlock");
         assertEquals(1, references.size());
-        assertRuleSetReferenceId(false, null, false, "EmptyCatchBlock", "EmptyCatchBlock", references.get(0));
+        assertRuleSetReferenceId(false, null, false, "EmptyCatchBlock", "EmptyCatchBlock", references.getFirst());
     }
 
     @Test
     void testRelativePathRuleSet() {
         List<RuleSetReferenceId> references = RuleSetReferenceId.parse("pmd/pmd-ruleset.xml");
         assertEquals(1, references.size());
-        assertRuleSetReferenceId(true, "pmd/pmd-ruleset.xml", true, null, "pmd/pmd-ruleset.xml", references.get(0));
+        assertRuleSetReferenceId(true, "pmd/pmd-ruleset.xml", true, null, "pmd/pmd-ruleset.xml", references.getFirst());
     }
 
     @Test
@@ -208,7 +208,7 @@ class RuleSetReferenceIdTest {
         List<RuleSetReferenceId> references = RuleSetReferenceId.parse("/home/foo/pmd/pmd-ruleset.xml");
         assertEquals(1, references.size());
         assertRuleSetReferenceId(true, "/home/foo/pmd/pmd-ruleset.xml", true, null, "/home/foo/pmd/pmd-ruleset.xml",
-                references.get(0));
+                references.getFirst());
     }
 
     @Test
@@ -217,7 +217,7 @@ class RuleSetReferenceIdTest {
                 .getCanonicalPath();
         List<RuleSetReferenceId> references = RuleSetReferenceId.parse(fooRulesFile);
         assertEquals(1, references.size());
-        assertRuleSetReferenceId(true, fooRulesFile, true, null, fooRulesFile, references.get(0));
+        assertRuleSetReferenceId(true, fooRulesFile, true, null, fooRulesFile, references.getFirst());
     }
 
     @Test

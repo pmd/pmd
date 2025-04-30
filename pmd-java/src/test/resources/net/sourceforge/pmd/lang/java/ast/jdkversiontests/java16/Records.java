@@ -38,7 +38,7 @@ public class Records {
         @MyAnnotation
         public Range {
           if (lo > hi)  /* referring here to the implicit constructor parameters */
-            throw new IllegalArgumentException(String.format("(%d,%d)", lo, hi));
+            throw new IllegalArgumentException("(%d,%d)".formatted(lo, hi));
         }
 
         public void foo() { }

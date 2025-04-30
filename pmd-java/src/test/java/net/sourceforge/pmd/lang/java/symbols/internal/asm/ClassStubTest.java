@@ -56,9 +56,9 @@ class ClassStubTest {
         JClassSymbol pointRecord = loadRecordClass(ts, "Point");
         List<JRecordComponentSymbol> components = pointRecord.getRecordComponents();
         assertThat(components, hasSize(2));
-        assertThat(components.get(0).getSimpleName(), equalTo("x"));
+        assertThat(components.getFirst().getSimpleName(), equalTo("x"));
         assertThat(components.get(1).getSimpleName(), equalTo("y"));
-        int modifiers = components.get(0).getModifiers();
+        int modifiers = components.getFirst().getModifiers();
         assertEquals(JRecordComponentSymbol.RECORD_COMPONENT_MODIFIERS, modifiers, Modifier.toString(modifiers));
 
         JClassType ty = (JClassType) ts.typeOf(pointRecord, false);
@@ -75,14 +75,14 @@ class ClassStubTest {
         JClassSymbol record = loadRecordClass(ts, "Varargs");
         List<JRecordComponentSymbol> components = record.getRecordComponents();
         assertThat(components, hasSize(1));
-        assertThat(components.get(0).getSimpleName(), equalTo("varargs"));
+        assertThat(components.getFirst().getSimpleName(), equalTo("varargs"));
         JClassType ty = (JClassType) ts.typeOf(record, false);
         assertEquals(ty.getDeclaredField("varargs").getTypeMirror(), ts.arrayType(ts.FLOAT));
 
         List<JConstructorSymbol> ctors = record.getConstructors();
         assertThat(ctors, hasSize(1));
-        assertTrue(ctors.get(0).isVarargs(), "varargs");
-        assertEquals(ctors.get(0).getFormalParameterTypes(Substitution.EMPTY).get(0), ts.arrayType(ts.FLOAT));
+        assertTrue(ctors.getFirst().isVarargs(), "varargs");
+        assertEquals(ctors.getFirst().getFormalParameterTypes(Substitution.EMPTY).getFirst(), ts.arrayType(ts.FLOAT));
     }
 
 
@@ -93,10 +93,10 @@ class ClassStubTest {
         List<JRecordComponentSymbol> components = record.getRecordComponents();
         assertThat(components, hasSize(2));
 
-        assertThat(components.get(0).getSimpleName(), equalTo("x"));
+        assertThat(components.getFirst().getSimpleName(), equalTo("x"));
         // Interestingly record components cannot be deprecated.
         // The field and accessor method are marked with the deprecated annotation though
-        assertNull(components.get(0).getDeclaredAnnotation(Deprecated.class), "should not be deprecated");
+        assertNull(components.getFirst().getDeclaredAnnotation(Deprecated.class), "should not be deprecated");
         assertNotNull(record.getDeclaredField("x").getDeclaredAnnotation(Deprecated.class), "should be deprecated");
 
         JClassSymbol annot = ts.getClassSymbol("net.sourceforge.pmd.lang.java.symbols.recordclasses.TypeAnnotation");
@@ -108,7 +108,7 @@ class ClassStubTest {
 
         List<JConstructorSymbol> ctors = record.getConstructors();
         assertThat(ctors, hasSize(1));
-        JClassType secondParm = (JClassType) ctors.get(0).getFormalParameterTypes(Substitution.EMPTY).get(1);
+        JClassType secondParm = (JClassType) ctors.getFirst().getFormalParameterTypes(Substitution.EMPTY).get(1);
         assertIsListWithTyAnnotation(secondParm);
     }
 
@@ -119,8 +119,8 @@ class ClassStubTest {
         List<JRecordComponentSymbol> components = record.getRecordComponents();
         assertThat(components, hasSize(1));
 
-        assertThat(components.get(0).getSimpleName(), equalTo("x"));
-        assertThat(components.get(0).getDeclaredAnnotations(), hasSize(1));
+        assertThat(components.getFirst().getSimpleName(), equalTo("x"));
+        assertThat(components.getFirst().getDeclaredAnnotations(), hasSize(1));
 
     }
 
@@ -186,7 +186,7 @@ class ClassStubTest {
 
     private static void assertIsListWithTyAnnotation(JClassType withTyAnnotation) {
         assertThat(withTyAnnotation.getSymbol().getBinaryName(), equalTo("java.util.List"));
-        JTypeMirror tyArg = withTyAnnotation.getTypeArgs().get(0);
+        JTypeMirror tyArg = withTyAnnotation.getTypeArgs().getFirst();
         assertThat(tyArg.getTypeAnnotations(), hasSize(1));
         assertThat(CollectionUtil.asSingle(tyArg.getTypeAnnotations()).getAnnotationSymbol().getBinaryName(),
                    equalTo("net.sourceforge.pmd.lang.java.symbols.recordclasses.TypeAnnotation"));

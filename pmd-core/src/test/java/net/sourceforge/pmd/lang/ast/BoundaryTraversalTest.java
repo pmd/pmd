@@ -40,7 +40,7 @@ class BoundaryTraversalTest {
 
         List<DummyNode> descendantsOfType = rootNode.descendants(DummyNode.class).toList();
         assertEquals(1, descendantsOfType.size());
-        assertTrue(descendantsOfType.get(0).isFindBoundary());
+        assertTrue(descendantsOfType.getFirst().isFindBoundary());
     }
 
     @Test
@@ -49,7 +49,7 @@ class BoundaryTraversalTest {
 
         List<DummyNode> descendantsOfType = rootNode.descendants(DummyNode.class).first().descendants(DummyNode.class).toList();
         assertEquals(1, descendantsOfType.size());
-        assertFalse(descendantsOfType.get(0).isFindBoundary());
+        assertFalse(descendantsOfType.getFirst().isFindBoundary());
     }
 
     @Test
@@ -58,7 +58,7 @@ class BoundaryTraversalTest {
 
         List<DummyNode> descendantsOfType = rootNode.descendants(DummyNode.class).take(1).descendants(DummyNode.class).toList();
         assertEquals(1, descendantsOfType.size());
-        assertFalse(descendantsOfType.get(0).isFindBoundary());
+        assertFalse(descendantsOfType.getFirst().isFindBoundary());
     }
 
     @Test
@@ -67,7 +67,7 @@ class BoundaryTraversalTest {
 
         List<DummyNode> descendantsOfType = rootNode.descendants(DummyNode.class).crossFindBoundaries().toList();
         assertEquals(2, descendantsOfType.size());
-        assertTrue(descendantsOfType.get(0).isFindBoundary());
+        assertTrue(descendantsOfType.getFirst().isFindBoundary());
         assertFalse(descendantsOfType.get(1).isFindBoundary());
     }
 }

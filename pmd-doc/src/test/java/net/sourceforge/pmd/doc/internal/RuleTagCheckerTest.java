@@ -21,7 +21,7 @@ class RuleTagCheckerTest {
 
         assertEquals(7, issues.size());
         assertEquals("ruletag-examples.md: 9: Rule tag for \"java/bestpractices/AvoidPrintStackTrace\" is not closed properly",
-                issues.get(0));
+                issues.getFirst());
         assertEquals("ruletag-examples.md:12: Rule \"java/notexistingcategory/AvoidPrintStackTrace\" is not found",
                 issues.get(1));
         assertEquals("ruletag-examples.md:14: Rule \"java/bestpractices/NotExistingRule\" is not found",

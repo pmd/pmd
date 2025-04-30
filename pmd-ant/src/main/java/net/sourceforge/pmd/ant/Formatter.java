@@ -204,7 +204,7 @@ public class Formatter {
             try {
                 Method method = Console.class.getMethod("isTerminal");
                 Object isTerminal = method.invoke(console);
-                if (isTerminal instanceof Boolean && !(Boolean) isTerminal) {
+                if (isTerminal instanceof Boolean boolean1 && !boolean1) {
                     // stop here, we don't have an interactive console.
                     return null;
                 }
@@ -217,8 +217,8 @@ public class Formatter {
             try {
                 Method method = Console.class.getMethod("charset");
                 Object charset = method.invoke(console);
-                if (charset instanceof Charset) {
-                    return ((Charset) charset).name();
+                if (charset instanceof Charset charset1) {
+                    return charset1.name();
                 }
             } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException ignored) {
                 // fall-through
@@ -244,8 +244,8 @@ public class Formatter {
                 Field field = Console.class.getDeclaredField("cs");
                 field.setAccessible(true);
                 Object csField = field.get(console);
-                if (csField instanceof Charset) {
-                    return ((Charset) csField).name();
+                if (csField instanceof Charset charset) {
+                    return charset.name();
                 }
             } catch (IllegalArgumentException | ReflectiveOperationException ignored) {
                 // fall-through
@@ -256,8 +256,8 @@ public class Formatter {
                 Method method = Console.class.getDeclaredMethod("encoding");
                 method.setAccessible(true);
                 Object encoding = method.invoke(console);
-                if (encoding instanceof String) {
-                    return (String) encoding;
+                if (encoding instanceof String string) {
+                    return string;
                 }
             } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException ignored) {
                 // fall-through

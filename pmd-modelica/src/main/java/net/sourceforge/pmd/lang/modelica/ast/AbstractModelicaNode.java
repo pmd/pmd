@@ -29,8 +29,8 @@ abstract class AbstractModelicaNode extends AbstractJjtreeNode<AbstractModelicaN
     @Override
     @SuppressWarnings("unchecked")
     public final <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
-        if (visitor instanceof ModelicaVisitor) {
-            return acceptModelicaVisitor((ModelicaVisitor<? super P, ? extends R>) visitor, data);
+        if (visitor instanceof ModelicaVisitor<? super P, ? extends R> modelicaVisitor) {
+            return acceptModelicaVisitor(modelicaVisitor, data);
         }
         return visitor.cannotVisit(this, data);
     }

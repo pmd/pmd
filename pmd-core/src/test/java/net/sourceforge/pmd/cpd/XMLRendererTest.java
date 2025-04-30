@@ -58,13 +58,15 @@ class XMLRendererTest {
         String report = sw.toString();
         assertReportIsValidSchema(report);
 
-        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                + "<pmd-cpd xmlns=\"https://pmd-code.org/schema/cpd-report\"\n"
-                + "         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                + "         pmdVersion=\"XXX\"\n"
-                + "         timestamp=\"XXX\"\n"
-                + "         version=\"1.0.0\"\n"
-                + "         xsi:schemaLocation=\"https://pmd-code.org/schema/cpd-report https://pmd.github.io/schema/cpd-report_1_0_0.xsd\"/>\n",
+        assertEquals("""
+                <?xml version="1.0" encoding="UTF-8"?>
+                <pmd-cpd xmlns="https://pmd-code.org/schema/cpd-report"
+                         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                         pmdVersion="XXX"
+                         timestamp="XXX"
+                         version="1.0.0"
+                         xsi:schemaLocation="https://pmd-code.org/schema/cpd-report https://pmd.github.io/schema/cpd-report_1_0_0.xsd"/>
+                """,
                 report.replaceAll("timestamp=\".+?\"", "timestamp=\"XXX\"")
                         .replaceAll("pmdVersion=\".+?\"", "pmdVersion=\"XXX\""),
                 "namespace is missing or wrong");

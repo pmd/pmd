@@ -64,7 +64,7 @@ public final class FileUtil {
     }
 
     public static @NonNull Path toExistingPath(String root) throws FileNotFoundException {
-        Path file = Paths.get(root);
+        Path file = Path.of(root);
         if (!Files.exists(file)) {
             throw new FileNotFoundException(root);
         }

@@ -29,7 +29,7 @@ class PropertySyntaxTest extends RulesetFactoryTestBase {
         ArrayList<PropertyDescriptor<?>> descriptors = new ArrayList<>(rule.getPropertyDescriptors());
         descriptors.removeAll(setOf(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR,
                                     Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR));
-        return descriptors.get(0);
+        return descriptors.getFirst();
     }
 
     private static String contextForPropertyDef(String propDef) {
@@ -75,7 +75,7 @@ class PropertySyntaxTest extends RulesetFactoryTestBase {
         assertEquals("pname", prop.name());
         assertEquals(4, prop.defaultValue());
         assertEquals(1, prop.serializer().getConstraints().size());
-        assertEquals("Should be greater or equal to 1", prop.serializer().getConstraints().get(0).getConstraintDescription());
+        assertEquals("Should be greater or equal to 1", prop.serializer().getConstraints().getFirst().getConstraintDescription());
     }
 
 
@@ -86,7 +86,7 @@ class PropertySyntaxTest extends RulesetFactoryTestBase {
             "<property name='pname' description='d' type='Integer' value='4' max='6' />"
         );
 
-        assertEquals("Should be smaller or equal to 6", prop.serializer().getConstraints().get(0).getConstraintDescription());
+        assertEquals("Should be smaller or equal to 6", prop.serializer().getConstraints().getFirst().getConstraintDescription());
     }
 
     @Test
@@ -96,7 +96,7 @@ class PropertySyntaxTest extends RulesetFactoryTestBase {
             "<property name='pname' description='d' type='Integer' value='4' max='6' min='2' />"
         );
 
-        assertEquals("Should be between 2 and 6", prop.serializer().getConstraints().get(0).getConstraintDescription());
+        assertEquals("Should be between 2 and 6", prop.serializer().getConstraints().getFirst().getConstraintDescription());
     }
 
     @Test

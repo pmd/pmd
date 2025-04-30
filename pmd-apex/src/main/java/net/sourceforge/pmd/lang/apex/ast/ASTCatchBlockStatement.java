@@ -23,7 +23,7 @@ public final class ASTCatchBlockStatement extends AbstractApexCommentContainerNo
     }
 
     public String getVariableName() {
-        return node.getException().getDeclarations().get(0).getId().getString();
+        return node.getException().getDeclarations().getFirst().getId().getString();
     }
 
     public ASTBlockStatement getBody() {

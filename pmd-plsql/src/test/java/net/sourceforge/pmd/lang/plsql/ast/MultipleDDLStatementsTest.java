@@ -21,6 +21,6 @@ class MultipleDDLStatementsTest extends AbstractPLSQLParserTst {
         assertEquals(6, ddlcommands.size());
         List<ASTComment> comments = input.descendants(ASTComment.class).toList();
         assertEquals(5, comments.size());
-        assertEquals("'abbreviated job title'", comments.get(0).firstChild(ASTStringLiteral.class).getImage());
+        assertEquals("'abbreviated job title'", comments.getFirst().firstChild(ASTStringLiteral.class).getImage());
     }
 }

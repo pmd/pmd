@@ -83,24 +83,24 @@ abstract class SaxonExprVisitor {
 
     public Expression visit(Expression expr) {
         Expression result;
-        if (expr instanceof DocumentSorter) {
-            result = visit((DocumentSorter) expr);
-        } else if (expr instanceof SlashExpression) {
-            result = visit((SlashExpression) expr);
-        } else if (expr instanceof RootExpression) {
-            result = visit((RootExpression) expr);
-        } else if (expr instanceof AxisExpression) {
-            result = visit((AxisExpression) expr);
-        } else if (expr instanceof VennExpression) {
-            result = visit((VennExpression) expr);
-        } else if (expr instanceof FilterExpression) {
-            result = visit((FilterExpression) expr);
-        } else if (expr instanceof QuantifiedExpression) {
-            result = visit((QuantifiedExpression) expr);
-        } else if (expr instanceof LetExpression) {
-            result = visit((LetExpression) expr);
-        } else if (expr instanceof BooleanExpression) {
-            result = visit((BooleanExpression) expr);
+        if (expr instanceof DocumentSorter sorter) {
+            result = visit(sorter);
+        } else if (expr instanceof SlashExpression expression) {
+            result = visit(expression);
+        } else if (expr instanceof RootExpression expression) {
+            result = visit(expression);
+        } else if (expr instanceof AxisExpression expression) {
+            result = visit(expression);
+        } else if (expr instanceof VennExpression expression) {
+            result = visit(expression);
+        } else if (expr instanceof FilterExpression expression) {
+            result = visit(expression);
+        } else if (expr instanceof QuantifiedExpression expression) {
+            result = visit(expression);
+        } else if (expr instanceof LetExpression expression) {
+            result = visit(expression);
+        } else if (expr instanceof BooleanExpression expression) {
+            result = visit(expression);
         } else {
             result = expr;
         }

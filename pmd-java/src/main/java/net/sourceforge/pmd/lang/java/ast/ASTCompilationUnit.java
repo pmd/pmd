@@ -79,7 +79,7 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements RootNo
                 if (currentMarkdownBlock == null) {
                     currentMarkdownBlock = new ArrayList<>();
                 } else {
-                    JavaComment lastComment = currentMarkdownBlock.get(currentMarkdownBlock.size() - 1);
+                    JavaComment lastComment = currentMarkdownBlock.getLast();
                     int lastCommentLine = lastComment.getReportLocation().getStartLine();
                     if (comment.getReportLocation().getStartLine() - lastCommentLine > 1) {
                         result.add(new JavadocComment(currentMarkdownBlock));

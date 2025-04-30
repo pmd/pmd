@@ -98,8 +98,8 @@ public class FileAnalysisException extends ContextedRuntimeException {
      * @return An exception
      */
     public static FileAnalysisException wrap(@NonNull FileId fileId, @NonNull String message, @NonNull Throwable cause) {
-        if (cause instanceof FileAnalysisException) {
-            return ((FileAnalysisException) cause).setFileId(fileId);
+        if (cause instanceof FileAnalysisException exception) {
+            return exception.setFileId(fileId);
         }
 
         String fullMessage = "In file '" + fileId.getAbsolutePath() + "': " + message;

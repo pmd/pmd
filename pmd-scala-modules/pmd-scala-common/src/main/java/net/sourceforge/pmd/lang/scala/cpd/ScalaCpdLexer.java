@@ -67,9 +67,7 @@ public class ScalaCpdLexer implements CpdLexer {
                                          token.getReportLocation());
             }
         } catch (Exception e) {
-            if (e instanceof TokenizeException) { // NOPMD
-                // cannot catch it as it's a checked exception and Scala sneaky throws
-                TokenizeException tokE = (TokenizeException) e;
+            if (e instanceof TokenizeException tokE) {
                 Position pos = tokE.pos();
                 throw tokenEntries.makeLexException(
                     pos.startLine() + 1, pos.startColumn() + 1, "Scalameta threw", tokE);

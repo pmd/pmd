@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.charset.Charset;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -340,7 +340,7 @@ class RuleSetTest {
         RuleSet ruleSet = createRuleSetBuilder("ruleset").replaceFileExclusions(excludePatterns).build();
         assertNotNull(ruleSet.getFileExclusions(), "Exclude patterns");
         assertEquals(2, ruleSet.getFileExclusions().size(), "Invalid number of exclude patterns");
-        assertEquals("ah*", ruleSet.getFileExclusions().get(0).pattern(), "Exclude pattern");
+        assertEquals("ah*", ruleSet.getFileExclusions().getFirst().pattern(), "Exclude pattern");
         assertEquals(".*", ruleSet.getFileExclusions().get(1).pattern(), "Exclude pattern");
         assertNotNull(ruleSet.getFileInclusions(), "Include patterns");
         assertEquals(0, ruleSet.getFileInclusions().size(), "Invalid number of include patterns");
@@ -353,7 +353,7 @@ class RuleSetTest {
                 .build();
         assertNotNull(ruleSet.getFileInclusions(), "Include patterns");
         assertEquals(1, ruleSet.getFileInclusions().size(), "Invalid number of patterns");
-        assertEquals(".*", ruleSet.getFileInclusions().get(0).pattern(), "Include pattern");
+        assertEquals(".*", ruleSet.getFileInclusions().getFirst().pattern(), "Include pattern");
         assertNotNull(ruleSet.getFileExclusions(), "Exclude patterns");
         assertEquals(0, ruleSet.getFileExclusions().size(), "Invalid number of exclude patterns");
     }
@@ -368,7 +368,7 @@ class RuleSetTest {
                 .build();
         assertNotNull(ruleSet2.getFileInclusions(), "Include patterns");
         assertEquals(2, ruleSet2.getFileInclusions().size(), "Invalid number of patterns");
-        assertEquals("ah*", ruleSet2.getFileInclusions().get(0).pattern(), "Include pattern");
+        assertEquals("ah*", ruleSet2.getFileInclusions().getFirst().pattern(), "Include pattern");
         assertEquals(".*", ruleSet2.getFileInclusions().get(1).pattern(), "Include pattern");
         assertNotNull(ruleSet.getFileExclusions(), "Exclude patterns");
         assertEquals(0, ruleSet.getFileExclusions().size(), "Invalid number of exclude patterns");
@@ -390,7 +390,7 @@ class RuleSetTest {
 
     @Test
     void testIncludeExcludeApplies() {
-        FileId fileId = TextFile.forPath(Paths.get("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java"), Charset.defaultCharset(), dummyVersion())
+        FileId fileId = TextFile.forPath(Path.of("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java"), Charset.defaultCharset(), dummyVersion())
                 .getFileId();
 
         RuleSet ruleSet = createRuleSetBuilder("ruleset").build();
@@ -506,7 +506,7 @@ class RuleSetTest {
 
         List<ProcessingError> errors = report.getProcessingErrors();
         assertThat(errors, hasSize(1));
-        ProcessingError error = errors.get(0);
+        ProcessingError error = errors.getFirst();
         assertThat(error.getMsg(), containsString("java.lang.IllegalStateException: Test exception while applying rule\n"));
         assertThat(error.getMsg(), containsString("Rule applied on node=dummyRootNode[@Image=Foo]"));
         assertThat(error.getError().getCause(), instanceOf(IllegalStateException.class));
@@ -531,7 +531,7 @@ class RuleSetTest {
 
         List<ProcessingError> errors = report.getProcessingErrors();
         assertThat(errors, hasSize(1));
-        ProcessingError error = errors.get(0);
+        ProcessingError error = errors.getFirst();
         assertThat(error.getMsg(), containsString("java.lang.IllegalStateException: Test exception while applying rule\n"));
         assertThat(error.getMsg(), containsString("Rule applied on node=dummyRootNode[@Image=Foo]"));
         assertThat(error.getError().getCause(), instanceOf(IllegalStateException.class));
@@ -570,7 +570,7 @@ class RuleSetTest {
 
         List<ProcessingError> errors = report.getProcessingErrors();
         assertThat(errors, hasSize(1));
-        ProcessingError error = errors.get(0);
+        ProcessingError error = errors.getFirst();
         assertThat(error.getMsg(), containsString("java.lang.UnsupportedOperationException: Test exception while applying rule\n"));
         assertThat(error.getMsg(), containsString("Rule applied on node=dummyRootNode[@Image=Foo]"));
         assertThat(error.getError().getCause(), instanceOf(UnsupportedOperationException.class));

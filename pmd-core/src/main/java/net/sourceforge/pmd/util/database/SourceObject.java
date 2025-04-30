@@ -58,7 +58,7 @@ public class SourceObject {
 
     @Override
     public String toString() {
-        return String.format("schema=\"%s\",type=\"%s\",name=\"%s\",revision=\"%s\"", this.getSchema(), this.getType(),
+        return "schema=\"%s\",type=\"%s\",name=\"%s\",revision=\"%s\"".formatted(this.getSchema(), this.getType(),
                 this.getName(), this.getRevision());
     }
 
@@ -158,7 +158,7 @@ public class SourceObject {
      * parser is used.
      */
     public String getPseudoFileName() {
-        return String.format("/Database/%s/%s/%s%s", getSchema(), getType(), getName(),
+        return "/Database/%s/%s/%s%s".formatted(getSchema(), getType(), getName(),
                 getSuffixFromType());
     }
 }

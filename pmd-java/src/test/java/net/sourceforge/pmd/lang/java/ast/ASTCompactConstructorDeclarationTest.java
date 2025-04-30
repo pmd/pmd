@@ -21,7 +21,7 @@ class ASTCompactConstructorDeclarationTest extends BaseParserTest {
                     + "         Objects.requireNonNull(foo, () -> \"foo\");"
                     + "     }"
                     + "}")
-                .get(0);
+                .getFirst();
         assertEquals(1, compactConstructor.getBody().getNumChildren());
     }
 }

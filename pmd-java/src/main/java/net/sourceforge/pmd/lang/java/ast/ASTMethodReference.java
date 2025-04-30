@@ -43,12 +43,12 @@ public final class ASTMethodReference extends AbstractJavaExpr
         super.jjtClose();
         JavaNode lhs = getChild(0);
         // if constructor ref, then the LHS is unambiguously a type.
-        if (lhs instanceof ASTAmbiguousName) {
+        if (lhs instanceof ASTAmbiguousName name) {
             if (isConstructorReference()) {
-                setChild(new ASTTypeExpression(((ASTAmbiguousName) lhs).forceTypeContext()), 0);
+                setChild(new ASTTypeExpression(name.forceTypeContext()), 0);
             }
-        } else if (lhs instanceof ASTType) {
-            setChild(new ASTTypeExpression((ASTType) lhs), 0);
+        } else if (lhs instanceof ASTType type) {
+            setChild(new ASTTypeExpression(type), 0);
         }
     }
 

@@ -14,10 +14,12 @@ class ApexCommentTest extends ApexParserTestBase {
 
     @Test
     void testContainsComment1() {
-        ASTApexFile file = apex.parse("class Foo {void foo(){try {\n"
-                                          + "} catch (Exception e) {\n"
-                                          + "  /* OK: block comment inside of empty catch block; should not be reported */\n"
-                                          + "}}}");
+        ASTApexFile file = apex.parse("""
+                                          class Foo {void foo(){try {
+                                          } catch (Exception e) {
+                                            /* OK: block comment inside of empty catch block; should not be reported */
+                                          }}}\
+                                          """);
 
         ASTCatchBlockStatement catchBlock = file.descendants(ASTCatchBlockStatement.class).crossFindBoundaries().firstOrThrow();
         assertTrue(catchBlock.getContainsComment());

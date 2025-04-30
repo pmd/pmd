@@ -215,7 +215,7 @@ public final class AssertionUtil {
     }
 
     public static <E extends RuntimeException> E mustBe(String name, Object value, String condition, Function<String, E> exceptionMaker) {
-        return exceptionMaker.apply(String.format("%s must be %s, got %s", name, condition, value));
+        return exceptionMaker.apply("%s must be %s, got %s".formatted(name, condition, value));
     }
 
     @NonNull
@@ -247,7 +247,7 @@ public final class AssertionUtil {
     }
 
     public static @NonNull ContextedRuntimeException contexted(RuntimeException e) {
-        return e instanceof ContextedRuntimeException ? (ContextedRuntimeException) e
+        return e instanceof ContextedRuntimeException cre ? cre
                                                       : new ContextedRuntimeException(e);
     }
 

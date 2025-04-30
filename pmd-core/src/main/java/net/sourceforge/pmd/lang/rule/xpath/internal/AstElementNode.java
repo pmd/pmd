@@ -136,18 +136,18 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
 
     @Override
     public int compareOrder(NodeInfo other) {
-        if (other instanceof AstElementNode) {
-            return Integer.compare(this.id, ((AstElementNode) other).id);
-        } else if (other instanceof SiblingCountingNode) {
-            return Navigator.compareOrder(this, (SiblingCountingNode) other);
+        if (other instanceof AstElementNode node) {
+            return Integer.compare(this.id, node.id);
+        } else if (other instanceof SiblingCountingNode node) {
+            return Navigator.compareOrder(this, node);
         }
         throw new UnsupportedOperationException();
     }
 
     @Override
     protected AxisIterator iterateAttributes(NodeTest predicate) {
-        if (predicate instanceof NameTest) {
-            String local = ((NameTest) predicate).getLocalPart();
+        if (predicate instanceof NameTest test) {
+            String local = test.getLocalPart();
             return SingleNodeIterator.makeIterator(getAttributes().get(local));
         }
 
@@ -208,11 +208,11 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
     @Override
     public String getStringValue() {
         Node node = getUnderlyingNode();
-        if (node instanceof TextNode) {
-            return ((TextNode) node).getText();
+        if (node instanceof TextNode textNode) {
+            return textNode.getText();
         }
-        if (node instanceof CommentNode) {
-            return ((CommentNode) node).getData();
+        if (node instanceof CommentNode commentNode) {
+            return commentNode.getData();
         }
 
         // https://www.w3.org/TR/xpath-datamodel-31/#ElementNode

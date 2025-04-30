@@ -68,8 +68,8 @@ class ModelicaClassDeclaration extends AbstractModelicaDeclaration implements Mo
             }
             resolvedExtends = new ArrayList<>();
             for (ModelicaType decl: ctx.getTypes().getBestCandidates()) {
-                if (decl instanceof ModelicaClassDeclaration) {
-                    resolvedExtends.add(((ModelicaClassDeclaration) decl).getClassScope());
+                if (decl instanceof ModelicaClassDeclaration declaration) {
+                    resolvedExtends.add(declaration.getClassScope());
                 }
             }
         }
@@ -182,24 +182,22 @@ class ModelicaClassDeclaration extends AbstractModelicaDeclaration implements Mo
             return;
         }
 
-        if (resolvedSimpleName instanceof ModelicaComponentDeclaration) {
-            ModelicaComponentDeclaration component = (ModelicaComponentDeclaration) resolvedSimpleName;
+        if (resolvedSimpleName instanceof ModelicaComponentDeclaration component) {
             if (result.getState().needRecurseInto(component)) {
                 ResolutionResult<ModelicaType> componentTypes = component.getTypeCandidates();
                 for (ModelicaType tpe : componentTypes.getBestCandidates()) {
-                    if (tpe instanceof ModelicaClassDeclaration) {
-                        ((ModelicaClassDeclaration) tpe).lookupInInstanceScope(result, furtherParts);
+                    if (tpe instanceof ModelicaClassDeclaration declaration) {
+                        declaration.lookupInInstanceScope(result, furtherParts);
                     }
                 }
                 result.markHidingPoint();
                 for (ModelicaType tpe : componentTypes.getHiddenCandidates()) {
-                    if (tpe instanceof ModelicaClassDeclaration) {
-                        ((ModelicaClassDeclaration) tpe).lookupInInstanceScope(result, furtherParts);
+                    if (tpe instanceof ModelicaClassDeclaration declaration) {
+                        declaration.lookupInInstanceScope(result, furtherParts);
                     }
                 }
             }
-        } else if (resolvedSimpleName instanceof ModelicaClassDeclaration) {
-            ModelicaClassDeclaration classDecl = (ModelicaClassDeclaration) resolvedSimpleName;
+        } else if (resolvedSimpleName instanceof ModelicaClassDeclaration classDecl) {
             classDecl.lookupInInstanceScope(result, furtherParts);
         } else {
             throw new IllegalArgumentException("Can recurse into class or component only");

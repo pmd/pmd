@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,7 @@ class ApexCpdTest {
     @BeforeEach
     void setUp() {
         String path = IOUtil.normalizePath("src/test/resources/net/sourceforge/pmd/lang/apex/cpd/issue427");
-        testdir = Paths.get(path);
+        testdir = Path.of(path);
     }
 
     @Test
@@ -40,7 +39,7 @@ class ApexCpdTest {
 
             cpd.performAnalysis(matches -> {
                 assertEquals(1, matches.getMatches().size());
-                Match firstDuplication = matches.getMatches().get(0);
+                Match firstDuplication = matches.getMatches().getFirst();
                 assertTrue(matches.getSourceCodeSlice(firstDuplication.getFirstMark()).startsWith("global with sharing class SFDCEncoder"));
             });
         }

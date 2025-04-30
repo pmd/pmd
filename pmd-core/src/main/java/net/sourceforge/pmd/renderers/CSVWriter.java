@@ -35,7 +35,7 @@ class CSVWriter<T> {
             quoteAndCommify(buf, columns.get(i).title);
         }
 
-        quote(buf, columns.get(columns.size() - 1).title);
+        quote(buf, columns.getLast().title);
 
         buf.append(lineSeparator);
         writer.write(buf.toString());

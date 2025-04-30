@@ -22,8 +22,8 @@ class WithClauseTest extends AbstractPLSQLParserTst {
         List<ASTSelectStatement> selectStatements = input.descendants(ASTSelectStatement.class).toList();
         assertEquals(1, selectStatements.size());
 
-        assertNotNull(selectStatements.get(0).descendants(ASTWithClause.class).first());
-        assertNotNull(selectStatements.get(0).descendants(ASTSelectList.class).first());
+        assertNotNull(selectStatements.getFirst().descendants(ASTWithClause.class).first());
+        assertNotNull(selectStatements.getFirst().descendants(ASTSelectList.class).first());
     }
 
     @Test
@@ -33,7 +33,7 @@ class WithClauseTest extends AbstractPLSQLParserTst {
         List<ASTSelectIntoStatement> selectStatements = input.descendants(ASTSelectIntoStatement.class).toList();
         assertEquals(1, selectStatements.size());
 
-        assertNotNull(selectStatements.get(0).descendants(ASTWithClause.class).first());
-        assertNotNull(selectStatements.get(0).descendants(ASTSelectList.class).first());
+        assertNotNull(selectStatements.getFirst().descendants(ASTWithClause.class).first());
+        assertNotNull(selectStatements.getFirst().descendants(ASTSelectList.class).first());
     }
 }

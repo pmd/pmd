@@ -78,8 +78,7 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
                     return explicitType.getTypeMirror();
                 }
             }
-            if (newT instanceof JClassType) {
-                JClassType classt = (JClassType) newT;
+            if (newT instanceof JClassType classt) {
                 // eg new Foo<>() -> Foo</*error*/>
                 List<JTypeMirror> fakeTypeArgs = Collections.nCopies(classt.getSymbol().getTypeParameterCount(), factory.ts.ERROR);
                 newT = classt.withTypeArguments(fakeTypeArgs);
@@ -106,8 +105,7 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
     @Override
     public @NonNull JTypeMirror getNewType() {
         JTypeMirror typeMirror = myNode.getTypeNode().getTypeMirror();
-        if (typeMirror instanceof JClassType) {
-            JClassType classTypeMirror = (JClassType) typeMirror;
+        if (typeMirror instanceof JClassType classTypeMirror) {
             if (isDiamond()) {
                 classTypeMirror = classTypeMirror.getGenericTypeDeclaration();
             }

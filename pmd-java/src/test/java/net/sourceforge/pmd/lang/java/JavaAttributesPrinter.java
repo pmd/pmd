@@ -36,6 +36,6 @@ public class JavaAttributesPrinter extends RelevantAttributePrinter {
 
     private boolean isBooleanTrue(Object o) {
         // for some reason Boolean::new is called somewhere in the reflection layer
-        return o instanceof Boolean && (Boolean) o;
+        return o instanceof Boolean b && b;
     }
 }

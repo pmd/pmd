@@ -17,13 +17,12 @@ public class ConnectUsingNonConnectorRule extends AbstractModelicaRule {
     private void reportIfViolated(ASTComponentReference ref, Object data) {
         ResolutionResult<ResolvableEntity> resolution = ref.getResolutionCandidates();
         if (!resolution.isUnresolved()) { // no false positive if not resolved at all
-            ResolvableEntity firstDecl = resolution.getBestCandidates().get(0);
-            if (firstDecl instanceof ModelicaComponentDeclaration) {
-                ModelicaComponentDeclaration componentDecl = (ModelicaComponentDeclaration) firstDecl;
+            ResolvableEntity firstDecl = resolution.getBestCandidates().getFirst();
+            if (firstDecl instanceof ModelicaComponentDeclaration componentDecl) {
                 ResolutionResult componentTypes = componentDecl.getTypeCandidates();
                 if (!componentTypes.isUnresolved()) {
-                    if (componentTypes.getBestCandidates().get(0) instanceof ModelicaClassType) {
-                        ModelicaClassType classDecl = (ModelicaClassType) componentTypes.getBestCandidates().get(0);
+                    if (componentTypes.getBestCandidates().getFirst() instanceof ModelicaClassType) {
+                        ModelicaClassType classDecl = (ModelicaClassType) componentTypes.getBestCandidates().getFirst();
                         ModelicaClassSpecialization restriction = classDecl.getSpecialization();
                         if (!classDecl.isConnectorLike()) {
                             asCtx(data).addViolation(ref, restriction.toString());

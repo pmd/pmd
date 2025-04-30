@@ -203,7 +203,7 @@ class BaseTestParserImpl {
                 throw new RuntimeException(
                     "Required tag is missing from the test-xml. Supply either a code or a code-ref tag");
             }
-            Element coderef = coderefs.get(0);
+            Element coderef = coderefs.getFirst();
             Attr id = getRequiredAttribute("id", coderef, err);
             if (id == null) {
                 return null;
@@ -316,7 +316,7 @@ class BaseTestParserImpl {
         } else if (nodes.size() > 1) {
             err.at(nodes.get(1)).error("Duplicate tag ''{0}'' is ignored", nodeName);
         }
-        return nodes.get(0);
+        return nodes.getFirst();
     }
 
     private static String parseTextNode(Node exampleNode) {

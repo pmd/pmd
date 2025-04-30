@@ -35,7 +35,7 @@ public final class ASTReferenceExpression extends AbstractApexNode.Many<Identifi
     @Override
     public String getImage() {
         if (!nodes.isEmpty()) {
-            return nodes.get(0).getString();
+            return nodes.getFirst().getString();
         }
         return "";
     }

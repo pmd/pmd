@@ -88,8 +88,8 @@ public final class Chars implements CharSequence {
      * this class. You can eg pass a StringBuilder if you want.
      */
     public static Chars wrap(CharSequence chars) {
-        if (chars instanceof Chars) {
-            return (Chars) chars;
+        if (chars instanceof Chars chars1) {
+            return chars1;
         } else if (chars.length() == 0) {
             return EMPTY;
         }
@@ -416,8 +416,7 @@ public final class Chars implements CharSequence {
      * @return True if both sequences are logically equal
      */
     public boolean contentEquals(CharSequence cs, boolean ignoreCase) {
-        if (cs instanceof Chars) {
-            Chars chars2 = (Chars) cs;
+        if (cs instanceof Chars chars2) {
             return len == chars2.len && str.regionMatches(ignoreCase, start, chars2.str, chars2.start, len);
         } else {
             return length() == cs.length() && str.regionMatches(ignoreCase, start, cs.toString(), 0, len);
@@ -543,7 +542,7 @@ public final class Chars implements CharSequence {
 
     @Override
     public boolean equals(Object o) {
-        return this == o || o instanceof Chars && contentEquals((Chars) o);
+        return this == o || o instanceof Chars c && contentEquals(c);
     }
 
     @Override
