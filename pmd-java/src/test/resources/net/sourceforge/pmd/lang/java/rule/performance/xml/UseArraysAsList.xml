@@ -254,4 +254,26 @@ class Test {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UseArraysAsList false positive with Sets #5711</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.HashSet;
+import java.util.Set;
+
+public class Foo {
+    private final Set<String> hashSet = new HashSet<>();
+
+    public void parseData(final String dataString) {
+        final String[] myArray = dataString.split(",");
+
+        for (final String element : myArray) {
+            this.hashSet.add(element); // line 11 - false positive
+        }
+        // e.g. this.hashSet = Arrays.asList(myArray); won't compile
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

@@ -25,6 +25,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀 New and noteworthy
 
 ### 🐛 Fixed Issues
+* java-performance
+  * [#5711](https://github.com/pmd/pmd/issues/5711): [java] UseArraysAsList false positive with Sets
 
 ### 🚨 API Changes
 
