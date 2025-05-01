@@ -13,10 +13,10 @@ on:
     # build it monthly: At 04:00 on day-of-month 1.
     - cron:  '0 4 1 * *'
 
-# if another commit is added to the PR (same github.head_ref), then cancel already running jobs
-# and start a new build
+# if another commit is added to the same branch or PR (same github.ref),
+# then cancel already running jobs and start a new build.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:

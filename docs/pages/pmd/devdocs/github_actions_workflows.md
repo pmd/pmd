@@ -15,12 +15,14 @@ last_updated: April 2025 (7.13.0)
 * Builds: <https://github.com/pmd/pmd/actions/workflows/build.yml>
 * Workflow file: <https://github.com/pmd/pmd/blob/main/.github/workflows/build.yml>
 
-This workflow is triggered whenever a pull request is created or synchronized or new commits are pushed to any branch.
-It is designed to run on the main repository in PMD's GitHub organization as well as for forks.
+This workflow is triggered whenever new commits are pushed to a branch (including the default branch and
+including forks) or whenever a pull request is created or synchronized.
+It is designed to run on the main repository in PMD's GitHub organization as well as for forks, as it does
+not require any secrets.
 
 In order to avoid unnecessary builds, we use concurrency control to make sure, we cancel any in-progress jobs for
-the current pull request when a new commit has been pushed. This means, only the latest commit is built, which
-is enough, since only this will be merged in the end. Only the latest build matters.
+the current branch or pull request when a new commit has been pushed. This means, only the latest commit is built,
+which is enough, since only this will be released or merged in the end. Only the latest build matters.
 
 The workflow is self-contained, e.g. it doesn't depend on the shell scripts from PMD's build-tools.
 It also uses only read permissions and doesn't need access to any secrets. It is safe to run also on
@@ -68,7 +70,7 @@ The jobs are:
 
 This workflow runs after "Build" on a pull request is completed. It runs in the context of our own
 repository and has write permissions and complete access to the configured secrets.
-For security reasons, this workflow won't checkout the pull request code and it won't build anything.
+For security reasons, this workflow won't check out the pull request code and won't build anything.
 
 It just uses the artifacts from the pull request build, uploads it as static website and adds
 a commit status and check status to the PR and finally adds a PR comment.
