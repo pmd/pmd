@@ -174,7 +174,7 @@ jobs:
           
           echo "### Result" >> "${GITHUB_STEP_SUMMARY}"
           echo "${comment}" >> "${GITHUB_STEP_SUMMARY}"
-      - uses: marocchino/sticky-pull-request-comment@v2
+      - uses: marocchino/sticky-pull-request-comment@67d0dec7b07ed060a405f9b2a64b8ab319fdd7db #v2.9.2
         with:
           header: pmd-publish-pull-requests
           number: ${{ env.PR_NUMBER }}
