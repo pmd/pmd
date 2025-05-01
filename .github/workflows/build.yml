@@ -6,7 +6,7 @@ on:
   push:
     branches:
       - '**'
-      # don't run on dependabot branches. Dependabot will create a pull requests, which will then be run instead
+      # don't run on dependabot branches. Dependabot will create pull requests, which will then be run instead
       - '!dependabot/**'
   workflow_dispatch:
   schedule:
@@ -42,11 +42,12 @@ jobs:
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
-          path: ~/.m2/repository
+          path: .m2/repository
           enableCrossOsArchive: true
       - name: Fast Build with Maven
         run: |
           ./mvnw --show-version --errors --batch-mode \
+            -Dmaven.repo.local=.m2/repository \
             verify -PfastSkip -DskipTests \
             deploy:deploy -DdogfoodStagingRepo="$(pwd)/target/staging"
       - name: Cleanup local repository
@@ -55,7 +56,7 @@ jobs:
           # Some information is stored in maven-metadata-*.xml files which tells maven which
           # version exactly is available in the staging repo. But if we rerun the build using the
           # older cache, it points to the old staging versions, which are not available anymore.
-          find ~/.m2/repository/net/sourceforge/pmd -type d -name "*-SNAPSHOT" -and -not -wholename "*/pmd-designer/*" | xargs rm -vrf
+          find .m2/repository/net/sourceforge/pmd -type d -name "*-SNAPSHOT" -and -not -path "*/pmd-designer/*" -print0 | xargs -0 rm -vrf
       - uses: actions/upload-artifact@v4
         with:
           name: compile-artifact
@@ -95,7 +96,7 @@ jobs:
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
-          path: ~/.m2/repository
+          path: .m2/repository
           enableCrossOsArchive: true
       - uses: actions/download-artifact@v4
         with:
@@ -103,6 +104,7 @@ jobs:
       - name: Full Build with Maven
         run: |
           ./mvnw --show-version --errors --batch-mode \
+              -Dmaven.repo.local=.m2/repository \
               verify \
               -DskipTests -Dmaven.test.skip=true
 
@@ -135,22 +137,25 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
       # only restore the cache, don't create a new cache
-      # under Windows, hashFiles('**/pom.xml') gives a different result due to line endings
+      # Note: this works under Windows only if pom.xml files use LF, so that hashFiles('**/pom.xml')
+      # gives the same result (line endings...).
+      # see .gitattributes for pom.xml - it should always be using lf.
       - uses: actions/cache/restore@v4
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
-          path: ~/.m2/repository
+          path: .m2/repository
           enableCrossOsArchive: true
       - uses: actions/download-artifact@v4
         # we can only reuse compile-artifacts under linux due to file timestamp issues and
-        # platform specific line endings in test files.
+        # platform specific line endings in test resource files.
         if: ${{ runner.os == 'Linux' }}
         with:
           name: compile-artifact
       - name: Build with Maven and run unit tests
         run: |
           ./mvnw --show-version --errors --batch-mode \
+              -Dmaven.repo.local=.m2/repository \
               verify \
               -PfastSkip -Dcyclonedx.skip=false \
               -Djava8.home="${JAVA_HOME_8_X64}" \
@@ -174,7 +179,7 @@ jobs:
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
-          path: ~/.m2/repository
+          path: .m2/repository
           enableCrossOsArchive: true
       - uses: actions/download-artifact@v4
         with:
@@ -197,12 +202,14 @@ jobs:
 
           new_version="${current_pmd_version}-dogfood-${dogfood_name}-SNAPSHOT"
           echo "::group::Set version to ${new_version}"
-          ./mvnw versions:set --quiet -DnewVersion="${new_version}" -DgenerateBackupPoms=false
+          ./mvnw -Dmaven.repo.local=.m2/repository \
+            versions:set --quiet -DnewVersion="${new_version}" -DgenerateBackupPoms=false
           sed -i 's/<version>[0-9]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}.*<\/version>\( *<!-- pmd.dogfood.version -->\)/<version>'"${current_pmd_version}"'<\/version>\1/' pom.xml
           echo "::endgroup::"
 
           echo "::group::Run ./mvnw verify"
           ./mvnw --show-version --errors --batch-mode \
+            -Dmaven.repo.local=.m2/repository \
             verify \
             -PfastSkip \
             -DdogfoodStagingRepo="$(pwd)/target/staging" \
@@ -212,7 +219,8 @@ jobs:
           echo "::endgroup::"
 
           echo "::group::Restore version to ${current_pmd_version}"
-          ./mvnw versions:set --quiet -DnewVersion="${current_pmd_version}" -DgenerateBackupPoms=false
+          ./mvnw -Dmaven.repo.local=.m2/repository \
+            versions:set --quiet -DnewVersion="${current_pmd_version}" -DgenerateBackupPoms=false
           git checkout -- pom.xml
           echo "::endgroup::"
 
@@ -233,7 +241,7 @@ jobs:
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
-          path: ~/.m2/repository
+          path: .m2/repository
           enableCrossOsArchive: true
       - uses: actions/download-artifact@v4
         with:
@@ -241,6 +249,7 @@ jobs:
       - name: Generate rule docs
         run: |
           ./mvnw --show-version --errors --batch-mode \
+            -Dmaven.repo.local=.m2/repository \
             verify \
             -Pgenerate-rule-docs,fastSkip \
             -DskipTests -Dmaven.test.skip=true -Dassembly.skipAssembly=true
