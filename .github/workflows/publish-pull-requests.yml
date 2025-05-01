@@ -156,9 +156,12 @@ jobs:
           comment="[Documentation Preview](https://pull-requests.pmd-code.org/pr-${PR_NUMBER}/${PR_SHA}/docs)
           
           ${summary}
+          
+          (comment created at $(date -u --rfc-3339=seconds) for ${PR_SHA})
           "
           echo "${comment}" > comment.txt
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
+          header: pmd-publish-pull-requests
           number: ${{ env.PR_NUMBER }}
           path: comment.txt
