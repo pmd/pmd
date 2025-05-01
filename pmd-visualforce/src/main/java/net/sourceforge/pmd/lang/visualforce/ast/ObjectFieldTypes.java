@@ -41,6 +41,9 @@ import com.google.common.reflect.ClassPath;
 
 /**
  * Responsible for storing a mapping of Fields that can be referenced from Visualforce to the type of the field.
+ *
+ * <p>SFDX and MDAPI project formats are supported.
+ * @see <a href="https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_source_file_format.htm">Salesforce DX Project Structure and Source Format</a>
  */
 class ObjectFieldTypes extends SalesforceFieldTypes {
     private static final Logger LOG = LoggerFactory.getLogger(ObjectFieldTypes.class);
@@ -50,21 +53,25 @@ class ObjectFieldTypes extends SalesforceFieldTypes {
     private static final String MDAPI_OBJECT_FILE_SUFFIX = ".object";
     private static final String SFDX_FIELD_FILE_SUFFIX = ".field-meta.xml";
 
-    private static final Map<String, DataType> STANDARD_FIELD_TYPES;
+    private static final Map<String, DataType> SYSTEM_FIELDS;
     private static final Map<String, ClassPath.ClassInfo> SOBJECTS;
 
     static {
-        STANDARD_FIELD_TYPES = new HashMap<>();
-        STANDARD_FIELD_TYPES.put("createdbyid", DataType.Lookup);
-        STANDARD_FIELD_TYPES.put("createddate", DataType.DateTime);
-        STANDARD_FIELD_TYPES.put("id", DataType.Lookup);
-        STANDARD_FIELD_TYPES.put("isdeleted", DataType.Checkbox);
-        STANDARD_FIELD_TYPES.put("lastmodifiedbyid", DataType.Lookup);
-        STANDARD_FIELD_TYPES.put("lastmodifieddate", DataType.DateTime);
-        STANDARD_FIELD_TYPES.put("name", DataType.Text);
-        STANDARD_FIELD_TYPES.put("systemmodstamp", DataType.DateTime);
+        // see https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/system_fields.htm
+        SYSTEM_FIELDS = new HashMap<>();
+        SYSTEM_FIELDS.put("id", DataType.Lookup);
+        SYSTEM_FIELDS.put("isdeleted", DataType.Checkbox);
+        SYSTEM_FIELDS.put("createdbyid", DataType.Lookup);
+        SYSTEM_FIELDS.put("createddate", DataType.DateTime);
+        SYSTEM_FIELDS.put("lastmodifiedbyid", DataType.Lookup);
+        SYSTEM_FIELDS.put("lastmodifieddate", DataType.DateTime);
+        SYSTEM_FIELDS.put("systemmodstamp", DataType.DateTime);
+        // name is not defined as systemfield, but might occur frequently
+        SYSTEM_FIELDS.put("name", DataType.Text);
 
         try {
+            // see https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_list.htm
+            // and https://github.com/apex-dev-tools/sobject-types
             SOBJECTS = Collections.unmodifiableMap(
                     ClassPath.from(ClassLoader.getSystemClassLoader())
                             .getTopLevelClasses(com.nawforce.runforce.SObjects.Account.class.getPackage().getName())
@@ -135,7 +142,7 @@ class ObjectFieldTypes extends SalesforceFieldTypes {
             String objectName = parts[0];
             String fieldName = parts[1];
 
-            addStandardFields(objectName);
+            addSystemFields(objectName);
 
             // Attempt to find a metadata file that contains the custom field. The information will be located in a
             // file located at <objectDirectory>/<objectName>.object or in an file located at
@@ -169,6 +176,10 @@ class ObjectFieldTypes extends SalesforceFieldTypes {
     /**
      * Sfdx projects decompose custom fields into individual files. This method will return the individual file that
      * corresponds to &lt;objectName&gt;.&lt;fieldName&gt; if it exists.
+     *
+     * <p>Note: these metadata files are created not only for custom fields, but also for standard fields that
+     * are used within the project. The metadata of these standard fields (fields of standard objects) provide
+     * less explicit information. E.g. the type is not available the metadata file for these standard fields.
      *
      * @return path to the metadata file for the Custom Field or null if not found
      */
@@ -267,11 +278,13 @@ class ObjectFieldTypes extends SalesforceFieldTypes {
     }
 
     /**
-     * Add the set of standard fields which aren't present in the metadata file, but may be refernced from the
+     * Add the set of system fields which aren't present in the metadata file, but may be referenced from the
      * visualforce page.
+     *
+     * @see <a href="https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/system_fields.htm">Overview of Salesforce Objects and Fields / System Fields</a>
      */
-    private void addStandardFields(String customObjectName) {
-        for (Map.Entry<String, DataType> entry : STANDARD_FIELD_TYPES.entrySet()) {
+    private void addSystemFields(String customObjectName) {
+        for (Map.Entry<String, DataType> entry : SYSTEM_FIELDS.entrySet()) {
             putDataType(customObjectName + "." + entry.getKey(), entry.getValue());
         }
     }
