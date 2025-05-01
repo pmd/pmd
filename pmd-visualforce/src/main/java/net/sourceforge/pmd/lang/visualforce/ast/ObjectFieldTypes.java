@@ -5,15 +5,19 @@
 package net.sourceforge.pmd.lang.visualforce.ast;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -33,6 +37,8 @@ import org.xml.sax.SAXException;
 
 import net.sourceforge.pmd.lang.visualforce.DataType;
 
+import com.google.common.reflect.ClassPath;
+
 /**
  * Responsible for storing a mapping of Fields that can be referenced from Visualforce to the type of the field.
  */
@@ -45,6 +51,7 @@ class ObjectFieldTypes extends SalesforceFieldTypes {
     private static final String SFDX_FIELD_FILE_SUFFIX = ".field-meta.xml";
 
     private static final Map<String, DataType> STANDARD_FIELD_TYPES;
+    private static final Map<String, ClassPath.ClassInfo> SOBJECTS;
 
     static {
         STANDARD_FIELD_TYPES = new HashMap<>();
@@ -56,6 +63,18 @@ class ObjectFieldTypes extends SalesforceFieldTypes {
         STANDARD_FIELD_TYPES.put("lastmodifieddate", DataType.DateTime);
         STANDARD_FIELD_TYPES.put("name", DataType.Text);
         STANDARD_FIELD_TYPES.put("systemmodstamp", DataType.DateTime);
+
+        try {
+            SOBJECTS = Collections.unmodifiableMap(
+                    ClassPath.from(ClassLoader.getSystemClassLoader())
+                            .getTopLevelClasses(com.nawforce.runforce.SObjects.Account.class.getPackage().getName())
+                            .stream()
+                            .collect(Collectors.toMap(c -> c.getSimpleName().toLowerCase(Locale.ROOT),
+                                    Function.identity()))
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -172,8 +191,33 @@ class ObjectFieldTypes extends SalesforceFieldTypes {
             Document document = documentBuilder.parse(sfdxCustomFieldPath.toFile());
             Node fullNameNode = (Node) sfdxCustomFieldFullNameExpression.evaluate(document, XPathConstants.NODE);
             Node typeNode = (Node) sfdxCustomFieldTypeExpression.evaluate(document, XPathConstants.NODE);
-            String type = typeNode.getNodeValue();
-            DataType dataType = DataType.fromString(type);
+
+            DataType dataType = null;
+
+            if (typeNode != null) {
+                // custom field with a defined type
+                String type = typeNode.getNodeValue();
+                dataType = DataType.fromString(type);
+            } else {
+                // maybe a field from a standard object - the type is then not explicitly in field-meta.xml provided
+                ClassPath.ClassInfo classInfo = SOBJECTS.get(customObjectName.toLowerCase(Locale.ROOT));
+                if (classInfo != null) {
+                    Field[] fields = classInfo.load().getFields();
+                    for (Field f : fields) {
+                        if (f.getName().equalsIgnoreCase(fullNameNode.getNodeValue())) {
+                            dataType = DataType.fromTypeName(f.getType().getSimpleName());
+                            break;
+                        }
+                    }
+                    if (dataType == null) {
+                        LOG.warn("Couldn't determine data type of customObjectName={} from {}", customObjectName, sfdxCustomFieldPath);
+                        dataType = DataType.Unknown;
+                    }
+                } else {
+                    LOG.warn("Couldn't determine data type of customObjectName={} - no sobject definition found", customObjectName);
+                    dataType = DataType.Unknown;
+                }
+            }
 
             String key = customObjectName + "." + fullNameNode.getNodeValue();
             putDataType(key, dataType);
