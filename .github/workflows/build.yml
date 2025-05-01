@@ -185,15 +185,17 @@ jobs:
           path: target/staging
       - name: Run PMD on PMD
         run: |
-          # this only works if the triggering event of this workflow is "pull_request"
-          pr_number="$(jq -r ".number" "${GITHUB_EVENT_PATH}")"
-          echo "Determined PR number: ${pr_number}"
+          if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
+            dogfood_name="pr-$(jq -r ".number" "${GITHUB_EVENT_PATH}")"
+          else
+            dogfood_name="sha-${GITHUB_SHA}"
+          fi
 
           current_pmd_version=$(./mvnw --batch-mode --no-transfer-progress \
               help:evaluate -Dexpression=project.version -q -DforceStdout || echo "failed_to_determine_current_pmd_version")
           echo "Determined current pmd version: ${current_pmd_version}"
 
-          new_version="${current_pmd_version}-pr-${pr_number}-dogfood-SNAPSHOT"
+          new_version="${current_pmd_version}-dogfood-${dogfood_name}-SNAPSHOT"
           echo "::group::Set version to ${new_version}"
           ./mvnw versions:set --quiet -DnewVersion="${new_version}" -DgenerateBackupPoms=false
           sed -i 's/<version>[0-9]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}.*<\/version>\( *<!-- pmd.dogfood.version -->\)/<version>'"${current_pmd_version}"'<\/version>\1/' pom.xml
