@@ -89,11 +89,12 @@ class JavaCommentTest extends BaseParserTest {
     void getLeadingCommentsAnnotatedConstructor() {
         ASTCompilationUnit parsed = java.parse("/* a */ class Foo { /* b */ @SuppressWarnings(\"\") /* c */ Foo() /* d */ {}; }");
 
-        assertLeadingCommentsMatch(parsed, "/* a */", "/* b */", "/* c */", "/* d */");
+        final ASTConstructorDeclaration constructorNode = parsed.descendants(ASTConstructorDeclaration.class).first();
+        assertLeadingCommentsMatch(constructorNode, "/* b */", "/* c */", "/* d */");
     }
 
-    private static void assertLeadingCommentsMatch(ASTCompilationUnit parsed, String... expectedComments) {
-        Assertions.assertThat(JavaComment.getLeadingComments(parsed))
+    private static void assertLeadingCommentsMatch(JavaNode javaNode, String... expectedComments) {
+        Assertions.assertThat(JavaComment.getLeadingComments(javaNode))
                 .extracting(c -> c.getText().toString())
                 .containsExactly(expectedComments);
     }
