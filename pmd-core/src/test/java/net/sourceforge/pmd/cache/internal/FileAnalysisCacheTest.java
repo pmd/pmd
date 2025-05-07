@@ -139,7 +139,7 @@ class FileAnalysisCacheTest {
 
         final List<RuleViolation> cachedViolations = reloadedCache.getCachedViolations(sourceFile);
         assertEquals(1, cachedViolations.size(), "Cached rule violations count mismatch");
-        final RuleViolation cachedViolation = cachedViolations.get(0);
+        final RuleViolation cachedViolation = cachedViolations.getFirst();
         assertSame(sourceFile.getFileId(), cachedViolation.getFileId());
         assertEquals(textLocation.getStartLine(), cachedViolation.getBeginLine());
         assertEquals(textLocation.getStartColumn(), cachedViolation.getBeginColumn());
@@ -219,7 +219,7 @@ class FileAnalysisCacheTest {
                        "Cache believes unmodified file with violations is not up to date");
             List<RuleViolation> cachedViolations = reloadedCache.getCachedViolations(doc1);
             assertEquals(1, cachedViolations.size(), "Cached rule violations count mismatch");
-            final RuleViolation cachedViolation = cachedViolations.get(0);
+            final RuleViolation cachedViolation = cachedViolations.getFirst();
             assertEquals(mockFile.getFileId(), cachedViolation.getLocation().getFileId());
         }
     }

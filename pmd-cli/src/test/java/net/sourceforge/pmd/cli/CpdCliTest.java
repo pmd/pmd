@@ -16,7 +16,6 @@ import static org.hamcrest.Matchers.not;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -36,15 +35,17 @@ class CpdCliTest extends BaseCliTest {
 
     private static final String BASE_RES_PATH = "src/test/resources/net/sourceforge/pmd/cli/cpd/";
     private static final String SRC_DIR = BASE_RES_PATH + "files/";
-    private static final Path SRC_PATH = Paths.get(SRC_DIR).toAbsolutePath();
+    private static final Path SRC_PATH = Path.of(SRC_DIR).toAbsolutePath();
 
-    private static final String CPD_REPORT_HEADER_PATTERN = "<\\?xml version=\"1.0\" encoding=\"UTF-8\"\\?>\n"
-            + "<pmd-cpd xmlns=\"https://pmd-code.org/schema/cpd-report\"\n"
-            + "         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-            + "         pmdVersion=\".+?\"\n"
-            + "         timestamp=\".+?\"\n"
-            + "         version=\"1.0.0\"\n"
-            + "         xsi:schemaLocation=\"https://pmd-code.org/schema/cpd-report https://pmd.github.io/schema/cpd-report_1_0_0.xsd\">\n";
+    private static final String CPD_REPORT_HEADER_PATTERN = """
+            <\\?xml version="1.0" encoding="UTF-8"\\?>
+            <pmd-cpd xmlns="https://pmd-code.org/schema/cpd-report"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     pmdVersion=".+?"
+                     timestamp=".+?"
+                     version="1.0.0"
+                     xsi:schemaLocation="https://pmd-code.org/schema/cpd-report https://pmd.github.io/schema/cpd-report_1_0_0.xsd">
+            """;
 
     private static final Map<String, Integer> NUMBER_OF_TOKENS;
 
@@ -86,7 +87,7 @@ class CpdCliTest extends BaseCliTest {
 
     private String getExpectedFileEntryXml(final String filename) {
         final int numberOfTokens = NUMBER_OF_TOKENS.get(filename);
-        return String.format("   <file path=\"%s\"\n         totalNumberOfTokens=\"%d\"/>\n",
+        return "   <file path=\"%s\"\n         totalNumberOfTokens=\"%d\"/>\n".formatted(
                 filename,
                 numberOfTokens);
     }
@@ -261,7 +262,7 @@ class CpdCliTest extends BaseCliTest {
     void testExitCodeWithLexicalErrors() throws Exception {
         runCli(RECOVERED_ERRORS_OR_VIOLATIONS,
                 "--minimum-tokens", "10",
-                "-d", Paths.get(BASE_RES_PATH, "badandgood", "BadFile.java").toString(),
+                "-d", Path.of(BASE_RES_PATH, "badandgood", "BadFile.java").toString(),
                 "--format", "text")
                 .verify(r -> {
                     r.checkStdErr(containsPattern("Skipping file: Lexical error in file '.*?BadFile\\.java'"));
@@ -273,7 +274,7 @@ class CpdCliTest extends BaseCliTest {
     void testExitCodeWithLexicalErrorsNoFail() throws Exception {
         runCli(OK,
                 "--minimum-tokens", "10",
-                "-d", Paths.get(BASE_RES_PATH, "badandgood", "BadFile.java").toString(),
+                "-d", Path.of(BASE_RES_PATH, "badandgood", "BadFile.java").toString(),
                 "--format", "text",
                 "--no-fail-on-error")
                 .verify(r -> {
@@ -286,7 +287,7 @@ class CpdCliTest extends BaseCliTest {
     void testExitCodeWithLexicalErrorsAndSkipLexical() throws Exception {
         runCli(OK,
                 "--minimum-tokens", "10",
-                "-d", Paths.get(BASE_RES_PATH, "badandgood", "BadFile.java").toString(),
+                "-d", Path.of(BASE_RES_PATH, "badandgood", "BadFile.java").toString(),
                 "--format", "text",
                 "--skip-lexical-errors")
                 .verify(r -> {

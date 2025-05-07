@@ -125,7 +125,7 @@ class ModelicaResolverTest {
 
         List<ASTExtendsClause> extendsClauses = ast.descendants(ASTExtendsClause.class).toList();
         assertEquals(1, extendsClauses.size());
-        ASTExtendsClause extendsB = extendsClauses.get(0);
+        ASTExtendsClause extendsB = extendsClauses.getFirst();
         assertEquals("#ROOT#FILE#Class:Test#Class:A", ((AbstractModelicaScope) extendsB.getMostSpecificScope()).getNestingRepresentation());
     }
 
@@ -174,15 +174,15 @@ class ModelicaResolverTest {
         ASTStoredDefinition ast = modelica.parse(contents);
 
         ResolutionResult<ResolvableEntity> testModelCandidates = testResolvedTypeCount(1, 0, ast.getMostSpecificScope(), true, "TestPackage", "TestModel");
-        ModelicaClassScope testModelScope = ((ModelicaClassType) testModelCandidates.getBestCandidates().get(0)).getClassScope();
+        ModelicaClassScope testModelScope = ((ModelicaClassType) testModelCandidates.getBestCandidates().getFirst()).getClassScope();
         assertEquals(
                 "#ROOT#FILE#Class:TestPackage#Class:TestModel",
                 testModelScope.getNestingRepresentation()
         );
 
         ResolutionResult<ResolvableEntity> aCandidates = testLexicallyResolvedComponents(1, 1, testModelScope, false, "A");
-        ModelicaClassType aBest = (ModelicaClassType) aCandidates.getBestCandidates().get(0);
-        ModelicaClassType aHidden = (ModelicaClassType) aCandidates.getHiddenCandidates().get(0);
+        ModelicaClassType aBest = (ModelicaClassType) aCandidates.getBestCandidates().getFirst();
+        ModelicaClassType aHidden = (ModelicaClassType) aCandidates.getHiddenCandidates().getFirst();
         assertEquals("#ROOT#FILE#Class:TestPackage#Class:TestModel#Class:A",
                 aBest.getClassScope().getNestingRepresentation());
         assertEquals("#ROOT#FILE#Class:TestPackage#Class:A",
@@ -203,16 +203,18 @@ class ModelicaResolverTest {
         List<ResolvableEntity> xs = testResolvedTypeCount(1, 0, ast.getMostSpecificScope(), false, "Test", "A", "x").getBestCandidates();
         assertEquals(
             "#ROOT#FILE#Class:Test#Class:A",
-                ((ModelicaComponentDeclaration) xs.get(0)).getContainingScope().getNestingRepresentation()
+                ((ModelicaComponentDeclaration) xs.getFirst()).getContainingScope().getNestingRepresentation()
         );
     }
 
     @Test
     void nestedStoredDefinitionTest() {
         String contents =
-              "within TestPackage.SubPackage;\n"
-            + "model Test\n"
-            + "end Test;\n";
+              """
+            within TestPackage.SubPackage;
+            model Test
+            end Test;
+            """;
 
         ASTStoredDefinition ast = modelica.parse(contents);
         RootScope rootScope = (RootScope) ast.getMostSpecificScope().getParent();
@@ -220,7 +222,7 @@ class ModelicaResolverTest {
         List<ResolvableEntity> nestedTest = testResolvedTypeCount(1, 0, rootScope, false, "TestPackage", "SubPackage", "Test").getBestCandidates();
         assertEquals(
                 "#ROOT#FILE#Class:Test",
-                ((ModelicaClassType) nestedTest.get(0)).getClassScope().getNestingRepresentation()
+                ((ModelicaClassType) nestedTest.getFirst()).getClassScope().getNestingRepresentation()
         );
 
         // Simple names are visible from within the same file
@@ -233,13 +235,15 @@ class ModelicaResolverTest {
     @Test
     void extendsTest() {
         String contents =
-              "model A\n"
-            + "  model X\n"
-            + "  end X;\n"
-            + "end A;\n"
-            + "model B\n"
-            + "  extends A;"
-            + "end B;";
+              """
+            model A
+              model X
+              end X;
+            end A;
+            model B
+              extends A;\
+            end B;\
+            """;
 
         ASTStoredDefinition ast = modelica.parse(contents);
 
@@ -249,18 +253,20 @@ class ModelicaResolverTest {
     @Test
     void importTest() {
         String contents =
-              "model I\n"
-            + "  model Z\n"
-            + "  end Z;\n"
-            + "end I;\n"
-            + "model A\n"
-            + "  import I.Z;\n"
-            + "  model X\n"
-            + "  end X;\n"
-            + "end A;\n"
-            + "model B\n"
-            + "  extends A;"
-            + "end B;";
+              """
+            model I
+              model Z
+              end Z;
+            end I;
+            model A
+              import I.Z;
+              model X
+              end X;
+            end A;
+            model B
+              extends A;\
+            end B;\
+            """;
 
         ASTStoredDefinition ast = modelica.parse(contents);
 
@@ -280,10 +286,10 @@ class ModelicaResolverTest {
         ASTStoredDefinition ast = modelica.parse(contents);
 
         List<ResolvableEntity> xs = testResolvedComponentCount(1, 0, ast.getMostSpecificScope(), true, "A", "B", "x").getBestCandidates();
-        ModelicaComponentDeclaration x = (ModelicaComponentDeclaration) xs.get(0);
+        ModelicaComponentDeclaration x = (ModelicaComponentDeclaration) xs.getFirst();
         ResolutionResult<ModelicaType> xTypes = x.getTypeCandidates();
         ensureCounts(xTypes, 1, 0);
-        ResolvableEntity tpe = xTypes.getBestCandidates().get(0);
+        ResolvableEntity tpe = xTypes.getBestCandidates().getFirst();
         assertTrue(tpe instanceof ModelicaBuiltinType);
         assertEquals(ModelicaBuiltinType.BaseType.REAL, ((ModelicaBuiltinType) tpe).getBaseType());
     }
@@ -305,7 +311,7 @@ class ModelicaResolverTest {
         testResolvedTypeCount(1, 0, ast.getMostSpecificScope(), false, "Test", "X", "X");
 
         ResolutionResult<ResolvableEntity> result = testResolvedComponentCount(1, 0, ast.getMostSpecificScope(), false, "Test", "X", "mdl");
-        ModelicaComponentDeclaration mdl = (ModelicaComponentDeclaration) result.getBestCandidates().get(0);
+        ModelicaComponentDeclaration mdl = (ModelicaComponentDeclaration) result.getBestCandidates().getFirst();
         ensureCounts(mdl.getTypeCandidates(), 1, 0);
     }
 }

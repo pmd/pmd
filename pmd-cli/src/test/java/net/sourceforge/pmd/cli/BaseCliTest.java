@@ -92,7 +92,7 @@ abstract class BaseCliTest {
 
             @Override
             public boolean matches(Object o) {
-                return o instanceof String && pattern.matcher((String) o).find();
+                return o instanceof String s && pattern.matcher(s).find();
             }
         };
     }
@@ -107,8 +107,8 @@ abstract class BaseCliTest {
 
             @Override
             public boolean matches(Object o) {
-                return o instanceof String
-                    && StringUtils.countMatches((String) o, substring) == times;
+                return o instanceof String s
+                    && StringUtils.countMatches(s, substring) == times;
             }
         };
     }

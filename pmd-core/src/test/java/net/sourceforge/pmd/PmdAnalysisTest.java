@@ -16,7 +16,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -56,7 +56,7 @@ class PmdAnalysisTest {
     @Test
     void testRendererInteractions() throws IOException {
         PMDConfiguration config = new PMDConfiguration();
-        config.addInputPath(Paths.get("sample-source/dummy"));
+        config.addInputPath(Path.of("sample-source/dummy"));
         Renderer renderer = spy(Renderer.class);
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
             pmd.addRenderer(renderer);
@@ -141,7 +141,7 @@ class PmdAnalysisTest {
 
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
             pmd.addRuleSet(ruleset);
-            pmd.files().addFile(Paths.get("src", "test", "resources", "sample-source", "dummy", "foo.txt"), language);
+            pmd.files().addFile(Path.of("src", "test", "resources", "sample-source", "dummy", "foo.txt"), language);
             Report report = pmd.performAnalysisAndCollectReport();
             for (Report.ProcessingError error : report.getProcessingErrors()) {
                 System.out.println("error = " + error.getMsg() + ": " + error.getDetail());

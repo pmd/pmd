@@ -37,15 +37,17 @@ class MatchAlgorithmTest {
     }
 
     private static String getMultipleRepetitionsCode() {
-        return "var x = [\n"
-                + "  1, 1, 1, 1, 1, 1, 1, 1,\n"
-                + "  0, 0, 0, 0, 0, 0, 0, 0,\n"
-                + "  2, 2, 2, 2, 2, 2, 2, 2,\n"
-                + "  0, 0, 0, 0, 0, 0, 0, 0,\n"
-                + "  3, 3, 3, 3, 3, 3, 3, 3,\n"
-                + "  0, 0, 0, 0, 0, 0, 0, 0,\n"
-                + "  4, 4, 4, 4, 4, 4, 4, 4\n"
-                + "];";
+        return """
+                var x = [
+                  1, 1, 1, 1, 1, 1, 1, 1,
+                  0, 0, 0, 0, 0, 0, 0, 0,
+                  2, 2, 2, 2, 2, 2, 2, 2,
+                  0, 0, 0, 0, 0, 0, 0, 0,
+                  3, 3, 3, 3, 3, 3, 3, 3,
+                  0, 0, 0, 0, 0, 0, 0, 0,
+                  4, 4, 4, 4, 4, 4, 4, 4
+                ];\
+                """;
     }
 
     @Test
@@ -63,7 +65,7 @@ class MatchAlgorithmTest {
         MatchAlgorithm matchAlgorithm = new MatchAlgorithm(tokens, 5);
         List<Match> matches = matchAlgorithm.findMatches(new CPDNullListener(), sourceManager);
         assertEquals(1, matches.size());
-        Match match = matches.get(0);
+        Match match = matches.getFirst();
 
         Iterator<Mark> marks = match.iterator();
         Mark mark1 = marks.next();
@@ -93,7 +95,7 @@ class MatchAlgorithmTest {
         MatchAlgorithm matchAlgorithm = new MatchAlgorithm(tokens, 15);
         List<Match> matches = matchAlgorithm.findMatches(new CPDNullListener(), sourceManager);
         assertEquals(1, matches.size());
-        Match match = matches.get(0);
+        Match match = matches.getFirst();
 
         Iterator<Mark> marks = match.iterator();
         Mark mark1 = marks.next();

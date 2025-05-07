@@ -30,113 +30,125 @@ class TestSchemaParserTest {
 
     @Test
     void testSchemaSimple() throws IOException {
-        String file = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                      + "<test-data\n"
-                      + "        xmlns=\"http://pmd.sourceforge.net/rule-tests\"\n"
-                      + "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                      + "        xsi:schemaLocation=\"http://pmd.sourceforge.net/rule-tests net/sourceforge/pmd/test/schema/rule-tests_1_0_0.xsd\">\n"
-                      + "    <test-code>\n"
-                      + "        <description>equality operators with Double.NaN</description>\n"
-                      + "        <expected-problems>4</expected-problems>\n"
-                      + "        <code><![CDATA[\n"
-                      + "            public class Foo {\n"
-                      + "                private int i;\n"
-                      + "            }\n"
-                      + "            ]]></code>\n"
-                      + "    </test-code>\n"
-                      + "    <test-code>\n"
-                      + "        <description>equality operators with Float.NaN</description>\n"
-                      + "        <expected-problems>4</expected-problems>\n"
-                      + "        <code><![CDATA[\n"
-                      + "            public class Foo {\n"
-                      + "            }\n"
-                      + "            ]]></code>\n"
-                      + "    </test-code>\n"
-                      + "</test-data>\n";
+        String file = """
+                      <?xml version="1.0" encoding="UTF-8"?>
+                      <test-data
+                              xmlns="http://pmd.sourceforge.net/rule-tests"
+                              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                              xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests net/sourceforge/pmd/test/schema/rule-tests_1_0_0.xsd">
+                          <test-code>
+                              <description>equality operators with Double.NaN</description>
+                              <expected-problems>4</expected-problems>
+                              <code><![CDATA[
+                                  public class Foo {
+                                      private int i;
+                                  }
+                                  ]]></code>
+                          </test-code>
+                          <test-code>
+                              <description>equality operators with Float.NaN</description>
+                              <expected-problems>4</expected-problems>
+                              <code><![CDATA[
+                                  public class Foo {
+                                  }
+                                  ]]></code>
+                          </test-code>
+                      </test-data>
+                      """;
 
         RuleTestCollection parsed = parseFile(file);
 
         assertEquals(2, parsed.getTests().size());
         assertThat("Indentation should be removed",
-                parsed.getTests().get(0).getCode(), equalTo("public class Foo {\n    private int i;\n}"));
+                parsed.getTests().getFirst().getCode(), equalTo("public class Foo {\n    private int i;\n}"));
     }
 
     @Test
     void testSharedCodeFragment() throws IOException {
-        String file = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                + "<test-data\n"
-                + "        xmlns=\"http://pmd.sourceforge.net/rule-tests\"\n"
-                + "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                + "        xsi:schemaLocation=\"http://pmd.sourceforge.net/rule-tests net/sourceforge/pmd/test/schema/rule-tests_1_0_0.xsd\">\n"
-                + "    <code-fragment id=\"code1\"><![CDATA[\n"
-                + "        public class Foo {\n"
-                + "            private int i;\n"
-                + "        }\n"
-                + "        ]]></code-fragment>\n"
-                + "    <test-code>\n"
-                + "        <description>equality operators with Double.NaN</description>\n"
-                + "        <expected-problems>4</expected-problems>\n"
-                + "        <code-ref id=\"code1\" />\n"
-                + "    </test-code>\n"
-                + "</test-data>\n";
+        String file = """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <test-data
+                        xmlns="http://pmd.sourceforge.net/rule-tests"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests net/sourceforge/pmd/test/schema/rule-tests_1_0_0.xsd">
+                    <code-fragment id="code1"><![CDATA[
+                        public class Foo {
+                            private int i;
+                        }
+                        ]]></code-fragment>
+                    <test-code>
+                        <description>equality operators with Double.NaN</description>
+                        <expected-problems>4</expected-problems>
+                        <code-ref id="code1" />
+                    </test-code>
+                </test-data>
+                """;
 
         RuleTestCollection parsed = parseFile(file);
 
         assertEquals(1, parsed.getTests().size());
         assertThat("Indentation should be removed",
-                parsed.getTests().get(0).getCode(), equalTo("public class Foo {\n    private int i;\n}"));
+                parsed.getTests().getFirst().getCode(), equalTo("public class Foo {\n    private int i;\n}"));
     }
 
     @Test
     void testSchemaDeprecatedAttr() throws Exception {
-        String file = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                      + "<test-data\n"
-                      + "        xmlns=\"http://pmd.sourceforge.net/rule-tests\"\n"
-                      + "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                      + "        xsi:schemaLocation=\"http://pmd.sourceforge.net/rule-tests net/sourceforge/pmd/test/schema/rule-tests_1_0_0.xsd\">\n"
-                      + "    <test-code regressionTest='false'>\n"
-                      + "        <description>equality operators with Double.NaN</description>\n"
-                      + "        <expected-problems>4</expected-problems>\n"
-                      + "        <code><![CDATA[\n"
-                      + "            public class Foo {\n"
-                      + "            }\n"
-                      + "            ]]></code>\n"
-                      + "    </test-code>\n"
-                      + "</test-data>\n";
+        String file = """
+                      <?xml version="1.0" encoding="UTF-8"?>
+                      <test-data
+                              xmlns="http://pmd.sourceforge.net/rule-tests"
+                              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                              xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests net/sourceforge/pmd/test/schema/rule-tests_1_0_0.xsd">
+                          <test-code regressionTest='false'>
+                              <description>equality operators with Double.NaN</description>
+                              <expected-problems>4</expected-problems>
+                              <code><![CDATA[
+                                  public class Foo {
+                                  }
+                                  ]]></code>
+                          </test-code>
+                      </test-data>
+                      """;
 
         String log = SystemLambda.tapSystemErr(() -> {
             RuleTestCollection parsed = parseFile(file);
             assertEquals(1, parsed.getTests().size());
         });
 
-        assertThat(log, containsString(" 6|     <test-code regressionTest='false'>\n"
-                                              + "                   ^^^^^^^^^^^^^^ Attribute 'regressionTest' is deprecated, use 'disabled' with inverted value\n"));
+        assertThat(log, containsString("""
+                                               6|     <test-code regressionTest='false'>
+                                                                 ^^^^^^^^^^^^^^ Attribute 'regressionTest' is deprecated, use 'disabled' with inverted value
+                                              """));
     }
 
     @Test
     void testUnknownProperty() throws Exception {
-        String file = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                + "<test-data\n"
-                + "        xmlns=\"http://pmd.sourceforge.net/rule-tests\"\n"
-                + "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                + "        xsi:schemaLocation=\"http://pmd.sourceforge.net/rule-tests net/sourceforge/pmd/test/schema/rule-tests_1_0_0.xsd\">\n"
-                + "    <test-code>\n"
-                + "        <description>equality operators with Double.NaN</description>\n"
-                + "        <rule-property name='invalid_property'>foo</rule-property>\n"
-                + "        <expected-problems>0</expected-problems>\n"
-                + "        <code><![CDATA[\n"
-                + "            public class Foo {\n"
-                + "            }\n"
-                + "            ]]></code>\n"
-                + "    </test-code>\n"
-                + "</test-data>\n";
+        String file = """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <test-data
+                        xmlns="http://pmd.sourceforge.net/rule-tests"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests net/sourceforge/pmd/test/schema/rule-tests_1_0_0.xsd">
+                    <test-code>
+                        <description>equality operators with Double.NaN</description>
+                        <rule-property name='invalid_property'>foo</rule-property>
+                        <expected-problems>0</expected-problems>
+                        <code><![CDATA[
+                            public class Foo {
+                            }
+                            ]]></code>
+                    </test-code>
+                </test-data>
+                """;
 
         String log = SystemLambda.tapSystemErr(() -> {
             assertThrows(IllegalStateException.class, () -> parseFile(file));
         });
 
-        assertThat(log, containsString("  8|         <rule-property name='invalid_property'>foo</rule-property>\n"
-                                             + "                            ^^^^ Unknown property, known property names are violationSuppressRegex, violationSuppressXPath\n"));
+        assertThat(log, containsString("""
+                                               8|         <rule-property name='invalid_property'>foo</rule-property>
+                                                                         ^^^^ Unknown property, known property names are violationSuppressRegex, violationSuppressXPath
+                                             """));
     }
 
     private RuleTestCollection parseFile(String file) throws IOException {

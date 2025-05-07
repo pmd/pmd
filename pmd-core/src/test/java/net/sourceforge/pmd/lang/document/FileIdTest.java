@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +21,7 @@ class FileIdTest {
 
     @Test
     void testFromPath() {
-        Path path = Paths.get("/a");
+        Path path = Path.of("/a");
         Path absPath = path.toAbsolutePath();
         FileId fileId = FileId.fromPath(path);
         checkId(fileId, absPath.toString(), "a", path.toUri().toString(), path.toString());
@@ -31,7 +30,7 @@ class FileIdTest {
 
     @Test
     void testFromUri() {
-        Path absPath = Paths.get("/a/b.c");
+        Path absPath = Path.of("/a/b.c");
         String uriStr = absPath.toUri().toString();
         FileId fileId = FileId.fromURI(uriStr);
         checkId(fileId, absPath.toAbsolutePath().toString(), "b.c", uriStr, absPath.toAbsolutePath().toString());
@@ -50,7 +49,7 @@ class FileIdTest {
 
     @Test
     void testFromUriForJar() {
-        Path zipPath = Paths.get("/a/b.zip");
+        Path zipPath = Path.of("/a/b.zip");
         String uriStr = "jar:" + zipPath.toUri() + "!/x/c.d";
         FileId fileId = FileId.fromURI(uriStr);
         String absLocalPath = "/x/c.d".replace('/', File.separatorChar);

@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -139,7 +140,7 @@ public class ParserCornerCases17 {
 		String outputFileName = "/foo-out";
 		String zipFileName = "/foo.zip";
 		java.nio.charset.Charset charset = java.nio.charset.Charset.forName("US-ASCII");
-	    java.nio.file.Path outputFilePath = java.nio.file.Paths.get(outputFileName);
+	    java.nio.file.Path outputFilePath = Path.of(outputFileName);
 
 	    // Open zip file and create output file with try-with-resources statement
 	    try (

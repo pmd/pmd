@@ -75,7 +75,7 @@ class VfExpressionTypeVisitor extends VfVisitorBase<Void, Void> {
                 String lowerAttr = attr.getName().toLowerCase(Locale.ROOT);
                 if (CONTROLLER_ATTRIBUTE.equals(lowerAttr)) {
                     // Controller Name should always take precedence
-                    apexClassNames.add(0, getAttrValue(attr));
+                    apexClassNames.addFirst(getAttrValue(attr));
                     break;
                 } else if (STANDARD_CONTROLLER_ATTRIBUTE.equals(lowerAttr)) {
                     standardControllerName = getAttrValue(attr).toLowerCase(Locale.ROOT);

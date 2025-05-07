@@ -51,8 +51,8 @@ public class HtmlCpdLexer implements CpdLexer {
     private void traverse(HtmlNode node, TokenFactory tokenEntries) {
         String image = node.getXPathNodeName();
 
-        if (node instanceof ASTHtmlTextNode) {
-            image = ((ASTHtmlTextNode) node).getWholeText();
+        if (node instanceof ASTHtmlTextNode textNode) {
+            image = textNode.getWholeText();
         }
 
         tokenEntries.recordToken(image, node.getReportLocation());

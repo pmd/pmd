@@ -19,7 +19,7 @@ class JspPageStyleTest extends AbstractJspNodesTst {
     void testComment() {
         List<ASTJspComment> comments = jsp.getNodes(ASTJspComment.class, JSP_COMMENT);
         assertEquals(1, comments.size(), "One comment expected!");
-        ASTJspComment comment = comments.iterator().next();
+        ASTJspComment comment = comments.getFirst();
         assertEquals("some comment", comment.getContent(), "Correct comment content expected!");
     }
 
@@ -32,13 +32,13 @@ class JspPageStyleTest extends AbstractJspNodesTst {
 
         List<ASTJspDirective> directives = root.descendants(ASTJspDirective.class).toList();
         assertEquals(1, directives.size(), "One directive expected!");
-        ASTJspDirective directive = directives.iterator().next();
+        ASTJspDirective directive = directives.getFirst();
         assertEquals("page", directive.getName(), "Correct directive name expected!");
 
         List<ASTJspDirectiveAttribute> directiveAttrs = root.descendants(ASTJspDirectiveAttribute.class).toList();
         assertEquals(2, directiveAttrs.size(), "Two directive attributes expected!");
 
-        ASTJspDirectiveAttribute attr = directiveAttrs.get(0);
+        ASTJspDirectiveAttribute attr = directiveAttrs.getFirst();
         assertEquals("language", attr.getName(), "Correct directive attribute name expected!");
         assertEquals("java", attr.getValue(), "Correct directive attribute value expected!");
 
@@ -55,7 +55,7 @@ class JspPageStyleTest extends AbstractJspNodesTst {
     void testDeclaration() {
         List<ASTJspDeclaration> declarations = jsp.getNodes(ASTJspDeclaration.class, JSP_DECLARATION);
         assertEquals(1, declarations.size(), "One declaration expected!");
-        ASTJspDeclaration declaration = declarations.iterator().next();
+        ASTJspDeclaration declaration = declarations.getFirst();
         assertEquals("String someString = \"s\";", declaration.getContent(), "Correct declaration content expected!");
     }
 
@@ -66,7 +66,7 @@ class JspPageStyleTest extends AbstractJspNodesTst {
     void testScriptlet() {
         List<ASTJspScriptlet> scriptlets = jsp.getNodes(ASTJspScriptlet.class, JSP_SCRIPTLET);
         assertEquals(1, scriptlets.size(), "One scriptlet expected!");
-        ASTJspScriptlet scriptlet = scriptlets.iterator().next();
+        ASTJspScriptlet scriptlet = scriptlets.getFirst();
         assertEquals("someString = someString + \"suffix\";",
                 scriptlet.getContent(), "Correct scriptlet content expected!");
     }
@@ -78,7 +78,7 @@ class JspPageStyleTest extends AbstractJspNodesTst {
     void testExpression() {
         List<ASTJspExpression> expressions = jsp.getNodes(ASTJspExpression.class, JSP_EXPRESSION);
         assertEquals(1, expressions.size(), "One expression expected!");
-        ASTJspExpression expression = expressions.iterator().next();
+        ASTJspExpression expression = expressions.getFirst();
         assertEquals("someString", expression.getContent(), "Correct expression content expected!");
     }
 
@@ -89,7 +89,7 @@ class JspPageStyleTest extends AbstractJspNodesTst {
     void testExpressionInAttribute() {
         List<ASTJspExpressionInAttribute> expressions = jsp.getNodes(ASTJspExpressionInAttribute.class, JSP_EXPRESSION_IN_ATTRIBUTE);
         assertEquals(1, expressions.size(), "One expression expected!");
-        ASTJspExpressionInAttribute expression = expressions.iterator().next();
+        ASTJspExpressionInAttribute expression = expressions.getFirst();
         assertEquals("style.getClass()", expression.getContent(), "Correct expression content expected!");
     }
 
@@ -100,7 +100,7 @@ class JspPageStyleTest extends AbstractJspNodesTst {
     void testElExpression() {
         List<ASTElExpression> expressions = jsp.getNodes(ASTElExpression.class, JSP_EL_EXPRESSION);
         assertEquals(1, expressions.size(), "One expression expected!");
-        ASTElExpression expression = expressions.iterator().next();
+        ASTElExpression expression = expressions.getFirst();
         assertEquals("myBean.get(\"${ World }\")", expression.getContent(), "Correct expression content expected!");
     }
 
@@ -111,7 +111,7 @@ class JspPageStyleTest extends AbstractJspNodesTst {
     void testElExpressionInAttribute() {
         List<ASTElExpression> expressions = jsp.getNodes(ASTElExpression.class, JSP_EL_EXPRESSION_IN_ATTRIBUTE);
         assertEquals(1, expressions.size(), "One expression expected!");
-        ASTElExpression expression = expressions.iterator().next();
+        ASTElExpression expression = expressions.getFirst();
         assertEquals("myValidator.find(\"'jsp'\")", expression.getContent(), "Correct expression content expected!");
     }
 
@@ -122,7 +122,7 @@ class JspPageStyleTest extends AbstractJspNodesTst {
     void testJsfValueBinding() {
         List<ASTValueBinding> valueBindings = jsp.getNodes(ASTValueBinding.class, JSF_VALUE_BINDING);
         assertEquals(1, valueBindings.size(), "One value binding expected!");
-        ASTValueBinding valueBinding = valueBindings.iterator().next();
+        ASTValueBinding valueBinding = valueBindings.getFirst();
         assertEquals("myValidator.find(\"'jsf'\")", valueBinding.getContent(), "Correct expression content expected!");
     }
 

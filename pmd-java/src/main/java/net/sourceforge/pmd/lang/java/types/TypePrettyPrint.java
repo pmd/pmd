@@ -337,7 +337,7 @@ public final class TypePrettyPrint {
                 if (isVarargs) {
                     sb.isVarargs = true;
                 }
-                types.get(types.size() - 1).acceptVisitor(this, sb);
+                types.getLast().acceptVisitor(this, sb);
             }
             sb.append(suffix);
             return null;

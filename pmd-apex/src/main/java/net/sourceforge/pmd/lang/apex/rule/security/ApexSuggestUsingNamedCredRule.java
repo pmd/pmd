@@ -136,11 +136,11 @@ public class ApexSuggestUsingNamedCredRule extends AbstractApexRule {
     }
 
     private boolean isAuthorizationReference(final ApexNode<?> node) {
-        if (node instanceof ASTLiteralExpression) {
-            return isAuthorizationLiteral((ASTLiteralExpression) node);
+        if (node instanceof ASTLiteralExpression expression) {
+            return isAuthorizationLiteral(expression);
         }
-        if (node instanceof ASTVariableExpression) {
-            return isAuthorizationVariable((ASTVariableExpression) node);
+        if (node instanceof ASTVariableExpression expression) {
+            return isAuthorizationVariable(expression);
         }
         return node instanceof ASTBinaryExpression && isAuthorizationReference(node.getChild(0));
     }
@@ -154,13 +154,13 @@ public class ApexSuggestUsingNamedCredRule extends AbstractApexRule {
     }
 
     private boolean isCredentialReference(ApexNode<?> node) {
-        if (node instanceof ASTLiteralExpression) {
-            return isCredentialLiteral((ASTLiteralExpression) node);
+        if (node instanceof ASTLiteralExpression expression) {
+            return isCredentialLiteral(expression);
         }
-        if (node instanceof ASTVariableExpression) {
-            return isCredentialVariable((ASTVariableExpression) node);
+        if (node instanceof ASTVariableExpression expression) {
+            return isCredentialVariable(expression);
         }
-        return node instanceof ASTBinaryExpression && isCredentialBinaryExpression((ASTBinaryExpression) node);
+        return node instanceof ASTBinaryExpression astbe && isCredentialBinaryExpression(astbe);
     }
 
     private boolean isCredentialLiteral(final ASTLiteralExpression literal) {

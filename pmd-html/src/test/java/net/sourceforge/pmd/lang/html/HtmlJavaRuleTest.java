@@ -21,16 +21,17 @@ import net.sourceforge.pmd.reporting.RuleViolation;
 
 class HtmlJavaRuleTest {
     // from https://developer.salesforce.com/docs/component-library/documentation/en/lwc/lwc.js_props_getter
-    private static final String LIGHTNING_WEB_COMPONENT = "<!-- helloExpressions.html -->\n"
-            + "<template>\n"
-            + "    <p>Hello, { greeting}!</p>\n"
-            + "    <lightning-input label=\"Name\" value={ greeting} onchange=\"{ handleChange }\"></lightning-input>\n"
-            + "    <div class=\"slds-m-around_medium\">\n"
-            + "        <lightning-input name='firstName' label=\"First Name\" onchange={ handleChange }></lightning-input>\n"
-            + "        <lightning-input name='lastName' label=\"Last Name\" onchange={handleChange}></lightning-input>\n"
-            + "        <p class=\"slds-m-top_medium\">Uppercased Full Name: {uppercasedFullName}</p>\n"
-            + "    </div>\n"
-            + "</template>";
+    private static final String LIGHTNING_WEB_COMPONENT = """
+            <!-- helloExpressions.html -->
+            <template>
+                <p>Hello, { greeting}!</p>
+                <lightning-input label="Name" value={ greeting} onchange="{ handleChange }"></lightning-input>
+                <div class="slds-m-around_medium">
+                    <lightning-input name='firstName' label="First Name" onchange={ handleChange }></lightning-input>
+                    <lightning-input name='lastName' label="Last Name" onchange={handleChange}></lightning-input>
+                    <p class="slds-m-top_medium">Uppercased Full Name: {uppercasedFullName}</p>
+                </div>
+            </template>""";
 
     @Test
     void findAllAttributesWithInvalidExpression() {
@@ -55,7 +56,7 @@ class HtmlJavaRuleTest {
         rule.setLanguage(HtmlLanguageModule.getInstance());
         List<RuleViolation> violations = runRule(LIGHTNING_WEB_COMPONENT, rule);
         assertEquals(2, violations.size());
-        assertEquals(4, violations.get(0).getBeginLine());
+        assertEquals(4, violations.getFirst().getBeginLine());
         assertEquals(6, violations.get(1).getBeginLine());
     }
 

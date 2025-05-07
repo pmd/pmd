@@ -100,7 +100,7 @@ class PmdRunnableTest {
 
             List<ProcessingError> errors = report.getProcessingErrors();
             assertThat(errors, hasSize(1));
-            assertThat(errors.get(0).getError(), instanceOf(ContextedAssertionError.class));
+            assertThat(errors.getFirst().getError(), instanceOf(ContextedAssertionError.class));
         });
 
     }

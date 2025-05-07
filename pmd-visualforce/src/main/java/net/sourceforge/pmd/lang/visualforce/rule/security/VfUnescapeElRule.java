@@ -61,8 +61,8 @@ public class VfUnescapeElRule extends AbstractVfRule {
         for (int i = 0; i < node.getNumChildren(); i++) {
             Node n = node.getChild(i);
 
-            if (n instanceof ASTElExpression) {
-                processElInScriptContext((ASTElExpression) n, data);
+            if (n instanceof ASTElExpression expression) {
+                processElInScriptContext(expression, data);
             }
         }
     }

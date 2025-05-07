@@ -26,8 +26,8 @@ class AllMetricsTest extends SimpleAggregatorTst {
     }
 
     static String formatApexMessage(Node node, Integer result, String defaultMessage) {
-        if (node instanceof ApexQualifiableNode) {
-            return "''" + ((ApexQualifiableNode) node).getQualifiedName() + "'' has value " + result + ".";
+        if (node instanceof ApexQualifiableNode qualifiableNode) {
+            return "''" + qualifiableNode.getQualifiedName() + "'' has value " + result + ".";
         }
         return defaultMessage;
     }

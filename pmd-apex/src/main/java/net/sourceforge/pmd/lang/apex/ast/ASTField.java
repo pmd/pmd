@@ -82,13 +82,13 @@ public final class ASTField extends AbstractApexNode.Many<Node> {
 
     @Override
     public boolean hasRealLoc() {
-        if (!(nodes.get(0) instanceof TypeRef)) {
+        if (!(nodes.getFirst() instanceof TypeRef)) {
             return super.hasRealLoc();
         }
 
         // only special case if the first child is a TypeRef - then we need to look deeper
         // TypeRef itself doesn't have a source location
-        TypeRef typeRef = (TypeRef) nodes.get(0);
+        TypeRef typeRef = (TypeRef) nodes.getFirst();
         boolean allHaveRealLoc = typeRef.getComponents().stream().noneMatch(c -> c.getId().getSourceLocation().isUnknown());
         // check the remaining nodes (name and optional value)
         for (int i = 1; i < nodes.size(); i++) {
@@ -99,7 +99,7 @@ public final class ASTField extends AbstractApexNode.Many<Node> {
 
     @Override
     protected void calculateTextRegion(TextDocument sourceCode) {
-        if (nodes.get(0) instanceof TypeRef) {
+        if (nodes.getFirst() instanceof TypeRef) {
             super.calculateTextRegion(sourceCode);
         }
 

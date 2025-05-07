@@ -16,17 +16,18 @@ import net.sourceforge.pmd.reporting.Report;
 class XmlXPathRuleTest {
 
     private static final String A_URI = "http://soap.sforce.com/2006/04/metadata";
-    private static final String FXML_IMPORTS = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                                               + "\n"
-                                               + "<!--suppress JavaFxDefaultTag -->\n"
-                                               + "\n"
-                                               + "<?import javafx.scene.layout.AnchorPane?>\n"
-                                               + "<?import javafx.scene.layout.BorderPane?>\n"
-                                               + "<?import javafx.scene.control.Tooltip?>\n"
-                                               + "<?import javafx.scene.control.Label?>\n"
-                                               + "<?import org.kordamp.ikonli.javafx.FontIcon?>\n"
-                                               + "<AnchorPane prefHeight=\"750.0\" prefWidth=\"1200.0\" stylesheets=\"@../css/designer.css\" xmlns=\"http://javafx.com/javafx/8\" xmlns:fx=\"http://javafx.com/fxml/1\">\n"
-                                               + "</AnchorPane>";
+    private static final String FXML_IMPORTS = """
+                                               <?xml version="1.0" encoding="UTF-8"?>
+                                               
+                                               <!--suppress JavaFxDefaultTag -->
+                                               
+                                               <?import javafx.scene.layout.AnchorPane?>
+                                               <?import javafx.scene.layout.BorderPane?>
+                                               <?import javafx.scene.control.Tooltip?>
+                                               <?import javafx.scene.control.Label?>
+                                               <?import org.kordamp.ikonli.javafx.FontIcon?>
+                                               <AnchorPane prefHeight="750.0" prefWidth="1200.0" stylesheets="@../css/designer.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+                                               </AnchorPane>""";
     final XmlParsingHelper xml = XmlParsingHelper.XML;
 
     private Rule makeXPath(String expression) {
@@ -63,8 +64,9 @@ class XmlXPathRuleTest {
     void testRootNodeWildcardUri() {
         // https://github.com/pmd/pmd/issues/3413#issuecomment-1072614398
         Report report = xml.executeRule(makeXPath("/*:Flow"),
-                                        "<Flow xmlns=\"http://soap.sforce.com/2006/04/metadata\">\n"
-                                        + "</Flow>");
+                                        """
+                                        <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+                                        </Flow>""");
 
         assertSize(report, 1);
     }
@@ -72,8 +74,9 @@ class XmlXPathRuleTest {
     @Test
     void testNoNamespaceRoot() {
         Report report = xml.executeRule(makeXPath("/Flow"),
-                                        "<Flow>\n"
-                                        + "</Flow>");
+                                        """
+                                        <Flow>
+                                        </Flow>""");
 
         assertSize(report, 1);
     }
@@ -167,10 +170,11 @@ class XmlXPathRuleTest {
     @Test
     void testComments() {
         Report report = xml.executeRule(makeXPath("/child::comment()[fn:starts-with(fn:string(.), 'suppress')]"),
-                                        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                                        + "<!--suppress JavaFxDefaultTag -->\n"
-                                        + "<AnchorPane prefHeight=\"750.0\" prefWidth=\"1200.0\" stylesheets=\"@../css/designer.css\" xmlns=\"http://javafx.com/javafx/8\" xmlns:fx=\"http://javafx.com/fxml/1\">\n"
-                                        + "</AnchorPane>");
+                                        """
+                                        <?xml version="1.0" encoding="UTF-8"?>
+                                        <!--suppress JavaFxDefaultTag -->
+                                        <AnchorPane prefHeight="750.0" prefWidth="1200.0" stylesheets="@../css/designer.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+                                        </AnchorPane>""");
 
         assertSize(report, 1);
     }
@@ -180,27 +184,28 @@ class XmlXPathRuleTest {
         // https://github.com/pmd/pmd/issues/2766
         Report report = xml.executeRule(
             makeXPath("/manifest[namespace-uri-for-prefix('android', .) = 'http://schemas.android.com/apk/res/android']"),
-            "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-            + "<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\n"
-            + "         package=\"com.a.b\">\n"
-            + "\n"
-            + "        <application\n"
-            + "             android:allowBackup=\"true\"\n"
-            + "             android:icon=\"@mipmap/ic_launcher\"\n"
-            + "             android:label=\"@string/app_name\"\n"
-            + "             android:roundIcon=\"@mipmap/ic_launcher_round\"\n"
-            + "             android:supportsRtl=\"true\"\n"
-            + "             android:theme=\"@style/AppTheme\">\n"
-            + "         <activity android:name=\".MainActivity\">\n"
-            + "             <intent-filter>\n"
-            + "                 <action android:name=\"android.intent.action.MAIN\" />\n"
-            + "\n"
-            + "                 <category android:name=\"android.intent.category.LAUNCHER\" />\n"
-            + "             </intent-filter>\n"
-            + "         </activity>\n"
-            + "     </application>\n"
-            + "\n"
-            + "</manifest>");
+            """
+            <?xml version="1.0" encoding="utf-8"?>
+            <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+                     package="com.a.b">
+            
+                    <application
+                         android:allowBackup="true"
+                         android:icon="@mipmap/ic_launcher"
+                         android:label="@string/app_name"
+                         android:roundIcon="@mipmap/ic_launcher_round"
+                         android:supportsRtl="true"
+                         android:theme="@style/AppTheme">
+                     <activity android:name=".MainActivity">
+                         <intent-filter>
+                             <action android:name="android.intent.action.MAIN" />
+            
+                             <category android:name="android.intent.category.LAUNCHER" />
+                         </intent-filter>
+                     </activity>
+                 </application>
+            
+            </manifest>""");
 
         assertSize(report, 1);
     }

@@ -105,7 +105,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 
         for (ASTVariableExpression varExpression : nodes) {
             if (urlParameterStrings.contains(Helper.getFQVariableName(varExpression))) {
-                asCtx(data).addViolation(nodes.get(0));
+                asCtx(data).addViolation(nodes.getFirst());
             }
         }
 
@@ -169,8 +169,8 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 
                 String varType = null;
 
-                if (node instanceof ASTVariableDeclaration) {
-                    varType = ((ASTVariableDeclaration) node).getType();
+                if (node instanceof ASTVariableDeclaration declaration) {
+                    varType = declaration.getType();
 
                 }
 
@@ -208,8 +208,8 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
         if (methodCallAssignment != null) {
 
             String varType = null;
-            if (node instanceof ASTVariableDeclaration) {
-                varType = ((ASTVariableDeclaration) node).getType();
+            if (node instanceof ASTVariableDeclaration declaration) {
+                varType = declaration.getType();
             }
 
             if (varType == null || !"id".equalsIgnoreCase(varType)) {
@@ -233,7 +233,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
             break;
         case 2: {
             // Look for: foo = bar;
-            final ASTVariableExpression right = reverseOrder ? nodes.get(0) : nodes.get(1);
+            final ASTVariableExpression right = reverseOrder ? nodes.getFirst() : nodes.get(1);
 
             if (urlParameterStrings.contains(Helper.getFQVariableName(right))) {
                 asCtx(data).addViolation(right);

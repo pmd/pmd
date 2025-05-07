@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.visualforce;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
@@ -61,7 +60,7 @@ public final class VFTestUtils {
      * src/test/resources/_decomposed_test_package_name_/_test_class_name_minus_Test_/metadata/_metadata_format_/_metadata_type_
      */
     public static Path getMetadataPath(Object testClazz, MetadataFormat metadataFormat, MetadataType metadataType) {
-        Path path = Paths.get("src", "test", "resources");
+        Path path = Path.of("src", "test", "resources");
         // Decompose the test's package structure into directories
         for (String directory : testClazz.getClass().getPackage().getName().split("\\.")) {
             path = path.resolve(directory);

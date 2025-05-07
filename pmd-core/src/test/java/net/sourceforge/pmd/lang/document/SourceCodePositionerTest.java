@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.document;
 
+import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link SourceCodePositioner}.
@@ -122,9 +122,11 @@ class SourceCodePositionerTest {
 
     @Test
     void lineToOffsetMappingWithLineFeedShouldSucceed() {
-        final String code = "public static int main(String[] args) {\n"
-            + "int var;\n"
-            + "}";
+        final String code = """
+            public static int main(String[] args) {
+            int var;
+            }\
+            """;
 
         SourceCodePositioner positioner = SourceCodePositioner.create(code);
 
@@ -133,24 +135,28 @@ class SourceCodePositionerTest {
 
     @Test
     void lineToOffsetMappingWithCarriageReturnFeedLineFeedShouldSucceed() {
-        final String code = "public static int main(String[] args) {\r\n"
-            + "int var;\r\n"
-            + "}";
+        final String code = """
+            public static int main(String[] args) {
+            int var;
+            }\
+            """;
 
         SourceCodePositioner positioner = SourceCodePositioner.create(code);
 
-        assertArrayEquals(new int[] { 0, 41, 51, 52 }, positioner.getLineOffsets());
+        assertArrayEquals(new int[]{0, 40, 49, 50}, positioner.getLineOffsets());
     }
 
     @Test
     void lineToOffsetMappingWithMixedLineSeparatorsShouldSucceed() {
-        final String code = "public static int main(String[] args) {\r\n"
-            + "int var;\n"
-            + "}";
+        final String code = """
+            public static int main(String[] args) {
+            int var;
+            }\
+            """;
 
         SourceCodePositioner positioner = SourceCodePositioner.create(code);
 
-        assertArrayEquals(new int[] { 0, 41, 50, 51 }, positioner.getLineOffsets());
+        assertArrayEquals(new int[]{0, 40, 49, 50}, positioner.getLineOffsets());
     }
 
 }

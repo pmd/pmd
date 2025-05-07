@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.visualforce.ast;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -57,11 +56,11 @@ abstract class SalesforceFieldTypes {
             return null;
         } else {
             // todo that could be done in the caller
-            Path vfFilePath = Paths.get(vfFileName.getAbsolutePath());
+            Path vfFilePath = Path.of(vfFileName.getAbsolutePath());
             List<Path> resolvedPaths = new ArrayList<>();
             for (String metadataDirectory : metadataDirectories) {
-                if (Paths.get(metadataDirectory).isAbsolute()) {
-                    resolvedPaths.add(Paths.get(metadataDirectory));
+                if (Path.of(metadataDirectory).isAbsolute()) {
+                    resolvedPaths.add(Path.of(metadataDirectory));
                 } else {
                     resolvedPaths.add(vfFilePath.getParent().resolve(metadataDirectory));
                 }

@@ -56,7 +56,7 @@ public final class ProgressBarListener implements GlobalAnalysisListener {
     }
 
     private String extraMessage() {
-        return String.format("Violations:%d, Errors:%d", numViolations.get(), numErrors.get());
+        return "Violations:%d, Errors:%d".formatted(numViolations.get(), numErrors.get());
     }
 
     @Override

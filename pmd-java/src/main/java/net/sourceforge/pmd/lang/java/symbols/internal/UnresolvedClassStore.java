@@ -60,8 +60,8 @@ public final class UnresolvedClassStore {
 
     public @NonNull JClassSymbol makeUnresolvedReference(JClassSymbol qualifier, String simpleName, int typeArity) {
 
-        if (qualifier instanceof UnresolvedClassImpl) {
-            UnresolvedClassImpl child = ((UnresolvedClassImpl) qualifier).getOrCreateUnresolvedChildClass(simpleName);
+        if (qualifier instanceof UnresolvedClassImpl impl) {
+            UnresolvedClassImpl child = impl.getOrCreateUnresolvedChildClass(simpleName);
             child.setTypeParameterCount(typeArity);
             this.unresolved.putIfAbsent(child.getCanonicalName(), child);
             return child;

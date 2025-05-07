@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
@@ -57,7 +56,7 @@ class PMDCoverageTest {
             String output = SystemLambda.tapSystemOut(() -> {
                 String errorOutput = SystemLambda.tapSystemErr(() -> {
                     PMDConfiguration conf = new PMDConfiguration();
-                    conf.addInputPath(Paths.get(inputPath));
+                    conf.addInputPath(Path.of(inputPath));
                     conf.setReportFile(f);
                     conf.addRuleSet("rulesets/internal/all-java.xml");
                     conf.setThreads(Runtime.getRuntime().availableProcessors());

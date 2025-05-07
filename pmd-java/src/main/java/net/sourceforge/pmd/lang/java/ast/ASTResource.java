@@ -77,8 +77,8 @@ public final class ASTResource extends AbstractJavaNode {
      */
     public ASTExpression getInitializer() {
         Node c = getChild(0);
-        if (c instanceof ASTExpression) {
-            return (ASTExpression) c;
+        if (c instanceof ASTExpression expression) {
+            return expression;
         } else {
             return ((ASTLocalVariableDeclaration) c).iterator().next().getInitializer();
         }

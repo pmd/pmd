@@ -47,7 +47,7 @@ class ElementNodeTest {
         assertEquals(Type.ELEMENT, rootElt.getNodeKind());
         assertSame(rootElt, treeInfo.findWrapperFor(root));
 
-        AstElementNode elementFoo0 = rootElt.getChildren().get(0);
+        AstElementNode elementFoo0 = rootElt.getChildren().getFirst();
         assertSame(c0, elementFoo0.getUnderlyingNode());
         assertSame(elementFoo0, treeInfo.findWrapperFor(c0));
 
@@ -79,7 +79,7 @@ class ElementNodeTest {
         assertEquals(Type.ELEMENT, rootElt.getNodeKind());
         assertSame(rootElt, treeInfo.findWrapperFor(root));
 
-        AstElementNode elementFoo0 = rootElt.getChildren().get(0);
+        AstElementNode elementFoo0 = rootElt.getChildren().getFirst();
         assertEquals(Type.ELEMENT, elementFoo0.getNodeKind());
         assertSame(c0, elementFoo0.getUnderlyingNode());
         assertSame(elementFoo0, treeInfo.findWrapperFor(c0));
@@ -100,7 +100,7 @@ class ElementNodeTest {
         AstTreeInfo treeInfo = new AstTreeInfo(root, configuration);
         AstElementNode rootElt = treeInfo.getRootNode().getRootElement();
 
-        AstElementNode elementComment = rootElt.getChildren().get(0);
+        AstElementNode elementComment = rootElt.getChildren().getFirst();
         assertEquals("#comment", c1.getXPathNodeName());
         assertEquals(Type.COMMENT, elementComment.getNodeKind());
         assertSame(c1, elementComment.getUnderlyingNode());

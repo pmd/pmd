@@ -75,8 +75,8 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
         if (literal != null) {
             int index = literal.getIndexInParent();
             if (index == 0) {
-                if (node instanceof ASTVariableDeclaration) {
-                    addVariable((ASTVariableDeclaration) node);
+                if (node instanceof ASTVariableDeclaration declaration) {
+                    addVariable(declaration);
                 } else if (node instanceof ASTBinaryExpression) {
                     ASTVariableDeclaration parent = node.ancestors(ASTVariableDeclaration.class).first();
                     if (parent != null) {
@@ -93,8 +93,7 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
                 }
             }
         } else {
-            if (node instanceof ASTField) {
-                ASTField field = (ASTField) node;
+            if (node instanceof ASTField field) {
                 if ("String".equalsIgnoreCase(field.getType())) {
                     if (field.getValue() != null) {
                         listOfStringLiteralVariables.add(Helper.getFQVariableName(field));

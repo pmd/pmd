@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -37,10 +36,10 @@ class UnusedMethodTest {
 
     @Test
     void findUnusedMethodsWithSfdxProject() throws Exception {
-        Path testProjectDir = Paths.get("src/test/resources/net/sourceforge/pmd/lang/apex/rule/design/UnusedMethod/project1");
+        Path testProjectDir = Path.of("src/test/resources/net/sourceforge/pmd/lang/apex/rule/design/UnusedMethod/project1");
         Report report = runRule(testProjectDir);
         assertEquals(1, report.getViolations().size());
-        assertViolation(report.getViolations().get(0), "Foo.cls", 10); // line 10 is method unusedMethod()
+        assertViolation(report.getViolations().getFirst(), "Foo.cls", 10); // line 10 is method unusedMethod()
     }
 
     private void assertViolation(RuleViolation violation, String fileName, int lineNumber) {

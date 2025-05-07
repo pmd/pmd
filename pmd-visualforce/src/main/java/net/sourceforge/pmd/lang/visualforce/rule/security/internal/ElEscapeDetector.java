@@ -80,7 +80,7 @@ public final class ElEscapeDetector {
         for (int i = 0; i < childCount; i++) {
             VfNode child = expression.getChild(i);
 
-            if (child instanceof ASTIdentifier) {
+            if (child instanceof ASTIdentifier identifier) {
                 // How we deal with an Identifier depends on what the next node after it is.
                 VfNode nextNode = getNextSibling(child);
                 if (nextNode instanceof ASTArguments || nextNode instanceof ASTDotExpression) {
@@ -92,13 +92,13 @@ public final class ElEscapeDetector {
                 }
                 // If there's no next node, or the next node isn't one of the desired types, then this Identifier is a raw
                 // variable.
-                if (typedNodeIsSafe((ASTIdentifier) child)) {
+                if (typedNodeIsSafe(identifier)) {
                     // If the raw variable is of an inherently safe type, we can keep going.
                     continue;
                 }
                 // If the raw variable isn't inherently safe, then it's dangerous, and must be escaped.
                 return false;
-            } else if (child instanceof ASTArguments) {
+            } else if (child instanceof ASTArguments arguments) {
                 // An Arguments node means we're looking at some kind of function call.
                 // If it's one of our designated escape functions, we're in the clear and we can keep going.
                 // Also, some built-in functions are inherently safe, which would mean we're good to continue.
@@ -107,7 +107,7 @@ public final class ElEscapeDetector {
                 }
 
                 // Otherwise, identify the argument expressions that must be checked, and add them to the list.
-                relevantChildren.addAll(getXssableArguments(prevId, (ASTArguments) child));
+                relevantChildren.addAll(getXssableArguments(prevId, arguments));
             } else if (child instanceof ASTDotExpression) {
                 // Dot expressions mean we're doing accessing properties of variables.
                 // If the variable is one of the definitely-safe global variables, then we're in the clear.
@@ -128,9 +128,9 @@ public final class ElEscapeDetector {
                     // If the node isn't definitely safe, it ought to be escaped. Return false.
                     return false;
                 }
-            } else if (child instanceof ASTExpression) {
+            } else if (child instanceof ASTExpression tExpression) {
                 // Expressions should always be added to the list.
-                relevantChildren.add((ASTExpression) child);
+                relevantChildren.add(tExpression);
             }
         }
         // Just because there's nothing immediately wrong with this node doesn't mean its children are guaranteed to be
@@ -224,8 +224,8 @@ public final class ElEscapeDetector {
             // should, but better safe than sorry.)
             for (int i : indicesToCheck) {
                 VfNode ithArg = arguments.getChild(i);
-                if (ithArg instanceof ASTExpression) {
-                    exprs.add((ASTExpression) ithArg);
+                if (ithArg instanceof ASTExpression expression) {
+                    exprs.add(expression);
                 }
             }
         }
@@ -260,14 +260,14 @@ public final class ElEscapeDetector {
                 return true;
             }
 
-            if (child instanceof ASTArguments) {
-                if (containsSafeFields((ASTArguments) child)) {
+            if (child instanceof ASTArguments arguments) {
+                if (containsSafeFields(arguments)) {
                     return true;
                 }
             }
 
-            if (child instanceof ASTDotExpression) {
-                if (innerContainsSafeFields((ASTDotExpression) child)) {
+            if (child instanceof ASTDotExpression dotExpression) {
+                if (innerContainsSafeFields(dotExpression)) {
                     return true;
                 }
             }

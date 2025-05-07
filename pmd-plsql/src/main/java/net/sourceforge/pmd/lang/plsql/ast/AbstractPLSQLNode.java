@@ -36,8 +36,8 @@ abstract class AbstractPLSQLNode extends AbstractJjtreeNode<AbstractPLSQLNode, P
     @Override
     @SuppressWarnings("unchecked")
     public final <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
-        if (visitor instanceof PlsqlVisitor) {
-            return acceptPlsqlVisitor((PlsqlVisitor<? super P, ? extends R>) visitor, data);
+        if (visitor instanceof PlsqlVisitor<? super P, ? extends R> plsqlVisitor) {
+            return acceptPlsqlVisitor(plsqlVisitor, data);
         }
         return visitor.cannotVisit(this, data);
     }

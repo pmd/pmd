@@ -24,7 +24,7 @@ public class AvoidHardcodingIdRule extends AbstractApexRule {
         final char[] chartable = "ABCDEFGHIJKLMNOPQRSTUVWXYZ012345".toCharArray();
 
         for (int i = 0; i < chartable.length; i++) {
-            lookup.put(String.format("%5s", Integer.toBinaryString(i)).replace(' ', '0'), chartable[i]);
+            lookup.put("%5s".formatted(Integer.toBinaryString(i)).replace(' ', '0'), chartable[i]);
         }
 
         CHECKSUM_LOOKUP = Collections.unmodifiableMap(lookup);

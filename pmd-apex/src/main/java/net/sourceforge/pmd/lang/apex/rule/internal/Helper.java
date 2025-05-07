@@ -84,7 +84,7 @@ public final class Helper {
         final ASTReferenceExpression reference = methodNode.firstChild(ASTReferenceExpression.class);
 
         return reference != null && reference.getNames().size() == 1
-                && reference.getNames().get(0).equalsIgnoreCase(className)
+                && reference.getNames().getFirst().equalsIgnoreCase(className)
                 && (ANY_METHOD.equals(methodName) || isMethodName(methodNode, methodName));
     }
 
@@ -118,7 +118,7 @@ public final class Helper {
         final ASTReferenceExpression ref = variable.firstChild(ASTReferenceExpression.class);
         String objectName = "";
         if (ref != null && ref.getNames().size() == 1) {
-            objectName = ref.getNames().get(0) + ".";
+            objectName = ref.getNames().getFirst() + ".";
         }
 
         StringBuilder sb = new StringBuilder().append(variable.getDefiningType()).append(":").append(objectName)

@@ -163,9 +163,11 @@ class TypeTestUtilTest extends BaseParserTest {
         // a subtype of everything
 
         ASTType field =
-            java.parse("class Foo<T extends Unresolved> {\n"
-                           + "\tT field;\n"
-                           + "}")
+            java.parse("""
+                           class Foo<T extends Unresolved> {
+                           	T field;
+                           }\
+                           """)
                 .descendants(ASTFieldDeclaration.class)
                 .firstOrThrow().getTypeNode();
 
@@ -180,9 +182,11 @@ class TypeTestUtilTest extends BaseParserTest {
         // #4852
 
         ASTType field =
-            java.parse("class Foo<T extends Number & Unresolved> {\n"
-                           + "\tT field;\n"
-                           + "}")
+            java.parse("""
+                           class Foo<T extends Number & Unresolved> {
+                           	T field;
+                           }\
+                           """)
                 .descendants(ASTFieldDeclaration.class)
                 .firstOrThrow().getTypeNode();
 

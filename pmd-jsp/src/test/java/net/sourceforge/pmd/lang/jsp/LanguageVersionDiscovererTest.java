@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
 
@@ -33,13 +32,13 @@ class LanguageVersionDiscovererTest extends AbstractJspNodesTst {
 
     private void testLanguageIsJsp(String first) {
         assertEquals(jsp.getLanguage().getDefaultVersion(),
-                                getLanguageVersion(Paths.get(first)));
+                                getLanguageVersion(Path.of(first)));
     }
 
     @Test
     void testParseWrong() {
         assertNotEquals(jsp.getLanguage().getDefaultVersion(),
-                                getLanguageVersion(Paths.get("sample.xxx")));
+                                getLanguageVersion(Path.of("sample.xxx")));
     }
 
     private LanguageVersion getLanguageVersion(Path jspFile) {

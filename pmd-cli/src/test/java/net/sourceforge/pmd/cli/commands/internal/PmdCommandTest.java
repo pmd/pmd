@@ -85,7 +85,7 @@ class PmdCommandTest extends BaseCommandTest<PmdCommand> {
     protected void addStandardParams(final List<String> argList) {
         // If no language provided, set dummy latest
         if (!argList.contains("--use-version")) {
-            argList.add(0, "--use-version");
+            argList.addFirst("--use-version");
             argList.add(1, "dummy-1.0");
         }
     }

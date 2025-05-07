@@ -10,7 +10,6 @@ import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
@@ -49,7 +48,7 @@ public final class GenerateRuleDocsCmd {
     }
 
     static final Pattern ADDITIONAL_RULESET_PATTERN = Pattern.compile("^.+" + Pattern.quote(File.separator) + "pmd-\\w+"
-            + Pattern.quote(IOUtil.normalizePath(File.separator + Paths.get("src", "main", "resources", "rulesets").toString()) + File.separator)
+            + Pattern.quote(IOUtil.normalizePath(File.separator + Path.of("src", "main", "resources", "rulesets").toString()) + File.separator)
             + "\\w+" + Pattern.quote(File.separator) + "\\w+.xml$");
 
     public static List<String> findAdditionalRulesets(Path basePath) {

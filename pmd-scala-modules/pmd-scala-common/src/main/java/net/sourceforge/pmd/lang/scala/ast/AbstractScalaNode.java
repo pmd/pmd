@@ -69,8 +69,8 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode<AbstractSc
 
     @Override
     public int compareLocation(Node node) {
-        if (node instanceof AbstractScalaNode) {
-            return POS_CMP.compare(((AbstractScalaNode<?>) node).pos, pos);
+        if (node instanceof AbstractScalaNode<?> scalaNode) {
+            return POS_CMP.compare(scalaNode.pos, pos);
         }
         return ScalaNode.super.compareLocation(node);
     }

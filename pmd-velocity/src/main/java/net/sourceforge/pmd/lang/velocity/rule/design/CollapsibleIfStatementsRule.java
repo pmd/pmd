@@ -40,8 +40,8 @@ public class CollapsibleIfStatementsRule extends AbstractVtlRule {
             int ifCounter = 0;
             for (int i = 0; i < ifBlock.getNumChildren(); i++) {
                 final Node blockChild = ifBlock.getChild(i);
-                if (blockChild instanceof ASTText) {
-                    if (StringUtils.isNotBlank(((ASTText) blockChild).getFirstToken().getImage())) {
+                if (blockChild instanceof ASTText text) {
+                    if (StringUtils.isNotBlank(text.getFirstToken().getImage())) {
                         violationFound = false;
                         break;
                     }

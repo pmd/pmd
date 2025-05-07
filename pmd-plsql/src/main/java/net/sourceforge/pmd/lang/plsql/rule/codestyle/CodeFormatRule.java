@@ -88,7 +88,7 @@ public class CodeFormatRule extends AbstractPLSQLRule {
 
             if (conditions.size() == 1) {
                 // one condition should be on the same line
-                ASTEqualityExpression singleCondition = conditions.get(0);
+                ASTEqualityExpression singleCondition = conditions.getFirst();
                 if (singleCondition.getBeginLine() != lineNumber) {
                     asCtx(data).addViolationWithMessage(child,
                             "Join condition \"" + singleCondition.getImage() + "\" should be on line " + lineNumber);
@@ -166,7 +166,7 @@ public class CodeFormatRule extends AbstractPLSQLRule {
         // check the data type alignment
         List<ASTFormalParameter> parameters = node.children(ASTFormalParameter.class).toList();
         if (parameters.size() > 1) {
-            ASTDatatype first = parameters.get(0).firstChild(ASTDatatype.class);
+            ASTDatatype first = parameters.getFirst().firstChild(ASTDatatype.class);
             for (int i = 1; first != null && i < parameters.size(); i++) {
                 ASTDatatype nextType = parameters.get(i).firstChild(ASTDatatype.class);
                 if (nextType != null) {
@@ -187,7 +187,7 @@ public class CodeFormatRule extends AbstractPLSQLRule {
 
         int datatypeIndentation = variableIndentation;
         if (!variables.isEmpty()) {
-            ASTDatatype datatype = variables.get(0).firstChild(ASTDatatype.class);
+            ASTDatatype datatype = variables.getFirst().firstChild(ASTDatatype.class);
             if (datatype != null) {
                 datatypeIndentation = datatype.getBeginColumn();
             }
@@ -242,9 +242,9 @@ public class CodeFormatRule extends AbstractPLSQLRule {
             // now check for the indentation of the expressions
             int expectedBeginColumn = longestParameterEndColumn + 3 + "=> ".length();
             // take the indentation from the first one, if it is greater
-            if (!arguments.isEmpty() && arguments.get(0).getNumChildren() == 2
-                    && arguments.get(0).getChild(1).getBeginColumn() > expectedBeginColumn) {
-                expectedBeginColumn = arguments.get(0).getChild(1).getBeginColumn();
+            if (!arguments.isEmpty() && arguments.getFirst().getNumChildren() == 2
+                    && arguments.getFirst().getChild(1).getBeginColumn() > expectedBeginColumn) {
+                expectedBeginColumn = arguments.getFirst().getChild(1).getBeginColumn();
             }
             for (ASTArgument argument : arguments) {
                 if (argument.getNumChildren() == 2 && argument.getChild(0) instanceof ASTUnqualifiedID) {

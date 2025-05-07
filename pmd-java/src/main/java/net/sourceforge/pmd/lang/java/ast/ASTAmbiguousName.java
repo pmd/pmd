@@ -204,8 +204,8 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
             simpleName -> {
                 String simpleNameImage = simpleName.getFirstToken().getImage();
                 AbstractJavaNode parent = (AbstractJavaNode) simpleName.getParent();
-                if (parent instanceof ASTClassType) {
-                    ((ASTClassType) parent).setSimpleName(simpleNameImage);
+                if (parent instanceof ASTClassType type) {
+                    type.setSimpleName(simpleNameImage);
                 } else {
                     parent.setImage(simpleNameImage);
                 }
@@ -214,8 +214,8 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
             },
             (ambig, simpleName) -> {
                 AbstractJavaNode parent = (AbstractJavaNode) ambig.getParent();
-                if (parent instanceof ASTClassType) {
-                    ((ASTClassType) parent).setSimpleName(simpleName);
+                if (parent instanceof ASTClassType type) {
+                    type.setSimpleName(simpleName);
                 } else {
                     parent.setImage(simpleName);
                 }

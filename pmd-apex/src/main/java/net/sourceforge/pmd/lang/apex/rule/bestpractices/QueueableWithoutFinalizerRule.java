@@ -73,7 +73,7 @@ public class QueueableWithoutFinalizerRule extends AbstractApexRule {
             return false;
         }
         List<ASTParameter> parameters = theMethod.descendants(ASTParameter.class).toList();
-        return parameters.size() == 1 && QUEUEABLE_CONTEXT.equalsIgnoreCase(parameters.get(0).getType());
+        return parameters.size() == 1 && QUEUEABLE_CONTEXT.equalsIgnoreCase(parameters.getFirst().getType());
     }
 
     /**

@@ -41,7 +41,7 @@ public interface NameResolver<S> {
      */
     default @Nullable S resolveFirst(String simpleName) {
         List<S> result = resolveHere(simpleName);
-        return result.isEmpty() ? null : result.get(0);
+        return result.isEmpty() ? null : result.getFirst();
     }
 
 

@@ -85,7 +85,7 @@ public abstract class ExprContext {
     }
 
     public @Nullable InvocationNode getInvocNodeIfInvocContext() {
-        return this instanceof InvocCtx ? ((InvocCtx) this).getNode() : null;
+        return this instanceof InvocCtx ic ? ic.getNode() : null;
     }
 
     public @NonNull ExprContext getToplevelCtx() {

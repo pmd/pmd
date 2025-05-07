@@ -287,7 +287,7 @@ public interface TypeInferenceLogger {
             site.getResolutionFailures()
                 .forEach((phase, failures) -> {
                     startSection(phase.toString() + ":");
-                    failures.forEach(it -> println(String.format("%-64s // while checking %s", it.getReason(), ppMethod(it.getFailedMethod()))));
+                    failures.forEach(it -> println("%-64s // while checking %s".formatted(it.getReason(), ppMethod(it.getFailedMethod()))));
                     endSection("");
                 });
             endSection("");
@@ -392,18 +392,18 @@ public interface TypeInferenceLogger {
         @Override
         public void startInference(JMethodSig sig, MethodCallSite site, MethodResolutionPhase phase) {
             mark();
-            startSection(String.format("Phase %-17s%s", phase, ppHighlight(sig)));
+            startSection("Phase %-17s%s".formatted(phase, ppHighlight(sig)));
         }
 
 
         @Override
         public void ctxInitialization(InferenceContext ctx, JMethodSig sig) {
-            println(String.format("Context %-11d%s", ctx.getId(), ppHighlight(ctx.mapToIVars(sig))));
+            println("Context %-11d%s".formatted(ctx.getId(), ppHighlight(ctx.mapToIVars(sig))));
         }
 
         @Override
         public void applicabilityTest(InferenceContext ctx) {
-            println(String.format("Solving with context %d for applicability testing", ctx.getId()));
+            println("Solving with context %d for applicability testing".formatted(ctx.getId()));
             addIndentSegment("|   ");
         }
 
@@ -503,7 +503,7 @@ public interface TypeInferenceLogger {
         }
 
         private @NonNull String addCtxInfo(InferenceContext ctx, String event) {
-            return String.format("%-20s(ctx %d):   ", event, ctx.getId());
+            return "%-20s(ctx %d):   ".formatted(event, ctx.getId());
         }
 
         @Override

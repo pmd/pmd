@@ -45,7 +45,7 @@ class PrettyPrintingUtilTest extends BaseParserTest {
         ASTCompilationUnit root = java.parse("class A { { foo(1); this.foo(1); A.this.foo(); } }");
         List<ASTMethodCall> m = root.descendants(ASTMethodCall.class).toList();
 
-        assertThat(prettyPrint(m.get(0)), contentEquals("foo(1)"));
+        assertThat(prettyPrint(m.getFirst()), contentEquals("foo(1)"));
         assertThat(prettyPrint(m.get(1)), contentEquals("this.foo(1)"));
         assertThat(prettyPrint(m.get(2)), contentEquals("A.this.foo()"));
     }
@@ -125,7 +125,7 @@ class PrettyPrintingUtilTest extends BaseParserTest {
         return new BaseMatcher<CharSequence>() {
             @Override
             public boolean matches(Object o) {
-                return o instanceof CharSequence && str.contentEquals((CharSequence) o);
+                return o instanceof CharSequence cs && str.contentEquals(cs);
             }
 
             @Override

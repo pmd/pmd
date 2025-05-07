@@ -50,8 +50,8 @@ class DataflowPassTest extends BaseParserTest {
                 + " } }");
         DataflowResult df = DataflowPass.getDataflowResult(ast);
         List<ASTVariableId> list = ast.descendants(ASTVariableId.class).toList();
-        ASTVariableId a = list.get(0);
-        ReachingDefinitionSet reachingAEqZero = df.getReachingDefinitions(a.getLocalUsages().get(0));
+        ASTVariableId a = list.getFirst();
+        ReachingDefinitionSet reachingAEqZero = df.getReachingDefinitions(a.getLocalUsages().getFirst());
         assertThat(reachingAEqZero.isNotFullyKnown(), is(false));
         assertThat(reachingAEqZero.getReaching(), hasSize(0));
     }
@@ -65,8 +65,8 @@ class DataflowPassTest extends BaseParserTest {
                 + " } }");
         DataflowResult df = DataflowPass.getDataflowResult(ast);
         List<ASTVariableId> list = ast.descendants(ASTVariableId.class).toList();
-        ASTVariableId field = list.get(0);
-        ReachingDefinitionSet finalUse = df.getReachingDefinitions(field.getLocalUsages().get(0));
+        ASTVariableId field = list.getFirst();
+        ReachingDefinitionSet finalUse = df.getReachingDefinitions(field.getLocalUsages().getFirst());
         assertThat(finalUse.isNotFullyKnown(), is(false));
         assertThat(finalUse.getReaching(), hasSize(1));
         AssignmentEntry assignment = finalUse.getReaching().iterator().next();
@@ -75,7 +75,7 @@ class DataflowPassTest extends BaseParserTest {
         assertTrue(JavaAstUtils.isLiteralInt(assignment.rhs, 2));
 
         ASTVariableId nonFinal = list.get(1);
-        ReachingDefinitionSet nonFinalUse = df.getReachingDefinitions(nonFinal.getLocalUsages().get(0));
+        ReachingDefinitionSet nonFinalUse = df.getReachingDefinitions(nonFinal.getLocalUsages().getFirst());
         assertThat(nonFinalUse.isNotFullyKnown(), is(true));
         assertThat(nonFinalUse.getReaching(), hasSize(1));
         assignment = nonFinalUse.getReaching().iterator().next();

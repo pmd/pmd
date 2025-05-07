@@ -203,8 +203,8 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
             JTypeMirror scrutineeType = node.ancestors(ASTSwitchLike.class).firstOrThrow()
                                          .getTestedExpression().getTypeMirror(data);
             JTypeDeclSymbol symbol = type.getSymbol();
-            if (symbol instanceof JClassSymbol) {
-                JTypeMirror inferred = infer.inferParameterizationForSubtype((JClassSymbol) symbol, scrutineeType);
+            if (symbol instanceof JClassSymbol classSymbol) {
+                JTypeMirror inferred = infer.inferParameterizationForSubtype(classSymbol, scrutineeType);
                 return TypeConversion.capture(inferred);
             }
         }
@@ -244,15 +244,15 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
             JTypeMirror iterableType = foreachStmt.getIterableExpr().getTypeMirror(ctx);
             iterableType = capture(iterableType);
 
-            if (iterableType instanceof JArrayType) {
-                return ((JArrayType) iterableType).getComponentType(); // component type is necessarily a type
+            if (iterableType instanceof JArrayType type) {
+                return type.getComponentType(); // component type is necessarily a type
             } else {
                 JTypeMirror asSuper = iterableType.getAsSuper(ts.getClassSymbol(Iterable.class));
-                if (asSuper instanceof JClassType) {
+                if (asSuper instanceof JClassType type) {
                     if (asSuper.isRaw()) {
                         return ts.OBJECT;
                     }
-                    JTypeMirror componentType = ((JClassType) asSuper).getTypeArgs().get(0);
+                    JTypeMirror componentType = type.getTypeArgs().getFirst();
                     return TypeOps.projectUpwards(componentType);
                 } else {
                     return ts.ERROR;
@@ -317,14 +317,14 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
     private JTypeMirror getTypeOfRecordComponent(ASTRecordPattern record, int compIndex) {
         JTypeMirror type = record.getTypeMirror();
         @Nullable JTypeDeclSymbol recordType = type.getSymbol();
-        if (recordType instanceof JClassSymbol && type instanceof JClassType) {
+        if (recordType instanceof JClassSymbol symbol && type instanceof JClassType classType) {
             if (recordType.isUnresolved()) {
                 return ts.UNKNOWN;
             }
-            List<JRecordComponentSymbol> components = ((JClassSymbol) recordType).getRecordComponents();
+            List<JRecordComponentSymbol> components = symbol.getRecordComponents();
             if (compIndex < components.size()) {
                 JRecordComponentSymbol sym = components.get(compIndex);
-                return ((JClassType) type).getDeclaredField(sym.getSimpleName()).getTypeMirror();
+                return classType.getDeclaredField(sym.getSimpleName()).getTypeMirror();
             }
         }
         return ts.ERROR;
@@ -560,14 +560,14 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
     @Override
     public JTypeMirror visit(ASTArrayInitializer node, TypingContext ctx) {
         JavaNode parent = node.getParent();
-        if (parent instanceof ASTArrayAllocation) {
-            return ((ASTArrayAllocation) parent).getTypeMirror(ctx);
-        } else if (parent instanceof ASTVariableDeclarator) {
-            ASTVariableId id = ((ASTVariableDeclarator) parent).getVarId();
+        if (parent instanceof ASTArrayAllocation allocation) {
+            return allocation.getTypeMirror(ctx);
+        } else if (parent instanceof ASTVariableDeclarator declarator) {
+            ASTVariableId id = declarator.getVarId();
             return id.isTypeInferred() ? ts.ERROR : id.getTypeMirror(ctx);
-        } else if (parent instanceof ASTArrayInitializer) {
-            JTypeMirror tm = ((ASTArrayInitializer) parent).getTypeMirror(ctx);
-            return tm instanceof JArrayType ? ((JArrayType) tm).getComponentType()
+        } else if (parent instanceof ASTArrayInitializer initializer) {
+            JTypeMirror tm = initializer.getTypeMirror(ctx);
+            return tm instanceof JArrayType jat ? jat.getComponentType()
                                             : ts.ERROR;
         }
         return ts.ERROR;
@@ -581,8 +581,8 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
             ASTSwitchLike switchParent = node.ancestors(ASTSwitchLike.class).firstOrThrow();
             JTypeMirror testedType = switchParent.getTestedExpression().getTypeMirror(ctx);
             JTypeDeclSymbol testedSym = testedType.getSymbol();
-            if (testedSym instanceof JClassSymbol && ((JClassSymbol) testedSym).isEnum()) {
-                JFieldSymbol enumConstant = ((JClassSymbol) testedSym).getDeclaredField(node.getName());
+            if (testedSym instanceof JClassSymbol symbol && symbol.isEnum()) {
+                JFieldSymbol enumConstant = symbol.getDeclaredField(node.getName());
                 if (enumConstant != null) {
                     // field exists and can be resolved
                     InternalApiBridge.setTypedSym(node, ts.sigOf(testedType, enumConstant));
@@ -672,8 +672,8 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
     public JTypeMirror visit(ASTArrayAccess node, TypingContext ctx) {
         JTypeMirror compType;
         JTypeMirror arrType = node.getQualifier().getTypeMirror(ctx);
-        if (arrType instanceof JArrayType) {
-            compType = ((JArrayType) arrType).getComponentType();
+        if (arrType instanceof JArrayType type) {
+            compType = type.getComponentType();
         } else if (isUnresolved(arrType)) {
             compType = polyResolution.getContextTypeForStandaloneFallback(node);
         } else {

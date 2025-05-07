@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
 
@@ -50,7 +49,7 @@ class AnalysisCacheIT extends AbstractBinaryDistributionTest {
               .assertReport(containsString(srcDir + File.separator + "JumbledIncrementer.java:8:\tJumbledIncrementer:\t"));
         
         // rerun from cache with relativized paths
-        ExecutionResult resultFromCache = PMDExecutor.runPMD(createTemporaryReportFile(), tempDir, "-d", Paths.get(".").toAbsolutePath().relativize(Paths.get(srcDir)).toString(), "-R", "src/test/resources/rulesets/sample-ruleset.xml",
+        ExecutionResult resultFromCache = PMDExecutor.runPMD(createTemporaryReportFile(), tempDir, "-d", Path.of(".").toAbsolutePath().relativize(Path.of(srcDir)).toString(), "-R", "src/test/resources/rulesets/sample-ruleset.xml",
                 "-f", "text", "--cache", cacheFile.toAbsolutePath().toString(), "--no-progress", "-v");
         
         resultFromCache.assertErrorOutputContains("Incremental Analysis cache HIT");

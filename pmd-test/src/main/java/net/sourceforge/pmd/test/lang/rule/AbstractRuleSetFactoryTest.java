@@ -517,8 +517,7 @@ public abstract class AbstractRuleSetFactoryTest {
             assertFalse(rule1 instanceof RuleReference != rule2 instanceof RuleReference,
                     message + ", Different RuleReference");
 
-            if (rule1 instanceof RuleReference) {
-                RuleReference ruleReference1 = (RuleReference) rule1;
+            if (rule1 instanceof RuleReference ruleReference1) {
                 RuleReference ruleReference2 = (RuleReference) rule2;
                 assertEquals(ruleReference1.getOverriddenMinimumLanguageVersion(),
                         ruleReference2.getOverriddenMinimumLanguageVersion(),
@@ -558,9 +557,9 @@ public abstract class AbstractRuleSetFactoryTest {
                 Object value1 = rule1.getProperty(propertyDescriptors1.get(j));
                 Object value2 = rule2.getProperty(propertyDescriptors2.get(j));
                 // special case for Pattern, there is no equals method
-                if (value1 instanceof Pattern && value2 instanceof Pattern) {
-                    value1 = ((Pattern) value1).pattern();
-                    value2 = ((Pattern) value2).pattern();
+                if (value1 instanceof Pattern pattern && value2 instanceof Pattern pattern1) {
+                    value1 = pattern.pattern();
+                    value2 = pattern1.pattern();
                 }
                 assertEquals(value1, value2, message + ", Rule " + rule1.getName() + " property "
                     + propertyDescriptors1.get(j).name());

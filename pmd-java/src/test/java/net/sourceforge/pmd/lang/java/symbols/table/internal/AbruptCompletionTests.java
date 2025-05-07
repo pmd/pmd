@@ -219,10 +219,14 @@ class AbruptCompletionTests extends BaseParserTest {
     void testSwitchExhaustive() {
         assertAll(
             // no default, even with exhaustive enum, means it can complete normally
-            canCompleteNormally("enum Local { A } Local a = Local.A;\n"
-                                    + "switch(a) { case A: return; }"),
-            mustCompleteAbruptly("enum Local { A } Local a = Local.A;\n"
-                                     + "switch(a) { case A: return; default: return; }")
+            canCompleteNormally("""
+                                    enum Local { A } Local a = Local.A;
+                                    switch(a) { case A: return; }\
+                                    """),
+            mustCompleteAbruptly("""
+                                     enum Local { A } Local a = Local.A;
+                                     switch(a) { case A: return; default: return; }\
+                                     """)
         );
     }
 

@@ -10,7 +10,6 @@ import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
@@ -126,7 +125,7 @@ public class RuleTagChecker {
     }
 
     private void addIssue(Path file, int lineNo, String message) {
-        issues.add(String.format("%s:%2d: %s", pagesDirectory.relativize(file).toString(), lineNo, message));
+        issues.add("%s:%2d: %s".formatted(pagesDirectory.relativize(file).toString(), lineNo, message));
     }
 
     public static void main(String[] args) throws IOException {
@@ -136,7 +135,7 @@ public class RuleTagChecker {
             System.err.println("java " + RuleTagChecker.class.getSimpleName() + " <project base directory>");
             System.exit(1);
         }
-        final Path rootDirectory = Paths.get(args[0]).resolve("..").toRealPath();
+        final Path rootDirectory = Path.of(args[0]).resolve("..").toRealPath();
 
         RuleTagChecker ruleTagChecker = new RuleTagChecker(rootDirectory);
         List<String> issues = ruleTagChecker.check();

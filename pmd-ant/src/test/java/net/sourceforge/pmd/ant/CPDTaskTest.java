@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.apache.tools.ant.BuildException;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,7 +53,7 @@ class CPDTaskTest extends AbstractAntTest {
     }
 
     private static void assertReport(String path) throws IOException {
-        Path report = Paths.get(path);
+        Path report = Path.of(path);
         assertTrue(Files.exists(report), "Report was not created");
         String reportContent = IOUtil.readFileToString(report.toFile(), StandardCharsets.UTF_8);
         assertThat(reportContent, containsString("Found a 1 line (21 tokens) duplication in the following files:"));

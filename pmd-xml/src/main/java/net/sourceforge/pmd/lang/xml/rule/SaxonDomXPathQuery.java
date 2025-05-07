@@ -130,11 +130,10 @@ final class SaxonDomXPathQuery {
         try {
             List<Node> result = new ArrayList<>();
             for (Item item : this.xpathExpression.evaluate(wrapper, propertyValues)) {
-                if (item instanceof AbstractNodeWrapper) {
-                    AbstractNodeWrapper nodeInfo = (AbstractNodeWrapper) item;
+                if (item instanceof AbstractNodeWrapper nodeInfo) {
                     Object domNode = nodeInfo.getUnderlyingNode();
-                    if (domNode instanceof org.w3c.dom.Node) {
-                        XmlNode wrapped = root.wrap((org.w3c.dom.Node) domNode);
+                    if (domNode instanceof org.w3c.dom.Node node) {
+                        XmlNode wrapped = root.wrap(node);
                         result.add(wrapped);
                     }
                 }

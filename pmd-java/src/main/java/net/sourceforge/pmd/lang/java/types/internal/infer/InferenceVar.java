@@ -198,8 +198,8 @@ public final class InferenceVar implements SubstVar {
     }
 
     public boolean isEquivalentTo(JTypeMirror t) {
-        return this == t || t instanceof InferenceVar
-            && ((InferenceVar) t).boundSet == this.boundSet; // NOPMD CompareObjectsWithEquals
+        return this == t || t instanceof InferenceVar iv
+            && iv.boundSet == this.boundSet; // NOPMD CompareObjectsWithEquals
     }
 
     public boolean isSubtypeNoSideEffect(@NonNull JTypeMirror other) {

@@ -81,9 +81,11 @@ class InvocationMatcherTest extends BaseParserTest {
 
         parse("_#_(int,int)"); // does not fail
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> parse("_#_(int, int)"));
-        assertThat(e.getMessage(), equalTo("Expected type at index 8:\n"
-                                                 + "    \"_#_(int, int)\"\n"
-                                                 + "             ^\n"));
+        assertThat(e.getMessage(), equalTo("""
+                                                 Expected type at index 8:
+                                                     "_#_(int, int)"
+                                                              ^
+                                                 """));
     }
 
     private void assertMatch(InvocationNode call, String sig) {

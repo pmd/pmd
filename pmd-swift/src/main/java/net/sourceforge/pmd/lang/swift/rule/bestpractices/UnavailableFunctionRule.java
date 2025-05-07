@@ -76,7 +76,7 @@ public class UnavailableFunctionRule extends AbstractSwiftRule {
 
                 final List<SwStatement> statements = ctx.statements().statement();
 
-                return statements.size() == 1 && FATAL_ERROR.equals(statements.get(0).getFirstAntlrToken().getText());
+                return statements.size() == 1 && FATAL_ERROR.equals(statements.getFirst().getFirstAntlrToken().getText());
             }
 
             private boolean hasUnavailableModifier(final List<SwAttribute> attributes) {

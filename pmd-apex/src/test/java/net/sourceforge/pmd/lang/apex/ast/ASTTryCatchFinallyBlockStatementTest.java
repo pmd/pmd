@@ -31,8 +31,8 @@ class ASTTryCatchFinallyBlockStatementTest extends ApexParserTestBase {
         assertEquals(0, statement.getTryBlock().getIndexInParent());
         assertNull(statement.getFinallyBlock());
         assertEquals(1, statement.getCatchClauses().size());
-        assertNotNull(statement.getCatchClauses().get(0).getBody());
-        assertEquals(1, statement.getCatchClauses().get(0).getIndexInParent());
+        assertNotNull(statement.getCatchClauses().getFirst().getBody());
+        assertEquals(1, statement.getCatchClauses().getFirst().getIndexInParent());
     }
 
     @Test
@@ -44,7 +44,7 @@ class ASTTryCatchFinallyBlockStatementTest extends ApexParserTestBase {
         assertNotNull(statement.getFinallyBlock());
         assertEquals(2, statement.getFinallyBlock().getIndexInParent());
         assertEquals(1, statement.getCatchClauses().size());
-        assertNotNull(statement.getCatchClauses().get(0).getBody());
-        assertEquals(1, statement.getCatchClauses().get(0).getIndexInParent());
+        assertNotNull(statement.getCatchClauses().getFirst().getBody());
+        assertEquals(1, statement.getCatchClauses().getFirst().getIndexInParent());
     }
 }

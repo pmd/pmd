@@ -12,7 +12,7 @@
     </parent>
 
     <properties>
-        <java.version>8</java.version>
+        <java.version>21</java.version>
     </properties>
 
     <build>

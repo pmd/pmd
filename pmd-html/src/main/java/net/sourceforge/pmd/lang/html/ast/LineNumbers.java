@@ -36,8 +36,8 @@ class LineNumbers {
             nextIndex = htmlString.indexOf("<![CDATA[", nextIndex);
         } else if (n instanceof ASTHtmlXmlDeclaration) {
             nextIndex = htmlString.indexOf("<?", nextIndex);
-        } else if (n instanceof ASTHtmlTextNode) {
-            textLength = ((ASTHtmlTextNode) n).getWholeText().length();
+        } else if (n instanceof ASTHtmlTextNode node) {
+            textLength = node.getWholeText().length();
         } else if (n instanceof ASTHtmlDocumentType) {
             nextIndex = index;
         }
@@ -59,13 +59,13 @@ class LineNumbers {
             nextIndex = htmlString.length();
         } else if (n instanceof ASTHtmlElement && hasCloseElement) {
             nextIndex += 2 + n.getXPathNodeName().length() + 1; // </nodename>
-        } else if (n instanceof ASTHtmlComment) {
+        } else if (n instanceof ASTHtmlComment comment) {
             nextIndex += 4 + 3; // <!-- and -->
-            nextIndex += ((ASTHtmlComment) n).getData().length();
+            nextIndex += comment.getData().length();
         } else if (n instanceof ASTHtmlTextNode) {
             nextIndex += textLength;
-        } else if (n instanceof ASTHtmlCDataNode) {
-            nextIndex += "<![CDATA[".length() + ((ASTHtmlCDataNode) n).getText().length() + "]]>".length();
+        } else if (n instanceof ASTHtmlCDataNode node) {
+            nextIndex += "<![CDATA[".length() + node.getText().length() + "]]>".length();
         } else if (n instanceof ASTHtmlXmlDeclaration) {
             nextIndex = htmlString.indexOf("?>", nextIndex) + 2;
         } else if (n instanceof ASTHtmlDocumentType) {

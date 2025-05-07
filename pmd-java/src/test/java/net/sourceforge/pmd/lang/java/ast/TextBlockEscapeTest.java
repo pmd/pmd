@@ -51,13 +51,17 @@ class TextBlockEscapeTest extends BaseParserTest {
     void testTextBlockContent() {
         assertEquals("winter", determineTextBlockContent("\"\"\"\n                winter\"\"\""),
                 "single line text block");
-        assertEquals("winter\n", determineTextBlockContent("\"\"\"\n"
-                                                   + "   winter\n"
-                                                   + "   \"\"\""),
+        assertEquals("winter\n", determineTextBlockContent("""
+                                                   ""\"
+                                                      winter
+                                                      ""\"\
+                                                   """),
                 "single line text block with LF");
-        assertEquals(" winter\n", determineTextBlockContent("\"\"\"\n"
-                                                   + "   winter\n"
-                                                   + "  \"\"\""),
+        assertEquals(" winter\n", determineTextBlockContent("""
+                                                   ""\"
+                                                      winter
+                                                     ""\"\
+                                                   """),
                 "single line text block with LF, some indent preserved");
     }
 
@@ -70,48 +74,60 @@ class TextBlockEscapeTest extends BaseParserTest {
 
     @Test
     void testEscapeBlockDelimiter() {
-        assertEquals("String text = \"\"\"\n"
-                         + "    A text block inside a text block\n"
-                         + "\"\"\";\n",
-                     determineTextBlockContent("\"\"\"\n"
-                                                   + "  String text = \\\"\"\"\n"
-                                                   + "      A text block inside a text block\n"
-                                                   + "  \\\"\"\";\n"
-                                                   + "  \"\"\""),
+        assertEquals("""
+                         String text = ""\"
+                             A text block inside a text block
+                         ""\";
+                         """,
+                     determineTextBlockContent("""
+                                                   ""\"
+                                                     String text = \\""\"
+                                                         A text block inside a text block
+                                                     \\""\";
+                                                     ""\"\
+                                                   """),
                 "escaped text block in inside text block");
     }
 
     @Test
     void testCrEscape() {
-        assertEquals("<html>\r\n"
-                         + "    <body>\r\n"
-                         + "        <p>Hello, world</p>\r\n"
-                         + "    </body>\r\n"
-                         + "</html>\r\n",
-                     determineTextBlockContent("\"\"\"\n"
-                                                   + "                      <html>\\r\n"
-                                                   + "                          <body>\\r\n"
-                                                   + "                              <p>Hello, world</p>\\r\n"
-                                                   + "                          </body>\\r\n"
-                                                   + "                      </html>\\r\n"
-                                                   + "                      \"\"\""),
+        assertEquals("""
+                         <html>
+                             <body>
+                                 <p>Hello, world</p>
+                             </body>
+                         </html>
+                         """,
+                     determineTextBlockContent("""
+                                                   ""\"
+                                                                         <html>\\r
+                                                                             <body>\\r
+                                                                                 <p>Hello, world</p>\\r
+                                                                             </body>\\r
+                                                                         </html>\\r
+                                                                         ""\"\
+                                                   """),
                 "text block with escapes");
     }
 
     @Test
     void testBasicHtmlBlock() {
-        assertEquals("<html>\n"
-                         + "    <body>\n"
-                         + "        <p>Hello, world</p>\n"
-                         + "    </body>\n"
-                         + "</html>\n",
-                     determineTextBlockContent("\"\"\"\n"
-                                                   + "                      <html>   \n"
-                                                   + "                          <body>\n"
-                                                   + "                              <p>Hello, world</p>    \n"
-                                                   + "                          </body> \n"
-                                                   + "                      </html>   \n"
-                                                   + "                      \"\"\""),
+        assertEquals("""
+                         <html>
+                             <body>
+                                 <p>Hello, world</p>
+                             </body>
+                         </html>
+                         """,
+                     determineTextBlockContent("""
+                                                   ""\"
+                                                                         <html>  \s
+                                                                             <body>
+                                                                                 <p>Hello, world</p>   \s
+                                                                             </body>\s
+                                                                         </html>  \s
+                                                                         ""\"\
+                                                   """),
                 "basic text block example with html");
     }
 
@@ -120,47 +136,59 @@ class TextBlockEscapeTest extends BaseParserTest {
         assertEquals("Lorem ipsum dolor sit amet, consectetur adipiscing "
                          + "elit, sed do eiusmod tempor incididunt ut labore "
                          + "et dolore magna aliqua.",
-                     determineTextBlockContent("\"\"\"\n"
-                                                   + "  Lorem ipsum dolor sit amet, consectetur adipiscing \\\n"
-                                                   + "  elit, sed do eiusmod tempor incididunt ut labore \\\n"
-                                                   + "  et dolore magna aliqua.\\\n"
-                                                   + "  \"\"\""),
+                     determineTextBlockContent("""
+                                                   ""\"
+                                                     Lorem ipsum dolor sit amet, consectetur adipiscing \\
+                                                     elit, sed do eiusmod tempor incididunt ut labore \\
+                                                     et dolore magna aliqua.\\
+                                                     ""\"\
+                                                   """),
                 "new escape: line continuation");
     }
 
     @Test
     void testEscapeSpace() {
-        assertEquals("red   \n"
-                         + "green \n"
-                         + "blue  \n",
-                     determineTextBlockContent("\"\"\"\n"
-                                                   + "                        red  \\s\n"
-                                                   + "                        green\\s\n"
-                                                   + "                        blue \\s\n"
-                                                   + "                        \"\"\""),
+        assertEquals("""
+                         red  \s
+                         green\s
+                         blue \s
+                         """,
+                     determineTextBlockContent("""
+                                                   ""\"
+                                                                           red  \\s
+                                                                           green\\s
+                                                                           blue \\s
+                                                                           ""\"\
+                                                   """),
                 "new escape: space escape");
     }
 
     @Test
     void testLineEndingNormalization() {
-        assertEquals("<html>\n"
-                         + "    <body>\n"
-                         + "        <p>Hello, world</p>\n"
-                         + "    </body>\n"
-                         + "</html>\n",
-                     determineTextBlockContent("\"\"\"\r\n"
-                                                   + "                      <html>   \r\n"
-                                                   + "                          <body>\r\n"
-                                                   + "                              <p>Hello, world</p>    \r\n"
-                                                   + "                          </body> \r\n"
-                                                   + "                      </html>   \r\n"
-                                                   + "                      \"\"\""),
+        assertEquals("""
+                         <html>
+                             <body>
+                                 <p>Hello, world</p>
+                             </body>
+                         </html>
+                         """,
+                     determineTextBlockContent("""
+                                                   ""\"
+                                                                         <html>   
+                                                                             <body>
+                                                                                 <p>Hello, world</p>    
+                                                                             </body> 
+                                                                         </html>   
+                                                                         ""\"\
+                                                   """),
                 "with crlf line endings");
-        assertEquals("<html>\n"
-                         + "    <body>\n"
-                         + "        <p>Hello, world</p>\n"
-                         + "    </body>\n"
-                         + "</html>\n",
+        assertEquals("""
+                         <html>
+                             <body>
+                                 <p>Hello, world</p>
+                             </body>
+                         </html>
+                         """,
                      determineTextBlockContent("\"\"\"\r"
                                                    + "                      <html>   \r"
                                                    + "                          <body>\r"
@@ -174,25 +202,33 @@ class TextBlockEscapeTest extends BaseParserTest {
     @Test
     void testEmptyLines() {
 
-        assertEquals("\ntest\n", determineTextBlockContent("\"\"\"\n"
-                                                               + "    \n"
-                                                               + "    test\n"
-                                                               + "    \"\"\""),
+        assertEquals("\ntest\n", determineTextBlockContent("""
+                                                               ""\"
+                                                                  \s
+                                                                   test
+                                                                   ""\"\
+                                                               """),
                 "empty line directly after opening");
-        assertEquals("\ntest\n", determineTextBlockContent("\"\"\"\r\n"
-                                                               + "    \r\n"
-                                                               + "    test\r\n"
-                                                               + "    \"\"\""),
+        assertEquals("\ntest\n", determineTextBlockContent("""
+                                                               ""\"
+                                                                   
+                                                                   test
+                                                                   ""\"\
+                                                               """),
                 "empty crlf line directly after opening");
-        assertEquals("\ntest\n", determineTextBlockContent("\"\"\"\n"
-                                                               + "\n"
-                                                               + "test\n"
-                                                               + "\"\"\""),
+        assertEquals("\ntest\n", determineTextBlockContent("""
+                                                               ""\"
+                                                               
+                                                               test
+                                                               ""\"\
+                                                               """),
                 "empty line directly after opening without indentation");
-        assertEquals("\ntest\n", determineTextBlockContent("\"\"\"\r\n"
-                                                               + "\r\n"
-                                                               + "test\r\n"
-                                                               + "\"\"\""),
+        assertEquals("\ntest\n", determineTextBlockContent("""
+                                                               ""\"
+                                                               
+                                                               test
+                                                               ""\"\
+                                                               """),
                 "empty crlf line directly after opening without indentation");
 
     }

@@ -53,8 +53,8 @@ abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<
         }
         if (!myNode.getMethodType().getSymbol().equals(ctDecl.getMethodType().getSymbol())) {
             return false;
-        } else if (myNode instanceof ASTConstructorCall && ((ASTConstructorCall) myNode).isAnonymousClass()
-            && !((ASTConstructorCall) myNode).getTypeNode().getTypeMirror().equals(getInferredType())) {
+        } else if (myNode instanceof ASTConstructorCall call && call.isAnonymousClass()
+            && !call.getTypeNode().getTypeMirror().equals(getInferredType())) {
             // check anon class has same type args
             return false;
         } else if (myNode.getParent() instanceof ASTVariableDeclarator) {

@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -38,7 +37,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * @author Clément Fournier
  */
 class FileCollectorTest {
-    private static final Path RESOURCES = Paths.get("src/test/resources/net/sourceforge/pmd/lang/document/filecollectortest/");
+    private static final Path RESOURCES = Path.of("src/test/resources/net/sourceforge/pmd/lang/document/filecollectortest/");
 
     @TempDir
     private Path tempFolder;
@@ -109,7 +108,7 @@ class FileCollectorTest {
 
         List<TextFile> applicableFiles = collector.getCollectedFiles();
         assertThat(applicableFiles, hasSize(2));
-        assertThat(applicableFiles.get(0).getFileId().getFileName(), equalTo("anotherfile.dummy"));
+        assertThat(applicableFiles.getFirst().getFileId().getFileName(), equalTo("anotherfile.dummy"));
         assertThat(applicableFiles.get(1).getFileId().getFileName(), equalTo("somefile.dummy"));
     }
 
@@ -122,7 +121,7 @@ class FileCollectorTest {
         List<TextFile> applicableFiles = collector.getCollectedFiles();
         // note: the file has 3 entries, but one is duplicated, resulting in 2 individual files
         assertThat(applicableFiles, hasSize(2));
-        assertFilenameIs(applicableFiles.get(0), "anotherfile.dummy");
+        assertFilenameIs(applicableFiles.getFirst(), "anotherfile.dummy");
         assertFilenameIs(applicableFiles.get(1), "somefile.dummy");
     }
 
@@ -137,7 +136,7 @@ class FileCollectorTest {
 
         List<TextFile> applicableFiles = collector.getCollectedFiles();
         assertThat(applicableFiles, hasSize(2));
-        assertFilenameIs(applicableFiles.get(0), "somefile2.dummy");
+        assertFilenameIs(applicableFiles.getFirst(), "somefile2.dummy");
         assertFilenameIs(applicableFiles.get(1), "somefile4.dummy");
     }
 
@@ -145,11 +144,11 @@ class FileCollectorTest {
     void testRelativizeWith() {
         PMDConfiguration conf = new PMDConfiguration();
         conf.setInputFilePath(RESOURCES.resolve("filelist2.txt"));
-        conf.addRelativizeRoot(Paths.get("src/test/resources"));
+        conf.addRelativizeRoot(Path.of("src/test/resources"));
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(2));
-            assertHasName(files.get(0), IOUtil.normalizePath("net/sourceforge/pmd/lang/document/filecollectortest/src/anotherfile.dummy"), pmd);
+            assertHasName(files.getFirst(), IOUtil.normalizePath("net/sourceforge/pmd/lang/document/filecollectortest/src/anotherfile.dummy"), pmd);
             assertHasName(files.get(1), IOUtil.normalizePath("net/sourceforge/pmd/lang/document/filecollectortest/src/somefile.dummy"), pmd);
         }
     }
@@ -162,7 +161,7 @@ class FileCollectorTest {
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
-            assertHasName(files.get(0), ".." + IOUtil.normalizePath("/otherSrc/somefile.dummy"), pmd);
+            assertHasName(files.getFirst(), ".." + IOUtil.normalizePath("/otherSrc/somefile.dummy"), pmd);
             assertHasName(files.get(1), "anotherfile.dummy", pmd);
             assertHasName(files.get(2), "somefile.dummy", pmd);
         }
@@ -177,7 +176,7 @@ class FileCollectorTest {
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
-            assertHasName(files.get(0), "somefile.dummy", pmd);
+            assertHasName(files.getFirst(), "somefile.dummy", pmd);
             assertHasName(files.get(1), "anotherfile.dummy", pmd);
             assertHasName(files.get(2), "somefile.dummy", pmd);
         }
@@ -191,7 +190,7 @@ class FileCollectorTest {
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
-            assertHasName(files.get(0), RESOURCES.resolve("otherSrc/somefile.dummy").toAbsolutePath().toString(), pmd);
+            assertHasName(files.getFirst(), RESOURCES.resolve("otherSrc/somefile.dummy").toAbsolutePath().toString(), pmd);
             assertHasName(files.get(1), RESOURCES.resolve("src/anotherfile.dummy").toAbsolutePath().toString(), pmd);
             assertHasName(files.get(2), RESOURCES.resolve("src/somefile.dummy").toAbsolutePath().toString(), pmd);
         }
@@ -209,7 +208,7 @@ class FileCollectorTest {
 
         List<TextFile> applicableFiles = collector.getCollectedFiles();
         assertThat(applicableFiles, hasSize(4));
-        assertFilenameIs(applicableFiles.get(0), "anotherfile.dummy");
+        assertFilenameIs(applicableFiles.getFirst(), "anotherfile.dummy");
         assertFilenameIs(applicableFiles.get(1), "somefile.dummy");
         assertFilenameIs(applicableFiles.get(2), "somefile2.dummy");
         assertFilenameIs(applicableFiles.get(3), "somefile4.dummy");

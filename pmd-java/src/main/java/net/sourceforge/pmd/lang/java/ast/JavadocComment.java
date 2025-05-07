@@ -34,7 +34,7 @@ public final class JavadocComment extends JavaComment {
     }
 
     JavadocComment(List<JavaComment> currentMarkdownBlock) {
-        super(currentMarkdownBlock.get(0).getToken());
+        super(currentMarkdownBlock.getFirst().getToken());
         assert currentMarkdownBlock.stream().map(JavaComment::getToken).allMatch(JavaAstUtils::isMarkdownComment);
         this.tokens = currentMarkdownBlock
                 .stream()
@@ -61,8 +61,8 @@ public final class JavadocComment extends JavaComment {
             return super.getReportLocation();
         }
 
-        JavaccToken firstToken = tokens.get(0);
-        JavaccToken lastToken = tokens.get(tokens.size() - 1);
+        JavaccToken firstToken = tokens.getFirst();
+        JavaccToken lastToken = tokens.getLast();
         TextRegion region = TextRegion.fromBothOffsets(firstToken.getRegion().getStartOffset(), lastToken.getRegion().getEndOffset());
         return firstToken.getDocument().getTextDocument().toLocation(region);
     }

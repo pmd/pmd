@@ -39,10 +39,12 @@ class CommentTest extends BaseParserTest {
     @Test
     void testMultiLinesInMultiLine() {
         String comment =
-                  "/*\n"
-                + " * line 1\n"
-                + " * line 2\n"
-                + " */\n";
+                  """
+                /*
+                 * line 1
+                 * line 2
+                 */
+                """;
         String filtered = filter(comment);
         assertEquals(2, lineCount(filtered));
         assertEquals("line 1\nline 2", filtered);
@@ -51,10 +53,12 @@ class CommentTest extends BaseParserTest {
     @Test
     void testMultiLinesInMultiLineCrLf() {
         String comment =
-                  "/*\r\n"
-                + " * line 1\r\n"
-                + " * line 2\r\n"
-                + " */\r\n";
+                  """
+                /*
+                 * line 1
+                 * line 2
+                 */
+                """;
         String filtered = filter(comment);
         assertEquals(2, lineCount(filtered));
         assertEquals("line 1\nline 2", filtered);
@@ -63,10 +67,12 @@ class CommentTest extends BaseParserTest {
     @Test
     void testMultiLinesInMultiLineFormal() {
         String comment =
-                  "/**\n"
-                + " * line 1\n"
-                + " * line 2\n"
-                + " */\n";
+                  """
+                /**
+                 * line 1
+                 * line 2
+                 */
+                """;
         String filtered = filter(comment);
         assertEquals(2, lineCount(filtered));
         assertEquals("line 1\nline 2", filtered);
@@ -75,10 +81,12 @@ class CommentTest extends BaseParserTest {
     @Test
     void testMultiLinesInMultiLineFormalCrLf() {
         String comment =
-                  "/**\r\n"
-                + " * line 1\r\n"
-                + " * line 2\r\n"
-                + " */\r\n";
+                  """
+                /**
+                 * line 1
+                 * line 2
+                 */
+                """;
         String filtered = filter(comment);
         assertEquals(2, lineCount(filtered));
         assertEquals("line 1\nline 2", filtered);
@@ -87,18 +95,20 @@ class CommentTest extends BaseParserTest {
     @Test
     void testMultiLinesInMultiLineNoAsteriskEmpty() {
         String comment =
-                  "/**\n"
-                + " * line 1\n"
-                + "line 2\n"
-                + "\n"
-                + " */\n";
+                  """
+                /**
+                 * line 1
+                line 2
+                
+                 */
+                """;
         String filtered = filter(comment);
         assertEquals(2, lineCount(filtered));
         assertEquals("line 1\nline 2", filtered);
     }
 
     private String filter(String comment) {
-        JavaComment firstComment = java.parse(comment).getComments().get(0);
+        JavaComment firstComment = java.parse(comment).getComments().getFirst();
         return StringUtils.join(firstComment.getFilteredLines(), '\n');
     }
 

@@ -10,7 +10,6 @@ import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -39,7 +38,7 @@ class ClassLoadingChildFirstTest {
      */
     @Test
     void testClassLoading() {
-        Path file = Paths.get("src/test/resources",
+        Path file = Path.of("src/test/resources",
                 getClass().getPackage().getName().replace('.', '/'),
                 "custom_java_lang.jar");
 
@@ -51,7 +50,7 @@ class ClassLoadingChildFirstTest {
         JClassType voidClass = typeSystem.BOXED_VOID;
         List<JMethodSymbol> declaredMethods = voidClass.getSymbol().getDeclaredMethods();
         assertThat(declaredMethods, hasSize(1));
-        assertThat(declaredMethods.get(0), hasProperty("simpleName", equalTo("customMethodOnJavaLangVoid")));
+        assertThat(declaredMethods.getFirst(), hasProperty("simpleName", equalTo("customMethodOnJavaLangVoid")));
     }
 
 }

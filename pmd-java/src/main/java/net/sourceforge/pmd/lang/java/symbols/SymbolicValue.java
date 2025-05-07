@@ -86,16 +86,16 @@ public interface SymbolicValue {
             return new SymValue(value);
         }
 
-        if (value instanceof Enum<?>) {
-            return SymEnum.fromEnum(ts, (Enum<?>) value);
+        if (value instanceof Enum<?> enum1) {
+            return SymEnum.fromEnum(ts, enum1);
         }
 
-        if (value instanceof Annotation) {
-            return AnnotWrapper.wrap(ts, (Annotation) value);
+        if (value instanceof Annotation annotation) {
+            return AnnotWrapper.wrap(ts, annotation);
         }
 
-        if (value instanceof Class<?>) {
-            return SymClass.ofBinaryName(ts, ((Class<?>) value).getName());
+        if (value instanceof Class<?> class1) {
+            return SymClass.ofBinaryName(ts, class1.getName());
         }
 
         if (value.getClass().isArray()) {
@@ -227,9 +227,9 @@ public interface SymbolicValue {
             if (attr == null) {
                 return OptionalBool.UNKNOWN;
             }
-            if (attr instanceof SymArray) {
+            if (attr instanceof SymArray array) {
                 // todo what if the value is an array itself
-                return OptionalBool.definitely(((SymArray) attr).containsValue(attrValue));
+                return OptionalBool.definitely(array.containsValue(attrValue));
             }
 
             return OptionalBool.definitely(SymbolicValueHelper.equalsModuloWrapper(attr, attrValue));
@@ -547,7 +547,7 @@ public interface SymbolicValue {
 
         @Override
         public boolean valueEquals(Object o) {
-            return o instanceof Class<?> && ((Class<?>) o).getName().equals(binaryName);
+            return o instanceof Class<?> c && c.getName().equals(binaryName);
         }
 
         @Override

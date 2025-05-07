@@ -250,9 +250,9 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                     && argument.firstChild(ASTReferenceExpression.class) != null) {
                 ASTReferenceExpression ref = argument.firstChild(ASTReferenceExpression.class);
                 List<String> names = ref.getNames();
-                if (names.size() == 1 && ACCESS_LEVEL.equalsIgnoreCase(names.get(0))) {
+                if (names.size() == 1 && ACCESS_LEVEL.equalsIgnoreCase(names.getFirst())) {
                     return true;
-                } else if (names.size() == 2 && "System".equalsIgnoreCase(names.get(0)) && ACCESS_LEVEL.equalsIgnoreCase(names.get(1))) {
+                } else if (names.size() == 2 && "System".equalsIgnoreCase(names.getFirst()) && ACCESS_LEVEL.equalsIgnoreCase(names.get(1))) {
                     return true;
                 }
             }
@@ -486,27 +486,27 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private boolean isWithSecurityEnforced(final ApexNode<?> node) {
-        return node instanceof ASTSoqlExpression
-                && WITH_SECURITY_ENFORCED.matcher(((ASTSoqlExpression) node).getQuery()).matches();
+        return node instanceof ASTSoqlExpression astse
+                && WITH_SECURITY_ENFORCED.matcher(astse.getQuery()).matches();
     }
 
     //For USER_MODE
     private boolean isWithUserMode(final ApexNode<?> node) {
-        return node instanceof ASTSoqlExpression
-            && WITH_USER_MODE.matcher(((ASTSoqlExpression) node).getQuery()).matches();
+        return node instanceof ASTSoqlExpression astse
+            && WITH_USER_MODE.matcher(astse.getQuery()).matches();
     }
 
     //For System Mode
     private boolean isWithSystemMode(final ApexNode<?> node) {
-        return node instanceof ASTSoqlExpression
-            && WITH_SYSTEM_MODE.matcher(((ASTSoqlExpression) node).getQuery()).matches();
+        return node instanceof ASTSoqlExpression astse
+            && WITH_SYSTEM_MODE.matcher(astse.getQuery()).matches();
     }
 
     private String getType(final ASTMethodCallExpression methodNode) {
         final ASTReferenceExpression reference = methodNode.firstChild(ASTReferenceExpression.class);
         if (!reference.getNames().isEmpty()) {
             return new StringBuilder().append(reference.getDefiningType()).append(":")
-                    .append(reference.getNames().get(0)).toString();
+                    .append(reference.getNames().getFirst()).toString();
         }
         return "";
     }
@@ -679,7 +679,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 List<String> identifiers = reference.getNames();
                 if (identifiers.size() == 1) {
                     StringBuilder sb = new StringBuilder().append(node.getDefiningType())
-                            .append(":").append(identifiers.get(0));
+                            .append(":").append(identifiers.getFirst());
                     checkedTypeToDMLOperationViaESAPI.put(sb.toString(), dmlOperation);
                 }
 
@@ -909,8 +909,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 final List<ASTVariableExpression> parameters = new ArrayList<>(numParameters);
                 for (int parameterIndex = 0, numChildren = methodNode.getNumChildren(); parameterIndex < numChildren; parameterIndex++) {
                     final ApexNode<?> childNode = methodNode.getChild(parameterIndex);
-                    if (childNode instanceof ASTVariableExpression) {
-                        parameters.add((ASTVariableExpression) childNode);
+                    if (childNode instanceof ASTVariableExpression expression) {
+                        parameters.add(expression);
                     }
                 }
                 // Make sure that it looks like "sObjectType.<objectTypeName>" as VariableExpression > ReferenceExpression

@@ -17,9 +17,9 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
 
     @Override
     public <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
-        if (visitor instanceof KotlinVisitor) {
+        if (visitor instanceof KotlinVisitor<? super P, ? extends R> kotlinVisitor) {
             // some of the generated antlr nodes have no accept method...
-            return ((KotlinVisitor<? super P, ? extends R>) visitor).visitKotlinNode(this, data);
+            return kotlinVisitor.visitKotlinNode(this, data);
         }
         return visitor.visitNode(this, data);
     }

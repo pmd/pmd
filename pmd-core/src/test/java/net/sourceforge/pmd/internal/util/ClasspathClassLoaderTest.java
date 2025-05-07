@@ -21,7 +21,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
@@ -188,7 +187,7 @@ class ClasspathClassLoaderTest {
     @ParameterizedTest
     @ValueSource(ints = {11, 17, 21})
     void loadFromJava(int javaVersion) throws IOException {
-        Path javaHome = Paths.get(System.getProperty("user.home"), "openjdk" + javaVersion);
+        Path javaHome = Path.of(System.getProperty("user.home"), "openjdk" + javaVersion);
         assumeTrue(Files.isDirectory(javaHome), "Couldn't find java" + javaVersion + " installation at " + javaHome);
 
         Path jrtfsPath = javaHome.resolve("lib/jrt-fs.jar");

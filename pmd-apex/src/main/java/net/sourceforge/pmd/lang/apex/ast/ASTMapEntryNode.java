@@ -27,6 +27,6 @@ public final class ASTMapEntryNode extends AbstractApexNode.Many<Expression> {
 
     @Override
     public String getImage() {
-        return String.format("%s: %s", key, value);
+        return "%s: %s".formatted(key, value);
     }
 }

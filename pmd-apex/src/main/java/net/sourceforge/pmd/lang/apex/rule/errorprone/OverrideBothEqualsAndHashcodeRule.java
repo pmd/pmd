@@ -50,9 +50,9 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractApexRule {
         String paramType = null;
         for (int ix = 0; ix < node.getNumChildren(); ix++) {
             ApexNode<?> sn = node.getChild(ix);
-            if (sn instanceof ASTParameter) {
+            if (sn instanceof ASTParameter parameter) {
                 numParams++;
-                paramType = ((ASTParameter) sn).getType();
+                paramType = parameter.getType();
             }
         }
         return numParams == 1 && "equals".equalsIgnoreCase(node.getImage()) && "Object".equalsIgnoreCase(paramType);

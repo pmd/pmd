@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 import org.apache.tools.ant.BuildException;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -74,7 +74,7 @@ class PMDTaskTest extends AbstractAntTest {
     void testRelativizeWith() throws IOException {
         executeTarget("testRelativizeWith");
 
-        try (InputStream in = Files.newInputStream(Paths.get("target/pmd-ant-test.txt"))) {
+        try (InputStream in = Files.newInputStream(Path.of("target/pmd-ant-test.txt"))) {
             String actual = IOUtil.readToString(in, StandardCharsets.UTF_8);
             // remove any trailing newline
             actual = actual.replaceAll("\n|\r", "");
@@ -86,7 +86,7 @@ class PMDTaskTest extends AbstractAntTest {
     void testXmlFormatter() throws IOException {
         executeTarget("testXmlFormatter");
 
-        try (InputStream in = Files.newInputStream(Paths.get("target/pmd-ant-xml.xml"));
+        try (InputStream in = Files.newInputStream(Path.of("target/pmd-ant-xml.xml"));
              InputStream expectedStream = PMDTaskTest.class.getResourceAsStream("xml/expected-pmd-ant-xml.xml")) {
             String actual = readAndNormalize(in);
             String expected = readAndNormalize(expectedStream);

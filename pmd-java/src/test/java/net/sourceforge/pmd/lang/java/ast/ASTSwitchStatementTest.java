@@ -50,17 +50,19 @@ class ASTSwitchStatementTest extends BaseParserTest {
     void defaultCaseWithArrowExprs() {
         ASTSwitchStatement switchStatement =
             java.parse(
-                    "import net.sourceforge.pmd.lang.java.rule.bestpractices.switchstmtsshouldhavedefault.SimpleEnum;\n"
-                        + "\n"
-                        + "            public class Foo {\n"
-                        + "                void bar(SimpleEnum x) {\n"
-                        + "                    switch (x) {\n"
-                        + "                    case FOO -> System.out.println(\"it is on\");\n"
-                        + "                    case BAR -> System.out.println(\"it is off\");\n"
-                        + "                    default -> System.out.println(\"it is neither on nor off - should not happen? maybe null?\");\n"
-                        + "                    }\n"
-                        + "                }\n"
-                        + "            }")
+                    """
+                    import net.sourceforge.pmd.lang.java.rule.bestpractices.switchstmtsshouldhavedefault.SimpleEnum;
+                    
+                                public class Foo {
+                                    void bar(SimpleEnum x) {
+                                        switch (x) {
+                                        case FOO -> System.out.println("it is on");
+                                        case BAR -> System.out.println("it is off");
+                                        default -> System.out.println("it is neither on nor off - should not happen? maybe null?");
+                                        }
+                                    }
+                                }\
+                    """)
                 .descendants(ASTSwitchStatement.class).firstOrThrow();
         assertFalse(switchStatement.isExhaustiveEnumSwitch());
         assertTrue(switchStatement.iterator().hasNext());

@@ -53,8 +53,8 @@ class AntlrVersionTest {
 
                         @Override
                         public void visitLdcInsn(Object value) {
-                            if (value instanceof String) {
-                                versions.addLast((String) value);
+                            if (value instanceof String string) {
+                                versions.addLast(string);
                                 if (versions.size() > 2) {
                                     versions.removeFirst();
                                 }

@@ -39,7 +39,7 @@ public class TypeAnnotTestUtil {
 
     static final List<Annotation> ANNOT_A = listOf(createAnnotationInstance(ClassWithTypeAnnotationsInside.A.class));
     static final List<Annotation> ANNOT_B = listOf(createAnnotationInstance(ClassWithTypeAnnotationsInside.B.class));
-    static final List<Annotation> ANNOTS_A_B = listOf(ANNOT_A.get(0), ANNOT_B.get(0));
+    static final List<Annotation> ANNOTS_A_B = listOf(ANNOT_A.getFirst(), ANNOT_B.getFirst());
 
     private TypeAnnotTestUtil() {
         // utility class
@@ -92,8 +92,8 @@ public class TypeAnnotTestUtil {
             } else if (method.getName().equals("hashCode") && args == null) {
                 return AnnotationUtils.hashCode((Annotation) proxy);
             } else if (method.getName().equals("equals") && args.length == 1) {
-                if (args[0] instanceof Annotation) {
-                    return AnnotationUtils.equals((Annotation) proxy, (Annotation) args[0]);
+                if (args[0] instanceof Annotation annotation) {
+                    return AnnotationUtils.equals((Annotation) proxy, annotation);
                 }
                 return false;
             } else if (attributes.containsKey(method.getName()) && args == null) {
@@ -110,7 +110,7 @@ public class TypeAnnotTestUtil {
         return new BaseMatcher<SymAnnot>() {
             @Override
             public boolean matches(Object actual) {
-                return actual instanceof SymAnnot && ((SymAnnot) actual).valueEquals(o);
+                return actual instanceof SymAnnot sa && sa.valueEquals(o);
             }
 
             @Override

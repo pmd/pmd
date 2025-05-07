@@ -21,67 +21,69 @@ class ASTSwitchLikeTest extends BaseParserTest {
     void exhaustiveSwitchSealedClassesAST() {
         Map<String, ASTSwitchLike> switchStatements =
                 java.parse(
-                                "import net.sourceforge.pmd.lang.java.rule.bestpractices.switchstmtsshouldhavedefault.SimpleEnum;\n"
-                                        + "public sealed class Foo {\n"
-                                        + "    public static final class Sub1 extends Foo {}\n"
-                                        + "    public static final class Sub2 extends Foo {}\n"
-                                        + "    void exhaustiveSealed(Foo x) {\n"
-                                        + "        switch (x) {\n"
-                                        + "            case Sub1 sub1 -> System.out.println(\"x is sub1\");\n"
-                                        + "            case Sub2 sub2 -> System.out.println(\"x is sub2\");\n"
-                                        + "        }\n"
-                                        + "    }\n"
-                                        + "    void exhaustiveSealedWithDefault(Foo x) {\n"
-                                        + "        switch (x) {\n"
-                                        + "            case Sub1 sub1 -> System.out.println(\"x is sub1\");\n"
-                                        + "            case Sub2 sub2 -> System.out.println(\"x is sub2\");\n"
-                                        + "            default -> System.out.println(\"unnecessary default\");\n"
-                                        + "        }\n"
-                                        + "    }\n"
-                                        + "    void notExhaustiveSealed(Foo x) {\n"
-                                        + "        switch (x) {\n"
-                                        + "            case Sub1 sub1 -> System.out.println(\"x is sub1\");\n"
-                                        + "            // sub2 is missing -> would be a compile error\n"
-                                        + "        }\n"
-                                        + "    }\n"
-                                        + "    void notExhaustiveSealedWithDefault(Foo x) {\n"
-                                        + "        switch (x) {\n"
-                                        + "            case Sub1 sub1 -> System.out.println(\"x is sub1\");\n"
-                                        + "            // sub2 is missing\n"
-                                        + "            default -> System.out.println(\"anything else\");\n"
-                                        + "        }\n"
-                                        + "    }\n"
-                                        + "    void exhaustiveEnum(SimpleEnum x) {\n"
-                                        + "        switch (x) {\n"
-                                        + "            case FOO -> System.out.println(\"x is foo\");\n"
-                                        + "            case BAR -> System.out.println(\"x is bar\");\n"
-                                        + "            case BZAZ -> System.out.println(\" x is bzaz\");\n"
-                                        + "        }\n"
-                                        + "    }\n"
-                                        + "    void exhaustiveEnumWithDefault(SimpleEnum x) {\n"
-                                        + "        switch (x) {\n"
-                                        + "            case FOO -> System.out.println(\"x is foo\");\n"
-                                        + "            case BAR -> System.out.println(\"x is bar\");\n"
-                                        + "            case BZAZ -> System.out.println(\" x is bzaz\");\n"
-                                        + "            default -> System.out.println(\"unnecessary default\");\n"
-                                        + "        }\n"
-                                        + "    }\n"
-                                        + "    void notExhaustiveEnum(SimpleEnum x) {\n"
-                                        + "        switch (x) {\n"
-                                        + "            case FOO -> System.out.println(\"x is foo\");\n"
-                                        + "            // missing: case BAR -> System.out.println(\"x is bar\");\n"
-                                        + "            case BZAZ -> System.out.println(\" x is bzaz\");\n"
-                                        + "        }\n"
-                                        + "    }\n"
-                                        + "    void notExhaustiveEnumWithDefault(SimpleEnum x) {\n"
-                                        + "        switch (x) {\n"
-                                        + "            case FOO -> System.out.println(\"x is foo\");\n"
-                                        + "            //missing: case BAR -> System.out.println(\"x is bar\");\n"
-                                        + "            case BZAZ -> System.out.println(\" x is bzaz\");\n"
-                                        + "            default -> System.out.println(\"unnecessary default\");\n"
-                                        + "        }\n"
-                                        + "    }\n"
-                                        + "}")
+                                """
+                                import net.sourceforge.pmd.lang.java.rule.bestpractices.switchstmtsshouldhavedefault.SimpleEnum;
+                                public sealed class Foo {
+                                    public static final class Sub1 extends Foo {}
+                                    public static final class Sub2 extends Foo {}
+                                    void exhaustiveSealed(Foo x) {
+                                        switch (x) {
+                                            case Sub1 sub1 -> System.out.println("x is sub1");
+                                            case Sub2 sub2 -> System.out.println("x is sub2");
+                                        }
+                                    }
+                                    void exhaustiveSealedWithDefault(Foo x) {
+                                        switch (x) {
+                                            case Sub1 sub1 -> System.out.println("x is sub1");
+                                            case Sub2 sub2 -> System.out.println("x is sub2");
+                                            default -> System.out.println("unnecessary default");
+                                        }
+                                    }
+                                    void notExhaustiveSealed(Foo x) {
+                                        switch (x) {
+                                            case Sub1 sub1 -> System.out.println("x is sub1");
+                                            // sub2 is missing -> would be a compile error
+                                        }
+                                    }
+                                    void notExhaustiveSealedWithDefault(Foo x) {
+                                        switch (x) {
+                                            case Sub1 sub1 -> System.out.println("x is sub1");
+                                            // sub2 is missing
+                                            default -> System.out.println("anything else");
+                                        }
+                                    }
+                                    void exhaustiveEnum(SimpleEnum x) {
+                                        switch (x) {
+                                            case FOO -> System.out.println("x is foo");
+                                            case BAR -> System.out.println("x is bar");
+                                            case BZAZ -> System.out.println(" x is bzaz");
+                                        }
+                                    }
+                                    void exhaustiveEnumWithDefault(SimpleEnum x) {
+                                        switch (x) {
+                                            case FOO -> System.out.println("x is foo");
+                                            case BAR -> System.out.println("x is bar");
+                                            case BZAZ -> System.out.println(" x is bzaz");
+                                            default -> System.out.println("unnecessary default");
+                                        }
+                                    }
+                                    void notExhaustiveEnum(SimpleEnum x) {
+                                        switch (x) {
+                                            case FOO -> System.out.println("x is foo");
+                                            // missing: case BAR -> System.out.println("x is bar");
+                                            case BZAZ -> System.out.println(" x is bzaz");
+                                        }
+                                    }
+                                    void notExhaustiveEnumWithDefault(SimpleEnum x) {
+                                        switch (x) {
+                                            case FOO -> System.out.println("x is foo");
+                                            //missing: case BAR -> System.out.println("x is bar");
+                                            case BZAZ -> System.out.println(" x is bzaz");
+                                            default -> System.out.println("unnecessary default");
+                                        }
+                                    }
+                                }\
+                                """)
                         .descendants(ASTSwitchLike.class)
                         .collect(Collectors.toMap(s -> s.ancestors(ASTMethodDeclaration.class).firstOrThrow().getName(),
                                 Function.identity()));
@@ -104,30 +106,32 @@ class ASTSwitchLikeTest extends BaseParserTest {
     void exhaustiveSwitchExpressionSealedClassesAST() {
         Map<String, ASTSwitchLike> switchExpressions =
                 java.parse(
-                                        "public sealed class Foo {\n"
-                                        + "    public static final class Sub1 extends Foo {}\n"
-                                        + "    public static final class Sub2 extends Foo {}\n"
-                                        + "    String exhaustiveSealed(Foo x) {\n"
-                                        + "        return switch (x) {\n"
-                                        + "            case Sub1 sub1 -> \"x is sub1\";\n"
-                                        + "            case Sub2 sub2 -> \"x is sub2\";\n"
-                                        + "        };\n"
-                                        + "    }\n"
-                                        + "    String exhaustiveSealedWithDefault(Foo x) {\n"
-                                        + "        return switch (x) {\n"
-                                        + "            case Sub1 sub1 -> \"x is sub1\";\n"
-                                        + "            case Sub2 sub2 -> \"x is sub2\";\n"
-                                        + "            default -> \"unnecessary default\";\n"
-                                        + "        };\n"
-                                        + "    }\n"
-                                        + "    String notExhaustiveSealedWithDefault(Foo x) {\n"
-                                        + "        return switch (x) {\n"
-                                        + "            case Sub1 sub1 -> \"x is sub1\";\n"
-                                        + "            // sub2 is missing\n"
-                                        + "            default -> \"anything else\";\n"
-                                        + "        };\n"
-                                        + "    }\n"
-                                        + "}")
+                                        """
+                                        public sealed class Foo {
+                                            public static final class Sub1 extends Foo {}
+                                            public static final class Sub2 extends Foo {}
+                                            String exhaustiveSealed(Foo x) {
+                                                return switch (x) {
+                                                    case Sub1 sub1 -> "x is sub1";
+                                                    case Sub2 sub2 -> "x is sub2";
+                                                };
+                                            }
+                                            String exhaustiveSealedWithDefault(Foo x) {
+                                                return switch (x) {
+                                                    case Sub1 sub1 -> "x is sub1";
+                                                    case Sub2 sub2 -> "x is sub2";
+                                                    default -> "unnecessary default";
+                                                };
+                                            }
+                                            String notExhaustiveSealedWithDefault(Foo x) {
+                                                return switch (x) {
+                                                    case Sub1 sub1 -> "x is sub1";
+                                                    // sub2 is missing
+                                                    default -> "anything else";
+                                                };
+                                            }
+                                        }\
+                                        """)
                         .descendants(ASTSwitchLike.class)
                         .collect(Collectors.toMap(s -> s.ancestors(ASTMethodDeclaration.class).firstOrThrow().getName(),
                                 Function.identity()));
@@ -144,28 +148,30 @@ class ASTSwitchLikeTest extends BaseParserTest {
         // net.sourceforge.pmd.lang.java.symbols.testdata.sealed.SealedTypesTestData
         Map<String, ASTSwitchLike> switchStatements =
                 java.parse(
-                                "import net.sourceforge.pmd.lang.java.symbols.testdata.sealed.SealedTypesTestData;\n"
-                                + "import net.sourceforge.pmd.lang.java.symbols.testdata.sealed.A;\n"
-                                + "import net.sourceforge.pmd.lang.java.symbols.testdata.sealed.B;\n"
-                                + "import net.sourceforge.pmd.lang.java.symbols.testdata.sealed.C;\n"
-                                + "import net.sourceforge.pmd.lang.java.symbols.testdata.sealed.X;\n"
-                                        + "public class Foo {\n"
-                                        + "    void exhaustiveSealed(SealedTypesTestData x) {\n"
-                                        + "        switch (x) {\n"
-                                        + "            case A a -> System.out.println(\"x is a\");\n"
-                                        + "            case B b -> System.out.println(\"x is b\");\n"
-                                        + "            case C c -> System.out.println(\"x is c\");\n"
-                                        + "        }\n"
-                                        + "    }\n"
-                                        + "    void exhaustiveSealedX(SealedTypesTestData x) {\n"
-                                        + "        switch (x) {\n"
-                                        + "            // X is the only subtype of A, so this switch is still exhaustive\n"
-                                        + "            case X x2 -> System.out.println(\"x is x\");\n"
-                                        + "            case B b -> System.out.println(\"x is b\");\n"
-                                        + "            case C c -> System.out.println(\"x is c\");\n"
-                                        + "        }\n"
-                                        + "    }\n"
-                                        + "}")
+                                """
+                                import net.sourceforge.pmd.lang.java.symbols.testdata.sealed.SealedTypesTestData;
+                                import net.sourceforge.pmd.lang.java.symbols.testdata.sealed.A;
+                                import net.sourceforge.pmd.lang.java.symbols.testdata.sealed.B;
+                                import net.sourceforge.pmd.lang.java.symbols.testdata.sealed.C;
+                                import net.sourceforge.pmd.lang.java.symbols.testdata.sealed.X;
+                                public class Foo {
+                                    void exhaustiveSealed(SealedTypesTestData x) {
+                                        switch (x) {
+                                            case A a -> System.out.println("x is a");
+                                            case B b -> System.out.println("x is b");
+                                            case C c -> System.out.println("x is c");
+                                        }
+                                    }
+                                    void exhaustiveSealedX(SealedTypesTestData x) {
+                                        switch (x) {
+                                            // X is the only subtype of A, so this switch is still exhaustive
+                                            case X x2 -> System.out.println("x is x");
+                                            case B b -> System.out.println("x is b");
+                                            case C c -> System.out.println("x is c");
+                                        }
+                                    }
+                                }\
+                                """)
                         .descendants(ASTSwitchLike.class)
                         .collect(Collectors.toMap(s -> s.ancestors(ASTMethodDeclaration.class).firstOrThrow().getName(),
                                 Function.identity()));

@@ -68,7 +68,7 @@ class CpdCommandTest extends BaseCommandTest<CpdCommand> {
     protected void addStandardParams(final List<String> argList) {
         // If no minimum tokens provided, set default value
         if (!argList.contains("--minimum-tokens")) {
-            argList.add(0, "--minimum-tokens");
+            argList.addFirst("--minimum-tokens");
             argList.add(1, "100");
         }
     }

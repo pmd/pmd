@@ -33,8 +33,8 @@ public final class ASTTryCatchFinallyBlockStatement extends AbstractApexNode.Sin
         if (getNumChildren() >= 2) {
             lastChild = getChild(getNumChildren() - 1);
         }
-        if (lastChild instanceof ASTBlockStatement) {
-            return (ASTBlockStatement) lastChild;
+        if (lastChild instanceof ASTBlockStatement statement) {
+            return statement;
         }
         return null;
     }

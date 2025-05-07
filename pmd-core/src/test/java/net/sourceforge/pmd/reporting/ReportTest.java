@@ -86,7 +86,7 @@ class ReportTest {
         Report filtered = r.filterViolations(ruleViolation -> !"to be filtered".equals(ruleViolation.getDescription()));
 
         assertEquals(1, filtered.getViolations().size());
-        assertEquals("msg", filtered.getViolations().get(0).getDescription());
+        assertEquals("msg", filtered.getViolations().getFirst().getDescription());
     }
 
     @Test

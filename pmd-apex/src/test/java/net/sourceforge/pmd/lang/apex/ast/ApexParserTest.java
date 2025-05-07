@@ -32,12 +32,15 @@ class ApexParserTest extends ApexParserTestBase {
     void understandsSimpleFile() {
 
         // Setup
-        String code = "@isTest\n"
-            + " public class SimpleClass {\n"
-            + "    @isTest\n public static void testAnything() {\n"
-            + "        \n"
-            + "    }\n"
-            + "}";
+        String code = """
+            @isTest
+             public class SimpleClass {
+                @isTest
+             public static void testAnything() {
+                   \s
+                }
+            }\
+            """;
 
         // Exercise
         ASTUserClassOrInterface<?> rootNode = parse(code);
@@ -54,12 +57,14 @@ class ApexParserTest extends ApexParserTestBase {
     }
 
     private final String testCodeForLineNumbers =
-              "public class SimpleClass {\n" // line 1
-            + "    public void method1() {\n" // line 2
-            + "        System.out.println('abc');\n" // line 3
-            + "        // this is a comment\n" // line 4
-            + "    }\n" // line 5
-            + "}"; // line 6
+              """
+              public class SimpleClass {
+                  public void method1() {
+                      System.out.println('abc');
+                      // this is a comment
+                  }
+              }\
+              """; // line 6
 
     @Test
     void verifyLineColumnNumbers() {
@@ -125,13 +130,15 @@ class ApexParserTest extends ApexParserTestBase {
     @Test
     void checkComments() {
 
-        String code = "public  /** Comment on Class */ class SimpleClass {\n" // line 1
-            + "    /** Comment on m1 */"
-            + "    public void method1() {\n" // line 2
-            + "    }\n" // line 3
-            + "    public void method2() {\n" // line 4
-            + "    }\n" // line 5
-            + "}\n"; // line 6
+        String code = """
+            public  /** Comment on Class */ class SimpleClass {
+                /** Comment on m1 */\
+                public void method1() {
+                }
+                public void method2() {
+                }
+            }
+            """; // line 6
 
         ASTUserClassOrInterface<?> root = parse(code);
 
@@ -204,14 +211,14 @@ class ApexParserTest extends ApexParserTestBase {
 
         List<ASTUserClass> classes = classNode.descendants(ASTUserClass.class).toList();
         assertEquals(2, classes.size());
-        assertEquals("bar1", classes.get(0).getSimpleName());
-        List<ASTMethod> methods = classes.get(0).children(ASTMethod.class).toList();
+        assertEquals("bar1", classes.getFirst().getSimpleName());
+        List<ASTMethod> methods = classes.getFirst().children(ASTMethod.class).toList();
         assertEquals(1, methods.size()); // m(). No synthetic clone()
-        assertEquals("m", methods.get(0).getImage());
-        assertPosition(methods.get(0), 4, 16, 7, 10);
+        assertEquals("m", methods.getFirst().getImage());
+        assertPosition(methods.getFirst(), 4, 16, 7, 10);
 
         // Position of the first inner class is its identifier
-        assertPosition(classes.get(0), 3, 12, 8, 6);
+        assertPosition(classes.getFirst(), 3, 12, 8, 6);
 
         assertEquals("bar2", classes.get(1).getSimpleName());
         assertPosition(classes.get(1), 10, 12, 15, 6);

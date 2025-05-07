@@ -10,10 +10,10 @@ class Jep441_PatternMatchingForSwitch {
     // As of Java 21
     static String formatterPatternSwitch(Object obj) {
         return switch (obj) {
-            case Integer i -> String.format("int %d", i);
-            case Long l    -> String.format("long %d", l);
-            case Double d  -> String.format("double %f", d);
-            case String s  -> String.format("String %s", s);
+            case Integer i -> "int %d".formatted(i);
+            case Long l    -> "long %d".formatted(l);
+            case Double d  -> "double %f".formatted(d);
+            case String s  -> "String %s".formatted(s);
             default        -> obj.toString();
         };
     }

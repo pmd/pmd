@@ -46,8 +46,7 @@ public class ApexXSSFromEscapeFalseRule extends AbstractApexRule {
         int numberOfChildren = methodCall.getNumChildren();
         if (numberOfChildren == 3) { // addError('',false)
             Object potentialLiteral = methodCall.getChild(2);
-            if (potentialLiteral instanceof ASTLiteralExpression) {
-                ASTLiteralExpression parameter = (ASTLiteralExpression) potentialLiteral;
+            if (potentialLiteral instanceof ASTLiteralExpression parameter) {
                 if (parameter.isBoolean()) {
                     boolean paramValue = Boolean.parseBoolean(parameter.getImage());
                     if (!paramValue) {

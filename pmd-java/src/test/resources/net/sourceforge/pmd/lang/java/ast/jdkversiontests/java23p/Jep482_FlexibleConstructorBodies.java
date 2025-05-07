@@ -67,9 +67,9 @@ class Jep482_FlexibleConstructorBodies {
     public record Range(int lo, int hi) {
         public Range(int lo, int hi, int maxDistance) {
             if (lo > hi)
-                throw new IllegalArgumentException(String.format("(%d,%d)", lo, hi));
+                throw new IllegalArgumentException("(%d,%d)".formatted(lo, hi));
             if (hi - lo > maxDistance)
-                throw new IllegalArgumentException(String.format("(%d,%d,%d", lo, hi, maxDistance));
+                throw new IllegalArgumentException("(%d,%d,%d".formatted(lo, hi, maxDistance));
             this(lo, hi);
         }
     }

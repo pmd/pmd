@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.visualforce;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
@@ -24,7 +24,7 @@ public class VfLanguageProperties extends LanguagePropertyBundle {
     public static final PropertyDescriptor<List<String>> APEX_DIRECTORIES_DESCRIPTOR =
         PropertyFactory.stringListProperty("apexDirectories")
                        .desc("Location of Apex Class directories. Absolute or relative to the Visualforce directory.")
-                       .defaultValues(Paths.get("..", "classes").toString())
+                       .defaultValues(Path.of("..", "classes").toString())
                        .build();
 
     /**
@@ -35,7 +35,7 @@ public class VfLanguageProperties extends LanguagePropertyBundle {
     public static final PropertyDescriptor<List<String>> OBJECTS_DIRECTORIES_DESCRIPTOR =
         PropertyFactory.stringListProperty("objectsDirectories")
                        .desc("Location of Custom Object directories. Absolute or relative to the Visualforce directory.")
-                       .defaultValues(Paths.get("..", "objects").toString())
+                       .defaultValues(Path.of("..", "objects").toString())
                        .build();
 
     public VfLanguageProperties() {

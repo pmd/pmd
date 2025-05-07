@@ -91,19 +91,21 @@ class DeadlockTest {
 
         Thread t1 = new Thread(() -> {
             ASTCompilationUnit class1 = JavaParsingHelper.DEFAULT.parse(
-                    "package net.sourceforge.pmd.lang.java.symbols;\n"
-                            + "import net.sourceforge.pmd.lang.java.symbols.DeadlockTest.Outer;\n"
-                            + "  class Class1 {\n"
-                            + "    public static <X> Outer.Inner<X> newInner(Outer<X> grid) {\n"
-                            + "      return null;\n"
-                            + "    }\n"
-                            + "  }\n"
+                    """
+                    package net.sourceforge.pmd.lang.java.symbols;
+                    import net.sourceforge.pmd.lang.java.symbols.DeadlockTest.Outer;
+                      class Class1 {
+                        public static <X> Outer.Inner<X> newInner(Outer<X> grid) {
+                          return null;
+                        }
+                      }
+                    """
             );
             assertNotNull(class1);
 
             // Outer.Inner<X> = return type of method "newInner"
             List<ASTClassType> classTypes = class1.descendants(ASTClassType.class).toList();
-            ASTClassType outerInner = classTypes.get(0);
+            ASTClassType outerInner = classTypes.getFirst();
             assertGenericClassType(outerInner, "Inner", "X", "T");
 
             // Outer = qualifier of Outer.Inner<X>
@@ -119,11 +121,13 @@ class DeadlockTest {
 
         Thread t2 = new Thread(() -> {
             ASTCompilationUnit class2 = JavaParsingHelper.DEFAULT.parse(
-                    "package net.sourceforge.pmd.lang.java.symbols;\n"
-                            + "import net.sourceforge.pmd.lang.java.symbols.DeadlockTest.Outer;\n"
-                            + "  class Class2<M> {\n"
-                            + "    protected Outer<M> theOuter;\n"
-                            + "  }\n"
+                    """
+                    package net.sourceforge.pmd.lang.java.symbols;
+                    import net.sourceforge.pmd.lang.java.symbols.DeadlockTest.Outer;
+                      class Class2<M> {
+                        protected Outer<M> theOuter;
+                      }
+                    """
             );
             assertNotNull(class2);
 
@@ -152,6 +156,6 @@ class DeadlockTest {
         assertEquals(actualTypeParamName, ((ASTClassType) classType.getTypeArguments().get(0)).getSimpleName());
         JTypeParameterOwnerSymbol symbol = (JTypeParameterOwnerSymbol) classType.getTypeMirror().getSymbol();
         assertEquals(1, symbol.getTypeParameterCount());
-        assertEquals(originalTypeParamName, symbol.getTypeParameters().get(0).getName());
+        assertEquals(originalTypeParamName, symbol.getTypeParameters().getFirst().getName());
     }
 }

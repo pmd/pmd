@@ -30,12 +30,14 @@ class TreeExportCliTest extends BaseCliTest {
         SystemLambda.withTextFromSystemIn("(a(b))").execute(() -> {
             final CliExecutionResult output = runCliSuccessfully("-i", "-f", "xml", "-PlineSeparator=LF");
 
-            output.checkStdOut(equalTo("<?xml version='1.0' encoding='UTF-8' ?>\n"
-                                           + "<dummyRootNode Image='' Lines='[, , ]'>\n"
-                                           + "    <dummyNode Image='a' Lines='[a, a, a]'>\n"
-                                           + "        <dummyNode Image='b' Lines='[b, b, b]' />\n"
-                                           + "    </dummyNode>\n"
-                                           + "</dummyRootNode>\n"));
+            output.checkStdOut(equalTo("""
+                                           <?xml version='1.0' encoding='UTF-8' ?>
+                                           <dummyRootNode Image='' Lines='[, , ]'>
+                                               <dummyNode Image='a' Lines='[a, a, a]'>
+                                                   <dummyNode Image='b' Lines='[b, b, b]' />
+                                               </dummyNode>
+                                           </dummyRootNode>
+                                           """));
         });
     }
 
@@ -43,12 +45,14 @@ class TreeExportCliTest extends BaseCliTest {
     void testReadFile() throws Exception {
         File file = newFileWithContents("(a(b))");
         final CliExecutionResult result = runCliSuccessfully("--file", file.getAbsolutePath(), "-f", "xml", "-PlineSeparator=LF");
-        result.checkStdOut(equalTo("<?xml version='1.0' encoding='UTF-8' ?>\n"
-                                       + "<dummyRootNode Image='' Lines='[, , ]'>\n"
-                                       + "    <dummyNode Image='a' Lines='[a, a, a]'>\n"
-                                       + "        <dummyNode Image='b' Lines='[b, b, b]' />\n"
-                                       + "    </dummyNode>\n"
-                                       + "</dummyRootNode>\n"));
+        result.checkStdOut(equalTo("""
+                                       <?xml version='1.0' encoding='UTF-8' ?>
+                                       <dummyRootNode Image='' Lines='[, , ]'>
+                                           <dummyNode Image='a' Lines='[a, a, a]'>
+                                               <dummyNode Image='b' Lines='[b, b, b]' />
+                                           </dummyNode>
+                                       </dummyRootNode>
+                                       """));
     }
 
     private File newFileWithContents(String data) throws IOException {

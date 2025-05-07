@@ -84,8 +84,8 @@ public class JVariableSig {
      * signature is valid in.
      */
     public JTypeMirror getTypeMirror() {
-        Substitution subst = declarator instanceof JClassType
-                             ? ((JClassType) declarator).getTypeParamSubst()
+        Substitution subst = declarator instanceof JClassType jct
+                             ? jct.getTypeParamSubst()
                              : Substitution.EMPTY; // array
 
         JTypeMirror symType = declarator.isRaw()

@@ -29,7 +29,11 @@ class StringLiteralsTest extends AbstractPLSQLParserTst {
         assertString("Q'{SELECT * FROM employees WHERE last_name = 'Smith';}'",
                 "SELECT * FROM employees WHERE last_name = 'Smith';", 13, strings);
         assertString("q'{\n" + "    also multiple\n" + "    lines\n" + "  }'",
-                "\n" + "    also multiple\n" + "    lines\n" + "  ", 15, strings);
+                """
+                
+                    also multiple
+                    lines
+                  """, 15, strings);
     }
 
     @Test
@@ -37,7 +41,7 @@ class StringLiteralsTest extends AbstractPLSQLParserTst {
         ASTInput input = plsql.parseResource("MultilineVarchar.pls");
         List<ASTStringLiteral> strings = input.descendants(ASTStringLiteral.class).toList();
         assertEquals(1, strings.size());
-        assertThat(normalizeEol(strings.get(0).getString()), startsWith("\ncreate or replace and"));
+        assertThat(normalizeEol(strings.getFirst().getString()), startsWith("\ncreate or replace and"));
     }
 
     private static void assertString(String quoted, String plain, int index, List<ASTStringLiteral> strings) {

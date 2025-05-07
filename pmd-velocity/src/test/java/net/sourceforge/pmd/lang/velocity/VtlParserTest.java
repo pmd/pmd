@@ -11,10 +11,19 @@ import org.junit.jupiter.api.Test;
  */
 class VtlParserTest {
 
-    private static final String VM_SRC = "<HTML><BODY>Hello $customer.Name <table> "
-        + "#foreach($mud in $mudsOnSpecial)" + "  #if ( $customer.hasPurchased($mud) )" + "     <tr>" + "      <td>"
-        + "       $flogger.getPromo( $mud )" + "    </td>" + "  </tr>" + " #elseif ($customer.broke) do stuff #end"
-        + "\n " + "#end " + "</table>";
+    private static final String VM_SRC = """
+        <HTML><BODY>Hello $customer.Name <table> \
+        #foreach($mud in $mudsOnSpecial)\
+          #if ( $customer.hasPurchased($mud) )\
+             <tr>\
+              <td>\
+               $flogger.getPromo( $mud )\
+            </td>\
+          </tr>\
+         #elseif ($customer.broke) do stuff #end
+         \
+        #end \
+        </table>""";
 
     private static final String SRC2 = "#macro(tablerows $color $values ) " + "#foreach( $value in $values ) "
         + "<tr><td bgcolor=$color>$value</td></tr> " + "#end " + "#end "

@@ -139,8 +139,8 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
     @Override
     @SuppressWarnings("unchecked")
     public final <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
-        if (visitor instanceof ApexVisitor) {
-            return this.acceptApexVisitor((ApexVisitor<? super P, ? extends R>) visitor, data);
+        if (visitor instanceof ApexVisitor<? super P, ? extends R> apexVisitor) {
+            return this.acceptApexVisitor(apexVisitor, data);
         }
         return visitor.cannotVisit(this, data);
     }
@@ -184,7 +184,7 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
 
     @Override
     public String getDefiningType() {
-        BaseApexClass<?> baseNode = this instanceof BaseApexClass ? (BaseApexClass<?>) this : ancestors(BaseApexClass.class).first();
+        BaseApexClass<?> baseNode = this instanceof BaseApexClass<?> bac ? bac : ancestors(BaseApexClass.class).first();
         if (baseNode != null) {
             return baseNode.getQualifiedName().toString();
         }
@@ -193,8 +193,8 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
 
     /** Returns the string value of the {@link LiteralExpression}. */
     static String literalToString(LiteralExpression expr) {
-        if (expr instanceof LiteralExpression.StringVal) {
-            return ((LiteralExpression.StringVal) expr).getValue();
+        if (expr instanceof LiteralExpression.StringVal val) {
+            return val.getValue();
         } else if (expr instanceof LiteralExpression.NullVal) {
             return "";
         }

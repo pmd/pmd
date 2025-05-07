@@ -41,18 +41,18 @@ final class HtmlTreeBuilder {
     }
 
     private AbstractHtmlNode<? extends Node> convertJsoupNode(Node node) {
-        if (node instanceof Element) {
-            return new ASTHtmlElement((Element) node);
-        } else if (node instanceof CDataNode) {
-            return new ASTHtmlCDataNode((CDataNode) node);
-        } else if (node instanceof TextNode) {
-            return new ASTHtmlTextNode((TextNode) node);
-        } else if (node instanceof Comment) {
-            return new ASTHtmlComment((Comment) node);
-        } else if (node instanceof XmlDeclaration) {
-            return new ASTHtmlXmlDeclaration((XmlDeclaration) node);
-        } else if (node instanceof DocumentType) {
-            return new ASTHtmlDocumentType((DocumentType) node);
+        if (node instanceof Element element) {
+            return new ASTHtmlElement(element);
+        } else if (node instanceof CDataNode dataNode) {
+            return new ASTHtmlCDataNode(dataNode);
+        } else if (node instanceof TextNode textNode) {
+            return new ASTHtmlTextNode(textNode);
+        } else if (node instanceof Comment comment) {
+            return new ASTHtmlComment(comment);
+        } else if (node instanceof XmlDeclaration declaration) {
+            return new ASTHtmlXmlDeclaration(declaration);
+        } else if (node instanceof DocumentType type) {
+            return new ASTHtmlDocumentType(type);
         } else {
             throw new RuntimeException("Unsupported node type: " + node.getClass());
         }

@@ -15,34 +15,38 @@ class Java8Test {
 
     @Test
     void interfaceMethodShouldBeParseable() {
-        java8.parse("interface WithStaticAndDefaultMethod {\n"
-                        + "        static void performOn() {\n"
-                        + "        }\n"
-                        + "\n"
-                        + "        default void myToString() {\n"
-                        + "        }\n"
-                        + "    }\n");
+        java8.parse("""
+                        interface WithStaticAndDefaultMethod {
+                                static void performOn() {
+                                }
+                        
+                                default void myToString() {
+                                }
+                            }
+                        """);
     }
 
     @Test
     void repeatableAnnotationsMethodShouldBeParseable() {
-        java8.parse("@Multitude(\"1\")\n"
-                        + "@Multitude(\"2\")\n"
-                        + "@Multitude(\"3\")\n"
-                        + "@Multitude(\"4\")\n"
-                        + "public class UsesRepeatableAnnotations {\n"
-                        + "\n"
-                        + "    @Repeatable(Multitudes.class)\n"
-                        + "    @Retention(RetentionPolicy.RUNTIME)\n"
-                        + "    @interface Multitude {\n"
-                        + "        String value();\n"
-                        + "    }\n"
-                        + "\n"
-                        + "    @Retention(RetentionPolicy.RUNTIME)\n"
-                        + "    @interface Multitudes {\n"
-                        + "        Multitude[] value();\n"
-                        + "    }\n"
-                        + "\n"
-                        + "}");
+        java8.parse("""
+                        @Multitude("1")
+                        @Multitude("2")
+                        @Multitude("3")
+                        @Multitude("4")
+                        public class UsesRepeatableAnnotations {
+                        
+                            @Repeatable(Multitudes.class)
+                            @Retention(RetentionPolicy.RUNTIME)
+                            @interface Multitude {
+                                String value();
+                            }
+                        
+                            @Retention(RetentionPolicy.RUNTIME)
+                            @interface Multitudes {
+                                Multitude[] value();
+                            }
+                        
+                        }\
+                        """);
     }
 }

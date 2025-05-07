@@ -115,7 +115,7 @@ class AnnotationReflectionTest {
         ParameterAnnotation annot = createAnnotationInstance(ParameterAnnotation.class);
 
         JMethodSymbol method = getMethodSym(sym, "withAnnotatedParam");
-        assertHasAnnotations(emptySet(), method.getFormalParameters().get(0));
+        assertHasAnnotations(emptySet(), method.getFormalParameters().getFirst());
         assertHasAnnotations(setOf(annot), method.getFormalParameters().get(1));
     }
 
@@ -138,7 +138,7 @@ class AnnotationReflectionTest {
         JClassSymbol sym = impl.getSymbol(actualClass);
 
         JMethodSymbol method = getMethodSym(sym, "anotatedMethod");
-        assertHasAnnotations(emptySet(), method.getFormalParameters().get(0));
+        assertHasAnnotations(emptySet(), method.getFormalParameters().getFirst());
         assertHasAnnotations(setOf(createAnnotationInstance(MethodAnnotation.class)), method);
     }
     
@@ -149,7 +149,7 @@ class AnnotationReflectionTest {
         Class<SomeClass> actualClass = SomeClass.class;
         JClassSymbol sym = impl.getSymbol(actualClass);
 
-        JConstructorSymbol ctor = sym.getConstructors().get(0);
+        JConstructorSymbol ctor = sym.getConstructors().getFirst();
         assertHasAnnotations(setOf(createAnnotationInstance(ConstructorAnnotation.class)), ctor);
     }
 
@@ -171,8 +171,10 @@ class AnnotationReflectionTest {
     void testAnnotWithInvalidType() {
         @NonNull ASTVariableId field =
             JavaParsingHelper.DEFAULT.parse(
-                "@interface A {}\n"
-                    + "class C<A> { @A int a; }\n"
+                """
+                @interface A {}
+                class C<A> { @A int a; }
+                """
             ).descendants(ASTFieldDeclaration.class).firstOrThrow().getVarIds().firstOrThrow();
 
         // The annotation actually refers to the type parameter A. Since

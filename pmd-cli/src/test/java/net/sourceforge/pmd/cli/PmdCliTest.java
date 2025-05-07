@@ -31,7 +31,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -382,7 +381,7 @@ class PmdCliTest extends BaseCliTest {
     void testNoRelativizeWithRelativeSrcDir() throws Exception {
         // Note, that we can't reliably change the current working directory for the current java process
         // therefore we use the current directory and make sure, we are at the correct place - in pmd-cli
-        Path cwd = Paths.get(".").toRealPath();
+        Path cwd = Path.of(".").toRealPath();
         assertThat(cwd.toString(), endsWith("pmd-cli"));
         String relativeSrcDir = "src/test/resources/net/sourceforge/pmd/cli/src";
         assertTrue(Files.isDirectory(cwd.resolve(relativeSrcDir)));
@@ -397,13 +396,13 @@ class PmdCliTest extends BaseCliTest {
     void testNoRelativizeWithRelativeSrcDirParent() throws Exception {
         // Note, that we can't reliably change the current working directory for the current java process
         // therefore we use the current directory and make sure, we are at the correct place - in pmd-cli
-        Path cwd = Paths.get(".").toRealPath();
+        Path cwd = Path.of(".").toRealPath();
         assertThat(cwd.toString(), endsWith("pmd-cli"));
         String relativeSrcDir = "src/test/resources/net/sourceforge/pmd/cli/src";
         assertTrue(Files.isDirectory(cwd.resolve(relativeSrcDir)));
 
         // use the parent directory
-        Path relativeSrcDirWithParent = Paths.get(relativeSrcDir, "..");
+        Path relativeSrcDirWithParent = Path.of(relativeSrcDir, "..");
 
         String expectedFile = "\n" + relativeSrcDirWithParent.resolve("src/somefile.dummy");
         runCli(VIOLATIONS_FOUND, "--dir", relativeSrcDirWithParent.toString(), "--rulesets",
@@ -415,7 +414,7 @@ class PmdCliTest extends BaseCliTest {
     void testRelativizeWithRootRelativeSrcDir() throws Exception {
         // Note, that we can't reliably change the current working directory for the current java process
         // therefore we use the current directory and make sure, we are at the correct place - in pmd-cli
-        Path cwd = Paths.get(".").toRealPath();
+        Path cwd = Path.of(".").toRealPath();
         assertThat(cwd.toString(), endsWith("pmd-cli"));
         String relativeSrcDir = "src/test/resources/net/sourceforge/pmd/cli/src";
         assertTrue(Files.isDirectory(cwd.resolve(relativeSrcDir)));

@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -94,7 +93,7 @@ class CpdAnalysisTest {
         FileCountAssertListener listener = new FileCountAssertListener(0);
         try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
             cpd.setCpdListener(listener);
-            assertFalse(cpd.files().addFile(Paths.get(BASE_TEST_RESOURCE_PATH, "this-is-a-broken-sym-link-for-test")));
+            assertFalse(cpd.files().addFile(Path.of(BASE_TEST_RESOURCE_PATH, "this-is-a-broken-sym-link-for-test")));
             cpd.performAnalysis();
         }
 
@@ -116,8 +115,8 @@ class CpdAnalysisTest {
         FileCountAssertListener listener = new FileCountAssertListener(1);
         try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
             cpd.setCpdListener(listener);
-            assertTrue(cpd.files().addFile(Paths.get(BASE_TEST_RESOURCE_PATH, "real-file.txt")));
-            assertFalse(cpd.files().addFile(Paths.get(BASE_TEST_RESOURCE_PATH, "symlink-for-real-file.txt")));
+            assertTrue(cpd.files().addFile(Path.of(BASE_TEST_RESOURCE_PATH, "real-file.txt")));
+            assertFalse(cpd.files().addFile(Path.of(BASE_TEST_RESOURCE_PATH, "symlink-for-real-file.txt")));
             cpd.performAnalysis();
         }
 
@@ -135,7 +134,7 @@ class CpdAnalysisTest {
         FileCountAssertListener listener = new FileCountAssertListener(0);
         try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
             cpd.setCpdListener(listener);
-            assertFalse(cpd.files().addFile(Paths.get(BASE_TEST_RESOURCE_PATH, "symlink-for-real-file.txt")));
+            assertFalse(cpd.files().addFile(Path.of(BASE_TEST_RESOURCE_PATH, "symlink-for-real-file.txt")));
             cpd.performAnalysis();
         }
 
@@ -154,7 +153,7 @@ class CpdAnalysisTest {
         FileCountAssertListener listener = new FileCountAssertListener(1);
         try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
             cpd.setCpdListener(listener);
-            assertTrue(cpd.files().addFile(Paths.get("./" + BASE_TEST_RESOURCE_PATH, "real-file.txt")));
+            assertTrue(cpd.files().addFile(Path.of("./" + BASE_TEST_RESOURCE_PATH, "real-file.txt")));
             cpd.performAnalysis();
         }
 
@@ -168,8 +167,8 @@ class CpdAnalysisTest {
      */
     @Test
     void testFileOrderRelevance() throws Exception {
-        Path dup1 = Paths.get("./" + BASE_TEST_RESOURCE_PATH, "dup1.txt");
-        Path dup2 = Paths.get("./" + BASE_TEST_RESOURCE_PATH, "dup2.txt");
+        Path dup1 = Path.of("./" + BASE_TEST_RESOURCE_PATH, "dup1.txt");
+        Path dup2 = Path.of("./" + BASE_TEST_RESOURCE_PATH, "dup2.txt");
 
         try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
             assertTrue(cpd.files().addFile(dup2));
@@ -233,7 +232,7 @@ class CpdAnalysisTest {
         List<Report.ProcessingError> processingErrors = report.get().getProcessingErrors();
         assertEquals(2, processingErrors.size());
 
-        Report.ProcessingError error1 = processingErrors.get(0);
+        Report.ProcessingError error1 = processingErrors.getFirst();
         assertEquals("foo.dummy", error1.getFileId().getFileName());
         assertThat(error1.getDetail(), containsString(LexException.class.getSimpleName()));
 
@@ -279,7 +278,7 @@ class CpdAnalysisTest {
 
             // the order of directory traversal is most likely not defined, so either one
             // of the two files might be added, but not both
-            String collectedFile = collectedFiles.get(0).getFileId().getAbsolutePath();
+            String collectedFile = collectedFiles.getFirst().getFileId().getAbsolutePath();
             assertTrue(collectedFile.equals(aFile1.toString()) || collectedFile.equals(bFile1.toString()));
         }
     }

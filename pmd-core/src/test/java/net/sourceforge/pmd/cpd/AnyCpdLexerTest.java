@@ -92,16 +92,18 @@ class AnyCpdLexerTest {
     );
 
     private static final String TEST1 =
-        "using System;\n"
-            + "namespace HelloNameSpace {\n"
-            + "\n"
-            + "    public class HelloWorld { // A comment\n"
-            + "        static void Main(string[] args) {\n"
-            + "\n"
-            + "            Console.WriteLine(\"Hello World!\");\n"
-            + "        }\n"
-            + "    }\n"
-            + "\n"
-            + "}\n";
+        """
+        using System;
+        namespace HelloNameSpace {
+        
+            public class HelloWorld { // A comment
+                static void Main(string[] args) {
+        
+                    Console.WriteLine("Hello World!");
+                }
+            }
+        
+        }
+        """;
 
 }

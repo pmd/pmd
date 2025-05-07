@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.visualforce.rule.security;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -90,7 +89,7 @@ class VfUnescapeElTest extends PmdRuleTst {
     @Test
     void testExtensions() {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
-                .resolve(Paths.get("StandardAccountWithExtensions.page"));
+                .resolve(Path.of("StandardAccountWithExtensions.page"));
 
         Report report = runRule(vfPagePath);
         List<RuleViolation> ruleViolations = report.getViolations();
