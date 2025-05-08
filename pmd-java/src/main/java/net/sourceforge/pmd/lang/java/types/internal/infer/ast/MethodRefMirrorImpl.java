@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprOps;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors.MirrorMaker;
@@ -29,7 +30,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 final class MethodRefMirrorImpl extends BaseFunctionalMirror<ASTMethodReference> implements MethodRefMirror {
 
     private JMethodSig exactMethod;
-    private JMethodSig ctdecl;
+    private MethodCtDecl ctdecl;
 
     MethodRefMirrorImpl(JavaExprMirrors mirrors, ASTMethodReference lambda, ExprMirror parent, MirrorMaker subexprMaker) {
         super(mirrors, lambda, parent, subexprMaker);
@@ -38,8 +39,6 @@ final class MethodRefMirrorImpl extends BaseFunctionalMirror<ASTMethodReference>
         // this is in case of failure: if the inference doesn't succeed
         // and doesn't end up calling those, then we still have a non-null
         // result in there.
-        setFunctionalMethod(mirrors.ts.UNRESOLVED_METHOD);
-        setCompileTimeDecl(mirrors.ts.UNRESOLVED_METHOD);
         // don't call this one as it would mean to the node "don't recompute my type"
         // even if a parent conditional failed its standalone test
         // setInferredType(mirrors.ts.UNKNOWN);
@@ -48,16 +47,17 @@ final class MethodRefMirrorImpl extends BaseFunctionalMirror<ASTMethodReference>
     @Override
     public void finishFailedInference(@Nullable JTypeMirror targetType) {
         super.finishFailedInference(targetType);
+        MethodCtDecl noCtDecl = factory.infer.getMissingCtDecl();
         if (!TypeOps.isUnresolved(getTypeToSearch())) {
             JMethodSig exactMethod = ExprOps.getExactMethod(this);
             if (exactMethod != null) {
                 // as a fallback, if the method reference is exact,
                 // we populate the compile time decl anyway.
-                setCompileTimeDecl(exactMethod);
+                setCompileTimeDecl(noCtDecl.withMethod(exactMethod));
                 return;
             }
         }
-        setCompileTimeDecl(factory.ts.UNRESOLVED_METHOD);
+        setCompileTimeDecl(noCtDecl);
     }
 
     @Override
@@ -92,7 +92,7 @@ final class MethodRefMirrorImpl extends BaseFunctionalMirror<ASTMethodReference>
     }
 
     @Override
-    public void setCompileTimeDecl(JMethodSig methodType) {
+    public void setCompileTimeDecl(MethodCtDecl methodType) {
         this.ctdecl = methodType;
         if (mayMutateAst()) {
             InternalApiBridge.setCompileTimeDecl(myNode, methodType);

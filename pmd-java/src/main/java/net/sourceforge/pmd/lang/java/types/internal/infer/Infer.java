@@ -39,6 +39,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationM
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.PolyExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * Main entry point for type inference.
@@ -53,7 +54,7 @@ public final class Infer {
     private final boolean isPreJava8;
     private final TypeSystem ts;
 
-    final MethodCtDecl NO_CTDECL; // SUPPRESS CHECKSTYLE same
+    private final MethodCtDecl NO_CTDECL; // SUPPRESS CHECKSTYLE same
 
     /** This is a sentinel for when the CTDecl was resolved, but invocation failed. */
     final MethodCtDecl FAILED_INVOCATION; // SUPPRESS CHECKSTYLE same
@@ -89,6 +90,10 @@ public final class Infer {
 
     public TypeInferenceLogger getLogger() {
         return LOG;
+    }
+
+    public MethodCtDecl getMissingCtDecl() {
+        return NO_CTDECL;
     }
 
     public PolySite<FunctionalExprMirror> newFunctionalSite(FunctionalExprMirror mirror, @Nullable JTypeMirror expectedType) {
@@ -164,7 +169,7 @@ public final class Infer {
     public void inferInvocationRecursively(MethodCallSite site) {
         MethodCtDecl ctdecl = goToInvocationWithFallback(site);
         InvocationMirror expr = site.getExpr();
-        expr.setCtDecl(ctdecl);
+        expr.setCompileTimeDecl(ctdecl);
         if (ctdecl == NO_CTDECL) {
             expr.setInferredType(fallbackType(expr));
         } else {
@@ -268,7 +273,7 @@ public final class Infer {
     public @NonNull MethodCtDecl getCompileTimeDecl(MethodCallSite site) {
         if (site.getExpr().getCtDecl() == null) {
             MethodCtDecl ctdecl = computeCompileTimeDecl(site);
-            site.getExpr().setCtDecl(ctdecl); // cache it for later
+            site.getExpr().setCompileTimeDecl(ctdecl); // cache it for later
         }
         return site.getExpr().getCtDecl();
     }
@@ -374,7 +379,7 @@ public final class Infer {
             return new MethodCtDecl(candidate,
                                     phase,
                                     site.canSkipInvocation(),
-                                    site.needsUncheckedConversion(),
+                    OptionalBool.definitely(site.needsUncheckedConversion()),
                                     false,
                                     site.getExpr());
         }
@@ -965,8 +970,12 @@ public final class Infer {
         Convertibility isConvertible = isConvertible(groundE, groundF, phase.canBox());
         if (isConvertible.never()) {
             throw ResolutionFailedException.incompatibleFormal(LOG, arg, groundE, groundF);
-        } else if (isConvertible.withUncheckedWarning() && site != null) {
-            site.setNeedsUncheckedConversion();
+        } else if (isConvertible.withUncheckedWarning()) {
+            if (site != null) {
+                site.setNeedsUncheckedConversion();
+            } else {
+                infCtx.setNeedsUncheckedConversion();
+            }
         }
     }
 
