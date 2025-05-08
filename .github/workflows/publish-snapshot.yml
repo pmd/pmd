@@ -80,7 +80,7 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.PMD_CI_GPG_PASSPHRASE }}
-        # note: we can't use artifact staging-repository, as the jars are unsigned.
+        # note: we can't use artifact staging-repository, as the jars are unsigned and javadoc+sources are missing.
         run: |
           ./mvnw --show-version --errors --batch-mode \
             -Dmaven.repo.local=.m2/repository \
@@ -367,12 +367,89 @@ jobs:
         run: |
           rm -rf "${HOME}/.ssh"
 
+  deploy-to-pmd-code-javadoc:
+    needs: check-version
+    # use environment pmd-code, where secrets are configured for PMD_CODE_ORG_DEPLOY_KEY
+    environment:
+      name: pmd-code
+      url: ${{ steps.upload.outputs.url_output }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: javadocs-artifact
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Setup ssh key for pmd-code
+        env:
+          PMD_CODE_ORG_DEPLOY_KEY: ${{ secrets.PMD_CODE_ORG_DEPLOY_KEY }}
+        run: |
+          mkdir -p "${HOME}/.ssh"
+          chmod 700 "${HOME}/.ssh"
+          printenv PMD_CODE_ORG_DEPLOY_KEY > "${HOME}/.ssh/pmd-code.org_deploy_key"
+          chmod 600 "${HOME}/.ssh/pmd-code.org_deploy_key"
+          echo "
+          Host pmd-code.org
+              IdentityFile=$HOME/.ssh/pmd-code.org_deploy_key
+          " > "$HOME/.ssh/config"
+          {
+            #
+            # pmd-code.org
+            #
+            # ssh-keyscan pmd-code.org | tee -a pmd_known_hosts
+            # ssh-keygen -F pmd-code.org -l -f pmd_known_hosts
+            # # Host pmd-code.org found: line 1 
+            # pmd-code.org RSA SHA256:/uKehVNumCNvJL8C5CziwV9KkUUxHfggq0C4GTrUhwg
+            # # Host pmd-code.org found: line 2 
+            # pmd-code.org ECDSA SHA256:6aD1r1XuIoc/zgBT3bt1S9L5ToyJzdQ9rrcMchnqiRA
+            # # Host pmd-code.org found: line 3 
+            # pmd-code.org ED25519 SHA256:nvkIAzZhYTxXqSU3DWvos83A0EocZ5dsxNkx1LoMZhg
+            # ssh-keygen -F pmd-code.org -f pmd_known_hosts
+            echo 'pmd-code.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDVsIeF6xU0oPb/bMbxG1nU1NDyBpR/cBEPZcm/PuJwdI9B0ydPHA6FysqAnt32fNFznC2SWisnWyY3iNsP3pa8RQJVwmnnv9OboGFlW2/61o3iRyydcpPbgl+ADdt8iU9fmMI7dC04UqgHGBoqOwVNna9VylTjp5709cK2qHnwU450F6YcOEiOKeZfJvV4PmpJCz/JcsUVqft6StviR31jKnqbnkZdP8qNoTbds6WmGKyXkhHdLSZE7X1CFQH28tk8XFqditX93ezeCiThFL7EleDexV/3+2+cs5878sDMUMzHS5KShTjkxzhHaodhtIEdNesinq/hOPbxAGkQ0FbD'
+            echo 'pmd-code.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBMfSJtZcJCeENSZMvdngr+Hwe7oUVQWWKwC4HnfiOoAh/NSIlzJyQvpoPZxnEFid6Y3ntDK+rnx04Japo63zD8Q='
+            echo 'pmd-code.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFa88nqfMavMH/tGeS5DNrSeM5AVHmZQGHh98vC1717o'
+          } > "$HOME/.ssh/known_hosts"
+
+      - name: Upload javadocs to pmd-code.org
+        id: upload
+        env:
+          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          PMD_CODE_SSH_USER: pmd
+          PMD_CODE_DOCS_PATH: /docs.pmd-code.org/
+        run: |
+          targetUrl="https://docs.pmd-code.org/apidocs/"
+          
+          for moduleJavadocJar in */target/*-javadoc.jar */*/target/*-javadoc.jar; do
+              moduleJavadocJarBasename="$(basename "$moduleJavadocJar")"
+              module=${moduleJavadocJarBasename%%-${PMD_VERSION}-javadoc.jar}
+    
+              scp "$moduleJavadocJar" ${PMD_CODE_SSH_USER}@pmd-code.org:${PMD_CODE_DOCS_PATH}
+              # shellcheck disable=SC2029
+              ssh ${PMD_CODE_SSH_USER}@pmd-code.org "cd \"${PMD_CODE_DOCS_PATH}\" && \
+                      mkdir -p \"apidocs/${module}/${PMD_VERSION}\" && \
+                      unzip -qo -d \"apidocs/${module}/${PMD_VERSION}\" \"${moduleJavadocJarBasename}\" && \
+                      rm \"${moduleJavadocJarBasename}\""
+          done
+
+          # make sure https://docs.pmd-code.org/apidocs/ shows directory index
+          # shellcheck disable=SC2029
+          ssh ${PMD_CODE_SSH_USER}@pmd-code.org "cd \"${PMD_CODE_DOCS_PATH}/apidocs\" && \
+              echo 'Options +Indexes' > .htaccess"
+
+          echo "TargetUrl: ${targetUrl}"
+          echo "url_output=${targetUrl}" >> "$GITHUB_OUTPUT"
+
+      - name: Cleanup ssh
+        if: ${{ always() }}
+        run: |
+          rm -rf "${HOME}/.ssh"
+
 # TODO
-# deploy-documentation:
-# -> https://docs.pmd-code.org/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}/
-# - also api docs https://docs.pmd-code.org/apidocs/*/${PMD_CI_MAVEN_PROJECT_VERSION}/
-# - also symlink https://docs.pmd-code.org/snapshot -> pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}
-# - use environment with secrets
 # update-github-pages:
 # -> (https://pmd.github.io/pmd/)
 # - just updates branch gh_pages
