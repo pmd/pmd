@@ -5,7 +5,7 @@ summary: |
   PMD uses GitHub Actions as the CI/CD infrastructure to build and release new versions.
   This page gives an overview of how these workflows work and how to use them.
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: April 2025 (7.13.0)
+last_updated: May 2025 (7.14.0)
 ---
 
 {%include note.html content="This page is work in progress and does not yet describe all workflows."%}
@@ -108,6 +108,7 @@ This workflow is in that sense optional, as the docs-artifact and pmd-regression
 be manually downloaded from the "Pull Request Build" workflow run. It merely adds convenience by
 giving easy access to a preview of the documentation and to the regression tester results.
 
+<<<<<<< HEAD
 In the end, this workflow adds additional links to a pull request page. For the comment, GitHub seems
 to automatically add "rel=nofollow" to the links in the text. This is also applied for the check status
 pages. However, the links in the commit status are plain links. This might lead to unnecessary
@@ -123,3 +124,57 @@ The reasons, why we don't want to have the pages there indexed: They are short-l
 temporary. These temporary created documentation pages should not end up in any search result.
 This also helps to avoid unnecessary traffic and load for both the hosting side and the
 crawling side.
+
+## Publish Snapshot
+
+* Builds: <https://github.com/pmd/pmd/actions/workflows/publish-snapshot.yml>
+* Workflow file: <https://github.com/pmd/pmd/blob/main/.github/workflows/publish-snapshot.yml>
+
+This runs after "Build" of a push on the `main` branch is finished.
+It runs in the context of our own repository and has access to all secrets. In order
+to have a nicer display in GitHub actions, we leverage "environments", which also
+contain secrets.
+
+There is a first job "check-version" that just determines the version of PMD we are building. This is to ensure,
+we are actually building a SNAPSHOT version. Then a couple of other jobs are being executed in parallel:
+
+* deploy-to-maven-central: Rebuilds PMD from branch main and deploys the snapshot artifacts to
+  <https://oss.sonatype.org/content/repositories/snapshots/net/sourceforge/pmd/>. Rebuilding is necessary in
+  order to produce all necessary artifacts (sources, javadoc) and also gpg-sign the artifacts. This
+  is not available from the build artifacts of the "Build" workflow.
+  * Environment: maven-central
+  * Secrets: OSSRH_TOKEN, OSSRH_USERNAME
+* deploy-to-sourceforge-files: Downloads the "dist-artifact" and "docs-artifact" from the "Build" workflow,
+  gpg-signs the files and uploads them to <https://sourceforge.net/projects/pmd/files/pmd/>.
+  * Environment: sourceforge
+  * Secrets: PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
+* deploy-to-sourceforge-io: Uploads the documentation page to be hosted at
+  <https://pmd.sourceforge.io/snapshot>.
+  * Environment: sourceforge
+  * Secrets: PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
+* deploy-to-pmd-code-doc: Uploads the documentation page to be hosted at
+  <https://docs.pmd-code.org/snapshot/>.
+  * Environment: pmd-code
+  * Secrets: PMD_CODE_ORG_DEPLOY_KEY
+* deploy-to-pmd-code-javadoc: Uploads the javadoc of PMD's modules to be hosted at
+  <https://docs.pmd-code.org/apidocs/>.
+  * Environment: pmd-code
+  * Secrets: PMD_CODE_ORG_DEPLOY_KEY
+* deploy-to-github-pages: Updates the branch "gh-pages" wit the new documentation page
+  and pushes a new commit onto that branch. This will trigger a new github pages deployment,
+  so that the new documentation page is available at
+  <https://pmd.github.io/pmd/>.
+  * Environment: github-pages
+  * Secrets: no additional secrets
+* create-regression-tester-baseline: Creates a new baseline to be used by the pull request builds
+  for regression testing. The baseline is uploaded to <https://pmd-code.org/pmd-regression-tester/main-baseline.zip>.
+  * Environment: pmd-code
+  * Secrets: PMD_CODE_ORG_DEPLOY_KEY
+* run-sonar: Executes [sonar-scanner-plugin](https://github.com/SonarSource/sonar-scanner-maven) and
+  uploads the results to sonarcloud at <https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd>.
+  * Environment: sonarcloud
+  * Secrets: SONAR_TOKEN
+* run-coveralls: Executes [coveralls-maven-plugin](https://github.com/hazendaz/coveralls-maven-plugin) and
+  uploads the results to coveralls at <https://coveralls.io/github/pmd/pmd>.
+  * Environment: coveralls
+  * Secrets: COVERALLS_REPO_TOKEN
