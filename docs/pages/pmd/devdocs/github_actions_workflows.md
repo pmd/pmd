@@ -38,7 +38,7 @@ During the build we create a couple of artifacts, that can be downloaded:
 * dist-artifact: contains the binary distribution files, ready to be downloaded. This can be used to test
   PMD with the changes from the pull request without the need to build it locally. It is actually used by the
   regression tester job to avoid building PMD another time. It also includes the SBOM files (in json and xml format).
-* docs-artifact: contains the generated rule documentation.
+* docs-artifact: contains the generated PMD documentation including rule descriptions.
 * pmd-regression-tester: contains the generation regression report, if there were any changes to rules.
 
 In order to have fast feedback of the build results, we run a couple of jobs in parallel and not sequentially.
@@ -57,7 +57,8 @@ The jobs are:
     - "dogfood": runs maven-pmd-plugin on PMD with the latest changes from this very pull request. It uses the
       "staging-repository" artifact.
     - "documentation": generates the rule documentations and builds PMD's documentation page using jekyll.
-      It also executes the verification for wrong rule tags and dead links. It creates the artifact "docs-artifact".
+      It also executes the verification for wrong rule tags and dead links. Additional it contains the release
+      notes in markdown format, to be used for release publishing. It creates the artifact "docs-artifact".
     - "regressiontester": runs the [pmdtester](pmd_devdocs_pmdtester.html) to produce the regression report.
       It reuses the artifact "dist-artifact" so that we don't need to build PMD again. It uses a different build
       cache as the other jobs, as this cache now contains the test projects (like Spring Framework) and their

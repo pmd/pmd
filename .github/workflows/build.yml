@@ -270,6 +270,10 @@ jobs:
         run: |
           cd docs
           bundle exec jekyll build
+      - name: Create Markdown formatted Release Notes
+        run: |
+          cd docs
+          bundle exec render_release_notes.rb pages/release_notes.md | tail -n +6 > _site/pmd_release_notes.md
       - uses: actions/upload-artifact@v4
         with:
           name: docs-artifact
