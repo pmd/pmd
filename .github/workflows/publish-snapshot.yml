@@ -488,9 +488,106 @@ jobs:
           echo "TargetUrl: ${targetUrl}"
           echo "url_output=${targetUrl}" >> "$GITHUB_OUTPUT"
 
+  create-regression-tester-baseline:
+    needs: check-version
+    runs-on: ubuntu-latest
+    # use environment pmd-code, where secrets are configured for PMD_CODE_ORG_DEPLOY_KEY
+    environment:
+      name: pmd-code
+      url: ${{ steps.upload.outputs.url_output }}
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      - name: Set up Ruby 3.3
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.gradle/caches
+            ~/work/pmd/target/repositories
+            vendor/bundle
+          key: regressiontester-${{ hashFiles('.ci/files/project-list.xml', 'Gemfile.lock') }}
+          restore-keys: regressiontester-
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist-artifact
+          path: pmd-dist/target
+      - name: Setup bundler
+        run: |
+          bundle config set --local gemfile .ci/files/Gemfile
+          bundle config set --local path vendor/bundle
+          bundle install
+      - name: Prepare HOME/openjdk11
+        run: |
+          ln -sfn "${JAVA_HOME_11_X64}" "${HOME}/openjdk11"
+      - name: Run pmdtester
+        run: |
+          cd ..
+          bundle exec pmdtester \
+              --mode single \
+              --local-git-repo ./pmd \
+              --patch-branch "main" \
+              --patch-config ./pmd/.ci/files/all-regression-rules.xml \
+              --list-of-project ./pmd/.ci/files/project-list.xml --html-flag \
+              --threads "$(nproc)" \
+              --error-recovery
+          pushd target/reports || { echo "Directory 'target/reports' doesn't exist"; exit 1; }
+      - name: Setup ssh key for pmd-code
+        env:
+          PMD_CODE_ORG_DEPLOY_KEY: ${{ secrets.PMD_CODE_ORG_DEPLOY_KEY }}
+        run: |
+          mkdir -p "${HOME}/.ssh"
+          chmod 700 "${HOME}/.ssh"
+          printenv PMD_CODE_ORG_DEPLOY_KEY > "${HOME}/.ssh/pmd-code.org_deploy_key"
+          chmod 600 "${HOME}/.ssh/pmd-code.org_deploy_key"
+          echo "
+          Host pmd-code.org
+              IdentityFile=$HOME/.ssh/pmd-code.org_deploy_key
+          " > "$HOME/.ssh/config"
+          {
+            #
+            # pmd-code.org
+            #
+            # ssh-keyscan pmd-code.org | tee -a pmd_known_hosts
+            # ssh-keygen -F pmd-code.org -l -f pmd_known_hosts
+            # # Host pmd-code.org found: line 1 
+            # pmd-code.org RSA SHA256:/uKehVNumCNvJL8C5CziwV9KkUUxHfggq0C4GTrUhwg
+            # # Host pmd-code.org found: line 2 
+            # pmd-code.org ECDSA SHA256:6aD1r1XuIoc/zgBT3bt1S9L5ToyJzdQ9rrcMchnqiRA
+            # # Host pmd-code.org found: line 3 
+            # pmd-code.org ED25519 SHA256:nvkIAzZhYTxXqSU3DWvos83A0EocZ5dsxNkx1LoMZhg
+            # ssh-keygen -F pmd-code.org -f pmd_known_hosts
+            echo 'pmd-code.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDVsIeF6xU0oPb/bMbxG1nU1NDyBpR/cBEPZcm/PuJwdI9B0ydPHA6FysqAnt32fNFznC2SWisnWyY3iNsP3pa8RQJVwmnnv9OboGFlW2/61o3iRyydcpPbgl+ADdt8iU9fmMI7dC04UqgHGBoqOwVNna9VylTjp5709cK2qHnwU450F6YcOEiOKeZfJvV4PmpJCz/JcsUVqft6StviR31jKnqbnkZdP8qNoTbds6WmGKyXkhHdLSZE7X1CFQH28tk8XFqditX93ezeCiThFL7EleDexV/3+2+cs5878sDMUMzHS5KShTjkxzhHaodhtIEdNesinq/hOPbxAGkQ0FbD'
+            echo 'pmd-code.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBMfSJtZcJCeENSZMvdngr+Hwe7oUVQWWKwC4HnfiOoAh/NSIlzJyQvpoPZxnEFid6Y3ntDK+rnx04Japo63zD8Q='
+            echo 'pmd-code.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFa88nqfMavMH/tGeS5DNrSeM5AVHmZQGHh98vC1717o'
+          } > "$HOME/.ssh/known_hosts"
+      - name: Upload report
+        id: upload
+        run: |
+          cd ../target/reports
+          zip -q -r "main-baseline.zip" "main/"
+          scp "main-baseline.zip" pmd@pmd-code.org:/httpdocs/pmd-regression-tester/
+
+          targetUrl="https://pmd-code.org/pmd-regression-tester/"
+          echo "TargetUrl: ${targetUrl}"
+          echo "url_output=${targetUrl}" >> "$GITHUB_OUTPUT"
+      - name: Cleanup ssh
+        if: ${{ always() }}
+        run: |
+          rm -rf "${HOME}/.ssh"
 
 # TODO
-# regression-tester-baseline:
-# - create new baseline -> https://pmd-code.org/pmd-regression-tester/
 # run-sonar: -> https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd
 # run-coveralls: -> https://coveralls.io/github/pmd/pmd
