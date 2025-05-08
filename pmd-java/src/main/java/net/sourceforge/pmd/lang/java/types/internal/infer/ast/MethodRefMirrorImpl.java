@@ -47,7 +47,7 @@ final class MethodRefMirrorImpl extends BaseFunctionalMirror<ASTMethodReference>
     @Override
     public void finishFailedInference(@Nullable JTypeMirror targetType) {
         super.finishFailedInference(targetType);
-        MethodCtDecl noCtDecl = factory.infer.getMissingCtDecl();
+        MethodCtDecl noCtDecl = factory.infer.getMissingCtDecl().withExpr(this);
         if (!TypeOps.isUnresolved(getTypeToSearch())) {
             JMethodSig exactMethod = ExprOps.getExactMethod(this);
             if (exactMethod != null) {

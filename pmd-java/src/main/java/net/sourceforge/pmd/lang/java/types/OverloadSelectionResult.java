@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
@@ -84,17 +87,6 @@ public interface OverloadSelectionResult {
     boolean isFailed();
 
 
-    /**
-     * Whether there were several candidates for this method resolution.
-     *
-     * <p>Candidates are not necessarily overloads of each other, they are
-     * just all the methods with the right name that could possibly be
-     * called at the invocation site because they're in scope. For instance
-     * in {@code call(1)}, maybe the method {@code call} is imported,
-     * inherited, defined in an outer class. In {@code a.call(1)}, the
-     * candidates are just the methods named {@code call} visible from
-     * the type of {@code a}. If some overloads are not visible at the
-     * call site, they are also not candidates.
-     */
-    boolean hadUniqueAccessibleCandidate();
+    @Experimental
+    @Nullable JTypeMirror getTypeToSearch();
 }

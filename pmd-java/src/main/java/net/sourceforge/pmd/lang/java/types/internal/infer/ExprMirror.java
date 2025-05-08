@@ -8,7 +8,6 @@ import static net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.Type
 import static net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.TypeSpecies.getSpecies;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.MethodResolutionPhase.STRICT;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -245,6 +244,8 @@ public interface ExprMirror {
     interface MethodUsageMirror extends PolyExprMirror {
 
         void setCompileTimeDecl(InvocationMirror.MethodCtDecl methodType);
+
+        @Nullable JTypeMirror getTypeToSearch();
     }
 
     /**
@@ -379,6 +380,7 @@ public interface ExprMirror {
      */
     interface InvocationMirror extends PolyExprMirror, MethodUsageMirror {
 
+
         /**
          * Enumerates *accessible* method (or ctor) signatures with
          * *the same name* as this invocation. Name and accessibility
@@ -446,6 +448,9 @@ public interface ExprMirror {
          */
         @Nullable MethodCtDecl getCtDecl();
 
+        default @Nullable JTypeMirror getTypeToSearch() {
+            return getReceiverType();
+        }
 
         /**
          * Information about the overload-resolution for a specific method.
@@ -460,14 +465,14 @@ public interface ExprMirror {
             private final boolean canSkipInvocation;
             private final OptionalBool needsUncheckedConversion;
             private final boolean failed;
-            private final @Nullable InvocationMirror expr;
+            private final @Nullable MethodUsageMirror expr;
 
             MethodCtDecl(JMethodSig methodType,
                          MethodResolutionPhase resolvePhase,
                          boolean canSkipInvocation,
                          OptionalBool needsUncheckedConversion,
                          boolean failed,
-                         @Nullable InvocationMirror expr) {
+                         @Nullable MethodUsageMirror expr) {
                 this.methodType = methodType;
                 this.resolvePhase = resolvePhase;
                 this.canSkipInvocation = canSkipInvocation;
@@ -485,7 +490,8 @@ public interface ExprMirror {
             MethodCtDecl withMethod(JMethodSig method, boolean failed) {
                 return new MethodCtDecl(method, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed, expr);
             }
-            MethodCtDecl withExpr(InvocationMirror expr) {
+
+            public MethodCtDecl withExpr(MethodUsageMirror expr) {
                 return new MethodCtDecl(methodType, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed, expr);
             }
 
@@ -534,16 +540,8 @@ public interface ExprMirror {
             }
 
             @Override
-            public boolean hadUniqueAccessibleCandidate() {
-                if (expr == null) {
-                    return false;
-                }
-                Iterator<JMethodSig> candidates = expr.getAccessibleCandidates().iterator();
-                if (candidates.hasNext()) {
-                    candidates.next();
-                    return !candidates.hasNext();
-                }
-                return false;
+            public @Nullable JTypeMirror getTypeToSearch() {
+                return expr != null ? expr.getTypeToSearch() : null;
             }
         }
     }
