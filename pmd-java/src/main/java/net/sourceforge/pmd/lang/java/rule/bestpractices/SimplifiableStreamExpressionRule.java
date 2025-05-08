@@ -16,6 +16,8 @@ public class SimplifiableStreamExpressionRule extends AbstractJavaRulechainRule 
 
 
     private static final InvocationMatcher STREAM_COLLECT = InvocationMatcher.parse("java.util.stream.Stream#collect(_)");
+    private static final InvocationMatcher STREAM_FOREACH = InvocationMatcher.parse("java.util.stream.Stream#forEach(_)");
+
     private static final InvocationMatcher COLLECTORS_TO_LIST = InvocationMatcher.parse("java.util.stream.Collectors#toList()");
 
     private static final InvocationMatcher ARRAYS_ASLIST = InvocationMatcher.parse("java.util.Arrays#asList(_*)");
@@ -36,6 +38,10 @@ public class SimplifiableStreamExpressionRule extends AbstractJavaRulechainRule 
         }
         if (COLLECTION_STREAM.matchesCall(node) && ARRAYS_ASLIST.matchesCall(node.getQualifier())) {
             asCtx(data).addViolation(node, "replace `Arrays.asList(..).stream()` with `Arrays.stream(..)` or `Stream.of(..)`");
+            return null;
+        }
+        if (STREAM_FOREACH.matchesCall(node) && COLLECTION_STREAM.matchesCall(node.getQualifier())) {
+            asCtx(data).addViolation(node, "replace `.stream().forEach(..)` with `.forEach(..)`");
             return null;
         }
 

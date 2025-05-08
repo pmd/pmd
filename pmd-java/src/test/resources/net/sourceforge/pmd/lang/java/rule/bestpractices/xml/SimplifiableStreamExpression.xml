@@ -39,6 +39,7 @@
     </test-code>
 
 
+
     <test-code>
         <description>Arrays stream</description>
         <expected-problems>1</expected-problems>
@@ -54,6 +55,26 @@
             class SomeTestClass {
                 void example(List<String> strings) {
                     var list = Arrays.asList("a", "b").stream();
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Stream foreach</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <expected-messages>
+            <message>Stream call chain may be simplified: replace `.stream().forEach(..)` with `.forEach(..)`</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.Arrays;
+            import java.util.List;
+            import java.util.stream.Collectors;
+
+            class SomeTestClass {
+                void example(List<String> strings) {
+                    strings.stream().forEach(it -> System.out.println(it));
                 }
             }
             ]]></code>

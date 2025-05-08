@@ -1298,12 +1298,13 @@ class SomeTestClass {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.SimplifiableStreamExpressionRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#simplifiablestreamexpression">
         <description>
-            Checks for usages of the Java Stream API that can be improved by using
+            Checks for usages of the Java Stream API that can be simplified by using
             more specific methods.
 
             This rule currently checks the following patterns:
             - `.collect(Collectors.toList())` -> `.toList()` (Java 16+)
             - `Arrays.asList(..).stream()` -> `Arrays.stream(..)` or `Stream.of(..)`
+            - `collection.stream().forEach(..)` -> `collection.forEach(..)`
 
         </description>
         <priority>3</priority>
