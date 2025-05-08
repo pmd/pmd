@@ -48,7 +48,7 @@ jobs:
         run: |
           ./mvnw --show-version --errors --batch-mode \
             -Dmaven.repo.local=.m2/repository \
-            verify -PfastSkip -DskipTests \
+            verify -PfastSkip -DskipTests -Dcyclonedx.skip=false \
             deploy:deploy -DdogfoodStagingRepo="$(pwd)/target/staging"
       - name: Cleanup local repository
         run: |
@@ -66,6 +66,8 @@ jobs:
             */*/target
             !pmd-dist/target/pmd-dist-*-bin.zip
             !pmd-dist/target/pmd-dist-*-src.zip
+            !pmd-dist/target/pmd-*-cyclonedx.xml
+            !pmd-dist/target/pmd-*-cyclonedx.json
       - uses: actions/upload-artifact@v4
         with:
           name: staging-repository
@@ -78,6 +80,8 @@ jobs:
           path: |
             pmd-dist/target/pmd-dist-*-bin.zip
             pmd-dist/target/pmd-dist-*-src.zip
+            pmd-dist/target/pmd-*-cyclonedx.xml
+            pmd-dist/target/pmd-*-cyclonedx.json
 
   verify:
     needs: compile

@@ -37,7 +37,7 @@ During the build we create a couple of artifacts, that can be downloaded:
   actually used by the dogfood job.
 * dist-artifact: contains the binary distribution files, ready to be downloaded. This can be used to test
   PMD with the changes from the pull request without the need to build it locally. It is actually used by the
-  regression tester job to avoid building PMD another time.
+  regression tester job to avoid building PMD another time. It also includes the SBOM files (in json and xml format).
 * docs-artifact: contains the generated rule documentation.
 * pmd-regression-tester: contains the generation regression report, if there were any changes to rules.
 
