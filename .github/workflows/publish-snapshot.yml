@@ -45,7 +45,9 @@ jobs:
   deploy-to-maven-central:
     needs: check-version
     # use environment maven-central, where secrets are configured for OSSRH_*
-    environment: maven-central
+    environment:
+      name: maven-central
+      url: https://oss.sonatype.org/content/repositories/snapshots/net/sourceforge/pmd/
     runs-on: ubuntu-latest
     timeout-minutes: 20
     defaults:
@@ -187,7 +189,6 @@ jobs:
         run: |
           # Deploy to sourceforge files https://sourceforge.net/projects/pmd/files/pmd/
           basePath="pmd/${PMD_VERSION}"
-          targetUrl="https://sourceforge.net/projects/pmd/files/${basePath}"
           uploadUrl="${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/${basePath}/"
 
           rsync -avh "dist/pmd-dist-${PMD_VERSION}-bin.zip"        "${uploadUrl}"
@@ -200,6 +201,7 @@ jobs:
           rsync -avh "dist/pmd-${PMD_VERSION}-cyclonedx.json"      "${uploadUrl}"
           rsync -avh "pmd-doc-${PMD_VERSION}/pmd_release_notes.md" "${uploadUrl}/ReadMe.md"
 
+          targetUrl="https://sourceforge.net/projects/pmd/files/${basePath}"
           echo "TargetUrl: ${targetUrl}"
           echo "url_output=${targetUrl}" >> "$GITHUB_OUTPUT"
 
@@ -214,7 +216,7 @@ jobs:
     # use environment sourceforge, where secrets are configured for PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
     environment:
       name: sourceforge
-      url: ${{ steps.upload.outputs.url_output }}
+      url: https://pmd.sourceforge.io/snapshot/
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
@@ -264,16 +266,10 @@ jobs:
           } > "$HOME/.ssh/known_hosts"
 
       - name: Upload to sourceforge
-        id: upload
         env:
           PMD_SF_USER: adangel
         run: |
-          targetPath="snapshot"
-          targetUrl="https://pmd.sourceforge.io/${targetPath}/"
-          rsync -ah --stats --delete "docs/" "${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/${targetPath}/"
-
-          echo "TargetUrl: ${targetUrl}"
-          echo "url_output=${targetUrl}" >> "$GITHUB_OUTPUT"
+          rsync -ah --stats --delete "docs/" "${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/"
 
       - name: Cleanup ssh
         if: ${{ always() }}
@@ -343,7 +339,6 @@ jobs:
           PMD_CODE_SSH_USER: pmd
           PMD_CODE_DOCS_PATH: /docs.pmd-code.org/
         run: |
-          targetUrl="https://docs.pmd-code.org/pmd-doc-${PMD_VERSION}/"
           filename="pmd-dist-${PMD_VERSION}-doc.zip"
           
           scp "${filename}" ${PMD_CODE_SSH_USER}@pmd-code.org:${PMD_CODE_DOCS_PATH}
@@ -359,6 +354,7 @@ jobs:
                   rm -f \"snapshot\" && \
                   ln -s \"pmd-doc-${PMD_VERSION}\" \"snapshot\""
 
+          targetUrl="https://docs.pmd-code.org/pmd-doc-${PMD_VERSION}/"
           echo "TargetUrl: ${targetUrl}"
           echo "url_output=${targetUrl}" >> "$GITHUB_OUTPUT"
 
@@ -372,7 +368,7 @@ jobs:
     # use environment pmd-code, where secrets are configured for PMD_CODE_ORG_DEPLOY_KEY
     environment:
       name: pmd-code
-      url: ${{ steps.upload.outputs.url_output }}
+      url: https://docs.pmd-code.org/apidocs/
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
@@ -416,14 +412,11 @@ jobs:
           } > "$HOME/.ssh/known_hosts"
 
       - name: Upload javadocs to pmd-code.org
-        id: upload
         env:
           PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
           PMD_CODE_SSH_USER: pmd
           PMD_CODE_DOCS_PATH: /docs.pmd-code.org/
         run: |
-          targetUrl="https://docs.pmd-code.org/apidocs/"
-          
           for moduleJavadocJar in */target/*-javadoc.jar */*/target/*-javadoc.jar; do
               moduleJavadocJarBasename="$(basename "$moduleJavadocJar")"
               module=${moduleJavadocJarBasename%%-${PMD_VERSION}-javadoc.jar}
@@ -441,9 +434,6 @@ jobs:
           ssh ${PMD_CODE_SSH_USER}@pmd-code.org "cd \"${PMD_CODE_DOCS_PATH}/apidocs\" && \
               echo 'Options +Indexes' > .htaccess"
 
-          echo "TargetUrl: ${targetUrl}"
-          echo "url_output=${targetUrl}" >> "$GITHUB_OUTPUT"
-
       - name: Cleanup ssh
         if: ${{ always() }}
         run: |
@@ -452,6 +442,9 @@ jobs:
   deploy-to-github-pages:
     needs: check-version
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: https://pmd.github.io/pmd/
     timeout-minutes: 10
     permissions:
       contents: write # to push to branch gh-pages
@@ -484,17 +477,13 @@ jobs:
           git commit -q -m "$MSG"
           git push
 
-          targetUrl="https://pmd.github.io/pmd/"
-          echo "TargetUrl: ${targetUrl}"
-          echo "url_output=${targetUrl}" >> "$GITHUB_OUTPUT"
-
   create-regression-tester-baseline:
     needs: check-version
     runs-on: ubuntu-latest
     # use environment pmd-code, where secrets are configured for PMD_CODE_ORG_DEPLOY_KEY
     environment:
       name: pmd-code
-      url: ${{ steps.upload.outputs.url_output }}
+      url: https://pmd-code.org/pmd-regression-tester/
     timeout-minutes: 60
     defaults:
       run:
@@ -574,15 +563,10 @@ jobs:
             echo 'pmd-code.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFa88nqfMavMH/tGeS5DNrSeM5AVHmZQGHh98vC1717o'
           } > "$HOME/.ssh/known_hosts"
       - name: Upload report
-        id: upload
         run: |
           cd ../target/reports
           zip -q -r "main-baseline.zip" "main/"
           scp "main-baseline.zip" pmd@pmd-code.org:/httpdocs/pmd-regression-tester/
-
-          targetUrl="https://pmd-code.org/pmd-regression-tester/"
-          echo "TargetUrl: ${targetUrl}"
-          echo "url_output=${targetUrl}" >> "$GITHUB_OUTPUT"
       - name: Cleanup ssh
         if: ${{ always() }}
         run: |
@@ -594,7 +578,7 @@ jobs:
     # use environment sonarcloud, where secrets are configured for SONAR_TOKEN
     environment:
       name: sonarcloud
-      url: ${{ steps.upload.outputs.url_output }}
+      url: https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd
     timeout-minutes: 20
     defaults:
       run:
@@ -614,7 +598,6 @@ jobs:
           path: .m2/repository
           enableCrossOsArchive: true
       - name: Build and upload to sonar cloud
-        id: upload
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -626,17 +609,13 @@ jobs:
               clean package \
               sonar:sonar -Psonar,fastSkip
 
-          targetUrl="https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd"
-          echo "TargetUrl: ${targetUrl}"
-          echo "url_output=${targetUrl}" >> "$GITHUB_OUTPUT"
-
   run-coveralls:
     needs: check-version
     runs-on: ubuntu-latest
     # use environment sonarcloud, where secrets are configured for COVERALLS_REPO_TOKEN
     environment:
       name: coveralls
-      url: ${{ steps.upload.outputs.url_output }}
+      url: https://coveralls.io/github/pmd/pmd
     timeout-minutes: 20
     defaults:
       run:
@@ -668,7 +647,6 @@ jobs:
           # shellcheck disable=SC2016
           sed -i 's$Comparisons.kt$ApexTreeBuilder.kt$g' pmd-apex/target/site/jacoco/jacoco.xml
       - name: Build and upload to coveralls report
-        id: upload
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         run: |
@@ -678,7 +656,3 @@ jobs:
               -Dmaven.repo.local=.m2/repository \
               generate-sources \
               coveralls:report -DrepoToken="${COVERALLS_REPO_TOKEN}" -Pcoveralls,fastSkip
-  
-          targetUrl="https://coveralls.io/github/pmd/pmd"
-          echo "TargetUrl: ${targetUrl}"
-          echo "url_output=${targetUrl}" >> "$GITHUB_OUTPUT"
