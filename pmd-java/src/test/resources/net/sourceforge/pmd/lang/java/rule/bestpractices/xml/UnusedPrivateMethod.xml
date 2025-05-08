@@ -2672,7 +2672,7 @@ class Foo {
     }
 
     private void handleRequest(RoutingContext rc) { }
-//    private void handleRequest(String rc) { }
+    private void handleRequest(String rc) { }
 }
 ]]></code>
     </test-code>

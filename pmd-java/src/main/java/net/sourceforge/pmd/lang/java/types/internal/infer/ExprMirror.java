@@ -451,17 +451,20 @@ public interface ExprMirror {
             private final boolean canSkipInvocation;
             private final boolean needsUncheckedConversion;
             private final boolean failed;
+            private final @Nullable InvocationMirror expr;
 
             MethodCtDecl(JMethodSig methodType,
                          MethodResolutionPhase resolvePhase,
                          boolean canSkipInvocation,
                          boolean needsUncheckedConversion,
-                         boolean failed) {
+                         boolean failed,
+                         @Nullable InvocationMirror expr) {
                 this.methodType = methodType;
                 this.resolvePhase = resolvePhase;
                 this.canSkipInvocation = canSkipInvocation;
                 this.needsUncheckedConversion = needsUncheckedConversion;
                 this.failed = failed;
+                this.expr = expr;
             }
 
             // package-private:
@@ -471,7 +474,10 @@ public interface ExprMirror {
             }
 
             MethodCtDecl withMethod(JMethodSig method, boolean failed) {
-                return new MethodCtDecl(method, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed);
+                return new MethodCtDecl(method, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed, expr);
+            }
+            MethodCtDecl withExpr(InvocationMirror expr) {
+                return new MethodCtDecl(methodType, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed, expr);
             }
 
             MethodCtDecl asFailed() {
@@ -487,7 +493,7 @@ public interface ExprMirror {
             }
 
             static MethodCtDecl unresolved(TypeSystem ts) {
-                return new MethodCtDecl(ts.UNRESOLVED_METHOD, STRICT, true, false, true);
+                return new MethodCtDecl(ts.UNRESOLVED_METHOD, STRICT, true, false, true, null);
             }
 
             // public:

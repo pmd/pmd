@@ -375,7 +375,8 @@ public final class Infer {
                                     phase,
                                     site.canSkipInvocation(),
                                     site.needsUncheckedConversion(),
-                                    false);
+                                    false,
+                                    site.getExpr());
         }
     }
 
