@@ -449,11 +449,47 @@ jobs:
         run: |
           rm -rf "${HOME}/.ssh"
 
+  deploy-to-github-pages:
+    needs: check-version
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write # to push to branch gh-pages
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+      - name: Clear old files
+        run: rm -rf *
+      - uses: actions/download-artifact@v4
+        with:
+          name: docs-artifact
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+      - name: Commit and push new page
+        env:
+          WORKFLOW_RUN_HTML_URL: ${{ github.event.workflow_run.html_url }}
+        run: |
+          # https://api.github.com/users/pmd-actions-helper[bot]
+          git config user.name "pmd-actions-helper[bot]"
+          git config user.email "207160486+pmd-actions-helper[bot]@users.noreply.github.com"
+          git add -A
+          MSG="Update documentation
+
+          Updated by: https://github.com/pmd/pmd/actions/runs/$GITHUB_RUN_ID
+          Triggered by: ${WORKFLOW_RUN_HTML_URL}"
+          git commit -q -m "$MSG"
+          git push
+
+          targetUrl="https://pmd.github.io/pmd/"
+          echo "TargetUrl: ${targetUrl}"
+          echo "url_output=${targetUrl}" >> "$GITHUB_OUTPUT"
+
+
 # TODO
-# update-github-pages:
-# -> (https://pmd.github.io/pmd/)
-# - just updates branch gh_pages
-# - needs write permissions
 # regression-tester-baseline:
 # - create new baseline -> https://pmd-code.org/pmd-regression-tester/
 # run-sonar: -> https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd
