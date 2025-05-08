@@ -1294,7 +1294,7 @@ class SomeTestClass {
     <rule name="SimplifiableStreamExpression"
           language="java"
           since="7.14.0"
-          message="Stream expression may be simplified using {0}"
+          message="Stream call chain may be simplified: {0}"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.SimplifiableStreamExpressionRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#simplifiablestreamexpression">
         <description>
@@ -1302,7 +1302,8 @@ class SomeTestClass {
             more specific methods.
 
             This rule currently checks the following patterns:
-            - Replace `.collect(Collectors.toList())` with `.toList()` (Java 16+)
+            - `.collect(Collectors.toList())` -> `.toList()` (Java 16+)
+            - `Arrays.asList(..).stream()` -> `Arrays.stream(..)` or `Stream.of(..)`
 
         </description>
         <priority>3</priority>

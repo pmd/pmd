@@ -9,7 +9,7 @@
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
-            <message>Terminal operation `.collect(Collectors.toList())` can be replaced with `.toList()`</message>
+            <message>Stream call chain may be simplified: replace `.collect(Collectors.toList())` with `.toList()`</message>
         </expected-messages>
         <code><![CDATA[
             import java.util.List;
@@ -33,6 +33,27 @@
             class SomeTestClass {
                 void example(List<String> strings) {
                     var list = strings.stream().map(t -> t + ".java").collect(Collectors.toUnmodifiableList());
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Arrays stream</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <expected-messages>
+            <message>Stream call chain may be simplified: replace `Arrays.asList(..).stream()` with `Arrays.stream(..)` or `Stream.of(..)`</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.Arrays;
+            import java.util.List;
+            import java.util.stream.Collectors;
+
+            class SomeTestClass {
+                void example(List<String> strings) {
+                    var list = Arrays.asList("a", "b").stream();
                 }
             }
             ]]></code>
