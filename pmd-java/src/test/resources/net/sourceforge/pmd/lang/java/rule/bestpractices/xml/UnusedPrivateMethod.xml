@@ -2665,4 +2665,27 @@ class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UnusedPrivateMethod false-positive #5664</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            @ExtendWith(MockitoExtension.class)
+            class TimeProfilerTests {
+                @Nested
+                class operations_test {
+                    private final long[] offset = {0L};
+
+                    private static Long offsetTimeSupplier(final long[] offset) {
+                        return offset[0];
+                    }
+
+                    @BeforeEach
+                    void setUp() {
+                        offset[0] = offsetTimeSupplier(offset);
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>
