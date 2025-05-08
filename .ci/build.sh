@@ -90,7 +90,7 @@ function build() {
                 # Trying to delete the files now, if they exist.
                 # Alternatively, we could run maven with flag "-U" to force update all dependencies...
                 pmd_ci_log_info "Cleanup local maven repo..."
-                find ~/.m2/repository -print0 -wholename "*/net/sourceforge/pmd/*/${PMD_CI_MAVEN_PROJECT_VERSION}/*.lastUpdated" | xargs -0 rm -v
+                find ~/.m2/repository -path "*/net/sourceforge/pmd/*/${PMD_CI_MAVEN_PROJECT_VERSION}/*.lastUpdated" -print0 | xargs -0 rm -v
                 pmd_ci_log_info "Cleanup local maven repo finished."
 
                 ./mvnw clean verify -pl pmd-cli,pmd-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
@@ -150,6 +150,36 @@ function build() {
     pmd_ci_log_group_end
     fi
 
+    # Trigger docker workflow to build new images for release builds
+    # but only for case b) pmd-cli/pmd-dist release
+    if pmd_ci_maven_isReleaseBuild && [ "${BUILD_CLI_DIST_ONLY}" = "true" ]; then
+    pmd_ci_log_group_start "Trigger docker workflow"
+      # split semantic version by dot
+      IFS="." read -ra VERSION_ARRAY <<< "${PMD_CI_MAVEN_PROJECT_VERSION}"
+      all_tags=""
+      new_tag=""
+      for i in "${VERSION_ARRAY[@]}"; do
+        if [ -z "$new_tag" ]; then
+          new_tag="${i}"
+        else
+          new_tag="${new_tag}.${i}"
+        fi
+        all_tags="${all_tags}${new_tag},"
+      done
+      all_tags="${all_tags}latest"
+      echo "version: ${PMD_CI_MAVEN_PROJECT_VERSION}"
+      echo "tags: ${all_tags}"
+
+      GH_TOKEN="${PMD_ACTIONS_HELPER_TOKEN}" \
+      gh api \
+        --method POST \
+        -H "Accept: application/vnd.github+json" \
+        -H "X-GitHub-Api-Version: 2022-11-28" \
+        /repos/pmd/docker/actions/workflows/publish-docker-image.yaml/dispatches \
+         -f "ref=main" -f "inputs[version]=${PMD_CI_MAVEN_PROJECT_VERSION}" -f "inputs[tags]=${all_tags}"
+    pmd_ci_log_group_end
+    fi
+
     #
     # everything from here runs only on snapshots, not on release builds
     #
@@ -169,7 +199,7 @@ function build() {
     pmd_ci_log_group_end
 
     pmd_ci_log_group_start "Executing build with coveralls"
-        pmd_ci_openjdk_setdefault 11
+        pmd_ci_openjdk_setdefault 17
         export CI_NAME="github actions"
         export CI_BUILD_URL="${PMD_CI_JOB_URL}"
         export CI_BRANCH="${PMD_CI_BRANCH}"

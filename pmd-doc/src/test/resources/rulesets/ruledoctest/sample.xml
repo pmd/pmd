@@ -142,7 +142,7 @@ public class Foo {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_sample.html#jumbledincrementer">
      <description>
-Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
+Avoid jumbled loop incrementers - it's usually a mistake, and is confusing even if intentional.
      </description>
      <priority>3</priority>
      <properties>

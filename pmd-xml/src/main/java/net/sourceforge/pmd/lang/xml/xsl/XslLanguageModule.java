@@ -12,8 +12,10 @@ import net.sourceforge.pmd.lang.xml.XmlHandler;
 import net.sourceforge.pmd.lang.xml.cpd.XmlCpdLexer;
 
 /**
- * Created by christoferdutz on 20.09.14.
+ * This language module is deprecated. XSL is now a dialect of XML.
+ * @deprecated Since 7.13.0. Use @link{XslDialectModule} instead.
  */
+@Deprecated
 public class XslLanguageModule extends SimpleLanguageModuleBase {
     private static final String ID = "xsl";
 
