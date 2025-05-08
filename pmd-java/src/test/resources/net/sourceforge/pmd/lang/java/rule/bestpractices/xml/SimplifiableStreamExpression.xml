@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Stream.toList</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Terminal operation `.collect(Collectors.toList())` can be replaced with `.toList()`</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.List;
+            import java.util.stream.Collectors;
+
+            class SomeTestClass {
+                void example(List<String> strings) {
+                    var list = strings.stream().map(t -> t + ".java").collect(Collectors.toList());
+                    //  can be replaced with .toList() since Java 16 ------------------------------
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Stream.toList not applicable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.List;
+            import java.util.stream.Collectors;
+
+            class SomeTestClass {
+                void example(List<String> strings) {
+                    var list = strings.stream().map(t -> t + ".java").collect(Collectors.toUnmodifiableList());
+                }
+            }
+            ]]></code>
+    </test-code>
+</test-data>
