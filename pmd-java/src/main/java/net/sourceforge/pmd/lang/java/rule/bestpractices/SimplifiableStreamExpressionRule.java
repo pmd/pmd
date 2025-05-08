@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
@@ -33,20 +34,25 @@ public class SimplifiableStreamExpressionRule extends AbstractJavaRulechainRule 
 
         boolean hasStreamToList = javaVersion.compareToVersion("16") >= 0;
         if (hasStreamToList && STREAM_COLLECT.matchesCall(node) && COLLECTORS_TO_LIST.matchesCall(node.getArguments().get(0))) {
-            asCtx(data).addViolation(node, "replace `.collect(Collectors.toList())` with `.toList()`");
+            reportCall(node, data, "replace `.collect(Collectors.toList())` with `.toList()`");
             return null;
         }
         if (COLLECTION_STREAM.matchesCall(node) && ARRAYS_ASLIST.matchesCall(node.getQualifier())) {
-            asCtx(data).addViolation(node, "replace `Arrays.asList(..).stream()` with `Arrays.stream(..)` or `Stream.of(..)`");
+            reportCall(node, data, "replace `Arrays.asList(..).stream()` with `Arrays.stream(..)` or `Stream.of(..)`");
             return null;
         }
         if (STREAM_FOREACH.matchesCall(node) && COLLECTION_STREAM.matchesCall(node.getQualifier())) {
-            asCtx(data).addViolation(node, "replace `.stream().forEach(..)` with `.forEach(..)`");
+            reportCall(node, data, "replace `.stream().forEach(..)` with `.forEach(..)`");
             return null;
         }
 
         // todo there are tons more
 
         return null;
+    }
+
+    private void reportCall(ASTMethodCall node, Object data, String reason) {
+        JavaccToken nameToken = node.getNameToken();
+        asCtx(data).addViolationAtToken(node, nameToken, getMessage(), reason);
     }
 }

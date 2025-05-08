@@ -19,6 +19,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.AstInfo;
+import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.internal.NodeFindingUtil;
@@ -164,13 +165,41 @@ public final class RuleContext {
     @Experimental
     public void addViolationWithPosition(Reportable reportable, AstInfo<?> astInfo, FileLocation location,
                                          String message, Object... formatArgs) {
+        Node nearestNode = getNearestNode(reportable, astInfo);
+        addViolationWithPosition(reportable, nearestNode, location, message, formatArgs);
+    }
+
+    @Experimental
+    public void addViolationAtToken(Node node, GenericToken<?> token,
+                                    String message, Object... formatArgs) {
+        addViolationWithPosition(token, node, token.getReportLocation(), message, formatArgs);
+    }
+
+    /**
+     * Record a new violation of the contextual rule, at the given location (node or token).
+     * The position is refined using the given begin and end line numbers.
+     * The given violation message ({@link Rule#getMessage()}) is treated
+     * as a format string for a {@link MessageFormat} and should hence use
+     * appropriate escapes. The given formatting arguments are used.
+     *
+     * @param reportable      Location of the violation (node or token) - only used to determine suppression
+     * @param suppressionNode Node relevant for suppression behavior (eg xpath suppression). It is assumed
+     *                        that the location is contained within the node.
+     * @param location        Report location of the violation
+     * @param message         Violation message
+     * @param formatArgs      Format arguments for the message
+     * @experimental This will probably never be stabilized, will instead be
+     * replaced by a fluent API or something to report violations. Do not use
+     * this outside of the PMD codebase. See <a href="https://github.com/pmd/pmd/issues/5039">[core] Add fluent API to report violations #5039</a>.
+     */
+    @Experimental
+    private void addViolationWithPosition(Reportable reportable, Node suppressionNode, FileLocation location,
+                                          String message, Object... formatArgs) {
         Objects.requireNonNull(reportable, "Node was null");
         Objects.requireNonNull(message, "Message was null");
         Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
 
-        LanguageVersionHandler handler = astInfo.getLanguageProcessor().services();
-
-        Node suppressionNode = getNearestNode(reportable, astInfo);
+        LanguageVersionHandler handler = suppressionNode.getAstInfo().getLanguageProcessor().services();
 
         Map<String, String> extraVariables = ViolationDecorator.apply(handler.getViolationDecorator(), suppressionNode);
         String description = makeMessage(message, formatArgs, extraVariables);
@@ -184,6 +213,7 @@ public final class RuleContext {
             listener.onRuleViolation(violation);
         }
     }
+
 
     private Node getNearestNode(Reportable reportable, AstInfo<?> astInfo) {
         if (reportable instanceof Node) {
