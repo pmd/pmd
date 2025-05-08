@@ -588,6 +588,97 @@ jobs:
         run: |
           rm -rf "${HOME}/.ssh"
 
-# TODO
-# run-sonar: -> https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd
-# run-coveralls: -> https://coveralls.io/github/pmd/pmd
+  run-sonar:
+    needs: check-version
+    runs-on: ubuntu-latest
+    # use environment sonarcloud, where secrets are configured for SONAR_TOKEN
+    environment:
+      name: sonarcloud
+      url: ${{ steps.upload.outputs.url_output }}
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17' # sonar requires java 17
+      - uses: actions/cache@v4
+        with:
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-
+          path: .m2/repository
+          enableCrossOsArchive: true
+      - name: Build and upload to sonar cloud
+        id: upload
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Note: Sonar also needs GITHUB_TOKEN (!)
+          ./mvnw \
+              --show-version --errors --batch-mode \
+              -Dmaven.repo.local=.m2/repository \
+              clean package \
+              sonar:sonar -Psonar,fastSkip
+
+          targetUrl="https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd"
+          echo "TargetUrl: ${targetUrl}"
+          echo "url_output=${targetUrl}" >> "$GITHUB_OUTPUT"
+
+  run-coveralls:
+    needs: check-version
+    runs-on: ubuntu-latest
+    # use environment sonarcloud, where secrets are configured for COVERALLS_REPO_TOKEN
+    environment:
+      name: coveralls
+      url: ${{ steps.upload.outputs.url_output }}
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17' # coveralls requires java 17
+      - uses: actions/cache@v4
+        with:
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-
+          path: .m2/repository
+          enableCrossOsArchive: true
+      - name: Create Jacoco Report
+        run: |
+          ./mvnw \
+              --show-version --errors --batch-mode \
+              -Dmaven.repo.local=.m2/repository \
+              clean package \
+              jacoco:report -Pcoveralls,fastSkip
+          
+          # workaround, maybe https://github.com/jacoco/jacoco/issues/654
+          # we use $ as a regex separator, not a shell variable, so no expansion
+          # shellcheck disable=SC2016
+          sed -i 's$Comparisons.kt$ApexTreeBuilder.kt$g' pmd-apex/target/site/jacoco/jacoco.xml
+      - name: Build and upload to coveralls report
+        id: upload
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        run: |
+          # note: generate-sources is needed, so that antlr4 generated directories are on the compileSourceRoots
+          ./mvnw \
+              --show-version --errors --batch-mode \
+              -Dmaven.repo.local=.m2/repository \
+              generate-sources \
+              coveralls:report -DrepoToken="${COVERALLS_REPO_TOKEN}" -Pcoveralls,fastSkip
+  
+          targetUrl="https://coveralls.io/github/pmd/pmd"
+          echo "TargetUrl: ${targetUrl}"
+          echo "url_output=${targetUrl}" >> "$GITHUB_OUTPUT"
