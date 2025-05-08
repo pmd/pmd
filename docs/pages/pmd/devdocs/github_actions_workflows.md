@@ -39,6 +39,7 @@ During the build we create a couple of artifacts, that can be downloaded:
   PMD with the changes from the pull request without the need to build it locally. It is actually used by the
   regression tester job to avoid building PMD another time. It also includes the SBOM files (in json and xml format).
 * docs-artifact: contains the generated PMD documentation including rule descriptions.
+* javadocs-artifact: contains the javadoc jars of all PMD modules generated during build.
 * pmd-regression-tester: contains the generation regression report, if there were any changes to rules.
 
 In order to have fast feedback of the build results, we run a couple of jobs in parallel and not sequentially.
@@ -51,6 +52,7 @@ The jobs are:
     - "verify": runs a complete `./mvnw verify` with all code checks like checkstyle, japicmp, javadoc, etc.
       but excluding unit tests (these are run in a separate job).
       This job is only run on linux. It reuses the already compiled artifacts from the first "compile" job.
+      Since it runs javadoc, it creates the javadocs-artifact.
     - "verify-unittests": just runs the unit tests on Linux, Windows and MacOS. Only linux reuses the
       "compile-artifact" from the first job. For Windows/MacOS we can't reuse this due to platform specific line
       endings and timestamp issues.
