@@ -24,6 +24,7 @@ import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypingContext;
+import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * Adapter class to manipulate expressions. The framework
@@ -240,10 +241,17 @@ public interface ExprMirror {
         void finishFailedInference(@Nullable JTypeMirror targetType);
     }
 
+    interface MethodUsageMirror extends PolyExprMirror {
+
+        void setCompileTimeDecl(InvocationMirror.MethodCtDecl methodType);
+
+        @Nullable JTypeMirror getTypeToSearch();
+    }
+
     /**
      * Mirror of a method reference expression.
      */
-    interface MethodRefMirror extends FunctionalExprMirror {
+    interface MethodRefMirror extends FunctionalExprMirror, MethodUsageMirror {
 
         /** True if this references a ctor. */
         boolean isConstructorRef();
@@ -286,7 +294,8 @@ public interface ExprMirror {
          * E.g. in {@code stringStream.map(String::isEmpty)}, this is
          * {@code java.lang.String.isEmpty() -> boolean}
          */
-        void setCompileTimeDecl(JMethodSig methodType);
+        @Override
+        void setCompileTimeDecl(InvocationMirror.MethodCtDecl methodType);
 
 
         /**
@@ -369,7 +378,8 @@ public interface ExprMirror {
     /**
      * Adapter over a method or constructor invocation expression.
      */
-    interface InvocationMirror extends PolyExprMirror {
+    interface InvocationMirror extends PolyExprMirror, MethodUsageMirror {
+
 
         /**
          * Enumerates *accessible* method (or ctor) signatures with
@@ -427,16 +437,20 @@ public interface ExprMirror {
         int getArgumentCount();
 
 
-        void setCtDecl(MethodCtDecl methodType);
+        @Override
+        void setCompileTimeDecl(MethodCtDecl methodType);
 
 
         /**
-         * Returns the method type set with {@link #setCtDecl(MethodCtDecl)}
+         * Returns the method type set with {@link #setCompileTimeDecl(MethodCtDecl)}
          * or null if that method was never called. This is used to perform
          * overload resolution exactly once per call site.
          */
         @Nullable MethodCtDecl getCtDecl();
 
+        default @Nullable JTypeMirror getTypeToSearch() {
+            return getReceiverType();
+        }
 
         /**
          * Information about the overload-resolution for a specific method.
@@ -449,29 +463,36 @@ public interface ExprMirror {
             private final JMethodSig methodType;
             private final MethodResolutionPhase resolvePhase;
             private final boolean canSkipInvocation;
-            private final boolean needsUncheckedConversion;
+            private final OptionalBool needsUncheckedConversion;
             private final boolean failed;
+            private final @Nullable MethodUsageMirror expr;
 
             MethodCtDecl(JMethodSig methodType,
                          MethodResolutionPhase resolvePhase,
                          boolean canSkipInvocation,
-                         boolean needsUncheckedConversion,
-                         boolean failed) {
+                         OptionalBool needsUncheckedConversion,
+                         boolean failed,
+                         @Nullable MethodUsageMirror expr) {
                 this.methodType = methodType;
                 this.resolvePhase = resolvePhase;
                 this.canSkipInvocation = canSkipInvocation;
                 this.needsUncheckedConversion = needsUncheckedConversion;
                 this.failed = failed;
+                this.expr = expr;
             }
 
             // package-private:
 
-            MethodCtDecl withMethod(JMethodSig method) {
+            public MethodCtDecl withMethod(JMethodSig method) {
                 return withMethod(method, failed);
             }
 
             MethodCtDecl withMethod(JMethodSig method, boolean failed) {
-                return new MethodCtDecl(method, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed);
+                return new MethodCtDecl(method, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed, expr);
+            }
+
+            public MethodCtDecl withExpr(MethodUsageMirror expr) {
+                return new MethodCtDecl(methodType, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed, expr);
             }
 
             MethodCtDecl asFailed() {
@@ -487,7 +508,7 @@ public interface ExprMirror {
             }
 
             static MethodCtDecl unresolved(TypeSystem ts) {
-                return new MethodCtDecl(ts.UNRESOLVED_METHOD, STRICT, true, false, true);
+                return new MethodCtDecl(ts.UNRESOLVED_METHOD, STRICT, true, OptionalBool.UNKNOWN, true, null);
             }
 
             // public:
@@ -500,7 +521,7 @@ public interface ExprMirror {
 
             @Override
             public boolean needsUncheckedConversion() {
-                return needsUncheckedConversion;
+                return needsUncheckedConversion.isTrue();
             }
 
             @Override
@@ -518,6 +539,10 @@ public interface ExprMirror {
                 return "CtDecl[phase=" + resolvePhase + ", method=" + methodType + ']';
             }
 
+            @Override
+            public @Nullable JTypeMirror getTypeToSearch() {
+                return expr != null ? expr.getTypeToSearch() : null;
+            }
         }
     }
 

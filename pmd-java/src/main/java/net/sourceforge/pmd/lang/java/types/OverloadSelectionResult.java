@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
@@ -82,4 +85,8 @@ public interface OverloadSelectionResult {
      * one was chosen.
      */
     boolean isFailed();
+
+
+    @Experimental
+    @Nullable JTypeMirror getTypeToSearch();
 }

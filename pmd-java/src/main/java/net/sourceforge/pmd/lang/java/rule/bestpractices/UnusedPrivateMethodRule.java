@@ -28,6 +28,9 @@ import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.AbstractIgnoredAnnotationRule;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
@@ -62,7 +65,12 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
             .crossFindBoundaries()
             .<MethodUsage>map(asInstanceOf(ASTMethodCall.class, ASTMethodReference.class))
             .forEach(ref -> {
-                JExecutableSymbol calledMethod = getMethodSymbol(ref);
+                OverloadSelectionResult selectionInfo = ref.getOverloadSelectionInfo();
+                JExecutableSymbol calledMethod = selectionInfo.getMethodType().getSymbol();
+                if (calledMethod.isUnresolved()) {
+                    handleUnresolvedCall(ref, selectionInfo, candidates);
+                    return;
+                }
                 candidates.compute(calledMethod, (sym2, reffed) -> {
                     if (reffed != null && ref.ancestors(ASTMethodDeclaration.class).first() != reffed) {
                         // remove mapping, but only if it is called from outside itself
@@ -78,15 +86,20 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         return null;
     }
 
-    private static JExecutableSymbol getMethodSymbol(MethodUsage ref) {
-        if (ref instanceof ASTMethodCall) {
-            return ((ASTMethodCall) ref).getMethodType().getSymbol();
-        } else if (ref instanceof ASTMethodReference) {
-            return ((ASTMethodReference) ref).getReferencedMethod().getSymbol();
-        }
-        throw new IllegalStateException("unknown type: " + ref);
-    }
+    private static void handleUnresolvedCall(MethodUsage ref, OverloadSelectionResult selectionInfo, Map<JExecutableSymbol, ASTMethodDeclaration> candidates) {
+        // If the type is may be an instance of this class, then the method may be
+        // a call to a private method here. In that case we whitelist all methods
+        // with that name.
+        JTypeMirror receive = selectionInfo.getTypeToSearch();
+        boolean receiverMayBeInstanceOfThisClass =
+                receive == null
+                || TypeOps.isSpecialUnresolved(receive)
+                || receive.equals(ref.getEnclosingType().getTypeMirror());
 
+        if (receiverMayBeInstanceOfThisClass) {
+            candidates.values().removeIf(it -> it.getName().equals(ref.getMethodName()));
+        }
+    }
 
     /**
      * Collect potential unused private methods and index them by their symbol.

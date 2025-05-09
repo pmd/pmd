@@ -218,8 +218,8 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         }
 
         @Override
-        public void setCtDecl(MethodCtDecl methodType) {
-            base.setCtDecl(methodType);
+        public void setCompileTimeDecl(MethodCtDecl methodType) {
+            base.setCompileTimeDecl(methodType);
         }
 
         @Override
