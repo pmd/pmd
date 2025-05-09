@@ -39,7 +39,18 @@ jobs:
           echo "PR_NUMBER=${PR_NUMBER}" >> "${GITHUB_ENV}"
           echo "PR_BRANCH=${PR_BRANCH}" >> "${GITHUB_ENV}"
           echo "PR_SHA=${PR_SHA}" >> "${GITHUB_ENV}"
+      - name: Add Job Summary
+        env:
+          WORKFLOW_RUN_DISPLAY_TITLE: ${{ github.event.workflow_run.display_title }}
+          WORKFLOW_RUN_NAME: ${{ github.event.workflow_run.name }}
+          WORKFLOW_RUN_NUMBER: ${{ github.event.workflow_run.run_number }}
+          WORKFLOW_RUN_HTML_URL: ${{ github.event.workflow_run.html_url }}
+        run: |
+          echo "### Run Info" >> "${GITHUB_STEP_SUMMARY}"
           echo "Triggered for PR [#${PR_NUMBER}](https://github.com/pmd/pmd/pull/${PR_NUMBER})" >> "${GITHUB_STEP_SUMMARY}"
+          echo "" >> "${GITHUB_STEP_SUMMARY}"
+          echo "Called by [${WORKFLOW_RUN_DISPLAY_TITLE} (${WORKFLOW_RUN_NAME} #${WORKFLOW_RUN_NUMBER})](${WORKFLOW_RUN_HTML_URL})" >> "${GITHUB_STEP_SUMMARY}"
+          echo "" >> "${GITHUB_STEP_SUMMARY}"
       - name: Download docs-artifact
         env:
           # Token required for GH CLI:
@@ -156,9 +167,15 @@ jobs:
           comment="[Documentation Preview](https://pull-requests.pmd-code.org/pr-${PR_NUMBER}/${PR_SHA}/docs)
           
           ${summary}
+          
+          (comment created at $(date -u --rfc-3339=seconds) for ${PR_SHA})
           "
           echo "${comment}" > comment.txt
-      - uses: marocchino/sticky-pull-request-comment@v2
+          
+          echo "### Result" >> "${GITHUB_STEP_SUMMARY}"
+          echo "${comment}" >> "${GITHUB_STEP_SUMMARY}"
+      - uses: marocchino/sticky-pull-request-comment@67d0dec7b07ed060a405f9b2a64b8ab319fdd7db #v2.9.2
         with:
+          header: pmd-publish-pull-requests
           number: ${{ env.PR_NUMBER }}
           path: comment.txt
